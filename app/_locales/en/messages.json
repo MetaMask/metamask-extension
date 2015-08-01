@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "metamask",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Ethereum Identity Management",
+    "description": "The description of the application"
+  }
+}
