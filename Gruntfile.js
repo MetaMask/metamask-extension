@@ -15,8 +15,6 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
-  grunt.loadNpmTasks('grunt-browserify');
-
   // Configurable paths
   var config = {
     app: 'app',
@@ -72,11 +70,11 @@ module.exports = function (grunt) {
         // change this to '0.0.0.0' to access the server from outside
         hostname: 'localhost'
       },
-      chrome: {
+      dev: {
         options: {
           open: false,
           base: [
-            '<%= config.app %>'
+            '<%= config.dist %>'
           ]
         }
       },
@@ -93,9 +91,7 @@ module.exports = function (grunt) {
 
     // Empties folders to start fresh
     clean: {
-      chrome: {
-      },
-      dist: {
+      basic: {
         files: [{
           dot: true,
           src: [
@@ -215,15 +211,21 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= config.dist %>/scripts/scripts.js': [
-    //         '<%= config.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
+    uglify: {
+      dist: {
+        files: {
+          '<%= config.dist %>/scripts/background.js': [
+            '<%= config.dist %>/scripts/background.js'
+          ],
+          '<%= config.dist %>/scripts/contentscript.js': [
+            '<%= config.dist %>/scripts/contentscript.js'
+          ],
+          '<%= config.dist %>/scripts/inpage.js': [
+            '<%= config.dist %>/scripts/inpage.js'
+          ],
+        }
+      }
+    },
     // concat: {
     //   dist: {}
     // },
@@ -231,7 +233,9 @@ module.exports = function (grunt) {
     browserify: {
       basic: {
         files: {
-          '<%= config.dist %>/scripts/web3.js': ['<%= config.app %>/scripts/web3.js'],
+          '<%= config.dist %>/scripts/background.js': ['<%= config.app %>/scripts/background.js'],
+          '<%= config.dist %>/scripts/contentscript.js': ['<%= config.app %>/scripts/contentscript.js'],
+          '<%= config.dist %>/scripts/inpage.js': ['<%= config.app %>/scripts/inpage.js'],
         },
       },
     },
@@ -251,24 +255,10 @@ module.exports = function (grunt) {
             'styles/{,*/}*.css',
             'styles/fonts/{,*/}*.*',
             '_locales/{,*/}*.json',
+            'manifest.json',
           ]
         }]
       }
-    },
-
-    // Run some tasks in parallel to speed up build process
-    concurrent: {
-      chrome: [
-        'browserify',
-      ],
-      dist: [
-        'imagemin',
-        'svgmin',
-        'browserify',
-      ],
-      test: [
-        'browserify',
-      ]
     },
 
     // Auto buildnumber, exclude dev files. smart builds that event pages
@@ -284,9 +274,9 @@ module.exports = function (grunt) {
             ]
           }
         },
-        src: '<%= config.app %>',
+        src: '<%= config.dist %>',
         dest: '<%= config.dist %>'
-      }
+      },
     },
 
     // Compres dist files to package
@@ -305,40 +295,57 @@ module.exports = function (grunt) {
           dest: ''
         }]
       }
-    }
+    },
+
+    // Run some tasks in parallel to speed up build process
+    concurrent: {
+      dev: [
+        'browserify',
+      ],
+      dist: [
+        'imagemin',
+        'svgmin',
+        'browserify',
+      ],
+      test: [
+        'browserify',
+      ]
+    },
+
+
   });
 
   grunt.registerTask('dev', function () {
     grunt.task.run([
-      'concurrent:chrome',
-      'connect:chrome',
-      'build',
+      'clean',
+      'concurrent:dev',
+      'connect:dev',
+      'copy',
+
       'watch',
     ]);
   });
 
   grunt.registerTask('test', [
-    'jshint',
+    // 'jshint',
+    'concurrent:test',
     'connect:test',
-    'mocha'
+    'copy',
+
+    'mocha',
   ]);
 
   grunt.registerTask('build', [
-    'clean:dist',
-    'chromeManifest:dist',
-    'useminPrepare',
+    'clean',
     'concurrent:dist',
-    'cssmin',
-    'concat',
     'uglify',
     'copy',
-    'usemin',
-    'compress'
+    'chromeManifest:dist',
+    'compress',
   ]);
 
   grunt.registerTask('default', [
-    'jshint',
     'test',
-    'build'
+    'build',
   ]);
 };

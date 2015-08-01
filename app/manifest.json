@@ -1,6 +1,6 @@
 {
   "name": "__MSG_appName__",
-  "version": "0.0.17",
+  "version": "0.0.49",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
@@ -19,8 +19,7 @@
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     },
-    "default_title": "metamask",
-    "default_popup": "popup.html"
+    "default_title": "metamask"
   },
   "content_scripts": [
     {
@@ -34,6 +33,9 @@
       "run_at": "document_start",
       "all_frames": false
     }
+  ],
+  "permissions": [
+    "storage"
   ],
   "web_accessible_resources": [
     "scripts/web3.js"
