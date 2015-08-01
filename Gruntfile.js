@@ -15,6 +15,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('grunt-browserify');
+
   // Configurable paths
   var config = {
     app: 'app',
@@ -36,7 +38,8 @@ module.exports = function (grunt) {
         files: ['<%= config.app %>/scripts/{,*/}*.js'],
         options: {
           livereload: '<%= connect.options.livereload %>'
-        }
+        },
+        tasks: ['useminPrepare', 'usemin', 'browserify'],
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -61,7 +64,7 @@ module.exports = function (grunt) {
       }
     },
 
-    // Grunt server and debug server setting
+    // Grunt server and dev server setting
     connect: {
       options: {
         port: 9000,
@@ -225,6 +228,14 @@ module.exports = function (grunt) {
     //   dist: {}
     // },
 
+    browserify: {
+      basic: {
+        files: {
+          '<%= config.dist %>/scripts/web3.js': ['<%= config.app %>/scripts/web3.js'],
+        },
+      },
+    },
+
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -248,16 +259,19 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up build process
     concurrent: {
       chrome: [
+        'browserify',
       ],
       dist: [
         'imagemin',
-        'svgmin'
+        'svgmin',
+        'browserify',
       ],
       test: [
+        'browserify',
       ]
     },
 
-    // Auto buildnumber, exclude debug files. smart builds that event pages
+    // Auto buildnumber, exclude dev files. smart builds that event pages
     chromeManifest: {
       dist: {
         options: {
@@ -294,11 +308,12 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('debug', function () {
+  grunt.registerTask('dev', function () {
     grunt.task.run([
       'concurrent:chrome',
       'connect:chrome',
-      'watch'
+      'build',
+      'watch',
     ]);
   });
 
