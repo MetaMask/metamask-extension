@@ -28,26 +28,15 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
-      bower: {
-        files: ['bower.json'],
-        tasks: ['bowerInstall']
-      },
       js: {
         files: ['<%= config.app %>/scripts/{,*/}*.js'],
         options: {
           livereload: '<%= connect.options.livereload %>'
         },
-        tasks: ['useminPrepare', 'usemin', 'browserify'],
+        tasks: ['browserify:dev'],
       },
       gruntfile: {
         files: ['Gruntfile.js']
-      },
-      styles: {
-        files: ['<%= config.app %>/styles/{,*/}*.css'],
-        tasks: [],
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        }
       },
       livereload: {
         options: {
@@ -102,115 +91,28 @@ module.exports = function (grunt) {
       }
     },
 
-    // Make sure code styles are up to par and there are no obvious mistakes
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= config.app %>/scripts/{,*/}*.js',
-        '!<%= config.app %>/scripts/vendor/*',
-        'test/spec/{,*/}*.js'
-      ]
-    },
-    mocha: {
-      all: {
-        options: {
-          run: true,
-          urls: ['http://localhost:<%= connect.options.port %>/index.html']
-        }
-      }
-    },
-
-    // Automatically inject Bower components into the HTML file
-    bowerInstall: {
-      app: {
-        src: [
-          '<%= config.app %>/*.html'
-        ]
-      }
-    },
-
-    // Reads HTML for usemin blocks to enable smart builds that automatically
-    // concat, minify and revision files. Creates configurations in memory so
-    // additional tasks can operate on them
-    useminPrepare: {
-      options: {
-        dest: '<%= config.dist %>'
-      },
-      html: [
-        '<%= config.app %>/popup.html',
-        '<%= config.app %>/options.html'
-      ]
-    },
-
-    // Performs rewrites based on rev and the useminPrepare configuration
-    usemin: {
-      options: {
-        assetsDirs: ['<%= config.dist %>', '<%= config.dist %>/images']
-      },
-      html: ['<%= config.dist %>/{,*/}*.html'],
-      css: ['<%= config.dist %>/styles/{,*/}*.css']
-    },
-
-    // The following *-min tasks produce minifies files in the dist folder
-    imagemin: {
+    // Build js files
+    browserify: {
       dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= config.app %>/images',
-          src: '{,*/}*.{gif,jpeg,jpg,png}',
-          dest: '<%= config.dist %>/images'
-        }]
-      }
-    },
-
-    svgmin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= config.app %>/images',
-          src: '{,*/}*.svg',
-          dest: '<%= config.dist %>/images'
-        }]
-      }
-    },
-
-    htmlmin: {
-      dist: {
-        options: {
-          // removeCommentsFromCDATA: true,
-          // collapseWhitespace: true,
-          // collapseBooleanAttributes: true,
-          // removeAttributeQuotes: true,
-          // removeRedundantAttributes: true,
-          // useShortDoctype: true,
-          // removeEmptyAttributes: true,
-          // removeOptionalTags: true
+        files: {
+          '<%= config.dist %>/scripts/background.js': ['<%= config.app %>/scripts/background.js'],
+          '<%= config.dist %>/scripts/contentscript.js': ['<%= config.app %>/scripts/contentscript.js'],
+          '<%= config.dist %>/scripts/inpage.js': ['<%= config.app %>/scripts/inpage.js'],
         },
-        files: [{
-          expand: true,
-          cwd: '<%= config.app %>',
-          src: '*.html',
-          dest: '<%= config.dist %>'
-        }]
-      }
+      },
+      dev: {
+        options: {
+          watch: true,
+        },
+        files: {
+          '<%= config.dist %>/scripts/background.js': ['<%= config.app %>/scripts/background.js'],
+          '<%= config.dist %>/scripts/contentscript.js': ['<%= config.app %>/scripts/contentscript.js'],
+          '<%= config.dist %>/scripts/inpage.js': ['<%= config.app %>/scripts/inpage.js'],
+        },
+      },
     },
 
-    // By default, your `index.html`'s <!-- Usemin block --> will take care of
-    // minification. These next options are pre-configured if you do not wish
-    // to use the Usemin blocks.
-    // cssmin: {
-    //   dist: {
-    //     files: {
-    //       '<%= config.dist %>/styles/main.css': [
-    //         '<%= config.app %>/styles/{,*/}*.css'
-    //       ]
-    //     }
-    //   }
-    // },
+    // minify js
     uglify: {
       dist: {
         files: {
@@ -226,23 +128,10 @@ module.exports = function (grunt) {
         }
       }
     },
-    // concat: {
-    //   dist: {}
-    // },
-
-    browserify: {
-      basic: {
-        files: {
-          '<%= config.dist %>/scripts/background.js': ['<%= config.app %>/scripts/background.js'],
-          '<%= config.dist %>/scripts/contentscript.js': ['<%= config.app %>/scripts/contentscript.js'],
-          '<%= config.dist %>/scripts/inpage.js': ['<%= config.app %>/scripts/inpage.js'],
-        },
-      },
-    },
 
     // Copies remaining files to places other tasks can use
     copy: {
-      dist: {
+      basic: {
         files: [{
           expand: true,
           dot: true,
@@ -258,7 +147,19 @@ module.exports = function (grunt) {
             'manifest.json',
           ]
         }]
-      }
+      },
+      dev: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= config.app %>',
+          dest: '<%= config.dist %>',
+          src: [
+            'images/{,*/}*.*',
+            'scripts/chromereload.js',
+          ]
+        }]
+      },
     },
 
     // Auto buildnumber, exclude dev files. smart builds that event pages
@@ -277,6 +178,42 @@ module.exports = function (grunt) {
         src: '<%= config.dist %>',
         dest: '<%= config.dist %>'
       },
+    },
+
+    // Make sure code styles are up to par and there are no obvious mistakes
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
+      },
+      all: [
+        'Gruntfile.js',
+        '<%= config.app %>/scripts/{,*/}*.js',
+        '!<%= config.app %>/scripts/vendor/*',
+        'test/spec/{,*/}*.js'
+      ]
+    },
+
+    // Testing
+    mocha: {
+      all: {
+        options: {
+          run: true,
+          urls: ['http://localhost:<%= connect.options.port %>/index.html']
+        }
+      }
+    },
+
+    // The following *-min tasks produce minifies files in the dist folder
+    imagemin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: '<%= config.app %>/images',
+          src: '{,*/}*.{gif,jpeg,jpg,png}',
+          dest: '<%= config.dist %>/images'
+        }]
+      }
     },
 
     // Compres dist files to package
@@ -299,17 +236,10 @@ module.exports = function (grunt) {
 
     // Run some tasks in parallel to speed up build process
     concurrent: {
-      dev: [
-        'browserify',
-      ],
       dist: [
         'imagemin',
-        'svgmin',
-        'browserify',
+        'browserify:dist',
       ],
-      test: [
-        'browserify',
-      ]
     },
 
 
@@ -318,9 +248,9 @@ module.exports = function (grunt) {
   grunt.registerTask('dev', function () {
     grunt.task.run([
       'clean',
-      'concurrent:dev',
-      'connect:dev',
+      'browserify:dev',
       'copy',
+      'connect:dev',
 
       'watch',
     ]);
@@ -328,7 +258,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     // 'jshint',
-    'concurrent:test',
+    'browserify:dist',
     'connect:test',
     'copy',
 
@@ -339,7 +269,7 @@ module.exports = function (grunt) {
     'clean',
     'concurrent:dist',
     'uglify',
-    'copy',
+    'copy:dist',
     'chromeManifest:dist',
     'compress',
   ]);

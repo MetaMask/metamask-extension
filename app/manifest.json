@@ -38,6 +38,6 @@
     "storage"
   ],
   "web_accessible_resources": [
-    "scripts/web3.js"
+    "scripts/inpage.js"
   ]
 }
