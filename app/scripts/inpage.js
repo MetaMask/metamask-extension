@@ -2,8 +2,9 @@ const web3 = require('web3')
 const MetamaskProvider = require('./lib/metamask-provider.js')
 
 const rpcUrl = 'https://rpc.metamask.io'
-const messageType = 'metamaskMessage'
 const documentOrigin = window.location.origin
+const allowedMessageTarget = 'metamask'
+const allowedMessageType = 'addUnconfirmedTx'
 
 
 var provider = new MetamaskProvider(forwardPayload, rpcUrl)
@@ -15,7 +16,8 @@ window.web3 = web3
 
 function forwardPayload(payload){
   window.postMessage({
-  	type: messageType,
+    to: allowedMessageTarget,
+  	type: allowedMessageType,
   	payload: payload,
   }, documentOrigin)
 }
