@@ -4,7 +4,7 @@ const MetamaskProvider = require('./lib/metamask-provider.js')
 const rpcUrl = 'https://rpc.metamask.io'
 const documentOrigin = window.location.origin
 const allowedMessageTarget = 'metamask'
-const allowedMessageType = 'addUnconfirmedTx'
+const allowedMessageType = 'addUnsignedTx'
 
 
 var provider = new MetamaskProvider(forwardPayload, rpcUrl)

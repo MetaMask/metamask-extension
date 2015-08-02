@@ -1,5 +1,5 @@
 const allowedMessageTarget = 'metamask'
-const allowedMessageType = 'addUnconfirmedTx'
+const allowedMessageType = 'addUnsignedTx'
 
 
 // inject in-page script

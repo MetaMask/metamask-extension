@@ -1,28 +1,36 @@
 const identitiesUrl = 'https://alpha.metamask.io/identities/'
 const messagingChannelName = 'metamask'
 
-var unconfirmedTxs = {}
+var unsignedTxs = {}
 
 // setup badge click handler
 chrome.browserAction.onClicked.addListener(function(activeTab) {
   chrome.tabs.create({ url: identitiesUrl })
 })
 
-// setup content-background messaging
-chrome.runtime.onConnect.addListener(function(port) {
-  port.onMessage.addListener(handleMessage)
+// setup messaging
+chrome.runtime.onConnect.addListener(connectRemote)
+chrome.runtime.onConnectExternal.addListener(connectRemote)
+function connectRemote(remote){
+  remote.onMessage.addListener(handleMessage)
+  exportUnsignedTxs(remote)
+}
+
+// load from storage
+chrome.storage.sync.get(function(data){
+  for (var key in data) {
+    var serialized = data[key]
+    var tx = deserializeTx(serialized)
+    var hash = simpleHash(serialized)
+    unsignedTxs[hash] = tx
+  }
+  updateBadge()
 })
 
 // listen to storage changes
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   for (key in changes) {
     var storageChange = changes[key]
-    console.log('Storage key "%s" in namespace "%s" changed. ' +
-                'Old value was "%s", new value is:',
-                key,
-                namespace,
-                storageChange.oldValue,
-                storageChange.newValue)
     if (storageChange.oldValue && !storageChange.newValue) {
       // was removed
       removeTransaction(storageChange.oldValue)
@@ -40,11 +48,11 @@ function handleMessage(msg){
   console.log('got message!', msg.type)
   switch(msg.type){
     
-    case 'addUnconfirmedTx':
+    case 'addUnsignedTx':
       addTransaction(msg.payload)
       return
 
-    case 'removeUnconfirmedTx':
+    case 'removeUnsignedTx':
       removeTransaction(msg.payload)
       return
 
@@ -54,8 +62,7 @@ function handleMessage(msg){
 function addTransaction(tx){
   var serialized = serializeTx(tx)
   var hash = simpleHash(serialized)
-  console.log('add tx: ', tx.id, hash, serializeTx(tx), tx)
-  unconfirmedTxs[hash] = tx
+  unsignedTxs[hash] = tx
   var data = {}
   data[hash] = serialized
   chrome.storage.sync.set(data)
@@ -65,7 +72,7 @@ function addTransaction(tx){
 
 function removeTransaction(serialized){
   var hash = simpleHash(serialized)
-  delete unconfirmedTxs[hash]
+  delete unsignedTxs[hash]
   var data = {}
   data[hash] = undefined
   chrome.storage.sync.set(data)
@@ -73,9 +80,18 @@ function removeTransaction(serialized){
   updateBadge()
 }
 
+function exportUnsignedTxs(remote){
+  console.log('exporting txs!', unsignedTxs)
+  var data = {
+    type: 'importUnsignedTxs',
+    payload: getValues(unsignedTxs),
+  }
+  remote.postMessage(data)
+}
+
 function updateBadge(){
   var label = ''
-  var count = Object.keys(unconfirmedTxs).length
+  var count = Object.keys(unsignedTxs).length
   if (count) {
     label = String(count)
   }
@@ -100,4 +116,12 @@ function serializeTx(tx){
 
 function deserializeTx(tx){
   return JSON.parse(tx)
+}
+
+function getValues(obj){
+  var output = []
+  for (var key in obj) {
+    output.push(obj[key])
+  }
+  return output
 }

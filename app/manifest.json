@@ -39,5 +39,11 @@
   ],
   "web_accessible_resources": [
     "scripts/inpage.js"
-  ]
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://metamask.io/*",
+      "https://alpha.metamask.io/*"
+    ]
+  }
 }
