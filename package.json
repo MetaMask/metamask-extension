@@ -4,7 +4,7 @@
   "public": false,
   "dependencies": {
     "async": "^1.4.0",
-    "blockapps-web3": "git://github.com/kumavis/blockapps-web3.git#95d64e4fb35a9c17728003c2afcc5c7b84ec5f79",
+    "blockapps-web3": "git://github.com/kumavis/blockapps-web3.git#9c1ee8e99efe277804fc47d8b11142abbc46180c",
     "ethereumjs-tx": "^0.6.7",
     "ethereumjs-util": "^1.3.5",
     "object.entries": "^1.0.2",
