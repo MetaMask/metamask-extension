@@ -1,4 +1,4 @@
-const ZeroClientProvider = require('web3-provider-skeleton')
+const ZeroClientProvider = require('web3-provider-engine')
 // const PortStream = require('./lib/port-stream.js')
 const identitiesUrl = 'https://alpha.metamask.io/identities/'
 
@@ -21,7 +21,8 @@ function connectRemote(remotePort){
 function onRpcRequest(remotePort, payload){
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
     if (err) throw err
-    // console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    if (response.result === true) debugger
     // if (typeof response !== 'object') {
     // if (!response) {
     //   console.warn('-------------------------------')

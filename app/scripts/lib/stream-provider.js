@@ -11,7 +11,7 @@ function StreamProvider(){
     objectMode: true,
   })
 
-  this._handlers = {}
+  this._payloads = {}
 }
 
 // public
@@ -21,19 +21,29 @@ StreamProvider.prototype.send = function(payload){
 }
 
 StreamProvider.prototype.sendAsync = function(payload, callback){
-//   console.log('StreamProvider - sending payload', payload)
-  this._handlers[payload.id] = callback
+  // console.log('StreamProvider - sending payload', payload)
+  this._payloads[payload.id] = [payload, callback]
+  // console.log('payload for plugin:', payload)
   this.push(payload)
 }
 
 // private
 
-StreamProvider.prototype._onResponse = function(payload){
-//   console.log('StreamProvider - got response', payload)
-  var callback = this._handlers[payload.id]
-  if (!callback) throw new Error('StreamProvider - Unknown response id')
-  delete this._handlers[payload.id]
-  callback(null, payload)
+StreamProvider.prototype._onResponse = function(response){
+  // console.log('StreamProvider - got response', payload)
+  var data = this._payloads[response.id]
+  if (!data) throw new Error('StreamProvider - Unknown response id')
+  delete this._payloads[response.id]
+  var payload = data[0]
+  var callback = data[1]
+
+  // logging
+  var res = Array.isArray(response) ? response : [response]
+  ;(Array.isArray(payload) ? payload : [payload]).forEach(function(payload, index){
+    console.log('plugin response:', payload.id, payload.method, payload.params, '->', res[index].result)
+  })
+
+  callback(null, response)
 }
 
 // stream plumbing

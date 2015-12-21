@@ -1,7 +1,6 @@
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const PortStream = require('./lib/port-stream.js')
 
-console.log('content script!')
 
 // inject in-page script
 var scriptTag = document.createElement('script')
