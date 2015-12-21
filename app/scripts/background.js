@@ -4,7 +4,9 @@ const identitiesUrl = 'https://alpha.metamask.io/identities/'
 
 // var unsignedTxs = {}
 
-var zeroClient = ZeroClientProvider()
+var zeroClient = ZeroClientProvider({
+  rpcUrl: 'https://rawrpc.metamask.io/',
+})
 
 // setup badge click handler
 chrome.browserAction.onClicked.addListener(function(activeTab) {
