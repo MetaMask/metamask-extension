@@ -10,7 +10,7 @@
     "object.entries": "^1.0.2",
     "readable-stream": "^2.0.5",
     "web3": "^0.15.1",
-    "web3-provider-engine": "^1.1.1"
+    "web3-provider-engine": "^1.2.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
