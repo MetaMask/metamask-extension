@@ -35,6 +35,13 @@ module.exports = function (grunt) {
         },
         tasks: ['browserify:dev'],
       },
+      html: {
+        files: ['<%= config.app %>/{,*/}*.html'],
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        },
+        tasks: ['copy'],
+      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
@@ -98,6 +105,7 @@ module.exports = function (grunt) {
           '<%= config.dist %>/scripts/background.js': ['<%= config.app %>/scripts/background.js'],
           '<%= config.dist %>/scripts/contentscript.js': ['<%= config.app %>/scripts/contentscript.js'],
           '<%= config.dist %>/scripts/inpage.js': ['<%= config.app %>/scripts/inpage.js'],
+          '<%= config.dist %>/scripts/popup.js': ['<%= config.app %>/scripts/popup.js'],
         },
       },
       dev: {
@@ -108,6 +116,7 @@ module.exports = function (grunt) {
           '<%= config.dist %>/scripts/background.js': ['<%= config.app %>/scripts/background.js'],
           '<%= config.dist %>/scripts/contentscript.js': ['<%= config.app %>/scripts/contentscript.js'],
           '<%= config.dist %>/scripts/inpage.js': ['<%= config.app %>/scripts/inpage.js'],
+          '<%= config.dist %>/scripts/popup.js': ['<%= config.app %>/scripts/popup.js'],
         },
       },
     },

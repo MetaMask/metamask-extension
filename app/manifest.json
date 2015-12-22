@@ -19,7 +19,8 @@
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     },
-    "default_title": "metamask"
+    "default_title": "MetaMask",
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

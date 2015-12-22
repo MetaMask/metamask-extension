@@ -4,14 +4,31 @@ const identitiesUrl = 'https://alpha.metamask.io/identities/'
 
 // var unsignedTxs = {}
 
-var zeroClient = ZeroClientProvider({
+var zeroClient = new ZeroClientProvider({
   rpcUrl: 'https://rawrpc.metamask.io/',
 })
 
-// setup badge click handler
-chrome.browserAction.onClicked.addListener(function(activeTab) {
-  chrome.tabs.create({ url: identitiesUrl })
-})
+// // setup badge click handler
+// chrome.browserAction.onClicked.addListener(function(activeTab) {
+//   // chrome.tabs.create({ url: identitiesUrl })
+//   tabbernackle()
+// })
+
+
+// function tabbernackle(){
+//   chrome.tabs.create({
+//     url: 'about:blank',//chrome.extension.getURL('dialog.html'),
+//     active: false
+//   }, function(tab) {
+//     // After the tab has been created, open a window to inject the tab
+//     chrome.windows.create({
+//       tabId: tab.id,
+//       type: 'panel',
+//       focused: true
+//       // incognito, top, left, ...
+//     });
+//   });
+// }
 
 // setup messaging
 chrome.runtime.onConnect.addListener(connectRemote)
