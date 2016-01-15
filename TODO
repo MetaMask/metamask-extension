@@ -1,0 +1,49 @@
+TODO
+
+### plugin
+  
+  - [ ] ui
+    - [ ] designer
+    - [ ] design
+    - [ ] stack
+      - [x] frontend
+      - [ ] build tools
+  
+  - [ ] data source
+    - [x] geth node
+    - [ ] rpc proxy
+      - [x] geth node
+      - [ ] whitelist
+      - [ ] (perf) proxy-level caching
+      - [ ] (perf) block listener websocket
+    - [ ] provider engine
+      - [x] top-level cache
+      - [x] top-level current block
+      - [x] subproviders should act like normal providers
+        - [x] return in payload wrapper
+      - [ ] subprovider implementations
+        - [x] static
+        - [ ] filters
+          - [x] block
+          - [x] log
+          - [ ] pendingTx
+        - [x] rpc
+        - [x] vm
+        - [x] tx signing
+
+  - [ ] dev ops
+    - [ ] test api load
+    - [ ] publish plugin to store
+  
+  - [ ] external info
+    - [ ] soft launch email
+    - [ ] consensys blog post?
+
+(2) dapp fallback lib
+  iframe wrapper api
+  data source
+    ?
+
+(3) browser-browser
+
+(4) mobile extension / app

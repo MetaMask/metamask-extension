@@ -1,122 +1,55 @@
-var HttpProvider = require('web3/lib/web3/httpprovider.js')
-var ethUtils = require('ethereumjs-util')
-var async = require('async')
+const ProviderEngine = require('web3-provider-engine')
+const CacheSubprovider = require('web3-provider-engine/subproviders/cache.js')
+const StaticSubprovider = require('web3-provider-engine/subproviders/static.js')
+const FilterSubprovider = require('web3-provider-engine/subproviders/filters.js')
+const VmSubprovider = require('web3-provider-engine/subproviders/vm.js')
+const LightWalletSubprovider = require('web3-provider-engine/subproviders/lightwallet.js')
+const RpcSubprovider = require('web3-provider-engine/subproviders/rpc.js')
 
-module.exports = MetamaskProvider
+module.exports = metamaskProvider
 
+function metamaskProvider(opts){
 
-function MetamaskProvider(forwardPayload, host) {
-  this.handlers = []
-  this.forwardPayload = forwardPayload
-  this.http = new HttpProvider(host)
-}
+  var engine = new ProviderEngine()
 
-MetamaskProvider.prototype.send = function (payload) {
-  if (Array.isArray(payload)) {
-    return payload.map( this.handlePayload.bind(this) )
-  } else {
-    return this.handlePayload( payload )
-  }
-}
+  // cache layer
+  engine.addProvider(new CacheSubprovider())
 
-MetamaskProvider.prototype.sendAsync = function (payload, cb) {
-  if (Array.isArray(payload)) {
-    async.map( payload, this.handlePayload.bind(this), cb )
-  } else {
-    this.handlePayload( payload, cb )
-  }
-}
+  // static results
+  engine.addProvider(new StaticSubprovider({
+    web3_clientVersion: 'MetaMask-ProviderEngine/v0.0.0/javascript',
+    net_listening: true,
+    eth_hashrate: '0x0',
+    eth_mining: false,
+    eth_syncing: true,
+  })
 
-MetamaskProvider.prototype.handlePayload = function (payload, cb) {
-  var _this = this
-  var isSync = !cb
-  var resolvedSync = true
-  var result = undefined
+  // filters
+  engine.addProvider(new FilterSubprovider())
 
-  // TODO - this should be injected from Vapor dapp starts
-  var exposedAccounts = ['0xa06ef3ed1ce41ade87f764de6ce8095c569d6d57']
+  // vm
+  engine.addProvider(new VmSubprovider())
 
-  switch (payload.method) {
-    
-    case 'web3_sha3':
-      var inputHex = stripHexStringPrefix(payload.params[0])
-      var hash = '0x'+ethUtils.sha3(new Buffer(inputHex, 'hex')).toString('hex')
-      return handleResult(null, wrapResponse(payload, hash))
-    
-    case 'eth_sendTransaction':
-      this.forwardPayload(payload)
-      return handleResult(null, wrapResponse(payload, ''))
+  // id mgmt
+  engine.addProvider(new LightWalletSubprovider())
 
-    case 'eth_coinbase':
-      var currentAddress = exposedAccounts[0]
-      return handleResult(null, wrapResponse(payload, currentAddress))
+  // data source
+  engine.addProvider(new RpcSubprovider({
+    rpcUrl: 'https://testrpc.metamask.io/',
+  }))
 
-    case 'eth_accounts':
-      return handleResult(null, wrapResponse(payload, exposedAccounts))
+  // log new blocks
+  engine.on('block', function(block){
+    // lazy hack - move caching and current block to engine
+    engine.currentBlock = block
+    console.log('================================')
+    console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
+    console.log('================================')
+  })
 
-    case 'eth_gasPrice':
-      // TODO - this should be dynamically set somehow
-      var gasPrice = '0x01'
-      return handleResult(null, wrapResponse(payload, [gasPrice]))
+  // start polling for blocks
+  engine.start()
 
-    case 'eth_call':
-      var params = payload.params
-      // default 'from' to default account
-      var args = params[0]
-      if (!args.from) {
-        var currentAddress = exposedAccounts[0]
-        args.from = currentAddress
-      }
-      // default block to latest
-      params[1] = params[1] || 'latest'
-      // turn on debug trace
-      params[2] = global.DEBUG_RPC
-      return handleNormally()
-    
-    default:
-      return handleNormally()
-  }
+  return engine
 
-  resolvedSync = false
-
-  function handleNormally(){
-    if (isSync) {
-      return handleResult(null, _this.http.send(payload))
-    } else {
-      _this.http.sendAsync(payload, handleResult)
-    }
-  }
-
-  // helper for normalizing handling of sync+async responses
-  function handleResult(err, resp) {
-    if (isSync) {
-      return resp
-    } else {
-      if (resolvedSync) {
-        process.nextTick(cb.bind(null, err, resp))
-      } else {
-        cb(err, resp)
-      }
-    }
-  }
-}
-
-function wrapResponse(payload, result){
-  return {
-    jsonrpc: payload.jsonrpc,
-    id: payload.id,
-    result: result,
-  }
-}
-
-function stripHexStringPrefix(hex) {
-  if (!hex) {
-    return hex
-  }
-
-  if (hex.slice(0, 2) === '0x') {
-    return hex.slice(2);
-  } else {
-    return hex;
-  }
 }

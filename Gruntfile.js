@@ -148,7 +148,7 @@ module.exports = function (grunt) {
           dest: '<%= config.dist %>',
           src: [
             '*.{ico,png,txt}',
-            'images/{,*/}*.{webp,gif}',
+            'images/{,*/}*.*',
             '{,*/}*.html',
             'styles/{,*/}*.css',
             'styles/fonts/{,*/}*.*',
@@ -164,7 +164,6 @@ module.exports = function (grunt) {
           cwd: '<%= config.app %>',
           dest: '<%= config.dist %>',
           src: [
-            'images/{,*/}*.*',
             'scripts/chromereload.js',
           ]
         }]
@@ -278,7 +277,7 @@ module.exports = function (grunt) {
     'clean',
     'concurrent:dist',
     'uglify',
-    'copy:dist',
+    'copy:basic',
     'chromeManifest:dist',
     'compress',
   ]);

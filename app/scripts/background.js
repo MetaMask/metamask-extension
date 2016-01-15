@@ -1,34 +1,10 @@
-const ZeroClientProvider = require('web3-provider-engine')
+const MetaMaskProvider = require('./lib/metamask-provider')
 // const PortStream = require('./lib/port-stream.js')
 const identitiesUrl = 'https://alpha.metamask.io/identities/'
 
 // var unsignedTxs = {}
 
-var zeroClient = new ZeroClientProvider({
-  rpcUrl: 'https://rawrpc.metamask.io/',
-})
-
-// // setup badge click handler
-// chrome.browserAction.onClicked.addListener(function(activeTab) {
-//   // chrome.tabs.create({ url: identitiesUrl })
-//   tabbernackle()
-// })
-
-
-// function tabbernackle(){
-//   chrome.tabs.create({
-//     url: 'about:blank',//chrome.extension.getURL('dialog.html'),
-//     active: false
-//   }, function(tab) {
-//     // After the tab has been created, open a window to inject the tab
-//     chrome.windows.create({
-//       tabId: tab.id,
-//       type: 'panel',
-//       focused: true
-//       // incognito, top, left, ...
-//     });
-//   });
-// }
+var zeroClient = MetaMaskProvider()
 
 // setup messaging
 chrome.runtime.onConnect.addListener(connectRemote)

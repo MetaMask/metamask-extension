@@ -2,13 +2,15 @@
   "name": "metamask-crx",
   "version": "0.0.0",
   "public": false,
+  "scripts": {
+    "start": "grunt dev",
+    "build": "grunt build"
+  },
   "dependencies": {
     "async": "^1.4.0",
-    "blockapps-web3": "git://github.com/kumavis/blockapps-web3.git#9c1ee8e99efe277804fc47d8b11142abbc46180c",
     "ethereumjs-tx": "^0.6.7",
     "ethereumjs-util": "^1.3.5",
-    "object.entries": "^1.0.2",
-    "readable-stream": "^2.0.5",
+    "inject-css": "^0.1.1",
     "web3": "^0.15.1",
     "web3-provider-engine": "^1.2.0"
   },
