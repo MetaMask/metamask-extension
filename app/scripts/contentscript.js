@@ -14,7 +14,7 @@ var pageStream = new LocalMessageDuplexStream({
   name: 'contentscript',
   target: 'inpage',
 })
-var pluginPort = chrome.runtime.connect({name: 'metamask'})
+var pluginPort = chrome.runtime.connect({name: 'contentscript'})
 var pluginStream = new PortStream(pluginPort)
 
 // forward communication across

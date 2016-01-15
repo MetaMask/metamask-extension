@@ -1,31 +1,182 @@
+const Dnode = require('dnode')
+const KeyStore = require('eth-lightwallet').keystore
+const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('./lib/metamask-provider')
-// const PortStream = require('./lib/port-stream.js')
-const identitiesUrl = 'https://alpha.metamask.io/identities/'
 
-// var unsignedTxs = {}
+console.log('ready to roll')
 
-var zeroClient = MetaMaskProvider()
+// setup provider
+var zeroClient = MetaMaskProvider({
+  rpcUrl: 'https://testrpc.metamask.io/',
+  getAccounts: getAccounts,
+  sendTransaction: confirmTransaction,
+})
 
 // setup messaging
 chrome.runtime.onConnect.addListener(connectRemote)
-// chrome.runtime.onConnectExternal.addListener(connectRemote)
 function connectRemote(remotePort){
+  var isMetaMaskInternalProcess = (remotePort.name === 'popup')
+  if (isMetaMaskInternalProcess) {
+    // communication with popup
+    handleInternalCommunication(remotePort)
+  } else {
+    // communication with page
+    handleExternalCommunication(remotePort)
+  }
+}
+
+function handleInternalCommunication(remotePort){
+  var duplex = new PortStream(remotePort)
+  var remote = Dnode({
+    getState: getState,
+    setLocked: setLocked,
+    submitPassword: submitPassword,
+    setSelectedAddress: setSelectedAddress,
+    signTransaction: signTransaction,
+  })
+  duplex.pipe(remote).pipe(duplex)
+}
+
+function handleExternalCommunication(remotePort){
   remotePort.onMessage.addListener(onRpcRequest.bind(null, remotePort))
 }
 
+// handle rpc requests
 function onRpcRequest(remotePort, payload){
+  // console.log('MetaMaskPlugin - incoming payload:', payload)
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
     if (err) throw err
     console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
-    // if (response.result === true) debugger
-    // if (typeof response !== 'object') {
-    // if (!response) {
-    //   console.warn('-------------------------------')
-    //   console.warn(payload, '->', response)
-    //   console.warn('-------------------------------')
-    // }
     remotePort.postMessage(response)
   })
+}
+
+// id mgmt
+var selectedAddress = null
+
+function getState(cb){
+  var result = _getState()
+  cb(null, result)
+}
+
+function _getState(cb){
+  var unlocked = isUnlocked()
+  var result = {
+    isUnlocked: unlocked,
+    identities: unlocked ? getIdentities() : {},
+    selectedAddress: selectedAddress,
+  }
+  return result
+}
+
+function isUnlocked(){
+  var password = window.sessionStorage['password']
+  var result = Boolean(password)
+  return result
+}
+
+function setLocked(){
+  delete window.sessionStorage['password']
+}
+
+function setSelectedAddress(address, cb){
+  selectedAddress = address
+  cb(null, _getState())
+}
+
+function submitPassword(password, cb){
+  console.log('submitPassword:', password)
+  tryPassword(password, function(err){
+    if (err) console.log('bad password:', password, err)
+    if (err) return cb(err)
+    console.log('good password:', password)
+    window.sessionStorage['password'] = password
+    cb(null, _getState())
+  })
+}
+
+function getAccounts(cb){
+  var identities = getIdentities()
+  var result = selectedAddress ? [selectedAddress] : []
+  cb(null, result)
+}
+
+function getIdentities(cb){
+  var keyStore = getKeyStore()
+  var addresses = keyStore.getAddresses()
+  var accountStore = {}
+  addresses.map(function(address){
+    address = '0x'+address
+    accountStore[address] = {
+      name: 'Wally',
+      img: 'QmW6hcwYzXrNkuHrpvo58YeZvbZxUddv69ATSHY3BHpPdd',
+      address: address,
+      balance: 10.005,
+      txCount: 16,
+    }
+  })
+  return accountStore
+}
+
+function tryPassword(password, cb){
+  var keyStore = getKeyStore(password)
+  var address = keyStore.getAddresses()[0]
+  if (!address) return cb(new Error('KeyStore - No address to check.'))
+  var hdPathString = keyStore.defaultHdPathString
+  try {
+    var encKey = keyStore.generateEncKey(password)
+    var encPrivKey = keyStore.ksData[hdPathString].encPrivKeys[address]
+    var privKey = KeyStore._decryptKey(encPrivKey, encKey)
+    var addrFromPrivKey = KeyStore._computeAddressFromPrivKey(privKey)
+  } catch (err) {
+    return cb(err)
+  }
+  if (addrFromPrivKey !== address) return cb(new Error('KeyStore - Decrypting private key failed!'))
+  cb()
+}
+
+function confirmTransaction(txParams, cb){
+  console.log('confirmTransaction:', txParams)
+}
+
+function signTransaction(txParams, cb){
+  console.log('signTransaction:', txParams)
+}
+
+var keyStore = null
+function getKeyStore(password){
+  if (keyStore) return keyStore
+  password = password || getPassword()
+  var serializedKeystore = window.localStorage['lightwallet']
+  // returning user
+  if (serializedKeystore) {
+    keyStore = KeyStore.deserialize(serializedKeystore)
+  // first time here
+  } else {
+    var defaultPassword = 'test'
+    console.log('creating new keystore with default password:', defaultPassword)
+    var secretSeed = KeyStore.generateRandomSeed()
+    keyStore = new KeyStore(secretSeed, defaultPassword)
+    keyStore.generateNewAddress(defaultPassword, 3)
+    saveKeystore()
+  }
+  keyStore.passwordProvider = unlockKeystore
+  return keyStore
+}
+
+function saveKeystore(){
+  window.localStorage['lightwallet'] = keyStore.serialize()
+}
+
+function getPassword(){
+  var password = window.sessionStorage['password']
+  if (!password) throw new Error('No password found...')
+}
+
+function unlockKeystore(cb){
+  var password = getPassword()
+  console.warn('unlocking keystore...')
+  cb(null, password)
 }
 
 // // load from storage
