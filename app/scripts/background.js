@@ -2,10 +2,11 @@ const Dnode = require('dnode')
 const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('./lib/metamask-provider')
 const IdentityManager = require('./lib/idmgmt')
+const eos = require('end-of-stream')
 
 console.log('ready to roll')
 
-var wallet = IdentityManager()
+var wallet = new IdentityManager()
 
 // setup provider
 var zeroClient = MetaMaskProvider({
@@ -35,8 +36,35 @@ function connectRemote(remotePort){
 
 function handleInternalCommunication(remotePort){
   var duplex = new PortStream(remotePort)
-  var remote = Dnode(wallet)
-  duplex.pipe(remote).pipe(duplex)
+  var connection = Dnode({
+    // this is annoying, have to decompose wallet
+    getState:           wallet.getState.bind(wallet),
+    submitPassword:     wallet.submitPassword.bind(wallet),
+    setSelectedAddress: wallet.setSelectedAddress.bind(wallet),
+    signTransaction:    wallet.signTransaction.bind(wallet),
+    setLocked:          wallet.setLocked.bind(wallet),
+    getAccounts:        wallet.getAccounts.bind(wallet),
+    confirmTransaction: wallet.confirmTransaction.bind(wallet),
+    newBlock:           wallet.newBlock.bind(wallet),
+    setProvider:        wallet.setProvider.bind(wallet),
+  })
+  duplex.pipe(connection).pipe(duplex)
+  connection.on('remote', function(remote){
+    
+    // push updates to popup
+    wallet.on('update', sendUpdate)
+    eos(duplex, function unsubscribe(){
+      wallet.removeListener('update', sendUpdate)
+    })
+    function sendUpdate(state){
+      remote.sendUpdate(state)
+    }
+
+  })
+
+  
+    
+  // sub to metamask store
 }
 
 function handleExternalCommunication(remotePort){

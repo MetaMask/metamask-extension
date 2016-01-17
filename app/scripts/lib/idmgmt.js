@@ -1,3 +1,4 @@
+const inherits = require('util').inherits
 const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const KeyStore = require('eth-lightwallet').keystore
@@ -11,34 +12,18 @@ module.exports = IdentityManager
 var provider = null
 var pubsub = new EventEmitter()
 
-pubsub.on('block', function(){
-  updateIdentities()
-})
 
+
+inherits(IdentityManager, EventEmitter)
 function IdentityManager(opts){
-  opts = opts || {}
-  providerEngine = opts.providerEngine
-
-  return {
-    // plugin popup
-    getState: getState,
-    subscribe: subscribe,
-    submitPassword: submitPassword,
-    setSelectedAddress: setSelectedAddress,
-    signTransaction: signTransaction,
-    setLocked: setLocked,
-    // eth rpc
-    getAccounts: getAccounts,
-    confirmTransaction: confirmTransaction,
-    // etc
-    newBlock: newBlock,
-    setProvider: setProvider,
-  }
+  const self = this
+  self.on('block', function(){
+    self.updateIdentities()
+  })
 }
 
 // plugin popup
 IdentityManager.prototype.getState = getState
-IdentityManager.prototype.subscribe = subscribe
 IdentityManager.prototype.submitPassword = submitPassword
 IdentityManager.prototype.setSelectedAddress = setSelectedAddress
 IdentityManager.prototype.signTransaction = signTransaction
@@ -57,21 +42,8 @@ function setProvider(_provider){
 }
 
 function newBlock(block){
-  pubsub.emit('block', block)
-}
-
-// on new block, update our accounts (but only if we're unlocked)
-function subscribe(cb){
-  pubsub.on('block', sendUpdateState)
-  // we're not unsubbing
-  // this causes errors and potentially breaks shit
-  // we should emit on change instead
-  // and background should handle unsubbing
-  function sendUpdateState(){
-    if (!isUnlocked()) return
-    var state = _getState()
-    cb(state)
-  }
+  var self = this
+  self.emit('block', block)
 }
 
 function getState(cb){
@@ -105,6 +77,7 @@ function setSelectedAddress(address, cb){
 }
 
 function submitPassword(password, cb){
+  const self = this
   console.log('submitPassword:', password)
   tryPassword(password, function(err){
     if (err) console.log('bad password:', password, err)
@@ -112,11 +85,12 @@ function submitPassword(password, cb){
     console.log('good password:', password)
     window.sessionStorage['password'] = password
     // load identities before returning...
-    loadIdentities()
+    self.loadIdentities()
     var state = _getState()
     cb(null, state)
     // trigger an update but dont wait for it
-    updateIdentities()
+    console.log(self)
+    self.updateIdentities()
   })
 }
 
@@ -132,7 +106,8 @@ function getIdentities(){
 }
 
 // load identities from keyStore
-function loadIdentities(){
+IdentityManager.prototype.loadIdentities = function(){
+  const self = this
   if (!isUnlocked()) throw new Error('not unlocked')
   var keyStore = getKeyStore()
   var addresses = keyStore.getAddresses().map(function(address){ return '0x'+address })
@@ -146,18 +121,21 @@ function loadIdentities(){
     }
     identities[address] = identity
   })
+  self.emit('update', _getState())
 }
 
 // foreach in identities, update balance + nonce
-function updateIdentities(cb){
+IdentityManager.prototype.updateIdentities = function(cb){
+  var self = this
   cb = cb || function(){}
   if (!isUnlocked()) return cb(new Error('Not unlocked.'))
   var addresses = Object.keys(identities)
-  async.map(addresses, updateIdentity, cb)
+  async.map(addresses, self.updateIdentity.bind(self), cb)
 }
 
 // gets latest info from the network for the identity
-function updateIdentity(address, cb){
+IdentityManager.prototype.updateIdentity = function(address, cb){
+  var self = this
   async.parallel([
     getAccountBalance.bind(null, address),
     getTxCount.bind(null, address),
@@ -166,6 +144,8 @@ function updateIdentity(address, cb){
     var identity = identities[address]
     identity.balance = result[0]
     identity.txCount = result[1]
+    console.log('updated!')
+    self.emit('update', _getState())
     cb()
   })
 }

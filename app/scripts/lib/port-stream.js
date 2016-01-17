@@ -12,6 +12,7 @@ function PortDuplexStream(port){
   })
   this._port = port
   port.onMessage.addListener(this._onMessage.bind(this))
+  port.onDisconnect.addListener(this._onDisconnect.bind(this))
 }
 
 // private
@@ -19,6 +20,15 @@ function PortDuplexStream(port){
 PortDuplexStream.prototype._onMessage = function(msg){
   // console.log('PortDuplexStream - saw message', msg)
   this.push(msg)
+}
+
+PortDuplexStream.prototype._onDisconnect = function(msg){
+  // console.log('PortDuplexStream - saw message', msg)
+  try {
+    this.end()
+  } catch(err){
+    this.emit('error', err)
+  }
 }
 
 // stream plumbing
