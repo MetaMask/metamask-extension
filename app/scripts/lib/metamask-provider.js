@@ -42,11 +42,11 @@ function metamaskProvider(opts){
   }))
 
   // log new blocks
-  // engine.on('block', function(block){
-  //   console.log('================================')
-  //   console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
-  //   console.log('================================')
-  // })
+  engine.on('block', function(block){
+    // console.log('================================')
+    console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
+    // console.log('================================')
+  })
 
   // start polling for blocks
   engine.start()
