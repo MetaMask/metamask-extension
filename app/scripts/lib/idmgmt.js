@@ -11,6 +11,10 @@ module.exports = IdentityManager
 var provider = null
 var pubsub = new EventEmitter()
 
+pubsub.on('block', function(){
+  updateIdentities()
+})
+
 function IdentityManager(opts){
   opts = opts || {}
   providerEngine = opts.providerEngine
@@ -32,24 +36,41 @@ function IdentityManager(opts){
   }
 }
 
+// plugin popup
+IdentityManager.prototype.getState = getState
+IdentityManager.prototype.subscribe = subscribe
+IdentityManager.prototype.submitPassword = submitPassword
+IdentityManager.prototype.setSelectedAddress = setSelectedAddress
+IdentityManager.prototype.signTransaction = signTransaction
+IdentityManager.prototype.setLocked = setLocked
+// eth rpc
+IdentityManager.prototype.getAccounts = getAccounts
+IdentityManager.prototype.confirmTransaction = confirmTransaction
+// etc
+IdentityManager.prototype.newBlock = newBlock
+IdentityManager.prototype.setProvider = setProvider
+
+
+
 function setProvider(_provider){
   provider = _provider
 }
 
 function newBlock(block){
   pubsub.emit('block', block)
-  updateIdentities()
 }
 
 // on new block, update our accounts (but only if we're unlocked)
 function subscribe(cb){
   pubsub.on('block', sendUpdateState)
+  // we're not unsubbing
+  // this causes errors and potentially breaks shit
+  // we should emit on change instead
+  // and background should handle unsubbing
   function sendUpdateState(){
     if (!isUnlocked()) return
-    updateIdentities(function(){
-      var state = _getState()
-      cb(state)
-    })
+    var state = _getState()
+    cb(state)
   }
 }
 
@@ -152,7 +173,11 @@ function updateIdentity(address, cb){
 function getTxCount(address, cb){
   provider.sendAsync(createPayload({
     method: 'eth_getTransactionCount',
-    params: [address],
+    // we actually want the pending txCount
+    // but pending is broken in provider-engine
+    // https://github.com/MetaMask/provider-engine/issues/11
+    // params: [address, 'pending'],
+    params: [address, 'latest'],
   }), function(err, res){
     if (err) return cb(err)
     if (res.error) return cb(res.error)
@@ -163,7 +188,7 @@ function getTxCount(address, cb){
 function getAccountBalance(address, cb){
   provider.sendAsync(createPayload({
     method: 'eth_getBalance',
-    params: [address],
+    params: [address, 'latest'],
   }), function(err, res){
     if (err) return cb(err)
     if (res.error) return cb(res.error)

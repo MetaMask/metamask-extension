@@ -17,7 +17,7 @@ function StreamProvider(){
 // public
 
 StreamProvider.prototype.send = function(payload){
-  throw new Error('StreamProvider - does not support synchronous RPC calls')
+  throw new Error('StreamProvider - does not support synchronous RPC calls. called: "'+payload.method+'"')
 }
 
 StreamProvider.prototype.sendAsync = function(payload, callback){
