@@ -12,7 +12,7 @@ var wallet = new IdentityManager()
 var zeroClient = MetaMaskProvider({
   rpcUrl: 'https://rawtestrpc.metamask.io/',
   getAccounts: wallet.getAccounts.bind(wallet),
-  sendTransaction: wallet.confirmTransaction.bind(wallet),
+  signTransaction: wallet.addUnconfirmedTransaction.bind(wallet),
 })
 
 wallet.setProvider(zeroClient)
@@ -44,7 +44,7 @@ function handleInternalCommunication(remotePort){
     signTransaction:    wallet.signTransaction.bind(wallet),
     setLocked:          wallet.setLocked.bind(wallet),
     getAccounts:        wallet.getAccounts.bind(wallet),
-    confirmTransaction: wallet.confirmTransaction.bind(wallet),
+    signTransaction:    wallet.signTransaction.bind(wallet),
     newBlock:           wallet.newBlock.bind(wallet),
     setProvider:        wallet.setProvider.bind(wallet),
   })

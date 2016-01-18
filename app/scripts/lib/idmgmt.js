@@ -3,14 +3,17 @@ const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const KeyStore = require('eth-lightwallet').keystore
 const createPayload = require('web3-provider-engine/util/create-payload')
-var selectedAddress = null
-var identities = {}
+const Transaction = require('ethereumjs-tx')
 
 module.exports = IdentityManager
 
 
+var selectedAddress = null
+var identities = {}
+var unconfTxs = {}
+
 var provider = null
-var pubsub = new EventEmitter()
+var defaultPassword = 'test'
 
 
 
@@ -30,7 +33,7 @@ IdentityManager.prototype.signTransaction = signTransaction
 IdentityManager.prototype.setLocked = setLocked
 // eth rpc
 IdentityManager.prototype.getAccounts = getAccounts
-IdentityManager.prototype.confirmTransaction = confirmTransaction
+IdentityManager.prototype.addUnconfirmedTransaction = addUnconfirmedTransaction
 // etc
 IdentityManager.prototype.newBlock = newBlock
 IdentityManager.prototype.setProvider = setProvider
@@ -56,6 +59,7 @@ function _getState(cb){
   var result = {
     isUnlocked: unlocked,
     identities: unlocked ? getIdentities() : {},
+    unconfTxs: unlocked ? unconfTxs() : {},
     selectedAddress: selectedAddress,
   }
   return result
@@ -144,7 +148,6 @@ IdentityManager.prototype.updateIdentity = function(address, cb){
     var identity = identities[address]
     identity.balance = result[0]
     identity.txCount = result[1]
-    console.log('updated!')
     self.emit('update', _getState())
     cb()
   })
@@ -193,12 +196,52 @@ function tryPassword(password, cb){
   cb()
 }
 
-function confirmTransaction(txParams, cb){
-  console.log('confirmTransaction:', txParams)
+function addUnconfirmedTransaction(txParams, cb){
+  var time = (new Date()).getTime()
+  var id = time
+  unconfTxs[id] = {
+    txParams: txParams,
+    time: time,
+  }
+  console.log('addUnconfirmedTransaction:', txParams)
+  
+  // temp - just sign the tx
+  // otherwise we need to keep the cb around
+  signTransaction(id, cb)
 }
 
 function signTransaction(txParams, cb){
   console.log('signTransaction:', txParams)
+  try {
+    // console.log('signing tx:', txParams)
+    var tx = new Transaction({
+      nonce: txParams.nonce,
+      to: txParams.to,
+      value: txParams.value,
+      data: txParams.input,
+      gasPrice: txParams.gasPrice,
+      gasLimit: txParams.gas,
+    })
+
+    var keyStore = getKeyStore()
+    var serializedTx = keystore.signTx(tx.serialize(), defaultPassword, selectedAddress)
+    tx.sign(privateKey)
+
+    // // deserialize and dump values to confirm configuration
+    // var verifyTx = new Transaction(tx.serialize())
+    // console.log('signed transaction:', {
+    //   to: '0x'+verifyTx.to.toString('hex'),
+    //   from: '0x'+verifyTx.from.toString('hex'),
+    //   nonce: '0x'+verifyTx.nonce.toString('hex'),
+    //   value: (ethUtil.bufferToInt(verifyTx.value)/1e18)+' ether',
+    //   data: '0x'+verifyTx.data.toString('hex'),
+    //   gasPrice: '0x'+verifyTx.gasPrice.toString('hex'),
+    //   gasLimit: '0x'+verifyTx.gasLimit.toString('hex'),
+    // })
+    cb(null, serializedTx)
+  } catch (err) {
+    cb(err)
+  }
 }
 
 var keyStore = null
@@ -211,7 +254,6 @@ function getKeyStore(password){
     keyStore = KeyStore.deserialize(serializedKeystore)
   // first time here
   } else {
-    var defaultPassword = 'test'
     console.log('creating new keystore with default password:', defaultPassword)
     var secretSeed = KeyStore.generateRandomSeed()
     keyStore = new KeyStore(secretSeed, defaultPassword)
