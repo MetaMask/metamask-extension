@@ -33,7 +33,7 @@ function metamaskProvider(opts){
   // id mgmt
   engine.addProvider(new HookedWalletSubprovider({
     getAccounts: opts.getAccounts,
-    sendTransaction: opts.sendTransaction,
+    signTransaction: opts.signTransaction,
   }))
 
   // data source

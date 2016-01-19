@@ -3,6 +3,7 @@ const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const KeyStore = require('eth-lightwallet').keystore
 const createPayload = require('web3-provider-engine/util/create-payload')
+const createId = require('web3-provider-engine/util/random-id')
 const Transaction = require('ethereumjs-tx')
 
 module.exports = IdentityManager
@@ -11,6 +12,9 @@ module.exports = IdentityManager
 var selectedAddress = null
 var identities = {}
 var unconfTxs = {}
+
+// not part of serilized metamask state - only keep in memory
+var unconfTxCbs = {}
 
 var provider = null
 var defaultPassword = 'test'
@@ -59,7 +63,7 @@ function _getState(cb){
   var result = {
     isUnlocked: unlocked,
     identities: unlocked ? getIdentities() : {},
-    unconfTxs: unlocked ? unconfTxs() : {},
+    unconfTxs: unlocked ? unconfTxs : {},
     selectedAddress: selectedAddress,
   }
   return result
@@ -125,6 +129,11 @@ IdentityManager.prototype.loadIdentities = function(){
     }
     identities[address] = identity
   })
+  self._didUpdate()
+}
+
+IdentityManager.prototype._didUpdate = function(){
+  const self = this
   self.emit('update', _getState())
 }
 
@@ -148,7 +157,7 @@ IdentityManager.prototype.updateIdentity = function(address, cb){
     var identity = identities[address]
     identity.balance = result[0]
     identity.txCount = result[1]
-    self.emit('update', _getState())
+    self._didUpdate()
     cb()
   })
 }
@@ -198,20 +207,51 @@ function tryPassword(password, cb){
 
 function addUnconfirmedTransaction(txParams, cb){
   var time = (new Date()).getTime()
-  var id = time
-  unconfTxs[id] = {
+  var txId = createId()
+  unconfTxs[txId] = {
+    id: txId,
     txParams: txParams,
     time: time,
+    status: 'unconfirmed',
   }
   console.log('addUnconfirmedTransaction:', txParams)
   
   // temp - just sign the tx
   // otherwise we need to keep the cb around
-  signTransaction(id, cb)
+  // signTransaction(txId, cb)
+  unconfTxCbs[txId] = cb
 }
 
-function signTransaction(txParams, cb){
-  console.log('signTransaction:', txParams)
+// called from 
+function signTransaction(password, txId, cb){
+  const self = this
+
+  var txData = unconfTxs[txId]
+  var txParams = txData.txParams
+  console.log('signTransaction:', txData)
+
+  self._signTransaction(txParams, function(err, rawTx, txHash){
+    if (err) {
+      txData.status = 'error'
+      txData.error = err
+      self._didUpdate()
+      return
+    }
+    txData.hash = txHash
+    txData.status = 'pending'
+    // for now just kill it
+    delete unconfTxs[txData.id]
+    
+    var txSigCb = unconfTxCbs[txId] || function(){}
+    txSigCb(null, rawTx)
+
+    cb(null, _getState())
+    self._didUpdate()
+  })
+}
+
+// internal - actually signs the tx
+IdentityManager.prototype._signTransaction = function(txParams, cb){
   try {
     // console.log('signing tx:', txParams)
     var tx = new Transaction({
@@ -224,8 +264,7 @@ function signTransaction(txParams, cb){
     })
 
     var keyStore = getKeyStore()
-    var serializedTx = keystore.signTx(tx.serialize(), defaultPassword, selectedAddress)
-    tx.sign(privateKey)
+    var serializedTx = keyStore.signTx(tx.serialize(), defaultPassword, selectedAddress)
 
     // // deserialize and dump values to confirm configuration
     // var verifyTx = new Transaction(tx.serialize())
@@ -238,7 +277,7 @@ function signTransaction(txParams, cb){
     //   gasPrice: '0x'+verifyTx.gasPrice.toString('hex'),
     //   gasLimit: '0x'+verifyTx.gasLimit.toString('hex'),
     // })
-    cb(null, serializedTx)
+    cb(null, serializedTx, tx.hash())
   } catch (err) {
     cb(err)
   }

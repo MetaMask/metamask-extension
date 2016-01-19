@@ -44,7 +44,6 @@ function handleInternalCommunication(remotePort){
     signTransaction:    wallet.signTransaction.bind(wallet),
     setLocked:          wallet.setLocked.bind(wallet),
     getAccounts:        wallet.getAccounts.bind(wallet),
-    signTransaction:    wallet.signTransaction.bind(wallet),
     newBlock:           wallet.newBlock.bind(wallet),
     setProvider:        wallet.setProvider.bind(wallet),
   })
@@ -82,17 +81,17 @@ function onRpcRequest(remotePort, payload){
 }
 
 // setup badge text
-// updateBadge()
+wallet.on('update', updateBadge)
 
-// function updateBadge(){
-//   var label = ''
-//   var count = Object.keys(unsignedTxs).length
-//   if (count) {
-//     label = String(count)
-//   }
-//   chrome.browserAction.setBadgeText({text: label})
-//   chrome.browserAction.setBadgeBackgroundColor({color: '#506F8B'})
-// }
+function updateBadge(state){
+  var label = ''
+  var count = Object.keys(state.unconfTxs).length
+  if (count) {
+    label = String(count)
+  }
+  chrome.browserAction.setBadgeText({text: label})
+  chrome.browserAction.setBadgeBackgroundColor({color: '#506F8B'})
+}
 
 // function handleMessage(msg){
 //   console.log('got message!', msg.type)
