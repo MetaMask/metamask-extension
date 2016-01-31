@@ -22,7 +22,11 @@ StreamProvider.prototype.send = function(payload){
 
 StreamProvider.prototype.sendAsync = function(payload, callback){
   // console.log('StreamProvider - sending payload', payload)
-  this._payloads[payload.id] = [payload, callback]
+  var id = payload.id
+  if (Array.isArray(payload)) {
+    id = 'batch'+payload[0].id
+  }
+  this._payloads[id] = [payload, callback]
   // console.log('payload for plugin:', payload)
   this.push(payload)
 }
@@ -31,9 +35,13 @@ StreamProvider.prototype.sendAsync = function(payload, callback){
 
 StreamProvider.prototype._onResponse = function(response){
   // console.log('StreamProvider - got response', payload)
-  var data = this._payloads[response.id]
+  var id = response.id
+  if (Array.isArray(response)) {
+    id = 'batch'+response[0].id
+  }
+  var data = this._payloads[id]
   if (!data) throw new Error('StreamProvider - Unknown response id')
-  delete this._payloads[response.id]
+  delete this._payloads[id]
   var payload = data[0]
   var callback = data[1]
 
