@@ -13,7 +13,20 @@ remoteProvider.pipe(pluginStream).pipe(remoteProvider)
 
 // handle synchronous methods remotely
 var syncProvider = new Web3.providers.HttpProvider('https://rawtestrpc.metamask.io/')
-remoteProvider.send = syncProvider.send.bind(syncProvider)
+var unsupportedMethods = ['eth_accounts']
+remoteProvider.send = function(payload){
+
+  var payloads = Array.isArray(payload) ? payload : [payload]
+  payloads.forEach(function(payload){
+    if (-1 !== unsupportedMethods.indexOf(payload.method)) {
+      console.error('MetaMask - Unsupported synchronous call "'+payload.method+'".')
+    }
+  })
+
+  return syncProvider.send(payload)
+
+}
+
 
 // create web3
 var web3 = new Web3(remoteProvider)
