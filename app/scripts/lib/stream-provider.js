@@ -47,9 +47,9 @@ StreamProvider.prototype._onResponse = function(response){
 
   // logging
   var res = Array.isArray(response) ? response : [response]
-  ;(Array.isArray(payload) ? payload : [payload]).forEach(function(payload, index){
-    console.log('plugin response:', payload.id, payload.method, payload.params, '->', res[index].result)
-  })
+  // ;(Array.isArray(payload) ? payload : [payload]).forEach(function(payload, index){
+  //   console.log('plugin response:', payload.id, payload.method, payload.params, '->', res[index].result)
+  // })
 
   callback(null, response)
 }
