@@ -11,8 +11,14 @@ var pluginStream = new LocalMessageDuplexStream({
 var remoteProvider = new StreamProvider()
 remoteProvider.pipe(pluginStream).pipe(remoteProvider)
 
+// handle synchronous methods remotely
+var syncProvider = new Web3.providers.HttpProvider('https://rawtestrpc.metamask.io/')
+remoteProvider.send = syncProvider.send.bind(syncProvider)
+
 // create web3
 var web3 = new Web3(remoteProvider)
 window.web3 = web3
-web3.setProvider = function(){}
-console.log('Metamask injected web3')
+web3.setProvider = function(){
+  console.log('MetaMask Extension - overrode web3.setProvider')
+}
+console.log('MetaMask Extension - injected web3')
