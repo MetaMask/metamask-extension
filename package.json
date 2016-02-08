@@ -2,6 +2,7 @@
   "name": "metamask-crx",
   "version": "0.0.0",
   "public": false,
+  "private": true,
   "scripts": {
     "start": "grunt dev",
     "build": "grunt build"
@@ -14,8 +15,9 @@
     "ethereumjs-tx": "^0.6.7",
     "ethereumjs-util": "^1.3.5",
     "inject-css": "^0.1.1",
+    "metamask-ui": "^0.1.0",
     "web3": "^0.15.1",
-    "web3-provider-engine": "^4.0.1"
+    "web3-provider-engine": "^5.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
