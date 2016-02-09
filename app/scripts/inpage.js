@@ -16,7 +16,7 @@ remoteProvider.pipe(pluginStream).pipe(remoteProvider)
 
 // handle accounts cache
 var accountsCache = []
-setInterval(populateAccountsCache, 1000)
+setInterval(populateAccountsCache, 4000)
 function populateAccountsCache(){
   remoteProvider.sendAsync(createPayload({
     method: 'eth_accounts',
