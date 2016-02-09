@@ -105,7 +105,6 @@ function submitPassword(password, cb){
 // get the current selected address
 function getAccounts(cb){
   var result = selectedAddress ? [selectedAddress] : []
-  console.log('getAccounts:', result)
   cb(null, result)
 }
 
