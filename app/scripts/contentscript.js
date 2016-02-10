@@ -20,3 +20,7 @@ var pluginStream = new PortStream(pluginPort)
 // forward communication across
 pageStream.pipe(pluginStream)
 pluginStream.pipe(pageStream)
+
+// log errors
+pageStream.on('error', console.error.bind(console))
+pluginStream.on('error', console.error.bind(console))

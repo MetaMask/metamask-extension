@@ -12,6 +12,9 @@ var pluginStream = new LocalMessageDuplexStream({
 var remoteProvider = new StreamProvider()
 remoteProvider.pipe(pluginStream).pipe(remoteProvider)
 
+pluginStream.on('error', console.error.bind(console))
+remoteProvider.on('error', console.error.bind(console))
+
 // handle synchronous methods remotely
 
 // handle accounts cache

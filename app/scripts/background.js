@@ -76,7 +76,11 @@ function onRpcRequest(remotePort, payload){
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
     if (err) throw err
     // console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
-    remotePort.postMessage(response)
+    try {
+      remotePort.postMessage(response)
+    } catch (_) {
+      // port disconnected
+    }
   })
 }
 

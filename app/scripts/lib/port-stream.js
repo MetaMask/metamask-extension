@@ -37,8 +37,13 @@ PortDuplexStream.prototype._read = noop
 
 PortDuplexStream.prototype._write = function(msg, encoding, cb){
   // console.log('PortDuplexStream - sent message', msg)
-  this._port.postMessage(msg)
-  cb()
+  try {
+    this._port.postMessage(msg)
+    cb()
+  } catch(err){
+    // this.emit('error', err)
+    cb(new Error('PortDuplexStream - disconnected'))
+  }
 }
 
 // util
