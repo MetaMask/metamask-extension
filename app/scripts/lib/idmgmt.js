@@ -97,7 +97,6 @@ function submitPassword(password, cb){
     var state = _getState()
     cb(null, state)
     // trigger an update but dont wait for it
-    console.log(self)
     self.updateIdentities()
   })
 }
@@ -164,11 +163,7 @@ IdentityManager.prototype.updateIdentity = function(address, cb){
 function getTxCount(address, cb){
   provider.sendAsync(createPayload({
     method: 'eth_getTransactionCount',
-    // we actually want the pending txCount
-    // but pending is broken in provider-engine
-    // https://github.com/MetaMask/provider-engine/issues/11
-    // params: [address, 'pending'],
-    params: [address, 'latest'],
+    params: [address, 'pending'],
   }), function(err, res){
     if (err) return cb(err)
     if (res.error) return cb(res.error)
@@ -205,6 +200,8 @@ function tryPassword(password, cb){
 }
 
 function addUnconfirmedTransaction(txParams, cb){
+  var self = this
+  
   var time = (new Date()).getTime()
   var txId = createId()
   unconfTxs[txId] = {
@@ -219,6 +216,9 @@ function addUnconfirmedTransaction(txParams, cb){
   // otherwise we need to keep the cb around
   // signTransaction(txId, cb)
   unconfTxCbs[txId] = cb
+
+  // signal update
+  self._didUpdate()
 }
 
 // called from 
