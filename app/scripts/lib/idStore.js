@@ -131,6 +131,14 @@ IdentityStore.prototype.signTransaction = function(password, txId, cb){
   })
 }
 
+IdentityStore.prototype.cancelTransaction = function(txId){
+  const self = this
+
+  var txData = self._currentState.unconfTxs[txId]
+  delete self._currentState.unconfTxs[txId]
+  self._didUpdate()  
+}
+
 //
 // private
 //

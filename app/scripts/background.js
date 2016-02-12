@@ -79,6 +79,7 @@ function handleInternalCommunication(remotePort){
     submitPassword:     idStore.submitPassword.bind(idStore),
     setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
     signTransaction:    idStore.signTransaction.bind(idStore),
+    cancelTransaction:  idStore.cancelTransaction.bind(idStore),
     setLocked:          idStore.setLocked.bind(idStore),
   })
   duplex.pipe(connection).pipe(duplex)
