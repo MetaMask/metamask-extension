@@ -42,6 +42,10 @@ module.exports = function (grunt) {
         },
         tasks: ['copy'],
       },
+      manifest: {
+        files: '<%= config.app %>/manifest.json',
+        tasks: ['copy'],
+      },
       gruntfile: {
         files: ['Gruntfile.js']
       },
