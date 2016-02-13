@@ -105,30 +105,46 @@ IdentityStore.prototype.signTransaction = function(password, txId, cb){
   var txData = self._currentState.unconfTxs[txId]
   var txParams = txData.txParams
 
-  self._signTransaction(txParams, function(err, rawTx, txHash){
+  self._signTransaction(password, txParams, function(err, rawTx, txHash){
     if (err) {
-      throw err
+      cb(err)
       txData.status = 'error'
       txData.error = err
       self._didUpdate()
       return
     }
 
+    txData.rawTx = rawTx
     txData.hash = txHash
-    txData.status = 'pending'
+    txData.status = 'signed'
 
-    // for now just remove it
-    delete self._currentState.unconfTxs[txData.id]
-
-    // rpc callback
-    var txSigCb = self._unconfTxCbs[txId] || noop
-    txSigCb(null, rawTx)
-
-    // confirm tx callback
+    // confirm tx signed
     cb()
-
     self._didUpdate()
   })
+}
+
+IdentityStore.prototype.sendTransaction = function(txId, cb){
+  const self = this
+
+  var txData = self._currentState.unconfTxs[txId]
+  
+  if (!txData || txData.status !== 'signed') {
+    return cb(new Error('IdentityStore - Transaction not signed:', txId))
+  }
+
+  var rawTx = txData.rawTx
+
+  // for now just remove it
+  delete self._currentState.unconfTxs[txData.id]
+
+  // rpc callback
+  var txSigCb = self._unconfTxCbs[txId] || noop
+  txSigCb(null, rawTx)
+
+  // confirm tx sent
+  cb()
+  self._didUpdate()
 }
 
 IdentityStore.prototype.cancelTransaction = function(txId){
@@ -144,7 +160,7 @@ IdentityStore.prototype.cancelTransaction = function(txId){
 //
 
 // internal - actually signs the tx
-IdentityStore.prototype._signTransaction = function(txParams, cb){
+IdentityStore.prototype._signTransaction = function(password, txParams, cb){
   const self = this
   try {
     // console.log('signing tx:', txParams)
