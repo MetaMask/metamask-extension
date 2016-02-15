@@ -18,7 +18,7 @@
     "ethereumjs-util": "^1.3.5",
     "faux-jax": "git+https://github.com/kumavis/faux-jax.git#c3648de04804f3895c5b4972750cae5b51ddb103",
     "inject-css": "^0.1.1",
-    "metamask-ui": "^1.0.0",
+    "metamask-ui": "^1.1.0",
     "readable-stream": "^2.0.5",
     "web3": "^0.15.1",
     "web3-provider-engine": "^5.0.1",
