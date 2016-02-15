@@ -35,7 +35,7 @@ function populateAccountsCache(){
   remoteProvider.sendAsync(createPayload({
     method: 'eth_accounts',
     params: [],
-    note: 'from metamask inpage provider',
+    isMetamaskInternal: true,
   }), function(err, response){
     if (err) return console.error('MetaMask - Error polling accounts')
     // update localStorage
