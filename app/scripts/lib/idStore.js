@@ -40,6 +40,7 @@ IdentityStore.prototype.setStore = function(store){
 IdentityStore.prototype.getState = function(){
   const self = this
   return clone(extend(self._currentState, {
+    isInitialized: !!window.localStorage['lightwallet'],
     isUnlocked: self._isUnlocked(),
   }))
 }
