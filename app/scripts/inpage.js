@@ -1,10 +1,18 @@
+const XHR = window.XMLHttpRequest
+const fauxJax = require('faux-jax')
+fauxJax.install()
 const Web3 = require('web3')
 const createPayload = require('web3-provider-engine/util/create-payload')
 const StreamProvider = require('./lib/stream-provider.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 
+const RPC_URL = 'https://rawtestrpc.metamask.io/'
 
+
+//
 // setup plugin communication
+//
+
 var pluginStream = new LocalMessageDuplexStream({
   name: 'inpage',
   target: 'contentscript',
@@ -15,7 +23,10 @@ remoteProvider.pipe(pluginStream).pipe(remoteProvider)
 pluginStream.on('error', console.error.bind(console))
 remoteProvider.on('error', console.error.bind(console))
 
-// handle synchronous methods remotely
+
+//
+// handle synchronous requests
+//
 
 // handle accounts cache
 var accountsCache = []
@@ -36,8 +47,8 @@ function populateAccountsCache(){
   })
 }
 
-var syncProvider = new Web3.providers.HttpProvider('https://rawtestrpc.metamask.io/')
-// var unsupportedMethods = ['eth_accounts']
+// handle synchronous methods via standard http provider
+var syncProvider = new Web3.providers.HttpProvider(RPC_URL)
 remoteProvider.send = function(payload){
   var result = null
   switch (payload.method) {
@@ -62,16 +73,84 @@ remoteProvider.send = function(payload){
 
   // return the result
   return {
-      id: payload.id,
-      jsonrpc: payload.jsonrpc,
-      result: result,
-    }
+    id: payload.id,
+    jsonrpc: payload.jsonrpc,
+    result: result,
+  }
 }
 
-// create web3
+//
+// global web3
+//
+
 var web3 = new Web3(remoteProvider)
 window.web3 = web3
 web3.setProvider = function(){
   console.log('MetaMask Extension - overrode web3.setProvider')
 }
 console.log('MetaMask Extension - injected web3')
+
+
+//
+// intercept local node requests
+//
+
+fauxJax.on('request', function(req){
+  // check if local node request
+  if (req.requestURL.indexOf('localhost:8545') !== -1) {
+    var rpcReq = JSON.parse(req.requestBody)
+    if (req.async) {
+      remoteProvider.sendAsync(rpcReq, function(err, result){
+        // console.log('intercepted request (async):', rpcReq, result)
+        handleResult(result)
+      })
+    } else {
+      var result = remoteProvider.send(rpcReq)
+      // console.log('intercepted request (sync):', rpcReq, result)
+      handleResult(result)
+    }
+  } else {
+    // console.log('request continuing normally:', req.requestURL)
+    continueRequestNormally(req)
+  }
+
+  function handleResult(result){
+    var serializedResult = JSON.stringify(result)
+    req.respond(200, {
+      'content-type': 'application/json',
+    }, serializedResult)
+  }
+})
+
+function continueRequestNormally(req){
+  var xhr = new XHR()
+  // set target url and method
+  xhr.open(req.requestMethod, req.requestURL, req.async)
+  // set headers
+  Object.keys(req.requestHeaders || {}).forEach(function(headerKey){
+    xhr.setRequestHeader(headerKey, req.requestHeaders[headerKey])
+  })
+  // send and call completion handler
+  if (req.async) {
+    xhr.onload = copyResult
+    xhr.send(req.requestBody)
+  } else {
+    xhr.send(req.requestBody)
+    copyResult()
+  }
+
+  function copyResult() {
+    var headers = extractResponseHeaders(xhr.getAllResponseHeaders())
+    req.respond(xhr.status, headers, xhr.response)
+  }
+}
+
+function extractResponseHeaders(rawHeaders){
+  var headers = {}
+  var headerKeyValues = rawHeaders.split('\r\n').filter(Boolean)
+  headerKeyValues.forEach(function(keyValue){
+    var data = keyValue.split(': ')
+    headers[data[0]] = data[1]
+  })
+  return headers
+}
