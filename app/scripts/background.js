@@ -48,7 +48,6 @@ idStore.setStore(ethStore)
 
 function getState(){
   var state = extend(ethStore.getState(), idStore.getState())
-  console.log(state)
   return state
 }
 
