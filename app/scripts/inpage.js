@@ -86,14 +86,17 @@ remoteProvider.send = function(payload){
 var web3 = new Web3(remoteProvider)
 window.web3 = web3
 web3.setProvider = function(){
-  console.log('MetaMask Extension - overrode web3.setProvider')
+  console.log('MetaMask - overrode web3.setProvider')
 }
-console.log('MetaMask Extension - injected web3')
+console.log('MetaMask - injected web3')
 
 
 //
 // intercept local node requests
 //
+
+
+console.log('MetaMask - intercepting localhost:8545 requests')
 
 fauxJax.on('request', function(req){
   // check if local node request
