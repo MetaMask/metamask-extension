@@ -38,8 +38,6 @@
   "permissions": [
     "storage",
     "tabs",
-    "webRequest",
-    "webRequestBlocking",
     "http://localhost:8545/"
   ],
   "web_accessible_resources": [
