@@ -32,10 +32,23 @@ function IdentityStore(ethStore) {
 // public
 //
 
+IdentityStore.prototype.createNewVault = function(password, cb){
+  const self = this
+  delete self._keyStore
+  delete window.localStorage['lightwallet']
+  var keyStore = self._getKeyStore(password)
+  var seedWords = keyStore.getSeed(password)
+  self._loadIdentities()
+  self._didUpdate()
+  cb(null, seedWords)
+}
+
+
 IdentityStore.prototype.setStore = function(store){
   const self = this
   self._ethStore = store
 }
+
 
 IdentityStore.prototype.getState = function(){
   const self = this
@@ -83,7 +96,6 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
 IdentityStore.prototype.setLocked = function(){
   const self = this
   delete self._keyStore
-  delete window.sessionStorage['password']
 }
 
 IdentityStore.prototype.submitPassword = function(password, cb){
@@ -93,7 +105,6 @@ IdentityStore.prototype.submitPassword = function(password, cb){
     if (err) console.log('bad password:', password, err)
     if (err) return cb(err)
     console.log('good password:', password)
-    window.sessionStorage['password'] = password
     // load identities before returning...
     self._loadIdentities()
     cb()
@@ -174,7 +185,6 @@ IdentityStore.prototype._signTransaction = function(password, txParams, cb){
       gasLimit: txParams.gas,
     })
 
-    var password = self._getPassword()
     var serializedTx = self._keyStore.signTx(tx.serialize(), password, self._currentState.selectedAddress)
 
     // // deserialize and dump values to confirm configuration
@@ -201,20 +211,19 @@ IdentityStore.prototype._didUpdate = function(){
 
 IdentityStore.prototype._isUnlocked = function(){
   const self = this
-  // var password = window.sessionStorage['password']
   // var result = Boolean(password)
   var result = Boolean(self._keyStore)
   return result
 }
 
-// load identities from keyStore
+// load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function(){
   const self = this
   if (!self._isUnlocked()) throw new Error('not unlocked')
   // get addresses and normalize address hexString
   var addresses = self._keyStore.getAddresses().map(function(address){ return '0x'+address })
   addresses.forEach(function(address){
-    // add to ethStore
+    // // add to ethStore
     self._ethStore.addAccount(address)
     // add to identities
     var identity = {
@@ -265,7 +274,7 @@ IdentityStore.prototype._getKeyStore = function(password){
     self._saveKeystore(keyStore)
   }
   keyStore.passwordProvider = function getPassword(cb){
-    cb(null, self._getPassword())
+    cb(null, password)
   }
   self._keyStore = keyStore
   return keyStore
@@ -274,13 +283,7 @@ IdentityStore.prototype._getKeyStore = function(password){
 IdentityStore.prototype._saveKeystore = function(keyStore){
   const self = this
   window.localStorage['lightwallet'] = keyStore.serialize()
-}
-
-IdentityStore.prototype._getPassword = function(){
-  const self = this
-  var password = window.sessionStorage['password']
-  console.warn('using password from memory:', password)
-  return password
+  console.log('saved to localStorage')
 }
 
 // util

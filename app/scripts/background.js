@@ -75,6 +75,7 @@ function handleInternalCommunication(remotePort){
   var connection = Dnode({
     getState:           function(cb){ cb(null, getState()) },
     // forward directly to idStore
+    createNewVault:     idStore.createNewVault.bind(idStore),
     submitPassword:     idStore.submitPassword.bind(idStore),
     setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
     signTransaction:    idStore.signTransaction.bind(idStore),
