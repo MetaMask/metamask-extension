@@ -4,7 +4,6 @@ const extend = require('xtend')
 const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('./lib/metamask-provider')
-// const IdentityManager = require('./lib/idmgmt')
 const IdentityStore = require('./lib/idStore')
 
 console.log('ready to roll')
@@ -41,7 +40,8 @@ var zeroClient = MetaMaskProvider({
     var result = selectedAddress ? [selectedAddress] : []
     cb(null, result)
   },
-  signTransaction: idStore.addUnconfirmedTransaction.bind(idStore),
+  approveTx: idStore.addUnconfirmedTransaction.bind(idStore),
+  signTransaction: idStore.signTransaction.bind(idStore),
 })
 var ethStore = new EthStore(zeroClient)
 idStore.setStore(ethStore)

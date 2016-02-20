@@ -1,4 +1,5 @@
 const ProviderEngine = require('web3-provider-engine')
+const NonceTrackerSubprovider = require('web3-provider-engine/subproviders/nonce-tracker.js')
 const CacheSubprovider = require('web3-provider-engine/subproviders/cache.js')
 const FixtureSubprovider = require('web3-provider-engine/subproviders/fixture.js')
 const FilterSubprovider = require('web3-provider-engine/subproviders/filters.js')
@@ -11,6 +12,9 @@ module.exports = metamaskProvider
 function metamaskProvider(opts){
 
   var engine = new ProviderEngine()
+
+  // nonce tracker
+  engine.addProvider(new NonceTrackerSubprovider())
 
   // cache layer
   engine.addProvider(new CacheSubprovider())
@@ -33,6 +37,7 @@ function metamaskProvider(opts){
   // id mgmt
   engine.addProvider(new HookedWalletSubprovider({
     getAccounts: opts.getAccounts,
+    approveTx: opts.approveTx,
     signTransaction: opts.signTransaction,
   }))
 
