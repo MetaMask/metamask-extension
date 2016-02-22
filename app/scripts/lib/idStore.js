@@ -71,7 +71,7 @@ IdentityStore.prototype.setSelectedAddress = function(address){
 
 IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
   var self = this
-  
+
   var time = (new Date()).getTime()
   var txId = createId()
   self._currentState.unconfTxs[txId] = {
@@ -81,7 +81,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
     status: 'unconfirmed',
   }
   console.log('addUnconfirmedTransaction:', txParams)
-  
+
   // temp - just sign the tx
   // otherwise we need to keep the cb around
   // signTransaction(txId, cb)
@@ -140,7 +140,7 @@ IdentityStore.prototype.sendTransaction = function(txId, cb){
   const self = this
 
   var txData = self._currentState.unconfTxs[txId]
-  
+
   if (!txData || txData.status !== 'signed') {
     return cb(new Error('IdentityStore - Transaction not signed:', txId))
   }
@@ -164,7 +164,7 @@ IdentityStore.prototype.cancelTransaction = function(txId){
 
   var txData = self._currentState.unconfTxs[txId]
   delete self._currentState.unconfTxs[txId]
-  self._didUpdate()  
+  self._didUpdate()
 }
 
 //
@@ -180,7 +180,7 @@ IdentityStore.prototype._signTransaction = function(password, txParams, cb){
       nonce: txParams.nonce,
       to: txParams.to,
       value: txParams.value,
-      data: txParams.input,
+      data: txParams.data,
       gasPrice: txParams.gasPrice,
       gasLimit: txParams.gas,
     })
