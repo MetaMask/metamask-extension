@@ -18,7 +18,8 @@ module.exports = function (grunt) {
   // Configurable paths
   var config = {
     app: 'app',
-    dist: 'dist'
+    dist: 'dist',
+    ui: 'node_modules/metamask-ui'
   };
 
   grunt.initConfig({
@@ -29,7 +30,10 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       js: {
-        files: ['<%= config.app %>/scripts/{,*/}*.js'],
+        files: [
+          '<%= config.app %>/scripts/{,*/}*.js',
+          '<%= config.ui %>/{,*/}*.js',
+        ],
         options: {
           livereload: '<%= connect.options.livereload %>'
         },
