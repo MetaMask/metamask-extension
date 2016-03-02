@@ -24,10 +24,10 @@ You now have the plugin, and can click 'inspect views: background plugin' to vie
 
 ### Developing the UI
 
-To enjoy the live-reloading that `grunt dev` offers while working on the `metamask-ui` dependency:
+To enjoy the live-reloading that `grunt dev` offers while working on the `metamask-ui` or `web3-provider-enigne` dependencies:
 
- 1. Clone the `metamask-ui` dependency locally.
+ 1. Clone the dependency locally.
  2. `npm install` in its folder.
  3. Run `npm link` in its folder.
- 4. Run `npm link metamask-ui` in this project folder.
- 5. Next time you `grunt dev` it will watch the metamask-ui for changes as well!
+ 4. Run `npm link $DEP_NAME` in this project folder.
+ 5. Next time you `grunt dev` it will watch the dependency for changes as well!

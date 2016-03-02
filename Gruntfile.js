@@ -19,6 +19,7 @@ module.exports = function (grunt) {
   var config = {
     app: 'app',
     dist: 'dist',
+    modules: 'node_modules',
     ui: 'node_modules/metamask-ui'
   };
 
@@ -33,6 +34,7 @@ module.exports = function (grunt) {
         files: [
           '<%= config.app %>/scripts/{,*/}*.js',
           '<%= config.ui %>/{,*/}*.js',
+          '<%= config.modules %>/web3-provider-engine/{,*/}*.js',
         ],
         options: {
           livereload: '<%= connect.options.livereload %>'
