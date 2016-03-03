@@ -3,7 +3,7 @@ const eos = require('end-of-stream')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
-const MetaMaskProvider = require('./lib/metamask-provider')
+const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const IdentityStore = require('./lib/idStore')
 
 console.log('ready to roll')
@@ -40,9 +40,15 @@ var zeroClient = MetaMaskProvider({
     var result = selectedAddress ? [selectedAddress] : []
     cb(null, result)
   },
-  approveTx: idStore.addUnconfirmedTransaction.bind(idStore),
+  approveTransaction: idStore.addUnconfirmedTransaction.bind(idStore),
   signTransaction: idStore.signTransaction.bind(idStore),
 })
+
+// log new blocks
+zeroClient.on('block', function(block){
+  console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
+})
+
 var ethStore = new EthStore(zeroClient)
 idStore.setStore(ethStore)
 
