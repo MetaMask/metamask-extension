@@ -7,6 +7,18 @@ npm install --global grunt-cli
 npm install
 grunt dev
 ```
+### Developing with Gulp
+
+We're using an experimental version of `gulp-cli`, so if you have the old version of gulp, you'll need to uninstall it, `npm uninstall -g gulp`, and install this one instead:
+
+```bash
+npm install gulpjs/gulp-cli#4.0 -g
+```
+
+After that, you can just:
+```bash
+gulp dev
+```
 
 ### In Chrome
 
