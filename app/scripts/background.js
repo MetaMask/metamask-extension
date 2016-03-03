@@ -62,7 +62,7 @@ function onRpcRequest(remotePort, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
     if (err) throw err
-    // console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
     try {
       remotePort.postMessage(response)
     } catch (_) {
@@ -84,9 +84,8 @@ function handleInternalCommunication(remotePort){
     createNewVault:     idStore.createNewVault.bind(idStore),
     submitPassword:     idStore.submitPassword.bind(idStore),
     setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
-    signTransaction:    idStore.signTransaction.bind(idStore),
+    approveTransaction: idStore.approveTransaction.bind(idStore),
     cancelTransaction:  idStore.cancelTransaction.bind(idStore),
-    sendTransaction:    idStore.sendTransaction.bind(idStore),
     setLocked:          idStore.setLocked.bind(idStore),
   })
   duplex.pipe(connection).pipe(duplex)
