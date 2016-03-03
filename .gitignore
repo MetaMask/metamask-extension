@@ -1,7 +1,9 @@
+dist
+gulp-dist
+
 node_modules
 temp
 .tmp
-dist
 .sass-cache
 app/bower_components
 test/bower_components
