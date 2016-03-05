@@ -1,7 +1,12 @@
 const XHR = window.XMLHttpRequest
 // const fauxJax = require('faux-jax')
 // fauxJax.install()
+
+// bring in web3 but rename on window
 const Web3 = require('web3')
+delete window.Web3
+window.MetamaskWeb3 = Web3
+
 const createPayload = require('web3-provider-engine/util/create-payload')
 const StreamProvider = require('./lib/stream-provider.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
