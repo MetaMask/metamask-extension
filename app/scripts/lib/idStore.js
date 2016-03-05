@@ -228,7 +228,13 @@ IdentityStore.prototype._createIdmgmt = function(password, cb){
         return keyStore.getAddresses().map(function(address){ return '0x'+address })
       },
       signTx: function(txParams){
-        txParams.gasLimit = txParams.gas
+        // normalize values
+        txParams.to = ethUtil.addHexPrefix(txParams.to)
+        txParams.from = ethUtil.addHexPrefix(txParams.from)
+        txParams.value = ethUtil.addHexPrefix(txParams.value)
+        txParams.data = ethUtil.addHexPrefix(txParams.data)
+        txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
+        txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
         var tx = new Transaction(txParams)
         var rawTx = '0x'+tx.serialize().toString('hex')
         return '0x'+LightwalletSigner.signTx(keyStore, derrivedKey, rawTx, txParams.from)
