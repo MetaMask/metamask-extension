@@ -61,8 +61,8 @@ function getState(){
 function onRpcRequest(remotePort, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
-    if (err) throw err
-    console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    // provider engine errors are included in response objects
+    if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
     try {
       remotePort.postMessage(response)
     } catch (_) {
