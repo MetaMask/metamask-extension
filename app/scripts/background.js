@@ -32,9 +32,10 @@ function handleExternalCommunication(remotePort){
 // state and network
 //
 
+var config = getConfig()
 var idStore = new IdentityStore()
 var zeroClient = MetaMaskProvider({
-  rpcUrl: 'https://rawtestrpc.metamask.io/',
+  rpcUrl: config.rpcTarget,
   getAccounts: function(cb){
     var selectedAddress = idStore.getSelectedAddress()
     var result = selectedAddress ? [selectedAddress] : []
@@ -53,7 +54,11 @@ var ethStore = new EthStore(zeroClient)
 idStore.setStore(ethStore)
 
 function getState(){
-  var state = extend(ethStore.getState(), idStore.getState())
+  var state = extend(
+    ethStore.getState(),
+    idStore.getState(),
+    getConfig()
+  )
   return state
 }
 
@@ -80,6 +85,7 @@ function handleInternalCommunication(remotePort){
   var duplex = new PortStream(remotePort)
   var connection = Dnode({
     getState:           function(cb){ cb(null, getState()) },
+    setRpcTarget:       setRpcTarget,
     // forward directly to idStore
     createNewVault:     idStore.createNewVault.bind(idStore),
     submitPassword:     idStore.submitPassword.bind(idStore),
@@ -118,7 +124,28 @@ function updateBadge(state){
   if (count) {
     label = String(count)
   }
-  chrome.browserAction.setBadgeText({text: label})
-  chrome.browserAction.setBadgeBackgroundColor({color: '#506F8B'})
+  chrome.browserAction.setBadgeText({ text: label })
+  chrome.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
 }
 
+//
+// config
+//
+
+// called from popup
+function setRpcTarget(rpcTarget){
+  var config = getConfig()
+  config.rpcTarget = rpcTarget
+  setConfig(config)
+  chrome.runtime.reload()
+}
+
+function getConfig(){
+  return extend({
+    rpcTarget: 'https://rawtestrpc.metamask.io/',
+  }, JSON.parse(localStorage['config'] || '{}'))
+}
+
+function setConfig(state){
+  localStorage['config'] = JSON.stringify(state)
+}
