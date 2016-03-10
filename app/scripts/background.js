@@ -2,6 +2,7 @@ const Dnode = require('dnode')
 const Multiplex = require('multiplex')
 const Through = require('through2')
 const eos = require('end-of-stream')
+const combineStreams = require('pumpify')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
@@ -28,10 +29,6 @@ function connectRemote(remotePort){
 }
 
 function handleEthRpcRequestStream(stream){
-  // portStream
-  stream.on('data', function(data){
-    console.log(data)
-  })
   stream.on('data', onRpcRequest.bind(null, stream))
 }
 
@@ -76,7 +73,7 @@ function onRpcRequest(remoteStream, payload){
     // provider engine errors are included in response objects
     // if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
     try {
-      remoteStream.push(response)
+      remoteStream.write(response)
     } catch (err) {
       console.error(err)
     }
@@ -101,10 +98,12 @@ function handleInternalCommunication(portStream){
     mx.destroy()
   })
   var dnodeStream = mx.createSharedStream('dnode')
-  var providerStream =
-    jsonStringifyStream()
-    .pipe(mx.createSharedStream('provider'))
-    .pipe(jsonParseStream())
+  var providerStream = combineStreams(
+    jsonStringifyStream(),
+    mx.createSharedStream('provider'),
+    jsonParseStream()
+  )
+
   linkDnode(dnodeStream)
   handleEthRpcRequestStream(providerStream)
 }
