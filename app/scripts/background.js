@@ -1,4 +1,6 @@
 const Dnode = require('dnode')
+const Multiplex = require('multiplex')
+const Through = require('through2')
 const eos = require('end-of-stream')
 const extend = require('xtend')
 const EthStore = require('eth-store')
@@ -15,17 +17,22 @@ console.log('ready to roll')
 chrome.runtime.onConnect.addListener(connectRemote)
 function connectRemote(remotePort){
   var isMetaMaskInternalProcess = (remotePort.name === 'popup')
+  var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
-    handleInternalCommunication(remotePort)
+    handleInternalCommunication(portStream)
   } else {
     // communication with page
-    handleExternalCommunication(remotePort)
+    handleEthRpcRequestStream(portStream)
   }
 }
 
-function handleExternalCommunication(remotePort){
-  remotePort.onMessage.addListener(onRpcRequest.bind(null, remotePort))
+function handleEthRpcRequestStream(stream){
+  // portStream
+  stream.on('data', function(data){
+    console.log(data)
+  })
+  stream.on('data', onRpcRequest.bind(null, stream))
 }
 
 //
@@ -63,15 +70,15 @@ function getState(){
 }
 
 // handle rpc requests
-function onRpcRequest(remotePort, payload){
+function onRpcRequest(remoteStream, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
     // provider engine errors are included in response objects
-    if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    // if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
     try {
-      remotePort.postMessage(response)
-    } catch (_) {
-      // port disconnected
+      remoteStream.push(response)
+    } catch (err) {
+      console.error(err)
     }
   })
 }
@@ -81,8 +88,28 @@ function onRpcRequest(remotePort, payload){
 // popup integration
 //
 
-function handleInternalCommunication(remotePort){
-  var duplex = new PortStream(remotePort)
+function handleInternalCommunication(portStream){
+  // setup multiplexing
+  var mx = Multiplex()
+  portStream.pipe(mx).pipe(portStream)
+  mx.on('error', function(err) {
+    console.error(err)
+    // portStream.destroy()
+  })
+  portStream.on('error', function(err) {
+    console.error(err)
+    mx.destroy()
+  })
+  var dnodeStream = mx.createSharedStream('dnode')
+  var providerStream =
+    jsonStringifyStream()
+    .pipe(mx.createSharedStream('provider'))
+    .pipe(jsonParseStream())
+  linkDnode(dnodeStream)
+  handleEthRpcRequestStream(providerStream)
+}
+
+function linkDnode(stream){
   var connection = Dnode({
     getState:           function(cb){ cb(null, getState()) },
     setRpcTarget:       setRpcTarget,
@@ -94,14 +121,14 @@ function handleInternalCommunication(remotePort){
     cancelTransaction:  idStore.cancelTransaction.bind(idStore),
     setLocked:          idStore.setLocked.bind(idStore),
   })
-  duplex.pipe(connection).pipe(duplex)
+  stream.pipe(connection).pipe(stream)
   connection.on('remote', function(remote){
     
     // push updates to popup
     ethStore.on('update', sendUpdate)
     idStore.on('update', sendUpdate)
     // teardown on disconnect
-    eos(duplex, function unsubscribe(){
+    eos(stream, function unsubscribe(){
       ethStore.removeListener('update', sendUpdate)
     })
     function sendUpdate(){
@@ -148,4 +175,20 @@ function getConfig(){
 
 function setConfig(state){
   localStorage['config'] = JSON.stringify(state)
+}
+
+// util
+
+function jsonParseStream(){
+  return Through.obj(function(serialized){
+    this.push(JSON.parse(serialized))
+    cb()
+  })
+}
+
+function jsonStringifyStream(){
+  return Through.obj(function(obj){
+    this.push(JSON.stringify(obj))
+    cb()
+  })
 }

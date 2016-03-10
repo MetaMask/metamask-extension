@@ -19,7 +19,9 @@
     "faux-jax": "git+https://github.com/kumavis/faux-jax.git#c3648de04804f3895c5b4972750cae5b51ddb103",
     "inject-css": "^0.1.1",
     "metamask-ui": "^1.5.0",
+    "multiplex": "^6.7.0",
     "readable-stream": "^2.0.5",
+    "through2": "^2.0.1",
     "web3": "^0.15.1",
     "web3-provider-engine": "^7.0.0",
     "xtend": "^4.0.1"

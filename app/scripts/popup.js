@@ -1,11 +1,13 @@
 const url = require('url')
 const EventEmitter = require('events').EventEmitter
 const async = require('async')
+const Multiplex = require('multiplex')
 const Dnode = require('dnode')
 const MetaMaskUi = require('metamask-ui')
 const MetaMaskUiCss = require('metamask-ui/css')
 const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
+const StreamProvider = require('./lib/stream-provider.js')
 
 // setup app
 var css = MetaMaskUiCss()
@@ -19,15 +21,39 @@ async.parallel({
 function connectToAccountManager(cb){
   // setup communication with background
   var pluginPort = chrome.runtime.connect({name: 'popup'})
-  var duplex = new PortStream(pluginPort)
+  var portStream = new PortStream(pluginPort)
+  // setup multiplexing
+  var mx = Multiplex()
+  portStream.pipe(mx).pipe(portStream)
+  mx.on('error', function(err) {
+    console.error(err)
+    portStream.destroy()
+  })
+  portStream.on('error', function(err) {
+    console.error(err)
+    mx.destroy()
+  })
+  var dnodeStream = mx.createSharedStream('dnode')
+  var providerStream = mx.createSharedStream('provider')
+  linkDnode(dnodeStream, cb)
+  linkWeb3(providerStream)
+}
+
+function linkWeb3(stream){
+  var remoteProvider = new StreamProvider()
+  remoteProvider.pipe(stream).pipe(remoteProvider)
+  stream.on('error', console.error.bind(console))
+  remoteProvider.on('error', console.error.bind(console))
+}
+
+function linkDnode(stream, cb){
   var eventEmitter = new EventEmitter()
   var background = Dnode({
-    // setUnconfirmedTxs: setUnconfirmedTxs,
     sendUpdate: function(state){
       eventEmitter.emit('update', state)
     },
   })
-  duplex.pipe(background).pipe(duplex)
+  stream.pipe(background).pipe(stream)
   background.once('remote', function(accountManager){
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)

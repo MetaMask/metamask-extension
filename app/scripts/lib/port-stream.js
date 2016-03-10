@@ -18,12 +18,18 @@ function PortDuplexStream(port){
 // private
 
 PortDuplexStream.prototype._onMessage = function(msg){
-  // console.log('PortDuplexStream - saw message', msg)
-  this.push(msg)
+  if (Buffer.isBuffer(msg)) {
+    delete msg._isBuffer
+    var data = new Buffer(msg)
+    // console.log('PortDuplexStream - saw message as buffer', data)
+    this.push(data)
+  } else {
+    // console.log('PortDuplexStream - saw message', msg)
+    this.push(msg)
+  }
 }
 
-PortDuplexStream.prototype._onDisconnect = function(msg){
-  // console.log('PortDuplexStream - saw message', msg)
+PortDuplexStream.prototype._onDisconnect = function(){
   try {
     this.end()
   } catch(err){
@@ -36,9 +42,16 @@ PortDuplexStream.prototype._onDisconnect = function(msg){
 PortDuplexStream.prototype._read = noop
 
 PortDuplexStream.prototype._write = function(msg, encoding, cb){
-  // console.log('PortDuplexStream - sent message', msg)
   try {
-    this._port.postMessage(msg)
+    if (Buffer.isBuffer(msg)) {
+      var data = msg.toJSON()
+      data._isBuffer = true
+      // console.log('PortDuplexStream - sent message as buffer', data)
+      this._port.postMessage(data)
+    } else {
+      // console.log('PortDuplexStream - sent message', msg)
+      this._port.postMessage(msg)
+    }
     cb()
   } catch(err){
     // this.emit('error', err)
