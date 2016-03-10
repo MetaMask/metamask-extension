@@ -3,6 +3,7 @@ const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const Multiplex = require('multiplex')
 const Dnode = require('dnode')
+const Web3 = require('web3')
 const MetaMaskUi = require('metamask-ui')
 const MetaMaskUiCss = require('metamask-ui/css')
 const injectCss = require('inject-css')
@@ -44,6 +45,7 @@ function linkWeb3(stream){
   remoteProvider.pipe(stream).pipe(remoteProvider)
   stream.on('error', console.error.bind(console))
   remoteProvider.on('error', console.error.bind(console))
+  global.web3 = new Web3(remoteProvider)
 }
 
 function linkDnode(stream, cb){
