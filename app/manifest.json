@@ -36,6 +36,7 @@
     }
   ],
   "permissions": [
+    "notifications",
     "storage",
     "tabs",
     "http://localhost:8545/"

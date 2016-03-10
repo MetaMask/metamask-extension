@@ -45,7 +45,7 @@ var zeroClient = MetaMaskProvider({
     var result = selectedAddress ? [selectedAddress] : []
     cb(null, result)
   },
-  approveTransaction: idStore.addUnconfirmedTransaction.bind(idStore),
+  approveTransaction: addUnconfirmedTx,
   signTransaction: idStore.signTransaction.bind(idStore),
 })
 
@@ -71,7 +71,7 @@ function onRpcRequest(remoteStream, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
   zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
     // provider engine errors are included in response objects
-    // if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
     try {
       remoteStream.write(response)
     } catch (err) {
@@ -152,6 +152,20 @@ function updateBadge(state){
   }
   chrome.browserAction.setBadgeText({ text: label })
   chrome.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
+}
+
+//
+// Add unconfirmed Tx
+//
+
+function addUnconfirmedTx(txParams, cb){
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: '/images/icon-128.png',
+    title: 'New Transaction',
+    message: 'click the extension to confirm...',
+  })
+  idStore.addUnconfirmedTransaction(txParams, cb)
 }
 
 //
