@@ -15,7 +15,7 @@ var del = require('del')
 gulp.task('dev:reload', function() {
   livereload.listen({
     port: 35729,
-    // basePath: './gulp-dist/'
+    // basePath: './dist/'
   })
 })
 
@@ -24,20 +24,20 @@ gulp.task('dev:reload', function() {
 
 gulp.task('copy:locales', copyTask({
   source: './app/_locales/',
-  destination: './gulp-dist/_locales',
+  destination: './dist/_locales',
 }))
 gulp.task('copy:images', copyTask({
   source: './app/images/',
-  destination: './gulp-dist/images',
+  destination: './dist/images',
 }))
 gulp.task('copy:reload', copyTask({
   source: './app/scripts/', 
-  destination: './gulp-dist/scripts',
+  destination: './dist/scripts',
   pattern: '/chromereload.js',
 }))
 gulp.task('copy:root', copyTask({
   source: './app/',
-  destination: './gulp-dist',
+  destination: './dist',
   pattern: '/*',
 }))
 gulp.task('copy',  gulp.parallel('copy:locales','copy:images','copy:reload','copy:root'))
@@ -64,7 +64,7 @@ gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript',
 
 
 gulp.task('clean', function clean() {
-  return del(['./gulp-dist'])
+  return del(['./dist'])
 })
 
 
@@ -123,7 +123,7 @@ function bundleTask(opts) {
       .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
          // Add transformation tasks to the pipeline here.
       .pipe(sourcemaps.write('./')) // writes .map file
-      .pipe(gulp.dest('./gulp-dist/scripts'))
+      .pipe(gulp.dest('./dist/scripts'))
       .pipe(livereload())
 
     )
