@@ -8,6 +8,7 @@ const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const IdentityStore = require('./lib/idStore')
+const createTxNotification = require('./lib/tx-notification.js')
 
 console.log('ready to roll')
 
@@ -159,13 +160,13 @@ function updateBadge(state){
 //
 
 function addUnconfirmedTx(txParams, cb){
-  chrome.notifications.create({
-    type: 'basic',
-    iconUrl: '/images/icon-128.png',
-    title: 'New Transaction',
-    message: 'click the extension to confirm...',
+  var txId = idStore.addUnconfirmedTransaction(txParams, cb)
+  createTxNotification({
+    title: 'New Unsigned Transaction',
+    txParams: txParams,
+    confirm: idStore.approveTransaction.bind(idStore, txId, noop),
+    cancel: idStore.cancelTransaction.bind(idStore, txId),
   })
-  idStore.addUnconfirmedTransaction(txParams, cb)
 }
 
 //
@@ -205,3 +206,5 @@ function jsonStringifyStream(){
     cb()
   })
 }
+
+function noop(){}
