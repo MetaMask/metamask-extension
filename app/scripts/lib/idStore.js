@@ -113,6 +113,8 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
 
   // signal update
   self._didUpdate()
+
+  return txId
 }
 
 // comes from metamask ui
