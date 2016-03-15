@@ -115,6 +115,7 @@ function linkDnode(stream){
     setRpcTarget:       setRpcTarget,
     // forward directly to idStore
     createNewVault:     idStore.createNewVault.bind(idStore),
+    recoverFromSeed:    idStore.recoverFromSeed.bind(idStore),
     submitPassword:     idStore.submitPassword.bind(idStore),
     setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
     approveTransaction: idStore.approveTransaction.bind(idStore),

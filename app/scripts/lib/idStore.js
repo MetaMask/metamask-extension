@@ -41,7 +41,7 @@ IdentityStore.prototype.createNewVault = function(password, cb){
   const self = this
   delete self._keyStore
   delete window.localStorage['lightwallet']
-  var keyStore = self._createIdmgmt(password, function(err){
+  var keyStore = self._createIdmgmt(password, null, function(err){
     if (err) return cb(err)
     var seedWords = self._idmgmt.getSeed()
     self._loadIdentities()
@@ -50,6 +50,15 @@ IdentityStore.prototype.createNewVault = function(password, cb){
   })
 }
 
+IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
+  const self = this
+  self._createIdmgmt(password, seed, function(err){
+    if (err) return cb(err)
+    self._loadIdentities()
+    self._didUpdate()
+    cb()
+  })
+}
 
 IdentityStore.prototype.setStore = function(store){
   const self = this
@@ -202,17 +211,23 @@ IdentityStore.prototype._loadIdentities = function(){
 
 IdentityStore.prototype._tryPassword = function(password, cb){
   const self = this
-  self._createIdmgmt(password, cb)
+  self._createIdmgmt(password, null, cb)
 }
 
-IdentityStore.prototype._createIdmgmt = function(password, cb){
+IdentityStore.prototype._createIdmgmt = function(password, seed, cb){
   const self = this
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, function(err, derrivedKey){
     if (err) return cb(err)
     var serializedKeystore = window.localStorage['lightwallet']
-    // returning user
-    if (serializedKeystore) {
+    // recovering from seed
+    if (seed) {
+      keyStore = new LightwalletKeyStore(seed, derrivedKey)
+      keyStore.generateNewAddress(derrivedKey, 3)
+      window.localStorage['lightwallet'] = keyStore.serialize()
+      console.log('saved to keystore localStorage')
+    // returning user, recovering from localStorage
+    } else if (serializedKeystore) {
       keyStore = LightwalletKeyStore.deserialize(serializedKeystore)
       var isCorrect = keyStore.isDerivedKeyCorrect(derrivedKey)
       if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
