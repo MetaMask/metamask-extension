@@ -31,6 +31,10 @@ StreamProvider.prototype.sendAsync = function(payload, callback){
   this.push(payload)
 }
 
+StreamProvider.prototype.isConnected = function(){
+  return true
+}
+
 // private
 
 StreamProvider.prototype._onResponse = function(response){
