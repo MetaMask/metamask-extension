@@ -37,22 +37,22 @@ function IdentityStore(ethStore) {
 // public
 //
 
-IdentityStore.prototype.createNewVault = function(password, cb){
-  const self = this
-  delete self._keyStore
+IdentityStore.prototype.createNewVault = function(password, entropy, cb){
+  delete this._keyStore
   delete window.localStorage['lightwallet']
-  var keyStore = self._createIdmgmt(password, null, function(err){
+  this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
-    var seedWords = self._idmgmt.getSeed()
-    self._loadIdentities()
-    self._didUpdate()
+    var seedWords = this._idmgmt.getSeed()
+    this._cacheSeedWordsUntilConfirmed(seedWords)
+    this._loadIdentities()
+    this._didUpdate()
     cb(null, seedWords)
   })
 }
 
 IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
   const self = this
-  self._createIdmgmt(password, seed, function(err){
+  self._createIdmgmt(password, seed, null, function(err){
     if (err) return cb(err)
     self._loadIdentities()
     self._didUpdate()
@@ -65,12 +65,18 @@ IdentityStore.prototype.setStore = function(store){
   self._ethStore = store
 }
 
+IdentityStore.prototype.clearSeedWordCache = function(cb) {
+  delete window.localStorage['seedWords']
+  cb()
+}
 
 IdentityStore.prototype.getState = function(){
   const self = this
+  const cachedSeeds = window.localStorage['seedWords']
   return clone(extend(self._currentState, {
-    isInitialized: !!window.localStorage['lightwallet'],
+    isInitialized: !!window.localStorage['lightwallet'] && !cachedSeeds,
     isUnlocked: self._isUnlocked(),
+    seedWords: cachedSeeds,
   }))
 }
 
@@ -185,6 +191,10 @@ IdentityStore.prototype._isUnlocked = function(){
   return result
 }
 
+IdentityStore.prototype._cacheSeedWordsUntilConfirmed = function(seedWords) {
+  window.localStorage['seedWords'] = seedWords
+}
+
 // load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function(){
   const self = this
@@ -211,58 +221,85 @@ IdentityStore.prototype._loadIdentities = function(){
 
 IdentityStore.prototype._tryPassword = function(password, cb){
   const self = this
-  self._createIdmgmt(password, null, cb)
+  self._createIdmgmt(password, null, null, cb)
 }
 
-IdentityStore.prototype._createIdmgmt = function(password, seed, cb){
-  const self = this
+IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
   var keyStore = null
-  LightwalletKeyStore.deriveKeyFromPassword(password, function(err, derrivedKey){
+  LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
     var serializedKeystore = window.localStorage['lightwallet']
-    // recovering from seed
+
     if (seed) {
-      keyStore = new LightwalletKeyStore(seed, derrivedKey)
-      keyStore.generateNewAddress(derrivedKey, 3)
-      window.localStorage['lightwallet'] = keyStore.serialize()
-      console.log('saved to keystore localStorage')
+      this._restoreFromSeed(keyStore, seed, derivedKey)
+
     // returning user, recovering from localStorage
     } else if (serializedKeystore) {
-      keyStore = LightwalletKeyStore.deserialize(serializedKeystore)
-      var isCorrect = keyStore.isDerivedKeyCorrect(derrivedKey)
+      keyStore = this._loadFromLocalStorage(serializedKeystore, derivedKey, cb)
+      var isCorrect = keyStore.isDerivedKeyCorrect(derivedKey)
       if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
-    // first time here
+
+   // first time here
     } else {
-      var secretSeed = LightwalletKeyStore.generateRandomSeed()
-      keyStore = new LightwalletKeyStore(secretSeed, derrivedKey)
-      keyStore.generateNewAddress(derrivedKey, 3)
-      window.localStorage['lightwallet'] = keyStore.serialize()
-      console.log('saved to keystore localStorage')
+      keyStore = this._createFirstWallet(entropy, derivedKey)
     }
-    self._keyStore = keyStore
-    self._idmgmt = {
-      getAddresses: function(){
-        return keyStore.getAddresses().map(function(address){ return '0x'+address })
-      },
-      signTx: function(txParams){
-        // normalize values
-        txParams.to = ethUtil.addHexPrefix(txParams.to)
-        txParams.from = ethUtil.addHexPrefix(txParams.from)
-        txParams.value = ethUtil.addHexPrefix(txParams.value)
-        txParams.data = ethUtil.addHexPrefix(txParams.data)
-        txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
-        txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
-        var tx = new Transaction(txParams)
-        var rawTx = '0x'+tx.serialize().toString('hex')
-        return '0x'+LightwalletSigner.signTx(keyStore, derrivedKey, rawTx, txParams.from)
-      },
-      getSeed: function(){
-        return keyStore.getSeed(derrivedKey)
-      },
-    }
+
+    this._keyStore = keyStore
+    this._idmgmt = new IdManagement({
+      keyStore: keyStore,
+      derivedKey: derivedKey,
+    })
+
     cb()
   })
 }
+
+IdentityStore.prototype._restoreFromSeed = function(keyStore, seed, derivedKey) {
+  keyStore = new LightwalletKeyStore(seed, derivedKey)
+  keyStore.generateNewAddress(derivedKey, 3)
+  window.localStorage['lightwallet'] = keyStore.serialize()
+  console.log('restored from seed. saved to keystore localStorage')
+}
+
+IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, derivedKey) {
+  return LightwalletKeyStore.deserialize(serializedKeystore)
+}
+
+IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
+  var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
+  var keyStore = new LightwalletKeyStore(secretSeed, derivedKey)
+  keyStore.generateNewAddress(derivedKey, 3)
+  window.localStorage['lightwallet'] = keyStore.serialize()
+  console.log('wallet generated. saved to keystore localStorage')
+  return keyStore
+}
+
+function IdManagement( opts = { keyStore: null, derivedKey: null } ) {
+  this.keyStore = opts.keyStore
+  this.derivedKey = opts.derivedKey
+
+  this.getAddresses =  function(){
+    return keyStore.getAddresses().map(function(address){ return '0x'+address })
+  }
+
+  this.signTx = function(txParams){
+    // normalize values
+    txParams.to = ethUtil.addHexPrefix(txParams.to)
+    txParams.from = ethUtil.addHexPrefix(txParams.from)
+    txParams.value = ethUtil.addHexPrefix(txParams.value)
+    txParams.data = ethUtil.addHexPrefix(txParams.data)
+    txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
+    txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
+    var tx = new Transaction(txParams)
+    var rawTx = '0x'+tx.serialize().toString('hex')
+    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from)
+  }
+
+  this.getSeed = function(){
+    return this.keyStore.getSeed(this.derivedKey)
+  }
+}
+
 
 // util
 
