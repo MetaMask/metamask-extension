@@ -121,10 +121,11 @@ function linkDnode(stream){
     approveTransaction: idStore.approveTransaction.bind(idStore),
     cancelTransaction:  idStore.cancelTransaction.bind(idStore),
     setLocked:          idStore.setLocked.bind(idStore),
+    clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
   })
   stream.pipe(connection).pipe(stream)
   connection.on('remote', function(remote){
-    
+
     // push updates to popup
     ethStore.on('update', sendUpdate)
     idStore.on('update', sendUpdate)
