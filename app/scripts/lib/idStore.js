@@ -91,10 +91,11 @@ IdentityStore.prototype.setSelectedAddress = function(address){
   self._didUpdate()
 }
 
-IdentityStore.prototype.setLocked = function(){
+IdentityStore.prototype.setLocked = function(cb){
   const self = this
   delete self._keyStore
   delete self._idmgmt
+  cb()
 }
 
 IdentityStore.prototype.submitPassword = function(password, cb){
@@ -270,7 +271,7 @@ IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   var keyStore = new LightwalletKeyStore(secretSeed, derivedKey)
   keyStore.generateNewAddress(derivedKey, 3)
   window.localStorage['lightwallet'] = keyStore.serialize()
-  console.log('wallet generated. saved to keystore localStorage')
+  console.log('saved to keystore localStorage')
   return keyStore
 }
 
