@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --compilers js:babel-register --recursive",
-    "watch": "mocha watch --compilers js:babel-register --recursive"
+    "test": "mocha --compilers js:babel-register --recursive"
   },
   "dependencies": {
     "async": "^1.5.2",
