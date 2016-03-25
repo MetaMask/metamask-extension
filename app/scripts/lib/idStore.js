@@ -218,7 +218,7 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
     var serializedKeystore = window.localStorage['lightwallet']
 
     if (seed) {
-      keyStore = this._restoreFromSeed(seed, derivedKey)
+      keyStore = this._restoreFromSeed(password, seed, derivedKey)
 
     // returning user, recovering from localStorage
     } else if (serializedKeystore) {
@@ -235,15 +235,19 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
     this._idmgmt = new IdManagement({
       keyStore: keyStore,
       derivedKey: derivedKey,
+      hdPathSTring: this.hdPathString,
     })
 
     cb()
   })
 }
 
-IdentityStore.prototype._restoreFromSeed = function(seed, derivedKey) {
+IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) {
   var keyStore = new LightwalletKeyStore(seed, derivedKey, this.hdPathString)
-  keyStore.generateNewAddress(derivedKey, 3, this.hdPathString)
+  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'});
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+
+  keyStore.generateNewAddress(derivedKey, 3)
   window.localStorage['lightwallet'] = keyStore.serialize()
   console.log('restored from seed. saved to keystore localStorage')
   return keyStore
@@ -256,7 +260,10 @@ IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, der
 IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
   var keyStore = new LightwalletKeyStore(secretSeed, derivedKey, this.hdPathString)
-  keyStore.generateNewAddress(derivedKey, 3, this.hdPathString)
+  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'});
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+
+  keyStore.generateNewAddress(derivedKey, 3)
   window.localStorage['lightwallet'] = keyStore.serialize()
   console.log('saved to keystore localStorage')
   return keyStore
