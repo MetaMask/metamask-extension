@@ -5,11 +5,11 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register",
+    "watch": "mocha watch --compilers js:babel-register"
   },
   "dependencies": {
     "async": "^1.5.2",
-    "bip39": "^2.2.0",
     "clone": "^1.0.2",
     "dnode": "^1.2.2",
     "end-of-stream": "^1.1.0",
@@ -39,8 +39,11 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
+    "jsdom": "^8.1.0",
     "jshint-stylish": "~0.1.5",
     "lodash.assign": "^4.0.6",
+    "mocha": "^2.4.5",
+    "mocha-jsdom": "^1.1.0",
     "tape": "^4.5.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",

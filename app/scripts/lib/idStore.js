@@ -1,6 +1,7 @@
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
 const Transaction = require('ethereumjs-tx')
+const Lightwallet = require('eth-lightwallet')
 const LightwalletKeyStore = require('eth-lightwallet').keystore
 const LightwalletSigner = require('eth-lightwallet').signing
 const async = require('async')
@@ -14,23 +15,24 @@ module.exports = IdentityStore
 
 inherits(IdentityStore, EventEmitter)
 function IdentityStore(ethStore) {
-  const self = this
-  EventEmitter.call(self)
+  EventEmitter.call(this)
 
   // we just use the ethStore to auto-add accounts
-  self._ethStore = ethStore
+  this._ethStore = ethStore
   // lightwallet key store
-  self._keyStore = null
+  this._keyStore = null
   // lightwallet wrapper
-  self._idmgmt = null
+  this._idmgmt = null
 
-  self._currentState = {
+  this.hdPathString = "m/44'/60'/0'/0"
+
+  this._currentState = {
     selectedAddress: null,
     identities: {},
     unconfTxs: {},
   }
   // not part of serilized metamask state - only kept in memory
-  self._unconfTxCbs = {}
+  this._unconfTxCbs = {}
 }
 
 //
@@ -122,7 +124,6 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
     status: 'unconfirmed',
   }
   self._currentState.unconfTxs[txId] = txData
-  console.log('addUnconfirmedTransaction:', txData)
 
   // keep the cb around for after approval (requires user interaction)
   self._unconfTxCbs[txId] = cb
@@ -201,7 +202,7 @@ IdentityStore.prototype._loadIdentities = function(){
   const self = this
   if (!self._isUnlocked()) throw new Error('not unlocked')
   // get addresses and normalize address hexString
-  var addresses = self._keyStore.getAddresses().map(function(address){ return '0x'+address })
+  var addresses = self._keyStore.getAddresses(this.hdPathString).map(function(address){ return '0x'+address })
   addresses.forEach(function(address){
     // // add to ethStore
     self._ethStore.addAccount(address)
@@ -257,7 +258,7 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
 
 IdentityStore.prototype._restoreFromSeed = function(keyStore, seed, derivedKey) {
   keyStore = new LightwalletKeyStore(seed, derivedKey)
-  keyStore.generateNewAddress(derivedKey, 3)
+  keyStore.generateNewAddress(derivedKey, 3, hdPathString)
   window.localStorage['lightwallet'] = keyStore.serialize()
   console.log('restored from seed. saved to keystore localStorage')
 }
@@ -268,19 +269,20 @@ IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, der
 
 IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
-  var keyStore = new LightwalletKeyStore(secretSeed, derivedKey)
-  keyStore.generateNewAddress(derivedKey, 3)
+  var keyStore = new LightwalletKeyStore(secretSeed, derivedKey, this.hdPathString)
+  keyStore.generateNewAddress(derivedKey, 3, this.hdPathString)
   window.localStorage['lightwallet'] = keyStore.serialize()
   console.log('saved to keystore localStorage')
   return keyStore
 }
 
-function IdManagement( opts = { keyStore: null, derivedKey: null } ) {
+function IdManagement( opts = { keyStore: null, derivedKey: null, hdPathString: null } ) {
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
+  this.hdPathString = opts.hdPathString
 
   this.getAddresses =  function(){
-    return keyStore.getAddresses().map(function(address){ return '0x'+address })
+    return keyStore.getAddresses(this.hdPathString).map(function(address){ return '0x'+address })
   }
 
   this.signTx = function(txParams){
