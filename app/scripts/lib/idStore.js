@@ -1,7 +1,6 @@
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
 const Transaction = require('ethereumjs-tx')
-const Lightwallet = require('eth-lightwallet')
 const LightwalletKeyStore = require('eth-lightwallet').keystore
 const LightwalletSigner = require('eth-lightwallet').signing
 const async = require('async')
