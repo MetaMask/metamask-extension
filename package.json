@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --compilers js:babel-register",
-    "watch": "mocha watch --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register --recursive",
+    "watch": "mocha watch --compilers js:babel-register --recursive"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -44,6 +44,8 @@
     "lodash.assign": "^4.0.6",
     "mocha": "^2.4.5",
     "mocha-jsdom": "^1.1.0",
+    "mocha-sinon": "^1.1.5",
+    "sinon": "^1.17.3",
     "tape": "^4.5.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
