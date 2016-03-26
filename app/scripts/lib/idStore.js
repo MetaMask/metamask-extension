@@ -14,23 +14,24 @@ module.exports = IdentityStore
 
 inherits(IdentityStore, EventEmitter)
 function IdentityStore(ethStore) {
-  const self = this
-  EventEmitter.call(self)
+  EventEmitter.call(this)
 
   // we just use the ethStore to auto-add accounts
-  self._ethStore = ethStore
+  this._ethStore = ethStore
   // lightwallet key store
-  self._keyStore = null
+  this._keyStore = null
   // lightwallet wrapper
-  self._idmgmt = null
+  this._idmgmt = null
 
-  self._currentState = {
+  this.hdPathString = "m/44'/60'/0'/0"
+
+  this._currentState = {
     selectedAddress: null,
     identities: {},
     unconfTxs: {},
   }
   // not part of serilized metamask state - only kept in memory
-  self._unconfTxCbs = {}
+  this._unconfTxCbs = {}
 }
 
 //
@@ -51,18 +52,17 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
 }
 
 IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
-  const self = this
-  self._createIdmgmt(password, seed, null, function(err){
+  this._createIdmgmt(password, seed, null, (err) => {
     if (err) return cb(err)
-    self._loadIdentities()
-    self._didUpdate()
+
+    this._loadIdentities()
+    this._didUpdate()
     cb()
   })
 }
 
 IdentityStore.prototype.setStore = function(store){
-  const self = this
-  self._ethStore = store
+  this._ethStore = store
 }
 
 IdentityStore.prototype.clearSeedWordCache = function(cb) {
@@ -71,46 +71,40 @@ IdentityStore.prototype.clearSeedWordCache = function(cb) {
 }
 
 IdentityStore.prototype.getState = function(){
-  const self = this
   const cachedSeeds = window.localStorage['seedWords']
-  return clone(extend(self._currentState, {
+  return clone(extend(this._currentState, {
     isInitialized: !!window.localStorage['lightwallet'] && !cachedSeeds,
-    isUnlocked: self._isUnlocked(),
+    isUnlocked: this._isUnlocked(),
     seedWords: cachedSeeds,
   }))
 }
 
 IdentityStore.prototype.getSelectedAddress = function(){
-  const self = this
-  return self._currentState.selectedAddress
+  return this._currentState.selectedAddress
 }
 
 IdentityStore.prototype.setSelectedAddress = function(address){
-  const self = this
-  self._currentState.selectedAddress = address
-  self._didUpdate()
+  this._currentState.selectedAddress = address
+  this._didUpdate()
 }
 
 IdentityStore.prototype.setLocked = function(cb){
-  const self = this
-  delete self._keyStore
-  delete self._idmgmt
+  delete this._keyStore
+  delete this._idmgmt
   cb()
 }
 
 IdentityStore.prototype.submitPassword = function(password, cb){
-  const self = this
-  self._tryPassword(password, function(err){
+  this._tryPassword(password, (err) => {
     if (err) return cb(err)
     // load identities before returning...
-    self._loadIdentities()
+    this._loadIdentities()
     cb()
   })
 }
 
 // comes from dapp via zero-client hooked-wallet provider
 IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
-  var self = this
 
   // create txData obj with parameters and meta data
   var time = (new Date()).getTime()
@@ -121,56 +115,51 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
     time: time,
     status: 'unconfirmed',
   }
-  self._currentState.unconfTxs[txId] = txData
+  this._currentState.unconfTxs[txId] = txData
   console.log('addUnconfirmedTransaction:', txData)
 
   // keep the cb around for after approval (requires user interaction)
-  self._unconfTxCbs[txId] = cb
+  this._unconfTxCbs[txId] = cb
 
   // signal update
-  self._didUpdate()
+  this._didUpdate()
 
   return txId
 }
 
 // comes from metamask ui
 IdentityStore.prototype.approveTransaction = function(txId, cb){
-  const self = this
-
-  var txData = self._currentState.unconfTxs[txId]
+  var txData = this._currentState.unconfTxs[txId]
   var txParams = txData.txParams
-  var approvalCb = self._unconfTxCbs[txId] || noop
+  var approvalCb = this._unconfTxCbs[txId] || noop
 
   // accept tx
   cb()
   approvalCb(null, true)
   // clean up
-  delete self._currentState.unconfTxs[txId]
-  delete self._unconfTxCbs[txId]
-  self._didUpdate()
+  delete this._currentState.unconfTxs[txId]
+  delete this._unconfTxCbs[txId]
+  this._didUpdate()
 }
 
 // comes from metamask ui
 IdentityStore.prototype.cancelTransaction = function(txId){
-  const self = this
-
-  var txData = self._currentState.unconfTxs[txId]
-  var approvalCb = self._unconfTxCbs[txId] || noop
+  var txData = this._currentState.unconfTxs[txId]
+  var approvalCb = this._unconfTxCbs[txId] || noop
 
   // reject tx
   approvalCb(null, false)
   // clean up
-  delete self._currentState.unconfTxs[txId]
-  delete self._unconfTxCbs[txId]
-  self._didUpdate()
+  delete this._currentState.unconfTxs[txId]
+  delete this._unconfTxCbs[txId]
+  this._didUpdate()
 }
 
 // performs the actual signing, no autofill of params
 IdentityStore.prototype.signTransaction = function(txParams, cb){
-  const self = this
   try {
     console.log('signing tx...', txParams)
-    var rawTx = self._idmgmt.signTx(txParams)
+    var rawTx = this._idmgmt.signTx(txParams)
     cb(null, rawTx)
   } catch (err) {
     cb(err)
@@ -182,13 +171,11 @@ IdentityStore.prototype.signTransaction = function(txParams, cb){
 //
 
 IdentityStore.prototype._didUpdate = function(){
-  const self = this
-  self.emit('update', self.getState())
+  this.emit('update', this.getState())
 }
 
 IdentityStore.prototype._isUnlocked = function(){
-  const self = this
-  var result = Boolean(self._keyStore) && Boolean(self._idmgmt)
+  var result = Boolean(this._keyStore) && Boolean(this._idmgmt)
   return result
 }
 
@@ -198,22 +185,21 @@ IdentityStore.prototype._cacheSeedWordsUntilConfirmed = function(seedWords) {
 
 // load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function(){
-  const self = this
-  if (!self._isUnlocked()) throw new Error('not unlocked')
+  if (!this._isUnlocked()) throw new Error('not unlocked')
   // get addresses and normalize address hexString
-  var addresses = self._keyStore.getAddresses().map(function(address){ return '0x'+address })
-  addresses.forEach(function(address){
+  var addresses = this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x'+address })
+  addresses.forEach((address) => {
     // // add to ethStore
-    self._ethStore.addAccount(address)
+    this._ethStore.addAccount(address)
     // add to identities
     var identity = {
       name: 'Wally',
       img: 'QmW6hcwYzXrNkuHrpvo58YeZvbZxUddv69ATSHY3BHpPdd',
       address: address,
     }
-    self._currentState.identities[address] = identity
+    this._currentState.identities[address] = identity
   })
-  self._didUpdate()
+  this._didUpdate()
 }
 
 //
@@ -221,8 +207,7 @@ IdentityStore.prototype._loadIdentities = function(){
 //
 
 IdentityStore.prototype._tryPassword = function(password, cb){
-  const self = this
-  self._createIdmgmt(password, null, null, cb)
+  this._createIdmgmt(password, null, null, cb)
 }
 
 IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
@@ -232,7 +217,7 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
     var serializedKeystore = window.localStorage['lightwallet']
 
     if (seed) {
-      this._restoreFromSeed(keyStore, seed, derivedKey)
+      keyStore = this._restoreFromSeed(password, seed, derivedKey)
 
     // returning user, recovering from localStorage
     } else if (serializedKeystore) {
@@ -249,17 +234,22 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
     this._idmgmt = new IdManagement({
       keyStore: keyStore,
       derivedKey: derivedKey,
+      hdPathSTring: this.hdPathString,
     })
 
     cb()
   })
 }
 
-IdentityStore.prototype._restoreFromSeed = function(keyStore, seed, derivedKey) {
-  keyStore = new LightwalletKeyStore(seed, derivedKey)
+IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) {
+  var keyStore = new LightwalletKeyStore(seed, derivedKey, this.hdPathString)
+  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'});
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+
   keyStore.generateNewAddress(derivedKey, 3)
   window.localStorage['lightwallet'] = keyStore.serialize()
   console.log('restored from seed. saved to keystore localStorage')
+  return keyStore
 }
 
 IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, derivedKey) {
@@ -268,19 +258,23 @@ IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, der
 
 IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
-  var keyStore = new LightwalletKeyStore(secretSeed, derivedKey)
+  var keyStore = new LightwalletKeyStore(secretSeed, derivedKey, this.hdPathString)
+  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'});
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+
   keyStore.generateNewAddress(derivedKey, 3)
   window.localStorage['lightwallet'] = keyStore.serialize()
   console.log('saved to keystore localStorage')
   return keyStore
 }
 
-function IdManagement( opts = { keyStore: null, derivedKey: null } ) {
+function IdManagement( opts = { keyStore: null, derivedKey: null, hdPathString: null } ) {
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
+  this.hdPathString = opts.hdPathString
 
   this.getAddresses =  function(){
-    return keyStore.getAddresses().map(function(address){ return '0x'+address })
+    return keyStore.getAddresses(this.hdPathString).map(function(address){ return '0x'+address })
   }
 
   this.signTx = function(txParams){
