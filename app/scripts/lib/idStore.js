@@ -57,7 +57,7 @@ IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
 
     this._loadIdentities()
     this._didUpdate()
-    cb()
+    cb(null, this.getState())
   })
 }
 
