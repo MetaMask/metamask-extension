@@ -285,7 +285,7 @@ function IdManagement(opts) {
 
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
-  this.hdPathString = opts.hdPathString
+  this.hdPathString = "m/44'/60'/0'/0"
 
   this.getAddresses =  function(){
     return keyStore.getAddresses(this.hdPathString).map(function(address){ return '0x'+address })
@@ -301,7 +301,7 @@ function IdManagement(opts) {
     txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
     var tx = new Transaction(txParams)
     var rawTx = '0x'+tx.serialize().toString('hex')
-    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from)
+    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from, this.hdPathString)
   }
 
   this.getSeed = function(){
