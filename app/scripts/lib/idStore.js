@@ -268,7 +268,9 @@ IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   return keyStore
 }
 
-function IdManagement( opts = { keyStore: null, derivedKey: null, hdPathString: null } ) {
+function IdManagement(opts) {
+  if (!opts) opts = {}
+
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
   this.hdPathString = opts.hdPathString
