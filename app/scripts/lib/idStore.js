@@ -7,6 +7,7 @@ const async = require('async')
 const clone = require('clone')
 const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
+const autoFaucet = require('./auto-faucet')
 
 
 module.exports = IdentityStore
@@ -47,6 +48,7 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
     this._cacheSeedWordsUntilConfirmed(seedWords)
     this._loadIdentities()
     this._didUpdate()
+    this._autoFaucet()
     cb(null, seedWords)
   })
 }
@@ -186,14 +188,14 @@ IdentityStore.prototype._cacheSeedWordsUntilConfirmed = function(seedWords) {
 // load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function(){
   if (!this._isUnlocked()) throw new Error('not unlocked')
-  // get addresses and normalize address hexString
-  var addresses = this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x'+address })
-  addresses.forEach((address) => {
+
+  var addresses = this._getAddresses()
+  addresses.forEach((address, i) => {
     // // add to ethStore
     this._ethStore.addAccount(address)
     // add to identities
     var identity = {
-      name: 'Wally',
+      name: 'Wallet ' + (i+1),
       img: 'QmW6hcwYzXrNkuHrpvo58YeZvbZxUddv69ATSHY3BHpPdd',
       address: address,
     }
@@ -268,12 +270,22 @@ IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   return keyStore
 }
 
+// get addresses and normalize address hexString
+IdentityStore.prototype._getAddresses = function() {
+  return this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x'+address })
+}
+
+IdentityStore.prototype._autoFaucet = function() {
+  var addresses = this._getAddresses()
+  autoFaucet(addresses[0])
+}
+
 function IdManagement(opts) {
   if (!opts) opts = {}
 
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
-  this.hdPathString = opts.hdPathString
+  this.hdPathString = "m/44'/60'/0'/0"
 
   this.getAddresses =  function(){
     return keyStore.getAddresses(this.hdPathString).map(function(address){ return '0x'+address })
@@ -289,7 +301,7 @@ function IdManagement(opts) {
     txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
     var tx = new Transaction(txParams)
     var rawTx = '0x'+tx.serialize().toString('hex')
-    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from)
+    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from, this.hdPathString)
   }
 
   this.getSeed = function(){
