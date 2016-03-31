@@ -88,20 +88,16 @@ ConfigManager.prototype.getWallet = function() {
   return this.migrator.getData().wallet
 }
 
-ConfigManager.prototype.getSeedWords = function() {
-  return this.migrator.getData().seedWords
-}
-
-ConfigManager.prototype.setSeedWords = function(seedWords) {
+// Takes a boolean
+ConfigManager.prototype.setShowSeedWords = function(should) {
   var data = this.migrator.getData()
-  data.seedWords = seedWords
+  data.showSeedWords = should
   this.setData(data)
 }
 
-ConfigManager.prototype.clearSeedWords = function() {
+ConfigManager.prototype.getShouldShowSeedWords = function() {
   var data = this.migrator.getData()
-  delete data.seedWords
-  this.setData(data)
+  return data.showSeedWords
 }
 
 ConfigManager.prototype.getCurrentRpcAddress = function() {

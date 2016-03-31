@@ -45,11 +45,13 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
   configManager.clearWallet()
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
-    var seedWords = this._idmgmt.getSeed()
-    configManager.setSeedWords(seedWords)
+
     this._loadIdentities()
     this._didUpdate()
     this._autoFaucet()
+
+    configManager.setShowSeedWords(true)
+    var seedWords = this._idmgmt.getSeed()
     cb(null, seedWords)
   })
 }
@@ -69,18 +71,26 @@ IdentityStore.prototype.setStore = function(store){
 }
 
 IdentityStore.prototype.clearSeedWordCache = function(cb) {
-  configManager.clearSeedWords()
+  configManager.setShowSeedWords(false)
   cb()
 }
 
 IdentityStore.prototype.getState = function(){
-  const cachedSeeds = configManager.getSeedWords()
+  var seedWords = this.getSeedIfUnlocked()
   var wallet = configManager.getWallet()
   return clone(extend(this._currentState, {
-    isInitialized: !!configManager.getWallet() && !cachedSeeds,
+    isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
-    seedWords: cachedSeeds,
+    seedWords: seedWords,
   }))
+}
+
+IdentityStore.prototype.getSeedIfUnlocked = function() {
+  var showSeed = configManager.getShouldShowSeedWords()
+  var idmgmt = this._idmgmt
+  var shouldShow = showSeed && !!idmgmt
+  var seedWords = shouldShow ? idmgmt.getSeed() : null
+  return seedWords
 }
 
 IdentityStore.prototype.getSelectedAddress = function(){
