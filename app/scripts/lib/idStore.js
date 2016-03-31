@@ -8,6 +8,7 @@ const clone = require('clone')
 const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./auto-faucet')
+const configManager = require('./config-manager-singleton')
 
 
 module.exports = IdentityStore
@@ -41,14 +42,16 @@ function IdentityStore(ethStore) {
 
 IdentityStore.prototype.createNewVault = function(password, entropy, cb){
   delete this._keyStore
-  delete window.localStorage['lightwallet']
+  configManager.clearWallet()
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
-    var seedWords = this._idmgmt.getSeed()
-    this._cacheSeedWordsUntilConfirmed(seedWords)
+
     this._loadIdentities()
     this._didUpdate()
     this._autoFaucet()
+
+    configManager.setShowSeedWords(true)
+    var seedWords = this._idmgmt.getSeed()
     cb(null, seedWords)
   })
 }
@@ -68,17 +71,26 @@ IdentityStore.prototype.setStore = function(store){
 }
 
 IdentityStore.prototype.clearSeedWordCache = function(cb) {
-  delete window.localStorage['seedWords']
+  configManager.setShowSeedWords(false)
   cb()
 }
 
 IdentityStore.prototype.getState = function(){
-  const cachedSeeds = window.localStorage['seedWords']
+  var seedWords = this.getSeedIfUnlocked()
+  var wallet = configManager.getWallet()
   return clone(extend(this._currentState, {
-    isInitialized: !!window.localStorage['lightwallet'] && !cachedSeeds,
+    isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
-    seedWords: cachedSeeds,
+    seedWords: seedWords,
   }))
+}
+
+IdentityStore.prototype.getSeedIfUnlocked = function() {
+  var showSeed = configManager.getShouldShowSeedWords()
+  var idmgmt = this._idmgmt
+  var shouldShow = showSeed && !!idmgmt
+  var seedWords = shouldShow ? idmgmt.getSeed() : null
+  return seedWords
 }
 
 IdentityStore.prototype.getSelectedAddress = function(){
@@ -181,10 +193,6 @@ IdentityStore.prototype._isUnlocked = function(){
   return result
 }
 
-IdentityStore.prototype._cacheSeedWordsUntilConfirmed = function(seedWords) {
-  window.localStorage['seedWords'] = seedWords
-}
-
 // load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function(){
   if (!this._isUnlocked()) throw new Error('not unlocked')
@@ -216,14 +224,14 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
-    var serializedKeystore = window.localStorage['lightwallet']
+    var serializedKeystore = configManager.getWallet()
 
     if (seed) {
       keyStore = this._restoreFromSeed(password, seed, derivedKey)
 
-    // returning user, recovering from localStorage
+    // returning user, recovering from storage
     } else if (serializedKeystore) {
-      keyStore = this._loadFromLocalStorage(serializedKeystore, derivedKey, cb)
+      keyStore = LightwalletKeyStore.deserialize(serializedKeystore)
       var isCorrect = keyStore.isDerivedKeyCorrect(derivedKey)
       if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
@@ -249,13 +257,9 @@ IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) 
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
   keyStore.generateNewAddress(derivedKey, 3)
-  window.localStorage['lightwallet'] = keyStore.serialize()
-  console.log('restored from seed. saved to keystore localStorage')
+  configManager.setWallet(keyStore.serialize())
+  console.log('restored from seed. saved to keystore')
   return keyStore
-}
-
-IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, derivedKey) {
-  return LightwalletKeyStore.deserialize(serializedKeystore)
 }
 
 IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
@@ -265,8 +269,8 @@ IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
   keyStore.generateNewAddress(derivedKey, 3)
-  window.localStorage['lightwallet'] = keyStore.serialize()
-  console.log('saved to keystore localStorage')
+  configManager.setWallet(keyStore.serialize())
+  console.log('saved to keystore')
   return keyStore
 }
 
