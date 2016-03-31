@@ -47,6 +47,15 @@ ConfigManager.prototype.setConfig = function(config) {
   this.setData(data)
 }
 
+ConfigManager.prototype.setRpcTarget = function(rpcUrl) {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'rpc',
+    rpcTarget: rpcUrl,
+  }
+  this.setConfig(config)
+}
+
 ConfigManager.prototype.getConfig = function() {
   var data = this.migrator.getData()
   if ('config' in data) {
@@ -59,28 +68,6 @@ ConfigManager.prototype.getConfig = function() {
       }
     }
   }
-}
-
-ConfigManager.prototype.setRpcTarget = function(rpcUrl) {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'rpc',
-    rpcTarget: rpcUrl,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.useEtherscanProvider = function() {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'etherscan',
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.getProvider = function() {
-  var config = this.getConfig()
-  return config.provider
 }
 
 ConfigManager.prototype.setData = function(data) {
