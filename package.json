@@ -27,7 +27,7 @@
     "readable-stream": "^2.0.5",
     "through2": "^2.0.1",
     "web3": "^0.15.1",
-    "web3-provider-engine": "^7.0.0",
+    "web3-provider-engine": "^7.2.1",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
