@@ -6,8 +6,7 @@ const combineStreams = require('pumpify')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
-const MetaMaskProvider = require('web3-provider-engine/zero.js')
-const EtherscanProvider = require('web3-provider-engine/subproviders/etherscan')
+const MetaMaskProvider = require('./lib/zero.js')
 const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/tx-notification.js')
 const configManager = require('./lib/config-manager-singleton')
@@ -48,16 +47,9 @@ var providerOpts = {
   },
   approveTransaction: addUnconfirmedTx,
   signTransaction: idStore.signTransaction.bind(idStore),
+  etherscan: providerConfig.type === 'etherscan',
 }
-var provider
-switch (providerConfig.type) {
-  case 'rpc':
-    provider = MetaMaskProvider(providerOpts)
-    break
-  case 'etherscan':
-    provider = EtherscanProvider(providerOpts)
-    break
-}
+var provider = MetaMaskProvider(providerOpts)
 
 // log new blocks
 provider.on('block', function(block){
