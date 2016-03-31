@@ -221,7 +221,7 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
 
     // returning user, recovering from storage
     } else if (serializedKeystore) {
-      keyStore = this.deserializeKeystore(serializedKeystore)
+      keyStore = LightwalletKeyStore.deserialize(serializedKeystore)
       var isCorrect = keyStore.isDerivedKeyCorrect(derivedKey)
       if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
@@ -250,10 +250,6 @@ IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) 
   configManager.setWallet(keyStore.serialize())
   console.log('restored from seed. saved to keystore')
   return keyStore
-}
-
-IdentityStore.prototype.deserializeKeystore = function(serializedKeystore) {
-  return LightwalletKeyStore.deserialize(serializedKeystore)
 }
 
 IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
