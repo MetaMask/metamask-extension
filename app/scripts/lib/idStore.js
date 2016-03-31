@@ -8,6 +8,7 @@ const clone = require('clone')
 const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./auto-faucet')
+const configManager = require('./config-manager-singleton')
 
 
 module.exports = IdentityStore
@@ -41,11 +42,11 @@ function IdentityStore(ethStore) {
 
 IdentityStore.prototype.createNewVault = function(password, entropy, cb){
   delete this._keyStore
-  delete window.localStorage['lightwallet']
+  configManager.clearWallet()
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
     var seedWords = this._idmgmt.getSeed()
-    this._cacheSeedWordsUntilConfirmed(seedWords)
+    configManager.setSeedWords(seedWords)
     this._loadIdentities()
     this._didUpdate()
     this._autoFaucet()
@@ -68,14 +69,17 @@ IdentityStore.prototype.setStore = function(store){
 }
 
 IdentityStore.prototype.clearSeedWordCache = function(cb) {
-  delete window.localStorage['seedWords']
+  configManager.clearSeedWords()
   cb()
 }
 
 IdentityStore.prototype.getState = function(){
-  const cachedSeeds = window.localStorage['seedWords']
+  const cachedSeeds = configManager.getSeedWords()
+  var wallet = configManager.getWallet()
+  console.log('wallet:')
+  console.dir(wallet)
   return clone(extend(this._currentState, {
-    isInitialized: !!window.localStorage['lightwallet'] && !cachedSeeds,
+    isInitialized: !!configManager.getWallet() && !cachedSeeds,
     isUnlocked: this._isUnlocked(),
     seedWords: cachedSeeds,
   }))
@@ -181,10 +185,6 @@ IdentityStore.prototype._isUnlocked = function(){
   return result
 }
 
-IdentityStore.prototype._cacheSeedWordsUntilConfirmed = function(seedWords) {
-  window.localStorage['seedWords'] = seedWords
-}
-
 // load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function(){
   if (!this._isUnlocked()) throw new Error('not unlocked')
@@ -216,14 +216,18 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
-    var serializedKeystore = window.localStorage['lightwallet']
+    var serializedKeystore = configManager.getWallet()
+    console.log("DESERIALIZED WALLET AND IT LOOKS LIKE THIS")
+    console.dir(serializedKeystore)
 
     if (seed) {
       keyStore = this._restoreFromSeed(password, seed, derivedKey)
 
-    // returning user, recovering from localStorage
+    // returning user, recovering from storage
     } else if (serializedKeystore) {
-      keyStore = this._loadFromLocalStorage(serializedKeystore, derivedKey, cb)
+      keyStore = this.deserializeKeystore(serializedKeystore)
+      console.log("DESERIALIZED KEYSTORE AND IT LOOKS LIKE THIS")
+      console.dir(keyStore)
       var isCorrect = keyStore.isDerivedKeyCorrect(derivedKey)
       if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
@@ -249,12 +253,12 @@ IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) 
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
   keyStore.generateNewAddress(derivedKey, 3)
-  window.localStorage['lightwallet'] = keyStore.serialize()
-  console.log('restored from seed. saved to keystore localStorage')
+  configManager.setWallet(keyStore.serialize())
+  console.log('restored from seed. saved to keystore')
   return keyStore
 }
 
-IdentityStore.prototype._loadFromLocalStorage = function(serializedKeystore, derivedKey) {
+IdentityStore.prototype.deserializeKeystore = function(serializedKeystore) {
   return LightwalletKeyStore.deserialize(serializedKeystore)
 }
 
@@ -265,8 +269,8 @@ IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
   keyStore.generateNewAddress(derivedKey, 3)
-  window.localStorage['lightwallet'] = keyStore.serialize()
-  console.log('saved to keystore localStorage')
+  configManager.setWallet(keyStore.serialize())
+  console.log('saved to keystore')
   return keyStore
 }
 

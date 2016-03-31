@@ -1,4 +1,2 @@
-require('mocha-sinon')()
-var jsdom = require('mocha-jsdom')
-jsdom()
-
+require('jsdom-global')()
+window.localStorage = {}

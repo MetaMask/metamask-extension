@@ -9,8 +9,7 @@ const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/tx-notification.js')
-
-console.log('ready to roll')
+const configManager = require('./lib/config-manager-singleton')
 
 //
 // connect to other contexts
@@ -37,10 +36,9 @@ function handleEthRpcRequestStream(stream){
 // state and network
 //
 
-var config = getConfig()
 var idStore = new IdentityStore()
 var zeroClient = MetaMaskProvider({
-  rpcUrl: config.rpcTarget,
+  rpcUrl: configManager.getCurrentRpcAddress(),
   getAccounts: function(cb){
     var selectedAddress = idStore.getSelectedAddress()
     var result = selectedAddress ? [selectedAddress] : []
@@ -62,7 +60,7 @@ function getState(){
   var state = extend(
     ethStore.getState(),
     idStore.getState(),
-    getConfig()
+    configManager.getConfig()
   )
   return state
 }
@@ -177,20 +175,8 @@ function addUnconfirmedTx(txParams, cb){
 
 // called from popup
 function setRpcTarget(rpcTarget){
-  var config = getConfig()
-  config.rpcTarget = rpcTarget
-  setConfig(config)
+  configManager.setRpcTarget(rpcTarget)
   chrome.runtime.reload()
-}
-
-function getConfig(){
-  return extend({
-    rpcTarget: 'https://rawtestrpc.metamask.io/',
-  }, JSON.parse(localStorage['config'] || '{}'))
-}
-
-function setConfig(state){
-  localStorage['config'] = JSON.stringify(state)
 }
 
 // util
