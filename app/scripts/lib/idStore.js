@@ -76,8 +76,6 @@ IdentityStore.prototype.clearSeedWordCache = function(cb) {
 IdentityStore.prototype.getState = function(){
   const cachedSeeds = configManager.getSeedWords()
   var wallet = configManager.getWallet()
-  console.log('wallet:')
-  console.dir(wallet)
   return clone(extend(this._currentState, {
     isInitialized: !!configManager.getWallet() && !cachedSeeds,
     isUnlocked: this._isUnlocked(),
@@ -217,8 +215,6 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
     var serializedKeystore = configManager.getWallet()
-    console.log("DESERIALIZED WALLET AND IT LOOKS LIKE THIS")
-    console.dir(serializedKeystore)
 
     if (seed) {
       keyStore = this._restoreFromSeed(password, seed, derivedKey)
@@ -226,8 +222,6 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
     // returning user, recovering from storage
     } else if (serializedKeystore) {
       keyStore = this.deserializeKeystore(serializedKeystore)
-      console.log("DESERIALIZED KEYSTORE AND IT LOOKS LIKE THIS")
-      console.dir(keyStore)
       var isCorrect = keyStore.isDerivedKeyCorrect(derivedKey)
       if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
