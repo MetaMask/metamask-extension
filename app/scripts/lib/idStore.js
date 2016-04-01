@@ -227,7 +227,11 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
     var serializedKeystore = configManager.getWallet()
 
     if (seed) {
-      keyStore = this._restoreFromSeed(password, seed, derivedKey)
+      try {
+        keyStore = this._restoreFromSeed(password, seed, derivedKey)
+      } catch (e) {
+        return cb(e)
+      }
 
     // returning user, recovering from storage
     } else if (serializedKeystore) {
