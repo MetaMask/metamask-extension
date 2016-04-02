@@ -6,7 +6,7 @@ const combineStreams = require('pumpify')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
-const MetaMaskProvider = require('web3-provider-engine/zero.js')
+const MetaMaskProvider = require('./lib/zero.js')
 const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/tx-notification.js')
 const configManager = require('./lib/config-manager-singleton')
@@ -36,8 +36,9 @@ function handleEthRpcRequestStream(stream){
 // state and network
 //
 
+var providerConfig = configManager.getProvider()
 var idStore = new IdentityStore()
-var zeroClient = MetaMaskProvider({
+var providerOpts = {
   rpcUrl: configManager.getCurrentRpcAddress(),
   getAccounts: function(cb){
     var selectedAddress = idStore.getSelectedAddress()
@@ -46,14 +47,16 @@ var zeroClient = MetaMaskProvider({
   },
   approveTransaction: addUnconfirmedTx,
   signTransaction: idStore.signTransaction.bind(idStore),
-})
+  etherscan: providerConfig.type === 'etherscan',
+}
+var provider = MetaMaskProvider(providerOpts)
 
 // log new blocks
-zeroClient.on('block', function(block){
+provider.on('block', function(block){
   console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
 })
 
-var ethStore = new EthStore(zeroClient)
+var ethStore = new EthStore(provider)
 idStore.setStore(ethStore)
 
 function getState(){
@@ -68,7 +71,7 @@ function getState(){
 // handle rpc requests
 function onRpcRequest(remoteStream, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
-  zeroClient.sendAsync(payload, function onPayloadHandled(err, response){
+  provider.sendAsync(payload, function onPayloadHandled(err, response){
     // provider engine errors are included in response objects
     if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
     try {
@@ -111,6 +114,7 @@ function linkDnode(stream){
   var connection = Dnode({
     getState:           function(cb){ cb(null, getState()) },
     setRpcTarget:       setRpcTarget,
+    useEtherscanProvider: useEtherscanProvider,
     // forward directly to idStore
     createNewVault:     idStore.createNewVault.bind(idStore),
     recoverFromSeed:    idStore.recoverFromSeed.bind(idStore),
@@ -176,6 +180,11 @@ function addUnconfirmedTx(txParams, cb){
 // called from popup
 function setRpcTarget(rpcTarget){
   configManager.setRpcTarget(rpcTarget)
+  chrome.runtime.reload()
+}
+
+function useEtherscanProvider() {
+  configManager.useEtherscanProvider()
   chrome.runtime.reload()
 }
 
