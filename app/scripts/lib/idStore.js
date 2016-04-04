@@ -98,6 +98,11 @@ IdentityStore.prototype.getSelectedAddress = function(){
 }
 
 IdentityStore.prototype.setSelectedAddress = function(address){
+  if (!address) {
+    var addresses = this._getAddresses()
+    address = addresses[0]
+  }
+
   this._currentState.selectedAddress = address
   this._didUpdate()
 }
