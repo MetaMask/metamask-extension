@@ -9,6 +9,7 @@ const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./auto-faucet')
 const configManager = require('./config-manager-singleton')
+const DEFAULT_RPC = 'https://rawtestrpc.metamask.io/'
 
 
 module.exports = IdentityStore
@@ -211,10 +212,26 @@ IdentityStore.prototype._loadIdentities = function(){
       name: 'Wallet ' + (i+1),
       img: 'QmW6hcwYzXrNkuHrpvo58YeZvbZxUddv69ATSHY3BHpPdd',
       address: address,
+      mayBeFauceting: this._mayBeFauceting(i),
     }
     this._currentState.identities[address] = identity
   })
   this._didUpdate()
+}
+
+// mayBeFauceting
+// If on testnet, index 0 may be fauceting.
+// The UI will have to check the balance to know.
+// If there is no balance and it mayBeFauceting,
+// then it is in fact fauceting.
+IdentityStore.prototype._mayBeFauceting = function(i) {
+  var config = configManager.getProvider()
+  if (i === 0 &&
+      config.type === 'rpc' &&
+      config.rpcTarget === DEFAULT_RPC) {
+    return true
+  }
+  return false
 }
 
 //
