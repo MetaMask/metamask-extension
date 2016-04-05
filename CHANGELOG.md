@@ -1,5 +1,9 @@
 # Changelog
 
+## Current Master
+
+- Removed extra entropy text field for simplified vault creation.
+
 ## 1.3.2 2016-04-04
 
  - When unlocking, first account is auto-selected.
