@@ -124,6 +124,7 @@ function linkDnode(stream){
     cancelTransaction:  idStore.cancelTransaction.bind(idStore),
     setLocked:          idStore.setLocked.bind(idStore),
     clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
+    exportAccount:      idStore.exportAccount.bind(idStore),
   })
   stream.pipe(connection).pipe(stream)
   connection.on('remote', function(remote){
