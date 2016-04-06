@@ -123,6 +123,11 @@ IdentityStore.prototype.submitPassword = function(password, cb){
   })
 }
 
+IdentityStore.prototype.exportAccount = function(address, cb) {
+  var privateKey = this._idmgmt.exportPrivateKey(address)
+  cb(null, privateKey)
+}
+
 // comes from dapp via zero-client hooked-wallet provider
 IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
 
@@ -336,6 +341,10 @@ function IdManagement(opts) {
 
   this.getSeed = function(){
     return this.keyStore.getSeed(this.derivedKey)
+  }
+
+  this.exportPrivateKey = function(address) {
+    return this.keyStore.exportPrivateKey(address, this.derivedKey, this.hdPathString)
   }
 }
 

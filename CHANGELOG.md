@@ -3,6 +3,9 @@
 ## Current Master
 
 - Removed extra entropy text field for simplified vault creation.
+- Now supports exporting an account's private key.
+- Unified button and input styles across the app.
+- Removed some non-working placeholder UI until it works.
 
 ## 1.3.2 2016-04-04
 
