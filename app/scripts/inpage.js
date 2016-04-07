@@ -90,6 +90,7 @@ remoteProvider.send = function(payload){
 
 var web3 = new Web3(remoteProvider)
 window.web3 = web3
+window.MetaMaskProvider = remoteProvider // support provider injection only (eventually not web3 object override)
 web3.setProvider = function(){
   console.log('MetaMask - overrode web3.setProvider')
 }
