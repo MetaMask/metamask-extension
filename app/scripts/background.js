@@ -1,6 +1,5 @@
 const Dnode = require('dnode')
 const Multiplex = require('multiplex')
-const Through = require('through2')
 const eos = require('end-of-stream')
 const combineStreams = require('pumpify')
 const extend = require('xtend')
@@ -10,6 +9,8 @@ const MetaMaskProvider = require('./lib/zero.js')
 const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/tx-notification.js')
 const configManager = require('./lib/config-manager-singleton')
+const jsonParseStream = require('./lib/stream-utils.js').jsonParseStream
+const jsonStringifyStream = require('./lib/stream-utils.js').jsonStringifyStream
 
 //
 // connect to other contexts
@@ -100,7 +101,7 @@ function handleInternalCommunication(portStream){
     mx.destroy()
   })
   var dnodeStream = mx.createSharedStream('dnode')
-  var providerStream = combineStreams(
+  var providerStream = combineStreams.obj(
     jsonStringifyStream(),
     mx.createSharedStream('provider'),
     jsonParseStream()
@@ -190,19 +191,5 @@ function useEtherscanProvider() {
 }
 
 // util
-
-function jsonParseStream(){
-  return Through.obj(function(serialized){
-    this.push(JSON.parse(serialized))
-    cb()
-  })
-}
-
-function jsonStringifyStream(){
-  return Through.obj(function(obj){
-    this.push(JSON.stringify(obj))
-    cb()
-  })
-}
 
 function noop(){}

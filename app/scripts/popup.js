@@ -9,6 +9,8 @@ const MetaMaskUiCss = require('metamask-ui/css')
 const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
 const StreamProvider = require('./lib/stream-provider.js')
+const jsonParseStream = require('./lib/stream-utils.js').jsonParseStream
+const jsonStringifyStream = require('./lib/stream-utils.js').jsonStringifyStream
 
 // setup app
 var css = MetaMaskUiCss()
@@ -42,7 +44,11 @@ function connectToAccountManager(cb){
 
 function linkWeb3(stream){
   var remoteProvider = new StreamProvider()
-  remoteProvider.pipe(stream).pipe(remoteProvider)
+  remoteProvider
+  .pipe(jsonStringifyStream())
+  .pipe(stream)
+  .pipe(jsonParseStream())
+  .pipe(remoteProvider)
   stream.on('error', console.error.bind(console))
   remoteProvider.on('error', console.error.bind(console))
   global.web3 = new Web3(remoteProvider)
