@@ -2,10 +2,14 @@
 
 ## Current Master
 
+## 1.4.0 2016-04-08
+
 - Removed extra entropy text field for simplified vault creation.
 - Now supports exporting an account's private key.
 - Unified button and input styles across the app.
 - Removed some non-working placeholder UI until it works.
+- Fix popup's web3 stream provider
+- Temporarily deactivated fauceting indication because it would activate when restoring an empty account.
 
 ## 1.3.2 2016-04-04
 
