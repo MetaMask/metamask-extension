@@ -1,6 +1,4 @@
 const XHR = window.XMLHttpRequest
-// const fauxJax = require('faux-jax')
-// fauxJax.install()
 
 // bring in web3 but rename on window
 const Web3 = require('web3')
@@ -94,71 +92,3 @@ web3.setProvider = function(){
   console.log('MetaMask - overrode web3.setProvider')
 }
 console.log('MetaMask - injected web3')
-
-
-//
-// intercept local node requests
-//
-
-
-// console.log('MetaMask - intercepting localhost:8545 requests')
-
-// fauxJax.on('request', function(req){
-//   // check if local node request
-//   if (req.requestURL.indexOf('localhost:8545') !== -1) {
-//     var rpcReq = JSON.parse(req.requestBody)
-//     if (req.async) {
-//       remoteProvider.sendAsync(rpcReq, function(err, result){
-//         // console.log('intercepted request (async):', rpcReq, result)
-//         handleResult(result)
-//       })
-//     } else {
-//       var result = remoteProvider.send(rpcReq)
-//       // console.log('intercepted request (sync):', rpcReq, result)
-//       handleResult(result)
-//     }
-//   } else {
-//     // console.log('request continuing normally:', req.requestURL)
-//     continueRequestNormally(req)
-//   }
-
-//   function handleResult(result){
-//     var serializedResult = JSON.stringify(result)
-//     req.respond(200, {
-//       'content-type': 'application/json',
-//     }, serializedResult)
-//   }
-// })
-
-// function continueRequestNormally(req){
-//   var xhr = new XHR()
-//   // set target url and method
-//   xhr.open(req.requestMethod, req.requestURL, req.async)
-//   // set headers
-//   Object.keys(req.requestHeaders || {}).forEach(function(headerKey){
-//     xhr.setRequestHeader(headerKey, req.requestHeaders[headerKey])
-//   })
-//   // send and call completion handler
-//   if (req.async) {
-//     xhr.onload = copyResult
-//     xhr.send(req.requestBody)
-//   } else {
-//     xhr.send(req.requestBody)
-//     copyResult()
-//   }
-
-//   function copyResult() {
-//     var headers = extractResponseHeaders(xhr.getAllResponseHeaders())
-//     req.respond(xhr.status, headers, xhr.response)
-//   }
-// }
-
-// function extractResponseHeaders(rawHeaders){
-//   var headers = {}
-//   var headerKeyValues = rawHeaders.split('\r\n').filter(Boolean)
-//   headerKeyValues.forEach(function(keyValue){
-//     var data = keyValue.split(': ')
-//     headers[data[0]] = data[1]
-//   })
-//   return headers
-// }
