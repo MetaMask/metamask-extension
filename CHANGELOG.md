@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Added ability to send ether.
+- Fixed bugs related to using Javascript numbers, which lacked appropriate precision.
+
 ## 1.4.0 2016-04-08
 
 - Removed extra entropy text field for simplified vault creation.
