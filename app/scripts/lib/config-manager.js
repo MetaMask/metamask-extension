@@ -2,7 +2,7 @@ const Migrator = require('pojo-migrator')
 const extend = require('xtend')
 
 const STORAGE_KEY = 'metamask-config'
-const DEFAULT_RPC = 'https://rawtestrpc.metamask.io/'
+const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 
 const migrations = require('./migrations')
 
