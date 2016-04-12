@@ -4,6 +4,7 @@
 
 - Added ability to send ether.
 - Fixed bugs related to using Javascript numbers, which lacked appropriate precision.
+- Corrected text above account list. Selected account is visible to all sites, not just the current domain.
 
 ## 1.4.0 2016-04-08
 
