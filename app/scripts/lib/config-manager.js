@@ -2,7 +2,9 @@ const Migrator = require('pojo-migrator')
 const extend = require('xtend')
 
 const STORAGE_KEY = 'metamask-config'
-var DEFAULT_RPC = 'https://rawtestrpc.metamask.io/'
+const DEFAULT_RPC = 'https://testrpc.metamask.io/'
+
+const migrations = require('./migrations')
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -28,7 +30,7 @@ function ConfigManager() {
     //
     // The `migrate` function receives the previous
     // config data format, and returns the new one.
-    migrations: [],
+    migrations: migrations,
 
     // How to load initial config.
     // Includes step on migrating pre-pojo-migrator data.
@@ -134,7 +136,9 @@ function loadData() {
   } catch (e) {}
 
   var data = extend({
-    version: 0,
+    meta: {
+      version: 0,
+    },
     data: {
       config: {
         rpcTarget: DEFAULT_RPC,
