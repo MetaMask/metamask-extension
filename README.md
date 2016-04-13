@@ -34,7 +34,7 @@ You now have the plugin, and can click 'inspect views: background plugin' to vie
 
 ### Developing the UI
 
-To enjoy the live-reloading that `gulp dev` offers while working on the `metamask-ui` or `web3-provider-engine` dependencies:
+To enjoy the live-reloading that `gulp dev` offers while working on the `web3-provider-engine` or other dependencies:
 
  1. Clone the dependency locally.
  2. `npm install` in its folder.
@@ -42,7 +42,22 @@ To enjoy the live-reloading that `gulp dev` offers while working on the `metamas
  4. Run `npm link $DEP_NAME` in this project folder.
  5. Next time you `gulp dev` it will watch the dependency for changes as well!
 
- ### Deploying the UI
+### Running Tests
+
+Currently the tests are split between two suites (we recently merged the UI into the main plugin repository).  There are two different test suites to be concerned with:
+
+Plugin tests, `npm test`.
+UI tests, `npm run testUi`.
+
+You can also run both of these with continuously watching processes, via `npm run watch` and `npm run watchUi`.
+
+#### UI Testing Particulars
+
+Requires `mocha` installed. Run `npm install -g mocha`.
+
+You can either run the test suite once with `npm testUi`, or you can reload on file changes, by running `mocha watch ui/test/**/**`.
+
+### Deploying the UI
 
  You must be authorized already on the Metamask plugin.
 
