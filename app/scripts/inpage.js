@@ -11,7 +11,7 @@ const createPayload = require('web3-provider-engine/util/create-payload')
 const StreamProvider = require('./lib/stream-provider.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 
-const RPC_URL = 'https://rawtestrpc.metamask.io/'
+const RPC_URL = 'https://testrpc.metamask.io/'
 
 
 //
@@ -57,7 +57,7 @@ var syncProvider = new Web3.providers.HttpProvider(RPC_URL)
 remoteProvider.send = function(payload){
   var result = null
   switch (payload.method) {
-    
+
     case 'eth_accounts':
       // read from localStorage
       accountsCache = JSON.parse(localStorage['MetaMask-Accounts'] || '[]')

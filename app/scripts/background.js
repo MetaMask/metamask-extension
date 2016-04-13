@@ -48,7 +48,6 @@ var providerOpts = {
   },
   approveTransaction: addUnconfirmedTx,
   signTransaction: idStore.signTransaction.bind(idStore),
-  etherscan: providerConfig.type === 'etherscan',
 }
 var provider = MetaMaskProvider(providerOpts)
 
