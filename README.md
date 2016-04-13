@@ -1,5 +1,7 @@
 # Metamask Plugin
 
+[![Throughput Graph](https://graphs.waffle.io/MetaMask/metamask-plugin/throughput.svg)](https://waffle.io/MetaMask/metamask-plugin/metrics)
+
 ## Development
 
 ```bash
