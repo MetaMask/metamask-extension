@@ -31,7 +31,7 @@ gulp.task('copy:images', copyTask({
   destination: './dist/images',
 }))
 gulp.task('copy:reload', copyTask({
-  source: './app/scripts/', 
+  source: './app/scripts/',
   destination: './dist/scripts',
   pattern: '/chromereload.js',
 }))
@@ -93,7 +93,6 @@ function copyTask(opts){
   }
 }
 
-
 function bundleTask(opts) {
   var browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
@@ -101,6 +100,7 @@ function bundleTask(opts) {
   })
 
   var bundler = browserify(browserifyOpts)
+  bundler.transform('brfs')
   if (opts.watch) {
     bundler = watchify(bundler)
     bundler.on('update', performBundle) // on any dep update, runs the bundler
@@ -121,7 +121,7 @@ function bundleTask(opts) {
       .pipe(buffer())
       // optional, remove if you dont want sourcemaps
       .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-         // Add transformation tasks to the pipeline here.
+      // Add transformation tasks to the pipeline here.
       .pipe(sourcemaps.write('./')) // writes .map file
       .pipe(gulp.dest('./dist/scripts'))
       .pipe(livereload())

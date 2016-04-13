@@ -4,8 +4,8 @@ const async = require('async')
 const Multiplex = require('multiplex')
 const Dnode = require('dnode')
 const Web3 = require('web3')
-const MetaMaskUi = require('metamask-ui')
-const MetaMaskUiCss = require('metamask-ui/css')
+const MetaMaskUi = require('../../ui')
+const MetaMaskUiCss = require('../../ui/css')
 const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
 const StreamProvider = require('./lib/stream-provider.js')
@@ -66,7 +66,7 @@ function linkDnode(stream, cb){
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)
     cb(null, accountManager)
-  })  
+  })
 }
 
 function getCurrentDomain(cb){

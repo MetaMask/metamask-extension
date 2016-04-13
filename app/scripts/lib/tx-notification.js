@@ -1,5 +1,5 @@
 const createId = require('hat')
-const uiUtils = require('metamask-ui/app/util')
+const uiUtils = require('../../../ui/app/util')
 var notificationHandlers = {}
 
 module.exports = createTxNotification
