@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 1.5.0 2016-04-13
+
 - Added ability to send ether.
 - Fixed bugs related to using Javascript numbers, which lacked appropriate precision.
 - Corrected text above account list. Selected account is visible to all sites, not just the current domain.
