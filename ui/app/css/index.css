@@ -1,0 +1,489 @@
+/*
+faint orange (textfield shades) #FAF6F0
+light orange (button shades): #F5C26D
+dark orange (text): #F5A623
+borders/font/any gray: #4A4A4A
+*/
+
+/*
+application specific styles
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  /*font-family: 'Open Sans', Arial, sans-serif;*/
+  font-family: 'Roboto', 'Noto', sans-serif;
+  color: #4D4D4D;
+  font-weight: 300;
+  line-height: 1.4em;
+}
+
+#app-content {
+  overflow-x: hidden;
+  min-width: 357px;
+  width: 360px;
+  height: 500px;
+}
+
+button {
+  outline: none;
+  cursor: pointer;
+  margin: 10px;
+  padding: 6px;
+  border: none;
+  border-radius: 3px;
+  background: #F7861C;
+  font-weight: 500;
+  color: white;
+  transform-origin: center center;
+  transition: transform 50ms ease-in;
+}
+button:hover {
+  transform: scale(1.1);
+}
+button:active {
+  transform: scale(0.95);
+}
+
+button.primary {
+  margin: 10px;
+  padding: 6px;
+  border: none;
+  border-radius: 3px;
+  background: #F7861C;
+  font-weight: 500;
+  color: white;
+}
+
+input, textarea {
+  width: 300px;
+  padding: 6px;
+  border-radius: 6px;
+  border-style: solid;
+  outline: none;
+  border: 1px solid #F5A623;
+  background: #FAF6F0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover{
+  color: #df6b0e;
+}
+
+/*
+app
+*/
+
+.active {
+  color: #909090;
+}
+
+button.btn-thin {
+  border: 1px solid;
+  border-color: #4D4D4D;
+  color: #4D4D4D;
+  background: rgb(255, 174, 41);
+  border-radius: 4px;
+  min-width: 200px;
+  margin: 12px 0;
+  padding: 6px;
+  font-size: 13px;
+}
+
+.app-header {
+  padding-top: 20px;
+}
+
+.app-header h1 {
+  font-size: 2em;
+  font-weight: 300;
+  height: 42px;
+}
+
+h2.page-subtitle {
+  font-size: 1em;
+  font-weight: 500;
+  height: 24px;
+  color: #F3C83E;
+}
+
+.app-primary {
+}
+
+.app-footer {
+  padding-bottom: 10px;
+  align-items: center;
+}
+
+.identicon {
+  height: 46px;
+  width: 46px;
+  background-size: cover;
+  border-radius: 100%;
+  border: 3px solid gray;
+}
+
+textarea.twelve-word-phrase {
+  margin-top: 20px;
+  width: 300px;
+  height: 180px;
+  font-size: 16px;
+  background: #FAF6F0;
+  resize: none;
+}
+
+/*
+app sections
+*/
+
+/* initialize */
+
+.initialize-screen hr {
+  width: 60px;
+  margin: 12px;
+  border-color: #F3C83E;
+  border-style: solid;
+}
+
+.initialize-screen input[type="password"], .initialize-screen textarea {
+  width: 300px;
+  padding: 6px;
+  border-radius: 6px;
+  border-style: solid;
+  outline: none;
+  border: 1px solid #F5A623;
+  background: #FAF6F0;
+}
+
+.initialize-screen label {
+  margin-top: 20px;
+}
+
+.initialize-screen button.create-vault {
+  margin-top: 40px;
+}
+
+.initialize-screen .warning {
+  font-size: 14px;
+  margin: 0 16px;
+}
+
+/* unlock */
+.error {
+  color: #E20202;
+}
+.lock {
+  width: 50px;
+  height: 50px;
+}
+
+.lock.locked {
+  transform: scale(1.5);
+  opacity: 0.0;
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}
+.lock.unlocked {
+  transform: scale(1);
+  opacity: 1;
+  transition: opacity 500ms ease-out, transform 500ms ease-out, background 200ms ease-in;
+}
+
+.lock.locked .lock-top {
+  transform: scaleX(1) translateX(0);
+  transition: transform 250ms ease-in;
+}
+.lock.unlocked .lock-top {
+  transform: scaleX(-1) translateX(-12px);
+  transition: transform 250ms ease-in;
+}
+.lock.unlocked:hover {
+  border-radius: 4px;
+  background: #e5e5e5;
+  border: 1px solid #b1b1b1;
+}
+.lock.unlocked:active {
+  background: #c3c3c3;
+}
+
+.section-title .fa-arrow-left {
+  margin: -2px 8px 0px -8px;
+}
+
+.unlock-screen label {
+  color: #F3C83E;
+  font-weight: 500;
+}
+
+.unlock-screen input[type=password] {
+  width: 60%;
+  height: 22px;
+  padding: 2px;
+  border-radius: 4px;
+  border: 2px solid #F3C83E;
+  background: #FAF6F0;
+}
+
+.unlock-screen input[type=password]:focus {
+  outline: none;
+  border: 3px solid #F3C83E;
+}
+
+/* accounts */
+
+.accounts-section {
+  margin: 0 20px;
+}
+
+.current-domain-panel {
+  border: 1px solid #B7B7B7;
+}
+
+.unconftx-link {
+  margin-top: 24px;
+  cursor: pointer;
+}
+
+.unconftx-link .fa-arrow-right {
+  margin: 0px -8px 0px 8px;
+}
+
+/* identity panel */
+
+.identity-panel {
+  font-weight: 500;
+}
+
+.identity-panel .identicon-wrapper {
+  margin: 4px;
+  margin-top: 8px;
+}
+
+.identity-panel .identicon-wrapper span {
+  margin: 0 auto;
+}
+
+.identity-panel .identity-data {
+  margin: 8px 8px 8px 18px;
+}
+
+.identity-panel i {
+  margin-top: 32px;
+  margin-right: 6px;
+  color: #B9B9B9;
+}
+
+.identity-panel .arrow-right {
+  padding-left: 18px;
+  width: 42px;
+  min-width: 18px;
+  height: 100%;
+}
+
+/* accounts screen */
+
+.identity-section {
+  border: 2px solid #4D4D4D;
+  margin: 0;
+}
+
+.identity-section .identity-panel {
+  background: #E9E9E9;
+  border-bottom: 1px solid #B1B1B1;
+  cursor: pointer;
+}
+.identity-section .identity-panel:hover {
+  background: #F9F9F9;
+}
+
+.identity-section .identity-panel.selected {
+  background: white;
+  color: #F3C83E;
+}
+
+.identity-section .identity-panel.selected .identicon {
+  border-color: orange;
+}
+
+/* account detail screen */
+
+.account-detail-section {
+  margin: 0 20px;
+}
+
+/* tx confirm */
+
+.unconftx-section {
+  margin: 0 20px;
+}
+
+.unconftx-section input[type=password] {
+  height: 22px;
+  padding: 2px;
+  margin: 12px;
+  margin-bottom: 24px;
+  border-radius: 4px;
+  border: 2px solid #F3C83E;
+  background: #FAF6F0;
+}
+
+
+/*
+react toggle
+*/
+
+/* overrides */
+
+.react-toggle-track-check {
+  display: none;
+}
+.react-toggle-track-x {
+  display: none;
+}
+
+/* modified original */
+
+.react-toggle {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.react-toggle-screenreader-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.react-toggle--disabled {
+  opacity: 0.5;
+  -webkit-transition: opacity 0.25s;
+  transition: opacity 0.25s;
+}
+
+.react-toggle-track {
+  width: 50px;
+  height: 24px;
+  padding: 0;
+  border-radius: 30px;
+  background-color: #4D4D4D;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: #000000;
+}
+
+.react-toggle--checked .react-toggle-track {
+  background-color: rgb(255, 174, 41);
+}
+
+.react-toggle.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: rgb(243, 151, 0);
+}
+
+.react-toggle-track-check {
+  position: absolute;
+  width: 14px;
+  height: 10px;
+  top: 0px;
+  bottom: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  line-height: 0;
+  left: 8px;
+  opacity: 0;
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-track-check {
+  opacity: 1;
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+.react-toggle-track-x {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 0px;
+  bottom: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  line-height: 0;
+  right: 10px;
+  opacity: 1;
+  -webkit-transition: opacity 0.25s ease;
+  -moz-transition: opacity 0.25s ease;
+  transition: opacity 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-track-x {
+  opacity: 0;
+}
+
+.react-toggle-thumb {
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #4D4D4D;
+  border-radius: 50%;
+  background-color: #FAFAFA;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  -webkit-transition: all 0.25s ease;
+  -moz-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+  left: 27px;
+  border-color: #828282;
+}
+/*
+      .react-toggle--focus .react-toggle-thumb {
+        -webkit-box-shadow: 0px 0px 3px 2px #0099E0;
+        -moz-box-shadow: 0px 0px 3px 2px #0099E0;
+        box-shadow: 0px 0px 2px 3px #0099E0;
+      }
+
+      .react-toggle:active .react-toggle-thumb {
+        -webkit-box-shadow: 0px 0px 5px 5px #0099E0;
+        -moz-box-shadow: 0px 0px 5px 5px #0099E0;
+        box-shadow: 0px 0px 5px 5px #0099E0;
+      }

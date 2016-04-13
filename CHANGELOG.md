@@ -3,6 +3,7 @@
 ## Current Master
 
 - Corrected text above account list. Selected account is visible to all sites, not just the current domain.
+- Merged the UI codebase into the main plugin codebase for simpler maintenance.
 
 ## 1.5.0 2016-04-13
 

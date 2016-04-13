@@ -1,0 +1,47 @@
+/* initial positions */
+.app-primary.from-right .main-enter {
+  transform: translateX(400px);
+  position: absolute;
+  width: 100%;
+  transition: transform 300ms ease-in-out;
+}
+.app-primary.from-left .main-enter {
+  transform: translateX(-400px);
+  position: absolute;
+  width: 100%;
+  transition: transform 300ms ease-in-out;
+}
+
+/* center position */
+.app-primary .main-enter.main-enter-active,
+.app-primary .main-leave {
+  transform: translateX(0px);
+  position: absolute;
+  width: 100%;
+  transition: transform 300ms ease-in-out;
+}
+
+/* final positions */
+.app-primary.from-left .main-leave-active {
+  transform: translateX(400px);
+  position: absolute;
+  width: 100%;
+  transition: transform 300ms ease-in-out;
+}
+.app-primary.from-right .main-leave-active {
+  transform: translateX(-400px);
+  position: absolute;
+  width: 100%;
+  transition: transform 300ms ease-in-out;
+}
+
+/* loader transitions */
+.loader-enter, .loader-leave-active {
+  opacity: 0.0;
+  transition: opacity 150 ease-in-out;
+}
+.loader-enter-active, .loader-leave {
+  opacity: 1.0;
+  transition: opacity 150 ease-in-out;
+}
+

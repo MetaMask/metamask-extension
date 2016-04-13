@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MetaMask</title>
+  </head>
+  <body>
+
+    <!-- app content -->
+    <div id="app-content"></div>
+    <script src="./bundle.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- design reference -->
+    <link rel="stylesheet" type="text/css" href="./app/css/debug.css">
+    <div id="design-container">
+      <img id="design-img" src="./design/metamask_wfs_jan_13.png">
+      <!-- persist scroll position on refresh -->
+      <script type="text/javascript">
+        var scrollElement = document.getElementById('design-container')
+        function getScrollPosition () {
+          var scrollTop = scrollElement.scrollTop, scrollLeft = scrollElement.scrollLeft
+          window.location.hash = 'scrollTop='+scrollTop+'&scrollLeft='+scrollLeft
+        }
+        window.onload = function () {
+          setInterval(getScrollPosition, 1000)
+          var hashLocation = window.location.hash.split('#')[1]
+          if (!hashLocation) return
+          var sections = hashLocation.split('&')
+          var scrollTop = sections[0].split('=')[1]
+          var scrollLeft = sections[1].split('=')[1]
+          scrollElement.scrollTop = scrollTop
+          scrollElement.scrollLeft = scrollLeft
+        }
+      </script>
+    </div>
+    
+  </body>
+</html>
