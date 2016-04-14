@@ -64,11 +64,16 @@ function weiToEth(bn) {
   return eth
 }
 
+var decimalsToKeep = 4
 function formatBalance(balance) {
   if (!balance) return 'None'
   var wei = numericBalance(balance)
-  var eth = weiToEth(wei)
-  return eth.toString(10) + ' ETH'
+  var padded = wei.toString(10)
+  var len = padded.length
+  var nonZeroIndex = padded.match(/[^0]/).index
+  var beforeDecimal = padded.substr(nonZeroIndex ? nonZeroIndex : 0, len - 18)
+  var afterDecimal = padded.substr(len - 18, decimalsToKeep)
+  return `${beforeDecimal}.${afterDecimal} ETH`
 }
 
 function dataSize(data) {
