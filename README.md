@@ -1,4 +1,4 @@
-# Metamask Plugin
+# Metamask Plugin [![Build Status](https://travis-ci.com/MetaMask/metamask-plugin.svg?token=3txzDGFpqQqvRCdgwTJp&branch=master)](https://travis-ci.com/MetaMask/metamask-plugin)
 
 ## Development
 
