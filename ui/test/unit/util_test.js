@@ -63,9 +63,21 @@ describe('util', function() {
     })
 
     it('should return eth as string followed by ETH', function() {
-      var input = new ethUtil.BN(ethInWei).toJSON()
+      var input = new ethUtil.BN(ethInWei, 10).toJSON()
       var result = util.formatBalance(input)
-      assert.equal(result, '1 ETH')
+      assert.equal(result, '1.0000 ETH')
+    })
+
+    it('should return eth as string followed by ETH', function() {
+      var input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
+      var result = util.formatBalance(input)
+      assert.equal(result, '.5000 ETH')
+    })
+
+    it('should display four decimal points', function() {
+      var input = "0x128dfa6a90b28000"
+      var result = util.formatBalance(input)
+      assert.equal(result, '1.3370 ETH')
     })
 
   })
