@@ -4,6 +4,7 @@
 
 - Corrected text above account list. Selected account is visible to all sites, not just the current domain.
 - Merged the UI codebase into the main plugin codebase for simpler maintenance.
+- Fix Ether display rounding error. Now rendering to four decimal points.
 
 ## 1.5.0 2016-04-13
 
