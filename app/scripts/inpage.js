@@ -32,7 +32,9 @@ remoteProvider.on('error', console.error.bind(console))
 //
 
 // handle accounts cache
-var accountsCache = []
+var accountsCache = JSON.parse(localStorage['MetaMask-Accounts'] || '[]')
+web3.eth.defaultAccount = accounts[0]
+
 setInterval(populateAccountsCache, 4000)
 function populateAccountsCache(){
   remoteProvider.sendAsync(createPayload({
@@ -44,6 +46,7 @@ function populateAccountsCache(){
     // update localStorage
     var accounts = response.result
     if (accounts.toString() !== accountsCache.toString()) {
+      web3.eth.defaultAccount = accounts[0]
       accountsCache = accounts
       localStorage['MetaMask-Accounts'] = JSON.stringify(accounts)
     }
@@ -58,13 +61,11 @@ remoteProvider.send = function(payload){
 
     case 'eth_accounts':
       // read from localStorage
-      accountsCache = JSON.parse(localStorage['MetaMask-Accounts'] || '[]')
       result = accountsCache
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      accountsCache = JSON.parse(localStorage['MetaMask-Accounts'] || '[]')
       result = accountsCache[0] || '0x0000000000000000000000000000000000000000'
       break
 
