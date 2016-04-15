@@ -26,6 +26,17 @@ remoteProvider.pipe(pluginStream).pipe(remoteProvider)
 pluginStream.on('error', console.error.bind(console))
 remoteProvider.on('error', console.error.bind(console))
 
+//
+// global web3
+//
+
+var web3 = new Web3(remoteProvider)
+window.web3 = web3
+web3.setProvider = function(){
+  console.log('MetaMask - overrode web3.setProvider')
+}
+console.log('MetaMask - injected web3')
+
 
 //
 // handle synchronous requests
@@ -33,7 +44,7 @@ remoteProvider.on('error', console.error.bind(console))
 
 // handle accounts cache
 var accountsCache = JSON.parse(localStorage['MetaMask-Accounts'] || '[]')
-web3.eth.defaultAccount = accounts[0]
+web3.eth.defaultAccount = accountsCache[0]
 
 setInterval(populateAccountsCache, 4000)
 function populateAccountsCache(){
@@ -46,8 +57,8 @@ function populateAccountsCache(){
     // update localStorage
     var accounts = response.result
     if (accounts.toString() !== accountsCache.toString()) {
-      web3.eth.defaultAccount = accounts[0]
       accountsCache = accounts
+      web3.eth.defaultAccount = accountsCache[0]
       localStorage['MetaMask-Accounts'] = JSON.stringify(accounts)
     }
   })
@@ -83,13 +94,3 @@ remoteProvider.send = function(payload){
   }
 }
 
-//
-// global web3
-//
-
-var web3 = new Web3(remoteProvider)
-window.web3 = web3
-web3.setProvider = function(){
-  console.log('MetaMask - overrode web3.setProvider')
-}
-console.log('MetaMask - injected web3')
