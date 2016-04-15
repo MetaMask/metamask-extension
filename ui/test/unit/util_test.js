@@ -71,7 +71,7 @@ describe('util', function() {
     it('should return eth as string followed by ETH', function() {
       var input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
       var result = util.formatBalance(input)
-      assert.equal(result, '.5000 ETH')
+      assert.equal(result, '0.5000 ETH')
     })
 
     it('should display four decimal points', function() {
