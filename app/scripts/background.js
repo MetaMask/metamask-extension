@@ -1,5 +1,5 @@
 const Dnode = require('dnode')
-const Multiplex = require('multiplex')
+const ObjectMultiplex = require('./lib/obj-multiplex')
 const eos = require('end-of-stream')
 const combineStreams = require('pumpify')
 const extend = require('xtend')
@@ -89,7 +89,7 @@ function onRpcRequest(remoteStream, payload){
 
 function handleInternalCommunication(portStream){
   // setup multiplexing
-  var mx = Multiplex()
+  var mx = ObjectMultiplex()
   portStream.pipe(mx).pipe(portStream)
   mx.on('error', function(err) {
     console.error(err)
@@ -99,15 +99,8 @@ function handleInternalCommunication(portStream){
     console.error(err)
     mx.destroy()
   })
-  var dnodeStream = mx.createSharedStream('dnode')
-  var providerStream = combineStreams.obj(
-    jsonStringifyStream(),
-    mx.createSharedStream('provider'),
-    jsonParseStream()
-  )
-
-  linkDnode(dnodeStream)
-  handleEthRpcRequestStream(providerStream)
+  linkDnode(mx.createStream('dnode'))
+  handleEthRpcRequestStream(mx.createStream('provider'))
 }
 
 function linkDnode(stream){
