@@ -71,7 +71,7 @@ function formatBalance(balance) {
   var padded = wei.toString(10)
   var len = padded.length
   var nonZeroIndex = padded.match(/[^0]/) && padded.match(/[^0]/).index
-  var beforeDecimal = padded.substr(nonZeroIndex ? nonZeroIndex : 0, len - 18)
+  var beforeDecimal = padded.substr(nonZeroIndex ? nonZeroIndex : 0, len - 18) || '0'
   var afterDecimal = padded.substr(len - 18, decimalsToKeep)
   return `${beforeDecimal}.${afterDecimal} ETH`
 }
