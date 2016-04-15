@@ -1,7 +1,6 @@
 const url = require('url')
 const EventEmitter = require('events').EventEmitter
 const async = require('async')
-const ObjectMultiplex = require('./lib/obj-multiplex')
 const Dnode = require('dnode')
 const Web3 = require('web3')
 const MetaMaskUi = require('../../ui')
@@ -9,6 +8,7 @@ const MetaMaskUiCss = require('../../ui/css')
 const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
 const StreamProvider = require('./lib/stream-provider.js')
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 
 // setup app
 var css = MetaMaskUiCss()
@@ -24,21 +24,13 @@ function connectToAccountManager(cb){
   var pluginPort = chrome.runtime.connect({name: 'popup'})
   var portStream = new PortStream(pluginPort)
   // setup multiplexing
-  var mx = ObjectMultiplex()
-  portStream.pipe(mx).pipe(portStream)
-  mx.on('error', function(err) {
-    console.error(err)
-    portStream.destroy()
-  })
-  portStream.on('error', function(err) {
-    console.error(err)
-    mx.destroy()
-  })
-  linkDnode(mx.createStream('dnode'), cb)
-  linkWeb3(mx.createStream('provider'))
+  var mx = setupMultiplex(portStream)
+  // connect features
+  setupControllerConnection(mx.createStream('controller'), cb)
+  setupWeb3Connection(mx.createStream('provider'))
 }
 
-function linkWeb3(stream){
+function setupWeb3Connection(stream){
   var remoteProvider = new StreamProvider()
   remoteProvider.pipe(stream).pipe(remoteProvider)
   stream.on('error', console.error.bind(console))
@@ -46,7 +38,7 @@ function linkWeb3(stream){
   global.web3 = new Web3(remoteProvider)
 }
 
-function linkDnode(stream, cb){
+function setupControllerConnection(stream, cb){
   var eventEmitter = new EventEmitter()
   var background = Dnode({
     sendUpdate: function(state){

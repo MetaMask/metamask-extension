@@ -1,13 +1,13 @@
-const XHR = window.XMLHttpRequest
-
-// bring in web3 but rename on window
-const Web3 = require('web3')
-delete window.Web3
-window.MetamaskWeb3 = Web3
-
 const createPayload = require('web3-provider-engine/util/create-payload')
 const StreamProvider = require('./lib/stream-provider.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const RemoteStore = require('./lib/remote-store.js').RemoteStore
+const Web3 = require('web3')
+
+// rename on window
+delete window.Web3
+window.MetamaskWeb3 = Web3
 
 const RPC_URL = 'https://testrpc.metamask.io/'
 
@@ -16,15 +16,25 @@ const RPC_URL = 'https://testrpc.metamask.io/'
 // setup plugin communication
 //
 
+// setup background connection
 var pluginStream = new LocalMessageDuplexStream({
   name: 'inpage',
   target: 'contentscript',
 })
+var mx = setupMultiplex(pluginStream)
+// connect features
 var remoteProvider = new StreamProvider()
-remoteProvider.pipe(pluginStream).pipe(remoteProvider)
-
-pluginStream.on('error', console.error.bind(console))
+remoteProvider.pipe(mx.createStream('provider')).pipe(remoteProvider)
 remoteProvider.on('error', console.error.bind(console))
+
+var publicConfigStore = new RemoteStore()
+var storeStream = publicConfigStore.createStream()
+storeStream.pipe(mx.createStream('publicConfig')).pipe(storeStream)
+
+publicConfigStore.subscribe(function(state){
+  console.log('store updated:', state)
+})
+
 
 //
 // global web3
