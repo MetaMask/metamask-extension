@@ -71,13 +71,6 @@ provider.on('block', function(block){
 var ethStore = new EthStore(provider)
 idStore.setStore(ethStore)
 
-// copy idStore substate into public store
-var publicConfigStore = new HostStore()
-idStore.on('update', function(state){
-  publicConfigStore.set('selectedAddress', state.selectedAddress)
-})
-
-
 function getState(){
   var state = extend(
     ethStore.getState(),
@@ -86,6 +79,47 @@ function getState(){
   )
   return state
 }
+
+//
+// public store
+//
+
+// get init state
+var initPublicState = extend(
+  idStoreToPublic(idStore.getState()),
+  configToPublic(configManager.getConfig())
+)
+
+var publicConfigStore = new HostStore(initPublicState)
+
+// subscribe to changes
+configManager.subscribe(function(state){
+  storeSetFromObj(publicConfigStore, configToPublic(state))
+})
+idStore.on('update', function(state){
+  storeSetFromObj(publicConfigStore, idStoreToPublic(state))
+})
+
+// idStore substate
+function idStoreToPublic(state){
+  return {
+    selectedAddress: state.selectedAddress,
+  }
+}
+// config substate
+function configToPublic(state){
+  return {
+    provider: state.provider,
+  }
+}
+// dump obj into store
+function storeSetFromObj(store, obj){
+  Object.keys(obj).forEach(function(key){
+    store.set(key, obj[key])
+  })
+}
+
+
 
 // handle rpc requests
 function onRpcRequest(remoteStream, payload){

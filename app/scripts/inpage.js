@@ -9,7 +9,7 @@ const Web3 = require('web3')
 delete window.Web3
 window.MetamaskWeb3 = Web3
 
-const RPC_URL = 'https://testrpc.metamask.io/'
+const DEFAULT_RPC_URL = 'https://rpc.metamask.io/'
 
 
 //
@@ -27,12 +27,13 @@ var remoteProvider = new StreamProvider()
 remoteProvider.pipe(mx.createStream('provider')).pipe(remoteProvider)
 remoteProvider.on('error', console.error.bind(console))
 
-var publicConfigStore = new RemoteStore()
+var initState = JSON.parse(localStorage['MetaMask-Config'] || '{}')
+var publicConfigStore = new RemoteStore(initState)
 var storeStream = publicConfigStore.createStream()
 storeStream.pipe(mx.createStream('publicConfig')).pipe(storeStream)
 
 publicConfigStore.subscribe(function(state){
-  console.log('store updated:', state)
+  localStorage['MetaMask-Config'] = JSON.stringify(state)
 })
 
 
@@ -52,42 +53,39 @@ console.log('MetaMask - injected web3')
 // handle synchronous requests
 //
 
-// handle accounts cache
-var accountsCache = JSON.parse(localStorage['MetaMask-Accounts'] || '[]')
-web3.eth.defaultAccount = accountsCache[0]
+global.publicConfigStore = publicConfigStore
 
-setInterval(populateAccountsCache, 4000)
-function populateAccountsCache(){
-  remoteProvider.sendAsync(createPayload({
-    method: 'eth_accounts',
-    params: [],
-    isMetamaskInternal: true,
-  }), function(err, response){
-    if (err) return console.error('MetaMask - Error polling accounts')
-    // update localStorage
-    var accounts = response.result
-    if (accounts.toString() !== accountsCache.toString()) {
-      accountsCache = accounts
-      web3.eth.defaultAccount = accountsCache[0]
-      localStorage['MetaMask-Accounts'] = JSON.stringify(accounts)
-    }
-  })
-}
+// set web3 defaultAcount
+publicConfigStore.subscribe(function(state){
+  web3.eth.defaultAccount = state.selectedAddress
+})
 
-// handle synchronous methods via standard http provider
-var syncProvider = new Web3.providers.HttpProvider(RPC_URL)
+// setup sync http provider
+var providerConfig = publicConfigStore.get('provider') || {}
+var providerUrl = providerConfig.rpcTarget ? providerConfig.rpcTarget : DEFAULT_RPC_URL
+var syncProvider = new Web3.providers.HttpProvider(providerUrl)
+publicConfigStore.subscribe(function(state){
+  if (!state.provider) return
+  if (!state.provider.rpcTarget || state.provider.rpcTarget === providerUrl) return
+  providerUrl = state.provider.rpcTarget
+  syncProvider = new Web3.providers.HttpProvider(providerUrl)
+})
+
+// handle sync methods
 remoteProvider.send = function(payload){
   var result = null
   switch (payload.method) {
 
     case 'eth_accounts':
       // read from localStorage
-      result = accountsCache
+      var selectedAddress = publicConfigStore.get('selectedAddress')
+      result = selectedAddress ? [selectedAddress] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      result = accountsCache[0] || '0x0000000000000000000000000000000000000000'
+      var selectedAddress = publicConfigStore.get('selectedAddress')
+      result = selectedAddress || '0x0000000000000000000000000000000000000000'
       break
 
     // fallback to normal rpc
