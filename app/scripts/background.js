@@ -9,8 +9,8 @@ const MetaMaskProvider = require('./lib/zero.js')
 const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/tx-notification.js')
 const configManager = require('./lib/config-manager-singleton')
-const jsonParseStream = require('./lib/stream-utils.js').jsonParseStream
-const jsonStringifyStream = require('./lib/stream-utils.js').jsonStringifyStream
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const HostStore = require('./lib/remote-store.js').HostStore
 
 //
 // connect to other contexts
@@ -22,15 +22,27 @@ function connectRemote(remotePort){
   var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
-    handleInternalCommunication(portStream)
+    setupTrustedCommunication(portStream)
   } else {
     // communication with page
-    handleEthRpcRequestStream(portStream)
+    setupUntrustedCommunication(portStream)
   }
 }
 
-function handleEthRpcRequestStream(stream){
-  stream.on('data', onRpcRequest.bind(null, stream))
+function setupUntrustedCommunication(connectionStream){
+  // setup multiplexing
+  var mx = setupMultiplex(connectionStream)
+  // connect features
+  setupProviderConnection(mx.createStream('provider'))
+  setupPublicConfig(mx.createStream('publicConfig'))
+}
+
+function setupTrustedCommunication(connectionStream){
+  // setup multiplexing
+  var mx = setupMultiplex(connectionStream)
+  // connect features
+  setupControllerConnection(mx.createStream('controller'))
+  setupProviderConnection(mx.createStream('provider'))
 }
 
 //
@@ -68,6 +80,47 @@ function getState(){
   return state
 }
 
+//
+// public store
+//
+
+// get init state
+var initPublicState = extend(
+  idStoreToPublic(idStore.getState()),
+  configToPublic(configManager.getConfig())
+)
+
+var publicConfigStore = new HostStore(initPublicState)
+
+// subscribe to changes
+configManager.subscribe(function(state){
+  storeSetFromObj(publicConfigStore, configToPublic(state))
+})
+idStore.on('update', function(state){
+  storeSetFromObj(publicConfigStore, idStoreToPublic(state))
+})
+
+// idStore substate
+function idStoreToPublic(state){
+  return {
+    selectedAddress: state.selectedAddress,
+  }
+}
+// config substate
+function configToPublic(state){
+  return {
+    provider: state.provider,
+  }
+}
+// dump obj into store
+function storeSetFromObj(store, obj){
+  Object.keys(obj).forEach(function(key){
+    store.set(key, obj[key])
+  })
+}
+
+
+
 // handle rpc requests
 function onRpcRequest(remoteStream, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
@@ -84,27 +137,20 @@ function onRpcRequest(remoteStream, payload){
 
 
 //
-// popup integration
+// remote features
 //
 
-function handleInternalCommunication(portStream){
-  // setup multiplexing
-  var mx = ObjectMultiplex()
-  portStream.pipe(mx).pipe(portStream)
-  mx.on('error', function(err) {
-    console.error(err)
-    // portStream.destroy()
-  })
-  portStream.on('error', function(err) {
-    console.error(err)
-    mx.destroy()
-  })
-  linkDnode(mx.createStream('dnode'))
-  handleEthRpcRequestStream(mx.createStream('provider'))
+function setupPublicConfig(stream){
+  var storeStream = publicConfigStore.createStream()
+  stream.pipe(storeStream).pipe(stream)
 }
 
-function linkDnode(stream){
-  var connection = Dnode({
+function setupProviderConnection(stream){
+  stream.on('data', onRpcRequest.bind(null, stream))
+}
+
+function setupControllerConnection(stream){
+  var dnode = Dnode({
     getState:           function(cb){ cb(null, getState()) },
     setRpcTarget:       setRpcTarget,
     useEtherscanProvider: useEtherscanProvider,
@@ -119,8 +165,8 @@ function linkDnode(stream){
     clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
     exportAccount:      idStore.exportAccount.bind(idStore),
   })
-  stream.pipe(connection).pipe(stream)
-  connection.on('remote', function(remote){
+  stream.pipe(dnode).pipe(stream)
+  dnode.on('remote', function(remote){
 
     // push updates to popup
     ethStore.on('update', sendUpdate)

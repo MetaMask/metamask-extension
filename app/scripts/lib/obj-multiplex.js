@@ -11,7 +11,7 @@ function ObjectMultiplex(opts){
     var data = chunk.data
     var substream = mx.streams[name]
     if (!substream) {
-      console.warn("orphaned data for stream " + name)
+      console.warn('orphaned data for stream ' + name)
     } else {
       substream.push(data)
     }

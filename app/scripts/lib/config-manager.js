@@ -15,6 +15,8 @@ const migrations = require('./migrations')
  */
 module.exports = ConfigManager
 function ConfigManager() {
+  // ConfigManager is observable and will emit updates
+  this._subs = []
 
   /* The migrator exported on the config-manager
    * has two methods the user should be concerned with:
@@ -47,6 +49,7 @@ ConfigManager.prototype.setConfig = function(config) {
   var data = this.migrator.getData()
   data.config = config
   this.setData(data)
+  this._emitUpdates(config)
 }
 
 ConfigManager.prototype.getConfig = function() {
@@ -126,6 +129,30 @@ ConfigManager.prototype.clearWallet = function() {
   delete data.wallet
   this.setData(data)
 }
+
+ConfigManager.prototype.setData = function(data) {
+  this.migrator.saveData(data)
+}
+
+// observable
+
+ConfigManager.prototype.subscribe = function(fn){
+  this._subs.push(fn)
+  var unsubscribe = this.unsubscribe.bind(this, fn)
+  return unsubscribe
+}
+
+ConfigManager.prototype.unsubscribe = function(fn){
+  var index = this._subs.indexOf(fn)
+  if (index !== -1) this._subs.splice(index, 1)
+}
+
+ConfigManager.prototype._emitUpdates = function(state){
+  this._subs.forEach(function(handler){
+    handler(state)
+  })
+}
+
 
 function loadData() {
 
