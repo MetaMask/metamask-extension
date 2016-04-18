@@ -3,7 +3,7 @@ var sinon = require('sinon')
 const ethUtil = require('ethereumjs-util')
 
 var path = require('path')
-var util = require(path.join(__dirname, '..', '..', 'app', 'util.js'))
+var util = require(path.join(__dirname, '..', '..', 'ui', 'app', 'util.js'))
 
 describe('util', function() {
   var ethInWei = '1'
