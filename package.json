@@ -5,11 +5,8 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "npm run testUi",
-    "testPlugin": "mocha --require test/helper.js --compilers js:babel-register --recursive",
-    "watch": "mocha watch --compilers js:babel-register --recursive",
-    "testUi": "mocha ui/test/**/**/*test.js",
-    "watchUi": "mocha watch ui/test/**/*test.js"
+    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
+    "watch": "mocha watch --compilers js:babel-register --recursive"
   },
   "browserify": {
     "transform": [

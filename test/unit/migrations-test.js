@@ -1,5 +1,4 @@
 var assert = require('assert')
-var test = require('tape')
 var path = require('path')
 
 var wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))

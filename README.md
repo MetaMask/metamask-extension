@@ -44,18 +44,11 @@ To enjoy the live-reloading that `gulp dev` offers while working on the `web3-pr
 
 ### Running Tests
 
-Currently the tests are split between two suites (we recently merged the UI into the main plugin repository).  There are two different test suites to be concerned with:
-
-Plugin tests, `npm test`.
-UI tests, `npm run testUi`.
-
-You can also run both of these with continuously watching processes, via `npm run watch` and `npm run watchUi`.
-
-#### UI Testing Particulars
-
 Requires `mocha` installed. Run `npm install -g mocha`.
 
-You can either run the test suite once with `npm testUi`, or you can reload on file changes, by running `mocha watch ui/test/**/**`.
+Then just run `npm test`.
+
+You can also test with a continuously watching process, via `npm run watch`.
 
 ### Deploying the UI
 
