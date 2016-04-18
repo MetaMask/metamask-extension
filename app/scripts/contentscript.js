@@ -7,7 +7,8 @@ var scriptTag = document.createElement('script')
 scriptTag.src = chrome.extension.getURL('scripts/inpage.js')
 scriptTag.onload = function() { this.parentNode.removeChild(this) }
 var container = document.head || document.documentElement
-container.appendChild(scriptTag)
+// append as first child
+container.insertBefore(scriptTag, container.children[0])
 
 // setup communication to page and plugin
 var pageStream = new LocalMessageDuplexStream({
