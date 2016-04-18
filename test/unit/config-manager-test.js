@@ -68,4 +68,83 @@ describe('config-manager', function() {
       assert.equal(secondResult, secondRpc)
     })
   })
+
+  describe('transactions', function() {
+    beforeEach(function() {
+      configManager._saveTxList([])
+    })
+
+    describe('#getTxList', function() {
+      it('when new should return empty array', function() {
+        var result = configManager.getTxList()
+        assert.ok(Array.isArray(result))
+        assert.equal(result.length, 0)
+      })
+    })
+
+    describe('#_saveTxList', function() {
+      it('saves the submitted data to the tx list', function() {
+        var target = [{ foo: 'bar' }]
+        configManager._saveTxList(target)
+        var result = configManager.getTxList()
+        assert.equal(result[0].foo, 'bar')
+      })
+    })
+
+    describe('#addTx', function() {
+      it('adds a tx returned in getTxList', function() {
+        var tx = { id: 1 }
+        configManager.addTx(tx)
+        var result = configManager.getTxList()
+        assert.ok(Array.isArray(result))
+        assert.equal(result.length, 1)
+        assert.equal(result[0].id, 1)
+      })
+    })
+
+    describe('#confirmTx', function() {
+      it('sets the tx status to confirmed', function() {
+        var tx = { id: 1, status: 'unconfirmed' }
+        configManager.addTx(tx)
+        configManager.confirmTx(1)
+        var result = configManager.getTxList()
+        assert.ok(Array.isArray(result))
+        assert.equal(result.length, 1)
+        assert.equal(result[0].status, 'confirmed')
+      })
+    })
+
+    describe('#rejectTx', function() {
+      it('sets the tx status to rejected', function() {
+        var tx = { id: 1, status: 'unconfirmed' }
+        configManager.addTx(tx)
+        configManager.rejectTx(1)
+        var result = configManager.getTxList()
+        assert.ok(Array.isArray(result))
+        assert.equal(result.length, 1)
+        assert.equal(result[0].status, 'rejected')
+      })
+    })
+
+    describe('#unconfirmedTxs', function() {
+      it('returns unconfirmed txs in a hash', function() {
+        configManager.addTx({ id: '1', status: 'unconfirmed' })
+        configManager.addTx({ id: '2', status: 'confirmed' })
+        let result = configManager.unconfirmedTxs()
+        assert.equal(typeof result, 'object')
+        assert.equal(result['1'].status, 'unconfirmed')
+        assert.equal(result['0'], undefined)
+        assert.equal(result['2'], undefined)
+      })
+    })
+
+    describe('#getTx', function() {
+      it('returns a tx with the requested id', function() {
+        configManager.addTx({ id: '1', status: 'unconfirmed' })
+        configManager.addTx({ id: '2', status: 'confirmed' })
+        assert.equal(configManager.getTx('1').status, 'unconfirmed')
+        assert.equal(configManager.getTx('2').status, 'confirmed')
+      })
+    })
+  })
 })

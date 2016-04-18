@@ -117,6 +117,7 @@ function storeSetFromObj(store, obj){
   Object.keys(obj).forEach(function(key){
     store.set(key, obj[key])
   })
+  store.set('unconfTxs', configManager.unconfirmedTxs())
 }
 
 
@@ -191,7 +192,8 @@ idStore.on('update', updateBadge)
 
 function updateBadge(state){
   var label = ''
-  var count = Object.keys(state.unconfTxs).length
+  var unconfTxs = configManager.unconfirmedTxs()
+  var count = Object.keys(unconfTxs).length
   if (count) {
     label = String(count)
   }
