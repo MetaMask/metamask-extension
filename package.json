@@ -35,7 +35,6 @@
     "eth-store": "^1.1.0",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.3.0",
-    "faux-jax": "git+https://github.com/kumavis/faux-jax.git#c3648de04804f3895c5b4972750cae5b51ddb103",
     "hat": "0.0.3",
     "inject-css": "^0.1.1",
     "metamask-logo": "^1.1.5",
