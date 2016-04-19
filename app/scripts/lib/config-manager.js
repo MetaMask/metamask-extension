@@ -134,6 +134,56 @@ ConfigManager.prototype.setData = function(data) {
   this.migrator.saveData(data)
 }
 
+ConfigManager.prototype.getTxList = function() {
+  var data = this.migrator.getData()
+  if ('transactions' in data) {
+    return data.transactions
+  } else {
+    return []
+  }
+}
+
+ConfigManager.prototype._saveTxList = function(txList) {
+  var data = this.migrator.getData()
+  data.transactions = txList
+  this.setData(data)
+}
+
+ConfigManager.prototype.addTx = function(tx) {
+  var transactions = this.getTxList()
+  transactions.push(tx)
+  this._saveTxList(transactions)
+}
+
+ConfigManager.prototype.getTx = function(txId) {
+  var transactions = this.getTxList()
+  var matching = transactions.filter(tx => tx.id === txId)
+  return matching.length > 0 ? matching[0] : null
+}
+
+ConfigManager.prototype.confirmTx = function(txId) {
+  this._setTxStatus(txId, 'confirmed')
+}
+
+ConfigManager.prototype.rejectTx = function(txId) {
+  this._setTxStatus(txId, 'rejected')
+}
+
+ConfigManager.prototype._setTxStatus = function(txId, status) {
+  var transactions = this.getTxList()
+  transactions.forEach((tx) => {
+    if (tx.id === txId) {
+      tx.status = status
+    }
+  })
+  this._saveTxList(transactions)
+}
+ConfigManager.prototype.unconfirmedTxs = function() {
+  var transactions = this.getTxList()
+  return transactions.filter(tx => tx.status === 'unconfirmed')
+  .reduce((result, tx) => { result[tx.id] = tx; return result }, {})
+}
+
 // observable
 
 ConfigManager.prototype.subscribe = function(fn){

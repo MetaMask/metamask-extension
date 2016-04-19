@@ -191,7 +191,8 @@ idStore.on('update', updateBadge)
 
 function updateBadge(state){
   var label = ''
-  var count = Object.keys(state.unconfTxs).length
+  var unconfTxs = configManager.unconfirmedTxs()
+  var count = Object.keys(unconfTxs).length
   if (count) {
     label = String(count)
   }
