@@ -83,6 +83,7 @@ IdentityStore.prototype.getState = function(){
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
     unconfTxs: configManager.unconfirmedTxs(),
+    transactions: configManager.getTxList(),
   }))
 }
 
