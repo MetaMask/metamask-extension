@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
 const AccountPanel = require('./components/account-panel')
+const transactionList = require('./components/transaction-list')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -15,6 +16,7 @@ function mapStateToProps(state) {
     accounts: state.metamask.accounts,
     address: state.appState.currentView.context,
     accountDetail: accountDetail,
+    transactions: state.metamask.transactions,
   }
 }
 
@@ -29,6 +31,7 @@ AccountDetailScreen.prototype.render = function() {
   var identity = state.identities[state.address]
   var account = state.accounts[state.address]
   var accountDetail = state.accountDetail
+  var transactions = state.transactions
 
   return (
 
@@ -78,14 +81,9 @@ AccountDetailScreen.prototype.render = function() {
           h('div.font-small','Transaction'),
           h('div.font-small','Amount'),
         ]),
-        h('.flex-row.flex-space-around', [
-  //        h('div'['href','0xfc37bda95ce571bd0a393e8e7f6da394f1420a57b7d53f7c93821bff61f9b580'),
-          h('a.font-small',
-          {href: 'http://testnet.etherscan.io/tx/0xfc37bda95ce571bd0a393e8e7f6da394f1420a57b7d53f7c93821bff61f9b580',
-          target: '_blank'},
-          '0xfc37bda...b580'),
-          h('div.font-small','0.5000 ETH'),
-        ]),
+
+        transactionList(transactions),
+
       ]),
 
       this.exportedAccount(accountDetail),
