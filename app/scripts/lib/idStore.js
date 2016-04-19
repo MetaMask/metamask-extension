@@ -31,7 +31,6 @@ function IdentityStore(ethStore) {
   this._currentState = {
     selectedAddress: null,
     identities: {},
-    unconfTxs: {},
   }
   // not part of serilized metamask state - only kept in memory
   this._unconfTxCbs = {}
@@ -83,6 +82,8 @@ IdentityStore.prototype.getState = function(){
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
+    unconfTxs: configManager.unconfirmedTxs(),
+    transactions: configManager.getTxList(),
   }))
 }
 
@@ -140,10 +141,11 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
     time: time,
     status: 'unconfirmed',
   }
-  this._currentState.unconfTxs[txId] = txData
+  configManager.addTx(txData)
   console.log('addUnconfirmedTransaction:', txData)
 
   // keep the cb around for after approval (requires user interaction)
+  // This cb fires completion to the Dapp's write operation.
   this._unconfTxCbs[txId] = cb
 
   // signal update
@@ -154,7 +156,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
 
 // comes from metamask ui
 IdentityStore.prototype.approveTransaction = function(txId, cb){
-  var txData = this._currentState.unconfTxs[txId]
+  var txData = configManager.getTx(txId)
   var txParams = txData.txParams
   var approvalCb = this._unconfTxCbs[txId] || noop
 
@@ -162,20 +164,20 @@ IdentityStore.prototype.approveTransaction = function(txId, cb){
   cb()
   approvalCb(null, true)
   // clean up
-  delete this._currentState.unconfTxs[txId]
+  configManager.confirmTx(txId)
   delete this._unconfTxCbs[txId]
   this._didUpdate()
 }
 
 // comes from metamask ui
 IdentityStore.prototype.cancelTransaction = function(txId){
-  var txData = this._currentState.unconfTxs[txId]
+  var txData = configManager.getTx(txId)
   var approvalCb = this._unconfTxCbs[txId] || noop
 
   // reject tx
   approvalCb(null, false)
   // clean up
-  delete this._currentState.unconfTxs[txId]
+  configManager.rejectTx(txId)
   delete this._unconfTxCbs[txId]
   this._didUpdate()
 }
