@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- Pending transactions are now persisted to localStorage and resume even after browser is closed.
+- Completed transactions are now persisted and can be displayed via UI.
+- Fix bug on config screen where current RPC address was always displayed wrong.
+
 # 1.5.1 2016-04-15
 
 - Corrected text above account list. Selected account is visible to all sites, not just the current domain.
