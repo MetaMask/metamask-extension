@@ -47,7 +47,6 @@ ConfigScreen.prototype.render = function() {
 
           currentProviderDisplay(metamaskState),
 
-
           h('div', [
             h('input', {
               placeholder: 'New RPC URL',
@@ -95,7 +94,7 @@ ConfigScreen.prototype.render = function() {
 }
 
 function currentProviderDisplay(metamaskState) {
-  var rpc = metamaskState.rpcTarget
+  var rpc = metamaskState.provider.rpcTarget
   return h('div', [
     h('h3', {style: { fontWeight: 'bold' }}, 'Currently using RPC'),
     h('p', rpc)
