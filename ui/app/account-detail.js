@@ -69,6 +69,23 @@ AccountDetailScreen.prototype.render = function() {
             },
           }, 'EXPORT'),
         ]),
+        h('.flex-row.flex-space-around', [
+          // h('button', 'GET ETH'), DISABLED UNTIL WORKING
+
+          h('div.font-small', 'Transaction Summary'),
+        ]),
+        h('.flex-row.flex-space-around', [
+          h('div.font-small','Transaction'),
+          h('div.font-small','Amount'),
+        ]),
+        h('.flex-row.flex-space-around', [
+  //        h('div'['href','0xfc37bda95ce571bd0a393e8e7f6da394f1420a57b7d53f7c93821bff61f9b580'),
+          h('a.font-small',
+          {href: 'http://testnet.etherscan.io/tx/0xfc37bda95ce571bd0a393e8e7f6da394f1420a57b7d53f7c93821bff61f9b580',
+          target: '_blank'},
+          '0xfc37bda...b580'),
+          h('div.font-small','0.5000 ETH'),
+        ]),
       ]),
 
       this.exportedAccount(accountDetail),
