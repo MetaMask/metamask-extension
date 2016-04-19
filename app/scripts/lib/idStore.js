@@ -82,6 +82,7 @@ IdentityStore.prototype.getState = function(){
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
+    unconfTxs: configManager.unconfirmedTxs(),
   }))
 }
 

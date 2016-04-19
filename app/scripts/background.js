@@ -117,7 +117,6 @@ function storeSetFromObj(store, obj){
   Object.keys(obj).forEach(function(key){
     store.set(key, obj[key])
   })
-  store.set('unconfTxs', configManager.unconfirmedTxs())
 }
 
 
