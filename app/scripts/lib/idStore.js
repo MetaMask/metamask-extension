@@ -337,6 +337,10 @@ function IdManagement(opts) {
     txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
     txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
     var tx = new Transaction(txParams)
+    var hash = '0x' + tx.hash().toString('hex')
+    var txLog = configManager.getTxWithParams(txParams)
+    txLog.hash = hash
+    configManager.updateTx(txLog)
     var rawTx = '0x'+tx.serialize().toString('hex')
     return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from, this.hdPathString)
   }
