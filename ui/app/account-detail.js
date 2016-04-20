@@ -72,20 +72,9 @@ AccountDetailScreen.prototype.render = function() {
             },
           }, 'EXPORT'),
         ]),
-        h('.flex-row.flex-space-around', [
-          // h('button', 'GET ETH'), DISABLED UNTIL WORKING
-
-          h('div.font-small', 'Transaction Summary'),
-        ]),
-        h('.flex-row.flex-space-around', [
-          h('div.font-small','Transaction'),
-          h('div.font-small','Amount'),
-        ]),
-
-        transactionList(transactions),
-
       ]),
 
+      transactionList(transactions),
       this.exportedAccount(accountDetail),
 
       // transaction table
