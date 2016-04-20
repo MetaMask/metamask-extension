@@ -156,31 +156,5 @@ describe('config-manager', function() {
         assert.equal(configManager.getTx('2').status, 'confirmed')
       })
     })
-
-    describe('#getTxWithParams', function() {
-      it('returns a tx with the matching params', function() {
-        configManager.addTx({ id: '1', status: 'unconfirmed', txParams: {
-          from: 'from',
-          to: 'to',
-          data: 'data',
-          value: 'value',
-          }
-        })
-        configManager.addTx({ id: '2', status: 'unconfirmed', txParams: {
-          from: 'from1',
-          to: 'to',
-          data: 'data',
-          value: 'value',
-          }
-        })
-        var result = configManager.getTxWithParams({
-          from: 'from',
-          to: 'to',
-          data: 'data',
-          value: 'value',
-        })
-        assert.equal(result.id, '1')
-      })
-    })
   })
 })
