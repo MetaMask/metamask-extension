@@ -97,6 +97,7 @@ function bundleTask(opts) {
   var browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
     debug: true,
+    plugin: 'browserify-derequire',
   })
 
   var bundler = browserify(browserifyOpts)
