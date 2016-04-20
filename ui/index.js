@@ -32,7 +32,10 @@ function startApp(metamaskState, accountManager, opts){
     // appState represents the current tab's popup state
     appState: {
       currentDomain: opts.currentDomain,
-    }
+    },
+
+    // Which blockchain we are using:
+    networkVersion: opts.networkVersion,
   })
 
   // if unconfirmed txs, start on txConf page

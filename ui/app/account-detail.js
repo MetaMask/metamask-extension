@@ -17,6 +17,7 @@ function mapStateToProps(state) {
     address: state.appState.currentView.context,
     accountDetail: accountDetail,
     transactions: state.metamask.transactions,
+    networkVersion: state.networkVersion,
   }
 }
 
@@ -74,7 +75,9 @@ AccountDetailScreen.prototype.render = function() {
         ]),
       ]),
 
-      transactionList(transactions),
+      transactionList(transactions
+        .filter(tx => tx.txParams.from === state.address)
+        .sort((a, b) => b.time - a.time), state.networkVersion),
       this.exportedAccount(accountDetail),
 
       // transaction table
