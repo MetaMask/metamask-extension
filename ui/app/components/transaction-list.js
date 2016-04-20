@@ -7,7 +7,7 @@ module.exports = function(transactions, network) {
   return h('details', [
 
     h('summary', [
-      h('div.font-small', {style: {display: 'inline'}}, 'Transaction Summary'),
+      h('div.font-small', {style: {display: 'inline'}}, 'Transactions'),
     ]),
 
     h('.flex-row.flex-space-around', [
