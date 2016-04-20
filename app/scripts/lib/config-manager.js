@@ -165,7 +165,7 @@ ConfigManager.prototype.getTxWithParams = function(params) {
   var transactions = this.getTxList()
   var matching = transactions.filter((tx) => {
     return Object.keys(tx.txParams).reduce((result, key) => {
-      return tx.params[key] === params[key] && result
+      return ('params' in tx) ? tx.params[key] === params[key] && result : result
     }, true)
   })
   return matching.length > 0 ? matching[0] : null
