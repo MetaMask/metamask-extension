@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "async": "^1.5.2",
+    "browserify-derequire": "^0.9.4",
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
     "debounce": "^1.0.0",
