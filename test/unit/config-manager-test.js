@@ -126,6 +126,16 @@ describe('config-manager', function() {
       })
     })
 
+    describe('#updateTx', function() {
+      it('replaces the tx with the same id', function() {
+        configManager.addTx({ id: '1', status: 'unconfirmed' })
+        configManager.addTx({ id: '2', status: 'confirmed' })
+        configManager.updateTx({ id: '1', status: 'blah', hash: 'foo' })
+        var result = configManager.getTx('1')
+        assert.equal(result.hash, 'foo')
+      })
+    })
+
     describe('#unconfirmedTxs', function() {
       it('returns unconfirmed txs in a hash', function() {
         configManager.addTx({ id: '1', status: 'unconfirmed' })
@@ -144,6 +154,32 @@ describe('config-manager', function() {
         configManager.addTx({ id: '2', status: 'confirmed' })
         assert.equal(configManager.getTx('1').status, 'unconfirmed')
         assert.equal(configManager.getTx('2').status, 'confirmed')
+      })
+    })
+
+    describe('#getTxWithParams', function() {
+      it('returns a tx with the matching params', function() {
+        configManager.addTx({ id: '1', status: 'unconfirmed', txParams: {
+          from: 'from',
+          to: 'to',
+          data: 'data',
+          value: 'value',
+          }
+        })
+        configManager.addTx({ id: '2', status: 'unconfirmed', txParams: {
+          from: 'from1',
+          to: 'to',
+          data: 'data',
+          value: 'value',
+          }
+        })
+        var result = configManager.getTxWithParams({
+          from: 'from',
+          to: 'to',
+          data: 'data',
+          value: 'value',
+        })
+        assert.equal(result.id, '1')
       })
     })
   })
