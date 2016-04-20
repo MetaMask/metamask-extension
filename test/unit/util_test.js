@@ -82,33 +82,47 @@ describe('util', function() {
 
   })
 
-  describe('#normalizeToWei', function() {
-    it('should convert an eth to the appropriate equivalent values', function() {
-      var valueTable = {
-        wei:   '1000000000000000000',
-        kwei:  '1000000000000000',
-        mwei:  '1000000000000',
-        gwei:  '1000000000',
-        szabo: '1000000',
-        finney:'1000',
-        ether: '1',
-        kether:'0.001',
-        mether:'0.000001',
-        // AUDIT: We're getting BN numbers on these ones.
-        // I think they're big enough to ignore for now.
-        // gether:'0.000000001',
-        // tether:'0.000000000001',
-      }
-      var oneEthBn = new ethUtil.BN(ethInWei, 10)
+  describe('normalizing values', function() {
 
-      for(var currency in valueTable) {
+    describe('#normalizeToWei', function() {
+      it('should convert an eth to the appropriate equivalent values', function() {
+        var valueTable = {
+          wei:   '1000000000000000000',
+          kwei:  '1000000000000000',
+          mwei:  '1000000000000',
+          gwei:  '1000000000',
+          szabo: '1000000',
+          finney:'1000',
+          ether: '1',
+          // kether:'0.001',
+          // mether:'0.000001',
+          // AUDIT: We're getting BN numbers on these ones.
+          // I think they're big enough to ignore for now.
+          // gether:'0.000000001',
+          // tether:'0.000000000001',
+        }
+        var oneEthBn = new ethUtil.BN(ethInWei, 10)
 
-        var value = new ethUtil.BN(valueTable[currency], 10)
-        var output = util.normalizeToWei(value, currency)
-        assert.equal(output.toString(10), valueTable.wei, `value of ${output.toString(10)} ${currency} should convert to ${oneEthBn}`)
+        for(var currency in valueTable) {
 
-      }
+          var value = new ethUtil.BN(valueTable[currency], 10)
+          var output = util.normalizeToWei(value, currency)
+          assert.equal(output.toString(10), valueTable.wei, `value of ${output.toString(10)} ${currency} should convert to ${oneEthBn}`)
+        }
+      })
+    })
+
+    describe('#normalizeNumberToWei', function() {
+
+      it('should convert a kwei number to the appropriate equivalent wei', function() {
+        var result = util.normalizeNumberToWei(1.111, 'kwei')
+        assert.equal(result.toString(10), '1111', 'accepts decimals')
+      })
+
+      it('should convert a ether number to the appropriate equivalent wei', function() {
+        var result = util.normalizeNumberToWei(1.111, 'ether')
+        assert.equal(result.toString(10), '1111000000000000000', 'accepts decimals')
+      })
     })
   })
-
 })
