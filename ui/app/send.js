@@ -96,7 +96,7 @@ SendTransactionScreen.prototype.render = function() {
         }, 'Send')
       ]),
 
-      state.warning ? h('span.error', state.warning) : null,
+      state.warning ? h('span.error', state.warning.split('.')[0]) : null,
     ])
   )
 }

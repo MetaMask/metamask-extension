@@ -31,19 +31,39 @@ __proto__
 Object
 */
 const h = require('react-hyperscript')
+const formatBalance = require('../util').formatBalance
 
 module.exports = function(transactions) {
-  return h('.tx-list',
-    transactions.map((transaction) => {
-      return h('.tx.flex-row.flex-space-around', [
-        h('a.font-small',
-        {
-          href: 'http://testnet.etherscan.io/tx/0xfc37bda95ce571bd0a393e8e7f6da394f1420a57b7d53f7c93821bff61f9b580',
-          target: '_blank',
+  return h('details', [
+
+    h('summary', [
+      h('div.font-small', {style: {display: 'inline'}}, 'Transaction Summary'),
+    ]),
+
+    h('.flex-row.flex-space-around', [
+      h('div.font-small','Transaction'),
+      h('div.font-small','Amount'),
+    ]),
+
+    h('.tx-list', {
+        style: {
+          overflowY: 'auto',
+          height: '180px',
         },
-        '0xfc37bda...b580'),
-        h('div.font-small', '0.5000 ETH')
-      ])
-    })
-  )
+      },
+
+      transactions.map((transaction) => {
+        return h('.tx.flex-row.flex-space-around', [
+          h('a.font-small',
+          {
+            href: 'http://testnet.etherscan.io/tx/0xfc37bda95ce571bd0a393e8e7f6da394f1420a57b7d53f7c93821bff61f9b580',
+            target: '_blank',
+          },
+          '0xfc37bda...b580'),
+          h('div.font-small', formatBalance(transaction.txParams.value))
+        ])
+      })
+    )
+
+  ])
 }
