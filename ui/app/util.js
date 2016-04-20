@@ -94,9 +94,7 @@ function normalizeToWei(amount, currency) {
 var multiple = new ethUtil.BN('1000', 10)
 function normalizeNumberToWei(n, currency) {
   var enlarged = n * 1000
-  console.log(`Enlarged, we have ${enlarged}`)
   var amount = new ethUtil.BN(String(enlarged), 10)
-  console.log("Amount inside is "+ amount.toString(10))
   return normalizeToWei(amount, currency).div(multiple)
 }
 
