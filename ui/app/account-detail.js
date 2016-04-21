@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
 const AccountPanel = require('./components/account-panel')
+const transactionList = require('./components/transaction-list')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -15,6 +16,8 @@ function mapStateToProps(state) {
     accounts: state.metamask.accounts,
     address: state.appState.currentView.context,
     accountDetail: accountDetail,
+    transactions: state.metamask.transactions,
+    networkVersion: state.networkVersion,
   }
 }
 
@@ -29,6 +32,7 @@ AccountDetailScreen.prototype.render = function() {
   var identity = state.identities[state.address]
   var account = state.accounts[state.address]
   var accountDetail = state.accountDetail
+  var transactions = state.transactions
 
   return (
 
@@ -71,6 +75,9 @@ AccountDetailScreen.prototype.render = function() {
         ]),
       ]),
 
+      transactionList(transactions
+        .filter(tx => tx.txParams.from === state.address)
+        .sort((a, b) => b.time - a.time), state.networkVersion),
       this.exportedAccount(accountDetail),
 
       // transaction table

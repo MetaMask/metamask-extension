@@ -28,6 +28,7 @@ module.exports = {
   ethToWei: ethToWei,
   weiToEth: weiToEth,
   normalizeToWei: normalizeToWei,
+  normalizeNumberToWei: normalizeNumberToWei,
   valueTable: valueTable,
   bnTable: bnTable,
 }
@@ -85,11 +86,16 @@ function dataSize(data) {
 // returns a BN in wei
 function normalizeToWei(amount, currency) {
   try {
-    var ether = amount.div(bnTable[currency])
-    var wei = ether.mul(bnTable.wei)
-    return wei
+    return amount.mul(bnTable.wei).div(bnTable[currency])
   } catch (e) {}
   return amount
+}
+
+var multiple = new ethUtil.BN('1000', 10)
+function normalizeNumberToWei(n, currency) {
+  var enlarged = n * 1000
+  var amount = new ethUtil.BN(String(enlarged), 10)
+  return normalizeToWei(amount, currency).div(multiple)
 }
 
 function readableDate(ms) {

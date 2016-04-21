@@ -4,7 +4,9 @@
 
 - Pending transactions are now persisted to localStorage and resume even after browser is closed.
 - Completed transactions are now persisted and can be displayed via UI.
+- Added transaction list to account detail view.
 - Fix bug on config screen where current RPC address was always displayed wrong.
+- Fixed bug where entering a decimal value when sending a transaction would result in sending the wrong amount.
 
 # 1.5.1 2016-04-15
 

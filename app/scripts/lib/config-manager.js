@@ -170,14 +170,26 @@ ConfigManager.prototype.rejectTx = function(txId) {
 }
 
 ConfigManager.prototype._setTxStatus = function(txId, status) {
+  var tx = this.getTx(txId)
+  tx.status = status
+  this.updateTx(tx)
+}
+
+ConfigManager.prototype.updateTx = function(tx) {
   var transactions = this.getTxList()
-  transactions.forEach((tx) => {
-    if (tx.id === txId) {
-      tx.status = status
+  var found, index
+  transactions.forEach((otherTx, i) => {
+    if (otherTx.id === tx.id) {
+      found = true
+      index = i
     }
   })
+  if (found) {
+    transactions[index] = tx
+  }
   this._saveTxList(transactions)
 }
+
 ConfigManager.prototype.unconfirmedTxs = function() {
   var transactions = this.getTxList()
   return transactions.filter(tx => tx.status === 'unconfirmed')

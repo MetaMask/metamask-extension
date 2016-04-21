@@ -96,7 +96,7 @@ SendTransactionScreen.prototype.render = function() {
         }, 'Send')
       ]),
 
-      state.warning ? h('span.error', state.warning) : null,
+      state.warning ? h('span.error', state.warning.split('.')[0]) : null,
     ])
   )
 }
@@ -108,11 +108,11 @@ SendTransactionScreen.prototype.back = function() {
 
 SendTransactionScreen.prototype.onSubmit = function(event) {
   var recipient = document.querySelector('input.address').value
-  var amount = new ethUtil.BN(document.querySelector('input.ether').value, 10)
-  var currency = document.querySelector('select.currency').value
-  var txData = document.querySelector('textarea.txData').value
 
-  var value = util.normalizeToWei(amount, currency)
+  var inputAmount = parseFloat(document.querySelector('input.ether').value)
+  var currency = document.querySelector('select.currency').value
+  var value = util.normalizeNumberToWei(inputAmount, currency)
+
   var balance = this.props.balance
 
   if (value.gt(balance)) {
@@ -132,6 +132,8 @@ SendTransactionScreen.prototype.onSubmit = function(event) {
     from: this.props.address,
     value: '0x' + value.toString(16),
   }
+
+  var txData = document.querySelector('textarea.txData').value
   if (txData) txParams.data = txData
 
   this.props.dispatch(actions.signTx(txParams))

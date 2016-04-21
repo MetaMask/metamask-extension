@@ -17,7 +17,7 @@ injectCss(css)
 async.parallel({
   currentDomain: getCurrentDomain,
   accountManager: connectToAccountManager,
-}, setupApp)
+}, getNetworkVersion)
 
 function connectToAccountManager(cb){
   // setup communication with background
@@ -65,6 +65,13 @@ function getCurrentDomain(cb){
   })
 }
 
+function getNetworkVersion(cb, results) {
+  web3.version.getNetwork(function(err, result) {
+    results.networkVersion = result
+    setupApp(err, results)
+  })
+}
+
 function setupApp(err, opts){
   if (err) {
     alert(err.stack)
@@ -78,6 +85,6 @@ function setupApp(err, opts){
     container: container,
     accountManager: opts.accountManager,
     currentDomain: opts.currentDomain,
+    networkVersion: opts.networkVersion,
   })
-
 }
