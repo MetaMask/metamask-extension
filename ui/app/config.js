@@ -47,11 +47,14 @@ ConfigScreen.prototype.render = function() {
 
           currentProviderDisplay(metamaskState),
 
-          h('div', [
-            h('input', {
+          h('div', { style: {display: 'flex'} }, [
+            h('input#new_rpc', {
               placeholder: 'New RPC URL',
               style: {
-                width: '100%',
+                width: 'inherit',
+                flex: '1 0 auto',
+                height: '30px',
+                margin: '8px',
               },
               onKeyPress(event) {
                 if (event.key === 'Enter') {
@@ -61,6 +64,17 @@ ConfigScreen.prototype.render = function() {
                 }
               }
             }),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick(event) {
+                event.preventDefault()
+                var element = document.querySelector('input#new_rpc')
+                var newRpc = element.value
+                state.dispatch(actions.setRpcTarget(newRpc))
+              }
+            }, 'Save')
           ]),
 
           h('div', [
@@ -87,6 +101,18 @@ ConfigScreen.prototype.render = function() {
             }, 'Use Morden Test Network')
           ]),
 
+          h('div', [
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick(event) {
+                event.preventDefault()
+                state.dispatch(actions.setRpcTarget('http://localhost:8545/'))
+              }
+            }, 'Use http://localhost:8545')
+          ]),
+
         ]),
       ]),
     ])
@@ -96,7 +122,7 @@ ConfigScreen.prototype.render = function() {
 function currentProviderDisplay(metamaskState) {
   var rpc = metamaskState.provider.rpcTarget
   return h('div', [
-    h('h3', {style: { fontWeight: 'bold' }}, 'Currently using RPC'),
-    h('p', rpc)
+    h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, 'Current RPC'),
+    h('span', rpc)
   ])
 }
