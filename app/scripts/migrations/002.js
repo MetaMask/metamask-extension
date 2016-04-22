@@ -1,13 +1,11 @@
-var oldTestRpc = 'https://rawtestrpc.metamask.io/'
-var newTestRpc = 'https://testrpc.metamask.io/'
-
 module.exports = {
-  version: 3,
+  version: 2,
 
   migrate: function(data) {
     try {
-      if (data.config.provider.rpcTarget === oldTestRpc) {
-        data.config.provider.rpcTarget = newTestRpc
+      if (data.config.provider.type === 'etherscan') {
+        data.config.provider.type = 'rpc'
+        data.config.provider.rpcTarget = 'https://rpc.metamask.io/'
       }
     } catch (e) {}
     return data
