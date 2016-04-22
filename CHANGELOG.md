@@ -7,6 +7,9 @@
 - Added transaction list to account detail view.
 - Fix bug on config screen where current RPC address was always displayed wrong.
 - Fixed bug where entering a decimal value when sending a transaction would result in sending the wrong amount.
+- Add save button to custom RPC input field.
+- Add quick-select button for RPC on `localhost:8545`.
+- Improve config view styling.
 
 # 1.5.1 2016-04-15
 
