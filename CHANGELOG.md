@@ -10,6 +10,7 @@
 - Add save button to custom RPC input field.
 - Add quick-select button for RPC on `localhost:8545`.
 - Improve config view styling.
+- Users have been migrated from old test-net RPC to a newer test-net RPC.
 
 # 1.5.1 2016-04-15
 
