@@ -2,6 +2,8 @@
 
 ## Current Master
 
+# 1.6.0 2016-04-22
+
 - Pending transactions are now persisted to localStorage and resume even after browser is closed.
 - Completed transactions are now persisted and can be displayed via UI.
 - Added transaction list to account detail view.
