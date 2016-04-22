@@ -7,6 +7,7 @@
 - Added transaction list to account detail view.
 - Fix bug on config screen where current RPC address was always displayed wrong.
 - Fixed bug where entering a decimal value when sending a transaction would result in sending the wrong amount.
+- Users have been migrated from old test-net RPC to a newer test-net RPC.
 
 # 1.5.1 2016-04-15
 
