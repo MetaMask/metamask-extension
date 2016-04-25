@@ -72,7 +72,8 @@ IdentityStore.prototype.setStore = function(store){
 
 IdentityStore.prototype.clearSeedWordCache = function(cb) {
   configManager.setShowSeedWords(false)
-  cb()
+  var accounts = this._loadIdentities()
+  cb(null, accounts)
 }
 
 IdentityStore.prototype.getState = function(){
@@ -119,8 +120,8 @@ IdentityStore.prototype.submitPassword = function(password, cb){
   this._tryPassword(password, (err) => {
     if (err) return cb(err)
     // load identities before returning...
-    this._loadIdentities()
-    cb()
+    var accounts = this._loadIdentities()
+    cb(null, accounts)
   })
 }
 
@@ -212,6 +213,7 @@ IdentityStore.prototype._loadIdentities = function(){
   if (!this._isUnlocked()) throw new Error('not unlocked')
 
   var addresses = this._getAddresses()
+  var accountArray = []
   addresses.forEach((address, i) => {
     // // add to ethStore
     this._ethStore.addAccount(address)
@@ -223,8 +225,10 @@ IdentityStore.prototype._loadIdentities = function(){
       mayBeFauceting: this._mayBeFauceting(i),
     }
     this._currentState.identities[address] = identity
+    accountArray.push(identity)
   })
   this._didUpdate()
+  return accountArray
 }
 
 // mayBeFauceting

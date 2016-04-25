@@ -1,4 +1,6 @@
 var actions = {
+  GO_HOME: 'GO_HOME',
+  goHome: goHome,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -87,10 +89,15 @@ var actions = {
 
 module.exports = actions
 
-
 var _accountManager = null
 function _setAccountManager(accountManager){
   _accountManager = accountManager
+}
+
+function goHome() {
+  return {
+    type: this.GO_HOME,
+  }
 }
 
 // async actions
@@ -98,13 +105,13 @@ function _setAccountManager(accountManager){
 function tryUnlockMetamask(password) {
   return (dispatch) => {
     dispatch(this.unlockInProgress())
-    _accountManager.submitPassword(password, (err) => {
+    _accountManager.submitPassword(password, (err, accounts) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         dispatch(this.unlockFailed())
       } else {
         dispatch(this.unlockMetamask())
-        dispatch(this.setSelectedAddress())
+        dispatch(this.showAccountDetail(accounts[0].address))
       }
     })
   }
@@ -123,7 +130,7 @@ function recoverFromSeed(password, seed) {
   return (dispatch) => {
     // dispatch(this.createNewVaultInProgress())
     dispatch(this.showLoadingIndication())
-    _accountManager.recoverFromSeed(password, seed, (err, result) => {
+    _accountManager.recoverFromSeed(password, seed, (err, accounts) => {
       if (err) {
         dispatch(this.hideLoadingIndication())
         var message = err.message
@@ -131,11 +138,9 @@ function recoverFromSeed(password, seed) {
       }
 
       dispatch(this.unlockMetamask())
-      dispatch(this.setSelectedAddress())
-      dispatch(this.updateMetamaskState(result))
+      dispatch(this.showAccountDetail(accounts[0].address))
       dispatch(this.hideLoadingIndication())
-      dispatch(this.showAccountsPage())
-    })
+   })
   }
 }
 
@@ -297,10 +302,10 @@ function clearSeedWordCache() {
 function confirmSeedWords() {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.clearSeedWordCache((err) => {
+    _accountManager.clearSeedWordCache((err, accounts) => {
       dispatch(this.clearSeedWordCache())
       console.log('Seed word cache cleared.')
-      dispatch(this.setSelectedAddress())
+      dispatch(this.showAccountDetail(accounts[0].address))
     })
   }
 }

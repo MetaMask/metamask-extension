@@ -19,7 +19,6 @@ function LoadingIndicator() {
 }
 
 LoadingIndicator.prototype.render = function() {
-  console.dir(this.props)
   var isLoading = this.props.isLoading
 
   return (
@@ -44,7 +43,6 @@ LoadingIndicator.prototype.render = function() {
           src: 'images/loading.svg',
         }),
       ]) : null,
-
     ])
   )
 }

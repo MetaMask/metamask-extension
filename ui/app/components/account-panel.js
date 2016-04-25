@@ -25,7 +25,7 @@ AccountPanel.prototype.render = function() {
       style: {
         flex: '1 0 auto',
       },
-      onClick: state.onSelect && state.onSelect.bind(null, identity.address),
+      onClick: state.onShowDetail && state.onShowDetail.bind(null, identity.address),
     }, [
 
       // account identicon
