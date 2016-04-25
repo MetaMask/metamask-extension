@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- Account detail view is now the primary view.
+- The account detail view now has a "Change acct" button which shows the account list.
+- Clicking accounts in the account list now both selects that account and displays that account's detail view.
+
 # 1.6.0 2016-04-22
 
 - Pending transactions are now persisted to localStorage and resume even after browser is closed.
