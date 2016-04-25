@@ -141,8 +141,6 @@ function reduceApp(state, action) {
 
 
   case actions.SHOW_ACCOUNT_DETAIL:
-    var account = action.value || valuesFor(state.metamask.accounts)[0].address
-
     return extend(appState, {
       isLoading: account ? false : true,
       currentView: {
