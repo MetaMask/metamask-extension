@@ -7,10 +7,11 @@ module.exports = reduceApp
 function reduceApp(state, action) {
 
   // clone and defaults
+  const selectedAccount = state.metamask.selectedAccount
   var defaultView = {
-    name: 'accountDetail',
+    name: selectedAccount ? 'accountDetail' : 'accounts',
     detailView: null,
-    context: state.metamask.selectedAccount,
+    context: selectedAccount,
   }
 
   // confirm seed words
