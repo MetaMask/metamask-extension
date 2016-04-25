@@ -139,13 +139,11 @@ function reduceApp(state, action) {
       transForward: false,
     })
 
-
   case actions.SHOW_ACCOUNT_DETAIL:
     return extend(appState, {
-      isLoading: account ? false : true,
       currentView: {
         name: 'accountDetail',
-        context: account,
+        context: action.value || account,
       },
       accountDetail: {
         accountExport: 'none',
