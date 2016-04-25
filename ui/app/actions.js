@@ -105,13 +105,13 @@ function goHome() {
 function tryUnlockMetamask(password) {
   return (dispatch) => {
     dispatch(this.unlockInProgress())
-    _accountManager.submitPassword(password, (err, accounts) => {
+    _accountManager.submitPassword(password, (err, selectedAccount) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         dispatch(this.unlockFailed())
       } else {
         dispatch(this.unlockMetamask())
-        dispatch(this.showAccountDetail(accounts[0].address))
+        dispatch(this.showAccountDetail(selectedAccount))
       }
     })
   }
@@ -130,7 +130,7 @@ function recoverFromSeed(password, seed) {
   return (dispatch) => {
     // dispatch(this.createNewVaultInProgress())
     dispatch(this.showLoadingIndication())
-    _accountManager.recoverFromSeed(password, seed, (err, accounts) => {
+    _accountManager.recoverFromSeed(password, seed, (err, selectedAccount) => {
       if (err) {
         dispatch(this.hideLoadingIndication())
         var message = err.message
@@ -138,7 +138,7 @@ function recoverFromSeed(password, seed) {
       }
 
       dispatch(this.unlockMetamask())
-      dispatch(this.showAccountDetail(accounts[0].address))
+      dispatch(this.showAccountDetail(selectedAccount))
       dispatch(this.hideLoadingIndication())
    })
   }
@@ -281,9 +281,13 @@ function lockMetamask() {
 }
 
 function showAccountDetail(address) {
-  return {
-    type: this.SHOW_ACCOUNT_DETAIL,
-    value: address,
+  return (dispatch) => {
+    _accountManager.setSelectedAddress(address)
+
+    dispatch({
+      type: this.SHOW_ACCOUNT_DETAIL,
+      value: address,
+    })
   }
 }
 
