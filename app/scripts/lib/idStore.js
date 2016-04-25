@@ -9,7 +9,7 @@ const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./auto-faucet')
 const configManager = require('./config-manager-singleton')
-const DEFAULT_RPC = 'https://rawtestrpc.metamask.io/'
+const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 
 
 module.exports = IdentityStore
@@ -72,7 +72,7 @@ IdentityStore.prototype.setStore = function(store){
 
 IdentityStore.prototype.clearSeedWordCache = function(cb) {
   configManager.setShowSeedWords(false)
-  cb()
+  cb(null, configManager.getSelectedAccount())
 }
 
 IdentityStore.prototype.getState = function(){
@@ -84,6 +84,7 @@ IdentityStore.prototype.getState = function(){
     seedWords: seedWords,
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
+    selectedAddress: configManager.getSelectedAccount(),
   }))
 }
 
@@ -96,7 +97,7 @@ IdentityStore.prototype.getSeedIfUnlocked = function() {
 }
 
 IdentityStore.prototype.getSelectedAddress = function(){
-  return this._currentState.selectedAddress
+  return configManager.getSelectedAccount()
 }
 
 IdentityStore.prototype.setSelectedAddress = function(address){
@@ -105,7 +106,7 @@ IdentityStore.prototype.setSelectedAddress = function(address){
     address = addresses[0]
   }
 
-  this._currentState.selectedAddress = address
+  configManager.setSelectedAccount(address)
   this._didUpdate()
 }
 
@@ -120,7 +121,7 @@ IdentityStore.prototype.submitPassword = function(password, cb){
     if (err) return cb(err)
     // load identities before returning...
     this._loadIdentities()
-    cb()
+    cb(null, configManager.getSelectedAccount())
   })
 }
 

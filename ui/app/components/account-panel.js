@@ -25,7 +25,7 @@ AccountPanel.prototype.render = function() {
       style: {
         flex: '1 0 auto',
       },
-      onClick: state.onSelect && state.onSelect.bind(null, identity.address),
+      onClick: (event) => state.onShowDetail(identity.address, event),
     }, [
 
       // account identicon
@@ -53,9 +53,7 @@ AccountPanel.prototype.render = function() {
 
       // navigate to account detail
       !state.onShowDetail ? null :
-        h('.arrow-right.cursor-pointer', {
-          onClick: state.onShowDetail && state.onShowDetail.bind(null, identity.address),
-        }, [
+        h('.arrow-right.cursor-pointer', [
           h('i.fa.fa-chevron-right.fa-lg'),
         ]),
     ])

@@ -1,5 +1,6 @@
 const extend = require('xtend')
 const actions = require('../actions')
+const valuesFor = require('../util').valuesFor
 
 module.exports = reduceApp
 
@@ -7,8 +8,9 @@ function reduceApp(state, action) {
 
   // clone and defaults
   var defaultView = {
-    name: 'accounts',
+    name: 'accountDetail',
     detailView: null,
+    context: state.metamask.selectedAccount,
   }
 
   // confirm seed words
@@ -56,6 +58,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {
         name: 'config',
+        context: appState.currentView.context,
       },
       transForward: true,
     })
@@ -64,6 +67,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {
         name: 'info',
+        context: appState.currentView.context,
       },
       transForward: true,
     })
@@ -120,11 +124,24 @@ function reduceApp(state, action) {
       activeAddress: action.value,
     })
 
+  case actions.GO_HOME:
+    return extend(appState, {
+      currentView: {
+        name: 'accountDetail',
+        context: appState.currentView.context,
+      },
+      accountDetail: {
+        accountExport: 'none',
+        privateKey: '',
+      },
+      transForward: false,
+    })
+
   case actions.SHOW_ACCOUNT_DETAIL:
     return extend(appState, {
       currentView: {
         name: 'accountDetail',
-        context: action.value,
+        context: action.value || account,
       },
       accountDetail: {
         accountExport: 'none',

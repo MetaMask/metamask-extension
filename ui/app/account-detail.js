@@ -10,12 +10,11 @@ const transactionList = require('./components/transaction-list')
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps(state) {
-  var accountDetail = state.appState.accountDetail
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     address: state.appState.currentView.context,
-    accountDetail: accountDetail,
+    accountDetail: state.appState.accountDetail,
     transactions: state.metamask.transactions,
     networkVersion: state.networkVersion,
   }
@@ -25,7 +24,6 @@ inherits(AccountDetailScreen, Component)
 function AccountDetailScreen() {
   Component.call(this)
 }
-
 
 AccountDetailScreen.prototype.render = function() {
   var state = this.props
@@ -40,9 +38,6 @@ AccountDetailScreen.prototype.render = function() {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.navigateToAccounts.bind(this),
-        }),
         h('h2.page-subtitle', 'Account Detail'),
       ]),
 
@@ -51,28 +46,35 @@ AccountDetailScreen.prototype.render = function() {
         showFullAddress: true,
         identity: identity,
         account: account,
+      }, []),
+
+      h('div', {
+        style: {
+          display: 'flex',
+        }
       }, [
-        h('.flex-row.flex-space-around', [
-          // h('button', 'GET ETH'), DISABLED UNTIL WORKING
 
-          h('button', {
-            onClick: () => {
-              copyToClipboard(identity.address)
-            },
-          }, 'COPY ADDR'),
+        h('button', {
+          onClick: this.navigateToAccounts.bind(this),
+        }, 'CHANGE ACCT'),
 
-          h('button', {
-            onClick: () => {
-              this.props.dispatch(actions.showSendPage())
-            },
-          }, 'SEND'),
+        h('button', {
+          onClick: () => {
+            copyToClipboard(identity.address)
+          },
+        }, 'COPY ADDR'),
 
-          h('button', {
-            onClick: () => {
-              this.requestAccountExport(identity.address)
-            },
-          }, 'EXPORT'),
-        ]),
+        h('button', {
+          onClick: () => {
+            this.props.dispatch(actions.showSendPage())
+          },
+        }, 'SEND'),
+
+        h('button', {
+          onClick: () => {
+            this.requestAccountExport(identity.address)
+          },
+        }, 'EXPORT'),
       ]),
 
       transactionList(transactions
