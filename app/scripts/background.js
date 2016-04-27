@@ -11,6 +11,7 @@ const createTxNotification = require('./lib/tx-notification.js')
 const configManager = require('./lib/config-manager-singleton')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const HostStore = require('./lib/remote-store.js').HostStore
+const Web3 = require('web3')
 
 //
 // connect to other contexts
@@ -62,6 +63,7 @@ var providerOpts = {
   signTransaction: idStore.signTransaction.bind(idStore),
 }
 var provider = MetaMaskProvider(providerOpts)
+var web3 = new Web3(provider)
 
 // log new blocks
 provider.on('block', function(block){
@@ -205,12 +207,18 @@ function updateBadge(state){
 //
 
 function addUnconfirmedTx(txParams, cb){
-  var txId = idStore.addUnconfirmedTransaction(txParams, cb)
-  createTxNotification({
-    title: 'New Unsigned Transaction',
-    txParams: txParams,
-    confirm: idStore.approveTransaction.bind(idStore, txId, noop),
-    cancel: idStore.cancelTransaction.bind(idStore, txId),
+
+  web3.version.getNetwork(function(err, network) {
+    if (err) return cb(err)
+
+    txParams.metamaskNetworkId = network
+    var txId = idStore.addUnconfirmedTransaction(txParams, cb)
+    createTxNotification({
+      title: 'New Unsigned Transaction',
+      txParams: txParams,
+      confirm: idStore.approveTransaction.bind(idStore, txId, noop),
+      cancel: idStore.cancelTransaction.bind(idStore, txId),
+    })
   })
 }
 
