@@ -32,7 +32,7 @@
     "eth-lightwallet": "^2.2.2",
     "eth-store": "^1.1.0",
     "ethereumjs-tx": "^1.0.0",
-    "ethereumjs-util": "^4.3.0",
+    "ethereumjs-util": "^4.4.0",
     "hat": "0.0.3",
     "inject-css": "^0.1.1",
     "metamask-logo": "^1.1.5",
@@ -53,7 +53,7 @@
     "three.js": "^0.73.2",
     "through2": "^2.0.1",
     "web3": "^0.15.1",
-    "web3-provider-engine": "^7.6.1",
+    "web3-provider-engine": "^7.6.2",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
