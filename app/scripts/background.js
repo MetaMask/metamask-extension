@@ -52,6 +52,7 @@ function setupTrustedCommunication(connectionStream){
 
 var providerConfig = configManager.getProvider()
 var idStore = new IdentityStore()
+
 var providerOpts = {
   rpcUrl: configManager.getCurrentRpcAddress(),
   getAccounts: function(cb){
@@ -64,6 +65,8 @@ var providerOpts = {
 }
 var provider = MetaMaskProvider(providerOpts)
 var web3 = new Web3(provider)
+idStore.web3 = web3
+idStore.getNetwork(3)
 
 // log new blocks
 provider.on('block', function(block){
@@ -207,18 +210,12 @@ function updateBadge(state){
 //
 
 function addUnconfirmedTx(txParams, cb){
-
-  web3.version.getNetwork(function(err, network) {
-    if (err) return cb(err)
-
-    txParams.metamaskNetworkId = network
-    var txId = idStore.addUnconfirmedTransaction(txParams, cb)
-    createTxNotification({
-      title: 'New Unsigned Transaction',
-      txParams: txParams,
-      confirm: idStore.approveTransaction.bind(idStore, txId, noop),
-      cancel: idStore.cancelTransaction.bind(idStore, txId),
-    })
+  var txId = idStore.addUnconfirmedTransaction(txParams, cb)
+  createTxNotification({
+    title: 'New Unsigned Transaction',
+    txParams: txParams,
+    confirm: idStore.approveTransaction.bind(idStore, txId, noop),
+    cancel: idStore.cancelTransaction.bind(idStore, txId),
   })
 }
 
@@ -230,6 +227,7 @@ function addUnconfirmedTx(txParams, cb){
 function setRpcTarget(rpcTarget){
   configManager.setRpcTarget(rpcTarget)
   chrome.runtime.reload()
+  idStore.getNetwork(3) // 3 retry attempts
 }
 
 function useEtherscanProvider() {

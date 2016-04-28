@@ -16,11 +16,11 @@ module.exports = IdentityStore
 
 
 inherits(IdentityStore, EventEmitter)
-function IdentityStore(ethStore) {
+function IdentityStore(opts = {}) {
   EventEmitter.call(this)
 
   // we just use the ethStore to auto-add accounts
-  this._ethStore = ethStore
+  this._ethStore = opts.ethStore
   // lightwallet key store
   this._keyStore = null
   // lightwallet wrapper
@@ -110,6 +110,16 @@ IdentityStore.prototype.setSelectedAddress = function(address){
   this._didUpdate()
 }
 
+IdentityStore.prototype.getNetwork = function(tries) {
+  if (tries === 0) return
+  this.web3.version.getNetwork((err, network) => {
+    if (err) {
+      return this.getNetwork(tries - 1, cb)
+    }
+    this._currentState.network = network
+  })
+}
+
 IdentityStore.prototype.setLocked = function(cb){
   delete this._keyStore
   delete this._idmgmt
@@ -137,6 +147,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
   var time = (new Date()).getTime()
   var txId = createId()
   txParams.metamaskId = txId
+  txParams.metamaskNetworkId = this._currentState.network
   var txData = {
     id: txId,
     txParams: txParams,
