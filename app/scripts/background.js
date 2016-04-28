@@ -11,6 +11,7 @@ const createTxNotification = require('./lib/tx-notification.js')
 const configManager = require('./lib/config-manager-singleton')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const HostStore = require('./lib/remote-store.js').HostStore
+const Web3 = require('web3')
 
 //
 // connect to other contexts
@@ -51,6 +52,7 @@ function setupTrustedCommunication(connectionStream){
 
 var providerConfig = configManager.getProvider()
 var idStore = new IdentityStore()
+
 var providerOpts = {
   rpcUrl: configManager.getCurrentRpcAddress(),
   getAccounts: function(cb){
@@ -62,6 +64,9 @@ var providerOpts = {
   signTransaction: idStore.signTransaction.bind(idStore),
 }
 var provider = MetaMaskProvider(providerOpts)
+var web3 = new Web3(provider)
+idStore.web3 = web3
+idStore.getNetwork(3)
 
 // log new blocks
 provider.on('block', function(block){
@@ -222,6 +227,7 @@ function addUnconfirmedTx(txParams, cb){
 function setRpcTarget(rpcTarget){
   configManager.setRpcTarget(rpcTarget)
   chrome.runtime.reload()
+  idStore.getNetwork(3) // 3 retry attempts
 }
 
 function useEtherscanProvider() {

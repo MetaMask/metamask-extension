@@ -15,7 +15,9 @@ describe('IdentityStore', function() {
       window.localStorage = {} // Hacking localStorage support into JSDom
 
       idStore = new IdentityStore({
-        addAccount(acct) { accounts.push(acct) },
+        ethStore: {
+          addAccount(acct) { accounts.push(acct) },
+        },
       })
 
       idStore.createNewVault(password, entropy, (err, seeds) => {
@@ -32,7 +34,9 @@ describe('IdentityStore', function() {
         window.localStorage = {} // Hacking localStorage support into JSDom
 
         idStore = new IdentityStore({
-          addAccount(acct) { newAccounts.push(acct) },
+          ethStore: {
+            addAccount(acct) { newAccounts.push(acct) },
+          },
         })
       })
 
@@ -61,8 +65,8 @@ describe('IdentityStore', function() {
       window.localStorage = {} // Hacking localStorage support into JSDom
 
       idStore = new IdentityStore({
-        addAccount(acct) {
-          accounts.push(acct)
+        ethStore: {
+          addAccount(acct) { accounts.push(acct) },
         },
       })
     })
