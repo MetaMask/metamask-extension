@@ -351,14 +351,20 @@ function IdManagement(opts) {
     txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
     var tx = new Transaction(txParams)
 
+    // sign tx
+    var privKeyHex = ethUtil.addHexPrefix(this.keyStore.exportPrivateKey(txParams.from, this.derivedKey, this.hdPathString))
+    var privKey = ethUtil.toBuffer(privKeyHex)
+    tx.sign(privKey)
+    
     // Add the tx hash to the persisted meta-tx object
-    var hash = '0x' + tx.hash().toString('hex')
+    var txHash = ethUtil.bufferToHex(tx.hash())
     var metaTx = configManager.getTx(txParams.metamaskId)
-    metaTx.hash = hash
+    metaTx.hash = txHash
     configManager.updateTx(metaTx)
 
-    var rawTx = '0x'+tx.serialize().toString('hex')
-    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from, this.hdPathString)
+    // return raw serialized tx
+    var rawTx = ethUtil.bufferToHex(tx.serialize())
+    return rawTx
   }
 
   this.getSeed = function(){

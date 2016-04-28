@@ -53,7 +53,7 @@
     "three.js": "^0.73.2",
     "through2": "^2.0.1",
     "web3": "^0.15.1",
-    "web3-provider-engine": "^7.5.0",
+    "web3-provider-engine": "^7.6.1",
     "xtend": "^4.0.1"
   },
   "devDependencies": {

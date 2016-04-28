@@ -131,7 +131,10 @@ function onRpcRequest(remoteStream, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
   provider.sendAsync(payload, function onPayloadHandled(err, response){
     // provider engine errors are included in response objects
-    if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    if (!payload.isMetamaskInternal) {
+      console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+      if (response.error) console.error('Error in RPC response:\n'+response.error.message)
+    }
     try {
       remoteStream.write(response)
     } catch (err) {
