@@ -145,13 +145,23 @@ ConfigManager.prototype.setData = function(data) {
   this.migrator.saveData(data)
 }
 
+//
+// Tx
+//
+
 ConfigManager.prototype.getTxList = function() {
   var data = this.migrator.getData()
-  if ('transactions' in data) {
+  if (data.transactions !== undefined) {
     return data.transactions
   } else {
     return []
   }
+}
+
+ConfigManager.prototype.unconfirmedTxs = function() {
+  var transactions = this.getTxList()
+  return transactions.filter(tx => tx.status === 'unconfirmed')
+  .reduce((result, tx) => { result[tx.id] = tx; return result }, {})
 }
 
 ConfigManager.prototype._saveTxList = function(txList) {
@@ -201,11 +211,73 @@ ConfigManager.prototype.updateTx = function(tx) {
   this._saveTxList(transactions)
 }
 
-ConfigManager.prototype.unconfirmedTxs = function() {
-  var transactions = this.getTxList()
-  return transactions.filter(tx => tx.status === 'unconfirmed')
-  .reduce((result, tx) => { result[tx.id] = tx; return result }, {})
+//
+// Msg
+//
+
+ConfigManager.prototype.getMsgList = function() {
+  var data = this.migrator.getData()
+  if (data.messages !== undefined) {
+    return data.messages
+  } else {
+    return []
+  }
 }
+
+ConfigManager.prototype.unconfirmedMsgs = function() {
+  var messages = this.getMsgList()
+  return messages.filter(msg => msg.status === 'unconfirmed')
+  .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+}
+
+ConfigManager.prototype._saveMsgList = function(msgList) {
+  var data = this.migrator.getData()
+  data.messages = msgList
+  this.setData(data)
+}
+
+ConfigManager.prototype.addMsg = function(msg) {
+  var messages = this.getMsgList()
+  messages.push(msg)
+  this._saveMsgList(messages)
+}
+
+ConfigManager.prototype.getMsg = function(msgId) {
+  var messages = this.getMsgList()
+  var matching = messages.filter(msg => msg.id === msgId)
+  return matching.length > 0 ? matching[0] : null
+}
+
+ConfigManager.prototype.confirmMsg = function(msgId) {
+  this._setMsgStatus(msgId, 'confirmed')
+}
+
+ConfigManager.prototype.rejectMsg = function(msgId) {
+  this._setMsgStatus(msgId, 'rejected')
+}
+
+ConfigManager.prototype._setMsgStatus = function(msgId, status) {
+  var msg = this.getMsg(msgId)
+  msg.status = status
+  this.updateMsg(msg)
+}
+
+ConfigManager.prototype.updateMsg = function(msg) {
+  var messages = this.getMsgList()
+  var found, index
+  messages.forEach((otherMsg, i) => {
+    if (otherMsg.id === msg.id) {
+      found = true
+      index = i
+    }
+  })
+  if (found) {
+    messages[index] = msg
+  }
+  this._saveMsgList(messages)
+}
+
+
 
 // observable
 

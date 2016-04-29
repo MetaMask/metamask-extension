@@ -34,6 +34,7 @@ function IdentityStore(opts = {}) {
   }
   // not part of serilized metamask state - only kept in memory
   this._unconfTxCbs = {}
+  this._unconfMsgCbs = {}
 }
 
 //
@@ -140,6 +141,10 @@ IdentityStore.prototype.exportAccount = function(address, cb) {
   cb(null, privateKey)
 }
 
+//
+// Transactions
+//
+
 // comes from dapp via zero-client hooked-wallet provider
 IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
 
@@ -170,7 +175,6 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
 // comes from metamask ui
 IdentityStore.prototype.approveTransaction = function(txId, cb){
   var txData = configManager.getTx(txId)
-  var txParams = txData.txParams
   var approvalCb = this._unconfTxCbs[txId] || noop
 
   // accept tx
@@ -201,6 +205,73 @@ IdentityStore.prototype.signTransaction = function(txParams, cb){
     console.log('signing tx...', txParams)
     var rawTx = this._idmgmt.signTx(txParams)
     cb(null, rawTx)
+  } catch (err) {
+    cb(err)
+  }
+}
+
+//
+// Messages
+//
+
+// comes from dapp via zero-client hooked-wallet provider
+IdentityStore.prototype.addUnconfirmedMessage = function(msgParams, cb){
+
+  // create txData obj with parameters and meta data
+  var time = (new Date()).getTime()
+  var msgId = createId()
+  var msgData = {
+    id: msgId,
+    msgParams: msgParams,
+    time: time,
+    status: 'unconfirmed',
+  }
+  configManager.addMsg(msgData)
+  console.log('addUnconfirmedMessage:', msgData)
+
+  // keep the cb around for after approval (requires user interaction)
+  // This cb fires completion to the Dapp's write operation.
+  this._unconfMsgCbs[msgId] = cb
+
+  // signal update
+  this._didUpdate()
+
+  return msgId
+}
+
+// comes from metamask ui
+IdentityStore.prototype.approveMessage = function(msgId, cb){
+  var msgData = configManager.getMsg(msgId)
+  var approvalCb = this._unconfMsgCbs[msgId] || noop
+
+  // accept msg
+  cb()
+  approvalCb(null, true)
+  // clean up
+  configManager.confirmMsg(msgId)
+  delete this._unconfMsgCbs[msgId]
+  this._didUpdate()
+}
+
+// comes from metamask ui
+IdentityStore.prototype.cancelMessage = function(msgId){
+  var txData = configManager.getMsg(msgId)
+  var approvalCb = this._unconfMsgCbs[msgId] || noop
+
+  // reject tx
+  approvalCb(null, false)
+  // clean up
+  configManager.rejectMsg(msgId)
+  delete this._unconfTxCbs[msgId]
+  this._didUpdate()
+}
+
+// performs the actual signing, no autofill of params
+IdentityStore.prototype.signMessage = function(msgParams, cb){
+  try {
+    console.log('signing msg...', msgParams.data)
+    var rawMsg = this._idmgmt.signMsg(msgParams.from, msgParams.data)
+    cb(null, rawMsg)
   } catch (err) {
     cb(err)
   }
@@ -351,14 +422,30 @@ function IdManagement(opts) {
     txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
     var tx = new Transaction(txParams)
 
+    // sign tx
+    var privKeyHex = this.exportPrivateKey(txParams.from)
+    var privKey = ethUtil.toBuffer(privKeyHex)
+    tx.sign(privKey)
+    
     // Add the tx hash to the persisted meta-tx object
-    var hash = '0x' + tx.hash().toString('hex')
+    var txHash = ethUtil.bufferToHex(tx.hash())
     var metaTx = configManager.getTx(txParams.metamaskId)
-    metaTx.hash = hash
+    metaTx.hash = txHash
     configManager.updateTx(metaTx)
 
-    var rawTx = '0x'+tx.serialize().toString('hex')
-    return '0x'+LightwalletSigner.signTx(this.keyStore, this.derivedKey, rawTx, txParams.from, this.hdPathString)
+    // return raw serialized tx
+    var rawTx = ethUtil.bufferToHex(tx.serialize())
+    return rawTx
+  }
+
+  this.signMsg = function(address, message){
+    // sign message
+    var privKeyHex = this.exportPrivateKey(address)
+    var privKey = ethUtil.toBuffer(privKeyHex)
+    var msgHash = ethUtil.sha3(message)
+    var msgSig = ethUtil.ecsign(msgHash, privKey)
+    var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))
+    return rawMsgSig
   }
 
   this.getSeed = function(){
@@ -366,7 +453,8 @@ function IdManagement(opts) {
   }
 
   this.exportPrivateKey = function(address) {
-    return this.keyStore.exportPrivateKey(address, this.derivedKey, this.hdPathString)
+    var privKeyHex = ethUtil.addHexPrefix(this.keyStore.exportPrivateKey(address, this.derivedKey, this.hdPathString))
+    return privKeyHex
   }
 }
 
@@ -374,3 +462,14 @@ function IdManagement(opts) {
 // util
 
 function noop(){}
+
+
+function concatSig(v, r, s) {
+  r = ethUtil.fromSigned(r)
+  s = ethUtil.fromSigned(s)
+  v = ethUtil.bufferToInt(v)
+  r = ethUtil.toUnsigned(r).toString('hex')
+  s = ethUtil.toUnsigned(s).toString('hex')
+  v = ethUtil.stripHexPrefix(ethUtil.intToHex(v))
+  return ethUtil.addHexPrefix(r.concat(s, v).toString("hex"))
+}

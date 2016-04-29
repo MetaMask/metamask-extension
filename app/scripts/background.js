@@ -7,7 +7,8 @@ const EthStore = require('eth-store')
 const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const IdentityStore = require('./lib/idStore')
-const createTxNotification = require('./lib/tx-notification.js')
+const createTxNotification = require('./lib/notifications.js').createTxNotification
+const createMsgNotification = require('./lib/notifications.js').createMsgNotification
 const configManager = require('./lib/config-manager-singleton')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const HostStore = require('./lib/remote-store.js').HostStore
@@ -55,13 +56,18 @@ var idStore = new IdentityStore()
 
 var providerOpts = {
   rpcUrl: configManager.getCurrentRpcAddress(),
+  // account mgmt
   getAccounts: function(cb){
     var selectedAddress = idStore.getSelectedAddress()
     var result = selectedAddress ? [selectedAddress] : []
     cb(null, result)
   },
+  // tx signing
   approveTransaction: addUnconfirmedTx,
   signTransaction: idStore.signTransaction.bind(idStore),
+  // msg signing
+  approveMessage: addUnconfirmedMsg,
+  signMessage: idStore.signMessage.bind(idStore),
 }
 var provider = MetaMaskProvider(providerOpts)
 var web3 = new Web3(provider)
@@ -131,7 +137,10 @@ function onRpcRequest(remoteStream, payload){
   // console.log('MetaMaskPlugin - incoming payload:', payload)
   provider.sendAsync(payload, function onPayloadHandled(err, response){
     // provider engine errors are included in response objects
-    if (!payload.isMetamaskInternal) console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+    if (!payload.isMetamaskInternal) {
+      console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
+      if (response.error) console.error('Error in RPC response:\n'+response.error.message)
+    }
     try {
       remoteStream.write(response)
     } catch (err) {
@@ -206,7 +215,7 @@ function updateBadge(state){
 }
 
 //
-// Add unconfirmed Tx
+// Add unconfirmed Tx + Msg
 //
 
 function addUnconfirmedTx(txParams, cb){
@@ -216,6 +225,16 @@ function addUnconfirmedTx(txParams, cb){
     txParams: txParams,
     confirm: idStore.approveTransaction.bind(idStore, txId, noop),
     cancel: idStore.cancelTransaction.bind(idStore, txId),
+  })
+}
+
+function addUnconfirmedMsg(msgParams, cb){
+  var msgId = idStore.addUnconfirmedMessage(msgParams, cb)
+  createMsgNotification({
+    title: 'New Unsigned Message',
+    msgParams: msgParams,
+    confirm: idStore.approveMessage.bind(idStore, msgId, noop),
+    cancel: idStore.cancelMessage.bind(idStore, msgId),
   })
 }
 
