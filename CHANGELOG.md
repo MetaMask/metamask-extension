@@ -6,6 +6,7 @@
 - The account detail view now has a "Change acct" button which shows the account list.
 - Clicking accounts in the account list now both selects that account and displays that account's detail view.
 - Selected account is now persisted between sessions, so the current account stays selected.
+- Fixed link to Slack channel.
 
 # 1.6.0 2016-04-22
 
