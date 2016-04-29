@@ -34,6 +34,7 @@
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.4.0",
     "hat": "0.0.3",
+    "identicon.js": "^1.2.1",
     "inject-css": "^0.1.1",
     "metamask-logo": "^1.1.5",
     "multiplex": "^6.7.0",

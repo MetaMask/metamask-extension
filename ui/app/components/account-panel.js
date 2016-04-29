@@ -4,6 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const addressSummary = require('../util').addressSummary
 const formatBalance = require('../util').formatBalance
+const Identicon = require('identicon.js')
 
 module.exports = AccountPanel
 
@@ -19,6 +20,9 @@ AccountPanel.prototype.render = function() {
   var account = state.account || {}
   var isFauceting = state.isFauceting
 
+  var identicon = new Identicon(identity.address, 46).toString()
+  var identiconSrc = `data:image/png;base64,${identicon}`
+
   return (
 
     h('.identity-panel.flex-row.flex-space-between'+(state.isSelected?'.selected':''), {
@@ -30,8 +34,12 @@ AccountPanel.prototype.render = function() {
 
       // account identicon
       h('.identicon-wrapper.flex-column.select-none', [
-        h('.identicon', {
-          style: { backgroundImage: 'url("https://ipfs.io/ipfs/'+identity.img+'")' }
+        h('img.identicon', {
+          src: identiconSrc,
+          style: {
+            border: 'none',
+            borderRadius: '20px',
+          }
         }),
         h('span.font-small', identity.name),
       ]),
