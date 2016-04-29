@@ -8,6 +8,7 @@
 - Selected account is now persisted between sessions, so the current account stays selected.
 - Account icons are now "identicons" (deterministically generated from the address).
 - Fixed link to Slack channel.
+- Added a context guard for "define" to avoid UMD's exporting themselves to the wrong module system
 
 # 1.6.0 2016-04-22
 
