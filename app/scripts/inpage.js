@@ -1,9 +1,11 @@
+cleanContextForImports()
 const createPayload = require('web3-provider-engine/util/create-payload')
 const StreamProvider = require('./lib/stream-provider.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const RemoteStore = require('./lib/remote-store.js').RemoteStore
 const Web3 = require('web3')
+restoreContextAfterImports()
 
 // rename on window
 delete window.Web3
@@ -102,3 +104,16 @@ remoteProvider.send = function(payload){
   }
 }
 
+// need to make sure we aren't affected by overlapping namespaces
+// and that we dont affect the app with our namespace
+// mostly a fix for web3's BigNumber if AMD's "define" is defined...
+var __define = undefined
+
+function cleanContextForImports(){
+  __define = global.define
+  delete global.define
+}
+
+function restoreContextAfterImports(){
+  global.define = __define
+}
