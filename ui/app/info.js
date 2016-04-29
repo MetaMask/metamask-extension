@@ -42,7 +42,7 @@ InfoScreen.prototype.render = function() {
 
           h('div', [
             h('a', {
-              href: 'https://consensys.slack.com/archives/team-metamask',
+              href: 'http://slack.metamask.io',
               target: '_blank',
               onClick(event) { this.navigateTo(event.target.href) },
             }, 'Join the conversation on Slack'),
