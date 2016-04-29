@@ -12,6 +12,7 @@
 - Transaction list now only shows transactions for the current account.
 - Transaction list now only shows transactions for the current network (mainnet, testnet, testrpc).
 - Fixed transaction links to etherscan blockchain explorer.
+- Fixed some UI transitions that had weird behavior.
 
 # 1.6.0 2016-04-22
 

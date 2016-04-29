@@ -91,7 +91,7 @@ AccountsScreen.prototype.render = function() {
     var componentState = extend(actions, {
       identity: identity,
       account: account,
-      isSelected: isSelected,
+      isSelected: false,
       isFauceting: isFauceting,
     })
     return h(AccountPanel, componentState)

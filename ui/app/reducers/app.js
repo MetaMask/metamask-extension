@@ -199,12 +199,11 @@ function reduceApp(state, action) {
     } else {
       return extend(appState, {
         transForward: false,
-        currentView: {
-          name: 'accounts',
-          context: 0,
-        },
-        transForward: false,
         warning: null,
+        currentView: {
+          name: 'accountDetail',
+          context: appState.currentView.context,
+        },
       })
     }
 

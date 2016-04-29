@@ -2,11 +2,21 @@ var jsdom = require('mocha-jsdom')
 var assert = require('assert')
 var freeze = require('deep-freeze-strict')
 var path = require('path')
+var sinon = require('sinon')
 
 var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
 var reducers = require(path.join(__dirname, '..', '..',  '..', 'ui', 'app', 'reducers.js'))
 
-describe('tx confirmation screen', function() {
+describe.only('tx confirmation screen', function() {
+
+  beforeEach(function() {
+    this.sinon = sinon.sandbox.create();
+  });
+
+  afterEach(function(){
+    this.sinon.restore();
+  });
+
   var initialState, result
 
   describe('when there is only one tx', function() {
@@ -42,14 +52,13 @@ describe('tx confirmation screen', function() {
           clearSeedWordCache(cb) { cb() },
         })
 
-        actions.cancelTx({id: firstTxId})(function(action) {
-          result = reducers(initialState, action)
-          done()
-        })
+        let action = actions.cancelTx({id: firstTxId})
+        result = reducers(initialState, action)
+        done()
       })
 
-      it('should transition to the accounts list', function() {
-        assert.equal(result.appState.currentView.name, 'accounts')
+      it('should transition to the account detail view', function() {
+        assert.equal(result.appState.currentView.name, 'accountDetail')
       })
 
       it('should have no unconfirmed txs remaining', function() {
@@ -67,7 +76,7 @@ describe('tx confirmation screen', function() {
           alert = () => {/* noop */}
 
           actions._setAccountManager({
-            approveTransaction(txId, cb) { cb('An error!') },
+            approveTransaction(txId, cb) { cb({message: 'An error!'}) },
           })
 
           actions.sendTx({id: firstTxId})(function(action) {
@@ -86,23 +95,15 @@ describe('tx confirmation screen', function() {
       })
 
       describe('when there is success', function() {
-        before(function(done) {
+        it('should complete tx and go home', function() {
           actions._setAccountManager({
             approveTransaction(txId, cb) { cb() },
           })
 
-          actions.sendTx({id: firstTxId})(function(action) {
-            result = reducers(initialState, action)
-            done()
-          })
-        })
+          var dispatchExpect = sinon.mock()
+          dispatchExpect.twice()
 
-        it('should navigate away from the tx page', function() {
-          assert.equal(result.appState.currentView.name, 'accounts')
-        })
-
-        it('should clear the tx from the unconfirmed transactions', function() {
-          assert(!(firstTxId in result.metamask.unconfTxs), 'tx is cleared')
+          actions.sendTx({id: firstTxId})(dispatchExpect)
         })
       })
     })
@@ -134,15 +135,14 @@ describe('tx confirmation screen', function() {
         }
         freeze(initialState)
 
-
         actions._setAccountManager({
           approveTransaction(txId, cb) { cb() },
         })
 
-        actions.sendTx({id: firstTxId})(function(action) {
+        let action = actions.sendTx({id: firstTxId})(function(action) {
           result = reducers(initialState, action)
-          done()
         })
+        done()
       })
 
       it('should stay on the confTx view', function() {
