@@ -9,6 +9,9 @@
 - Account icons are now "identicons" (deterministically generated from the address).
 - Fixed link to Slack channel.
 - Added a context guard for "define" to avoid UMD's exporting themselves to the wrong module system
+- Transaction list now only shows transactions for the current account.
+- Transaction list now only shows transactions for the current network (mainnet, testnet, testrpc).
+- Fixed transaction links to etherscan blockchain explorer.
 
 # 1.6.0 2016-04-22
 
