@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 1.7.0 2016-04-29
+
 - Account detail view is now the primary view.
 - The account detail view now has a "Change acct" button which shows the account list.
 - Clicking accounts in the account list now both selects that account and displays that account's detail view.
@@ -14,7 +16,7 @@
 - Fixed transaction links to etherscan blockchain explorer.
 - Fixed some UI transitions that had weird behavior.
 
-# 1.6.0 2016-04-22
+## 1.6.0 2016-04-22
 
 - Pending transactions are now persisted to localStorage and resume even after browser is closed.
 - Completed transactions are now persisted and can be displayed via UI.
@@ -26,7 +28,7 @@
 - Improve config view styling.
 - Users have been migrated from old test-net RPC to a newer test-net RPC.
 
-# 1.5.1 2016-04-15
+## 1.5.1 2016-04-15
 
 - Corrected text above account list. Selected account is visible to all sites, not just the current domain.
 - Merged the UI codebase into the main plugin codebase for simpler maintenance.
