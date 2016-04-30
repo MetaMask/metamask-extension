@@ -131,15 +131,11 @@ function recoverFromSeed(password, seed) {
     // dispatch(this.createNewVaultInProgress())
     dispatch(this.showLoadingIndication())
     _accountManager.recoverFromSeed(password, seed, (err, selectedAccount) => {
-      if (err) {
-        dispatch(this.hideLoadingIndication())
-        var message = err.message
-        return dispatch(this.displayWarning(err.message))
-      }
+      dispatch(this.hideLoadingIndication())
+      if (err) return dispatch(this.displayWarning(err.message))
 
       dispatch(this.unlockMetamask())
-      dispatch(this.showAccountDetail(selectedAccount))
-      dispatch(this.hideLoadingIndication())
+      dispatch(this.showAccountsPage())
    })
   }
 }
@@ -165,7 +161,7 @@ function signTx(txData) {
 
       if (err) return dispatch(this.displayWarning(err.message))
       dispatch(this.hideWarning())
-      dispatch(this.showAccountsPage())
+      dispatch(this.goHome())
     })
   }
 }
@@ -198,10 +194,8 @@ function txError(err) {
 }
 
 function cancelTx(txData){
-  return (dispatch) => {
-    _accountManager.cancelTransaction(txData.id)
-    dispatch(this.showAccountsPage())
-  }
+  _accountManager.cancelTransaction(txData.id)
+  return this.goHome()
 }
 
 //
