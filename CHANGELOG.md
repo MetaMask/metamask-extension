@@ -10,7 +10,7 @@
 - Selected account is now persisted between sessions, so the current account stays selected.
 - Account icons are now "identicons" (deterministically generated from the address).
 - Fixed link to Slack channel.
-- Added a context guard for "define" to avoid UMD's exporting themselves to the wrong module system
+- Added a context guard for "define" to avoid UMD's exporting themselves to the wrong module system, fixing interference with some websites.
 - Transaction list now only shows transactions for the current account.
 - Transaction list now only shows transactions for the current network (mainnet, testnet, testrpc).
 - Fixed transaction links to etherscan blockchain explorer.
