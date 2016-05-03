@@ -49,7 +49,7 @@ ConfirmTxScreen.prototype.render = function() {
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
         }),
-        h('h2.page-subtitle', 'Confirm Transaction'),
+        h('h2.page-subtitle', 'Confirmation'),
       ]),
 
       h('h3', {
@@ -64,7 +64,7 @@ ConfirmTxScreen.prototype.render = function() {
           },
           onClick: () => state.dispatch(actions.previousTx()),
         }),
-        ` Transaction ${state.index + 1} of ${unconfTxList.length} `,
+        ` ${state.index + 1} of ${unconfTxList.length} `,
         h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
           style: {
             display: state.index + 1 === unconfTxList.length ? 'none' : 'inline-block',

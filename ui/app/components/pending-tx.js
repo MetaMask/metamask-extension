@@ -30,6 +30,13 @@ PendingTx.prototype.render = function() {
       key: txData.id,
     }, [
 
+      h('h3', {
+        style: {
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }
+      }, 'Submit Transaction'),
+
       // account that will sign
       h(AccountPanel, {
         showFullAddress: true,

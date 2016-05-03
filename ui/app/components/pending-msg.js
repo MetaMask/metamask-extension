@@ -30,6 +30,13 @@ PendingMsg.prototype.render = function() {
       key: msgData.id,
     }, [
 
+      h('h3', {
+        style: {
+          fontWeight: 'bold',
+          textAlign: 'center',
+        }
+      }, 'Sign Message'),
+
       // account that will sign
       h(AccountPanel, {
         showFullAddress: true,
