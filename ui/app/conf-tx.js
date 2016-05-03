@@ -38,7 +38,8 @@ ConfirmTxScreen.prototype.render = function() {
   var unconfTxs = state.unconfTxs
   var unconfMsgs = state.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs)
-  var txData = unconfTxList[state.index] || {}
+  var index = state.index !== undefined ? state.index : 0
+  var txData = unconfTxList[index] || {}
 
   return (
 

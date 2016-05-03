@@ -113,7 +113,6 @@ function tryUnlockMetamask(password) {
         dispatch(this.unlockFailed())
       } else {
         dispatch(this.unlockMetamask())
-        dispatch(this.showAccountDetail(selectedAccount))
       }
     })
   }
