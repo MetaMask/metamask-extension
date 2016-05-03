@@ -9,6 +9,7 @@ const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./auto-faucet')
 const configManager = require('./config-manager-singleton')
+const messageManager = require('./message-manager')
 const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 
 
@@ -32,6 +33,7 @@ function IdentityStore(opts = {}) {
     selectedAddress: null,
     identities: {},
   }
+
   // not part of serilized metamask state - only kept in memory
   this._unconfTxCbs = {}
   this._unconfMsgCbs = {}
@@ -85,6 +87,8 @@ IdentityStore.prototype.getState = function(){
     seedWords: seedWords,
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
+    unconfMsgs: messageManager.unconfirmedMsgs(),
+    messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),
   }))
 }
@@ -226,7 +230,7 @@ IdentityStore.prototype.addUnconfirmedMessage = function(msgParams, cb){
     time: time,
     status: 'unconfirmed',
   }
-  configManager.addMsg(msgData)
+  messageManager.addMsg(msgData)
   console.log('addUnconfirmedMessage:', msgData)
 
   // keep the cb around for after approval (requires user interaction)
@@ -241,27 +245,27 @@ IdentityStore.prototype.addUnconfirmedMessage = function(msgParams, cb){
 
 // comes from metamask ui
 IdentityStore.prototype.approveMessage = function(msgId, cb){
-  var msgData = configManager.getMsg(msgId)
+  var msgData = messageManager.getMsg(msgId)
   var approvalCb = this._unconfMsgCbs[msgId] || noop
 
   // accept msg
   cb()
   approvalCb(null, true)
   // clean up
-  configManager.confirmMsg(msgId)
+  messageManager.confirmMsg(msgId)
   delete this._unconfMsgCbs[msgId]
   this._didUpdate()
 }
 
 // comes from metamask ui
 IdentityStore.prototype.cancelMessage = function(msgId){
-  var txData = configManager.getMsg(msgId)
+  var txData = messageManager.getMsg(msgId)
   var approvalCb = this._unconfMsgCbs[msgId] || noop
 
   // reject tx
   approvalCb(null, false)
   // clean up
-  configManager.rejectMsg(msgId)
+  messageManager.rejectMsg(msgId)
   delete this._unconfTxCbs[msgId]
   this._didUpdate()
 }
@@ -271,7 +275,14 @@ IdentityStore.prototype.signMessage = function(msgParams, cb){
   try {
     console.log('signing msg...', msgParams.data)
     var rawMsg = this._idmgmt.signMsg(msgParams.from, msgParams.data)
-    cb(null, rawMsg)
+    if ('metamaskId' in msgParams) {
+      var id = msgParams.metamaskId
+      delete msgParams.metamaskId
+
+      this.approveMessage(id, cb)
+    } else {
+      cb(null, rawMsg)
+    }
   } catch (err) {
     cb(err)
   }
@@ -426,7 +437,7 @@ function IdManagement(opts) {
     var privKeyHex = this.exportPrivateKey(txParams.from)
     var privKey = ethUtil.toBuffer(privKeyHex)
     tx.sign(privKey)
-    
+
     // Add the tx hash to the persisted meta-tx object
     var txHash = ethUtil.bufferToHex(tx.hash())
     var metaTx = configManager.getTx(txParams.metamaskId)

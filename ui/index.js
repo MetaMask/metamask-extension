@@ -43,6 +43,11 @@ function startApp(metamaskState, accountManager, opts){
     store.dispatch(actions.showConfTxPage())
   }
 
+  // if unconfirmed messages, start on msgConf page
+  if (Object.keys(metamaskState.unconfMsgs || {}).length) {
+    store.dispatch(actions.showConfTxPage())
+  }
+
   accountManager.on('update', function(metamaskState){
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })

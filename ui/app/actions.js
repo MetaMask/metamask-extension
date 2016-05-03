@@ -42,6 +42,7 @@ var actions = {
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
+  SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
@@ -57,7 +58,8 @@ var actions = {
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
   setSelectedAddress: setSelectedAddress,
-  signTx: signTx,
+  signMsg: signMsg,
+  cancelMsg: cancelMsg,
   sendTx: sendTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -152,16 +154,15 @@ function setSelectedAddress(address) {
   }
 }
 
-function signTx(txData) {
+function signMsg(msgData) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
 
-    web3.eth.sendTransaction(txData, (err, data) => {
+    _accountManager.signMessage(msgData, (err) => {
       dispatch(this.hideLoadingIndication())
 
       if (err) return dispatch(this.displayWarning(err.message))
-      dispatch(this.hideWarning())
-      dispatch(this.goHome())
+      dispatch(this.completedTx(msgData.metamaskId))
     })
   }
 }
@@ -193,9 +194,14 @@ function txError(err) {
   }
 }
 
+function cancelMsg(msgData){
+  _accountManager.cancelMessage(msgData.id)
+  return this.completedTx(msgData.id)
+}
+
 function cancelTx(txData){
   _accountManager.cancelTransaction(txData.id)
-  return this.goHome()
+  return this.completedTx(txData.id)
 }
 
 //

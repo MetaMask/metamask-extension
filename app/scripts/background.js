@@ -10,6 +10,7 @@ const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/notifications.js').createTxNotification
 const createMsgNotification = require('./lib/notifications.js').createMsgNotification
 const configManager = require('./lib/config-manager-singleton')
+const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
@@ -175,6 +176,8 @@ function setupControllerConnection(stream){
     setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
     approveTransaction: idStore.approveTransaction.bind(idStore),
     cancelTransaction:  idStore.cancelTransaction.bind(idStore),
+    signMessage:        idStore.signMessage.bind(idStore),
+    cancelMessage:      idStore.cancelMessage.bind(idStore),
     setLocked:          idStore.setLocked.bind(idStore),
     clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
     exportAccount:      idStore.exportAccount.bind(idStore),
@@ -206,7 +209,10 @@ idStore.on('update', updateBadge)
 function updateBadge(state){
   var label = ''
   var unconfTxs = configManager.unconfirmedTxs()
-  var count = Object.keys(unconfTxs).length
+  var unconfTxLen = Object.keys(unconfTxs).length
+  var unconfMsgs = messageManager.unconfirmedMsgs()
+  var unconfMsgLen = Object.keys(unconfMsgs).length
+  var count = unconfTxLen + unconfMsgLen
   if (count) {
     label = String(count)
   }

@@ -44,11 +44,17 @@ function reduceMetamask(state, action) {
   case actions.COMPLETED_TX:
     var stringId = String(action.id)
     var newState = extend(metamaskState, {
-      unconfTxs: {}
+      unconfTxs: {},
+      unconfMsgs: {},
     })
     for (var id in metamaskState.unconfTxs) {
       if (id !== stringId) {
         newState.unconfTxs[id] = metamaskState.unconfTxs[id]
+      }
+    }
+    for (var id in metamaskState.unconfMsgs) {
+      if (id !== stringId) {
+        newState.unconfMsgs[id] = metamaskState.unconfMsgs[id]
       }
     }
     return newState

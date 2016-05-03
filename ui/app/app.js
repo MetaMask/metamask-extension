@@ -202,7 +202,7 @@ App.prototype.renderPrimary = function(state){
       return h(CreateVaultScreen, {key: 'createVault'})
 
     default:
-      return h(AccountsScreen, {key: 'accounts'})
+      return h(AccountDetailScreen, {key: 'account-detail'})
   }
 }
 

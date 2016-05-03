@@ -7,10 +7,10 @@ const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
 const AccountPanel = require('./components/account-panel')
 const valuesFor = require('./util').valuesFor
-const addressSummary = require('./util').addressSummary
-const readableDate = require('./util').readableDate
-const formatBalance = require('./util').formatBalance
-const dataSize = require('./util').dataSize
+const txHelper = require('../lib/tx-helper')
+
+const ConfirmTx = require('./components/pending-tx')
+const PendingMsg = require('./components/pending-msg')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -20,7 +20,9 @@ function mapStateToProps(state) {
     accounts: state.metamask.accounts,
     selectedAddress: state.metamask.selectedAddress,
     unconfTxs: state.metamask.unconfTxs,
+    unconfMsgs: state.metamask.unconfMsgs,
     index: state.appState.currentView.context,
+    warning: state.appState.warning,
   }
 }
 
@@ -32,12 +34,11 @@ function ConfirmTxScreen() {
 
 ConfirmTxScreen.prototype.render = function() {
   var state = this.props
-  var unconfTxList = valuesFor(state.unconfTxs).sort(tx => tx.time)
+
+  var unconfTxs = state.unconfTxs
+  var unconfMsgs = state.unconfMsgs
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
   var txData = unconfTxList[state.index] || {}
-  var txParams = txData.txParams || {}
-  var address =  txParams.from || state.selectedAddress
-  var identity = state.identities[address] || { address: address }
-  var account = state.accounts[address] || { address: address }
 
   return (
 
@@ -46,7 +47,7 @@ ConfirmTxScreen.prototype.render = function() {
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.navigateToAccounts.bind(this),
+          onClick: this.goHome.bind(this),
         }),
         h('h2.page-subtitle', 'Confirm Transaction'),
       ]),
@@ -72,56 +73,42 @@ ConfirmTxScreen.prototype.render = function() {
         }),
       ]),
 
+      warningIfExists(state.warning),
+
       h(ReactCSSTransitionGroup, {
         transitionName: "main",
         transitionEnterTimeout: 300,
         transitionLeaveTimeout: 300,
       }, [
 
-        h('.transaction', {
+        currentTxView({
+          // Properties
+          txData: txData,
           key: txData.id,
-        }, [
+          selectedAddress: state.selectedAddress,
+          accounts: state.accounts,
+          identities: state.identities,
+          // Actions
+          sendTransaction: this.sendTransaction.bind(this, txData),
+          cancelTransaction: this.cancelTransaction.bind(this, txData),
+          signMessage: this.signMessage.bind(this, txData),
+          cancelMessage: this.cancelMessage.bind(this, txData),
+        }),
 
-          // account that will sign
-          h(AccountPanel, {
-            showFullAddress: true,
-            identity: identity,
-            account: account,
-          }),
-
-          // tx data
-          h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
-
-            h('.flex-row.flex-space-between', [
-              h('label.font-small', 'TO ADDRESS'),
-              h('span.font-small', addressSummary(txParams.to)),
-            ]),
-
-            h('.flex-row.flex-space-between', [
-              h('label.font-small', 'DATE'),
-              h('span.font-small', readableDate(txData.time)),
-            ]),
-
-            h('.flex-row.flex-space-between', [
-              h('label.font-small', 'AMOUNT'),
-              h('span.font-small', formatBalance(txParams.value)),
-            ]),
-
-          ]),
-
-          // send + cancel
-          h('.flex-row.flex-space-around', [
-            h('button', {
-              onClick: this.cancelTransaction.bind(this, txData),
-            }, 'Cancel'),
-            h('button', {
-              onClick: this.sendTransaction.bind(this, txData),
-            }, 'Send'),
-          ]),
-        ]),
       ]),
-    ]) // No comma or semicolon can go here
+    ])
   )
+}
+
+function currentTxView (opts) {
+
+  if ('txParams' in opts.txData) {
+    // This is a pending transaction
+    return h(ConfirmTx, opts)
+  } else if ('msgParams' in opts.txData) {
+    // This is a pending message to sign
+    return h(PendingMsg, opts)
+  }
 }
 
 ConfirmTxScreen.prototype.sendTransaction = function(txData, event){
@@ -134,7 +121,25 @@ ConfirmTxScreen.prototype.cancelTransaction = function(txData, event){
   this.props.dispatch(actions.cancelTx(txData))
 }
 
-ConfirmTxScreen.prototype.navigateToAccounts = function(event){
+ConfirmTxScreen.prototype.signMessage = function(msgData, event){
+  var params = msgData.msgParams
+  params.metamaskId = msgData.id
   event.stopPropagation()
-  this.props.dispatch(actions.showAccountsPage())
+  this.props.dispatch(actions.signMsg(params))
+}
+
+ConfirmTxScreen.prototype.cancelMessage = function(msgData, event){
+  event.stopPropagation()
+  this.props.dispatch(actions.cancelMsg(msgData))
+}
+
+ConfirmTxScreen.prototype.goHome = function(event){
+  event.stopPropagation()
+  this.props.dispatch(actions.goHome())
+}
+
+function warningIfExists(warning) {
+  if (warning) {
+    return h('span.error', { style: { margin: 'auto' } }, warning)
+  }
 }
