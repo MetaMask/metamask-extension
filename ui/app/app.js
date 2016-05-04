@@ -23,6 +23,7 @@ const ConfirmTxScreen = require('./conf-tx')
 const ConfigScreen = require('./config')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
+const txHelper = require('../lib/tx-helper')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -39,6 +40,8 @@ function mapStateToProps(state) {
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
     seedWords: state.metamask.seedWords,
+    unconfTxs: state.metamask.unconfTxs,
+    unconfMsgs: state.metamask.unconfMsgs,
   }
 }
 
@@ -202,8 +205,20 @@ App.prototype.renderPrimary = function(state){
       return h(CreateVaultScreen, {key: 'createVault'})
 
     default:
-      return h(AccountsScreen, {key: 'accounts'})
-  }
+      if (this.hasPendingTxs()) {
+        return h(ConfirmTxScreen, {key: 'confirm-tx'})
+      } else {
+        return h(AccountDetailScreen, {key: 'account-detail'})
+      }
+   }
+}
+
+App.prototype.hasPendingTxs = function() {
+  var state = this.props
+  var unconfTxs = state.unconfTxs
+  var unconfMsgs = state.unconfMsgs
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  return unconfTxList.length > 0
 }
 
 function onOffToggle(state){

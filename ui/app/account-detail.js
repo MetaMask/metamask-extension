@@ -13,7 +13,7 @@ function mapStateToProps(state) {
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-    address: state.appState.currentView.context,
+    address: state.metamask.selectedAccount,
     accountDetail: state.appState.accountDetail,
     transactions: state.metamask.transactions,
     networkVersion: state.metamask.network,
@@ -27,6 +27,7 @@ function AccountDetailScreen() {
 
 AccountDetailScreen.prototype.render = function() {
   var state = this.props
+  var selected = state.address || Object.keys(state.accounts[0]).address
   var identity = state.identities[state.address]
   var account = state.accounts[state.address]
   var accountDetail = state.accountDetail

@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const valuesFor = require('../util').valuesFor
+const txHelper = require('../../lib/tx-helper')
 
 module.exports = reduceApp
 
@@ -107,6 +108,7 @@ function reduceApp(state, action) {
 
   case actions.UNLOCK_METAMASK:
     return extend(appState, {
+      currentView: {},
       transForward: true,
       warning: null,
     })
@@ -127,10 +129,7 @@ function reduceApp(state, action) {
 
   case actions.GO_HOME:
     return extend(appState, {
-      currentView: {
-        name: 'accountDetail',
-        context: appState.currentView.context,
-      },
+      currentView: {},
       accountDetail: {
         accountExport: 'none',
         privateKey: '',
@@ -185,9 +184,24 @@ function reduceApp(state, action) {
       warning: null,
     })
 
+  case actions.SHOW_CONF_MSG_PAGE:
+    return extend(appState, {
+      currentView: {
+        name: 'confTx',
+        context: 0,
+      },
+      transForward: true,
+      warning: null,
+    })
+
   case actions.COMPLETED_TX:
-    var unconfTxs = Object.keys(state.metamask.unconfTxs).filter(tx => tx !== tx.id)
-    if (unconfTxs && unconfTxs.length > 0) {
+    var unconfTxs = state.metamask.unconfTxs
+    var unconfMsgs = state.metamask.unconfMsgs
+
+    var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+    .filter(tx => tx !== tx.id)
+
+    if (unconfTxList && unconfTxList.length > 0) {
       return extend(appState, {
         transForward: false,
         currentView: {
@@ -202,7 +216,7 @@ function reduceApp(state, action) {
         warning: null,
         currentView: {
           name: 'accountDetail',
-          context: appState.currentView.context,
+          context: state.metamask.selectedAddress,
         },
       })
     }

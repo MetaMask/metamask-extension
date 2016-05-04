@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add support for calls to `eth.sign`.
+
 ## 1.7.0 2016-04-29
 
 - Account detail view is now the primary view.
