@@ -23,6 +23,9 @@ function reduceApp(state, action) {
 
   var appState = extend({
     currentView: seedWords ? seedConfView : defaultView,
+    accountDetail: {
+      subview: 'transactions',
+    },
     currentDomain: 'example.com',
     transForward: true, // Used to render transition direction
     isLoading: false,   // Used to display loading indicator
@@ -133,6 +136,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {},
       accountDetail: {
+        subview: 'transactions',
         accountExport: 'none',
         privateKey: '',
       },
@@ -146,6 +150,7 @@ function reduceApp(state, action) {
         context: action.value || account,
       },
       accountDetail: {
+        subview: 'transactions',
         accountExport: 'none',
         privateKey: '',
       },
@@ -159,6 +164,7 @@ function reduceApp(state, action) {
         context: action.value,
       },
       accountDetail: {
+        subview: 'transactions',
         accountExport: 'none',
         privateKey: '',
       },
@@ -219,6 +225,9 @@ function reduceApp(state, action) {
         currentView: {
           name: 'accountDetail',
           context: state.metamask.selectedAddress,
+        },
+        accountDetail: {
+          subview: 'transactions',
         },
       })
     }
@@ -287,7 +296,13 @@ function reduceApp(state, action) {
 
   case actions.REQUEST_ACCOUNT_EXPORT:
     return extend(appState, {
+      transForward: true,
+      currentView: {
+        name: 'accountDetail',
+        context: appState.currentView.context,
+      },
       accountDetail: {
+        subview: 'export',
         accountExport: 'requested',
       },
     })
@@ -295,6 +310,7 @@ function reduceApp(state, action) {
   case  actions.EXPORT_ACCOUNT:
     return extend(appState, {
       accountDetail: {
+        subview: 'export',
         accountExport: 'completed',
       },
     })
@@ -302,6 +318,7 @@ function reduceApp(state, action) {
   case  actions.SHOW_PRIVATE_KEY:
     return extend(appState, {
       accountDetail: {
+        subview: 'export',
         accountExport: 'completed',
         privateKey: action.value,
       },
