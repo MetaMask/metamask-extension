@@ -7,6 +7,7 @@
 - Added buttons to the account export process.
 - Improved visual appearance of account detail transition where button heights would change.
 - Restored back button to account detail view.
+- Show transaction list always, never collapsed.
 
 ## 1.7.0 2016-04-29
 

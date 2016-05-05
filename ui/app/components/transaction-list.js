@@ -4,23 +4,16 @@ const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 
 module.exports = function(transactions, network) {
-  return h('details', { key: 'transaction-list' }, [
-
-    h('summary', [
-      h('div.font-small', {style: {display: 'inline'}}, 'Transactions'),
-    ]),
-
-    h('.flex-row.flex-space-around', [
-      h('div.font-small','To'),
-      h('div.font-small','Amount'),
-    ]),
-
-    h('.tx-list', {
-        style: {
-          overflowY: 'auto',
-          height: '180px',
-        },
+  return h('.tx-list', {
+      style: {
+        overflowY: 'auto',
+        height: '180px',
+        textAlign: 'center',
       },
+    },
+
+    [
+      h('div.font-small', {style: {display: 'inline'}}, 'Transactions'),
 
       transactions.map((transaction) => {
         return h('.tx.flex-row.flex-space-around', [
@@ -33,7 +26,6 @@ module.exports = function(transactions, network) {
           h('div.font-small', formatBalance(transaction.txParams.value))
         ])
       })
-    )
-
-  ])
+    ]
+  )
 }
