@@ -47,6 +47,11 @@ AccountDetailScreen.prototype.render = function() {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+          onClick: (event) => {
+            state.dispatch(actions.goHome())
+          }
+        }),
         h('h2.page-subtitle', 'Account Detail'),
       ]),
 
@@ -62,10 +67,6 @@ AccountDetailScreen.prototype.render = function() {
           display: 'flex',
         }
       }, [
-
-        h('button', {
-          onClick: this.navigateToAccounts.bind(this),
-        }, 'CHANGE ACCT'),
 
         h('button', {
           onClick: () => {

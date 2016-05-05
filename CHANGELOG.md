@@ -6,6 +6,7 @@
 - Moved account exporting within transitioning subview on the account detail view.
 - Added buttons to the account export process.
 - Improved visual appearance of account detail transition where button heights would change.
+- Restored back button to account detail view.
 
 ## 1.7.0 2016-04-29
 
