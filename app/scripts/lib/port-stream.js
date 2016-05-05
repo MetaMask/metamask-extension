@@ -31,7 +31,8 @@ PortDuplexStream.prototype._onMessage = function(msg){
 
 PortDuplexStream.prototype._onDisconnect = function(){
   try {
-    this.end()
+    // this.end()
+    this.emit('close')
   } catch(err){
     this.emit('error', err)
   }
@@ -54,6 +55,7 @@ PortDuplexStream.prototype._write = function(msg, encoding, cb){
     }
     cb()
   } catch(err){
+    console.error(err)
     // this.emit('error', err)
     cb(new Error('PortDuplexStream - disconnected'))
   }

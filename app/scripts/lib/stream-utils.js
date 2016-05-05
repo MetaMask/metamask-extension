@@ -27,7 +27,6 @@ function setupMultiplex(connectionStream){
   connectionStream.pipe(mx).pipe(connectionStream)
   mx.on('error', function(err) {
     console.error(err)
-    // connectionStream.destroy()
   })
   connectionStream.on('error', function(err) {
     console.error(err)
