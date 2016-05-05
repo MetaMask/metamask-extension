@@ -5,6 +5,7 @@ const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const RemoteStore = require('./lib/remote-store.js').RemoteStore
 const Web3 = require('web3')
+const once = require('once')
 restoreContextAfterImports()
 
 // rename on window
@@ -24,32 +25,61 @@ var pluginStream = new LocalMessageDuplexStream({
   target: 'contentscript',
 })
 var mx = setupMultiplex(pluginStream)
-// connect features
+
+// connect to provider
 var remoteProvider = new StreamProvider()
 remoteProvider.pipe(mx.createStream('provider')).pipe(remoteProvider)
 remoteProvider.on('error', console.error.bind(console))
 
+// subscribe to metamask public config
 var initState = JSON.parse(localStorage['MetaMask-Config'] || '{}')
 var publicConfigStore = new RemoteStore(initState)
 var storeStream = publicConfigStore.createStream()
 storeStream.pipe(mx.createStream('publicConfig')).pipe(storeStream)
-
 publicConfigStore.subscribe(function(state){
   localStorage['MetaMask-Config'] = JSON.stringify(state)
 })
 
-
 //
-// global web3
+// setup web3
 //
 
 var web3 = new Web3(remoteProvider)
-window.web3 = web3
 web3.setProvider = function(){
   console.log('MetaMask - overrode web3.setProvider')
 }
 console.log('MetaMask - injected web3')
 
+//
+// automatic dapp reset
+//
+
+// export web3 as a global, checking for usage
+var pageIsUsingWeb3 = false
+var resetWasRequested = false
+window.web3 = ensnare(web3, once(function(){
+  // if web3 usage happened after a reset request, trigger reset late
+  if (resetWasRequested) return triggerReset()
+  // mark web3 as used
+  pageIsUsingWeb3 = true
+  // reset web3 reference
+  window.web3 = web3
+}))
+
+// listen for reset requests
+mx.createStream('control').once('data', function(){
+  resetWasRequested = true
+  // ignore if web3 was not used
+  if (!pageIsUsingWeb3) return
+  // reload after short timeout
+  triggerReset()
+})
+
+function triggerReset(){
+  setTimeout(function(){
+    window.location.reload()
+  }, 500)
+}
 
 //
 // handle synchronous requests
@@ -102,6 +132,34 @@ remoteProvider.send = function(payload){
     jsonrpc: payload.jsonrpc,
     result: result,
   }
+}
+
+
+//
+// util
+//
+
+// creates a proxy object that calls cb everytime the obj's properties/fns are accessed
+function ensnare(obj, cb){
+  var proxy = {}
+  Object.keys(obj).forEach(function(key){
+    var val = obj[key]
+    switch (typeof val) {
+      case 'function':
+        proxy[key] = function(){
+          cb()
+          val.apply(obj, arguments)
+        }
+        return
+      default:
+        Object.defineProperty(proxy, key, {
+          get: function(){ cb(); return obj[key] },
+          set: function(val){ cb(); return obj[key] = val },
+        })
+        return
+    }
+  })
+  return proxy
 }
 
 // need to make sure we aren't affected by overlapping namespaces

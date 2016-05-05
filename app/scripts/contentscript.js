@@ -1,5 +1,7 @@
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const PortStream = require('./lib/port-stream.js')
+const ObjectMultiplex = require('./lib/obj-multiplex')
+
 
 
 // inject in-page script
@@ -15,13 +17,22 @@ var pageStream = new LocalMessageDuplexStream({
   name: 'contentscript',
   target: 'inpage',
 })
+pageStream.on('error', console.error.bind(console))
 var pluginPort = chrome.runtime.connect({name: 'contentscript'})
 var pluginStream = new PortStream(pluginPort)
-
-// forward communication across
-pageStream.pipe(pluginStream)
-pluginStream.pipe(pageStream)
-
-// log errors
-pageStream.on('error', console.error.bind(console))
 pluginStream.on('error', console.error.bind(console))
+
+// forward communication plugin->inpage
+pageStream.pipe(pluginStream).pipe(pageStream)
+
+// connect contentscript->inpage control stream
+var mx = ObjectMultiplex()
+mx.on('error', console.error.bind(console))
+mx.pipe(pageStream)
+var controlStream = mx.createStream('control')
+controlStream.on('error', console.error.bind(console))
+
+// if we lose connection with the plugin, trigger tab refresh 
+pluginStream.on('close', function(){
+  controlStream.write({ method: 'reset' })
+})

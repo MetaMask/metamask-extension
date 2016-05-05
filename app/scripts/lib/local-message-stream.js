@@ -23,7 +23,7 @@ function LocalMessageDuplexStream(opts){
 
 LocalMessageDuplexStream.prototype._onMessage = function(event){
   var msg = event.data
-  // console.log('LocalMessageDuplexStream ('+this._name+') - heard message...')
+  // console.log('LocalMessageDuplexStream ('+this._name+') - heard message...', event)
   // validate message
   if (event.origin !== location.origin) return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (event.origin !== location.origin) ')
   if (typeof msg !== 'object') return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (typeof msg !== "object") ')
@@ -31,7 +31,11 @@ LocalMessageDuplexStream.prototype._onMessage = function(event){
   if (!msg.data) return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (!msg.data) ')
   // console.log('LocalMessageDuplexStream ('+this._name+') - accepted', msg.data)
   // forward message
-  this.push(msg.data)
+  try {
+    this.push(msg.data)
+  } catch(err) {
+    this.emit('error', err)
+  }
 }
 
 // stream plumbing
