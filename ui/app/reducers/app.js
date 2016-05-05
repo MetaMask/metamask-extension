@@ -109,7 +109,9 @@ function reduceApp(state, action) {
   case actions.UNLOCK_METAMASK:
     return extend(appState, {
       currentView: {},
+      detailView: {},
       transForward: true,
+      isLoading: false,
       warning: null,
     })
 
