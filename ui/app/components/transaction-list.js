@@ -4,7 +4,7 @@ const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 
 module.exports = function(transactions, network) {
-  return h('details', [
+  return h('details', { key: 'transaction-list' }, [
 
     h('summary', [
       h('div.font-small', {style: {display: 'inline'}}, 'Transactions'),
