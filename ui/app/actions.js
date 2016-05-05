@@ -108,7 +108,6 @@ function tryUnlockMetamask(password) {
   return (dispatch) => {
     dispatch(this.unlockInProgress())
     _accountManager.submitPassword(password, (err, selectedAccount) => {
-      dispatch(this.hideLoadingIndication())
       if (err) {
         dispatch(this.unlockFailed())
       } else {

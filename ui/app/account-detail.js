@@ -1,11 +1,15 @@
 const inherits = require('util').inherits
+const extend = require('xtend')
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+
 const AccountPanel = require('./components/account-panel')
 const transactionList = require('./components/transaction-list')
+const ExportAccountView = require('./components/account-export')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -35,7 +39,11 @@ AccountDetailScreen.prototype.render = function() {
 
   return (
 
-    h('.account-detail-section.flex-column.flex-grow', [
+    h('.account-detail-section.flex-column.flex-grow', {
+      style: {
+        width: '330px',
+      },
+    }, [
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
@@ -78,12 +86,13 @@ AccountDetailScreen.prototype.render = function() {
         }, 'EXPORT'),
       ]),
 
-      transactionList(transactions
-        .filter(tx => tx.txParams.from === state.address)
-        .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
-        .sort((a, b) => b.time - a.time), state.networkVersion),
-      this.exportedAccount(accountDetail),
-
+      h(ReactCSSTransitionGroup, {
+        transitionName: "main",
+        transitionEnterTimeout: 300,
+        transitionLeaveTimeout: 300,
+      }, [
+        this.subview(),
+      ]),
       // transaction table
       /*
       h('section.flex-column', [
@@ -94,72 +103,41 @@ AccountDetailScreen.prototype.render = function() {
   )
 }
 
+AccountDetailScreen.prototype.subview = function() {
+  var subview
+  try {
+    subview = this.props.accountDetail.subview
+  } catch (e) {
+    subview = null
+  }
+
+  switch (subview) {
+    case 'transactions':
+      return this.transactionList()
+    case 'export':
+      var state = extend({key: 'export'}, this.props)
+      return h(ExportAccountView, state)
+    default:
+      return this.transactionList()
+  }
+}
+
+AccountDetailScreen.prototype.transactionList = function() {
+  var state = this.props
+  var transactions = state.transactions
+
+  return transactionList(transactions
+  .filter(tx => tx.txParams.from === state.address)
+  .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
+  .sort((a, b) => b.time - a.time), state.networkVersion)
+}
+
 AccountDetailScreen.prototype.navigateToAccounts = function(event){
   event.stopPropagation()
   this.props.dispatch(actions.showAccountsPage())
-}
-
-AccountDetailScreen.prototype.exportAccount = function(address) {
-  this.props.dispatch(actions.exportAccount(address))
 }
 
 AccountDetailScreen.prototype.requestAccountExport = function() {
   this.props.dispatch(actions.requestExportAccount())
 }
 
-AccountDetailScreen.prototype.exportedAccount = function(accountDetail) {
-  if (!accountDetail) return
-  var accountExport = accountDetail.accountExport
-
-  var notExporting = accountExport === 'none'
-  var exportRequested = accountExport === 'requested'
-  var accountExported = accountExport === 'completed'
-
-  if (notExporting) return
-
-  if (exportRequested) {
-    var warning = `Exporting your private key is very dangerous,
-      and you should only do it if you know what you're doing.`
-    var confirmation = `If you're absolutely sure, type "I understand" below and
-                        hit Enter.`
-    return h('div', {}, [
-      h('p.error', warning),
-      h('p', confirmation),
-      h('input#exportAccount', {
-        onKeyPress: this.onExportKeyPress.bind(this),
-      })
-    ])
-  }
-
-  if (accountExported) {
-    return h('div.privateKey', {
-
-    }, [
-      h('label', 'Your private key (click to copy):'),
-      h('p.error.cursor-pointer', {
-        style: {
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-          webkitUserSelect: 'text',
-          width: '100%',
-        },
-        onClick: function(event) {
-          copyToClipboard(accountDetail.privateKey)
-        }
-      }, accountDetail.privateKey),
-    ])
-  }
-}
-
-AccountDetailScreen.prototype.onExportKeyPress = function(event) {
-  if (event.key !== 'Enter') return
-  event.preventDefault()
-
-  var input = document.getElementById('exportAccount')
-  if (input.value === 'I understand') {
-    this.props.dispatch(actions.exportAccount(this.props.address))
-  } else {
-    input.value = ''
-    input.placeholder = 'Please retype "I understand" exactly.'
-  }
-}
