@@ -48,9 +48,7 @@ AccountDetailScreen.prototype.render = function() {
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
-            state.dispatch(actions.goHome())
-          }
+          onClick: this.navigateToAccounts.bind(this),
         }),
         h('h2.page-subtitle', 'Account Detail'),
       ]),
