@@ -35,7 +35,11 @@ AccountDetailScreen.prototype.render = function() {
 
   return (
 
-    h('.account-detail-section.flex-column.flex-grow', [
+    h('.account-detail-section.flex-column.flex-grow', {
+      style: {
+        width: '330px',
+      },
+    }, [
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [

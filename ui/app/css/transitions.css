@@ -19,6 +19,7 @@
   position: absolute;
   width: 100%;
   transition: transform 300ms ease-in-out;
+  overflow-x: hidden;
 }
 
 /* final positions */

@@ -65,7 +65,7 @@ App.prototype.render = function() {
     h('.flex-column.flex-grow.full-height', {
       style: {
         // Windows was showing a vertical scroll bar:
-        overflowY: 'hidden',
+        overflow: 'hidden',
       }
     },
     [
@@ -82,6 +82,7 @@ App.prototype.render = function() {
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
         style: {
           height: '380px',
+          width: '360px',
         }
       }, [
         h(ReactCSSTransitionGroup, {
