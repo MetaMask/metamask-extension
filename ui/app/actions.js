@@ -61,6 +61,7 @@ var actions = {
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   sendTx: sendTx,
+  signTx: signTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
   txError: txError,
@@ -161,6 +162,20 @@ function signMsg(msgData) {
 
       if (err) return dispatch(this.displayWarning(err.message))
       dispatch(this.completedTx(msgData.metamaskId))
+    })
+  }
+}
+
+function signTx(txData) {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+
+    web3.eth.sendTransaction(txData, (err, data) => {
+      dispatch(this.hideLoadingIndication())
+
+      if (err) return dispatch(this.displayWarning(err.message))
+      dispatch(this.hideWarning())
+      dispatch(this.goHome())
     })
   }
 }

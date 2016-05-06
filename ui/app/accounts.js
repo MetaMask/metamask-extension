@@ -50,7 +50,7 @@ AccountsScreen.prototype.render = function() {
        * regardless of the current domain.
        */
       h('.current-domain-panel.flex-center.font-small', [
-        h('spam', 'Selected address is visible to all sites you visit.'),
+        h('span', 'Selected address is visible to all sites you visit.'),
         // h('span', state.currentDomain),
       ]),
 
