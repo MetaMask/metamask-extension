@@ -16,7 +16,9 @@ module.exports = function(transactions, network) {
       h('div.font-small', {style: {display: 'inline'}}, 'Transactions'),
 
       transactions.map((transaction) => {
-        return h('.tx.flex-row.flex-space-around', [
+        return h('.tx.flex-row.flex-space-around', {
+          key: `listed-tx-${transaction.hash}`,
+        }, [
           h('a.font-small',
           {
             href: explorerLink(transaction.hash, parseInt(network)),

@@ -58,7 +58,8 @@ AccountDetailScreen.prototype.render = function() {
         showFullAddress: true,
         identity: identity,
         account: account,
-      }, []),
+        key: 'accountPanel'
+      }),
 
       h('div', {
         style: {

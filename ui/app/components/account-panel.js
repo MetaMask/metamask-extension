@@ -6,6 +6,8 @@ const addressSummary = require('../util').addressSummary
 const formatBalance = require('../util').formatBalance
 const Identicon = require('identicon.js')
 
+const Panel = require('./panel')
+
 module.exports = AccountPanel
 
 
@@ -23,49 +25,29 @@ AccountPanel.prototype.render = function() {
   var identicon = new Identicon(identity.address, 46).toString()
   var identiconSrc = `data:image/png;base64,${identicon}`
 
-  return (
-
-    h('.identity-panel.flex-row.flex-space-between'+(state.isSelected?'.selected':''), {
-      style: {
-        flex: '1 0 auto',
+  var panelOpts = {
+    key: `accountPanel${identity.address}`,
+    onClick: (event) => {
+      if (state.onShowDetail) {
+        state.onShowDetail(identity.address, event)
+      }
+    },
+    identiconKey: identity.address,
+    identiconLabel: identity.name,
+    attributes: [
+      {
+        key: 'ADDRESS',
+        value: addressSummary(identity.address)
       },
-      onClick: (event) => state.onShowDetail(identity.address, event),
-    }, [
+      balanceOrFaucetingIndication(account, isFauceting),
+    ]
+  }
 
-      // account identicon
-      h('.identicon-wrapper.flex-column.select-none', [
-        h('img.identicon', {
-          src: identiconSrc,
-          style: {
-            border: 'none',
-            borderRadius: '20px',
-          }
-        }),
-        h('span.font-small', identity.name),
-      ]),
+  return h(Panel, panelOpts,
+  !state.onShowDetail ? null : h('.arrow-right.cursor-pointer', [
+    h('i.fa.fa-chevron-right.fa-lg'),
+  ]))
 
-      // account address, balance
-      h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
-
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'ADDRESS'),
-          h('span.font-small', addressSummary(identity.address)),
-        ]),
-
-        balanceOrFaucetingIndication(account, isFauceting),
-
-        // outlet for inserting additional stuff
-        state.children,
-
-      ]),
-
-      // navigate to account detail
-      !state.onShowDetail ? null :
-        h('.arrow-right.cursor-pointer', [
-          h('i.fa.fa-chevron-right.fa-lg'),
-        ]),
-    ])
-  )
 }
 
 function balanceOrFaucetingIndication(account, isFauceting) {
@@ -73,27 +55,14 @@ function balanceOrFaucetingIndication(account, isFauceting) {
   // Temporarily deactivating isFauceting indication
   // because it shows fauceting for empty restored accounts.
   if (/*isFauceting*/ false) {
-
-    return h('.flex-row.flex-space-between', [
-      h('span.font-small', {
-      }, [
-        'Account is auto-funding,',
-        h('br'),
-        'please wait.'
-      ]),
-    ])
-
+    return {
+      key: 'Account is auto-funding.',
+      value: 'Please wait.',
+    }
   } else {
-
-    return h('.flex-row.flex-space-between', [
-      h('label.font-small', 'BALANCE'),
-      h('span.font-small', {
-        style: {
-          overflowX: 'hidden',
-          maxWidth: '136px',
-        }
-      }, formatBalance(account.balance)),
-    ])
-
+    return {
+      key: 'BALANCE',
+      value: formatBalance(account.balance)
+    }
   }
 }
