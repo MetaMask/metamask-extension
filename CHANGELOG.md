@@ -8,6 +8,7 @@
 - Improved visual appearance of account detail transition where button heights would change.
 - Restored back button to account detail view.
 - Show transaction list always, never collapsed.
+- Changing provider now reloads current Dapps
 
 ## 1.7.0 2016-04-29
 
