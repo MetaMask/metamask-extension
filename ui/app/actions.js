@@ -135,8 +135,8 @@ function recoverFromSeed(password, seed) {
       dispatch(this.hideLoadingIndication())
       if (err) return dispatch(this.displayWarning(err.message))
 
+      dispatch(this.goHome())
       dispatch(this.unlockMetamask())
-      dispatch(this.showAccountsPage())
    })
   }
 }

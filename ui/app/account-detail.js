@@ -31,9 +31,9 @@ function AccountDetailScreen() {
 
 AccountDetailScreen.prototype.render = function() {
   var state = this.props
-  var selected = state.address || Object.keys(state.accounts[0]).address
-  var identity = state.identities[state.address]
-  var account = state.accounts[state.address]
+  var selected = state.address || Object.keys(state.accounts)[0]
+  var identity = state.identities[selected]
+  var account = state.accounts[selected]
   var accountDetail = state.accountDetail
   var transactions = state.transactions
 
