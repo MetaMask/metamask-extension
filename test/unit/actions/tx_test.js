@@ -7,7 +7,7 @@ var sinon = require('sinon')
 var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
 var reducers = require(path.join(__dirname, '..', '..',  '..', 'ui', 'app', 'reducers.js'))
 
-describe.only('tx confirmation screen', function() {
+describe('tx confirmation screen', function() {
 
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
