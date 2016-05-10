@@ -2,8 +2,10 @@
 
 ## Current Master
 
+## 1.8.0 2016-05-10
+
 - Add support for calls to `eth.sign`.
-- Moved account exporting within transitioning subview on the account detail view.
+- Moved account exporting within subview of the account detail view.
 - Added buttons to the account export process.
 - Improved visual appearance of account detail transition where button heights would change.
 - Restored back button to account detail view.
