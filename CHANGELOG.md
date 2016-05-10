@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Initial usage of scalable blockchain backend.
+- Made official providers more easily configurable for us internally.
+
 ## 1.8.0 2016-05-10
 
 - Add support for calls to `eth.sign`.

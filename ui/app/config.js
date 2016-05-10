@@ -84,7 +84,7 @@ ConfigScreen.prototype.render = function() {
               },
               onClick(event) {
                 event.preventDefault()
-                state.dispatch(actions.setRpcTarget('https://rpc.metamask.io/'))
+                state.dispatch(actions.setProviderType('mainnet'))
               }
             }, 'Use Main Network')
           ]),
@@ -96,7 +96,7 @@ ConfigScreen.prototype.render = function() {
               },
               onClick(event) {
                 event.preventDefault()
-                state.dispatch(actions.setRpcTarget('https://testrpc.metamask.io/'))
+                state.dispatch(actions.setProviderType('testnet'))
               }
             }, 'Use Morden Test Network')
           ]),
@@ -120,9 +120,28 @@ ConfigScreen.prototype.render = function() {
 }
 
 function currentProviderDisplay(metamaskState) {
-  var rpc = metamaskState.provider.rpcTarget
+  var provider = metamaskState.provider
+  var title, value
+
+  switch (provider.type) {
+
+    case 'mainnet':
+      title = 'Current Network'
+      value = 'Main Ethereum Network'
+      break
+
+    case 'testnet':
+      title = 'Current Network'
+      value = 'Morden Test Network'
+      break
+
+    default:
+      title = 'Current RPC'
+      value = metamaskState.provider.rpcTarget
+ }
+
   return h('div', [
-    h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, 'Current RPC'),
-    h('span', rpc)
+    h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
+    h('span', value)
   ])
 }
