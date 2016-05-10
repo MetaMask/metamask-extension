@@ -36,7 +36,8 @@ describe ('config view actions', function() {
       }
 
       var result = reducers(initialState, action)
-      assert.equal(result.metamask.rpcTarget, action.value)
+      assert.equal(result.metamask.provider.type, 'rpc')
+      assert.equal(result.metamask.provider.rpcTarget, action.value)
     })
   })
 })

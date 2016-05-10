@@ -168,6 +168,7 @@ function setupControllerConnection(stream){
   var dnode = Dnode({
     getState:           function(cb){ cb(null, getState()) },
     setRpcTarget:       setRpcTarget,
+    setProviderType:    setProviderType,
     useEtherscanProvider: useEtherscanProvider,
     // forward directly to idStore
     createNewVault:     idStore.createNewVault.bind(idStore),
@@ -253,6 +254,12 @@ function setRpcTarget(rpcTarget){
   configManager.setRpcTarget(rpcTarget)
   chrome.runtime.reload()
   idStore.getNetwork(3) // 3 retry attempts
+}
+
+function setProviderType(type) {
+  configManager.setProviderType(type)
+  chrome.runtime.reload()
+  idStore.getNetwork(3)
 }
 
 function useEtherscanProvider() {

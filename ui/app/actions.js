@@ -77,10 +77,12 @@ var actions = {
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
+  SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   USE_ETHERSCAN_PROVIDER: 'USE_ETHERSCAN_PROVIDER',
   useEtherscanProvider: useEtherscanProvider,
   showConfigPage: showConfigPage,
   setRpcTarget: setRpcTarget,
+  setProviderType: setProviderType,
   // hacky - need a way to get a reference to account manager
   _setAccountManager: _setAccountManager,
   // loading overlay
@@ -366,6 +368,14 @@ function setRpcTarget(newRpc) {
   return {
     type: this.SET_RPC_TARGET,
     value: newRpc,
+  }
+}
+
+function setProviderType(type) {
+  _accountManager.setProviderType(type)
+  return {
+    type: this.SET_PROVIDER_TYPE,
+    value: type,
   }
 }
 

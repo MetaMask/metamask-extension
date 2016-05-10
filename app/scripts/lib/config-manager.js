@@ -2,7 +2,8 @@ const Migrator = require('pojo-migrator')
 const extend = require('xtend')
 
 const STORAGE_KEY = 'metamask-config'
-const DEFAULT_RPC = 'https://testrpc.metamask.io/'
+const TESTNET_RPC = 'http://morden.infura.io'
+const MAINNET_RPC = 'http://mainnet.infura.io/'
 
 const migrations = require('./migrations')
 
@@ -59,8 +60,7 @@ ConfigManager.prototype.getConfig = function() {
   } else {
     return {
       provider: {
-        type: 'rpc',
-        rpcTarget: DEFAULT_RPC,
+        type: 'testnet',
       }
     }
   }
@@ -71,6 +71,14 @@ ConfigManager.prototype.setRpcTarget = function(rpcUrl) {
   config.provider = {
     type: 'rpc',
     rpcTarget: rpcUrl,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.setProviderType = function(type) {
+  var config = this.getConfig()
+  config.provider = {
+    type: type,
   }
   this.setConfig(config)
 }
@@ -130,9 +138,19 @@ ConfigManager.prototype.getShouldShowSeedWords = function() {
 }
 
 ConfigManager.prototype.getCurrentRpcAddress = function() {
-  var config = this.getConfig()
-  if (!config) return null
-  return config.provider && config.provider.rpcTarget ? config.provider.rpcTarget : DEFAULT_RPC
+  var provider = this.getProvider()
+  if (!provider) return null
+    switch (provider.type) {
+
+      case 'mainnet':
+        return MAINNET_RPC
+
+      case 'testnet':
+        return TESTNET_RPC
+
+      default:
+        return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
+   }
 }
 
 ConfigManager.prototype.clearWallet = function() {
@@ -246,7 +264,9 @@ function loadData() {
     },
     data: {
       config: {
-        rpcTarget: DEFAULT_RPC,
+        provider: {
+          type: 'testnet',
+        }
       }
     }
   }, oldData ? oldData : null, newData ? newData : null)
