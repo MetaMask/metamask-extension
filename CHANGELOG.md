@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 1.8.1 2016-05-10
+
 - Initial usage of scalable blockchain backend.
 - Made official providers more easily configurable for us internally.
 
