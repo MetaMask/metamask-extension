@@ -30,6 +30,10 @@ gulp.task('copy:images', copyTask({
   source: './app/images/',
   destination: './dist/images',
 }))
+gulp.task('copy:fonts', copyTask({
+  source: './app/fonts/',
+  destination: './dist/fonts',
+}))
 gulp.task('copy:reload', copyTask({
   source: './app/scripts/',
   destination: './dist/scripts',
@@ -40,7 +44,7 @@ gulp.task('copy:root', copyTask({
   destination: './dist',
   pattern: '/*',
 }))
-gulp.task('copy',  gulp.parallel('copy:locales','copy:images','copy:reload','copy:root'))
+gulp.task('copy',  gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })

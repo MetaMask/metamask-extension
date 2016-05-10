@@ -3,9 +3,12 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const extend = require('xtend')
+const Identicon = require('identicon.js')
 const actions = require('./actions')
 const AccountPanel = require('./components/account-panel')
 const valuesFor = require('./util').valuesFor
+const addressSummary = require('./util').addressSummary
+const formatBalance = require('./util').formatBalance
 
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
@@ -40,24 +43,14 @@ AccountsScreen.prototype.render = function() {
 
       // subtitle and nav
       h('.section-title.flex-column.flex-center', [
-        h('h2.page-subtitle', 'Accounts'),
+        h('h2.page-subtitle', 'Select Account'),
       ]),
 
-      // current domain
-      /* AUDIT
-       * Temporarily removed
-       * since accounts are currently injected
-       * regardless of the current domain.
-       */
-      h('.current-domain-panel.flex-center.font-small', [
-        h('span', 'Selected address is visible to all sites you visit.'),
-        // h('span', state.currentDomain),
-      ]),
+      h('hr.horizontal-line'),
 
       // identity selection
       h('section.identity-section.flex-column', {
         style: {
-          maxHeight: '290px',
           overflowY: 'auto',
           overflowX: 'hidden',
         }
@@ -94,7 +87,46 @@ AccountsScreen.prototype.render = function() {
       isSelected: false,
       isFauceting: isFauceting,
     })
-    return h(AccountPanel, componentState)
+    // return h(AccountPanel, componentState)
+
+    // var identity = state.identity || {}
+    // var account = state.account || {}
+    // var isFauceting = state.isFauceting
+
+    var identicon = new Identicon(identity.address, 46).toString()
+    var identiconSrc = `data:image/png;base64,${identicon}`
+
+    return (
+      h('.accounts-list-option.flex-row.flex-space-between', {
+        style: {
+          flex: '1 0 auto',
+          background: isSelected ? 'white' : 'none',
+        },
+        // onClick: state.onClick,
+      }, [
+
+        // account identicon
+        h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h('img.identicon', {
+            src: identiconSrc,
+            style: {
+              border: 'none',
+              borderRadius: '20px',
+            }
+          }),
+        ]),
+
+        // account address, balance
+        h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
+
+          h('span', identity.name),
+          h('span.font-small', addressSummary(identity.address)),
+          h('span.font-small', formatBalance(account.balance)),
+
+        ]),
+
+      ])
+    )
   }
 }
 

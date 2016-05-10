@@ -73,9 +73,15 @@ App.prototype.render = function() {
       h(LoadingIndicator),
 
       // top row
-      h('.app-header.flex-column.flex-center', {
+      h('.app-header.flex-row.flex-space-between', {
       }, [
+        h('img', {
+          height: 24,
+          width: 24,
+          src: '/images/icon-128.png',
+        }),
         h('h1', 'MetaMask'),
+        h('i.fa.fa-bars'),
       ]),
 
       // panel content
@@ -115,19 +121,19 @@ App.prototype.render = function() {
           },
         }),
 
-        // toggle
-        onOffToggle({
-          toggleMetamaskActive: this.toggleMetamaskActive.bind(this),
-          isUnlocked: state.isUnlocked,
-        }),
+        // // toggle
+        // onOffToggle({
+        //   toggleMetamaskActive: this.toggleMetamaskActive.bind(this),
+        //   isUnlocked: state.isUnlocked,
+        // }),
 
-        // help
-        h('i.fa.fa-question.fa-lg.cursor-pointer', {
-          style: {
-            opacity: state.isUnlocked ? '1.0' : '0.0',
-          },
-          onClick() { state.dispatch(actions.showInfoPage()) }
-        }),
+        // // help
+        // h('i.fa.fa-question.fa-lg.cursor-pointer', {
+        //   style: {
+        //     opacity: state.isUnlocked ? '1.0' : '0.0',
+        //   },
+        //   onClick() { state.dispatch(actions.showInfoPage()) }
+        // }),
       ]),
     ])
   )

@@ -14,8 +14,7 @@ application specific styles
 }
 
 html, body {
-  /*font-family: 'Open Sans', Arial, sans-serif;*/
-  font-family: 'Roboto', 'Noto', sans-serif;
+  font-family: 'Transat Standard', Arial;
   color: #4D4D4D;
   font-weight: 300;
   line-height: 1.4em;
@@ -98,23 +97,25 @@ button.btn-thin {
 }
 
 .app-header {
-  padding-top: 20px;
+  padding: 6px 8px;
 }
 
 .app-header h1 {
-  font-size: 2em;
-  font-weight: 300;
-  height: 42px;
+  font-family: 'Transat Medium';
+  text-transform: uppercase;
+  color: #AEAEAE;
 }
 
 h2.page-subtitle {
+  font-family: 'Transat Light';
+  text-transform: uppercase;
+  color: #AEAEAE;
   font-size: 1em;
-  font-weight: 500;
-  height: 24px;
-  color: #F3C83E;
+  margin: 12px;
 }
 
 .app-primary {
+  background: #F7F7F7;
 }
 
 .app-footer {
@@ -238,11 +239,19 @@ app sections
 /* accounts */
 
 .accounts-section {
-  margin: 0 20px;
+  margin: 0 0px;
 }
 
-.current-domain-panel {
-  border: 1px solid #B7B7B7;
+.accounts-section .horizontal-line {
+  margin: 0px 18px;
+}
+
+.accounts-list-option {
+  height: 120px;
+}
+
+.accounts-list-option .identicon-wrapper {
+  width: 100px;
 }
 
 .unconftx-link {
@@ -289,8 +298,7 @@ app sections
 /* accounts screen */
 
 .identity-section {
-  border: 2px solid #4D4D4D;
-  margin: 0;
+
 }
 
 .identity-section .identity-panel {
