@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fixed bug where send view would not load correctly the first time it was visited per account.
+
 ## 1.8.1 2016-05-10
 
 - Initial usage of scalable blockchain backend.
