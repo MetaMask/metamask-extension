@@ -127,8 +127,13 @@ AccountDetailScreen.prototype.transactionList = function() {
   var transactions = state.transactions
 
   return transactionList(transactions
+  // only transactions that have a hash
+  .filter(tx => tx.hash)
+  // only transactions that are from the current address
   .filter(tx => tx.txParams.from === state.address)
+  // only transactions that are on the current network
   .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
+  // sort by recency
   .sort((a, b) => b.time - a.time), state.networkVersion)
 }
 

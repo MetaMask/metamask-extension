@@ -250,6 +250,11 @@ app sections
   height: 120px;
 }
 
+.accounts-list-option:hover {
+  background: pink;
+  transform: scale(1.1);
+}
+
 .accounts-list-option .identicon-wrapper {
   width: 100px;
 }

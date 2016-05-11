@@ -97,12 +97,12 @@ AccountsScreen.prototype.render = function() {
     var identiconSrc = `data:image/png;base64,${identicon}`
 
     return (
-      h('.accounts-list-option.flex-row.flex-space-between', {
+      h('.accounts-list-option.flex-row.flex-space-between.cursor-pointer', {
         style: {
           flex: '1 0 auto',
           background: isSelected ? 'white' : 'none',
         },
-        // onClick: state.onClick,
+        onClick: (event) => actions.onShowDetail(identity.address, event),
       }, [
 
         // account identicon
