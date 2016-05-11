@@ -33,7 +33,6 @@ IdenticonComponent.prototype.componentDidMount = function(){
   var address = state.address
 
   if (!address) return
-    console.log('rendering for address ' + address)
   var numericRepresentation = jsNumberForAddress(address)
 
   var container = findDOMNode(this)
