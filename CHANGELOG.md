@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fixed bug where send view would not load correctly the first time it was visited per account.
+- Migrated all users to new scalable backend.
 
 ## 1.8.1 2016-05-10
 
