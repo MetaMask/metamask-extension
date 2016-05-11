@@ -14,7 +14,6 @@ function IdenticonComponent() {
 }
 
 IdenticonComponent.prototype.render = function() {
-  debugger
   return (
     h('div', {
       key: 'identicon-' + this.props.address,
@@ -38,8 +37,13 @@ IdenticonComponent.prototype.componentDidMount = function(){
   var numericRepresentation = jsNumberForAddress(address)
 
   var container = findDOMNode(this)
+  // jazzicon with hack to fix inline svg error
   var identicon = jazzicon(this.diameter, numericRepresentation)
-  container.appendChild(identicon)
+  var identiconSrc = identicon.innerHTML
+  var dataUri = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(identiconSrc)
+  var img = document.createElement('img')
+  img.src = dataUri
+  container.appendChild(img)
 }
 
 function jsNumberForAddress(address) {

@@ -12,6 +12,9 @@ Heres some utilities for preparing the data uri:
 
 build a template using pure svg:
 
+generate uri
+'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgSrc)
+
 <svg xmlns='http://www.w3.org/2000/svg'
   width='1000px' height='500px' viewBox='0 0 200 100'>
   <rect x='0' y='0' width='100%' height='100%' fill='white' />
