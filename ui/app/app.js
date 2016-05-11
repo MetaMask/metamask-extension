@@ -74,6 +74,9 @@ App.prototype.render = function() {
 
       // top row
       h('.app-header.flex-row.flex-space-between', {
+        style: {
+          alignItems: 'center',
+        }
       }, [
         h('img', {
           height: 24,
