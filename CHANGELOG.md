@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- UI Overhaul per Vlad Todirut's designs
+- Replaced identicons with jazzicons
+- Fixed glitchy transitions
+
 ## 1.8.1 2016-05-10
 
 - Initial usage of scalable blockchain backend.
