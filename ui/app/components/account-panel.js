@@ -4,7 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const addressSummary = require('../util').addressSummary
 const formatBalance = require('../util').formatBalance
-const Identicon = require('identicon.js')
+const Identicon = require('./identicon')
 
 const Panel = require('./panel')
 

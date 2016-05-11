@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const Identicon = require('identicon.js')
+const Identicon = require('./identicon')
 
 module.exports = Panel
 
@@ -19,9 +19,6 @@ Panel.prototype.render = function() {
   var account = state.account || {}
   var isFauceting = state.isFauceting
 
-  var identicon = new Identicon(state.identiconKey, 46).toString()
-  var identiconSrc = `data:image/png;base64,${identicon}`
-
   return (
     h('.identity-panel.flex-row.flex-space-between', {
       style: {
@@ -32,12 +29,8 @@ Panel.prototype.render = function() {
 
       // account identicon
       h('.identicon-wrapper.flex-column.select-none', [
-        h('img.identicon', {
-          src: identiconSrc,
-          style: {
-            border: 'none',
-            borderRadius: '20px',
-          }
+        h(Identicon, {
+          address: state.identiconKey,
         }),
         h('span.font-small', state.identiconLabel),
       ]),

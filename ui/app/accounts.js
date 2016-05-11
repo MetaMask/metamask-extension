@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const extend = require('xtend')
-const Identicon = require('identicon.js')
+const Identicon = require('./components/identicon')
 const actions = require('./actions')
 const AccountPanel = require('./components/account-panel')
 const valuesFor = require('./util').valuesFor
@@ -87,14 +87,6 @@ AccountsScreen.prototype.render = function() {
       isSelected: false,
       isFauceting: isFauceting,
     })
-    // return h(AccountPanel, componentState)
-
-    // var identity = state.identity || {}
-    // var account = state.account || {}
-    // var isFauceting = state.isFauceting
-
-    var identicon = new Identicon(identity.address, 46).toString()
-    var identiconSrc = `data:image/png;base64,${identicon}`
 
     return (
       h('.accounts-list-option.flex-row.flex-space-between.cursor-pointer', {
@@ -105,14 +97,9 @@ AccountsScreen.prototype.render = function() {
         onClick: (event) => actions.onShowDetail(identity.address, event),
       }, [
 
-        // account identicon
         h('.identicon-wrapper.flex-column.flex-center.select-none', [
-          h('img.identicon', {
-            src: identiconSrc,
-            style: {
-              border: 'none',
-              borderRadius: '20px',
-            }
+          h(Identicon, {
+            address: identity.address
           }),
         ]),
 
