@@ -6,6 +6,12 @@
 - Replaced identicons with jazzicons
 - Fixed glitchy transitions
 
+## 1.8.2 2016-05-11
+
+- Fixed bug where send view would not load correctly the first time it was visited per account.
+- Migrated all users to new scalable backend.
+- Fixed `eth_syncing` method response.
+
 ## 1.8.1 2016-05-10
 
 - Initial usage of scalable blockchain backend.

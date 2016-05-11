@@ -5,6 +5,7 @@ var wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
 
 var migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
 var migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
+var migration4 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '004'))
 
 describe('wallet1 is migrated successfully', function() {
 
@@ -22,6 +23,10 @@ describe('wallet1 is migrated successfully', function() {
 
     var secondResult = migration3.migrate(firstResult)
     assert.equal(secondResult.config.provider.rpcTarget, newTestRpc)
+
+    var thirdResult = migration4.migrate(secondResult)
+    assert.equal(secondResult.config.provider.rpcTarget, null)
+    assert.equal(secondResult.config.provider.type, 'testnet')
 
     done()
   })
