@@ -5,9 +5,12 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
+const addressSummary = require('./util').addressSummary
+const formatBalance = require('./util').formatBalance
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 const AccountPanel = require('./components/account-panel')
+const Identicon = require('./components/identicon')
 const transactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 
@@ -41,49 +44,80 @@ AccountDetailScreen.prototype.render = function() {
 
     h('.account-detail-section.flex-column.flex-grow', {
       style: {
-        width: '330px',
+        width: 330,
+        'margin-top': 28,
       },
     }, [
 
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+      h('.flex-row.flex-space-between', [
+
+        // invisible placeholder for later
+        h('i.fa.fa-users.fa-lg.color-orange', {
+          style: {
+            visibility: 'hidden',
+          },
+        }),
+
+        // large identicon
+        h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h(Identicon, {
+            diameter: 62,
+            address: account.address
+          }),
+        ]),
+
+        // small accounts nav
+        h('i.fa.fa-users.fa-lg.cursor-pointer.color-orange', {
           onClick: this.navigateToAccounts.bind(this),
         }),
-        h('h2.page-subtitle', 'Account Detail'),
+
       ]),
 
-      // account summary, with embedded action buttons
-      h(AccountPanel, {
-        showFullAddress: true,
-        identity: identity,
-        account: account,
-        key: 'accountPanel'
-      }),
-
-      h('div', {
+      h('h2.font-medium.color-forest.flex-center', {
         style: {
-          display: 'flex',
-        }
+          'padding-top': 8,
+          'margin-bottom': 32,
+        },
+      }, identity && identity.name),
+
+      h('.flex-row.flex-space-between', {
+        style: {
+          'margin-bottom': 16,
+        },
       }, [
 
-        h('button', {
-          onClick: () => {
-            copyToClipboard(identity.address)
+        h('div', {
+          style: {
+            'line-height': 16,
           },
-        }, 'COPY ADDR'),
+        }, addressSummary(account.address)),
+
+        h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
+          onClick: () => this.requestAccountExport(account.address),
+        }),
+
+        h('i.fa.fa-qrcode.fa-md.cursor-disabled.color-orange', {
+          onClick: () => console.warn('QRCode not implented...'),
+        }),
+
+        h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
+          onClick: () => copyToClipboard(account.address),
+        }),
+
+      ]),
+
+      h('.flex-row.flex-space-between', [
+
+        h('div', {
+          style: {
+            'line-height': 50,
+          },
+        }, formatBalance(account.balance)),
 
         h('button', {
-          onClick: () => {
-            this.props.dispatch(actions.showSendPage())
-          },
-        }, 'SEND'),
+          onClick: () => this.props.dispatch(actions.showSendPage()),
+        }, 'SEND ETH'),
 
-        h('button', {
-          onClick: () => {
-            this.requestAccountExport(identity.address)
-          },
-        }, 'EXPORT'),
       ]),
 
       h(ReactCSSTransitionGroup, {
@@ -93,12 +127,7 @@ AccountDetailScreen.prototype.render = function() {
       }, [
         this.subview(),
       ]),
-      // transaction table
-      /*
-      h('section.flex-column', [
-        h('span', 'your transaction history will go here.'),
-      ]),
-      */
+
     ])
   )
 }

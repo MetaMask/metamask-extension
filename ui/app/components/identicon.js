@@ -10,18 +10,20 @@ inherits(IdenticonComponent, Component)
 function IdenticonComponent() {
   Component.call(this)
 
-  this.diameter = 46
+  this.defaultDiameter = 46
 }
 
 IdenticonComponent.prototype.render = function() {
+  var state = this.props
+  var diameter = state.diameter || this.defaultDiameter
   return (
     h('div', {
       key: 'identicon-' + this.props.address,
       style: {
         display: 'inline-block',
-        height: this.diameter,
-        width: this.diameter,
-        borderRadius: this.diameter / 2,
+        height: diameter,
+        width: diameter,
+        borderRadius: diameter / 2,
         overflow: 'hidden',
       },
     })
@@ -33,12 +35,12 @@ IdenticonComponent.prototype.componentDidMount = function(){
   var address = state.address
 
   if (!address) return
-    console.log('rendering for address ' + address)
   var numericRepresentation = jsNumberForAddress(address)
 
   var container = findDOMNode(this)
   // jazzicon with hack to fix inline svg error
-  var identicon = jazzicon(this.diameter, numericRepresentation)
+  var diameter = state.diameter || this.defaultDiameter
+  var identicon = jazzicon(diameter, numericRepresentation)
   var identiconSrc = identicon.innerHTML
   var dataUri = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(identiconSrc)
   var img = document.createElement('img')

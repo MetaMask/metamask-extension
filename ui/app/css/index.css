@@ -28,18 +28,18 @@ html, body {
 }
 
 button {
+  font-family: 'Transat Black';
   outline: none;
   cursor: pointer;
   margin: 10px;
-  padding: 6px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 3px;
   background: #F7861C;
-  font-weight: 500;
   color: white;
   transform-origin: center center;
   transition: transform 50ms ease-in;
 }
+
 button:hover {
   transform: scale(1.1);
 }
