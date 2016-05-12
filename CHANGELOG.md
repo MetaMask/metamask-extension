@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 1.8.3 2016-05-12
+
+- Bumped web3 to 0.6.0
+- Really fixed `eth_syncing` method response.
+
 ## 1.8.2 2016-05-11
 
 - Fixed bug where send view would not load correctly the first time it was visited per account.
