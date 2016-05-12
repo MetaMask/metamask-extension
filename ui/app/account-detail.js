@@ -45,7 +45,7 @@ AccountDetailScreen.prototype.render = function() {
     h('.account-detail-section.flex-column.flex-grow', {
       style: {
         width: 330,
-        'marginTop': 28,
+        'margin-top': 28,
       },
     }, [
 
@@ -75,20 +75,20 @@ AccountDetailScreen.prototype.render = function() {
 
       h('h2.font-medium.color-forest.flex-center', {
         style: {
-          'paddingTop': 8,
-          'marginBottom': 32,
+          'padding-top': 8,
+          'margin-bottom': 32,
         },
       }, identity && identity.name),
 
       h('.flex-row.flex-space-between', {
         style: {
-          'marginBottom': 16,
+          'margin-bottom': 16,
         },
       }, [
 
         h('div', {
           style: {
-            'lineHeight': 16,
+            'line-height': 16,
           },
         }, addressSummary(account.address)),
 
@@ -110,7 +110,7 @@ AccountDetailScreen.prototype.render = function() {
 
         h('div', {
           style: {
-            'lineHeight': 50,
+            'line-height': 50,
           },
         }, formatBalance(account.balance)),
 
