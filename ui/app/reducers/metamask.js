@@ -69,17 +69,24 @@ function reduceMetamask(state, action) {
     }
     return newState
 
+  case actions.SHOW_NEW_VAULT_SEED:
+    return extend(metamaskState, {
+      isUnlocked: true,
+      isInitialized: false,
+    })
+
   case actions.CLEAR_SEED_WORD_CACHE:
     var newState = extend(metamaskState, {
+      isUnlocked: true,
       isInitialized: true,
+      selectedAccount: action.value,
     })
     delete newState.seedWords
     return newState
 
-  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+  case actions.SHOW_ACCOUNT_DETAIL:
     return extend(metamaskState, {
-      isUnlocked: true,
-      isInitialized: true,
+      selectedAccount: action.value,
     })
 
   default:

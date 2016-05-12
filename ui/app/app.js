@@ -157,12 +157,9 @@ App.prototype.toggleMetamaskActive = function(){
 App.prototype.renderPrimary = function(state){
   var state = this.props
 
-  // If seed words haven't been dismissed yet, show them still.
-  /*
   if (state.seedWords) {
     return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
   }
-  */
 
   // show initialize screen
   if (!state.isInitialized) {
@@ -175,6 +172,9 @@ App.prototype.renderPrimary = function(state){
 
       case 'restoreVault':
         return h(RestoreVaultScreen, {key: 'restoreVault'})
+
+      case 'createVaultComplete':
+        return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
@@ -189,9 +189,6 @@ App.prototype.renderPrimary = function(state){
 
   // show current view
   switch (state.currentView.name) {
-
-    case 'createVaultComplete':
-      return h(CreateVaultCompleteScreen, {key: 'created-vault'})
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})

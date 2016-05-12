@@ -278,10 +278,13 @@ function reduceApp(state, action) {
   case actions.CLEAR_SEED_WORD_CACHE:
     return extend(appState, {
       transForward: true,
-      currentView: {
-        name: 'accounts',
-      },
+      currentView: {},
       isLoading: false,
+      accountDetail: {
+        subview: 'transactions',
+        accountExport: 'none',
+        privateKey: '',
+      },
     })
 
   case actions.DISPLAY_WARNING:

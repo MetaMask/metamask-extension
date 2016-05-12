@@ -312,19 +312,20 @@ function backToAccountDetail(address) {
     value: address,
   }
 }
-function clearSeedWordCache() {
+function clearSeedWordCache(account) {
   return {
-    type: this.CLEAR_SEED_WORD_CACHE
+    type: this.CLEAR_SEED_WORD_CACHE,
+    value: account,
   }
 }
 
 function confirmSeedWords() {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.clearSeedWordCache((err, accounts) => {
-      dispatch(this.clearSeedWordCache())
-      console.log('Seed word cache cleared.')
-      dispatch(this.showAccountDetail(accounts[0].address))
+    _accountManager.clearSeedWordCache((err, account) => {
+      dispatch(this.clearSeedWordCache(account))
+      console.log('Seed word cache cleared. ' + account)
+      dispatch(this.showAccountDetail(account))
     })
   }
 }
