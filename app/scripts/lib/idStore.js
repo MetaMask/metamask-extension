@@ -105,14 +105,14 @@ IdentityStore.prototype.getSelectedAddress = function(){
   return configManager.getSelectedAccount()
 }
 
-IdentityStore.prototype.setSelectedAddress = function(address){
+IdentityStore.prototype.setSelectedAddress = function(address, cb){
   if (!address) {
     var addresses = this._getAddresses()
     address = addresses[0]
   }
 
   configManager.setSelectedAccount(address)
-  this._didUpdate()
+  if (cb) return cb(null, address)
 }
 
 IdentityStore.prototype.getNetwork = function(tries) {

@@ -29,6 +29,7 @@ function reduceMetamask(state, action) {
     return extend(metamaskState, {
       isUnlocked: true,
       isInitialized: true,
+      selectedAccount: action.value,
     })
 
   case actions.LOCK_METAMASK:
@@ -85,9 +86,14 @@ function reduceMetamask(state, action) {
     return newState
 
   case actions.SHOW_ACCOUNT_DETAIL:
-    return extend(metamaskState, {
+    const newState = extend(metamaskState, {
+      isUnlocked: true,
+      isInitialized: true,
       selectedAccount: action.value,
+      selectedAddress: action.value,
     })
+    delete newState.seedWords
+    return newState
 
   default:
     return metamaskState

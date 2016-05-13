@@ -21,7 +21,13 @@ describe('#recoverFromSeed(password, seed)', function() {
 
   // stub out account manager
   actions._setAccountManager({
-    recoverFromSeed(pw, seed, cb) { cb(null, [{}, {}]) },
+    recoverFromSeed(pw, seed, cb) {
+      cb(null, {
+        identities: {
+          foo: 'bar'
+        }
+      })
+    },
   })
 
   it('sets metamask.isUnlocked to true', function() {

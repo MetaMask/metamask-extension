@@ -62,7 +62,7 @@ AccountDetailScreen.prototype.render = function() {
         h('.identicon-wrapper.flex-column.flex-center.select-none', [
           h(Identicon, {
             diameter: 62,
-            address: account.address
+            address: selected,
           }),
         ]),
 
@@ -90,7 +90,7 @@ AccountDetailScreen.prototype.render = function() {
           style: {
             'line-height': 16,
           },
-        }, addressSummary(account.address)),
+        }, addressSummary(selected)),
 
         h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
           onClick: () => this.requestAccountExport(account.address),
