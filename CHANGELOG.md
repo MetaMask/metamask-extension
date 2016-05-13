@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Point rpc servers to https endpoints.
+
 ## 1.8.3 2016-05-12
 
 - Bumped web3 to 0.6.0
