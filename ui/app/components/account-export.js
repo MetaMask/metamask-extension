@@ -31,19 +31,28 @@ ExportAccountView.prototype.render = function() {
       and you should only do it if you know what you're doing.`
     var confirmation = `If you're absolutely sure, type "I understand" below and
                         submit.`
-    return h('div', { key: 'exporting' }, [
-      h('p.error', warning),
-      h('p', confirmation),
-      h('input#exportAccount', {
-        onKeyPress: this.onExportKeyPress.bind(this),
-      }),
-      h('button', {
-        onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
-      }, 'Submit'),
-      h('button', {
-        onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address))
-      }, 'Cancel'),
-    ])
+    return (
+
+      h('div', {
+        key: 'exporting',
+        style: {
+          margin: '0 20px',
+        },
+      }, [
+        h('p.error', warning),
+        h('p', confirmation),
+        h('input#exportAccount', {
+          onKeyPress: this.onExportKeyPress.bind(this),
+        }),
+        h('button', {
+          onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
+        }, 'Submit'),
+        h('button', {
+          onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address))
+        }, 'Cancel'),
+      ])
+
+    )
   }
 
   if (accountExported) {
