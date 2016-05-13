@@ -72,19 +72,28 @@ App.prototype.render = function() {
 
       h(LoadingIndicator),
 
-      // top row
+      // app bar
       h('.app-header.flex-row.flex-space-between', {
         style: {
           alignItems: 'center',
         }
       }, [
+
+        // mini logo
         h('img', {
           height: 24,
           width: 24,
           src: '/images/icon-128.png',
         }),
+
+        // metamask name
         h('h1', 'MetaMask'),
-        h('i.fa.fa-bars'),
+
+        // hamburger
+        h('i.fa.fa-bars.cursor-pointer.color-orange', {
+          onClick: (event) => state.dispatch(actions.showConfigPage()),
+        }),
+
       ]),
 
       // panel content
@@ -104,25 +113,25 @@ App.prototype.render = function() {
       ]),
 
       // footer
-      h('.app-footer.flex-row.flex-space-around', {
-        style: {
-          display: shouldHaveFooter ? 'flex' : 'none',
-          alignItems: 'center',
-          height: '56px',
-        }
-      }, [
+      // h('.app-footer.flex-row.flex-space-around', {
+      //   style: {
+      //     display: shouldHaveFooter ? 'flex' : 'none',
+      //     alignItems: 'center',
+      //     height: '56px',
+      //   }
+      // }, [
 
-        // settings icon
-        h('i.fa.fa-cog.fa-lg' + (view  === 'config' ? '.active' : '.cursor-pointer'), {
-          style: {
-            opacity: state.isUnlocked ? '1.0' : '0.0',
-            transition: 'opacity 200ms ease-in',
-            //transform: `translateX(${state.isUnlocked ? '0px' : '-100px'})`,
-          },
-          onClick: function(ev) {
-            state.dispatch(actions.showConfigPage())
-          },
-        }),
+        // // settings icon
+        // h('i.fa.fa-cog.fa-lg' + (view  === 'config' ? '.active' : '.cursor-pointer'), {
+        //   style: {
+        //     opacity: state.isUnlocked ? '1.0' : '0.0',
+        //     transition: 'opacity 200ms ease-in',
+        //     //transform: `translateX(${state.isUnlocked ? '0px' : '-100px'})`,
+        //   },
+        //   onClick: function(ev) {
+        //     state.dispatch(actions.showConfigPage())
+        //   },
+        // }),
 
         // // toggle
         // onOffToggle({
@@ -137,7 +146,8 @@ App.prototype.render = function() {
         //   },
         //   onClick() { state.dispatch(actions.showInfoPage()) }
         // }),
-      ]),
+      // ]),
+
     ])
   )
 }
