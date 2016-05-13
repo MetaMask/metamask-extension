@@ -42,85 +42,99 @@ AccountDetailScreen.prototype.render = function() {
 
   return (
 
-    h('.account-detail-section.flex-column.flex-grow', {
-      style: {
-        width: 330,
-        marginTop: 28,
-      },
-    }, [
+    h('.account-detail-section.flex-column.flex-grow', [
 
-      h('.flex-row.flex-space-between', [
-
-        // invisible placeholder for later
-        h('i.fa.fa-users.fa-lg.color-orange', {
-          style: {
-            visibility: 'hidden',
-          },
-        }),
-
-        // large identicon
-        h('.identicon-wrapper.flex-column.flex-center.select-none', [
-          h(Identicon, {
-            diameter: 62,
-            address: selected,
-          }),
-        ]),
-
-        // small accounts nav
-        h('i.fa.fa-users.fa-lg.cursor-pointer.color-orange', {
-          onClick: this.navigateToAccounts.bind(this),
-        }),
-
-      ]),
-
-      h('h2.font-medium.color-forest.flex-center', {
+      // identicon, label, balance, etc
+      h('.account-data-subsection.flex-column.flex-grow', {
         style: {
-          paddingTop: 8,
-          marginBottom: 32,
-        },
-      }, identity && identity.name),
-
-      h('.flex-row.flex-space-between', {
-        style: {
-          marginBottom: 16,
+          margin: '0 20px',
         },
       }, [
 
-        h('div', {
+        // header - identicon + nav
+        h('.flex-row.flex-space-between', {
           style: {
-            lineHeight: '16px',
+            marginTop: 28,
           },
-        }, addressSummary(selected)),
+        }, [
 
-        h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
-          onClick: () => this.requestAccountExport(account.address),
-        }),
+          // invisible placeholder for later
+          h('i.fa.fa-users.fa-lg.color-orange', {
+            style: {
+              visibility: 'hidden',
+            },
+          }),
 
-        h('i.fa.fa-qrcode.fa-md.cursor-disabled.color-orange', {
-          onClick: () => console.warn('QRCode not implented...'),
-        }),
+          // large identicon
+          h('.identicon-wrapper.flex-column.flex-center.select-none', [
+            h(Identicon, {
+              diameter: 62,
+              address: selected,
+            }),
+          ]),
 
-        h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
-          onClick: () => copyToClipboard(account.address),
-        }),
+          // small accounts nav
+          h('i.fa.fa-users.fa-lg.cursor-pointer.color-orange', {
+            onClick: this.navigateToAccounts.bind(this),
+          }),
 
+        ]),
+
+        // account label
+        h('h2.font-medium.color-forest.flex-center', {
+          style: {
+            paddingTop: 8,
+            marginBottom: 32,
+          },
+        }, identity && identity.name),
+
+        // address and getter actions
+        h('.flex-row.flex-space-between', {
+          style: {
+            marginBottom: 16,
+          },
+        }, [
+
+          h('div', {
+            style: {
+              lineHeight: '16px',
+            },
+          }, addressSummary(selected)),
+
+          h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
+            onClick: () => this.requestAccountExport(account.address),
+          }),
+
+          h('i.fa.fa-qrcode.fa-md.cursor-disabled.color-orange', {
+            onClick: () => console.warn('QRCode not implented...'),
+          }),
+
+          h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
+            onClick: () => copyToClipboard(account.address),
+          }),
+
+        ]),
+
+        // balance + send
+        h('.flex-row.flex-space-between', [
+
+          h('div', {
+            style: {
+              lineHeight: '50px',
+            },
+          }, formatBalance(account && account.balance)),
+
+          h('button', {
+            onClick: () => this.props.dispatch(actions.showSendPage()),
+          }, 'SEND ETH'),
+
+        ]),
+      
       ]),
 
-      h('.flex-row.flex-space-between', [
-
-        h('div', {
-          style: {
-            lineHeight: '50px',
-          },
-        }, formatBalance(account.balance)),
-
-        h('button', {
-          onClick: () => this.props.dispatch(actions.showSendPage()),
-        }, 'SEND ETH'),
-
-      ]),
-
+      // subview (tx history, pk export confirm)
       h(ReactCSSTransitionGroup, {
+        className: 'css-transition-group',
         transitionName: 'main',
         transitionEnterTimeout: 300,
         transitionLeaveTimeout: 300,
@@ -155,15 +169,17 @@ AccountDetailScreen.prototype.transactionList = function() {
   var state = this.props
   var transactions = state.transactions
 
-  return transactionList(transactions
-  // only transactions that have a hash
-  .filter(tx => tx.hash)
-  // only transactions that are from the current address
-  .filter(tx => tx.txParams.from === state.address)
-  // only transactions that are on the current network
-  .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
-  // sort by recency
-  .sort((a, b) => b.time - a.time), state.networkVersion)
+  var txsToRender = transactions
+    // only transactions that are from the current address
+    .filter(tx => tx.txParams.from === state.address)
+    // only transactions that are on the current network
+    .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
+    // only transactions that have a hash
+    .filter(tx => tx.hash)
+    // sort by recency
+    .sort((a, b) => b.time - a.time)
+
+  return transactionList(txsToRender, state.networkVersion)
 }
 
 AccountDetailScreen.prototype.navigateToAccounts = function(event){

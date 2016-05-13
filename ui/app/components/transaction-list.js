@@ -5,50 +5,62 @@ const explorerLink = require('../../lib/explorer-link')
 const Panel = require('./panel')
 
 module.exports = function(transactions, network) {
-  return h('section', [
+  return (
 
-    h('.current-domain-panel.flex-center.font-small', [
-      h('span', 'Transactions'),
-    ]),
+    h('section.transaction-list', [
 
-    h('.tx-list', {
+      h('h3.flex-center.text-transform-uppercase', {
+        style: {
+          background: '#EBEBEB',
+        },
+      }, [
+        'Transactions',
+      ]),
+
+      h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '180px',
+          height: '204px',
+          margin: '0 20px',
           textAlign: 'center',
         },
-      },
+      }, (
 
-      [
-
-        transactions.map((transaction) => {
-
-          var panelOpts = {
-            key: `tx-${transaction.hash}`,
-            identiconKey: transaction.txParams.to,
+        transactions.length ?
+          transactions.map(renderTransaction)
+        :
+          [h('.flex-center', {
             style: {
-              cursor: 'pointer',
+              height: '100%',
             },
-            onClick: (event) => {
-              var url = explorerLink(transaction.hash, parseInt(network))
-              chrome.tabs.create({ url });
-            },
-            attributes: [
-              {
-                key: 'TO',
-                value: addressSummary(transaction.txParams.to),
-              },
-              {
-                key: 'VALUE',
-                value: formatBalance(transaction.txParams.value),
-              },
-            ]
-          }
+          }, 'No transaction history...')]
 
-          return h(Panel, panelOpts)
-        })
-      ]
-    )
+      ))
 
-  ])
+    ])
+
+  )
  }
+
+function renderTransaction(transaction){
+  var panelOpts = {
+    key: `tx-${transaction.hash}`,
+    identiconKey: transaction.txParams.to,
+    onClick: (event) => {
+      var url = explorerLink(transaction.hash, parseInt(network))
+      chrome.tabs.create({ url })
+    },
+    attributes: [
+      {
+        key: 'TO',
+        value: addressSummary(transaction.txParams.to),
+      },
+      {
+        key: 'VALUE',
+        value: formatBalance(transaction.txParams.value),
+      },
+    ]
+  }
+
+  return h(Panel, panelOpts)
+}

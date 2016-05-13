@@ -100,7 +100,7 @@
 }
 
 .select-none {
-  cursor: default;
+  cursor: inherit;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -137,6 +137,10 @@
 
 .bold {
   font-weight: bold;
+}
+
+.text-transform-uppercase {
+  text-transform: uppercase;
 }
 
 .font-small {

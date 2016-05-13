@@ -18,12 +18,15 @@ Panel.prototype.render = function() {
   var identity = state.identity || {}
   var account = state.account || {}
   var isFauceting = state.isFauceting
+  var style = {
+    flex: '1 0 auto',
+  }
+
+  if (state.onClick) style.cursor = 'pointer'
 
   return (
     h('.identity-panel.flex-row.flex-space-between', {
-      style: {
-        flex: '1 0 auto',
-      },
+      style,
       onClick: state.onClick,
     }, [
 
@@ -42,7 +45,7 @@ Panel.prototype.render = function() {
           return h('.flex-row.flex-space-between', {
             key: '' + Math.round(Math.random() * 1000000),
           }, [
-            h('label.font-small', attr.key),
+            h('label.font-small.no-select', attr.key),
             h('span.font-small', attr.value),
           ])
         }),

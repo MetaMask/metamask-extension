@@ -104,7 +104,8 @@ App.prototype.render = function() {
         }
       }, [
         h(ReactCSSTransitionGroup, {
-          transitionName: "main",
+          className: 'css-transition-group',
+          transitionName: 'main',
           transitionEnterTimeout: 300,
           transitionLeaveTimeout: 300,
         }, [
