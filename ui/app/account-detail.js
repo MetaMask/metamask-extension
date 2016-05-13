@@ -102,7 +102,7 @@ AccountDetailScreen.prototype.render = function() {
           }, addressSummary(selected)),
 
           h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
-            onClick: () => this.requestAccountExport(account.address),
+            onClick: () => this.requestAccountExport(selected),
           }),
 
           h('i.fa.fa-qrcode.fa-md.cursor-disabled.color-orange', {
@@ -110,7 +110,7 @@ AccountDetailScreen.prototype.render = function() {
           }),
 
           h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
-            onClick: () => copyToClipboard(account.address),
+            onClick: () => copyToClipboard(selected),
           }),
 
         ]),
