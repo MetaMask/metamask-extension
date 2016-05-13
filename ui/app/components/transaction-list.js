@@ -21,7 +21,7 @@ module.exports = function(transactions, network) {
         style: {
           overflowY: 'auto',
           height: '204px',
-          margin: '0 20px',
+          padding: '0 20px',
           textAlign: 'center',
         },
       }, (
