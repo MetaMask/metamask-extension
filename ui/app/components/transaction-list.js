@@ -22,7 +22,6 @@ module.exports = function(transactions, network) {
       [
 
         transactions.map((transaction) => {
-          console.dir(transaction)
 
           var panelOpts = {
             key: `tx-${transaction.hash}`,
