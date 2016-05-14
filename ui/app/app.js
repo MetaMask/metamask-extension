@@ -50,15 +50,6 @@ App.prototype.render = function() {
   var state = this.props
   var view = state.currentView.name
   var transForward = state.transForward
-  var shouldHaveFooter = true
-  switch (view) {
-    case 'restoreVault':
-      shouldHaveFooter = false;
-    case 'createVault':
-      shouldHaveFooter = false;
-    case 'createVaultComplete':
-      shouldHaveFooter = false;
-  }
 
   return (
 
@@ -67,34 +58,12 @@ App.prototype.render = function() {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
       }
-    },
-    [
+    }, [
 
       h(LoadingIndicator),
 
       // app bar
-      h('.app-header.flex-row.flex-space-between', {
-        style: {
-          alignItems: 'center',
-        }
-      }, [
-
-        // mini logo
-        h('img', {
-          height: 24,
-          width: 24,
-          src: '/images/icon-128.png',
-        }),
-
-        // metamask name
-        h('h1', 'MetaMask'),
-
-        // hamburger
-        h('i.fa.fa-bars.cursor-pointer.color-orange', {
-          onClick: (event) => state.dispatch(actions.showConfigPage()),
-        }),
-
-      ]),
+      this.renderAppBar(),
 
       // panel content
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
@@ -153,16 +122,38 @@ App.prototype.render = function() {
   )
 }
 
-App.prototype.toggleMetamaskActive = function(){
-  if (!this.props.isUnlocked) {
-    // currently inactive: redirect to password box
-    var passwordBox = document.querySelector('input[type=password]')
-    if (!passwordBox) return
-    passwordBox.focus()
-  } else {
-    // currently active: deactivate
-    this.props.dispatch(actions.lockMetamask(false))
-  }
+App.prototype.renderAppBar = function(){
+  var state = this.props
+
+  return (
+
+    h('.app-header.flex-row.flex-space-between', {
+      style: {
+        alignItems: 'center',
+        visibility: state.isUnlocked ? 'visibile' : 'none',
+        background: state.isUnlocked ? 'white' : 'none',
+        height: '36px',
+      },
+    }, state.isUnlocked && [
+
+      // mini logo
+      h('img', {
+        height: 24,
+        width: 24,
+        src: '/images/icon-128.png',
+      }),
+
+      // metamask name
+      h('h1', 'MetaMask'),
+
+      // hamburger
+      h('i.fa.fa-bars.cursor-pointer.color-orange', {
+        onClick: (event) => state.dispatch(actions.showConfigPage()),
+      }),
+
+    ])
+
+  )
 }
 
 App.prototype.renderPrimary = function(state){
@@ -229,6 +220,18 @@ App.prototype.renderPrimary = function(state){
         return h(AccountDetailScreen, {key: 'account-detail'})
       }
    }
+}
+
+App.prototype.toggleMetamaskActive = function(){
+  if (!this.props.isUnlocked) {
+    // currently inactive: redirect to password box
+    var passwordBox = document.querySelector('input[type=password]')
+    if (!passwordBox) return
+    passwordBox.focus()
+  } else {
+    // currently active: deactivate
+    this.props.dispatch(actions.lockMetamask(false))
+  }
 }
 
 App.prototype.hasPendingTxs = function() {

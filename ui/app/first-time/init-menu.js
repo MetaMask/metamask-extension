@@ -46,11 +46,11 @@ InitializeMenuScreen.prototype.renderMenu = function() {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h('h2.page-subtitle', 'Welcome!'),
-
       h(Mascot, {
         animationEventEmitter: this.animationEventEmitter,
       }),
+
+      h('h2.page-subtitle', 'MetaMask'),
 
       h('button.btn-thin', {
         onClick: this.showCreateVault.bind(this),
