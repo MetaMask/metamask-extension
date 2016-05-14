@@ -75,7 +75,10 @@ SendTransactionScreen.prototype.render = function() {
       h('section.data', [
         h('details', [
           h('summary', {
-            style: {cursor: 'pointer'},
+            style: {
+              cursor: 'pointer',
+              outline: 'none',
+            },
           }, 'Advanced'),
           h('textarea.txData', {
             type: 'textarea',
