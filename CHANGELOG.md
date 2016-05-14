@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 1.8.4 2016-05-13
+
 - Point rpc servers to https endpoints.
 
 ## 1.8.3 2016-05-12
