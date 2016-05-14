@@ -1,4 +1,5 @@
 const h = require('react-hyperscript')
+const vreme = new (require('vreme'))
 const formatBalance = require('../util').formatBalance
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
@@ -12,6 +13,7 @@ module.exports = function(transactions, network) {
       h('h3.flex-center.text-transform-uppercase', {
         style: {
           background: '#EBEBEB',
+          color: '#AEAEAE',
         },
       }, [
         'Transactions',
@@ -43,6 +45,7 @@ module.exports = function(transactions, network) {
  }
 
 function renderTransaction(transaction){
+
   var panelOpts = {
     key: `tx-${transaction.hash}`,
     identiconKey: transaction.txParams.to,
@@ -51,6 +54,10 @@ function renderTransaction(transaction){
       chrome.tabs.create({ url })
     },
     attributes: [
+      {
+        key: 'TIME',
+        value: formatDate(transaction.time),
+      },
       {
         key: 'TO',
         value: addressSummary(transaction.txParams.to),
@@ -63,4 +70,8 @@ function renderTransaction(transaction){
   }
 
   return h(Panel, panelOpts)
+}
+
+function formatDate(date){
+  return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
