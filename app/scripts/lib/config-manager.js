@@ -2,8 +2,8 @@ const Migrator = require('pojo-migrator')
 const extend = require('xtend')
 
 const STORAGE_KEY = 'metamask-config'
-const TESTNET_RPC = 'http://morden.infura.io'
-const MAINNET_RPC = 'http://mainnet.infura.io/'
+const TESTNET_RPC = 'https://morden.infura.io'
+const MAINNET_RPC = 'https://mainnet.infura.io/'
 
 const migrations = require('./migrations')
 
