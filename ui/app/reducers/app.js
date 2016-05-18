@@ -22,6 +22,7 @@ function reduceApp(state, action) {
   var seedWords = state.metamask.seedWords
 
   var appState = extend({
+    menuOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
@@ -33,6 +34,11 @@ function reduceApp(state, action) {
   }, state.appState)
 
   switch (action.type) {
+
+  case actions.TOGGLE_MENU:
+    return extend(appState, {
+      menuOpen: !appState.menuOpen,
+    })
 
   // intialize
 

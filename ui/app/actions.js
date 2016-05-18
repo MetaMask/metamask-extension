@@ -1,6 +1,9 @@
 var actions = {
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // menu state
+  TOGGLE_MENU: 'TOGGLE_MENU',
+  toggleMenu: toggleMenu,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -102,6 +105,14 @@ function _setAccountManager(accountManager){
 function goHome() {
   return {
     type: this.GO_HOME,
+  }
+}
+
+// menu state
+
+function toggleMenu() {
+  return {
+    type: this.TOGGLE_MENU,
   }
 }
 

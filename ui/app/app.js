@@ -24,6 +24,8 @@ const ConfigScreen = require('./config')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
 const txHelper = require('../lib/tx-helper')
+const SandwichExpando = require('sandwich-expando')
+const MenuDroppo = require('menu-droppo')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -42,6 +44,7 @@ function mapStateToProps(state) {
     seedWords: state.metamask.seedWords,
     unconfTxs: state.metamask.unconfTxs,
     unconfMsgs: state.metamask.unconfMsgs,
+    menuOpen: state.appState.menuOpen,
   }
 }
 
@@ -143,12 +146,17 @@ App.prototype.renderAppBar = function(){
         src: '/images/icon-128.png',
       }),
 
-      // metamask name
+      // metamask namlterChangese
       h('h1', 'MetaMask'),
 
       // hamburger
-      h('i.fa.fa-bars.cursor-pointer.color-orange', {
-        onClick: (event) => state.dispatch(actions.showConfigPage()),
+      h(SandwichExpando, {
+        width: 16,
+        barHeight: 2,
+        padding: 0,
+        isOpen: state.menuOpen,
+        color: 'rgb(247,146,30)',
+        onClick: () => this.props.dispatch(actions.toggleMenu()),
       }),
 
     ])
