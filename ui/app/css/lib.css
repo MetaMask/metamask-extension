@@ -151,23 +151,6 @@
   font-size: 1.2em;
 }
 
-/* Send Screen */
-.send-screen {
-  margin: 0 20px;
-}
-.send-screen section {
-  margin: 7px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-.send-screen details {
-  width: 100%;
-}
-.send-screen section input {
-  width: 100%;
-}
-
 hr.horizontal-line {
   display: block;
   height: 1px;

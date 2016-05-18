@@ -126,6 +126,9 @@ AccountDetailScreen.prototype.render = function() {
 
           h('button', {
             onClick: () => this.props.dispatch(actions.showSendPage()),
+            style: {
+              margin: 10,
+            },
           }, 'SEND ETH'),
 
         ]),
