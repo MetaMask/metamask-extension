@@ -6,11 +6,11 @@ const connect = require('react-redux').connect
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
 const addressSummary = require('./util').addressSummary
-const formatBalance = require('./util').formatBalance
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 const AccountPanel = require('./components/account-panel')
 const Identicon = require('./components/identicon')
+const EtherBalance = require('./components/eth-balance')
 const transactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 
@@ -118,11 +118,12 @@ AccountDetailScreen.prototype.render = function() {
         // balance + send
         h('.flex-row.flex-space-between', [
 
-          h('div', {
+          h(EtherBalance, {
+            value: account && account.balance,
             style: {
               lineHeight: '50px',
             },
-          }, formatBalance(account && account.balance)),
+          }),
 
           h('button', {
             onClick: () => this.props.dispatch(actions.showSendPage()),

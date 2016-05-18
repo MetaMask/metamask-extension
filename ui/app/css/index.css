@@ -385,3 +385,12 @@ input.large-input {
   letter-spacing: 0.1em;
 }
 
+/* Ether Balance Widget */
+
+.ether-balance-amount {
+  color: #F7861C;
+}
+
+.ether-balance-label {
+  color: #ABA9AA;
+}

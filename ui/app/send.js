@@ -8,7 +8,7 @@ const util = require('./util')
 const numericBalance = require('./util').numericBalance
 const formatBalance = require('./util').formatBalance
 const addressSummary = require('./util').addressSummary
-const AccountPanel = require('./components/account-panel')
+const EtherBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
@@ -106,7 +106,10 @@ SendTransactionScreen.prototype.render = function() {
         // balance
         h('.flex-row.flex-center', [
 
-          h('div', formatBalance(account && account.balance)),
+          // h('div', formatBalance(account && account.balance)),
+          h(EtherBalance, {
+            value: account && account.balance,
+          })
 
         ]),
 

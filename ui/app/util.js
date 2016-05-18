@@ -22,6 +22,7 @@ module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
   numericBalance: numericBalance,
+  parseBalance: parseBalance,
   formatBalance: formatBalance,
   dataSize: dataSize,
   readableDate: readableDate,
@@ -65,16 +66,30 @@ function weiToEth(bn) {
   return eth
 }
 
-var decimalsToKeep = 4
-function formatBalance(balance) {
-  if (!balance || balance === '0x0') return 'None'
+// Takes  hex, returns [beforeDecimal, afterDecimal]
+function parseBalance(balance, decimalsToKeep) {
+  if (decimalsToKeep === undefined) decimalsToKeep = 4
+  if (!balance || balance === '0x0') return ['0', '']
   var wei = numericBalance(balance)
   var padded = wei.toString(10)
   var len = padded.length
-  var nonZeroIndex = padded.match(/[^0]/) && padded.match(/[^0]/).index
+  var match = padded.match(/[^0]/)
+  var nonZeroIndex = match && match.index
   var beforeDecimal = padded.substr(nonZeroIndex ? nonZeroIndex : 0, len - 18) || '0'
   var afterDecimal = padded.substr(len - 18, decimalsToKeep)
-  return `${beforeDecimal}.${afterDecimal} ETH`
+  return [beforeDecimal, afterDecimal]
+}
+
+// Takes wei hex, returns "None" or "${formattedAmount} ETH"
+function formatBalance(balance) {
+  var parsed = parseBalance(balance)
+  var beforeDecimal = parsed[0]
+  var afterDecimal = parsed[1]
+  if (beforeDecimal === '0' && afterDecimal === '') return 'None'
+  var result = beforeDecimal
+  if (afterDecimal) result += '.'+afterDecimal
+  result += ' ETH'
+  return result
 }
 
 function dataSize(data) {
