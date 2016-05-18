@@ -26,6 +26,7 @@ const LoadingIndicator = require('./loading')
 const txHelper = require('../lib/tx-helper')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
+const DropMenuItem = require('./components/drop-menu-item')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -130,37 +131,85 @@ App.prototype.renderAppBar = function(){
 
   return (
 
-    h('.app-header.flex-row.flex-space-between', {
-      style: {
-        alignItems: 'center',
-        visibility: state.isUnlocked ? 'visibile' : 'none',
-        background: state.isUnlocked ? 'white' : 'none',
-        height: '36px',
-      },
-    }, state.isUnlocked && [
+    h('div', [
 
-      // mini logo
-      h('img', {
-        height: 24,
-        width: 24,
-        src: '/images/icon-128.png',
-      }),
+      h('.app-header.flex-row.flex-space-between', {
+        style: {
+          alignItems: 'center',
+          visibility: state.isUnlocked ? 'visibile' : 'none',
+          background: state.isUnlocked ? 'white' : 'none',
+          height: '36px',
+        },
+      }, state.isUnlocked && [
 
-      // metamask namlterChangese
-      h('h1', 'MetaMask'),
+        // mini logo
+        h('img', {
+          height: 24,
+          width: 24,
+          src: '/images/icon-128.png',
+        }),
 
-      // hamburger
-      h(SandwichExpando, {
-        width: 16,
-        barHeight: 2,
-        padding: 0,
+        // metamask namlterChangese
+        h('h1', 'MetaMask'),
+
+        // hamburger
+        h(SandwichExpando, {
+          width: 16,
+          barHeight: 2,
+          padding: 0,
+          isOpen: state.menuOpen,
+          color: 'rgb(247,146,30)',
+          onClick: (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            this.props.dispatch(actions.toggleMenu())
+          },
+        }),
+      ]),
+
+      h(MenuDroppo, {
+        style: {
+          right: '0px',
+        },
+        innerStyle: {
+          background: 'white',
+
+          // This shadow is hidden by the surrounding bounding box.
+          // Maybe worth revealing in the future:
+          boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+          float: 'right',
+        },
         isOpen: state.menuOpen,
-        color: 'rgb(247,146,30)',
-        onClick: () => this.props.dispatch(actions.toggleMenu()),
-      }),
+        onClickOutside: (event) => {
+          this.props.dispatch(actions.closeMenu())
+        },
+      }, [ // DROP MENU ITEMS
+        h('menu', [
+          h('style', '.drop-menu-item:hover { background:rgb(235, 235, 235); }'),
 
+          h(DropMenuItem, {
+            closeMenu:() => this.props.dispatch(actions.closeMenu()),
+            action:() => this.props.dispatch(actions.showConfigPage()),
+            icon: null,
+            label: 'Settings'
+          }),
+
+          h(DropMenuItem, {
+            closeMenu:() => this.props.dispatch(actions.closeMenu()),
+            action:() => this.props.dispatch(actions.lockMetamask()),
+            icon: null,
+            label: 'Lock Account'
+          }),
+
+          h(DropMenuItem, {
+            closeMenu:() => this.props.dispatch(actions.closeMenu()),
+            action:() => this.props.dispatch(actions.showInfoPage()),
+            icon: null,
+            label: 'Help'
+          }),
+        ]),
+      ]),
     ])
-
   )
 }
 

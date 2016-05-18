@@ -4,6 +4,8 @@ var actions = {
   // menu state
   TOGGLE_MENU: 'TOGGLE_MENU',
   toggleMenu: toggleMenu,
+  SET_MENU_STATE: 'SET_MENU_STATE',
+  closeMenu: closeMenu,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -113,6 +115,13 @@ function goHome() {
 function toggleMenu() {
   return {
     type: this.TOGGLE_MENU,
+  }
+}
+
+function closeMenu() {
+  return {
+    type: this.SET_MENU_STATE,
+    value: false,
   }
 }
 
