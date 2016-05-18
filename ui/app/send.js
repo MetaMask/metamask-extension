@@ -21,6 +21,8 @@ function mapStateToProps(state) {
     warning: state.appState.warning,
   }
 
+  result.error = result.warning && result.warning.split('.')[0]
+
   result.account = result.accounts[result.address]
   result.identity = result.identities[result.address]
   result.balance = result.account ? numericBalance(result.account.balance) : null
@@ -127,9 +129,13 @@ SendTransactionScreen.prototype.render = function() {
         'Send Transaction',
       ]),
 
+      // error message
+      state.error && h('span.error.flex-center', state.error),
+
       // 'to' field
       h('section.flex-row.flex-center', [
-        h('input.address.large-input', {
+        h('input.large-input', {
+          name: 'address',
           placeholder: 'Recipient Address',
         })
       ]),
@@ -137,7 +143,8 @@ SendTransactionScreen.prototype.render = function() {
       // 'amount' and send button
       h('section.flex-row.flex-center', [
 
-        h('input.ether.large-input', {
+        h('input.large-input', {
+          name: 'amount',
           placeholder: 'Amount',
           type: 'number',
           style: {
@@ -171,7 +178,8 @@ SendTransactionScreen.prototype.render = function() {
 
       // 'data' field
       h('section.flex-row.flex-center', [
-        h('input.txData.large-input', {
+        h('input.large-input', {
+          name: 'txData',
           placeholder: '0x01234',
           style: {
             width: '100%',
@@ -179,8 +187,6 @@ SendTransactionScreen.prototype.render = function() {
           }
         }),
       ]),
-
-      // state.warning ? h('span.error', state.warning.split('.')[0]) : null,
 
     ])
 
@@ -198,11 +204,10 @@ SendTransactionScreen.prototype.back = function() {
 }
 
 SendTransactionScreen.prototype.onSubmit = function(event) {
-  var recipient = document.querySelector('input.address').value
+  var recipient = document.querySelector('input[name="address"]').value
 
-  var inputAmount = parseFloat(document.querySelector('input.ether').value)
-  var currency = document.querySelector('select.currency').value
-  var value = util.normalizeNumberToWei(inputAmount, currency)
+  var inputAmount = parseFloat(document.querySelector('input[name="amount"]').value)
+  var value = util.normalizeNumberToWei(inputAmount, 'ether')
 
   var balance = this.props.balance
 
@@ -224,7 +229,7 @@ SendTransactionScreen.prototype.onSubmit = function(event) {
     value: '0x' + value.toString(16),
   }
 
-  var txData = document.querySelector('textarea.txData').value
+  var txData = document.querySelector('input[name="txData"]').value
   if (txData) txParams.data = txData
 
   this.props.dispatch(actions.signTx(txParams))
