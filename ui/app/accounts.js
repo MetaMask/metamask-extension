@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const extend = require('xtend')
 const Identicon = require('./components/identicon')
 const actions = require('./actions')
-const AccountPanel = require('./components/account-panel')
+const EtherBalance = require('./components/eth-balance')
 const valuesFor = require('./util').valuesFor
 const addressSummary = require('./util').addressSummary
 const formatBalance = require('./util').formatBalance
@@ -108,7 +108,10 @@ AccountsScreen.prototype.render = function() {
 
           h('span', identity.name),
           h('span.font-small', addressSummary(identity.address)),
-          h('span.font-small', formatBalance(account.balance)),
+          // h('span.font-small', formatBalance(account.balance)),
+          h(EtherBalance, {
+            value: account.balance,
+          }),
 
         ]),
 
