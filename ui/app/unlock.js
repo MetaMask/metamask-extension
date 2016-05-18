@@ -41,7 +41,7 @@ UnlockScreen.prototype.render = function() {
         },
       }, 'MetaMask'),
 
-      h('input.password-box', {
+      h('input.large-input', {
         type: 'password',
         id: 'password-box',
         placeholder: 'enter password',
@@ -60,6 +60,9 @@ UnlockScreen.prototype.render = function() {
 
       h('button.primary.cursor-pointer', {
         onClick: this.onSubmit.bind(this),
+        style: {
+          margin: 10,
+        },
       }, 'Unlock'),
 
     ])

@@ -21,7 +21,7 @@ html, body {
   background: #F7F7F7;
 }
 
-input:focus {
+input:focus, textarea:focus {
   outline: none;
 }
 
@@ -36,7 +36,7 @@ button {
   font-family: 'Transat Black';
   outline: none;
   cursor: pointer;
-  margin: 10px;
+  /*margin: 10px;*/
   padding: 8px 12px;
   border: none;
   background: #F7861C;
@@ -51,16 +51,6 @@ button:hover {
 button:active {
   transform: scale(0.95);
 }
-
-/*input, textarea {
-  width: 300px;
-  padding: 6px;
-  border-radius: 6px;
-  border-style: solid;
-  outline: none;
-  border: 1px solid #F5A623;
-  background: #FAF6F0;
-}*/
 
 a {
   text-decoration: none;
@@ -80,7 +70,6 @@ app
 }
 
 button.primary {
-  margin: 10px;
   padding: 8px 12px;
   background: #F7861C;
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
@@ -234,31 +223,42 @@ app sections
 
 .unlock-screen input[type=password] {
   width: 260px;
-  height: 36px;
+  /*height: 36px;
   margin-bottom: 24px;
-  padding: 8px;
+  padding: 8px;*/
 }
 
 /* Webkit */
-.password-box::-webkit-input-placeholder {
+.unlock-screen input::-webkit-input-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
 /* Firefox 18- */
-.password-box:-moz-placeholder {
+.unlock-screen input:-moz-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
 /* Firefox 19+ */
-.password-box::-moz-placeholder {
+.unlock-screen input::-moz-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
 /* IE */
-.password-box:-ms-input-placeholder {
+.unlock-screen input:-ms-input-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
+
+input.large-input, textarea.large-input {
+  /*margin-bottom: 24px;*/
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}
+
+
 
 /* accounts */
 
@@ -367,5 +367,21 @@ app sections
   border-radius: 4px;
   border: 2px solid #F3C83E;
   background: #FAF6F0;
+}
+
+/* Send Screen */
+
+.send-screen {
+
+}
+
+.send-screen section {
+  margin: 8px 16px;
+}
+
+.send-screen input {
+  width: 100%;
+  font-size: 12px;
+  letter-spacing: 0.1em;
 }
 
