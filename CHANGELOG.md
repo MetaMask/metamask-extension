@@ -5,6 +5,7 @@
 - UI Overhaul per Vlad Todirut's designs
 - Replaced identicons with jazzicons
 - Fixed glitchy transitions
+- Added support for capitalization-based address checksums
 
 ## 1.8.4 2016-05-13
 
