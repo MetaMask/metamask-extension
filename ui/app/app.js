@@ -24,6 +24,9 @@ const ConfigScreen = require('./config')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
 const txHelper = require('../lib/tx-helper')
+const SandwichExpando = require('sandwich-expando')
+const MenuDroppo = require('menu-droppo')
+const DropMenuItem = require('./components/drop-menu-item')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -42,6 +45,7 @@ function mapStateToProps(state) {
     seedWords: state.metamask.seedWords,
     unconfTxs: state.metamask.unconfTxs,
     unconfMsgs: state.metamask.unconfMsgs,
+    menuOpen: state.appState.menuOpen,
   }
 }
 
@@ -64,6 +68,7 @@ App.prototype.render = function() {
 
       // app bar
       this.renderAppBar(),
+      this.renderDropdown(),
 
       // panel content
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
@@ -127,47 +132,104 @@ App.prototype.renderAppBar = function(){
 
   return (
 
-    h('.app-header.flex-row.flex-space-between', {
-      style: {
-        alignItems: 'center',
-        visibility: state.isUnlocked ? 'visibile' : 'none',
-        background: state.isUnlocked ? 'white' : 'none',
-        height: '36px',
-      },
-    }, state.isUnlocked && [
+    h('div', [
 
-      // mini logo
-      h('img', {
-        height: 24,
-        width: 24,
-        src: '/images/icon-128.png',
-      }),
+      h('.app-header.flex-row.flex-space-between', {
+        style: {
+          alignItems: 'center',
+          visibility: state.isUnlocked ? 'visible' : 'none',
+          background: state.isUnlocked ? 'white' : 'none',
+          height: '36px',
+          position: 'relative',
+          zIndex: 1,
+        },
+      }, state.isUnlocked && [
 
-      // metamask name
-      h('h1', 'MetaMask'),
+        // mini logo
+        h('img', {
+          height: 24,
+          width: 24,
+          src: '/images/icon-128.png',
+        }),
 
-      // hamburger
-      h('i.fa.fa-bars.cursor-pointer.color-orange', {
-        onClick: (event) => state.dispatch(actions.showConfigPage()),
-      }),
+        // metamask name
+        h('h1', 'MetaMask'),
 
+        // hamburger
+        h(SandwichExpando, {
+          width: 16,
+          barHeight: 2,
+          padding: 0,
+          isOpen: state.menuOpen,
+          color: 'rgb(247,146,30)',
+          onClick: (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            this.props.dispatch(actions.toggleMenu())
+          },
+        }),
+      ]),
     ])
-
   )
 }
 
-App.prototype.renderPrimary = function(state){
-  var state = this.props
+App.prototype.renderDropdown = function() {
+  const props = this.props
+  return h(MenuDroppo, {
+    isOpen: props.menuOpen,
+    onClickOutside: (event) => {
+      this.props.dispatch(actions.closeMenu())
+    },
+    style: {
+      position: 'fixed',
+      right: 0,
+      zIndex: 0,
+    },
+    innerStyle: {
+      background: 'white',
+      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+    },
+  }, [ // DROP MENU ITEMS
+    h('style', `
+      .drop-menu-item:hover { background:rgb(235, 235, 235); }
+      .drop-menu-item i { margin: 11px; }
+    `),
 
-  if (state.seedWords) {
+    h(DropMenuItem, {
+      label: 'Settings',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Lock Account',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.lockMetamask()),
+      icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Help',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.showInfoPage()),
+      icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
+    }),
+  ])
+}
+
+App.prototype.renderPrimary = function(){
+  var props = this.props
+
+  if (props.seedWords) {
     return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
   }
 
   // show initialize screen
-  if (!state.isInitialized) {
+  if (!props.isInitialized) {
 
     // show current view
-    switch (state.currentView.name) {
+    switch (props.currentView.name) {
 
       case 'createVault':
         return h(CreateVaultScreen, {key: 'createVault'})
@@ -185,12 +247,12 @@ App.prototype.renderPrimary = function(state){
   }
 
   // show unlock screen
-  if (!state.isUnlocked) {
+  if (!props.isUnlocked) {
     return h(UnlockScreen, {key: 'locked'})
   }
 
   // show current view
-  switch (state.currentView.name) {
+  switch (props.currentView.name) {
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})
