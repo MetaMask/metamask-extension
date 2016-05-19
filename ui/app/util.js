@@ -45,6 +45,7 @@ function valuesFor(obj) {
 }
 
 function addressSummary(address) {
+  if (!address) return ''
   var checked = ethUtil.toChecksumAddress(address)
   return checked ? checked.slice(0,2+8)+'...'+checked.slice(-4) : '...'
 }
@@ -55,6 +56,7 @@ function isValidAddress(address) {
 }
 
 function isAllOneCase(address) {
+  if (!address) return true
   var lower = address.toLowerCase()
   var upper = address.toUpperCase()
   return address === lower || address === upper

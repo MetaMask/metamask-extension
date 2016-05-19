@@ -228,11 +228,11 @@ SendTransactionScreen.prototype.onSubmit = function() {
   this.props.dispatch(actions.showLoadingIndication())
 
   var txParams = {
-    to: recipient,
     from: this.props.address,
     value: '0x' + value.toString(16),
   }
 
+  if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)
   if (txData) txParams.data = txData
 
   this.props.dispatch(actions.signTx(txParams))
