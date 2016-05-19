@@ -61,6 +61,7 @@ describe('util', function() {
       var result = util.isValidAddress(address)
       assert.ok(!result)
     })
+
   })
 
   describe('numericBalance', function() {
@@ -159,6 +160,13 @@ describe('util', function() {
     })
 
     describe('#normalizeNumberToWei', function() {
+
+      it('should handle a simple use case', function() {
+        var input = 0.0002
+        var output = util.normalizeNumberToWei(input, 'ether')
+        var str = output.toString(10)
+        assert.equal(str, '200000000000000')
+      })
 
       it('should convert a kwei number to the appropriate equivalent wei', function() {
         var result = util.normalizeNumberToWei(1.111, 'kwei')
