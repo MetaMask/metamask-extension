@@ -4,11 +4,24 @@ const formatBalance = require('../util').formatBalance
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const Panel = require('./panel')
+const Identicon = require('./identicon')
+const EtherBalance = require('./eth-balance')
+
 
 module.exports = function(transactions, network) {
   return (
 
     h('section.transaction-list', [
+
+      h('style', `
+        .transaction-list .transaction-list-item:not(:last-of-type) {
+          border-bottom: 1px solid #D4D4D4;
+        }
+        .transaction-list .transaction-list-item .ether-balance-label {
+          display: block !important;
+          font-size: small;
+        }
+      `),
 
       h('h3.flex-center.text-transform-uppercase', {
         style: {
@@ -42,35 +55,80 @@ module.exports = function(transactions, network) {
     ])
 
   )
- }
 
-function renderTransaction(transaction){
 
-  var panelOpts = {
-    key: `tx-${transaction.hash}`,
-    identiconKey: transaction.txParams.to,
-    onClick: (event) => {
-      var url = explorerLink(transaction.hash, parseInt(network))
-      chrome.tabs.create({ url })
-    },
-    attributes: [
-      {
-        key: 'TIME',
-        value: formatDate(transaction.time),
+  function renderTransaction(transaction){
+
+    var panelOpts = {
+      key: `tx-${transaction.hash}`,
+      identiconKey: transaction.txParams.to,
+      onClick: (event) => {
+        var url = explorerLink(transaction.hash, parseInt(network))
+        chrome.tabs.create({ url })
       },
-      {
-        key: 'TO',
-        value: addressSummary(transaction.txParams.to),
-      },
-      {
-        key: 'VALUE',
-        value: formatBalance(transaction.txParams.value),
-      },
-    ]
+      attributes: [
+        {
+          key: 'TIME',
+          value: formatDate(transaction.time),
+        },
+        {
+          key: 'TO',
+          value: addressSummary(transaction.txParams.to),
+        },
+        {
+          key: 'VALUE',
+          value: formatBalance(transaction.txParams.value),
+        },
+      ]
+    }
+
+    var txParams = transaction.txParams
+    var date = formatDate(transaction.time)
+
+    return ( 
+
+      h('.transaction-list-item.flex-row.flex-space-between.cursor-pointer', {
+        key: `tx-${transaction.hash}`,
+        onClick: (event) => {
+          var url = explorerLink(transaction.hash, parseInt(network))
+          chrome.tabs.create({ url })
+        },
+        style: {
+          padding: '20px 0',
+        },
+      }, [
+
+        // large identicon
+        h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h(Identicon, {
+            diameter: 24,
+            address: txParams.to,
+          }),
+        ]),
+
+        h('.flex-column', [
+
+          h('div', date),
+
+          h('div', {
+            style: {
+              fontSize: 'small',
+              color: '#ABA9AA',
+            },
+          }, addressSummary(txParams.to)),
+
+        ]),
+
+        h(EtherBalance, {
+          value: txParams.value,
+        }),
+
+      ])
+
+    )
   }
 
-  return h(Panel, panelOpts)
-}
+ }
 
 function formatDate(date){
   return vreme.format(new Date(date), 'March 16 2014 14:30')
