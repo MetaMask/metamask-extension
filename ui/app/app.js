@@ -137,7 +137,7 @@ App.prototype.renderAppBar = function(){
       h('.app-header.flex-row.flex-space-between', {
         style: {
           alignItems: 'center',
-          visibility: state.isUnlocked ? 'visibile' : 'none',
+          visibility: state.isUnlocked ? 'visible' : 'none',
           background: state.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
@@ -152,7 +152,7 @@ App.prototype.renderAppBar = function(){
           src: '/images/icon-128.png',
         }),
 
-        // metamask namlterChangese
+        // metamask name
         h('h1', 'MetaMask'),
 
         // hamburger
