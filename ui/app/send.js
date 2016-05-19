@@ -209,8 +209,8 @@ SendTransactionScreen.prototype.back = function() {
 SendTransactionScreen.prototype.onSubmit = function() {
 
   const recipient = document.querySelector('input[name="address"]').value
-  const inputAmount = parseFloat(document.querySelector('input[name="amount"]').value)
-  const value = util.normalizeNumberToWei(inputAmount, 'ether')
+  const input = document.querySelector('input[name="amount"]').value
+  const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
 

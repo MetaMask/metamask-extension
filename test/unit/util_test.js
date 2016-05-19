@@ -159,6 +159,20 @@ describe('util', function() {
       })
     })
 
+    describe('normalizeEthStringToWei', function() {
+      it('should convert decimal eth to pure wei BN', function() {
+        var input = '1.23456789'
+        var output = util.normalizeEthStringToWei(input)
+        assert.equal(output.toString(10), '1234567890000000000')
+      })
+
+      it('should convert 1 to expected wei', function() {
+        var input = '1'
+        var output = util.normalizeEthStringToWei(input)
+        assert.equal(output.toString(10), ethInWei)
+      })
+    })
+
     describe('#normalizeNumberToWei', function() {
 
       it('should handle a simple use case', function() {

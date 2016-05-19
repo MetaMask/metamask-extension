@@ -31,6 +31,7 @@ module.exports = {
   ethToWei: ethToWei,
   weiToEth: weiToEth,
   normalizeToWei: normalizeToWei,
+  normalizeEthStringToWei: normalizeEthStringToWei,
   normalizeNumberToWei: normalizeNumberToWei,
   valueTable: valueTable,
   bnTable: bnTable,
@@ -118,6 +119,20 @@ function normalizeToWei(amount, currency) {
     return amount.mul(bnTable.wei).div(bnTable[currency])
   } catch (e) {}
   return amount
+}
+
+function normalizeEthStringToWei(str) {
+  const parts = str.split('.')
+  let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei)
+  if (parts[1]) {
+    var decimal = parts[1]
+    while(decimal.length < 18) {
+      decimal += '0'
+    }
+    const decimalBN = new ethUtil.BN(decimal, 10)
+    eth = eth.add(decimalBN)
+  }
+  return eth
 }
 
 var multiple = new ethUtil.BN('10000', 10)
