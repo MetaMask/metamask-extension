@@ -4,6 +4,7 @@ const StreamProvider = require('./lib/stream-provider.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const RemoteStore = require('./lib/remote-store.js').RemoteStore
+const MetamaskConfig = require('./config.js')
 const Web3 = require('web3')
 const once = require('once')
 restoreContextAfterImports()
@@ -11,8 +12,6 @@ restoreContextAfterImports()
 // rename on window
 delete window.Web3
 window.MetamaskWeb3 = Web3
-
-const DEFAULT_RPC_URL = 'https://rpc.metamask.io/'
 
 
 //
@@ -93,15 +92,33 @@ publicConfigStore.subscribe(function(state){
 })
 
 // setup sync http provider
-var providerConfig = publicConfigStore.get('provider') || {}
-var providerUrl = providerConfig.rpcTarget ? providerConfig.rpcTarget : DEFAULT_RPC_URL
-var syncProvider = new Web3.providers.HttpProvider(providerUrl)
-publicConfigStore.subscribe(function(state){
-  if (!state.provider) return
-  if (!state.provider.rpcTarget || state.provider.rpcTarget === providerUrl) return
-  providerUrl = state.provider.rpcTarget
-  syncProvider = new Web3.providers.HttpProvider(providerUrl)
-})
+updateProvider({ provider: publicConfigStore.get('provider') })
+publicConfigStore.subscribe(updateProvider)
+
+var syncProvider = null
+var syncProviderUrl = null
+
+function updateProvider(state){
+  var providerConfig = state.provider || {}
+  var newSyncProviderUrl = undefined
+
+  if (providerConfig.rpcTarget) {
+    newSyncProviderUrl = providerConfig.rpcTarget
+  } else {
+    switch(providerConfig.type) {
+      case 'testnet':
+        newSyncProviderUrl = MetamaskConfig.network.testnet
+        break
+      case 'mainnet':
+        newSyncProviderUrl = MetamaskConfig.network.mainnet
+        break
+      default:
+        newSyncProviderUrl = MetamaskConfig.network.default
+    }
+  }
+  if (newSyncProviderUrl === syncProviderUrl) return
+  syncProvider = new Web3.providers.HttpProvider(newSyncProviderUrl)
+}
 
 // handle sync methods
 remoteProvider.send = function(payload){
