@@ -206,20 +206,21 @@ SendTransactionScreen.prototype.back = function() {
   this.props.dispatch(actions.backToAccountDetail(address))
 }
 
-SendTransactionScreen.prototype.onSubmit = function(event) {
-  var recipient = document.querySelector('input[name="address"]').value
+SendTransactionScreen.prototype.onSubmit = function() {
 
-  var inputAmount = parseFloat(document.querySelector('input[name="amount"]').value)
-  var value = util.normalizeNumberToWei(inputAmount, 'ether')
-
-  var balance = this.props.balance
+  const recipient = document.querySelector('input[name="address"]').value
+  const inputAmount = parseFloat(document.querySelector('input[name="amount"]').value)
+  const value = util.normalizeNumberToWei(inputAmount, 'ether')
+  const txData = document.querySelector('input[name="txData"]').value
+  const balance = this.props.balance
 
   if (value.gt(balance)) {
     var message = 'Insufficient funds.'
     return this.props.dispatch(actions.displayWarning(message))
   }
-  if (recipient.length !== 42) {
-    var message = 'Recipient address is the incorrect length.'
+
+  if ((recipient.length !== 42 && !txData) || (!recipient && !txData)) {
+    var message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
@@ -232,7 +233,6 @@ SendTransactionScreen.prototype.onSubmit = function(event) {
     value: '0x' + value.toString(16),
   }
 
-  var txData = document.querySelector('input[name="txData"]').value
   if (txData) txParams.data = txData
 
   this.props.dispatch(actions.signTx(txParams))
