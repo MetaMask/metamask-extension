@@ -165,7 +165,7 @@ function reduceApp(state, action) {
         accountExport: 'none',
         privateKey: '',
       },
-      transForward: true,
+      transForward: false,
     })
 
   case actions.BACK_TO_ACCOUNT_DETAIL:
@@ -188,7 +188,7 @@ function reduceApp(state, action) {
       currentView: {
         name: seedWords ? 'createVaultComplete' : 'accounts',
       },
-      transForward: appState.currentView.name == 'locked',
+      transForward: true,
       isLoading: false,
       warning: null,
     })
