@@ -68,6 +68,7 @@ App.prototype.render = function() {
 
       // app bar
       this.renderAppBar(),
+      this.renderDropdown(),
 
       // panel content
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
@@ -139,6 +140,8 @@ App.prototype.renderAppBar = function(){
           visibility: state.isUnlocked ? 'visibile' : 'none',
           background: state.isUnlocked ? 'white' : 'none',
           height: '36px',
+          position: 'relative',
+          zIndex: 1,
         },
       }, state.isUnlocked && [
 
@@ -166,65 +169,67 @@ App.prototype.renderAppBar = function(){
           },
         }),
       ]),
-
-      h(MenuDroppo, {
-        style: {
-          right: '0px',
-        },
-        innerStyle: {
-          background: 'white',
-
-          // This shadow is hidden by the surrounding bounding box.
-          // Maybe worth revealing in the future:
-          boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-          float: 'right',
-        },
-        isOpen: state.menuOpen,
-        onClickOutside: (event) => {
-          this.props.dispatch(actions.closeMenu())
-        },
-      }, [ // DROP MENU ITEMS
-        h('menu', [
-          h('style', '.drop-menu-item:hover { background:rgb(235, 235, 235); }'),
-
-          h(DropMenuItem, {
-            closeMenu:() => this.props.dispatch(actions.closeMenu()),
-            action:() => this.props.dispatch(actions.showConfigPage()),
-            icon: null,
-            label: 'Settings'
-          }),
-
-          h(DropMenuItem, {
-            closeMenu:() => this.props.dispatch(actions.closeMenu()),
-            action:() => this.props.dispatch(actions.lockMetamask()),
-            icon: null,
-            label: 'Lock Account'
-          }),
-
-          h(DropMenuItem, {
-            closeMenu:() => this.props.dispatch(actions.closeMenu()),
-            action:() => this.props.dispatch(actions.showInfoPage()),
-            icon: null,
-            label: 'Help'
-          }),
-        ]),
-      ]),
     ])
   )
 }
 
-App.prototype.renderPrimary = function(state){
-  var state = this.props
+App.prototype.renderDropdown = function() {
+  const props = this.props
+  return h(MenuDroppo, {
+    isOpen: props.menuOpen,
+    onClickOutside: (event) => {
+      this.props.dispatch(actions.closeMenu())
+    },
+    style: {
+      position: 'fixed',
+      right: 0,
+      zIndex: 0,
+    },
+    innerStyle: {
+      background: 'white',
+      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+    },
+  }, [ // DROP MENU ITEMS
+    h('style', `
+      .drop-menu-item:hover { background:rgb(235, 235, 235); }
+      .drop-menu-item i { margin: 11px; }
+    `),
 
-  if (state.seedWords) {
+    h(DropMenuItem, {
+      label: 'Settings',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Lock Account',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.lockMetamask()),
+      icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Help',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.showInfoPage()),
+      icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
+    }),
+  ])
+}
+
+App.prototype.renderPrimary = function(){
+  var props = this.props
+
+  if (props.seedWords) {
     return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
   }
 
   // show initialize screen
-  if (!state.isInitialized) {
+  if (!props.isInitialized) {
 
     // show current view
-    switch (state.currentView.name) {
+    switch (props.currentView.name) {
 
       case 'createVault':
         return h(CreateVaultScreen, {key: 'createVault'})
@@ -242,12 +247,12 @@ App.prototype.renderPrimary = function(state){
   }
 
   // show unlock screen
-  if (!state.isUnlocked) {
+  if (!props.isUnlocked) {
     return h(UnlockScreen, {key: 'locked'})
   }
 
   // show current view
-  switch (state.currentView.name) {
+  switch (props.currentView.name) {
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})
