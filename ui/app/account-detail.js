@@ -13,6 +13,7 @@ const Identicon = require('./components/identicon')
 const EtherBalance = require('./components/eth-balance')
 const transactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
+const ethUtil = require('ethereumjs-util')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -110,7 +111,7 @@ AccountDetailScreen.prototype.render = function() {
           }),
 
           h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
-            onClick: () => copyToClipboard(selected),
+            onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
           }),
 
         ]),
@@ -133,7 +134,7 @@ AccountDetailScreen.prototype.render = function() {
           }, 'SEND ETH'),
 
         ]),
-      
+
       ]),
 
       // subview (tx history, pk export confirm)
