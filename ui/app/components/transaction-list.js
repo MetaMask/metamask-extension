@@ -59,38 +59,15 @@ module.exports = function(transactions, network) {
 
   function renderTransaction(transaction, i){
 
-    var panelOpts = {
-      key: `tx-${transaction.id + i}`,
-      identiconKey: transaction.txParams.to,
-      onClick: (event) => {
-        if (!transaction.hash) return
-        var url = explorerLink(transaction.hash, parseInt(network))
-        chrome.tabs.create({ url })
-      },
-      attributes: [
-        {
-          key: 'TIME',
-          value: formatDate(transaction.time),
-        },
-        {
-          key: 'TO',
-          value: addressSummary(transaction.txParams.to),
-        },
-        {
-          key: 'VALUE',
-          value: formatBalance(transaction.txParams.value),
-        },
-      ]
-    }
-
     var txParams = transaction.txParams
     var date = formatDate(transaction.time)
 
     return (
 
-      h('.transaction-list-item.flex-row.flex-space-between.cursor-pointer', {
+      h(`.transaction-list-item.flex-row.flex-space-between${transaction.hash ? '.pointer' : ''}`, {
         key: `tx-${transaction.id + i}`,
         onClick: (event) => {
+          if (!transaction.hash) return
           var url = explorerLink(transaction.hash, parseInt(network))
           chrome.tabs.create({ url })
         },
