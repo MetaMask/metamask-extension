@@ -179,8 +179,6 @@ AccountDetailScreen.prototype.transactionList = function() {
     .filter(tx => tx.txParams.from === state.address)
     // only transactions that are on the current network
     .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
-    // only transactions that have a hash
-    .filter(tx => tx.hash)
     // sort by recency
     .sort((a, b) => b.time - a.time)
 
