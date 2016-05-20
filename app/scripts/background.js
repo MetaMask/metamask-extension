@@ -183,6 +183,7 @@ function setupControllerConnection(stream){
     clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
     exportAccount:      idStore.exportAccount.bind(idStore),
     revealAccount:      idStore.revealAccount.bind(idStore),
+    saveAccountLabel:   idStore.saveAccountLabel.bind(idStore),
   })
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', function(remote){

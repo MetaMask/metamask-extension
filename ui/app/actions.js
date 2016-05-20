@@ -59,6 +59,8 @@ var actions = {
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
+  SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
+  saveAccountLabel: saveAccountLabel,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -478,6 +480,22 @@ function showPrivateKey(key) {
   return {
     type: this.SHOW_PRIVATE_KEY,
     value: key,
+  }
+}
+
+function saveAccountLabel(account, label) {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    _accountManager.saveAccountLabel(account, label, (err) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) {
+        return dispatch(this.showWarning(err.message))
+      }
+      dispatch({
+        type: this.SAVE_ACCOUNT_LABEL,
+        value: { account, label },
+      })
+    })
   }
 }
 

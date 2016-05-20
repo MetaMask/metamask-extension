@@ -8,12 +8,12 @@ const actions = require('./actions')
 const addressSummary = require('./util').addressSummary
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
-const AccountPanel = require('./components/account-panel')
 const Identicon = require('./components/identicon')
 const EtherBalance = require('./components/eth-balance')
 const transactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
+const EditableLabel = require('./components/editable-label')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -34,12 +34,12 @@ function AccountDetailScreen() {
 }
 
 AccountDetailScreen.prototype.render = function() {
-  var state = this.props
-  var selected = state.address || Object.keys(state.accounts)[0]
-  var identity = state.identities[selected]
-  var account = state.accounts[selected]
-  var accountDetail = state.accountDetail
-  var transactions = state.transactions
+  var props = this.props
+  var selected = props.address || Object.keys(props.accounts)[0]
+  var identity = props.identities[selected]
+  var account = props.accounts[selected]
+  var accountDetail = props.accountDetail
+  var transactions = props.transactions
 
   return (
 
@@ -78,16 +78,28 @@ AccountDetailScreen.prototype.render = function() {
           h('i.fa.fa-users.fa-lg.cursor-pointer.color-orange', {
             onClick: this.navigateToAccounts.bind(this),
           }),
-
         ]),
 
-        // account label
-        h('h2.font-medium.color-forest.flex-center', {
+        h('.flex-center', {
           style: {
-            paddingTop: 8,
-            marginBottom: 32,
-          },
-        }, identity && identity.name),
+            height: '62px',
+            paddingTop: '8px',
+          }
+        }, [
+          h(EditableLabel, {
+            textValue: identity ? identity.name : '',
+            state: {
+              isEditingLabel: false,
+            },
+            saveText: (text) => {
+              props.dispatch(actions.saveAccountLabel(selected, text))
+            },
+          }, [
+
+            // What is shown when not editing:
+            h('h2.font-medium.color-forest', identity && identity.name)
+          ]),
+        ]),
 
         // address and getter actions
         h('.flex-row.flex-space-between', {

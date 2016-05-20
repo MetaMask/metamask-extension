@@ -8,6 +8,7 @@
 - Added support for capitalization-based address checksums.
 - Send value is no longer limited by javascript number precision, and is always in ETH.
 - Added ability to generate new accounts.
+- Added ability to locally nickname accounts.
 
 ## 1.8.4 2016-05-13
 

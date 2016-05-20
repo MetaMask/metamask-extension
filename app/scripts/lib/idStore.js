@@ -325,14 +325,22 @@ IdentityStore.prototype._loadIdentities = function(){
     // // add to ethStore
     this._ethStore.addAccount(address)
     // add to identities
+    const defaultLabel = 'Wallet ' + (i+1)
+    const nickname = configManager.nicknameForWallet(address)
     var identity = {
-      name: 'Wallet ' + (i+1),
-      img: 'QmW6hcwYzXrNkuHrpvo58YeZvbZxUddv69ATSHY3BHpPdd',
+      name: nickname || defaultLabel,
       address: address,
       mayBeFauceting: this._mayBeFauceting(i),
     }
     this._currentState.identities[address] = identity
   })
+  this._didUpdate()
+}
+
+IdentityStore.prototype.saveAccountLabel = function(account, label, cb) {
+  configManager.setNicknameForWallet(account, label)
+  this._loadIdentities()
+  cb(null, label)
   this._didUpdate()
 }
 

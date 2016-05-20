@@ -274,10 +274,6 @@ input.large-input {
   height: 120px;
 }
 
-.accounts-list-option:hover {
-  transform: scale(1.1);
-}
-
 .accounts-list-option .identicon-wrapper {
   width: 100px;
 }
@@ -334,9 +330,6 @@ input.large-input {
   border-bottom: 1px solid #B1B1B1;
   cursor: pointer;
 }
-.identity-section .identity-panel:hover {
-  background: #F9F9F9;
-}
 
 .identity-section .identity-panel.selected {
   background: white;
@@ -345,6 +338,11 @@ input.large-input {
 
 .identity-section .identity-panel.selected .identicon {
   border-color: orange;
+}
+
+.identity-section .accounts-list-option:hover,
+.identity-section .accounts-list-option.selected {
+  background:white;
 }
 
 /* account detail screen */
