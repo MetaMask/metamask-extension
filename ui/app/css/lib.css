@@ -107,6 +107,10 @@
   user-select: none;
 }
 
+.hover-white:hover {
+  background: white;
+}
+
 .pointer {
   cursor: pointer;
 }

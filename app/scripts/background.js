@@ -182,6 +182,7 @@ function setupControllerConnection(stream){
     setLocked:          idStore.setLocked.bind(idStore),
     clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
     exportAccount:      idStore.exportAccount.bind(idStore),
+    revealAccount:      idStore.revealAccount.bind(idStore),
   })
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', function(remote){
