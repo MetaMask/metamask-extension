@@ -2,9 +2,11 @@
 
 ## Current Master
 
-- UI Overhaul per Vlad Todirut's designs
-- Replaced identicons with jazzicons
-- Fixed glitchy transitions
+- UI Overhaul per Vlad Todirut's designs.
+- Replaced identicons with jazzicons.
+- Fixed glitchy transitions.
+- Added support for capitalization-based address checksums.
+- Send value is no longer limited by javascript number precision, and is always in ETH.
 
 ## 1.8.4 2016-05-13
 

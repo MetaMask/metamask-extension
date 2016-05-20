@@ -17,6 +17,53 @@ describe('util', function() {
     this.sinon.restore()
   })
 
+  describe('addressSummary', function() {
+    it('should add case-sensitive checksum', function() {
+      var address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
+      var result = util.addressSummary(address)
+      assert.equal(result, '0xFDEa65C8...b825')
+    })
+  })
+
+  describe('isValidAddress', function() {
+    it('should allow 40-char non-prefixed hex', function() {
+      var address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825'
+      var result = util.isValidAddress(address)
+      assert.ok(result)
+    })
+
+    it('should allow 42-char non-prefixed hex', function() {
+      var address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
+      var result = util.isValidAddress(address)
+      assert.ok(result)
+    })
+
+    it('should not allow less non hex-prefixed', function() {
+      var address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b85'
+      var result = util.isValidAddress(address)
+      assert.ok(!result)
+    })
+
+    it('should not allow less hex-prefixed', function() {
+      var address = '0xfdea65ce26263f6d9a1b5de9555d2931a33b85'
+      var result = util.isValidAddress(address)
+      assert.ok(!result)
+    })
+
+    it('should recognize correct capitalized checksum', function() {
+      var address = '0xFDEa65C8e26263F6d9A1B5de9555D2931A33b825'
+      var result = util.isValidAddress(address)
+      assert.ok(result)
+    })
+
+    it('should recognize incorrect capitalized checksum', function() {
+      var address = '0xFDea65C8e26263F6d9A1B5de9555D2931A33b825'
+      var result = util.isValidAddress(address)
+      assert.ok(!result)
+    })
+
+  })
+
   describe('numericBalance', function() {
 
     it('should return a BN 0 if given nothing', function() {
@@ -112,7 +159,28 @@ describe('util', function() {
       })
     })
 
+    describe('normalizeEthStringToWei', function() {
+      it('should convert decimal eth to pure wei BN', function() {
+        var input = '1.23456789'
+        var output = util.normalizeEthStringToWei(input)
+        assert.equal(output.toString(10), '1234567890000000000')
+      })
+
+      it('should convert 1 to expected wei', function() {
+        var input = '1'
+        var output = util.normalizeEthStringToWei(input)
+        assert.equal(output.toString(10), ethInWei)
+      })
+    })
+
     describe('#normalizeNumberToWei', function() {
+
+      it('should handle a simple use case', function() {
+        var input = 0.0002
+        var output = util.normalizeNumberToWei(input, 'ether')
+        var str = output.toString(10)
+        assert.equal(str, '200000000000000')
+      })
 
       it('should convert a kwei number to the appropriate equivalent wei', function() {
         var result = util.normalizeNumberToWei(1.111, 'kwei')
