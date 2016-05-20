@@ -85,7 +85,7 @@ module.exports = function(transactions, network) {
     var txParams = transaction.txParams
     var date = formatDate(transaction.time)
 
-    return ( 
+    return (
 
       h('.transaction-list-item.flex-row.flex-space-between.cursor-pointer', {
         key: `tx-${transaction.hash}`,
@@ -100,36 +100,61 @@ module.exports = function(transactions, network) {
 
         // large identicon
         h('.identicon-wrapper.flex-column.flex-center.select-none', [
-          h(Identicon, {
-            diameter: 24,
-            address: txParams.to,
-          }),
+          identicon(txParams, transaction),
         ]),
 
         h('.flex-column', [
 
           h('div', date),
 
-          h('div', {
-            style: {
-              fontSize: 'small',
-              color: '#ABA9AA',
-            },
-          }, addressSummary(txParams.to)),
+          recipientField(txParams),
 
         ]),
 
         h(EtherBalance, {
           value: txParams.value,
         }),
-
       ])
 
     )
   }
+}
 
- }
+function recipientField(txParams) {
+  if (txParams.to) {
+    return h('div', {
+      style: {
+        fontSize: 'small',
+        color: '#ABA9AA',
+      },
+    }, addressSummary(txParams.to))
+
+  } else {
+
+    return h('div', {
+      style: {
+        fontSize: 'small',
+        color: '#ABA9AA',
+      },
+    }, 'Contract Published')
+  }
+}
 
 function formatDate(date){
   return vreme.format(new Date(date), 'March 16 2014 14:30')
+}
+
+function identicon(txParams, transaction) {
+  if (txParams.to) {
+    return h(Identicon, {
+      diameter: 24,
+      address: txParams.to || transaction.hash,
+    })
+  } else {
+    return h('i.fa.fa-file-text-o.fa-lg', {
+      style: {
+        width: '24px',
+      }
+    })
+  }
 }
