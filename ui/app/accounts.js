@@ -46,7 +46,7 @@ AccountsScreen.prototype.render = function() {
 
       // subtitle and nav
       h('.section-title.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.pointer.hover-white', {
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
             state.dispatch(actions.goHome())
           }
@@ -114,7 +114,7 @@ AccountsScreen.prototype.render = function() {
     })
 
     return (
-      h('.accounts-list-option.flex-row.flex-space-between.cursor-pointer', {
+      h('.accounts-list-option.flex-row.flex-space-between.pointer.hover-white', {
         key: `account-panel-${identity.address}`,
         style: {
           flex: '1 0 auto',
