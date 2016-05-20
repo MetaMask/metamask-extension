@@ -5,7 +5,7 @@
 }
 
 .color-forest {
-  color: #0A5448; 
+  color: #0A5448;
 }
 
 /* lib */
@@ -107,6 +107,9 @@
   user-select: none;
 }
 
+.pointer {
+  cursor: pointer;
+}
 .cursor-pointer {
   cursor: pointer;
   transform-origin: center center;

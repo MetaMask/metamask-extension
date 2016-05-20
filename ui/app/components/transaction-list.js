@@ -57,39 +57,17 @@ module.exports = function(transactions, network) {
   )
 
 
-  function renderTransaction(transaction){
-
-    var panelOpts = {
-      key: `tx-${transaction.hash}`,
-      identiconKey: transaction.txParams.to,
-      onClick: (event) => {
-        var url = explorerLink(transaction.hash, parseInt(network))
-        chrome.tabs.create({ url })
-      },
-      attributes: [
-        {
-          key: 'TIME',
-          value: formatDate(transaction.time),
-        },
-        {
-          key: 'TO',
-          value: addressSummary(transaction.txParams.to),
-        },
-        {
-          key: 'VALUE',
-          value: formatBalance(transaction.txParams.value),
-        },
-      ]
-    }
+  function renderTransaction(transaction, i){
 
     var txParams = transaction.txParams
     var date = formatDate(transaction.time)
 
     return (
 
-      h('.transaction-list-item.flex-row.flex-space-between.cursor-pointer', {
-        key: `tx-${transaction.hash}`,
+      h(`.transaction-list-item.flex-row.flex-space-between${transaction.hash ? '.pointer' : ''}`, {
+        key: `tx-${transaction.id + i}`,
         onClick: (event) => {
+          if (!transaction.hash) return
           var url = explorerLink(transaction.hash, parseInt(network))
           chrome.tabs.create({ url })
         },
@@ -107,7 +85,7 @@ module.exports = function(transactions, network) {
 
           h('div', date),
 
-          recipientField(txParams),
+          recipientField(txParams, transaction),
 
         ]),
 
@@ -120,14 +98,17 @@ module.exports = function(transactions, network) {
   }
 }
 
-function recipientField(txParams) {
+function recipientField(txParams, transaction) {
   if (txParams.to) {
     return h('div', {
       style: {
         fontSize: 'small',
         color: '#ABA9AA',
       },
-    }, addressSummary(txParams.to))
+    }, [
+      addressSummary(txParams.to),
+      failIfFailed(transaction),
+    ])
 
   } else {
 
@@ -136,7 +117,11 @@ function recipientField(txParams) {
         fontSize: 'small',
         color: '#ABA9AA',
       },
-    }, 'Contract Published')
+    },[
+      'Contract Published',
+      failIfFailed(transaction),
+    ])
+
   }
 }
 
@@ -145,6 +130,14 @@ function formatDate(date){
 }
 
 function identicon(txParams, transaction) {
+  if (transaction.status === 'rejected') {
+    return h('i.fa.fa-exclamation-triangle.fa-lg.error', {
+      style: {
+        width: '24px',
+      }
+    })
+  }
+
   if (txParams.to) {
     return h(Identicon, {
       diameter: 24,
@@ -156,5 +149,11 @@ function identicon(txParams, transaction) {
         width: '24px',
       }
     })
+  }
+}
+
+function failIfFailed(transaction) {
+  if (transaction.status === 'rejected') {
+    return h('span.error', ' (Failed)')
   }
 }
