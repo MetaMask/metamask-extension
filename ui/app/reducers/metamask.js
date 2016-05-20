@@ -95,6 +95,14 @@ function reduceMetamask(state, action) {
     delete newState.seedWords
     return newState
 
+  case actions.SAVE_ACCOUNT_LABEL:
+    const account = action.value.account
+    const name = action.value.label
+    var id = {}
+    id[account] = extend(metamaskState.identities[account], { name })
+    var identities = extend(metamaskState.identities, id)
+    return extend(metamaskState, { identities })
+
   default:
     return metamaskState
 

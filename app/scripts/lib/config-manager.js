@@ -230,6 +230,26 @@ ConfigManager.prototype.updateTx = function(tx) {
   this._saveTxList(transactions)
 }
 
+// wallet nickname methods
+
+ConfigManager.prototype.getWalletNicknames = function() {
+  var data = this.getData()
+  let nicknames = ('walletNicknames' in data) ? data.walletNicknames : {}
+  return nicknames
+}
+
+ConfigManager.prototype.nicknameForWallet = function(account) {
+  let nicknames = this.getWalletNicknames()
+  return nicknames[account]
+}
+
+ConfigManager.prototype.setNicknameForWallet = function(account, nickname) {
+  let nicknames = this.getWalletNicknames()
+  nicknames[account] = nickname
+  var data = this.getData()
+  data.walletNicknames = nicknames
+  this.setData(data)
+}
 
 // observable
 
