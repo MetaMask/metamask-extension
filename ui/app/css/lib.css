@@ -107,10 +107,6 @@
   user-select: none;
 }
 
-.hover-white:hover {
-  background: white;
-}
-
 .pointer {
   cursor: pointer;
 }
@@ -165,4 +161,8 @@ hr.horizontal-line {
   border-top: 1px solid #ccc;
   margin: 1em 0;
   padding: 0;
+}
+
+.hover-white:hover {
+  background: white;
 }

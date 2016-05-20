@@ -39,6 +39,7 @@ AccountsScreen.prototype.render = function() {
     onSelect: this.onSelect.bind(this),
     onShowDetail: this.onShowDetail.bind(this),
     revealAccount: this.onRevealAccount.bind(this),
+    goHome: this.goHome.bind(this),
   }
   return (
 
@@ -47,9 +48,7 @@ AccountsScreen.prototype.render = function() {
       // subtitle and nav
       h('.section-title.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
-            state.dispatch(actions.goHome())
-          }
+          onClick: actions.goHome,
         }),
         h('h2.page-subtitle', 'Select Account'),
       ]),
@@ -112,13 +111,13 @@ AccountsScreen.prototype.render = function() {
       isSelected: false,
       isFauceting: isFauceting,
     })
+    const selectedClass = isSelected ? '.selected' : ''
 
     return (
-      h('.accounts-list-option.flex-row.flex-space-between.pointer.hover-white', {
+      h(`.accounts-list-option.flex-row.flex-space-between.pointer.hover-white${selectedClass}`, {
         key: `account-panel-${identity.address}`,
         style: {
           flex: '1 0 auto',
-          background: isSelected ? 'white' : 'none',
         },
         onClick: (event) => actions.onShowDetail(identity.address, event),
       }, [
@@ -176,4 +175,8 @@ AccountsScreen.prototype.onShowDetail = function(address, event){
 
 AccountsScreen.prototype.onRevealAccount = function() {
   this.props.dispatch(actions.revealAccount())
+}
+
+AccountsScreen.prototype.goHome = function() {
+  this.props.dispatch(actions.goHome())
 }
