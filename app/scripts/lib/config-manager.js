@@ -1,11 +1,12 @@
 const Migrator = require('pojo-migrator')
 const extend = require('xtend')
+const MetamaskConfig = require('./config.js')
+const migrations = require('./migrations')
 
 const STORAGE_KEY = 'metamask-config'
-const TESTNET_RPC = 'https://morden.infura.io'
-const MAINNET_RPC = 'https://mainnet.infura.io/'
+const TESTNET_RPC = MetamaskConfig.network.testnet
+const MAINNET_RPC = MetamaskConfig.network.mainnet
 
-const migrations = require('./migrations')
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
