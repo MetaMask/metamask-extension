@@ -63,6 +63,7 @@ module.exports = function(transactions, network) {
       key: `tx-${transaction.id + i}`,
       identiconKey: transaction.txParams.to,
       onClick: (event) => {
+        if (!transaction.hash) return
         var url = explorerLink(transaction.hash, parseInt(network))
         chrome.tabs.create({ url })
       },
