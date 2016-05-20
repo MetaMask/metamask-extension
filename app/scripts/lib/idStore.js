@@ -115,6 +115,21 @@ IdentityStore.prototype.setSelectedAddress = function(address, cb){
   if (cb) return cb(null, address)
 }
 
+IdentityStore.prototype.revealAccount = function(cb) {
+  let addresses = this._getAddresses()
+  const derivedKey = this._idmgmt.derivedKey
+  const keyStore = this._keyStore
+
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+  keyStore.generateNewAddress(derivedKey, 1)
+  configManager.setWallet(keyStore.serialize())
+
+  addresses = this._getAddresses()
+  this._loadIdentities()
+  this._didUpdate()
+  cb(null)
+}
+
 IdentityStore.prototype.getNetwork = function(tries) {
   if (tries === 0) return
   this.web3.version.getNetwork((err, network) => {

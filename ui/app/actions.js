@@ -48,6 +48,8 @@ var actions = {
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
+  REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
+  revealAccount: revealAccount,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
@@ -172,6 +174,19 @@ function showInfoPage() {
 function setSelectedAddress(address) {
   return (dispatch) => {
     _accountManager.setSelectedAddress(address)
+  }
+}
+
+function revealAccount() {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    _accountManager.revealAccount((err) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) return dispatch(this.displayWarning(err.message))
+      dispatch({
+        type: this.REVEAL_ACCOUNT,
+      })
+    })
   }
 }
 

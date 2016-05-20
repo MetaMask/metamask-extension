@@ -191,6 +191,12 @@ function reduceApp(state, action) {
       transForward: true,
       isLoading: false,
       warning: null,
+      scrollToBottom: false,
+    })
+
+  case actions.REVEAL_ACCOUNT:
+    return extend(appState, {
+      scrollToBottom: true,
     })
 
   case actions.SHOW_CONF_TX_PAGE:
