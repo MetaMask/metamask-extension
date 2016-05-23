@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Added copy address button to account list.
+
 ## 2.0.0 2016-05-23
 
 - UI Overhaul per Vlad Todirut's designs.
