@@ -10,6 +10,7 @@ const valuesFor = require('../util').valuesFor
 const addressSummary = require('../util').addressSummary
 const formatBalance = require('../util').formatBalance
 const findDOMNode = require('react-dom').findDOMNode
+const AccountPanel = require('./account-panel')
 
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
@@ -64,7 +65,14 @@ AccountsScreen.prototype.render = function() {
         }
       },
       [
-        identityList.map(renderAccountPanel),
+        identityList.map((identity) => {
+          return h(AccountPanel, {
+            identity,
+            selectedAddress: this.props.selectedAddress,
+            accounts: this.props.accounts,
+            onShowDetail: this.onShowDetail.bind(this),
+          })
+        }),
 
         h('hr.horizontal-line', {key: 'horizontal-line1'}),
         h('div.footer.hover-white.pointer', {
@@ -99,50 +107,6 @@ AccountsScreen.prototype.render = function() {
       ),
     ])
   )
-
-  function renderAccountPanel(identity){
-    var mayBeFauceting = identity.mayBeFauceting
-    var isSelected = state.selectedAddress === identity.address
-    var account = state.accounts[identity.address]
-    var isFauceting = mayBeFauceting && account.balance === '0x0'
-    var componentState = extend(actions, {
-      identity: identity,
-      account: account,
-      isSelected: false,
-      isFauceting: isFauceting,
-    })
-    const selectedClass = isSelected ? '.selected' : ''
-
-    return (
-      h(`.accounts-list-option.flex-row.flex-space-between.pointer.hover-white${selectedClass}`, {
-        key: `account-panel-${identity.address}`,
-        style: {
-          flex: '1 0 auto',
-        },
-        onClick: (event) => actions.onShowDetail(identity.address, event),
-      }, [
-
-        h('.identicon-wrapper.flex-column.flex-center.select-none', [
-          h(Identicon, {
-            address: identity.address
-          }),
-        ]),
-
-        // account address, balance
-        h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
-
-          h('span', identity.name),
-          h('span.font-small', addressSummary(identity.address)),
-          // h('span.font-small', formatBalance(account.balance)),
-          h(EtherBalance, {
-            value: account.balance,
-          }),
-
-        ]),
-
-      ])
-    )
-  }
 }
 
 // If a new account was revealed, scroll to the bottom
