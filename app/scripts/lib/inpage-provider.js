@@ -1,7 +1,7 @@
 const HttpProvider = require('web3/lib/web3/httpprovider')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('./obj-multiplex')
-const StreamProvider = require('./stream-provider.js')
+const StreamProvider = require('web3-stream-provider')
 const RemoteStore = require('./remote-store.js').RemoteStore
 const MetamaskConfig = require('../config.js')
 
