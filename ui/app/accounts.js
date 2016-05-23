@@ -3,9 +3,13 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const extend = require('xtend')
+const Identicon = require('./components/identicon')
 const actions = require('./actions')
-const AccountPanel = require('./components/account-panel')
+const EtherBalance = require('./components/eth-balance')
 const valuesFor = require('./util').valuesFor
+const addressSummary = require('./util').addressSummary
+const formatBalance = require('./util').formatBalance
+const findDOMNode = require('react-dom').findDOMNode
 
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
@@ -17,6 +21,7 @@ function mapStateToProps(state) {
     unconfTxs: state.metamask.unconfTxs,
     selectedAddress: state.metamask.selectedAddress,
     currentDomain: state.appState.currentDomain,
+    scrollToBottom: state.appState.scrollToBottom,
   }
 }
 
@@ -33,37 +38,52 @@ AccountsScreen.prototype.render = function() {
   var actions = {
     onSelect: this.onSelect.bind(this),
     onShowDetail: this.onShowDetail.bind(this),
+    revealAccount: this.onRevealAccount.bind(this),
+    goHome: this.goHome.bind(this),
   }
   return (
 
-    h('.accounts-section.flex-column.flex-grow', [
+    h('.accounts-section.flex-grow', [
 
       // subtitle and nav
-      h('.section-title.flex-column.flex-center', [
-        h('h2.page-subtitle', 'Accounts'),
+      h('.section-title.flex-center', [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+          onClick: actions.goHome,
+        }),
+        h('h2.page-subtitle', 'Select Account'),
       ]),
 
-      // current domain
-      /* AUDIT
-       * Temporarily removed
-       * since accounts are currently injected
-       * regardless of the current domain.
-       */
-      h('.current-domain-panel.flex-center.font-small', [
-        h('span', 'Selected address is visible to all sites you visit.'),
-        // h('span', state.currentDomain),
-      ]),
+      h('hr.horizontal-line'),
 
       // identity selection
       h('section.identity-section.flex-column', {
         style: {
-          maxHeight: '290px',
+          height: '418px',
           overflowY: 'auto',
           overflowX: 'hidden',
         }
       },
-        identityList.map(renderAccountPanel)
-      ),
+      [
+        identityList.map(renderAccountPanel),
+
+        h('hr.horizontal-line', {key: 'horizontal-line1'}),
+        h('div.footer.hover-white.pointer', {
+          key: 'reveal-account-bar',
+          onClick:() => {
+            actions.revealAccount()
+          },
+          style: {
+            display: 'flex',
+            flex: '1 0 auto',
+            height: '40px',
+            paddint: '10px',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }
+        }, [
+          h('i.fa.fa-chevron-down.fa-lg', {key: ''}),
+        ]),
+      ]),
 
       unconfTxList.length ? (
 
@@ -77,10 +97,7 @@ AccountsScreen.prototype.render = function() {
       ) : (
         null
       ),
-
-
     ])
-
   )
 
   function renderAccountPanel(identity){
@@ -94,7 +111,48 @@ AccountsScreen.prototype.render = function() {
       isSelected: false,
       isFauceting: isFauceting,
     })
-    return h(AccountPanel, componentState)
+    const selectedClass = isSelected ? '.selected' : ''
+
+    return (
+      h(`.accounts-list-option.flex-row.flex-space-between.pointer.hover-white${selectedClass}`, {
+        key: `account-panel-${identity.address}`,
+        style: {
+          flex: '1 0 auto',
+        },
+        onClick: (event) => actions.onShowDetail(identity.address, event),
+      }, [
+
+        h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h(Identicon, {
+            address: identity.address
+          }),
+        ]),
+
+        // account address, balance
+        h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
+
+          h('span', identity.name),
+          h('span.font-small', addressSummary(identity.address)),
+          // h('span.font-small', formatBalance(account.balance)),
+          h(EtherBalance, {
+            value: account.balance,
+          }),
+
+        ]),
+
+      ])
+    )
+  }
+}
+
+// If a new account was revealed, scroll to the bottom
+AccountsScreen.prototype.componentDidUpdate = function(){
+  const scrollToBottom = this.props.scrollToBottom
+
+  if (scrollToBottom) {
+    var container = findDOMNode(this)
+    var scrollable = container.querySelector('.identity-section')
+    scrollable.scrollTop = scrollable.scrollHeight
   }
 }
 
@@ -113,4 +171,12 @@ AccountsScreen.prototype.onSelect = function(address, event){
 AccountsScreen.prototype.onShowDetail = function(address, event){
   event.stopPropagation()
   this.props.dispatch(actions.showAccountDetail(address))
+}
+
+AccountsScreen.prototype.onRevealAccount = function() {
+  this.props.dispatch(actions.revealAccount())
+}
+
+AccountsScreen.prototype.goHome = function() {
+  this.props.dispatch(actions.goHome())
 }

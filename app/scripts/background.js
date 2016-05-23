@@ -1,11 +1,12 @@
 const Dnode = require('dnode')
-const ObjectMultiplex = require('./lib/obj-multiplex')
 const eos = require('end-of-stream')
 const combineStreams = require('pumpify')
 const extend = require('xtend')
 const EthStore = require('eth-store')
-const PortStream = require('./lib/port-stream.js')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
+const handleRequestsFromStream = require('web3-stream-provider/handler')
+const ObjectMultiplex = require('./lib/obj-multiplex')
+const PortStream = require('./lib/port-stream.js')
 const IdentityStore = require('./lib/idStore')
 const createTxNotification = require('./lib/notifications.js').createTxNotification
 const createMsgNotification = require('./lib/notifications.js').createMsgNotification
@@ -132,25 +133,6 @@ function storeSetFromObj(store, obj){
 }
 
 
-
-// handle rpc requests
-function onRpcRequest(remoteStream, payload){
-  // console.log('MetaMaskPlugin - incoming payload:', payload)
-  provider.sendAsync(payload, function onPayloadHandled(err, response){
-    // provider engine errors are included in response objects
-    if (!payload.isMetamaskInternal) {
-      console.log('MetaMaskPlugin - RPC complete:', payload, '->', response)
-      if (response.error) console.error('Error in RPC response:\n'+response.error.message)
-    }
-    try {
-      remoteStream.write(response)
-    } catch (err) {
-      console.error(err)
-    }
-  })
-}
-
-
 //
 // remote features
 //
@@ -161,7 +143,15 @@ function setupPublicConfig(stream){
 }
 
 function setupProviderConnection(stream){
-  stream.on('data', onRpcRequest.bind(null, stream))
+  handleRequestsFromStream(stream, provider, logger)
+
+  function logger(err, request, response){
+    if (err) return console.error(err.stack)
+    if (!request.isMetamaskInternal) {
+      console.log('MetaMaskPlugin - RPC complete:', request, '->', response)
+      if (response.error) console.error('Error in RPC response:\n'+response.error.message)
+    }
+  }
 }
 
 function setupControllerConnection(stream){
@@ -182,6 +172,8 @@ function setupControllerConnection(stream){
     setLocked:          idStore.setLocked.bind(idStore),
     clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
     exportAccount:      idStore.exportAccount.bind(idStore),
+    revealAccount:      idStore.revealAccount.bind(idStore),
+    saveAccountLabel:   idStore.saveAccountLabel.bind(idStore),
   })
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', function(remote){

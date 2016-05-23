@@ -105,14 +105,29 @@ IdentityStore.prototype.getSelectedAddress = function(){
   return configManager.getSelectedAccount()
 }
 
-IdentityStore.prototype.setSelectedAddress = function(address){
+IdentityStore.prototype.setSelectedAddress = function(address, cb){
   if (!address) {
     var addresses = this._getAddresses()
     address = addresses[0]
   }
 
   configManager.setSelectedAccount(address)
+  if (cb) return cb(null, address)
+}
+
+IdentityStore.prototype.revealAccount = function(cb) {
+  let addresses = this._getAddresses()
+  const derivedKey = this._idmgmt.derivedKey
+  const keyStore = this._keyStore
+
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+  keyStore.generateNewAddress(derivedKey, 1)
+  configManager.setWallet(keyStore.serialize())
+
+  addresses = this._getAddresses()
+  this._loadIdentities()
   this._didUpdate()
+  cb(null)
 }
 
 IdentityStore.prototype.getNetwork = function(tries) {
@@ -310,14 +325,22 @@ IdentityStore.prototype._loadIdentities = function(){
     // // add to ethStore
     this._ethStore.addAccount(address)
     // add to identities
+    const defaultLabel = 'Wallet ' + (i+1)
+    const nickname = configManager.nicknameForWallet(address)
     var identity = {
-      name: 'Wallet ' + (i+1),
-      img: 'QmW6hcwYzXrNkuHrpvo58YeZvbZxUddv69ATSHY3BHpPdd',
+      name: nickname || defaultLabel,
       address: address,
       mayBeFauceting: this._mayBeFauceting(i),
     }
     this._currentState.identities[address] = identity
   })
+  this._didUpdate()
+}
+
+IdentityStore.prototype.saveAccountLabel = function(account, label, cb) {
+  configManager.setNicknameForWallet(account, label)
+  this._loadIdentities()
+  cb(null, label)
   this._didUpdate()
 }
 

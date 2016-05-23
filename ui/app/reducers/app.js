@@ -22,6 +22,7 @@ function reduceApp(state, action) {
   var seedWords = state.metamask.seedWords
 
   var appState = extend({
+    menuOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
@@ -33,6 +34,16 @@ function reduceApp(state, action) {
   }, state.appState)
 
   switch (action.type) {
+
+  case actions.TOGGLE_MENU:
+    return extend(appState, {
+      menuOpen: !appState.menuOpen,
+    })
+
+  case actions.SET_MENU_STATE:
+    return extend(appState, {
+      menuOpen: action.value,
+    })
 
   // intialize
 
@@ -154,7 +165,7 @@ function reduceApp(state, action) {
         accountExport: 'none',
         privateKey: '',
       },
-      transForward: true,
+      transForward: false,
     })
 
   case actions.BACK_TO_ACCOUNT_DETAIL:
@@ -177,9 +188,15 @@ function reduceApp(state, action) {
       currentView: {
         name: seedWords ? 'createVaultComplete' : 'accounts',
       },
-      transForward: appState.currentView.name == 'locked',
+      transForward: true,
       isLoading: false,
       warning: null,
+      scrollToBottom: false,
+    })
+
+  case actions.REVEAL_ACCOUNT:
+    return extend(appState, {
+      scrollToBottom: true,
     })
 
   case actions.SHOW_CONF_TX_PAGE:
@@ -278,10 +295,13 @@ function reduceApp(state, action) {
   case actions.CLEAR_SEED_WORD_CACHE:
     return extend(appState, {
       transForward: true,
-      currentView: {
-        name: 'accounts',
-      },
+      currentView: {},
       isLoading: false,
+      accountDetail: {
+        subview: 'transactions',
+        accountExport: 'none',
+        privateKey: '',
+      },
     })
 
   case actions.DISPLAY_WARNING:

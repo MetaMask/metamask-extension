@@ -29,6 +29,7 @@ function reduceMetamask(state, action) {
     return extend(metamaskState, {
       isUnlocked: true,
       isInitialized: true,
+      selectedAccount: action.value,
     })
 
   case actions.LOCK_METAMASK:
@@ -69,18 +70,38 @@ function reduceMetamask(state, action) {
     }
     return newState
 
+  case actions.SHOW_NEW_VAULT_SEED:
+    return extend(metamaskState, {
+      isUnlocked: true,
+      isInitialized: false,
+    })
+
   case actions.CLEAR_SEED_WORD_CACHE:
     var newState = extend(metamaskState, {
+      isUnlocked: true,
       isInitialized: true,
+      selectedAccount: action.value,
     })
     delete newState.seedWords
     return newState
 
-  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
-    return extend(metamaskState, {
+  case actions.SHOW_ACCOUNT_DETAIL:
+    const newState = extend(metamaskState, {
       isUnlocked: true,
       isInitialized: true,
+      selectedAccount: action.value,
+      selectedAddress: action.value,
     })
+    delete newState.seedWords
+    return newState
+
+  case actions.SAVE_ACCOUNT_LABEL:
+    const account = action.value.account
+    const name = action.value.label
+    var id = {}
+    id[account] = extend(metamaskState.identities[account], { name })
+    var identities = extend(metamaskState.identities, id)
+    return extend(metamaskState, { identities })
 
   default:
     return metamaskState

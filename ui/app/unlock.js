@@ -29,19 +29,25 @@ UnlockScreen.prototype.render = function() {
 
     h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-      h('h2.page-subtitle', 'Welcome!'),
-
       h(Mascot, {
         animationEventEmitter: this.animationEventEmitter,
       }),
 
-      h('label', {
-        htmlFor: 'password-box',
-      }, 'Enter Password:'),
+      h('h1', {
+        style: {
+          fontSize: '1.4em',
+          textTransform: 'uppercase',
+          color: '#7F8082',
+        },
+      }, 'MetaMask'),
 
-      h('input', {
+      h('input.large-input', {
         type: 'password',
         id: 'password-box',
+        placeholder: 'enter password',
+        style: {
+
+        },
         onKeyPress: this.onKeyPress.bind(this),
         onInput: this.inputChanged.bind(this),
       }),
@@ -54,6 +60,9 @@ UnlockScreen.prototype.render = function() {
 
       h('button.primary.cursor-pointer', {
         onClick: this.onSubmit.bind(this),
+        style: {
+          margin: 10,
+        },
       }, 'Unlock'),
 
     ])

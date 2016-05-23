@@ -14,11 +14,15 @@ application specific styles
 }
 
 html, body {
-  /*font-family: 'Open Sans', Arial, sans-serif;*/
-  font-family: 'Roboto', 'Noto', sans-serif;
+  font-family: 'Transat Standard', Arial;
   color: #4D4D4D;
   font-weight: 300;
   line-height: 1.4em;
+  background: #F7F7F7;
+}
+
+input:focus, textarea:focus {
+  outline: none;
 }
 
 #app-content {
@@ -29,43 +33,23 @@ html, body {
 }
 
 button {
+  font-family: 'Transat Black';
   outline: none;
   cursor: pointer;
-  margin: 10px;
-  padding: 6px;
+  /*margin: 10px;*/
+  padding: 8px 12px;
   border: none;
-  border-radius: 3px;
   background: #F7861C;
-  font-weight: 500;
   color: white;
   transform-origin: center center;
   transition: transform 50ms ease-in;
 }
+
 button:hover {
   transform: scale(1.1);
 }
 button:active {
   transform: scale(0.95);
-}
-
-button.primary {
-  margin: 10px;
-  padding: 6px;
-  border: none;
-  border-radius: 3px;
-  background: #F7861C;
-  font-weight: 500;
-  color: white;
-}
-
-input, textarea {
-  width: 300px;
-  padding: 6px;
-  border-radius: 6px;
-  border-style: solid;
-  outline: none;
-  border: 1px solid #F5A623;
-  background: #FAF6F0;
 }
 
 a {
@@ -85,6 +69,16 @@ app
   color: #909090;
 }
 
+button.primary {
+  padding: 8px 12px;
+  background: #F7861C;
+  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  color: white;
+  font-size: 1.1em;
+  font-family: 'Transat Standard';
+  text-transform: uppercase;
+}
+
 button.btn-thin {
   border: 1px solid;
   border-color: #4D4D4D;
@@ -98,23 +92,25 @@ button.btn-thin {
 }
 
 .app-header {
-  padding-top: 20px;
+  padding: 6px 8px;
 }
 
 .app-header h1 {
-  font-size: 2em;
-  font-weight: 300;
-  height: 42px;
+  font-family: 'Transat Medium';
+  text-transform: uppercase;
+  color: #AEAEAE;
 }
 
 h2.page-subtitle {
+  font-family: 'Transat Light';
+  text-transform: uppercase;
+  color: #AEAEAE;
   font-size: 1em;
-  font-weight: 500;
-  height: 24px;
-  color: #F3C83E;
+  margin: 12px;
 }
 
 .app-primary {
+
 }
 
 .app-footer {
@@ -216,33 +212,70 @@ app sections
   margin: -2px 8px 0px -8px;
 }
 
-.unlock-screen label {
-  color: #F3C83E;
-  font-weight: 500;
+.unlock-screen #metamask-mascot-container {
+  margin-top: 24px;
+}
+
+.unlock-screen h1 {
+  margin-top: -28px;
+  margin-bottom: 42px;
 }
 
 .unlock-screen input[type=password] {
-  width: 60%;
-  height: 22px;
-  padding: 2px;
-  border-radius: 4px;
-  border: 2px solid #F3C83E;
-  background: #FAF6F0;
+  width: 260px;
+  /*height: 36px;
+  margin-bottom: 24px;
+  padding: 8px;*/
 }
 
-.unlock-screen input[type=password]:focus {
-  outline: none;
-  border: 3px solid #F3C83E;
+/* Webkit */
+.unlock-screen input::-webkit-input-placeholder {
+  text-align: center;
+  font-size: 1.2em;
 }
+/* Firefox 18- */
+.unlock-screen input:-moz-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+/* Firefox 19+ */
+.unlock-screen input::-moz-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+/* IE */
+.unlock-screen input:-ms-input-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+
+input.large-input, textarea.large-input {
+  /*margin-bottom: 24px;*/
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}
+
+
 
 /* accounts */
 
 .accounts-section {
-  margin: 0 20px;
+  margin: 0 0px;
 }
 
-.current-domain-panel {
-  border: 1px solid #B7B7B7;
+.accounts-section .horizontal-line {
+  margin: 0px 18px;
+}
+
+.accounts-list-option {
+  height: 120px;
+}
+
+.accounts-list-option .identicon-wrapper {
+  width: 100px;
 }
 
 .unconftx-link {
@@ -289,17 +322,13 @@ app sections
 /* accounts screen */
 
 .identity-section {
-  border: 2px solid #4D4D4D;
-  margin: 0;
+
 }
 
 .identity-section .identity-panel {
   background: #E9E9E9;
   border-bottom: 1px solid #B1B1B1;
   cursor: pointer;
-}
-.identity-section .identity-panel:hover {
-  background: #F9F9F9;
 }
 
 .identity-section .identity-panel.selected {
@@ -311,10 +340,15 @@ app sections
   border-color: orange;
 }
 
+.identity-section .accounts-list-option:hover,
+.identity-section .accounts-list-option.selected {
+  background:white;
+}
+
 /* account detail screen */
 
 .account-detail-section {
-  margin: 0 20px;
+
 }
 
 /* tx confirm */
@@ -333,157 +367,28 @@ app sections
   background: #FAF6F0;
 }
 
+/* Send Screen */
 
-/*
-react toggle
-*/
+.send-screen {
 
-/* overrides */
-
-.react-toggle-track-check {
-  display: none;
-}
-.react-toggle-track-x {
-  display: none;
 }
 
-/* modified original */
-
-.react-toggle {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  background-color: transparent;
-  border: 0;
-  padding: 0;
-
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-  -webkit-tap-highlight-color: transparent;
+.send-screen section {
+  margin: 8px 16px;
 }
 
-.react-toggle-screenreader-only {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
+.send-screen input {
+  width: 100%;
+  font-size: 12px;
+  letter-spacing: 0.1em;
 }
 
-.react-toggle--disabled {
-  opacity: 0.5;
-  -webkit-transition: opacity 0.25s;
-  transition: opacity 0.25s;
+/* Ether Balance Widget */
+
+.ether-balance-amount {
+  color: #F7861C;
 }
 
-.react-toggle-track {
-  width: 50px;
-  height: 24px;
-  padding: 0;
-  border-radius: 30px;
-  background-color: #4D4D4D;
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  transition: all 0.2s ease;
+.ether-balance-label {
+  color: #ABA9AA;
 }
-
-.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: #000000;
-}
-
-.react-toggle--checked .react-toggle-track {
-  background-color: rgb(255, 174, 41);
-}
-
-.react-toggle.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
-  background-color: rgb(243, 151, 0);
-}
-
-.react-toggle-track-check {
-  position: absolute;
-  width: 14px;
-  height: 10px;
-  top: 0px;
-  bottom: 0px;
-  margin-top: auto;
-  margin-bottom: auto;
-  line-height: 0;
-  left: 8px;
-  opacity: 0;
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-}
-
-.react-toggle--checked .react-toggle-track-check {
-  opacity: 1;
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-}
-
-.react-toggle-track-x {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  top: 0px;
-  bottom: 0px;
-  margin-top: auto;
-  margin-bottom: auto;
-  line-height: 0;
-  right: 10px;
-  opacity: 1;
-  -webkit-transition: opacity 0.25s ease;
-  -moz-transition: opacity 0.25s ease;
-  transition: opacity 0.25s ease;
-}
-
-.react-toggle--checked .react-toggle-track-x {
-  opacity: 0;
-}
-
-.react-toggle-thumb {
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 22px;
-  height: 22px;
-  border: 1px solid #4D4D4D;
-  border-radius: 50%;
-  background-color: #FAFAFA;
-
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-
-  -webkit-transition: all 0.25s ease;
-  -moz-transition: all 0.25s ease;
-  transition: all 0.25s ease;
-}
-
-.react-toggle--checked .react-toggle-thumb {
-  left: 27px;
-  border-color: #828282;
-}
-/*
-      .react-toggle--focus .react-toggle-thumb {
-        -webkit-box-shadow: 0px 0px 3px 2px #0099E0;
-        -moz-box-shadow: 0px 0px 3px 2px #0099E0;
-        box-shadow: 0px 0px 2px 3px #0099E0;
-      }
-
-      .react-toggle:active .react-toggle-thumb {
-        -webkit-box-shadow: 0px 0px 5px 5px #0099E0;
-        -moz-box-shadow: 0px 0px 5px 5px #0099E0;
-        box-shadow: 0px 0px 5px 5px #0099E0;
-      }

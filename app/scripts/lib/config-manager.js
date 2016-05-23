@@ -1,11 +1,12 @@
 const Migrator = require('pojo-migrator')
 const extend = require('xtend')
+const MetamaskConfig = require('../config.js')
+const migrations = require('./migrations')
 
 const STORAGE_KEY = 'metamask-config'
-const TESTNET_RPC = 'https://morden.infura.io'
-const MAINNET_RPC = 'https://mainnet.infura.io/'
+const TESTNET_RPC = MetamaskConfig.network.testnet
+const MAINNET_RPC = MetamaskConfig.network.mainnet
 
-const migrations = require('./migrations')
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -229,6 +230,26 @@ ConfigManager.prototype.updateTx = function(tx) {
   this._saveTxList(transactions)
 }
 
+// wallet nickname methods
+
+ConfigManager.prototype.getWalletNicknames = function() {
+  var data = this.getData()
+  let nicknames = ('walletNicknames' in data) ? data.walletNicknames : {}
+  return nicknames
+}
+
+ConfigManager.prototype.nicknameForWallet = function(account) {
+  let nicknames = this.getWalletNicknames()
+  return nicknames[account]
+}
+
+ConfigManager.prototype.setNicknameForWallet = function(account, nickname) {
+  let nicknames = this.getWalletNicknames()
+  nicknames[account] = nickname
+  var data = this.getData()
+  data.walletNicknames = nicknames
+  this.setData(data)
+}
 
 // observable
 

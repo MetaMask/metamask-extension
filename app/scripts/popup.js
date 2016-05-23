@@ -7,7 +7,7 @@ const MetaMaskUi = require('../../ui')
 const MetaMaskUiCss = require('../../ui/css')
 const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
-const StreamProvider = require('./lib/stream-provider.js')
+const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 
 // setup app

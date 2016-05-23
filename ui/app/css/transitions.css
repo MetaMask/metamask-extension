@@ -1,48 +1,42 @@
-/* initial positions */
-.app-primary.from-right .main-enter {
-  transform: translateX(400px);
+/* universal */
+.app-primary .main-enter {
   position: absolute;
   width: 100%;
-  transition: transform 300ms ease-in-out;
-}
-.app-primary.from-left .main-enter {
-  transform: translateX(-400px);
-  position: absolute;
-  width: 100%;
-  transition: transform 300ms ease-in-out;
 }
 
 /* center position */
-.app-primary .main-enter.main-enter-active,
-.app-primary .main-leave {
-  transform: translateX(0px);
-  position: absolute;
-  width: 100%;
-  transition: transform 300ms ease-in-out;
+.app-primary.from-right .main-enter-active,
+.app-primary.from-left .main-enter-active {
   overflow-x: hidden;
+  transform: translateX(0px);
+  transition: transform 300ms ease-in;
 }
 
-/* final positions */
+/* exited positions */
 .app-primary.from-left .main-leave-active {
-  transform: translateX(400px);
-  position: absolute;
-  width: 100%;
-  transition: transform 300ms ease-in-out;
+  transform: translateX(360px);
+  transition: transform 300ms ease-in;
 }
 .app-primary.from-right .main-leave-active {
-  transform: translateX(-400px);
-  position: absolute;
-  width: 100%;
-  transition: transform 300ms ease-in-out;
+  transform: translateX(-360px);
+  transition: transform 300ms ease-in;
 }
 
 /* loader transitions */
 .loader-enter, .loader-leave-active {
   opacity: 0.0;
-  transition: opacity 150 ease-in-out;
+  transition: opacity 150 ease-in;
 }
 .loader-enter-active, .loader-leave {
   opacity: 1.0;
-  transition: opacity 150 ease-in-out;
+  transition: opacity 150 ease-in;
+}
+
+/* entering positions */
+.app-primary.from-right .main-enter:not(.main-enter-active) {
+  transform: translateX(360px);
+}
+.app-primary.from-left .main-enter:not(.main-enter-active) {
+  transform: translateX(-360px);
 }
 

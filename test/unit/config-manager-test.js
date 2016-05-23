@@ -54,6 +54,27 @@ describe('config-manager', function() {
     })
   })
 
+  describe('wallet nicknames', function() {
+    it('should return null when no nicknames are saved', function() {
+      var nick = configManager.nicknameForWallet('0x0')
+      assert.equal(nick, null, 'no nickname returned')
+    })
+
+    it('should persist nicknames', function() {
+      var account = '0x0'
+      var nick1 = 'foo'
+      var nick2 = 'bar'
+      configManager.setNicknameForWallet(account, nick1)
+
+      var result1 = configManager.nicknameForWallet(account)
+      assert.equal(result1, nick1)
+
+      configManager.setNicknameForWallet(account, nick2)
+      var result2 = configManager.nicknameForWallet(account)
+      assert.equal(result2, nick2)
+    })
+  })
+
   describe('rpc manipulations', function() {
     it('changing rpc should return a different rpc', function() {
       var firstRpc = 'first'

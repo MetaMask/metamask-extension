@@ -24,6 +24,9 @@ const ConfigScreen = require('./config')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
 const txHelper = require('../lib/tx-helper')
+const SandwichExpando = require('sandwich-expando')
+const MenuDroppo = require('menu-droppo')
+const DropMenuItem = require('./components/drop-menu-item')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -42,6 +45,7 @@ function mapStateToProps(state) {
     seedWords: state.metamask.seedWords,
     unconfTxs: state.metamask.unconfTxs,
     unconfMsgs: state.metamask.unconfMsgs,
+    menuOpen: state.appState.menuOpen,
   }
 }
 
@@ -50,15 +54,6 @@ App.prototype.render = function() {
   var state = this.props
   var view = state.currentView.name
   var transForward = state.transForward
-  var shouldHaveFooter = true
-  switch (view) {
-    case 'restoreVault':
-      shouldHaveFooter = false;
-    case 'createVault':
-      shouldHaveFooter = false;
-    case 'createVaultComplete':
-      shouldHaveFooter = false;
-  }
 
   return (
 
@@ -67,16 +62,13 @@ App.prototype.render = function() {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
       }
-    },
-    [
+    }, [
 
       h(LoadingIndicator),
 
-      // top row
-      h('.app-header.flex-column.flex-center', {
-      }, [
-        h('h1', 'MetaMask'),
-      ]),
+      // app bar
+      this.renderAppBar(),
+      this.renderDropdown(),
 
       // panel content
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
@@ -86,7 +78,8 @@ App.prototype.render = function() {
         }
       }, [
         h(ReactCSSTransitionGroup, {
-          transitionName: "main",
+          className: 'css-transition-group',
+          transitionName: 'main',
           transitionEnterTimeout: 300,
           transitionLeaveTimeout: 300,
         }, [
@@ -95,77 +88,157 @@ App.prototype.render = function() {
       ]),
 
       // footer
-      h('.app-footer.flex-row.flex-space-around', {
+      // h('.app-footer.flex-row.flex-space-around', {
+      //   style: {
+      //     display: shouldHaveFooter ? 'flex' : 'none',
+      //     alignItems: 'center',
+      //     height: '56px',
+      //   }
+      // }, [
+
+        // // settings icon
+        // h('i.fa.fa-cog.fa-lg' + (view  === 'config' ? '.active' : '.cursor-pointer'), {
+        //   style: {
+        //     opacity: state.isUnlocked ? '1.0' : '0.0',
+        //     transition: 'opacity 200ms ease-in',
+        //     //transform: `translateX(${state.isUnlocked ? '0px' : '-100px'})`,
+        //   },
+        //   onClick: function(ev) {
+        //     state.dispatch(actions.showConfigPage())
+        //   },
+        // }),
+
+        // // toggle
+        // onOffToggle({
+        //   toggleMetamaskActive: this.toggleMetamaskActive.bind(this),
+        //   isUnlocked: state.isUnlocked,
+        // }),
+
+        // // help
+        // h('i.fa.fa-question.fa-lg.cursor-pointer', {
+        //   style: {
+        //     opacity: state.isUnlocked ? '1.0' : '0.0',
+        //   },
+        //   onClick() { state.dispatch(actions.showInfoPage()) }
+        // }),
+      // ]),
+
+    ])
+  )
+}
+
+App.prototype.renderAppBar = function(){
+  var state = this.props
+
+  return (
+
+    h('div', [
+
+      h('.app-header.flex-row.flex-space-between', {
         style: {
-          display: shouldHaveFooter ? 'flex' : 'none',
           alignItems: 'center',
-          height: '56px',
-        }
-      }, [
+          visibility: state.isUnlocked ? 'visible' : 'none',
+          background: state.isUnlocked ? 'white' : 'none',
+          height: '36px',
+          position: 'relative',
+          zIndex: 1,
+        },
+      }, state.isUnlocked && [
 
-        // settings icon
-        h('i.fa.fa-cog.fa-lg' + (view  === 'config' ? '.active' : '.cursor-pointer'), {
-          style: {
-            opacity: state.isUnlocked ? '1.0' : '0.0',
-            transition: 'opacity 200ms ease-in',
-            //transform: `translateX(${state.isUnlocked ? '0px' : '-100px'})`,
-          },
-          onClick: function(ev) {
-            state.dispatch(actions.showConfigPage())
-          },
+        // mini logo
+        h('img', {
+          height: 24,
+          width: 24,
+          src: '/images/icon-128.png',
         }),
 
-        // toggle
-        onOffToggle({
-          toggleMetamaskActive: this.toggleMetamaskActive.bind(this),
-          isUnlocked: state.isUnlocked,
-        }),
+        // metamask name
+        h('h1', 'MetaMask'),
 
-        // help
-        h('i.fa.fa-question.fa-lg.cursor-pointer', {
-          style: {
-            opacity: state.isUnlocked ? '1.0' : '0.0',
+        // hamburger
+        h(SandwichExpando, {
+          width: 16,
+          barHeight: 2,
+          padding: 0,
+          isOpen: state.menuOpen,
+          color: 'rgb(247,146,30)',
+          onClick: (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            this.props.dispatch(actions.toggleMenu())
           },
-          onClick() { state.dispatch(actions.showInfoPage()) }
         }),
       ]),
     ])
   )
 }
 
-App.prototype.toggleMetamaskActive = function(){
-  if (!this.props.isUnlocked) {
-    // currently inactive: redirect to password box
-    var passwordBox = document.querySelector('input[type=password]')
-    if (!passwordBox) return
-    passwordBox.focus()
-  } else {
-    // currently active: deactivate
-    this.props.dispatch(actions.lockMetamask(false))
-  }
+App.prototype.renderDropdown = function() {
+  const props = this.props
+  return h(MenuDroppo, {
+    isOpen: props.menuOpen,
+    onClickOutside: (event) => {
+      this.props.dispatch(actions.closeMenu())
+    },
+    style: {
+      position: 'fixed',
+      right: 0,
+      zIndex: 0,
+    },
+    innerStyle: {
+      background: 'white',
+      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+    },
+  }, [ // DROP MENU ITEMS
+    h('style', `
+      .drop-menu-item:hover { background:rgb(235, 235, 235); }
+      .drop-menu-item i { margin: 11px; }
+    `),
+
+    h(DropMenuItem, {
+      label: 'Settings',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Lock Account',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.lockMetamask()),
+      icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Help',
+      closeMenu:() => this.props.dispatch(actions.closeMenu()),
+      action:() => this.props.dispatch(actions.showInfoPage()),
+      icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
+    }),
+  ])
 }
 
-App.prototype.renderPrimary = function(state){
-  var state = this.props
+App.prototype.renderPrimary = function(){
+  var props = this.props
 
-  // If seed words haven't been dismissed yet, show them still.
-  /*
-  if (state.seedWords) {
+  if (props.seedWords) {
     return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
   }
-  */
 
   // show initialize screen
-  if (!state.isInitialized) {
+  if (!props.isInitialized) {
 
     // show current view
-    switch (state.currentView.name) {
+    switch (props.currentView.name) {
 
       case 'createVault':
         return h(CreateVaultScreen, {key: 'createVault'})
 
       case 'restoreVault':
         return h(RestoreVaultScreen, {key: 'restoreVault'})
+
+      case 'createVaultComplete':
+        return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
@@ -174,15 +247,12 @@ App.prototype.renderPrimary = function(state){
   }
 
   // show unlock screen
-  if (!state.isUnlocked) {
+  if (!props.isUnlocked) {
     return h(UnlockScreen, {key: 'locked'})
   }
 
   // show current view
-  switch (state.currentView.name) {
-
-    case 'createVaultComplete':
-      return h(CreateVaultCompleteScreen, {key: 'created-vault'})
+  switch (props.currentView.name) {
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})
@@ -212,6 +282,18 @@ App.prototype.renderPrimary = function(state){
         return h(AccountDetailScreen, {key: 'account-detail'})
       }
    }
+}
+
+App.prototype.toggleMetamaskActive = function(){
+  if (!this.props.isUnlocked) {
+    // currently inactive: redirect to password box
+    var passwordBox = document.querySelector('input[type=password]')
+    if (!passwordBox) return
+    passwordBox.focus()
+  } else {
+    // currently active: deactivate
+    this.props.dispatch(actions.lockMetamask(false))
+  }
 }
 
 App.prototype.hasPendingTxs = function() {

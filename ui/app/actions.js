@@ -1,6 +1,11 @@
 var actions = {
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // menu state
+  TOGGLE_MENU: 'TOGGLE_MENU',
+  toggleMenu: toggleMenu,
+  SET_MENU_STATE: 'SET_MENU_STATE',
+  closeMenu: closeMenu,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -43,6 +48,8 @@ var actions = {
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
+  REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
+  revealAccount: revealAccount,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
@@ -52,6 +59,8 @@ var actions = {
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
+  SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
+  saveAccountLabel: saveAccountLabel,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -105,6 +114,21 @@ function goHome() {
   }
 }
 
+// menu state
+
+function toggleMenu() {
+  return {
+    type: this.TOGGLE_MENU,
+  }
+}
+
+function closeMenu() {
+  return {
+    type: this.SET_MENU_STATE,
+    value: false,
+  }
+}
+
 // async actions
 
 function tryUnlockMetamask(password) {
@@ -114,7 +138,7 @@ function tryUnlockMetamask(password) {
       if (err) {
         dispatch(this.unlockFailed())
       } else {
-        dispatch(this.unlockMetamask())
+        dispatch(this.unlockMetamask(selectedAccount))
       }
     })
   }
@@ -133,12 +157,12 @@ function recoverFromSeed(password, seed) {
   return (dispatch) => {
     // dispatch(this.createNewVaultInProgress())
     dispatch(this.showLoadingIndication())
-    _accountManager.recoverFromSeed(password, seed, (err, selectedAccount) => {
+    _accountManager.recoverFromSeed(password, seed, (err, metamaskState) => {
       dispatch(this.hideLoadingIndication())
       if (err) return dispatch(this.displayWarning(err.message))
 
-      dispatch(this.goHome())
-      dispatch(this.unlockMetamask())
+      var account = Object.keys(metamaskState.identities)[0]
+      dispatch(this.unlockMetamask(account))
    })
   }
 }
@@ -152,6 +176,19 @@ function showInfoPage() {
 function setSelectedAddress(address) {
   return (dispatch) => {
     _accountManager.setSelectedAddress(address)
+  }
+}
+
+function revealAccount() {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    _accountManager.revealAccount((err) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) return dispatch(this.displayWarning(err.message))
+      dispatch({
+        type: this.REVEAL_ACCOUNT,
+      })
+    })
   }
 }
 
@@ -271,9 +308,10 @@ function unlockFailed() {
   }
 }
 
-function unlockMetamask() {
+function unlockMetamask(account) {
   return {
     type: this.UNLOCK_METAMASK,
+    value: account,
   }
 }
 
@@ -297,11 +335,13 @@ function lockMetamask() {
 
 function showAccountDetail(address) {
   return (dispatch) => {
-    _accountManager.setSelectedAddress(address)
-
-    dispatch({
-      type: this.SHOW_ACCOUNT_DETAIL,
-      value: address,
+    dispatch(this.showLoadingIndication())
+    _accountManager.setSelectedAddress(address, (err, address) => {
+      dispatch(this.hideLoadingIndication())
+      dispatch({
+        type: this.SHOW_ACCOUNT_DETAIL,
+        value: address,
+      })
     })
   }
 }
@@ -312,19 +352,19 @@ function backToAccountDetail(address) {
     value: address,
   }
 }
-function clearSeedWordCache() {
+function clearSeedWordCache(account) {
   return {
-    type: this.CLEAR_SEED_WORD_CACHE
+    type: this.CLEAR_SEED_WORD_CACHE,
+    value: account,
   }
 }
 
 function confirmSeedWords() {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.clearSeedWordCache((err, accounts) => {
-      dispatch(this.clearSeedWordCache())
-      console.log('Seed word cache cleared.')
-      dispatch(this.showAccountDetail(accounts[0].address))
+    _accountManager.clearSeedWordCache((err, account) => {
+      console.log('Seed word cache cleared. ' + account)
+      dispatch(this.showAccountDetail(account))
     })
   }
 }
@@ -440,6 +480,22 @@ function showPrivateKey(key) {
   return {
     type: this.SHOW_PRIVATE_KEY,
     value: key,
+  }
+}
+
+function saveAccountLabel(account, label) {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    _accountManager.saveAccountLabel(account, label, (err) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) {
+        return dispatch(this.showWarning(err.message))
+      }
+      dispatch({
+        type: this.SAVE_ACCOUNT_LABEL,
+        value: { account, label },
+      })
+    })
   }
 }
 

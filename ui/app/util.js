@@ -21,13 +21,17 @@ for (var currency in valueTable) {
 module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
+  isAllOneCase: isAllOneCase,
+  isValidAddress: isValidAddress,
   numericBalance: numericBalance,
+  parseBalance: parseBalance,
   formatBalance: formatBalance,
   dataSize: dataSize,
   readableDate: readableDate,
   ethToWei: ethToWei,
   weiToEth: weiToEth,
   normalizeToWei: normalizeToWei,
+  normalizeEthStringToWei: normalizeEthStringToWei,
   normalizeNumberToWei: normalizeNumberToWei,
   valueTable: valueTable,
   bnTable: bnTable,
@@ -41,7 +45,21 @@ function valuesFor(obj) {
 }
 
 function addressSummary(address) {
-  return address ? address.slice(0,2+8)+'...'+address.slice(-4) : '...'
+  if (!address) return ''
+  var checked = ethUtil.toChecksumAddress(address)
+  return checked ? checked.slice(0,2+8)+'...'+checked.slice(-4) : '...'
+}
+
+function isValidAddress(address) {
+  var prefixed = ethUtil.addHexPrefix(address)
+  return isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed) || ethUtil.isValidChecksumAddress(prefixed)
+}
+
+function isAllOneCase(address) {
+  if (!address) return true
+  var lower = address.toLowerCase()
+  var upper = address.toUpperCase()
+  return address === lower || address === upper
 }
 
 // Takes wei Hex, returns wei BN, even if input is null
@@ -65,16 +83,30 @@ function weiToEth(bn) {
   return eth
 }
 
-var decimalsToKeep = 4
-function formatBalance(balance) {
-  if (!balance || balance === '0x0') return 'None'
+// Takes  hex, returns [beforeDecimal, afterDecimal]
+function parseBalance(balance, decimalsToKeep) {
+  if (decimalsToKeep === undefined) decimalsToKeep = 4
+  if (!balance || balance === '0x0') return ['0', '']
   var wei = numericBalance(balance)
   var padded = wei.toString(10)
   var len = padded.length
-  var nonZeroIndex = padded.match(/[^0]/) && padded.match(/[^0]/).index
+  var match = padded.match(/[^0]/)
+  var nonZeroIndex = match && match.index
   var beforeDecimal = padded.substr(nonZeroIndex ? nonZeroIndex : 0, len - 18) || '0'
   var afterDecimal = padded.substr(len - 18, decimalsToKeep)
-  return `${beforeDecimal}.${afterDecimal} ETH`
+  return [beforeDecimal, afterDecimal]
+}
+
+// Takes wei hex, returns "None" or "${formattedAmount} ETH"
+function formatBalance(balance) {
+  var parsed = parseBalance(balance)
+  var beforeDecimal = parsed[0]
+  var afterDecimal = parsed[1]
+  if (beforeDecimal === '0' && afterDecimal === '') return 'None'
+  var result = beforeDecimal
+  if (afterDecimal) result += '.'+afterDecimal
+  result += ' ETH'
+  return result
 }
 
 function dataSize(data) {
@@ -91,9 +123,23 @@ function normalizeToWei(amount, currency) {
   return amount
 }
 
-var multiple = new ethUtil.BN('1000', 10)
+function normalizeEthStringToWei(str) {
+  const parts = str.split('.')
+  let eth = new ethUtil.BN(parts[0], 10).mul(bnTable.wei)
+  if (parts[1]) {
+    var decimal = parts[1]
+    while(decimal.length < 18) {
+      decimal += '0'
+    }
+    const decimalBN = new ethUtil.BN(decimal, 10)
+    eth = eth.add(decimalBN)
+  }
+  return eth
+}
+
+var multiple = new ethUtil.BN('10000', 10)
 function normalizeNumberToWei(n, currency) {
-  var enlarged = n * 1000
+  var enlarged = n * 10000
   var amount = new ethUtil.BN(String(enlarged), 10)
   return normalizeToWei(amount, currency).div(multiple)
 }

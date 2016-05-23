@@ -2,6 +2,16 @@
 
 ## Current Master
 
+## 2.0.0 2016-05-23
+
+- UI Overhaul per Vlad Todirut's designs.
+- Replaced identicons with jazzicons.
+- Fixed glitchy transitions.
+- Added support for capitalization-based address checksums.
+- Send value is no longer limited by javascript number precision, and is always in ETH.
+- Added ability to generate new accounts.
+- Added ability to locally nickname accounts.
+
 ## 1.8.4 2016-05-13
 
 - Point rpc servers to https endpoints.

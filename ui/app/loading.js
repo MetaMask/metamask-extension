@@ -23,7 +23,8 @@ LoadingIndicator.prototype.render = function() {
 
   return (
     h(ReactCSSTransitionGroup, {
-      transitionName: "loader",
+      className: 'css-transition-group',
+      transitionName: 'loader',
       transitionEnterTimeout: 150,
       transitionLeaveTimeout: 150,
     }, [

@@ -1,3 +1,13 @@
+/* color */
+
+.color-orange {
+  color: #F7861C;
+}
+
+.color-forest {
+  color: #0A5448;
+}
+
 /* lib */
 
 .full-width {
@@ -47,6 +57,10 @@
   flex: none;
 }
 
+.flex-basis-auto {
+  flex-basis: auto;
+}
+
 .flex-grow {
   flex: 1 1 auto;
 }
@@ -86,13 +100,16 @@
 }
 
 .select-none {
-  cursor: default;
+  cursor: inherit;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 
+.pointer {
+  cursor: pointer;
+}
 .cursor-pointer {
   cursor: pointer;
   transform-origin: center center;
@@ -103,6 +120,10 @@
 }
 .cursor-pointer:active {
   transform: scale(0.95);
+}
+
+.cursor-disabled {
+  cursor: not-allowed;
 }
 
 .margin-bottom-sml {
@@ -121,23 +142,27 @@
   font-weight: bold;
 }
 
+.text-transform-uppercase {
+  text-transform: uppercase;
+}
+
 .font-small {
   font-size: 12px;
 }
 
-/* Send Screen */
-.send-screen {
-  margin: 0 20px;
+.font-medium {
+  font-size: 1.2em;
 }
-.send-screen section {
-  margin: 7px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+
+hr.horizontal-line {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
 }
-.send-screen details {
-  width: 100%;
-}
-.send-screen section input {
-  width: 100%;
+
+.hover-white:hover {
+  background: white;
 }
