@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.0.0 2016-05-23
+
 - UI Overhaul per Vlad Todirut's designs.
 - Replaced identicons with jazzicons.
 - Fixed glitchy transitions.
