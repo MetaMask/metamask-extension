@@ -36,8 +36,8 @@ console.log('MetaMask - injected web3')
 // export global web3 with auto dapp reload
 //
 
-var controlStream = inpageProvider.multiStream.createStream('control')
-setupDappAutoReload(web3, controlStream)
+var reloadStream = inpageProvider.multiStream.createStream('reload')
+setupDappAutoReload(web3, reloadStream)
 
 // set web3 defaultAcount
 inpageProvider.publicConfigStore.subscribe(function(state){
