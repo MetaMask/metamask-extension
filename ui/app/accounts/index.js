@@ -3,12 +3,8 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const extend = require('xtend')
-const Identicon = require('../components/identicon')
 const actions = require('../actions')
-const EtherBalance = require('../components/eth-balance')
 const valuesFor = require('../util').valuesFor
-const addressSummary = require('../util').addressSummary
-const formatBalance = require('../util').formatBalance
 const findDOMNode = require('react-dom').findDOMNode
 const AccountPanel = require('./account-panel')
 
@@ -67,6 +63,7 @@ AccountsScreen.prototype.render = function() {
       [
         identityList.map((identity) => {
           return h(AccountPanel, {
+            key: `acct-panel-${identity.address}`,
             identity,
             selectedAddress: this.props.selectedAddress,
             accounts: this.props.accounts,

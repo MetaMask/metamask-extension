@@ -319,6 +319,11 @@ input.large-input {
   height: 100%;
 }
 
+.identity-copy.flex-column {
+  flex: 0.25 0 auto;
+  justify-content: center;
+}
+
 /* accounts screen */
 
 .identity-section {
