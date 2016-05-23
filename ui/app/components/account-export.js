@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 
 module.exports = ExportAccountView
