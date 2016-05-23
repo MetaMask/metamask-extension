@@ -25,14 +25,14 @@ pluginStream.on('error', console.error.bind(console))
 // forward communication plugin->inpage
 pageStream.pipe(pluginStream).pipe(pageStream)
 
-// connect contentscript->inpage control stream
+// connect contentscript->inpage reload stream
 var mx = ObjectMultiplex()
 mx.on('error', console.error.bind(console))
 mx.pipe(pageStream)
-var controlStream = mx.createStream('control')
-controlStream.on('error', console.error.bind(console))
+var reloadStream = mx.createStream('reload')
+reloadStream.on('error', console.error.bind(console))
 
 // if we lose connection with the plugin, trigger tab refresh 
 pluginStream.on('close', function(){
-  controlStream.write({ method: 'reset' })
+  reloadStream.write({ method: 'reset' })
 })
