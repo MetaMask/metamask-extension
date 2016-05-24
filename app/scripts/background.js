@@ -8,6 +8,7 @@ const handleRequestsFromStream = require('web3-stream-provider/handler')
 const ObjectMultiplex = require('./lib/obj-multiplex')
 const PortStream = require('./lib/port-stream.js')
 const IdentityStore = require('./lib/idStore')
+const createUnlockRequestNotification = require('./lib/notifications.js').createUnlockRequestNotification
 const createTxNotification = require('./lib/notifications.js').createTxNotification
 const createMsgNotification = require('./lib/notifications.js').createMsgNotification
 const configManager = require('./lib/config-manager-singleton')
@@ -65,10 +66,10 @@ var providerOpts = {
     cb(null, result)
   },
   // tx signing
-  approveTransaction: addUnconfirmedTx,
+  approveTransaction: approveTransaction,
   signTransaction: idStore.signTransaction.bind(idStore),
   // msg signing
-  approveMessage: addUnconfirmedMsg,
+  approveMessage: approveMessage,
   signMessage: idStore.signMessage.bind(idStore),
 }
 var provider = MetaMaskProvider(providerOpts)
@@ -216,6 +217,30 @@ function updateBadge(state){
 //
 // Add unconfirmed Tx + Msg
 //
+
+function approveTransaction(txParams, cb){
+  var state = idStore.getState()
+  if (!state.isUnlocked) {
+    createUnlockRequestNotification({
+      title: 'Account Unlock Request',
+    })
+    var txId = idStore.addUnconfirmedTransaction(txParams, cb)
+  } else {
+    addUnconfirmedTx(txParams, cb)    
+  }
+}
+
+function approveMessage(msgParams, cb){
+  var state = idStore.getState()
+  if (!state.isUnlocked) {
+    createUnlockRequestNotification({
+      title: 'Account Unlock Request',
+    })
+    var msgId = idStore.addUnconfirmedMessage(msgParams, cb)
+  } else {
+    addUnconfirmedMsg(msgParams, cb)    
+  }
+}
 
 function addUnconfirmedTx(txParams, cb){
   var txId = idStore.addUnconfirmedTransaction(txParams, cb)
