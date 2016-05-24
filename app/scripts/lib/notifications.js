@@ -3,6 +3,7 @@ const uiUtils = require('../../../ui/app/util')
 var notificationHandlers = {}
 
 module.exports = {
+  createUnlockRequestNotification: createUnlockRequestNotification,
   createTxNotification: createTxNotification,
   createMsgNotification: createMsgNotification,
 }
@@ -24,6 +25,19 @@ chrome.notifications.onClosed.addListener(function(notificationId){
 })
 
 // creation helper
+function createUnlockRequestNotification(opts){
+  var message = 'An Ethereum app has requested a signature. Please unlock your account.'
+
+  var id = createId()
+  chrome.notifications.create(id, {
+    type: 'basic',
+    iconUrl: '/images/icon-128.png',
+    title: opts.title,
+    message: message,
+  })
+  
+}
+
 function createTxNotification(opts){
   var message = [
     'to: '+uiUtils.addressSummary(opts.txParams.to),
