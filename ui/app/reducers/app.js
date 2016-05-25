@@ -9,8 +9,17 @@ function reduceApp(state, action) {
 
   // clone and defaults
   const selectedAccount = state.metamask.selectedAccount
+  const pendingTxs = hasPendingTxs(state)
+  let name = 'accounts'
+  if (selectedAccount) {
+    defaultView = 'accountDetail'
+  }
+  if (pendingTxs) {
+    defaultView = 'confTx'
+  }
+
   var defaultView = {
-    name: selectedAccount ? 'accountDetail' : 'accounts',
+    name,
     detailView: null,
     context: selectedAccount,
   }
@@ -122,7 +131,6 @@ function reduceApp(state, action) {
 
   case actions.UNLOCK_METAMASK:
     return extend(appState, {
-      currentView: {},
       detailView: {},
       transForward: true,
       isLoading: false,
@@ -145,7 +153,9 @@ function reduceApp(state, action) {
 
   case actions.GO_HOME:
     return extend(appState, {
-      currentView: {},
+    currentView: extend(appState.currentView, {
+        name: 'accountDetail',
+      }),
       accountDetail: {
         subview: 'transactions',
         accountExport: 'none',
@@ -348,4 +358,11 @@ function reduceApp(state, action) {
     return appState
 
   }
+}
+
+function hasPendingTxs (state) {
+  var unconfTxs = state.metamask.unconfTxs
+  var unconfMsgs = state.metamask.unconfMsgs
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  return unconfTxList.length > 0
 }

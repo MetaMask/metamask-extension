@@ -239,11 +239,7 @@ App.prototype.renderPrimary = function(){
       return h(CreateVaultScreen, {key: 'createVault'})
 
     default:
-      if (this.hasPendingTxs()) {
-        return h(ConfirmTxScreen, {key: 'confirm-tx'})
-      } else {
-        return h(AccountDetailScreen, {key: 'account-detail'})
-      }
+      return h(AccountDetailScreen, {key: 'account-detail'})
    }
 }
 
@@ -257,14 +253,6 @@ App.prototype.toggleMetamaskActive = function(){
     // currently active: deactivate
     this.props.dispatch(actions.lockMetamask(false))
   }
-}
-
-App.prototype.hasPendingTxs = function() {
-  var state = this.props
-  var unconfTxs = state.unconfTxs
-  var unconfMsgs = state.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
-  return unconfTxList.length > 0
 }
 
 function onOffToggle(state){
