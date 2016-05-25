@@ -3,6 +3,7 @@
 ## Current Master
 
 - Added copy address button to account list.
+- Fixed bug where error warning was sometimes not cleared on view transition.
 
 ## 2.0.0 2016-05-23
 
