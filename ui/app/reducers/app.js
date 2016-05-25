@@ -152,6 +152,7 @@ function reduceApp(state, action) {
         privateKey: '',
       },
       transForward: false,
+      warning: null,
     })
 
   case actions.SHOW_ACCOUNT_DETAIL:
