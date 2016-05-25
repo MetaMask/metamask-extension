@@ -86,43 +86,6 @@ App.prototype.render = function() {
           this.renderPrimary(),
         ]),
       ]),
-
-      // footer
-      // h('.app-footer.flex-row.flex-space-around', {
-      //   style: {
-      //     display: shouldHaveFooter ? 'flex' : 'none',
-      //     alignItems: 'center',
-      //     height: '56px',
-      //   }
-      // }, [
-
-        // // settings icon
-        // h('i.fa.fa-cog.fa-lg' + (view  === 'config' ? '.active' : '.cursor-pointer'), {
-        //   style: {
-        //     opacity: state.isUnlocked ? '1.0' : '0.0',
-        //     transition: 'opacity 200ms ease-in',
-        //     //transform: `translateX(${state.isUnlocked ? '0px' : '-100px'})`,
-        //   },
-        //   onClick: function(ev) {
-        //     state.dispatch(actions.showConfigPage())
-        //   },
-        // }),
-
-        // // toggle
-        // onOffToggle({
-        //   toggleMetamaskActive: this.toggleMetamaskActive.bind(this),
-        //   isUnlocked: state.isUnlocked,
-        // }),
-
-        // // help
-        // h('i.fa.fa-question.fa-lg.cursor-pointer', {
-        //   style: {
-        //     opacity: state.isUnlocked ? '1.0' : '0.0',
-        //   },
-        //   onClick() { state.dispatch(actions.showInfoPage()) }
-        // }),
-      // ]),
-
     ])
   )
 }
