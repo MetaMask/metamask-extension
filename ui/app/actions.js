@@ -110,7 +110,7 @@ function _setAccountManager(accountManager){
 
 function goHome() {
   return {
-    type: this.GO_HOME,
+    type: actions.GO_HOME,
   }
 }
 
@@ -118,13 +118,13 @@ function goHome() {
 
 function toggleMenu() {
   return {
-    type: this.TOGGLE_MENU,
+    type: actions.TOGGLE_MENU,
   }
 }
 
 function closeMenu() {
   return {
-    type: this.SET_MENU_STATE,
+    type: actions.SET_MENU_STATE,
     value: false,
   }
 }
@@ -133,12 +133,12 @@ function closeMenu() {
 
 function tryUnlockMetamask(password) {
   return (dispatch) => {
-    dispatch(this.unlockInProgress())
+    dispatch(actions.unlockInProgress())
     _accountManager.submitPassword(password, (err, selectedAccount) => {
       if (err) {
-        dispatch(this.unlockFailed())
+        dispatch(actions.unlockFailed())
       } else {
-        dispatch(this.unlockMetamask(selectedAccount))
+        dispatch(actions.unlockMetamask(selectedAccount))
       }
     })
   }
@@ -146,30 +146,30 @@ function tryUnlockMetamask(password) {
 
 function createNewVault(password, entropy) {
   return (dispatch) => {
-    dispatch(this.createNewVaultInProgress())
+    dispatch(actions.createNewVaultInProgress())
     _accountManager.createNewVault(password, entropy, (err, result) => {
-      dispatch(this.showNewVaultSeed(result))
+      dispatch(actions.showNewVaultSeed(result))
     })
   }
 }
 
 function recoverFromSeed(password, seed) {
   return (dispatch) => {
-    // dispatch(this.createNewVaultInProgress())
-    dispatch(this.showLoadingIndication())
+    // dispatch(actions.createNewVaultInProgress())
+    dispatch(actions.showLoadingIndication())
     _accountManager.recoverFromSeed(password, seed, (err, metamaskState) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) return dispatch(this.displayWarning(err.message))
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
 
       var account = Object.keys(metamaskState.identities)[0]
-      dispatch(this.unlockMetamask(account))
+      dispatch(actions.unlockMetamask(account))
    })
   }
 }
 
 function showInfoPage() {
   return {
-    type: this.SHOW_INFO_PAGE,
+    type: actions.SHOW_INFO_PAGE,
   }
 }
 
@@ -181,12 +181,12 @@ function setSelectedAddress(address) {
 
 function revealAccount() {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     _accountManager.revealAccount((err) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) return dispatch(this.displayWarning(err.message))
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
       dispatch({
-        type: this.REVEAL_ACCOUNT,
+        type: actions.REVEAL_ACCOUNT,
       })
     })
   }
@@ -194,27 +194,27 @@ function revealAccount() {
 
 function signMsg(msgData) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
 
     _accountManager.signMessage(msgData, (err) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
 
-      if (err) return dispatch(this.displayWarning(err.message))
-      dispatch(this.completedTx(msgData.metamaskId))
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.completedTx(msgData.metamaskId))
     })
   }
 }
 
 function signTx(txData) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
 
     web3.eth.sendTransaction(txData, (err, data) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
 
-      if (err) return dispatch(this.displayWarning(err.message))
-      dispatch(this.hideWarning())
-      dispatch(this.goHome())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.hideWarning())
+      dispatch(actions.goHome())
     })
   }
 }
@@ -224,36 +224,36 @@ function sendTx(txData) {
     _accountManager.approveTransaction(txData.id, (err) => {
       if (err) {
         alert(err.message)
-        dispatch(this.txError(err))
+        dispatch(actions.txError(err))
         return console.error(err.message)
       }
-      dispatch(this.completedTx(txData.id))
+      dispatch(actions.completedTx(txData.id))
     })
   }
 }
 
 function completedTx(id) {
   return {
-    type: this.COMPLETED_TX,
+    type: actions.COMPLETED_TX,
     id,
   }
 }
 
 function txError(err) {
   return {
-    type: this.TRANSACTION_ERROR,
+    type: actions.TRANSACTION_ERROR,
     message: err.message,
   }
 }
 
 function cancelMsg(msgData){
   _accountManager.cancelMessage(msgData.id)
-  return this.completedTx(msgData.id)
+  return actions.completedTx(msgData.id)
 }
 
 function cancelTx(txData){
   _accountManager.cancelTransaction(txData.id)
-  return this.completedTx(txData.id)
+  return actions.completedTx(txData.id)
 }
 
 //
@@ -263,31 +263,31 @@ function cancelTx(txData){
 
 function showCreateVault() {
   return {
-    type: this.SHOW_CREATE_VAULT,
+    type: actions.SHOW_CREATE_VAULT,
   }
 }
 
 function showRestoreVault() {
   return {
-    type: this.SHOW_RESTORE_VAULT,
+    type: actions.SHOW_RESTORE_VAULT,
   }
 }
 
 function showInitializeMenu() {
   return {
-    type: this.SHOW_INIT_MENU,
+    type: actions.SHOW_INIT_MENU,
   }
 }
 
 function createNewVaultInProgress() {
   return {
-    type: this.CREATE_NEW_VAULT_IN_PROGRESS,
+    type: actions.CREATE_NEW_VAULT_IN_PROGRESS,
   }
 }
 
 function showNewVaultSeed(seed) {
   return {
-    type: this.SHOW_NEW_VAULT_SEED,
+    type: actions.SHOW_NEW_VAULT_SEED,
     value: seed,
   }
 }
@@ -298,26 +298,26 @@ function showNewVaultSeed(seed) {
 
 function unlockInProgress() {
   return {
-    type: this.UNLOCK_IN_PROGRESS,
+    type: actions.UNLOCK_IN_PROGRESS,
   }
 }
 
 function unlockFailed() {
   return {
-    type: this.UNLOCK_FAILED,
+    type: actions.UNLOCK_FAILED,
   }
 }
 
 function unlockMetamask(account) {
   return {
-    type: this.UNLOCK_METAMASK,
+    type: actions.UNLOCK_METAMASK,
     value: account,
   }
 }
 
 function updateMetamaskState(newState) {
   return {
-    type: this.UPDATE_METAMASK_STATE,
+    type: actions.UPDATE_METAMASK_STATE,
     value: newState,
   }
 }
@@ -326,20 +326,20 @@ function lockMetamask() {
   return (dispatch) => {
     _accountManager.setLocked((err) => {
       dispatch({
-        type: this.LOCK_METAMASK,
+        type: actions.LOCK_METAMASK,
       })
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
     })
   }
 }
 
 function showAccountDetail(address) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     _accountManager.setSelectedAddress(address, (err, address) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       dispatch({
-        type: this.SHOW_ACCOUNT_DETAIL,
+        type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
     })
@@ -348,54 +348,54 @@ function showAccountDetail(address) {
 
 function backToAccountDetail(address) {
   return {
-    type: this.BACK_TO_ACCOUNT_DETAIL,
+    type: actions.BACK_TO_ACCOUNT_DETAIL,
     value: address,
   }
 }
 function clearSeedWordCache(account) {
   return {
-    type: this.CLEAR_SEED_WORD_CACHE,
+    type: actions.CLEAR_SEED_WORD_CACHE,
     value: account,
   }
 }
 
 function confirmSeedWords() {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     _accountManager.clearSeedWordCache((err, account) => {
       console.log('Seed word cache cleared. ' + account)
-      dispatch(this.showAccountDetail(account))
+      dispatch(actions.showAccountDetail(account))
     })
   }
 }
 
 function showAccountsPage() {
   return {
-    type: this.SHOW_ACCOUNTS_PAGE,
+    type: actions.SHOW_ACCOUNTS_PAGE,
   }
 }
 
 function showConfTxPage() {
   return {
-    type: this.SHOW_CONF_TX_PAGE,
+    type: actions.SHOW_CONF_TX_PAGE,
   }
 }
 
 function nextTx() {
   return {
-    type: this.NEXT_TX,
+    type: actions.NEXT_TX,
   }
 }
 
 function previousTx() {
   return {
-    type: this.PREVIOUS_TX,
+    type: actions.PREVIOUS_TX,
   }
 }
 
 function showConfigPage() {
   return {
-    type: this.SHOW_CONFIG_PAGE,
+    type: actions.SHOW_CONFIG_PAGE,
   }
 }
 
@@ -406,7 +406,7 @@ function showConfigPage() {
 function setRpcTarget(newRpc) {
   _accountManager.setRpcTarget(newRpc)
   return {
-    type: this.SET_RPC_TARGET,
+    type: actions.SET_RPC_TARGET,
     value: newRpc,
   }
 }
@@ -414,7 +414,7 @@ function setRpcTarget(newRpc) {
 function setProviderType(type) {
   _accountManager.setProviderType(type)
   return {
-    type: this.SET_PROVIDER_TYPE,
+    type: actions.SET_PROVIDER_TYPE,
     value: type,
   }
 }
@@ -422,38 +422,38 @@ function setProviderType(type) {
 function useEtherscanProvider() {
   _accountManager.useEtherscanProvider()
   return {
-    type: this.USE_ETHERSCAN_PROVIDER,
+    type: actions.USE_ETHERSCAN_PROVIDER,
   }
 }
 
 function showLoadingIndication() {
   return {
-    type: this.SHOW_LOADING,
+    type: actions.SHOW_LOADING,
   }
 }
 
 function hideLoadingIndication() {
   return {
-    type: this.HIDE_LOADING,
+    type: actions.HIDE_LOADING,
   }
 }
 
 function displayWarning(text) {
   return {
-    type: this.DISPLAY_WARNING,
+    type: actions.DISPLAY_WARNING,
     value: text,
   }
 }
 
 function hideWarning() {
   return {
-    type: this.HIDE_WARNING,
+    type: actions.HIDE_WARNING,
   }
 }
 
 function requestExportAccount() {
   return {
-    type: this.REQUEST_ACCOUNT_EXPORT,
+    type: actions.REQUEST_ACCOUNT_EXPORT,
   }
 }
 
@@ -478,21 +478,21 @@ function exportAccount(address) {
 
 function showPrivateKey(key) {
   return {
-    type: this.SHOW_PRIVATE_KEY,
+    type: actions.SHOW_PRIVATE_KEY,
     value: key,
   }
 }
 
 function saveAccountLabel(account, label) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     _accountManager.saveAccountLabel(account, label, (err) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(this.showWarning(err.message))
+        return dispatch(actions.showWarning(err.message))
       }
       dispatch({
-        type: this.SAVE_ACCOUNT_LABEL,
+        type: actions.SAVE_ACCOUNT_LABEL,
         value: { account, label },
       })
     })
@@ -501,6 +501,6 @@ function saveAccountLabel(account, label) {
 
 function showSendPage() {
   return {
-    type: this.SHOW_SEND_PAGE,
+    type: actions.SHOW_SEND_PAGE,
   }
 }
