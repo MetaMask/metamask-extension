@@ -356,7 +356,6 @@ function reduceApp(state, action) {
 
   default:
     return appState
-
   }
 }
 

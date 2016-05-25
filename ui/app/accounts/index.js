@@ -12,6 +12,10 @@ module.exports = connect(mapStateToProps)(AccountsScreen)
 
 
 function mapStateToProps(state) {
+  const pendingTxs = valuesFor(state.metamask.unconfTxs)
+  const pendingMsgs = valuesFor(state.metamask.unconfMsgs)
+  const pending = pendingTxs.concat(pendingMsgs)
+
   return {
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
@@ -19,6 +23,7 @@ function mapStateToProps(state) {
     selectedAddress: state.metamask.selectedAddress,
     currentDomain: state.appState.currentDomain,
     scrollToBottom: state.appState.scrollToBottom,
+    pending,
   }
 }
 
@@ -62,12 +67,23 @@ AccountsScreen.prototype.render = function() {
       },
       [
         identityList.map((identity) => {
+          const pending = this.props.pending.filter((txOrMsg) => {
+            if ('txParams' in txOrMsg) {
+              return txOrMsg.txParams.from === identity.address
+            } else if ('msgParams' in txOrMsg) {
+              return txOrMsg.msgParams.from === identity.address
+            } else {
+              return false
+            }
+          })
+
           return h(AccountPanel, {
             key: `acct-panel-${identity.address}`,
             identity,
             selectedAddress: this.props.selectedAddress,
             accounts: this.props.accounts,
             onShowDetail: this.onShowDetail.bind(this),
+            pending,
           })
         }),
 

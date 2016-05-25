@@ -34,6 +34,7 @@ NewComponent.prototype.render = function() {
     }, [
 
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
+        this.pendingOrNot(),
         h(Identicon, {
           address: identity.address
         }),
@@ -60,4 +61,10 @@ NewComponent.prototype.render = function() {
       ])
     ])
   )
+}
+
+NewComponent.prototype.pendingOrNot = function() {
+  const pending = this.props.pending
+  if (pending.length === 0) return null
+  return h('.pending-dot', pending.length)
 }
