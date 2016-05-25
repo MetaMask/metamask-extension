@@ -49,6 +49,7 @@ function createTxNotification(opts){
   var id = createId()
   chrome.notifications.create(id, {
     type: 'basic',
+    requireInteraction: true,
     iconUrl: '/images/icon-128.png',
     title: opts.title,
     message: message,
@@ -73,6 +74,7 @@ function createMsgNotification(opts){
   var id = createId()
   chrome.notifications.create(id, {
     type: 'basic',
+    requireInteraction: true,
     iconUrl: '/images/icon-128.png',
     title: opts.title,
     message: message,
