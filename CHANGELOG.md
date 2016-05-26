@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.1.0 2016-05-26
+
 - Added copy address button to account list.
 - Fixed back button on confirm transaction screen.
 - Add indication of pending transactions to account list screen.
