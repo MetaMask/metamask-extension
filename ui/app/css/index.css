@@ -296,6 +296,8 @@ input.large-input {
 .identity-panel .identicon-wrapper {
   margin: 4px;
   margin-top: 8px;
+  display: flex;
+  align-items: center;
 }
 
 .identity-panel .identicon-wrapper span {
