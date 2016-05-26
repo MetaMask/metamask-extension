@@ -25,6 +25,7 @@ TransactionListItem.prototype.render = function() {
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
+  var isPending = transaction.status === 'unconfirmed'
 
   let txParams
   if (isTx) {
@@ -33,10 +34,16 @@ TransactionListItem.prototype.render = function() {
     txParams = transaction.msgParams
   }
 
+  const isClickable = ('hash' in transaction) || isPending
+
   return (
-    h(`.transaction-list-item.flex-row.flex-space-between${transaction.hash ? '.pointer' : ''}`, {
+    h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
       key: `tx-${transaction.id + i}`,
       onClick: (event) => {
+        if (isPending) {
+          this.props.showTx(transaction.id)
+        }
+
         if (!transaction.hash) return
         var url = explorerLink(transaction.hash, parseInt(network))
         chrome.tabs.create({ url })

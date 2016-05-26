@@ -76,6 +76,8 @@ var actions = {
   txError: txError,
   nextTx: nextTx,
   previousTx: previousTx,
+  viewPendingTx: viewPendingTx,
+  VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
   showAccountDetail: showAccountDetail,
   BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
@@ -384,6 +386,13 @@ function showConfTxPage() {
 function nextTx() {
   return {
     type: actions.NEXT_TX,
+  }
+}
+
+function viewPendingTx(txId) {
+  return {
+    type: actions.VIEW_PENDING_TX,
+    value: txId,
   }
 }
 
