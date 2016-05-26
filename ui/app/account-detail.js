@@ -7,10 +7,11 @@ const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
 const addressSummary = require('./util').addressSummary
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+const valuesFor = require('./util').valuesFor
 
 const Identicon = require('./components/identicon')
 const EtherBalance = require('./components/eth-balance')
-const transactionList = require('./components/transaction-list')
+const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
@@ -24,7 +25,9 @@ function mapStateToProps(state) {
     address: state.metamask.selectedAccount,
     accountDetail: state.appState.accountDetail,
     transactions: state.metamask.transactions,
-    networkVersion: state.metamask.network,
+    network: state.metamask.network,
+    unconfTxs: valuesFor(state.metamask.unconfTxs),
+    unconfMsgs: valuesFor(state.metamask.unconfMsgs),
   }
 }
 
@@ -139,7 +142,7 @@ AccountDetailScreen.prototype.render = function() {
           }),
 
           h('button', {
-            onClick: () => this.props.dispatch(actions.showSendPage()),
+            onClick: () => props.dispatch(actions.showSendPage()),
             style: {
               margin: 10,
             },
@@ -183,18 +186,22 @@ AccountDetailScreen.prototype.subview = function() {
 }
 
 AccountDetailScreen.prototype.transactionList = function() {
-  var state = this.props
-  var transactions = state.transactions
+  const { transactions, unconfTxs, unconfMsgs, address, network } = this.props
 
   var txsToRender = transactions
-    // only transactions that are from the current address
-    .filter(tx => tx.txParams.from === state.address)
-    // only transactions that are on the current network
-    .filter(tx => tx.txParams.metamaskNetworkId === state.networkVersion)
-    // sort by recency
-    .sort((a, b) => b.time - a.time)
+  // only transactions that are from the current address
+  .filter(tx => tx.txParams.from === address)
+  // only transactions that are on the current network
+  .filter(tx => tx.txParams.metamaskNetworkId === network)
+  // sort by recency
+  .sort((a, b) => b.time - a.time)
 
-  return transactionList(txsToRender, state.networkVersion)
+  return h(TransactionList, {
+    txsToRender,
+    network,
+    unconfTxs,
+    unconfMsgs,
+  })
 }
 
 AccountDetailScreen.prototype.navigateToAccounts = function(event){

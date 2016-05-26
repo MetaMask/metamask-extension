@@ -1,4 +1,7 @@
+const Component = require('react').Component
 const h = require('react-hyperscript')
+const inherits = require('util').inherits
+
 const vreme = new (require('vreme'))
 const formatBalance = require('../util').formatBalance
 const addressSummary = require('../util').addressSummary
@@ -7,8 +10,18 @@ const Panel = require('./panel')
 const Identicon = require('./identicon')
 const EtherBalance = require('./eth-balance')
 
+module.exports = TransactionList
 
-module.exports = function(transactions, network) {
+
+inherits(TransactionList, Component)
+function TransactionList() {
+  Component.call(this)
+}
+
+TransactionList.prototype.render = function() {
+  const { txsToRender, network, unconfTxs, unconfMsgs } = this.props
+  const transactions = txsToRender.concat(unconfTxs).concat(unconfMsgs)
+
   return (
 
     h('section.transaction-list', [
@@ -49,53 +62,49 @@ module.exports = function(transactions, network) {
               height: '100%',
             },
           }, 'No transaction history...')]
-
       ))
+    ])
+  )
+}
 
+
+function renderTransaction(transaction, i){
+  var txParams = transaction.txParams
+  var date = formatDate(transaction.time)
+
+  return (
+
+    h(`.transaction-list-item.flex-row.flex-space-between${transaction.hash ? '.pointer' : ''}`, {
+      key: `tx-${transaction.id + i}`,
+      onClick: (event) => {
+        if (!transaction.hash) return
+        var url = explorerLink(transaction.hash, parseInt(network))
+        chrome.tabs.create({ url })
+      },
+      style: {
+        padding: '20px 0',
+      },
+    }, [
+
+      // large identicon
+      h('.identicon-wrapper.flex-column.flex-center.select-none', [
+        identicon(txParams, transaction),
+      ]),
+
+      h('.flex-column', [
+
+        h('div', date),
+
+        recipientField(txParams, transaction),
+
+      ]),
+
+      h(EtherBalance, {
+        value: txParams.value,
+      }),
     ])
 
   )
-
-
-  function renderTransaction(transaction, i){
-
-    var txParams = transaction.txParams
-    var date = formatDate(transaction.time)
-
-    return (
-
-      h(`.transaction-list-item.flex-row.flex-space-between${transaction.hash ? '.pointer' : ''}`, {
-        key: `tx-${transaction.id + i}`,
-        onClick: (event) => {
-          if (!transaction.hash) return
-          var url = explorerLink(transaction.hash, parseInt(network))
-          chrome.tabs.create({ url })
-        },
-        style: {
-          padding: '20px 0',
-        },
-      }, [
-
-        // large identicon
-        h('.identicon-wrapper.flex-column.flex-center.select-none', [
-          identicon(txParams, transaction),
-        ]),
-
-        h('.flex-column', [
-
-          h('div', date),
-
-          recipientField(txParams, transaction),
-
-        ]),
-
-        h(EtherBalance, {
-          value: txParams.value,
-        }),
-      ])
-
-    )
-  }
 }
 
 function recipientField(txParams, transaction) {
@@ -121,7 +130,6 @@ function recipientField(txParams, transaction) {
       'Contract Published',
       failIfFailed(transaction),
     ])
-
   }
 }
 
