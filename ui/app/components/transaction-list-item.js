@@ -24,11 +24,8 @@ TransactionListItem.prototype.render = function() {
   var date = formatDate(transaction.time)
 
   let isLinkable = false
-  try {
-    const numericNet = parseInt(network)
-    isLinkable = numericNet === 1 || numericNet === 2
-  }
-  catch() {}
+  const numericNet = parseInt(network)
+  isLinkable = numericNet === 1 || numericNet === 2
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
