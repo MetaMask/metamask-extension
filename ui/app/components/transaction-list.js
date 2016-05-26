@@ -14,7 +14,9 @@ function TransactionList() {
 
 TransactionList.prototype.render = function() {
   const { txsToRender, network, unconfTxs, unconfMsgs } = this.props
-  const transactions = txsToRender
+  const transactions = txsToRender.concat(unconfMsgs)
+  .sort((a, b) => b.time - a.time)
+  console.dir(transactions)
 
   return (
 

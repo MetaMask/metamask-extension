@@ -2,12 +2,13 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const Identicon = require('./identicon')
 const EtherBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const formatBalance = require('../util').formatBalance
 const vreme = new (require('vreme'))
+
+const TransactionIcon = require('./transaction-list-item-icon')
 
 module.exports = TransactionListItem
 
@@ -25,7 +26,12 @@ TransactionListItem.prototype.render = function() {
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
 
-  var txParams = transaction.txParams
+  let txParams
+  if (isTx) {
+    txParams = transaction.txParams
+  } else if (isMsg) {
+    txParams = transaction.msgParams
+  }
 
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${transaction.hash ? '.pointer' : ''}`, {
@@ -42,49 +48,55 @@ TransactionListItem.prototype.render = function() {
 
       // large identicon
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        identicon(txParams, transaction),
+        transaction.status === 'unconfirmed' ? h('.red-dot', ' ') :
+        h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
       ]),
 
       h('.flex-column', [
-
+        domainField(txParams),
         h('div', date),
-
-        recipientField(txParams, transaction),
-
+        recipientField(txParams, transaction, isTx, isMsg),
       ]),
 
-      h(EtherBalance, {
+      isTx ? h(EtherBalance, {
         value: txParams.value,
-      }),
+      }) : h('.flex-column'),
     ])
   )
 }
 
+function domainField(txParams) {
+  return h('div', {
+    style: {
+      fontSize: 'small',
+      color: '#ABA9AA',
+    },
+  },[
+    txParams.origin,
+  ])
+}
 
-function recipientField(txParams, transaction) {
-  if (txParams.to) {
-    return h('div', {
-      style: {
-        fontSize: 'small',
-        color: '#ABA9AA',
-      },
-    }, [
-      addressSummary(txParams.to),
-      failIfFailed(transaction),
-    ])
+function recipientField(txParams, transaction, isTx, isMsg) {
+  let message
 
+  if (isMsg) {
+    message = 'Signature Requested'
+  } else if (txParams.to) {
+    message =  addressSummary(txParams.to)
   } else {
-
-    return h('div', {
-      style: {
-        fontSize: 'small',
-        color: '#ABA9AA',
-      },
-    },[
-      'Contract Published',
-      failIfFailed(transaction),
-    ])
+    message = 'Contract Published'
   }
+
+  return h('div', {
+    style: {
+      fontSize: 'small',
+      color: '#ABA9AA',
+    },
+  },[
+    message,
+    failIfFailed(transaction),
+  ])
+
 }
 
 TransactionListItem.prototype.renderMessage = function() {
@@ -96,31 +108,11 @@ function formatDate(date){
   return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
 
-function identicon(txParams, transaction) {
-  if (transaction.status === 'rejected') {
-    return h('i.fa.fa-exclamation-triangle.fa-lg.error', {
-      style: {
-        width: '24px',
-      }
-    })
-  }
-
-  if (txParams.to) {
-    return h(Identicon, {
-      diameter: 24,
-      address: txParams.to || transaction.hash,
-    })
-  } else {
-    return h('i.fa.fa-file-text-o.fa-lg', {
-      style: {
-        width: '24px',
-      }
-    })
-  }
-}
-
 function failIfFailed(transaction) {
   if (transaction.status === 'rejected') {
+    return h('span.error', ' (Rejected)')
+  }
+  if (transaction.status === 'failed') {
     return h('span.error', ' (Failed)')
   }
 }

@@ -167,6 +167,20 @@ hr.horizontal-line {
   background: white;
 }
 
+.red-dot {
+  position: inherit;
+  background: red;
+  color: white;
+  border-radius: 10px;
+  height: 12px;
+  min-width: 12px;
+  margin-left: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
 .pending-dot {
   background: red;
   left: 57px;
@@ -179,4 +193,9 @@ hr.horizontal-line {
   align-items: center;
   justify-content: center;
   padding: 4px;
+}
+
+.ether-balance {
+  display: flex;
+  align-items: center;
 }
