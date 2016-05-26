@@ -19,7 +19,7 @@ function TransactionListItem() {
 }
 
 TransactionListItem.prototype.render = function() {
-  const { transaction, i } = this.props
+  const { transaction, i, network } = this.props
 
   var date = formatDate(transaction.time)
 
