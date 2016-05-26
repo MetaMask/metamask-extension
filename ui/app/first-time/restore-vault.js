@@ -25,39 +25,46 @@ RestoreVaultScreen.prototype.render = function() {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.showInitializeMenu.bind(this),
-        }),
-        h('h2.page-subtitle', 'Restore Vault'),
+      h('h3.flex-center.text-transform-uppercase', {
+        style: {
+          background: '#EBEBEB',
+          color: '#AEAEAE',
+          marginBottom: 24,
+          width: '100%',
+          fontSize: '20px',
+          padding: 6,
+        },
+      }, [
+        'Restore Vault',
       ]),
 
       // wallet seed entry
       h('h3', 'Wallet Seed'),
-      h('textarea.twelve-word-phrase', {
+      h('textarea.twelve-word-phrase.letter-spacey', {
         placeholder: 'Enter your secret twelve word phrase here to restore your vault.'
       }),
 
       // password
-      h('label', {
-        htmlFor: 'password-box',
-      }, 'New Password (min 8 chars):'),
-
-      h('input', {
+      h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box',
+        placeholder: 'New Password (min 8 chars)',
+        style: {
+          width: 260,
+          marginTop: 12,
+        },
       }),
 
       // confirm password
-      h('label', {
-        htmlFor: 'password-box-confirm',
-      }, 'Confirm Password:'),
-
-      h('input', {
+      h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box-confirm',
+        placeholder: 'Confirm Password',
         onKeyPress: this.onMaybeCreate.bind(this),
+        style: {
+          width: 260,
+          marginTop: 16,
+        },
       }),
 
       (state.warning) && (
@@ -65,9 +72,25 @@ RestoreVaultScreen.prototype.render = function() {
       ),
 
       // submit
-      h('button.btn-thin', {
-        onClick: this.restoreVault.bind(this),
-      }, 'I\'ve double checked the 12 word phrase.'),
+
+      h('.flex-row.flex-space-between', {
+        style: {
+          marginTop: 30,
+          width: '50%',
+        },
+      }, [
+
+        // cancel
+        h('button.primary', {
+          onClick: this.showInitializeMenu.bind(this),
+        }, 'CANCEL'),
+
+        // submit
+        h('button.primary', {
+          onClick: this.restoreVault.bind(this),
+        }, 'OK'),
+
+      ]),
 
     ])
 

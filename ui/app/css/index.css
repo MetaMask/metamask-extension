@@ -128,10 +128,11 @@ h2.page-subtitle {
 
 textarea.twelve-word-phrase {
   margin-top: 20px;
+  padding: 12px;
   width: 300px;
-  height: 180px;
+  height: 140px;
   font-size: 16px;
-  background: #FAF6F0;
+  background: white;
   resize: none;
 }
 
@@ -144,18 +145,8 @@ app sections
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #F3C83E;
+  border-color: #F7861C;
   border-style: solid;
-}
-
-.initialize-screen input[type="password"], .initialize-screen textarea {
-  width: 300px;
-  padding: 6px;
-  border-radius: 6px;
-  border-style: solid;
-  outline: none;
-  border: 1px solid #F5A623;
-  background: #FAF6F0;
 }
 
 .initialize-screen label {
@@ -256,6 +247,10 @@ input.large-input, textarea.large-input {
 
 input.large-input {
   height: 36px;
+}
+
+.letter-spacey {
+  letter-spacing: 0.1em;
 }
 
 
@@ -387,7 +382,6 @@ input.large-input {
 .send-screen input {
   width: 100%;
   font-size: 12px;
-  letter-spacing: 0.1em;
 }
 
 /* Ether Balance Widget */

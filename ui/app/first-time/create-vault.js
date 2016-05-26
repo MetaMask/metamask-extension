@@ -25,56 +25,63 @@ CreateVaultScreen.prototype.render = function() {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.showInitializeMenu.bind(this),
-        }),
-        h('h2.page-subtitle', 'Create Vault'),
+      h('h3.flex-center.text-transform-uppercase', {
+        style: {
+          background: '#EBEBEB',
+          color: '#AEAEAE',
+          marginBottom: 24,
+          width: '100%',
+          fontSize: '20px',
+          padding: 6,
+        },
+      }, [
+        'Create Vault',
       ]),
 
       // password
-      h('label', {
-        htmlFor: 'password-box',
-      }, 'Enter Password (min 8 chars):'),
-
-      h('input', {
+      h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box',
+        placeholder: 'New Password (min 8 chars)',
+        style: {
+          width: 260,
+          marginTop: 12,
+        },
       }),
 
       // confirm password
-      h('label', {
-        htmlFor: 'password-box-confirm',
-      }, 'Confirm Password:'),
-
-      h('input', {
+      h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box-confirm',
+        placeholder: 'Confirm Password',
         onKeyPress: this.createVaultOnEnter.bind(this),
+        style: {
+          width: 260,
+          marginTop: 16,
+        },
       }),
 
-      /* ENTROPY TEXT INPUT CURRENTLY DISABLED
-      // entropy
-      h('label', {
-        htmlFor: 'entropy-text-entry',
-      }, 'Enter random text (optional)'),
+      h('.flex-row.flex-space-between', {
+        style: {
+          marginTop: 30,
+          width: '50%',
+        },
+      }, [
 
-      h('textarea', {
-        id: 'entropy-text-entry',
-        style: { resize: 'none' },
-        onKeyPress: this.createVaultOnEnter.bind(this),
-      }),
-      */
+        // cancel
+        h('button.primary', {
+          onClick: this.showInitializeMenu.bind(this),
+        }, 'CANCEL'),
 
-      // submit
-      h('button.create-vault.btn-thin', {
-        onClick: this.createNewVault.bind(this),
-      }, 'OK'),
+        // submit
+        h('button.primary', {
+          onClick: this.createNewVault.bind(this),
+        }, 'OK'),
+
+      ]),
 
       (!state.inProgress && state.warning) && (
         h('span.in-progress-notification', state.warning)
-
       ),
 
       state.inProgress && (

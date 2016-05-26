@@ -27,9 +27,23 @@ CreateVaultCompleteScreen.prototype.render = function() {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        h('h2.page-subtitle', 'Vault Created'),
+      // // subtitle and nav
+      // h('.section-title.flex-row.flex-center', [
+      //   h('h2.page-subtitle', 'Vault Created'),
+      // ]),
+
+      h('h3.flex-center.text-transform-uppercase', {
+        style: {
+          background: '#EBEBEB',
+          color: '#AEAEAE',
+          marginTop: 36,
+          marginBottom: 8,
+          width: '100%',
+          fontSize: '20px',
+          padding: 6,
+        },
+      }, [
+        'Vault Created',
       ]),
 
       h('span.error', { // Error for the right red
@@ -44,9 +58,12 @@ CreateVaultCompleteScreen.prototype.render = function() {
         value: seed,
       }),
 
-      h('button.btn-thin', {
+      h('button.primary', {
         onClick: () => this.confirmSeedWords(),
-      }, 'I\'ve copied it somewhere safe.'),
+        style: {
+          margin: '24px',
+        },
+      }, 'I\'ve copied it somewhere safe'),
     ])
   )
 }
