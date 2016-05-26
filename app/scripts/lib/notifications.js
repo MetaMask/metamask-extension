@@ -40,6 +40,7 @@ function createUnlockRequestNotification(opts){
 
 function createTxNotification(opts){
   var message = [
+    'Submitted by '+opts.txParams.origin,
     'to: '+uiUtils.addressSummary(opts.txParams.to),
     'from: '+uiUtils.addressSummary(opts.txParams.from),
     'value: '+uiUtils.formatBalance(opts.txParams.value),
