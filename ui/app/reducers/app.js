@@ -12,10 +12,10 @@ function reduceApp(state, action) {
   const pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
   if (selectedAccount) {
-    defaultView = 'accountDetail'
+    name = 'accountDetail'
   }
   if (pendingTxs) {
-    defaultView = 'confTx'
+    name = 'confTx'
   }
 
   var defaultView = {
@@ -270,6 +270,17 @@ function reduceApp(state, action) {
       }
     })
 
+  case actions.VIEW_PENDING_TX:
+    const context = indexForPending(state, action.value)
+    return extend(appState, {
+      transForward: true,
+      currentView: {
+        name: 'confTx',
+        context,
+        warning: null,
+      }
+    })
+
   case actions.PREVIOUS_TX:
     return extend(appState, {
       transForward: false,
@@ -365,4 +376,17 @@ function hasPendingTxs (state) {
   var unconfMsgs = state.metamask.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs)
   return unconfTxList.length > 0
+}
+
+function indexForPending(state, txId) {
+  var unconfTxs = state.metamask.unconfTxs
+  var unconfMsgs = state.metamask.unconfMsgs
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  let idx
+  unconfTxList.forEach((tx, i) => {
+    if (tx.id === txId) {
+      idx = i
+    }
+  })
+  return idx
 }

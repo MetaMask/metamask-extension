@@ -201,6 +201,9 @@ AccountDetailScreen.prototype.transactionList = function() {
     network,
     unconfTxs,
     unconfMsgs,
+    viewPendingTx:(txId) => {
+      this.props.dispatch(actions.viewPendingTx(txId))
+    }
   })
 }
 
