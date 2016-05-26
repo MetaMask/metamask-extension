@@ -14,7 +14,8 @@ function TransactionList() {
 
 TransactionList.prototype.render = function() {
   const { txsToRender, network, unconfTxs, unconfMsgs } = this.props
-  const transactions = txsToRender
+  const transactions = txsToRender.concat(unconfMsgs)
+  .sort((a, b) => b.time - a.time)
 
   return (
 
@@ -51,7 +52,10 @@ TransactionList.prototype.render = function() {
         transactions.length ?
           transactions.map((transaction, i) => {
             return h(TransactionListItem, {
-              transaction, i
+              transaction, i, network,
+              showTx:(txId) => {
+                this.props.viewPendingTx(txId)
+              },
             })
           })
         :
