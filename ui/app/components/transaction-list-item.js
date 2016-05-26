@@ -23,6 +23,13 @@ TransactionListItem.prototype.render = function() {
 
   var date = formatDate(transaction.time)
 
+  let isLinkable = false
+  try {
+    const numericNet = parseInt(network)
+    isLinkable = numericNet === 1 || numericNet === 2
+  }
+  catch() {}
+
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
   var isPending = transaction.status === 'unconfirmed'
@@ -34,7 +41,7 @@ TransactionListItem.prototype.render = function() {
     txParams = transaction.msgParams
   }
 
-  const isClickable = ('hash' in transaction) || isPending
+  const isClickable = ('hash' in transaction && isLinkable) || isPending
 
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
@@ -44,7 +51,7 @@ TransactionListItem.prototype.render = function() {
           this.props.showTx(transaction.id)
         }
 
-        if (!transaction.hash) return
+        if (!transaction.hash || !isLinkable) return
         var url = explorerLink(transaction.hash, parseInt(network))
         chrome.tabs.create({ url })
       },
