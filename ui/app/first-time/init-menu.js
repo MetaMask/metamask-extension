@@ -50,10 +50,20 @@ InitializeMenuScreen.prototype.renderMenu = function() {
         animationEventEmitter: this.animationEventEmitter,
       }),
 
-      h('h2.page-subtitle', 'MetaMask'),
+      h('h1', {
+        style: {
+          fontSize: '1.4em',
+          textTransform: 'uppercase',
+          color: '#7F8082',
+          marginBottom: 20,
+        },
+      }, 'MetaMask'),
 
-      h('button.btn-thin', {
+      h('button.primary', {
         onClick: this.showCreateVault.bind(this),
+        style: {
+          margin: 12,
+        },
       }, 'Create New Vault'),
 
       h('.flex-row.flex-center.flex-grow', [
@@ -62,8 +72,11 @@ InitializeMenuScreen.prototype.renderMenu = function() {
         h('hr'),
       ]),
 
-      h('button.btn-thin', {
+      h('button.primary', {
         onClick: this.showRestoreVault.bind(this),
+        style: {
+          margin: 12,
+        },
       }, 'Restore Existing Vault'),
 
     ])
