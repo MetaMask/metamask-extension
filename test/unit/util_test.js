@@ -17,6 +17,21 @@ describe('util', function() {
     this.sinon.restore()
   })
 
+  describe('parseBalance', function() {
+    it('should render 0.01 eth correctly', function() {
+      const input = '0x2386F26FC10000'
+      const output = util.parseBalance(input)
+      assert.deepEqual(output, ['0', '01'])
+    })
+  })
+  describe('parseBalance', function() {
+    it('should render 0.01 eth correctly', function() {
+      const input = 'A6DA46CCA6858000'
+      const output = util.parseBalance(input)
+      assert.deepEqual(output, ['12', '023'])
+    })
+  })
+
   describe('addressSummary', function() {
     it('should add case-sensitive checksum', function() {
       var address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
@@ -111,20 +126,30 @@ describe('util', function() {
 
     it('should return eth as string followed by ETH', function() {
       var input = new ethUtil.BN(ethInWei, 10).toJSON()
-      var result = util.formatBalance(input)
+      var result = util.formatBalance(input, 4)
       assert.equal(result, '1.0000 ETH')
     })
 
     it('should return eth as string followed by ETH', function() {
       var input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
-      var result = util.formatBalance(input)
-      assert.equal(result, '0.5000 ETH')
+      var result = util.formatBalance(input, 3)
+      assert.equal(result, '0.500 ETH')
     })
 
-    it('should display four decimal points', function() {
+    it('should display specified decimal points', function() {
+      var input = "0x128dfa6a90b28000"
+      var result = util.formatBalance(input, 2)
+      assert.equal(result, '1.33 ETH')
+    })
+    it('should default to 3 decimal points', function() {
       var input = "0x128dfa6a90b28000"
       var result = util.formatBalance(input)
-      assert.equal(result, '1.3370 ETH')
+      assert.equal(result, '1.337 ETH')
+    })
+    it('should show 2 significant digits for tiny balances', function() {
+      var input = "0x1230fa6a90b28"
+      var result = util.formatBalance(input)
+      assert.equal(result, '0.00032 ETH')
     })
 
   })

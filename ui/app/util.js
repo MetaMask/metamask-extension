@@ -84,29 +84,41 @@ function weiToEth(bn) {
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
-function parseBalance(balance, decimalsToKeep) {
-  if (decimalsToKeep === undefined) decimalsToKeep = 4
-  if (!balance || balance === '0x0') return ['0', '']
-  var wei = numericBalance(balance)
-  var padded = wei.toString(10)
-  var len = padded.length
-  var match = padded.match(/[^0]/)
-  var nonZeroIndex = match && match.index
-  var beforeDecimal = padded.substr(nonZeroIndex ? nonZeroIndex : 0, len - 18) || '0'
-  var afterDecimal = padded.substr(len - 18, decimalsToKeep)
+function parseBalance(balance) {
+  if (!balance || balance === '0x0') return ['0', '0']
+  var wei = numericBalance(balance).toString(10)
+  var eth = String(wei/valueTable['wei'])
+  var beforeDecimal = String(Math.floor(eth))
+  var afterDecimal
+  if(eth.indexOf('.') > -1){
+    afterDecimal = eth.slice(eth.indexOf('.') + 1)
+  }else{
+    afterDecimal = '0'
+  }
   return [beforeDecimal, afterDecimal]
 }
 
 // Takes wei hex, returns "None" or "${formattedAmount} ETH"
-function formatBalance(balance) {
+function formatBalance(balance, decimalsToKeep) {
   var parsed = parseBalance(balance)
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
-  if (beforeDecimal === '0' && afterDecimal === '') return 'None'
-  var result = beforeDecimal
-  if (afterDecimal) result += '.'+afterDecimal
-  result += ' ETH'
-  return result
+  var formatted = "None"
+  if(decimalsToKeep === undefined){
+    if(beforeDecimal === '0'){
+      if(afterDecimal !== '0'){
+        var sigFigs = afterDecimal.match(/^0*(.{2})/) //default: grabs 2 most significant digits
+        if(sigFigs){afterDecimal = sigFigs[0]}
+        formatted = '0.' + afterDecimal + ' ETH'
+      }
+    }else{
+      formatted = beforeDecimal + "." + afterDecimal.slice(0,3) + ' ETH'
+    }
+  }else{
+    afterDecimal += Array(decimalsToKeep).join("0")
+    formatted = beforeDecimal + "." + afterDecimal.slice(0,decimalsToKeep) + ' ETH'
+  }
+  return formatted
 }
 
 function dataSize(data) {

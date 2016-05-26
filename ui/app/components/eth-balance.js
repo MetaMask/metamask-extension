@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const parseBalance = require('../util').parseBalance
+const formatBalance = require('../util').formatBalance
 
 module.exports = EthBalanceComponent
 
@@ -12,11 +13,8 @@ function EthBalanceComponent() {
 
 EthBalanceComponent.prototype.render = function() {
   var state = this.props
-  var parsedAmount = parseBalance(state.value)
-  var beforeDecimal = parsedAmount[0]
-  var afterDecimal = parsedAmount[1]
-  var value = beforeDecimal+(afterDecimal ? '.'+afterDecimal : '')
   var style = state.style
+  var value = formatBalance(state.value)
 
   return (
 
@@ -28,12 +26,6 @@ EthBalanceComponent.prototype.render = function() {
           display: 'inline',
         },
       }, value),
-      h('.ether-balance-label', {
-        style: {
-          display: 'inline',
-          marginLeft: 6,
-        },
-      }, 'ETH'),
     ])
 
   )
