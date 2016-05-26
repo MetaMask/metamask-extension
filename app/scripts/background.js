@@ -1,10 +1,10 @@
+const urlUtil = require('url')
 const Dnode = require('dnode')
 const eos = require('end-of-stream')
 const combineStreams = require('pumpify')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
-const handleRequestsFromStream = require('web3-stream-provider/handler')
 const ObjectMultiplex = require('./lib/obj-multiplex')
 const PortStream = require('./lib/port-stream.js')
 const IdentityStore = require('./lib/idStore')
@@ -27,27 +27,28 @@ function connectRemote(remotePort){
   var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
-    setupTrustedCommunication(portStream)
+    setupTrustedCommunication(portStream, 'MetaMask')
   } else {
     // communication with page
-    setupUntrustedCommunication(portStream)
+    var originDomain = urlUtil.parse(remotePort.sender.url).hostname
+    setupUntrustedCommunication(portStream, originDomain)
   }
 }
 
-function setupUntrustedCommunication(connectionStream){
+function setupUntrustedCommunication(connectionStream, originDomain){
   // setup multiplexing
   var mx = setupMultiplex(connectionStream)
   // connect features
-  setupProviderConnection(mx.createStream('provider'))
+  setupProviderConnection(mx.createStream('provider'), originDomain)
   setupPublicConfig(mx.createStream('publicConfig'))
 }
 
-function setupTrustedCommunication(connectionStream){
+function setupTrustedCommunication(connectionStream, originDomain){
   // setup multiplexing
   var mx = setupMultiplex(connectionStream)
   // connect features
   setupControllerConnection(mx.createStream('controller'))
-  setupProviderConnection(mx.createStream('provider'))
+  setupProviderConnection(mx.createStream('provider'), originDomain)
 }
 
 //
@@ -66,10 +67,10 @@ var providerOpts = {
     cb(null, result)
   },
   // tx signing
-  approveTransaction: approveTransaction,
+  approveTransaction: newUnsignedTransaction,
   signTransaction: idStore.signTransaction.bind(idStore),
   // msg signing
-  approveMessage: approveMessage,
+  approveMessage: newUnsignedMessage,
   signMessage: idStore.signMessage.bind(idStore),
 }
 var provider = MetaMaskProvider(providerOpts)
@@ -143,13 +144,32 @@ function setupPublicConfig(stream){
   stream.pipe(storeStream).pipe(stream)
 }
 
-function setupProviderConnection(stream){
-  handleRequestsFromStream(stream, provider, logger)
+function setupProviderConnection(stream, originDomain){
+  
+  stream.on('data', function onRpcRequest(payload){
+    // Append origin to rpc payload
+    payload.origin = originDomain
+    // Append origin to signature request
+    if (payload.method === 'eth_sendTransaction') {
+      payload.params[0].origin = originDomain
+    } else if (payload.method === 'eth_sign') {
+      payload.params.push(originDomain)
+    }
+    // handle rpc request
+    provider.sendAsync(payload, function onPayloadHandled(err, response){
+      logger(null, payload, response)
+      try {
+        stream.write(response)
+      } catch (err) {
+        logger(err)
+      }
+    })
+  })
 
   function logger(err, request, response){
     if (err) return console.error(err.stack)
     if (!request.isMetamaskInternal) {
-      console.log('MetaMaskPlugin - RPC complete:', request, '->', response)
+      console.log(`RPC (${originDomain}):`, request, '->', response)
       if (response.error) console.error('Error in RPC response:\n'+response.error.message)
     }
   }
@@ -218,7 +238,7 @@ function updateBadge(state){
 // Add unconfirmed Tx + Msg
 //
 
-function approveTransaction(txParams, cb){
+function newUnsignedTransaction(txParams, cb){
   var state = idStore.getState()
   if (!state.isUnlocked) {
     createUnlockRequestNotification({
@@ -230,7 +250,7 @@ function approveTransaction(txParams, cb){
   }
 }
 
-function approveMessage(msgParams, cb){
+function newUnsignedMessage(msgParams, cb){
   var state = idStore.getState()
   if (!state.isUnlocked) {
     createUnlockRequestNotification({
