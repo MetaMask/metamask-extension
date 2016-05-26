@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Redesigned init, vault create, vault restore and seed confirmation screens.
+
 ## 2.1.0 2016-05-26
 
 - Added copy address button to account list.
