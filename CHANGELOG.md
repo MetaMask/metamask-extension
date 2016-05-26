@@ -6,6 +6,7 @@
 - Fixed back button on confirm transaction screen.
 - Add indication of pending transactions to account list screen.
 - Fixed bug where error warning was sometimes not cleared on view transition.
+- Updated eth-lightwallet to fix a critical security issue.
 
 ## 2.0.0 2016-05-23
 
