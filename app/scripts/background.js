@@ -153,7 +153,7 @@ function setupProviderConnection(stream, originDomain){
     if (payload.method === 'eth_sendTransaction') {
       payload.params[0].origin = originDomain
     } else if (payload.method === 'eth_sign') {
-      payload.params.push(originDomain)
+      payload.params.push({ origin: originDomain })
     }
     // handle rpc request
     provider.sendAsync(payload, function onPayloadHandled(err, response){
