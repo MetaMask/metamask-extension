@@ -107,7 +107,7 @@ function recipientField(txParams, transaction, isTx, isMsg) {
 }
 
 TransactionListItem.prototype.renderMessage = function() {
-  const { transaction, i } = this.props
+  const { transaction, i, network } = this.props
   return h('div', 'wowie, thats a message')
 }
 

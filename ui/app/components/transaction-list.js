@@ -52,7 +52,7 @@ TransactionList.prototype.render = function() {
         transactions.length ?
           transactions.map((transaction, i) => {
             return h(TransactionListItem, {
-              transaction, i,
+              transaction, i, network,
               showTx:(txId) => {
                 this.props.viewPendingTx(txId)
               },
