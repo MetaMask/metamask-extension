@@ -68,6 +68,7 @@ function createTxNotification(opts){
 
 function createMsgNotification(opts){
   var message = [
+    'Submitted by '+opts.msgParams.origin,
     'to be signed by: '+uiUtils.addressSummary(opts.msgParams.from),
     'message:\n'+opts.msgParams.data,
   ].join('\n')
