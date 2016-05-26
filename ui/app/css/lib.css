@@ -166,3 +166,17 @@ hr.horizontal-line {
 .hover-white:hover {
   background: white;
 }
+
+.pending-dot {
+  background: red;
+  left: 57px;
+  color: white;
+  border-radius: 10px;
+  height: 20px;
+  min-width: 20px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
