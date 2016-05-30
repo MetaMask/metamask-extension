@@ -131,7 +131,10 @@ IdentityStore.prototype.revealAccount = function(cb) {
 }
 
 IdentityStore.prototype.getNetwork = function(tries) {
-  if (tries === 0) return
+  if (tries === 0) {
+    this._currentState.network = 'error'
+    return
+  }
   this.web3.version.getNetwork((err, network) => {
     if (err) {
       return this.getNetwork(tries - 1, cb)
