@@ -27,6 +27,7 @@ const txHelper = require('../lib/tx-helper')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
+const NetworkIndicator = require('./components/network')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -46,6 +47,7 @@ function mapStateToProps(state) {
     unconfTxs: state.metamask.unconfTxs,
     unconfMsgs: state.metamask.unconfMsgs,
     menuOpen: state.appState.menuOpen,
+    network: state.metamask.network,
   }
 }
 
@@ -109,20 +111,21 @@ App.prototype.renderAppBar = function(){
       }, state.isUnlocked && [
 
         // mini logo
-        h('img', {
-          height: 24,
-          width: 24,
-          src: '/images/icon-128.png',
-        }),
+        // h('img', {
+        //   height: 24,
+        //   width: 24,
+        //   src: '/images/icon-128.png',
+        // }),
+        h(NetworkIndicator, {network: this.props.network}),
 
         // metamask name
         h('h1', 'MetaMask'),
-
         // hamburger
         h(SandwichExpando, {
           width: 16,
           barHeight: 2,
           padding: 0,
+          paddingLeft: '200px',
           isOpen: state.menuOpen,
           color: 'rgb(247,146,30)',
           onClick: (event) => {
