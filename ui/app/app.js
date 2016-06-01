@@ -111,11 +111,11 @@ App.prototype.renderAppBar = function(){
       }, state.isUnlocked && [
 
         // mini logo
-        // h('img', {
-        //   height: 24,
-        //   width: 24,
-        //   src: '/images/icon-128.png',
-        // }),
+        h('img', {
+          height: 24,
+          width: 24,
+          src: '/images/icon-128.png',
+        }),
         h(NetworkIndicator, {network: this.props.network}),
 
         // metamask name
@@ -125,7 +125,6 @@ App.prototype.renderAppBar = function(){
           width: 16,
           barHeight: 2,
           padding: 0,
-          paddingLeft: '200px',
           isOpen: state.menuOpen,
           color: 'rgb(247,146,30)',
           onClick: (event) => {
