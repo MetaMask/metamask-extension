@@ -5,6 +5,7 @@
 - Redesigned init, vault create, vault restore and seed confirmation screens.
 - Added pending transactions to transaction list on account screen.
 - Clicking a pending transaction takes you back to the transaction approval screen.
+- Update provider-engine to fix intermittent out of gas errors.
 
 ## 2.1.0 2016-05-26
 
