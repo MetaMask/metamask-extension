@@ -85,7 +85,7 @@ function reduceApp(state, action) {
         name: 'config',
         context: appState.currentView.context,
       },
-      transForward: true,
+      transForward: action.value,
     })
 
   case actions.SHOW_INFO_PAGE:
@@ -143,6 +143,18 @@ function reduceApp(state, action) {
       transForward: false,
       warning: null,
     })
+
+  // reveal seed words
+
+  case actions.REVEAL_SEED_CONFIRMATION:
+    return extend(appState, {
+      currentView: {
+        name: 'reveal-seed-conf',
+      },
+      transForward: true,
+      warning: null,
+    })
+
 
   // accounts
 

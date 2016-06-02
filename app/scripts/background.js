@@ -145,7 +145,7 @@ function setupPublicConfig(stream){
 }
 
 function setupProviderConnection(stream, originDomain){
-  
+
   stream.on('data', function onRpcRequest(payload){
     // Append origin to rpc payload
     payload.origin = originDomain
@@ -195,6 +195,8 @@ function setupControllerConnection(stream){
     exportAccount:      idStore.exportAccount.bind(idStore),
     revealAccount:      idStore.revealAccount.bind(idStore),
     saveAccountLabel:   idStore.saveAccountLabel.bind(idStore),
+    tryPassword:        idStore.tryPassword.bind(idStore),
+    recoverSeed:        idStore.recoverSeed.bind(idStore),
   })
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', function(remote){
@@ -246,7 +248,7 @@ function newUnsignedTransaction(txParams, cb){
     })
     var txId = idStore.addUnconfirmedTransaction(txParams, cb)
   } else {
-    addUnconfirmedTx(txParams, cb)    
+    addUnconfirmedTx(txParams, cb)
   }
 }
 
@@ -258,7 +260,7 @@ function newUnsignedMessage(msgParams, cb){
     })
     var msgId = idStore.addUnconfirmedMessage(msgParams, cb)
   } else {
-    addUnconfirmedMsg(msgParams, cb)    
+    addUnconfirmedMsg(msgParams, cb)
   }
 }
 
