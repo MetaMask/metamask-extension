@@ -25,10 +25,11 @@ function reduceApp(state, action) {
   }
 
   // confirm seed words
+  var seedWords = state.metamask.seedWords
   var seedConfView = {
     name: 'createVaultComplete',
+    seedWords,
   }
-  var seedWords = state.metamask.seedWords
 
   var appState = extend({
     menuOpen: false,
@@ -111,7 +112,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {
         name: 'createVaultComplete',
-        context: action.value,
+        seedWords: action.value,
       },
       transForward: true,
       isLoading: false,
@@ -210,6 +211,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {
         name: seedWords ? 'createVaultComplete' : 'accounts',
+        seedWords,
       },
       transForward: true,
       isLoading: false,

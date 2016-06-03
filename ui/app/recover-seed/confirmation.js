@@ -65,10 +65,9 @@ RevealSeedConfirmatoin.prototype.render = function() {
           },
         }),
 
-        h('h4', {
+        h(`h4${state && state.confirmationWrong ? '.error' : ''}`, {
           style: {
             marginTop: '12px',
-            color: state && state.confirmationWrong ? 'red' : 'black',
           }
         }, `Enter the phrase "I understand" to proceed.`),
 
