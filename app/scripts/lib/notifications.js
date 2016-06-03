@@ -8,24 +8,30 @@ module.exports = {
   createMsgNotification: createMsgNotification,
 }
 
-// guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+setupListeners()
 
-// notification button press
-chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
-  var handlers = notificationHandlers[notificationId]
-  if (buttonIndex === 0) {
-    handlers.confirm()
-  } else {
-    handlers.cancel()
-  }
-  chrome.notifications.clear(notificationId)
-})
+function setupListeners(){
+  
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
 
-// notification teardown
-chrome.notifications.onClosed.addListener(function(notificationId){
-  delete notificationHandlers[notificationId]
-})
+  // notification button press
+  chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
+    var handlers = notificationHandlers[notificationId]
+    if (buttonIndex === 0) {
+      handlers.confirm()
+    } else {
+      handlers.cancel()
+    }
+    chrome.notifications.clear(notificationId)
+  })
+
+  // notification teardown
+  chrome.notifications.onClosed.addListener(function(notificationId){
+    delete notificationHandlers[notificationId]
+  })
+
+}
 
 // creation helper
 function createUnlockRequestNotification(opts){
