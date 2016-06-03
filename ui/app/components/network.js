@@ -16,14 +16,12 @@ Network.prototype.render = function() {
   let iconName, hoverText
   const imagePath = "/images/"
 
-  if (networkNumber == undefined || networkNumber == "error") {
-    hoverText = 'No Blockchain Connection'
-    iconName = 'no-connection'
-  } else if (networkNumber ==  'loading') {
+  if (networkNumber ==  'loading') {
     return h('img', {
-      title: 'Contacting network...',
+      title: 'Attempting to connect to blockchain.',
       style: {
         width: '27px',
+        marginRight: '-16px'
       },
       src: 'images/loading.svg',
     })
@@ -39,7 +37,7 @@ Network.prototype.render = function() {
   }
   return (
     h('#network_component.flex-center', {
-      style: {},
+      style: { marginRight: '-16px' },
       title: hoverText,
     },[ h('img',{src: imagePath + iconName + ".jpg", width: '25px'}) ])
   )
