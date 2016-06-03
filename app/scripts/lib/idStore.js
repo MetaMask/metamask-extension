@@ -61,7 +61,7 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
 
 IdentityStore.prototype.recoverSeed = function(cb){
   configManager.setShowSeedWords(true)
-  if (!this_idmgmt) return cb(new Error('Unauthenticated. Please sign in.'))
+  if (!this._idmgmt) return cb(new Error('Unauthenticated. Please sign in.'))
   var seedWords = this._idmgmt.getSeed()
   cb(null, seedWords)
 }
