@@ -77,6 +77,13 @@ describe('util', function() {
       assert.ok(!result)
     })
 
+    it('should recognize this sample hashed address', function() {
+      const address = '0x5Fda30Bb72B8Dfe20e48A00dFc108d0915BE9Bb0'
+      const result = util.isValidAddress(address)
+      const hashed = ethUtil.toChecksumAddress(address.toLowerCase())
+      assert.equal(hashed, address, 'example is hashed correctly')
+      assert.ok(result, 'is valid by our check')
+    })
   })
 
   describe('numericBalance', function() {

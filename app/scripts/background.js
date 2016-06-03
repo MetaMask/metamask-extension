@@ -202,6 +202,8 @@ function setupControllerConnection(stream){
     exportAccount:      idStore.exportAccount.bind(idStore),
     revealAccount:      idStore.revealAccount.bind(idStore),
     saveAccountLabel:   idStore.saveAccountLabel.bind(idStore),
+    tryPassword:        idStore.tryPassword.bind(idStore),
+    recoverSeed:        idStore.recoverSeed.bind(idStore),
   })
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', function(remote){

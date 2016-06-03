@@ -8,24 +8,35 @@ module.exports = {
   createMsgNotification: createMsgNotification,
 }
 
-// notification button press
-chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
-  var handlers = notificationHandlers[notificationId]
-  if (buttonIndex === 0) {
-    handlers.confirm()
-  } else {
-    handlers.cancel()
-  }
-  chrome.notifications.clear(notificationId)
-})
+setupListeners()
 
-// notification teardown
-chrome.notifications.onClosed.addListener(function(notificationId){
-  delete notificationHandlers[notificationId]
-})
+function setupListeners(){
+  
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+
+  // notification button press
+  chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
+    var handlers = notificationHandlers[notificationId]
+    if (buttonIndex === 0) {
+      handlers.confirm()
+    } else {
+      handlers.cancel()
+    }
+    chrome.notifications.clear(notificationId)
+  })
+
+  // notification teardown
+  chrome.notifications.onClosed.addListener(function(notificationId){
+    delete notificationHandlers[notificationId]
+  })
+
+}
 
 // creation helper
 function createUnlockRequestNotification(opts){
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
   var message = 'An Ethereum app has requested a signature. Please unlock your account.'
 
   var id = createId()
@@ -39,6 +50,8 @@ function createUnlockRequestNotification(opts){
 }
 
 function createTxNotification(opts){
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
   var message = [
     'Submitted by '+opts.txParams.origin,
     'to: '+uiUtils.addressSummary(opts.txParams.to),
@@ -67,6 +80,8 @@ function createTxNotification(opts){
 }
 
 function createMsgNotification(opts){
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
   var message = [
     'Submitted by '+opts.msgParams.origin,
     'to be signed by: '+uiUtils.addressSummary(opts.msgParams.from),

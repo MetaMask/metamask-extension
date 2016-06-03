@@ -59,6 +59,13 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
   })
 }
 
+IdentityStore.prototype.recoverSeed = function(cb){
+  configManager.setShowSeedWords(true)
+  if (!this._idmgmt) return cb(new Error('Unauthenticated. Please sign in.'))
+  var seedWords = this._idmgmt.getSeed()
+  cb(null, seedWords)
+}
+
 IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
   this._createIdmgmt(password, seed, null, (err) => {
     if (err) return cb(err)
@@ -156,7 +163,7 @@ IdentityStore.prototype.setLocked = function(cb){
 }
 
 IdentityStore.prototype.submitPassword = function(password, cb){
-  this._tryPassword(password, (err) => {
+  this.tryPassword(password, (err) => {
     if (err) return cb(err)
     // load identities before returning...
     this._loadIdentities()
@@ -372,7 +379,7 @@ IdentityStore.prototype._mayBeFauceting = function(i) {
 // keyStore managment - unlocking + deserialization
 //
 
-IdentityStore.prototype._tryPassword = function(password, cb){
+IdentityStore.prototype.tryPassword = function(password, cb){
   this._createIdmgmt(password, null, null, cb)
 }
 
