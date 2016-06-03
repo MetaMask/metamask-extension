@@ -131,8 +131,10 @@ IdentityStore.prototype.revealAccount = function(cb) {
 }
 
 IdentityStore.prototype.getNetwork = function(tries) {
+
   if (tries === 0) {
     this._currentState.network = 'error'
+    this._didUpdate()
     return
   }
   this.web3.version.getNetwork((err, network) => {
@@ -140,7 +142,11 @@ IdentityStore.prototype.getNetwork = function(tries) {
       return this.getNetwork(tries - 1, cb)
     }
     this._currentState.network = network
+    this._didUpdate()
   })
+
+  this._currentState.network = 'loading'
+  this._didUpdate()
 }
 
 IdentityStore.prototype.setLocked = function(cb){

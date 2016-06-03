@@ -19,6 +19,14 @@ Network.prototype.render = function() {
   if (networkNumber == undefined || networkNumber == "error") {
     hoverText = 'No Blockchain Connection'
     iconName = 'no-connection'
+  } else if (networkNumber ==  'loading') {
+    return h('img', {
+      title: 'Contacting network...',
+      style: {
+        width: '27px',
+      },
+      src: 'images/loading.svg',
+    })
   } else if (networkNumber ==  1) {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
