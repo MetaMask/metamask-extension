@@ -102,7 +102,7 @@ AccountsScreen.prototype.render = function() {
             alignItems: 'center',
           }
         }, [
-          h('i.fa.fa-chevron-down.fa-lg', {key: ''}),
+          h('i.fa.fa-plus.fa-lg', {key: ''}),
         ]),
       ]),
 
