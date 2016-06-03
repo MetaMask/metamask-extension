@@ -11,24 +11,28 @@ function Network() {
 }
 
 Network.prototype.render = function() {
-  var state = this.props
-  var networkNumber = state.network
-  var networkName;
-  var imagePath = "/images/"
+  const state = this.props
+  const networkNumber = state.network
+  let iconName, hoverText
+  const imagePath = "/images/"
 
   if (networkNumber == undefined || networkNumber == "error") {
-    networkName = "No Blockchain Connection"
+    hoverText = 'No Blockchain Connection'
+    iconName = 'no-connection'
   } else if (networkNumber ==  1) {
-    networkName = "Main Ethereum Network"
-  } else if (networkNumber ==  2) {
-    networkName = "Morden Test Network"
-  } else {
-    networkName = "Unknown Private Network"
+    hoverText = 'Main Ethereum Network'
+    iconName = 'ethereum-network'
+  }else if (networkNumber ==  2) {
+    hoverText = "Morden Test Network"
+    iconName = 'morden-test-network'
+  }else {
+    hoverText = "Unknown Private Network"
+    iconName = 'unknown-private-network'
   }
   return (
     h('#network_component.flex-center', {
       style: {},
-      title: networkName
-    },[ h('img',{src: imagePath + networkName + ".jpg", width: '25px'}) ])
+      title: hoverText,
+    },[ h('img',{src: imagePath + iconName + ".jpg", width: '25px'}) ])
   )
 }
