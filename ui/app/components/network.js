@@ -16,13 +16,13 @@ Network.prototype.render = function() {
   var networkName;
   var imagePath = "/images/"
 
-  if(networkNumber == undefined || networkNumber == "error"){
+  if (networkNumber == undefined || networkNumber == "error") {
     networkName = "No Blockchain Connection"
-  }else if(networkNumber ==  1){
+  } else if (networkNumber ==  1) {
     networkName = "Main Ethereum Network"
-  }else if(networkNumber ==  2){
+  } else if (networkNumber ==  2) {
     networkName = "Morden Test Network"
-  }else{
+  } else {
     networkName = "Unknown Private Network"
   }
   return (
