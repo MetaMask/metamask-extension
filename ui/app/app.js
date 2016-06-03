@@ -110,12 +110,6 @@ App.prototype.renderAppBar = function(){
         },
       }, state.isUnlocked && [
 
-        // mini logo
-        h('img', {
-          height: 24,
-          width: 24,
-          src: '/images/icon-128.png',
-        }),
         h(NetworkIndicator, {network: this.props.network}),
 
         // metamask name
