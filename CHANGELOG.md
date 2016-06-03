@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Added seed word recovery to config screen.
+
 ## 2.2.0 2016-06-02
 
 - Redesigned init, vault create, vault restore and seed confirmation screens.

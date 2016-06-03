@@ -21,6 +21,7 @@ const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // other views
 const ConfigScreen = require('./config')
+const RevealSeedConfirmation = require('./recover-seed/confirmation')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
 const txHelper = require('../lib/tx-helper')
@@ -231,6 +232,9 @@ App.prototype.renderPrimary = function(){
 
     case 'config':
       return h(ConfigScreen, {key: 'config'})
+
+    case 'reveal-seed-conf':
+      return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
 
     case 'info':
       return h(InfoScreen, {key: 'info'})

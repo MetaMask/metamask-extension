@@ -14,7 +14,7 @@ function CreateVaultCompleteScreen() {
 
 function mapStateToProps(state) {
   return {
-    seed: state.appState.currentView.context,
+    seed: state.appState.currentView.seedWords,
     cachedSeed: state.metamask.seedWords,
   }
 }
