@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- show network status in title bar
 - Added seed word recovery to config screen.
 
 ## 2.2.0 2016-06-02

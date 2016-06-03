@@ -6,6 +6,8 @@ var actions = {
   toggleMenu: toggleMenu,
   SET_MENU_STATE: 'SET_MENU_STATE',
   closeMenu: closeMenu,
+  getNetworkStatus: 'getNetworkStatus',
+
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -132,6 +134,12 @@ function closeMenu() {
   return {
     type: actions.SET_MENU_STATE,
     value: false,
+  }
+}
+
+function getNetworkStatus(){
+  return {
+    type: actions.getNetworkStatus,
   }
 }
 

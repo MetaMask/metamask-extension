@@ -76,12 +76,19 @@ var providerOpts = {
 var provider = MetaMaskProvider(providerOpts)
 var web3 = new Web3(provider)
 idStore.web3 = web3
-idStore.getNetwork(3)
+idStore.getNetwork()
 
 // log new blocks
 provider.on('block', function(block){
   console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
+
+  // Check network when restoring connectivity:
+  if (idStore._currentState.network === 'loading') {
+    idStore.getNetwork()
+  }
 })
+
+provider.on('error', idStore.getNetwork.bind(idStore))
 
 var ethStore = new EthStore(provider)
 idStore.setStore(ethStore)
@@ -292,13 +299,13 @@ function addUnconfirmedMsg(msgParams, cb){
 function setRpcTarget(rpcTarget){
   configManager.setRpcTarget(rpcTarget)
   chrome.runtime.reload()
-  idStore.getNetwork(3) // 3 retry attempts
+  idStore.getNetwork()
 }
 
 function setProviderType(type) {
   configManager.setProviderType(type)
   chrome.runtime.reload()
-  idStore.getNetwork(3)
+  idStore.getNetwork()
 }
 
 function useEtherscanProvider() {
