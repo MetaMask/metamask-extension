@@ -4,7 +4,7 @@ Taking advantage of this might allow us to show nicely formatted notifications
 
 build a template using pure svg:
 
-```
+```svg
 <svg xmlns='http://www.w3.org/2000/svg'
   width='1000px' height='500px' viewBox='0 0 200 100'>
   <rect x='0' y='0' width='100%' height='100%' fill='white' />
@@ -22,7 +22,8 @@ generate uri
 `'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgSrc)`
 
 or svg-embedded html:
-```
+
+```svg
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="500">
   <rect x='0' y='0' width='100%' height='100%' fill='white' />
   <foreignObject class="node" x="46" y="22" width="200" height="300">
