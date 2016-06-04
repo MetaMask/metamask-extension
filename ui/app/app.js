@@ -53,10 +53,9 @@ function mapStateToProps(state) {
 }
 
 App.prototype.render = function() {
-  // const { selectedReddit, posts, isFetching, lastUpdated } = this.props
-  var state = this.props
-  var view = state.currentView.name
-  var transForward = state.transForward
+  var props = this.props
+  var view = props.currentView.name
+  var transForward = props.transForward
 
   return (
 
@@ -71,6 +70,7 @@ App.prototype.render = function() {
 
       // app bar
       this.renderAppBar(),
+      this.renderNetworkDropdown(),
       this.renderDropdown(),
 
       // panel content
@@ -94,7 +94,9 @@ App.prototype.render = function() {
 }
 
 App.prototype.renderAppBar = function(){
-  var state = this.props
+  const props = this.props
+  const state = this.state || {}
+  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
 
   return (
 
@@ -103,15 +105,22 @@ App.prototype.renderAppBar = function(){
       h('.app-header.flex-row.flex-space-between', {
         style: {
           alignItems: 'center',
-          visibility: state.isUnlocked ? 'visible' : 'none',
-          background: state.isUnlocked ? 'white' : 'none',
+          visibility: props.isUnlocked ? 'visible' : 'none',
+          background: props.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
           zIndex: 1,
         },
-      }, state.isUnlocked && [
+      }, props.isUnlocked && [
 
-        h(NetworkIndicator, {network: this.props.network}),
+        h(NetworkIndicator, {
+          network: this.props.network,
+          onClick:(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+          }
+        }),
 
         // metamask name
         h('h1', 'MetaMask'),
@@ -120,7 +129,7 @@ App.prototype.renderAppBar = function(){
           width: 16,
           barHeight: 2,
           padding: 0,
-          isOpen: state.menuOpen,
+          isOpen: props.menuOpen,
           color: 'rgb(247,146,30)',
           onClick: (event) => {
             event.preventDefault()
@@ -131,6 +140,56 @@ App.prototype.renderAppBar = function(){
       ]),
     ])
   )
+}
+
+App.prototype.renderNetworkDropdown = function() {
+  const props = this.props
+  const state = this.state || {}
+  const isOpen = state.isNetworkMenuOpen
+
+  const checked = h('i.fa.fa-check.fa-lg', { ariaHidden: true })
+
+  return h(MenuDroppo, {
+    isOpen,
+    onClickOutside:(event) => {
+      this.setState({ isNetworkMenuOpen: !isOpen })
+    },
+    style: {
+      position: 'fixed',
+      left: 0,
+      zIndex: 0,
+    },
+    innerStyle: {
+      background: 'white',
+      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+    },
+  }, [ // DROP MENU ITEMS
+    h('style', `
+      .drop-menu-item:hover { background:rgb(235, 235, 235); }
+      .drop-menu-item i { margin: 11px; }
+    `),
+
+    h(DropMenuItem, {
+      label: 'Main Ethereum Network',
+      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
+      action:() => props.dispatch(actions.setProviderType('mainnet')),
+      icon: h('.menu-icon.ether-icon'),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Morden Test Network',
+      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
+      action:() => props.dispatch(actions.setProviderType('testnet')),
+      icon: h('.menu-icon.morden-icon'),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Localhost 8545',
+      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
+      action:() => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
+      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+    }),
+  ])
 }
 
 App.prototype.renderDropdown = function() {
