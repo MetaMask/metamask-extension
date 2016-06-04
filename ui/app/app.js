@@ -53,10 +53,9 @@ function mapStateToProps(state) {
 }
 
 App.prototype.render = function() {
-  // const { selectedReddit, posts, isFetching, lastUpdated } = this.props
-  var state = this.props
-  var view = state.currentView.name
-  var transForward = state.transForward
+  var props = this.props
+  var view = props.currentView.name
+  var transForward = props.transForward
 
   return (
 
@@ -95,7 +94,9 @@ App.prototype.render = function() {
 }
 
 App.prototype.renderAppBar = function(){
-  var state = this.props
+  const props = this.props
+  const state = this.state || {}
+  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
 
   return (
 
@@ -104,20 +105,20 @@ App.prototype.renderAppBar = function(){
       h('.app-header.flex-row.flex-space-between', {
         style: {
           alignItems: 'center',
-          visibility: state.isUnlocked ? 'visible' : 'none',
-          background: state.isUnlocked ? 'white' : 'none',
+          visibility: props.isUnlocked ? 'visible' : 'none',
+          background: props.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
           zIndex: 1,
         },
-      }, state.isUnlocked && [
+      }, props.isUnlocked && [
 
         h(NetworkIndicator, {
           network: this.props.network,
           onClick:(event) => {
             event.preventDefault()
             event.stopPropagation()
-            this.setState({ isNetworkMenuOpen: true })
+            this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
           }
         }),
 
@@ -128,7 +129,7 @@ App.prototype.renderAppBar = function(){
           width: 16,
           barHeight: 2,
           padding: 0,
-          isOpen: state.menuOpen,
+          isOpen: props.menuOpen,
           color: 'rgb(247,146,30)',
           onClick: (event) => {
             event.preventDefault()
@@ -150,9 +151,7 @@ App.prototype.renderNetworkDropdown = function() {
 
   return h(MenuDroppo, {
     isOpen,
-    onClickOutside: (event) => {
-      event.preventDefault()
-      event.stopPropagation()
+    onClickOutside:(event) => {
       this.setState({ isNetworkMenuOpen: !isOpen })
     },
     style: {
@@ -173,22 +172,22 @@ App.prototype.renderNetworkDropdown = function() {
     h(DropMenuItem, {
       label: 'Main Ethereum Network',
       closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
-      action:() => state.dispatch(actions.setProviderType('mainnet')),
-      icon: h('img.menu-icon', { src: '/images/ethereum-network.jpg' }),
+      action:() => props.dispatch(actions.setProviderType('mainnet')),
+      icon: h('.menu-icon.ether-icon'),
     }),
 
     h(DropMenuItem, {
       label: 'Morden Test Network',
       closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
-      action:() => state.dispatch(actions.setProviderType('testnet')),
-      icon: h('img.menu-icon', { src: '/images/morden-test-network.jpg' }),
+      action:() => props.dispatch(actions.setProviderType('testnet')),
+      icon: h('.menu-icon.morden-icon'),
     }),
 
     h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
-      action:() => state.dispatch(actions.setRpcTarget('http://localhost:8545')),
-      icon: h('img.menu-icon', { src: '/images/unknown-private-network.jpg' }),
+      action:() => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
+      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
     }),
   ])
 }
