@@ -71,6 +71,7 @@ App.prototype.render = function() {
 
       // app bar
       this.renderAppBar(),
+      this.renderNetworkDropdown(),
       this.renderDropdown(),
 
       // panel content
@@ -111,7 +112,14 @@ App.prototype.renderAppBar = function(){
         },
       }, state.isUnlocked && [
 
-        h(NetworkIndicator, {network: this.props.network}),
+        h(NetworkIndicator, {
+          network: this.props.network,
+          onClick:(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            this.setState({ isNetworkMenuOpen: true })
+          }
+        }),
 
         // metamask name
         h('h1', 'MetaMask'),
@@ -131,6 +139,58 @@ App.prototype.renderAppBar = function(){
       ]),
     ])
   )
+}
+
+App.prototype.renderNetworkDropdown = function() {
+  const props = this.props
+  const state = this.state || {}
+  const isOpen = state.isNetworkMenuOpen
+
+  const checked = h('i.fa.fa-check.fa-lg', { ariaHidden: true })
+
+  return h(MenuDroppo, {
+    isOpen,
+    onClickOutside: (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      this.setState({ isNetworkMenuOpen: !isOpen })
+    },
+    style: {
+      position: 'fixed',
+      left: 0,
+      zIndex: 0,
+    },
+    innerStyle: {
+      background: 'white',
+      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+    },
+  }, [ // DROP MENU ITEMS
+    h('style', `
+      .drop-menu-item:hover { background:rgb(235, 235, 235); }
+      .drop-menu-item i { margin: 11px; }
+    `),
+
+    h(DropMenuItem, {
+      label: 'Main Ethereum Network',
+      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
+      action:() => state.dispatch(actions.setProviderType('mainnet')),
+      icon: h('img.menu-icon', { src: '/images/ethereum-network.jpg' }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Morden Test Network',
+      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
+      action:() => state.dispatch(actions.setProviderType('testnet')),
+      icon: h('img.menu-icon', { src: '/images/morden-test-network.jpg' }),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Localhost 8545',
+      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
+      action:() => state.dispatch(actions.setRpcTarget('http://localhost:8545')),
+      icon: h('img.menu-icon', { src: '/images/unknown-private-network.jpg' }),
+    }),
+  ])
 }
 
 App.prototype.renderDropdown = function() {

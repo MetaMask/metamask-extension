@@ -199,3 +199,7 @@ hr.horizontal-line {
   display: flex;
   align-items: center;
 }
+
+img.menu-icon {
+  width: 25px;
+}

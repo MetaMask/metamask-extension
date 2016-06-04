@@ -39,6 +39,7 @@ Network.prototype.render = function() {
     h('#network_component.flex-center', {
       style: { marginRight: '-16px' },
       title: hoverText,
-    },[ h('img',{src: imagePath + iconName + ".jpg", width: '25px'}) ])
+      onClick:(event) => this.props.onClick(event),
+    },[ h('img.menu-icon',{src: imagePath + iconName + ".jpg"}) ])
   )
 }
