@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Cache identicon images to optimize for long lists of transactions.
+
 ## 2.3.0 2016-06-06
 
 - Show network status in title bar
