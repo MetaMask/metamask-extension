@@ -1,8 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const jazzicon = require('jazzicon')
 const findDOMNode = require('react-dom').findDOMNode
+const jazzicon = require('jazzicon')
+const iconFactoryGen = require('../../lib/icon-factory')
+const iconFactory = iconFactoryGen(jazzicon)
 
 module.exports = IdenticonComponent
 
@@ -35,21 +37,14 @@ IdenticonComponent.prototype.componentDidMount = function(){
   var address = state.address
 
   if (!address) return
-  var numericRepresentation = jsNumberForAddress(address)
 
   var container = findDOMNode(this)
-  // jazzicon with hack to fix inline svg error
+
   var diameter = state.diameter || this.defaultDiameter
-  var identicon = jazzicon(diameter, numericRepresentation)
-  var identiconSrc = identicon.innerHTML
-  var dataUri = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(identiconSrc)
+  var dataUri = iconFactory.iconForAddress(address, diameter)
+
   var img = document.createElement('img')
   img.src = dataUri
   container.appendChild(img)
 }
 
-function jsNumberForAddress(address) {
-  var addr = address.slice(2, 10)
-  var seed = parseInt(addr, 16)
-  return seed
-}
