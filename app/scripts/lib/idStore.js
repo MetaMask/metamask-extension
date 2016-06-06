@@ -59,6 +59,13 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
   })
 }
 
+IdentityStore.prototype.recoverSeed = function(cb){
+  configManager.setShowSeedWords(true)
+  if (!this._idmgmt) return cb(new Error('Unauthenticated. Please sign in.'))
+  var seedWords = this._idmgmt.getSeed()
+  cb(null, seedWords)
+}
+
 IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
   this._createIdmgmt(password, seed, null, (err) => {
     if (err) return cb(err)
@@ -130,16 +137,22 @@ IdentityStore.prototype.revealAccount = function(cb) {
   cb(null)
 }
 
-IdentityStore.prototype.getNetwork = function(tries) {
-  if (tries === 0) {
-    this._currentState.network = 'error'
-    return
+IdentityStore.prototype.getNetwork = function(err) {
+
+  if (err) {
+    this._currentState.network = 'loading'
+    this._didUpdate()
   }
+
   this.web3.version.getNetwork((err, network) => {
     if (err) {
-      return this.getNetwork(tries - 1, cb)
+      this._currentState.network = 'loading'
+      return this._didUpdate()
     }
+
+    console.log('web3.getNetwork returned ' + network)
     this._currentState.network = network
+    this._didUpdate()
   })
 }
 
@@ -150,7 +163,7 @@ IdentityStore.prototype.setLocked = function(cb){
 }
 
 IdentityStore.prototype.submitPassword = function(password, cb){
-  this._tryPassword(password, (err) => {
+  this.tryPassword(password, (err) => {
     if (err) return cb(err)
     // load identities before returning...
     this._loadIdentities()
@@ -366,7 +379,7 @@ IdentityStore.prototype._mayBeFauceting = function(i) {
 // keyStore managment - unlocking + deserialization
 //
 
-IdentityStore.prototype._tryPassword = function(password, cb){
+IdentityStore.prototype.tryPassword = function(password, cb){
   this._createIdmgmt(password, null, null, cb)
 }
 

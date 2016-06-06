@@ -6,6 +6,8 @@ var actions = {
   toggleMenu: toggleMenu,
   SET_MENU_STATE: 'SET_MENU_STATE',
   closeMenu: closeMenu,
+  getNetworkStatus: 'getNetworkStatus',
+
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -29,6 +31,10 @@ var actions = {
   createNewVaultInProgress: createNewVaultInProgress,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
+  // seed recovery actions
+  REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
+  revealSeedConfirmation: revealSeedConfirmation,
+  requestRevealSeed: requestRevealSeed,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -131,6 +137,12 @@ function closeMenu() {
   }
 }
 
+function getNetworkStatus(){
+  return {
+    type: actions.getNetworkStatus,
+  }
+}
+
 // async actions
 
 function tryUnlockMetamask(password) {
@@ -151,6 +163,26 @@ function createNewVault(password, entropy) {
     dispatch(actions.createNewVaultInProgress())
     _accountManager.createNewVault(password, entropy, (err, result) => {
       dispatch(actions.showNewVaultSeed(result))
+    })
+  }
+}
+
+function revealSeedConfirmation() {
+  return {
+    type: this.REVEAL_SEED_CONFIRMATION,
+  }
+}
+
+function requestRevealSeed(password) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    _accountManager.tryPassword(password, (err, seed) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      _accountManager.recoverSeed((err, seed) => {
+        if (err) return dispatch(actions.displayWarning(err.message))
+        dispatch(actions.showNewVaultSeed(seed))
+      })
     })
   }
 }
@@ -402,9 +434,10 @@ function previousTx() {
   }
 }
 
-function showConfigPage() {
+function showConfigPage(transitionForward = true) {
   return {
     type: actions.SHOW_CONFIG_PAGE,
+    value: transitionForward,
   }
 }
 

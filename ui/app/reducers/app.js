@@ -25,10 +25,11 @@ function reduceApp(state, action) {
   }
 
   // confirm seed words
+  var seedWords = state.metamask.seedWords
   var seedConfView = {
     name: 'createVaultComplete',
+    seedWords,
   }
-  var seedWords = state.metamask.seedWords
 
   var appState = extend({
     menuOpen: false,
@@ -85,7 +86,7 @@ function reduceApp(state, action) {
         name: 'config',
         context: appState.currentView.context,
       },
-      transForward: true,
+      transForward: action.value,
     })
 
   case actions.SHOW_INFO_PAGE:
@@ -111,7 +112,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {
         name: 'createVaultComplete',
-        context: action.value,
+        seedWords: action.value,
       },
       transForward: true,
       isLoading: false,
@@ -143,6 +144,18 @@ function reduceApp(state, action) {
       transForward: false,
       warning: null,
     })
+
+  // reveal seed words
+
+  case actions.REVEAL_SEED_CONFIRMATION:
+    return extend(appState, {
+      currentView: {
+        name: 'reveal-seed-conf',
+      },
+      transForward: true,
+      warning: null,
+    })
+
 
   // accounts
 
@@ -198,6 +211,7 @@ function reduceApp(state, action) {
     return extend(appState, {
       currentView: {
         name: seedWords ? 'createVaultComplete' : 'accounts',
+        seedWords,
       },
       transForward: true,
       isLoading: false,

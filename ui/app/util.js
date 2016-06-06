@@ -52,7 +52,7 @@ function addressSummary(address) {
 
 function isValidAddress(address) {
   var prefixed = ethUtil.addHexPrefix(address)
-  return isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed) || ethUtil.isValidChecksumAddress(prefixed)
+  return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
 function isAllOneCase(address) {

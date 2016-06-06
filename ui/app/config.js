@@ -78,7 +78,7 @@ ConfigScreen.prototype.render = function() {
           ]),
 
           h('div', [
-            h('button', {
+            h('button.spaced', {
               style: {
                 alignSelf: 'center',
               },
@@ -86,11 +86,11 @@ ConfigScreen.prototype.render = function() {
                 event.preventDefault()
                 state.dispatch(actions.setProviderType('mainnet'))
               }
-            }, 'Use Main Network')
+            }, 'Use Main Network'),
           ]),
 
           h('div', [
-            h('button', {
+            h('button.spaced', {
               style: {
                 alignSelf: 'center',
               },
@@ -98,11 +98,11 @@ ConfigScreen.prototype.render = function() {
                 event.preventDefault()
                 state.dispatch(actions.setProviderType('testnet'))
               }
-            }, 'Use Morden Test Network')
+            }, 'Use Morden Test Network'),
           ]),
 
           h('div', [
-            h('button', {
+            h('button.spaced', {
               style: {
                 alignSelf: 'center',
               },
@@ -110,7 +110,25 @@ ConfigScreen.prototype.render = function() {
                 event.preventDefault()
                 state.dispatch(actions.setRpcTarget('http://localhost:8545/'))
               }
-            }, 'Use http://localhost:8545')
+            }, 'Use http://localhost:8545'),
+          ]),
+
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            }
+          }, [
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick(event) {
+                event.preventDefault()
+                state.dispatch(actions.revealSeedConfirmation())
+              }
+            }, 'Reveal Seed Words')
           ]),
 
         ]),

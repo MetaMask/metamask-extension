@@ -45,6 +45,10 @@ button {
   transition: transform 50ms ease-in;
 }
 
+button.spaced {
+  margin: 2px;
+}
+
 button:hover {
   transform: scale(1.1);
 }

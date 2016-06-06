@@ -199,3 +199,22 @@ hr.horizontal-line {
   display: flex;
   align-items: center;
 }
+
+.menu-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: 13px;
+}
+.ether-icon {
+  background: rgb(0, 163, 68);
+  border-radius: 20px;
+}
+.morden-icon {
+  background: #2465E1;
+}
+
+.drop-menu-item {
+  display: flex;
+  align-items: center;
+}
