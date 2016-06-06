@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.3.0 2016-06-06
+
 - Show network status in title bar
 - Added seed word recovery to config screen.
 - Clicking network status indicator now reveals a provider menu.
