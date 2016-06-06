@@ -352,7 +352,28 @@ input.large-input {
 .account-detail-section {
 
 }
+.editing-label{
+ /* visibility: hidden;
+  border-color: #F7861C;
+  border-style: solid;
+  border-width: 1px;*/
 
+}
+.edit-text {
+  visibility: hidden;
+}
+.editing-label {
+  width: 60px;
+  height: 40px;
+  position: absolute;
+  text-align: right;
+  font-size: small;
+  padding-top: 15px;
+  color: #F7861C;
+}
+.editing-label:hover div{
+  visibility: visible;
+}
 /* tx confirm */
 
 .unconftx-section {

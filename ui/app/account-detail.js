@@ -100,7 +100,8 @@ AccountDetailScreen.prototype.render = function() {
           }, [
 
             // What is shown when not editing:
-            h('h2.font-medium.color-forest', identity && identity.name)
+            h('label.editing-label',[h('.edit-text','edit')]),
+            h('h2.font-medium.color-forest', {title: 'edit'}, identity && identity.name)
           ]),
         ]),
 
