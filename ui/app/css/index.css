@@ -352,19 +352,15 @@ input.large-input {
 .account-detail-section {
 
 }
-.editing-label{
- /* visibility: hidden;
-  border-color: #F7861C;
-  border-style: solid;
-  border-width: 1px;*/
 
-}
 .edit-text {
+  height: 15px;
   visibility: hidden;
 }
 .editing-label {
+  cursor: text;
   width: 60px;
-  height: 40px;
+  height: 20px;
   position: absolute;
   text-align: right;
   font-size: small;
