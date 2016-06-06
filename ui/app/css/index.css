@@ -219,6 +219,15 @@ app sections
   padding: 8px;*/
 }
 
+.editable-input{
+  font-size: 1em;
+  height: 31px;
+}
+
+.editable-button{
+  position: relative;
+  bottom: 2px;
+}
 /* Webkit */
 .unlock-screen input::-webkit-input-placeholder {
   text-align: center;
