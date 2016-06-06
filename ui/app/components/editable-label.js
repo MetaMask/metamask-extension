@@ -18,13 +18,13 @@ EditableLabel.prototype.render = function() {
   if (state && state.isEditingLabel) {
 
     return h('div.editable-label', [
-      h('input', {
+      h('input.editable-input', {
         defaultValue: props.textValue,
         onKeyPress:(event) => {
           this.saveIfEnter(event)
         },
       }),
-      h('button', {
+      h('button.editable-button', {
         onClick:() => this.saveText(),
       }, 'Save')
     ])
