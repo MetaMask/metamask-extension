@@ -69,11 +69,11 @@ InfoScreen.prototype.render = function() {
 
           h('div',{
             style: {
-              paddingLeft: '25px',
+              paddingLeft: '30px',
             }},
           [
             h('div', [
-              h('a.info', {
+              h('a', {
                 href: 'https://metamask.io/',
                 target: '_blank',
                 onClick(event) { this.navigateTo(event.target.href) },
@@ -81,9 +81,9 @@ InfoScreen.prototype.render = function() {
                 h('img.icon-size', {
                   src: manifest.icons[128]
                 }),
-                h('.info',{
+                h('div.info',{
                   style: {
-                    display: 'inherit',
+                    fontWeight: 800,
                   }
                 },'Visit our web site')
               ])
