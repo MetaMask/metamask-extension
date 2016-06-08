@@ -62,10 +62,10 @@ InfoScreen.prototype.render = function() {
               style: {
                 marginBottom: '20px',
               }},
-            `For more information on Metamask
+            `For more information on MetaMask
              you can visit our web site. If you want to
              contact us with questions or just
-             say Hi, you can find us on theise platforms:`),
+             say 'Hi', you can find us on theise platforms:`),
 
           h('div',{
             style: {

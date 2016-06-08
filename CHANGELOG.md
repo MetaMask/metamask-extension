@@ -1,7 +1,7 @@
 # Changelog
 
 ## Current Master
-
+- Style up the info page
 - Show network status in title bar
 - Added seed word recovery to config screen.
 - Clicking network status indicator now reveals a provider menu.
