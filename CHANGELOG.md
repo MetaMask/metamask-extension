@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Style up the info page
 - Cache identicon images to optimize for long lists of transactions.
 
 ## 2.3.0 2016-06-06
