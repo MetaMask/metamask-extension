@@ -366,8 +366,7 @@ input.large-input {
 
 }
 .name-label{
-  position: relative;
-  bottom: 14px;
+  margin-bottom: 14px;
 }
 .edit-text {
   height: 100%;
