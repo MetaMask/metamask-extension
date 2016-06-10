@@ -365,7 +365,10 @@ input.large-input {
 .account-detail-section {
 
 }
-
+.name-label{
+  position: relative;
+  bottom: 14px;
+}
 .edit-text {
   height: 100%;
   visibility: hidden;

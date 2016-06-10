@@ -118,16 +118,19 @@ AccountDetailScreen.prototype.render = function() {
             },
           }, addressSummary(selected)),
 
+           h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
+            onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
+            style:{
+              marginLeft: '64px',
+            },
+          }),
+
           h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
             onClick: () => this.requestAccountExport(selected),
-          }),
-
-          h('i.fa.fa-qrcode.fa-md.cursor-disabled.color-orange', {
-            onClick: () => console.warn('QRCode not implented...'),
-          }),
-
-          h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
-            onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
+            style:{
+              position: 'relative',
+              right: '32px',
+            },
           }),
 
         ]),
