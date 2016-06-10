@@ -30,7 +30,7 @@ EditableLabel.prototype.render = function() {
     ])
 
   } else {
-    return h('div', {
+    return h('div.name-label', {
       onClick:(event) => {
         this.setState({ isEditingLabel: true })
       },

@@ -367,20 +367,19 @@ input.large-input {
 }
 
 .edit-text {
-  height: 15px;
+  height: 100%;
   visibility: hidden;
 }
 .editing-label {
   cursor: text;
-  width: 60px;
-  height: 20px;
-  position: absolute;
+  width: 100%;
+  position: relative;
+  top: 7px;
   text-align: right;
   font-size: small;
-  padding-top: 15px;
   color: #F7861C;
 }
-.editing-label:hover div{
+.name-label:hover .edit-text {
   visibility: visible;
 }
 /* tx confirm */
