@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Clean up UI
+- Remove nonfunctional QR code button
+
 ## 2.3.1 2016-06-09
 
 - Style up the info page
