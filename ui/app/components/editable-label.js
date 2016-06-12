@@ -18,7 +18,7 @@ EditableLabel.prototype.render = function() {
   if (state && state.isEditingLabel) {
 
     return h('div.editable-label', [
-      h('input.editable-input', {
+      h('input.sizing-input', {
         defaultValue: props.textValue,
         onKeyPress:(event) => {
           this.saveIfEnter(event)
