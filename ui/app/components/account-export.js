@@ -42,8 +42,12 @@ ExportAccountView.prototype.render = function() {
       }, [
         h('p.error', warning),
         h('p', confirmation),
-        h('input#exportAccount', {
+        h('input#exportAccount.sizing-input', {
           onKeyPress: this.onExportKeyPress.bind(this),
+          style: {
+            position: 'relative',
+            top: '1.5px',
+          }
         }),
         h('button', {
           onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
