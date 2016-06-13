@@ -2,7 +2,14 @@
 
 ## Current Master
 
+- Clean up UI
+- Remove nonfunctional QR code button
+
+## 2.3.1 2016-06-09
+
+- Style up the info page
 - Cache identicon images to optimize for long lists of transactions.
+- Fix out of gas errors
 
 ## 2.3.0 2016-06-06
 

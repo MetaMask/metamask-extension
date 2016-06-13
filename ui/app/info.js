@@ -18,7 +18,7 @@ function InfoScreen() {
 InfoScreen.prototype.render = function() {
   var state = this.props
   var rpc = state.rpc
-
+  var manifest = chrome.runtime.getManifest();
   return (
     h('.flex-column.flex-grow', [
 
@@ -39,50 +39,92 @@ InfoScreen.prototype.render = function() {
             padding: '20px',
           }
         }, [
+          //current version number
 
-          h('div', [
-            h('a', {
-              href: 'http://slack.metamask.io',
-              target: '_blank',
-              onClick(event) { this.navigateTo(event.target.href) },
-            }, 'Join the conversation on Slack'),
+          h('.info.info-gray',[
+            h('div','Metamask'),
+            h('div', {
+              style: {
+              marginBottom: '10px',
+              }
+            },`Version: ${manifest.version}`),
           ]),
 
-          h('div', [
-            h('a', {
-              href: 'https://metamask.io/',
-              target: '_blank',
-              onClick(event) { this.navigateTo(event.target.href) },
-            }, 'Visit our web site'),
-          ]),
+          h('hr',{
+            style: {
+              margin:'20px 0 ',
+              width: '7em',
+            }
+          }),
 
-          h('div', [
-            h('a', {
-              href: 'https://twitter.com/metamask_io',
-              target: '_blank',
-              onClick(event) { this.navigateTo(event.target.href) },
-            }, 'Follow us on Twitter'),
-          ]),
 
-          h('div', [
-            h('a', {
-              href: 'mailto:hello@metamask.io?subject=Feedback',
-              target: '_blank',
-            }, 'Email us any questions or comments!'),
-          ]),
+          h('.info',{
+              style: {
+                marginBottom: '20px',
+              }},
+            `For more information on MetaMask
+             you can visit our web site. If you want to
+             contact us with questions or just
+             say 'Hi', you can find us on theise platforms:`),
 
-          h('div', [
-            h('a', {
-              href: 'https://github.com/metamask/talk/issues',
-              target: '_blank',
-              onClick(event) { this.navigateTo(event.target.href) },
-            }, 'Start a thread on Github'),
-          ]),
+          h('div',{
+            style: {
+              paddingLeft: '30px',
+            }},
+          [
+            h('div', [
+              h('a', {
+                href: 'https://metamask.io/',
+                target: '_blank',
+                onClick(event) { this.navigateTo(event.target.href) },
+              },[
+                h('img.icon-size', {
+                  src: manifest.icons[128]
+                }),
+                h('div.info',{
+                  style: {
+                    fontWeight: 800,
+                  }
+                },'Visit our web site')
+              ])
+            ]),
+            h('div.fa.fa-slack', [
+              h('a.info', {
+                href: 'http://slack.metamask.io',
+                target: '_blank',
+                onClick(event) { this.navigateTo(event.target.href) },
+              }, 'Join the conversation on Slack'),
+            ]),
 
+
+            h('div.fa.fa-twitter', [
+              h('a.info', {
+                href: 'https://twitter.com/metamask_io',
+                target: '_blank',
+                onClick(event) { this.navigateTo(event.target.href) },
+              }, 'Follow us on Twitter'),
+            ]),
+
+            h('div.fa.fa-envelope', [
+              h('a.info', {
+                href: 'mailto:hello@metamask.io?subject=Feedback',
+                target: '_blank',
+              }, 'Email us any questions or comments!'),
+            ]),
+
+            h('div.fa.fa-github', [
+              h('a.info', {
+                href: 'https://github.com/metamask/talk/issues',
+                target: '_blank',
+                onClick(event) { this.navigateTo(event.target.href) },
+              }, 'Start a thread on Github'),
+            ]),
+          ]),
         ]),
       ]),
     ])
   )
+
 }
 
 InfoScreen.prototype.navigateTo = function(url) {

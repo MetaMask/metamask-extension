@@ -223,7 +223,7 @@ app sections
   padding: 8px;*/
 }
 
-.editable-input{
+.sizing-input{
   font-size: 1em;
   height: 31px;
 }
@@ -365,22 +365,23 @@ input.large-input {
 .account-detail-section {
 
 }
-
+.name-label{
+  margin-bottom: 14px;
+}
 .edit-text {
-  height: 15px;
+  height: 100%;
   visibility: hidden;
 }
 .editing-label {
   cursor: text;
-  width: 60px;
-  height: 20px;
-  position: absolute;
+  width: 100%;
+  position: relative;
+  top: 7px;
   text-align: right;
   font-size: small;
-  padding-top: 15px;
   color: #F7861C;
 }
-.editing-label:hover div{
+.name-label:hover .edit-text {
   visibility: visible;
 }
 /* tx confirm */
@@ -423,3 +424,23 @@ input.large-input {
 .ether-balance-label {
   color: #ABA9AA;
 }
+
+/* Info screen */
+.info-gray{
+  font-family: 'Transat Medium';
+  text-transform: uppercase;
+  color: #AEAEAE;
+}
+
+.icon-size{
+  width: 20px;
+}
+
+.info{
+  font-family: 'Transat Standard', Arial;
+  font-weight: bolder;
+  padding-bottom: 10px;
+  display: inline-block;
+  padding-left: 5px;
+}
+
