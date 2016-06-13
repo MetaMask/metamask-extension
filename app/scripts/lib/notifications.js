@@ -215,7 +215,7 @@ function transactionNotificationSVG(opts){
       <polyline class="cls-10" points="764 424 764 400 648 400 648 424"/>
       <polyline class="cls-10" points="764 392 764 384 648 384 648 392"/>
     </g>
-    <text class="cls-11" transform="translate(222.45 442)">Contract <tspan x="-24.3" y="72">Invocation</tspan></text>
+    <text class="cls-11" transform="translate(185 475)">Transaction</text>
     <text class="cls-12" transform="translate(355.22 830)"><tspan class="cls-13">Value :</tspan></text>
     <text class="cls-8" transform="translate(113.13 602.67)">`+toAddr+`</text>
     <rect class="cls-14" x="754" y="702" width="590" height="188" rx="5" ry="5"/>
