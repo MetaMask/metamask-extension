@@ -26,6 +26,7 @@ module.exports = {
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
+  colorBasedOnEthCost: colorBasedOnEthCost,
   dataSize: dataSize,
   readableDate: readableDate,
   ethToWei: ethToWei,
@@ -119,6 +120,15 @@ function formatBalance(balance, decimalsToKeep) {
     formatted = beforeDecimal + "." + afterDecimal.slice(0,decimalsToKeep) + ' ETH'
   }
   return formatted
+}
+
+function colorBasedOnEthCost(hexVal){
+  var cost = parseBalance(hexVal)[0];
+  if (cost == 0){return '00ff00'
+  } else if(cost < 1){return '88ff00'
+  } else if(cost < 5){return 'ffff00'
+  } else if(cost < 25){return 'ff8800'
+  } else{ return 'ff0000'}
 }
 
 function dataSize(data) {
