@@ -5,7 +5,6 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
-const addressSummary = require('./util').addressSummary
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
 
@@ -120,7 +119,7 @@ AccountDetailScreen.prototype.render = function() {
               textOverflow: 'ellipsis',
               paddingTop: '3px',
             },
-          }, selected),
+          }, ethUtil.toChecksumAddress(selected)),
 
           h('img.cursor-pointer.color-orange', {
             src: 'images/copy.svg',

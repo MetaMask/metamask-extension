@@ -2,7 +2,6 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const addressSummary = require('../util').addressSummary
 const formatBalance = require('../util').formatBalance
 const Identicon = require('./identicon')
 
@@ -37,7 +36,7 @@ AccountPanel.prototype.render = function() {
     attributes: [
       {
         key: 'ADDRESS',
-        value: addressSummary(identity.address)
+        value: identity.address,
       },
       balanceOrFaucetingIndication(account, isFauceting),
     ]
