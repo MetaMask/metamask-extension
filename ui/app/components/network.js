@@ -19,6 +19,7 @@ Network.prototype.render = function() {
   if (networkNumber ==  'loading') {
     return h('img', {
       title: 'Attempting to connect to blockchain.',
+      onClick:(event) => this.props.onClick(event),
       style: {
         width: '27px',
         marginRight: '-27px'
