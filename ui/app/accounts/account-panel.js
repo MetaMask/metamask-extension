@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 
 const EtherBalance = require('../components/eth-balance')
-const addressSummary = require('../util').addressSummary
 const copyToClipboard = require('copy-to-clipboard')
 const Identicon = require('../components/identicon')
 
@@ -41,16 +40,29 @@ NewComponent.prototype.render = function() {
       ]),
 
       // account address, balance
-      h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
-
+      h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', {
+        style: {
+          width: '200px',
+        },
+      }, [
         h('span', identity.name),
-        h('span.font-small', addressSummary(identity.address)),
+        h('span.font-small', {
+          style: {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          },
+        }, ethUtil.toChecksumAddress(identity.address)),
         h(EtherBalance, {
           value: account.balance,
         }),
       ]),
 
-      h('.identity-copy.flex-column', [
+      // copy button
+      h('.identity-copy.flex-column', {
+        style: {
+          margin: '0 20px',
+        },
+      }, [
         h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
           onClick: (event) => {
             event.stopPropagation()
@@ -58,7 +70,7 @@ NewComponent.prototype.render = function() {
             copyToClipboard(ethUtil.toChecksumAddress(identity.address))
           }
         }),
-      ])
+      ]),
     ])
   )
 }
