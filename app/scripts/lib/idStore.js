@@ -522,8 +522,8 @@ function pad_with_zeroes(number, length){
 }
 
 function concatSig(v, r, s) {
-  r = pad_with_zeroes(ethUtil.fromSigned(r))
-  s = pad_with_zeroes(ethUtil.fromSigned(s))
+  r = pad_with_zeroes(ethUtil.fromSigned(r), 64)
+  s = pad_with_zeroes(ethUtil.fromSigned(s), 64)
   v = ethUtil.bufferToInt(v)
   r = ethUtil.toUnsigned(r).toString('hex')
   s = ethUtil.toUnsigned(s).toString('hex')
