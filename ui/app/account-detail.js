@@ -65,6 +65,7 @@ AccountDetailScreen.prototype.render = function() {
           // invisible placeholder for later
           h('i.fa.fa-users.fa-lg.color-orange', {
             style: {
+              width: '30px',
               visibility: 'hidden',
             },
           }),
