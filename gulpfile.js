@@ -46,7 +46,7 @@ gulp.task('copy:root', copyTask({
 }))
 gulp.task('copy',  gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'))
 gulp.task('copy:watch', function(){
-  gulp.watch(['./app/{_locales,images}/', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
+  gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
 
 

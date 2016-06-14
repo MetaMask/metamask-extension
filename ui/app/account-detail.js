@@ -78,7 +78,8 @@ AccountDetailScreen.prototype.render = function() {
           ]),
 
           // small accounts nav
-          h('i.fa.fa-users.fa-lg.cursor-pointer.color-orange', {
+          h('img.cursor-pointer.color-orange', {
+            src: 'images/switch_acc.svg',
             onClick: this.navigateToAccounts.bind(this),
           }),
         ]),
@@ -118,14 +119,16 @@ AccountDetailScreen.prototype.render = function() {
             },
           }, addressSummary(selected)),
 
-           h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
+          h('img.cursor-pointer.color-orange', {
+            src: 'images/copy.svg',
             onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
             style:{
               marginLeft: '64px',
             },
           }),
 
-          h('i.fa.fa-download.fa-md.cursor-pointer.color-orange', {
+          h('img.fa-md.cursor-pointer.color-orange', {
+            src: 'images/download.svg',
             onClick: () => this.requestAccountExport(selected),
             style:{
               position: 'relative',
