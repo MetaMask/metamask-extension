@@ -5,6 +5,7 @@
 - Clean up UI.
 - Remove nonfunctional QR code button.
 - Make network loading indicator clickable to select accessible network.
+- Show more characters of addresses when space permits.
 
 ## 2.3.1 2016-06-09
 
