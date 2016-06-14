@@ -222,7 +222,7 @@ App.prototype.renderDropdown = function() {
     }),
 
     h(DropMenuItem, {
-      label: 'Lock Account',
+      label: 'Lock',
       closeMenu:() => this.props.dispatch(actions.closeMenu()),
       action:() => this.props.dispatch(actions.lockMetamask()),
       icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
