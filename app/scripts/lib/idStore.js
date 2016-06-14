@@ -513,10 +513,17 @@ function IdManagement(opts) {
 
 function noop(){}
 
+function pad_with_zeroes(number, length){
+  var my_string = '' + number;
+  while (my_string.length < length) {
+    my_string = '0' + my_string;
+  }
+  return my_string;
+}
 
 function concatSig(v, r, s) {
-  r = ethUtil.fromSigned(r)
-  s = ethUtil.fromSigned(s)
+  r = pad_with_zeroes(ethUtil.fromSigned(r), 64)
+  s = pad_with_zeroes(ethUtil.fromSigned(s), 64)
   v = ethUtil.bufferToInt(v)
   r = ethUtil.toUnsigned(r).toString('hex')
   s = ethUtil.toUnsigned(s).toString('hex')
