@@ -11,3 +11,4 @@ package
 .DS_Store
 builds/
 notes.txt
+app/.DS_Store
