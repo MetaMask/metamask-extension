@@ -127,7 +127,7 @@ AccountDetailScreen.prototype.render = function() {
             },
           }),
 
-          h('img.fa-md.cursor-pointer.color-orange', {
+          h('img.cursor-pointer.color-orange', {
             src: 'images/download.svg',
             onClick: () => this.requestAccountExport(selected),
             style:{
