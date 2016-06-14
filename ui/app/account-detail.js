@@ -108,7 +108,7 @@ AccountDetailScreen.prototype.render = function() {
         ]),
 
         // address and getter actions
-        h('.flex-row.flex-space-between', {
+        h('.flex-row', {
           style: {
             marginBottom: 16,
           },
@@ -116,15 +116,17 @@ AccountDetailScreen.prototype.render = function() {
 
           h('div', {
             style: {
-              lineHeight: '16px',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              paddingTop: '3px',
             },
-          }, addressSummary(selected)),
+          }, selected),
 
           h('img.cursor-pointer.color-orange', {
             src: 'images/copy.svg',
             onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
             style:{
-              marginLeft: '64px',
+              margin: '0px 5px',
             },
           }),
 
@@ -132,8 +134,7 @@ AccountDetailScreen.prototype.render = function() {
             src: 'images/download.svg',
             onClick: () => this.requestAccountExport(selected),
             style:{
-              position: 'relative',
-              right: '32px',
+              margin: '0px 5px',
             },
           }),
 
