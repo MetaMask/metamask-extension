@@ -492,8 +492,8 @@ function IdManagement(opts) {
     // sign message
     var privKeyHex = this.exportPrivateKey(address)
     var privKey = ethUtil.toBuffer(privKeyHex)
-    var msgHash = ethUtil.sha3(message)
-    var msgSig = ethUtil.ecsign(msgHash, privKey)
+    var msgBuffer = new Buffer(message.replace('0x',''), 'hex')
+    var msgSig = ethUtil.ecsign(msgBuffer, privKey)
     var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))
     return rawMsgSig
   }
