@@ -320,37 +320,3 @@ App.prototype.toggleMetamaskActive = function(){
   }
 }
 
-function onOffToggle(state){
-  var buttonSize = '50px';
-  var lockWidth = '20px';
-  return (
-    h('.app-toggle.flex-row.flex-center.lock' + (state.isUnlocked ? '.unlocked' : '.locked'), {
-      width: buttonSize,
-      height: buttonSize,
-    }, [
-      h('div', {
-        onClick: state.toggleMetamaskActive,
-        style: {
-          width: lockWidth,
-          height: '' + parseInt(lockWidth) * 1.5 + 'px',
-          position: 'relative',
-        }
-      }, [
-        h('img.lock-top', {
-          src: 'images/lock-top.png',
-          style: {
-            width: lockWidth,
-            position: 'absolute',
-          }
-        }),
-        h('img', {
-          src: 'images/lock-base.png',
-          style: {
-            width: lockWidth,
-            position: 'absolute',
-          }
-        }),
-      ])
-    ])
-  )
-}
