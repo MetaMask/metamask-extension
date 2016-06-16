@@ -318,7 +318,8 @@ function showInitializeMenu() {
 function agreeToDisclaimer() {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.agreeToDisclaimer((err) {
+    _accountManager.agreeToDisclaimer((err) => {
+      dispatch(this.hideLoadingIndication())
       dispatch({
         type: this.AGREE_TO_DISCLAIMER,
       })
