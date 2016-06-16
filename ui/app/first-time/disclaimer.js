@@ -39,7 +39,7 @@ DisclaimerScreen.prototype.render = function() {
       h('div', {
         style: {
           background: 'rgb(235, 235, 235)',
-          height: '235px',
+          height: '336px',
 
           width: '80%',
           overflowY: 'scroll',
