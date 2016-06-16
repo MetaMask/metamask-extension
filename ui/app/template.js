@@ -16,8 +16,7 @@ function COMPONENTNAME() {
 }
 
 COMPONENTNAME.prototype.render = function() {
-  var state = this.props
-  var rpc = state.rpc
+  const props = this.props
 
   return (
     h('div', {
