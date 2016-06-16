@@ -8,6 +8,7 @@ const extend = require('xtend')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
+const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
 const CreateVaultScreen = require('./first-time/create-vault')
 const CreateVaultCompleteScreen = require('./first-time/create-vault-complete')
@@ -39,6 +40,7 @@ function App() { Component.call(this) }
 function mapStateToProps(state) {
   return {
     // state from plugin
+    isConfirmed: state.metamask.isConfirmed,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
@@ -239,6 +241,10 @@ App.prototype.renderDropdown = function() {
 
 App.prototype.renderPrimary = function(){
   var props = this.props
+
+  if (!props.isConfirmed) {
+    return h(DisclaimerScreen, {key: 'disclaimerScreen'})
+  }
 
   if (props.seedWords) {
     return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
