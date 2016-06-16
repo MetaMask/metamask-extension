@@ -21,9 +21,10 @@ COMPONENTNAME.prototype.render = function() {
   return (
     h('div', {
       style: {
-        display: 'none',
+        background: 'blue',
       }
     }, [
+      'Hello, world!'
     ])
   )
 }
