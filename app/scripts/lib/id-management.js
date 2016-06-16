@@ -39,16 +39,14 @@ function IdManagement(opts) {
     return rawTx
   }
 
-  this.signMsg = function(address, message){
+  this.signMsg = function (address, message) {
     // sign message
-    var privKeyHex = this.exportPrivateKey(address)
-    var privKey = ethUtil.toBuffer(privKeyHex)
-    var msgHash = ethUtil.sha3(message)
-    var msgBuffer = new Buffer(message.replace('0x',''), 'hex')
-    var msgSig = ethUtil.ecsign(msgBuffer, privKey)
-    var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))
-    return rawMsgSig
-  }
+    var privKeyHex = this.exportPrivateKey(address);
+    var privKey = ethUtil.toBuffer(privKeyHex);
+    var msgSig = ethUtil.ecsign(new Buffer(message.replace('0x',''), 'hex'), privKey);
+    var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s));
+    return rawMsgSig;
+  };
 
   this.getSeed = function(){
     return this.keyStore.getSeed(this.derivedKey)
@@ -71,9 +69,8 @@ function pad_with_zeroes(number, length){
 function concatSig(v, r, s) {
   r = pad_with_zeroes(ethUtil.fromSigned(r), 64)
   s = pad_with_zeroes(ethUtil.fromSigned(s), 64)
-  v = ethUtil.bufferToInt(v)
-  r = ethUtil.toUnsigned(r).toString('hex')
-  s = ethUtil.toUnsigned(s).toString('hex')
+  r = ethUtil.stripHexPrefix(r.toString('hex'))
+  s = ethUtil.stripHexPrefix(s.toString('hex'))
   v = ethUtil.stripHexPrefix(ethUtil.intToHex(v))
-  return ethUtil.addHexPrefix(r.concat(s, v).toString("hex"))
+  return ethUtil.addHexPrefix(r.concat(s, v))
 }
