@@ -6,7 +6,6 @@ const actions = require('../actions')
 const fs = require('fs')
 const path = require('path')
 const disclaimer = fs.readFileSync(path.join(__dirname, 'disclaimer.txt')).toString()
-
 module.exports = connect(mapStateToProps)(DisclaimerScreen)
 
 function mapStateToProps(state) {
@@ -38,9 +37,10 @@ DisclaimerScreen.prototype.render = function() {
 
       h('div', {
         style: {
+          whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
           height: '336px',
-
+          padding: '6px',
           width: '80%',
           overflowY: 'scroll',
         }
