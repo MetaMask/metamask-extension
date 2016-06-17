@@ -248,15 +248,15 @@ function updateBadge(state){
 // Add unconfirmed Tx + Msg
 //
 
-function newUnsignedTransaction(txParams, cb){
+function newUnsignedTransaction(txParams, onTxDoneCb){
   var state = idStore.getState()
   if (!state.isUnlocked) {
     createUnlockRequestNotification({
       title: 'Account Unlock Request',
     })
-    var txId = idStore.addUnconfirmedTransaction(txParams, cb)
+    idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, noop)
   } else {
-    addUnconfirmedTx(txParams, cb)
+    addUnconfirmedTx(txParams, onTxDoneCb)
   }
 }
 
@@ -272,13 +272,15 @@ function newUnsignedMessage(msgParams, cb){
   }
 }
 
-function addUnconfirmedTx(txParams, cb){
-  var txId = idStore.addUnconfirmedTransaction(txParams, cb)
-  createTxNotification({
-    title: 'New Unsigned Transaction',
-    txParams: txParams,
-    confirm: idStore.approveTransaction.bind(idStore, txId, noop),
-    cancel: idStore.cancelTransaction.bind(idStore, txId),
+function addUnconfirmedTx(txParams, onTxDoneCb){
+  idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, function(err, txData){
+    if (err) return onTxDoneCb(err)
+    createTxNotification({
+      title: 'New Unsigned Transaction',
+      txParams: txParams,
+      confirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
+      cancel: idStore.cancelTransaction.bind(idStore, txData.id),
+    })
   })
 }
 
