@@ -4,9 +4,39 @@ var configManager
 
 describe('config-manager', function() {
 
-  before(function() {
+  beforeEach(function() {
     window.localStorage = {} // Hacking localStorage support into JSDom
     configManager = new ConfigManager()
+  })
+
+  describe('confirmation', function() {
+
+    describe('#getConfirmed', function() {
+      it('should return false if no previous key exists', function() {
+        var result = configManager.getConfirmed()
+        assert.ok(!result)
+      })
+    })
+
+    describe('#setConfirmed', function() {
+      it('should make getConfirmed return true once set', function() {
+        configManager.setConfirmed(true)
+        var result = configManager.getConfirmed()
+        assert.equal(result, true)
+      })
+
+      it('should be able to set false', function() {
+        configManager.setConfirmed(false)
+        var result = configManager.getConfirmed()
+        assert.equal(result, false)
+      })
+
+      it('should persist to local storage', function() {
+        configManager.setConfirmed(true)
+        var data = configManager.getData()
+        assert.equal(data.isConfirmed, true)
+      })
+    })
   })
 
   describe('#setConfig', function() {

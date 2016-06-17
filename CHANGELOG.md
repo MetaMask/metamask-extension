@@ -7,6 +7,8 @@
 - Make network loading indicator clickable to select accessible network.
 - Show more characters of addresses when space permits.
 - Fixed eth.sign behavior.
+- Fixed bug when signing messages under 64 hex characters long.
+- Add disclaimer view with placeholder text for first time users.
 
 ## 2.3.1 2016-06-09
 

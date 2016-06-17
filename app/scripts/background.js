@@ -188,6 +188,7 @@ function setupControllerConnection(stream){
     setRpcTarget:       setRpcTarget,
     setProviderType:    setProviderType,
     useEtherscanProvider: useEtherscanProvider,
+    agreeToDisclaimer:  agreeToDisclaimer,
     // forward directly to idStore
     createNewVault:     idStore.createNewVault.bind(idStore),
     recoverFromSeed:    idStore.recoverFromSeed.bind(idStore),
@@ -294,6 +295,15 @@ function addUnconfirmedMsg(msgParams, cb){
 //
 // config
 //
+
+function agreeToDisclaimer(cb) {
+  try {
+    configManager.setConfirmed(true)
+    cb()
+  } catch (e) {
+    cb(e)
+  }
+}
 
 // called from popup
 function setRpcTarget(rpcTarget){

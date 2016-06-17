@@ -93,6 +93,7 @@ IdentityStore.prototype.getState = function(){
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
+    isConfirmed: configManager.getConfirmed(),
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
     unconfMsgs: messageManager.unconfirmedMsgs(),

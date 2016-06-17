@@ -270,6 +270,17 @@ ConfigManager.prototype._emitUpdates = function(state){
   })
 }
 
+ConfigManager.prototype.setConfirmed = function(confirmed) {
+  var data = this.getData()
+  data.isConfirmed = confirmed
+  this.setData(data)
+}
+
+ConfigManager.prototype.getConfirmed = function() {
+  var data = this.getData()
+  return ('isConfirmed' in data) && data.isConfirmed
+}
+
 
 function loadData() {
 
