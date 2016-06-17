@@ -1,12 +1,14 @@
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
 const Transaction = require('ethereumjs-tx')
+const ethUtil = require('ethereumjs-util')
 const LightwalletKeyStore = require('eth-lightwallet').keystore
 const LightwalletSigner = require('eth-lightwallet').signing
 const async = require('async')
 const clone = require('clone')
 const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
+const ethBinToOps = require('eth-bin-to-ops')
 const autoFaucet = require('./auto-faucet')
 const configManager = require('./config-manager-singleton')
 const messageManager = require('./message-manager')
@@ -181,13 +183,13 @@ IdentityStore.prototype.exportAccount = function(address, cb) {
 //
 
 // comes from dapp via zero-client hooked-wallet provider
-IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
-
+IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, onTxDoneCb, cb){
+  var self = this
   // create txData obj with parameters and meta data
   var time = (new Date()).getTime()
   var txId = createId()
   txParams.metamaskId = txId
-  txParams.metamaskNetworkId = this._currentState.network
+  txParams.metamaskNetworkId = self._currentState.network
   var txData = {
     id: txId,
     txParams: txParams,
@@ -197,14 +199,38 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, cb){
   configManager.addTx(txData)
   console.log('addUnconfirmedTransaction:', txData)
 
-  // keep the cb around for after approval (requires user interaction)
-  // This cb fires completion to the Dapp's write operation.
-  this._unconfTxCbs[txId] = cb
+  // keep the onTxDoneCb around for after approval/denial (requires user interaction)
+  // This onTxDoneCb fires completion to the Dapp's write operation.
+  self._unconfTxCbs[txId] = onTxDoneCb
 
-  // signal update
-  this._didUpdate()
+  // perform static analyis on the target contract code
+  var provider = self._ethStore._query.currentProvider
+  if (txParams.to) {
+    provider.sendAsync({ id: 1, method: 'eth_getCode', params: [txParams.to, 'latest'] }, function(err, res){
+      if (err) return didComplete(err)
+      if (res.error) return didComplete(res.error)
+      var code = ethUtil.toBuffer(res.result)
+      if (code !== '0x') {
+        var ops = ethBinToOps(code)
+        var containsDelegateCall = ops.some((op)=>op.name === 'DELEGATECALL')
+        txData.containsDelegateCall = containsDelegateCall
+        didComplete()
+      } else {
+        didComplete()
+      }
+    })
+  } else {
+    didComplete()
+  }
 
-  return txId
+  function didComplete(err){
+    if (err) return cb(err)
+    // signal update
+    self._didUpdate()
+    // signal completion of add tx
+    cb(null, txData)
+  }
+
 }
 
 // comes from metamask ui
