@@ -12,6 +12,8 @@ var actions = {
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
   // intialize screen
+  AGREE_TO_DISCLAIMER: 'AGREE_TO_DISCLAIMER',
+  agreeToDisclaimer: agreeToDisclaimer,
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
@@ -310,6 +312,18 @@ function showRestoreVault() {
 function showInitializeMenu() {
   return {
     type: actions.SHOW_INIT_MENU,
+  }
+}
+
+function agreeToDisclaimer() {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    _accountManager.agreeToDisclaimer((err) => {
+      dispatch(this.hideLoadingIndication())
+      dispatch({
+        type: this.AGREE_TO_DISCLAIMER,
+      })
+    })
   }
 }
 
