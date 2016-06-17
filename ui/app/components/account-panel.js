@@ -4,6 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const formatBalance = require('../util').formatBalance
 const Identicon = require('./identicon')
+const addressSummary = require('../util').addressSummary
 
 const Panel = require('./panel')
 
@@ -36,7 +37,7 @@ AccountPanel.prototype.render = function() {
     attributes: [
       {
         key: 'ADDRESS',
-        value: identity.address,
+        value: addressSummary(identity.address),
       },
       balanceOrFaucetingIndication(account, isFauceting),
     ]
