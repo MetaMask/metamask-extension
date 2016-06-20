@@ -25,10 +25,24 @@ describe('util', function() {
     })
   })
   describe('parseBalance', function() {
-    it('should render 0.01 eth correctly', function() {
+    it('should render 12.023 eth correctly', function() {
       const input = 'A6DA46CCA6858000'
       const output = util.parseBalance(input)
       assert.deepEqual(output, ['12', '023'])
+    })
+  })
+  describe('parseBalance', function() {
+    it('should render 0.0000000342422 eth correctly', function() {
+      const input = '0x7F8FE81C0'
+      const output = util.parseBalance(input)
+      assert.deepEqual(output, ['0', '0000000342422'])
+    })
+  })
+  describe('parseBalance', function() {
+    it('should render 0 eth correctly', function() {
+      const input = '0x0'
+      const output = util.parseBalance(input)
+      assert.deepEqual(output, ['0', '0'])
     })
   })
 
