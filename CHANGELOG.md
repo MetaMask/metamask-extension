@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.4.0 2016-06-20
+
 - Clean up UI.
 - Remove nonfunctional QR code button.
 - Make network loading indicator clickable to select accessible network.
