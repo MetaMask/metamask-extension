@@ -10,8 +10,7 @@ const AccountPanel = require('./account-panel')
 
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
-
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const pendingTxs = valuesFor(state.metamask.unconfTxs)
   const pendingMsgs = valuesFor(state.metamask.unconfMsgs)
   const pending = pendingTxs.concat(pendingMsgs)
@@ -28,12 +27,11 @@ function mapStateToProps(state) {
 }
 
 inherits(AccountsScreen, Component)
-function AccountsScreen() {
+function AccountsScreen () {
   Component.call(this)
 }
 
-
-AccountsScreen.prototype.render = function() {
+AccountsScreen.prototype.render = function () {
   var state = this.props
   var identityList = valuesFor(state.identities)
   var unconfTxList = valuesFor(state.unconfTxs)
@@ -63,48 +61,48 @@ AccountsScreen.prototype.render = function() {
           height: '418px',
           overflowY: 'auto',
           overflowX: 'hidden',
-        }
+        },
       },
-      [
-        identityList.map((identity) => {
-          const pending = this.props.pending.filter((txOrMsg) => {
-            if ('txParams' in txOrMsg) {
-              return txOrMsg.txParams.from === identity.address
-            } else if ('msgParams' in txOrMsg) {
-              return txOrMsg.msgParams.from === identity.address
-            } else {
-              return false
-            }
-          })
+        [
+          identityList.map((identity) => {
+            const pending = this.props.pending.filter((txOrMsg) => {
+              if ('txParams' in txOrMsg) {
+                return txOrMsg.txParams.from === identity.address
+              } else if ('msgParams' in txOrMsg) {
+                return txOrMsg.msgParams.from === identity.address
+              } else {
+                return false
+              }
+            })
 
-          return h(AccountPanel, {
-            key: `acct-panel-${identity.address}`,
-            identity,
-            selectedAddress: this.props.selectedAddress,
-            accounts: this.props.accounts,
-            onShowDetail: this.onShowDetail.bind(this),
-            pending,
-          })
-        }),
+            return h(AccountPanel, {
+              key: `acct-panel-${identity.address}`,
+              identity,
+              selectedAddress: this.props.selectedAddress,
+              accounts: this.props.accounts,
+              onShowDetail: this.onShowDetail.bind(this),
+              pending,
+            })
+          }),
 
-        h('hr.horizontal-line', {key: 'horizontal-line1'}),
-        h('div.footer.hover-white.pointer', {
-          key: 'reveal-account-bar',
-          onClick:() => {
-            actions.revealAccount()
-          },
-          style: {
-            display: 'flex',
-            flex: '1 0 auto',
-            height: '40px',
-            paddint: '10px',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }
-        }, [
-          h('i.fa.fa-plus.fa-lg', {key: ''}),
+          h('hr.horizontal-line', {key: 'horizontal-line1'}),
+          h('div.footer.hover-white.pointer', {
+            key: 'reveal-account-bar',
+            onClick: () => {
+              actions.revealAccount()
+            },
+            style: {
+              display: 'flex',
+              flex: '1 0 auto',
+              height: '40px',
+              paddint: '10px',
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          }, [
+            h('i.fa.fa-plus.fa-lg', {key: ''}),
+          ]),
         ]),
-      ]),
 
       unconfTxList.length ? (
 
@@ -123,7 +121,7 @@ AccountsScreen.prototype.render = function() {
 }
 
 // If a new account was revealed, scroll to the bottom
-AccountsScreen.prototype.componentDidUpdate = function(){
+AccountsScreen.prototype.componentDidUpdate = function () {
   const scrollToBottom = this.props.scrollToBottom
 
   if (scrollToBottom) {
@@ -133,27 +131,27 @@ AccountsScreen.prototype.componentDidUpdate = function(){
   }
 }
 
-AccountsScreen.prototype.navigateToConfTx = function(){
+AccountsScreen.prototype.navigateToConfTx = function () {
   event.stopPropagation()
   this.props.dispatch(actions.showConfTxPage())
 }
 
-AccountsScreen.prototype.onSelect = function(address, event){
+AccountsScreen.prototype.onSelect = function (address, event) {
   event.stopPropagation()
   // if already selected, deselect
   if (this.props.selectedAddress === address) address = null
   this.props.dispatch(actions.setSelectedAddress(address))
 }
 
-AccountsScreen.prototype.onShowDetail = function(address, event){
+AccountsScreen.prototype.onShowDetail = function (address, event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountDetail(address))
 }
 
-AccountsScreen.prototype.onRevealAccount = function() {
+AccountsScreen.prototype.onRevealAccount = function () {
   this.props.dispatch(actions.revealAccount())
 }
 
-AccountsScreen.prototype.goHome = function() {
+AccountsScreen.prototype.goHome = function () {
   this.props.dispatch(actions.goHome())
 }

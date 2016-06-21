@@ -12,13 +12,12 @@ const TransactionIcon = require('./transaction-list-item-icon')
 
 module.exports = TransactionListItem
 
-
 inherits(TransactionListItem, Component)
-function TransactionListItem() {
+function TransactionListItem () {
   Component.call(this)
 }
 
-TransactionListItem.prototype.render = function() {
+TransactionListItem.prototype.render = function () {
   const { transaction, i, network } = this.props
 
   var date = formatDate(transaction.time)
@@ -76,24 +75,24 @@ TransactionListItem.prototype.render = function() {
   )
 }
 
-function domainField(txParams) {
+function domainField (txParams) {
   return h('div', {
     style: {
       fontSize: 'small',
       color: '#ABA9AA',
     },
-  },[
+  }, [
     txParams.origin,
   ])
 }
 
-function recipientField(txParams, transaction, isTx, isMsg) {
+function recipientField (txParams, transaction, isTx, isMsg) {
   let message
 
   if (isMsg) {
     message = 'Signature Requested'
   } else if (txParams.to) {
-    message =  addressSummary(txParams.to)
+    message = addressSummary(txParams.to)
   } else {
     message = 'Contract Published'
   }
@@ -103,23 +102,22 @@ function recipientField(txParams, transaction, isTx, isMsg) {
       fontSize: 'small',
       color: '#ABA9AA',
     },
-  },[
+  }, [
     message,
     failIfFailed(transaction),
   ])
-
 }
 
-TransactionListItem.prototype.renderMessage = function() {
+TransactionListItem.prototype.renderMessage = function () {
   const { transaction, i, network } = this.props
   return h('div', 'wowie, thats a message')
 }
 
-function formatDate(date){
+function formatDate (date) {
   return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
 
-function failIfFailed(transaction) {
+function failIfFailed (transaction) {
   if (transaction.status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }

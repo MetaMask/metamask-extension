@@ -8,17 +8,16 @@ const path = require('path')
 const disclaimer = fs.readFileSync(path.join(__dirname, 'disclaimer.txt')).toString()
 module.exports = connect(mapStateToProps)(DisclaimerScreen)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {}
 }
 
 inherits(DisclaimerScreen, Component)
-function DisclaimerScreen() {
+function DisclaimerScreen () {
   Component.call(this)
 }
 
-DisclaimerScreen.prototype.render = function() {
-
+DisclaimerScreen.prototype.render = function () {
   return (
     h('.flex-column.flex-center.flex-grow', [
 
@@ -43,13 +42,13 @@ DisclaimerScreen.prototype.render = function() {
           padding: '6px',
           width: '80%',
           overflowY: 'scroll',
-        }
+        },
       }, disclaimer),
 
       h('button', {
         style: { marginTop: '18px' },
-        onClick: () => this.props.dispatch(actions.agreeToDisclaimer())
-      }, 'I Agree')
+        onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
+      }, 'I Agree'),
     ])
   )
 }

@@ -10,13 +10,12 @@ const Panel = require('./panel')
 
 module.exports = AccountPanel
 
-
 inherits(AccountPanel, Component)
-function AccountPanel() {
+function AccountPanel () {
   Component.call(this)
 }
 
-AccountPanel.prototype.render = function() {
+AccountPanel.prototype.render = function () {
   var state = this.props
   var identity = state.identity || {}
   var account = state.account || {}
@@ -40,21 +39,19 @@ AccountPanel.prototype.render = function() {
         value: addressSummary(identity.address),
       },
       balanceOrFaucetingIndication(account, isFauceting),
-    ]
+    ],
   }
 
   return h(Panel, panelOpts,
   !state.onShowDetail ? null : h('.arrow-right.cursor-pointer', [
     h('i.fa.fa-chevron-right.fa-lg'),
   ]))
-
 }
 
-function balanceOrFaucetingIndication(account, isFauceting) {
-
+function balanceOrFaucetingIndication (account, isFauceting) {
   // Temporarily deactivating isFauceting indication
   // because it shows fauceting for empty restored accounts.
-  if (/*isFauceting*/ false) {
+  if (/* isFauceting*/ false) {
     return {
       key: 'Account is auto-funding.',
       value: 'Please wait.',
@@ -62,7 +59,7 @@ function balanceOrFaucetingIndication(account, isFauceting) {
   } else {
     return {
       key: 'BALANCE',
-      value: formatBalance(account.balance)
+      value: formatBalance(account.balance),
     }
   }
 }

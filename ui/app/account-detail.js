@@ -17,7 +17,7 @@ const EditableLabel = require('./components/editable-label')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
@@ -31,11 +31,11 @@ function mapStateToProps(state) {
 }
 
 inherits(AccountDetailScreen, Component)
-function AccountDetailScreen() {
+function AccountDetailScreen () {
   Component.call(this)
 }
 
-AccountDetailScreen.prototype.render = function() {
+AccountDetailScreen.prototype.render = function () {
   var props = this.props
   var selected = props.address || Object.keys(props.accounts)[0]
   var identity = props.identities[selected]
@@ -88,7 +88,7 @@ AccountDetailScreen.prototype.render = function() {
           style: {
             height: '62px',
             paddingTop: '8px',
-          }
+          },
         }, [
           h(EditableLabel, {
             textValue: identity ? identity.name : '',
@@ -101,7 +101,7 @@ AccountDetailScreen.prototype.render = function() {
           }, [
 
             // What is shown when not editing + edit text:
-            h('label.editing-label',[h('.edit-text','edit')]),
+            h('label.editing-label', [h('.edit-text', 'edit')]),
             h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
           ]),
         ]),
@@ -124,7 +124,7 @@ AccountDetailScreen.prototype.render = function() {
           h('img.cursor-pointer.color-orange', {
             src: 'images/copy.svg',
             onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
-            style:{
+            style: {
               margin: '0px 5px',
             },
           }),
@@ -132,7 +132,7 @@ AccountDetailScreen.prototype.render = function() {
           h('img.cursor-pointer.color-orange', {
             src: 'images/download.svg',
             onClick: () => this.requestAccountExport(selected),
-            style:{
+            style: {
               margin: '0px 5px',
             },
           }),
@@ -174,7 +174,7 @@ AccountDetailScreen.prototype.render = function() {
   )
 }
 
-AccountDetailScreen.prototype.subview = function() {
+AccountDetailScreen.prototype.subview = function () {
   var subview
   try {
     subview = this.props.accountDetail.subview
@@ -193,7 +193,7 @@ AccountDetailScreen.prototype.subview = function() {
   }
 }
 
-AccountDetailScreen.prototype.transactionList = function() {
+AccountDetailScreen.prototype.transactionList = function () {
   const { transactions, unconfTxs, unconfMsgs, address, network } = this.props
 
   var txsToRender = transactions
@@ -209,18 +209,18 @@ AccountDetailScreen.prototype.transactionList = function() {
     network,
     unconfTxs,
     unconfMsgs,
-    viewPendingTx:(txId) => {
+    viewPendingTx: (txId) => {
       this.props.dispatch(actions.viewPendingTx(txId))
-    }
+    },
   })
 }
 
-AccountDetailScreen.prototype.navigateToAccounts = function(event){
+AccountDetailScreen.prototype.navigateToAccounts = function (event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountsPage())
 }
 
-AccountDetailScreen.prototype.requestAccountExport = function() {
+AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
 

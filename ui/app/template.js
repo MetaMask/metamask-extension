@@ -6,25 +6,25 @@ const actions = require('./actions')
 
 module.exports = connect(mapStateToProps)(COMPONENTNAME)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {}
 }
 
 inherits(COMPONENTNAME, Component)
-function COMPONENTNAME() {
+function COMPONENTNAME () {
   Component.call(this)
 }
 
-COMPONENTNAME.prototype.render = function() {
+COMPONENTNAME.prototype.render = function () {
   const props = this.props
 
   return (
     h('div', {
       style: {
         background: 'blue',
-      }
+      },
     }, [
-      'Hello, world!'
+      'Hello, world!',
     ])
   )
 }

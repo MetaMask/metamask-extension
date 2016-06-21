@@ -10,18 +10,17 @@ const dataSize = require('../util').dataSize
 
 module.exports = PendingMsg
 
-
 inherits(PendingMsg, Component)
-function PendingMsg() {
+function PendingMsg () {
   Component.call(this)
 }
 
-PendingMsg.prototype.render = function() {
+PendingMsg.prototype.render = function () {
   var state = this.props
   var msgData = state.txData
 
   var msgParams = msgData.msgParams || {}
-  var address =  msgParams.from || state.selectedAddress
+  var address = msgParams.from || state.selectedAddress
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
@@ -34,7 +33,7 @@ PendingMsg.prototype.render = function() {
         style: {
           fontWeight: 'bold',
           textAlign: 'center',
-        }
+        },
       }, 'Sign Message'),
 
       // account that will sign

@@ -3,10 +3,9 @@ const inherits = require('util').inherits
 
 module.exports = PortDuplexStream
 
-
 inherits(PortDuplexStream, Duplex)
 
-function PortDuplexStream(port){
+function PortDuplexStream (port) {
   Duplex.call(this, {
     objectMode: true,
   })
@@ -17,7 +16,7 @@ function PortDuplexStream(port){
 
 // private
 
-PortDuplexStream.prototype._onMessage = function(msg){
+PortDuplexStream.prototype._onMessage = function (msg) {
   if (Buffer.isBuffer(msg)) {
     delete msg._isBuffer
     var data = new Buffer(msg)
@@ -29,11 +28,11 @@ PortDuplexStream.prototype._onMessage = function(msg){
   }
 }
 
-PortDuplexStream.prototype._onDisconnect = function(){
+PortDuplexStream.prototype._onDisconnect = function () {
   try {
     // this.end()
     this.emit('close')
-  } catch(err){
+  } catch (err) {
     this.emit('error', err)
   }
 }
@@ -42,7 +41,7 @@ PortDuplexStream.prototype._onDisconnect = function(){
 
 PortDuplexStream.prototype._read = noop
 
-PortDuplexStream.prototype._write = function(msg, encoding, cb){
+PortDuplexStream.prototype._write = function (msg, encoding, cb) {
   try {
     if (Buffer.isBuffer(msg)) {
       var data = msg.toJSON()
@@ -54,7 +53,7 @@ PortDuplexStream.prototype._write = function(msg, encoding, cb){
       this._port.postMessage(msg)
     }
     cb()
-  } catch(err){
+  } catch (err) {
     console.error(err)
     // this.emit('error', err)
     cb(new Error('PortDuplexStream - disconnected'))
@@ -63,4 +62,4 @@ PortDuplexStream.prototype._write = function(msg, encoding, cb){
 
 // util
 
-function noop(){}
+function noop () {}

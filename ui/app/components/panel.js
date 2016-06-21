@@ -6,13 +6,12 @@ const Identicon = require('./identicon')
 
 module.exports = Panel
 
-
 inherits(Panel, Component)
-function Panel() {
+function Panel () {
   Component.call(this)
 }
 
-Panel.prototype.render = function() {
+Panel.prototype.render = function () {
   var state = this.props
 
   var identity = state.identity || {}

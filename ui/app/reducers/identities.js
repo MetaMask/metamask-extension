@@ -3,8 +3,7 @@ const actions = require('../actions')
 
 module.exports = reduceIdentities
 
-function reduceIdentities(state, action) {
-
+function reduceIdentities (state, action) {
   // clone + defaults
   var idState = extend({
 
@@ -14,5 +13,4 @@ function reduceIdentities(state, action) {
     default:
       return idState
   }
-
 }

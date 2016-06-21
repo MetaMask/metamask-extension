@@ -7,11 +7,11 @@ const formatBalance = require('../util').formatBalance
 module.exports = EthBalanceComponent
 
 inherits(EthBalanceComponent, Component)
-function EthBalanceComponent() {
+function EthBalanceComponent () {
   Component.call(this)
 }
 
-EthBalanceComponent.prototype.render = function() {
+EthBalanceComponent.prototype.render = function () {
   var state = this.props
   var style = state.style
   var value = formatBalance(state.value)

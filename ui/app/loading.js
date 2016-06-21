@@ -7,18 +7,18 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 module.exports = connect(mapStateToProps)(LoadingIndicator)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     isLoading: state.appState.isLoading,
   }
 }
 
 inherits(LoadingIndicator, Component)
-function LoadingIndicator() {
+function LoadingIndicator () {
   Component.call(this)
 }
 
-LoadingIndicator.prototype.render = function() {
+LoadingIndicator.prototype.render = function () {
   var isLoading = this.props.isLoading
 
   return (
@@ -38,7 +38,7 @@ LoadingIndicator.prototype.render = function() {
           height: '100%',
           width: '100%',
           background: 'rgba(255, 255, 255, 0.5)',
-        }
+        },
       }, [
         h('img', {
           src: 'images/loading.svg',

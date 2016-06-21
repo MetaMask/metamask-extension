@@ -7,19 +7,18 @@ const actions = require('../actions')
 
 module.exports = connect(mapStateToProps)(CreateVaultScreen)
 
-
 inherits(CreateVaultScreen, Component)
-function CreateVaultScreen() {
+function CreateVaultScreen () {
   Component.call(this)
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
   }
 }
 
-CreateVaultScreen.prototype.render = function() {
+CreateVaultScreen.prototype.render = function () {
   var state = this.props
   return (
 
@@ -91,24 +90,24 @@ CreateVaultScreen.prototype.render = function() {
   )
 }
 
-CreateVaultScreen.prototype.componentDidMount = function(){
+CreateVaultScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
-CreateVaultScreen.prototype.showInitializeMenu = function() {
+CreateVaultScreen.prototype.showInitializeMenu = function () {
   this.props.dispatch(actions.showInitializeMenu())
 }
 
 // create vault
 
-CreateVaultScreen.prototype.createVaultOnEnter = function(event) {
+CreateVaultScreen.prototype.createVaultOnEnter = function (event) {
   if (event.key === 'Enter') {
     event.preventDefault()
     this.createNewVault()
   }
 }
 
-CreateVaultScreen.prototype.createNewVault = function(){
+CreateVaultScreen.prototype.createNewVault = function () {
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value
   var passwordConfirmBox = document.getElementById('password-box-confirm')
@@ -126,5 +125,5 @@ CreateVaultScreen.prototype.createNewVault = function(){
     return
   }
 
-  this.props.dispatch(actions.createNewVault(password, ''/*entropy*/))
+  this.props.dispatch(actions.createNewVault(password, ''/* entropy*/))
 }

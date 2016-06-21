@@ -7,13 +7,12 @@ const MetamaskConfig = require('../config.js')
 
 module.exports = MetamaskInpageProvider
 
-
-function MetamaskInpageProvider(connectionStream){
+function MetamaskInpageProvider (connectionStream) {
   const self = this
 
-  // setup connectionStream multiplexing 
+  // setup connectionStream multiplexing
   var multiStream = ObjectMultiplex()
-  Streams.pipe(connectionStream, multiStream, connectionStream, function(err){
+  Streams.pipe(connectionStream, multiStream, connectionStream, function (err) {
     console.warn('MetamaskInpageProvider - lost connection to MetaMask')
     if (err) throw err
   })
@@ -22,7 +21,7 @@ function MetamaskInpageProvider(connectionStream){
   // subscribe to metamask public config
   var publicConfigStore = remoteStoreWithLocalStorageCache('MetaMask-Config')
   var storeStream = publicConfigStore.createStream()
-  Streams.pipe(storeStream, multiStream.createStream('publicConfig'), storeStream, function(err){
+  Streams.pipe(storeStream, multiStream.createStream('publicConfig'), storeStream, function (err) {
     console.warn('MetamaskInpageProvider - lost connection to MetaMask publicConfig')
     if (err) throw err
   })
@@ -31,13 +30,13 @@ function MetamaskInpageProvider(connectionStream){
   // connect to sync provider
   self.syncProvider = createSyncProvider(publicConfigStore.get('provider'))
   // subscribe to publicConfig to update the syncProvider on change
-  publicConfigStore.subscribe(function(state){
+  publicConfigStore.subscribe(function (state) {
     self.syncProvider = createSyncProvider(state.provider)
   })
 
   // connect to async provider
   var asyncProvider = new StreamProvider()
-  Streams.pipe(asyncProvider, multiStream.createStream('provider'), asyncProvider, function(err){
+  Streams.pipe(asyncProvider, multiStream.createStream('provider'), asyncProvider, function (err) {
     console.warn('MetamaskInpageProvider - lost connection to MetaMask provider')
     if (err) throw err
   })
@@ -47,7 +46,7 @@ function MetamaskInpageProvider(connectionStream){
   self.sendAsync = asyncProvider.sendAsync.bind(asyncProvider)
 }
 
-MetamaskInpageProvider.prototype.send = function(payload){
+MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
 
   var result = null
@@ -79,24 +78,24 @@ MetamaskInpageProvider.prototype.send = function(payload){
   }
 }
 
-MetamaskInpageProvider.prototype.sendAsync = function(){
+MetamaskInpageProvider.prototype.sendAsync = function () {
   throw new Error('MetamaskInpageProvider - sendAsync not overwritten')
 }
 
-MetamaskInpageProvider.prototype.isConnected = function(){
+MetamaskInpageProvider.prototype.isConnected = function () {
   return true
 }
 
 // util
 
-function createSyncProvider(providerConfig){
+function createSyncProvider (providerConfig) {
   providerConfig = providerConfig || {}
   var syncProviderUrl = undefined
 
   if (providerConfig.rpcTarget) {
     syncProviderUrl = providerConfig.rpcTarget
   } else {
-    switch(providerConfig.type) {
+    switch (providerConfig.type) {
       case 'testnet':
         syncProviderUrl = MetamaskConfig.network.testnet
         break
@@ -110,12 +109,12 @@ function createSyncProvider(providerConfig){
   return new HttpProvider(syncProviderUrl)
 }
 
-function remoteStoreWithLocalStorageCache(storageKey){
+function remoteStoreWithLocalStorageCache (storageKey) {
   // read local cache
   var initState = JSON.parse(localStorage[storageKey] || '{}')
   var store = new RemoteStore(initState)
   // cache the latest state locally
-  store.subscribe(function(state){
+  store.subscribe(function (state) {
     localStorage[storageKey] = JSON.stringify(state)
   })
 

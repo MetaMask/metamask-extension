@@ -4,13 +4,12 @@ const inherits = require('util').inherits
 
 module.exports = NewComponent
 
-
 inherits(NewComponent, Component)
-function NewComponent() {
+function NewComponent () {
   Component.call(this)
 }
 
-NewComponent.prototype.render = function() {
+NewComponent.prototype.render = function () {
   var state = this.props
 
   return (

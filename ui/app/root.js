@@ -7,17 +7,16 @@ const App = require('./app')
 
 module.exports = Root
 
-
 inherits(Root, Component)
-function Root() { Component.call(this) }
+function Root () { Component.call(this) }
 
-Root.prototype.render = function() {
+Root.prototype.render = function () {
   return (
-    
+
     h(Provider, {
       store: this.props.store,
     }, [
-      h(App)
+      h(App),
     ])
 
   )

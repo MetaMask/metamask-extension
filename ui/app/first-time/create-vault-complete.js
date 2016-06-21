@@ -6,20 +6,19 @@ const actions = require('../actions')
 
 module.exports = connect(mapStateToProps)(CreateVaultCompleteScreen)
 
-
 inherits(CreateVaultCompleteScreen, Component)
-function CreateVaultCompleteScreen() {
+function CreateVaultCompleteScreen () {
   Component.call(this)
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     seed: state.appState.currentView.seedWords,
     cachedSeed: state.metamask.seedWords,
   }
 }
 
-CreateVaultCompleteScreen.prototype.render = function() {
+CreateVaultCompleteScreen.prototype.render = function () {
   var state = this.props
   var seed = state.seed || state.cachedSeed
 
@@ -50,7 +49,7 @@ CreateVaultCompleteScreen.prototype.render = function() {
         style: {
           padding: '12px 20px 0px 20px',
           textAlign: 'center',
-        }
+        },
       }, 'These 12 words can restore all of your MetaMask accounts for this vault.\nSave them somewhere safe and secret.'),
 
       h('textarea.twelve-word-phrase', {
@@ -68,7 +67,7 @@ CreateVaultCompleteScreen.prototype.render = function() {
   )
 }
 
-CreateVaultCompleteScreen.prototype.confirmSeedWords = function() {
+CreateVaultCompleteScreen.prototype.confirmSeedWords = function () {
   this.props.dispatch(actions.confirmSeedWords())
 }
 

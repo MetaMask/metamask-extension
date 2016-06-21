@@ -15,12 +15,10 @@ const messageManager = require('./message-manager')
 const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 const IdManagement = require('./id-management')
 
-
 module.exports = IdentityStore
 
-
 inherits(IdentityStore, EventEmitter)
-function IdentityStore(opts = {}) {
+function IdentityStore (opts = {}) {
   EventEmitter.call(this)
 
   // we just use the ethStore to auto-add accounts
@@ -46,7 +44,7 @@ function IdentityStore(opts = {}) {
 // public
 //
 
-IdentityStore.prototype.createNewVault = function(password, entropy, cb){
+IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   delete this._keyStore
   configManager.clearWallet()
   this._createIdmgmt(password, null, entropy, (err) => {
@@ -62,14 +60,14 @@ IdentityStore.prototype.createNewVault = function(password, entropy, cb){
   })
 }
 
-IdentityStore.prototype.recoverSeed = function(cb){
+IdentityStore.prototype.recoverSeed = function (cb) {
   configManager.setShowSeedWords(true)
   if (!this._idmgmt) return cb(new Error('Unauthenticated. Please sign in.'))
   var seedWords = this._idmgmt.getSeed()
   cb(null, seedWords)
 }
 
-IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
+IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
   this._createIdmgmt(password, seed, null, (err) => {
     if (err) return cb(err)
 
@@ -79,16 +77,16 @@ IdentityStore.prototype.recoverFromSeed = function(password, seed, cb){
   })
 }
 
-IdentityStore.prototype.setStore = function(store){
+IdentityStore.prototype.setStore = function (store) {
   this._ethStore = store
 }
 
-IdentityStore.prototype.clearSeedWordCache = function(cb) {
+IdentityStore.prototype.clearSeedWordCache = function (cb) {
   configManager.setShowSeedWords(false)
   cb(null, configManager.getSelectedAccount())
 }
 
-IdentityStore.prototype.getState = function(){
+IdentityStore.prototype.getState = function () {
   var seedWords = this.getSeedIfUnlocked()
   var wallet = configManager.getWallet()
   return clone(extend(this._currentState, {
@@ -104,7 +102,7 @@ IdentityStore.prototype.getState = function(){
   }))
 }
 
-IdentityStore.prototype.getSeedIfUnlocked = function() {
+IdentityStore.prototype.getSeedIfUnlocked = function () {
   var showSeed = configManager.getShouldShowSeedWords()
   var idmgmt = this._idmgmt
   var shouldShow = showSeed && !!idmgmt
@@ -112,11 +110,11 @@ IdentityStore.prototype.getSeedIfUnlocked = function() {
   return seedWords
 }
 
-IdentityStore.prototype.getSelectedAddress = function(){
+IdentityStore.prototype.getSelectedAddress = function () {
   return configManager.getSelectedAccount()
 }
 
-IdentityStore.prototype.setSelectedAddress = function(address, cb){
+IdentityStore.prototype.setSelectedAddress = function (address, cb) {
   if (!address) {
     var addresses = this._getAddresses()
     address = addresses[0]
@@ -126,7 +124,7 @@ IdentityStore.prototype.setSelectedAddress = function(address, cb){
   if (cb) return cb(null, address)
 }
 
-IdentityStore.prototype.revealAccount = function(cb) {
+IdentityStore.prototype.revealAccount = function (cb) {
   let addresses = this._getAddresses()
   const derivedKey = this._idmgmt.derivedKey
   const keyStore = this._keyStore
@@ -141,8 +139,7 @@ IdentityStore.prototype.revealAccount = function(cb) {
   cb(null)
 }
 
-IdentityStore.prototype.getNetwork = function(err) {
-
+IdentityStore.prototype.getNetwork = function (err) {
   if (err) {
     this._currentState.network = 'loading'
     this._didUpdate()
@@ -160,13 +157,13 @@ IdentityStore.prototype.getNetwork = function(err) {
   })
 }
 
-IdentityStore.prototype.setLocked = function(cb){
+IdentityStore.prototype.setLocked = function (cb) {
   delete this._keyStore
   delete this._idmgmt
   cb()
 }
 
-IdentityStore.prototype.submitPassword = function(password, cb){
+IdentityStore.prototype.submitPassword = function (password, cb) {
   this.tryPassword(password, (err) => {
     if (err) return cb(err)
     // load identities before returning...
@@ -175,7 +172,7 @@ IdentityStore.prototype.submitPassword = function(password, cb){
   })
 }
 
-IdentityStore.prototype.exportAccount = function(address, cb) {
+IdentityStore.prototype.exportAccount = function (address, cb) {
   var privateKey = this._idmgmt.exportPrivateKey(address)
   cb(null, privateKey)
 }
@@ -185,7 +182,7 @@ IdentityStore.prototype.exportAccount = function(address, cb) {
 //
 
 // comes from dapp via zero-client hooked-wallet provider
-IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, onTxDoneCb, cb){
+IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDoneCb, cb) {
   var self = this
   // create txData obj with parameters and meta data
   var time = (new Date()).getTime()
@@ -208,13 +205,13 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, onTxDoneC
   // perform static analyis on the target contract code
   var provider = self._ethStore._query.currentProvider
   if (txParams.to) {
-    provider.sendAsync({ id: 1, method: 'eth_getCode', params: [txParams.to, 'latest'] }, function(err, res){
+    provider.sendAsync({ id: 1, method: 'eth_getCode', params: [txParams.to, 'latest'] }, function (err, res) {
       if (err) return didComplete(err)
       if (res.error) return didComplete(res.error)
       var code = ethUtil.toBuffer(res.result)
       if (code !== '0x') {
         var ops = ethBinToOps(code)
-        var containsDelegateCall = ops.some((op)=>op.name === 'DELEGATECALL')
+        var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
         txData.containsDelegateCall = containsDelegateCall
         didComplete()
       } else {
@@ -225,18 +222,17 @@ IdentityStore.prototype.addUnconfirmedTransaction = function(txParams, onTxDoneC
     didComplete()
   }
 
-  function didComplete(err){
+  function didComplete (err) {
     if (err) return cb(err)
     // signal update
     self._didUpdate()
     // signal completion of add tx
     cb(null, txData)
   }
-
 }
 
 // comes from metamask ui
-IdentityStore.prototype.approveTransaction = function(txId, cb){
+IdentityStore.prototype.approveTransaction = function (txId, cb) {
   var txData = configManager.getTx(txId)
   var approvalCb = this._unconfTxCbs[txId] || noop
 
@@ -250,7 +246,7 @@ IdentityStore.prototype.approveTransaction = function(txId, cb){
 }
 
 // comes from metamask ui
-IdentityStore.prototype.cancelTransaction = function(txId){
+IdentityStore.prototype.cancelTransaction = function (txId) {
   var txData = configManager.getTx(txId)
   var approvalCb = this._unconfTxCbs[txId] || noop
 
@@ -263,7 +259,7 @@ IdentityStore.prototype.cancelTransaction = function(txId){
 }
 
 // performs the actual signing, no autofill of params
-IdentityStore.prototype.signTransaction = function(txParams, cb){
+IdentityStore.prototype.signTransaction = function (txParams, cb) {
   try {
     console.log('signing tx...', txParams)
     var rawTx = this._idmgmt.signTx(txParams)
@@ -278,8 +274,7 @@ IdentityStore.prototype.signTransaction = function(txParams, cb){
 //
 
 // comes from dapp via zero-client hooked-wallet provider
-IdentityStore.prototype.addUnconfirmedMessage = function(msgParams, cb){
-
+IdentityStore.prototype.addUnconfirmedMessage = function (msgParams, cb) {
   // create txData obj with parameters and meta data
   var time = (new Date()).getTime()
   var msgId = createId()
@@ -303,7 +298,7 @@ IdentityStore.prototype.addUnconfirmedMessage = function(msgParams, cb){
 }
 
 // comes from metamask ui
-IdentityStore.prototype.approveMessage = function(msgId, cb){
+IdentityStore.prototype.approveMessage = function (msgId, cb) {
   var msgData = messageManager.getMsg(msgId)
   var approvalCb = this._unconfMsgCbs[msgId] || noop
 
@@ -317,7 +312,7 @@ IdentityStore.prototype.approveMessage = function(msgId, cb){
 }
 
 // comes from metamask ui
-IdentityStore.prototype.cancelMessage = function(msgId){
+IdentityStore.prototype.cancelMessage = function (msgId) {
   var txData = messageManager.getMsg(msgId)
   var approvalCb = this._unconfMsgCbs[msgId] || noop
 
@@ -330,7 +325,7 @@ IdentityStore.prototype.cancelMessage = function(msgId){
 }
 
 // performs the actual signing, no autofill of params
-IdentityStore.prototype.signMessage = function(msgParams, cb){
+IdentityStore.prototype.signMessage = function (msgParams, cb) {
   try {
     console.log('signing msg...', msgParams.data)
     var rawMsg = this._idmgmt.signMsg(msgParams.from, msgParams.data)
@@ -351,17 +346,17 @@ IdentityStore.prototype.signMessage = function(msgParams, cb){
 // private
 //
 
-IdentityStore.prototype._didUpdate = function(){
+IdentityStore.prototype._didUpdate = function () {
   this.emit('update', this.getState())
 }
 
-IdentityStore.prototype._isUnlocked = function(){
+IdentityStore.prototype._isUnlocked = function () {
   var result = Boolean(this._keyStore) && Boolean(this._idmgmt)
   return result
 }
 
 // load identities from keyStoreet
-IdentityStore.prototype._loadIdentities = function(){
+IdentityStore.prototype._loadIdentities = function () {
   if (!this._isUnlocked()) throw new Error('not unlocked')
 
   var addresses = this._getAddresses()
@@ -369,7 +364,7 @@ IdentityStore.prototype._loadIdentities = function(){
     // // add to ethStore
     this._ethStore.addAccount(address)
     // add to identities
-    const defaultLabel = 'Wallet ' + (i+1)
+    const defaultLabel = 'Wallet ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)
     var identity = {
       name: nickname || defaultLabel,
@@ -381,7 +376,7 @@ IdentityStore.prototype._loadIdentities = function(){
   this._didUpdate()
 }
 
-IdentityStore.prototype.saveAccountLabel = function(account, label, cb) {
+IdentityStore.prototype.saveAccountLabel = function (account, label, cb) {
   configManager.setNicknameForWallet(account, label)
   this._loadIdentities()
   cb(null, label)
@@ -393,7 +388,7 @@ IdentityStore.prototype.saveAccountLabel = function(account, label, cb) {
 // The UI will have to check the balance to know.
 // If there is no balance and it mayBeFauceting,
 // then it is in fact fauceting.
-IdentityStore.prototype._mayBeFauceting = function(i) {
+IdentityStore.prototype._mayBeFauceting = function (i) {
   var config = configManager.getProvider()
   if (i === 0 &&
       config.type === 'rpc' &&
@@ -407,11 +402,11 @@ IdentityStore.prototype._mayBeFauceting = function(i) {
 // keyStore managment - unlocking + deserialization
 //
 
-IdentityStore.prototype.tryPassword = function(password, cb){
+IdentityStore.prototype.tryPassword = function (password, cb) {
   this._createIdmgmt(password, null, null, cb)
 }
 
-IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
+IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
@@ -446,9 +441,9 @@ IdentityStore.prototype._createIdmgmt = function(password, seed, entropy, cb){
   })
 }
 
-IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) {
+IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey) {
   var keyStore = new LightwalletKeyStore(seed, derivedKey, this.hdPathString)
-  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'});
+  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
   keyStore.generateNewAddress(derivedKey, 3)
@@ -457,10 +452,10 @@ IdentityStore.prototype._restoreFromSeed = function(password, seed, derivedKey) 
   return keyStore
 }
 
-IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
+IdentityStore.prototype._createFirstWallet = function (entropy, derivedKey) {
   var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
   var keyStore = new LightwalletKeyStore(secretSeed, derivedKey, this.hdPathString)
-  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'});
+  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
   keyStore.generateNewAddress(derivedKey, 3)
@@ -470,15 +465,15 @@ IdentityStore.prototype._createFirstWallet = function(entropy, derivedKey) {
 }
 
 // get addresses and normalize address hexString
-IdentityStore.prototype._getAddresses = function() {
-  return this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x'+address })
+IdentityStore.prototype._getAddresses = function () {
+  return this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x' + address })
 }
 
-IdentityStore.prototype._autoFaucet = function() {
+IdentityStore.prototype._autoFaucet = function () {
   var addresses = this._getAddresses()
   autoFaucet(addresses[0])
 }
 
 // util
 
-function noop(){}
+function noop () {}

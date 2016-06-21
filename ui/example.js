@@ -26,7 +26,7 @@ var identities = {
     address: '0x333462427bcc9133bb46e88bcbe39cd7ef0e7333',
     balance: 0.000001,
     txCount: 1,
-  }
+  },
 }
 
 var unconfTxs = {}
@@ -42,7 +42,7 @@ addUnconfTx({
   data: '0x000462427bcc9133bb46e88bcbe39cd7ef0e7000',
 })
 
-function addUnconfTx(txParams){
+function addUnconfTx (txParams) {
   var time = (new Date()).getTime()
   var id = createRandomId()
   unconfTxs[id] = {
@@ -55,7 +55,7 @@ function addUnconfTx(txParams){
 var isUnlocked = false
 var selectedAddress = null
 
-function getState(){
+function getState () {
   return {
     isUnlocked: isUnlocked,
     identities: isUnlocked ? identities : {},
@@ -66,16 +66,16 @@ function getState(){
 
 var accountManager = new EventEmitter()
 
-accountManager.getState = function(cb){
+accountManager.getState = function (cb) {
   cb(null, getState())
 }
 
-accountManager.setLocked = function(){
+accountManager.setLocked = function () {
   isUnlocked = false
   this._didUpdate()
 }
 
-accountManager.submitPassword = function(password, cb){
+accountManager.submitPassword = function (password, cb) {
   if (password === 'test') {
     isUnlocked = true
     cb(null, getState())
@@ -85,17 +85,17 @@ accountManager.submitPassword = function(password, cb){
   }
 }
 
-accountManager.setSelectedAddress = function(address, cb){
+accountManager.setSelectedAddress = function (address, cb) {
   selectedAddress = address
   cb(null, getState())
   this._didUpdate()
 }
 
-accountManager.signTransaction = function(txParams, cb){
+accountManager.signTransaction = function (txParams, cb) {
   alert('signing tx....')
 }
 
-accountManager._didUpdate = function(){
+accountManager._didUpdate = function () {
   this.emit('update', getState())
 }
 
@@ -108,16 +108,16 @@ injectCss(css)
 
 var app = MetaMaskUi({
   container: container,
-  accountManager: accountManager
+  accountManager: accountManager,
 })
 
 // util
 
-function createRandomId(){
+function createRandomId () {
   // 13 time digits
-  var datePart = new Date().getTime()*Math.pow(10, 3)
+  var datePart = new Date().getTime() * Math.pow(10, 3)
   // 3 random digits
-  var extraPart = Math.floor(Math.random()*Math.pow(10, 3))
+  var extraPart = Math.floor(Math.random() * Math.pow(10, 3))
   // 16 digits
-  return datePart+extraPart
+  return datePart + extraPart
 }

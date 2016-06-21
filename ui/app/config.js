@@ -6,7 +6,7 @@ const actions = require('./actions')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     rpc: state.metamask.rpcTarget,
     metamask: state.metamask,
@@ -14,12 +14,11 @@ function mapStateToProps(state) {
 }
 
 inherits(ConfigScreen, Component)
-function ConfigScreen() {
+function ConfigScreen () {
   Component.call(this)
 }
 
-
-ConfigScreen.prototype.render = function() {
+ConfigScreen.prototype.render = function () {
   var state = this.props
   var rpc = state.rpc
   var metamaskState = state.metamask
@@ -32,7 +31,7 @@ ConfigScreen.prototype.render = function() {
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
             state.dispatch(actions.goHome())
-          }
+          },
         }),
         h('h2.page-subtitle', 'Configuration'),
       ]),
@@ -42,7 +41,7 @@ ConfigScreen.prototype.render = function() {
         h('.flex-space-around', {
           style: {
             padding: '20px',
-          }
+          },
         }, [
 
           currentProviderDisplay(metamaskState),
@@ -56,25 +55,25 @@ ConfigScreen.prototype.render = function() {
                 height: '30px',
                 margin: '8px',
               },
-              onKeyPress(event) {
+              onKeyPress (event) {
                 if (event.key === 'Enter') {
                   var element = event.target
                   var newRpc = element.value
                   state.dispatch(actions.setRpcTarget(newRpc))
                 }
-              }
+              },
             }),
             h('button', {
               style: {
                 alignSelf: 'center',
               },
-              onClick(event) {
+              onClick (event) {
                 event.preventDefault()
                 var element = document.querySelector('input#new_rpc')
                 var newRpc = element.value
                 state.dispatch(actions.setRpcTarget(newRpc))
-              }
-            }, 'Save')
+              },
+            }, 'Save'),
           ]),
 
           h('div', [
@@ -82,10 +81,10 @@ ConfigScreen.prototype.render = function() {
               style: {
                 alignSelf: 'center',
               },
-              onClick(event) {
+              onClick (event) {
                 event.preventDefault()
                 state.dispatch(actions.setProviderType('mainnet'))
-              }
+              },
             }, 'Use Main Network'),
           ]),
 
@@ -94,10 +93,10 @@ ConfigScreen.prototype.render = function() {
               style: {
                 alignSelf: 'center',
               },
-              onClick(event) {
+              onClick (event) {
                 event.preventDefault()
                 state.dispatch(actions.setProviderType('testnet'))
-              }
+              },
             }, 'Use Morden Test Network'),
           ]),
 
@@ -106,10 +105,10 @@ ConfigScreen.prototype.render = function() {
               style: {
                 alignSelf: 'center',
               },
-              onClick(event) {
+              onClick (event) {
                 event.preventDefault()
                 state.dispatch(actions.setRpcTarget('http://localhost:8545/'))
-              }
+              },
             }, 'Use http://localhost:8545'),
           ]),
 
@@ -118,17 +117,17 @@ ConfigScreen.prototype.render = function() {
           h('div', {
             style: {
               marginTop: '20px',
-            }
+            },
           }, [
             h('button', {
               style: {
                 alignSelf: 'center',
               },
-              onClick(event) {
+              onClick (event) {
                 event.preventDefault()
                 state.dispatch(actions.revealSeedConfirmation())
-              }
-            }, 'Reveal Seed Words')
+              },
+            }, 'Reveal Seed Words'),
           ]),
 
         ]),
@@ -137,7 +136,7 @@ ConfigScreen.prototype.render = function() {
   )
 }
 
-function currentProviderDisplay(metamaskState) {
+function currentProviderDisplay (metamaskState) {
   var provider = metamaskState.provider
   var title, value
 
@@ -156,10 +155,10 @@ function currentProviderDisplay(metamaskState) {
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget
- }
+  }
 
   return h('div', [
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
-    h('span', value)
+    h('span', value),
   ])
 }

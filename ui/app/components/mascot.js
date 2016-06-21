@@ -7,9 +7,8 @@ const debounce = require('debounce')
 
 module.exports = Mascot
 
-
 inherits(Mascot, Component)
-function Mascot() {
+function Mascot () {
   Component.call(this)
   this.logo = metamaskLogo({
     followMouse: true,
@@ -22,8 +21,7 @@ function Mascot() {
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
 
-
-Mascot.prototype.render = function() {
+Mascot.prototype.render = function () {
   // this is a bit hacky
   // the event emitter is on `this.props`
   // and we dont get that until render
@@ -36,19 +34,19 @@ Mascot.prototype.render = function() {
   )
 }
 
-Mascot.prototype.componentDidMount = function() {
+Mascot.prototype.componentDidMount = function () {
   if (!this.logo) return
   var targetDivId = 'metamask-mascot-container'
   var container = document.getElementById(targetDivId)
   container.appendChild(this.logo.canvas)
 }
 
-Mascot.prototype.componentWillUnmount = function() {
+Mascot.prototype.componentWillUnmount = function () {
   if (!this.logo) return
   this.logo.canvas.remove()
 }
 
-Mascot.prototype.handleAnimationEvents = function(){
+Mascot.prototype.handleAnimationEvents = function () {
   if (!this.logo) return
   // only setup listeners once
   if (this.animations) return
@@ -57,7 +55,7 @@ Mascot.prototype.handleAnimationEvents = function(){
   this.animations.on('setFollowMouse', this.logo.setFollowMouse.bind(this.logo))
 }
 
-Mascot.prototype.lookAt = function(target){
+Mascot.prototype.lookAt = function (target) {
   if (!this.logo) return
   this.unfollowMouse()
   this.logo.lookAt(target)

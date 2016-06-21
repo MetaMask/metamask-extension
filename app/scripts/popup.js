@@ -19,7 +19,7 @@ async.parallel({
   accountManager: connectToAccountManager,
 }, setupApp)
 
-function connectToAccountManager(cb){
+function connectToAccountManager (cb) {
   // setup communication with background
   var pluginPort = chrome.runtime.connect({name: 'popup'})
   var portStream = new PortStream(pluginPort)
@@ -30,7 +30,7 @@ function connectToAccountManager(cb){
   setupWeb3Connection(mx.createStream('provider'))
 }
 
-function setupWeb3Connection(stream){
+function setupWeb3Connection (stream) {
   var remoteProvider = new StreamProvider()
   remoteProvider.pipe(stream).pipe(remoteProvider)
   stream.on('error', console.error.bind(console))
@@ -38,23 +38,23 @@ function setupWeb3Connection(stream){
   global.web3 = new Web3(remoteProvider)
 }
 
-function setupControllerConnection(stream, cb){
+function setupControllerConnection (stream, cb) {
   var eventEmitter = new EventEmitter()
   var background = Dnode({
-    sendUpdate: function(state){
+    sendUpdate: function (state) {
       eventEmitter.emit('update', state)
     },
   })
   stream.pipe(background).pipe(stream)
-  background.once('remote', function(accountManager){
+  background.once('remote', function (accountManager) {
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)
     cb(null, accountManager)
   })
 }
 
-function getCurrentDomain(cb){
-  chrome.tabs.query({active: true, currentWindow: true}, function(results){
+function getCurrentDomain (cb) {
+  chrome.tabs.query({active: true, currentWindow: true}, function (results) {
     var activeTab = results[0]
     var currentUrl = activeTab && activeTab.url
     var currentDomain = url.parse(currentUrl).host
@@ -65,7 +65,7 @@ function getCurrentDomain(cb){
   })
 }
 
-function setupApp(err, opts){
+function setupApp (err, opts) {
   if (err) {
     alert(err.stack)
     throw err

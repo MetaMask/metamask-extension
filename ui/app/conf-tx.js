@@ -14,7 +14,7 @@ const PendingMsg = require('./components/pending-msg')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
@@ -27,12 +27,11 @@ function mapStateToProps(state) {
 }
 
 inherits(ConfirmTxScreen, Component)
-function ConfirmTxScreen() {
+function ConfirmTxScreen () {
   Component.call(this)
 }
 
-
-ConfirmTxScreen.prototype.render = function() {
+ConfirmTxScreen.prototype.render = function () {
   var state = this.props
 
   var unconfTxs = state.unconfTxs
@@ -103,7 +102,6 @@ ConfirmTxScreen.prototype.render = function() {
 }
 
 function currentTxView (opts) {
-
   if ('txParams' in opts.txData) {
     // This is a pending transaction
     return h(ConfirmTx, opts)
@@ -113,34 +111,34 @@ function currentTxView (opts) {
   }
 }
 
-ConfirmTxScreen.prototype.sendTransaction = function(txData, event){
+ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   event.stopPropagation()
   this.props.dispatch(actions.sendTx(txData))
 }
 
-ConfirmTxScreen.prototype.cancelTransaction = function(txData, event){
+ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   event.stopPropagation()
   this.props.dispatch(actions.cancelTx(txData))
 }
 
-ConfirmTxScreen.prototype.signMessage = function(msgData, event){
+ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   event.stopPropagation()
   this.props.dispatch(actions.signMsg(params))
 }
 
-ConfirmTxScreen.prototype.cancelMessage = function(msgData, event){
+ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
   event.stopPropagation()
   this.props.dispatch(actions.cancelMsg(msgData))
 }
 
-ConfirmTxScreen.prototype.goHome = function(event){
+ConfirmTxScreen.prototype.goHome = function (event) {
   event.stopPropagation()
   this.props.dispatch(actions.goHome())
 }
 
-function warningIfExists(warning) {
+function warningIfExists (warning) {
   if (warning) {
     return h('span.error', { style: { margin: 'auto' } }, warning)
   }

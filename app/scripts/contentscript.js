@@ -2,12 +2,10 @@ const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
 
-
-
 // inject in-page script
 var scriptTag = document.createElement('script')
 scriptTag.src = chrome.extension.getURL('scripts/inpage.js')
-scriptTag.onload = function() { this.parentNode.removeChild(this) }
+scriptTag.onload = function () { this.parentNode.removeChild(this) }
 var container = document.head || document.documentElement
 // append as first child
 container.insertBefore(scriptTag, container.children[0])
@@ -32,7 +30,7 @@ mx.pipe(pageStream)
 var reloadStream = mx.createStream('reload')
 reloadStream.on('error', console.error.bind(console))
 
-// if we lose connection with the plugin, trigger tab refresh 
-pluginStream.on('close', function(){
+// if we lose connection with the plugin, trigger tab refresh
+pluginStream.on('close', function () {
   reloadStream.write({ method: 'reset' })
 })

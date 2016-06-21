@@ -8,11 +8,11 @@ module.exports = TransactionList
 
 
 inherits(TransactionList, Component)
-function TransactionList() {
+function TransactionList () {
   Component.call(this)
 }
 
-TransactionList.prototype.render = function() {
+TransactionList.prototype.render = function () {
   const { txsToRender, network, unconfTxs, unconfMsgs } = this.props
   const transactions = txsToRender.concat(unconfMsgs)
   .sort((a, b) => b.time - a.time)
@@ -53,7 +53,7 @@ TransactionList.prototype.render = function() {
           transactions.map((transaction, i) => {
             return h(TransactionListItem, {
               transaction, i, network,
-              showTx:(txId) => {
+              showTx: (txId) => {
                 this.props.viewPendingTx(txId)
               },
             })
@@ -64,7 +64,7 @@ TransactionList.prototype.render = function() {
               height: '100%',
             },
           }, 'No transaction history...')]
-      ))
+      )),
     ])
   )
 }
