@@ -130,10 +130,15 @@ AccountDetailScreen.prototype.render = function() {
           }),
 
           h('img.cursor-pointer.color-orange', {
-            src: 'images/download.svg',
+            src: 'images/key-32.png',
             onClick: () => this.requestAccountExport(selected),
             style:{
-              margin: '0px 5px',
+              margin: "0px 5px",
+              width: "20px",
+              height: "20px",
+              position: "relative",
+              top: "3px",
+              right: "4px",
             },
           }),
 

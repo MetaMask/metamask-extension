@@ -36,7 +36,8 @@ button {
   font-family: 'Transat Black';
   outline: none;
   cursor: pointer;
-  /*margin: 10px;*/
+  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+   /*margin: 10px;*/
   padding: 8px 12px;
   border: none;
   background: #F7861C;
