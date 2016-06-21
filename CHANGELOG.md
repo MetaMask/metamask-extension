@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Change out export icon for key.
+- Unify copy to clipboard icon
+
 ## 2.4.0 2016-06-20
 
 - Clean up UI.
