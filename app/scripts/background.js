@@ -1,11 +1,9 @@
 const urlUtil = require('url')
 const Dnode = require('dnode')
 const eos = require('end-of-stream')
-const combineStreams = require('pumpify')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
-const ObjectMultiplex = require('./lib/obj-multiplex')
 const PortStream = require('./lib/port-stream.js')
 const IdentityStore = require('./lib/idStore')
 const createUnlockRequestNotification = require('./lib/notifications.js').createUnlockRequestNotification
@@ -55,7 +53,6 @@ function setupTrustedCommunication(connectionStream, originDomain){
 // state and network
 //
 
-var providerConfig = configManager.getProvider()
 var idStore = new IdentityStore()
 
 var providerOpts = {

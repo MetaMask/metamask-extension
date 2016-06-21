@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
+    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive && gulp lint",
     "watch": "mocha watch --compilers js:babel-register --recursive"
   },
   "browserify": {
