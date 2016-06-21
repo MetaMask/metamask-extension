@@ -67,12 +67,6 @@ NewComponent.prototype.render = function () {
             event.preventDefault()
             copyToClipboard(ethUtil.toChecksumAddress(identity.address))
           },
-<<<<<<< HEAD
-          style:{
-            margin: '0px 5px',
-          },
-=======
->>>>>>> master
         }),
       ]),
     ])
