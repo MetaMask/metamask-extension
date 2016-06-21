@@ -6,14 +6,13 @@ const Identicon = require('./components/identicon')
 const actions = require('./actions')
 const util = require('./util')
 const numericBalance = require('./util').numericBalance
-const formatBalance = require('./util').formatBalance
 const addressSummary = require('./util').addressSummary
 const EtherBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   var result = {
     address: state.metamask.selectedAccount,
     accounts: state.metamask.accounts,
@@ -31,11 +30,11 @@ function mapStateToProps(state) {
 }
 
 inherits(SendTransactionScreen, Component)
-function SendTransactionScreen() {
+function SendTransactionScreen () {
   Component.call(this)
 }
 
-SendTransactionScreen.prototype.render = function() {
+SendTransactionScreen.prototype.render = function () {
   var state = this.props
   var address = state.address
   var account = state.account
@@ -111,7 +110,7 @@ SendTransactionScreen.prototype.render = function() {
           // h('div', formatBalance(account && account.balance)),
           h(EtherBalance, {
             value: account && account.balance,
-          })
+          }),
 
         ]),
 
@@ -140,7 +139,7 @@ SendTransactionScreen.prototype.render = function() {
         h('input.large-input', {
           name: 'address',
           placeholder: 'Recipient Address',
-        })
+        }),
       ]),
 
       // 'amount' and send button
@@ -160,7 +159,7 @@ SendTransactionScreen.prototype.render = function() {
           style: {
             textTransform: 'uppercase',
           },
-        }, 'Send')
+        }, 'Send'),
 
       ]),
 
@@ -187,7 +186,7 @@ SendTransactionScreen.prototype.render = function() {
           style: {
             width: '100%',
             resize: 'none',
-          }
+          },
         }),
       ]),
 
@@ -196,31 +195,31 @@ SendTransactionScreen.prototype.render = function() {
   )
 }
 
-SendTransactionScreen.prototype.navigateToAccounts = function(event){
+SendTransactionScreen.prototype.navigateToAccounts = function (event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountsPage())
 }
 
-SendTransactionScreen.prototype.back = function() {
+SendTransactionScreen.prototype.back = function () {
   var address = this.props.address
   this.props.dispatch(actions.backToAccountDetail(address))
 }
 
-SendTransactionScreen.prototype.onSubmit = function() {
-
+SendTransactionScreen.prototype.onSubmit = function () {
   const recipient = document.querySelector('input[name="address"]').value
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
+  let message
 
   if (value.gt(balance)) {
-    var message = 'Insufficient funds.'
+    message = 'Insufficient funds.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
   if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
-    var message = 'Recipient address is invalid.'
+    message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 

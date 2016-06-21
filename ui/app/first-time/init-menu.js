@@ -3,28 +3,25 @@ const EventEmitter = require('events').EventEmitter
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const getCaretCoordinates = require('textarea-caret')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
-const CreateVaultScreen = require('./create-vault')
-const CreateVaultCompleteScreen = require('./create-vault-complete')
 
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 
 inherits(InitializeMenuScreen, Component)
-function InitializeMenuScreen() {
+function InitializeMenuScreen () {
   Component.call(this)
   this.animationEventEmitter = new EventEmitter()
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     // state from plugin
     currentView: state.appState.currentView,
   }
 }
 
-InitializeMenuScreen.prototype.render = function() {
+InitializeMenuScreen.prototype.render = function () {
   var state = this.props
 
   switch (state.currentView.name) {
@@ -33,15 +30,13 @@ InitializeMenuScreen.prototype.render = function() {
       return this.renderMenu()
 
   }
-
 }
 
 // InitializeMenuScreen.prototype.componentDidMount = function(){
 //   document.getElementById('password-box').focus()
 // }
 
-InitializeMenuScreen.prototype.renderMenu = function() {
-  var state = this.props
+InitializeMenuScreen.prototype.renderMenu = function () {
   return (
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
@@ -88,15 +83,15 @@ InitializeMenuScreen.prototype.renderMenu = function() {
 //   this.props.dispatch(actions.showInitializeMenu())
 // }
 
-InitializeMenuScreen.prototype.showInitializeMenu = function() {
+InitializeMenuScreen.prototype.showInitializeMenu = function () {
   this.props.dispatch(actions.showInitializeMenu())
 }
 
-InitializeMenuScreen.prototype.showCreateVault = function() {
+InitializeMenuScreen.prototype.showCreateVault = function () {
   this.props.dispatch(actions.showCreateVault())
 }
 
-InitializeMenuScreen.prototype.showRestoreVault = function() {
+InitializeMenuScreen.prototype.showRestoreVault = function () {
   this.props.dispatch(actions.showRestoreVault())
 }
 

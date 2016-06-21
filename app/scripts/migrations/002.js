@@ -1,7 +1,7 @@
 module.exports = {
   version: 2,
 
-  migrate: function(data) {
+  migrate: function (data) {
     try {
       if (data.config.provider.type === 'etherscan') {
         data.config.provider.type = 'rpc'
@@ -9,5 +9,5 @@ module.exports = {
       }
     } catch (e) {}
     return data
-  }
+  },
 }

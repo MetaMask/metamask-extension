@@ -2,28 +2,20 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
-const AccountPanel = require('./components/account-panel')
 
 module.exports = connect(mapStateToProps)(AppSettingsPage)
 
-function mapStateToProps(state) {
-  return {
-    identities: state.metamask.identities,
-    address: state.appState.currentView.context,
-  }
+function mapStateToProps (state) {
+  return {}
 }
 
 inherits(AppSettingsPage, Component)
-function AppSettingsPage() {
+function AppSettingsPage () {
   Component.call(this)
 }
 
-
-AppSettingsPage.prototype.render = function() {
-  var state = this.props
-  var identity = state.identities[state.address]
+AppSettingsPage.prototype.render = function () {
   return (
 
     h('.account-detail-section.flex-column.flex-grow', [
@@ -47,23 +39,22 @@ AppSettingsPage.prototype.render = function() {
       }),
 
     ])
-    
+
   )
 }
 
-AppSettingsPage.prototype.componentDidMount = function(){
+AppSettingsPage.prototype.componentDidMount = function () {
   document.querySelector('input').focus()
 }
 
-AppSettingsPage.prototype.onKeyPress = function(event) {
+AppSettingsPage.prototype.onKeyPress = function (event) {
   // get submit event
   if (event.key === 'Enter') {
     // this.submitPassword(event)
   }
 }
 
-
-AppSettingsPage.prototype.navigateToAccounts = function(event){
+AppSettingsPage.prototype.navigateToAccounts = function (event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountsPage())
 }

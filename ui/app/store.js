@@ -6,7 +6,6 @@ const rootReducer = require('./reducers')
 
 module.exports = configureStore
 
-
 const loggerMiddleware = createLogger()
 
 const createStoreWithMiddleware = applyMiddleware(
@@ -14,6 +13,6 @@ const createStoreWithMiddleware = applyMiddleware(
   loggerMiddleware
 )(createStore)
 
-function configureStore(initialState) {
+function configureStore (initialState) {
   return createStoreWithMiddleware(rootReducer, initialState)
 }

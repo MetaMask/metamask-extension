@@ -9,20 +9,19 @@ const EventEmitter = require('events').EventEmitter
 
 module.exports = connect(mapStateToProps)(UnlockScreen)
 
-
 inherits(UnlockScreen, Component)
-function UnlockScreen() {
+function UnlockScreen () {
   Component.call(this)
   this.animationEventEmitter = new EventEmitter()
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
   }
 }
 
-UnlockScreen.prototype.render = function() {
+UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
@@ -55,7 +54,7 @@ UnlockScreen.prototype.render = function() {
       h('.error', {
         style: {
           display: warning ? 'block' : 'none',
-        }
+        },
       }, warning),
 
       h('button.primary.cursor-pointer', {
@@ -70,23 +69,23 @@ UnlockScreen.prototype.render = function() {
   )
 }
 
-UnlockScreen.prototype.componentDidMount = function(){
+UnlockScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
-UnlockScreen.prototype.onSubmit = function(event) {
+UnlockScreen.prototype.onSubmit = function (event) {
   const input = document.getElementById('password-box')
   const password = input.value
   this.props.dispatch(actions.tryUnlockMetamask(password))
 }
 
-UnlockScreen.prototype.onKeyPress = function(event) {
+UnlockScreen.prototype.onKeyPress = function (event) {
   if (event.key === 'Enter') {
     this.submitPassword(event)
   }
 }
 
-UnlockScreen.prototype.submitPassword = function(event){
+UnlockScreen.prototype.submitPassword = function (event) {
   var element = event.target
   var password = element.value
   // reset input
@@ -94,7 +93,7 @@ UnlockScreen.prototype.submitPassword = function(event){
   this.props.dispatch(actions.tryUnlockMetamask(password))
 }
 
-UnlockScreen.prototype.inputChanged = function(event){
+UnlockScreen.prototype.inputChanged = function (event) {
   // tell mascot to look at page action
   var element = event.target
   var boundingRect = element.getBoundingClientRect()
@@ -105,6 +104,6 @@ UnlockScreen.prototype.inputChanged = function(event){
   })
 }
 
-UnlockScreen.prototype.emitAnim = function(name, a, b, c){
+UnlockScreen.prototype.emitAnim = function (name, a, b, c) {
   this.animationEventEmitter.emit(name, a, b, c)
 }

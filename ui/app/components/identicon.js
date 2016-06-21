@@ -9,13 +9,13 @@ const iconFactory = iconFactoryGen(jazzicon)
 module.exports = IdenticonComponent
 
 inherits(IdenticonComponent, Component)
-function IdenticonComponent() {
+function IdenticonComponent () {
   Component.call(this)
 
   this.defaultDiameter = 46
 }
 
-IdenticonComponent.prototype.render = function() {
+IdenticonComponent.prototype.render = function () {
   var state = this.props
   var diameter = state.diameter || this.defaultDiameter
   return (
@@ -32,7 +32,7 @@ IdenticonComponent.prototype.render = function() {
   )
 }
 
-IdenticonComponent.prototype.componentDidMount = function(){
+IdenticonComponent.prototype.componentDidMount = function () {
   var state = this.props
   var address = state.address
 

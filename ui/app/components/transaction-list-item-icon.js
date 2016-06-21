@@ -6,20 +6,19 @@ const Identicon = require('./identicon')
 
 module.exports = TransactionIcon
 
-
 inherits(TransactionIcon, Component)
-function TransactionIcon() {
+function TransactionIcon () {
   Component.call(this)
 }
 
-TransactionIcon.prototype.render = function() {
-  const { transaction, txParams, isTx, isMsg } = this.props
+TransactionIcon.prototype.render = function () {
+  const { transaction, txParams, isMsg } = this.props
 
   if (transaction.status === 'rejected') {
     return h('i.fa.fa-exclamation-triangle.fa-lg.error', {
       style: {
         width: '24px',
-      }
+      },
     })
   }
 
@@ -27,7 +26,7 @@ TransactionIcon.prototype.render = function() {
     return h('i.fa.fa-certificate.fa-lg', {
       style: {
         width: '24px',
-      }
+      },
     })
   }
 
@@ -40,7 +39,7 @@ TransactionIcon.prototype.render = function() {
     return h('i.fa.fa-file-text-o.fa-lg', {
       style: {
         width: '24px',
-      }
+      },
     })
   }
 }
