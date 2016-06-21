@@ -148,21 +148,25 @@ function setupPublicConfig (stream) {
 }
 
 function setupProviderConnection (stream, originDomain) {
-  stream.on('data', function onRpcRequest (payload) {
-    // Append origin to rpc payload
-    payload.origin = originDomain
-    // Append origin to signature request
-    if (payload.method === 'eth_sendTransaction') {
-      payload.params[0].origin = originDomain
-    } else if (payload.method === 'eth_sign') {
-      payload.params.push({ origin: originDomain })
-    }
+  // decorate all payloads with origin domain
+  stream.on('data', function onRpcRequest (request) {
+    var payloads = Array.isArray(request) ? request : [request]
+    payloads.forEach(function (payload) {
+      // Append origin to rpc payload
+      payload.origin = originDomain
+      // Append origin to signature request
+      if (payload.method === 'eth_sendTransaction') {
+        payload.params[0].origin = originDomain
+      } else if (payload.method === 'eth_sign') {
+        payload.params.push({ origin: originDomain })
+      }
+    })
     // handle rpc request
-    provider.sendAsync(payload, function onPayloadHandled (err, response) {
+    provider.sendAsync(request, function onPayloadHandled (err, response) {
       if (err) {
         return logger(err)
       }
-      logger(null, payload, response)
+      logger(null, request, response)
       try {
         stream.write(response)
       } catch (err) {
