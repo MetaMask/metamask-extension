@@ -84,16 +84,13 @@ function weiToEth (bn) {
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
 function parseBalance (balance) {
-  if (!balance || balance === '0x0') return ['0', '0']
-  var wei = numericBalance(balance).toString(10)
-  var eth = String(wei / valueTable['wei'])
-  var beforeDecimal = String(Math.floor(eth))
-  var afterDecimal
-  if (eth.indexOf('.') > -1) {
-    afterDecimal = eth.slice(eth.indexOf('.') + 1)
-  } else {
-    afterDecimal = '0'
-  }
+  let beforeDecimal, afterDecimal
+  let wei = numericBalance(balance).toString()
+  let trailingZeros = /0+$/
+
+  beforeDecimal = wei.length > 18 ?  wei.slice(0, wei.length - 18) : '0'
+  afterDecimal = ("000000000000000000" + wei).slice(-18).replace(trailingZeros, "")
+  if(afterDecimal == ""){afterDecimal = "0" }
   return [beforeDecimal, afterDecimal]
 }
 
