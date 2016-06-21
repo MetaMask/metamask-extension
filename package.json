@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive && gulp lint",
+    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
     "watch": "mocha watch --compilers js:babel-register --recursive"
   },
   "browserify": {
@@ -89,6 +89,7 @@
     "jshint-stylish": "~0.1.5",
     "lodash.assign": "^4.0.6",
     "mocha": "^2.4.5",
+    "mocha-eslint": "^2.1.1",
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^1.1.5",
     "sinon": "^1.17.3",
