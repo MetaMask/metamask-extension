@@ -1,4 +1,4 @@
-# Metamask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-plugin.svg?style=shield&circle-toke=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-plugin)
+# Metamask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-plugin.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-plugin)
 
 ## Architecture
 
