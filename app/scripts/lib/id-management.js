@@ -1,6 +1,9 @@
 const ethUtil = require('ethereumjs-util')
+const Transaction = require('ethereumjs-tx')
+const configManager = require('./config-manager-singleton')
 
 module.exports = IdManagement
+
 
 function IdManagement(opts) {
   if (!opts) opts = {}
