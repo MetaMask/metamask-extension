@@ -4,19 +4,18 @@ const configManager = require('./config-manager-singleton')
 
 module.exports = IdManagement
 
-
-function IdManagement(opts) {
+function IdManagement (opts) {
   if (!opts) opts = {}
 
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
   this.hdPathString = "m/44'/60'/0'/0"
 
-  this.getAddresses =  function(){
-    return keyStore.getAddresses(this.hdPathString).map(function(address){ return '0x'+address })
+  this.getAddresses = function () {
+    return this.keyStore.getAddresses(this.hdPathString).map(function (address) { return '0x' + address })
   }
 
-  this.signTx = function(txParams){
+  this.signTx = function (txParams) {
     // normalize values
     txParams.to = ethUtil.addHexPrefix(txParams.to)
     txParams.from = ethUtil.addHexPrefix(txParams.from)
@@ -44,34 +43,34 @@ function IdManagement(opts) {
 
   this.signMsg = function (address, message) {
     // sign message
-    var privKeyHex = this.exportPrivateKey(address);
-    var privKey = ethUtil.toBuffer(privKeyHex);
-    var msgSig = ethUtil.ecsign(new Buffer(message.replace('0x',''), 'hex'), privKey);
-    var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s));
-    return rawMsgSig;
-  };
+    var privKeyHex = this.exportPrivateKey(address)
+    var privKey = ethUtil.toBuffer(privKeyHex)
+    var msgSig = ethUtil.ecsign(new Buffer(message.replace('0x', ''), 'hex'), privKey)
+    var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))
+    return rawMsgSig
+  }
 
-  this.getSeed = function(){
+  this.getSeed = function () {
     return this.keyStore.getSeed(this.derivedKey)
   }
 
-  this.exportPrivateKey = function(address) {
+  this.exportPrivateKey = function (address) {
     var privKeyHex = ethUtil.addHexPrefix(this.keyStore.exportPrivateKey(address, this.derivedKey, this.hdPathString))
     return privKeyHex
   }
 }
 
-function pad_with_zeroes(number, length){
-  var my_string = '' + number;
-  while (my_string.length < length) {
-    my_string = '0' + my_string;
+function padWithZeroes (number, length) {
+  var myString = '' + number
+  while (myString.length < length) {
+    myString = '0' + myString
   }
-  return my_string;
+  return myString
 }
 
-function concatSig(v, r, s) {
-  r = pad_with_zeroes(ethUtil.fromSigned(r), 64)
-  s = pad_with_zeroes(ethUtil.fromSigned(s), 64)
+function concatSig (v, r, s) {
+  r = padWithZeroes(ethUtil.fromSigned(r), 64)
+  s = padWithZeroes(ethUtil.fromSigned(s), 64)
   r = ethUtil.stripHexPrefix(r.toString('hex'))
   s = ethUtil.stripHexPrefix(s.toString('hex'))
   v = ethUtil.stripHexPrefix(ethUtil.intToHex(v))

@@ -4,16 +4,14 @@ const inherits = require('util').inherits
 
 module.exports = DropMenuItem
 
-
 inherits(DropMenuItem, Component)
-function DropMenuItem() {
+function DropMenuItem () {
   Component.call(this)
 }
 
-DropMenuItem.prototype.render = function() {
-
+DropMenuItem.prototype.render = function () {
   return h('li.drop-menu-item', {
-    onClick:() => {
+    onClick: () => {
       this.props.closeMenu()
       this.props.action()
     },

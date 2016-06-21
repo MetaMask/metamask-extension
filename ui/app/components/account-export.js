@@ -6,14 +6,13 @@ const actions = require('../actions')
 
 module.exports = ExportAccountView
 
-
 inherits(ExportAccountView, Component)
-function ExportAccountView() {
+function ExportAccountView () {
   Component.call(this)
 }
 
-ExportAccountView.prototype.render = function() {
-  console.log("EXPORT VIEW")
+ExportAccountView.prototype.render = function () {
+  console.log('EXPORT VIEW')
   console.dir(this.props)
   var state = this.props
   var accountDetail = state.accountDetail
@@ -47,13 +46,13 @@ ExportAccountView.prototype.render = function() {
           style: {
             position: 'relative',
             top: '1.5px',
-          }
+          },
         }),
         h('button', {
           onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
         }, 'Submit'),
         h('button', {
-          onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address))
+          onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
         }, 'Cancel'),
       ])
 
@@ -72,18 +71,18 @@ ExportAccountView.prototype.render = function() {
           webkitUserSelect: 'text',
           width: '100%',
         },
-        onClick: function(event) {
+        onClick: function (event) {
           copyToClipboard(accountDetail.privateKey)
-        }
+        },
       }, accountDetail.privateKey),
       h('button', {
-        onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address))
+        onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
       }, 'Done'),
     ])
   }
 }
 
-ExportAccountView.prototype.onExportKeyPress = function(event) {
+ExportAccountView.prototype.onExportKeyPress = function (event) {
   if (event.key !== 'Enter') return
   event.preventDefault()
 
@@ -96,6 +95,6 @@ ExportAccountView.prototype.onExportKeyPress = function(event) {
   }
 }
 
-ExportAccountView.prototype.exportAccount = function(address) {
+ExportAccountView.prototype.exportAccount = function (address) {
   this.props.dispatch(actions.exportAccount(address))
 }

@@ -4,16 +4,15 @@ const inherits = require('util').inherits
 
 module.exports = NewComponent
 
-
 inherits(NewComponent, Component)
-function NewComponent() {
+function NewComponent () {
   Component.call(this)
 }
 
-NewComponent.prototype.render = function() {
-  var state = this.props
+NewComponent.prototype.render = function () {
+  const props = this.props
 
   return (
-    h('span', 'Placeholder component')
+    h('span', props.message)
   )
 }

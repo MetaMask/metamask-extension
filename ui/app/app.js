@@ -1,10 +1,7 @@
 const inherits = require('util').inherits
-const React = require('react')
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const extend = require('xtend')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
@@ -25,7 +22,6 @@ const ConfigScreen = require('./config')
 const RevealSeedConfirmation = require('./recover-seed/confirmation')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
-const txHelper = require('../lib/tx-helper')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
@@ -33,11 +29,10 @@ const NetworkIndicator = require('./components/network')
 
 module.exports = connect(mapStateToProps)(App)
 
-
 inherits(App, Component)
-function App() { Component.call(this) }
+function App () { Component.call(this) }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     // state from plugin
     isConfirmed: state.metamask.isConfirmed,
@@ -54,9 +49,8 @@ function mapStateToProps(state) {
   }
 }
 
-App.prototype.render = function() {
+App.prototype.render = function () {
   var props = this.props
-  var view = props.currentView.name
   var transForward = props.transForward
 
   return (
@@ -65,7 +59,7 @@ App.prototype.render = function() {
       style: {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
-      }
+      },
     }, [
 
       h(LoadingIndicator),
@@ -80,7 +74,7 @@ App.prototype.render = function() {
         style: {
           height: '380px',
           width: '360px',
-        }
+        },
       }, [
         h(ReactCSSTransitionGroup, {
           className: 'css-transition-group',
@@ -95,7 +89,7 @@ App.prototype.render = function() {
   )
 }
 
-App.prototype.renderAppBar = function(){
+App.prototype.renderAppBar = function () {
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
@@ -117,11 +111,11 @@ App.prototype.renderAppBar = function(){
 
         h(NetworkIndicator, {
           network: this.props.network,
-          onClick:(event) => {
+          onClick: (event) => {
             event.preventDefault()
             event.stopPropagation()
             this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
-          }
+          },
         }),
 
         // metamask name
@@ -144,16 +138,14 @@ App.prototype.renderAppBar = function(){
   )
 }
 
-App.prototype.renderNetworkDropdown = function() {
+App.prototype.renderNetworkDropdown = function () {
   const props = this.props
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
 
-  const checked = h('i.fa.fa-check.fa-lg', { ariaHidden: true })
-
   return h(MenuDroppo, {
     isOpen,
-    onClickOutside:(event) => {
+    onClickOutside: (event) => {
       this.setState({ isNetworkMenuOpen: !isOpen })
     },
     style: {
@@ -173,28 +165,28 @@ App.prototype.renderNetworkDropdown = function() {
 
     h(DropMenuItem, {
       label: 'Main Ethereum Network',
-      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
-      action:() => props.dispatch(actions.setProviderType('mainnet')),
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => props.dispatch(actions.setProviderType('mainnet')),
       icon: h('.menu-icon.ether-icon'),
     }),
 
     h(DropMenuItem, {
       label: 'Morden Test Network',
-      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
-      action:() => props.dispatch(actions.setProviderType('testnet')),
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => props.dispatch(actions.setProviderType('testnet')),
       icon: h('.menu-icon.morden-icon'),
     }),
 
     h(DropMenuItem, {
       label: 'Localhost 8545',
-      closeMenu:() => this.setState({ isNetworkMenuOpen: false }),
-      action:() => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
       icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
     }),
   ])
 }
 
-App.prototype.renderDropdown = function() {
+App.prototype.renderDropdown = function () {
   const props = this.props
   return h(MenuDroppo, {
     isOpen: props.menuOpen,
@@ -218,28 +210,28 @@ App.prototype.renderDropdown = function() {
 
     h(DropMenuItem, {
       label: 'Settings',
-      closeMenu:() => this.props.dispatch(actions.closeMenu()),
-      action:() => this.props.dispatch(actions.showConfigPage()),
+      closeMenu: () => this.props.dispatch(actions.closeMenu()),
+      action: () => this.props.dispatch(actions.showConfigPage()),
       icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
     }),
 
     h(DropMenuItem, {
       label: 'Lock',
-      closeMenu:() => this.props.dispatch(actions.closeMenu()),
-      action:() => this.props.dispatch(actions.lockMetamask()),
+      closeMenu: () => this.props.dispatch(actions.closeMenu()),
+      action: () => this.props.dispatch(actions.lockMetamask()),
       icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
     }),
 
     h(DropMenuItem, {
       label: 'Help',
-      closeMenu:() => this.props.dispatch(actions.closeMenu()),
-      action:() => this.props.dispatch(actions.showInfoPage()),
+      closeMenu: () => this.props.dispatch(actions.closeMenu()),
+      action: () => this.props.dispatch(actions.showInfoPage()),
       icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
     }),
   ])
 }
 
-App.prototype.renderPrimary = function(){
+App.prototype.renderPrimary = function () {
   var props = this.props
 
   if (!props.isConfirmed) {
@@ -252,7 +244,6 @@ App.prototype.renderPrimary = function(){
 
   // show initialize screen
   if (!props.isInitialized) {
-
     // show current view
     switch (props.currentView.name) {
 
@@ -305,10 +296,10 @@ App.prototype.renderPrimary = function(){
 
     default:
       return h(AccountDetailScreen, {key: 'account-detail'})
-   }
+  }
 }
 
-App.prototype.toggleMetamaskActive = function(){
+App.prototype.toggleMetamaskActive = function () {
   if (!this.props.isUnlocked) {
     // currently inactive: redirect to password box
     var passwordBox = document.querySelector('input[type=password]')

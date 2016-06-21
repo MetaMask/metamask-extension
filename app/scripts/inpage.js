@@ -8,7 +8,6 @@ restoreContextAfterImports()
 // remove from window
 delete window.Web3
 
-
 //
 // setup plugin communication
 //
@@ -27,7 +26,7 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 //
 
 var web3 = new Web3(inpageProvider)
-web3.setProvider = function(){
+web3.setProvider = function () {
   console.log('MetaMask - overrode web3.setProvider')
 }
 console.log('MetaMask - injected web3')
@@ -40,7 +39,7 @@ var reloadStream = inpageProvider.multiStream.createStream('reload')
 setupDappAutoReload(web3, reloadStream)
 
 // set web3 defaultAcount
-inpageProvider.publicConfigStore.subscribe(function(state){
+inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })
 
@@ -51,13 +50,13 @@ inpageProvider.publicConfigStore.subscribe(function(state){
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-var __define = undefined
+var __define
 
-function cleanContextForImports(){
+function cleanContextForImports () {
   __define = global.define
   delete global.define
 }
 
-function restoreContextAfterImports(){
+function restoreContextAfterImports () {
   global.define = __define
 }

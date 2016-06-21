@@ -9,18 +9,15 @@ const Identicon = require('../components/identicon')
 
 module.exports = NewComponent
 
-
 inherits(NewComponent, Component)
-function NewComponent() {
+function NewComponent () {
   Component.call(this)
 }
 
-NewComponent.prototype.render = function() {
+NewComponent.prototype.render = function () {
   const identity = this.props.identity
-  var mayBeFauceting = identity.mayBeFauceting
   var isSelected = this.props.selectedAddress === identity.address
   var account = this.props.accounts[identity.address]
-  var isFauceting = mayBeFauceting && account.balance === '0x0'
   const selectedClass = isSelected ? '.selected' : ''
 
   return (
@@ -35,7 +32,7 @@ NewComponent.prototype.render = function() {
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
         this.pendingOrNot(),
         h(Identicon, {
-          address: identity.address
+          address: identity.address,
         }),
       ]),
 
@@ -70,16 +67,19 @@ NewComponent.prototype.render = function() {
             event.preventDefault()
             copyToClipboard(ethUtil.toChecksumAddress(identity.address))
           },
+<<<<<<< HEAD
           style:{
             margin: '0px 5px',
           },
+=======
+>>>>>>> master
         }),
       ]),
     ])
   )
 }
 
-NewComponent.prototype.pendingOrNot = function() {
+NewComponent.prototype.pendingOrNot = function () {
   const pending = this.props.pending
   if (pending.length === 0) return null
   return h('.pending-dot', pending.length)

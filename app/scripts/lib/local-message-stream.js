@@ -3,10 +3,9 @@ const inherits = require('util').inherits
 
 module.exports = LocalMessageDuplexStream
 
-
 inherits(LocalMessageDuplexStream, Duplex)
 
-function LocalMessageDuplexStream(opts){
+function LocalMessageDuplexStream (opts) {
   Duplex.call(this, {
     objectMode: true,
   })
@@ -21,19 +20,19 @@ function LocalMessageDuplexStream(opts){
 
 // private
 
-LocalMessageDuplexStream.prototype._onMessage = function(event){
+LocalMessageDuplexStream.prototype._onMessage = function (event) {
   var msg = event.data
   // console.log('LocalMessageDuplexStream ('+this._name+') - heard message...', event)
   // validate message
-  if (event.origin !== location.origin) return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (event.origin !== location.origin) ')
-  if (typeof msg !== 'object') return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (typeof msg !== "object") ')
-  if (msg.target !== this._name) return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (msg.target !== this._name) ', msg.target, this._name)
-  if (!msg.data) return //console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (!msg.data) ')
+  if (event.origin !== location.origin) return // console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (event.origin !== location.origin) ')
+  if (typeof msg !== 'object') return // console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (typeof msg !== "object") ')
+  if (msg.target !== this._name) return // console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (msg.target !== this._name) ', msg.target, this._name)
+  if (!msg.data) return // console.log('LocalMessageDuplexStream ('+this._name+') - rejected - (!msg.data) ')
   // console.log('LocalMessageDuplexStream ('+this._name+') - accepted', msg.data)
   // forward message
   try {
     this.push(msg.data)
-  } catch(err) {
+  } catch (err) {
     this.emit('error', err)
   }
 }
@@ -42,7 +41,7 @@ LocalMessageDuplexStream.prototype._onMessage = function(event){
 
 LocalMessageDuplexStream.prototype._read = noop
 
-LocalMessageDuplexStream.prototype._write = function(data, encoding, cb){
+LocalMessageDuplexStream.prototype._write = function (data, encoding, cb) {
   // console.log('LocalMessageDuplexStream ('+this._name+') - sending message...')
   var message = {
     target: this._target,
@@ -54,4 +53,4 @@ LocalMessageDuplexStream.prototype._write = function(data, encoding, cb){
 
 // util
 
-function noop(){}
+function noop () {}

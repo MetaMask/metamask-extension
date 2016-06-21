@@ -1,4 +1,4 @@
-# Metamask Plugin [![Build Status](https://travis-ci.com/MetaMask/metamask-plugin.svg?token=3txzDGFpqQqvRCdgwTJp&branch=master)](https://travis-ci.com/MetaMask/metamask-plugin)
+# Metamask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-plugin.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-plugin)
 
 ## Architecture
 
@@ -53,6 +53,8 @@ Requires `mocha` installed. Run `npm install -g mocha`.
 Then just run `npm test`.
 
 You can also test with a continuously watching process, via `npm run watch`.
+
+You can run the linter by itself with `gulp lint`.
 
 ### Deploying the UI
 

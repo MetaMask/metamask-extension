@@ -6,20 +6,18 @@ const actions = require('../actions')
 
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 
-
 inherits(RestoreVaultScreen, Component)
-function RestoreVaultScreen() {
+function RestoreVaultScreen () {
   Component.call(this)
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
   }
 }
 
-
-RestoreVaultScreen.prototype.render = function() {
+RestoreVaultScreen.prototype.render = function () {
   var state = this.props
   return (
 
@@ -41,7 +39,7 @@ RestoreVaultScreen.prototype.render = function() {
       // wallet seed entry
       h('h3', 'Wallet Seed'),
       h('textarea.twelve-word-phrase.letter-spacey', {
-        placeholder: 'Enter your secret twelve word phrase here to restore your vault.'
+        placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
       }),
 
       // password
@@ -97,17 +95,17 @@ RestoreVaultScreen.prototype.render = function() {
   )
 }
 
-RestoreVaultScreen.prototype.showInitializeMenu = function() {
+RestoreVaultScreen.prototype.showInitializeMenu = function () {
   this.props.dispatch(actions.showInitializeMenu())
 }
 
-RestoreVaultScreen.prototype.onMaybeCreate = function(event) {
+RestoreVaultScreen.prototype.onMaybeCreate = function (event) {
   if (event.key === 'Enter') {
     this.restoreVault()
   }
 }
 
-RestoreVaultScreen.prototype.restoreVault = function(){
+RestoreVaultScreen.prototype.restoreVault = function () {
   // check password
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value

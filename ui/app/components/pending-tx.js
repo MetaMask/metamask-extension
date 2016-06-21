@@ -6,22 +6,20 @@ const AccountPanel = require('./account-panel')
 const addressSummary = require('../util').addressSummary
 const readableDate = require('../util').readableDate
 const formatBalance = require('../util').formatBalance
-const dataSize = require('../util').dataSize
 
 module.exports = PendingTx
 
-
 inherits(PendingTx, Component)
-function PendingTx() {
+function PendingTx () {
   Component.call(this)
 }
 
-PendingTx.prototype.render = function() {
+PendingTx.prototype.render = function () {
   var state = this.props
   var txData = state.txData
 
   var txParams = txData.txParams || {}
-  var address =  txParams.from || state.selectedAddress
+  var address = txParams.from || state.selectedAddress
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
@@ -34,7 +32,7 @@ PendingTx.prototype.render = function() {
         style: {
           fontWeight: 'bold',
           textAlign: 'center',
-        }
+        },
       }, 'Submit Transaction'),
 
       // account that will sign

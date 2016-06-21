@@ -1,5 +1,3 @@
-const combineReducers = require('redux').combineReducers
-const actions = require('./actions')
 const extend = require('xtend')
 
 //
@@ -11,8 +9,7 @@ const reduceApp = require('./reducers/app')
 
 module.exports = rootReducer
 
-function rootReducer(state, action) {
-
+function rootReducer (state, action) {
   // clone
   state = extend(state)
 
@@ -34,8 +31,6 @@ function rootReducer(state, action) {
 
   state.appState = reduceApp(state, action)
 
-
   return state
-
 }
 

@@ -1,4 +1,4 @@
-module.exports = function(hash, network) {
+module.exports = function (hash, network) {
   const net = parseInt(network)
   let prefix
   switch (net) {
