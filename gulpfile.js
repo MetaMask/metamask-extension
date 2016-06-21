@@ -9,6 +9,7 @@ var sourcemaps = require('gulp-sourcemaps')
 var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
 var del = require('del')
+var eslint = require('gulp-eslint')
 
 // browser reload
 
@@ -49,6 +50,25 @@ gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
 
+// lint js
+
+gulp.task('lint', function () {
+  // Ignoring node_modules, dist, and docs folders:
+  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/**', '!docs/**'])
+    .pipe(eslint())
+    // eslint.format() outputs the lint results to the console.
+    // Alternatively use eslint.formatEach() (see Docs).
+    .pipe(eslint.format())
+    // To have the process exit with an error code (1) on
+    // lint error, return the stream and pipe to failAfterError last.
+    .pipe(eslint.failAfterError())
+});
+
+/*
+gulp.task('default', ['lint'], function () {
+    // This will only run if the lint task is successful...
+});
+*/
 
 // build js
 
@@ -74,8 +94,8 @@ gulp.task('clean', function clean() {
 
 // high level tasks
 
-gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
+gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload', 'lint')))
+gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy', 'lint')))
 
 // task generators
 

@@ -54,6 +54,8 @@ Then just run `npm test`.
 
 You can also test with a continuously watching process, via `npm run watch`.
 
+You can run the linter by itself with `gulp lint`.
+
 ### Deploying the UI
 
  You must be authorized already on the Metamask plugin.
