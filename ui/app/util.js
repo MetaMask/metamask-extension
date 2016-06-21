@@ -98,7 +98,6 @@ function parseBalance(balance) {
 // Takes wei hex, returns "None" or "${formattedAmount} ETH"
 function formatBalance(balance, decimalsToKeep) {
   var parsed = parseBalance(balance)
-  console.log(parsed)
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
   var formatted = "None"
