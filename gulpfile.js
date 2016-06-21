@@ -10,6 +10,8 @@ var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
 var del = require('del')
 var eslint = require('gulp-eslint')
+var fs = require('fs')
+var path = require('path')
 
 // browser reload
 
@@ -55,7 +57,7 @@ gulp.task('copy:watch', function(){
 gulp.task('lint', function () {
   // Ignoring node_modules, dist, and docs folders:
   return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/**', '!docs/**'])
-    .pipe(eslint())
+    .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
     // eslint.format() outputs the lint results to the console.
     // Alternatively use eslint.formatEach() (see Docs).
     .pipe(eslint.format())

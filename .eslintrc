@@ -1,20 +1,26 @@
 {
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 6,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "impliedStrict": true,
+      "modules": true,
+      "blockBindings": true,
+      "arrowFunctions": true,
+      "objectLiteralShorthandMethods": true,
+      "objectLiteralShorthandProperties": true,
+      "templateStrings": true
     },
   },
 
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "browser": true
   },
 
   "plugins": [
-    "standard",
-    "promise"
   ],
 
   "globals": {
@@ -134,17 +140,13 @@
     "space-infix-ops": 2,
     "space-unary-ops": [2, { "words": true, "nonwords": false }],
     "spaced-comment": [2, "always", { "markers": ["global", "globals", "eslint", "eslint-disable", "*package", "!", ","] }],
+    "strict": 0,
     "template-curly-spacing": [2, "never"],
     "use-isnan": 2,
     "valid-typeof": 2,
     "wrap-iife": [2, "any"],
     "yield-star-spacing": [2, "both"],
     "yoda": [2, "never"],
-
-    "standard/object-curly-even-spacing": [2, "either"],
-    "standard/array-bracket-even-spacing": [2, "either"],
-    "standard/computed-property-even-spacing": [2, "even"],
-
-    "promise/param-names": 2
+    "prefer-const": 1
   }
 }
