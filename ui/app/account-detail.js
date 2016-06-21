@@ -40,8 +40,6 @@ AccountDetailScreen.prototype.render = function () {
   var selected = props.address || Object.keys(props.accounts)[0]
   var identity = props.identities[selected]
   var account = props.accounts[selected]
-  var accountDetail = props.accountDetail
-  var transactions = props.transactions
 
   return (
 

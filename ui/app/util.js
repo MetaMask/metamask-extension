@@ -84,13 +84,13 @@ function weiToEth (bn) {
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
 function parseBalance (balance) {
-  let beforeDecimal, afterDecimal
-  let wei = numericBalance(balance).toString()
-  let trailingZeros = /0+$/
+  var beforeDecimal, afterDecimal
+  const wei = numericBalance(balance).toString()
+  const trailingZeros = /0+$/
 
-  beforeDecimal = wei.length > 18 ?  wei.slice(0, wei.length - 18) : '0'
-  afterDecimal = ("000000000000000000" + wei).slice(-18).replace(trailingZeros, "")
-  if(afterDecimal == ""){afterDecimal = "0" }
+  beforeDecimal = wei.length > 18 ? wei.slice(0, wei.length - 18) : '0'
+  afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
+  if (afterDecimal === '') { afterDecimal = '0' }
   return [beforeDecimal, afterDecimal]
 }
 
@@ -161,7 +161,7 @@ function readableDate (ms) {
   var minutes = '0' + date.getMinutes()
   var seconds = '0' + date.getSeconds()
 
-  var date = `${month}/${day}/${year}`
+  var dateStr = `${month}/${day}/${year}`
   var time = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`
-  return `${date} ${time}`
+  return `${dateStr} ${time}`
 }

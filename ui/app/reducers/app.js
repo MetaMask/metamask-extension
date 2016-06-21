@@ -1,6 +1,5 @@
 const extend = require('xtend')
 const actions = require('../actions')
-const valuesFor = require('../util').valuesFor
 const txHelper = require('../../lib/tx-helper')
 
 module.exports = reduceApp
@@ -180,7 +179,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'accountDetail',
-          context: action.value || account,
+          context: action.value,
         },
         accountDetail: {
           subview: 'transactions',
@@ -205,7 +204,6 @@ function reduceApp (state, action) {
       })
 
     case actions.SHOW_ACCOUNTS_PAGE:
-      var seedWords = state.metamask.seedWords
       return extend(appState, {
         currentView: {
           name: seedWords ? 'createVaultComplete' : 'accounts',

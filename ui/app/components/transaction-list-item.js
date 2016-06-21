@@ -5,7 +5,6 @@ const inherits = require('util').inherits
 const EtherBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
-const formatBalance = require('../util').formatBalance
 const vreme = new (require('vreme'))
 
 const TransactionIcon = require('./transaction-list-item-icon')
@@ -58,8 +57,8 @@ TransactionListItem.prototype.render = function () {
 
       // large identicon
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('.red-dot', ' ') :
-        h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        transaction.status === 'unconfirmed' ? h('.red-dot', ' ')
+         : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
       ]),
 
       h('.flex-column', [
@@ -106,11 +105,6 @@ function recipientField (txParams, transaction, isTx, isMsg) {
     message,
     failIfFailed(transaction),
   ])
-}
-
-TransactionListItem.prototype.renderMessage = function () {
-  const { transaction, i, network } = this.props
-  return h('div', 'wowie, thats a message')
 }
 
 function formatDate (date) {

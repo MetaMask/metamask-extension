@@ -69,12 +69,11 @@ function setupApp (err, opts) {
   if (err) {
     alert(err.stack)
     throw err
-    return
   }
 
   var container = document.getElementById('app-content')
 
-  var app = MetaMaskUi({
+  MetaMaskUi({
     container: container,
     accountManager: opts.accountManager,
     currentDomain: opts.currentDomain,

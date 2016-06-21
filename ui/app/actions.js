@@ -139,12 +139,6 @@ function closeMenu () {
   }
 }
 
-function getNetworkStatus () {
-  return {
-    type: actions.getNetworkStatus,
-  }
-}
-
 // async actions
 
 function tryUnlockMetamask (password) {
@@ -164,6 +158,9 @@ function createNewVault (password, entropy) {
   return (dispatch) => {
     dispatch(actions.createNewVaultInProgress())
     _accountManager.createNewVault(password, entropy, (err, result) => {
+      if (err) {
+        return dispatch(actions.showWarning(err.message))
+      }
       dispatch(actions.showNewVaultSeed(result))
     })
   }
@@ -318,6 +315,10 @@ function agreeToDisclaimer () {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
     _accountManager.agreeToDisclaimer((err) => {
+      if (err) {
+        return dispatch(actions.showWarning(err.message))
+      }
+
       dispatch(this.hideLoadingIndication())
       dispatch({
         type: this.AGREE_TO_DISCLAIMER,
@@ -372,10 +373,14 @@ function updateMetamaskState (newState) {
 function lockMetamask () {
   return (dispatch) => {
     _accountManager.setLocked((err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err.message))
+      }
+
       dispatch({
         type: actions.LOCK_METAMASK,
       })
-      dispatch(actions.hideLoadingIndication())
     })
   }
 }
@@ -385,6 +390,10 @@ function showAccountDetail (address) {
     dispatch(actions.showLoadingIndication())
     _accountManager.setSelectedAddress(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err.message))
+      }
+
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
@@ -410,6 +419,11 @@ function confirmSeedWords () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     _accountManager.clearSeedWordCache((err, account) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err.message))
+      }
+
       console.log('Seed word cache cleared. ' + account)
       dispatch(actions.showAccountDetail(account))
     })

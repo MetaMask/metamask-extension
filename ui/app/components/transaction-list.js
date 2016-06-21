@@ -13,7 +13,7 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { txsToRender, network, unconfTxs, unconfMsgs } = this.props
+  const { txsToRender, network, unconfMsgs } = this.props
   const transactions = txsToRender.concat(unconfMsgs)
   .sort((a, b) => b.time - a.time)
 
@@ -49,8 +49,8 @@ TransactionList.prototype.render = function () {
         },
       }, (
 
-        transactions.length ?
-          transactions.map((transaction, i) => {
+        transactions.length
+          ? transactions.map((transaction, i) => {
             return h(TransactionListItem, {
               transaction, i, network,
               showTx: (txId) => {
@@ -58,12 +58,11 @@ TransactionList.prototype.render = function () {
               },
             })
           })
-        :
-          [h('.flex-center', {
-            style: {
-              height: '100%',
-            },
-          }, 'No transaction history...')]
+        : [h('.flex-center', {
+          style: {
+            height: '100%',
+          },
+        }, 'No transaction history...')]
       )),
     ])
   )

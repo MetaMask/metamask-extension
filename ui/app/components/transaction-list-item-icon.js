@@ -12,7 +12,7 @@ function TransactionIcon () {
 }
 
 TransactionIcon.prototype.render = function () {
-  const { transaction, txParams, isTx, isMsg } = this.props
+  const { transaction, txParams, isMsg } = this.props
 
   if (transaction.status === 'rejected') {
     return h('i.fa.fa-exclamation-triangle.fa-lg.error', {

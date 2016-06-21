@@ -12,7 +12,7 @@ function IdManagement (opts) {
   this.hdPathString = "m/44'/60'/0'/0"
 
   this.getAddresses = function () {
-    return keyStore.getAddresses(this.hdPathString).map(function (address) { return '0x' + address })
+    return this.keyStore.getAddresses(this.hdPathString).map(function (address) { return '0x' + address })
   }
 
   this.signTx = function (txParams) {
@@ -60,17 +60,17 @@ function IdManagement (opts) {
   }
 }
 
-function pad_with_zeroes (number, length) {
-  var my_string = '' + number
-  while (my_string.length < length) {
-    my_string = '0' + my_string
+function padWithZeroes (number, length) {
+  var myString = '' + number
+  while (myString.length < length) {
+    myString = '0' + myString
   }
-  return my_string
+  return myString
 }
 
 function concatSig (v, r, s) {
-  r = pad_with_zeroes(ethUtil.fromSigned(r), 64)
-  s = pad_with_zeroes(ethUtil.fromSigned(s), 64)
+  r = padWithZeroes(ethUtil.fromSigned(r), 64)
+  s = padWithZeroes(ethUtil.fromSigned(s), 64)
   r = ethUtil.stripHexPrefix(r.toString('hex'))
   s = ethUtil.stripHexPrefix(s.toString('hex'))
   v = ethUtil.stripHexPrefix(ethUtil.intToHex(v))

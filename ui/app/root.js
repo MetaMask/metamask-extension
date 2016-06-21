@@ -1,5 +1,4 @@
 const inherits = require('util').inherits
-const React = require('react')
 const Component = require('react').Component
 const Provider = require('react-redux').Provider
 const h = require('react-hyperscript')

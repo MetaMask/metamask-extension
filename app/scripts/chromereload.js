@@ -603,10 +603,10 @@ window.LiveReloadOptions = { host: 'localhost' };
               } else if (__indexOf.call(message.protocols, PROTOCOL_7) >= 0) {
                 this.protocol = 7
               } else if (__indexOf.call(message.protocols, PROTOCOL_6) >= 0) {
-              this.protocol = 6
-            } else {
-              throw new ProtocolError('no supported protocols found')
-            }
+                this.protocol = 6
+              } else {
+                throw new ProtocolError('no supported protocols found')
+              }
             }
             return this.handlers.connected(this.protocol)
           } else if (this.protocol === 6) {

@@ -14,9 +14,8 @@ Network.prototype.render = function () {
   const state = this.props
   const networkNumber = state.network
   let iconName, hoverText
-  const imagePath = '/images/'
 
-  if (networkNumber == 'loading') {
+  if (networkNumber === 'loading') {
     return h('img', {
       title: 'Attempting to connect to blockchain.',
       onClick: (event) => this.props.onClick(event),
@@ -26,10 +25,10 @@ Network.prototype.render = function () {
       },
       src: 'images/loading.svg',
     })
-  } else if (parseInt(networkNumber) == 1) {
+  } else if (parseInt(networkNumber) === 1) {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
-  } else if (parseInt(networkNumber) == 2) {
+  } else if (parseInt(networkNumber) === 2) {
     hoverText = 'Morden Test Network'
     iconName = 'morden-test-network'
   } else {
@@ -45,7 +44,7 @@ Network.prototype.render = function () {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [
-      function () {
+      (function () {
         switch (iconName) {
           case 'ethereum-network':
             return h('.menu-icon.ether-icon')
@@ -60,7 +59,7 @@ Network.prototype.render = function () {
               },
             })
         }
-      }(),
+      })(),
     ])
   )
 }

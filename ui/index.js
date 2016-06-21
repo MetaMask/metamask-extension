@@ -1,7 +1,5 @@
-const React = require('react')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const extend = require('xtend')
 const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
@@ -37,11 +35,6 @@ function startApp (metamaskState, accountManager, opts) {
 
   // if unconfirmed txs, start on txConf page
   if (Object.keys(metamaskState.unconfTxs || {}).length) {
-    store.dispatch(actions.showConfTxPage())
-  }
-
-  // if unconfirmed messages, start on msgConf page
-  if (Object.keys(metamaskState.unconfMsgs || {}).length) {
     store.dispatch(actions.showConfTxPage())
   }
 

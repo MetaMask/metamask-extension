@@ -106,7 +106,7 @@ var container = document.getElementById('app-content')
 var css = MetaMaskUiCss()
 injectCss(css)
 
-var app = MetaMaskUi({
+MetaMaskUi({
   container: container,
   accountManager: accountManager,
 })

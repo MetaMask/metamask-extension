@@ -1,10 +1,7 @@
 const inherits = require('util').inherits
-const React = require('react')
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const extend = require('xtend')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
@@ -25,7 +22,6 @@ const ConfigScreen = require('./config')
 const RevealSeedConfirmation = require('./recover-seed/confirmation')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./loading')
-const txHelper = require('../lib/tx-helper')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
@@ -55,7 +51,6 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  var view = props.currentView.name
   var transForward = props.transForward
 
   return (
@@ -147,8 +142,6 @@ App.prototype.renderNetworkDropdown = function () {
   const props = this.props
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
-
-  const checked = h('i.fa.fa-check.fa-lg', { ariaHidden: true })
 
   return h(MenuDroppo, {
     isOpen,

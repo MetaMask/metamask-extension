@@ -6,7 +6,6 @@ const Identicon = require('./components/identicon')
 const actions = require('./actions')
 const util = require('./util')
 const numericBalance = require('./util').numericBalance
-const formatBalance = require('./util').formatBalance
 const addressSummary = require('./util').addressSummary
 const EtherBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
@@ -212,14 +211,15 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
+  let message
 
   if (value.gt(balance)) {
-    var message = 'Insufficient funds.'
+    message = 'Insufficient funds.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
   if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
-    var message = 'Recipient address is invalid.'
+    message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 

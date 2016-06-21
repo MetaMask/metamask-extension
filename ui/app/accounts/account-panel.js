@@ -16,10 +16,8 @@ function NewComponent () {
 
 NewComponent.prototype.render = function () {
   const identity = this.props.identity
-  var mayBeFauceting = identity.mayBeFauceting
   var isSelected = this.props.selectedAddress === identity.address
   var account = this.props.accounts[identity.address]
-  var isFauceting = mayBeFauceting && account.balance === '0x0'
   const selectedClass = isSelected ? '.selected' : ''
 
   return (

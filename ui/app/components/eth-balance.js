@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const parseBalance = require('../util').parseBalance
 const formatBalance = require('../util').formatBalance
 
 module.exports = EthBalanceComponent

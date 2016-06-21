@@ -2,7 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const extend = require('xtend')
 const actions = require('../actions')
 const valuesFor = require('../util').valuesFor
 const findDOMNode = require('react-dom').findDOMNode

@@ -4,6 +4,8 @@ const actions = require('../actions')
 module.exports = reduceMetamask
 
 function reduceMetamask (state, action) {
+  let newState
+
   // clone + defaults
   var metamaskState = extend({
     isInitialized: false,
@@ -17,9 +19,9 @@ function reduceMetamask (state, action) {
   switch (action.type) {
 
     case actions.SHOW_ACCOUNTS_PAGE:
-      var state = extend(metamaskState)
-      delete state.seedWords
-      return state
+      newState = extend(metamaskState)
+      delete newState.seedWords
+      return newState
 
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)
@@ -58,16 +60,16 @@ function reduceMetamask (state, action) {
 
     case actions.COMPLETED_TX:
       var stringId = String(action.id)
-      var newState = extend(metamaskState, {
+      newState = extend(metamaskState, {
         unconfTxs: {},
         unconfMsgs: {},
       })
-      for (var id in metamaskState.unconfTxs) {
+      for (const id in metamaskState.unconfTxs) {
         if (id !== stringId) {
           newState.unconfTxs[id] = metamaskState.unconfTxs[id]
         }
       }
-      for (var id in metamaskState.unconfMsgs) {
+      for (const id in metamaskState.unconfMsgs) {
         if (id !== stringId) {
           newState.unconfMsgs[id] = metamaskState.unconfMsgs[id]
         }
@@ -81,7 +83,7 @@ function reduceMetamask (state, action) {
       })
 
     case actions.CLEAR_SEED_WORD_CACHE:
-      var newState = extend(metamaskState, {
+      newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
         selectedAccount: action.value,
@@ -90,7 +92,7 @@ function reduceMetamask (state, action) {
       return newState
 
     case actions.SHOW_ACCOUNT_DETAIL:
-      const newState = extend(metamaskState, {
+      newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
         selectedAccount: action.value,

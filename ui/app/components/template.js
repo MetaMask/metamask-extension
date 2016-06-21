@@ -10,9 +10,9 @@ function NewComponent () {
 }
 
 NewComponent.prototype.render = function () {
-  var state = this.props
+  const props = this.props
 
   return (
-    h('span', 'Placeholder component')
+    h('span', props.message)
   )
 }

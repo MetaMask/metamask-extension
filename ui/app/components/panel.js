@@ -1,5 +1,4 @@
 const inherits = require('util').inherits
-const ethUtil = require('ethereumjs-util')
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const Identicon = require('./identicon')
@@ -14,9 +13,6 @@ function Panel () {
 Panel.prototype.render = function () {
   var state = this.props
 
-  var identity = state.identity || {}
-  var account = state.account || {}
-  var isFauceting = state.isFauceting
   var style = {
     flex: '1 0 auto',
   }

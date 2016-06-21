@@ -12,7 +12,7 @@ function EditableLabel () {
 
 EditableLabel.prototype.render = function () {
   const props = this.props
-  let state = this.state
+  const state = this.state
 
   if (state && state.isEditingLabel) {
     return h('div.editable-label', [

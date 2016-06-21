@@ -8,7 +8,6 @@ module.exports = connect(mapStateToProps)(ConfigScreen)
 
 function mapStateToProps (state) {
   return {
-    rpc: state.metamask.rpcTarget,
     metamask: state.metamask,
   }
 }
@@ -20,7 +19,6 @@ function ConfigScreen () {
 
 ConfigScreen.prototype.render = function () {
   var state = this.props
-  var rpc = state.rpc
   var metamaskState = state.metamask
 
   return (

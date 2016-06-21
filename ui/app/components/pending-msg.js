@@ -3,10 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
-const addressSummary = require('../util').addressSummary
 const readableDate = require('../util').readableDate
-const formatBalance = require('../util').formatBalance
-const dataSize = require('../util').dataSize
 
 module.exports = PendingMsg
 

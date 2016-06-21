@@ -17,7 +17,6 @@ function InfoScreen () {
 
 InfoScreen.prototype.render = function () {
   var state = this.props
-  var rpc = state.rpc
   var manifest = chrome.runtime.getManifest()
   return (
     h('.flex-column.flex-grow', [

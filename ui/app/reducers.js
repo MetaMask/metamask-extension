@@ -1,5 +1,3 @@
-const combineReducers = require('redux').combineReducers
-const actions = require('./actions')
 const extend = require('xtend')
 
 //

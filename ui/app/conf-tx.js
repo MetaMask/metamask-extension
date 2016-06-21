@@ -3,10 +3,7 @@ const Component = require('react').Component
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
-const AccountPanel = require('./components/account-panel')
-const valuesFor = require('./util').valuesFor
 const txHelper = require('../lib/tx-helper')
 
 const ConfirmTx = require('./components/pending-tx')

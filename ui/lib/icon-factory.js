@@ -34,9 +34,11 @@ IconFactory.prototype.cacheIcon = function (address, diameter, icon) {
   if (!(address in this.cache)) {
     var sizeCache = {}
     sizeCache[diameter] = icon
-    return this.cache[address] = sizeCache
+    this.cache[address] = sizeCache
+    return sizeCache
   } else {
-    return this.cache[address][diameter] = icon
+    this.cache[address][diameter] = icon
+    return icon
   }
 }
 

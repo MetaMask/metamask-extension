@@ -1,10 +1,7 @@
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
-const Transaction = require('ethereumjs-tx')
 const ethUtil = require('ethereumjs-util')
 const LightwalletKeyStore = require('eth-lightwallet').keystore
-const LightwalletSigner = require('eth-lightwallet').signing
-const async = require('async')
 const clone = require('clone')
 const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
@@ -88,7 +85,6 @@ IdentityStore.prototype.clearSeedWordCache = function (cb) {
 
 IdentityStore.prototype.getState = function () {
   var seedWords = this.getSeedIfUnlocked()
-  var wallet = configManager.getWallet()
   return clone(extend(this._currentState, {
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
@@ -125,7 +121,6 @@ IdentityStore.prototype.setSelectedAddress = function (address, cb) {
 }
 
 IdentityStore.prototype.revealAccount = function (cb) {
-  let addresses = this._getAddresses()
   const derivedKey = this._idmgmt.derivedKey
   const keyStore = this._keyStore
 
@@ -133,7 +128,6 @@ IdentityStore.prototype.revealAccount = function (cb) {
   keyStore.generateNewAddress(derivedKey, 1)
   configManager.setWallet(keyStore.serialize())
 
-  addresses = this._getAddresses()
   this._loadIdentities()
   this._didUpdate()
   cb(null)
@@ -233,7 +227,6 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
 
 // comes from metamask ui
 IdentityStore.prototype.approveTransaction = function (txId, cb) {
-  var txData = configManager.getTx(txId)
   var approvalCb = this._unconfTxCbs[txId] || noop
 
   // accept tx
@@ -247,7 +240,6 @@ IdentityStore.prototype.approveTransaction = function (txId, cb) {
 
 // comes from metamask ui
 IdentityStore.prototype.cancelTransaction = function (txId) {
-  var txData = configManager.getTx(txId)
   var approvalCb = this._unconfTxCbs[txId] || noop
 
   // reject tx
@@ -299,7 +291,6 @@ IdentityStore.prototype.addUnconfirmedMessage = function (msgParams, cb) {
 
 // comes from metamask ui
 IdentityStore.prototype.approveMessage = function (msgId, cb) {
-  var msgData = messageManager.getMsg(msgId)
   var approvalCb = this._unconfMsgCbs[msgId] || noop
 
   // accept msg
@@ -313,7 +304,6 @@ IdentityStore.prototype.approveMessage = function (msgId, cb) {
 
 // comes from metamask ui
 IdentityStore.prototype.cancelMessage = function (msgId) {
-  var txData = messageManager.getMsg(msgId)
   var approvalCb = this._unconfMsgCbs[msgId] || noop
 
   // reject tx

@@ -2,17 +2,12 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const copyToClipboard = require('copy-to-clipboard')
 const actions = require('./actions')
-const AccountPanel = require('./components/account-panel')
 
 module.exports = connect(mapStateToProps)(AppSettingsPage)
 
 function mapStateToProps (state) {
-  return {
-    identities: state.metamask.identities,
-    address: state.appState.currentView.context,
-  }
+  return {}
 }
 
 inherits(AppSettingsPage, Component)
@@ -21,8 +16,6 @@ function AppSettingsPage () {
 }
 
 AppSettingsPage.prototype.render = function () {
-  var state = this.props
-  var identity = state.identities[state.address]
   return (
 
     h('.account-detail-section.flex-column.flex-grow', [

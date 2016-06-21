@@ -1,9 +1,7 @@
 const inherits = require('util').inherits
-const ethUtil = require('ethereumjs-util')
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const formatBalance = require('../util').formatBalance
-const Identicon = require('./identicon')
 const addressSummary = require('../util').addressSummary
 
 const Panel = require('./panel')
@@ -20,9 +18,6 @@ AccountPanel.prototype.render = function () {
   var identity = state.identity || {}
   var account = state.account || {}
   var isFauceting = state.isFauceting
-
-  var identicon = new Identicon(identity.address, 46).toString()
-  var identiconSrc = `data:image/png;base64,${identicon}`
 
   var panelOpts = {
     key: `accountPanel${identity.address}`,

@@ -3,11 +3,8 @@ const EventEmitter = require('events').EventEmitter
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const getCaretCoordinates = require('textarea-caret')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
-const CreateVaultScreen = require('./create-vault')
-const CreateVaultCompleteScreen = require('./create-vault-complete')
 
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 
@@ -40,7 +37,6 @@ InitializeMenuScreen.prototype.render = function () {
 // }
 
 InitializeMenuScreen.prototype.renderMenu = function () {
-  var state = this.props
   return (
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [

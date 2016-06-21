@@ -56,7 +56,7 @@ gulp.task('copy:watch', function(){
 
 gulp.task('lint', function () {
   // Ignoring node_modules, dist, and docs folders:
-  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/**', '!docs/**'])
+  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/**', '!docs/**', '!app/scripts/chromereload.js'])
     .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
     // eslint.format() outputs the lint results to the console.
     // Alternatively use eslint.formatEach() (see Docs).
@@ -96,8 +96,8 @@ gulp.task('clean', function clean() {
 
 // high level tasks
 
-gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload', 'lint')))
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy', 'lint')))
+gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
 
 // task generators
 

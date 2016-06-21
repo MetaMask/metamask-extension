@@ -48,19 +48,20 @@ function MetamaskInpageProvider (connectionStream) {
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
+  let selectedAddress
 
   var result = null
   switch (payload.method) {
 
     case 'eth_accounts':
       // read from localStorage
-      var selectedAddress = self.publicConfigStore.get('selectedAddress')
+      selectedAddress = self.publicConfigStore.get('selectedAddress')
       result = selectedAddress ? [selectedAddress] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      var selectedAddress = self.publicConfigStore.get('selectedAddress')
+      selectedAddress = self.publicConfigStore.get('selectedAddress')
       result = selectedAddress || '0x0000000000000000000000000000000000000000'
       break
 
@@ -90,7 +91,7 @@ MetamaskInpageProvider.prototype.isConnected = function () {
 
 function createSyncProvider (providerConfig) {
   providerConfig = providerConfig || {}
-  var syncProviderUrl = undefined
+  let syncProviderUrl
 
   if (providerConfig.rpcTarget) {
     syncProviderUrl = providerConfig.rpcTarget

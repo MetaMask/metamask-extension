@@ -1,5 +1,4 @@
 const extend = require('xtend')
-const actions = require('../actions')
 
 module.exports = reduceIdentities
 
