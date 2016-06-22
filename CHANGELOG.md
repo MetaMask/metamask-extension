@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Switch out font family Transat for Montserrat
+
 ## 2.4.2 2016-06-22
 
 - Change out export icon for key.

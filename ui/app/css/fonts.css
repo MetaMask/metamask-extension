@@ -2,45 +2,19 @@
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
 
 @font-face {
-  font-family: 'Transat Standard';
-  src: url('/fonts/Transat Standard/transat_standard-webfont.eot');
-  src: url('/fonts/Transat Standard/transat_standard-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/fonts/Transat Standard/transat_standard-webfont.woff') format('woff'),
-       url('/fonts/Transat Standard/transat_standard-webfont.ttf') format('truetype'),
-       url('/fonts/Transat Standard/transat_standard-webfont.svg#ywftsvg') format('svg');
+  font-family: 'Montserrat Regular';
+    src: url('/fonts/Montserrat/Montserrat-Regular.woff') format('woff');
+    src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-size: 'small',
+
 }
 
 @font-face {
-  font-family: 'Transat Black';
-  src: url('/fonts/Transat Black/transat_black-webfont.eot');
-  src: url('/fonts/Transat Black/transat_black-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/fonts/Transat Black/transat_black-webfont.woff') format('woff'),
-       url('/fonts/Transat Black/transat_black-webfont.ttf') format('truetype'),
-       url('/fonts/Transat Black/transat_black-webfont.svg#ywftsvg') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Transat Medium';
-  src: url('/fonts/Transat Medium/transat_medium-webfont.eot');
-  src: url('/fonts/Transat Medium/transat_medium-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/fonts/Transat Medium/transat_medium-webfont.woff') format('woff'),
-       url('/fonts/Transat Medium/transat_medium-webfont.ttf') format('truetype'),
-       url('/fonts/Transat Medium/transat_medium-webfont.svg#ywftsvg') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Transat Light';
-  src: url('/fonts/Transat Light/transat_light-webfont.eot');
-  src: url('/fonts/Transat Light/transat_light-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/fonts/Transat Light/transat_light-webfont.woff') format('woff'),
-       url('/fonts/Transat Light/transat_light-webfont.ttf') format('truetype'),
-       url('/fonts/Transat Light/transat_light-webfont.svg#ywftsvg') format('svg');
+  font-family: 'Montserrat Bold';
+    src: url('/fonts/Montserrat/Montserrat-Bold.woff') format('woff');
+    src: url('/fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
