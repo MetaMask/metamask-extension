@@ -2,9 +2,12 @@
 
 ## Current Master
 
+## 2.4.2 2016-06-22
+
 - Change out export icon for key.
 - Unify copy to clipboard icon
 - Fixed eth.sign behavior.
+- Fix behavior of batched outbound transactions.
 
 ## 2.4.0 2016-06-20
 
