@@ -69,10 +69,12 @@ function padWithZeroes (number, length) {
 }
 
 function concatSig (v, r, s) {
-  r = padWithZeroes(ethUtil.fromSigned(r), 64)
-  s = padWithZeroes(ethUtil.fromSigned(s), 64)
-  r = ethUtil.stripHexPrefix(r.toString('hex'))
-  s = ethUtil.stripHexPrefix(s.toString('hex'))
-  v = ethUtil.stripHexPrefix(ethUtil.intToHex(v))
-  return ethUtil.addHexPrefix(r.concat(s, v))
+  const rSig = ethUtil.fromSigned(r)
+  const sSig = ethUtil.fromSigned(s)
+  const vSig = ethUtil.bufferToInt(v)
+  const rStr = padWithZeroes(ethUtil.toUnsigned(rSig).toString('hex'), 64)
+  const sStr = padWithZeroes(ethUtil.toUnsigned(sSig).toString('hex'), 64)
+  const vStr = ethUtil.stripHexPrefix(ethUtil.intToHex(vSig))
+  return ethUtil.addHexPrefix(rStr.concat(sStr, vStr)).toString('hex')
 }
+
