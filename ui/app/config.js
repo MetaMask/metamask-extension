@@ -73,7 +73,6 @@ ConfigScreen.prototype.render = function () {
               },
             }, 'Save'),
           ]),
-          
           h('hr.horizontal-line'),
 
           h('div', {

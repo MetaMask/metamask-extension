@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Remove redundant network option buttons from settings page
 - Switch out font family Transat for Montserrat
 
 ## 2.4.2 2016-06-22
