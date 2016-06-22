@@ -2,8 +2,12 @@
 
 ## Current Master
 
+## 2.4.2 2016-06-22
+
 - Change out export icon for key.
 - Unify copy to clipboard icon
+- Fixed eth.sign behavior.
+- Fix behavior of batched outbound transactions.
 
 ## 2.4.0 2016-06-20
 
@@ -11,7 +15,6 @@
 - Remove nonfunctional QR code button.
 - Make network loading indicator clickable to select accessible network.
 - Show more characters of addresses when space permits.
-- Fixed eth.sign behavior.
 - Fixed bug when signing messages under 64 hex characters long.
 - Add disclaimer view with placeholder text for first time users.
 
