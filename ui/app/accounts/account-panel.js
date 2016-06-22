@@ -60,7 +60,8 @@ NewComponent.prototype.render = function () {
           margin: '0 20px',
         },
       }, [
-        h('i.fa.fa-clipboard.fa-md.cursor-pointer.color-orange', {
+        h('img.cursor-pointer.color-orange', {
+          src: 'images/copy.svg',
           onClick: (event) => {
             event.stopPropagation()
             event.preventDefault()
