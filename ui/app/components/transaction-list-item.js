@@ -77,7 +77,7 @@ TransactionListItem.prototype.render = function () {
 function domainField (txParams) {
   return h('div', {
     style: {
-      fontSize: 'small',
+      fontSize: 'x-small',
       color: '#ABA9AA',
     },
   }, [
@@ -98,7 +98,7 @@ function recipientField (txParams, transaction, isTx, isMsg) {
 
   return h('div', {
     style: {
-      fontSize: 'small',
+      fontSize: 'x-small',
       color: '#ABA9AA',
     },
   }, [
