@@ -55,15 +55,8 @@ function createUnlockRequestNotification (opts) {
 function createTxNotification (opts) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
-  var message = [
-    'Submitted by ' + opts.txParams.origin,
-    'to: ' + uiUtils.addressSummary(opts.txParams.to),
-    'from: ' + uiUtils.addressSummary(opts.txParams.from),
-    'value: ' + uiUtils.formatBalance(opts.txParams.value),
-    'data: ' + uiUtils.dataSize(opts.txParams.data),
-  ].join('\n')
 
-  transactionNotificationSVG(opts, function(err, source){
+  renderTransactionNotificationSVG(opts, function(err, source){
     
     var imageUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(source)
 
@@ -74,7 +67,7 @@ function createTxNotification (opts) {
       iconUrl: '/images/icon-128.png',
       imageUrl: imageUrl,
       title: opts.title,
-      message: message,
+      message: '',
       buttons: [{
         title: 'confirm',
       }, {
@@ -117,14 +110,12 @@ function createMsgNotification (opts) {
   }
 }
 
-function transactionNotificationSVG(opts, cb){
+function renderTransactionNotificationSVG(opts, cb){
   var state = {
     nonInteractive: true,
+    inlineIdenticons: true,
     txData: {
-      txParams: {
-        from: '0x5fda30bb72b8dfe20e48a00dfc108d0915be9bb0',
-        to: '0x5fda30bb72b8dfe20e48a00dfc108d0915be9bb0',
-      },
+      txParams: opts.txParams,
       time: (new Date()).getTime(),
     },
     identities: {
@@ -155,7 +146,6 @@ function transactionNotificationSVG(opts, cb){
     unmountComponentAtNode(container)
     var svgSource = svgWrapper(viewSource)
     // insert content into svg wrapper
-    console.log(svgSource)
     cb(null, svgSource)
   })
 }
