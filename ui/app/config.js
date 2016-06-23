@@ -73,43 +73,6 @@ ConfigScreen.prototype.render = function () {
               },
             }, 'Save'),
           ]),
-
-          h('div', [
-            h('button.spaced', {
-              style: {
-                alignSelf: 'center',
-              },
-              onClick (event) {
-                event.preventDefault()
-                state.dispatch(actions.setProviderType('mainnet'))
-              },
-            }, 'Use Main Network'),
-          ]),
-
-          h('div', [
-            h('button.spaced', {
-              style: {
-                alignSelf: 'center',
-              },
-              onClick (event) {
-                event.preventDefault()
-                state.dispatch(actions.setProviderType('testnet'))
-              },
-            }, 'Use Morden Test Network'),
-          ]),
-
-          h('div', [
-            h('button.spaced', {
-              style: {
-                alignSelf: 'center',
-              },
-              onClick (event) {
-                event.preventDefault()
-                state.dispatch(actions.setRpcTarget('http://localhost:8545/'))
-              },
-            }, 'Use http://localhost:8545'),
-          ]),
-
           h('hr.horizontal-line'),
 
           h('div', {
