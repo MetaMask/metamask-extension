@@ -14,7 +14,7 @@ application specific styles
 }
 
 html, body {
-  font-family: 'Transat Standard', Arial;
+  font-family: 'Montserrat Regular', Arial;
   color: #4D4D4D;
   font-weight: 300;
   line-height: 1.4em;
@@ -33,7 +33,7 @@ input:focus, textarea:focus {
 }
 
 button {
-  font-family: 'Transat Black';
+  font-family: 'Montserrat Bold';
   outline: none;
   cursor: pointer;
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
@@ -80,7 +80,7 @@ button.primary {
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
   color: white;
   font-size: 1.1em;
-  font-family: 'Transat Standard';
+  font-family: 'Montserrat Regular';
   text-transform: uppercase;
 }
 
@@ -101,13 +101,13 @@ button.btn-thin {
 }
 
 .app-header h1 {
-  font-family: 'Transat Medium';
+  font-family: 'Montserrat Regular';
   text-transform: uppercase;
   color: #AEAEAE;
 }
 
 h2.page-subtitle {
-  font-family: 'Transat Light';
+  font-family: 'Montserrat Regular';
   text-transform: uppercase;
   color: #AEAEAE;
   font-size: 1em;
@@ -428,7 +428,7 @@ input.large-input {
 
 /* Info screen */
 .info-gray{
-  font-family: 'Transat Medium';
+  font-family: 'Montserrat Regular';
   text-transform: uppercase;
   color: #AEAEAE;
 }
@@ -438,10 +438,8 @@ input.large-input {
 }
 
 .info{
-  font-family: 'Transat Standard', Arial;
-  font-weight: bolder;
+  font-family: 'Montserrat Regular', Arial;
   padding-bottom: 10px;
   display: inline-block;
   padding-left: 5px;
 }
-

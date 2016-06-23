@@ -18,7 +18,7 @@ DropMenuItem.prototype.render = function () {
     style: {
       listStyle: 'none',
       padding: '6px 16px 6px 5px',
-      fontFamily: 'Transat Medium',
+      fontFamily: 'Montserrat Regular',
       color: 'rgb(125, 128, 130)',
       cursor: 'pointer',
     },

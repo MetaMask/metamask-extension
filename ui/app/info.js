@@ -56,10 +56,7 @@ InfoScreen.prototype.render = function () {
             },
           }),
 
-          h('.info', {
-            style: {
-              marginBottom: '20px',
-            }},
+          h('.info',
             `For more information on MetaMask
              you can visit our web site. If you want to
              contact us with questions or just
@@ -79,11 +76,7 @@ InfoScreen.prototype.render = function () {
                   h('img.icon-size', {
                     src: manifest.icons[128],
                   }),
-                  h('div.info', {
-                    style: {
-                      fontWeight: 800,
-                    },
-                  }, 'Visit our web site'),
+                  h('div.info', 'Visit our web site'),
                 ]),
               ]),
               h('div.fa.fa-slack', [
@@ -106,6 +99,7 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   href: 'mailto:hello@metamask.io?subject=Feedback',
                   target: '_blank',
+                  style: { width: '85vw' },
                 }, 'Email us any questions or comments!'),
               ]),
 
