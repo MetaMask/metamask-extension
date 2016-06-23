@@ -1,8 +1,11 @@
 const createId = require('hat')
-const svg = require('virtual-dom/virtual-hyperscript/svg')
-const stringifyVdom = require('virtual-dom-stringify')
+const unmountComponentAtNode = require('react-dom').unmountComponentAtNode
+const findDOMNode = require('react-dom').findDOMNode
+const render = require('react-dom').render
+const h = require('react-hyperscript')
 const uiUtils = require('../../../ui/app/util')
 const renderPendingTx = require('../../../ui/app/components/pending-tx').prototype.renderGeneric
+const MetaMaskUiCss = require('../../../ui/css')
 var notificationHandlers = {}
 
 module.exports = {
@@ -118,8 +121,10 @@ function transactionNotificationSVG(opts, cb){
   var state = {
     txData: {
       txParams: {
-        from: '0xabcd',
+        from: '0x5fda30bb72b8dfe20e48a00dfc108d0915be9bb0',
+        to: '0x5fda30bb72b8dfe20e48a00dfc108d0915be9bb0',
       },
+      time: (new Date()).getTime(),
     },
     identities: {
 
@@ -129,62 +134,38 @@ function transactionNotificationSVG(opts, cb){
     },
   }
 
-  const unmountComponentAtNode = require('react-dom').unmountComponentAtNode
-  const findDOMNode = require('react-dom').findDOMNode
-  const render = require('react-dom').render
-  const h = require('react-hyperscript')
-  const MetaMaskUiCss = require('../../../ui/css')
-  var css = MetaMaskUiCss()
-
   var container = document.createElement('div')
-  var confirmView = h('div', [
-    h('style', css),
+  var confirmView = h('div.app-primary', {
+    style: {
+      width: '450px',
+      height: '300px',
+      padding: '16px',
+      // background: '#F7F7F7',
+      background: 'white',
+    },
+  }, [
+    h('style', MetaMaskUiCss()),
     renderPendingTx(h, state),
   ])
 
   render(confirmView, container, function ready(){
     var rootElement = findDOMNode(this)
-    var source = rootElement.outerHTML
+    var viewSource = rootElement.outerHTML
     unmountComponentAtNode(container)
-    var vnode = svgWrapper()
-    var tagSource = stringifyVdom(vnode)
-    // workaround for https://github.com/alexmingoia/virtual-dom-stringify/issues/26
-    tagSource = tagSource.split('foreignobject').join('foreignObject')
+    var svgSource = svgWrapper(viewSource)
     // insert content into svg wrapper
-    tagSource = tagSource.split('{{content}}').join(source)
-    cb(null, tagSource)
+    console.log(svgSource)
+    cb(null, svgSource)
   })
 }
 
-function svgWrapper(){
-  var h = svg
-  return (
-    
-    h('svg', {
-      'xmlns': 'http://www.w3.org/2000/svg',
-      // 'width': '300',
-      // 'height': '200',
-      'width': '450',
-      'height': '300',
-    }, [
-      h('rect', {
-        'x': '0',
-        'y': '0',
-        'width': '100%',
-        'height': '100%',
-        'fill': 'white',
-      }),
-      h('foreignObject', {
-        'x': '0',
-        'y': '0',
-        'width': '100%',
-        'height': '100%',
-      }, [
-        h('body', {
-          xmlns: 'http://www.w3.org/1999/xhtml',
-        },'{{content}}')
-      ])
-    ])
-
-  )
+function svgWrapper(content){
+  var wrapperSource = `    
+  <svg xmlns="http://www.w3.org/2000/svg" width="450" height="300">
+     <foreignObject x="0" y="0" width="100%" height="100%">
+        <body xmlns="http://www.w3.org/1999/xhtml" height="100%">{{content}}</body>
+     </foreignObject>
+  </svg>
+  `
+  return wrapperSource.split('{{content}}').join(content)
 }

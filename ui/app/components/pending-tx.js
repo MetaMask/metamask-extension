@@ -41,11 +41,11 @@ PendingTx.prototype.renderGeneric = function (h, state) {
       }, 'Submit Transaction'),
 
       // account that will sign
-      // h(AccountPanel, {
-      //   showFullAddress: true,
-      //   identity: identity,
-      //   account: account,
-      // }),
+      h(AccountPanel, {
+        showFullAddress: true,
+        identity: identity,
+        account: account,
+      }),
 
       // tx data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
