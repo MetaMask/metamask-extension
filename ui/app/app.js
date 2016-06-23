@@ -109,30 +109,74 @@ App.prototype.renderAppBar = function () {
         },
       }, props.isUnlocked && [
 
-        h(NetworkIndicator, {
-          network: this.props.network,
-          onClick: (event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+        h('div', {
+          style: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           },
-        }),
+        }, [
+
+          // mini logo
+          h('img', {
+            height: 24,
+            width: 24,
+            src: '/images/icon-128.png',
+          }),
+
+          h(NetworkIndicator, {
+            network: this.props.network,
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+            },
+          }),
+        ]),
 
         // metamask name
-        h('h1', 'MetaMask'),
-        // hamburger
-        h(SandwichExpando, {
-          width: 16,
-          barHeight: 2,
-          padding: 0,
-          isOpen: props.menuOpen,
-          color: 'rgb(247,146,30)',
-          onClick: (event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            this.props.dispatch(actions.toggleMenu())
+        h('h1', {
+          style: {
+            position: 'relative',
+            left: '3px',
           },
-        }),
+        }, 'MetaMask'),
+
+        h('div', {
+          style: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          },
+        }, [
+
+          // small accounts nav
+          h('img.cursor-pointer.color-orange', {
+            src: 'images/switch_acc.svg',
+            style: {
+              width: '23.5px',
+              marginRight: '8px',
+            },
+            onClick: (event) => {
+              event.stopPropagation()
+              this.props.dispatch(actions.showAccountsPage())
+            },
+          }),
+
+          // hamburger
+          h(SandwichExpando, {
+            width: 16,
+            barHeight: 2,
+            padding: 0,
+            isOpen: props.menuOpen,
+            color: 'rgb(247,146,30)',
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.props.dispatch(actions.toggleMenu())
+            },
+          }),
+        ]),
       ]),
     ])
   )
