@@ -39,12 +39,9 @@ IdenticonComponent.prototype.componentDidMount = function () {
   if (!address) return
 
   var container = findDOMNode(this)
-
   var diameter = state.diameter || this.defaultDiameter
-  var dataUri = iconFactory.iconForAddress(address, diameter)
-
-  var img = document.createElement('img')
-  img.src = dataUri
+  var imageify = state.imageify
+  var img = iconFactory.iconForAddress(address, diameter, imageify)
   container.appendChild(img)
 }
 
