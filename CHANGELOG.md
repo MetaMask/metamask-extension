@@ -2,6 +2,12 @@
 
 ## Current Master
 
+## 2.4.4 2016-06-23
+
+- Update web3-stream-provider for batch payload bug fix
+
+## 2.4.3 2016-06-23
+
 - Remove redundant network option buttons from settings page
 - Switch out font family Transat for Montserrat
 
