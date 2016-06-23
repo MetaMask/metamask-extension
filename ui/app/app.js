@@ -109,17 +109,38 @@ App.prototype.renderAppBar = function () {
         },
       }, props.isUnlocked && [
 
-        h(NetworkIndicator, {
-          network: this.props.network,
-          onClick: (event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+        h('div', {
+          style: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           },
-        }),
+        }, [
+
+          // mini logo
+          h('img', {
+            height: 24,
+            width: 24,
+            src: '/images/icon-128.png',
+          }),
+
+          h(NetworkIndicator, {
+            network: this.props.network,
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+            },
+          }),
+        ]),
 
         // metamask name
-        h('h1', 'MetaMask'),
+        h('h1', {
+          style: {
+            position: 'relative',
+            left: '3px',
+          },
+        }, 'MetaMask'),
 
         h('div', {
           style: {
