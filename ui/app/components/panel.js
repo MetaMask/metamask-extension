@@ -27,9 +27,9 @@ Panel.prototype.render = function () {
 
       // account identicon
       h('.identicon-wrapper.flex-column.select-none', [
-        h(Identicon, {
-          address: state.identiconKey,
-        }),
+        // h(Identicon, {
+        //   address: state.identiconKey,
+        // }),
         h('span.font-small', state.identiconLabel),
       ]),
 

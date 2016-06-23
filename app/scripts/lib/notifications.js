@@ -119,6 +119,7 @@ function createMsgNotification (opts) {
 
 function transactionNotificationSVG(opts, cb){
   var state = {
+    nonInteractive: true,
     txData: {
       txParams: {
         from: '0x5fda30bb72b8dfe20e48a00dfc108d0915be9bb0',

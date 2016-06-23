@@ -67,16 +67,25 @@ PendingTx.prototype.renderGeneric = function (h, state) {
       ]),
 
       // send + cancel
-      h('.flex-row.flex-space-around', [
-        h('button', {
-          onClick: state.cancelTransaction,
-        }, 'Cancel'),
-        h('button', {
-          onClick: state.sendTransaction,
-        }, 'Send'),
-      ]),
+      state.nonInteractive ? null : actionButtons(state),
+
     ])
     
   )
+
 }
 
+function actionButtons(state){
+  return (
+
+    h('.flex-row.flex-space-around', [
+      h('button', {
+        onClick: state.cancelTransaction,
+      }, 'Cancel'),
+      h('button', {
+        onClick: state.sendTransaction,
+      }, 'Send'),
+    ])
+
+  )
+}
