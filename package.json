@@ -65,7 +65,7 @@
     "vreme": "^3.0.2",
     "web3": "ethereum/web3.js#0.16.0",
     "web3-provider-engine": "^7.8.1",
-    "web3-stream-provider": "^2.0.3",
+    "web3-stream-provider": "^2.0.4",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
