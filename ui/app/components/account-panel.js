@@ -46,6 +46,7 @@ AccountPanel.prototype.render = function () {
       h('.identicon-wrapper.flex-column.select-none', [
         h(Identicon, {
           address: panelState.identiconKey,
+          imageify: !state.inlineIdenticons,
         }),
         h('span.font-small', panelState.identiconLabel),
       ]),

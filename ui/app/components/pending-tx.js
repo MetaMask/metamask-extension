@@ -45,6 +45,7 @@ PendingTx.prototype.renderGeneric = function (h, state) {
         showFullAddress: true,
         identity: identity,
         account: account,
+        inlineIdenticons: state.inlineIdenticons,
       }),
 
       // tx data
