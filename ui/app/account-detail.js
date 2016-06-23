@@ -53,19 +53,11 @@ AccountDetailScreen.prototype.render = function () {
       }, [
 
         // header - identicon + nav
-        h('.flex-row.flex-space-between', {
+        h('.flex-row.flex-center', {
           style: {
             marginTop: 28,
           },
         }, [
-
-          // invisible placeholder for later
-          h('i.fa.fa-users.fa-lg.color-orange', {
-            style: {
-              width: '30px',
-              visibility: 'hidden',
-            },
-          }),
 
           // large identicon
           h('.identicon-wrapper.flex-column.flex-center.select-none', [
@@ -74,12 +66,6 @@ AccountDetailScreen.prototype.render = function () {
               address: selected,
             }),
           ]),
-
-          // small accounts nav
-          h('img.cursor-pointer.color-orange', {
-            src: 'images/switch_acc.svg',
-            onClick: this.navigateToAccounts.bind(this),
-          }),
         ]),
 
         h('.flex-center', {
@@ -216,11 +202,6 @@ AccountDetailScreen.prototype.transactionList = function () {
       this.props.dispatch(actions.viewPendingTx(txId))
     },
   })
-}
-
-AccountDetailScreen.prototype.navigateToAccounts = function (event) {
-  event.stopPropagation()
-  this.props.dispatch(actions.showAccountsPage())
 }
 
 AccountDetailScreen.prototype.requestAccountExport = function () {

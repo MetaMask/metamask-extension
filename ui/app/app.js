@@ -120,19 +120,42 @@ App.prototype.renderAppBar = function () {
 
         // metamask name
         h('h1', 'MetaMask'),
-        // hamburger
-        h(SandwichExpando, {
-          width: 16,
-          barHeight: 2,
-          padding: 0,
-          isOpen: props.menuOpen,
-          color: 'rgb(247,146,30)',
-          onClick: (event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            this.props.dispatch(actions.toggleMenu())
+
+        h('div', {
+          style: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
           },
-        }),
+        }, [
+
+          // small accounts nav
+          h('img.cursor-pointer.color-orange', {
+            src: 'images/switch_acc.svg',
+            style: {
+              width: '23.5px',
+              marginRight: '8px',
+            },
+            onClick: (event) => {
+              event.stopPropagation()
+              this.props.dispatch(actions.showAccountsPage())
+            },
+          }),
+
+          // hamburger
+          h(SandwichExpando, {
+            width: 16,
+            barHeight: 2,
+            padding: 0,
+            isOpen: props.menuOpen,
+            color: 'rgb(247,146,30)',
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.props.dispatch(actions.toggleMenu())
+            },
+          }),
+        ]),
       ]),
     ])
   )
