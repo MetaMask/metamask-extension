@@ -1,12 +1,12 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const Identicon = require('./identicon')
 const formatBalance = require('../util').formatBalance
 const addressSummary = require('../util').addressSummary
 
-const Panel = require('./panel')
-
 module.exports = AccountPanel
+
 
 inherits(AccountPanel, Component)
 function AccountPanel () {
@@ -19,13 +19,8 @@ AccountPanel.prototype.render = function () {
   var account = state.account || {}
   var isFauceting = state.isFauceting
 
-  var panelOpts = {
+  var panelState = {
     key: `accountPanel${identity.address}`,
-    onClick: (event) => {
-      if (state.onShowDetail) {
-        state.onShowDetail(identity.address, event)
-      }
-    },
     identiconKey: identity.address,
     identiconLabel: identity.name,
     attributes: [
@@ -37,10 +32,40 @@ AccountPanel.prototype.render = function () {
     ],
   }
 
-  return h(Panel, panelOpts,
-  !state.onShowDetail ? null : h('.arrow-right.cursor-pointer', [
-    h('i.fa.fa-chevron-right.fa-lg'),
-  ]))
+  return (
+
+    h('.identity-panel.flex-row.flex-space-between', {
+      style: {
+        flex: '1 0 auto',
+        cursor: panelState.onClick ? 'pointer' : undefined,
+      },
+      onClick: panelState.onClick,
+    }, [
+
+      // account identicon
+      h('.identicon-wrapper.flex-column.select-none', [
+        h(Identicon, {
+          address: panelState.identiconKey,
+        }),
+        h('span.font-small', panelState.identiconLabel),
+      ]),
+
+      // account address, balance
+      h('.identity-data.flex-column.flex-justify-center.flex-grow.select-none', [
+
+        panelState.attributes.map((attr) => {
+          return h('.flex-row.flex-space-between', {
+            key: '' + Math.round(Math.random() * 1000000),
+          }, [
+            h('label.font-small.no-select', attr.key),
+            h('span.font-small', attr.value),
+          ])
+        }),
+      ]),
+
+    ])
+
+  )
 }
 
 function balanceOrFaucetingIndication (account, isFauceting) {
