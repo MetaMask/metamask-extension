@@ -271,6 +271,13 @@ function newUnsignedMessage (msgParams, cb) {
   }
 }
 
+createTxNotification({
+  title: 'New Unsigned Transaction',
+  txParams: {to: '0xabc', from: '0xdef'},
+  // confirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
+  // cancel: idStore.cancelTransaction.bind(idStore, txData.id),
+})
+
 function addUnconfirmedTx (txParams, onTxDoneCb) {
   idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, function (err, txData) {
     if (err) return onTxDoneCb(err)

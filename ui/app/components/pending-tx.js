@@ -16,6 +16,10 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   var state = this.props
+  return this.renderGeneric(h, state)
+}
+
+PendingTx.prototype.renderGeneric = function (h, state) {
   var txData = state.txData
 
   var txParams = txData.txParams || {}
@@ -24,6 +28,7 @@ PendingTx.prototype.render = function () {
   var account = state.accounts[address] || { address: address }
 
   return (
+
     h('.transaction', {
       key: txData.id,
     }, [
@@ -36,11 +41,11 @@ PendingTx.prototype.render = function () {
       }, 'Submit Transaction'),
 
       // account that will sign
-      h(AccountPanel, {
-        showFullAddress: true,
-        identity: identity,
-        account: account,
-      }),
+      // h(AccountPanel, {
+      //   showFullAddress: true,
+      //   identity: identity,
+      //   account: account,
+      // }),
 
       // tx data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
@@ -71,6 +76,7 @@ PendingTx.prototype.render = function () {
         }, 'Send'),
       ]),
     ])
+    
   )
 }
 
