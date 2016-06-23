@@ -32,8 +32,7 @@ IconFactory.prototype.generateIdenticonImg = function (address, diameter) {
 
 // returns svg dom element
 IconFactory.prototype.generateIdenticonSvg = function (address, diameter) {
-  var numericRepresentation = jsNumberForAddress(address)
-  var cacheId = address+':'+diameter
+  var cacheId = `${address}:${diameter}`
   // check cache, lazily generate and populate cache
   var identicon = this.cache[cacheId] || (this.cache[cacheId] = this.generateNewIdenticon(address, diameter))
   // create a clean copy so you can modify it

@@ -57,6 +57,7 @@ function createTxNotification (opts) {
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
 
   renderTransactionNotificationSVG(opts, function(err, source){
+    if (err) throw err
     
     var imageUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(source)
 
