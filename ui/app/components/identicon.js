@@ -40,7 +40,7 @@ IdenticonComponent.prototype.componentDidMount = function () {
 
   var container = findDOMNode(this)
   var diameter = state.diameter || this.defaultDiameter
-  var imageify = state.imageify
+  var imageify = state.imageify === undefined ? true : state.imageify
   var img = iconFactory.iconForAddress(address, diameter, imageify)
   container.appendChild(img)
 }
