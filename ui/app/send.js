@@ -61,7 +61,7 @@ SendTransactionScreen.prototype.render = function () {
           },
         }, [
 
-          // invisible placeholder for later
+          // back button
           h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
             onClick: this.back.bind(this),
           }),
@@ -74,10 +74,8 @@ SendTransactionScreen.prototype.render = function () {
             }),
           ]),
 
-          // small accounts nav
-          h('i.fa.fa-users.fa-lg.cursor-pointer.color-orange', {
-            onClick: this.navigateToAccounts.bind(this),
-          }),
+          // invisible place holder
+          h('i.fa.fa-users.fa-lg.invisible'),
 
         ]),
 
