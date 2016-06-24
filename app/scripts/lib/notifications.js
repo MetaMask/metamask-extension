@@ -4,7 +4,7 @@ const findDOMNode = require('react-dom').findDOMNode
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const uiUtils = require('../../../ui/app/util')
-const renderPendingTx = require('../../../ui/app/components/pending-tx').prototype.renderGeneric
+const renderPendingTx = require('../../../ui/app/components/pending-tx-details').prototype.renderGeneric
 const MetaMaskUiCss = require('../../../ui/css')
 var notificationHandlers = {}
 
@@ -64,7 +64,7 @@ function createTxNotification (opts) {
     var id = createId()
     chrome.notifications.create(id, {
       type: 'image',
-      // requireInteraction: true,
+      requireInteraction: true,
       iconUrl: '/images/icon-128.png',
       imageUrl: imageUrl,
       title: opts.title,
@@ -113,8 +113,7 @@ function createMsgNotification (opts) {
 
 function renderTransactionNotificationSVG(opts, cb){
   var state = {
-    nonInteractive: true,
-    inlineIdenticons: true,
+    imageifyIdenticons: false,
     txData: {
       txParams: opts.txParams,
       time: (new Date()).getTime(),
