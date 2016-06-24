@@ -43,7 +43,10 @@ function IdentityStore (opts = {}) {
 
 IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   delete this._keyStore
-  this.configManager.clearWallet()
+  if (this.configManager) {
+    this.configManager.clearWallet()
+  }
+
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
 
@@ -439,7 +442,7 @@ IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
       keyStore: keyStore,
       derivedKey: derivedKey,
       hdPathSTring: this.hdPathString,
-      this.configManager,
+      configManager: this.configManager,
     })
 
     cb()

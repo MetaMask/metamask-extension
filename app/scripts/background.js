@@ -1,4 +1,5 @@
 const urlUtil = require('url')
+const extend = require('xtend')
 const Dnode = require('dnode')
 const eos = require('end-of-stream')
 const PortStream = require('./lib/port-stream.js')
@@ -22,7 +23,7 @@ const controller = new MetamaskController({
 })
 const idStore = controller.idStore
 
-function unlockAccountMessage() {
+function unlockAccountMessage () {
   createUnlockRequestNotification({
     title: 'Account Unlock Request',
   })
@@ -37,7 +38,7 @@ function showUnconfirmedMessage (msgParams, msgId) {
   })
 }
 
-function showUnconfirmedTx(txParams, txData, onTxDoneCb) {
+function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
   createTxNotification({
     title: 'New Unsigned Transaction',
     txParams: txParams,
@@ -89,7 +90,7 @@ function setupControllerConnection (stream) {
   var api = controller.getApi()
   var dnode = Dnode(api)
   stream.pipe(dnode).pipe(stream)
-  dnode.on('remote', function() {
+  dnode.on('remote', () => {
     // push updates to popup
     controller.ethStore.on('update', controller.sendUpdate)
     idStore.on('update', controller.sendUpdate)
@@ -99,7 +100,6 @@ function setupControllerConnection (stream) {
       controller.ethStore.removeListener('update', controller.sendUpdate)
     })
   })
-
 }
 
 //

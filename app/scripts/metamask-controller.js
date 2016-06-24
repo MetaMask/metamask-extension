@@ -13,11 +13,13 @@ class MetamaskController {
 
   constructor (opts) {
     this.configManager = new ConfigManager(opts)
-    this.idStore = new IdentityStore({ configManager })
-    this.messageManager = messageManager
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
-    this.idStore.setStore(this.ethStore)
+    this.idStore = new IdentityStore({
+      configManager: this.configManager,
+      ethStore: this.ethStore,
+    })
+    this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
   }
 
@@ -203,7 +205,7 @@ class MetamaskController {
   }
 
   setupPublicConfig (stream) {
-    var storeStream = publicConfigStore.createStream()
+    var storeStream = this.publicConfigStore.createStream()
     stream.pipe(storeStream).pipe(stream)
   }
 
@@ -223,7 +225,7 @@ class MetamaskController {
   // config
   //
 
-  function agreeToDisclaimer (cb) {
+  agreeToDisclaimer (cb) {
     try {
       this.configManager.setConfirmed(true)
       cb()
@@ -233,23 +235,22 @@ class MetamaskController {
   }
 
   // called from popup
-  function setRpcTarget (rpcTarget) {
+  setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
     chrome.runtime.reload()
-    idStore.getNetwork()
+    this.idStore.getNetwork()
   }
 
-  function setProviderType (type) {
+  setProviderType (type) {
     this.configManager.setProviderType(type)
     chrome.runtime.reload()
-    idStore.getNetwork()
+    this.idStore.getNetwork()
   }
 
-  function useEtherscanProvider () {
+  useEtherscanProvider () {
     this.configManager.useEtherscanProvider()
     chrome.runtime.reload()
   }
-
 }
 
 function noop () {}

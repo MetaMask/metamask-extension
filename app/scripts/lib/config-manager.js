@@ -1,5 +1,4 @@
 const Migrator = require('pojo-migrator')
-const extend = require('xtend')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
 
