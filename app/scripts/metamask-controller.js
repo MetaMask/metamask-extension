@@ -7,9 +7,9 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 
-module.exports = BackgroundController
+module.exports = MetamaskController
 
-class BackgroundController {
+class MetamaskController {
 
   constructor (opts) {
     this.configManager = new ConfigManager(opts)

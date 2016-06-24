@@ -7,11 +7,11 @@ const createTxNotification = require('./lib/notifications.js').createTxNotificat
 const createMsgNotification = require('./lib/notifications.js').createMsgNotification
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
-const BackgroundController = require('./background-controller')
+const MetamaskController = require('./metamask-controller')
 
 const STORAGE_KEY = 'metamask-config'
 
-const controller = new BackgroundController({
+const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage,
   unlockAccountMessage,
