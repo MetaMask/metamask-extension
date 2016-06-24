@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../actions')
 const valuesFor = require('../util').valuesFor
 const findDOMNode = require('react-dom').findDOMNode
-const AccountPanel = require('./account-panel')
+const AccountListItem = require('./account-list-item')
 
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
@@ -74,7 +74,7 @@ AccountsScreen.prototype.render = function () {
               }
             })
 
-            return h(AccountPanel, {
+            return h(AccountListItem, {
               key: `acct-panel-${identity.address}`,
               identity,
               selectedAddress: this.props.selectedAddress,

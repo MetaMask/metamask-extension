@@ -33,6 +33,7 @@ NewComponent.prototype.render = function () {
         this.pendingOrNot(),
         h(Identicon, {
           address: identity.address,
+          imageify: true,
         }),
       ]),
 
