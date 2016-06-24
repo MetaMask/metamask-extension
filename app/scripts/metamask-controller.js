@@ -7,18 +7,16 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 
-module.exports = MetamaskController
-
-class MetamaskController {
+module.exports = class MetamaskController {
 
   constructor (opts) {
     this.configManager = new ConfigManager(opts)
-    this.provider = this.initializeProvider(opts)
-    this.ethStore = new EthStore(this.provider)
     this.idStore = new IdentityStore({
       configManager: this.configManager,
-      ethStore: this.ethStore,
     })
+    this.provider = this.initializeProvider(opts)
+    this.ethStore = new EthStore(this.provider)
+    this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
   }
@@ -35,7 +33,7 @@ class MetamaskController {
     const idStore = this.idStore
 
     return {
-      getState: function (cb) { cb(null, this.getState()) },
+      getState: (cb) => { cb(null, this.getState()) },
       setRpcTarget: this.setRpcTarget.bind(this),
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
@@ -99,7 +97,9 @@ class MetamaskController {
   }
 
   sendUpdate () {
-    this.remote.sendUpdate(this.getState())
+    if (this.remote) {
+      this.remote.sendUpdate(this.getState())
+    }
   }
 
   initializeProvider (opts) {
@@ -126,7 +126,7 @@ class MetamaskController {
     idStore.web3 = web3
     idStore.getNetwork()
 
-    provider.on('block', this.processBlock)
+    provider.on('block', this.processBlock.bind(this))
     provider.on('error', idStore.getNetwork.bind(idStore))
 
     return provider

@@ -90,14 +90,15 @@ function setupControllerConnection (stream) {
   var api = controller.getApi()
   var dnode = Dnode(api)
   stream.pipe(dnode).pipe(stream)
-  dnode.on('remote', () => {
+  dnode.on('remote', (remote) => {
     // push updates to popup
-    controller.ethStore.on('update', controller.sendUpdate)
-    idStore.on('update', controller.sendUpdate)
+    controller.ethStore.on('update', controller.sendUpdate.bind(controller))
+    controller.remote = remote
+    idStore.on('update', controller.sendUpdate.bind(controller))
 
     // teardown on disconnect
     eos(stream, () => {
-      controller.ethStore.removeListener('update', controller.sendUpdate)
+      controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
     })
   })
 }
