@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fixed bug where MetaMask interfered with PDF loading.
+- Moved switch account icon into menu bar.
+
 ## 2.4.4 2016-06-23
 
 - Update web3-stream-provider for batch payload bug fix
