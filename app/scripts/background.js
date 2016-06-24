@@ -5,16 +5,20 @@ const PortStream = require('./lib/port-stream.js')
 const createUnlockRequestNotification = require('./lib/notifications.js').createUnlockRequestNotification
 const createTxNotification = require('./lib/notifications.js').createTxNotification
 const createMsgNotification = require('./lib/notifications.js').createMsgNotification
-const configManager = require('./lib/config-manager-singleton')
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
-
 const BackgroundController = require('./background-controller')
 
+const STORAGE_KEY = 'metamask-config'
+
 const controller = new BackgroundController({
+  // User confirmation callbacks:
   showUnconfirmedMessage,
   unlockAccountMessage,
   showUnconfirmedTx,
+  // Persistence Methods:
+  setData,
+  loadData,
 })
 const idStore = controller.idStore
 
@@ -82,7 +86,7 @@ function setupTrustedCommunication (connectionStream, originDomain) {
 
 function setupControllerConnection (stream) {
   controller.stream = stream
-  var api = controller.api
+  var api = controller.getApi()
   var dnode = Dnode(api)
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', function() {
@@ -106,7 +110,7 @@ idStore.on('update', updateBadge)
 
 function updateBadge (state) {
   var label = ''
-  var unconfTxs = configManager.unconfirmedTxs()
+  var unconfTxs = controller.configManager.unconfirmedTxs()
   var unconfTxLen = Object.keys(unconfTxs).length
   var unconfMsgs = messageManager.unconfirmedMsgs()
   var unconfMsgLen = Object.keys(unconfMsgs).length
@@ -116,6 +120,56 @@ function updateBadge (state) {
   }
   chrome.browserAction.setBadgeText({ text: label })
   chrome.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
+}
+
+function loadData () {
+  var oldData = getOldStyleData()
+  var newData
+  try {
+    newData = JSON.parse(window.localStorage[STORAGE_KEY])
+  } catch (e) {}
+
+  var data = extend({
+    meta: {
+      version: 0,
+    },
+    data: {
+      config: {
+        provider: {
+          type: 'testnet',
+        },
+      },
+    },
+  }, oldData || null, newData || null)
+  return data
+}
+
+function getOldStyleData () {
+  var config, wallet, seedWords
+
+  var result = {
+    meta: { version: 0 },
+    data: {},
+  }
+
+  try {
+    config = JSON.parse(window.localStorage['config'])
+    result.data.config = config
+  } catch (e) {}
+  try {
+    wallet = JSON.parse(window.localStorage['lightwallet'])
+    result.data.wallet = wallet
+  } catch (e) {}
+  try {
+    seedWords = window.localStorage['seedWords']
+    result.data.seedWords = seedWords
+  } catch (e) {}
+
+  return result
+}
+
+function setData (data) {
+  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }
 
 function noop () {}

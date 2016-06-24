@@ -1,6 +1,5 @@
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
-const configManager = require('./config-manager-singleton')
 
 module.exports = IdManagement
 
@@ -9,6 +8,7 @@ function IdManagement (opts) {
 
   this.keyStore = opts.keyStore
   this.derivedKey = opts.derivedKey
+  this.configManager = opts.configManager
   this.hdPathString = "m/44'/60'/0'/0"
 
   this.getAddresses = function () {
@@ -32,9 +32,9 @@ function IdManagement (opts) {
 
     // Add the tx hash to the persisted meta-tx object
     var txHash = ethUtil.bufferToHex(tx.hash())
-    var metaTx = configManager.getTx(txParams.metamaskId)
+    var metaTx = this.configManager.getTx(txParams.metamaskId)
     metaTx.hash = txHash
-    configManager.updateTx(metaTx)
+    this.configManager.updateTx(metaTx)
 
     // return raw serialized tx
     var rawTx = ethUtil.bufferToHex(tx.serialize())

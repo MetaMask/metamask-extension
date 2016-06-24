@@ -2,19 +2,18 @@ const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const IdentityStore = require('./lib/idStore')
-const configManager = require('./lib/config-manager-singleton')
 const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
-
+const ConfigManager = require('./lib/config-manager')
 
 module.exports = BackgroundController
 
 class BackgroundController {
 
   constructor (opts) {
-    this.idStore = new IdentityStore()
-    this.configManager = configManager
+    this.configManager = new ConfigManager(opts)
+    this.idStore = new IdentityStore({ configManager })
     this.messageManager = messageManager
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
@@ -22,7 +21,7 @@ class BackgroundController {
     this.publicConfigStore = this.initPublicConfigStore()
   }
 
-  get state () {
+  getState () {
     return extend(
       this.ethStore.getState(),
       this.idStore.getState(),
@@ -30,15 +29,15 @@ class BackgroundController {
     )
   }
 
-  get api () {
+  getApi () {
     const idStore = this.idStore
 
     return {
-      getState: function (cb) { cb(null, this.state) },
-      setRpcTarget: setRpcTarget,
-      setProviderType: setProviderType,
-      useEtherscanProvider: useEtherscanProvider,
-      agreeToDisclaimer: agreeToDisclaimer,
+      getState: function (cb) { cb(null, this.getState()) },
+      setRpcTarget: this.setRpcTarget.bind(this),
+      setProviderType: this.setProviderType.bind(this),
+      useEtherscanProvider: this.useEtherscanProvider.bind(this),
+      agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -98,14 +97,14 @@ class BackgroundController {
   }
 
   sendUpdate () {
-    this.remote.sendUpdate(this.state)
+    this.remote.sendUpdate(this.getState())
   }
 
   initializeProvider (opts) {
     const idStore = this.idStore
 
     var providerOpts = {
-      rpcUrl: configManager.getCurrentRpcAddress(),
+      rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: function (cb) {
         var selectedAddress = idStore.getSelectedAddress()
@@ -188,7 +187,7 @@ class BackgroundController {
     }
   }
 
-  newUnsignedMessage(msgParams, cb) {
+  newUnsignedMessage (msgParams, cb) {
     var state = this.idStore.getState()
     if (!state.isUnlocked) {
       this.opts.unlockAccountMessage()
@@ -212,7 +211,7 @@ class BackgroundController {
   processBlock (block) {
     console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
     this.verifyNetwork()
- }
+  }
 
   verifyNetwork () {
     // Check network when restoring connectivity:
@@ -220,36 +219,37 @@ class BackgroundController {
       this.idStore.getNetwork()
     }
   }
-}
 
-// config
-//
+  // config
+  //
 
-function agreeToDisclaimer (cb) {
-  try {
-    configManager.setConfirmed(true)
-    cb()
-  } catch (e) {
-    cb(e)
+  function agreeToDisclaimer (cb) {
+    try {
+      this.configManager.setConfirmed(true)
+      cb()
+    } catch (e) {
+      cb(e)
+    }
   }
-}
 
-// called from popup
-function setRpcTarget (rpcTarget) {
-  configManager.setRpcTarget(rpcTarget)
-  chrome.runtime.reload()
-  idStore.getNetwork()
-}
+  // called from popup
+  function setRpcTarget (rpcTarget) {
+    this.configManager.setRpcTarget(rpcTarget)
+    chrome.runtime.reload()
+    idStore.getNetwork()
+  }
 
-function setProviderType (type) {
-  configManager.setProviderType(type)
-  chrome.runtime.reload()
-  idStore.getNetwork()
-}
+  function setProviderType (type) {
+    this.configManager.setProviderType(type)
+    chrome.runtime.reload()
+    idStore.getNetwork()
+  }
 
-function useEtherscanProvider () {
-  configManager.useEtherscanProvider()
-  chrome.runtime.reload()
+  function useEtherscanProvider () {
+    this.configManager.useEtherscanProvider()
+    chrome.runtime.reload()
+  }
+
 }
 
 function noop () {}

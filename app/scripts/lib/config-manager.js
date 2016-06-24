@@ -3,7 +3,6 @@ const extend = require('xtend')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
 
-const STORAGE_KEY = 'metamask-config'
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
 
@@ -15,7 +14,7 @@ const MAINNET_RPC = MetamaskConfig.network.mainnet
  * particular portions of the state.
  */
 module.exports = ConfigManager
-function ConfigManager () {
+function ConfigManager (opts) {
   // ConfigManager is observable and will emit updates
   this._subs = []
 
@@ -37,12 +36,10 @@ function ConfigManager () {
 
     // How to load initial config.
     // Includes step on migrating pre-pojo-migrator data.
-    loadData: loadData,
+    loadData: opts.loadData,
 
     // How to persist migrated config.
-    setData: function (data) {
-      window.localStorage[STORAGE_KEY] = JSON.stringify(data)
-    },
+    setData: opts.setData,
   })
 }
 
@@ -278,51 +275,5 @@ ConfigManager.prototype.setConfirmed = function (confirmed) {
 ConfigManager.prototype.getConfirmed = function () {
   var data = this.getData()
   return ('isConfirmed' in data) && data.isConfirmed
-}
-
-function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
-
-  var data = extend({
-    meta: {
-      version: 0,
-    },
-    data: {
-      config: {
-        provider: {
-          type: 'testnet',
-        },
-      },
-    },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
-  }
-
-  try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
-
-  return result
 }
 
