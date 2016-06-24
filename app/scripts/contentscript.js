@@ -1,36 +1,52 @@
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
+const urlUtil = require('url')
 
-// inject in-page script
-var scriptTag = document.createElement('script')
-scriptTag.src = chrome.extension.getURL('scripts/inpage.js')
-scriptTag.onload = function () { this.parentNode.removeChild(this) }
-var container = document.head || document.documentElement
-// append as first child
-container.insertBefore(scriptTag, container.children[0])
+if (shouldInjectWeb3()) {
+  setupInjection()
+}
 
-// setup communication to page and plugin
-var pageStream = new LocalMessageDuplexStream({
-  name: 'contentscript',
-  target: 'inpage',
-})
-pageStream.on('error', console.error.bind(console))
-var pluginPort = chrome.runtime.connect({name: 'contentscript'})
-var pluginStream = new PortStream(pluginPort)
-pluginStream.on('error', console.error.bind(console))
+function setupInjection(){
 
-// forward communication plugin->inpage
-pageStream.pipe(pluginStream).pipe(pageStream)
+  // inject in-page script
+  var scriptTag = document.createElement('script')
+  scriptTag.src = chrome.extension.getURL('scripts/inpage.js')
+  scriptTag.onload = function () { this.parentNode.removeChild(this) }
+  var container = document.head || document.documentElement
+  // append as first child
+  container.insertBefore(scriptTag, container.children[0])
 
-// connect contentscript->inpage reload stream
-var mx = ObjectMultiplex()
-mx.on('error', console.error.bind(console))
-mx.pipe(pageStream)
-var reloadStream = mx.createStream('reload')
-reloadStream.on('error', console.error.bind(console))
+  // setup communication to page and plugin
+  var pageStream = new LocalMessageDuplexStream({
+    name: 'contentscript',
+    target: 'inpage',
+  })
+  pageStream.on('error', console.error.bind(console))
+  var pluginPort = chrome.runtime.connect({name: 'contentscript'})
+  var pluginStream = new PortStream(pluginPort)
+  pluginStream.on('error', console.error.bind(console))
 
-// if we lose connection with the plugin, trigger tab refresh
-pluginStream.on('close', function () {
-  reloadStream.write({ method: 'reset' })
-})
+  // forward communication plugin->inpage
+  pageStream.pipe(pluginStream).pipe(pageStream)
+
+  // connect contentscript->inpage reload stream
+  var mx = ObjectMultiplex()
+  mx.on('error', console.error.bind(console))
+  mx.pipe(pageStream)
+  var reloadStream = mx.createStream('reload')
+  reloadStream.on('error', console.error.bind(console))
+
+  // if we lose connection with the plugin, trigger tab refresh
+  pluginStream.on('close', function () {
+    reloadStream.write({ method: 'reset' })
+  })
+
+}
+
+function shouldInjectWeb3(){
+  var urlData = urlUtil.parse(window.location.href)
+  var extension = urlData.pathname.split('.').slice(-1)[0]
+  var shouldInject = (extension !== 'pdf')
+  return shouldInject
+}
