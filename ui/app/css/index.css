@@ -228,10 +228,8 @@ app sections
   font-size: 1em;
   height: 31px;
 }
-
-.editable-button{
-  position: relative;
-  bottom: 2px;
+.editable-label{
+  display: flex;
 }
 /* Webkit */
 .unlock-screen input::-webkit-input-placeholder {
