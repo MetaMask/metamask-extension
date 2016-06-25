@@ -1,10 +1,12 @@
 const createId = require('hat')
+const extend = require('xtend')
 const unmountComponentAtNode = require('react-dom').unmountComponentAtNode
 const findDOMNode = require('react-dom').findDOMNode
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const uiUtils = require('../../../ui/app/util')
-const renderPendingTx = require('../../../ui/app/components/pending-tx-details').prototype.renderGeneric
+const PendingTxDetails = require('../../../ui/app/components/pending-tx-details')
+const PendingMsgDetails = require('../../../ui/app/components/pending-msg-details')
 const MetaMaskUiCss = require('../../../ui/css')
 var notificationHandlers = {}
 
@@ -56,63 +58,8 @@ function createTxNotification (opts) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
 
-  renderTransactionNotificationSVG(opts, function(err, source){
-    if (err) throw err
-    
-    var imageUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(source)
-
-    var id = createId()
-    chrome.notifications.create(id, {
-      type: 'image',
-      requireInteraction: true,
-      iconUrl: '/images/icon-128.png',
-      imageUrl: imageUrl,
-      title: opts.title,
-      message: '',
-      buttons: [{
-        title: 'confirm',
-      }, {
-        title: 'cancel',
-      }],
-    })
-    notificationHandlers[id] = {
-      confirm: opts.confirm,
-      cancel: opts.cancel,
-    }
-
-  })
-}
-
-function createMsgNotification (opts) {
-  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
-  var message = [
-    'Submitted by ' + opts.msgParams.origin,
-    'to be signed by: ' + uiUtils.addressSummary(opts.msgParams.from),
-    'message:\n' + opts.msgParams.data,
-  ].join('\n')
-
-  var id = createId()
-  chrome.notifications.create(id, {
-    type: 'basic',
-    requireInteraction: true,
-    iconUrl: '/images/icon-128.png',
-    title: opts.title,
-    message: message,
-    buttons: [{
-      title: 'confirm',
-    }, {
-      title: 'cancel',
-    }],
-  })
-  notificationHandlers[id] = {
-    confirm: opts.confirm,
-    cancel: opts.cancel,
-  }
-}
-
-function renderTransactionNotificationSVG(opts, cb){
   var state = {
+    title: 'New Unsigned Transaction',
     imageifyIdenticons: false,
     txData: {
       txParams: opts.txParams,
@@ -124,8 +71,87 @@ function renderTransactionNotificationSVG(opts, cb){
     accounts: {
 
     },
+    onConfirm: opts.confirm,
+    onCancel: opts.cancel,
   }
 
+  renderTxNotificationSVG(state, function(err, notificationSvgSource){
+    if (err) throw err
+
+    showNotification(extend(state, {
+      imageUrl: toSvgUri(notificationSvgSource),
+    }))
+
+  })
+}
+
+function createMsgNotification (opts) {
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+
+  var state = {
+    title: 'New Unsigned Message',
+    imageifyIdenticons: false,
+    txData: {
+      msgParams: opts.msgParams,
+      time: (new Date()).getTime(),
+    },
+    identities: {
+
+    },
+    accounts: {
+
+    },
+    onConfirm: opts.confirm,
+    onCancel: opts.cancel,
+  }
+
+  renderMsgNotificationSVG(state, function(err, notificationSvgSource){
+    if (err) throw err
+
+    showNotification(extend(state, {
+      imageUrl: toSvgUri(notificationSvgSource),
+    }))
+
+  })
+}
+
+function showNotification (state) {
+  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+
+  var id = createId()
+  chrome.notifications.create(id, {
+    type: 'image',
+    requireInteraction: true,
+    iconUrl: '/images/icon-128.png',
+    imageUrl: state.imageUrl,
+    title: state.title,
+    message: '',
+    buttons: [{
+      title: 'confirm',
+    }, {
+      title: 'cancel',
+    }],
+  })
+  notificationHandlers[id] = {
+    confirm: state.onConfirm,
+    cancel: state.onCancel,
+  }
+
+}
+
+function renderTxNotificationSVG(state, cb){
+  var content = h(PendingTxDetails, state)
+  renderNotificationSVG(content, cb)
+}
+
+function renderMsgNotificationSVG(state, cb){
+  var content = h(PendingMsgDetails, state)
+  renderNotificationSVG(content, cb)
+}
+
+function renderNotificationSVG(content, cb){
   var container = document.createElement('div')
   var confirmView = h('div.app-primary', {
     style: {
@@ -137,7 +163,7 @@ function renderTransactionNotificationSVG(opts, cb){
     },
   }, [
     h('style', MetaMaskUiCss()),
-    renderPendingTx(h, state),
+    content,
   ])
 
   render(confirmView, container, function ready(){
@@ -159,4 +185,8 @@ function svgWrapper(content){
   </svg>
   `
   return wrapperSource.split('{{content}}').join(content)
+}
+
+function toSvgUri(content){
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(content)
 }

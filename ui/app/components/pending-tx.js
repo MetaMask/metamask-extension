@@ -1,12 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-
-const AccountPanel = require('./account-panel')
 const PendingTxDetails = require('./pending-tx-details')
-const addressSummary = require('../util').addressSummary
-const readableDate = require('../util').readableDate
-const formatBalance = require('../util').formatBalance
+
 
 module.exports = PendingTx
 
@@ -17,10 +13,6 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   var state = this.props
-  return this.renderGeneric(h, state)
-}
-
-PendingTx.prototype.renderGeneric = function (h, state) {
   var txData = state.txData
 
   var txParams = txData.txParams || {}

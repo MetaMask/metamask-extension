@@ -1,9 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-
-const AccountPanel = require('./account-panel')
-const readableDate = require('../util').readableDate
+const PendingTxDetails = require('./pending-msg-details')
 
 module.exports = PendingMsg
 
@@ -22,10 +20,12 @@ PendingMsg.prototype.render = function () {
   var account = state.accounts[address] || { address: address }
 
   return (
-    h('.transaction', {
+
+    h('div', {
       key: msgData.id,
     }, [
 
+      // header
       h('h3', {
         style: {
           fontWeight: 'bold',
@@ -33,27 +33,10 @@ PendingMsg.prototype.render = function () {
         },
       }, 'Sign Message'),
 
-      // account that will sign
-      h(AccountPanel, {
-        showFullAddress: true,
-        identity: identity,
-        account: account,
-      }),
+      // message details
+      h(PendingTxDetails, state),
 
-      // tx data
-      h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'DATE'),
-          h('span.font-small', readableDate(msgData.time)),
-        ]),
-
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'MESSAGE'),
-          h('span.font-small', msgParams.data),
-        ]),
-      ]),
-
-      // send + cancel
+      // sign + cancel
       h('.flex-row.flex-space-around', [
         h('button', {
           onClick: state.cancelMessage,
@@ -63,6 +46,7 @@ PendingMsg.prototype.render = function () {
         }, 'Sign'),
       ]),
     ])
+    
   )
 }
 
