@@ -4,7 +4,6 @@ const unmountComponentAtNode = require('react-dom').unmountComponentAtNode
 const findDOMNode = require('react-dom').findDOMNode
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const uiUtils = require('../../../ui/app/util')
 const PendingTxDetails = require('../../../ui/app/components/pending-tx-details')
 const PendingMsgDetails = require('../../../ui/app/components/pending-msg-details')
 const MetaMaskUiCss = require('../../../ui/css')

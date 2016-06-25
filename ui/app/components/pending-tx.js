@@ -15,11 +15,6 @@ PendingTx.prototype.render = function () {
   var state = this.props
   var txData = state.txData
 
-  var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAddress
-  var identity = state.identities[address] || { address: address }
-  var account = state.accounts[address] || { address: address }
-
   return (
 
     h('div', {
@@ -38,25 +33,17 @@ PendingTx.prototype.render = function () {
       h(PendingTxDetails, state),
 
       // send + cancel
-      actionButtons(state),
+      h('.flex-row.flex-space-around', [
+        h('button', {
+          onClick: state.cancelTransaction,
+        }, 'Cancel'),
+        h('button', {
+          onClick: state.sendTransaction,
+        }, 'Send'),
+      ]),
 
     ])
     
   )
 
-}
-
-function actionButtons(state){
-  return (
-
-    h('.flex-row.flex-space-around', [
-      h('button', {
-        onClick: state.cancelTransaction,
-      }, 'Cancel'),
-      h('button', {
-        onClick: state.sendTransaction,
-      }, 'Send'),
-    ])
-
-  )
 }
