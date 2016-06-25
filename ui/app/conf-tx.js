@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 
-const ConfirmTx = require('./components/pending-tx')
+const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
@@ -101,7 +101,7 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   if ('txParams' in opts.txData) {
     // This is a pending transaction
-    return h(ConfirmTx, opts)
+    return h(PendingTx, opts)
   } else if ('msgParams' in opts.txData) {
     // This is a pending message to sign
     return h(PendingMsg, opts)
