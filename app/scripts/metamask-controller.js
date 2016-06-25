@@ -10,6 +10,7 @@ const ConfigManager = require('./lib/config-manager')
 module.exports = class MetamaskController {
 
   constructor (opts) {
+    this.opts = opts
     this.configManager = new ConfigManager(opts)
     this.idStore = new IdentityStore({
       configManager: this.configManager,
@@ -108,16 +109,16 @@ module.exports = class MetamaskController {
     var providerOpts = {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
-      getAccounts: function (cb) {
+      getAccounts: (cb) => {
         var selectedAddress = idStore.getSelectedAddress()
         var result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
       },
       // tx signing
-      approveTransaction: this.newUnsignedTransaction,
+      approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: idStore.signTransaction.bind(idStore),
       // msg signing
-      approveMessage: this.newUnsignedMessage,
+      approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: idStore.signMessage.bind(idStore),
     }
 
