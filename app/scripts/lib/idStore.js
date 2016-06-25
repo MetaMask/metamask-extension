@@ -7,7 +7,6 @@ const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
 const ethBinToOps = require('eth-bin-to-ops')
 const autoFaucet = require('./auto-faucet')
-const configManager = require('./config-manager-singleton')
 const messageManager = require('./message-manager')
 const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 const IdManagement = require('./id-management')
@@ -20,6 +19,7 @@ function IdentityStore (opts = {}) {
 
   // we just use the ethStore to auto-add accounts
   this._ethStore = opts.ethStore
+  this.configManager = opts.configManager
   // lightwallet key store
   this._keyStore = null
   // lightwallet wrapper
@@ -43,7 +43,10 @@ function IdentityStore (opts = {}) {
 
 IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   delete this._keyStore
-  configManager.clearWallet()
+  if (this.configManager) {
+    this.configManager.clearWallet()
+  }
+
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
 
@@ -51,14 +54,14 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
     this._didUpdate()
     this._autoFaucet()
 
-    configManager.setShowSeedWords(true)
+    this.configManager.setShowSeedWords(true)
     var seedWords = this._idmgmt.getSeed()
     cb(null, seedWords)
   })
 }
 
 IdentityStore.prototype.recoverSeed = function (cb) {
-  configManager.setShowSeedWords(true)
+  this.configManager.setShowSeedWords(true)
   if (!this._idmgmt) return cb(new Error('Unauthenticated. Please sign in.'))
   var seedWords = this._idmgmt.getSeed()
   cb(null, seedWords)
@@ -79,11 +82,13 @@ IdentityStore.prototype.setStore = function (store) {
 }
 
 IdentityStore.prototype.clearSeedWordCache = function (cb) {
+  const configManager = this.configManager
   configManager.setShowSeedWords(false)
   cb(null, configManager.getSelectedAccount())
 }
 
 IdentityStore.prototype.getState = function () {
+  const configManager = this.configManager
   var seedWords = this.getSeedIfUnlocked()
   return clone(extend(this._currentState, {
     isInitialized: !!configManager.getWallet() && !seedWords,
@@ -99,6 +104,7 @@ IdentityStore.prototype.getState = function () {
 }
 
 IdentityStore.prototype.getSeedIfUnlocked = function () {
+  const configManager = this.configManager
   var showSeed = configManager.getShouldShowSeedWords()
   var idmgmt = this._idmgmt
   var shouldShow = showSeed && !!idmgmt
@@ -107,10 +113,12 @@ IdentityStore.prototype.getSeedIfUnlocked = function () {
 }
 
 IdentityStore.prototype.getSelectedAddress = function () {
+  const configManager = this.configManager
   return configManager.getSelectedAccount()
 }
 
 IdentityStore.prototype.setSelectedAddress = function (address, cb) {
+  const configManager = this.configManager
   if (!address) {
     var addresses = this._getAddresses()
     address = addresses[0]
@@ -123,6 +131,7 @@ IdentityStore.prototype.setSelectedAddress = function (address, cb) {
 IdentityStore.prototype.revealAccount = function (cb) {
   const derivedKey = this._idmgmt.derivedKey
   const keyStore = this._keyStore
+  const configManager = this.configManager
 
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
   keyStore.generateNewAddress(derivedKey, 1)
@@ -158,6 +167,7 @@ IdentityStore.prototype.setLocked = function (cb) {
 }
 
 IdentityStore.prototype.submitPassword = function (password, cb) {
+  const configManager = this.configManager
   this.tryPassword(password, (err) => {
     if (err) return cb(err)
     // load identities before returning...
@@ -177,6 +187,7 @@ IdentityStore.prototype.exportAccount = function (address, cb) {
 
 // comes from dapp via zero-client hooked-wallet provider
 IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDoneCb, cb) {
+  const configManager = this.configManager
   var self = this
   // create txData obj with parameters and meta data
   var time = (new Date()).getTime()
@@ -227,6 +238,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
 
 // comes from metamask ui
 IdentityStore.prototype.approveTransaction = function (txId, cb) {
+  const configManager = this.configManager
   var approvalCb = this._unconfTxCbs[txId] || noop
 
   // accept tx
@@ -240,6 +252,7 @@ IdentityStore.prototype.approveTransaction = function (txId, cb) {
 
 // comes from metamask ui
 IdentityStore.prototype.cancelTransaction = function (txId) {
+  const configManager = this.configManager
   var approvalCb = this._unconfTxCbs[txId] || noop
 
   // reject tx
@@ -347,6 +360,7 @@ IdentityStore.prototype._isUnlocked = function () {
 
 // load identities from keyStoreet
 IdentityStore.prototype._loadIdentities = function () {
+  const configManager = this.configManager
   if (!this._isUnlocked()) throw new Error('not unlocked')
 
   var addresses = this._getAddresses()
@@ -367,6 +381,7 @@ IdentityStore.prototype._loadIdentities = function () {
 }
 
 IdentityStore.prototype.saveAccountLabel = function (account, label, cb) {
+  const configManager = this.configManager
   configManager.setNicknameForWallet(account, label)
   this._loadIdentities()
   cb(null, label)
@@ -379,6 +394,7 @@ IdentityStore.prototype.saveAccountLabel = function (account, label, cb) {
 // If there is no balance and it mayBeFauceting,
 // then it is in fact fauceting.
 IdentityStore.prototype._mayBeFauceting = function (i) {
+  const configManager = this.configManager
   var config = configManager.getProvider()
   if (i === 0 &&
       config.type === 'rpc' &&
@@ -397,6 +413,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
 }
 
 IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
+  const configManager = this.configManager
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
@@ -425,6 +442,7 @@ IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
       keyStore: keyStore,
       derivedKey: derivedKey,
       hdPathSTring: this.hdPathString,
+      configManager: this.configManager,
     })
 
     cb()
@@ -432,6 +450,7 @@ IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
 }
 
 IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey) {
+  const configManager = this.configManager
   var keyStore = new LightwalletKeyStore(seed, derivedKey, this.hdPathString)
   keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
@@ -443,6 +462,7 @@ IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey)
 }
 
 IdentityStore.prototype._createFirstWallet = function (entropy, derivedKey) {
+  const configManager = this.configManager
   var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
   var keyStore = new LightwalletKeyStore(secretSeed, derivedKey, this.hdPathString)
   keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})

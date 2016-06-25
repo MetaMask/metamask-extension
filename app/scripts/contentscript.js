@@ -1,7 +1,7 @@
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
-const urlUtil = require('url')
+// const urlUtil = require('url')
 
 if (shouldInjectWeb3()) {
   setupInjection()
@@ -45,8 +45,6 @@ function setupInjection(){
 }
 
 function shouldInjectWeb3(){
-  var urlData = urlUtil.parse(window.location.href)
-  var extension = urlData.pathname.split('.').slice(-1)[0]
-  var shouldInject = (extension !== 'pdf')
+  var shouldInject = (window.location.href.indexOf('.pdf') === -1)
   return shouldInject
 }
