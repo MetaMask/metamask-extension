@@ -1,5 +1,6 @@
 var assert = require('assert')
 var IdentityStore = require('../../app/scripts/lib/idStore')
+var configManagerGen = require('../lib/mock-config-manager')
 
 describe('IdentityStore', function() {
 
@@ -15,6 +16,7 @@ describe('IdentityStore', function() {
       window.localStorage = {} // Hacking localStorage support into JSDom
 
       idStore = new IdentityStore({
+        configManager: configManagerGen(),
         ethStore: {
           addAccount(acct) { accounts.push(acct) },
         },
@@ -34,6 +36,7 @@ describe('IdentityStore', function() {
         window.localStorage = {} // Hacking localStorage support into JSDom
 
         idStore = new IdentityStore({
+          configManager: configManagerGen(),
           ethStore: {
             addAccount(acct) { newAccounts.push(acct) },
           },
@@ -65,6 +68,7 @@ describe('IdentityStore', function() {
       window.localStorage = {} // Hacking localStorage support into JSDom
 
       idStore = new IdentityStore({
+        configManager: configManagerGen(),
         ethStore: {
           addAccount(acct) { accounts.push(acct) },
         },
