@@ -62,6 +62,7 @@ NewComponent.prototype.render = function () {
         },
       }, [
         h('img.cursor-pointer.color-orange', {
+          title: 'Copy Address',
           src: 'images/copy.svg',
           onClick: (event) => {
             event.stopPropagation()

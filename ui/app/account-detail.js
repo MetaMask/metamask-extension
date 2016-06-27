@@ -107,6 +107,7 @@ AccountDetailScreen.prototype.render = function () {
 
           h('img.cursor-pointer.color-orange', {
             src: 'images/copy.svg',
+            title: 'Copy Address',
             onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
             style: {
               margin: '0px 5px',
@@ -115,6 +116,7 @@ AccountDetailScreen.prototype.render = function () {
 
           h('img.cursor-pointer.color-orange', {
             src: 'images/key-32.png',
+            title: 'Export Private Key',
             onClick: () => this.requestAccountExport(selected),
             style: {
               margin: '0px 5px',
