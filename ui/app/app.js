@@ -157,6 +157,7 @@ App.prototype.renderAppBar = function () {
               width: '23.5px',
               marginRight: '8px',
             },
+            title: 'Switch Accounts',
             onClick: (event) => {
               event.stopPropagation()
               this.props.dispatch(actions.showAccountsPage())
