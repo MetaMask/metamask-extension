@@ -10,6 +10,7 @@
 - Fix formatting on terms & conditions page.
 - Now enforce 30 character limit on wallet names.
 - Fix out-of-place positioning of pending transaction badges on wallet list.
+- Change network status icons to reflect current design.
 
 ## 2.4.4 2016-06-23
 

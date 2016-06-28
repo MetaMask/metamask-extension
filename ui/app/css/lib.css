@@ -168,17 +168,14 @@ hr.horizontal-line {
 }
 
 .red-dot {
-  position: inherit;
-  background: red;
+  background: #E91550;
   color: white;
   border-radius: 10px;
-  height: 12px;
-  min-width: 12px;
-  margin-left: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
+}
+
+.diamond {
+  transform: rotate(45deg);
+  background: #038789;
 }
 
 .pending-dot {
@@ -203,8 +200,8 @@ hr.horizontal-line {
 
 .menu-icon {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  height: 9px;
+  min-width: 9px;
   margin: 13px;
 }
 .ether-icon {

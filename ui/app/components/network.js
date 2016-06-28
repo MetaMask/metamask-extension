@@ -47,9 +47,9 @@ Network.prototype.render = function () {
       (function () {
         switch (iconName) {
           case 'ethereum-network':
-            return h('.menu-icon.ether-icon')
+            return h('.menu-icon.diamond')
           case 'morden-test-network':
-            return h('.menu-icon.morden-icon')
+            return h('.menu-icon.red-dot')
           default:
             return h('i.fa.fa-question-circle.fa-lg', {
               ariaHidden: true,
