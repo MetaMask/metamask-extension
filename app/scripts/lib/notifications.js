@@ -176,8 +176,13 @@ function renderNotificationSVG(content, cb){
 }
 
 function svgWrapper(content){
+<<<<<<< HEAD
   var wrapperSource = `    
   <svg xmlns="http://www.w3.org/2000/svg" width="360" height="240">
+=======
+  var wrapperSource = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="450" height="300">
+>>>>>>> master
      <foreignObject x="0" y="0" width="100%" height="100%">
         <body xmlns="http://www.w3.org/1999/xhtml" height="100%">{{content}}</body>
      </foreignObject>
