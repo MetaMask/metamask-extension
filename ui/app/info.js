@@ -97,9 +97,9 @@ InfoScreen.prototype.render = function () {
 
               h('div.fa.fa-envelope', [
                 h('a.info', {
-                  href: 'mailto:hello@metamask.io?subject=Feedback',
                   target: '_blank',
                   style: { width: '85vw' },
+                  onClick () { chrome.tabs.create({url: 'mailto:help@metamask.io?subject=Feedback'}) },
                 }, 'Email us any questions or comments!'),
               ]),
 
