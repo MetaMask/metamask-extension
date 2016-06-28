@@ -45,7 +45,7 @@ EditableLabel.prototype.saveIfEnter = function (event) {
 EditableLabel.prototype.saveText = function () {
   var container = findDOMNode(this)
   var text = container.querySelector('.editable-label input').value
-  var truncatedText = text.substring(0, 30)
+  var truncatedText = text.substring(0, 20)
   this.props.saveText(truncatedText)
   this.setState({ isEditingLabel: false, textLabel: truncatedText })
 }
