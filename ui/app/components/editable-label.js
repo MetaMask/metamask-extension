@@ -18,6 +18,7 @@ EditableLabel.prototype.render = function () {
     return h('div.editable-label', [
       h('input.sizing-input', {
         defaultValue: props.textValue,
+        maxLength: '30',
         onKeyPress: (event) => {
           this.saveIfEnter(event)
         },
@@ -44,6 +45,7 @@ EditableLabel.prototype.saveIfEnter = function (event) {
 EditableLabel.prototype.saveText = function () {
   var container = findDOMNode(this)
   var text = container.querySelector('.editable-label input').value
-  this.props.saveText(text)
-  this.setState({ isEditingLabel: false, textLabel: text })
+  var truncatedText = text.substring(0, 30)
+  this.props.saveText(truncatedText)
+  this.setState({ isEditingLabel: false, textLabel: truncatedText })
 }

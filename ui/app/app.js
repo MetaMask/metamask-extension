@@ -355,4 +355,3 @@ App.prototype.toggleMetamaskActive = function () {
     this.props.dispatch(actions.lockMetamask(false))
   }
 }
-
