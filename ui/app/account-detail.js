@@ -145,7 +145,7 @@ AccountDetailScreen.prototype.render = function () {
             style: {
               margin: 10,
             },
-          }, 'SEND ETH'),
+          }, 'SEND'),
 
         ]),
 

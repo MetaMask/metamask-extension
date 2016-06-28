@@ -216,6 +216,11 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
+  if (input < 0) {
+    message = 'Can not send negative amounts of ETH.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
   if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
     message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
@@ -234,4 +239,3 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(actions.signTx(txParams))
 }
-
