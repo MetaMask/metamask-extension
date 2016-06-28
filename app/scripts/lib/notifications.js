@@ -53,62 +53,30 @@ function createUnlockRequestNotification (opts) {
   })
 }
 
-function createTxNotification (opts) {
+function createTxNotification (state) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
-
-  var state = {
-    title: 'New Unsigned Transaction',
-    imageifyIdenticons: false,
-    txData: {
-      txParams: opts.txParams,
-      time: (new Date()).getTime(),
-    },
-    identities: {
-
-    },
-    accounts: {
-
-    },
-    onConfirm: opts.confirm,
-    onCancel: opts.cancel,
-  }
 
   renderTxNotificationSVG(state, function(err, notificationSvgSource){
     if (err) throw err
 
     showNotification(extend(state, {
+      title: 'New Unsigned Transaction',
       imageUrl: toSvgUri(notificationSvgSource),
     }))
 
   })
 }
 
-function createMsgNotification (opts) {
+function createMsgNotification (state) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
-
-  var state = {
-    title: 'New Unsigned Message',
-    imageifyIdenticons: false,
-    txData: {
-      msgParams: opts.msgParams,
-      time: (new Date()).getTime(),
-    },
-    identities: {
-
-    },
-    accounts: {
-
-    },
-    onConfirm: opts.confirm,
-    onCancel: opts.cancel,
-  }
 
   renderMsgNotificationSVG(state, function(err, notificationSvgSource){
     if (err) throw err
 
     showNotification(extend(state, {
+      title: 'New Unsigned Message',
       imageUrl: toSvgUri(notificationSvgSource),
     }))
 
