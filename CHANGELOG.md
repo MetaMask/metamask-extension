@@ -4,7 +4,9 @@
 
 - Fixed bug where MetaMask interfered with PDF loading.
 - Moved switch account icon into menu bar.
+- Changed status shapes to be a yellow warning sign for failure and ellipsis for pending transactions.
 - Now enforce 30 character limit on wallet names.
+
 
 ## 2.4.4 2016-06-23
 
