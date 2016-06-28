@@ -180,12 +180,13 @@ hr.horizontal-line {
 
 .pending-dot {
   background: red;
-  left: 57px;
+  left: 14px;
+  top: 14px;
   color: white;
   border-radius: 10px;
   height: 20px;
   min-width: 20px;
-  position: absolute;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
