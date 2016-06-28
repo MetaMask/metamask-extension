@@ -38,7 +38,7 @@ DisclaimerScreen.prototype.render = function () {
         style: {
           whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
-          height: '336px',
+          height: '310px',
           padding: '6px',
           width: '80%',
           overflowY: 'scroll',
