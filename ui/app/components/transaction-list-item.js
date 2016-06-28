@@ -57,7 +57,7 @@ TransactionListItem.prototype.render = function () {
 
       // large identicon
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('.red-dot', ' ')
+        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {style: { fontSize: '27px' }})
          : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
       ]),
 
