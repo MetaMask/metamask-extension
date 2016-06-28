@@ -212,14 +212,14 @@ App.prototype.renderNetworkDropdown = function () {
       label: 'Main Ethereum Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('mainnet')),
-      icon: h('.menu-icon.ether-icon'),
+      icon: h('.menu-icon.red-dot'),
     }),
 
     h(DropMenuItem, {
       label: 'Morden Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
-      icon: h('.menu-icon.morden-icon'),
+      icon: h('.menu-icon.diamond'),
     }),
 
     h(DropMenuItem, {
