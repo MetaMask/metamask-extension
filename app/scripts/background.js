@@ -30,21 +30,37 @@ function unlockAccountMessage () {
 }
 
 function showUnconfirmedMessage (msgParams, msgId) {
+  var controllerState = controller.getState()
+
   createMsgNotification({
-    title: 'New Unsigned Message',
-    msgParams: msgParams,
-    confirm: idStore.approveMessage.bind(idStore, msgId, noop),
-    cancel: idStore.cancelMessage.bind(idStore, msgId),
+    imageifyIdenticons: false,
+    txData: {
+      msgParams: msgParams,
+      time: (new Date()).getTime(),
+    },
+    identities: controllerState.identities,
+    accounts: controllerState.accounts,
+    onConfirm: idStore.approveMessage.bind(idStore, msgId, noop),
+    onCancel: idStore.cancelMessage.bind(idStore, msgId),
   })
+
 }
 
 function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
+  var controllerState = controller.getState()
+
   createTxNotification({
-    title: 'New Unsigned Transaction',
-    txParams: txParams,
-    confirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
-    cancel: idStore.cancelTransaction.bind(idStore, txData.id),
+    imageifyIdenticons: false,
+    txData: {
+      txParams: txParams,
+      time: (new Date()).getTime(),
+    },
+    identities: controllerState.identities,
+    accounts: controllerState.accounts,
+    onConfirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
+    onCancel: idStore.cancelTransaction.bind(idStore, txData.id),
   })
+  
 }
 
 //

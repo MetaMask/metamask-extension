@@ -53,62 +53,30 @@ function createUnlockRequestNotification (opts) {
   })
 }
 
-function createTxNotification (opts) {
+function createTxNotification (state) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
-
-  var state = {
-    title: 'New Unsigned Transaction',
-    imageifyIdenticons: false,
-    txData: {
-      txParams: opts.txParams,
-      time: (new Date()).getTime(),
-    },
-    identities: {
-
-    },
-    accounts: {
-
-    },
-    onConfirm: opts.confirm,
-    onCancel: opts.cancel,
-  }
 
   renderTxNotificationSVG(state, function(err, notificationSvgSource){
     if (err) throw err
 
     showNotification(extend(state, {
+      title: 'New Unsigned Transaction',
       imageUrl: toSvgUri(notificationSvgSource),
     }))
 
   })
 }
 
-function createMsgNotification (opts) {
+function createMsgNotification (state) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
-
-  var state = {
-    title: 'New Unsigned Message',
-    imageifyIdenticons: false,
-    txData: {
-      msgParams: opts.msgParams,
-      time: (new Date()).getTime(),
-    },
-    identities: {
-
-    },
-    accounts: {
-
-    },
-    onConfirm: opts.confirm,
-    onCancel: opts.cancel,
-  }
 
   renderMsgNotificationSVG(state, function(err, notificationSvgSource){
     if (err) throw err
 
     showNotification(extend(state, {
+      title: 'New Unsigned Message',
       imageUrl: toSvgUri(notificationSvgSource),
     }))
 
@@ -154,8 +122,8 @@ function renderNotificationSVG(content, cb){
   var container = document.createElement('div')
   var confirmView = h('div.app-primary', {
     style: {
-      width: '450px',
-      height: '300px',
+      width: '360px',
+      height: '240px',
       padding: '16px',
       // background: '#F7F7F7',
       background: 'white',
@@ -176,8 +144,13 @@ function renderNotificationSVG(content, cb){
 }
 
 function svgWrapper(content){
+<<<<<<< HEAD
+  var wrapperSource = `    
+  <svg xmlns="http://www.w3.org/2000/svg" width="360" height="240">
+=======
   var wrapperSource = `
   <svg xmlns="http://www.w3.org/2000/svg" width="450" height="300">
+>>>>>>> master
      <foreignObject x="0" y="0" width="100%" height="100%">
         <body xmlns="http://www.w3.org/1999/xhtml" height="100%">{{content}}</body>
      </foreignObject>
