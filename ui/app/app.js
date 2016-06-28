@@ -324,6 +324,7 @@ App.prototype.renderPrimary = function () {
       return h(SendTransactionScreen, {key: 'send-transaction'})
 
     case 'confTx':
+      this.clearNotifications()
       return h(ConfirmTxScreen, {key: 'confirm-tx'})
 
     case 'config':
@@ -355,3 +356,10 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
+App.prototype.clearNotifications = function () {
+  chrome.notifications.getAll( function (object) {
+      for (let notification in object){
+        chrome.notifications.clear(notification)
+      }
+  })
+};
