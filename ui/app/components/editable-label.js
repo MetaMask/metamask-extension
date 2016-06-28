@@ -18,6 +18,7 @@ EditableLabel.prototype.render = function () {
     return h('div.editable-label', [
       h('input.sizing-input', {
         defaultValue: props.textValue,
+        maxLength: "30",
         onKeyPress: (event) => {
           this.saveIfEnter(event)
         },

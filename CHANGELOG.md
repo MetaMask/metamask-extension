@@ -4,6 +4,7 @@
 
 - Fixed bug where MetaMask interfered with PDF loading.
 - Moved switch account icon into menu bar.
+- Now enforce 30 character limit on wallet names.
 
 ## 2.4.4 2016-06-23
 
