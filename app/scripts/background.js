@@ -35,7 +35,7 @@ function showUnconfirmedMessage (msgParams, msgId) {
   createMsgNotification({
     imageifyIdenticons: false,
     txData: {
-      msgParams: opts.msgParams,
+      msgParams: msgParams,
       time: (new Date()).getTime(),
     },
     identities: controllerState.identities,
