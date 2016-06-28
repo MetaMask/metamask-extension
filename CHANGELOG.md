@@ -9,6 +9,7 @@
 - Wallet titles are now properly truncated in transaction confirmation.
 - Fix formatting on terms & conditions page.
 - Now enforce 30 character limit on wallet names.
+- Change network status icons to reflect current design.
 
 ## 2.4.4 2016-06-23
 
