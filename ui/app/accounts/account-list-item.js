@@ -49,7 +49,7 @@ NewComponent.prototype.render = function () {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           },
-        }, ethUtil.toChecksumAddress(identity.address)),
+        }, ethUtil.toChecksumAddress(identity.address).substring(0,7)),
         h(EtherBalance, {
           value: account.balance,
         }),
