@@ -14,9 +14,14 @@ CopyButton.prototype.render = function () {
   const props = this.props
   const value = props.value
 
-  return h('img.cursor-pointer.color-orange', {
-    src: 'images/copy.svg',
-    title: 'Copy Address',
+  return h('i.fa.fa-clipboard.cursor-pointer.color-orange', {
+    title: props.title || 'Copy',
+    style: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: '5px',
+    },
     onClick: (event) => {
       event.preventDefault()
       event.stopPropagation()
