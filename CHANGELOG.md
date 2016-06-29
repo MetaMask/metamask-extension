@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.4.5 2016-06-29
+
 - Fixed bug where MetaMask interfered with PDF loading.
 - Moved switch account icon into menu bar.
 - Changed status shapes to be a yellow warning sign for failure and ellipsis for pending transactions.
