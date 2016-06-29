@@ -31,7 +31,7 @@ DropMenuItem.prototype.render = function () {
 
 DropMenuItem.prototype.activeNetworkRender = function () {
   var activeNetwork = this.props.activeNetworkRender
-  if( activeNetwork === undefined) return
+  if (activeNetwork === undefined) return
 
   switch (this.props.label) {
     case 'Main Ethereum Network':
@@ -41,7 +41,6 @@ DropMenuItem.prototype.activeNetworkRender = function () {
       if (activeNetwork === '2') return h('.check', '	✓')
       break
     case 'Localhost 8545':
-      debugger
       if (activeNetwork === 'http://localhost:8545') return h('.check', '	✓')
       break
     default:

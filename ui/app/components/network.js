@@ -47,25 +47,25 @@ Network.prototype.render = function () {
       (function () {
         switch (iconName) {
           case 'ethereum-network':
-            return h('.network-indicator',[
-                h('.menu-icon.diamond'),
-                h('.network-name',{
-                  style: {
-                    color: '#039396',
-                  }},
-                'Etherum Main Net')
-              ])
+            return h('.network-indicator', [
+              h('.menu-icon.diamond'),
+              h('.network-name', {
+                style: {
+                  color: '#039396',
+                }},
+              'Etherum Main Net'),
+            ])
           case 'morden-test-network':
-            return h('.network-indicator',[
-                h('.menu-icon.red-dot'),
-                h('.network-name',{
-                  style: {
-                    color: '#ff6666',
-                  }},
-                'Morden Test Net')
-              ])
+            return h('.network-indicator', [
+              h('.menu-icon.red-dot'),
+              h('.network-name', {
+                style: {
+                  color: '#ff6666',
+                }},
+              'Morden Test Net'),
+            ])
           default:
-            return h('.network-indicator',[
+            return h('.network-indicator', [
               h('i.fa.fa-question-circle.fa-lg', {
                 ariaHidden: true,
                 style: {
@@ -74,7 +74,7 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name',{
+              h('.network-name', {
                 style: {
                   color: '#AEAEAE',
                 }},

@@ -383,7 +383,7 @@ App.prototype.renderCustomOption = function (rpcTarget) {
         label: `${rpcTarget}`,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
-        activeNetworkRender: 'custom'
+        activeNetworkRender: 'custom',
       })
   }
 }
