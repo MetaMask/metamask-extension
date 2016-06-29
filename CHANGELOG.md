@@ -4,6 +4,10 @@
 
 - Added a network indicator mark in dropdown menu
 - Added network name next to network indicator
+- Unify wording for transaction approve/reject options on notifications and the extension.
+
+## 2.4.5 2016-06-29
+
 - Fixed bug where MetaMask interfered with PDF loading.
 - Moved switch account icon into menu bar.
 - Changed status shapes to be a yellow warning sign for failure and ellipsis for pending transactions.

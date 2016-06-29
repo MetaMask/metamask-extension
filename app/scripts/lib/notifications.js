@@ -96,9 +96,9 @@ function showNotification (state) {
     title: state.title,
     message: '',
     buttons: [{
-      title: 'confirm',
+      title: 'Approve',
     }, {
-      title: 'cancel',
+      title: 'Reject',
     }],
   })
   notificationHandlers[id] = {
