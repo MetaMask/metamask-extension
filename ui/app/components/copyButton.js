@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
 
-const Tooltip = require('react-tooltip-component')
+const Tooltip = require('./tooltip')
 
 module.exports = CopyButton
 
@@ -32,7 +32,6 @@ CopyButton.prototype.render = function () {
   }, [
 
     h(Tooltip, {
-      position: 'top',
       title: message,
     }, [
       h('i.fa.fa-clipboard.cursor-pointer.color-orange', {

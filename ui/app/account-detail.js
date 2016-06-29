@@ -14,6 +14,7 @@ const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
+const Tooltip = require('./components/tooltip')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -109,19 +110,28 @@ AccountDetailScreen.prototype.render = function () {
             value: ethUtil.toChecksumAddress(selected),
           }),
 
-          h('img.cursor-pointer.color-orange', {
-            src: 'images/key-32.png',
+          h(Tooltip, {
             title: 'Export Private Key',
-            onClick: () => this.requestAccountExport(selected),
-            style: {
-              margin: '0px 5px',
-              width: '20px',
-              height: '20px',
-              position: 'relative',
-              top: '3px',
-              right: '4px',
-            },
-          }),
+          }, [
+            h('div', {
+              style: {
+                margin: '5px',
+              },
+            }, [
+              h('img.cursor-pointer.color-orange', {
+                src: 'images/key-32.png',
+                onClick: () => this.requestAccountExport(selected),
+                style: {
+                  margin: '0px 5px',
+                  width: '20px',
+                  height: '20px',
+                  position: 'relative',
+                  top: '3px',
+                  right: '4px',
+                },
+              }),
+            ]),
+          ]),
 
         ]),
 
