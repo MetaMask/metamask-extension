@@ -372,7 +372,6 @@ App.prototype.renderCustomOption = function (rpcTarget) {
       return h(DropMenuItem, {
         label: `${rpcTarget}`,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.closeMenu()),
         icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
       })
   }
