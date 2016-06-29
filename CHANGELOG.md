@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add copy transaction hash button to completed transaction list items.
+
 ## 2.4.5 2016-06-29
 
 - Fixed bug where MetaMask interfered with PDF loading.
