@@ -46,6 +46,7 @@ function mapStateToProps (state) {
     unconfMsgs: state.metamask.unconfMsgs,
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
+    provider: state.metamask.provider,
   }
 }
 
@@ -228,6 +229,7 @@ App.prototype.renderNetworkDropdown = function () {
       action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
       icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
     }),
+    this.renderCustomOption(props.provider.rpcTarget),
   ])
 }
 
@@ -353,5 +355,24 @@ App.prototype.toggleMetamaskActive = function () {
   } else {
     // currently active: deactivate
     this.props.dispatch(actions.lockMetamask(false))
+  }
+}
+
+App.prototype.renderCustomOption = function (rpcTarget) {
+  switch (rpcTarget) {
+    case undefined:
+      return h(DropMenuItem, {
+        label: 'Custom RPC',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+        action: () => this.props.dispatch(actions.showConfigPage()),
+        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      })
+
+    default:
+      return h(DropMenuItem, {
+        label: `${rpcTarget}`,
+        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      })
   }
 }
