@@ -139,7 +139,7 @@ App.prototype.renderAppBar = function () {
         h('h1', {
           style: {
             position: 'relative',
-            left: '3px',
+            left: '9px',
           },
         }, 'MetaMask'),
 

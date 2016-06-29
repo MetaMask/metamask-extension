@@ -41,7 +41,8 @@ DropMenuItem.prototype.activeNetworkRender = function () {
       if (activeNetwork === '2') return h('.check', '	✓')
       break
     case 'Localhost 8545':
-      if (activeNetwork > '2') return h('.check', '	✓')
+      debugger
+      if (activeNetwork === 'http://localhost:8545') return h('.check', '	✓')
       break
     default:
       if (activeNetwork === 'custom') return h('.check', '	✓')
