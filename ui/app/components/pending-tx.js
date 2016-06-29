@@ -39,7 +39,7 @@ PendingTx.prototype.render = function () {
         }, 'Reject'),
         h('button', {
           onClick: state.sendTransaction,
-        }, 'Confirm'),
+        }, 'Approve'),
       ]),
 
     ])

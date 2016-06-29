@@ -16,7 +16,6 @@
 - Fix out-of-place positioning of pending transaction badges on wallet list.
 - Change network status icons to reflect current design.
 
-
 ## 2.4.4 2016-06-23
 
 - Update web3-stream-provider for batch payload bug fix
