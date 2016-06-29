@@ -3,7 +3,7 @@ const extend = require('xtend')
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const copyToClipboard = require('copy-to-clipboard')
+const CopyButton = require('./components/copyButton')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
@@ -105,13 +105,8 @@ AccountDetailScreen.prototype.render = function () {
             },
           }, ethUtil.toChecksumAddress(selected)),
 
-          h('img.cursor-pointer.color-orange', {
-            src: 'images/copy.svg',
-            title: 'Copy Address',
-            onClick: () => copyToClipboard(ethUtil.toChecksumAddress(selected)),
-            style: {
-              margin: '0px 5px',
-            },
+          h(CopyButton, {
+            value: ethUtil.toChecksumAddress(selected),
           }),
 
           h('img.cursor-pointer.color-orange', {
