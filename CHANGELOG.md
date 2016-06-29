@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Unify wording for transaction approve/reject options on notifications and the extension.
+
 ## 2.4.5 2016-06-29
 
 - Fixed bug where MetaMask interfered with PDF loading.
@@ -13,7 +15,7 @@
 - Now enforce 30 character limit on wallet names.
 - Fix out-of-place positioning of pending transaction badges on wallet list.
 - Change network status icons to reflect current design.
-- Unify wording for transaction approve/reject options on notifications and the extension.
+
 
 ## 2.4.4 2016-06-23
 
