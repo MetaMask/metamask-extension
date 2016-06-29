@@ -25,5 +25,25 @@ DropMenuItem.prototype.render = function () {
   }, [
     this.props.icon,
     this.props.label,
+    this.activeNetworkRender(),
   ])
+}
+
+DropMenuItem.prototype.activeNetworkRender = function () {
+  var activeNetwork = this.props.activeNetworkRender
+  if( activeNetwork === undefined) return
+
+  switch (this.props.label) {
+    case 'Main Ethereum Network':
+      if (activeNetwork === '1') return h('.check', '	✓')
+      break
+    case 'Morden Test Network':
+      if (activeNetwork === '2') return h('.check', '	✓')
+      break
+    case 'Localhost 8545':
+      if (activeNetwork > '2') return h('.check', '	✓')
+      break
+    default:
+      if (activeNetwork === 'custom') return h('.check', '	✓')
+  }
 }
