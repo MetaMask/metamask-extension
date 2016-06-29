@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add copy transaction hash button to completed transaction list items.
+- Unify wording for transaction approve/reject options on notifications and the extension.
 
 ## 2.4.5 2016-06-29
 
