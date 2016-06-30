@@ -47,17 +47,39 @@ Network.prototype.render = function () {
       (function () {
         switch (iconName) {
           case 'ethereum-network':
-            return h('.menu-icon.diamond')
+            return h('.network-indicator', [
+              h('.menu-icon.diamond'),
+              h('.network-name', {
+                style: {
+                  color: '#039396',
+                }},
+              'Etherum Main Net'),
+            ])
           case 'morden-test-network':
-            return h('.menu-icon.red-dot')
+            return h('.network-indicator', [
+              h('.menu-icon.red-dot'),
+              h('.network-name', {
+                style: {
+                  color: '#ff6666',
+                }},
+              'Morden Test Net'),
+            ])
           default:
-            return h('i.fa.fa-question-circle.fa-lg', {
-              ariaHidden: true,
-              style: {
-                margin: '10px',
-                color: 'rgb(125, 128, 130)',
-              },
-            })
+            return h('.network-indicator', [
+              h('i.fa.fa-question-circle.fa-lg', {
+                ariaHidden: true,
+                style: {
+                  margin: '10px',
+                  color: 'rgb(125, 128, 130)',
+                },
+              }),
+
+              h('.network-name', {
+                style: {
+                  color: '#AEAEAE',
+                }},
+              'Private Network'),
+            ])
         }
       })(),
     ])
