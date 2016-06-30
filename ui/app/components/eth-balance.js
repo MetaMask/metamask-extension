@@ -24,8 +24,24 @@ EthBalanceComponent.prototype.render = function () {
         style: {
           display: 'inline',
         },
-      }, value),
+      }, this.renderBalance(value)),
     ])
 
   )
+}
+
+EthBalanceComponent.prototype.renderBalance = function (value) {
+
+  if (value === 'None') return value
+
+  var balance = value[0]
+  var label = value[1]
+
+  return (
+    h('.flex-column',[
+      h('div', balance),
+      h('div', label)
+    ])
+  )
+
 }
