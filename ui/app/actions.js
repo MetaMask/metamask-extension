@@ -47,6 +47,7 @@ var actions = {
   unlockInProgress: unlockInProgress,
   // error handling
   displayWarning: displayWarning,
+  showWarning: showWarning, // alias
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -505,6 +506,10 @@ function hideLoadingIndication () {
   return {
     type: actions.HIDE_LOADING,
   }
+}
+
+function showWarning (text) {
+  return this.displayWarning(text)
 }
 
 function displayWarning (text) {

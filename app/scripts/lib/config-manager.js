@@ -149,12 +149,6 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
   }
 }
 
-ConfigManager.prototype.clearWallet = function () {
-  var data = this.getConfig()
-  delete data.wallet
-  this.setData(data)
-}
-
 ConfigManager.prototype.setData = function (data) {
   this.migrator.saveData(data)
 }
