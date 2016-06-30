@@ -34,7 +34,8 @@ CopyButton.prototype.render = function () {
     h(Tooltip, {
       title: message,
     }, [
-      h('i.fa.fa-clipboard.cursor-pointer.color-orange', {
+      h('img.cursor-pointer.color-orange', {
+        src: 'images/copy.svg',
         style: {
           margin: '5px',
         },
