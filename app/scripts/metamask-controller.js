@@ -195,7 +195,7 @@ module.exports = class MetamaskController {
     if (!state.isUnlocked) {
       this.opts.unlockAccountMessage()
     } else {
-      this.addUnconfirmedMsg(msgParams, cb)
+      this.addUnconfirmedMessage(msgParams, cb)
     }
   }
 
