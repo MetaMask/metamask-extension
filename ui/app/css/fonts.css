@@ -7,7 +7,7 @@
     src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-size: 'small',
+  font-size: 'small';
 
 }
 
@@ -17,4 +17,11 @@
     src: url('/fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat Thin';
+    src: url('/fonts/Montserrat/Montserrat-Regular.woff') format('woff');
+    src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  text-rendering: geometricPrecision;
 }

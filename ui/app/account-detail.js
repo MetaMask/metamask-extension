@@ -56,7 +56,7 @@ AccountDetailScreen.prototype.render = function () {
         // header - identicon + nav
         h('div', {
           style: {
-            marginTop: 28,
+            marginTop: '15px',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
@@ -90,23 +90,32 @@ AccountDetailScreen.prototype.render = function () {
               h('label.editing-label', [h('.edit-text', 'edit')]),
               h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
             ]),
-            h('.flex-row',{
-              style:{
+            h('.flex-row', {
+              style: {
                 width: '15em',
                 justifyContent: 'space-between',
                 alignItems: 'baseline',
-              }
-            },[
+              },
+            }, [
+
+              // address
+
               h('div', {
                 style: {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   paddingTop: '3px',
                   width: '5em',
-                  fontSize: 'smaller',
+                  fontSize: '13px',
+                  fontFamily: 'Montserrat Thin',
+                  textRendering: 'geometricPrecision',
+                  marginTop: '10px',
+                  marginBottom: '15px',
+                  color: '#AEAEAE',
                 },
               }, ethUtil.toChecksumAddress(selected)),
 
+              // copy and export
 
               h('.flex-row', {
                 style: {
@@ -132,20 +141,20 @@ AccountDetailScreen.prototype.render = function () {
                         margin: '0px 5px',
                         width: '20px',
                         height: '20px',
-                        position: 'relative',
-                        top: '3px',
-                        right: '4px',
                       },
                     }),
                   ]),
                 ]),
               ]),
             ]),
+
+            // account ballence
+
             h('.flex-row', {
               style: {
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
-              }
+              },
             }, [
 
               h(EtherBalance, {
@@ -158,7 +167,8 @@ AccountDetailScreen.prototype.render = function () {
               h('button', {
                 onClick: () => props.dispatch(actions.showSendPage()),
                 style: {
-                  margin: 10,
+                  marginBottom: '20px',
+                  marginRight: '8px',
                 },
               }, 'SEND'),
 
@@ -166,11 +176,6 @@ AccountDetailScreen.prototype.render = function () {
 
           ]),
         ]),
-
-        // address and getter actions
-
-        // balance + send
-
       ]),
 
       // subview (tx history, pk export confirm)

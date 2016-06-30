@@ -29,19 +29,29 @@ EthBalanceComponent.prototype.render = function () {
 
   )
 }
-
 EthBalanceComponent.prototype.renderBalance = function (value) {
 
   if (value === 'None') return value
 
-  var balance = value[0]
-  var label = value[1]
+  var balance = value.split(' ')[0]
+  var label = value.split(' ')[1]
 
   return (
-    h('.flex-column',[
+    h('.flex-column', {
+      style: {
+        alignItems: 'flex-end',
+        lineHeight: '13px',
+        fontFamily: 'Montserrat Thin',
+        textRendering: 'geometricPrecision',
+      },
+    }, [
       h('div', balance),
-      h('div', label)
+      h('div', {
+        style: {
+          color: ' #AEAEAE',
+          fontSize: '12px',
+        },
+      }, label),
     ])
   )
-
 }
