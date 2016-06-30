@@ -149,8 +149,6 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
   }
 }
 
-ConfigManager.prototype.clearWallet = function () {}
-
 ConfigManager.prototype.setData = function (data) {
   this.migrator.saveData(data)
 }

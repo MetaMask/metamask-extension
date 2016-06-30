@@ -42,17 +42,6 @@ describe('config-manager', function() {
     })
   })
 
-  describe('#clearWallet', function() {
-    it('should not erase confirmation', function() {
-      configManager.setConfirmed(true)
-      assert.equal(configManager.getConfirmed(), true)
-
-      configManager.clearWallet()
-
-      assert.equal(configManager.getConfirmed(), true)
-    })
-  })
-
   describe('#setConfig', function() {
     window.localStorage = {} // Hacking localStorage support into JSDom
 
