@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Implement new account design.
 - Added a network indicator mark in dropdown menu
 - Added network name next to network indicator
 - Add copy transaction hash button to completed transaction list items.
