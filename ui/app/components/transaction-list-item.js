@@ -5,6 +5,7 @@ const inherits = require('util').inherits
 const EtherBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
+const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 
 const TransactionIcon = require('./transaction-list-item-icon')
@@ -66,6 +67,8 @@ TransactionListItem.prototype.render = function () {
         h('div', date),
         recipientField(txParams, transaction, isTx, isMsg),
       ]),
+
+      transaction.hash ? h(CopyButton, { value: transaction.hash }) : null,
 
       isTx ? h(EtherBalance, {
         value: txParams.value,

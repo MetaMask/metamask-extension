@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 
 const EtherBalance = require('../components/eth-balance')
-const copyToClipboard = require('copy-to-clipboard')
+const CopyButton = require('../components/copyButton')
 const Identicon = require('../components/identicon')
 
 module.exports = NewComponent
@@ -61,14 +61,8 @@ NewComponent.prototype.render = function () {
           margin: '0 20px',
         },
       }, [
-        h('img.cursor-pointer.color-orange', {
-          title: 'Copy Address',
-          src: 'images/copy.svg',
-          onClick: (event) => {
-            event.stopPropagation()
-            event.preventDefault()
-            copyToClipboard(ethUtil.toChecksumAddress(identity.address))
-          },
+        h(CopyButton, {
+          value: ethUtil.toChecksumAddress(identity.address),
         }),
       ]),
     ])
