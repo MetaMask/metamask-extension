@@ -26,6 +26,7 @@ const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
 const NetworkIndicator = require('./components/network')
+const Tooltip = require('./components/tooltip')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -152,18 +153,19 @@ App.prototype.renderAppBar = function () {
         }, [
 
           // small accounts nav
-          h('img.cursor-pointer.color-orange', {
-            src: 'images/switch_acc.svg',
-            style: {
-              width: '23.5px',
-              marginRight: '8px',
-            },
-            title: 'Switch Accounts',
-            onClick: (event) => {
-              event.stopPropagation()
-              this.props.dispatch(actions.showAccountsPage())
-            },
-          }),
+          h(Tooltip, { title: 'Switch Accounts' }, [
+            h('img.cursor-pointer.color-orange', {
+              src: 'images/switch_acc.svg',
+              style: {
+                width: '23.5px',
+                marginRight: '8px',
+              },
+              onClick: (event) => {
+                event.stopPropagation()
+                this.props.dispatch(actions.showAccountsPage())
+              },
+            }),
+          ]),
 
           // hamburger
           h(SandwichExpando, {
