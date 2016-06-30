@@ -140,7 +140,7 @@ App.prototype.renderAppBar = function () {
         h('h1', {
           style: {
             position: 'relative',
-            left: '3px',
+            left: '9px',
           },
         }, 'MetaMask'),
 
@@ -216,6 +216,7 @@ App.prototype.renderNetworkDropdown = function () {
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('mainnet')),
       icon: h('.menu-icon.diamond'),
+      activeNetworkRender: props.network,
     }),
 
     h(DropMenuItem, {
@@ -223,6 +224,7 @@ App.prototype.renderNetworkDropdown = function () {
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
       icon: h('.menu-icon.red-dot'),
+      activeNetworkRender: props.network,
     }),
 
     h(DropMenuItem, {
@@ -230,6 +232,7 @@ App.prototype.renderNetworkDropdown = function () {
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
       icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      activeNetworkRender: props.provider.rpcTarget,
     }),
     this.renderCustomOption(props.provider.rpcTarget),
   ])
@@ -369,12 +372,20 @@ App.prototype.renderCustomOption = function (rpcTarget) {
         action: () => this.props.dispatch(actions.showConfigPage()),
         icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
       })
+    case 'http://localhost:8545':
+      return h(DropMenuItem, {
+        label: 'Custom RPC',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+        action: () => this.props.dispatch(actions.showConfigPage()),
+        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      })
 
     default:
       return h(DropMenuItem, {
         label: `${rpcTarget}`,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+        activeNetworkRender: 'custom',
       })
   }
 }

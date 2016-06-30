@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Added a network indicator mark in dropdown menu
+- Added network name next to network indicator
 - Add copy transaction hash button to completed transaction list items.
 - Unify wording for transaction approve/reject options on notifications and the extension.
 

@@ -141,6 +141,23 @@ textarea.twelve-word-phrase {
   resize: none;
 }
 
+.network-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.6em;
+
+}
+
+.network-name {
+  position: absolute;
+  top: 8px;
+  width: 5.2em;
+  line-height: 9px;
+}
+
+.check {
+  color: #F7861C;
+}
 /*
 app sections
 */
