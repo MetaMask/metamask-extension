@@ -2,10 +2,6 @@ var actions = {
   GO_HOME: 'GO_HOME',
   goHome: goHome,
   // menu state
-  TOGGLE_MENU: 'TOGGLE_MENU',
-  toggleMenu: toggleMenu,
-  SET_MENU_STATE: 'SET_MENU_STATE',
-  closeMenu: closeMenu,
   getNetworkStatus: 'getNetworkStatus',
 
   // remote state
@@ -122,21 +118,6 @@ function _setAccountManager (accountManager) {
 function goHome () {
   return {
     type: actions.GO_HOME,
-  }
-}
-
-// menu state
-
-function toggleMenu () {
-  return {
-    type: actions.TOGGLE_MENU,
-  }
-}
-
-function closeMenu () {
-  return {
-    type: actions.SET_MENU_STATE,
-    value: false,
   }
 }
 

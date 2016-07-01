@@ -9,13 +9,13 @@ const Selector = require('./selector')
 const qs = require('qs')
 let queryString = qs.parse(window.location.href.split('#')[1])
 let selectedView = queryString.view || 'account detail'
+const firstState = states[selectedView]
+updateQueryParams(selectedView)
 
 // CSS
 const MetaMaskUiCss = require('../ui/css')
 const injectCss = require('inject-css')
 
-const firstState = states[selectedView]
-updateQueryParams()
 
 function updateQueryParams(newView) {
   queryString.view = newView
@@ -54,6 +54,8 @@ render(
       style: {
         height: '500px',
         width: '360px',
+        boxShadow: '2px 2px 5px grey',
+        margin: '20px',
       },
     }, [
       h(Root, {
