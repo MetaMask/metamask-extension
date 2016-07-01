@@ -35,7 +35,20 @@ DisclaimerScreen.prototype.render = function () {
         'MetaMask Terms & Conditions',
       ]),
 
-      h('div', {
+      h('style', `
+
+        .markdown {
+          font-family: Times New Roman;
+        }
+        .markdown h1,h2,h3,h4 {
+          margin: 10px 0;
+          font-family: arial sans-serif;
+          font-weight: bold;
+        }
+
+      `),
+
+      h('div.markdown', {
         style: {
           // whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
