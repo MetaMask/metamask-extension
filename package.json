@@ -54,6 +54,7 @@
     "react-addons-css-transition-group": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-hyperscript": "^2.2.2",
+    "react-markdown": "^2.3.0",
     "react-redux": "^4.4.5",
     "react-tooltip-component": "^0.3.0",
     "readable-stream": "^2.1.2",

@@ -3,6 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../actions')
+const ReactMarkdown = require('react-markdown')
 const fs = require('fs')
 const path = require('path')
 const disclaimer = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'USER_AGREEMENT.md')).toString()
@@ -36,14 +37,21 @@ DisclaimerScreen.prototype.render = function () {
 
       h('div', {
         style: {
-          whiteSpace: 'pre-line',
+          // whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
           height: '310px',
           padding: '6px',
           width: '80%',
           overflowY: 'scroll',
         },
-      }, disclaimer),
+      }, [
+
+        h(ReactMarkdown, {
+          source: disclaimer,
+          skipHtml: true,
+        }),
+
+      ]),
 
       h('button', {
         style: { marginTop: '18px' },
