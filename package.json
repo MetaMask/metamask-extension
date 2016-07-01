@@ -7,7 +7,7 @@
     "start": "gulp dev",
     "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
     "watch": "mocha watch --compilers js:babel-register --recursive",
-    "ui": "cd development && node genStates.js && beefy mocker.js:bundle.js --live --open"
+    "ui": "cd development && beefy mocker.js:bundle.js --live --open"
   },
   "browserify": {
     "transform": [
@@ -24,8 +24,6 @@
   },
   "dependencies": {
     "async": "^1.5.2",
-    "babel-preset-es2015": "^6.9.0",
-    "babel-register": "^6.9.0",
     "browserify-derequire": "^0.9.4",
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
