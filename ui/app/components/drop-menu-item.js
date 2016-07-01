@@ -21,6 +21,8 @@ DropMenuItem.prototype.render = function () {
       fontFamily: 'Montserrat Regular',
       color: 'rgb(125, 128, 130)',
       cursor: 'pointer',
+      display: 'flex',
+      justifyContent: 'flex-start',
     },
   }, [
     this.props.icon,

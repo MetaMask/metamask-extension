@@ -158,6 +158,9 @@ textarea.twelve-word-phrase {
 
 .check {
   color: #F7861C;
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: flex-end;
 }
 /*
 app sections
