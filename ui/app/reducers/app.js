@@ -43,16 +43,6 @@ function reduceApp (state, action) {
 
   switch (action.type) {
 
-    case actions.TOGGLE_MENU:
-      return extend(appState, {
-        menuOpen: !appState.menuOpen,
-      })
-
-    case actions.SET_MENU_STATE:
-      return extend(appState, {
-        menuOpen: action.value,
-      })
-
   // intialize
 
     case actions.SHOW_CREATE_VAULT:

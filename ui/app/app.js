@@ -178,7 +178,7 @@ App.prototype.renderAppBar = function () {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
-              this.props.dispatch(actions.toggleMenu())
+              this.setState({ isMainMenuOpen: true })
             },
           }),
         ]),
@@ -241,10 +241,13 @@ App.prototype.renderNetworkDropdown = function () {
 
 App.prototype.renderDropdown = function () {
   const props = this.props
+  const state = this.state || {}
+  const isOpen = state.isMainMenuOpen
+
   return h(MenuDroppo, {
-    isOpen: props.menuOpen,
+    isOpen: isOpen,
     onClickOutside: (event) => {
-      this.props.dispatch(actions.closeMenu())
+      this.setState({ isMainMenuOpen: !isOpen })
     },
     style: {
       position: 'absolute',
@@ -263,21 +266,21 @@ App.prototype.renderDropdown = function () {
 
     h(DropMenuItem, {
       label: 'Settings',
-      closeMenu: () => this.props.dispatch(actions.closeMenu()),
+      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showConfigPage()),
       icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
     }),
 
     h(DropMenuItem, {
       label: 'Lock',
-      closeMenu: () => this.props.dispatch(actions.closeMenu()),
+      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.lockMetamask()),
       icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
     }),
 
     h(DropMenuItem, {
       label: 'Help',
-      closeMenu: () => this.props.dispatch(actions.closeMenu()),
+      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
       icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
     }),
