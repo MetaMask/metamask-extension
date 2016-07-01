@@ -2,10 +2,12 @@
 
 ## Current Master
 
+- Implement new account design.
 - Added a network indicator mark in dropdown menu
 - Added network name next to network indicator
 - Add copy transaction hash button to completed transaction list items.
 - Unify wording for transaction approve/reject options on notifications and the extension.
+- Fix bug where confirmation view would be shown twice.
 
 ## 2.4.5 2016-06-29
 

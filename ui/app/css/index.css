@@ -153,6 +153,7 @@ textarea.twelve-word-phrase {
   top: 8px;
   width: 5.2em;
   line-height: 9px;
+  text-rendering: geometricPrecision;
 }
 
 .check {
@@ -248,7 +249,7 @@ app sections
 
 .sizing-input{
   font-size: 1em;
-  height: 31px;
+  height: 30px;
 }
 .editable-label{
   display: flex;
@@ -387,19 +388,19 @@ input.large-input {
 
 }
 .name-label{
-  margin-bottom: 14px;
+
 }
 .edit-text {
   height: 100%;
   visibility: hidden;
 }
 .editing-label {
-  cursor: text;
-  width: 100%;
-  position: relative;
-  top: 7px;
-  text-align: right;
-  font-size: small;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 50px;
+  margin-bottom: 2px;
+  font-size: 11px;
+  text-rendering: geometricPrecision;
   color: #F7861C;
 }
 .name-label:hover .edit-text {

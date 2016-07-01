@@ -44,116 +44,138 @@ AccountDetailScreen.prototype.render = function () {
 
   return (
 
-    h('.account-detail-section.flex-column.flex-grow', [
+    h('.account-detail-section', [
 
       // identicon, label, balance, etc
-      h('.account-data-subsection.flex-column.flex-grow', {
+      h('.account-data-subsection', {
         style: {
           margin: '0 20px',
         },
       }, [
 
         // header - identicon + nav
-        h('.flex-row.flex-center', {
+        h('div', {
           style: {
-            marginTop: 28,
+            marginTop: '15px',
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
           },
         }, [
 
-          // large identicon
-          h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          // large identicon and addresses
+          h('.identicon-wrapper.select-none', [
             h(Identicon, {
               diameter: 62,
               address: selected,
             }),
           ]),
-        ]),
-
-        h('.flex-center', {
-          style: {
-            height: '62px',
-            paddingTop: '8px',
-          },
-        }, [
-          h(EditableLabel, {
-            textValue: identity ? identity.name : '',
-            state: {
-              isEditingLabel: false,
-            },
-            saveText: (text) => {
-              props.dispatch(actions.saveAccountLabel(selected, text))
-            },
-          }, [
-
-            // What is shown when not editing + edit text:
-            h('label.editing-label', [h('.edit-text', 'edit')]),
-            h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
-          ]),
-        ]),
-
-        // address and getter actions
-        h('.flex-row', {
-          style: {
-            marginBottom: 16,
-          },
-        }, [
-
-          h('div', {
+          h('flex-column', {
             style: {
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              paddingTop: '3px',
+              lineHeight: '10px',
+              marginLeft: '15px',
             },
-          }, ethUtil.toChecksumAddress(selected)),
-
-          h(CopyButton, {
-            value: ethUtil.toChecksumAddress(selected),
-          }),
-
-          h(Tooltip, {
-            title: 'Export Private Key',
           }, [
-            h('div', {
-              style: {
-                margin: '5px',
+            h(EditableLabel, {
+              textValue: identity ? identity.name : '',
+              state: {
+                isEditingLabel: false,
+              },
+              saveText: (text) => {
+                props.dispatch(actions.saveAccountLabel(selected, text))
               },
             }, [
-              h('img.cursor-pointer.color-orange', {
-                src: 'images/key-32.png',
-                onClick: () => this.requestAccountExport(selected),
+
+              // What is shown when not editing + edit text:
+              h('label.editing-label', [h('.edit-text', 'edit')]),
+              h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
+            ]),
+            h('.flex-row', {
+              style: {
+                width: '15em',
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+              },
+            }, [
+
+              // address
+
+              h('div', {
                 style: {
-                  margin: '0px 5px',
-                  width: '20px',
-                  height: '20px',
-                  position: 'relative',
-                  top: '3px',
-                  right: '4px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  paddingTop: '3px',
+                  width: '5em',
+                  fontSize: '13px',
+                  fontFamily: 'Montserrat Thin',
+                  textRendering: 'geometricPrecision',
+                  marginTop: '10px',
+                  marginBottom: '15px',
+                  color: '#AEAEAE',
+                },
+              }, ethUtil.toChecksumAddress(selected)),
+
+              // copy and export
+
+              h('.flex-row', {
+                style: {
+                  justifyContent: 'flex-end',
+                },
+              }, [
+                h(CopyButton, {
+                  value: ethUtil.toChecksumAddress(selected),
+                }),
+
+                h(Tooltip, {
+                  title: 'Export Private Key',
+                }, [
+                  h('div', {
+                    style: {
+                      margin: '5px',
+                    },
+                  }, [
+                    h('img.cursor-pointer.color-orange', {
+                      src: 'images/key-32.png',
+                      onClick: () => this.requestAccountExport(selected),
+                      style: {
+                        margin: '0px 5px',
+                        width: '20px',
+                        height: '20px',
+                      },
+                    }),
+                  ]),
+                ]),
+              ]),
+            ]),
+
+            // account ballence
+
+            h('.flex-row', {
+              style: {
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+              },
+            }, [
+
+              h(EtherBalance, {
+                value: account && account.balance,
+                style: {
+                  lineHeight: '7px',
                 },
               }),
+
+              h('button', {
+                onClick: () => props.dispatch(actions.showSendPage()),
+                style: {
+                  marginBottom: '20px',
+                  marginRight: '8px',
+                },
+              }, 'SEND'),
+
             ]),
+
           ]),
-
         ]),
-
-        // balance + send
-        h('.flex-row.flex-space-between', [
-
-          h(EtherBalance, {
-            value: account && account.balance,
-            style: {
-              lineHeight: '50px',
-            },
-          }),
-
-          h('button', {
-            onClick: () => props.dispatch(actions.showSendPage()),
-            style: {
-              margin: 10,
-            },
-          }, 'SEND'),
-
-        ]),
-
       ]),
 
       // subview (tx history, pk export confirm)
@@ -214,4 +236,3 @@ AccountDetailScreen.prototype.transactionList = function () {
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
-

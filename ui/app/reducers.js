@@ -13,6 +13,10 @@ function rootReducer (state, action) {
   // clone
   state = extend(state)
 
+  if (action.type === 'GLOBAL_FORCE_UPDATE') {
+    return action.value
+  }
+
   //
   // Identities
   //

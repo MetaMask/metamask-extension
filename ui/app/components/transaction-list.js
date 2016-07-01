@@ -35,6 +35,8 @@ TransactionList.prototype.render = function () {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
+          paddingTop: '4px',
+          paddingBottom: '4px',
         },
       }, [
         'Transactions',
@@ -43,7 +45,7 @@ TransactionList.prototype.render = function () {
       h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '204px',
+          height: '305px',
           padding: '0 20px',
           textAlign: 'center',
         },
@@ -67,4 +69,3 @@ TransactionList.prototype.render = function () {
     ])
   )
 }
-

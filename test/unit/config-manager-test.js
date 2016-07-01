@@ -22,6 +22,7 @@ describe('config-manager', function() {
 
     describe('#setConfirmed', function() {
       it('should make getConfirmed return true once set', function() {
+        assert.equal(configManager.getConfirmed(), false)
         configManager.setConfirmed(true)
         var result = configManager.getConfirmed()
         assert.equal(result, true)
@@ -63,8 +64,9 @@ describe('config-manager', function() {
         provider: {
           type: 'rpc',
           rpcTarget: 'foobar'
-        }
+        },
       }
+      configManager.setConfirmed(true)
       configManager.setConfig(testConfig)
 
       var testWallet = {
@@ -75,6 +77,7 @@ describe('config-manager', function() {
       var result = configManager.getData()
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
+      assert.equal(configManager.getConfirmed(), true)
 
       testConfig.provider.type = 'something else!'
       configManager.setConfig(testConfig)
@@ -83,6 +86,7 @@ describe('config-manager', function() {
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
       assert.equal(result.config.provider.type, testConfig.provider.type)
+      assert.equal(configManager.getConfirmed(), true)
     })
   })
 

@@ -17,7 +17,13 @@ function InfoScreen () {
 
 InfoScreen.prototype.render = function () {
   var state = this.props
-  var manifest = chrome.runtime.getManifest()
+  var manifest
+  try {
+    manifest = chrome.runtime.getManifest()
+  } catch (e) {
+    manifest = { version: '2.0.0' }
+  }
+
   return (
     h('.flex-column.flex-grow', [
 
