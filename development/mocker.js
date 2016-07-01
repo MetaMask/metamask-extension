@@ -54,6 +54,8 @@ render(
       style: {
         height: '500px',
         width: '360px',
+        boxShadow: '2px 2px 5px grey',
+        margin: '20px',
       },
     }, [
       h(Root, {

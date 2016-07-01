@@ -22,13 +22,14 @@ DisclaimerScreen.prototype.render = function () {
   return (
     h('.flex-column.flex-center.flex-grow', [
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
           marginBottom: 24,
           width: '100%',
           fontSize: '20px',
+          textAlign: 'center',
           padding: 6,
         },
       }, [
@@ -40,7 +41,7 @@ DisclaimerScreen.prototype.render = function () {
         .markdown {
           font-family: Times New Roman;
         }
-        .markdown h1,h2,h3,h4 {
+        .markdown h1, .markdown h2, .markdown h3 {
           margin: 10px 0;
           font-family: arial sans-serif;
           font-weight: bold;

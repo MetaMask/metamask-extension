@@ -61,6 +61,7 @@ App.prototype.render = function () {
       style: {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
+        position: 'relative',
       },
     }, [
 
@@ -197,7 +198,7 @@ App.prototype.renderNetworkDropdown = function () {
       this.setState({ isNetworkMenuOpen: !isOpen })
     },
     style: {
-      position: 'fixed',
+      position: 'absolute',
       left: 0,
       zIndex: 0,
     },
@@ -246,7 +247,7 @@ App.prototype.renderDropdown = function () {
       this.props.dispatch(actions.closeMenu())
     },
     style: {
-      position: 'fixed',
+      position: 'absolute',
       right: 0,
       zIndex: 0,
     },

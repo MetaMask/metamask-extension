@@ -17,6 +17,9 @@ NewComponent.prototype.render = function () {
   const selected = state.selected || selectedKey
 
   return h('select', {
+    style: {
+      margin: '20px 20px 0px',
+    },
     value: selected,
     onChange:(event) => {
       const selectedKey = event.target.value
