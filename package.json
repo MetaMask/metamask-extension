@@ -93,6 +93,7 @@
     "mocha-eslint": "^2.1.1",
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^1.1.5",
+    "qs": "^6.2.0",
     "sinon": "^1.17.3",
     "tape": "^4.5.1",
     "uglifyify": "^3.0.1",

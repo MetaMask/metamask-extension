@@ -54,12 +54,14 @@ function setupControllerConnection (stream, cb) {
 }
 
 function getCurrentDomain (cb) {
+  const unknown = '<unknown>'
+  if (!chrome.tabs) return cb(null, unknown)
   chrome.tabs.query({active: true, currentWindow: true}, function (results) {
     var activeTab = results[0]
     var currentUrl = activeTab && activeTab.url
     var currentDomain = url.parse(currentUrl).host
     if (!currentUrl) {
-      return cb(null, '<unknown>')
+      return cb(null, unknown)
     }
     cb(null, currentDomain)
   })
@@ -78,7 +80,7 @@ function setupApp (err, opts) {
     alert(err.stack)
     throw err
   }
-  
+
   clearNotifications()
 
   var container = document.getElementById('app-content')
