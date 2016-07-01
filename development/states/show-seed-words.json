@@ -45,7 +45,7 @@
     "transactions": [],
     "network": "2",
     "seedWords": "debris dizzy just program just float decrease vacant alarm reduce speak stadium",
-    "isConfirmed": false,
+    "isConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "provider": {

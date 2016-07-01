@@ -50,9 +50,16 @@ render(
 
     h(Selector, { actions, selectedKey: selectedView, states, store }),
 
-    h(Root, {
-      store: store,
-    }),
+    h('.mock-app-root', {
+      style: {
+        height: '500px',
+        width: '360px',
+      },
+    }, [
+      h(Root, {
+       store: store,
+      }),
+    ]),
 
   ]
 ), container)
