@@ -240,7 +240,6 @@ App.prototype.renderNetworkDropdown = function () {
 }
 
 App.prototype.renderDropdown = function () {
-  const props = this.props
   const state = this.state || {}
   const isOpen = state.isMainMenuOpen
 
