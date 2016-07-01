@@ -1,9 +1,9 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const Root = require('../ui/app/root')
-const configureStore = require('./mockStore')
-const states = require('./states')
-const Selector = require('./selector')
+const Root = require('./ui/app/root')
+const configureStore = require('./development/mockStore')
+const states = require('./development/states')
+const Selector = require('./development/selector')
 
 // Query String
 const qs = require('qs')
@@ -13,7 +13,7 @@ const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
 // CSS
-const MetaMaskUiCss = require('../ui/css')
+const MetaMaskUiCss = require('./ui/css')
 const injectCss = require('inject-css')
 
 
