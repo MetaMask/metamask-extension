@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../actions')
 const fs = require('fs')
 const path = require('path')
-const disclaimer = fs.readFileSync(path.join(__dirname, 'disclaimer.txt')).toString()
+const disclaimer = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'USER_AGREEMENT.md')).toString()
 module.exports = connect(mapStateToProps)(DisclaimerScreen)
 
 function mapStateToProps (state) {
