@@ -6,7 +6,8 @@
   "scripts": {
     "start": "gulp dev",
     "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
-    "watch": "mocha watch --compilers js:babel-register --recursive"
+    "watch": "mocha watch --compilers js:babel-register --recursive",
+    "ui": "cd development && node genStates.js && beefy mocker.js:bundle.js --live --open"
   },
   "browserify": {
     "transform": [
