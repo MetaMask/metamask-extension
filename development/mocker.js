@@ -2,32 +2,32 @@ const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('../ui/app/root')
 const configureStore = require('./mockStore')
+const states = require('./states')
+const Selector = require('./selector')
+
+// Query String
 const qs = require('qs')
-const queryString = qs.parse(window.location.href)
+let queryString = qs.parse(window.location.href.split('#')[1])
 let selectedView = queryString.view || 'account detail'
 
+// CSS
 const MetaMaskUiCss = require('../ui/css')
 const injectCss = require('inject-css')
-
-const states = require('./states')
 
 const firstState = states[selectedView]
 updateQueryParams()
 
-function updateQueryParams() {
-  const newParamsObj = {
-    view: selectedView,
-  }
-  const newQs = qs.stringify(newParamsObj)
-  //window.location.href = window.location.href.split('?')[0] + `?${newQs}`
-
+function updateQueryParams(newView) {
+  queryString.view = newView
+  const params = qs.stringify(queryString)
+  window.location.href = window.location.href.split('#')[0] + `#${params}`
 }
 
 const actions = {
   _setAccountManager(){},
   update: function(stateName) {
     selectedView = stateName
-    updateQueryParams()
+    updateQueryParams(stateName)
     const newState = states[selectedView]
     return {
       type: 'GLOBAL_FORCE_UPDATE',
@@ -48,15 +48,7 @@ var store = configureStore(states[selectedView])
 render(
   h('.super-dev-container', [
 
-    h('select', {
-      value: 'account-detail',
-      onChange:(event) => {
-        const selectedKey = event.target.value
-        store.dispatch(actions.update(selectedKey))
-      },
-    }, Object.keys(states).map((stateName) => {
-      return h('option', { value: stateName }, stateName)
-    })),
+    h(Selector, { actions, selectedKey: selectedView, states, store }),
 
     h(Root, {
       store: store,
