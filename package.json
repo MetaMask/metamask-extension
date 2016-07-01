@@ -7,7 +7,7 @@
     "start": "gulp dev",
     "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
     "watch": "mocha watch --compilers js:babel-register --recursive",
-    "ui": "beefy development/mocker.js:bundle.js --live --open --cwd development --index=./development/index.html"
+    "ui": "beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./"
   },
   "browserify": {
     "transform": [
