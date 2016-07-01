@@ -9,6 +9,13 @@
 ```bash
 npm install
 ```
+
+### Developing on UI Only
+
+You can run `npm run ui`, and your browser should open a live-reloading demo version of the plugin UI.
+
+Some actions will crash the app, so this is only for tuning aesthetics, but it allows live-reloading styles, which is a much faster feedback loop than reloading the full extension.
+
 ### Developing with Gulp
 
 We're using an experimental version of `gulp-cli`, so if you have the old version of gulp, you'll need to uninstall it, `npm uninstall -g gulp`, and install this one instead:

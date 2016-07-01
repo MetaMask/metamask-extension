@@ -1,0 +1,21 @@
+{
+  "metamask": {
+    "accounts": {},
+    "transactions": [],
+    "identities": {},
+    "network": "2",
+    "isInitialized": false,
+    "isUnlocked": false,
+    "seedWords": null,
+    "isConfirmed": false,
+    "unconfTxs": {},
+    "unconfMsgs": {},
+    "messages": [],
+    "provider": {
+      "type": "testnet"
+    }
+  },
+  "appState": {
+    "currentDomain": "extensions"
+  }
+}
