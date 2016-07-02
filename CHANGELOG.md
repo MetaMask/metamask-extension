@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.5.0 2016-06-29
+
 - Implement new account design.
 - Added a network indicator mark in dropdown menu
 - Added network name next to network indicator
