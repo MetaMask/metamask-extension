@@ -2,26 +2,26 @@ Hi, and welcome to MetaMask.
 
 Today we’re happy to share our gift to the Ethereum ecosystem.
 
-The MetaMask browser extension turns an ordinary browser like Chrome into an Ethereum browser, letting websites get data from the blockchain, and letting users securely manage identities and sign transactions.
+The MetaMask browser extension turns Google Chrome into an Ethereum browser, letting websites retrieve data from the blockchain, and letting users securely manage identities and sign transactions.
 
 When you start up MetaMask, you are given a seed phrase that can be used to restore all the accounts you ever create within MetaMask.
 
 You can switch the current account with the switch account button in the top right, and you can add more accounts at the bottom of the account list.
 
-Your account vault is stored encrypted within your browser, and it never touches our servers, but with your secret phrase, you can easily seed a new vault with the same accounts.
+Your account vault is encrypted and locally stored within your browser, meaning no account information ever touches our servers. However, with your secret phrase, you can easily restore your vault with the same accounts.
 
-You can send ether from within MetaMask like any wallet, but where MetaMask really shines is how it lets you visit Ethereum enabled websites.
+At first glance, Metamask enables you to send ether like a normal wallet application, but Metamask's true strength lies in enabling your browser to visit Ethereum enabled websites.
 
 Here’s a simple Ethereum distributed app, or Ðapp, called Tokens, that lets you easily deploy your own currency.
 
-When you visit a Dapp like Tokens with MetaMask installed, that website has access to the Ethereum blockchain via the standard Web3 Javascript API, and when it wants to write to the blockchain, it just asks web3 to send the transaction, and MetaMask asks for the user’s permission first.
+When you visit a Dapp like Tokens with MetaMask installed, that website has access to the Ethereum blockchain via the standard Web3 Javascript API. When it wants to write to the blockchain, it asks web3 to send the transaction, prompting MetaMask to ask for user confirmation.
 
-After you submit a transaction, you have to wait for the next block for the change to be reflected on the website, and there it is!
+After you submit a transaction, wait for the next block for the change to be reflected on the website...and there it is!
 
-Now I have my own MetaMaskCoins! I can check my balance, or if I want to send some to another account, I can click the copy link on it, and then check its balance, see it has none, then send it some meta-coins!
+Now I have my own MetaMaskCoins! I can check my balance or, if I want to send some to another account, I can click the copy link on it. I check its balance, see it has none, then send it some meta-coins!
 
-And this has been nice, but it’s all been on the test-net. I can always switch what blockchain I’m working on to the main-net, and I’m ready issue a token with the full security of the Ethereum blockchain.
+This has been nice, but it’s all been on the test-net. I can always switch what blockchain I’m working on, say the main blockhain, and I’m ready issue a token with the full security of the Ethereum blockchain.
 
-MetaMask connects to these blockchains with no synchronization time, because we host blockchain nodes by default, but you can always point MetaMask at your own Ethereum RPC Server, and fully control your connection to the blockchain.
+MetaMask connects to these blockchains with no synchronization time because we host blockchain nodes by default. You can always point MetaMask at your own Ethereum RPC Server, and fully control your connection to the blockchain.
 
-So that’s how MetaMask lets ordinary websites talk to a trusted Ethereum provider, while letting the user store and manage their own private keys. We hope this will help enable a new wave of blockchain-enabled websites.
+And that’s how MetaMask lets ordinary websites talk to a trusted Ethereum provider, all while letting the user store and manage their own private keys. We hope this will help enable a new wave of blockchain-enabled websites.
