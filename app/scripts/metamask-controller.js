@@ -89,10 +89,13 @@ module.exports = class MetamaskController {
     })
 
     function logger (err, request, response) {
-      if (err) return console.error(err.stack)
+      if (err) return console.error(err)
       if (!request.isMetamaskInternal) {
         console.log(`RPC (${originDomain}):`, request, '->', response)
-        if (response.error) console.error('Error in RPC response:\n' + response.error.message)
+        if (response.error) {
+          console.error('Error in RPC response:\n')
+          console.error(response.error)
+        }
       }
     }
   }
