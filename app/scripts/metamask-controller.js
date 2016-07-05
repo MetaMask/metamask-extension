@@ -93,8 +93,7 @@ module.exports = class MetamaskController {
       if (!request.isMetamaskInternal) {
         console.log(`RPC (${originDomain}):`, request, '->', response)
         if (response.error) {
-          console.error('Error in RPC response:\n')
-          console.error(response.error)
+          console.error('Error in RPC response:\n', response.error)
         }
       }
     }
