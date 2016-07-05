@@ -142,7 +142,7 @@ describe('util', function() {
 
     it('when given nothing', function() {
       var result = util.formatBalance()
-      assert.equal(result, 'None', 'should return "None"')
+      assert.equal(result, '0 ETH', 'should return "0 ETH"')
     })
 
     it('should return eth as string followed by ETH', function() {
