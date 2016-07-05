@@ -20,8 +20,17 @@
 }
 
 @font-face {
-  font-family: 'Montserrat Thin';
-    src: url('/fonts/Montserrat/Montserrat-Regular.woff') format('woff');
-    src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
-  text-rendering: geometricPrecision;
+  font-family: 'Montserrat Light';
+    src: url('/fonts/Montserrat/Montserrat-Light.woff') format('woff');
+    src: url('/fonts/Montserrat/Montserrat-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat UltraLight';
+    src: url('/fonts/Montserrat/Montserrat-UltraLight.woff') format('woff');
+    src: url('/fonts/Montserrat/Montserrat-UltraLight.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }

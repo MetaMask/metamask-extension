@@ -107,7 +107,7 @@ AccountDetailScreen.prototype.render = function () {
                   paddingTop: '3px',
                   width: '5em',
                   fontSize: '13px',
-                  fontFamily: 'Montserrat Thin',
+                  fontFamily: 'Montserrat Light',
                   textRendering: 'geometricPrecision',
                   marginTop: '10px',
                   marginBottom: '15px',
