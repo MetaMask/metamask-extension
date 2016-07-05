@@ -56,7 +56,7 @@ AccountDetailScreen.prototype.render = function () {
         // header - identicon + nav
         h('div', {
           style: {
-            marginTop: '15px',
+            marginTop: '20px',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
@@ -120,6 +120,8 @@ AccountDetailScreen.prototype.render = function () {
               h('.flex-row', {
                 style: {
                   justifyContent: 'flex-end',
+                  position: 'relative',
+                  bottom: '15px',
                 },
               }, [
                 h(CopyButton, {
@@ -150,31 +152,31 @@ AccountDetailScreen.prototype.render = function () {
 
             // account ballence
 
-            h('.flex-row', {
-              style: {
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-              },
-            }, [
-
-              h(EtherBalance, {
-                value: account && account.balance,
-                style: {
-                  lineHeight: '7px',
-                },
-              }),
-
-              h('button', {
-                onClick: () => props.dispatch(actions.showSendPage()),
-                style: {
-                  marginBottom: '20px',
-                  marginRight: '8px',
-                },
-              }, 'SEND'),
-
-            ]),
-
           ]),
+        ]),
+        h('.flex-row', {
+          style: {
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+          },
+        }, [
+
+          h(EtherBalance, {
+            value: account && account.balance,
+            style: {
+              lineHeight: '7px',
+              marginTop: '10px',
+            },
+          }),
+
+          h('button', {
+            onClick: () => props.dispatch(actions.showSendPage()),
+            style: {
+              marginBottom: '20px',
+              marginRight: '8px',
+            },
+          }, 'SEND'),
+
         ]),
       ]),
 
