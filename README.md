@@ -1,4 +1,4 @@
-# Metamask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-plugin.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-plugin)
+# MetaMask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-plugin.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-plugin)
 
 ## Architecture
 
@@ -65,7 +65,7 @@ You can run the linter by itself with `gulp lint`.
 
 ### Deploying the UI
 
- You must be authorized already on the Metamask plugin.
+ You must be authorized already on the MetaMask plugin.
 
  0. Update the version in `app/manifest.json` and the Changelog in `CHANGELOG.md`.
  1. Visit [the chrome developer dashboard](https://chrome.google.com/webstore/developer/dashboard?authuser=2).
