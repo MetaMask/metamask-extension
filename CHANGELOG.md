@@ -6,6 +6,7 @@
 - Fix formatting of account details.
 - Use web3 minified dist for faster inject times
 - Fix issue where dropdowns were not in front of icons.
+- Update transaction approval styles.
 
 ## 2.5.0 2016-06-29
 
