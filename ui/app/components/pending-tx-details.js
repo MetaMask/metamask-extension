@@ -10,7 +10,7 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 
 const baseGasFee = new BN('21000', 10)
-const gasCost = new BN('10000000000', 10)
+const gasCost = new BN('4a817c800', 16)
 const baseFeeHex = baseGasFee.mul(gasCost).toString(16)
 
 module.exports = PendingTxDetails
