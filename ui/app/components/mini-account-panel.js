@@ -2,8 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const Identicon = require('./identicon')
-const formatBalance = require('../util').formatBalance
-const TransactionIcon = require('./transaction-list-item-icon')
 
 module.exports = AccountPanel
 
@@ -16,7 +14,6 @@ function AccountPanel () {
 AccountPanel.prototype.render = function () {
   var props = this.props
   var picOrder = props.picOrder || 'left'
-  var isFauceting = props.isFauceting
   const { attrs, imageSeed } = props
 
   return (
@@ -39,7 +36,7 @@ AccountPanel.prototype.render = function () {
         },
       }, [
 
-        props.attrs.map((attr) => {
+        attrs.map((attr) => {
           return h('span.font-small', {
             key: `mini-${attr}`,
             style: {
@@ -47,14 +44,12 @@ AccountPanel.prototype.render = function () {
             },
           }, attr)
         }),
-
       ]),
-
     ])
   )
 }
 
-AccountPanel.prototype.genIcon= function(seed, picOrder) {
+AccountPanel.prototype.genIcon = function (seed, picOrder) {
   const props = this.props
 
   // When there is no seed value, this is a contract creation.
@@ -63,14 +58,14 @@ AccountPanel.prototype.genIcon= function(seed, picOrder) {
     return h('.identicon-wrapper.flex-column.select-none', {
       style: {
         order: picOrder === 'left' ? 1 : 3,
-     },
+      },
     }, [
       h('i.fa.fa-file-text-o.fa-lg', {
         style: {
           fontSize: '42px',
           transform: 'translate(0px, -16px)',
         },
-      })
+      }),
     ])
   }
 
@@ -85,21 +80,5 @@ AccountPanel.prototype.genIcon= function(seed, picOrder) {
       imageify: props.imageifyIdenticons,
     }),
   ])
-}
-
-function balanceOrFaucetingIndication (account, isFauceting) {
-  // Temporarily deactivating isFauceting indication
-  // because it shows fauceting for empty restored accounts.
-  if (/* isFauceting*/ false) {
-    return {
-      key: 'Account is auto-funding.',
-      value: 'Please wait.',
-    }
-  } else {
-    return {
-      key: 'BALANCE',
-      value: formatBalance(account.balance),
-    }
-  }
 }
 
