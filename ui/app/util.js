@@ -26,7 +26,7 @@ module.exports = {
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
-  mainBalanceObject: mainBalanceObject,
+  generateBalanceObject: generateBalanceObject,
   dataSize: dataSize,
   readableDate: readableDate,
   ethToWei: ethToWei,
@@ -118,7 +118,7 @@ function formatBalance (balance, decimalsToKeep) {
   return formatted
 }
 
-function mainBalanceObject (formattedBalance) {
+function generateBalanceObject (formattedBalance) {
   var balance = formattedBalance.split(' ')[0]
   var label = formattedBalance.split(' ')[1]
   var beforeDecimal = balance.split('.')[0]

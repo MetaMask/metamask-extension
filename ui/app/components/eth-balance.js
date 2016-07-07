@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const formatBalance = require('../util').formatBalance
-const mainBalanceObject = require('../util').mainBalanceObject
+const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
 module.exports = EthBalanceComponent
 
@@ -31,7 +31,7 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
   if (value === 'None') return value
-  var balanceObj = mainBalanceObject(value)
+  var balanceObj = generateBalanceObject(value)
 
   var balance = balanceObj.balance
   var label = balanceObj.label
