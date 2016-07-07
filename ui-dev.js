@@ -71,7 +71,7 @@ render(
       style: {
         height: '500px',
         width: '360px',
-        boxShadow: '2px 2px 5px grey',
+        boxShadow: 'grey 0px 2px 9px',
         margin: '20px',
       },
     }, [
