@@ -19,10 +19,6 @@ function setupInjection(){
 
 function setupStreams(){
 
-  const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
-  const PortStream = require('./lib/port-stream.js')
-  const ObjectMultiplex = require('./lib/obj-multiplex')
-
   // setup communication to page and plugin
   var pageStream = new LocalMessageDuplexStream({
     name: 'contentscript',

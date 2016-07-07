@@ -1,3 +1,4 @@
+/*global Web3*/
 cleanContextForImports()
 require('web3/dist/web3.min.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
