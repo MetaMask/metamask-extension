@@ -4,10 +4,14 @@ const inherits = require('util').inherits
 
 const MiniAccountPanel = require('./mini-account-panel')
 const addressSummary = require('../util').addressSummary
-const readableDate = require('../util').readableDate
 const formatBalance = require('../util').formatBalance
 const nameForAddress = require('../../lib/contract-namer')
-const BN = require('ethereumjs-util').BN
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
+
+const baseGasFee = new BN('21000', 10)
+const gasCost = new BN('10000000000', 10)
+const baseFeeHex = baseGasFee.mul(gasCost).toString(16)
 
 module.exports = PendingTxDetails
 
@@ -25,11 +29,11 @@ PTXP.render = function () {
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
   var identity = props.identities[address] || { address: address }
-  var account = props.accounts[address] || { address: address }
 
-  var isContractDeploy = !('to' in txParams)
-
-  var maxCost = (new BN(txParams.value, 16) + new BN(txParams.gas, 16)).toString(16)
+  var gasCost = ethUtil.stripHexPrefix(txParams.gas || baseFeeHex)
+  var txValue = ethUtil.stripHexPrefix(txParams.value || '0x0')
+  var maxCost = ((new BN(txValue, 16)).add(new BN(gasCost, 16))).toString(16)
+  var dataLength = txParams.data ? txParams.data.length - 2 : 0
 
   return (
     h('div', [
@@ -86,7 +90,7 @@ PTXP.render = function () {
 
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
-          h('.cell.value', formatBalance(txParams.gas).formatted),
+          h('.cell.value', formatBalance(gasCost).formatted),
         ]),
 
         h('.cell.row', {
@@ -103,11 +107,11 @@ PTXP.render = function () {
           style: {
             background: '#f7f7f7',
             paddingBottom: '0px',
-          }
+          },
         }, [
           h('.cell.label'),
-          h('.cell.value', `Data included: ${txParams.data.length - 2} bytes`)
-        ])
+          h('.cell.value', `Data included: ${dataLength} bytes`),
+        ]),
       ]), // End of Table
 
       this.warnIfNeeded(),
@@ -116,15 +120,10 @@ PTXP.render = function () {
   )
 }
 
-PTXP.miniAccountPanelForRecipient = function() {
+PTXP.miniAccountPanelForRecipient = function () {
   var props = this.props
   var txData = props.txData
-
   var txParams = txData.txParams || {}
-  var address = txParams.from || props.selectedAddress
-  var identity = props.identities[address] || { address: address }
-  var account = props.accounts[address] || { address: address }
-
   var isContractDeploy = !('to' in txParams)
 
   // If it's not a contract deploy, send to the account
@@ -134,14 +133,14 @@ PTXP.miniAccountPanelForRecipient = function() {
         nameForAddress(txParams.to),
         addressSummary(txParams.to, 6, 4, false),
       ],
-      imageSeed: address,
+      imageSeed: txParams.to,
       imageifyIdenticons: props.imageifyIdenticons,
       picOrder: 'left',
     })
   } else {
-     return h(MiniAccountPanel, {
+    return h(MiniAccountPanel, {
       attrs: [
-        'New Contract'
+        'New Contract',
       ],
       imageifyIdenticons: props.imageifyIdenticons,
       picOrder: 'left',
@@ -151,8 +150,12 @@ PTXP.miniAccountPanelForRecipient = function() {
 
 // Should analyze if there is a DELEGATECALL opcode
 // in the recipient contract, and show a warning if so.
-PTXP.warnIfNeeded = function() {
-  return null
+PTXP.warnIfNeeded = function () {
+  const containsDelegateCall = !!this.props.txData.containsDelegateCall
+
+  if (!containsDelegateCall) {
+    return null
+  }
 
   return h('span.error', {
     style: {
@@ -160,7 +163,7 @@ PTXP.warnIfNeeded = function() {
       fontSize: '13px',
       display: 'flex',
       justifyContent: 'center',
-    }
+    },
   }, [
     h('i.fa.fa-lg.fa-info-circle', { style: { margin: '5px' } }),
     h('span', ' Your identity may be used in other contracts!'),

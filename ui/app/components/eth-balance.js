@@ -14,7 +14,8 @@ function EthBalanceComponent () {
 EthBalanceComponent.prototype.render = function () {
   var state = this.props
   var style = state.style
-  var value = formatBalance(state.value)
+
+  const value = formatBalance(state.value)
 
   return (
 

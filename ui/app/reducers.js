@@ -35,7 +35,6 @@ function rootReducer (state, action) {
 
   state.appState = reduceApp(state, action)
 
-  console.log(JSON.stringify(state))
   return state
 }
 
