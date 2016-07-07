@@ -39,6 +39,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
   return (
     h(Tooltip, {
       title: value.balance,
+      position: 'bottom',
     }, [
       h('.flex-column', {
         style: {
