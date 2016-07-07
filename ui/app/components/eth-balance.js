@@ -11,10 +11,10 @@ function EthBalanceComponent () {
 }
 
 EthBalanceComponent.prototype.render = function () {
-  var state = this.props
-  var style = state.style
+  var props = this.props
+  var style = props.style
 
-  const value = formatBalance(state.value)
+  const value = formatBalance(props.value)
 
   return (
 
@@ -31,26 +31,33 @@ EthBalanceComponent.prototype.render = function () {
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
+  const props = this.props
 
   if (value === 'None') return value
 
   var balance = value.split(' ')[0]
   var label = value.split(' ')[1]
+  var tagName = props.inline ? 'span' : 'div'
+  var topTag = props.inline ? 'div' : '.flex-column'
 
   return (
-    h('.flex-column', {
+    h(topTag, {
       style: {
         alignItems: 'flex-end',
-        lineHeight: '13px',
-        fontFamily: 'Montserrat Thin',
+        lineHeight: props.fontSize || '13px',
+        fontFamily: 'Montserrat Regular',
         textRendering: 'geometricPrecision',
       },
     }, [
-      h('div', balance),
-      h('div', {
+      h(tagName, {
         style: {
-          color: ' #AEAEAE',
-          fontSize: '12px',
+          fontSize: props.fontSize || '12px',
+        }
+      }, balance + ' '),
+      h(tagName, {
+        style: {
+          color: props.labelColor || '#AEAEAE',
+          fontSize: props.fontSize || '12px',
         },
       }, label),
     ])
