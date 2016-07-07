@@ -29,12 +29,15 @@ PTXP.render = function () {
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
   var identity = props.identities[address] || { address: address }
+  var balance = props.accounts[address].balance
 
   var gasCost = ethUtil.stripHexPrefix(txParams.gas || baseFeeHex)
   var txValue = ethUtil.stripHexPrefix(txParams.value || '0x0')
   var maxCost = ((new BN(txValue, 16)).add(new BN(gasCost, 16))).toString(16)
   var dataLength = txParams.data ? txParams.data.length - 2 : 0
 
+  console.dir(identity)
+  console.dir({props})
   return (
     h('div', [
 
@@ -48,7 +51,7 @@ PTXP.render = function () {
           attrs: [
             identity.name,
             addressSummary(address, 6, 4, false),
-            formatBalance(identity.balance).formatted,
+            formatBalance(balance).formatted,
           ],
           imageSeed: address,
           imageifyIdenticons: props.imageifyIdenticons,
