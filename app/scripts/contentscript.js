@@ -4,7 +4,7 @@ const ObjectMultiplex = require('./lib/obj-multiplex')
 
 if (shouldInjectWeb3()) {
   setupInjection()
-  setTimeout(setupStreams, 200)
+  setupStreams()
 }
 
 function setupInjection(){
