@@ -53,11 +53,11 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
       }, [
         h('div', {
           style: {
-          width: '100%',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        },
-      }, balance),
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          },
+        }, balance),
         h('div', {
           style: {
             color: ' #AEAEAE',
