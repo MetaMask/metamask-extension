@@ -51,7 +51,7 @@ PTXP.render = function () {
           attrs: [
             identity.name,
             addressSummary(address, 6, 4, false),
-            formatBalance(balance).formatted,
+            formatBalance(balance),
           ],
           imageSeed: address,
           imageifyIdenticons: props.imageifyIdenticons,
@@ -88,12 +88,12 @@ PTXP.render = function () {
 
         h('.row', [
           h('.cell.label', 'Amount'),
-          h('.cell.value', formatBalance(txParams.value).formatted),
+          h('.cell.value', formatBalance(txParams.value)),
         ]),
 
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
-          h('.cell.value', formatBalance(gasCost).formatted),
+          h('.cell.value', formatBalance(gasCost)),
         ]),
 
         h('.cell.row', {
@@ -103,7 +103,7 @@ PTXP.render = function () {
           },
         }, [
           h('.cell.label', 'Max Total'),
-          h('.cell.value', formatBalance(maxCost).formatted),
+          h('.cell.value', formatBalance(maxCost)),
         ]),
 
         h('.cell.row', {
