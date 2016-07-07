@@ -26,6 +26,7 @@ module.exports = {
   numericBalance: numericBalance,
   parseBalance: parseBalance,
   formatBalance: formatBalance,
+  generateBalanceObject: generateBalanceObject,
   dataSize: dataSize,
   readableDate: readableDate,
   ethToWei: ethToWei,
@@ -115,6 +116,17 @@ function formatBalance (balance, decimalsToKeep) {
     formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ' ETH'
   }
   return formatted
+}
+
+function generateBalanceObject (formattedBalance) {
+  var balance = formattedBalance.split(' ')[0]
+  var label = formattedBalance.split(' ')[1]
+  var beforeDecimal = balance.split('.')[0]
+  var afterDecimal = balance.split('.')[1]
+
+  if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '< 0.00001' }
+
+  return { balance, label }
 }
 
 function dataSize (data) {
