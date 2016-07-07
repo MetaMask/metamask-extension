@@ -108,7 +108,7 @@ App.prototype.renderAppBar = function () {
           background: props.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
-          zIndex: 1,
+          zIndex: 2,
         },
       }, props.isUnlocked && [
 
@@ -197,10 +197,10 @@ App.prototype.renderNetworkDropdown = function () {
     onClickOutside: (event) => {
       this.setState({ isNetworkMenuOpen: !isOpen })
     },
+    zIndex: 1,
     style: {
       position: 'absolute',
       left: 0,
-      zIndex: 0,
     },
     innerStyle: {
       background: 'white',
@@ -245,13 +245,13 @@ App.prototype.renderDropdown = function () {
 
   return h(MenuDroppo, {
     isOpen: isOpen,
+    zIndex: 1,
     onClickOutside: (event) => {
       this.setState({ isMainMenuOpen: !isOpen })
     },
     style: {
       position: 'absolute',
       right: 0,
-      zIndex: 0,
     },
     innerStyle: {
       background: 'white',

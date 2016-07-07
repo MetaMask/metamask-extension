@@ -116,7 +116,7 @@ function formatBalance (balance, decimalsToKeep) {
     if (afterDecimal !== '0') {
       var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
       if (sigFigs) { afterDecimal = sigFigs[0] }
-      formattedBalance = `0.${afterDecimal.slice(0, 6)}`
+      formattedBalance = afterDecimal.substr(0, 5) === '00000' ? '<0.00001' : `0.${afterDecimal.slice(0, 6)}`
     }
   } else {
     formattedBalance = `${beforeDecimal}.${afterDecimal.slice(0, 2)}`
