@@ -177,7 +177,7 @@ PTXP.miniAccountPanelForRecipient = function () {
         style: {
           fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
         },
-      }, nameForAddress(txParams.to)),
+      }, nameForAddress(txParams.to, props.identities)),
       h('span.font-small', {
         style: {
           fontFamily: 'Montserrat Light, Montserrat, sans-serif',
