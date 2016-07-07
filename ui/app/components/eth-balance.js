@@ -73,7 +73,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
             },
           }, label),
         ]),
-      ])
+      ]),
     ])
 
   )
