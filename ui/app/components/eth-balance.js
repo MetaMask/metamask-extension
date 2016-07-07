@@ -2,7 +2,8 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const formatBalance = require('../util').formatBalance
-
+const generateBalanceObject = require('../util').generateBalanceObject
+const Tooltip = require('./tooltip.js')
 module.exports = EthBalanceComponent
 
 inherits(EthBalanceComponent, Component)
@@ -32,34 +33,48 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
   const props = this.props
-
   if (value === 'None') return value
-
-  var balance = value.split(' ')[0]
-  var label = value.split(' ')[1]
+  var balanceObj = generateBalanceObject(value)
+  var balance = balanceObj.balance
+  var label = balanceObj.label
   var tagName = props.inline ? 'span' : 'div'
   var topTag = props.inline ? 'div' : '.flex-column'
 
   return (
-    h(topTag, {
-      style: {
-        alignItems: 'flex-end',
-        lineHeight: props.fontSize || '13px',
-        fontFamily: 'Montserrat Regular',
-        textRendering: 'geometricPrecision',
-      },
+
+    h(Tooltip, {
+      position: 'bottom',
+      title: value.split(' ')[0],
     }, [
-      h(tagName, {
+      h(topTag, {
         style: {
-          fontSize: props.fontSize || '12px',
+          alignItems: 'flex-end',
+          lineHeight: props.fontSize || '13px',
+          fontFamily: 'Montserrat Regular',
+          textRendering: 'geometricPrecision',
         },
-      }, balance + ' '),
-      h(tagName, {
-        style: {
-          color: props.labelColor || '#AEAEAE',
-          fontSize: props.fontSize || '12px',
-        },
-      }, label),
+      }, [
+        h(tagName, {
+          style: {
+            fontSize: props.fontSize || '12px',
+          },
+        }, balance + ' '),
+        h(tagName, {
+          style: {
+            color: props.labelColor || '#AEAEAE',
+            fontSize: props.fontSize || '12px',
+          },
+        }, [
+          h('div', balance),
+          h('div', {
+            style: {
+              color: '#AEAEAE',
+              fontSize: '12px',
+            },
+          }, label),
+        ]),
+      ])
     ])
+
   )
 }
