@@ -14,7 +14,7 @@ Tooltip.prototype.render = function () {
   const props = this.props
 
   return h(ReactTooltip, {
-    position: 'left',
+    position: props.position ? props.position : 'left',
     title: props.title,
     fixed: false,
   }, props.children)

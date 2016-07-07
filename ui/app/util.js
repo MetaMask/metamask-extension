@@ -99,22 +99,29 @@ function formatBalance (balance, decimalsToKeep) {
   var parsed = parseBalance(balance)
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
-  var formatted = 'None'
-  if (decimalsToKeep === undefined) {
-    if (beforeDecimal === '0') {
-      if (afterDecimal !== '0') {
-        var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
-        if (sigFigs) { afterDecimal = sigFigs[0] }
-        formatted = '0.' + afterDecimal + ' ETH'
-      }
-    } else {
-      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ' ETH'
+  var formatted, formattedBalance
+
+  if (beforeDecimal === '0') {
+    if (afterDecimal !== '0') {
+      var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
+      if (sigFigs) { afterDecimal = sigFigs[0] }
+      formattedBalance = afterDecimal.substr(0, 5) === '00000' ? '<0.00001' : `0.${afterDecimal.slice(0, 6)}`
     }
   } else {
-    afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ' ETH'
+    formattedBalance = `${beforeDecimal}.${afterDecimal.slice(0, 2)}`
   }
-  return formatted
+  if (decimalsToKeep) {
+    formattedBalance = `${beforeDecimal}.${afterDecimal.slice(0, decimalsToKeep)}`
+  }
+
+  formatted = `${formattedBalance} ETH`
+
+  if (formattedBalance === '0.0' || formattedBalance === undefined) {
+    formatted = 'None'
+    formattedBalance = 'None'
+  }
+
+  return {formattedBalance, balance: parsed.join('.'), formatted}
 }
 
 function dataSize (data) {
