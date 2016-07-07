@@ -104,7 +104,8 @@ function parseBalance (balance) {
   return [beforeDecimal, afterDecimal]
 }
 
-// Takes wei hex, returns "None" or "${formattedAmount} ETH"
+// Takes wei hex, returns an object with three properties.
+// Its "formatted" property is what we generally use to render values.
 function formatBalance (balance, decimalsToKeep) {
   var parsed = parseBalance(balance)
   var beforeDecimal = parsed[0]

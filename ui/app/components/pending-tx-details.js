@@ -7,6 +7,7 @@ const addressSummary = require('../util').addressSummary
 const readableDate = require('../util').readableDate
 const formatBalance = require('../util').formatBalance
 const nameForAddress = require('../../lib/contract-namer')
+const BN = require('ethereumjs-util').BN
 
 module.exports = PendingTxDetails
 
@@ -18,15 +19,17 @@ function PendingTxDetails () {
 const PTXP = PendingTxDetails.prototype
 
 PTXP.render = function () {
-  var state = this.props
-  var txData = state.txData
+  var props = this.props
+  var txData = props.txData
 
   var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAddress
-  var identity = state.identities[address] || { address: address }
-  var account = state.accounts[address] || { address: address }
+  var address = txParams.from || props.selectedAddress
+  var identity = props.identities[address] || { address: address }
+  var account = props.accounts[address] || { address: address }
 
   var isContractDeploy = !('to' in txParams)
+
+  var maxCost = (new BN(txParams.value, 16) + new BN(txParams.gas, 16)).toString(16)
 
   return (
     h('div', [
@@ -41,10 +44,10 @@ PTXP.render = function () {
           attrs: [
             identity.name,
             addressSummary(address, 6, 4, false),
-            formatBalance(identity.balance),
+            formatBalance(identity.balance).formatted,
           ],
           imageSeed: address,
-          imageifyIdenticons: state.imageifyIdenticons,
+          imageifyIdenticons: props.imageifyIdenticons,
           picOrder: 'right',
         }),
 
@@ -57,40 +60,70 @@ PTXP.render = function () {
         }),
 
         this.miniAccountPanelForRecipient(),
-
       ]),
 
-      // tx data
-      h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
+      h('style', `
+        .table-box {
+          margin: 7px 6px 0px 6px;
+        }
+        .table-box .row {
+          margin: 0px;
+          background: rgb(236,236,236);
+          display: flex;
+          justify-content: space-between;
+          font-family: Montserrat Light, sans-serif;
+          font-size: 13px;
+          padding: 5px 15px;
+        }
+      `),
 
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'TO ADDRESS'),
-          h('span.font-small', addressSummary(txParams.to)),
+      h('.table-box', [
+
+        h('.row', [
+          h('.cell.label', 'Amount'),
+          h('.cell.value', formatBalance(txParams.value).formatted),
         ]),
 
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'DATE'),
-          h('span.font-small', readableDate(txData.time)),
+        h('.cell.row', [
+          h('.cell.label', 'Max Transaction Fee'),
+          h('.cell.value', formatBalance(txParams.gas).formatted),
         ]),
 
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'AMOUNT'),
-          h('span.font-small', formatBalance(txParams.value)),
+        h('.cell.row', {
+          style: {
+            fontFamily: 'Montserrat Regular',
+            background: 'rgb(216,216,216)',
+          },
+        }, [
+          h('.cell.label', 'Max Total'),
+          h('.cell.value', formatBalance(maxCost).formatted),
         ]),
-      ]),
+
+        h('.cell.row', {
+          style: {
+            background: '#f7f7f7',
+            paddingBottom: '0px',
+          }
+        }, [
+          h('.cell.label'),
+          h('.cell.value', `Data included: ${txParams.data.length - 2} bytes`)
+        ])
+      ]), // End of Table
+
+      this.warnIfNeeded(),
 
     ])
   )
 }
 
 PTXP.miniAccountPanelForRecipient = function() {
-  var state = this.props
-  var txData = state.txData
+  var props = this.props
+  var txData = props.txData
 
   var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAddress
-  var identity = state.identities[address] || { address: address }
-  var account = state.accounts[address] || { address: address }
+  var address = txParams.from || props.selectedAddress
+  var identity = props.identities[address] || { address: address }
+  var account = props.accounts[address] || { address: address }
 
   var isContractDeploy = !('to' in txParams)
 
@@ -102,7 +135,7 @@ PTXP.miniAccountPanelForRecipient = function() {
         addressSummary(txParams.to, 6, 4, false),
       ],
       imageSeed: address,
-      imageifyIdenticons: state.imageifyIdenticons,
+      imageifyIdenticons: props.imageifyIdenticons,
       picOrder: 'left',
     })
   } else {
@@ -110,9 +143,26 @@ PTXP.miniAccountPanelForRecipient = function() {
       attrs: [
         'New Contract'
       ],
-      imageifyIdenticons: state.imageifyIdenticons,
+      imageifyIdenticons: props.imageifyIdenticons,
       picOrder: 'left',
     })
   }
 }
 
+// Should analyze if there is a DELEGATECALL opcode
+// in the recipient contract, and show a warning if so.
+PTXP.warnIfNeeded = function() {
+  return null
+
+  return h('span.error', {
+    style: {
+      fontFamily: 'Montserrat Light',
+      fontSize: '13px',
+      display: 'flex',
+      justifyContent: 'center',
+    }
+  }, [
+    h('i.fa.fa-lg.fa-info-circle', { style: { margin: '5px' } }),
+    h('span', ' Your identity may be used in other contracts!'),
+  ])
+}

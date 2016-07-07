@@ -33,7 +33,11 @@ PendingTx.prototype.render = function () {
       h(PendingTxDetails, state),
 
       // send + cancel
-      h('.flex-row.flex-space-around', [
+      h('.flex-row.flex-space-around', {
+        style: {
+          marginTop: '14px',
+        }
+      }, [
         h('button', {
           onClick: state.cancelTransaction,
         }, 'Reject'),

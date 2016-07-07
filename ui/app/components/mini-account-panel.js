@@ -43,7 +43,7 @@ AccountPanel.prototype.render = function () {
           return h('span.font-small', {
             key: `mini-${attr}`,
             style: {
-              fontFamily: 'Montserrat UltraLight, Montserrat Light, Montserrat',
+              fontFamily: 'Montserrat Light, Montserrat, sans-serif',
             },
           }, attr)
         }),
