@@ -69,6 +69,7 @@ PTXP.render = function () {
           }, h(EtherBalance, {
             value: balance,
             inline: true,
+            labelColor: '#F7861C',
           })),
 
         ]),
