@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Master
+
+- Fix formatting of ETH balance
 - Fix formatting of account details.
 
 ## 2.5.0 2016-06-29

@@ -142,35 +142,23 @@ describe('util', function() {
 
     it('when given nothing', function() {
       var result = util.formatBalance()
-      assert.equal(result, 'None', 'should return "None"')
-    })
-
-    it('should return eth as string followed by ETH', function() {
-      var input = new ethUtil.BN(ethInWei, 10).toJSON()
-      var result = util.formatBalance(input, 4)
-      assert.equal(result, '1.0000 ETH')
-    })
-
-    it('should return eth as string followed by ETH', function() {
-      var input = new ethUtil.BN(ethInWei, 10).div(new ethUtil.BN('2', 10)).toJSON()
-      var result = util.formatBalance(input, 3)
-      assert.equal(result, '0.500 ETH')
+      assert.equal(result.formatted, 'None', 'should return "None"')
     })
 
     it('should display specified decimal points', function() {
       var input = "0x128dfa6a90b28000"
       var result = util.formatBalance(input, 2)
-      assert.equal(result, '1.33 ETH')
+      assert.equal(result.formatted, '1.33 ETH')
     })
-    it('should default to 3 decimal points', function() {
+    it('should default to 2 decimal points', function() {
       var input = "0x128dfa6a90b28000"
       var result = util.formatBalance(input)
-      assert.equal(result, '1.337 ETH')
+      assert.equal(result.formatted, '1.33 ETH')
     })
     it('should show 2 significant digits for tiny balances', function() {
       var input = "0x1230fa6a90b28"
       var result = util.formatBalance(input)
-      assert.equal(result, '0.00032 ETH')
+      assert.equal(result.formatted, '0.00032 ETH')
     })
 
   })
