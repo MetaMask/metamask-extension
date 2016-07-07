@@ -42,12 +42,12 @@ PendingTx.prototype.render = function () {
         h('button.confirm', {
           onClick: state.sendTransaction,
           style: { background: 'rgb(251,117,1)' },
-        }, 'Confirm'),
+        }, 'Accept'),
 
         h('button.cancel', {
           onClick: state.cancelTransaction,
           style: { background: 'rgb(254,35,17)' },
-        }, 'Cancel'),
+        }, 'Reject'),
       ]),
     ])
   )
