@@ -14,7 +14,7 @@ function AccountPanel () {
 AccountPanel.prototype.render = function () {
   var props = this.props
   var picOrder = props.picOrder || 'left'
-  const { attrs, imageSeed } = props
+  const { imageSeed } = props
 
   return (
 

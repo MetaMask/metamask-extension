@@ -52,7 +52,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
       h(tagName, {
         style: {
           fontSize: props.fontSize || '12px',
-        }
+        },
       }, balance + ' '),
       h(tagName, {
         style: {
