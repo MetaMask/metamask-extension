@@ -1,12 +1,10 @@
 cleanContextForImports()
-const Web3 = require('web3')
+require('web3/dist/web3.min.js')
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
 
-// remove from window
-delete window.Web3
 
 //
 // setup plugin communication

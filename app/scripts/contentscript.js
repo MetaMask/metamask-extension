@@ -1,14 +1,13 @@
 const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
-// const urlUtil = require('url')
 
 if (shouldInjectWeb3()) {
   setupInjection()
+  setTimeout(setupStreams, 200)
 }
 
 function setupInjection(){
-
   // inject in-page script
   var scriptTag = document.createElement('script')
   scriptTag.src = chrome.extension.getURL('scripts/inpage.js')
@@ -16,6 +15,13 @@ function setupInjection(){
   var container = document.head || document.documentElement
   // append as first child
   container.insertBefore(scriptTag, container.children[0])
+}
+
+function setupStreams(){
+
+  const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
+  const PortStream = require('./lib/port-stream.js')
+  const ObjectMultiplex = require('./lib/obj-multiplex')
 
   // setup communication to page and plugin
   var pageStream = new LocalMessageDuplexStream({
