@@ -62,7 +62,7 @@ TransactionListItem.prototype.render = function () {
          : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
       ]),
 
-      h('.flex-column', [
+      h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
         domainField(txParams),
         h('div', date),
         recipientField(txParams, transaction, isTx, isMsg),
@@ -83,6 +83,9 @@ function domainField (txParams) {
     style: {
       fontSize: 'x-small',
       color: '#ABA9AA',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      width: '100%',
     },
   }, [
     txParams.origin,

@@ -58,7 +58,7 @@
         "txParams": {
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "to": "0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761",
-          "value": "0xde0b6b3a7640000",
+          "value": "0x66c899104aa57038000",
           "origin": "thelongestdomainnameintheworldandthensomeandthensomemoreandmore.com",
           "metamaskId": 1467921503489592,
           "metamaskNetworkId": "2"
@@ -72,7 +72,7 @@
         "txParams": {
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "to": "0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761",
-          "value": "0xde0b6b3a7640000",
+          "value": "0x66c8104aa57038000",
           "origin": "thelongestdomainnameintheworldandthensomeandthensomemoreandmore.com",
           "metamaskId": 1467923203344608,
           "metamaskNetworkId": "2"
