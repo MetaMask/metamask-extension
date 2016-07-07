@@ -52,6 +52,12 @@ describe('util', function() {
       var result = util.addressSummary(address)
       assert.equal(result, '0xFDEa65C8...b825')
     })
+
+    it('should accept arguments for firstseg, lastseg, and keepPrefix', function() {
+      var address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
+      var result = util.addressSummary(address, 4, 4, false)
+      assert.equal(result, 'FDEa...b825')
+    })
   })
 
   describe('isValidAddress', function() {

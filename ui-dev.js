@@ -1,3 +1,20 @@
+/* UI DEV
+ *
+ * This is a utility module.
+ * It initializes a minimalist browserifiable project
+ * that contains the Metamask UI, with a mocked state.
+ *
+ * Includes a state menu for switching between different
+ * mocked states, along with query param support,
+ * so those states are preserved when live-reloading.
+ *
+ * This is a convenient way to develop on the UI
+ * without having to re-enter your password
+ * every time the plugin rebuilds.
+ *
+ * To use, run `npm run ui`.
+ */
+
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('./ui/app/root')

@@ -2,10 +2,11 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const AccountPanel = require('./account-panel')
+const MiniAccountPanel = require('./mini-account-panel')
 const addressSummary = require('../util').addressSummary
 const readableDate = require('../util').readableDate
 const formatBalance = require('../util').formatBalance
+const nameForAddress = require('../../lib/contract-namer')
 
 module.exports = PendingTxDetails
 
@@ -14,12 +15,10 @@ function PendingTxDetails () {
   Component.call(this)
 }
 
-PendingTxDetails.prototype.render = function () {
-  var state = this.props
-  return this.renderGeneric(h, state)
-}
+const PTXP = PendingTxDetails.prototype
 
-PendingTxDetails.prototype.renderGeneric = function (h, state) {
+PTXP.render = function () {
+  var state = this.props
   var txData = state.txData
 
   var txParams = txData.txParams || {}
@@ -27,17 +26,39 @@ PendingTxDetails.prototype.renderGeneric = function (h, state) {
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
-  return (
+  var isContractDeploy = !('to' in txParams)
 
+  return (
     h('div', [
 
-      // account that will sign
-      h(AccountPanel, {
-        showFullAddress: true,
-        identity: identity,
-        account: account,
-        imageifyIdenticons: state.imageifyIdenticons,
-      }),
+      h('.flex-row.flex-center', {
+        style: {
+          maxWidth: '100%',
+        },
+      }, [
+
+        h(MiniAccountPanel, {
+          attrs: [
+            identity.name,
+            addressSummary(address, 6, 4, false),
+            formatBalance(identity.balance),
+          ],
+          imageSeed: address,
+          imageifyIdenticons: state.imageifyIdenticons,
+          picOrder: 'right',
+        }),
+
+        h('img', {
+          src: 'images/forward-carrat.svg',
+          style: {
+            padding: '5px 6px 0px 10px',
+            height: '48px',
+          },
+        }),
+
+        this.miniAccountPanelForRecipient(),
+
+      ]),
 
       // tx data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
@@ -59,7 +80,39 @@ PendingTxDetails.prototype.renderGeneric = function (h, state) {
       ]),
 
     ])
-    
   )
-
 }
+
+PTXP.miniAccountPanelForRecipient = function() {
+  var state = this.props
+  var txData = state.txData
+
+  var txParams = txData.txParams || {}
+  var address = txParams.from || state.selectedAddress
+  var identity = state.identities[address] || { address: address }
+  var account = state.accounts[address] || { address: address }
+
+  var isContractDeploy = !('to' in txParams)
+
+  // If it's not a contract deploy, send to the account
+  if (!isContractDeploy) {
+    return h(MiniAccountPanel, {
+      attrs: [
+        nameForAddress(txParams.to),
+        addressSummary(txParams.to, 6, 4, false),
+      ],
+      imageSeed: address,
+      imageifyIdenticons: state.imageifyIdenticons,
+      picOrder: 'left',
+    })
+  } else {
+     return h(MiniAccountPanel, {
+      attrs: [
+        'New Contract'
+      ],
+      imageifyIdenticons: state.imageifyIdenticons,
+      picOrder: 'left',
+    })
+  }
+}
+
