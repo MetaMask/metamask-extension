@@ -36,8 +36,6 @@ PTXP.render = function () {
   var maxCost = ((new BN(txValue, 16)).add(new BN(gasCost, 16))).toString(16)
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
 
-  console.dir(identity)
-  console.dir({props})
   return (
     h('div', [
 
@@ -48,15 +46,28 @@ PTXP.render = function () {
       }, [
 
         h(MiniAccountPanel, {
-          attrs: [
-            identity.name,
-            addressSummary(address, 6, 4, false),
-            formatBalance(balance),
-          ],
           imageSeed: address,
           imageifyIdenticons: props.imageifyIdenticons,
           picOrder: 'right',
-        }),
+        }, [
+          h('span.font-small', {
+            style: {
+              fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+            },
+          }, identity.name),
+          h('span.font-small', {
+            style: {
+              fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+            },
+          }, addressSummary(address, 6, 4, false)),
+
+          h('span.font-small', {
+            style: {
+              fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+            },
+          }, formatBalance(balance)),
+
+        ]),
 
         h('img', {
           src: 'images/forward-carrat.svg',
@@ -132,22 +143,35 @@ PTXP.miniAccountPanelForRecipient = function () {
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
     return h(MiniAccountPanel, {
-      attrs: [
-        nameForAddress(txParams.to),
-        addressSummary(txParams.to, 6, 4, false),
-      ],
       imageSeed: txParams.to,
       imageifyIdenticons: props.imageifyIdenticons,
       picOrder: 'left',
-    })
+    }, [
+      h('span.font-small', {
+        style: {
+          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+        },
+      }, nameForAddress(txParams.to)),
+      h('span.font-small', {
+        style: {
+          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+        },
+      }, addressSummary(txParams.to, 6, 4, false)),
+    ])
+
   } else {
     return h(MiniAccountPanel, {
-      attrs: [
-        'New Contract',
-      ],
       imageifyIdenticons: props.imageifyIdenticons,
       picOrder: 'left',
-    })
+    }, [
+
+      h('span.font-small', {
+        style: {
+          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+        },
+      }, 'New Contract'),
+
+    ])
   }
 }
 

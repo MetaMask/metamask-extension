@@ -34,17 +34,7 @@ AccountPanel.prototype.render = function () {
           display: 'flex',
           alignItems: picOrder === 'left' ? 'flex-begin' : 'flex-end',
         },
-      }, [
-
-        attrs.map((attr) => {
-          return h('span.font-small', {
-            key: `mini-${attr}`,
-            style: {
-              fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-            },
-          }, attr)
-        }),
-      ]),
+      }, this.props.children),
     ])
   )
 }
