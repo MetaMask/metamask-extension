@@ -163,6 +163,7 @@ AccountDetailScreen.prototype.render = function () {
 
           h(EtherBalance, {
             value: account && account.balance,
+            mainBalance: true,
             style: {
               lineHeight: '7px',
               marginTop: '10px',
