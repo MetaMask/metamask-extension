@@ -411,10 +411,6 @@ input.large-input {
 }
 /* tx confirm */
 
-.unconftx-section {
-  margin: 0 20px;
-}
-
 .unconftx-section input[type=password] {
   height: 22px;
   padding: 2px;

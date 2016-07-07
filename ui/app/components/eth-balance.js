@@ -12,9 +12,11 @@ function EthBalanceComponent () {
 }
 
 EthBalanceComponent.prototype.render = function () {
-  var state = this.props
-  var style = state.style
-  var value = formatBalance(state.value)
+  var props = this.props
+  var style = props.style
+
+  const value = formatBalance(props.value)
+
   return (
 
     h('.ether-balance', {
@@ -30,33 +32,49 @@ EthBalanceComponent.prototype.render = function () {
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
+  const props = this.props
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value)
-
   var balance = balanceObj.balance
   var label = balanceObj.label
+  var tagName = props.inline ? 'span' : 'div'
+  var topTag = props.inline ? 'div' : '.flex-column'
 
   return (
+
     h(Tooltip, {
       position: 'bottom',
       title: value.split(' ')[0],
     }, [
-      h('.flex-column', {
+      h(topTag, {
         style: {
           alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Montserrat Light',
+          lineHeight: props.fontSize || '13px',
+          fontFamily: 'Montserrat Regular',
           textRendering: 'geometricPrecision',
         },
       }, [
-        h('div', balance),
-        h('div', {
+        h(tagName, {
           style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
+            fontSize: props.fontSize || '12px',
           },
-        }, label),
+        }, balance + ' '),
+        h(tagName, {
+          style: {
+            color: props.labelColor || '#AEAEAE',
+            fontSize: props.fontSize || '12px',
+          },
+        }, [
+          h('div', balance),
+          h('div', {
+            style: {
+              color: '#AEAEAE',
+              fontSize: '12px',
+            },
+          }, label),
+        ]),
       ]),
     ])
+
   )
 }
