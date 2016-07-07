@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const MiniAccountPanel = require('./mini-account-panel')
+const EtherBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const formatBalance = require('../util').formatBalance
 const nameForAddress = require('../../lib/contract-namer')
@@ -52,7 +53,7 @@ PTXP.render = function () {
         }, [
           h('span.font-small', {
             style: {
-              fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+              fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
             },
           }, identity.name),
           h('span.font-small', {
@@ -65,7 +66,10 @@ PTXP.render = function () {
             style: {
               fontFamily: 'Montserrat Light, Montserrat, sans-serif',
             },
-          }, formatBalance(balance)),
+          }, h(EtherBalance, {
+            value: balance,
+            inline: true,
+          })),
 
         ]),
 
@@ -73,7 +77,7 @@ PTXP.render = function () {
           src: 'images/forward-carrat.svg',
           style: {
             padding: '5px 6px 0px 10px',
-            height: '48px',
+            height: '37px',
           },
         }),
 
@@ -82,7 +86,8 @@ PTXP.render = function () {
 
       h('style', `
         .table-box {
-          margin: 7px 6px 0px 6px;
+          margin: 7px 0px 0px 0px;
+          width: 100%;
         }
         .table-box .row {
           margin: 0px;
@@ -91,7 +96,10 @@ PTXP.render = function () {
           justify-content: space-between;
           font-family: Montserrat Light, sans-serif;
           font-size: 13px;
-          padding: 5px 15px;
+          padding: 5px 25px;
+        }
+        .table-box .row .value {
+          font-family: Montserrat Regular;
         }
       `),
 
@@ -110,11 +118,24 @@ PTXP.render = function () {
         h('.cell.row', {
           style: {
             fontFamily: 'Montserrat Regular',
-            background: 'rgb(216,216,216)',
+            background: 'white',
+            padding: '10px 25px',
           },
         }, [
           h('.cell.label', 'Max Total'),
-          h('.cell.value', formatBalance(maxCost)),
+          h('.cell.value', {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+            },
+          }, [
+            h(EtherBalance, {
+              value: maxCost,
+              inline: true,
+              labelColor: 'black',
+              fontSize: '16px',
+            }),
+          ]),
         ]),
 
         h('.cell.row', {
@@ -124,7 +145,12 @@ PTXP.render = function () {
           },
         }, [
           h('.cell.label'),
-          h('.cell.value', `Data included: ${dataLength} bytes`),
+          h('.cell.value', {
+            style: {
+              fontFamily: 'Montserrat Light',
+              fontSize: '11px',
+            },
+          }, `Data included: ${dataLength} bytes`),
         ]),
       ]), // End of Table
 
@@ -149,7 +175,7 @@ PTXP.miniAccountPanelForRecipient = function () {
     }, [
       h('span.font-small', {
         style: {
-          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
         },
       }, nameForAddress(txParams.to)),
       h('span.font-small', {
@@ -167,7 +193,7 @@ PTXP.miniAccountPanelForRecipient = function () {
 
       h('span.font-small', {
         style: {
-          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
         },
       }, 'New Contract'),
 

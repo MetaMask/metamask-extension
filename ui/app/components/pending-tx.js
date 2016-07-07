@@ -21,14 +21,6 @@ PendingTx.prototype.render = function () {
       key: txData.id,
     }, [
 
-      // header
-      h('h3', {
-        style: {
-          fontWeight: 'bold',
-          textAlign: 'center',
-        },
-      }, 'Submit Transaction'),
-
       // tx info
       h(PendingTxDetails, state),
 
