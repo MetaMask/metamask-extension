@@ -4,6 +4,7 @@
 
 - Fix formatting of ETH balance
 - Fix formatting of account details.
+- Use web3 minified dist for faster inject times
 
 ## 2.5.0 2016-06-29
 
