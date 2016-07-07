@@ -77,14 +77,13 @@ module.exports = class MetamaskController {
 
     // handle rpc request
     this.provider.sendAsync(request, function onPayloadHandled (err, response) {
-      if (err) {
-        return logger(err)
-      }
-      logger(null, request, response)
-      try {
-        stream.write(response)
-      } catch (err) {
-        logger(err)
+      logger(err, request, response)
+      if (response) {
+        try {
+          stream.write(response)
+        } catch (err) {
+          logger(err)
+        }
       }
     })
 
