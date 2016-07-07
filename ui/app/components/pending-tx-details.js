@@ -34,7 +34,7 @@ PTXP.render = function () {
   var gasCost = ethUtil.stripHexPrefix(txParams.gas || baseFeeHex)
   var txValue = ethUtil.stripHexPrefix(txParams.value || '0x0')
   var maxCost = ((new BN(txValue, 16)).add(new BN(gasCost, 16))).toString(16)
-  var dataLength = txParams.data ? txParams.data.length - 2 : 0
+  var dataLength = txParams.data ? (txParams.data.length - 2) * 2 : 0
 
   console.dir(identity)
   console.dir({props})
