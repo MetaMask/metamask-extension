@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const formatBalance = require('../util').formatBalance
-const Tooltip = require('./tooltip')
 
 module.exports = EthBalanceComponent
 
@@ -31,32 +30,28 @@ EthBalanceComponent.prototype.render = function () {
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
+
   if (value === 'None') return value
 
-  var balance = value.formatted.split(' ')[0]
-  var label = value.formatted.split(' ')[1]
+  var balance = value.split(' ')[0]
+  var label = value.split(' ')[1]
 
   return (
-    h(Tooltip, {
-      title: value.balance,
-      position: 'bottom',
+    h('.flex-column', {
+      style: {
+        alignItems: 'flex-end',
+        lineHeight: '13px',
+        fontFamily: 'Montserrat Thin',
+        textRendering: 'geometricPrecision',
+      },
     }, [
-      h('.flex-column', {
+      h('div', balance),
+      h('div', {
         style: {
-          alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Montserrat Light',
-          textRendering: 'geometricPrecision',
+          color: ' #AEAEAE',
+          fontSize: '12px',
         },
-      }, [
-        h('div', balance),
-        h('div', {
-          style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
-          },
-        }, label),
-      ]),
+      }, label),
     ])
   )
 }
