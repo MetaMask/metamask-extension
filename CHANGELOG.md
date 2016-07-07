@@ -6,6 +6,7 @@
 - Fix formatting of account details.
 - Use web3 minified dist for faster inject times
 - Fix issue where dropdowns were not in front of icons.
+- Update transaction approval styles.
 - Align failed and successful transaction history text.
 - Fix issue where large domain names and large transaction values would misalign the transaction history.
 

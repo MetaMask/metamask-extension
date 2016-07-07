@@ -39,14 +39,14 @@ ConfirmTxScreen.prototype.render = function () {
 
   return (
 
-    h('.unconftx-section.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', [
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
         }),
-        h('h2.page-subtitle', 'Confirmation'),
+        h('h2.page-subtitle', 'Confirm Transaction'),
       ]),
 
       h('h3', {

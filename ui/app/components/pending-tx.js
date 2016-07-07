@@ -21,29 +21,35 @@ PendingTx.prototype.render = function () {
       key: txData.id,
     }, [
 
-      // header
-      h('h3', {
-        style: {
-          fontWeight: 'bold',
-          textAlign: 'center',
-        },
-      }, 'Submit Transaction'),
-
       // tx info
       h(PendingTxDetails, state),
 
+      h('style', `
+        .conf-buttons button {
+          margin-left: 10px;
+          text-transform: uppercase;
+        }
+      `),
+
       // send + cancel
-      h('.flex-row.flex-space-around', [
-        h('button', {
-          onClick: state.cancelTransaction,
-        }, 'Reject'),
-        h('button', {
+      h('.flex-row.flex-space-around.conf-buttons', {
+        style: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          margin: '14px 25px',
+        },
+      }, [
+        h('button.confirm', {
           onClick: state.sendTransaction,
-        }, 'Approve'),
+          style: { background: 'rgb(251,117,1)' },
+        }, 'Accept'),
+
+        h('button.cancel', {
+          onClick: state.cancelTransaction,
+          style: { background: 'rgb(254,35,17)' },
+        }, 'Reject'),
       ]),
-
     ])
-
   )
-
 }
+

@@ -21,6 +21,7 @@ for (var currency in valueTable) {
 module.exports = {
   valuesFor: valuesFor,
   addressSummary: addressSummary,
+  miniAddressSummary: miniAddressSummary,
   isAllOneCase: isAllOneCase,
   isValidAddress: isValidAddress,
   numericBalance: numericBalance,
@@ -44,10 +45,19 @@ function valuesFor (obj) {
     .map(function (key) { return obj[key] })
 }
 
-function addressSummary (address) {
+function addressSummary (address, firstSegLength = 10, lastSegLength = 4, includeHex = true) {
+  if (!address) return ''
+  let checked = ethUtil.toChecksumAddress(address)
+  if (!includeHex) {
+    checked = ethUtil.stripHexPrefix(checked)
+  }
+  return checked ? checked.slice(0, firstSegLength) + '...' + checked.slice(checked.length - lastSegLength) : '...'
+}
+
+function miniAddressSummary (address) {
   if (!address) return ''
   var checked = ethUtil.toChecksumAddress(address)
-  return checked ? checked.slice(0, 2 + 8) + '...' + checked.slice(-4) : '...'
+  return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
 function isValidAddress (address) {
@@ -95,7 +105,8 @@ function parseBalance (balance) {
   return [beforeDecimal, afterDecimal]
 }
 
-// Takes wei hex, returns "None" or "${formattedAmount} ETH"
+// Takes wei hex, returns an object with three properties.
+// Its "formatted" property is what we generally use to render values.
 function formatBalance (balance, decimalsToKeep) {
   var parsed = parseBalance(balance)
   var beforeDecimal = parsed[0]

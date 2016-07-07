@@ -22,7 +22,7 @@ AccountPanel.prototype.render = function () {
   var panelState = {
     key: `accountPanel${identity.address}`,
     identiconKey: identity.address,
-    identiconLabel: identity.name,
+    identiconLabel: identity.name || '',
     attributes: [
       {
         key: 'ADDRESS',
