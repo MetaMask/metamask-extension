@@ -74,7 +74,7 @@ PTXP.render = function () {
               value: balance,
               inline: true,
               labelColor: '#F7861C',
-            })
+            }),
           ]),
 
         ]),
