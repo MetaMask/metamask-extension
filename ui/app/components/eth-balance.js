@@ -56,16 +56,20 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
       }, [
         h(tagName, {
           style: {
-            fontSize: props.fontSize || '12px',
-          },
-        }, balance + ' '),
-        h(tagName, {
-          style: {
             color: props.labelColor || '#AEAEAE',
             fontSize: props.fontSize || '12px',
           },
-        }, label),
+        }, [
+          h('div', balance),
+          h('div', {
+            style: {
+              color: '#AEAEAE',
+              fontSize: '12px',
+            },
+          }, label),
+        ]),
       ]),
     ])
+
   )
 }

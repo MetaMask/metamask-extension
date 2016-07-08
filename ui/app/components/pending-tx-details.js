@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const carratInline = require('fs').readFileSync('./images/forward-carrat.svg', 'utf8')
 
 const MiniAccountPanel = require('./mini-account-panel')
 const EtherBalance = require('./eth-balance')
@@ -37,6 +38,8 @@ PTXP.render = function () {
   var maxCost = ((new BN(txValue, 16)).add(new BN(gasCost, 16))).toString(16)
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
 
+  var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
+
   return (
     h('div', [
 
@@ -48,7 +51,7 @@ PTXP.render = function () {
 
         h(MiniAccountPanel, {
           imageSeed: address,
-          imageifyIdenticons: props.imageifyIdenticons,
+          imageifyIdenticons: imageify,
           picOrder: 'right',
         }, [
           h('span.font-small', {
@@ -66,20 +69,17 @@ PTXP.render = function () {
             style: {
               fontFamily: 'Montserrat Light, Montserrat, sans-serif',
             },
-          }, h(EtherBalance, {
-            value: balance,
-            inline: true,
-          })),
+          }, [
+            h(EtherBalance, {
+              value: balance,
+              inline: true,
+              labelColor: '#F7861C',
+            }),
+          ]),
 
         ]),
 
-        h('img', {
-          src: 'images/forward-carrat.svg',
-          style: {
-            padding: '5px 6px 0px 10px',
-            height: '37px',
-          },
-        }),
+        forwardCarrat(imageify),
 
         this.miniAccountPanelForRecipient(),
       ]),
@@ -221,4 +221,33 @@ PTXP.warnIfNeeded = function () {
     h('i.fa.fa-lg.fa-info-circle', { style: { margin: '5px' } }),
     h('span', ' Your identity may be used in other contracts!'),
   ])
+}
+
+
+function forwardCarrat(imageify){
+  if (imageify) {
+    return (
+
+      h('img', {
+        src: 'images/forward-carrat.svg',
+        style: {
+          padding: '5px 6px 0px 10px',
+          height: '37px',
+        },
+      })
+
+    )
+  } else {
+    return (
+
+      h('div', {
+        dangerouslySetInnerHTML: { __html: carratInline },
+        style: {
+          padding: '0px 6px 0px 10px',
+          height: '45px',
+        },
+      })
+
+    )
+  }
 }
