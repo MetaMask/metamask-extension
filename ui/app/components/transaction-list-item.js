@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const EtherBalance = require('./eth-balance')
+const EtherBalance = require('./eth-balance-tx-history')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
@@ -62,7 +62,7 @@ TransactionListItem.prototype.render = function () {
          : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
       ]),
 
-      h('.flex-column', [
+      h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
         domainField(txParams),
         h('div', date),
         recipientField(txParams, transaction, isTx, isMsg),
@@ -73,6 +73,8 @@ TransactionListItem.prototype.render = function () {
 
       isTx ? h(EtherBalance, {
         value: txParams.value,
+        maxWidth: '55px',
+        shorten: true,
       }) : h('.flex-column'),
     ])
   )
@@ -83,6 +85,9 @@ function domainField (txParams) {
     style: {
       fontSize: 'x-small',
       color: '#ABA9AA',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      width: '100%',
     },
   }, [
     txParams.origin,
