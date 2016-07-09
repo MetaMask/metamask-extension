@@ -26,12 +26,12 @@ EthBalanceComponent.prototype.render = function () {
           display: 'inline',
           maxWidth: maxWidth,
         },
-      }, this.renderBalance(value,state)),
+      }, this.renderBalance(value, state)),
     ])
 
   )
 }
-EthBalanceComponent.prototype.renderBalance = function (value,state) {
+EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value)
 
@@ -72,14 +72,14 @@ EthBalanceComponent.prototype.renderBalance = function (value,state) {
   )
 }
 
-function shortenBalance(balance) {
+function shortenBalance (balance) {
   var truncatedValue
   var convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
-    truncatedValue = (balance/1000000).toFixed(1)
+    truncatedValue = (balance / 1000000).toFixed(1)
     return `${truncatedValue}m`
   } else if (convertedBalance > 1000) {
-    truncatedValue = (balance/1000).toFixed(1)
+    truncatedValue = (balance / 1000).toFixed(1)
     return `${truncatedValue}k`
   } else {
     return balance
