@@ -73,6 +73,8 @@ TransactionListItem.prototype.render = function () {
 
       isTx ? h(EtherBalance, {
         value: txParams.value,
+        maxWidth: '55px',
+        shorten: true,
       }) : h('.flex-column'),
     ])
   )
