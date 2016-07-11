@@ -17,28 +17,25 @@ describe('util', function() {
     this.sinon.restore()
   })
 
-  describe('parseBalance', function() {
+  describe('#parseBalance', function() {
     it('should render 0.01 eth correctly', function() {
       const input = '0x2386F26FC10000'
       const output = util.parseBalance(input)
       assert.deepEqual(output, ['0', '01'])
     })
-  })
-  describe('parseBalance', function() {
+
     it('should render 12.023 eth correctly', function() {
       const input = 'A6DA46CCA6858000'
       const output = util.parseBalance(input)
       assert.deepEqual(output, ['12', '023'])
     })
-  })
-  describe('parseBalance', function() {
+
     it('should render 0.0000000342422 eth correctly', function() {
       const input = '0x7F8FE81C0'
       const output = util.parseBalance(input)
       assert.deepEqual(output, ['0', '0000000342422'])
     })
-  })
-  describe('parseBalance', function() {
+
     it('should render 0 eth correctly', function() {
       const input = '0x0'
       const output = util.parseBalance(input)
@@ -46,7 +43,7 @@ describe('util', function() {
     })
   })
 
-  describe('addressSummary', function() {
+  describe('#addressSummary', function() {
     it('should add case-sensitive checksum', function() {
       var address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825'
       var result = util.addressSummary(address)
@@ -60,7 +57,7 @@ describe('util', function() {
     })
   })
 
-  describe('isValidAddress', function() {
+  describe('#isValidAddress', function() {
     it('should allow 40-char non-prefixed hex', function() {
       var address = 'fdea65c8e26263f6d9a1b5de9555d2931a33b825'
       var result = util.isValidAddress(address)
@@ -106,7 +103,7 @@ describe('util', function() {
     })
   })
 
-  describe('numericBalance', function() {
+  describe('#numericBalance', function() {
 
     it('should return a BN 0 if given nothing', function() {
       var result = util.numericBalance()
@@ -211,7 +208,7 @@ describe('util', function() {
       })
     })
 
-    describe('normalizeEthStringToWei', function() {
+    describe('#normalizeEthStringToWei', function() {
       it('should convert decimal eth to pure wei BN', function() {
         var input = '1.23456789'
         var output = util.normalizeEthStringToWei(input)
