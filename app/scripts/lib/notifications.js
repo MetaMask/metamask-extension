@@ -9,11 +9,13 @@ const PendingMsgDetails = require('../../../ui/app/components/pending-msg-detail
 const MetaMaskUiCss = require('../../../ui/css')
 var notificationHandlers = {}
 
-module.exports = {
+const notifications  = {
   createUnlockRequestNotification: createUnlockRequestNotification,
   createTxNotification: createTxNotification,
   createMsgNotification: createMsgNotification,
 }
+module.exports = notifications
+window.METAMASK_NOTIFIER = notifications
 
 setupListeners()
 
