@@ -20,8 +20,15 @@ After you submit a transaction, wait for the next block for the change to be ref
 
 Now I have my own MetaMaskCoins! I can check my balance or, if I want to send some to another account, I can click the copy link on it. I check its balance, see it has none, then send it some meta-coins!
 
-This has been nice, but it’s all been on the test-net. I can always switch what blockchain I’m working on, say the main blockhain, and I’m ready issue a token with the full security of the Ethereum blockchain.
+This has been nice, but it’s all been on the Morden test net. But with Metamask, I can always switch what network I’m working on, say the main network, and I’m ready issue a token with the full security of the main Ethereum blockchain.
 
 MetaMask connects to these blockchains with no synchronization time because we host blockchain nodes by default. You can always point MetaMask at your own Ethereum RPC Server, and fully control your connection to the blockchain.
 
-And that’s how MetaMask lets ordinary websites talk to a trusted Ethereum provider, all while letting the user store and manage their own private keys. We hope this will help enable a new wave of blockchain-enabled websites.
+And that’s how MetaMask lets ordinary websites talk to a trusted Ethereum provider, all while letting the user store and manage their own private keys. We hope this will make it easier than ever for people to get started creating and using a new wave of blockchain-enabled websites.
+
+If you’d like to get started with Metamask right now, go ahead and click here to get the Chrome extension.
+
+If you’d like to learn more about MetaMask, you can visit our website at metamask.io.
+
+You’re also welcome to join our slack, follow our twitter or read our source code. You can find all of those links and more at Metamask.io
+
