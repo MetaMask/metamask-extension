@@ -14,8 +14,10 @@ function EthBalanceComponent () {
 EthBalanceComponent.prototype.render = function () {
   var state = this.props
   var style = state.style
-  var value = formatBalance(state.value)
-  var maxWidth = state.maxWidth
+
+  const value = formatBalance(state.value)
+  var width = state.width
+
   return (
 
     h('.ether-balance', {
@@ -24,7 +26,7 @@ EthBalanceComponent.prototype.render = function () {
       h('.ether-balance-amount', {
         style: {
           display: 'inline',
-          maxWidth: maxWidth,
+          width: width,
         },
       }, this.renderBalance(value, state)),
     ])
@@ -34,11 +36,12 @@ EthBalanceComponent.prototype.render = function () {
 EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value)
-
-  var balance = balanceObj.balance
+  var balance
 
   if (state.shorten) {
-    balance = shortenBalance(balance)
+    balance = balanceObj.shortBalance
+  } else {
+    balance = balanceObj.balance
   }
 
   var label = balanceObj.label
@@ -59,6 +62,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
         h('div', {
           style: {
             width: '100%',
+            textAlign: 'right',
           },
         }, balance),
         h('div', {
@@ -70,18 +74,4 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
       ]),
     ])
   )
-}
-
-function shortenBalance (balance) {
-  var truncatedValue
-  var convertedBalance = parseFloat(balance)
-  if (convertedBalance > 1000000) {
-    truncatedValue = (balance / 1000000).toFixed(1)
-    return `${truncatedValue}m`
-  } else if (convertedBalance > 1000) {
-    truncatedValue = (balance / 1000).toFixed(1)
-    return `${truncatedValue}k`
-  } else {
-    return balance
-  }
 }

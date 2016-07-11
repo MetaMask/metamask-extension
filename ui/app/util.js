@@ -85,7 +85,6 @@ function parseBalance (balance) {
   const trailingZeros = /0+$/
 
   beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
-  // We don't use weiToEth here because we need to maintain decimal precision.
   afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
   if (afterDecimal === '') { afterDecimal = '0' }
   return [beforeDecimal, afterDecimal]
@@ -115,15 +114,31 @@ function formatBalance (balance, decimalsToKeep) {
   return formatted
 }
 
+
 function generateBalanceObject (formattedBalance) {
   var balance = formattedBalance.split(' ')[0]
   var label = formattedBalance.split(' ')[1]
   var beforeDecimal = balance.split('.')[0]
   var afterDecimal = balance.split('.')[1]
+  var shortBalance = shortenBalance(balance)
 
   if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '< 0.00001' }
 
-  return { balance, label }
+  return { balance, label, shortBalance }
+}
+
+function shortenBalance (balance) {
+  var truncatedValue
+  var convertedBalance = parseFloat(balance)
+  if (convertedBalance > 1000000) {
+    truncatedValue = (balance / 1000000).toFixed(1)
+    return `>${truncatedValue}m`
+  } else if (convertedBalance > 1000) {
+    truncatedValue = (balance / 1000).toFixed(1)
+    return `>${truncatedValue}k`
+  } else {
+    return balance
+  }
 }
 
 function dataSize (data) {
