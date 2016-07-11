@@ -173,12 +173,12 @@ App.prototype.renderAppBar = function () {
             width: 16,
             barHeight: 2,
             padding: 0,
-            isOpen: props.menuOpen,
+            isOpen: state.isMainMenuOpen,
             color: 'rgb(247,146,30)',
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
-              this.setState({ isMainMenuOpen: true })
+              this.setState({ isMainMenuOpen: !state.isMainMenuOpen })
             },
           }),
         ]),
