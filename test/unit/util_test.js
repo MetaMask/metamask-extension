@@ -122,25 +122,6 @@ describe('util', function() {
 
   })
 
-  describe('#ethToWei', function() {
-
-    it('should take an eth BN, returns wei BN', function() {
-      var input = new ethUtil.BN(1, 10)
-      var result = util.ethToWei(input)
-      assert.equal(result, ethInWei, '18 zeroes')
-    })
-
-  })
-
-  describe('#weiToEth', function() {
-
-    it('should take a wei BN and return an eth BN', function() {
-    var result = util.weiToEth(new ethUtil.BN(ethInWei))
-    assert.equal(result, '1', 'equals 1 eth')
-    })
-
-  })
-
   describe('#formatBalance', function() {
 
     it('when given nothing', function() {
