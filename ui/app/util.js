@@ -115,27 +115,31 @@ function formatBalance (balance, decimalsToKeep) {
 }
 
 
-function generateBalanceObject (formattedBalance) {
+function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   var balance = formattedBalance.split(' ')[0]
   var label = formattedBalance.split(' ')[1]
   var beforeDecimal = balance.split('.')[0]
   var afterDecimal = balance.split('.')[1]
-  var shortBalance = shortenBalance(balance)
+  var shortBalance = shortenBalance(balance, decimalsToKeep)
 
-  if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '< 0.00001' }
+  if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '<1.0e-5' }
 
   return { balance, label, shortBalance }
 }
 
-function shortenBalance (balance) {
+function shortenBalance (balance, decimalsToKeep = 1) {
   var truncatedValue
   var convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
-    truncatedValue = (balance / 1000000).toFixed(1)
+    truncatedValue = (balance / 1000000).toFixed(decimalsToKeep)
     return `>${truncatedValue}m`
   } else if (convertedBalance > 1000) {
-    truncatedValue = (balance / 1000).toFixed(1)
+    truncatedValue = (balance / 1000).toFixed(decimalsToKeep)
     return `>${truncatedValue}k`
+  } else if (convertedBalance < 1) {
+    var exponent = balance.match(/\.0*/)[0].length
+    truncatedValue = (convertedBalance * Math.pow(10, exponent)).toFixed(decimalsToKeep)
+    return `<${truncatedValue}e-${exponent}`
   } else {
     return balance
   }
