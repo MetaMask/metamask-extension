@@ -165,12 +165,13 @@ PTXP.miniAccountPanelForRecipient = function () {
   var txData = props.txData
   var txParams = txData.txParams || {}
   var isContractDeploy = !('to' in txParams)
+  var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
     return h(MiniAccountPanel, {
       imageSeed: txParams.to,
-      imageifyIdenticons: props.imageifyIdenticons,
+      imageifyIdenticons: imageify,
       picOrder: 'left',
     }, [
       h('span.font-small', {
@@ -184,10 +185,9 @@ PTXP.miniAccountPanelForRecipient = function () {
         },
       }, addressSummary(txParams.to, 6, 4, false)),
     ])
-
   } else {
     return h(MiniAccountPanel, {
-      imageifyIdenticons: props.imageifyIdenticons,
+      imageifyIdenticons: imageify,
       picOrder: 'left',
     }, [
 
@@ -224,7 +224,7 @@ PTXP.warnIfNeeded = function () {
 }
 
 
-function forwardCarrat(imageify){
+function forwardCarrat (imageify) {
   if (imageify) {
     return (
 

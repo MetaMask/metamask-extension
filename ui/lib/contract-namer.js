@@ -13,7 +13,6 @@ module.exports = function(addr, identities = {}) {
   const address = addr.toLowerCase()
   const ids = hashFromIdentities(identities)
 
-  console.dir({ addr, ids })
   return addrFromHash(address, ids) || addrFromHash(address, nicknames)
 }
 

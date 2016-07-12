@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const EtherBalance = require('./eth-balance-tx-history')
+const EtherBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
@@ -73,7 +73,7 @@ TransactionListItem.prototype.render = function () {
 
       isTx ? h(EtherBalance, {
         value: txParams.value,
-        maxWidth: '55px',
+        width: '55px',
         shorten: true,
       }) : h('.flex-column'),
     ])

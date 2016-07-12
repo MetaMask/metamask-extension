@@ -12,10 +12,11 @@ function EthBalanceComponent () {
 }
 
 EthBalanceComponent.prototype.render = function () {
-  var props = this.props
-  var style = props.style
+  var state = this.props
+  var style = state.style
 
-  const value = formatBalance(props.value)
+  const value = formatBalance(state.value)
+  var width = state.width
 
   return (
 
@@ -25,51 +26,52 @@ EthBalanceComponent.prototype.render = function () {
       h('.ether-balance-amount', {
         style: {
           display: 'inline',
+          width: width,
         },
-      }, this.renderBalance(value)),
+      }, this.renderBalance(value, state)),
     ])
 
   )
 }
-EthBalanceComponent.prototype.renderBalance = function (value) {
-  const props = this.props
+EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
-  var balanceObj = generateBalanceObject(value)
-  var balance = balanceObj.balance
+  var balanceObj = generateBalanceObject(value, 1)
+  var balance
+
+  if (state.shorten) {
+    balance = balanceObj.shortBalance
+  } else {
+    balance = balanceObj.balance
+  }
+
   var label = balanceObj.label
-  var tagName = props.inline ? 'span' : 'div'
-  var topTag = props.inline ? 'div' : '.flex-column'
 
   return (
-
     h(Tooltip, {
       position: 'bottom',
       title: value.split(' ')[0],
     }, [
-      h(topTag, {
+      h('.flex-column', {
         style: {
           alignItems: 'flex-end',
-          lineHeight: props.fontSize || '13px',
-          fontFamily: 'Montserrat Regular',
+          lineHeight: '13px',
+          fontFamily: 'Montserrat Light',
           textRendering: 'geometricPrecision',
         },
       }, [
-        h(tagName, {
+        h('div', {
           style: {
-            color: props.labelColor || '#AEAEAE',
-            fontSize: props.fontSize || '12px',
+            width: '100%',
+            textAlign: 'right',
           },
-        }, [
-          h('div', balance),
-          h('div', {
-            style: {
-              color: '#AEAEAE',
-              fontSize: '12px',
-            },
-          }, label),
-        ]),
+        }, balance),
+        h('div', {
+          style: {
+            color: ' #AEAEAE',
+            fontSize: '12px',
+          },
+        }, label),
       ]),
     ])
-
   )
 }
