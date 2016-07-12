@@ -9,11 +9,13 @@ const PendingMsgDetails = require('../../../ui/app/components/pending-msg-detail
 const MetaMaskUiCss = require('../../../ui/css')
 var notificationHandlers = {}
 
-module.exports = {
+const notifications = {
   createUnlockRequestNotification: createUnlockRequestNotification,
   createTxNotification: createTxNotification,
   createMsgNotification: createMsgNotification,
 }
+module.exports = notifications
+window.METAMASK_NOTIFIER = notifications
 
 setupListeners()
 
@@ -57,14 +59,13 @@ function createTxNotification (state) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
 
-  renderTxNotificationSVG(state, function(err, notificationSvgSource){
+  renderTxNotificationSVG(state, function (err, notificationSvgSource) {
     if (err) throw err
 
     showNotification(extend(state, {
       title: 'New Unsigned Transaction',
       imageUrl: toSvgUri(notificationSvgSource),
     }))
-
   })
 }
 
@@ -72,14 +73,13 @@ function createMsgNotification (state) {
   // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
   if (!chrome.notifications) return console.error('Chrome notifications API missing...')
 
-  renderMsgNotificationSVG(state, function(err, notificationSvgSource){
+  renderMsgNotificationSVG(state, function (err, notificationSvgSource) {
     if (err) throw err
 
     showNotification(extend(state, {
       title: 'New Unsigned Message',
       imageUrl: toSvgUri(notificationSvgSource),
     }))
-
   })
 }
 
@@ -105,20 +105,19 @@ function showNotification (state) {
     confirm: state.onConfirm,
     cancel: state.onCancel,
   }
-
 }
 
-function renderTxNotificationSVG(state, cb){
+function renderTxNotificationSVG (state, cb) {
   var content = h(PendingTxDetails, state)
   renderNotificationSVG(content, cb)
 }
 
-function renderMsgNotificationSVG(state, cb){
+function renderMsgNotificationSVG (state, cb) {
   var content = h(PendingMsgDetails, state)
   renderNotificationSVG(content, cb)
 }
 
-function renderNotificationSVG(content, cb){
+function renderNotificationSVG (content, cb) {
   var container = document.createElement('div')
   var confirmView = h('div.app-primary', {
     style: {
@@ -133,7 +132,7 @@ function renderNotificationSVG(content, cb){
     content,
   ])
 
-  render(confirmView, container, function ready(){
+  render(confirmView, container, function ready() {
     var rootElement = findDOMNode(this)
     var viewSource = rootElement.outerHTML
     unmountComponentAtNode(container)
@@ -143,7 +142,7 @@ function renderNotificationSVG(content, cb){
   })
 }
 
-function svgWrapper(content){
+function svgWrapper (content) {
   var wrapperSource = `
   <svg xmlns="http://www.w3.org/2000/svg" width="360" height="240">
      <foreignObject x="0" y="0" width="100%" height="100%">
@@ -154,6 +153,6 @@ function svgWrapper(content){
   return wrapperSource.split('{{content}}').join(content)
 }
 
-function toSvgUri(content){
+function toSvgUri (content) {
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(content)
 }

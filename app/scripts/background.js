@@ -43,7 +43,6 @@ function showUnconfirmedMessage (msgParams, msgId) {
     onConfirm: idStore.approveMessage.bind(idStore, msgId, noop),
     onCancel: idStore.cancelMessage.bind(idStore, msgId),
   })
-
 }
 
 function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
@@ -60,7 +59,6 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
     onConfirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
     onCancel: idStore.cancelTransaction.bind(idStore, txData.id),
   })
-  
 }
 
 //

@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix rendering of recipient SVG in tx approval notification.
+
 ## 2.6.0 2016-07-11
 
 - Fix formatting of ETH balance
