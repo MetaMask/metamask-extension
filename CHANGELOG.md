@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.6.0 2016-07-11
+
 - Fix formatting of ETH balance
 - Fix formatting of account details.
 - Use web3 minified dist for faster inject times
