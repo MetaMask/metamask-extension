@@ -30,8 +30,6 @@ module.exports = {
   generateBalanceObject: generateBalanceObject,
   dataSize: dataSize,
   readableDate: readableDate,
-  ethToWei: ethToWei,
-  weiToEth: weiToEth,
   normalizeToWei: normalizeToWei,
   normalizeEthStringToWei: normalizeEthStringToWei,
   normalizeNumberToWei: normalizeNumberToWei,
@@ -79,27 +77,14 @@ function numericBalance (balance) {
   return new ethUtil.BN(stripped, 16)
 }
 
-// Takes eth BN, returns BN wei
-function ethToWei (bn) {
-  var eth = new ethUtil.BN('1000000000000000000')
-  var wei = bn.mul(eth)
-  return wei
-}
-
-// Takes BN in Wei, returns BN in eth
-function weiToEth (bn) {
-  var diff = new ethUtil.BN('1000000000000000000')
-  var eth = bn.div(diff)
-  return eth
-}
-
 // Takes  hex, returns [beforeDecimal, afterDecimal]
 function parseBalance (balance) {
   var beforeDecimal, afterDecimal
-  const wei = numericBalance(balance).toString()
+  const wei = numericBalance(balance)
+  var weiString = wei.toString()
   const trailingZeros = /0+$/
 
-  beforeDecimal = wei.length > 18 ? wei.slice(0, wei.length - 18) : '0'
+  beforeDecimal = weiString.length > 18 ? weiString.slice(0, weiString.length - 18) : '0'
   afterDecimal = ('000000000000000000' + wei).slice(-18).replace(trailingZeros, '')
   if (afterDecimal === '') { afterDecimal = '0' }
   return [beforeDecimal, afterDecimal]
@@ -129,15 +114,35 @@ function formatBalance (balance, decimalsToKeep) {
   return formatted
 }
 
-function generateBalanceObject (formattedBalance) {
+
+function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   var balance = formattedBalance.split(' ')[0]
   var label = formattedBalance.split(' ')[1]
   var beforeDecimal = balance.split('.')[0]
   var afterDecimal = balance.split('.')[1]
+  var shortBalance = shortenBalance(balance, decimalsToKeep)
 
-  if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '< 0.00001' }
+  if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '<1.0e-5' }
 
-  return { balance, label }
+  return { balance, label, shortBalance }
+}
+
+function shortenBalance (balance, decimalsToKeep = 1) {
+  var truncatedValue
+  var convertedBalance = parseFloat(balance)
+  if (convertedBalance > 1000000) {
+    truncatedValue = (balance / 1000000).toFixed(decimalsToKeep)
+    return `>${truncatedValue}m`
+  } else if (convertedBalance > 1000) {
+    truncatedValue = (balance / 1000).toFixed(decimalsToKeep)
+    return `>${truncatedValue}k`
+  } else if (convertedBalance < 1) {
+    var exponent = balance.match(/\.0*/)[0].length
+    truncatedValue = (convertedBalance * Math.pow(10, exponent)).toFixed(decimalsToKeep)
+    return `<${truncatedValue}e-${exponent}`
+  } else {
+    return balance
+  }
 }
 
 function dataSize (data) {
