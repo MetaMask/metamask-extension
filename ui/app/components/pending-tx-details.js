@@ -185,7 +185,6 @@ PTXP.miniAccountPanelForRecipient = function () {
         },
       }, addressSummary(txParams.to, 6, 4, false)),
     ])
-
   } else {
     return h(MiniAccountPanel, {
       imageifyIdenticons: imageify,
@@ -225,7 +224,7 @@ PTXP.warnIfNeeded = function () {
 }
 
 
-function forwardCarrat(imageify){
+function forwardCarrat (imageify) {
   if (imageify) {
     return (
 
