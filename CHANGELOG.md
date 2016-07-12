@@ -9,6 +9,8 @@
 - Update transaction approval styles.
 - Align failed and successful transaction history text.
 - Fix issue where large domain names and large transaction values would misalign the transaction history.
+- Abbreviate ether balances on transaction details to maintain formatting.
+- General code cleanup.
 
 ## 2.5.0 2016-06-29
 
