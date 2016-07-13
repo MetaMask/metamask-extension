@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "EthereumのID管理",
+    "description": "The description of the application"
+  }
+}
