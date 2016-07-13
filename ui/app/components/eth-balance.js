@@ -35,7 +35,7 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
-  var balanceObj = generateBalanceObject(value, 1)
+  var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
   var balance
 
   if (state.shorten) {
