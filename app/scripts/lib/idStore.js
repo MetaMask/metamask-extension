@@ -465,7 +465,7 @@ IdentityStore.prototype._createFirstWallet = function (entropy, derivedKey) {
   keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
-  keyStore.generateNewAddress(derivedKey, 3)
+  keyStore.generateNewAddress(derivedKey, 1)
   configManager.setWallet(keyStore.serialize())
   console.log('saved to keystore')
   return keyStore
