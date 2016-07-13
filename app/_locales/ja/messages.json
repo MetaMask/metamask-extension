@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "Ethereum Identity Management",
+    "message": "EthereumのID管理",
     "description": "The description of the application"
   }
 }
