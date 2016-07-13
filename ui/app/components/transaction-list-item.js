@@ -75,6 +75,7 @@ TransactionListItem.prototype.render = function () {
         value: txParams.value,
         width: '55px',
         shorten: true,
+        style: {fontSize: '15px'}
       }) : h('.flex-column'),
     ])
   )
