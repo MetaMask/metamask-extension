@@ -4,6 +4,8 @@
 
 - Fix rendering of recipient SVG in tx approval notification.
 - New vaults now generate only one wallet instead of three.
+- Bumped version of web3 provider engine.
+- Fixed bug where some lowercase or uppercase addresses were not being recognized as valid.
 
 ## 2.6.0 2016-07-11
 
