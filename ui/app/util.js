@@ -123,6 +123,7 @@ function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   var shortBalance = shortenBalance(balance, decimalsToKeep)
 
   if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') { balance = '<1.0e-5' }
+  balance = `${beforeDecimal}.${afterDecimal.slice(0, 3)}`
 
   return { balance, label, shortBalance }
 }
@@ -141,7 +142,7 @@ function shortenBalance (balance, decimalsToKeep = 1) {
     truncatedValue = (convertedBalance * Math.pow(10, exponent)).toFixed(decimalsToKeep)
     return `<${truncatedValue}e-${exponent}`
   } else {
-    return balance
+    return convertedBalance.toFixed(decimalsToKeep)
   }
 }
 
