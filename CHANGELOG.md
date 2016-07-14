@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix tool tips on Eth balance to show the 6 decimals
 - Fix rendering of recipient SVG in tx approval notification.
 - New vaults now generate only one wallet instead of three.
 - Bumped version of web3 provider engine.
