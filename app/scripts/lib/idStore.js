@@ -1,6 +1,8 @@
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
+const async = require('async')
 const ethUtil = require('ethereumjs-util')
+const EthQuery = require('eth-query')
 const LightwalletKeyStore = require('eth-lightwallet').keystore
 const clone = require('clone')
 const extend = require('xtend')
@@ -197,35 +199,53 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     time: time,
     status: 'unconfirmed',
   }
-  configManager.addTx(txData)
+  
   console.log('addUnconfirmedTransaction:', txData)
 
   // keep the onTxDoneCb around for after approval/denial (requires user interaction)
   // This onTxDoneCb fires completion to the Dapp's write operation.
   self._unconfTxCbs[txId] = onTxDoneCb
 
-  // perform static analyis on the target contract code
   var provider = self._ethStore._query.currentProvider
-  if (txParams.to) {
-    provider.sendAsync({ id: 1, method: 'eth_getCode', params: [txParams.to, 'latest'] }, function (err, res) {
-      if (err) return didComplete(err)
-      if (res.error) return didComplete(res.error)
-      var code = ethUtil.toBuffer(res.result)
-      if (code !== '0x') {
-        var ops = ethBinToOps(code)
-        var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
-        txData.containsDelegateCall = containsDelegateCall
-        didComplete()
-      } else {
-        didComplete()
-      }
+  var query = new EthQuery(provider)
+
+  // calculate metadata for tx
+  async.parallel([
+    analyzeForDelegateCall,
+    estimateGas,
+  ], didComplete)
+
+  // perform static analyis on the target contract code
+  function analyzeForDelegateCall(cb){
+    if (txParams.to) {
+      query.getCode(txParams.to, function (err, result) {
+        if (err) return cb(err)
+        var code = ethUtil.toBuffer(result)
+        if (code !== '0x') {
+          var ops = ethBinToOps(code)
+          var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
+          txData.containsDelegateCall = containsDelegateCall
+          cb()
+        } else {
+          cb()
+        }
+      })
+    } else {
+      cb()
+    }
+  }
+
+  function estimateGas(cb){
+    query.estimateGas(txParams, function(err, result){
+      if (err) return cb(err)
+      txData.estimatedGas = result
+      cb()
     })
-  } else {
-    didComplete()
   }
 
   function didComplete (err) {
     if (err) return cb(err)
+    configManager.addTx(txData)
     // signal update
     self._didUpdate()
     // signal completion of add tx

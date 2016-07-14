@@ -32,6 +32,7 @@
     "end-of-stream": "^1.1.0",
     "eth-bin-to-ops": "^1.0.0",
     "eth-lightwallet": "^2.3.3",
+    "eth-query": "^1.0.3",
     "eth-store": "^1.1.0",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.4.0",
