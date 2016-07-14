@@ -11,9 +11,6 @@ const nameForAddress = require('../../lib/contract-namer')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 
-const baseGasFee = new BN('21000', 10)
-const gasCost = new BN('4a817c800', 16)
-const baseFeeHex = baseGasFee.mul(gasCost).toString(16)
 
 module.exports = PendingTxDetails
 
@@ -33,9 +30,11 @@ PTXP.render = function () {
   var identity = props.identities[address] || { address: address }
   var balance = props.accounts[address].balance
 
-  var gasCost = ethUtil.stripHexPrefix(txParams.gas || baseFeeHex)
-  var txValue = ethUtil.stripHexPrefix(txParams.value || '0x0')
-  var maxCost = ((new BN(txValue, 16)).add(new BN(gasCost, 16))).toString(16)
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
 
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
@@ -112,7 +111,7 @@ PTXP.render = function () {
 
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
-          h('.cell.value', formatBalance(gasCost)),
+          h('.cell.value', formatBalance(txFee.toString(16))),
         ]),
 
         h('.cell.row', {
@@ -130,7 +129,7 @@ PTXP.render = function () {
             },
           }, [
             h(EtherBalance, {
-              value: maxCost,
+              value: maxCost.toString(16),
               inline: true,
               labelColor: 'black',
               fontSize: '16px',
