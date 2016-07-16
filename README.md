@@ -1,5 +1,13 @@
 # MetaMask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-plugin.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-plugin)
 
+## Building locally
+
+ - Install [Node.js](https://nodejs.org/en/) version 6 or later.
+ - Install local dependencies with `npm install`.
+ - Install gulp globally with `npm install -g gulp`.
+ - Build the project to the `./dist/` folder with `gulp build`.
+ - Optionally, to rebuild on file changes, run `gulp dev`.
+
 ## Architecture
 
 [![Architecture Diagram](./docs/architecture.png)][1]
