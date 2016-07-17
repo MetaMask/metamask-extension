@@ -171,6 +171,19 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
+            onClick: () => window.open(
+              `https://buy.coinbase.com?code=address=crypto_currency=ETH`,
+              'width=360,height=500'
+            ),
+            style: {
+              marginBottom: '20px',
+              marginRight: '8px',
+              position: 'relative',
+              left: '73px',
+            },
+          }, 'BUY'),
+
+          h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
             style: {
               marginBottom: '20px',
