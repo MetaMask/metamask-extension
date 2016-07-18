@@ -123,6 +123,7 @@ function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   var shortBalance = shortenBalance(balance, decimalsToKeep)
 
   if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') {
+    // eslint-disable-next-line eqeqeq
     if (afterDecimal == 0) {
       balance = '0'
     } else {
