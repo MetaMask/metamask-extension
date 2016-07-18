@@ -17,8 +17,9 @@ BuyEthWarning.prototype.render = function () {
     h('.error.flex-column', {
       key: 'ethWarning',
       style: {
-        marginRight: '20px',
-        marginLeft: '20px',
+        paddingTop: '25px',
+        marginRight: '30px',
+        marginLeft: '30px',
         alignItems: 'center',
       },
     }, [
@@ -26,12 +27,22 @@ BuyEthWarning.prototype.render = function () {
         `We  would like to remind you that MetaMask
         is in beta - only put in amounts you are comfortible losing
         `),
-      h('.flex-row', [
+      h('.flex-row', {
+        style: {
+          marginTop: '25px',
+          marginBottom: '10px',
+        },
+      }, [
         h('input', {
           type: 'checkbox',
           onChange: this.toggleShowWarning.bind(this,event)
         }),
-        h('.warning', 'Dont show me this message again')
+        h('.warning', {
+          style:{
+            fontSize: '11px',
+          },
+
+        }, 'Dont show me this message again')
       ]),
       h('.flex-row', {
         style: {
