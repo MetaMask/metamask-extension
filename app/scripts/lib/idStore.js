@@ -94,6 +94,7 @@ IdentityStore.prototype.getState = function () {
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
     isConfirmed: configManager.getConfirmed(),
+    isEthConfirmed: configManager.getShouldntShowWarning(),
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
     unconfMsgs: messageManager.unconfirmedMsgs(),
@@ -199,7 +200,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     time: time,
     status: 'unconfirmed',
   }
-  
+
   console.log('addUnconfirmedTransaction:', txData)
 
   // keep the onTxDoneCb around for after approval/denial (requires user interaction)

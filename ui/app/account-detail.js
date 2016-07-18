@@ -15,6 +15,7 @@ const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
+const BuyEthWarning = require('./components/buy-eth-warning')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -28,6 +29,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     unconfTxs: valuesFor(state.metamask.unconfTxs),
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
+    isEthWarningConfirmed: state.metamask.isEthConfirmed
   }
 }
 
@@ -171,10 +173,7 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
-            onClick: () => window.open(
-              `https://buy.coinbase.com?code=address=crypto_currency=ETH`,
-              'width=360,height=500'
-            ),
+            onClick: () => props.dispatch(actions.showEthWarning()),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
@@ -194,7 +193,7 @@ AccountDetailScreen.prototype.render = function () {
         ]),
       ]),
 
-      // subview (tx history, pk export confirm)
+      // subview (tx history, pk export confirm, buy eth warning)
       h(ReactCSSTransitionGroup, {
         className: 'css-transition-group',
         transitionName: 'main',
@@ -222,6 +221,9 @@ AccountDetailScreen.prototype.subview = function () {
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
+    case 'buy-eth-warning':
+      var state = extend({key: 'ethWarning'}, this.props)
+      return h(BuyEthWarning, state)
     default:
       return this.transactionList()
   }
@@ -251,4 +253,11 @@ AccountDetailScreen.prototype.transactionList = function () {
 
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
+}
+
+function toCoinbase (account) {
+    debugger
+    window.open(
+      `https://buy.coinbase.com?code=&amount=5&address=${account}&crypto_currency=ETH`
+    )
 }

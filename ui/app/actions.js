@@ -66,6 +66,10 @@ var actions = {
   showPrivateKey: showPrivateKey,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
+  AGREE_TO_ETH_WARNING: 'AGREE_TO_ETH_WARNING',
+  agreeToEthWarning: agreeToEthWarning,
+  SHOW_ETH_WARNING: 'SHOW_ETH_WARNING',
+  showEthWarning: showEthWarning,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -557,5 +561,26 @@ function saveAccountLabel (account, label) {
 function showSendPage () {
   return {
     type: actions.SHOW_SEND_PAGE,
+  }
+}
+
+function agreeToEthWarning () {
+ debugger
+  return (dispatch) => {
+    _accountManager.agreeToEthWarning((err) => {
+      if (err) {
+        debugger
+        return dispatch(actions.showEthWarning(err.message))
+      }
+      dispatch({
+        type: actions.AGREE_TO_ETH_WARNING,
+      })
+    })
+  }
+}
+
+function showEthWarning () {
+  return {
+    type: actions.SHOW_ETH_WARNING,
   }
 }

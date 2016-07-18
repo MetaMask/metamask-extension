@@ -39,6 +39,7 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      agreeToEthWarning: this.agreeToEthWarning.bind(this),
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -230,6 +231,15 @@ module.exports = class MetamaskController {
   agreeToDisclaimer (cb) {
     try {
       this.configManager.setConfirmed(true)
+      cb()
+    } catch (e) {
+      cb(e)
+    }
+  }
+
+   agreeToEthWarning (cb) {
+    try {
+      this.configManager.setShouldntShowWarning(true)
       cb()
     } catch (e) {
       cb(e)
