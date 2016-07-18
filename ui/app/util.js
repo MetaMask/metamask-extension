@@ -123,7 +123,11 @@ function generateBalanceObject (formattedBalance, decimalsToKeep = 1) {
   var shortBalance = shortenBalance(balance, decimalsToKeep)
 
   if (beforeDecimal === '0' && afterDecimal.substr(0, 5) === '00000') {
-    balance = '<1.0e-5'
+    if (afterDecimal == 0) {
+      balance = '0'
+    } else {
+      balance = '<1.0e-5'
+    }
   } else if (beforeDecimal !== '0') {
     balance = `${beforeDecimal}.${afterDecimal.slice(0, decimalsToKeep)}`
   }
