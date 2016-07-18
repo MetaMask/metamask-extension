@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fixed bug that would prevent the plugin from reopening on the first try after receiving a new transaction while locked.
+
 ## 2.6.1 2016-07-13
 
 - Fix tool tips on Eth balance to show the 6 decimals
