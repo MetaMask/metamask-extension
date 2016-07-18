@@ -96,7 +96,7 @@ function formatBalance (balance, decimalsToKeep) {
   var parsed = parseBalance(balance)
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
-  var formatted
+  var formatted = 'None'
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
