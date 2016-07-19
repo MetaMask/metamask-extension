@@ -29,12 +29,12 @@ function reduceApp (state, action) {
     seedWords,
   }
   var ethStoreWarning = {
-    name: 'EthStoreWarning'
+    name: 'EthStoreWarning',
   }
 
   var appState = extend({
     menuOpen: false,
-    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning :defaultView ,
+    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning : defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -371,13 +371,13 @@ function reduceApp (state, action) {
 
     case actions.SHOW_ETH_WARNING:
       return extend(appState, {
-      transForward: true,
-      currentView: {
-        name: 'accountDetail',
-        context: appState.currentView.context,
-      },
-      accountDetail: {
-        subview: 'buy-eth-warning',
+        transForward: true,
+        currentView: {
+          name: 'accountDetail',
+          context: appState.currentView.context,
+        },
+        accountDetail: {
+          subview: 'buy-eth-warning',
         },
       })
     default:

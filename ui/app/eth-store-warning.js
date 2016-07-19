@@ -19,10 +19,9 @@ function mapStateToProps (state) {
 
 EthStoreWarning.prototype.render = function () {
 
-  const props = this.props
   return (
 
-    h('.error.flex-column', {
+    h('.flex-column', {
       key: 'ethWarning',
       style: {
         paddingTop: '25px',
@@ -31,20 +30,22 @@ EthStoreWarning.prototype.render = function () {
         alignItems: 'center',
       },
     }, [
-      h('.error', {
+      h('.warning', {
         style: {
           margin: '10px 10px 10px 10px',
         },
       },
-        `We  would like to remind you that MetaMask
-        is in beta - only put in amounts you are comfortible losing
+        `MetaMask is currently in beta -
+        exercise caution while handling
+        and storing your ether.
         `),
+
       h('i.fa.fa-exclamation-triangle.fa-4', {
         style: {
           fontSize: '152px',
           color: '#AEAEAE',
           textAlign: 'center',
-        }
+        },
       }),
 
       h('.flex-row', {
@@ -55,28 +56,27 @@ EthStoreWarning.prototype.render = function () {
       }, [
         h('input', {
           type: 'checkbox',
-          onChange: this.toggleShowWarning.bind(this,event)
+          onChange: this.toggleShowWarning.bind(this, event),
         }),
         h('.warning', {
-          style:{
+          style: {
             fontSize: '11px',
           },
 
-        }, 'Dont show me this message again')
+        }, 'Dont show me this message again'),
       ]),
       h('.flex-row', {
         style: {
           width: '100%',
-          justifyContent: 'space-around'
+          justifyContent: 'space-around',
         },
       }, [
         h('button', {
           onClick: this.toAccounts.bind(this),
         },
-          `Continue to MetaMask`),
-        ]),
-
-      ])
+          'Continue to MetaMask'),
+      ]),
+    ])
   )
 }
 
@@ -85,6 +85,5 @@ EthStoreWarning.prototype.toggleShowWarning = function (event) {
 }
 
 EthStoreWarning.prototype.toAccounts = function () {
-
   this.props.dispatch(actions.showAccountDetail(this.props.account))
 }

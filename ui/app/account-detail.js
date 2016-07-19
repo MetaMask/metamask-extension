@@ -28,7 +28,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     unconfTxs: valuesFor(state.metamask.unconfTxs),
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
-    isEthWarningConfirmed: state.metamask.isEthConfirmed
+    isEthWarningConfirmed: state.metamask.isEthConfirmed,
   }
 }
 
@@ -171,7 +171,7 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
-           h('button', {
+          h('button', {
             onClick: () => props.dispatch(actions.buyEth(selected)),
             style: {
               marginBottom: '20px',
@@ -220,9 +220,6 @@ AccountDetailScreen.prototype.subview = function () {
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
-    case 'buy-eth-warning':
-      var state = extend({key: 'ethWarning'}, this.props)
-      return h(BuyEthWarning, state)
     default:
       return this.transactionList()
   }

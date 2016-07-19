@@ -110,9 +110,9 @@ var actions = {
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
-  //buy Eth
+  // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
-  buyEth: buyEth
+  buyEth: buyEth,
 }
 
 module.exports = actions
@@ -568,11 +568,9 @@ function showSendPage () {
 }
 
 function agreeToEthWarning () {
-
   return (dispatch) => {
     _accountManager.agreeToEthWarning((err) => {
       if (err) {
-
         return dispatch(actions.showEthWarning(err.message))
       }
       dispatch({
@@ -592,7 +590,7 @@ function buyEth (address, amount) {
   return (dispatch) => {
     _accountManager.buyEth(address, amount)
     dispatch({
-      type: actions.BUY_ETH
+      type: actions.BUY_ETH,
     })
   }
 }

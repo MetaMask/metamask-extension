@@ -327,7 +327,7 @@ App.prototype.renderPrimary = function () {
   // show current view
   switch (props.currentView.name) {
     case 'EthStoreWarning':
-       return h(EthStoreWarning, {key: 'ethWarning'})
+      return h(EthStoreWarning, {key: 'ethWarning'})
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})

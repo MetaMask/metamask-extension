@@ -239,7 +239,7 @@ module.exports = class MetamaskController {
     }
   }
 
-   agreeToEthWarning (cb) {
+  agreeToEthWarning (cb) {
     try {
       this.configManager.setShouldntShowWarning(true)
       cb()
@@ -267,17 +267,17 @@ module.exports = class MetamaskController {
   }
 
   buyEth (address, amount) {
-    if(!amount) amount = '5'
+    if (!amount) amount = '5'
 
     var network = this.idStore._currentState.network
-    var url =`https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
 
-    if (network == 2) {
+    if (network === '2') {
       url = 'https://testfaucet.metamask.io/'
     }
 
     chrome.tabs.create({
-      url
+      url,
     })
   }
 
