@@ -53,9 +53,17 @@ var __define
 
 function cleanContextForImports () {
   __define = global.define
-  delete global.define
+  try {
+    delete global.define
+  } catch (_) {
+    console.warn('MetaMask - global.define could not be deleted.')
+  }
 }
 
 function restoreContextAfterImports () {
-  global.define = __define
+  try {
+    global.define = __define
+  } catch {
+    console.warn('MetaMask - global.define could not be overwritten.')
+  }
 }
