@@ -63,7 +63,7 @@ function cleanContextForImports () {
 function restoreContextAfterImports () {
   try {
     global.define = __define
-  } catch {
+  } catch (_) {
     console.warn('MetaMask - global.define could not be overwritten.')
   }
 }
