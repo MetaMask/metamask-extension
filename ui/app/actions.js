@@ -110,6 +110,9 @@ var actions = {
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
+  //buy Eth
+  BUY_ETH: 'BUY_ETH',
+  buyEth: buyEth
 }
 
 module.exports = actions
@@ -565,11 +568,11 @@ function showSendPage () {
 }
 
 function agreeToEthWarning () {
- debugger
+
   return (dispatch) => {
     _accountManager.agreeToEthWarning((err) => {
       if (err) {
-        debugger
+
         return dispatch(actions.showEthWarning(err.message))
       }
       dispatch({
@@ -582,5 +585,14 @@ function agreeToEthWarning () {
 function showEthWarning () {
   return {
     type: actions.SHOW_ETH_WARNING,
+  }
+}
+
+function buyEth (address, amount) {
+  return (dispatch) => {
+    _accountManager.buyEth(address, amount)
+    dispatch({
+      type: actions.BUY_ETH
+    })
   }
 }

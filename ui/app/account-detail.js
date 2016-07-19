@@ -15,7 +15,6 @@ const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
-const BuyEthWarning = require('./components/buy-eth-warning')
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -172,8 +171,8 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
-          h('button', {
-            onClick: () => props.dispatch(actions.showEthWarning()),
+           h('button', {
+            onClick: () => props.dispatch(actions.buyEth(selected)),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
@@ -249,15 +248,4 @@ AccountDetailScreen.prototype.transactionList = function () {
       this.props.dispatch(actions.viewPendingTx(txId))
     },
   })
-}
-
-AccountDetailScreen.prototype.requestAccountExport = function () {
-  this.props.dispatch(actions.requestExportAccount())
-}
-
-function toCoinbase (account) {
-    debugger
-    window.open(
-      `https://buy.coinbase.com?code=&amount=5&address=${account}&crypto_currency=ETH`
-    )
 }
