@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.6.2 2016-07-20
+
 - Fixed bug that would prevent the plugin from reopening on the first try after receiving a new transaction while locked.
 - Fixed bug that would render 0 ETH as a non-exact amount.
 
