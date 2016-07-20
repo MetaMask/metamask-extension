@@ -108,7 +108,7 @@ function createSyncProvider (providerConfig) {
     }
   }
 
-  const provider =  new HttpProvider(syncProviderUrl)
+  const provider = new HttpProvider(syncProviderUrl)
   // Stubbing out the send method to throw on sync methods:
   provider.send = function() {
     var message = 'The MetaMask Web3 object does not support synchronous methods. See https://github.com/MetaMask/faq#all-async---think-of-metamask-as-a-light-client for details.'
