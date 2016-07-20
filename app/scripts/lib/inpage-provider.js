@@ -1,4 +1,4 @@
-const HttpProvider = require('./async-only-http-provider')
+const HttpProvider = require('web3/lib/web3/httpprovider')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('./obj-multiplex')
 const StreamProvider = require('web3-stream-provider')
