@@ -14,11 +14,12 @@
   You should have received a copy of the GNU Lesser General Public License
   along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @file httpprovider.js
+/** @file async-only-http-provider.js
  * @authors:
  *   Marek Kotewicz <marek@ethdev.com>
  *   Marian Oancea <marian@ethdev.com>
  *   Fabian Vogelsteller <fabian@ethdev.com>
+ *   Dan Finlay <dan@metamask.io>
  * @date 2015
  */
 
