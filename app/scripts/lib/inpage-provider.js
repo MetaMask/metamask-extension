@@ -1,4 +1,3 @@
-// const HttpProvider = require('./async-only-http-provider')
 const HttpProvider = require('./async-only-http-provider')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('./obj-multiplex')
