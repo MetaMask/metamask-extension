@@ -1,4 +1,4 @@
-const HttpProvider = require('web3/lib/web3/httpprovider')
+const HttpProvider = require('./inpage-http-provider')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('./obj-multiplex')
 const StreamProvider = require('web3-stream-provider')
