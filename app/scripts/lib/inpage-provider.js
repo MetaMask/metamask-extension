@@ -1,3 +1,4 @@
+// const HttpProvider = require('./async-only-http-provider')
 const HttpProvider = require('./async-only-http-provider')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('./obj-multiplex')
@@ -107,7 +108,15 @@ function createSyncProvider (providerConfig) {
         syncProviderUrl = MetamaskConfig.network.default
     }
   }
-  return new HttpProvider(syncProviderUrl)
+
+  const provider =  new HttpProvider(syncProviderUrl)
+  // Stubbing out the send method to throw on sync methods:
+  provider.send = function() {
+    var message = 'The MetaMask Web3 object does not support synchronous methods. See https://github.com/MetaMask/faq#all-async---think-of-metamask-as-a-light-client for details.'
+    throw new Error(message)
+  }
+
+  return provider
 }
 
 function remoteStoreWithLocalStorageCache (storageKey) {
