@@ -286,7 +286,9 @@ ConfigManager.prototype.setConversionRate = function () {
   var data = this.getData()
   return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
   .then(function (response) {
-    data.conversionRate = Number(JSON.parse(response).ticker.price)
+    const parsedResponse = JSON.parse(response)
+    data.conversionRate = Number(parsedResponse.ticker.price)
+    data.conversionLastUpdated = new Date(parsedResponse.timestamp).toString()
     this.setData(data)
   }.bind(this)).catch(function (err) {
     console.log('Error in conversion.', err)
@@ -296,4 +298,9 @@ ConfigManager.prototype.setConversionRate = function () {
 ConfigManager.prototype.getConversionRate = function () {
   var data = this.getData()
   return ('conversionRate' in data) && data.conversionRate
+}
+
+ConfigManager.prototype.getConversionLastUpdated = function () {
+  var data = this.getData()
+  return ('conversionLastUpdated' in data) && data.conversionLastUpdated
 }
