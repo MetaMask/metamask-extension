@@ -28,10 +28,13 @@ function reduceApp (state, action) {
     name: 'createVaultComplete',
     seedWords,
   }
+  var ethStoreWarning = {
+    name: 'EthStoreWarning',
+  }
 
   var appState = extend({
     menuOpen: false,
-    currentView: seedWords ? seedConfView : defaultView,
+    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning : defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -366,6 +369,17 @@ function reduceApp (state, action) {
         },
       })
 
+    case actions.SHOW_ETH_WARNING:
+      return extend(appState, {
+        transForward: true,
+        currentView: {
+          name: 'accountDetail',
+          context: appState.currentView.context,
+        },
+        accountDetail: {
+          subview: 'buy-eth-warning',
+        },
+      })
     default:
       return appState
   }
@@ -390,3 +404,5 @@ function indexForPending (state, txId) {
   })
   return idx
 }
+
+

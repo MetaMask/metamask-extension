@@ -66,6 +66,10 @@ var actions = {
   showPrivateKey: showPrivateKey,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
+  AGREE_TO_ETH_WARNING: 'AGREE_TO_ETH_WARNING',
+  agreeToEthWarning: agreeToEthWarning,
+  SHOW_ETH_WARNING: 'SHOW_ETH_WARNING',
+  showEthWarning: showEthWarning,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -106,6 +110,9 @@ var actions = {
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
+  // buy Eth with coinbase
+  BUY_ETH: 'BUY_ETH',
+  buyEth: buyEth,
 }
 
 module.exports = actions
@@ -557,5 +564,33 @@ function saveAccountLabel (account, label) {
 function showSendPage () {
   return {
     type: actions.SHOW_SEND_PAGE,
+  }
+}
+
+function agreeToEthWarning () {
+  return (dispatch) => {
+    _accountManager.agreeToEthWarning((err) => {
+      if (err) {
+        return dispatch(actions.showEthWarning(err.message))
+      }
+      dispatch({
+        type: actions.AGREE_TO_ETH_WARNING,
+      })
+    })
+  }
+}
+
+function showEthWarning () {
+  return {
+    type: actions.SHOW_ETH_WARNING,
+  }
+}
+
+function buyEth (address, amount) {
+  return (dispatch) => {
+    _accountManager.buyEth(address, amount)
+    dispatch({
+      type: actions.BUY_ETH,
+    })
   }
 }
