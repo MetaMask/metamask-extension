@@ -37,11 +37,6 @@
       "all_frames": false
     }
   ],
-  "applications": {
-    "gecko": {
-      "id": "MOZILLA_EXTENSION_ID"
-    }
-  },
   "permissions": [
     "notifications",
     "storage",
