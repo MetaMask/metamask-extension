@@ -245,6 +245,7 @@ module.exports = class MetamaskController {
       const data = {
         conversionRate: this.configManager.getConversionRate,
         currentFiat: this.configManager.getCurrentFiat,
+        conversionDate: this.configManager.getConversionDate,
       }
       cb(data)
     } catch (e) {

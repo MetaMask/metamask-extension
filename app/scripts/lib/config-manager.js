@@ -288,7 +288,7 @@ ConfigManager.prototype.setConversionRate = function () {
   .then(function (response) {
     const parsedResponse = JSON.parse(response)
     data.conversionRate = Number(parsedResponse.ticker.price)
-    data.conversionLastUpdated = new Date(parsedResponse.timestamp).toString()
+    data.conversionDate = new Date(parsedResponse.timestamp).toString()
     this.setData(data)
   }.bind(this)).catch(function (err) {
     console.log('Error in conversion.', err)
@@ -300,7 +300,7 @@ ConfigManager.prototype.getConversionRate = function () {
   return ('conversionRate' in data) && data.conversionRate
 }
 
-ConfigManager.prototype.getConversionLastUpdated = function () {
+ConfigManager.prototype.getConversionDate = function () {
   var data = this.getData()
-  return ('conversionLastUpdated' in data) && data.conversionLastUpdated
+  return ('conversionDate' in data) && data.conversionDate
 }

@@ -113,6 +113,7 @@ function reduceMetamask (state, action) {
       return extend(metaMaskState, {
         currentFiat: action.value.currentFiat,
         conversionRate: action.value.conversionRate,
+        conversionDate: action.value.conversionDate,
       })
 
     default:

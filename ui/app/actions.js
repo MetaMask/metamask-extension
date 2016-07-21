@@ -219,6 +219,7 @@ function setCurrentFiat (fiat) {
         value: {
           currentFiat: data.currentFiat,
           conversionRate: data.conversionRate,
+          conversionDate: data.conversionDate,
         }
       })
     })
