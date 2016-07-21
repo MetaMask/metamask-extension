@@ -6,6 +6,7 @@ const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
+const extension = require('./lib/extension')
 
 module.exports = class MetamaskController {
 
@@ -251,19 +252,19 @@ module.exports = class MetamaskController {
   // called from popup
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
-    chrome.runtime.reload()
+    extension.runtime.reload()
     this.idStore.getNetwork()
   }
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
-    chrome.runtime.reload()
+    extension.runtime.reload()
     this.idStore.getNetwork()
   }
 
   useEtherscanProvider () {
     this.configManager.useEtherscanProvider()
-    chrome.runtime.reload()
+    extension.runtime.reload()
   }
 
   buyEth (address, amount) {
