@@ -241,8 +241,13 @@ module.exports = class MetamaskController {
     try {
       this.configManager.setCurrentFiat(fiat)
       this.configManager.setConversionRate()
+      const data = {
+        conversionRate: this.configManager.getConversionRate,
+        currentFiat: this.configManager.getCurrentFiat,
+      }
+      cb(data)
     } catch (e) {
-      cb(e)
+      cb(null,e)
     }
   }
 

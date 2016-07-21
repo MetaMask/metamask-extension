@@ -212,10 +212,14 @@ function revealAccount () {
 function setCurrentFiat (fiat) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.setCurrentFiat(fiat, (err) => {
+    _accountManager.setCurrentFiat(fiat, (data, err) => {
       dispatch(this.hideLoadingIndication())
       dispatch({
         type: this.SET_CURRENT_FIAT,
+        value: {
+          currentFiat: data.currentFiat,
+          conversionRate: data.conversionRate,
+        }
       })
     })
   }

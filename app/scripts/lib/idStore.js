@@ -99,6 +99,8 @@ IdentityStore.prototype.getState = function () {
     unconfMsgs: messageManager.unconfirmedMsgs(),
     messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),
+    currentFiat: configManager.getCurrentFiat(),
+    currentConversion: configManager.getConversionRate(),
   }))
 }
 
@@ -199,7 +201,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     time: time,
     status: 'unconfirmed',
   }
-  
+
   console.log('addUnconfirmedTransaction:', txData)
 
   // keep the onTxDoneCb around for after approval/denial (requires user interaction)
