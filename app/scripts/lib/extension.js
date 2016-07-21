@@ -10,41 +10,5 @@
  * https://developer.mozilla.org/en-US/Add-ons/WebExtensions
  */
 
-const apis = [
-  'alarms',
-  'bookmarks',
-  'browserAction',
-  'commands',
-  'contextMenus',
-  'cookies',
-  'downloads',
-  'events',
-  'extension',
-  'extensionTypes',
-  'history',
-  'i18n',
-  'idle',
-  'notifications',
-  'pageAction',
-  'runtime',
-  'storage',
-  'tabs',
-  'webNavigation',
-  'webRequest',
-  'windows',
-]
-
+const Extension = require('./extension-instance')
 module.exports = new Extension()
-
-function Extension() {
-  const _this = this
-  let global = window
-
-  if (chrome) {
-    global = chrome
-  }
-
-  apis.forEach(function(api) {
-    _this[api] = global[api]
-  })
-}
