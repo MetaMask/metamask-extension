@@ -416,6 +416,8 @@ function reduceApp (state, action) {
           default:
              extend(appState, {})
         }
+=======
+>>>>>>> fcd523a... Buy button (#474)
     default:
       return appState
   }

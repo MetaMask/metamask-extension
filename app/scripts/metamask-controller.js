@@ -268,7 +268,6 @@ module.exports = class MetamaskController {
   }
 
   buyEth (address, amount) {
-    debugger
     if (!amount) amount = '5'
 
     var network = this.idStore._currentState.network

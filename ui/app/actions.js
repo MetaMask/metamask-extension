@@ -113,12 +113,15 @@ var actions = {
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
+<<<<<<< HEAD
   buyEthSubview: buyEthSubview,
   BUY_ETH_SUBVIEW: 'BUY_ETH_SUBVIEW',
   UPDATE_COIBASE_INFO: 'UPDATE_COIBASE_INFO',
   updateCoinBaseInfo: updateCoinBaseInfo,
 
 
+=======
+>>>>>>> fcd523a... Buy button (#474)
 }
 
 module.exports = actions
@@ -593,7 +596,6 @@ function showEthWarning () {
 }
 
 function buyEth (address, amount) {
-  debugger
   return (dispatch) => {
     _accountManager.buyEth(address, amount)
     dispatch({
@@ -609,13 +611,9 @@ function buyEthSubview () {
 }
 
 function updateCoinBaseInfo (label, value) {
-  debugger
   return {
     type: actions.UPDATE_COIBASE_INFO,
     value,
     label,
   }
 }
-
-
-

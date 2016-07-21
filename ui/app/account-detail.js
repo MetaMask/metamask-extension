@@ -177,7 +177,8 @@ AccountDetailScreen.prototype.render = function () {
               marginBottom: '20px',
               marginRight: '8px',
               position: 'absolute',
-              left: '219px',            },
+              left: '219px',
+            },
           }, 'BUY'),
 
           h('button', {
