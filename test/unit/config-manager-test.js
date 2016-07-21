@@ -3,12 +3,93 @@ const extend = require('xtend')
 const STORAGE_KEY = 'metamask-persistance-key'
 var configManagerGen = require('../lib/mock-config-manager')
 var configManager
+const rp = require('request-promise')
 
 describe('config-manager', function() {
 
   beforeEach(function() {
     window.localStorage = {} // Hacking localStorage support into JSDom
     configManager = configManagerGen()
+  })
+
+  describe('currency conversions', function() {
+
+    describe('#getCurrentFiat', function() {
+      it('should return false if no previous key exists', function() {
+        var result = configManager.getCurrentFiat()
+        assert.ok(!result)
+      })
+    })
+
+    describe('#setCurrentFiat', function() {
+      it('should make getCurrentFiat return true once set', function() {
+        assert.equal(configManager.getCurrentFiat(), false)
+        configManager.setCurrentFiat('usd')
+        var result = configManager.getCurrentFiat()
+        assert.equal(result, 'usd')
+      })
+
+      it('should work with other currencies as well', function() {
+        assert.equal(configManager.getCurrentFiat(), false)
+        configManager.setCurrentFiat('jpy')
+        var result = configManager.getCurrentFiat()
+        assert.equal(result, 'jpy')
+      })
+    })
+
+    describe('#getConversionRate', function() {
+      it('should return false if non-existent', function() {
+        var result = configManager.getConversionRate()
+        assert.ok(!result)
+      })
+    })
+
+    describe('#setConversionRate', function() {
+      it('should retrieve an update for ETH to USD and set it in memory', function(done) {
+        this.timeout(15000)
+        assert.equal(configManager.getConversionRate(), false)
+        var promise = new Promise(
+          function (resolve, reject) {
+            configManager.setCurrentFiat('usd')
+            configManager.setConversionRate().then(function() {
+              resolve()
+            })
+        })
+
+        promise.then(function() {
+          var result = configManager.getConversionRate()
+          assert.equal(typeof result, 'number')
+          done()
+        }).catch(function(err) {
+          console.log(err)
+        })
+
+      })
+
+      it('should work for JPY as well.', function() {
+        this.timeout(15000)
+        assert.equal(configManager.getConversionRate(), false)
+        var promise = new Promise(
+          function (resolve, reject) {
+            configManager.setCurrentFiat('jpy')
+            configManager.setConversionRate().then(function() {
+              resolve()
+            })
+        })
+
+        promise.then(function() {
+          var result = configManager.getConversionRate()
+          assert.equal(typeof result, 'number')
+          done()
+        }).catch(function(err) {
+          console.log(err)
+        })
+      })
+
+      xit('should activate every time the currency is changed.', function() {
+
+      })
+    })
   })
 
   describe('confirmation', function() {
@@ -215,4 +296,3 @@ describe('config-manager', function() {
     })
   })
 })
-

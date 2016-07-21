@@ -1,6 +1,7 @@
 const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
+const rp = require('request-promise')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -270,3 +271,29 @@ ConfigManager.prototype.getConfirmed = function () {
   return ('isConfirmed' in data) && data.isConfirmed
 }
 
+ConfigManager.prototype.setCurrentFiat = function (currency) {
+  var data = this.getData()
+  data.fiatCurrency = currency
+  this.setData(data)
+}
+
+ConfigManager.prototype.getCurrentFiat = function () {
+  var data = this.getData()
+  return ('fiatCurrency' in data) && data.fiatCurrency
+}
+
+ConfigManager.prototype.setConversionRate = function () {
+  var data = this.getData()
+  return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
+  .then(function (response) {
+    data.conversionRate = Number(JSON.parse(response).ticker.price)
+    this.setData(data)
+  }.bind(this)).catch(function (err) {
+    console.log('Error in conversion.', err)
+  })
+}
+
+ConfigManager.prototype.getConversionRate = function () {
+  var data = this.getData()
+  return ('conversionRate' in data) && data.conversionRate
+}
