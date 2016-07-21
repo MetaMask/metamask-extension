@@ -282,17 +282,28 @@ ConfigManager.prototype.getCurrentFiat = function () {
   return ('fiatCurrency' in data) && data.fiatCurrency
 }
 
-ConfigManager.prototype.setConversionRate = function () {
+ConfigManager.prototype.updateConversionRate = function () {
   var data = this.getData()
   return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
-  .then(function (response) {
+  .then((response) => {
     const parsedResponse = JSON.parse(response)
-    data.conversionRate = Number(parsedResponse.ticker.price)
-    data.conversionDate = new Date(parsedResponse.timestamp).toString()
-    this.setData(data)
-  }.bind(this)).catch(function (err) {
-    console.log('Error in conversion.', err)
+    this.setConversionPrice(parsedResponse.ticker.price)
+    this.setConversionDate(parsedResponse.timestamp)
+  }).catch((err) => {
+    console.error('Error in conversion.', err)
   })
+}
+
+ConfigManager.prototype.setConversionPrice = function(price) {
+  var data = this.getData()
+  data.conversionRate = Number(parsedResponse.ticker.price)
+  this.setData(data)
+}
+
+ConfigManager.prototype.setConversionDate = function (datestring) {
+  var data = this.getData()
+  data.conversionDate = datestring
+  this.setData(data)
 }
 
 ConfigManager.prototype.getConversionRate = function () {

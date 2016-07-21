@@ -21,6 +21,7 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
+    this.scheduleConversionInterval()
   }
 
   getState () {
@@ -241,7 +242,8 @@ module.exports = class MetamaskController {
   setCurrentFiat (fiat, cb) {
     try {
       this.configManager.setCurrentFiat(fiat)
-      this.configManager.setConversionRate()
+      this.configManager.updateConversionRate()
+      this.scheduleConversionInterval()
       const data = {
         conversionRate: this.configManager.getConversionRate,
         currentFiat: this.configManager.getCurrentFiat,
@@ -251,6 +253,16 @@ module.exports = class MetamaskController {
     } catch (e) {
       cb(null,e)
     }
+  }
+
+  scheduleConversionInterval () {
+    if (this.conversionInterval) {
+      clearInterval(this.conversionInterval)
+    }
+    this.conversionInterval = setInterval(() => {
+      console.log("Updated currency!")
+      this.configManager.updateConversionRate()
+    }, 1000)
   }
 
   // called from popup

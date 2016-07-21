@@ -44,14 +44,14 @@ describe('config-manager', function() {
       })
     })
 
-    describe('#setConversionRate', function() {
+    describe('#updateConversionRate', function() {
       it('should retrieve an update for ETH to USD and set it in memory', function(done) {
         this.timeout(15000)
         assert.equal(configManager.getConversionRate(), false)
         var promise = new Promise(
           function (resolve, reject) {
             configManager.setCurrentFiat('usd')
-            configManager.setConversionRate().then(function() {
+            configManager.updateConversionRate().then(function() {
               resolve()
             })
         })
@@ -72,7 +72,7 @@ describe('config-manager', function() {
         var promise = new Promise(
           function (resolve, reject) {
             configManager.setCurrentFiat('jpy')
-            configManager.setConversionRate().then(function() {
+            configManager.updateConversionRate().then(function() {
               resolve()
             })
         })
