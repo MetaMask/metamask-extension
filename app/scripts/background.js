@@ -9,6 +9,7 @@ const createMsgNotification = require('./lib/notifications.js').createMsgNotific
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const MetamaskController = require('./metamask-controller')
+const extension = require('./lib/extension')
 
 const STORAGE_KEY = 'metamask-config'
 
@@ -65,7 +66,7 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
 // connect to other contexts
 //
 
-chrome.runtime.onConnect.addListener(connectRemote)
+extension.runtime.onConnect.addListener(connectRemote)
 function connectRemote (remotePort) {
   var isMetaMaskInternalProcess = (remotePort.name === 'popup')
   var portStream = new PortStream(remotePort)
@@ -133,8 +134,8 @@ function updateBadge (state) {
   if (count) {
     label = String(count)
   }
-  chrome.browserAction.setBadgeText({ text: label })
-  chrome.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
+  extension.browserAction.setBadgeText({ text: label })
+  extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
 }
 
 function loadData () {

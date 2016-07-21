@@ -9,6 +9,7 @@ const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const extension = require('./lib/extension')
 
 // setup app
 var css = MetaMaskUiCss()
@@ -21,7 +22,7 @@ async.parallel({
 
 function connectToAccountManager (cb) {
   // setup communication with background
-  var pluginPort = chrome.runtime.connect({name: 'popup'})
+  var pluginPort = extension.runtime.connect({name: 'popup'})
   var portStream = new PortStream(pluginPort)
   // setup multiplexing
   var mx = setupMultiplex(portStream)
@@ -55,8 +56,8 @@ function setupControllerConnection (stream, cb) {
 
 function getCurrentDomain (cb) {
   const unknown = '<unknown>'
-  if (!chrome.tabs) return cb(null, unknown)
-  chrome.tabs.query({active: true, currentWindow: true}, function (results) {
+  if (!extension.tabs) return cb(null, unknown)
+  extension.tabs.query({active: true, currentWindow: true}, function (results) {
     var activeTab = results[0]
     var currentUrl = activeTab && activeTab.url
     var currentDomain = url.parse(currentUrl).host
@@ -68,9 +69,9 @@ function getCurrentDomain (cb) {
 }
 
 function clearNotifications(){
-  chrome.notifications.getAll(function (object) {
+  extension.notifications.getAll(function (object) {
     for (let notification in object){
-      chrome.notifications.clear(notification)
+      extension.notifications.clear(notification)
     }
   })
 }

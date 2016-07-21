@@ -23,7 +23,6 @@
   ],
 
   "globals": {
-    "chrome": true,
     "document": false,
     "navigator": false,
     "web3": true,
