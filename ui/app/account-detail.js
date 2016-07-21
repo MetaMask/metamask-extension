@@ -176,8 +176,8 @@ AccountDetailScreen.prototype.render = function () {
             style: {
               marginBottom: '20px',
               marginRight: '8px',
-              position: 'relative',
-              left: '73px',
+              position: 'absolute',
+              left: '219px',
             },
           }, 'BUY'),
 
@@ -246,3 +246,8 @@ AccountDetailScreen.prototype.transactionList = function () {
     },
   })
 }
+
+AccountDetailScreen.prototype.requestAccountExport = function () {
+  this.props.dispatch(actions.requestExportAccount())
+}
+

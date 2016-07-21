@@ -277,7 +277,7 @@ module.exports = class MetamaskController {
       url = 'https://testfaucet.metamask.io/'
     }
 
-    chrome.tabs.create({
+    extension.tabs.create({
       url,
     })
   }

@@ -3,7 +3,7 @@
 ## Current Master
 
 - Added a Warning screen about storing ETH
-- Add by Button!
+- Add buy Button!
 - MetaMask now throws descriptive errors when apps try to use synchronous web3 methods.
 
 ## 2.6.2 2016-07-20
