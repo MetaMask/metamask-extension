@@ -28,7 +28,8 @@ PTXP.render = function () {
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
   var identity = props.identities[address] || { address: address }
-  var balance = props.accounts[address].balance
+  var account = props.accounts[address]
+  var balance = account ? account.balance : '0x0'
 
   var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
   var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
