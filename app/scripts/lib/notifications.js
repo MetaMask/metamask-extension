@@ -7,6 +7,7 @@ const h = require('react-hyperscript')
 const PendingTxDetails = require('../../../ui/app/components/pending-tx-details')
 const PendingMsgDetails = require('../../../ui/app/components/pending-msg-details')
 const MetaMaskUiCss = require('../../../ui/css')
+const extension = require('./extension')
 var notificationHandlers = {}
 
 const notifications = {
@@ -20,34 +21,34 @@ window.METAMASK_NOTIFIER = notifications
 setupListeners()
 
 function setupListeners () {
-  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+  // guard for extension bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!extension.notifications) return console.error('Chrome notifications API missing...')
 
   // notification button press
-  chrome.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
+  extension.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
     var handlers = notificationHandlers[notificationId]
     if (buttonIndex === 0) {
       handlers.confirm()
     } else {
       handlers.cancel()
     }
-    chrome.notifications.clear(notificationId)
+    extension.notifications.clear(notificationId)
   })
 
   // notification teardown
-  chrome.notifications.onClosed.addListener(function (notificationId) {
+  extension.notifications.onClosed.addListener(function (notificationId) {
     delete notificationHandlers[notificationId]
   })
 }
 
 // creation helper
 function createUnlockRequestNotification (opts) {
-  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+  // guard for extension bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!extension.notifications) return console.error('Chrome notifications API missing...')
   var message = 'An Ethereum app has requested a signature. Please unlock your account.'
 
   var id = createId()
-  chrome.notifications.create(id, {
+  extension.notifications.create(id, {
     type: 'basic',
     iconUrl: '/images/icon-128.png',
     title: opts.title,
@@ -56,8 +57,8 @@ function createUnlockRequestNotification (opts) {
 }
 
 function createTxNotification (state) {
-  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+  // guard for extension bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!extension.notifications) return console.error('Chrome notifications API missing...')
 
   renderTxNotificationSVG(state, function (err, notificationSvgSource) {
     if (err) throw err
@@ -70,8 +71,8 @@ function createTxNotification (state) {
 }
 
 function createMsgNotification (state) {
-  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+  // guard for extension bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!extension.notifications) return console.error('Chrome notifications API missing...')
 
   renderMsgNotificationSVG(state, function (err, notificationSvgSource) {
     if (err) throw err
@@ -84,11 +85,11 @@ function createMsgNotification (state) {
 }
 
 function showNotification (state) {
-  // guard for chrome bug https://github.com/MetaMask/metamask-plugin/issues/236
-  if (!chrome.notifications) return console.error('Chrome notifications API missing...')
+  // guard for extension bug https://github.com/MetaMask/metamask-plugin/issues/236
+  if (!extension.notifications) return console.error('Chrome notifications API missing...')
 
   var id = createId()
-  chrome.notifications.create(id, {
+  extension.notifications.create(id, {
     type: 'image',
     requireInteraction: true,
     iconUrl: '/images/icon-128.png',

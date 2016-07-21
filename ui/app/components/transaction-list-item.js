@@ -7,6 +7,7 @@ const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
+const extension = require('../../../app/scripts/lib/extension')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 
@@ -49,7 +50,7 @@ TransactionListItem.prototype.render = function () {
 
         if (!transaction.hash || !isLinkable) return
         var url = explorerLink(transaction.hash, parseInt(network))
-        chrome.tabs.create({ url })
+        extension.tabs.create({ url })
       },
       style: {
         padding: '20px 0',
