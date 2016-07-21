@@ -9,8 +9,8 @@ module.exports = configureStore
 const loggerMiddleware = createLogger()
 
 const createStoreWithMiddleware = applyMiddleware(
-  thunkMiddleware,
-  loggerMiddleware
+  thunkMiddleware
+  // // loggerMiddleware
 )(createStore)
 
 function configureStore (initialState) {

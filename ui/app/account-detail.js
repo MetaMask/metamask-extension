@@ -15,7 +15,7 @@ const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
-
+const BuyButtonSubview = require('./components/buy-button-subview')
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
@@ -172,13 +172,12 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
-            onClick: () => props.dispatch(actions.buyEth(selected)),
+            onClick: () => props.dispatch(actions.buyEthSubview()),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
               position: 'absolute',
-              left: '219px',
-            },
+              left: '219px',            },
           }, 'BUY'),
 
           h('button', {
@@ -220,6 +219,8 @@ AccountDetailScreen.prototype.subview = function () {
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
+    case 'buy':
+      return h(BuyButtonSubview, this.props)
     default:
       return this.transactionList()
   }

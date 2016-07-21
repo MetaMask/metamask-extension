@@ -380,6 +380,42 @@ function reduceApp (state, action) {
           subview: 'buy-eth-warning',
         },
       })
+
+      case actions.BUY_ETH_SUBVIEW:
+        return extend(appState, {
+          transForward: true,
+          currentView: {
+            name: 'accountDetail',
+            context: appState.currentView.context,
+          },
+          accountDetail: {
+            subview: 'buy',
+            amount: '5',
+            buyAddress: appState.currentView.context,
+          },
+        })
+
+
+      case actions.UPDATE_COIBASE_INFO:
+        debugger
+        switch (action.label){
+          case 'buyAddress':
+            return extend(appState, {
+              accountDetail: {
+                subview: 'buy',
+                buyAddress: action.value,
+              },
+            })
+          case 'amount':
+            return extend(appState, {
+              accountDetail: {
+                subview: 'buy',
+                amount: action.value,
+              },
+            })
+          default:
+             extend(appState, {})
+        }
     default:
       return appState
   }
