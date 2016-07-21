@@ -39,6 +39,7 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      setCurrentFiat: this.setCurrentFiat.bind(this),
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -231,6 +232,15 @@ module.exports = class MetamaskController {
     try {
       this.configManager.setConfirmed(true)
       cb()
+    } catch (e) {
+      cb(e)
+    }
+  }
+
+  setCurrentFiat (fiat, cb) {
+    try {
+      this.configManager.setCurrentFiat(fiat)
+      this.configManager.setConversionRate()
     } catch (e) {
       cb(e)
     }
