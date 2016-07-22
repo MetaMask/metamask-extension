@@ -1,6 +1,6 @@
 machine:
   node:
     version: 6.0.0
-pre:
-  - "npm i -g testem"
-  - "npm i -g phantomjs"
+  pre:
+    - "npm i -g testem"
+    - "npm i -g phantomjs"
