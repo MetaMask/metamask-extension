@@ -4,4 +4,3 @@ machine:
 dependencies:
   pre:
     - "npm i -g testem"
-    - "npm i -g phantomjs"
