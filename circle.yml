@@ -1,6 +1,7 @@
 machine:
   node:
     version: 6.0.0
+dependencies:
   pre:
     - "npm i -g testem"
     - "npm i -g phantomjs"
