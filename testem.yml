@@ -1,0 +1,10 @@
+launch_in_dev:
+  - Chrome
+  - Firefox
+framework:
+  - QUnit
+test_page: "test/integration/index.html"
+before_tests: "browserify ./mock-dev.js -o ./development/bundle.js"
+after_tests: "rm ./development/bundle.js"
+src_files: "./mock-dev.js"
+
