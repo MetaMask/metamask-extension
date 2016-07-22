@@ -55,7 +55,7 @@ var actions = {
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
   revealAccount: revealAccount,
-  SET_CURRENT_FIAT:  'SET_CURRENT_FIAT',
+  SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   setCurrentFiat: setCurrentFiat,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
@@ -220,7 +220,7 @@ function setCurrentFiat (fiat) {
           currentFiat: data.currentFiat,
           conversionRate: data.conversionRate,
           conversionDate: data.conversionDate,
-        }
+        },
       })
     })
   }

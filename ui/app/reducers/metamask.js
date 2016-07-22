@@ -110,7 +110,7 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, { identities })
 
     case actions.SET_CURRENT_FIAT:
-      return extend(metaMaskState, {
+      return extend(metamaskState, {
         currentFiat: action.value.currentFiat,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,

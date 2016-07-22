@@ -251,7 +251,7 @@ module.exports = class MetamaskController {
       }
       cb(data)
     } catch (e) {
-      cb(null,e)
+      cb(null, e)
     }
   }
 
@@ -260,7 +260,9 @@ module.exports = class MetamaskController {
       clearInterval(this.conversionInterval)
     }
     this.conversionInterval = setInterval(() => {
-      console.log("Updated currency!")
+      console.log('=================')
+      console.log('Updated currency!')
+      console.log('=================')
       this.configManager.updateConversionRate()
     }, 1000)
   }

@@ -296,7 +296,7 @@ ConfigManager.prototype.updateConversionRate = function () {
 
 ConfigManager.prototype.setConversionPrice = function(price) {
   var data = this.getData()
-  data.conversionRate = Number(parsedResponse.ticker.price)
+  data.conversionRate = Number(price)
   this.setData(data)
 }
 
