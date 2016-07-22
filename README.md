@@ -18,12 +18,6 @@
 npm install
 ```
 
-### Developing on UI Only
-
-You can run `npm run ui`, and your browser should open a live-reloading demo version of the plugin UI.
-
-Some actions will crash the app, so this is only for tuning aesthetics, but it allows live-reloading styles, which is a much faster feedback loop than reloading the full extension.
-
 ### Developing with Gulp
 
 We're using an experimental version of `gulp-cli`, so if you have the old version of gulp, you'll need to uninstall it, `npm uninstall -g gulp`, and install this one instead:
@@ -37,7 +31,7 @@ After that, you can just:
 gulp dev
 ```
 
-### In Chrome
+#### In Chrome
 
 Open `Settings` > `Extensions`.
 
@@ -51,7 +45,21 @@ Click `Select`.
 
 You now have the plugin, and can click 'inspect views: background plugin' to view its dev console.
 
-### Developing the UI
+### Developing on UI Only
+
+You can run `npm run ui`, and your browser should open a live-reloading demo version of the plugin UI.
+
+Some actions will crash the app, so this is only for tuning aesthetics, but it allows live-reloading styles, which is a much faster feedback loop than reloading the full extension.
+
+### Developing on UI with Mocked Background Process
+
+You can run `npm run mock` and your browser should open a live-reloading demo version of the plugin UI, just like the `npm run ui`, except that it tries to actually perform all normal operations.
+
+It does not yet connect to a real blockchain (this could be a good test feature later, connecting to a test blockchain), so only local operations work.
+
+You can reset the mock ui at any time with the `Reset` button at the top of the screen.
+
+### Developing on Dependencies
 
 To enjoy the live-reloading that `gulp dev` offers while working on the `web3-provider-engine` or other dependencies:
 

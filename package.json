@@ -7,7 +7,8 @@
     "start": "gulp dev",
     "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
     "watch": "mocha watch --compilers js:babel-register --recursive",
-    "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./"
+    "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
+    "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./"
   },
   "browserify": {
     "transform": [

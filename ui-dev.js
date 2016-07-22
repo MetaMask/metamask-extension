@@ -18,7 +18,7 @@
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const Root = require('./ui/app/root')
-const configureStore = require('./development/mockStore')
+const configureStore = require('./development/uiStore')
 const states = require('./development/states')
 const Selector = require('./development/selector')
 
