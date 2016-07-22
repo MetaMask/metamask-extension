@@ -2,7 +2,10 @@
 
 ## Current Master
 
+- Added a Warning screen about storing ETH
+- Add buy Button!
 - MetaMask now throws descriptive errors when apps try to use synchronous web3 methods.
+- Removed firefox-specific line in manifest.
 
 ## 2.6.2 2016-07-20
 

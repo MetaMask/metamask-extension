@@ -20,7 +20,9 @@ module.exports = class MetamaskController {
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
-    this.publicConfigStore = this.initPublicConfigStore()
+    this.publicConfigStore = this.initPublicConfigStore
+    this.configManager.setCurrentFiat('usd')
+    this.configManager.updateConversionRate()
     this.scheduleConversionInterval()
   }
 
@@ -42,6 +44,8 @@ module.exports = class MetamaskController {
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
       setCurrentFiat: this.setCurrentFiat.bind(this),
+      agreeToEthWarning: this.agreeToEthWarning.bind(this),
+
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -58,6 +62,8 @@ module.exports = class MetamaskController {
       saveAccountLabel: idStore.saveAccountLabel.bind(idStore),
       tryPassword: idStore.tryPassword.bind(idStore),
       recoverSeed: idStore.recoverSeed.bind(idStore),
+      // coinbase
+      buyEth: this.buyEth.bind(this),
     }
   }
 
@@ -260,11 +266,18 @@ module.exports = class MetamaskController {
       clearInterval(this.conversionInterval)
     }
     this.conversionInterval = setInterval(() => {
-      console.log('=================')
-      console.log('Updated currency!')
-      console.log('=================')
+      console.log('started update conversion rate.')
       this.configManager.updateConversionRate()
-    }, 1000)
+    }, 300000)
+  }
+
+  agreeToEthWarning (cb) {
+    try {
+      this.configManager.setShouldntShowWarning(true)
+      cb()
+    } catch (e) {
+      cb(e)
+    }
   }
 
   // called from popup
@@ -284,6 +297,22 @@ module.exports = class MetamaskController {
     this.configManager.useEtherscanProvider()
     extension.runtime.reload()
   }
+
+  buyEth (address, amount) {
+    if (!amount) amount = '5'
+
+    var network = this.idStore._currentState.network
+    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+
+    if (network === '2') {
+      url = 'https://testfaucet.metamask.io/'
+    }
+
+    extension.tabs.create({
+      url,
+    })
+  }
+
 }
 
 function noop () {}

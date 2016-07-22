@@ -31,6 +31,11 @@ function reduceMetamask (state, action) {
         isConfirmed: true,
       })
 
+    case actions.AGREE_TO_ETH_WARNING:
+      return extend(metamaskState, {
+        isEthConfirmed: true,
+      })
+
     case actions.UNLOCK_METAMASK:
       return extend(metamaskState, {
         isUnlocked: true,

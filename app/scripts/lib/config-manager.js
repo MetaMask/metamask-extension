@@ -289,6 +289,12 @@ ConfigManager.prototype.updateConversionRate = function () {
     const parsedResponse = JSON.parse(response)
     this.setConversionPrice(parsedResponse.ticker.price)
     this.setConversionDate(parsedResponse.timestamp)
+    console.log('=================')
+    console.log('Updated currency!')
+    console.log('=================')
+    console.log(this.getConversionRate())
+    console.log(this.getCurrentFiat())
+    console.log(parsedResponse)
   }).catch((err) => {
     console.error('Error in conversion.', err)
   })
@@ -314,4 +320,15 @@ ConfigManager.prototype.getConversionRate = function () {
 ConfigManager.prototype.getConversionDate = function () {
   var data = this.getData()
   return ('conversionDate' in data) && data.conversionDate
+}
+
+ConfigManager.prototype.setShouldntShowWarning = function (confirmed) {
+  var data = this.getData()
+  data.isEthConfirmed = confirmed
+  this.setData(data)
+}
+
+ConfigManager.prototype.getShouldntShowWarning = function () {
+  var data = this.getData()
+  return ('isEthConfirmed' in data) && data.isEthConfirmed
 }

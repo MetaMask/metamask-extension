@@ -28,6 +28,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     unconfTxs: valuesFor(state.metamask.unconfTxs),
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
+    isEthWarningConfirmed: state.metamask.isEthConfirmed,
   }
 }
 
@@ -171,6 +172,16 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
+            onClick: () => props.dispatch(actions.buyEth(selected)),
+            style: {
+              marginBottom: '20px',
+              marginRight: '8px',
+              position: 'absolute',
+              left: '219px',
+            },
+          }, 'BUY'),
+
+          h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
             style: {
               marginBottom: '20px',
@@ -181,7 +192,7 @@ AccountDetailScreen.prototype.render = function () {
         ]),
       ]),
 
-      // subview (tx history, pk export confirm)
+      // subview (tx history, pk export confirm, buy eth warning)
       h(ReactCSSTransitionGroup, {
         className: 'css-transition-group',
         transitionName: 'main',
@@ -239,3 +250,4 @@ AccountDetailScreen.prototype.transactionList = function () {
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
+

@@ -94,6 +94,7 @@ IdentityStore.prototype.getState = function () {
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
     isConfirmed: configManager.getConfirmed(),
+    isEthConfirmed: configManager.getShouldntShowWarning(),
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
     unconfMsgs: messageManager.unconfirmedMsgs(),
