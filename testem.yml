@@ -1,9 +1,6 @@
 launch_in_dev:
   - Chrome
   - Firefox
-  - PhantomJS
 framework:
-  - QUnit
+  - qunit
 test_page: "test/integration/index.html"
-src_files: "./mock-dev.js"
-
