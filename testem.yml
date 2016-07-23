@@ -1,8 +1,9 @@
 launch_in_dev:
   - Chrome
   - Firefox
-skip:
-  - PhantomJS
+launch_in_ci:
+  - Chrome
+  - Firefox
 framework:
   - qunit
 test_page: "test/integration/index.html"
