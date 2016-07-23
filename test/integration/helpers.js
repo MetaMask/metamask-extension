@@ -1,5 +1,7 @@
 function wait() {
   return new Promise(function(resolve, reject) {
-    setTimeout(resolve, 500)
+    setTimeout(function() {
+      resolve()
+    }, 500)
   })
 }
