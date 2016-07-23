@@ -1,6 +1,7 @@
 launch_in_dev:
   - Chrome
   - Firefox
+skip:
   - PhantomJS
 framework:
   - qunit
