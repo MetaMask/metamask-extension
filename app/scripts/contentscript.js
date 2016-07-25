@@ -11,7 +11,8 @@ if (shouldInjectWeb3()) {
 function setupInjection(){
   // inject in-page script
   var scriptTag = document.createElement('script')
-  scriptTag.src = extension.extension.getURL('scripts/inpage.js')
+  var urlGetter = extension.extension || chrome.extension
+  scriptTag.src = urlGetter.getURL('scripts/inpage.js')
   scriptTag.onload = function () { this.parentNode.removeChild(this) }
   var container = document.head || document.documentElement
   // append as first child
