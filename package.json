@@ -86,6 +86,7 @@
     "deep-freeze-strict": "^1.1.1",
     "del": "^2.2.0",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-brfs": "^0.1.0",
     "gulp-livereload": "^3.8.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",

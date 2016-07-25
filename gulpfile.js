@@ -8,6 +8,7 @@ var watch = require('gulp-watch')
 var sourcemaps = require('gulp-sourcemaps')
 var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
+var brfs = require('gulp-brfs')
 var del = require('del')
 var eslint = require('gulp-eslint')
 var fs = require('fs')
@@ -144,6 +145,7 @@ function bundleTask(opts) {
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source(opts.filename))
+      .pipe(brfs())
       // optional, remove if you don't need to buffer file contents
       .pipe(buffer())
       // optional, remove if you dont want sourcemaps
