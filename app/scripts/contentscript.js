@@ -9,14 +9,19 @@ if (shouldInjectWeb3()) {
 }
 
 function setupInjection(){
-  // inject in-page script
-  var scriptTag = document.createElement('script')
-  var urlGetter = extension.extension || chrome.extension
-  scriptTag.src = urlGetter.getURL('scripts/inpage.js')
-  scriptTag.onload = function () { this.parentNode.removeChild(this) }
-  var container = document.head || document.documentElement
-  // append as first child
-  container.insertBefore(scriptTag, container.children[0])
+  try {
+
+    // inject in-page script
+    var scriptTag = document.createElement('script')
+    scriptTag.src = extension.extension.getURL('scripts/inpage.js')
+    scriptTag.onload = function () { this.parentNode.removeChild(this) }
+    var container = document.head || document.documentElement
+    // append as first child
+    container.insertBefore(scriptTag, container.children[0])
+
+  } catch (e) {
+    console.error('Metamask injection failed.', e)
+  }
 }
 
 function setupStreams(){
