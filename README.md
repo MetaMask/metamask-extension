@@ -55,6 +55,8 @@ Select the file `dist/manifest.json`.
 
 You can optionally enable debugging, and click `Debug`, for a console window that logs all of Metamask's processes to a single console.
 
+If you have problems debugging, try connecting to the IRC channel `#webextensions` on `irc.mozilla.org`.
+
 ### Developing on UI Only
 
 You can run `npm run ui`, and your browser should open a live-reloading demo version of the plugin UI.
