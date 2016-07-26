@@ -93,6 +93,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
+    "gulp-zip": "^3.2.0",
     "jsdom": "^8.1.0",
     "jsdom-global": "^1.7.0",
     "jshint-stylish": "~0.1.5",

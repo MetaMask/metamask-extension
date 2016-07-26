@@ -7,6 +7,7 @@ var gutil = require('gulp-util')
 var watch = require('gulp-watch')
 var sourcemaps = require('gulp-sourcemaps')
 var jsoneditor = require('gulp-json-editor')
+var zip = require('gulp-zip')
 var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
 var brfs = require('gulp-brfs')
@@ -50,19 +51,20 @@ gulp.task('copy:root', copyTask({
   pattern: '/*',
 }))
 gulp.task('manifest:cleanup', function() {
-  gulp.src('./dist/chrome/manifest.json')
+  return gulp.src('./dist/firefox/manifest.json')
   .pipe(jsoneditor(function(json) {
     delete json.applications
     return json
   }))
-  .pipe(gulp.dest('./dist/chrome/manifest.json'))
+  .pipe(gulp.dest('./dist/chrome', { overwrite: false }))
 })
 gulp.task('copy:chrome', gulp.series(
 copyTask({
   source: './dist/firefox',
   destination: './dist/chrome',
+  pattern: '**/[^manifest]*'
 }), 'manifest:cleanup'))
-gulp.task('copy',  gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root')), 'copy:chrome')
+gulp.task('copy',  gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'copy:chrome'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -108,11 +110,24 @@ gulp.task('clean', function clean() {
   return del(['./dist/*'])
 })
 
+// zip tasks for distribution
+gulp.task('zip:chrome', () => {
+  return gulp.src('dist/chrome/**')
+  .pipe(zip('chrome.zip'))
+  .pipe(gulp.dest('dist'));
+});
+gulp.task('zip:firefox', () => {
+  return gulp.src('dist/firefox/**')
+  .pipe(zip('firefox.zip'))
+  .pipe(gulp.dest('dist'));
+});
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
 
 // high level tasks
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
 gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
+gulp.task('dist', gulp.series('build', 'zip:firefox'))
 
 // task generators
 
