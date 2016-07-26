@@ -9,6 +9,8 @@
  - Optionally, to rebuild on file changes, run `gulp dev`.
  - To package .zip files for distribution, run `gulp zip`, or run the full build & zip with `gulp dist`.
 
+ Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
+
 ## Architecture
 
 [![Architecture Diagram](./docs/architecture.png)][1]
