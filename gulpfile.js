@@ -15,6 +15,7 @@ var del = require('del')
 var eslint = require('gulp-eslint')
 var fs = require('fs')
 var path = require('path')
+var manifest = require('./app/manifest.json')
 
 // browser reload
 
@@ -113,13 +114,13 @@ gulp.task('clean', function clean() {
 // zip tasks for distribution
 gulp.task('zip:chrome', () => {
   return gulp.src('dist/chrome/**')
-  .pipe(zip('chrome.zip'))
-  .pipe(gulp.dest('dist'));
+  .pipe(zip(`metamask-chrome-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
 });
 gulp.task('zip:firefox', () => {
   return gulp.src('dist/firefox/**')
-  .pipe(zip('firefox.zip'))
-  .pipe(gulp.dest('dist'));
+  .pipe(zip(`metamask-firefox-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
 });
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
 
