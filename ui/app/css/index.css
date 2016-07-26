@@ -473,3 +473,35 @@ input.large-input {
 .buy-subview{
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
+
+.input-container:hover .edit-text{
+  visibility: visible;
+}
+
+.buy-inputs{
+  font-family: 'Montserrat Light';
+  font-size: 13px;
+  height: 20px;
+  background: transparent;
+  box-sizing: border-box;
+  border: solid;
+  border-color: transparent;
+  border-width: 0.5px;
+  border-radius: 2px;
+
+}
+.input-container:hover .buy-inputs{
+  box-sizing: inherit;
+  border: solid;
+  border-color: #F7861C;
+  border-width: 0.5px;
+  border-radius: 2px;
+}
+
+.buy-inputs:focus{
+  border: solid;
+  border-color: #F7861C;
+  border-width: 0.5px;
+  border-radius: 2px;
+}
+

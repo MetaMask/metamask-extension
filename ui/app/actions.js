@@ -113,16 +113,12 @@ var actions = {
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
-<<<<<<< HEAD
   buyEthSubview: buyEthSubview,
   BUY_ETH_SUBVIEW: 'BUY_ETH_SUBVIEW',
   UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
   updateCoinBaseAmount: updateCoinBaseAmount,
   UPDATE_COINBASE_ADDRESS: 'UPDATE_COIBASE_ADDRESS',
   updateCoinBaseAddress: updateCoinBaseAddress,
-
-=======
->>>>>>> fcd523a... Buy button (#474)
 }
 
 module.exports = actions
@@ -611,8 +607,14 @@ function buyEthSubview () {
   }
 }
 
+function updateCoinBaseAmount (value) {
+  return {
+    type: actions.UPDATE_COINBASE_AMOUNT,
+    value,
+  }
+}
+
 function updateCoinBaseAddress (value) {
-  debugger
   return {
     type: actions.UPDATE_COINBASE_ADDRESS,
     value,

@@ -369,32 +369,6 @@ function reduceApp (state, action) {
         },
       })
 
-    // case actions.SHOW_ETH_WARNING:
-    //   return extend(appState, {
-    //     transForward: true,
-    //     currentView: {
-    //       name: 'accountDetail',
-    //       context: appState.currentView.context,
-    //     },
-    //     accountDetail: {
-    //       subview: 'buy-eth-warning',
-    //     },
-    //   })
-
-      case actions.BUY_ETH_SUBVIEW:
-        return extend(appState, {
-          transForward: true,
-          currentView: {
-            name: 'accountDetail',
-            context: appState.currentView.context,
-          },
-          accountDetail: {
-            subview: 'buy',
-            amount: '5',
-            buyAddress: appState.currentView.context,
-          },
-        })
-
     case actions.BUY_ETH_SUBVIEW:
       return extend(appState, {
         transForward: true,
@@ -404,23 +378,21 @@ function reduceApp (state, action) {
         },
         accountDetail: {
           subview: 'buyForm',
-          amount: '5',
+          amount: '5.00',
           buyAddress: appState.currentView.context,
         },
       })
 
-
-    case actions.UPDATE_COINBASE_AMOUNT:
-    debugger
+    case actions.UPDATE_COINBASE_ADDRESS:
       return extend(appState, {
         accountDetail: {
           subview: 'buyForm',
           buyAddress: action.value,
-          amount: action.accountDetail.amount,
+          amount: appState.accountDetail.amount,
         },
       })
 
-    case actions.UPDATE_COINBASE_ADDRESS:
+    case actions.UPDATE_COINBASE_AMOUNT:
       return extend(appState, {
         accountDetail: {
           subview: 'buyForm',

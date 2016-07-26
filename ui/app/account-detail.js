@@ -179,7 +179,12 @@ AccountDetailScreen.prototype.render = function () {
               position: 'absolute',
               left: '219px',
             },
-          }, 'BUY'),
+          }, props.accountDetail.subview === 'buyForm' ?  [h('i.fa.fa-arrow-left', {
+            style: {
+              width: '22.641px',
+              height: '14px',
+            },
+          }), ] : 'BUY'),
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
@@ -254,3 +259,12 @@ AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
 
+AccountDetailScreen.prototype.buyButtonDeligator = function () {
+  var props = this.props
+
+  if (this.props.accountDetail.subview === 'buyForm') {
+    props.dispatch(actions.backToAccountDetail(props.address))
+  }else{
+    props.dispatch(actions.buyEthSubview())
+  }
+}
