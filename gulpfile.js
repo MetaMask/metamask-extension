@@ -57,13 +57,13 @@ gulp.task('manifest:cleanup', function() {
     delete json.applications
     return json
   }))
-  .pipe(gulp.dest('./dist/chrome', { overwrite: false }))
+  .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 gulp.task('copy:chrome', gulp.series(
 copyTask({
   source: './dist/firefox',
   destination: './dist/chrome',
-  pattern: '**/[^manifest]*'
+  pattern: '**/*'
 }), 'manifest:cleanup'))
 gulp.task('copy',  gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'copy:chrome'))
 gulp.task('copy:watch', function(){
