@@ -4,9 +4,10 @@
 
  - Install [Node.js](https://nodejs.org/en/) version 6 or later.
  - Install local dependencies with `npm install`.
- - Install gulp globally with `npm install -g gulp`.
+ - Install gulp globally with `npm install -g gulp-cli`.
  - Build the project to the `./dist/` folder with `gulp build`.
  - Optionally, to rebuild on file changes, run `gulp dev`.
+ - To package .zip files for distribution, run `gulp zip`, or run the full build & zip with `gulp dist`.
 
 ## Architecture
 
@@ -16,19 +17,6 @@
 
 ```bash
 npm install
-```
-
-### Developing with Gulp
-
-We're using an experimental version of `gulp-cli`, so if you have the old version of gulp, you'll need to uninstall it, `npm uninstall -g gulp`, and install this one instead:
-
-```bash
-npm install gulpjs/gulp-cli#4.0 -g
-```
-
-After that, you can just:
-```bash
-gulp dev
 ```
 
 #### In Chrome
