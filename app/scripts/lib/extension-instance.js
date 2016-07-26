@@ -26,7 +26,10 @@ function Extension () {
   const _this = this
 
   apis.forEach(function (api) {
-    _this[api] = chrome ? chrome[api] : window[api] || browser.extension[api]
+    _this[api] = chrome !== undefined && chrome[api] ? chrome[api]
+      : window[api] ? window[api]
+        : browser && browser.extension && browser.extension[api]
+          ? browser.extension[api] : null
   })
 }
 

@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\" && npm run ci",
+    "test": "npm run fastTest && npm run ci",
+    "fastTest": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",

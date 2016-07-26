@@ -5,7 +5,7 @@ const extension = require('./lib/extension')
 
 const fs = require('fs')
 const path = require('path')
-const inpageText = fs.readFileSync(__dirname + '/inpage.js').toString()
+const inpageText = fs.readFileSync(path.join(__dirname + '/inpage.js')).toString()
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
