@@ -127,7 +127,7 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
 gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
-gulp.task('dist', gulp.series('build', 'zip:firefox'))
+gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators
 
