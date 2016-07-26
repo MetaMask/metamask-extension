@@ -116,9 +116,10 @@ var actions = {
 <<<<<<< HEAD
   buyEthSubview: buyEthSubview,
   BUY_ETH_SUBVIEW: 'BUY_ETH_SUBVIEW',
-  UPDATE_COIBASE_INFO: 'UPDATE_COIBASE_INFO',
-  updateCoinBaseInfo: updateCoinBaseInfo,
-
+  UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
+  updateCoinBaseAmount: updateCoinBaseAmount,
+  UPDATE_COINBASE_ADDRESS: 'UPDATE_COIBASE_ADDRESS',
+  updateCoinBaseAddress: updateCoinBaseAddress,
 
 =======
 >>>>>>> fcd523a... Buy button (#474)
@@ -610,10 +611,10 @@ function buyEthSubview () {
   }
 }
 
-function updateCoinBaseInfo (label, value) {
+function updateCoinBaseAddress (value) {
+  debugger
   return {
-    type: actions.UPDATE_COIBASE_INFO,
+    type: actions.UPDATE_COINBASE_ADDRESS,
     value,
-    label,
   }
 }

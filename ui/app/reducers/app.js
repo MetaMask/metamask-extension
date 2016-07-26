@@ -369,17 +369,17 @@ function reduceApp (state, action) {
         },
       })
 
-    case actions.SHOW_ETH_WARNING:
-      return extend(appState, {
-        transForward: true,
-        currentView: {
-          name: 'accountDetail',
-          context: appState.currentView.context,
-        },
-        accountDetail: {
-          subview: 'buy-eth-warning',
-        },
-      })
+    // case actions.SHOW_ETH_WARNING:
+    //   return extend(appState, {
+    //     transForward: true,
+    //     currentView: {
+    //       name: 'accountDetail',
+    //       context: appState.currentView.context,
+    //     },
+    //     accountDetail: {
+    //       subview: 'buy-eth-warning',
+    //     },
+    //   })
 
       case actions.BUY_ETH_SUBVIEW:
         return extend(appState, {
@@ -395,31 +395,41 @@ function reduceApp (state, action) {
           },
         })
 
+    case actions.BUY_ETH_SUBVIEW:
+      return extend(appState, {
+        transForward: true,
+        currentView: {
+          name: 'accountDetail',
+          context: appState.currentView.context,
+        },
+        accountDetail: {
+          subview: 'buyForm',
+          amount: '5',
+          buyAddress: appState.currentView.context,
+        },
+      })
 
-      case actions.UPDATE_COIBASE_INFO:
-        debugger
-        switch (action.label){
-          case 'buyAddress':
-            return extend(appState, {
-              accountDetail: {
-                subview: 'buy',
-                buyAddress: action.value,
-              },
-            })
-          case 'amount':
-            return extend(appState, {
-              accountDetail: {
-                subview: 'buy',
-                amount: action.value,
-              },
-            })
-          default:
-             extend(appState, {})
-        }
-=======
->>>>>>> fcd523a... Buy button (#474)
-    default:
-      return appState
+
+    case actions.UPDATE_COINBASE_AMOUNT:
+    debugger
+      return extend(appState, {
+        accountDetail: {
+          subview: 'buyForm',
+          buyAddress: action.value,
+          amount: action.accountDetail.amount,
+        },
+      })
+
+    case actions.UPDATE_COINBASE_ADDRESS:
+      return extend(appState, {
+        accountDetail: {
+          subview: 'buyForm',
+          buyAddress: appState.accountDetail.buyAddress,
+          amount: action.value,
+        },
+      })
+  default:
+    return appState
   }
 }
 

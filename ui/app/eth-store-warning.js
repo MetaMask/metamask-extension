@@ -63,7 +63,6 @@ EthStoreWarning.prototype.render = function () {
           style: {
             fontSize: '11px',
           },
-
         }, "Don't show me this message again"),
       ]),
       h('.flex-row', {

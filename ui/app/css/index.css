@@ -469,3 +469,7 @@ input.large-input {
 .eth-warning{
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
+
+.buy-subview{
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}

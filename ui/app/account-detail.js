@@ -192,7 +192,7 @@ AccountDetailScreen.prototype.render = function () {
         ]),
       ]),
 
-      // subview (tx history, pk export confirm, buy eth warning)
+      // subview (tx history, pk export confirm)
       h(ReactCSSTransitionGroup, {
         className: 'css-transition-group',
         transitionName: 'main',
@@ -220,8 +220,9 @@ AccountDetailScreen.prototype.subview = function () {
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
-    case 'buy':
-      return h(BuyButtonSubview, this.props)
+    case 'buyForm':
+      var state = extend({key: 'buyForm'}, this.props)
+      return h(BuyButtonSubview, state)
     default:
       return this.transactionList()
   }
