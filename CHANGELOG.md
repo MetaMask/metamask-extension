@@ -7,6 +7,8 @@
 - Add buy Button!
 - MetaMask now throws descriptive errors when apps try to use synchronous web3 methods.
 - Removed firefox-specific line in manifest.
+- Got most functionality working within Firefox.
+- Fixed bug where sometimes when opening the plugin, it would not fully open until closing and re-opening.
 
 ## 2.6.2 2016-07-20
 
