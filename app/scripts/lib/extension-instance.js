@@ -24,14 +24,27 @@ const apis = [
 
 function Extension () {
   const _this = this
-  let global = window
-
-  if (window.chrome) {
-    global = window.chrome
-  }
 
   apis.forEach(function (api) {
-    _this[api] = global[api]
+
+    _this[api] = null
+
+    try {
+      if (chrome[api]) {
+        _this[api] = chrome[api]
+      }
+    } catch (e) {}
+
+    try {
+      if (window[api]) {
+        _this[api] = window[api]
+      }
+    } catch (e) {}
+
+    try {
+      _this.api = browser.extension[api]
+    } catch (e) {}
+
   })
 }
 
