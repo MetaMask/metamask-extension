@@ -203,6 +203,7 @@ App.prototype.renderNetworkDropdown = function () {
     style: {
       position: 'absolute',
       left: 0,
+      top: '36px',
     },
     innerStyle: {
       background: 'white',

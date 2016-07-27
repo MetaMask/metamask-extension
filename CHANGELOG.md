@@ -5,6 +5,7 @@
 - Fix bug where web3 would sometimes not be injected in time for the application.
 - Fixed bug where sometimes when opening the plugin, it would not fully open until closing and re-opening.
 - Got most functionality working within Firefox.
+- Fixed menu dropdown bug introduced in Chrome 52.
 
 ## 2.7.0 2016-07-21
 
