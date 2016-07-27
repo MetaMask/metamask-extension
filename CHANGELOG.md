@@ -3,6 +3,8 @@
 ## Current Master
 
 - Fix bug where web3 would sometimes not be injected in time for the application.
+## 2.7.0 2016-07-21
+
 - Added a Warning screen about storing ETH
 - Add buy Button!
 - MetaMask now throws descriptive errors when apps try to use synchronous web3 methods.
