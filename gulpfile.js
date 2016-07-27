@@ -103,7 +103,7 @@ gulp.task('build:js:background', bundleTask({ watch: false, filename: 'backgroun
 gulp.task('build:js:popup', bundleTask({ watch: false, filename: 'popup.js' }))
 gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup'))
 
-// clean dist/firefox
+// clean dist
 
 
 gulp.task('clean', function clean() {
