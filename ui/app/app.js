@@ -131,7 +131,7 @@ App.prototype.renderAppBar = function () {
 
           h(NetworkIndicator, {
             network: this.props.network,
-            provider: this.props.provider
+            provider: this.props.provider,
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
