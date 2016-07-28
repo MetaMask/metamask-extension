@@ -52,7 +52,7 @@ HostStore.prototype.set = function (key, value) {
 
 HostStore.prototype.createStream = function () {
   var dnode = Dnode({
-    update: this._didUpdate.bind(this),
+    // update: this._didUpdate.bind(this),
   })
   dnode.on('remote', this._didConnect.bind(this))
   return dnode
