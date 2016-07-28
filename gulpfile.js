@@ -64,7 +64,7 @@ copyTask({
   source: './dist/firefox',
   destination: './dist/chrome',
 }), 'manifest:cleanup'))
-gulp.task('copy',  gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'copy:chrome'))
+gulp.task('copy', gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -91,16 +91,20 @@ gulp.task('default', ['lint'], function () {
 
 // build js
 
-gulp.task('dev:js:inpage', bundleTask({ watch: true, filename: 'inpage.js' }))
-gulp.task('dev:js:contentscript', bundleTask({ watch: true, filename: 'contentscript.js' }))
-gulp.task('dev:js:background', bundleTask({ watch: true, filename: 'background.js' }))
-gulp.task('dev:js:popup', bundleTask({ watch: true, filename: 'popup.js' }))
-gulp.task('dev:js',  gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
+const jsFiles = [
+  'inpage',
+  'contentscript',
+  'background',
+  'popup',
+]
 
-gulp.task('build:js:inpage', bundleTask({ watch: false, filename: 'inpage.js' }))
-gulp.task('build:js:contentscript', bundleTask({ watch: false, filename: 'contentscript.js' }))
-gulp.task('build:js:background', bundleTask({ watch: false, filename: 'background.js' }))
-gulp.task('build:js:popup', bundleTask({ watch: false, filename: 'popup.js' }))
+jsFiles.forEach((jsFile) => {
+  gulp.task(`dev:js:${jsFile}`, bundleTask({ watch: true, filename: `${jsFile}.js` }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
+})
+
+gulp.task('dev:js', gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
+
 gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup'))
 
 // clean dist
@@ -182,6 +186,7 @@ function bundleTask(opts) {
       // Add transformation tasks to the pipeline here.
       .pipe(sourcemaps.write('./')) // writes .map file
       .pipe(gulp.dest('./dist/firefox/scripts'))
+      .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(livereload())
 
     )
