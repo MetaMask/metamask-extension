@@ -2,7 +2,7 @@
 
 ## Building locally
 
- - Install [Node.js](https://nodejs.org/en/) version 6 or later.
+ - Install [Node.js](https://nodejs.org/en/) version 6.3.1 or later.
  - Install local dependencies with `npm install`.
  - Install gulp globally with `npm install -g gulp-cli`.
  - Build the project to the `./dist/` folder with `gulp build`.

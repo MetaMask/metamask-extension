@@ -31,26 +31,42 @@ gulp.task('dev:reload', function() {
 
 gulp.task('copy:locales', copyTask({
   source: './app/_locales/',
-  destination: './dist/firefox/_locales',
+  destinations: [
+    './dist/firefox/_locales',
+    './dist/chrome/_locales',
+  ]
 }))
 gulp.task('copy:images', copyTask({
   source: './app/images/',
-  destination: './dist/firefox/images',
+  destinations: [
+    './dist/firefox/images',
+    './dist/chrome/images',
+  ],
 }))
 gulp.task('copy:fonts', copyTask({
   source: './app/fonts/',
-  destination: './dist/firefox/fonts',
+  destinations: [
+    './dist/firefox/fonts',
+    './dist/chrome/fonts',
+  ],
 }))
 gulp.task('copy:reload', copyTask({
   source: './app/scripts/',
-  destination: './dist/firefox/scripts',
+  destinations: [
+    './dist/firefox/scripts',
+    './dist/chrome/scripts',
+  ],
   pattern: '/chromereload.js',
 }))
 gulp.task('copy:root', copyTask({
   source: './app/',
-  destination: './dist/firefox',
+  destinations: [
+    './dist/firefox',
+    './dist/chrome',
+  ],
   pattern: '/*',
 }))
+
 gulp.task('manifest:cleanup', function() {
   return gulp.src('./dist/firefox/manifest.json')
   .pipe(jsoneditor(function(json) {
@@ -59,12 +75,8 @@ gulp.task('manifest:cleanup', function() {
   }))
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
-gulp.task('copy:chrome', gulp.series(
-copyTask({
-  source: './dist/firefox',
-  destination: './dist/chrome',
-}), 'manifest:cleanup'))
-gulp.task('copy', gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'))
+
+gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:cleanup'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -130,7 +142,7 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
 // high level tasks
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
-gulp.task('build', gulp.series('clean', 'build:js', 'copy'))
+gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
 gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators
@@ -138,18 +150,19 @@ gulp.task('dist', gulp.series('build', 'zip'))
 function copyTask(opts){
   var source = opts.source
   var destination = opts.destination
+  var destinations = opts.destinations || [ destination ]
   var pattern = opts.pattern || '/**/*'
 
   return performCopy
 
   function performCopy(){
-    return (
+    let stream = gulp.src(source + pattern, { base: source })
+    destinations.forEach(function(destination) {
+      stream = stream.pipe(gulp.dest(destination))
+    })
+    stream.pipe(livereload())
 
-      gulp.src(source + pattern, { base: source })
-      .pipe(gulp.dest(destination))
-      .pipe(livereload())
-
-    )
+    return stream
   }
 }
 
