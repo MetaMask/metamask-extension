@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where host store would fail to receive updates.
+
 ## 2.7.1 2016-07-27
 
 - Fix bug where web3 would sometimes not be injected in time for the application.
