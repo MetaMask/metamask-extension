@@ -158,6 +158,7 @@ textarea.twelve-word-phrase {
 }
 
 .check {
+  margin-left: 7px;
   color: #F7861C;
   flex: 1 0 auto;
   display: flex;
