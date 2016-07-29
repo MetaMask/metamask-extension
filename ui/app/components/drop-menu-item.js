@@ -34,14 +34,15 @@ DropMenuItem.prototype.render = function () {
 DropMenuItem.prototype.activeNetworkRender = function () {
   let activeNetwork = this.props.activeNetworkRender
   let { provider } = this.props
+  let providerType = provider ? provider.type : null
   if (activeNetwork === undefined) return
 
   switch (this.props.label) {
     case 'Main Ethereum Network':
-      if (provider.type === 'mainnet') return h('.check', '✓')
+      if (providerType === 'mainnet') return h('.check', '✓')
       break
     case 'Ethereum Classic Network':
-      if (provider.type === 'classic') return h('.check', '✓')
+      if (providerType === 'classic') return h('.check', '✓')
       break
     case 'Morden Test Network':
       if (activeNetwork === '2') return h('.check', '✓')
