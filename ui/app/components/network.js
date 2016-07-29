@@ -11,11 +11,13 @@ function Network () {
 }
 
 Network.prototype.render = function () {
-  const state = this.props
-  const networkNumber = state.network
+  const props = this.props
+  const networkNumber = props.network
+  const providerName = props.provider.type
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
+
     return h('img', {
       title: 'Attempting to connect to blockchain.',
       onClick: (event) => this.props.onClick(event),
@@ -25,9 +27,13 @@ Network.prototype.render = function () {
       },
       src: 'images/loading.svg',
     })
-  } else if (parseInt(networkNumber) === 1) {
+
+  } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
+  } else if (providerName === 'classic') {
+    hoverText = 'Ethereum Classic Network'
+    iconName = 'classic-network'
   } else if (parseInt(networkNumber) === 2) {
     hoverText = 'Morden Test Network'
     iconName = 'morden-test-network'
@@ -54,6 +60,15 @@ Network.prototype.render = function () {
                   color: '#039396',
                 }},
               'Etherum Main Net'),
+            ])
+          case 'classic-network':
+            return h('.network-indicator', [
+              h('.menu-icon.hollow-diamond'),
+              h('.network-name', {
+                style: {
+                  color: '#039396',
+                }},
+              'Etherum Classic'),
             ])
           case 'morden-test-network':
             return h('.network-indicator', [
