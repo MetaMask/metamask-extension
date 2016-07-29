@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.7.2 2016-07-29
+
 - Add Ethereum Classic to provider menu
 - Fix bug where host store would fail to receive updates.
 
