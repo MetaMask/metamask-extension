@@ -165,6 +165,7 @@ module.exports = class MetamaskController {
     function configToPublic (state) {
       return {
         provider: state.provider,
+        selectedAddress: state.selectedAccount,
       }
     }
     // dump obj into store
