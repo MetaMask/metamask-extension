@@ -13,7 +13,12 @@ function Network () {
 Network.prototype.render = function () {
   const props = this.props
   const networkNumber = props.network
-  const providerName = props.provider.type
+  let providerName
+  try {
+    providerName = props.provider.type
+  } catch (e) {
+    providerName = null
+  }
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
