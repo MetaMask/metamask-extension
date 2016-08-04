@@ -120,7 +120,7 @@ CreateVaultScreen.prototype.createNewVault = function () {
     return
   }
   if (password !== passwordConfirm) {
-    this.warning = 'passwords dont match'
+    this.warning = 'passwords don\'t match'
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
