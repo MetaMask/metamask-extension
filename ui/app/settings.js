@@ -32,7 +32,6 @@ AppSettingsPage.prototype.render = function () {
         htmlFor: 'settings-rpc-endpoint',
       }, 'RPC Endpoint:'),
       h('input', {
-        // value: '//testrpc.metamask.io',
         type: 'url',
         id: 'settings-rpc-endpoint',
         onKeyPress: this.onKeyPress.bind(this),

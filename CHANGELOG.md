@@ -2,6 +2,26 @@
 
 ## Current Master
 
+- Fix various typos.
+
+## 2.7.3 2016-07-29
+
+- Fix bug where changing an account would not update in a live Dapp.
+
+## 2.7.2 2016-07-29
+
+- Add Ethereum Classic to provider menu
+- Fix bug where host store would fail to receive updates.
+
+## 2.7.1 2016-07-27
+
+- Fix bug where web3 would sometimes not be injected in time for the application.
+- Fixed bug where sometimes when opening the plugin, it would not fully open until closing and re-opening.
+- Got most functionality working within Firefox (still working on review process before it can be available).
+- Fixed menu dropdown bug introduced in Chrome 52.
+
+## 2.7.0 2016-07-21
+
 - Added a Warning screen about storing ETH
 - Add buy Button!
 - MetaMask now throws descriptive errors when apps try to use synchronous web3 methods.

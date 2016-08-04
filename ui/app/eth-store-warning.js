@@ -56,14 +56,14 @@ EthStoreWarning.prototype.render = function () {
       }, [
         h('input', {
           type: 'checkbox',
-          onChange: this.toggleShowWarning.bind(this, event),
+          onChange: this.toggleShowWarning.bind(this),
         }),
         h('.warning', {
           style: {
             fontSize: '11px',
           },
 
-        }, 'Dont show me this message again'),
+        }, 'Don\'t show me this message again'),
       ]),
       h('.flex-row', {
         style: {
@@ -80,7 +80,7 @@ EthStoreWarning.prototype.render = function () {
   )
 }
 
-EthStoreWarning.prototype.toggleShowWarning = function (event) {
+EthStoreWarning.prototype.toggleShowWarning = function () {
   this.props.dispatch(actions.agreeToEthWarning())
 }
 

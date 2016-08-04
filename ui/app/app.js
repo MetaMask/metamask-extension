@@ -131,6 +131,7 @@ App.prototype.renderAppBar = function () {
 
           h(NetworkIndicator, {
             network: this.props.network,
+            provider: this.props.provider,
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -203,6 +204,7 @@ App.prototype.renderNetworkDropdown = function () {
     style: {
       position: 'absolute',
       left: 0,
+      top: '36px',
     },
     innerStyle: {
       background: 'white',
@@ -220,6 +222,16 @@ App.prototype.renderNetworkDropdown = function () {
       action: () => props.dispatch(actions.setProviderType('mainnet')),
       icon: h('.menu-icon.diamond'),
       activeNetworkRender: props.network,
+      provider: props.provider,
+    }),
+
+    h(DropMenuItem, {
+      label: 'Ethereum Classic Network',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => props.dispatch(actions.setProviderType('classic')),
+      icon: h('.menu-icon.hollow-diamond'),
+      activeNetworkRender: props.network,
+      provider: props.provider,
     }),
 
     h(DropMenuItem, {
@@ -237,6 +249,7 @@ App.prototype.renderNetworkDropdown = function () {
       icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
       activeNetworkRender: props.provider.rpcTarget,
     }),
+
     this.renderCustomOption(props.provider.rpcTarget),
   ])
 }
@@ -254,6 +267,7 @@ App.prototype.renderDropdown = function () {
     style: {
       position: 'absolute',
       right: 0,
+      top: '36px',
     },
     innerStyle: {
       background: 'white',
