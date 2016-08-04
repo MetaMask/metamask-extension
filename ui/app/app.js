@@ -267,6 +267,7 @@ App.prototype.renderDropdown = function () {
     style: {
       position: 'absolute',
       right: 0,
+      top: '36px',
     },
     innerStyle: {
       background: 'white',
