@@ -1,14 +1,17 @@
 {
   "metamask": {
-    "accounts": {},
-    "transactions": [],
-    "identities": {},
-    "network": "2",
     "isInitialized": false,
     "isUnlocked": false,
+    "currentDomain": "example.com",
+    "rpcTarget": "https://rawtestrpc.metamask.io/",
+    "identities": {},
+    "unconfTxs": {},
+    "accounts": {},
+    "transactions": [],
+    "network": "2",
     "seedWords": null,
     "isConfirmed": false,
-    "unconfTxs": {},
+    "isEthConfirmed": false,
     "unconfMsgs": {},
     "messages": [],
     "provider": {
@@ -16,6 +19,17 @@
     }
   },
   "appState": {
-    "currentDomain": "extensions"
-  }
+    "menuOpen": false,
+    "currentView": {
+      "name": "EthStoreWarning"
+    },
+    "accountDetail": {
+      "subview": "transactions"
+    },
+    "currentDomain": "127.0.0.1:9966",
+    "transForward": true,
+    "isLoading": false,
+    "warning": null
+  },
+  "identities": {}
 }

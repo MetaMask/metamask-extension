@@ -37,7 +37,6 @@ AccountsScreen.prototype.render = function () {
   var actions = {
     onSelect: this.onSelect.bind(this),
     onShowDetail: this.onShowDetail.bind(this),
-    revealAccount: this.onRevealAccount.bind(this),
     goHome: this.goHome.bind(this),
   }
   return (
@@ -88,7 +87,7 @@ AccountsScreen.prototype.render = function () {
           h('div.footer.hover-white.pointer', {
             key: 'reveal-account-bar',
             onClick: () => {
-              actions.revealAccount()
+              this.onRevealAccount()
             },
             style: {
               display: 'flex',

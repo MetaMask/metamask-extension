@@ -5,9 +5,14 @@
   "private": true,
   "scripts": {
     "start": "gulp dev",
-    "test": "mocha --require test/helper.js --compilers js:babel-register --recursive",
-    "watch": "mocha watch --compilers js:babel-register --recursive",
-    "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./"
+    "test": "npm run fastTest && npm run ci",
+    "fastTest": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
+    "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
+    "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
+    "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
+    "buildMock": "browserify ./mock-dev.js -o ./development/bundle.js",
+    "testem": "npm run buildMock && testem",
+    "ci": "npm run buildMock && testem ci -P 2"
   },
   "browserify": {
     "transform": [
@@ -82,10 +87,13 @@
     "deep-freeze-strict": "^1.1.1",
     "del": "^2.2.0",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-brfs": "^0.1.0",
+    "gulp-json-editor": "^2.2.1",
     "gulp-livereload": "^3.8.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
+    "gulp-zip": "^3.2.0",
     "jsdom": "^8.1.0",
     "jsdom-global": "^1.7.0",
     "jshint-stylish": "~0.1.5",
@@ -95,6 +103,7 @@
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^1.1.5",
     "qs": "^6.2.0",
+    "qunit": "^0.9.1",
     "sinon": "^1.17.3",
     "tape": "^4.5.1",
     "uglifyify": "^3.0.1",

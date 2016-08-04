@@ -151,12 +151,14 @@ textarea.twelve-word-phrase {
 .network-name {
   position: absolute;
   top: 8px;
+  left: 60px;
   width: 5.2em;
   line-height: 9px;
   text-rendering: geometricPrecision;
 }
 
 .check {
+  margin-left: 7px;
   color: #F7861C;
   flex: 1 0 auto;
   display: flex;
@@ -504,4 +506,3 @@ input.large-input {
   border-width: 0.5px;
   border-radius: 2px;
 }
-

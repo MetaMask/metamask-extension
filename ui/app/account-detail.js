@@ -197,7 +197,7 @@ AccountDetailScreen.prototype.render = function () {
         ]),
       ]),
 
-      // subview (tx history, pk export confirm)
+      // subview (tx history, pk export confirm, buy eth warning)
       h(ReactCSSTransitionGroup, {
         className: 'css-transition-group',
         transitionName: 'main',

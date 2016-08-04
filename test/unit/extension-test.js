@@ -1,6 +1,8 @@
 var assert = require('assert')
 var sinon = require('sinon')
 const ethUtil = require('ethereumjs-util')
+GLOBAL.chrome = {}
+GLOBAL.browser = {}
 
 var path = require('path')
 var Extension = require(path.join(__dirname, '..', '..', 'app', 'scripts', 'lib', 'extension-instance.js'))
@@ -11,7 +13,7 @@ describe('extension', function() {
     let extension
 
     beforeEach(function() {
-      window.chrome = {
+      GLOBAL.chrome = {
         alarms: 'foo'
       }
       extension = new Extension()
@@ -24,11 +26,18 @@ describe('extension', function() {
 
   describe('without chrome global', function() {
     let extension
+    let realWindow
 
     beforeEach(function() {
-      window.chrome = undefined
-      window.alarms = 'foo'
+      realWindow = window
+      window = GLOBAL
+      GLOBAL.chrome = undefined
+      GLOBAL.alarms = 'foo'
       extension = new Extension()
+    })
+
+    after(function() {
+      window = realWindow
     })
 
     it('should use the global apis', function() {

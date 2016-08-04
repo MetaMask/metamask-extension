@@ -1,0 +1,9 @@
+launch_in_dev:
+  - Chrome
+  - Firefox
+launch_in_ci:
+  - Chrome
+  - Firefox
+framework:
+  - qunit
+test_page: "test/integration/index.html"

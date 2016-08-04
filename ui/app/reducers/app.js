@@ -402,7 +402,6 @@ function reduceApp (state, action) {
       })
   default:
     return appState
-  }
 }
 
 function hasPendingTxs (state) {

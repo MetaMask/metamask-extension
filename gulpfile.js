@@ -6,19 +6,23 @@ var buffer = require('vinyl-buffer')
 var gutil = require('gulp-util')
 var watch = require('gulp-watch')
 var sourcemaps = require('gulp-sourcemaps')
+var jsoneditor = require('gulp-json-editor')
+var zip = require('gulp-zip')
 var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
+var brfs = require('gulp-brfs')
 var del = require('del')
 var eslint = require('gulp-eslint')
 var fs = require('fs')
 var path = require('path')
+var manifest = require('./app/manifest.json')
 
 // browser reload
 
 gulp.task('dev:reload', function() {
   livereload.listen({
     port: 35729,
-    // basePath: './dist/'
+    // basePath: './dist/firefox/'
   })
 })
 
@@ -27,27 +31,52 @@ gulp.task('dev:reload', function() {
 
 gulp.task('copy:locales', copyTask({
   source: './app/_locales/',
-  destination: './dist/_locales',
+  destinations: [
+    './dist/firefox/_locales',
+    './dist/chrome/_locales',
+  ]
 }))
 gulp.task('copy:images', copyTask({
   source: './app/images/',
-  destination: './dist/images',
+  destinations: [
+    './dist/firefox/images',
+    './dist/chrome/images',
+  ],
 }))
 gulp.task('copy:fonts', copyTask({
   source: './app/fonts/',
-  destination: './dist/fonts',
+  destinations: [
+    './dist/firefox/fonts',
+    './dist/chrome/fonts',
+  ],
 }))
 gulp.task('copy:reload', copyTask({
   source: './app/scripts/',
-  destination: './dist/scripts',
+  destinations: [
+    './dist/firefox/scripts',
+    './dist/chrome/scripts',
+  ],
   pattern: '/chromereload.js',
 }))
 gulp.task('copy:root', copyTask({
   source: './app/',
-  destination: './dist',
+  destinations: [
+    './dist/firefox',
+    './dist/chrome',
+  ],
   pattern: '/*',
 }))
-gulp.task('copy',  gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'))
+
+gulp.task('manifest:cleanup', function() {
+  return gulp.src('./dist/firefox/manifest.json')
+  .pipe(jsoneditor(function(json) {
+    delete json.applications
+    return json
+  }))
+  .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
+})
+
+gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:cleanup'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -55,8 +84,8 @@ gulp.task('copy:watch', function(){
 // lint js
 
 gulp.task('lint', function () {
-  // Ignoring node_modules, dist, and docs folders:
-  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/**', '!docs/**', '!app/scripts/chromereload.js'])
+  // Ignoring node_modules, dist/firefox, and docs folders:
+  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js'])
     .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
     // eslint.format() outputs the lint results to the console.
     // Alternatively use eslint.formatEach() (see Docs).
@@ -74,48 +103,66 @@ gulp.task('default', ['lint'], function () {
 
 // build js
 
-gulp.task('dev:js:inpage', bundleTask({ watch: true, filename: 'inpage.js' }))
-gulp.task('dev:js:contentscript', bundleTask({ watch: true, filename: 'contentscript.js' }))
-gulp.task('dev:js:background', bundleTask({ watch: true, filename: 'background.js' }))
-gulp.task('dev:js:popup', bundleTask({ watch: true, filename: 'popup.js' }))
-gulp.task('dev:js',  gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
+const jsFiles = [
+  'inpage',
+  'contentscript',
+  'background',
+  'popup',
+]
 
-gulp.task('build:js:inpage', bundleTask({ watch: false, filename: 'inpage.js' }))
-gulp.task('build:js:contentscript', bundleTask({ watch: false, filename: 'contentscript.js' }))
-gulp.task('build:js:background', bundleTask({ watch: false, filename: 'background.js' }))
-gulp.task('build:js:popup', bundleTask({ watch: false, filename: 'popup.js' }))
+jsFiles.forEach((jsFile) => {
+  gulp.task(`dev:js:${jsFile}`, bundleTask({ watch: true, filename: `${jsFile}.js` }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
+})
+
+gulp.task('dev:js', gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
+
 gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup'))
 
 // clean dist
 
 
 gulp.task('clean', function clean() {
-  return del(['./dist'])
+  return del(['./dist/*'])
 })
 
+// zip tasks for distribution
+gulp.task('zip:chrome', () => {
+  return gulp.src('dist/chrome/**')
+  .pipe(zip(`metamask-chrome-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
+});
+gulp.task('zip:firefox', () => {
+  return gulp.src('dist/firefox/**')
+  .pipe(zip(`metamask-firefox-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
+});
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
 
 // high level tasks
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
 gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
+gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators
 
 function copyTask(opts){
   var source = opts.source
   var destination = opts.destination
+  var destinations = opts.destinations || [ destination ]
   var pattern = opts.pattern || '/**/*'
 
   return performCopy
 
   function performCopy(){
-    return (
+    let stream = gulp.src(source + pattern, { base: source })
+    destinations.forEach(function(destination) {
+      stream = stream.pipe(gulp.dest(destination))
+    })
+    stream.pipe(livereload())
 
-      gulp.src(source + pattern, { base: source })
-      .pipe(gulp.dest(destination))
-      .pipe(livereload())
-
-    )
+    return stream
   }
 }
 
@@ -144,13 +191,15 @@ function bundleTask(opts) {
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source(opts.filename))
+      .pipe(brfs())
       // optional, remove if you don't need to buffer file contents
       .pipe(buffer())
       // optional, remove if you dont want sourcemaps
       .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
       // Add transformation tasks to the pipeline here.
       .pipe(sourcemaps.write('./')) // writes .map file
-      .pipe(gulp.dest('./dist/scripts'))
+      .pipe(gulp.dest('./dist/firefox/scripts'))
+      .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(livereload())
 
     )
