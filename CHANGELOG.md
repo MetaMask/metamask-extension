@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix various typos.
+
 ## 2.7.3 2016-07-29
 
 - Fix bug where changing an account would not update in a live Dapp.
