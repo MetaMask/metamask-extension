@@ -3,6 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const select = require('react-select')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -74,6 +75,8 @@ ConfigScreen.prototype.render = function () {
             }, 'Save'),
           ]),
           h('hr.horizontal-line'),
+          currentConversionInformation(metamaskState, state),
+          h('hr.horizontal-line'),
 
           h('div', {
             style: {
@@ -95,6 +98,28 @@ ConfigScreen.prototype.render = function () {
       ]),
     ])
   )
+}
+
+function currentConversionInformation (metamaskState, state) {
+  var currentFiat = metamaskState.currentFiat
+  return h('div'), [
+    h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, "Current Fiat"),
+    h('select#currentFiat', {
+      onChange (event) {
+        event.preventDefault()
+        var element = document.getElementById("currentFiat")
+        var newFiat = element.value
+        state.dispatch(actions.setCurrentFiat(newFiat))
+      },
+      value: currentFiat,
+      defaultValue: currentFiat,
+    }, [
+      h('option', {key: 'usd', value: 'usd'}, 'usd'),
+      h('option', {key: 'eur', value: 'eur'}, 'eur'),
+      h('option', {key: 'jpy', value: 'jpy'}, 'jpy'),
+    ]
+  ),
+  ]
 }
 
 function currentProviderDisplay (metamaskState) {
