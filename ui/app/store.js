@@ -1,12 +1,12 @@
 const createStore = require('redux').createStore
 const applyMiddleware = require('redux').applyMiddleware
 const thunkMiddleware = require('redux-thunk')
-const createLogger = require('redux-logger')
+// const createLogger = require('redux-logger')
 const rootReducer = require('./reducers')
 
 module.exports = configureStore
 
-const loggerMiddleware = createLogger()
+// const loggerMiddleware = createLogger()
 
 const createStoreWithMiddleware = applyMiddleware(
   thunkMiddleware

@@ -317,6 +317,16 @@ function reduceApp (state, action) {
         isLoading: false,
       })
 
+    case actions.SHOW_SUB_LOADING_INDICATION:
+      return extend(appState, {
+        isSubLoading: true,
+      })
+
+    case actions.HIDE_SUB_LOADING_INDICATION:
+      return extend(appState, {
+        isSubLoading: false,
+      })
+
     case actions.CLEAR_SEED_WORD_CACHE:
       return extend(appState, {
         transForward: true,
@@ -380,13 +390,21 @@ function reduceApp (state, action) {
           subview: 'buyForm',
           amount: '5.00',
           buyAddress: appState.currentView.context,
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
         },
       })
 
-    case actions.UPDATE_COINBASE_ADDRESS:
+    case actions.UPDATE_BUY_ADDRESS:
       return extend(appState, {
         accountDetail: {
           subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
           buyAddress: action.value,
           amount: appState.accountDetail.amount,
         },
@@ -396,12 +414,78 @@ function reduceApp (state, action) {
       return extend(appState, {
         accountDetail: {
           subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
           buyAddress: appState.accountDetail.buyAddress,
           amount: action.value,
         },
       })
-  default:
-    return appState
+
+    case actions.COINBASE_SUBVIEW:
+      return extend(appState, {
+        accountDetail: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+          buyAddress: appState.accountDetail.buyAddress,
+          amount: appState.accountDetail.amount,
+        },
+      })
+
+    case actions.SHAPESHIFT_SUBVIEW:
+      return extend(appState, {
+        accountDetail: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: action.value.marketinfo,
+            coinOptions: action.value.coinOptions,
+          },
+          buyAddress: appState.accountDetail.buyAddress,
+          amount: appState.accountDetail.amount,
+        },
+      })
+
+    case actions.PAIR_UPDATE:
+      return extend(appState, {
+        accountDetail: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: action.value.marketinfo,
+            coinOptions: appState.accountDetail.formView.coinOptions,
+          },
+          buyAddress: appState.accountDetail.buyAddress,
+          amount: appState.accountDetail.amount,
+          warning: null,
+        },
+      })
+
+    case actions.COIN_SHIFT_REQUEST:
+      return extend(appState, {
+        accountDetail: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: appState.accountDetail.formView.marketinfo,
+            coinOptions: appState.accountDetail.formView.coinOptions,
+            response: action.value.response,
+          },
+          buyAddress: appState.accountDetail.buyAddress,
+          amount: appState.accountDetail.amount,
+          warning: null,
+        },
+      })
+
+    default:
+      return appState
   }
 }
 
@@ -424,5 +508,4 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-
 

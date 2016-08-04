@@ -172,19 +172,19 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
-            onClick: () => props.dispatch(actions.buyEthSubview()),
+            onClick: this.buyButtonDeligator.bind(this),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
               position: 'absolute',
               left: '219px',
             },
-          }, props.accountDetail.subview === 'buyForm' ?  [h('i.fa.fa-arrow-left', {
+          }, props.accountDetail.subview === 'buyForm' ? [h('i.fa.fa-arrow-left', {
             style: {
               width: '22.641px',
               height: '14px',
             },
-          }), ] : 'BUY'),
+          })] : 'BUY'),
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
@@ -226,8 +226,7 @@ AccountDetailScreen.prototype.subview = function () {
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
     case 'buyForm':
-      var state = extend({key: 'buyForm'}, this.props)
-      return h(BuyButtonSubview, state)
+      return h(BuyButtonSubview, extend({key: 'buyForm'}, this.props))
     default:
       return this.transactionList()
   }
@@ -264,7 +263,7 @@ AccountDetailScreen.prototype.buyButtonDeligator = function () {
 
   if (this.props.accountDetail.subview === 'buyForm') {
     props.dispatch(actions.backToAccountDetail(props.address))
-  }else{
+  } else {
     props.dispatch(actions.buyEthSubview())
   }
 }

@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Add ShapeShift integration
+- Add a for for Coinbase Buy button to support different amounts other then $5
+
 ## 2.7.3 2016-07-29
 
 - Fix bug where changing an account would not update in a live Dapp.
