@@ -20,6 +20,7 @@ module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
   return {
+    metamask: state.metamask,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     address: state.metamask.selectedAccount,
@@ -250,4 +251,3 @@ AccountDetailScreen.prototype.transactionList = function () {
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
-

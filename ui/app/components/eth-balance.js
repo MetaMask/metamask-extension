@@ -1,10 +1,22 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
 const formatBalance = require('../util').formatBalance
 const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
-module.exports = EthBalanceComponent
+
+
+function mapStateToProps (state) {
+  return {
+    conversionRate: state.metamask.conversionRate,
+    conversionDate: state.metamask.conversionDate,
+    currentFiat: state.metamask.currentFiat,
+  }
+}
+
+module.exports = connect(mapStateToProps)(EthBalanceComponent)
+
 
 inherits(EthBalanceComponent, Component)
 function EthBalanceComponent () {
@@ -37,6 +49,11 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
   var balance
+  var splitBalance = value.split(' ')
+  var ethNumber = splitBalance[0]
+  var ethSuffix = splitBalance[1]
+  var fiatNumber = Number(splitBalance[0]) * state.conversionRate
+  var fiatSuffix = state.currentFiat
 
   if (state.shorten) {
     balance = balanceObj.shortBalance
@@ -49,7 +66,9 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   return (
     h(Tooltip, {
       position: 'bottom',
-      title: value.split(' ')[0],
+      multiline: true,
+      title: `${ethNumber} ${ethSuffix}
+      ${fiatNumber} ${fiatSuffix}`,
     }, [
       h('.flex-column', {
         style: {

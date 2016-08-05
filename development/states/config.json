@@ -1,8 +1,8 @@
 {
   "metamask": {
-    "currentFiat": "JPY",
-    "conversionRate": "N/A",
-    "conversionDate": "N/A",
+    "currentFiat": "USD",
+    "conversionRate": 11.06608791,
+    "conversionDate": 1470421024,
     "isInitialized": true,
     "isUnlocked": true,
     "currentDomain": "example.com",
