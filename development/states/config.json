@@ -1,5 +1,8 @@
 {
   "metamask": {
+    "currentFiat": "jpy",
+    "conversionRate": "N/A",
+    "conversionDate": "N/A",
     "isInitialized": true,
     "isUnlocked": true,
     "currentDomain": "example.com",
@@ -68,7 +71,7 @@
   "appState": {
     "menuOpen": false,
     "currentView": {
-      "name": "accounts"
+      "name": "config"
     },
     "accountDetail": {
       "subview": "transactions",

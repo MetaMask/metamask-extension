@@ -14,6 +14,9 @@ function reduceMetamask (state, action) {
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unconfTxs: {},
+    currentFiat: 'PENDING',
+    conversionRate: 'N/A',
+    conversionDate: 'N/A',
   }, state.metamask)
 
   switch (action.type) {
