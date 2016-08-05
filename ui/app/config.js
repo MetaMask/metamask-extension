@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const select = require('react-select')
+const Select = require('react-select')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -114,9 +114,9 @@ function currentConversionInformation (metamaskState, state) {
       value: currentFiat,
       defaultValue: currentFiat,
     }, [
-      h('option', {key: 'usd', value: 'usd'}, 'usd'),
-      h('option', {key: 'eur', value: 'eur'}, 'eur'),
-      h('option', {key: 'jpy', value: 'jpy'}, 'jpy'),
+      h('option', {key: 'USD', value: 'USD'}, 'USD'),
+      h('option', {key: 'EUR', value: 'EUR'}, 'EUR'),
+      h('option', {key: 'JPY', value: 'JPY'}, 'JPY'),
     ]
   ),
   ]
