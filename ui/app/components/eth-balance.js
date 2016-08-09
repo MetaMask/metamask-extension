@@ -6,6 +6,7 @@ const formatBalance = require('../util').formatBalance
 const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
 
+module.exports = connect(mapStateToProps)(EthBalanceComponent)
 
 function mapStateToProps (state) {
   return {
@@ -14,9 +15,6 @@ function mapStateToProps (state) {
     currentFiat: state.metamask.currentFiat,
   }
 }
-
-module.exports = connect(mapStateToProps)(EthBalanceComponent)
-
 
 inherits(EthBalanceComponent, Component)
 function EthBalanceComponent () {
