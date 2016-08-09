@@ -3,6 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const currencies = require('./conversion-util').availableCurrencies.rows
 const Select = require('react-select')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
@@ -103,7 +104,7 @@ ConfigScreen.prototype.render = function () {
 function currentConversionInformation (metamaskState, state) {
   var currentFiat = metamaskState.currentFiat
   return h('div'), [
-    h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, "Current Fiat"),
+    h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, 'Current Conversion'),
     h('select#currentFiat', {
       onChange (event) {
         event.preventDefault()
@@ -113,11 +114,14 @@ function currentConversionInformation (metamaskState, state) {
       },
       value: currentFiat,
       defaultValue: currentFiat,
-    }, [
-      h('option', {key: 'USD', value: 'USD'}, 'USD'),
-      h('option', {key: 'EUR', value: 'EUR'}, 'EUR'),
-      h('option', {key: 'JPY', value: 'JPY'}, 'JPY'),
-    ]
+    }, currencies.map((currency) => {
+        return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)
+      })
+    // [
+    //   h('option', {key: 'USD', value: 'USD'}, 'USD'),
+    //   h('option', {key: 'EUR', value: 'EUR'}, 'EUR'),
+    //   h('option', {key: 'JPY', value: 'JPY'}, 'JPY'),
+    // ]
   ),
   ]
 }
