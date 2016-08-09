@@ -252,9 +252,9 @@ module.exports = class MetamaskController {
       this.configManager.updateConversionRate()
       this.scheduleConversionInterval()
       const data = {
-        conversionRate: this.configManager.getConversionRate,
-        currentFiat: this.configManager.getCurrentFiat,
-        conversionDate: this.configManager.getConversionDate,
+        conversionRate: this.configManager.getConversionRate(),
+        currentFiat: this.configManager.getCurrentFiat(),
+        conversionDate: this.configManager.getConversionDate(),
       }
       cb(data)
     } catch (e) {
