@@ -3,6 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const extension = require('../../app/scripts/lib/extension')
 
 module.exports = connect(mapStateToProps)(InfoScreen)
 
@@ -19,7 +20,7 @@ InfoScreen.prototype.render = function () {
   var state = this.props
   var manifest
   try {
-    manifest = chrome.runtime.getManifest()
+    manifest = extension.runtime.getManifest()
   } catch (e) {
     manifest = { version: '2.0.0' }
   }
@@ -105,7 +106,7 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   target: '_blank',
                   style: { width: '85vw' },
-                  onClick () { chrome.tabs.create({url: 'mailto:help@metamask.io?subject=Feedback'}) },
+                  onClick () { extension.tabs.create({url: 'mailto:help@metamask.io?subject=Feedback'}) },
                 }, 'Email us any questions or comments!'),
               ]),
 
@@ -124,5 +125,5 @@ InfoScreen.prototype.render = function () {
 }
 
 InfoScreen.prototype.navigateTo = function (url) {
-  chrome.tabs.create({ url })
+  extension.tabs.create({ url })
 }

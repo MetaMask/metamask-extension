@@ -10,6 +10,7 @@ function reduceMetamask (state, action) {
   var metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
+    isEthConfirmed: false,
     currentDomain: 'example.com',
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
@@ -29,6 +30,11 @@ function reduceMetamask (state, action) {
     case actions.AGREE_TO_DISCLAIMER:
       return extend(metamaskState, {
         isConfirmed: true,
+      })
+
+    case actions.AGREE_TO_ETH_WARNING:
+      return extend(metamaskState, {
+        isEthConfirmed: !metamaskState.isEthConfirmed,
       })
 
     case actions.UNLOCK_METAMASK:

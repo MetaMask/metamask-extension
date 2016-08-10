@@ -131,7 +131,6 @@ var actions = {
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
   hideSubLoadingIndication: hideSubLoadingIndication,
-
 }
 
 module.exports = actions
@@ -625,6 +624,7 @@ function buyEth (address, amount) {
     })
   }
 }
+<<<<<<< HEAD
 
 function buyEthSubview () {
   return {

@@ -25,7 +25,7 @@
 //   if (e.data) {
 //     var data = JSON.parse(e.data);
 //     if (data && data.command === 'reload') {
-//       chrome.runtime.reload();
+//       extension.runtime.reload();
 //     }
 //   }
 // };

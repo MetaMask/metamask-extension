@@ -4,6 +4,7 @@ const migrations = require('./migrations')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
+const CLASSIC_RPC = MetamaskConfig.network.classic
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -144,6 +145,9 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
     case 'testnet':
       return TESTNET_RPC
 
+    case 'classic':
+      return CLASSIC_RPC
+
     default:
       return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
   }
@@ -270,3 +274,17 @@ ConfigManager.prototype.getConfirmed = function () {
   return ('isConfirmed' in data) && data.isConfirmed
 }
 
+ConfigManager.prototype.setShouldntShowWarning = function () {
+  var data = this.getData()
+  if (data.isEthConfirmed) {
+    data.isEthConfirmed = !data.isEthConfirmed
+  } else {
+    data.isEthConfirmed = true    
+  }
+  this.setData(data)
+}
+
+ConfigManager.prototype.getShouldntShowWarning = function () {
+  var data = this.getData()
+  return ('isEthConfirmed' in data) && data.isEthConfirmed
+}

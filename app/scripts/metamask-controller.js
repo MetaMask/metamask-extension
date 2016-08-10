@@ -243,7 +243,7 @@ module.exports = class MetamaskController {
 
   agreeToEthWarning (cb) {
     try {
-      this.configManager.setShouldntShowWarning(true)
+      this.configManager.setShouldntShowWarning()
       cb()
     } catch (e) {
       cb(e)
