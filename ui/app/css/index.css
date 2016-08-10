@@ -471,3 +471,105 @@ input.large-input {
 .eth-warning{
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
+
+.buy-subview{
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}
+
+.input-container:hover .edit-text{
+  visibility: visible;
+}
+
+.buy-inputs{
+  font-family: 'Montserrat Light';
+  font-size: 13px;
+  height: 20px;
+  background: transparent;
+  box-sizing: border-box;
+  border: solid;
+  border-color: transparent;
+  border-width: 0.5px;
+  border-radius: 2px;
+
+}
+.input-container:hover .buy-inputs{
+  box-sizing: inherit;
+  border: solid;
+  border-color: #F7861C;
+  border-width: 0.5px;
+  border-radius: 2px;
+}
+
+.buy-inputs:focus{
+  border: solid;
+  border-color: #F7861C;
+  border-width: 0.5px;
+  border-radius: 2px;
+}
+
+.activeForm {
+  background: #F7F7F7;
+  border: none;
+  border-radius: 8px 8px 0px 0px;
+  width: 50%;
+  text-align: center;
+  padding-bottom: 4px;
+
+}
+
+.inactiveForm {
+  border: none;
+  border-radius: 8px 8px 0px 0px;
+  width: 50%;
+  text-align: center;
+  padding-bottom: 4px;
+}
+
+.ex-coins {
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 33px;
+  width: 118px;
+  height: 42px;
+  padding: 1px;
+  color: #4D4D4D;
+}
+
+.marketinfo{
+  font-family: 'Montserrat light';
+  color: #AEAEAE;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+#fromCoin::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+#coinList {
+  width: 400px;
+  height: 500px;
+  overflow: scroll;
+}
+
+.icon-control .fa-refresh{
+  visibility: hidden;
+}
+
+.icon-control:hover .fa-refresh{
+  visibility: visible;
+}
+
+.icon-control:hover .fa-chevron-right{
+  visibility: hidden;
+}
+
+.inactive {
+    color: #AEAEAE;
+}
+
+.inactive button{
+    background: #AEAEAE;
+    color: white;
+}

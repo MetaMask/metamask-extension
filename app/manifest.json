@@ -53,7 +53,8 @@
   ],
   "externally_connectable": {
     "matches": [
-      "https://metamask.io/*"
+      "https://metamask.io/*",
+      "https://shapeshift.io/*"
     ]
   }
 }

@@ -32,12 +32,13 @@ EthStoreWarning.prototype.render = function () {
     }, [
       h('.warning', {
         style: {
-          margin: '10px 10px 10px 10px',
+          margin: '0px 10px 10px 10px',
         },
       },
-        `MetaMask is currently in beta -
-        exercise caution while handling
-        and storing your ether.
+        `The MetaMask team would like to
+        remind you that MetaMask is currently in beta - so
+        don't store large
+        amounts of ether in MetaMask.
         `),
 
       h('i.fa.fa-exclamation-triangle.fa-4', {
@@ -62,8 +63,7 @@ EthStoreWarning.prototype.render = function () {
           style: {
             fontSize: '11px',
           },
-
-        }, 'Don\'t show me this message again'),
+        }, "Don't show me this message again"),
       ]),
       h('.flex-row', {
         style: {
