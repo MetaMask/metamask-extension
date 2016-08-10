@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../actions')
-const CopyButton = require('./CopyButton')
+const CopyButton = require('./copyButton')
 
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(ShapeshiftForm)
