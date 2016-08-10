@@ -7,6 +7,8 @@ const reduceIdentities = require('./reducers/identities')
 const reduceMetamask = require('./reducers/metamask')
 const reduceApp = require('./reducers/app')
 
+window.METAMASK_CACHED_LOG_STATE = null
+
 module.exports = rootReducer
 
 function rootReducer (state, action) {
@@ -35,5 +37,11 @@ function rootReducer (state, action) {
 
   state.appState = reduceApp(state, action)
 
+  window.METAMASK_CACHED_LOG_STATE = state
   return state
+}
+
+window.logState = function() {
+  var stateString = JSON.stringify(window.METAMASK_CACHED_LOG_STATE, null, 2)
+  console.log(stateString)
 }

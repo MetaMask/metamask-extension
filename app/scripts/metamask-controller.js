@@ -6,6 +6,7 @@ const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
+const extension = require('./lib/extension')
 
 module.exports = class MetamaskController {
 
@@ -39,6 +40,7 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      agreeToEthWarning: this.agreeToEthWarning.bind(this),
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -55,6 +57,8 @@ module.exports = class MetamaskController {
       saveAccountLabel: idStore.saveAccountLabel.bind(idStore),
       tryPassword: idStore.tryPassword.bind(idStore),
       recoverSeed: idStore.recoverSeed.bind(idStore),
+      // coinbase
+      buyEth: this.buyEth.bind(this),
     }
   }
 
@@ -161,6 +165,7 @@ module.exports = class MetamaskController {
     function configToPublic (state) {
       return {
         provider: state.provider,
+        selectedAddress: state.selectedAccount,
       }
     }
     // dump obj into store
@@ -236,23 +241,48 @@ module.exports = class MetamaskController {
     }
   }
 
+  agreeToEthWarning (cb) {
+    try {
+      this.configManager.setShouldntShowWarning(true)
+      cb()
+    } catch (e) {
+      cb(e)
+    }
+  }
+
   // called from popup
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
-    chrome.runtime.reload()
+    extension.runtime.reload()
     this.idStore.getNetwork()
   }
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
-    chrome.runtime.reload()
+    extension.runtime.reload()
     this.idStore.getNetwork()
   }
 
   useEtherscanProvider () {
     this.configManager.useEtherscanProvider()
-    chrome.runtime.reload()
+    extension.runtime.reload()
   }
+
+  buyEth (address, amount) {
+    if (!amount) amount = '5'
+
+    var network = this.idStore._currentState.network
+    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+
+    if (network === '2') {
+      url = 'https://testfaucet.metamask.io/'
+    }
+
+    extension.tabs.create({
+      url,
+    })
+  }
+
 }
 
 function noop () {}
