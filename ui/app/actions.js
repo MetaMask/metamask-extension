@@ -624,7 +624,6 @@ function buyEth (address, amount) {
     })
   }
 }
-<<<<<<< HEAD
 
 function buyEthSubview () {
   return {

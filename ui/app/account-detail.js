@@ -172,27 +172,19 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
-<<<<<<< HEAD
             onClick: this.buyButtonDeligator.bind(this),
-=======
-            onClick: () => props.dispatch(actions.buyEth(selected)),
->>>>>>> master
             style: {
               marginBottom: '20px',
               marginRight: '8px',
               position: 'absolute',
               left: '219px',
             },
-<<<<<<< HEAD
           }, props.accountDetail.subview === 'buyForm' ? [h('i.fa.fa-arrow-left', {
             style: {
               width: '22.641px',
               height: '14px',
             },
           })] : 'BUY'),
-=======
-          }, 'BUY'),
->>>>>>> master
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
