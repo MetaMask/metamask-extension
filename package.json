@@ -106,6 +106,7 @@
     "qunit": "^0.9.1",
     "sinon": "^1.17.3",
     "tape": "^4.5.1",
+    "testem": "^1.10.3",
     "uglifyify": "^3.0.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
