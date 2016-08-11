@@ -7,6 +7,7 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
+const developmentMode = require('./config').developmentMode
 
 module.exports = class MetamaskController {
 
@@ -93,7 +94,7 @@ module.exports = class MetamaskController {
 
     function logger (err, request, response) {
       if (err) return console.error(err)
-      if (!request.isMetamaskInternal) {
+      if (developmentMode && !request.isMetamaskInternal) {
         console.log(`RPC (${originDomain}):`, request, '->', response)
         if (response.error) {
           console.error('Error in RPC response:\n', response.error)
@@ -218,7 +219,9 @@ module.exports = class MetamaskController {
 
   // Log blocks
   processBlock (block) {
-    console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    if (developmentMode) {
+      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    }
     this.verifyNetwork()
   }
 

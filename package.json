@@ -35,6 +35,7 @@
     "debounce": "^1.0.0",
     "dnode": "^1.2.2",
     "end-of-stream": "^1.1.0",
+    "envify": "^3.4.1",
     "eth-bin-to-ops": "^1.0.0",
     "eth-lightwallet": "^2.3.3",
     "eth-query": "^1.0.3",
