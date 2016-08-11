@@ -16,8 +16,7 @@ if (developmentMode) {
 }
 
 
-const createStoreWithMiddleware = applyMiddleware(...middlewares
-)(createStore)
+const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore)
 
 function configureStore (initialState) {
   return createStoreWithMiddleware(rootReducer, initialState)
