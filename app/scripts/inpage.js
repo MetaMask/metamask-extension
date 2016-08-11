@@ -1,7 +1,7 @@
 /*global Web3*/
 cleanContextForImports()
 require('web3/dist/web3.min.js')
-const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
+const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
