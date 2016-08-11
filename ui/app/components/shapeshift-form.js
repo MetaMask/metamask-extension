@@ -29,7 +29,7 @@ ShapeshiftForm.prototype.render = function () {
 
   return h('.flex-column', {
     style: {
-      margin: '10px',
+      marginTop: '10px',
       width: '100%',
       alignItems: 'center',
     },
@@ -126,8 +126,9 @@ ShapeshiftForm.prototype.render = function () {
 
     h(this.activeToggle('.input-container'), {
       style: {
+        padding: '10px',
+        paddingBottom: '0px',
         width: '100%',
-        marginTop: '19px',
       },
     }, [
       h('div', 'Receiving address:'),
@@ -156,6 +157,7 @@ ShapeshiftForm.prototype.render = function () {
     ]),
     h(this.activeToggle('.input-container'), {
       style: {
+        padding: '10px',
         width: '100%',
       },
     }, [
