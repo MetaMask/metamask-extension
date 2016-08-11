@@ -25,15 +25,3 @@ const createStoreWithMiddleware = applyMiddleware(...middlewares
 function configureStore (initialState) {
   return createStoreWithMiddleware(rootReducer, initialState)
 }
-
-// import thunk from 'redux-thunk';
-//
-// const middlewares = [thunk];
-//
-// if (process.env.NODE_ENV === `development`) {
-//   const createLogger = require(`redux-logger`);
-//   const logger = createLogger();
-//   middlewares.push(logger);
-// }
-//
-// const store = compose(applyMiddleware(...middlewares))(createStore)(reducer);
