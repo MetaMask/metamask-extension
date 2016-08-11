@@ -274,9 +274,13 @@ ConfigManager.prototype.getConfirmed = function () {
   return ('isConfirmed' in data) && data.isConfirmed
 }
 
-ConfigManager.prototype.setShouldntShowWarning = function (confirmed) {
+ConfigManager.prototype.setShouldntShowWarning = function () {
   var data = this.getData()
-  data.isEthConfirmed = confirmed
+  if (data.isEthConfirmed) {
+    data.isEthConfirmed = !data.isEthConfirmed
+  } else {
+    data.isEthConfirmed = true    
+  }
   this.setData(data)
 }
 
