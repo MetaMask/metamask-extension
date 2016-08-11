@@ -39,9 +39,9 @@ function MetamaskInpageProvider (connectionStream) {
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
+  
   let selectedAddress
-
-  var result = null
+  let result = null
   switch (payload.method) {
 
     case 'eth_accounts':
