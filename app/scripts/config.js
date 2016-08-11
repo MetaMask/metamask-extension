@@ -11,5 +11,5 @@ module.exports = {
     testnet: TESTNET_RPC_URL,
     classic: CLASSIC_RPC_URL,
   },
-  developmentMode: DEVELOPMENT_MODE
+  developmentMode: DEVELOPMENT_MODE,
 }
