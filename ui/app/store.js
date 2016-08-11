@@ -9,7 +9,6 @@ module.exports = configureStore
 
 const middlewares = [thunkMiddleware]
 
-console.log(developmentMode)
 if (developmentMode) {
   console.log('Development Mode ON.')
   const loggerMiddleware = createLogger()
