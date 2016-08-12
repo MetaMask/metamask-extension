@@ -96,7 +96,6 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
       return h(ShapeshiftForm, this.props)
     }
   } else {
-    console.log(this.props.network)
     return h('div.flex-column', {
       style: {
         alignItems: 'center',
@@ -108,6 +107,10 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
           width: '225px',
         },
       }, 'In order to access this feature please switch too the Main Network'),
+      h('h3.text-transform-uppercase', 'or:'),
+      this.props.network === '2' ? h('button.text-transform-uppercase', {
+        onClick: () => this.props.dispatch(actions.buyEth()),
+      }, 'Go To Test Faucet') : null,
     ])
   }
 }
