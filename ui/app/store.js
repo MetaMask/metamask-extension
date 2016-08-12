@@ -9,7 +9,7 @@ global.METAMASK_DEBUG = false
 module.exports = configureStore
 
 const loggerMiddleware = createLogger({
-  predicate: () => global.METAMASK_DEBUG ? true : false
+  predicate: () => global.METAMASK_DEBUG,
 })
 
 const middlewares = [thunkMiddleware, loggerMiddleware]
