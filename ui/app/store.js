@@ -2,17 +2,17 @@ const createStore = require('redux').createStore
 const applyMiddleware = require('redux').applyMiddleware
 const thunkMiddleware = require('redux-thunk')
 const rootReducer = require('./reducers')
-const developmentMode = require('../../app/scripts/config').developmentMode
 const createLogger = require('redux-logger')
+
+global.METAMASK_DEBUG = false
 
 module.exports = configureStore
 
-const middlewares = [thunkMiddleware]
+const loggerMiddleware = createLogger({
+  predicate: () => global.METAMASK_DEBUG ? true : false
+})
 
-if (developmentMode) {
-  const loggerMiddleware = createLogger()
-  middlewares.push(loggerMiddleware)
-}
+const middlewares = [thunkMiddleware, loggerMiddleware]
 
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore)
 
