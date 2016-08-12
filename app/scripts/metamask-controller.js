@@ -94,7 +94,9 @@ module.exports = class MetamaskController {
     function logger (err, request, response) {
       if (err) return console.error(err)
       if (!request.isMetamaskInternal) {
-        console.log(`RPC (${originDomain}):`, request, '->', response)
+        if (global.METAMASK_DEBUG) {
+          console.log(`RPC (${originDomain}):`, request, '->', response)
+        }
         if (response.error) {
           console.error('Error in RPC response:\n', response.error)
         }
@@ -218,7 +220,9 @@ module.exports = class MetamaskController {
 
   // Log blocks
   processBlock (block) {
-    console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    if (global.METAMASK_DEBUG) {
+      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    }
     this.verifyNetwork()
   }
 
