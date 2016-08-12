@@ -13,6 +13,7 @@ const extension = require('./lib/extension')
 
 const STORAGE_KEY = 'metamask-config'
 
+
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage,
