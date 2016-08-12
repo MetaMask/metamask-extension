@@ -19,6 +19,7 @@ const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
 const states = require('./development/states')
+const Selector = require('./development/selector')
 const MetamaskController = require('./app/scripts/metamask-controller')
 const extension = require('./development/mockExtension')
 
@@ -138,6 +139,8 @@ render(
         margin: '19px 19px 0px 19px',
       },
     }, 'Reset State'),
+
+    h(Selector, { actions, selectedKey: selectedView, states, store }),
 
     h('.mock-app-root', {
       style: {
