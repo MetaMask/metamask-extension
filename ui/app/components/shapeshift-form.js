@@ -2,9 +2,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const actions = require('../actions')
-const CopyButton = require('./copyButton')
-
+const Qr = require('./qr-code')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(ShapeshiftForm)
 
@@ -13,23 +13,36 @@ function mapStateToProps(state) {
     selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
     isSubLoading: state.appState.isSubLoading,
+    qrRequested: state.appState.qrRequested,
   }
 }
 
 inherits(ShapeshiftForm, Component)
 
-function ShapeshiftForm() {
+function ShapeshiftForm () {
   Component.call(this)
 }
-
 ShapeshiftForm.prototype.render = function () {
-  const marketinfo = this.props.accountDetail.formView.marketinfo
-  const coinOptions = this.props.accountDetail.formView.coinOptions
+  return h(ReactCSSTransitionGroup, {
+    className: 'css-transition-group',
+    transitionName: 'main',
+    transitionEnterTimeout: 300,
+    transitionLeaveTimeout: 300,
+  }, [
+    this.props.qrRequested ? h(Qr, {key: 'qr'}) : this.renderMain(),
+  ])
+
+}
+
+ShapeshiftForm.prototype.renderMain = function () {
+  const marketinfo = this.props.buyView.formView.marketinfo
+  const coinOptions = this.props.buyView.formView.coinOptions
   var coin = marketinfo.pair.split('_')[0].toUpperCase()
 
   return h('.flex-column', {
     style: {
-      marginTop: '10px',
+      // marginTop: '10px',
+      padding: '25px',
       width: '100%',
       alignItems: 'center',
     },
@@ -67,8 +80,8 @@ ShapeshiftForm.prototype.render = function () {
             fontSize: '12px',
             color: '#F7861C',
             position: 'relative',
-            bottom: '23px',
-            right: '11px',
+            bottom: '48px',
+            left: '106px',
           },
         }),
       ]),
@@ -78,7 +91,7 @@ ShapeshiftForm.prototype.render = function () {
           style: {
             position: 'relative',
             bottom: '5px',
-            right: '5px',
+            left: '5px',
             color: '#F7861C',
           },
           onClick: this.updateCoin.bind(this),
@@ -86,8 +99,8 @@ ShapeshiftForm.prototype.render = function () {
         h('i.fa.fa-chevron-right.fa-4.orange', {
           style: {
             position: 'relative',
-            bottom: '5px',
-            right: '15px',
+            bottom: '26px',
+            left: '10px',
             color: '#F7861C',
           },
           onClick: this.updateCoin.bind(this),
@@ -107,7 +120,6 @@ ShapeshiftForm.prototype.render = function () {
     ]),
 
     this.props.isSubLoading ? this.renderLoading() : null,
-
     h('.flex-column', {
       style: {
         width: '235px',
@@ -124,40 +136,21 @@ ShapeshiftForm.prototype.render = function () {
         this.props.warning) : this.renderInfo(),
     ]),
 
-    h(this.activeToggle('.input-container'), {
+    h('.flex-row', {
       style: {
         padding: '10px',
-        paddingBottom: '0px',
+        paddingBottom: '2px',
         width: '100%',
       },
     }, [
       h('div', 'Receiving address:'),
-
-      h('input.buy-inputs', {
-        type: 'text',
-        value: this.props.accountDetail.buyAddress,
-        onChange: this.handleAddress.bind(this),
-        style: {
-          boxSizing: 'border-box',
-          width: '325px',
-          height: '20px',
-          padding: ' 5px ',
-        },
-      }),
-
-      h('i.fa.fa-pencil-square-o.edit-text', {
-        style: {
-          fontSize: '12px',
-          color: '#F7861C',
-          position: 'relative',
-          bottom: '5px',
-          right: '11px',
-        },
-      }),
+      h('.ellip-address', this.props.buyView.buyAddress),
     ]),
+
     h(this.activeToggle('.input-container'), {
       style: {
         padding: '10px',
+        paddingTop: '0px',
         width: '100%',
       },
     }, [
@@ -168,7 +161,7 @@ ShapeshiftForm.prototype.render = function () {
         placeholder: `Your ${coin} Refund Address`,
         style: {
           boxSizing: 'border-box',
-          width: '235px',
+          width: '278px',
           height: '20px',
           padding: ' 5px ',
         },
@@ -183,19 +176,27 @@ ShapeshiftForm.prototype.render = function () {
           right: '11px',
         },
       }),
-
-      h('button', {
-        onClick: this.shift.bind(this),
-      },
-      'Submit'),
+      h('.flex-row', {
+        style: {
+          justifyContent: 'flex-end',
+        },
+      }, [
+        h('button', {
+          onClick: this.shift.bind(this),
+          style: {
+            marginTop: '10px',
+          },
+        },
+        'Submit'),
+      ]),
     ]),
   ])
 }
 
 ShapeshiftForm.prototype.shift = function () {
-  var withdrawal = this.props.accountDetail.buyAddress
+  var withdrawal = this.props.buyView.buyAddress
   var returnAddress = document.getElementById('fromCoinAddress').value
-  var pair = this.props.accountDetail.formView.marketinfo.pair
+  var pair = this.props.buyView.formView.marketinfo.pair
   var data = {
     'withdrawal': withdrawal,
     'pair': pair,
@@ -208,7 +209,7 @@ ShapeshiftForm.prototype.shift = function () {
 }
 
 ShapeshiftForm.prototype.renderCoinList = function () {
-  var list = Object.keys(this.props.accountDetail.formView.coinOptions).map((item) => {
+  var list = Object.keys(this.props.buyView.formView.coinOptions).map((item) => {
     return h('option', {
       value: item,
     }, item)
@@ -224,7 +225,7 @@ ShapeshiftForm.prototype.renderCoinList = function () {
 ShapeshiftForm.prototype.updateCoin = function (event) {
   event.preventDefault()
   const props = this.props
-  var coinOptions = this.props.accountDetail.formView.coinOptions
+  var coinOptions = this.props.buyView.formView.coinOptions
   var coin = document.getElementById('fromCoin').value
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
@@ -237,7 +238,7 @@ ShapeshiftForm.prototype.updateCoin = function (event) {
 
 ShapeshiftForm.prototype.handleLiveInput = function () {
   const props = this.props
-  var coinOptions = this.props.accountDetail.formView.coinOptions
+  var coinOptions = this.props.buyView.formView.coinOptions
   var coin = document.getElementById('fromCoin').value
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
@@ -248,61 +249,30 @@ ShapeshiftForm.prototype.handleLiveInput = function () {
 }
 
 ShapeshiftForm.prototype.renderInfo = function () {
-  const marketinfo = this.props.accountDetail.formView.marketinfo
-  const coinOptions = this.props.accountDetail.formView.coinOptions
+  const marketinfo = this.props.buyView.formView.marketinfo
+  const coinOptions = this.props.buyView.formView.coinOptions
   var coin = marketinfo.pair.split('_')[0].toUpperCase()
-  const request = this.props.accountDetail.formView.response
 
-  if (!request) {
-    return h('span', [
-      h('h3.flex-row.text-transform-uppercase', {
-        style: {
-          color: '#AEAEAE',
-          paddingTop: '4px',
-          justifyContent: 'space-around',
-          textAlign: 'center',
-          fontSize: '14px',
-        },
-      }, `Market Info for ${marketinfo.pair.replace('_', ' to ').toUpperCase()}:`),
-      h('.marketinfo', ['Status : ', `${coinOptions[coin].status}`]),
-      h('.marketinfo', ['Exchange Rate: ', `${marketinfo.rate}`]),
-      h('.marketinfo', ['Limit: ', `${marketinfo.limit}`]),
-      h('.marketinfo', ['Minimum : ', `${marketinfo.minimum}`]),
-    ])
-  } else {
-    return h('.flex-column', {
+  return h('span', {
+    style: {
+      marginTop: '15px',
+      marginBottom: '15px',
+    },
+  }, [
+    h('h3.flex-row.text-transform-uppercase', {
       style: {
-        width: '229px',
-        height: '82px',
+        color: '#AEAEAE',
+        paddingTop: '4px',
+        justifyContent: 'space-around',
+        textAlign: 'center',
+        fontSize: '14px',
       },
-    }, [
-      h('.marketinfo', ['Limit: ', `${marketinfo.limit}`]),
-      h('.marketinfo', ['Minimum : ', `${marketinfo.minimum}`]),
-      h('div', {
-        style: {
-          fontSize: '12px',
-          lineHeight: '16px',
-          marginTop: '4px',
-          color: '#F7861C',
-        },
-      }, `Deposit your ${request.depositType} to the address bellow:`),
-      h('.flex-row', {
-        style: {
-          position: 'relative',
-          right: '38px',
-        },
-      }, [
-        h('div', {
-          style: {
-            fontSize: '13px',
-          },
-        }, request.deposit),
-        h(CopyButton, {
-          value: request.deposit,
-        }),
-      ]),
-    ])
-  }
+    }, `Market Info for ${marketinfo.pair.replace('_', ' to ').toUpperCase()}:`),
+    h('.marketinfo', ['Status : ', `${coinOptions[coin].status}`]),
+    h('.marketinfo', ['Exchange Rate: ', `${marketinfo.rate}`]),
+    h('.marketinfo', ['Limit: ', `${marketinfo.limit}`]),
+    h('.marketinfo', ['Minimum : ', `${marketinfo.minimum}`]),
+  ])
 }
 
 ShapeshiftForm.prototype.handleAddress = function (event) {
@@ -310,7 +280,7 @@ ShapeshiftForm.prototype.handleAddress = function (event) {
 }
 
 ShapeshiftForm.prototype.activeToggle = function (elementType) {
-  if (!this.props.accountDetail.formView.response || this.props.warning) return elementType
+  if (!this.props.buyView.formView.response || this.props.warning) return elementType
   return `${elementType}.inactive`
 }
 
@@ -319,7 +289,7 @@ ShapeshiftForm.prototype.renderLoading = function () {
     style: {
       position: 'absolute',
       left: '70px',
-      bottom: '138px',
+      bottom: '194px',
       background: 'transparent',
       width: '229px',
       height: '82px',

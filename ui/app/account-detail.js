@@ -172,7 +172,7 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
-            onClick: this.buyButtonDeligator.bind(this),
+            onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
@@ -264,6 +264,6 @@ AccountDetailScreen.prototype.buyButtonDeligator = function () {
   if (this.props.accountDetail.subview === 'buyForm') {
     props.dispatch(actions.backToAccountDetail(props.address))
   } else {
-    props.dispatch(actions.buyEthSubview())
+    props.dispatch(actions.buyEthView())
   }
 }

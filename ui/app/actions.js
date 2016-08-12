@@ -113,8 +113,8 @@ var actions = {
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
-  buyEthSubview: buyEthSubview,
-  BUY_ETH_SUBVIEW: 'BUY_ETH_SUBVIEW',
+  buyEthView: buyEthView,
+  BUY_ETH_VIEW: 'BUY_ETH_VIEW',
   UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
   updateCoinBaseAmount: updateCoinBaseAmount,
   UPDATE_BUY_ADDRESS: 'UPDATE_BUY_ADDRESS',
@@ -125,12 +125,14 @@ var actions = {
   shapeShiftSubview: shapeShiftSubview,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
-  COIN_SHIFT_REQUEST: 'COIN_SHIFT_REQUEST',
   coinShiftRquest: coinShiftRquest,
   SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
   showSubLoadingIndication: showSubLoadingIndication,
   HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
   hideSubLoadingIndication: hideSubLoadingIndication,
+// QR STUFF:
+  SHOW_QR: 'SHOW_QR',
+  getQr: getQr,
 }
 
 module.exports = actions
@@ -625,9 +627,10 @@ function buyEth (address, amount) {
   }
 }
 
-function buyEthSubview () {
+function buyEthView (address) {
   return {
-    type: actions.BUY_ETH_SUBVIEW,
+    type: actions.BUY_ETH_VIEW,
+    value: address,
   }
 }
 
@@ -691,19 +694,32 @@ function shapeShiftSubview (network) {
 
 function coinShiftRquest (data) {
   return (dispatch) => {
-    dispatch(actions.showSubLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      dispatch(actions.hideSubLoadingIndication())
+      if (response.error) return dispatch(actions.showWarning(response.error))
+      var message = `Deposit your ${response.depositType} to the address bellow:`
+      dispatch(actions.getQr(response.deposit, '125x125', message))
+    })
+  }
+}
+
+function getQr (data, size, message) {
+  return (dispatch) => {
+    qrRequest(data, size, (response) => {
+      dispatch(actions.hideLoadingIndication())
       if (response.error) return dispatch(actions.showWarning(response.error))
       dispatch({
-        type: actions.COIN_SHIFT_REQUEST,
+        type: actions.SHOW_QR,
         value: {
-          response: response,
+          qr: response,
+          message: message,
+          data: data,
         },
       })
     })
   }
 }
+
 function shapeShiftRequest (query, options, cb) {
   var queryResponse, method
   !options ? options = {} : null
@@ -726,4 +742,16 @@ function shapeShiftRequest (query, options, cb) {
   } else {
     return shapShiftReq.send()
   }
+}
+
+function qrRequest (data, size, cb) {
+  var requestListner = function (request) {
+    cb ? cb(this.responseText) : null
+    return this.responseText
+  }
+
+  var qrReq = new XMLHttpRequest()
+  qrReq.addEventListener('load', requestListner)
+  qrReq.open('GET', `https://api.qrserver.com/v1/create-qr-code/?size=${size}&format=svg&data=${data}`, true)
+  qrReq.send()
 }

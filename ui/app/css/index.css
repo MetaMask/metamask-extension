@@ -573,3 +573,12 @@ input.large-input {
     background: #AEAEAE;
     color: white;
 }
+
+.ellip-address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 5em;
+  font-size: 14px;
+  font-family: "Montserrat Light";
+  margin-left: 5px;
+}

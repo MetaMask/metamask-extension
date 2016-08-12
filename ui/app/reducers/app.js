@@ -378,17 +378,17 @@ function reduceApp (state, action) {
         },
       })
 
-    case actions.BUY_ETH_SUBVIEW:
+    case actions.BUY_ETH_VIEW:
       return extend(appState, {
         transForward: true,
         currentView: {
-          name: 'accountDetail',
+          name: 'buyEth',
           context: appState.currentView.context,
         },
-        accountDetail: {
+        buyView: {
           subview: 'buyForm',
           amount: '5.00',
-          buyAddress: appState.currentView.context,
+          buyAddress: action.value,
           formView: {
             coinbase: true,
             shapeshift: false,
@@ -398,46 +398,46 @@ function reduceApp (state, action) {
 
     case actions.UPDATE_BUY_ADDRESS:
       return extend(appState, {
-        accountDetail: {
+        buyView: {
           subview: 'buyForm',
           formView: {
-            coinbase: true,
-            shapeshift: false,
+            coinbase: appState.buyView.formView.coinbase,
+            shapeshift: appState.buyView.formView.shapeshift,
           },
           buyAddress: action.value,
-          amount: appState.accountDetail.amount,
+          amount: appState.buyView.amount,
         },
       })
 
     case actions.UPDATE_COINBASE_AMOUNT:
       return extend(appState, {
-        accountDetail: {
+        buyView: {
           subview: 'buyForm',
           formView: {
             coinbase: true,
             shapeshift: false,
           },
-          buyAddress: appState.accountDetail.buyAddress,
+          buyAddress: appState.buyView.buyAddress,
           amount: action.value,
         },
       })
 
     case actions.COINBASE_SUBVIEW:
       return extend(appState, {
-        accountDetail: {
+        buyView: {
           subview: 'buyForm',
           formView: {
             coinbase: true,
             shapeshift: false,
           },
-          buyAddress: appState.accountDetail.buyAddress,
-          amount: appState.accountDetail.amount,
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
         },
       })
 
     case actions.SHAPESHIFT_SUBVIEW:
       return extend(appState, {
-        accountDetail: {
+        buyView: {
           subview: 'buyForm',
           formView: {
             coinbase: false,
@@ -445,41 +445,35 @@ function reduceApp (state, action) {
             marketinfo: action.value.marketinfo,
             coinOptions: action.value.coinOptions,
           },
-          buyAddress: appState.accountDetail.buyAddress,
-          amount: appState.accountDetail.amount,
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
         },
       })
 
     case actions.PAIR_UPDATE:
       return extend(appState, {
-        accountDetail: {
+        buyView: {
           subview: 'buyForm',
           formView: {
             coinbase: false,
             shapeshift: true,
             marketinfo: action.value.marketinfo,
-            coinOptions: appState.accountDetail.formView.coinOptions,
+            coinOptions: appState.buyView.formView.coinOptions,
           },
-          buyAddress: appState.accountDetail.buyAddress,
-          amount: appState.accountDetail.amount,
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
           warning: null,
         },
       })
 
-    case actions.COIN_SHIFT_REQUEST:
+    case actions.SHOW_QR:
       return extend(appState, {
-        accountDetail: {
-          subview: 'buyForm',
-          formView: {
-            coinbase: false,
-            shapeshift: true,
-            marketinfo: appState.accountDetail.formView.marketinfo,
-            coinOptions: appState.accountDetail.formView.coinOptions,
-            response: action.value.response,
-          },
-          buyAddress: appState.accountDetail.buyAddress,
-          amount: appState.accountDetail.amount,
-          warning: null,
+        qrRequested: true,
+        transForward: true,
+        Qr: {
+          message: action.value.message,
+          image: action.value.qr,
+          data: action.value.data,
         },
       })
     default:

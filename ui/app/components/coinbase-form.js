@@ -22,12 +22,13 @@ function CoinbaseForm() {
 
 CoinbaseForm.prototype.render = function () {
   var props = this.props
-  var amount = props.accountDetail.amount
-  var address = props.accountDetail.buyAddress
+  var amount = props.buyView.amount
+  var address = props.buyView.buyAddress
 
   return h('.flex-column', {
     style: {
-      margin: '10px',
+      // margin: '10px',
+      padding: '25px',
     },
   }, [
     h('.flex-column', {
@@ -35,35 +36,10 @@ CoinbaseForm.prototype.render = function () {
         alignItems: 'flex-start',
       },
     }, [
-      h('.flex-column', [
+      h('.flex-row', [
         h('div', 'Address:'),
-        h('.input-container', {
-          style: {},
-        }, [
-          h('input.buy-inputs', {
-            type: 'text',
-            style: {
-              boxSizing: 'border-box',
-              width: '317px',
-              height: '20px',
-              padding: ' 12px 0px 12px 1px ',
-            },
-            defaultValue: address,
-            onChange: this.handleAddress.bind(this),
-          }),
-          h('i.fa.fa-pencil-square-o.edit-text', {
-            style: {
-              fontSize: '12px',
-              color: '#F7861C',
-              position: 'relative',
-              bottom: '8px',
-              right: '11px',
-            },
-          }),
-
-        ]),
+        h('.ellip-address', address),
       ]),
-
       h('.flex-row', [
         h('div', 'Amount: $'),
         h('.input-container', [
@@ -119,7 +95,7 @@ CoinbaseForm.prototype.render = function () {
       }, 'Continue to Coinbase'),
 
       h('button', {
-        onClick: () => props.dispatch(actions.backToAccountDetail(props.accounts.address)),
+        onClick: () => props.dispatch(actions.backTobuyView(props.accounts.address)),
       }, 'Cancel'),
     ]),
   ])
@@ -132,12 +108,12 @@ CoinbaseForm.prototype.handleAddress = function (event) {
 }
 CoinbaseForm.prototype.toCoinbase = function () {
   var props = this.props
-  var amount = props.accountDetail.amount
-  var address = props.accountDetail.buyAddress
+  var amount = props.buyView.amount
+  var address = props.buyView.buyAddress
   var message
 
   if (isValidAddress(address) && isValidAmountforCoinBase(amount).valid) {
-    props.dispatch(actions.buyEth(address, props.accountDetail.amount))
+    props.dispatch(actions.buyEth(address, props.buyView.amount))
   } else if (!isValidAmountforCoinBase(amount).valid) {
     message = isValidAmountforCoinBase(amount).message
     return props.dispatch(actions.showWarning(message))

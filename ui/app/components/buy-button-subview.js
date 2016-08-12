@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
+const extension = require('../../../app/scripts/lib/extension')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -12,6 +13,7 @@ function mapStateToProps (state) {
   return {
     selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
+    buyView: state.appState.buyView,
     network: state.metamask.network,
     provider: state.metamask.provider,
   }
@@ -24,10 +26,26 @@ function BuyButtonSubview () {
 
 BuyButtonSubview.prototype.render = function () {
   const props = this.props
-  const currentForm = props.accountDetail.formView
+  const currentForm = props.buyView.formView
 
   return (
-    h('span', {key: 'buyForm'}, [
+    h('.buy-eth-section', [
+             // back button
+      h('.flex-row', {
+        style: {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+      }, [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+          onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAccount)),
+          style: {
+            position: 'absolute',
+            left: '10px',
+          },
+        }),
+        h('h2.page-subtitle', 'Buy Eth'),
+      ]),
       h('h3.flex-row.text-transform-uppercase', {
         style: {
           background: '#EBEBEB',
@@ -39,9 +57,31 @@ BuyButtonSubview.prototype.render = function () {
         h(currentForm.coinbase ? '.activeForm' : '.inactiveForm', {
           onClick: () => props.dispatch(actions.coinBaseSubview()),
         }, 'Coinbase'),
+        h('a', {
+          onClick: (event) => this.navigateTo('https://github.com/MetaMask/faq/blob/master/COINBASE.md'),
+        }, [
+          h('i.fa.fa-question-circle', {
+            style: {
+              position: 'relative',
+              right: '33px',
+            },
+          }),
+        ]),
         h(currentForm.shapeshift ? '.activeForm' : '.inactiveForm', {
           onClick: () => props.dispatch(actions.shapeShiftSubview(props.provider.type)),
         }, 'Shapeshift'),
+
+        h('a', {
+          href: 'https://github.com/MetaMask/faq/blob/master/COINBASE.md',
+          onClick: (event) => this.navigateTo('https://info.shapeshift.io/about'),
+        }, [
+          h('i.fa.fa-question-circle', {
+            style: {
+              position: 'relative',
+              right: '28px',
+            },
+          }),
+        ]),
       ]),
       this.formVersionSubview(),
     ])
@@ -50,9 +90,9 @@ BuyButtonSubview.prototype.render = function () {
 
 BuyButtonSubview.prototype.formVersionSubview = function () {
   if (this.props.network === '1') {
-    if (this.props.accountDetail.formView.coinbase) {
+    if (this.props.buyView.formView.coinbase) {
       return h(CoinbaseForm, this.props)
-    } else if (this.props.accountDetail.formView.shapeshift) {
+    } else if (this.props.buyView.formView.shapeshift) {
       return h(ShapeshiftForm, this.props)
     }
   } else {
@@ -72,3 +112,6 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
   }
 }
 
+BuyButtonSubview.prototype.navigateTo = function (url) {
+  extension.tabs.create({ url })
+}
