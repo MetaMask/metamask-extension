@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix various typos.
+- Make dapp-metamask connection more reliable
 
 ## 2.7.3 2016-07-29
 
