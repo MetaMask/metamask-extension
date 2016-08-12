@@ -1,5 +1,5 @@
 const once = require('once')
-const ensnare = require('./ensnare.js')
+const ensnare = require('ensnare')
 
 module.exports = setupDappAutoReload
 
