@@ -582,3 +582,13 @@ input.large-input {
   font-family: "Montserrat Light";
   margin-left: 5px;
 }
+
+.qr-message {
+  font-size: 12px;
+  color: #F7861C;
+}
+
+div.message-container > div:first-child {
+  font-size: 15px;
+  color: #4D4D4D;
+}

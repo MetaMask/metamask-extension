@@ -692,13 +692,14 @@ function shapeShiftSubview (network) {
   }
 }
 
-function coinShiftRquest (data) {
+function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
       if (response.error) return dispatch(actions.showWarning(response.error))
-      var message = `Deposit your ${response.depositType} to the address bellow:`
-      dispatch(actions.getQr(response.deposit, '125x125', message))
+      var message = `
+        Deposit your ${response.depositType} to the address bellow:`
+      dispatch(actions.getQr(response.deposit, '125x125', [message].concat(marketData)))
     })
   }
 }

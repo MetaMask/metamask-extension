@@ -194,6 +194,7 @@ ShapeshiftForm.prototype.renderMain = function () {
 }
 
 ShapeshiftForm.prototype.shift = function () {
+  var props = this.props
   var withdrawal = this.props.buyView.buyAddress
   var returnAddress = document.getElementById('fromCoinAddress').value
   var pair = this.props.buyView.formView.marketinfo.pair
@@ -202,9 +203,12 @@ ShapeshiftForm.prototype.shift = function () {
     'pair': pair,
     'returnAddress': returnAddress,
   }
-
+  var message = [
+    `Deposit Limit: ${props.buyView.formView.marketinfo.limit}`,
+    `Deposit Minimum:${props.buyView.formView.marketinfo.minimum}`,
+  ]
   if (isValidAddress(withdrawal)) {
-    this.props.dispatch(actions.coinShiftRquest(data))
+    this.props.dispatch(actions.coinShiftRquest(data, message))
   }
 }
 

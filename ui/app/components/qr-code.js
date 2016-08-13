@@ -29,7 +29,7 @@ QrCodeView.prototype.render = function () {
       alignItems: 'center',
     },
   }, [
-    h('h3', Qr.message),
+    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('h3', Qr.message),
     h('#qr-container.flex-column', {
       key: 'qr',
       style: {
@@ -47,4 +47,10 @@ QrCodeView.prototype.render = function () {
       }),
     ]),
   ])
+}
+
+QrCodeView.prototype.renderMultiMessage = function () {
+  var Qr = this.props.Qr
+  var multiMessage = Qr.message.map((message) => h('.qr-message', message))
+  return multiMessage
 }
