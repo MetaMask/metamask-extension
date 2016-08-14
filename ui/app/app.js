@@ -28,7 +28,7 @@ const DropMenuItem = require('./components/drop-menu-item')
 const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
 const EthStoreWarning = require('./eth-store-warning')
-
+const BuyView = require('./components/buy-button-subview')
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -366,6 +366,8 @@ App.prototype.renderPrimary = function () {
 
     case 'createVault':
       return h(CreateVaultScreen, {key: 'createVault'})
+    case 'buyEth':
+      return h(BuyView, {key: 'buyEthView'})
 
     default:
       return h(AccountDetailScreen, {key: 'account-detail'})
