@@ -41,9 +41,6 @@ DropMenuItem.prototype.activeNetworkRender = function () {
     case 'Main Ethereum Network':
       if (providerType === 'mainnet') return h('.check', '✓')
       break
-    case 'Ethereum Classic Network':
-      if (providerType === 'classic') return h('.check', '✓')
-      break
     case 'Morden Test Network':
       if (activeNetwork === '2') return h('.check', '✓')
       break

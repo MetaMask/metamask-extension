@@ -1,10 +1,12 @@
 # Changelog
 
 ## Current Master
+
 - Integrate ShapeShift
 - Add a for for Coinbase to specify amount to buy
 - Fix various typos.
 - Make dapp-metamask connection more reliable
+- Remove Ethereum Classic from provider menu.
 
 ## 2.7.3 2016-07-29
 
