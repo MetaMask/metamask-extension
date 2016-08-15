@@ -226,15 +226,6 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Ethereum Classic Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('classic')),
-      icon: h('.menu-icon.hollow-diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
-
-    h(DropMenuItem, {
       label: 'Morden Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
