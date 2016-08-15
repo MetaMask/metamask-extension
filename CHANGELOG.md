@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.8.0 2016-08-15
+
 - Integrate ShapeShift
 - Add a for for Coinbase to specify amount to buy
 - Fix various typos.
