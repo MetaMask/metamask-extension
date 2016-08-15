@@ -317,6 +317,15 @@ function reduceApp (state, action) {
         isLoading: false,
       })
 
+    case actions.SHOW_SUB_LOADING_INDICATION:
+      return extend(appState, {
+        isSubLoading: true,
+      })
+
+    case actions.HIDE_SUB_LOADING_INDICATION:
+      return extend(appState, {
+        isSubLoading: false,
+      })
     case actions.CLEAR_SEED_WORD_CACHE:
       return extend(appState, {
         transForward: true,
@@ -369,15 +378,102 @@ function reduceApp (state, action) {
         },
       })
 
-    case actions.SHOW_ETH_WARNING:
+    case actions.BUY_ETH_VIEW:
       return extend(appState, {
         transForward: true,
         currentView: {
-          name: 'accountDetail',
+          name: 'buyEth',
           context: appState.currentView.context,
         },
-        accountDetail: {
-          subview: 'buy-eth-warning',
+        buyView: {
+          subview: 'buyForm',
+          amount: '5.00',
+          buyAddress: action.value,
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+        },
+      })
+
+    case actions.UPDATE_BUY_ADDRESS:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: appState.buyView.formView.coinbase,
+            shapeshift: appState.buyView.formView.shapeshift,
+          },
+          buyAddress: action.value,
+          amount: appState.buyView.amount,
+        },
+      })
+
+    case actions.UPDATE_COINBASE_AMOUNT:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: action.value,
+        },
+      })
+
+    case actions.COINBASE_SUBVIEW:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
+        },
+      })
+
+    case actions.SHAPESHIFT_SUBVIEW:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: action.value.marketinfo,
+            coinOptions: action.value.coinOptions,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
+        },
+      })
+
+    case actions.PAIR_UPDATE:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: action.value.marketinfo,
+            coinOptions: appState.buyView.formView.coinOptions,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
+          warning: null,
+        },
+      })
+
+    case actions.SHOW_QR:
+      return extend(appState, {
+        qrRequested: true,
+        transForward: true,
+        Qr: {
+          message: action.value.message,
+          image: action.value.qr,
+          data: action.value.data,
         },
       })
     default:

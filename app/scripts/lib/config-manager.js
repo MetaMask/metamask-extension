@@ -5,7 +5,6 @@ const rp = require('request-promise')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
-const CLASSIC_RPC = MetamaskConfig.network.classic
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -145,9 +144,6 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
 
     case 'testnet':
       return TESTNET_RPC
-
-    case 'classic':
-      return CLASSIC_RPC
 
     default:
       return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
@@ -320,9 +316,13 @@ ConfigManager.prototype.getConversionDate = function () {
   return ('conversionDate' in data) && data.conversionDate
 }
 
-ConfigManager.prototype.setShouldntShowWarning = function (confirmed) {
+ConfigManager.prototype.setShouldntShowWarning = function () {
   var data = this.getData()
-  data.isEthConfirmed = confirmed
+  if (data.isEthConfirmed) {
+    data.isEthConfirmed = !data.isEthConfirmed
+  } else {
+    data.isEthConfirmed = true
+  }
   this.setData(data)
 }
 

@@ -156,8 +156,9 @@ IdentityStore.prototype.getNetwork = function (err) {
       this._currentState.network = 'loading'
       return this._didUpdate()
     }
-
-    console.log('web3.getNetwork returned ' + network)
+    if (global.METAMASK_DEBUG) {
+      console.log('web3.getNetwork returned ' + network)
+    }
     this._currentState.network = network
     this._didUpdate()
   })
@@ -478,7 +479,9 @@ IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey)
 
   keyStore.generateNewAddress(derivedKey, 3)
   configManager.setWallet(keyStore.serialize())
-  console.log('restored from seed. saved to keystore')
+  if (global.METAMASK_DEBUG) {
+    console.log('restored from seed. saved to keystore')
+  }
   return keyStore
 }
 

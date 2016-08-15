@@ -28,7 +28,7 @@ const DropMenuItem = require('./components/drop-menu-item')
 const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
 const EthStoreWarning = require('./eth-store-warning')
-
+const BuyView = require('./components/buy-button-subview')
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -226,15 +226,6 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Ethereum Classic Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('classic')),
-      icon: h('.menu-icon.hollow-diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
-
-    h(DropMenuItem, {
       label: 'Morden Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
@@ -366,6 +357,8 @@ App.prototype.renderPrimary = function () {
 
     case 'createVault':
       return h(CreateVaultScreen, {key: 'createVault'})
+    case 'buyEth':
+      return h(BuyView, {key: 'buyEthView'})
 
     default:
       return h(AccountDetailScreen, {key: 'account-detail'})

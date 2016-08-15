@@ -1,9 +1,7 @@
-const HttpProvider = require('web3/lib/web3/httpprovider')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('./obj-multiplex')
 const StreamProvider = require('web3-stream-provider')
 const RemoteStore = require('./remote-store.js').RemoteStore
-const MetamaskConfig = require('../config.js')
 
 module.exports = MetamaskInpageProvider
 
@@ -27,13 +25,6 @@ function MetamaskInpageProvider (connectionStream) {
   })
   self.publicConfigStore = publicConfigStore
 
-  // connect to sync provider
-  self.syncProvider = createSyncProvider(publicConfigStore.get('provider'))
-  // subscribe to publicConfig to update the syncProvider on change
-  publicConfigStore.subscribe(function (state) {
-    self.syncProvider = createSyncProvider(state.provider)
-  })
-
   // connect to async provider
   var asyncProvider = new StreamProvider()
   Streams.pipe(asyncProvider, multiStream.createStream('provider'), asyncProvider, function (err) {
@@ -48,9 +39,9 @@ function MetamaskInpageProvider (connectionStream) {
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
+  
   let selectedAddress
-
-  var result = null
+  let result = null
   switch (payload.method) {
 
     case 'eth_accounts':
@@ -65,9 +56,10 @@ MetamaskInpageProvider.prototype.send = function (payload) {
       result = selectedAddress || '0x0000000000000000000000000000000000000000'
       break
 
-    // fallback to normal rpc
+    // throw not-supported Error
     default:
-      return self.syncProvider.send(payload)
+      var message = 'The MetaMask Web3 object does not support synchronous methods. See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#all-async---think-of-metamask-as-a-light-client for details.'
+      throw new Error(message)
 
   }
 
@@ -88,35 +80,6 @@ MetamaskInpageProvider.prototype.isConnected = function () {
 }
 
 // util
-
-function createSyncProvider (providerConfig) {
-  providerConfig = providerConfig || {}
-  let syncProviderUrl
-
-  if (providerConfig.rpcTarget) {
-    syncProviderUrl = providerConfig.rpcTarget
-  } else {
-    switch (providerConfig.type) {
-      case 'testnet':
-        syncProviderUrl = MetamaskConfig.network.testnet
-        break
-      case 'mainnet':
-        syncProviderUrl = MetamaskConfig.network.mainnet
-        break
-      default:
-        syncProviderUrl = MetamaskConfig.network.default
-    }
-  }
-
-  const provider = new HttpProvider(syncProviderUrl)
-  // Stubbing out the send method to throw on sync methods:
-  provider.send = function() {
-    var message = 'The MetaMask Web3 object does not support synchronous methods. See https://github.com/MetaMask/faq#all-async---think-of-metamask-as-a-light-client for details.'
-    throw new Error(message)
-  }
-
-  return provider
-}
 
 function remoteStoreWithLocalStorageCache (storageKey) {
   // read local cache

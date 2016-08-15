@@ -115,6 +115,26 @@ var actions = {
   // buy Eth with coinbase
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
+  buyEthView: buyEthView,
+  BUY_ETH_VIEW: 'BUY_ETH_VIEW',
+  UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
+  updateCoinBaseAmount: updateCoinBaseAmount,
+  UPDATE_BUY_ADDRESS: 'UPDATE_BUY_ADDRESS',
+  updateBuyAddress: updateBuyAddress,
+  COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
+  coinBaseSubview: coinBaseSubview,
+  SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
+  shapeShiftSubview: shapeShiftSubview,
+  PAIR_UPDATE: 'PAIR_UPDATE',
+  pairUpdate: pairUpdate,
+  coinShiftRquest: coinShiftRquest,
+  SHOW_SUB_LOADING_INDICATION: 'SHOW_SUB_LOADING_INDICATION',
+  showSubLoadingIndication: showSubLoadingIndication,
+  HIDE_SUB_LOADING_INDICATION: 'HIDE_SUB_LOADING_INDICATION',
+  hideSubLoadingIndication: hideSubLoadingIndication,
+// QR STUFF:
+  SHOW_QR: 'SHOW_QR',
+  getQr: getQr,
 }
 
 module.exports = actions
@@ -520,6 +540,18 @@ function hideLoadingIndication () {
   }
 }
 
+function showSubLoadingIndication () {
+  return {
+    type: actions.SHOW_SUB_LOADING_INDICATION,
+  }
+}
+
+function hideSubLoadingIndication () {
+  return {
+    type: actions.HIDE_SUB_LOADING_INDICATION,
+  }
+}
+
 function showWarning (text) {
   return this.displayWarning(text)
 }
@@ -617,4 +649,133 @@ function buyEth (address, amount) {
       type: actions.BUY_ETH,
     })
   }
+}
+
+function buyEthView (address) {
+  return {
+    type: actions.BUY_ETH_VIEW,
+    value: address,
+  }
+}
+
+function updateCoinBaseAmount (value) {
+  return {
+    type: actions.UPDATE_COINBASE_AMOUNT,
+    value,
+  }
+}
+
+function updateBuyAddress (value) {
+  return {
+    type: actions.UPDATE_BUY_ADDRESS,
+    value,
+  }
+}
+
+function coinBaseSubview () {
+  return {
+    type: actions.COINBASE_SUBVIEW,
+  }
+}
+
+function pairUpdate (coin) {
+  return (dispatch) => {
+    dispatch(actions.showSubLoadingIndication())
+    dispatch(actions.hideWarning())
+    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+      dispatch(actions.hideSubLoadingIndication())
+      dispatch({
+        type: actions.PAIR_UPDATE,
+        value: {
+          marketinfo: mktResponse,
+        },
+      })
+    })
+  }
+}
+
+function shapeShiftSubview (network) {
+  var pair = 'btc_eth'
+
+  return (dispatch) => {
+    dispatch(actions.showSubLoadingIndication())
+    shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
+      shapeShiftRequest('getcoins', {}, (response) => {
+        dispatch(actions.hideSubLoadingIndication())
+        if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+        dispatch({
+          type: actions.SHAPESHIFT_SUBVIEW,
+          value: {
+            marketinfo: mktResponse,
+            coinOptions: response,
+          },
+        })
+      })
+    })
+  }
+}
+
+function coinShiftRquest (data, marketData) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+      if (response.error) return dispatch(actions.showWarning(response.error))
+      var message = `
+        Deposit your ${response.depositType} to the address bellow:`
+      dispatch(actions.getQr(response.deposit, '125x125', [message].concat(marketData)))
+    })
+  }
+}
+
+function getQr (data, size, message) {
+  return (dispatch) => {
+    qrRequest(data, size, (response) => {
+      dispatch(actions.hideLoadingIndication())
+      if (response.error) return dispatch(actions.showWarning(response.error))
+      dispatch({
+        type: actions.SHOW_QR,
+        value: {
+          qr: response,
+          message: message,
+          data: data,
+        },
+      })
+    })
+  }
+}
+
+function shapeShiftRequest (query, options, cb) {
+  var queryResponse, method
+  !options ? options = {} : null
+  options.method ? method = options.method : method = 'GET'
+
+  var requestListner = function (request) {
+    queryResponse = JSON.parse(this.responseText)
+    cb ? cb(queryResponse) : null
+    return queryResponse
+  }
+
+  var shapShiftReq = new XMLHttpRequest()
+  shapShiftReq.addEventListener('load', requestListner)
+  shapShiftReq.open(method, `https://shapeshift.io/${query}/${options.pair ? options.pair : ''}`, true)
+
+  if (options.method === 'POST') {
+    var jsonObj = JSON.stringify(options.data)
+    shapShiftReq.setRequestHeader('Content-Type', 'application/json')
+    return shapShiftReq.send(jsonObj)
+  } else {
+    return shapShiftReq.send()
+  }
+}
+
+function qrRequest (data, size, cb) {
+  var requestListner = function (request) {
+    cb ? cb(this.responseText) : null
+    return this.responseText
+  }
+
+  var qrReq = new XMLHttpRequest()
+  qrReq.addEventListener('load', requestListner)
+  qrReq.open('GET', `https://api.qrserver.com/v1/create-qr-code/?size=${size}&format=svg&data=${data}`, true)
+  qrReq.send()
 }
