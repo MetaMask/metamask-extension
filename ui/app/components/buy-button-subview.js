@@ -110,6 +110,9 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
       h('h3.text-transform-uppercase', 'or:'),
       this.props.network === '2' ? h('button.text-transform-uppercase', {
         onClick: () => this.props.dispatch(actions.buyEth()),
+        style: {
+          marginTop: '15px',
+        },
       }, 'Go To Test Faucet') : null,
     ])
   }
