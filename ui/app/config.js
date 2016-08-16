@@ -101,8 +101,12 @@ ConfigScreen.prototype.render = function () {
 
 function currentConversionInformation (metamaskState, state) {
   var currentFiat = metamaskState.currentFiat
+  var conversionDate = metamaskState.conversionDate
+  console.log(conversionDate)
+  console.log("This is the current date")
   return h('div', [
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, 'Current Conversion'),
+    h('span', {style: { fontWeight: 'bold', paddingRight: '10px', fontSize: '13px'}}, `Updated ${Date(conversionDate)}`),
     h('select#currentFiat', {
       onChange (event) {
         event.preventDefault()
