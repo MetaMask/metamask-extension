@@ -44,9 +44,6 @@ EthBalanceComponent.prototype.render = function () {
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value, state) {
-  console.log("THIS IS VALUE")
-  console.log(value)
-  console.log(state.conversionRate)
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
   var balance
