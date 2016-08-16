@@ -145,6 +145,8 @@ function shortenBalance (balance, decimalsToKeep = 1) {
   } else if (convertedBalance > 1000) {
     truncatedValue = (balance / 1000).toFixed(decimalsToKeep)
     return `>${truncatedValue}k`
+  } else if (convertedBalance === 0) {
+    return '0'
   } else if (convertedBalance < 1) {
     var exponent = balance.match(/\.0*/)[0].length
     truncatedValue = (convertedBalance * Math.pow(10, exponent)).toFixed(decimalsToKeep)

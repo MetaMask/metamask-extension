@@ -55,6 +55,8 @@ var actions = {
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
   revealAccount: revealAccount,
+  SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
+  setCurrentFiat: setCurrentFiat,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
@@ -229,6 +231,23 @@ function revealAccount () {
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch({
         type: actions.REVEAL_ACCOUNT,
+      })
+    })
+  }
+}
+
+function setCurrentFiat (fiat) {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    _accountManager.setCurrentFiat(fiat, (data, err) => {
+      dispatch(this.hideLoadingIndication())
+      dispatch({
+        type: this.SET_CURRENT_FIAT,
+        value: {
+          currentFiat: data.currentFiat,
+          conversionRate: data.conversionRate,
+          conversionDate: data.conversionDate,
+        },
       })
     })
   }

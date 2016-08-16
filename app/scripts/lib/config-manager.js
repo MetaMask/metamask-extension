@@ -1,6 +1,7 @@
 const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
+const rp = require('request-promise')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -268,6 +269,53 @@ ConfigManager.prototype.setConfirmed = function (confirmed) {
 ConfigManager.prototype.getConfirmed = function () {
   var data = this.getData()
   return ('isConfirmed' in data) && data.isConfirmed
+}
+
+ConfigManager.prototype.setCurrentFiat = function (currency) {
+  var data = this.getData()
+  data.fiatCurrency = currency
+  this.setData(data)
+}
+
+ConfigManager.prototype.getCurrentFiat = function () {
+  var data = this.getData()
+  return ('fiatCurrency' in data) && data.fiatCurrency
+}
+
+ConfigManager.prototype.updateConversionRate = function () {
+  var data = this.getData()
+  return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
+  .then((response) => {
+    const parsedResponse = JSON.parse(response)
+    this.setConversionPrice(parsedResponse.ticker.price)
+    this.setConversionDate(parsedResponse.timestamp)
+  }).catch((err) => {
+    console.error('Error in conversion.', err)
+    this.setConversionPrice(0)
+    this.setConversionDate('N/A')
+  })
+}
+
+ConfigManager.prototype.setConversionPrice = function(price) {
+  var data = this.getData()
+  data.conversionRate = Number(price)
+  this.setData(data)
+}
+
+ConfigManager.prototype.setConversionDate = function (datestring) {
+  var data = this.getData()
+  data.conversionDate = datestring
+  this.setData(data)
+}
+
+ConfigManager.prototype.getConversionRate = function () {
+  var data = this.getData()
+  return (('conversionRate' in data) && data.conversionRate) || 0
+}
+
+ConfigManager.prototype.getConversionDate = function () {
+  var data = this.getData()
+  return (('conversionDate' in data) && data.conversionDate) || 'N/A'
 }
 
 ConfigManager.prototype.setShouldntShowWarning = function () {

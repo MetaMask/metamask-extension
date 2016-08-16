@@ -21,6 +21,9 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
+    this.configManager.setCurrentFiat('USD')
+    this.configManager.updateConversionRate()
+    this.scheduleConversionInterval()
   }
 
   getState () {
@@ -40,7 +43,9 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      setCurrentFiat: this.setCurrentFiat.bind(this),
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
+
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -243,6 +248,31 @@ module.exports = class MetamaskController {
     } catch (e) {
       cb(e)
     }
+  }
+
+  setCurrentFiat (fiat, cb) {
+    try {
+      this.configManager.setCurrentFiat(fiat)
+      this.configManager.updateConversionRate()
+      this.scheduleConversionInterval()
+      const data = {
+        conversionRate: this.configManager.getConversionRate(),
+        currentFiat: this.configManager.getCurrentFiat(),
+        conversionDate: this.configManager.getConversionDate(),
+      }
+      cb(data)
+    } catch (e) {
+      cb(null, e)
+    }
+  }
+
+  scheduleConversionInterval () {
+    if (this.conversionInterval) {
+      clearInterval(this.conversionInterval)
+    }
+    this.conversionInterval = setInterval(() => {
+      this.configManager.updateConversionRate()
+    }, 300000)
   }
 
   agreeToEthWarning (cb) {
