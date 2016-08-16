@@ -69,7 +69,7 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
 
 extension.runtime.onConnect.addListener(connectRemote)
 function connectRemote (remotePort) {
-  var isMetaMaskInternalProcess = (remotePort.name === 'popup')
+  var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
   var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
