@@ -59,6 +59,10 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
     balance = balanceObj.balance
   }
 
+  if (fiatNumber !== 'N/A') {
+    fiatNumber = fiatNumber.toFixed(2)
+  }
+
   var label = balanceObj.label
 
   return (
@@ -109,7 +113,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
               fontSize: '12px',
               color: '#333333',
             },
-          }, `= ${fiatNumber.toFixed(2)}`),
+          }, `= ${fiatNumber}`),
           h('div', {
             style: {
               color: '#AEAEAE',

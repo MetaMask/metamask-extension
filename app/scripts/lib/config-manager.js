@@ -291,6 +291,8 @@ ConfigManager.prototype.updateConversionRate = function () {
     this.setConversionDate(parsedResponse.timestamp)
   }).catch((err) => {
     console.error('Error in conversion.', err)
+    this.setConversionPrice('N/A')
+    this.setConversionDate('N/A')
   })
 }
 
