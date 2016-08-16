@@ -52,7 +52,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   var ethSuffix = splitBalance[1]
 
 
-  if (state.conversionRate !== 'N/A') {
+  if (state.conversionRate !== 0) {
     fiatNumber = (Number(splitBalance[0]) * state.conversionRate).toFixed(2)
   } else {
     fiatNumber = 'N/A'

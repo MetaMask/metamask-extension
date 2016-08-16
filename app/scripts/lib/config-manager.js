@@ -291,7 +291,7 @@ ConfigManager.prototype.updateConversionRate = function () {
     this.setConversionDate(parsedResponse.timestamp)
   }).catch((err) => {
     console.error('Error in conversion.', err)
-    this.setConversionPrice('N/A')
+    this.setConversionPrice(0)
     this.setConversionDate('N/A')
   })
 }
@@ -310,12 +310,12 @@ ConfigManager.prototype.setConversionDate = function (datestring) {
 
 ConfigManager.prototype.getConversionRate = function () {
   var data = this.getData()
-  return ('conversionRate' in data) && data.conversionRate
+  return (('conversionRate' in data) && data.conversionRate) || 0
 }
 
 ConfigManager.prototype.getConversionDate = function () {
   var data = this.getData()
-  return ('conversionDate' in data) && data.conversionDate
+  return (('conversionDate' in data) && data.conversionDate) || 'N/A'
 }
 
 ConfigManager.prototype.setShouldntShowWarning = function () {

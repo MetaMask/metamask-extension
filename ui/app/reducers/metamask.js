@@ -16,7 +16,7 @@ function reduceMetamask (state, action) {
     identities: {},
     unconfTxs: {},
     currentFiat: 'USD',
-    conversionRate: 'N/A',
+    conversionRate: 0,
     conversionDate: 'N/A',
   }, state.metamask)
 

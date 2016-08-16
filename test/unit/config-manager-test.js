@@ -24,16 +24,16 @@ describe('config-manager', function() {
     describe('#setCurrentFiat', function() {
       it('should make getCurrentFiat return true once set', function() {
         assert.equal(configManager.getCurrentFiat(), false)
-        configManager.setCurrentFiat('usd')
+        configManager.setCurrentFiat('USD')
         var result = configManager.getCurrentFiat()
-        assert.equal(result, 'usd')
+        assert.equal(result, 'USD')
       })
 
       it('should work with other currencies as well', function() {
         assert.equal(configManager.getCurrentFiat(), false)
-        configManager.setCurrentFiat('jpy')
+        configManager.setCurrentFiat('JPY')
         var result = configManager.getCurrentFiat()
-        assert.equal(result, 'jpy')
+        assert.equal(result, 'JPY')
       })
     })
 
@@ -50,7 +50,7 @@ describe('config-manager', function() {
         assert.equal(configManager.getConversionRate(), false)
         var promise = new Promise(
           function (resolve, reject) {
-            configManager.setCurrentFiat('usd')
+            configManager.setCurrentFiat('USD')
             configManager.updateConversionRate().then(function() {
               resolve()
             })
@@ -71,7 +71,7 @@ describe('config-manager', function() {
         assert.equal(configManager.getConversionRate(), false)
         var promise = new Promise(
           function (resolve, reject) {
-            configManager.setCurrentFiat('jpy')
+            configManager.setCurrentFiat('JPY')
             configManager.updateConversionRate().then(function() {
               resolve()
             })
@@ -80,7 +80,6 @@ describe('config-manager', function() {
         promise.then(function() {
           var result = configManager.getConversionRate()
           assert.equal(typeof result, 'number')
-          done()
         }).catch(function(err) {
           console.log(err)
         })
