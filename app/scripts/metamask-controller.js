@@ -20,7 +20,7 @@ module.exports = class MetamaskController {
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
-    this.publicConfigStore = this.initPublicConfigStore
+    this.publicConfigStore = this.initPublicConfigStore()
     this.configManager.setCurrentFiat('USD')
     this.configManager.updateConversionRate()
     this.scheduleConversionInterval()
