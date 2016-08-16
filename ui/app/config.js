@@ -4,8 +4,6 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const currencies = require('./conversion-util').availableCurrencies.rows
-const Select = require('react-select')
-
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
 function mapStateToProps (state) {
@@ -116,11 +114,6 @@ function currentConversionInformation (metamaskState, state) {
     }, currencies.map((currency) => {
       return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)
     })
-    // [
-    //   h('option', {key: 'USD', value: 'USD'}, 'USD'),
-    //   h('option', {key: 'EUR', value: 'EUR'}, 'EUR'),
-    //   h('option', {key: 'JPY', value: 'JPY'}, 'JPY'),
-    // ]
   ),
   ])
 }
