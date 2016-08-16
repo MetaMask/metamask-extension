@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Added feature to reflect current conversion rates of current vault balance.
+
 ## 2.8.0 2016-08-15
 
 - Integrate ShapeShift
