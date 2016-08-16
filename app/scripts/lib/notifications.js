@@ -31,7 +31,7 @@ function createMsgNotification (state) {
 }
 
 function showNotification() {
-  chrome.windows.create({
+  extension.windows.create({
     url:"notification.html",
     type:"panel",
     width:360,

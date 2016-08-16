@@ -9,6 +9,7 @@ const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const isPopupOrNotification = require('./lib/is-popup-or-notification')
 const extension = require('./lib/extension')
 
 // setup app
@@ -22,7 +23,10 @@ async.parallel({
 
 function connectToAccountManager (cb) {
   // setup communication with background
-  var pluginPort = extension.runtime.connect({name: 'popup'})
+
+  var name = isPopupOrNotification()
+  window.METAMASK_UI_TYPE = name
+  var pluginPort = extension.runtime.connect({ name })
   var portStream = new PortStream(pluginPort)
   // setup multiplexing
   var mx = setupMultiplex(portStream)
@@ -93,3 +97,4 @@ function setupApp (err, opts) {
     networkVersion: opts.networkVersion,
   })
 }
+

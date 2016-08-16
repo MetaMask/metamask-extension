@@ -108,7 +108,6 @@ const jsFiles = [
   'contentscript',
   'background',
   'popup',
-  'notification',
 ]
 
 jsFiles.forEach((jsFile) => {
@@ -116,9 +115,9 @@ jsFiles.forEach((jsFile) => {
   gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
 })
 
-gulp.task('dev:js', gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup', 'dev:js:notification'))
+gulp.task('dev:js', gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
 
-gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup', 'dev:js:notification'))
+gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup'))
 
 // clean dist
 
