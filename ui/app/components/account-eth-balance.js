@@ -44,23 +44,28 @@ EthBalanceComponent.prototype.render = function () {
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value, state) {
+  console.log("THIS IS VALUE")
+  console.log(value)
+  console.log(state.conversionRate)
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
   var balance
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
-  var fiatNumber = Number(splitBalance[0]) * state.conversionRate
+
+  if (state.conversionRate !== 'N/A') {
+    var fiatNumber = (Number(splitBalance[0]) * state.conversionRate).toFixed(2)
+  } else {
+    var fiatNumber = 'N/A'
+  }
+
   var fiatSuffix = state.currentFiat
 
   if (state.shorten) {
     balance = balanceObj.shortBalance
   } else {
     balance = balanceObj.balance
-  }
-
-  if (fiatNumber !== 'N/A') {
-    fiatNumber = fiatNumber.toFixed(2)
   }
 
   var label = balanceObj.label
@@ -98,31 +103,39 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
         position: 'bottom',
         title: `${fiatNumber} ${fiatSuffix}`,
       }, [
-        h('.flex-row', {
-          style: {
-            alignItems: 'flex-end',
-            lineHeight: '13px',
-            fontFamily: 'Montserrat Light',
-            textRendering: 'geometricPrecision',
-          },
-        }, [
-          h('div', {
-            style: {
-              width: '100%',
-              textAlign: 'right',
-              fontSize: '12px',
-              color: '#333333',
-            },
-          }, `= ${fiatNumber}`),
-          h('div', {
-            style: {
-              color: '#AEAEAE',
-              marginLeft: '5px',
-              fontSize: '12px',
-            },
-          }, fiatSuffix),
-        ]),
+        fiatDisplay (fiatNumber, fiatSuffix)
       ]),
     ])
   )
+}
+
+function fiatDisplay (fiatNumber, fiatSuffix) {
+  if (fiatNumber !== 'N/A') {
+    return h('.flex-row', {
+      style: {
+        alignItems: 'flex-end',
+        lineHeight: '13px',
+        fontFamily: 'Montserrat Light',
+        textRendering: 'geometricPrecision',
+      },
+    }, [
+      h('div', {
+        style: {
+          width: '100%',
+          textAlign: 'right',
+          fontSize: '12px',
+          color: '#333333',
+        },
+      }, fiatNumber),
+      h('div', {
+        style: {
+          color: '#AEAEAE',
+          marginLeft: '5px',
+          fontSize: '12px',
+        },
+      }, fiatSuffix),
+    ])
+  } else {
+    return h('div')
+  }
 }
