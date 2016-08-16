@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const currencies = require('./conversion-util').availableCurrencies.rows
-// const Select = require('react-select')
+const Select = require('react-select')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -112,7 +112,6 @@ function currentConversionInformation (metamaskState, state) {
         var newFiat = element.value
         state.dispatch(actions.setCurrentFiat(newFiat))
       },
-      value: currentFiat,
       defaultValue: currentFiat,
     }, currencies.map((currency) => {
       return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)

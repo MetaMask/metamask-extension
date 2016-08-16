@@ -271,7 +271,6 @@ module.exports = class MetamaskController {
       clearInterval(this.conversionInterval)
     }
     this.conversionInterval = setInterval(() => {
-      console.log('started update conversion rate.')
       this.configManager.updateConversionRate()
     }, 300000)
   }
