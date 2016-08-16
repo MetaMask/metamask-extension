@@ -6,15 +6,7 @@ const formatBalance = require('../util').formatBalance
 const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
 
-module.exports = connect(mapStateToProps)(EthBalanceComponent)
-
-function mapStateToProps (state) {
-  return {
-    conversionRate: state.metamask.conversionRate,
-    conversionDate: state.metamask.conversionDate,
-    currentFiat: state.metamask.currentFiat,
-  }
-}
+module.exports = EthBalanceComponent
 
 inherits(EthBalanceComponent, Component)
 function EthBalanceComponent () {
@@ -50,8 +42,6 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
-  var fiatNumber = Number(splitBalance[0]) * state.conversionRate
-  var fiatSuffix = state.currentFiat
 
   if (state.shorten) {
     balance = balanceObj.shortBalance
@@ -64,9 +54,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   return (
     h(Tooltip, {
       position: 'bottom',
-      multiline: true,
-      title: `${ethNumber} ${ethSuffix}
-      ${fiatNumber} ${fiatSuffix}`,
+      title: `${ethNumber} ${ethSuffix}`,
     }, [
       h('.flex-column', {
         style: {
