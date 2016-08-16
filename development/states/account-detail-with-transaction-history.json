@@ -1,5 +1,8 @@
 {
   "metamask": {
+    "currentFiat": "USD",
+    "conversionRate": 11.06608791,
+    "conversionDate": 1470421024,
     "isInitialized": true,
     "isUnlocked": true,
     "currentDomain": "example.com",
@@ -72,7 +75,7 @@
         "txParams": {
           "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "to": "0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761",
-          "value": "0x99966c8104aa57038000",
+          "value": "0x0",
           "origin": "thelongestdomainnameintheworldandthensomeandthensomemoreandmore.com",
           "metamaskId": 1467923203344608,
           "metamaskNetworkId": "2"

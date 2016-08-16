@@ -15,6 +15,9 @@ function reduceMetamask (state, action) {
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unconfTxs: {},
+    currentFiat: 'USD',
+    conversionRate: 0,
+    conversionDate: 'N/A',
   }, state.metamask)
 
   switch (action.type) {
@@ -114,6 +117,13 @@ function reduceMetamask (state, action) {
       id[account] = extend(metamaskState.identities[account], { name })
       var identities = extend(metamaskState.identities, id)
       return extend(metamaskState, { identities })
+
+    case actions.SET_CURRENT_FIAT:
+      return extend(metamaskState, {
+        currentFiat: action.value.currentFiat,
+        conversionRate: action.value.conversionRate,
+        conversionDate: action.value.conversionDate,
+      })
 
     default:
       return metamaskState

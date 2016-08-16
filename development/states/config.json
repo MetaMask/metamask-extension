@@ -1,5 +1,8 @@
 {
   "metamask": {
+    "currentFiat": "USD",
+    "conversionRate": 11.06608791,
+    "conversionDate": 1470421024,
     "isInitialized": true,
     "isUnlocked": true,
     "currentDomain": "example.com",
@@ -68,7 +71,7 @@
   "appState": {
     "menuOpen": false,
     "currentView": {
-      "name": "accounts"
+      "name": "config"
     },
     "accountDetail": {
       "subview": "transactions",
