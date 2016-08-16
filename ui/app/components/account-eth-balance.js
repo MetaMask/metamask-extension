@@ -65,7 +65,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
     h('.flex-column', [
       h(Tooltip, {
         position: 'bottom',
-        title: `${balance} ${label}`,
+        title: `${ethNumber} ${ethSuffix}`,
       }, [
         h('.flex-row', {
           style: {

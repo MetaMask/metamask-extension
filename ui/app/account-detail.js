@@ -10,7 +10,6 @@ const valuesFor = require('./util').valuesFor
 
 const Identicon = require('./components/identicon')
 const AccountEtherBalance = require('./components/account-eth-balance')
-const EtherBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
