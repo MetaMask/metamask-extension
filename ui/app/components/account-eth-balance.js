@@ -46,15 +46,16 @@ EthBalanceComponent.prototype.render = function () {
 EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
-  var balance
+  var balance, fiatNumber
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
 
+
   if (state.conversionRate !== 'N/A') {
-    var fiatNumber = (Number(splitBalance[0]) * state.conversionRate).toFixed(2)
+    fiatNumber = (Number(splitBalance[0]) * state.conversionRate).toFixed(2)
   } else {
-    var fiatNumber = 'N/A'
+    fiatNumber = 'N/A'
   }
 
   var fiatSuffix = state.currentFiat
@@ -100,7 +101,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
         position: 'bottom',
         title: `${fiatNumber} ${fiatSuffix}`,
       }, [
-        fiatDisplay (fiatNumber, fiatSuffix)
+        fiatDisplay(fiatNumber, fiatSuffix),
       ]),
     ])
   )
