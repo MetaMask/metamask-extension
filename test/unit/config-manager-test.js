@@ -85,10 +85,6 @@ describe('config-manager', function() {
           console.log(err)
         })
       })
-
-      xit('should activate every time the currency is changed.', function() {
-
-      })
     })
   })
 
