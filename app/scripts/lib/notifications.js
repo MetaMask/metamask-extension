@@ -33,7 +33,8 @@ function createMsgNotification (state) {
 function showNotification() {
   extension.windows.create({
     url:"notification.html",
-    type:"panel",
+    type:"detached_panel",
+    focused:true,
     width:360,
     height:500,
   })

@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const extension = require('../../../app/scripts/lib/extension')
 
 module.exports = reduceApp
 
@@ -250,6 +251,17 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
+
+        const isNotification = window.METAMASK_UI_TYPE === 'notification'
+        if (isNotification) {
+          return extension.windows.getCurrent({}, function(win) {
+						extension.windows.remove(win.id, function(err) {
+							if (err) console.err(err)
+						})
+					})
+        } else {
+          debugger
+        }
         return extend(appState, {
           transForward: false,
           warning: null,

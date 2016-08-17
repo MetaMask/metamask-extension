@@ -36,6 +36,7 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfTxList = txHelper(unconfTxs, unconfMsgs)
   var index = state.index !== undefined ? state.index : 0
   var txData = unconfTxList[index] || {}
+  var isNotification = window.METAMASK_UI_TYPE === 'notification'
 
   return (
 
@@ -43,9 +44,9 @@ ConfirmTxScreen.prototype.render = function () {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
-        }),
+        }) : null,
         h('h2.page-subtitle', 'Confirm Transaction'),
       ]),
 
