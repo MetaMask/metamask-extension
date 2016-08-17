@@ -1,14 +1,4 @@
-const createId = require('hat')
-const extend = require('xtend')
-const unmountComponentAtNode = require('react-dom').unmountComponentAtNode
-const findDOMNode = require('react-dom').findDOMNode
-const render = require('react-dom').render
-const h = require('react-hyperscript')
-const PendingTxDetails = require('../../../ui/app/components/pending-tx-details')
-const PendingMsgDetails = require('../../../ui/app/components/pending-msg-details')
-const MetaMaskUiCss = require('../../../ui/css')
 const extension = require('./extension')
-var notificationHandlers = {}
 
 const notifications = {
   createUnlockRequestNotification: createUnlockRequestNotification,
@@ -32,11 +22,11 @@ function createMsgNotification (state) {
 
 function showNotification() {
   extension.windows.create({
-    url:"notification.html",
-    type:"detached_panel",
-    focused:true,
-    width:360,
-    height:500,
+    url: 'notification.html',
+    type: 'detached_panel',
+    focused: true,
+    width: 360,
+    height: 500,
   })
 }
 

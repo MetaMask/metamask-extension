@@ -254,14 +254,11 @@ function reduceApp (state, action) {
 
         const isNotification = window.METAMASK_UI_TYPE === 'notification'
         if (isNotification) {
-          return extension.windows.getCurrent({}, function(win) {
-						extension.windows.remove(win.id, function(err) {
-							if (err) console.err(err)
-						})
-					})
-        } else {
-          debugger
+          extension.windows.getCurrent({}, (win) => {
+            extension.windows.remove(win.id, console.error)
+          })
         }
+
         return extend(appState, {
           transForward: false,
           warning: null,
