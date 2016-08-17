@@ -3,6 +3,7 @@
 ## Current Master
 
 - Added feature to reflect current conversion rates of current vault balance.
+- Changed transaction approval from notifications system to popup system.
 
 ## 2.8.0 2016-08-15
 
