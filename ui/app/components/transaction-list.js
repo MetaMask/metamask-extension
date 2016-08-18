@@ -85,6 +85,6 @@ function viewMoreButton(url) {
     onClick: (ev) => {
       ev.preventDefault()
       extension.tabs.create({ url })
-    }
+    },
   }, 'View More') : null
 }
