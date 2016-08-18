@@ -100,11 +100,12 @@ ShiftListItem.prototype.renderUtilComponents = function () {
             alignItems: 'baseline',
           },
         }, [
-          h('.color-orange', {
+          h('div', {
             style: {
               fontFamily: 'Montserrat Light',
               position: 'relative',
               left: '6px',
+              color: '#01888C',
             },
           }, '+'),
           h(EtherBalance, {
@@ -113,6 +114,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
             shorten: true,
             style: {
               fontSize: '15px',
+              color: '#01888C',
             },
           }),
         ]),

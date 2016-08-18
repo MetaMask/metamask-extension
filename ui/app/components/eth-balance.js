@@ -21,10 +21,10 @@ EthBalanceComponent.prototype.render = function () {
 
   return (
 
-    h('.ether-balance', {
+    h('.ether-balance.ether-balance-amount', {
       style: style,
     }, [
-      h('.ether-balance-amount', {
+      h('div', {
         style: {
           display: 'inline',
           width: width,
