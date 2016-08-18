@@ -1,6 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const genAccountLink = require('../../lib/account-link')
+const extension = require('../../../app/scripts/lib/extension')
 
 const TransactionListItem = require('./transaction-list-item')
 
@@ -13,9 +15,10 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { txsToRender, network, unconfMsgs } = this.props
+  const { txsToRender, network, unconfMsgs, address } = this.props
   const transactions = txsToRender.concat(unconfMsgs)
   .sort((a, b) => b.time - a.time)
+  const accountLink = genAccountLink(address, network)
 
   return (
 
@@ -45,11 +48,11 @@ TransactionList.prototype.render = function () {
       h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '305px',
+          height: '300px',
           padding: '0 20px',
           textAlign: 'center',
         },
-      }, (
+      }, [
 
         transactions.length
           ? transactions.map((transaction, i) => {
@@ -59,13 +62,29 @@ TransactionList.prototype.render = function () {
                 this.props.viewPendingTx(txId)
               },
             })
-          })
-        : [h('.flex-center', {
+          }).concat(viewMoreButton(accountLink))
+        : h('.flex-center', {
           style: {
+            flexDirection: 'column',
             height: '100%',
           },
-        }, 'No transaction history...')]
-      )),
+        }, [
+          'No transaction history.',
+          viewMoreButton(accountLink),
+        ]),
+      ]),
     ])
   )
+}
+
+function viewMoreButton(url) {
+  return url ? h('button', {
+    style: {
+      margin: '10px',
+    },
+    onClick: (ev) => {
+      ev.preventDefault()
+      extension.tabs.create({ url })
+    }
+  }, 'View More') : null
 }

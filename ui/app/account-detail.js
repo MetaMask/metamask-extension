@@ -248,6 +248,7 @@ AccountDetailScreen.prototype.transactionList = function () {
     network,
     unconfTxs,
     unconfMsgs,
+    address,
     viewPendingTx: (txId) => {
       this.props.dispatch(actions.viewPendingTx(txId))
     },
