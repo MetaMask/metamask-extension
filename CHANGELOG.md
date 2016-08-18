@@ -2,6 +2,10 @@
 
 ## Current Master
 
+- Added feature to reflect current conversion rates of current vault balance.
+
+## 2.8.0 2016-08-15
+
 - Integrate ShapeShift
 - Add a for for Coinbase to specify amount to buy
 - Fix various typos.

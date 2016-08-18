@@ -9,7 +9,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
 
 const Identicon = require('./components/identicon')
-const EtherBalance = require('./components/eth-balance')
+const AccountEtherBalance = require('./components/account-eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
@@ -20,6 +20,7 @@ module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
   return {
+    metamask: state.metamask,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     address: state.metamask.selectedAccount,
@@ -163,9 +164,8 @@ AccountDetailScreen.prototype.render = function () {
           },
         }, [
 
-          h(EtherBalance, {
+          h(AccountEtherBalance, {
             value: account && account.balance,
-            mainBalance: true,
             style: {
               lineHeight: '7px',
               marginTop: '10px',
@@ -254,6 +254,7 @@ AccountDetailScreen.prototype.transactionList = function () {
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
+
 
 AccountDetailScreen.prototype.buyButtonDeligator = function () {
   var props = this.props

@@ -52,7 +52,11 @@ QrCodeView.prototype.render = function () {
       },
     }),
     h('.flex-row', [
-      h('h3.ellip-address', Qr.data),
+      h('h3.ellip-address', {
+        style: {
+          width: '247px',
+        },
+      }, Qr.data),
       h(CopyButton, {
         value: Qr.data,
       }),

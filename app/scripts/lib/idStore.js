@@ -101,6 +101,9 @@ IdentityStore.prototype.getState = function () {
     messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),
     shapeShiftTxList: configManager.getShapeShiftTxList(),
+    currentFiat: configManager.getCurrentFiat(),
+    conversionRate: configManager.getConversionRate(),
+    conversionDate: configManager.getConversionDate(),
   }))
 }
 

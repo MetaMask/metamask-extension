@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 
-const EtherBalance = require('../components/eth-balance')
+const AccountEtherBalance = require('../components/account-eth-balance')
 const CopyButton = require('../components/copyButton')
 const Identicon = require('../components/identicon')
 
@@ -50,8 +50,12 @@ NewComponent.prototype.render = function () {
             textOverflow: 'ellipsis',
           },
         }, ethUtil.toChecksumAddress(identity.address)),
-        h(EtherBalance, {
+        h(AccountEtherBalance, {
           value: account.balance,
+          style: {
+            lineHeight: '7px',
+            marginTop: '10px',
+          },
         }),
       ]),
 

@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const formatBalance = require('../util').formatBalance
 const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
+
 module.exports = EthBalanceComponent
 
 inherits(EthBalanceComponent, Component)
@@ -37,6 +38,9 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
   var balance
+  var splitBalance = value.split(' ')
+  var ethNumber = splitBalance[0]
+  var ethSuffix = splitBalance[1]
 
   if (state.shorten) {
     balance = balanceObj.shortBalance
@@ -49,7 +53,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
   return (
     h(Tooltip, {
       position: 'bottom',
-      title: value.split(' ')[0],
+      title: `${ethNumber} ${ethSuffix}`,
     }, [
       h('.flex-column', {
         style: {
