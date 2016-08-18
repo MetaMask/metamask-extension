@@ -149,10 +149,10 @@ function shortenBalance (balance, decimalsToKeep = 1) {
     return '0'
   } else if (convertedBalance < 0.001) {
     return '<0.001'
-  } else if (convertedBalance < 1)  {
+  } else if (convertedBalance < 1) {
     var stringBalance = convertedBalance.toString()
     if (stringBalance.split('.')[1].length > 3) {
-      return convertedBalance.toFixed(3);
+      return convertedBalance.toFixed(3)
     } else {
       return stringBalance
     }
