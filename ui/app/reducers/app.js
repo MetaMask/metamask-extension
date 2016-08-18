@@ -490,7 +490,7 @@ function reduceApp (state, action) {
           data: action.value.data,
         },
       })
-        default:
+    default:
       return appState
   }
 }

@@ -337,11 +337,11 @@ ConfigManager.prototype.getShapeShiftTxList = function () {
   var data = this.getData()
   var shapeShiftTxList = data.shapeShiftTxList ? data.shapeShiftTxList : []
   shapeShiftTxList.forEach((tx) => {
-    if (tx.response.status !== 'complete'){
+    if (tx.response.status !== 'complete') {
       var requestListner = function (request) {
         tx.response = JSON.parse(this.responseText)
-        if (tx.status === 'complete') {
-          tx.completeTime = new Date().getTime()
+        if (tx.response.status === 'complete') {
+          tx.time = new Date().getTime()
         }
       }
 
@@ -351,6 +351,7 @@ ConfigManager.prototype.getShapeShiftTxList = function () {
       shapShiftReq.send()
     }
   })
+  this.setData(data)
   return shapeShiftTxList
 }
 
@@ -358,10 +359,11 @@ ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositTy
   var data = this.getData()
 
   var shapeShiftTx = {depositAddress, depositType, key: 'shapeshift', time: new Date().getTime(), response: {}}
-  if(!data.shapeShiftTxList) {
+  if (!data.shapeShiftTxList) {
     data.shapeShiftTxList = [shapeShiftTx]
   } else {
     data.shapeShiftTxList.push(shapeShiftTx)
   }
   this.setData(data)
 }
+

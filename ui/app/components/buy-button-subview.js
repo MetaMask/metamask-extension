@@ -54,7 +54,7 @@ BuyButtonSubview.prototype.render = function () {
           justifyContent: 'space-around',
         },
       }, [
-        h(currentForm.coinbase ? '.activeForm' : '.inactiveForm', {
+        h(currentForm.coinbase ? '.activeForm' : '.inactiveForm.pointer', {
           onClick: () => props.dispatch(actions.coinBaseSubview()),
         }, 'Coinbase'),
         h('a', {
@@ -67,7 +67,7 @@ BuyButtonSubview.prototype.render = function () {
             },
           }),
         ]),
-        h(currentForm.shapeshift ? '.activeForm' : '.inactiveForm', {
+        h(currentForm.shapeshift ? '.activeForm' : '.inactiveForm.pointer', {
           onClick: () => props.dispatch(actions.shapeShiftSubview(props.provider.type)),
         }, 'Shapeshift'),
 

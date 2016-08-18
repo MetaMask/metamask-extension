@@ -592,3 +592,7 @@ div.message-container > div:first-child {
   font-size: 15px;
   color: #4D4D4D;
 }
+
+.pop-hover:hover {
+    transform: scale(1.1);
+}

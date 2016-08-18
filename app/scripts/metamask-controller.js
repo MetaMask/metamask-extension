@@ -65,7 +65,7 @@ module.exports = class MetamaskController {
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
-      createShapeShiftTx : this.createShapeShiftTx.bind(this),
+      createShapeShiftTx: this.createShapeShiftTx.bind(this),
     }
   }
 
@@ -319,10 +319,9 @@ module.exports = class MetamaskController {
     })
   }
 
- createShapeShiftTx (depositAddress, depositType) {
+  createShapeShiftTx (depositAddress, depositType) {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
-
 }
 
 function noop () {}

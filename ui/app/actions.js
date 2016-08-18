@@ -747,7 +747,7 @@ function reshowQrCode (data, coin) {
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
 
-      var message =[
+      var message = [
         `Deposit your ${coin} to the address bellow:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
