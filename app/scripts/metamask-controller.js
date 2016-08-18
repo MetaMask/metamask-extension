@@ -59,6 +59,8 @@ module.exports = class MetamaskController {
       recoverSeed: idStore.recoverSeed.bind(idStore),
       // coinbase
       buyEth: this.buyEth.bind(this),
+      // shapeshift
+      createShapeShiftTx : this.createShapeShiftTx.bind(this),
     }
   }
 
@@ -285,6 +287,10 @@ module.exports = class MetamaskController {
     extension.tabs.create({
       url,
     })
+  }
+
+ createShapeShiftTx (depositAddress, depositType) {
+    this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
 
 }

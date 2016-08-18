@@ -29,6 +29,7 @@ function mapStateToProps (state) {
     unconfTxs: valuesFor(state.metamask.unconfTxs),
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
     isEthWarningConfirmed: state.metamask.isEthConfirmed,
+    shapeShiftTxList : state.metamask.shapeShiftTxList,
   }
 }
 
@@ -179,12 +180,7 @@ AccountDetailScreen.prototype.render = function () {
               position: 'absolute',
               left: '219px',
             },
-          }, props.accountDetail.subview === 'buyForm' ? [h('i.fa.fa-arrow-left', {
-            style: {
-              width: '22.641px',
-              height: '14px',
-            },
-          })] : 'BUY'),
+          }, 'BUY'),
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),
@@ -233,7 +229,7 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
-  const { transactions, unconfTxs, unconfMsgs, address, network } = this.props
+  const { transactions, unconfTxs, unconfMsgs, address, network, shapeShiftTxList } = this.props
 
   var txsToRender = transactions
   // only transactions that are from the current address
@@ -248,6 +244,7 @@ AccountDetailScreen.prototype.transactionList = function () {
     network,
     unconfTxs,
     unconfMsgs,
+    shapeShiftTxList,
     viewPendingTx: (txId) => {
       this.props.dispatch(actions.viewPendingTx(txId))
     },

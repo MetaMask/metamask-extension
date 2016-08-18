@@ -10,6 +10,7 @@ function mapStateToProps (state) {
   return {
     Qr: state.appState.Qr,
     buyView: state.appState.buyView,
+    warning: state.appState.warning,
   }
 }
 
@@ -23,6 +24,7 @@ QrCodeView.prototype.render = function () {
   var props = this.props
   var Qr = props.Qr
   return h('.main-container.flex-column', {
+    key: 'qr',
     style: {
       justifyContent: 'center',
       padding: '45px',
@@ -30,8 +32,17 @@ QrCodeView.prototype.render = function () {
     },
   }, [
     Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('h3', Qr.message),
+
+    this.props.warning ? this.props.warning && h('span.error.flex-center', {
+      style: {
+        textAlign: 'center',
+        width: '229px',
+        height: '82px',
+      },
+    },
+    this.props.warning) : null,
+
     h('#qr-container.flex-column', {
-      key: 'qr',
       style: {
         marginTop: '25px',
         marginBottom: '15px',

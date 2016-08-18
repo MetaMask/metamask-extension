@@ -133,6 +133,8 @@ var actions = {
 // QR STUFF:
   SHOW_QR: 'SHOW_QR',
   getQr: getQr,
+  reshowQrCode: reshowQrCode,
+  SHOW_QR_VIEW: 'SHOW_QR_VIEW',
 }
 
 module.exports = actions
@@ -698,6 +700,7 @@ function coinShiftRquest (data, marketData) {
       if (response.error) return dispatch(actions.showWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
+      _accountManager.createShapeShiftTx(response.deposit, response.depositType)
       dispatch(actions.getQr(response.deposit, '125x125', [message].concat(marketData)))
     })
   }
@@ -715,6 +718,32 @@ function getQr (data, size, message) {
           message: message,
           data: data,
         },
+      })
+    })
+  }
+}
+function reshowQrCode (data, coin) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
+      if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+
+      var message =[
+        `Deposit your ${coin} to the address bellow:`,
+        `Deposit Limit: ${mktResponse.limit}`,
+        `Deposit Minimum:${mktResponse.minimum}`,
+      ]
+
+      qrRequest(data, '125x125', (response) => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch({
+          type: actions.SHOW_QR_VIEW,
+          value: {
+            qr: response,
+            message: message,
+            data: data,
+          },
+        })
       })
     })
   }
