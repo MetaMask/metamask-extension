@@ -5,6 +5,7 @@
 - Added feature to reflect current conversion rates of current vault balance.
 - Transaction history now has a hard limit.
 - Added a link to view more account info after transaction history.
+- Modify balance display logic.
 
 ## 2.8.0 2016-08-15
 
