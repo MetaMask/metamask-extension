@@ -95,29 +95,15 @@ ShiftListItem.prototype.renderUtilComponents = function () {
         h(CopyButton, {
           value: this.props.response.transaction,
         }),
-        h('.flex-row', {
+        h(EtherBalance, {
+          value: `${props.response.outgoingCoin}`,
+          width: '55px',
+          shorten: true,
           style: {
-            alignItems: 'baseline',
+            fontSize: '15px',
+            color: '#01888C',
           },
-        }, [
-          h('div', {
-            style: {
-              fontFamily: 'Montserrat Light',
-              position: 'relative',
-              left: '6px',
-              color: '#01888C',
-            },
-          }, '+'),
-          h(EtherBalance, {
-            value: `${props.response.outgoingCoin}`,
-            width: '55px',
-            shorten: true,
-            style: {
-              fontSize: '15px',
-              color: '#01888C',
-            },
-          }),
-        ]),
+        }),
       ])
 
     case 'failed':

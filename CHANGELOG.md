@@ -3,7 +3,7 @@
 ## Current Master
 
 - Added ShapeShift to the transaction history
-- Added PUB.KEY too ShapeShift request for affiliate program
+- Added affiliate key to Shapeshift requests
 - Added feature to reflect current conversion rates of current vault balance.
 
 ## 2.8.0 2016-08-15
