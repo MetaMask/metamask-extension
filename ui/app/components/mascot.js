@@ -15,7 +15,7 @@ function Mascot () {
     width: 200,
     height: 200,
   })
-  if (!this.logo) return
+  if (!this.logo.webGLSupport) return
   this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
@@ -36,10 +36,9 @@ Mascot.prototype.render = function () {
 Mascot.prototype.componentDidMount = function () {
   var targetDivId = 'metamask-mascot-container'
   var container = document.getElementById(targetDivId)
-  if (!this.logo) {
-    var staticLogo = document.createElement('img')
-    staticLogo.src = 'images/icon-128.png'
-    staticLogo.style.marginBottom = '20px'
+  if (!this.logo.webGLSupport) {
+    var staticLogo = this.logo.staticLogo
+    staticLogo.style.marginBottom = '40px'
     container.appendChild(staticLogo)
   } else {
     container.appendChild(this.logo.canvas)
