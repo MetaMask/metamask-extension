@@ -34,10 +34,16 @@ Mascot.prototype.render = function () {
 }
 
 Mascot.prototype.componentDidMount = function () {
-  if (!this.logo) return
   var targetDivId = 'metamask-mascot-container'
   var container = document.getElementById(targetDivId)
-  container.appendChild(this.logo.canvas)
+  if (!this.logo) {
+    var staticLogo = document.createElement('img')
+    staticLogo.src = 'images/icon-128.png'
+    staticLogo.style.marginBottom = '20px'
+    container.appendChild(staticLogo)
+  } else {
+    container.appendChild(this.logo.canvas)
+  }
 }
 
 Mascot.prototype.componentWillUnmount = function () {
