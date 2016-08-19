@@ -86,5 +86,5 @@ function viewMoreButton(url) {
       ev.preventDefault()
       extension.tabs.create({ url })
     },
-  }, 'View More') : null
+  }, 'Show More') : null
 }
