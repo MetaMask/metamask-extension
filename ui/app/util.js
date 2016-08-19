@@ -141,16 +141,21 @@ function shortenBalance (balance, decimalsToKeep = 1) {
   var convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
     truncatedValue = (balance / 1000000).toFixed(decimalsToKeep)
-    return `>${truncatedValue}m`
+    return `${truncatedValue}m`
   } else if (convertedBalance > 1000) {
     truncatedValue = (balance / 1000).toFixed(decimalsToKeep)
-    return `>${truncatedValue}k`
+    return `${truncatedValue}k`
   } else if (convertedBalance === 0) {
     return '0'
+  } else if (convertedBalance < 0.001) {
+    return '<0.001'
   } else if (convertedBalance < 1) {
-    var exponent = balance.match(/\.0*/)[0].length
-    truncatedValue = (convertedBalance * Math.pow(10, exponent)).toFixed(decimalsToKeep)
-    return `<${truncatedValue}e-${exponent}`
+    var stringBalance = convertedBalance.toString()
+    if (stringBalance.split('.')[1].length > 3) {
+      return convertedBalance.toFixed(3)
+    } else {
+      return stringBalance
+    }
   } else {
     return convertedBalance.toFixed(decimalsToKeep)
   }
