@@ -29,6 +29,7 @@ const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
 const EthStoreWarning = require('./eth-store-warning')
 const BuyView = require('./components/buy-button-subview')
+const QrView = require('./components/qr-code')
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -364,6 +365,33 @@ App.prototype.renderPrimary = function () {
       return h(CreateVaultScreen, {key: 'createVault'})
     case 'buyEth':
       return h(BuyView, {key: 'buyEthView'})
+    case 'qr':
+      return h('div', {
+        style: {
+          position: 'absolute',
+          height: '100%',
+          top: '0px',
+          left: '0px',
+        },
+      }, [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+          onClick: () => props.dispatch(actions.backToAccountDetail(props.activeAddress)),
+          style: {
+            marginLeft: '10px',
+            marginTop: '50px',
+          },
+        }),
+        h('div', {
+          style: {
+            position: 'absolute',
+            bottom: '115px',
+            left: '44px',
+            width: '285px',
+          },
+        }, [
+          h(QrView, {key: 'qr'}),
+        ]),
+      ])
 
     default:
       return h(AccountDetailScreen, {key: 'account-detail'})

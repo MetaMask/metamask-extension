@@ -485,6 +485,20 @@ function reduceApp (state, action) {
           data: action.value.data,
         },
       })
+
+    case actions.SHOW_QR_VIEW:
+      return extend(appState, {
+        currentView: {
+          name: 'qr',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+        Qr: {
+          message: action.value.message,
+          image: action.value.qr,
+          data: action.value.data,
+        },
+      })
     default:
       return appState
   }

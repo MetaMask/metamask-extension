@@ -46,16 +46,17 @@ EthBalanceComponent.prototype.render = function () {
 EthBalanceComponent.prototype.renderBalance = function (value, state) {
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
-  var balance, fiatNumber
+  var balance, fiatDisplayNumber, fiatTooltipNumber
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
 
 
   if (state.conversionRate !== 0) {
-    fiatNumber = (Number(splitBalance[0]) * state.conversionRate).toFixed(2)
+    fiatTooltipNumber = Number(splitBalance[0]) * state.conversionRate
+    fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
   } else {
-    fiatNumber = 'N/A'
+    fiatDisplayNumber = 'N/A'
   }
 
   var fiatSuffix = state.currentFiat
@@ -99,16 +100,16 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
       ]),
       h(Tooltip, {
         position: 'bottom',
-        title: `${fiatNumber} ${fiatSuffix}`,
+        title: `${fiatTooltipNumber} ${fiatSuffix}`,
       }, [
-        fiatDisplay(fiatNumber, fiatSuffix),
+        fiatDisplay(fiatDisplayNumber, fiatSuffix),
       ]),
     ])
   )
 }
 
-function fiatDisplay (fiatNumber, fiatSuffix) {
-  if (fiatNumber !== 'N/A') {
+function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
+  if (fiatDisplayNumber !== 'N/A') {
     return h('.flex-row', {
       style: {
         alignItems: 'flex-end',
@@ -124,7 +125,7 @@ function fiatDisplay (fiatNumber, fiatSuffix) {
           fontSize: '12px',
           color: '#333333',
         },
-      }, fiatNumber),
+      }, fiatDisplayNumber),
       h('div', {
         style: {
           color: '#AEAEAE',

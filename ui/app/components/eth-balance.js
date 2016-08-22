@@ -15,26 +15,27 @@ function EthBalanceComponent () {
 EthBalanceComponent.prototype.render = function () {
   var state = this.props
   var style = state.style
-
-  const value = formatBalance(state.value, 6)
+  var needsParse = this.props.needsParse !== undefined ? this.props.needsParse : true
+  const value = formatBalance(state.value, 6, needsParse)
   var width = state.width
 
   return (
 
-    h('.ether-balance', {
+    h('.ether-balance.ether-balance-amount', {
       style: style,
     }, [
-      h('.ether-balance-amount', {
+      h('div', {
         style: {
           display: 'inline',
           width: width,
         },
-      }, this.renderBalance(value, state)),
+      }, this.renderBalance(value)),
     ])
 
   )
 }
-EthBalanceComponent.prototype.renderBalance = function (value, state) {
+EthBalanceComponent.prototype.renderBalance = function (value) {
+  var state = this.props
   if (value === 'None') return value
   var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
   var balance
@@ -68,7 +69,7 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
             width: '100%',
             textAlign: 'right',
           },
-        }, balance),
+        }, this.props.incoming ? `+${balance}` : balance),
         h('div', {
           style: {
             color: ' #AEAEAE',

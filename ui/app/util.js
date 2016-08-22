@@ -92,8 +92,8 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-function formatBalance (balance, decimalsToKeep) {
-  var parsed = parseBalance(balance)
+function formatBalance (balance, decimalsToKeep, needsParse = true) {
+  var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
   var formatted = 'None'
@@ -141,16 +141,21 @@ function shortenBalance (balance, decimalsToKeep = 1) {
   var convertedBalance = parseFloat(balance)
   if (convertedBalance > 1000000) {
     truncatedValue = (balance / 1000000).toFixed(decimalsToKeep)
-    return `>${truncatedValue}m`
+    return `${truncatedValue}m`
   } else if (convertedBalance > 1000) {
     truncatedValue = (balance / 1000).toFixed(decimalsToKeep)
-    return `>${truncatedValue}k`
+    return `${truncatedValue}k`
   } else if (convertedBalance === 0) {
     return '0'
+  } else if (convertedBalance < 0.001) {
+    return '<0.001'
   } else if (convertedBalance < 1) {
-    var exponent = balance.match(/\.0*/)[0].length
-    truncatedValue = (convertedBalance * Math.pow(10, exponent)).toFixed(decimalsToKeep)
-    return `<${truncatedValue}e-${exponent}`
+    var stringBalance = convertedBalance.toString()
+    if (stringBalance.split('.')[1].length > 3) {
+      return convertedBalance.toFixed(3)
+    } else {
+      return stringBalance
+    }
   } else {
     return convertedBalance.toFixed(decimalsToKeep)
   }

@@ -202,6 +202,8 @@ ShapeshiftForm.prototype.shift = function () {
     'withdrawal': withdrawal,
     'pair': pair,
     'returnAddress': returnAddress,
+    //  Public api key
+    'apiKey': '803d1f5df2ed1b1476e4b9e6bcd089e34d8874595dda6a23b67d93c56ea9cc2445e98a6748b219b2b6ad654d9f075f1f1db139abfa93158c04e825db122c14b6',
   }
   var message = [
     `Deposit Limit: ${props.buyView.formView.marketinfo.limit}`,
