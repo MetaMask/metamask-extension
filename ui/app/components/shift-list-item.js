@@ -99,6 +99,8 @@ ShiftListItem.prototype.renderUtilComponents = function () {
           value: `${props.response.outgoingCoin}`,
           width: '55px',
           shorten: true,
+          needsParse: false,
+          incoming: true,
           style: {
             fontSize: '15px',
             color: '#01888C',

@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.9.0 2016-08-22
+
 - Added ShapeShift to the transaction history
 - Added affiliate key to Shapeshift requests
 - Added feature to reflect current conversion rates of current vault balance.
