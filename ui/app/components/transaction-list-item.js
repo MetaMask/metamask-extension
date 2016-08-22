@@ -44,7 +44,6 @@ TransactionListItem.prototype.render = function () {
 
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
-      key: `tx-${transaction.id + i}`,
       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)

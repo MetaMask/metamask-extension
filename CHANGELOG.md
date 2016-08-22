@@ -2,13 +2,14 @@
 
 ## Current Master
 
+- Transaction history now has a hard limit.
+- Added info link on account screen that visits Etherscan.
+
 ## 2.9.0 2016-08-22
 
 - Added ShapeShift to the transaction history
 - Added affiliate key to Shapeshift requests
 - Added feature to reflect current conversion rates of current vault balance.
-- Transaction history now has a hard limit.
-- Added a link to view more account info after transaction history.
 - Modify balance display logic.
 
 ## 2.8.0 2016-08-15

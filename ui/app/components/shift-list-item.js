@@ -26,6 +26,10 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
+  var props = this.props
+  const { depositAddress, time, i, response } = props
+  const { transaction } = response
+
   return (
     h('.transaction-list-item.flex-row', {
       style: {

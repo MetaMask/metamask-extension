@@ -4,6 +4,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const CopyButton = require('./components/copyButton')
+const AccountInfoLink = require('./components/account-info-link')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
@@ -44,6 +45,7 @@ AccountDetailScreen.prototype.render = function () {
   var selected = props.address || Object.keys(props.accounts)[0]
   var identity = props.identities[selected]
   var account = props.accounts[selected]
+  const { network } = props
 
   return (
 
@@ -127,6 +129,9 @@ AccountDetailScreen.prototype.render = function () {
                   bottom: '15px',
                 },
               }, [
+
+                h(AccountInfoLink, { selected, network }),
+
                 h(CopyButton, {
                   value: ethUtil.toChecksumAddress(selected),
                 }),
@@ -136,16 +141,15 @@ AccountDetailScreen.prototype.render = function () {
                 }, [
                   h('div', {
                     style: {
-                      margin: '5px',
-                    },
+                      display: 'flex',
+                      alignItems: 'center',
+                    }
                   }, [
                     h('img.cursor-pointer.color-orange', {
                       src: 'images/key-32.png',
                       onClick: () => this.requestAccountExport(selected),
                       style: {
-                        margin: '0px 5px',
-                        width: '20px',
-                        height: '20px',
+                        height: '19px',
                       },
                     }),
                   ]),

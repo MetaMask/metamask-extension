@@ -16,7 +16,6 @@ function TransactionList () {
 
 TransactionList.prototype.render = function () {
   const { txsToRender, network, unconfMsgs, address } = this.props
-  const transactions = txsToRender.concat(unconfMsgs)
   var shapeShiftTxList
   if (network === '1'){
     shapeShiftTxList = this.props.shapeShiftTxList
@@ -47,7 +46,7 @@ TransactionList.prototype.render = function () {
           paddingBottom: '4px',
         },
       }, [
-        'Transactions',
+        'History',
       ]),
 
       h('.tx-list', {
@@ -61,13 +60,22 @@ TransactionList.prototype.render = function () {
 
         transactions.length
           ? transactions.map((transaction, i) => {
+            let key
+            switch (transaction.key) {
+              case 'shapeshift':
+                const { depositAddress, time } = transaction
+                key = `shift-tx-${depositAddress}-${time}-${i}`
+                break
+              default:
+                key = `tx-${transaction.id}-${i}`
+            }
             return h(TransactionListItem, {
-              transaction, i, network,
+              transaction, i, network, key,
               showTx: (txId) => {
                 this.props.viewPendingTx(txId)
               },
             })
-          }).concat(viewMoreButton(accountLink))
+          })
         : h('.flex-center', {
           style: {
             flexDirection: 'column',
@@ -75,21 +83,9 @@ TransactionList.prototype.render = function () {
           },
         }, [
           'No transaction history.',
-          viewMoreButton(accountLink),
         ]),
       ]),
     ])
   )
 }
 
-function viewMoreButton(url) {
-  return url ? h('button', {
-    style: {
-      margin: '10px',
-    },
-    onClick: (ev) => {
-      ev.preventDefault()
-      extension.tabs.create({ url })
-    },
-  }, 'Show More') : null
-}
