@@ -338,3 +338,38 @@ ConfigManager.prototype.getShouldntShowWarning = function () {
   var data = this.getData()
   return ('isEthConfirmed' in data) && data.isEthConfirmed
 }
+
+ConfigManager.prototype.getShapeShiftTxList = function () {
+  var data = this.getData()
+  var shapeShiftTxList = data.shapeShiftTxList ? data.shapeShiftTxList : []
+  shapeShiftTxList.forEach((tx) => {
+    if (tx.response.status !== 'complete') {
+      var requestListner = function (request) {
+        tx.response = JSON.parse(this.responseText)
+        if (tx.response.status === 'complete') {
+          tx.time = new Date().getTime()
+        }
+      }
+
+      var shapShiftReq = new XMLHttpRequest()
+      shapShiftReq.addEventListener('load', requestListner)
+      shapShiftReq.open('GET', `https://shapeshift.io/txStat/${tx.depositAddress}`, true)
+      shapShiftReq.send()
+    }
+  })
+  this.setData(data)
+  return shapeShiftTxList
+}
+
+ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositType) {
+  var data = this.getData()
+
+  var shapeShiftTx = {depositAddress, depositType, key: 'shapeshift', time: new Date().getTime(), response: {}}
+  if (!data.shapeShiftTxList) {
+    data.shapeShiftTxList = [shapeShiftTx]
+  } else {
+    data.shapeShiftTxList.push(shapeShiftTx)
+  }
+  this.setData(data)
+}
+

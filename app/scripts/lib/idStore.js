@@ -100,6 +100,7 @@ IdentityStore.prototype.getState = function () {
     unconfMsgs: messageManager.unconfirmedMsgs(),
     messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),
+    shapeShiftTxList: configManager.getShapeShiftTxList(),
     currentFiat: configManager.getCurrentFiat(),
     conversionRate: configManager.getConversionRate(),
     conversionDate: configManager.getConversionDate(),

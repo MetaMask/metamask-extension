@@ -10,7 +10,7 @@ const vreme = new (require('vreme'))
 const extension = require('../../../app/scripts/lib/extension')
 
 const TransactionIcon = require('./transaction-list-item-icon')
-
+const ShiftListItem = require('./shift-list-item')
 module.exports = TransactionListItem
 
 inherits(TransactionListItem, Component)
@@ -20,7 +20,9 @@ function TransactionListItem () {
 
 TransactionListItem.prototype.render = function () {
   const { transaction, i, network } = this.props
-
+  if (transaction.key === 'shapeshift') {
+    if (network === '1') return h(ShiftListItem, transaction)
+  }
   var date = formatDate(transaction.time)
 
   let isLinkable = false

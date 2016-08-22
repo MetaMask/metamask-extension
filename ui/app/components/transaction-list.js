@@ -17,6 +17,11 @@ function TransactionList () {
 TransactionList.prototype.render = function () {
   const { txsToRender, network, unconfMsgs, address } = this.props
   const transactions = txsToRender.concat(unconfMsgs)
+  var shapeShiftTxList
+  if (network === '1'){
+    shapeShiftTxList = this.props.shapeShiftTxList
+  }
+  const transactions = !shapeShiftTxList ? txsToRender.concat(unconfMsgs) : txsToRender.concat(unconfMsgs, shapeShiftTxList)
   .sort((a, b) => b.time - a.time)
   const accountLink = genAccountLink(address, network)
 
