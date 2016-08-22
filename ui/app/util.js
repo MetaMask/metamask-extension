@@ -92,8 +92,8 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-function formatBalance (balance, decimalsToKeep) {
-  var parsed = parseBalance(balance)
+function formatBalance (balance, decimalsToKeep, needsParse = true) {
+  var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
   var formatted = 'None'
