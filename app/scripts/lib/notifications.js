@@ -2,19 +2,15 @@ const extension = require('./extension')
 
 const notifications = {
   show: showNotification,
+  getPopup,
 }
 module.exports = notifications
 window.METAMASK_NOTIFIER = notifications
 
 function showNotification() {
-  extension.windows.getAll({}, (windows) => {
-
-    let popupWindow = windows.find((win) => {
-      return win.type === 'popup'
-    })
-
-    if (popupWindow) {
-      return extension.windows.update(popupWindow.id, { focused: true })
+  getPopup((popup) => {
+    if (popup) {
+      return extension.windows.update(popup.id, { focused: true })
     }
 
     extension.windows.create({
@@ -24,6 +20,16 @@ function showNotification() {
       width: 360,
       height: 500,
     })
+  })
+}
+
+function getPopup(cb) {
+  extension.windows.getAll({}, (windows) => {
+    let popup = windows.find((win) => {
+      return win.type === 'popup'
+    })
+
+    cb(popup)
   })
 }
 

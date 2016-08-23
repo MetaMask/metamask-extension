@@ -2,6 +2,7 @@ const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
 const extension = require('../../../app/scripts/lib/extension')
+const notification = require('../../../app/scripts/lib/notifications')
 
 module.exports = reduceApp
 
@@ -252,12 +253,7 @@ function reduceApp (state, action) {
         })
       } else {
 
-        const isNotification = window.METAMASK_UI_TYPE === 'notification'
-        if (isNotification) {
-          extension.windows.getCurrent({}, (win) => {
-            extension.windows.remove(win.id, console.error)
-          })
-        }
+        closePopupIfOpen()
 
         return extend(appState, {
           transForward: false,
@@ -524,4 +520,9 @@ function indexForPending (state, txId) {
   return idx
 }
 
-
+function closePopupIfOpen() {
+  notification.getPopup((popup) => {
+    if (!popup) return
+    extension.windows.remove(popup.id, console.error)
+  })
+}
