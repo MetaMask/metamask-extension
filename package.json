@@ -45,7 +45,6 @@
     "eth-store": "^1.1.0",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.4.0",
-    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-eslint": "^2.0.0",
     "hat": "0.0.3",
     "identicon.js": "^1.2.1",
