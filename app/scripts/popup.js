@@ -11,6 +11,7 @@ const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const isPopupOrNotification = require('./lib/is-popup-or-notification')
 const extension = require('./lib/extension')
+const notification = require('./lib/notifications')
 
 // setup app
 var css = MetaMaskUiCss()
@@ -25,6 +26,7 @@ function connectToAccountManager (cb) {
   // setup communication with background
 
   var name = isPopupOrNotification()
+  closePopupIfOpen(name)
   window.METAMASK_UI_TYPE = name
   var pluginPort = extension.runtime.connect({ name })
   var portStream = new PortStream(pluginPort)
@@ -98,3 +100,8 @@ function setupApp (err, opts) {
   })
 }
 
+function closePopupIfOpen(name) {
+  if (name !== 'notification') {
+    notification.closePopup()
+  }
+}

@@ -1,13 +1,14 @@
 const extension = require('./extension')
 
 const notifications = {
-  show: showNotification,
+  show,
   getPopup,
+  closePopup,
 }
 module.exports = notifications
 window.METAMASK_NOTIFIER = notifications
 
-function showNotification() {
+function show () {
   getPopup((popup) => {
     if (popup) {
       return extension.windows.update(popup.id, { focused: true })
@@ -39,3 +40,9 @@ function getPopup(cb) {
   })
 }
 
+function closePopup() {
+  getPopup((popup) => {
+    if (!popup) return
+    extension.windows.remove(popup.id, console.error)
+  })
+}

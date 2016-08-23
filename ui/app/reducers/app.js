@@ -253,7 +253,7 @@ function reduceApp (state, action) {
         })
       } else {
 
-        closePopupIfOpen()
+        notification.closePopup()
 
         return extend(appState, {
           transForward: false,
@@ -520,9 +520,3 @@ function indexForPending (state, txId) {
   return idx
 }
 
-function closePopupIfOpen() {
-  notification.getPopup((popup) => {
-    if (!popup) return
-    extension.windows.remove(popup.id, console.error)
-  })
-}
