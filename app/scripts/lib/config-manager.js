@@ -5,6 +5,7 @@ const rp = require('request-promise')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
+const txLimit = 40
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -15,6 +16,8 @@ const MAINNET_RPC = MetamaskConfig.network.mainnet
  */
 module.exports = ConfigManager
 function ConfigManager (opts) {
+  this.txLimit = txLimit
+
   // ConfigManager is observable and will emit updates
   this._subs = []
 
@@ -181,6 +184,9 @@ ConfigManager.prototype._saveTxList = function (txList) {
 
 ConfigManager.prototype.addTx = function (tx) {
   var transactions = this.getTxList()
+  while (transactions.length > this.txLimit - 1) {
+    transactions.shift()
+  }
   transactions.push(tx)
   this._saveTxList(transactions)
 }
