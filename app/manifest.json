@@ -4,6 +4,16 @@
   "version": "2.9.0",
   "manifest_version": 2,
   "description": "Ethereum Browser Extension",
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Ctrl+M",
+        "mac": "Command+M",
+        "chromeos": "Ctrl+M",
+        "linux": "Ctrl+M"
+      }
+    }
+  },
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
