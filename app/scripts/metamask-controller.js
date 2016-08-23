@@ -12,6 +12,7 @@ module.exports = class MetamaskController {
 
   constructor (opts) {
     this.opts = opts
+    this.listeners = []
     this.configManager = new ConfigManager(opts)
     this.idStore = new IdentityStore({
       configManager: this.configManager,
@@ -112,9 +113,9 @@ module.exports = class MetamaskController {
   }
 
   sendUpdate () {
-    if (this.remote) {
-      this.remote.sendUpdate(this.getState())
-    }
+    this.listeners.forEach((remote) => {
+      remote.sendUpdate(this.getState())
+    })
   }
 
   initializeProvider (opts) {
@@ -130,10 +131,17 @@ module.exports = class MetamaskController {
       },
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
-      signTransaction: idStore.signTransaction.bind(idStore),
+      signTransaction: (...args) => {
+        idStore.signTransaction(...args)
+        this.sendUpdate()
+      },
+
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
-      signMessage: idStore.signMessage.bind(idStore),
+      signMessage: (...args) => {
+        idStore.signMessage(...args)
+        this.sendUpdate()
+      },
     }
 
     var provider = MetaMaskProvider(providerOpts)
@@ -193,6 +201,8 @@ module.exports = class MetamaskController {
 
     // It's locked
     if (!state.isUnlocked) {
+
+      // Allow the environment to define an unlock message.
       this.opts.unlockAccountMessage()
       idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, noop)
 
@@ -200,6 +210,7 @@ module.exports = class MetamaskController {
     } else {
       idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
         if (err) return onTxDoneCb(err)
+        this.sendUpdate()
         this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
       })
     }
@@ -211,6 +222,7 @@ module.exports = class MetamaskController {
       this.opts.unlockAccountMessage()
     } else {
       this.addUnconfirmedMessage(msgParams, cb)
+      this.sendUpdate()
     }
   }
 

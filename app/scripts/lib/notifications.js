@@ -1,24 +1,10 @@
 const extension = require('./extension')
 
 const notifications = {
-  createUnlockRequestNotification: createUnlockRequestNotification,
-  createTxNotification: createTxNotification,
-  createMsgNotification: createMsgNotification,
+  show: showNotification,
 }
 module.exports = notifications
 window.METAMASK_NOTIFIER = notifications
-
-function createUnlockRequestNotification (opts) {
-  showNotification()
-}
-
-function createTxNotification (state) {
-  showNotification()
-}
-
-function createMsgNotification (state) {
-  showNotification()
-}
 
 function showNotification() {
   extension.windows.getAll({}, (windows) => {
