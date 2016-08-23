@@ -54,7 +54,7 @@ var __define
 function cleanContextForImports () {
   __define = global.define
   try {
-    delete global.define
+    global.define = undefined
   } catch (_) {
     console.warn('MetaMask - global.define could not be deleted.')
   }

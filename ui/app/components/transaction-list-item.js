@@ -19,7 +19,7 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.render = function () {
-  const { transaction, i, network } = this.props
+  const { transaction, network } = this.props
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }
@@ -44,7 +44,6 @@ TransactionListItem.prototype.render = function () {
 
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
-      key: `tx-${transaction.id + i}`,
       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)
