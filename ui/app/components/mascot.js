@@ -14,9 +14,8 @@ function Mascot () {
     pxNotRatio: true,
     width: 200,
     height: 200,
-    staticImage: './images/icon-512.png'
+    staticImage: './images/icon-512.png',
   })
-  debugger;
   if (!this.logo.webGLSupport) return
   this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
