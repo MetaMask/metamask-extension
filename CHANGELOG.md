@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Added static image as fallback for when WebGL isn't supported.
+
 ## 2.9.0 2016-08-22
 
 - Added ShapeShift to the transaction history
