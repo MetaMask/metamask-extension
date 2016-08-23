@@ -19,7 +19,7 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.render = function () {
-  const { transaction, i, network } = this.props
+  const { transaction, network } = this.props
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }

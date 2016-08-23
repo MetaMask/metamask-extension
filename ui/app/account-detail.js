@@ -143,7 +143,7 @@ AccountDetailScreen.prototype.render = function () {
                     style: {
                       display: 'flex',
                       alignItems: 'center',
-                    }
+                    },
                   }, [
                     h('img.cursor-pointer.color-orange', {
                       src: 'images/key-32.png',

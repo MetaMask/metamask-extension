@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const genAccountLink = require('../../lib/account-link')
-const extension = require('../../../app/scripts/lib/extension')
 
 const TransactionListItem = require('./transaction-list-item')
 
@@ -17,12 +16,11 @@ function TransactionList () {
 TransactionList.prototype.render = function () {
   const { txsToRender, network, unconfMsgs, address } = this.props
   var shapeShiftTxList
-  if (network === '1'){
+  if (network === '1') {
     shapeShiftTxList = this.props.shapeShiftTxList
   }
   const transactions = !shapeShiftTxList ? txsToRender.concat(unconfMsgs) : txsToRender.concat(unconfMsgs, shapeShiftTxList)
   .sort((a, b) => b.time - a.time)
-  const accountLink = genAccountLink(address, network)
 
   return (
 

@@ -27,8 +27,7 @@ function ShiftListItem () {
 
 ShiftListItem.prototype.render = function () {
   var props = this.props
-  const { depositAddress, time, i, response } = props
-  const { transaction } = response
+  const { response } = props
 
   return (
     h('.transaction-list-item.flex-row', {
@@ -117,7 +116,6 @@ ShiftListItem.prototype.renderUtilComponents = function () {
     default:
       return ''
   }
-
 }
 
 ShiftListItem.prototype.renderInfo = function () {
