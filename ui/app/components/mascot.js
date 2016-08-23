@@ -14,7 +14,9 @@ function Mascot () {
     pxNotRatio: true,
     width: 200,
     height: 200,
+    staticImage: './images/icon-512.png'
   })
+  debugger;
   if (!this.logo.webGLSupport) return
   this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
@@ -46,12 +48,12 @@ Mascot.prototype.componentDidMount = function () {
 }
 
 Mascot.prototype.componentWillUnmount = function () {
-  if (!this.logo) return
+  if (!this.logo.webGLSupport) return
   this.logo.canvas.remove()
 }
 
 Mascot.prototype.handleAnimationEvents = function () {
-  if (!this.logo) return
+  if (!this.logo.webGLSupport) return
   // only setup listeners once
   if (this.animations) return
   this.animations = this.props.animationEventEmitter
@@ -60,7 +62,7 @@ Mascot.prototype.handleAnimationEvents = function () {
 }
 
 Mascot.prototype.lookAt = function (target) {
-  if (!this.logo) return
+  if (!this.logo.webGLSupport) return
   this.unfollowMouse()
   this.logo.lookAt(target)
   this.refollowMouse()
