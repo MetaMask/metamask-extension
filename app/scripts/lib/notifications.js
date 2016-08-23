@@ -24,6 +24,12 @@ function showNotification() {
 }
 
 function getPopup(cb) {
+
+  // Ignore in test environment
+  if (!extension.windows) {
+    return cb(null)
+  }
+
   extension.windows.getAll({}, (windows) => {
     let popup = windows.find((win) => {
       return win.type === 'popup'
