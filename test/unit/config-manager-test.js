@@ -233,6 +233,17 @@ describe('config-manager', function() {
         assert.equal(result.length, 1)
         assert.equal(result[0].id, 1)
       })
+
+      it('cuts off early txs beyond a limit', function() {
+        const limit = configManager.txLimit
+        for (let i = 0; i < limit + 1; i++) {
+          let tx = { id: i }
+          configManager.addTx(tx)
+        }
+        var result = configManager.getTxList()
+        assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
+        assert.equal(result[0].id, 1, 'early txs truncted')
+      })
     })
 
     describe('#confirmTx', function() {

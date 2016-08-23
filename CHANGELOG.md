@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Transaction history now has a hard limit.
+- Added info link on account screen that visits Etherscan.
+
 ## 2.9.0 2016-08-22
 
 - Added ShapeShift to the transaction history
