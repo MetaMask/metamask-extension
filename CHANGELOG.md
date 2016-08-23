@@ -3,6 +3,8 @@
 ## Current Master
 
 - Added static image as fallback for when WebGL isn't supported.
+- Transaction history now has a hard limit.
+- Added info link on account screen that visits Etherscan.
 
 ## 2.9.0 2016-08-22
 
