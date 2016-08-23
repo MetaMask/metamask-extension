@@ -3,6 +3,7 @@
 ## Current Master
 
 - Changed transaction approval from notifications system to popup system.
+- Added static image as fallback for when WebGL isn't supported.
 - Transaction history now has a hard limit.
 - Added info link on account screen that visits Etherscan.
 
