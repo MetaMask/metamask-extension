@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const genAccountLink = require('../../lib/account-link')
 
 const TransactionListItem = require('./transaction-list-item')
 
@@ -14,7 +13,7 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { txsToRender, network, unconfMsgs, address } = this.props
+  const { txsToRender, network, unconfMsgs } = this.props
   var shapeShiftTxList
   if (network === '1') {
     shapeShiftTxList = this.props.shapeShiftTxList
