@@ -3,9 +3,10 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const Mascot = require('./components/mascot')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
+
+const Mascot = require('./components/mascot')
 
 module.exports = connect(mapStateToProps)(UnlockScreen)
 
