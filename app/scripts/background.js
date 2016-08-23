@@ -161,4 +161,3 @@ function setData (data) {
   window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }
 
-function noop () {}
