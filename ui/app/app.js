@@ -51,6 +51,7 @@ function mapStateToProps (state) {
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    forgottenPassword: state.appState.forgottenPassword,
   }
 }
 
@@ -89,6 +90,7 @@ App.prototype.render = function () {
           transitionLeaveTimeout: 300,
         }, [
           this.renderPrimary(),
+          this.renderBackToInitButton(),
         ]),
       ]),
     ])
@@ -294,6 +296,61 @@ App.prototype.renderDropdown = function () {
   ])
 }
 
+App.prototype.renderBackToInitButton = function () {
+  var props = this.props
+  var button = null
+  var backButton = h('.flex-row', {
+    key: 'leftArrow',
+    transForward: false,
+    style: {
+      position: 'absolute',
+      bottom: '10px',
+      left: '8px',
+      fontSize: '21px',
+      fontFamily: 'Montserrat Light',
+      color: '#7F8082',
+      width: '71.969px',
+      alignItems: 'flex-end',
+    },
+  }, [
+    h('i.fa.fa-arrow-left.cursor-pointer'),
+    h('div.cursor-pointer', {
+      style: {
+        marginLeft: '3px',
+      },
+      onClick: () => props.dispatch(actions.goBackToInitView()),
+    }, 'Back'),
+  ])
+  if (!props.isUnlocked) {
+    if (props.currentView.name === 'InitMenu') {
+      button = props.forgottenPassword ? h('.flex-row', {
+        key: 'rightArrow',
+        style: {
+          position: 'absolute',
+          bottom: '10px',
+          right: '8px',
+          fontSize: '21px',
+          fontFamily: 'Montserrat Light',
+          color: '#7F8082',
+          width: '77.578px',
+          alignItems: 'flex-end',
+        },
+      }, [
+        h('div.cursor-pointer', {
+          style: {
+            marginRight: '3px',
+          },
+          onClick: () => props.dispatch(actions.backToUnlockView()),
+        }, 'Login'),
+        h('i.fa.fa-arrow-right.cursor-pointer'),
+      ]) : null
+    } else if (props.isInitialized) {
+      button = backButton
+    }
+  }
+  return button
+}
+
 App.prototype.renderPrimary = function () {
   var props = this.props
 
@@ -306,7 +363,7 @@ App.prototype.renderPrimary = function () {
   }
 
   // show initialize screen
-  if (!props.isInitialized) {
+  if (!props.isInitialized || props.forgottenPassword) {
     // show current view
     switch (props.currentView.name) {
 

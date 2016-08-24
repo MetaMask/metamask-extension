@@ -137,6 +137,12 @@ var actions = {
   getQr: getQr,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
+// FORGOT PASSWORD:
+  BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
+  goBackToInitView: goBackToInitView,
+  RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
+  BACK_TO_UNLOCK_VIEW: 'BACK_TO_UNLOCK_VIEW',
+  backToUnlockView: backToUnlockView,
 }
 
 module.exports = actions
@@ -370,6 +376,12 @@ function showNewVaultSeed (seed) {
   }
 }
 
+function backToUnlockView () {
+  return {
+    type: actions.BACK_TO_UNLOCK_VIEW,
+  }
+}
+
 //
 // unlock screen
 //
@@ -495,6 +507,12 @@ function showConfigPage (transitionForward = true) {
   return {
     type: actions.SHOW_CONFIG_PAGE,
     value: transitionForward,
+  }
+}
+
+function goBackToInitView () {
+  return {
+    type: actions.BACK_TO_INIT_MENU,
   }
 }
 
