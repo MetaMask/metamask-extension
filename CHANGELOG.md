@@ -5,6 +5,7 @@
 - Added static image as fallback for when WebGL isn't supported.
 - Transaction history now has a hard limit.
 - Added info link on account screen that visits Etherscan.
+- Fixed bug where a message signing request would be lost if the vault was locked.
 
 ## 2.9.0 2016-08-22
 
