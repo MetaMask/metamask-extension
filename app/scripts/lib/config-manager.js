@@ -300,9 +300,10 @@ ConfigManager.prototype.updateConversionRate = function () {
     this.setConversionPrice(0)
     this.setConversionDate('N/A')
   })
+
 }
 
-ConfigManager.prototype.setConversionPrice = function(price) {
+ConfigManager.prototype.setConversionPrice = function (price) {
   var data = this.getData()
   data.conversionRate = Number(price)
   this.setData(data)
@@ -372,4 +373,3 @@ ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositTy
   }
   this.setData(data)
 }
-
