@@ -1,4 +1,4 @@
-var assert = require('assert')
+const assert = require('assert')
 const extend = require('xtend')
 const STORAGE_KEY = 'metamask-persistance-key'
 var configManagerGen = require('../lib/mock-config-manager')
@@ -47,11 +47,12 @@ describe('config-manager', function() {
     describe('#updateConversionRate', function() {
       it('should retrieve an update for ETH to USD and set it in memory', function(done) {
         this.timeout(15000)
+
         assert.equal(configManager.getConversionRate(), false)
         var promise = new Promise(
           function (resolve, reject) {
             configManager.setCurrentFiat('USD')
-            configManager.updateConversionRate().then(function() {
+            configManager.updateConversionRate(true, 'USD').then(function() {
               resolve()
             })
         })
@@ -69,10 +70,11 @@ describe('config-manager', function() {
       it('should work for JPY as well.', function() {
         this.timeout(15000)
         assert.equal(configManager.getConversionRate(), false)
+
         var promise = new Promise(
           function (resolve, reject) {
             configManager.setCurrentFiat('JPY')
-            configManager.updateConversionRate().then(function() {
+            configManager.updateConversionRate(true, 'JPY').then(function() {
               resolve()
             })
         })
