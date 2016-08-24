@@ -7,10 +7,10 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "windows": "Ctrl+M",
-        "mac": "Command+M",
-        "chromeos": "Ctrl+M",
-        "linux": "Ctrl+M"
+        "windows": "Alt+M",
+        "mac": "Alt+M",
+        "chromeos": "Alt+M",
+        "linux": "Alt+M"
       }
     }
   },
