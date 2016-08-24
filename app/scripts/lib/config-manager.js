@@ -288,29 +288,19 @@ ConfigManager.prototype.getCurrentFiat = function () {
   return ('fiatCurrency' in data) && data.fiatCurrency
 }
 
-ConfigManager.prototype.updateConversionRate = function (mock = false, mockCurrency = 'USD') {
+ConfigManager.prototype.updateConversionRate = function () {
   var data = this.getData()
-  if (!mock) {
-    return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
-    .then((response) => {
-      const parsedResponse = JSON.parse(response)
-      this.setConversionPrice(parsedResponse.ticker.price)
-      this.setConversionDate(parsedResponse.timestamp)
-    }).catch((err) => {
-      console.error('Error in conversion.', err)
-      this.setConversionPrice(0)
-      this.setConversionDate('N/A')
-    })
-  } else {
-    return new Promise(function(resolve, reject) { resolve() }).then((response) => {
-      this.setConversionPrice('11.01')
-      this.setConversionDate(1472065924)
-    }).catch((err) => {
-      console.error('Error in conversion.', err)
-      this.setConversionPrice('11.01')
-      this.setConversionDate(1472065924)
-    })
-  }
+  return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
+  .then((response) => {
+    const parsedResponse = JSON.parse(response)
+    this.setConversionPrice(parsedResponse.ticker.price)
+    this.setConversionDate(parsedResponse.timestamp)
+  }).catch((err) => {
+    console.error('Error in conversion.', err)
+    this.setConversionPrice(0)
+    this.setConversionDate('N/A')
+  })
+
 }
 
 ConfigManager.prototype.setConversionPrice = function (price) {

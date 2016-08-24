@@ -108,6 +108,7 @@
     "mocha-eslint": "^2.1.1",
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^1.1.5",
+    "nock": "^8.0.0",
     "qs": "^6.2.0",
     "qunit": "^0.9.1",
     "sinon": "^1.17.3",
