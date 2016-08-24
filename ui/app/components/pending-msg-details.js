@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
-const readableDate = require('../util').readableDate
 
 module.exports = PendingMsgDetails
 
@@ -24,6 +23,9 @@ PendingMsgDetails.prototype.render = function () {
   return (
     h('div', {
       key: msgData.id,
+      style: {
+        margin: '10px 20px',
+      },
     }, [
 
       // account that will sign
@@ -36,11 +38,6 @@ PendingMsgDetails.prototype.render = function () {
 
       // message data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'DATE'),
-          h('span.font-small', readableDate(msgData.time)),
-        ]),
-
         h('.flex-row.flex-space-between', [
           h('label.font-small', 'MESSAGE'),
           h('span.font-small', msgParams.data),
