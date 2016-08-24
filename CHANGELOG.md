@@ -7,6 +7,7 @@
 - Added info link on account screen that visits Etherscan.
 - Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt/Alt+M)
 - Prevent API calls in  tests.
+- Fixed bug where sign message confirmation would sometimes render blank.
 
 ## 2.9.0 2016-08-22
 
