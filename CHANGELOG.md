@@ -5,6 +5,7 @@
 - Added static image as fallback for when WebGL isn't supported.
 - Transaction history now has a hard limit.
 - Added info link on account screen that visits Etherscan.
+- Fixed bug where a message signing request would be lost if the vault was locked.
 - Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt/Alt+M)
 - Prevent API calls in  tests.
 - Fixed bug where sign message confirmation would sometimes render blank.
