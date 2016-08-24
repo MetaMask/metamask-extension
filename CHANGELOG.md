@@ -5,7 +5,7 @@
 - Added static image as fallback for when WebGL isn't supported.
 - Transaction history now has a hard limit.
 - Added info link on account screen that visits Etherscan.
-- Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt+M)
+- Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt/Alt+M)
 
 ## 2.9.0 2016-08-22
 
