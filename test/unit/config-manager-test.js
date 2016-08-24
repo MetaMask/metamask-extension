@@ -1,9 +1,10 @@
-var assert = require('assert')
+const assert = require('assert')
 const extend = require('xtend')
 const STORAGE_KEY = 'metamask-persistance-key'
 var configManagerGen = require('../lib/mock-config-manager')
 var configManager
 const rp = require('request-promise')
+const nock = require('nock')
 
 describe('config-manager', function() {
 
@@ -47,6 +48,10 @@ describe('config-manager', function() {
     describe('#updateConversionRate', function() {
       it('should retrieve an update for ETH to USD and set it in memory', function(done) {
         this.timeout(15000)
+        var usdMock = nock('https://www.cryptonator.com')
+          .get('/api/ticker/eth-USD')
+          .reply(200, '{"ticker":{"base":"ETH","target":"USD","price":"11.02456145","volume":"44948.91745289","change":"-0.01472534"},"timestamp":1472072136,"success":true,"error":""}')
+
         assert.equal(configManager.getConversionRate(), false)
         var promise = new Promise(
           function (resolve, reject) {
@@ -69,6 +74,12 @@ describe('config-manager', function() {
       it('should work for JPY as well.', function() {
         this.timeout(15000)
         assert.equal(configManager.getConversionRate(), false)
+
+        var jpyMock = nock('https://www.cryptonator.com')
+          .get('/api/ticker/eth-JPY')
+          .reply(200, '{"ticker":{"base":"ETH","target":"JPY","price":"11.02456145","volume":"44948.91745289","change":"-0.01472534"},"timestamp":1472072136,"success":true,"error":""}')
+
+
         var promise = new Promise(
           function (resolve, reject) {
             configManager.setCurrentFiat('JPY')
