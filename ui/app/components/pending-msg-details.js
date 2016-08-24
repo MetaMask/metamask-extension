@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
-const readableDate = require('../util').readableDate
 
 module.exports = PendingMsgDetails
 
