@@ -10,5 +10,26 @@ Since:
 
 Whenever this class is loaded, it registers an `onChange` listener. On those events, it checks the target for a special ID attribute it listens for.
 
-Let's say we call our class `PersistentForm`. So then we might check for a `persistent-form-id`.
+Let's say we call our class `PersistentForm`. So then we might check for a `persistent-form-id` on change.
+
+The parent element will define a special attribute, let's say `persistent-form-parent-id`.
+
+Here's some pseudo-code for it:
+```
+onChange(ev) =>
+  persisted = localStorage[parentKey]
+  persisted[childKey] = ev.value
+  localStorage[parentKey] = persisted
+```
+
+On startup, we just do the inverse:
+
+```
+onStart() =>
+  el = this.getEl()
+  parentKey = el.attr('persistent-form-parent-id')
+  children = el.children.where('[persistent-form-id]')
+  children.each(loadValue)
+```
+
 
