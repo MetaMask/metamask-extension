@@ -46,7 +46,6 @@ PersistentForm.prototype.persistentFieldDidUpdate = function (event) {
   const key = field.getAttribute('data-persistent-formid')
   const val = field.value
   store[key] = val
-  console.log(val)
   this.setPersistentStore(store)
 }
 
