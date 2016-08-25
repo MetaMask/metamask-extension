@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 2.9.2 2016-08-24
+
+- Fixed shortcut bug from preventing installation.
+
+
 ## 2.9.1 2016-08-24
 
 - Added static image as fallback for when WebGL isn't supported.
