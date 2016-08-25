@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const notification = require('../../../app/scripts/lib/notifications')
 
 module.exports = reduceApp
 
@@ -250,6 +251,9 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
+
+        notification.closePopup()
+
         return extend(appState, {
           transForward: false,
           warning: null,
@@ -514,5 +518,4 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-
 

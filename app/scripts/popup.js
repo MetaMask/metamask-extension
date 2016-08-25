@@ -9,7 +9,9 @@ const injectCss = require('inject-css')
 const PortStream = require('./lib/port-stream.js')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const isPopupOrNotification = require('./lib/is-popup-or-notification')
 const extension = require('./lib/extension')
+const notification = require('./lib/notifications')
 
 // setup app
 var css = MetaMaskUiCss()
@@ -22,7 +24,11 @@ async.parallel({
 
 function connectToAccountManager (cb) {
   // setup communication with background
-  var pluginPort = extension.runtime.connect({name: 'popup'})
+
+  var name = isPopupOrNotification()
+  closePopupIfOpen(name)
+  window.METAMASK_UI_TYPE = name
+  var pluginPort = extension.runtime.connect({ name })
   var portStream = new PortStream(pluginPort)
   // setup multiplexing
   var mx = setupMultiplex(portStream)
@@ -92,4 +98,10 @@ function setupApp (err, opts) {
     currentDomain: opts.currentDomain,
     networkVersion: opts.networkVersion,
   })
+}
+
+function closePopupIfOpen(name) {
+  if (name !== 'notification') {
+    notification.closePopup()
+  }
 }

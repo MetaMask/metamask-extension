@@ -5,6 +5,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
+const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
@@ -36,6 +37,7 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfTxList = txHelper(unconfTxs, unconfMsgs)
   var index = state.index !== undefined ? state.index : 0
   var txData = unconfTxList[index] || unconfTxList[0] || {}
+  var isNotification = isPopupOrNotification() === 'notification'
 
   return (
 
@@ -43,9 +45,9 @@ ConfirmTxScreen.prototype.render = function () {
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
-        }),
+        }) : null,
         h('h2.page-subtitle', 'Confirm Transaction'),
       ]),
 
