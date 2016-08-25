@@ -26,6 +26,7 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
+
   return (
     h('.transaction-list-item.flex-row', {
       style: {
@@ -113,7 +114,6 @@ ShiftListItem.prototype.renderUtilComponents = function () {
     default:
       return ''
   }
-
 }
 
 ShiftListItem.prototype.renderInfo = function () {
