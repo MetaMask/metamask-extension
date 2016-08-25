@@ -98,6 +98,11 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
+
+  if (window.METAMASK_UI_TYPE === 'notification') {
+    return null
+  }
+
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false

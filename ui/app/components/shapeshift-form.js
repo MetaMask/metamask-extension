@@ -1,4 +1,4 @@
-const Component = require('react').Component
+const PersistentForm = require('../../lib/persistent-form')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -17,12 +17,15 @@ function mapStateToProps(state) {
   }
 }
 
-inherits(ShapeshiftForm, Component)
+inherits(ShapeshiftForm, PersistentForm)
 
 function ShapeshiftForm () {
-  Component.call(this)
+  PersistentForm.call(this)
+  this.persistentFormParentId = 'shapeshift-buy-form'
 }
+
 ShapeshiftForm.prototype.render = function () {
+
   return h(ReactCSSTransitionGroup, {
     className: 'css-transition-group',
     transitionName: 'main',
@@ -66,6 +69,9 @@ ShapeshiftForm.prototype.renderMain = function () {
         h('input#fromCoin.buy-inputs.ex-coins', {
           type: 'text',
           list: 'coinList',
+          dataset: {
+            persistentFormId: 'input-coin',
+          },
           style: {
             boxSizing: 'border-box',
           },
@@ -159,6 +165,9 @@ ShapeshiftForm.prototype.renderMain = function () {
       h('input#fromCoinAddress.buy-inputs', {
         type: 'text',
         placeholder: `Your ${coin} Refund Address`,
+        dataset: {
+          persistentFormId: 'refund-address',
+        },
         style: {
           boxSizing: 'border-box',
           width: '278px',
