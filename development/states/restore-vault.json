@@ -1,0 +1,39 @@
+{
+  "metamask": {
+    "isInitialized": false,
+    "isUnlocked": false,
+    "isEthConfirmed": false,
+    "currentDomain": "example.com",
+    "rpcTarget": "https://rawtestrpc.metamask.io/",
+    "identities": {},
+    "unconfTxs": {},
+    "currentFiat": "USD",
+    "conversionRate": 0,
+    "conversionDate": "N/A",
+    "accounts": {},
+    "transactions": [],
+    "seedWords": null,
+    "isConfirmed": true,
+    "unconfMsgs": {},
+    "messages": [],
+    "shapeShiftTxList": [],
+    "provider": {
+      "type": "testnet"
+    },
+    "network": "2"
+  },
+  "appState": {
+    "menuOpen": false,
+    "currentView": {
+      "name": "restoreVault"
+    },
+    "accountDetail": {
+      "subview": "transactions"
+    },
+    "currentDomain": "extensions",
+    "transForward": true,
+    "isLoading": false,
+    "warning": null
+  },
+  "identities": {}
+}

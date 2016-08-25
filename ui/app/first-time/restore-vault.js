@@ -1,14 +1,14 @@
 const inherits = require('util').inherits
-const Component = require('react').Component
+const PersistentForm = require('../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../actions')
 
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 
-inherits(RestoreVaultScreen, Component)
+inherits(RestoreVaultScreen, PersistentForm)
 function RestoreVaultScreen () {
-  Component.call(this)
+  PersistentForm.call(this)
 }
 
 function mapStateToProps (state) {
@@ -19,6 +19,8 @@ function mapStateToProps (state) {
 
 RestoreVaultScreen.prototype.render = function () {
   var state = this.props
+  this.persistentFormParentId = 'restore-vault-form'
+
   return (
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
@@ -39,6 +41,9 @@ RestoreVaultScreen.prototype.render = function () {
       // wallet seed entry
       h('h3', 'Wallet Seed'),
       h('textarea.twelve-word-phrase.letter-spacey', {
+        dataset: {
+          persistentFormId: 'wallet-seed',
+        },
         placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
       }),
 
@@ -47,6 +52,9 @@ RestoreVaultScreen.prototype.render = function () {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
+        dataset: {
+          persistentFormId: 'password',
+        },
         style: {
           width: 260,
           marginTop: 12,
@@ -59,6 +67,9 @@ RestoreVaultScreen.prototype.render = function () {
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
         onKeyPress: this.onMaybeCreate.bind(this),
+        dataset: {
+          persistentFormId: 'password-confirmation',
+        },
         style: {
           width: 260,
           marginTop: 16,

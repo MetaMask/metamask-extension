@@ -3,6 +3,12 @@
 ## Current Master
 
 - Changed transaction approval from notifications system to popup system.
+- Forms now retain their values even when closing the popup and reopening it.
+
+## 2.9.2 2016-08-24
+
+- Fixed shortcut bug from preventing installation.
+
 ## 2.9.1 2016-08-24
 
 - Added static image as fallback for when WebGL isn't supported.
