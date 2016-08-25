@@ -8,28 +8,21 @@ Since:
 
  This calls for an architecture of a form component that can completely persist its values to LocalStorage on every relevant change, and restore those values on reopening.
 
-Whenever this class is loaded, it registers an `onChange` listener. On those events, it checks the target for a special ID attribute it listens for.
+ To achieve this, we have defined a class, a subclass of `React.Component`, called `PersistentForm`, and it's stored at `ui/lib/persistent-form.js`.
 
-Let's say we call our class `PersistentForm`. So then we might check for a `persistent-form-id` on change.
+To use this class, simply take your form component (the component that renders `input`, `select`, or `textarea` elements), and make it subclass from `PersistentForm` instead of `React.Component`.
 
-The parent element will define a special attribute, let's say `persistent-form-parent-id`.
+You can see an example of this in use in `ui/app/first-time/restore-vault.js`.
 
-Here's some pseudo-code for it:
-```
-onChange(ev) =>
-  persisted = localStorage[parentKey]
-  persisted[childKey] = ev.value
-  localStorage[parentKey] = persisted
-```
+Additionally, any field whose value should be persisted, should have a `persistentFormId` attribute, which needs to be assigned under a `dataset` key on the main `attributes` hash.  For example:
 
-On startup, we just do the inverse:
-
-```
-onStart() =>
-  el = this.getEl()
-  parentKey = el.attr('persistent-form-parent-id')
-  children = el.children.where('[persistent-form-id]')
-  children.each(loadValue)
+```javascript
+  return h('textarea.twelve-word-phrase.letter-spacey', {
+    dataset: {
+      persistentFormId: 'wallet-seed',
+    },
+  })
 ```
 
+That's it! This field should be persisted to `localStorage` on each `keyUp`, those values should be restored on view load, and the cached values should be cleared when navigating deliberately away from the form.
 
