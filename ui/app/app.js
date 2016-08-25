@@ -299,28 +299,24 @@ App.prototype.renderDropdown = function () {
 App.prototype.renderBackToInitButton = function () {
   var props = this.props
   var button = null
-  var backButton = h('.flex-row', {
-    key: 'leftArrow',
-    transForward: false,
-    style: {
-      position: 'absolute',
-      bottom: '10px',
-      left: '8px',
-      fontSize: '21px',
-      fontFamily: 'Montserrat Light',
-      color: '#7F8082',
-      width: '71.969px',
-      alignItems: 'flex-end',
-    },
-  }, [
-    h('i.fa.fa-arrow-left.cursor-pointer'),
-    h('div.cursor-pointer', {
-      style: {
-        marginLeft: '3px',
-      },
-      onClick: () => props.dispatch(actions.goBackToInitView()),
-    }, 'Back'),
-  ])
+  var backButton = function (style, justArrow = false) {
+    return (
+      h('.flex-row', {
+        key: 'leftArrow',
+        transForward: false,
+        style: style,
+        onClick: () => props.dispatch(actions.goBackToInitView()),
+      }, [
+        h('i.fa.fa-arrow-left.cursor-pointer'),
+        justArrow ? null : h('div.cursor-pointer', {
+          style: {
+            marginLeft: '3px',
+          },
+          onClick: () => props.dispatch(actions.goBackToInitView()),
+        }, 'BACK'),
+      ])
+    )
+  }
   if (!props.isUnlocked) {
     if (props.currentView.name === 'InitMenu') {
       button = props.forgottenPassword ? h('.flex-row', {
@@ -328,7 +324,7 @@ App.prototype.renderBackToInitButton = function () {
         style: {
           position: 'absolute',
           bottom: '10px',
-          right: '8px',
+          right: '15px',
           fontSize: '21px',
           fontFamily: 'Montserrat Light',
           color: '#7F8082',
@@ -341,11 +337,45 @@ App.prototype.renderBackToInitButton = function () {
             marginRight: '3px',
           },
           onClick: () => props.dispatch(actions.backToUnlockView()),
-        }, 'Login'),
+        }, 'LOGIN'),
         h('i.fa.fa-arrow-right.cursor-pointer'),
       ]) : null
     } else if (props.isInitialized) {
-      button = backButton
+      var style
+      switch (props.currentView.name) {
+        case 'createVault':
+          style = {
+            position: 'absolute',
+            top: '41px',
+            left: '80px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Bold',
+            color: 'rgb(174, 174, 174)',
+          }
+          return backButton(style, true)
+        case 'restoreVault':
+          style = {
+            position: 'absolute',
+            top: '41px',
+            left: '70px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Bold',
+            color: 'rgb(174, 174, 174)',
+          }
+          return backButton(style, true)
+        default:
+          style = {
+            position: 'absolute',
+            bottom: '10px',
+            left: '15px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Light',
+            color: '#7F8082',
+            width: '71.969px',
+            alignItems: 'flex-end',
+          }
+          return backButton(style)
+      }
     }
   }
   return button
