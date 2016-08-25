@@ -1,7 +1,7 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const defaultKey = 'persistent-form-default'
-const eventName = 'keyup'//.persistent-form-change'//.persistent-form-change'
+const eventName = 'keyup'
 
 module.exports = PersistentForm
 
@@ -16,7 +16,6 @@ PersistentForm.prototype.componentDidMount = function () {
   const store = this.getPersistentStore()
   fields.forEach((field) => {
     const key = field.getAttribute('data-persistent-formid')
-    const val = field.value
     const cached = store[key]
     if (cached !== undefined) {
       field.value = cached
@@ -51,7 +50,6 @@ PersistentForm.prototype.persistentFieldDidUpdate = function (event) {
 
 PersistentForm.prototype.componentWillUnmount = function () {
   const fields = document.querySelectorAll('[data-persistent-formid]')
-  const store = this.getPersistentStore()
   fields.forEach((field) => {
     field.removeEventListener(eventName, this.persistentFieldDidUpdate.bind(this))
   })
