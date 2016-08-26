@@ -61,7 +61,7 @@ Network.prototype.render = function () {
                 style: {
                   color: '#039396',
                 }},
-              'Etherum Main Net'),
+              'Ethereum Main Net'),
             ])
           case 'morden-test-network':
             return h('.network-indicator', [
