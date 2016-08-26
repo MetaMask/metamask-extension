@@ -124,6 +124,7 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         detailView: {},
         transForward: true,
         isLoading: false,
@@ -137,6 +138,25 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.BACK_TO_INIT_MENU:
+      return extend(appState, {
+        warning: null,
+        transForward: false,
+        forgottenPassword: true,
+        currentView: {
+          name: 'InitMenu',
+        },
+      })
+
+    case actions.BACK_TO_UNLOCK_VIEW:
+      return extend(appState, {
+        warning: null,
+        transForward: true,
+        forgottenPassword: !appState.forgottenPassword,
+        currentView: {
+          name: 'UnlockScreen',
+        },
+      })
   // reveal seed words
 
     case actions.REVEAL_SEED_CONFIRMATION:
@@ -171,6 +191,7 @@ function reduceApp (state, action) {
 
     case actions.SHOW_ACCOUNT_DETAIL:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         currentView: {
           name: 'accountDetail',
           context: action.value,

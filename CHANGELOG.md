@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Add a back button and and functionality to unlock screen so
+that you can recover your vault from seed or create a new one
+if you forget your password.
 - Changed transaction approval from notifications system to popup system.
 - Forms now retain their values even when closing the popup and reopening it.
 
@@ -29,7 +32,7 @@
 ## 2.8.0 2016-08-15
 
 - Integrate ShapeShift
-- Add a for for Coinbase to specify amount to buy
+- Add a form for Coinbase to specify amount to buy
 - Fix various typos.
 - Make dapp-metamask connection more reliable
 - Remove Ethereum Classic from provider menu.

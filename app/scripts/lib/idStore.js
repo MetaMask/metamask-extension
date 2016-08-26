@@ -45,7 +45,11 @@ function IdentityStore (opts = {}) {
 
 IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   delete this._keyStore
+  var serializedKeystore = this.configManager.getWallet()
 
+  if (serializedKeystore) {
+    this.configManager.setData({})
+  }
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
 
@@ -437,6 +441,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
 
 IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
   const configManager = this.configManager
+
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
