@@ -13,8 +13,9 @@ function getProvider(){
 
   console.log('MetaMask ZeroClient - injecting zero-client iframe!')
   var iframeStream = setupIframe({
-    zeroClientProvider: 'http://localhost:9001',
+    zeroClientProvider: 'http://127.0.0.1:9001',
     sandboxAttributes: ['allow-scripts', 'allow-popups', 'allow-same-origin'],
+    container: document.body,
   })
 
   var inpageProvider = new MetamaskInpageProvider(iframeStream)
