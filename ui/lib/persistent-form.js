@@ -14,6 +14,9 @@ inherits(PersistentForm, Component)
 PersistentForm.prototype.componentDidMount = function () {
   const fields = document.querySelectorAll('[data-persistent-formid]')
   const store = this.getPersistentStore()
+  if (!fields) {
+    return
+  }
   fields.forEach((field) => {
     const key = field.getAttribute('data-persistent-formid')
     const cached = store[key]
@@ -50,8 +53,12 @@ PersistentForm.prototype.persistentFieldDidUpdate = function (event) {
 
 PersistentForm.prototype.componentWillUnmount = function () {
   const fields = document.querySelectorAll('[data-persistent-formid]')
+  if (!fields) {
+    return
+  }
   fields.forEach((field) => {
     field.removeEventListener(eventName, this.persistentFieldDidUpdate.bind(this))
   })
   this.setPersistentStore({})
 }
+
