@@ -2,11 +2,12 @@
 
 ## Current Master
 
-- Add a back button and and functionality to unlock screen so
-that you can recover your vault from seed or create a new one
-if you forget your password.
+## 2.10.0 2016-08-29
+
 - Changed transaction approval from notifications system to popup system.
+- Add a back button to locked screen to allow restoring vault from seed words when password is forgotten.
 - Forms now retain their values even when closing the popup and reopening it.
+- Fixed a spelling error in provider menu.
 
 ## 2.9.2 2016-08-24
 
