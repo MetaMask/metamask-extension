@@ -1,4 +1,4 @@
-const LocalMessageDuplexStream = require('./lib/local-message-stream.js')
+const LocalMessageDuplexStream = require('post-message-stream')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
 const extension = require('./lib/extension')

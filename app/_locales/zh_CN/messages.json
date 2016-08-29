@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "以太坊身份管理",
+    "description": "The description of the application"
+  }
+}

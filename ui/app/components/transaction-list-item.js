@@ -10,7 +10,7 @@ const vreme = new (require('vreme'))
 const extension = require('../../../app/scripts/lib/extension')
 
 const TransactionIcon = require('./transaction-list-item-icon')
-
+const ShiftListItem = require('./shift-list-item')
 module.exports = TransactionListItem
 
 inherits(TransactionListItem, Component)
@@ -19,8 +19,10 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.render = function () {
-  const { transaction, i, network } = this.props
-
+  const { transaction, network } = this.props
+  if (transaction.key === 'shapeshift') {
+    if (network === '1') return h(ShiftListItem, transaction)
+  }
   var date = formatDate(transaction.time)
 
   let isLinkable = false
@@ -42,7 +44,6 @@ TransactionListItem.prototype.render = function () {
 
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
-      key: `tx-${transaction.id + i}`,
       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)

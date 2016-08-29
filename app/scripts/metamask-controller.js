@@ -12,6 +12,7 @@ module.exports = class MetamaskController {
 
   constructor (opts) {
     this.opts = opts
+    this.listeners = []
     this.configManager = new ConfigManager(opts)
     this.idStore = new IdentityStore({
       configManager: this.configManager,
@@ -21,6 +22,9 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
+    this.configManager.setCurrentFiat('USD')
+    this.configManager.updateConversionRate()
+    this.scheduleConversionInterval()
   }
 
   getState () {
@@ -40,7 +44,9 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      setCurrentFiat: this.setCurrentFiat.bind(this),
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
+
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
       recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
@@ -59,6 +65,8 @@ module.exports = class MetamaskController {
       recoverSeed: idStore.recoverSeed.bind(idStore),
       // coinbase
       buyEth: this.buyEth.bind(this),
+      // shapeshift
+      createShapeShiftTx: this.createShapeShiftTx.bind(this),
     }
   }
 
@@ -94,7 +102,9 @@ module.exports = class MetamaskController {
     function logger (err, request, response) {
       if (err) return console.error(err)
       if (!request.isMetamaskInternal) {
-        console.log(`RPC (${originDomain}):`, request, '->', response)
+        if (global.METAMASK_DEBUG) {
+          console.log(`RPC (${originDomain}):`, request, '->', response)
+        }
         if (response.error) {
           console.error('Error in RPC response:\n', response.error)
         }
@@ -103,9 +113,9 @@ module.exports = class MetamaskController {
   }
 
   sendUpdate () {
-    if (this.remote) {
-      this.remote.sendUpdate(this.getState())
-    }
+    this.listeners.forEach((remote) => {
+      remote.sendUpdate(this.getState())
+    })
   }
 
   initializeProvider (opts) {
@@ -121,10 +131,17 @@ module.exports = class MetamaskController {
       },
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
-      signTransaction: idStore.signTransaction.bind(idStore),
+      signTransaction: (...args) => {
+        idStore.signTransaction(...args)
+        this.sendUpdate()
+      },
+
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
-      signMessage: idStore.signMessage.bind(idStore),
+      signMessage: (...args) => {
+        idStore.signMessage(...args)
+        this.sendUpdate()
+      },
     }
 
     var provider = MetaMaskProvider(providerOpts)
@@ -184,6 +201,8 @@ module.exports = class MetamaskController {
 
     // It's locked
     if (!state.isUnlocked) {
+
+      // Allow the environment to define an unlock message.
       this.opts.unlockAccountMessage()
       idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, noop)
 
@@ -191,6 +210,7 @@ module.exports = class MetamaskController {
     } else {
       idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
         if (err) return onTxDoneCb(err)
+        this.sendUpdate()
         this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
       })
     }
@@ -199,9 +219,11 @@ module.exports = class MetamaskController {
   newUnsignedMessage (msgParams, cb) {
     var state = this.idStore.getState()
     if (!state.isUnlocked) {
+      this.idStore.addUnconfirmedMessage(msgParams, cb)
       this.opts.unlockAccountMessage()
     } else {
       this.addUnconfirmedMessage(msgParams, cb)
+      this.sendUpdate()
     }
   }
 
@@ -218,7 +240,9 @@ module.exports = class MetamaskController {
 
   // Log blocks
   processBlock (block) {
-    console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    if (global.METAMASK_DEBUG) {
+      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    }
     this.verifyNetwork()
   }
 
@@ -241,9 +265,34 @@ module.exports = class MetamaskController {
     }
   }
 
+  setCurrentFiat (fiat, cb) {
+    try {
+      this.configManager.setCurrentFiat(fiat)
+      this.configManager.updateConversionRate()
+      this.scheduleConversionInterval()
+      const data = {
+        conversionRate: this.configManager.getConversionRate(),
+        currentFiat: this.configManager.getCurrentFiat(),
+        conversionDate: this.configManager.getConversionDate(),
+      }
+      cb(data)
+    } catch (e) {
+      cb(null, e)
+    }
+  }
+
+  scheduleConversionInterval () {
+    if (this.conversionInterval) {
+      clearInterval(this.conversionInterval)
+    }
+    this.conversionInterval = setInterval(() => {
+      this.configManager.updateConversionRate()
+    }, 300000)
+  }
+
   agreeToEthWarning (cb) {
     try {
-      this.configManager.setShouldntShowWarning(true)
+      this.configManager.setShouldntShowWarning()
       cb()
     } catch (e) {
       cb(e)
@@ -283,6 +332,9 @@ module.exports = class MetamaskController {
     })
   }
 
+  createShapeShiftTx (depositAddress, depositType) {
+    this.configManager.createShapeShiftTx(depositAddress, depositType)
+  }
 }
 
 function noop () {}

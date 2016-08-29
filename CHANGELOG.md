@@ -2,7 +2,43 @@
 
 ## Current Master
 
+- Fix bug where provider menu did not allow switching to custom network from a custom network.
+
+## 2.10.0 2016-08-29
+
+- Changed transaction approval from notifications system to popup system.
+- Add a back button to locked screen to allow restoring vault from seed words when password is forgotten.
+- Forms now retain their values even when closing the popup and reopening it.
+- Fixed a spelling error in provider menu.
+
+## 2.9.2 2016-08-24
+
+- Fixed shortcut bug from preventing installation.
+
+## 2.9.1 2016-08-24
+
+- Added static image as fallback for when WebGL isn't supported.
+- Transaction history now has a hard limit.
+- Added info link on account screen that visits Etherscan.
+- Fixed bug where a message signing request would be lost if the vault was locked.
+- Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt/Alt+M)
+- Prevent API calls in  tests.
+- Fixed bug where sign message confirmation would sometimes render blank.
+
+## 2.9.0 2016-08-22
+
+- Added ShapeShift to the transaction history
+- Added affiliate key to Shapeshift requests
+- Added feature to reflect current conversion rates of current vault balance.
+- Modify balance display logic.
+
+## 2.8.0 2016-08-15
+
+- Integrate ShapeShift
+- Add a form for Coinbase to specify amount to buy
 - Fix various typos.
+- Make dapp-metamask connection more reliable
+- Remove Ethereum Classic from provider menu.
 
 ## 2.7.3 2016-07-29
 

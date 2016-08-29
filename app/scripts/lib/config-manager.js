@@ -1,10 +1,11 @@
 const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
+const rp = require('request-promise')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
-const CLASSIC_RPC = MetamaskConfig.network.classic
+const txLimit = 40
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -15,6 +16,8 @@ const CLASSIC_RPC = MetamaskConfig.network.classic
  */
 module.exports = ConfigManager
 function ConfigManager (opts) {
+  this.txLimit = txLimit
+
   // ConfigManager is observable and will emit updates
   this._subs = []
 
@@ -145,9 +148,6 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
     case 'testnet':
       return TESTNET_RPC
 
-    case 'classic':
-      return CLASSIC_RPC
-
     default:
       return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
   }
@@ -184,6 +184,9 @@ ConfigManager.prototype._saveTxList = function (txList) {
 
 ConfigManager.prototype.addTx = function (tx) {
   var transactions = this.getTxList()
+  while (transactions.length > this.txLimit - 1) {
+    transactions.shift()
+  }
   transactions.push(tx)
   this._saveTxList(transactions)
 }
@@ -274,13 +277,99 @@ ConfigManager.prototype.getConfirmed = function () {
   return ('isConfirmed' in data) && data.isConfirmed
 }
 
-ConfigManager.prototype.setShouldntShowWarning = function (confirmed) {
+ConfigManager.prototype.setCurrentFiat = function (currency) {
   var data = this.getData()
-  data.isEthConfirmed = confirmed
+  data.fiatCurrency = currency
+  this.setData(data)
+}
+
+ConfigManager.prototype.getCurrentFiat = function () {
+  var data = this.getData()
+  return ('fiatCurrency' in data) && data.fiatCurrency
+}
+
+ConfigManager.prototype.updateConversionRate = function () {
+  var data = this.getData()
+  return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
+  .then((response) => {
+    const parsedResponse = JSON.parse(response)
+    this.setConversionPrice(parsedResponse.ticker.price)
+    this.setConversionDate(parsedResponse.timestamp)
+  }).catch((err) => {
+    console.error('Error in conversion.', err)
+    this.setConversionPrice(0)
+    this.setConversionDate('N/A')
+  })
+
+}
+
+ConfigManager.prototype.setConversionPrice = function (price) {
+  var data = this.getData()
+  data.conversionRate = Number(price)
+  this.setData(data)
+}
+
+ConfigManager.prototype.setConversionDate = function (datestring) {
+  var data = this.getData()
+  data.conversionDate = datestring
+  this.setData(data)
+}
+
+ConfigManager.prototype.getConversionRate = function () {
+  var data = this.getData()
+  return (('conversionRate' in data) && data.conversionRate) || 0
+}
+
+ConfigManager.prototype.getConversionDate = function () {
+  var data = this.getData()
+  return (('conversionDate' in data) && data.conversionDate) || 'N/A'
+}
+
+ConfigManager.prototype.setShouldntShowWarning = function () {
+  var data = this.getData()
+  if (data.isEthConfirmed) {
+    data.isEthConfirmed = !data.isEthConfirmed
+  } else {
+    data.isEthConfirmed = true
+  }
   this.setData(data)
 }
 
 ConfigManager.prototype.getShouldntShowWarning = function () {
   var data = this.getData()
   return ('isEthConfirmed' in data) && data.isEthConfirmed
+}
+
+ConfigManager.prototype.getShapeShiftTxList = function () {
+  var data = this.getData()
+  var shapeShiftTxList = data.shapeShiftTxList ? data.shapeShiftTxList : []
+  shapeShiftTxList.forEach((tx) => {
+    if (tx.response.status !== 'complete') {
+      var requestListner = function (request) {
+        tx.response = JSON.parse(this.responseText)
+        if (tx.response.status === 'complete') {
+          tx.time = new Date().getTime()
+        }
+      }
+
+      var shapShiftReq = new XMLHttpRequest()
+      shapShiftReq.addEventListener('load', requestListner)
+      shapShiftReq.open('GET', `https://shapeshift.io/txStat/${tx.depositAddress}`, true)
+      shapShiftReq.send()
+    }
+  })
+  this.setData(data)
+  return shapeShiftTxList
+}
+
+ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositType) {
+  var data = this.getData()
+
+  var shapeShiftTx = {depositAddress, depositType, key: 'shapeshift', time: new Date().getTime(), response: {}}
+  if (!data.shapeShiftTxList) {
+    data.shapeShiftTxList = [shapeShiftTx]
+  } else {
+    data.shapeShiftTxList.push(shapeShiftTx)
+  }
+  this.setData(data)
 }

@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const notification = require('../../../app/scripts/lib/notifications')
 
 module.exports = reduceApp
 
@@ -123,6 +124,7 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         detailView: {},
         transForward: true,
         isLoading: false,
@@ -136,6 +138,25 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.BACK_TO_INIT_MENU:
+      return extend(appState, {
+        warning: null,
+        transForward: false,
+        forgottenPassword: true,
+        currentView: {
+          name: 'InitMenu',
+        },
+      })
+
+    case actions.BACK_TO_UNLOCK_VIEW:
+      return extend(appState, {
+        warning: null,
+        transForward: true,
+        forgottenPassword: !appState.forgottenPassword,
+        currentView: {
+          name: 'UnlockScreen',
+        },
+      })
   // reveal seed words
 
     case actions.REVEAL_SEED_CONFIRMATION:
@@ -170,6 +191,7 @@ function reduceApp (state, action) {
 
     case actions.SHOW_ACCOUNT_DETAIL:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         currentView: {
           name: 'accountDetail',
           context: action.value,
@@ -250,6 +272,9 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
+
+        notification.closePopup()
+
         return extend(appState, {
           transForward: false,
           warning: null,
@@ -317,6 +342,15 @@ function reduceApp (state, action) {
         isLoading: false,
       })
 
+    case actions.SHOW_SUB_LOADING_INDICATION:
+      return extend(appState, {
+        isSubLoading: true,
+      })
+
+    case actions.HIDE_SUB_LOADING_INDICATION:
+      return extend(appState, {
+        isSubLoading: false,
+      })
     case actions.CLEAR_SEED_WORD_CACHE:
       return extend(appState, {
         transForward: true,
@@ -369,15 +403,116 @@ function reduceApp (state, action) {
         },
       })
 
-    case actions.SHOW_ETH_WARNING:
+    case actions.BUY_ETH_VIEW:
       return extend(appState, {
         transForward: true,
         currentView: {
-          name: 'accountDetail',
+          name: 'buyEth',
           context: appState.currentView.context,
         },
-        accountDetail: {
-          subview: 'buy-eth-warning',
+        buyView: {
+          subview: 'buyForm',
+          amount: '5.00',
+          buyAddress: action.value,
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+        },
+      })
+
+    case actions.UPDATE_BUY_ADDRESS:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: appState.buyView.formView.coinbase,
+            shapeshift: appState.buyView.formView.shapeshift,
+          },
+          buyAddress: action.value,
+          amount: appState.buyView.amount,
+        },
+      })
+
+    case actions.UPDATE_COINBASE_AMOUNT:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: action.value,
+        },
+      })
+
+    case actions.COINBASE_SUBVIEW:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: true,
+            shapeshift: false,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
+        },
+      })
+
+    case actions.SHAPESHIFT_SUBVIEW:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: action.value.marketinfo,
+            coinOptions: action.value.coinOptions,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
+        },
+      })
+
+    case actions.PAIR_UPDATE:
+      return extend(appState, {
+        buyView: {
+          subview: 'buyForm',
+          formView: {
+            coinbase: false,
+            shapeshift: true,
+            marketinfo: action.value.marketinfo,
+            coinOptions: appState.buyView.formView.coinOptions,
+          },
+          buyAddress: appState.buyView.buyAddress,
+          amount: appState.buyView.amount,
+          warning: null,
+        },
+      })
+
+    case actions.SHOW_QR:
+      return extend(appState, {
+        qrRequested: true,
+        transForward: true,
+        Qr: {
+          message: action.value.message,
+          image: action.value.qr,
+          data: action.value.data,
+        },
+      })
+
+    case actions.SHOW_QR_VIEW:
+      return extend(appState, {
+        currentView: {
+          name: 'qr',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+        Qr: {
+          message: action.value.message,
+          image: action.value.qr,
+          data: action.value.data,
         },
       })
     default:
@@ -404,5 +539,4 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-
 

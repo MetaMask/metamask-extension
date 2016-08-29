@@ -3,9 +3,10 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const Mascot = require('./components/mascot')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
+
+const Mascot = require('./components/mascot')
 
 module.exports = connect(mapStateToProps)(UnlockScreen)
 
@@ -25,47 +26,46 @@ UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
+    h('.flex-column.hey-im-here', [
+      h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-    h('.unlock-screen.flex-column.flex-center.flex-grow', [
+        h(Mascot, {
+          animationEventEmitter: this.animationEventEmitter,
+        }),
 
-      h(Mascot, {
-        animationEventEmitter: this.animationEventEmitter,
-      }),
+        h('h1', {
+          style: {
+            fontSize: '1.4em',
+            textTransform: 'uppercase',
+            color: '#7F8082',
+          },
+        }, 'MetaMask'),
 
-      h('h1', {
-        style: {
-          fontSize: '1.4em',
-          textTransform: 'uppercase',
-          color: '#7F8082',
-        },
-      }, 'MetaMask'),
+        h('input.large-input', {
+          type: 'password',
+          id: 'password-box',
+          placeholder: 'enter password',
+          style: {
 
-      h('input.large-input', {
-        type: 'password',
-        id: 'password-box',
-        placeholder: 'enter password',
-        style: {
+          },
+          onKeyPress: this.onKeyPress.bind(this),
+          onInput: this.inputChanged.bind(this),
+        }),
 
-        },
-        onKeyPress: this.onKeyPress.bind(this),
-        onInput: this.inputChanged.bind(this),
-      }),
+        h('.error', {
+          style: {
+            display: warning ? 'block' : 'none',
+          },
+        }, warning),
 
-      h('.error', {
-        style: {
-          display: warning ? 'block' : 'none',
-        },
-      }, warning),
-
-      h('button.primary.cursor-pointer', {
-        onClick: this.onSubmit.bind(this),
-        style: {
-          margin: 10,
-        },
-      }, 'Unlock'),
-
+        h('button.primary.cursor-pointer', {
+          onClick: this.onSubmit.bind(this),
+          style: {
+            margin: 10,
+          },
+        }, 'Unlock'),
+      ]),
     ])
-
   )
 }
 

@@ -4,22 +4,24 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const CopyButton = require('./components/copyButton')
+const AccountInfoLink = require('./components/account-info-link')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
 
 const Identicon = require('./components/identicon')
-const EtherBalance = require('./components/eth-balance')
+const AccountEtherBalance = require('./components/account-eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
-
+const BuyButtonSubview = require('./components/buy-button-subview')
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
   return {
+    metamask: state.metamask,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     address: state.metamask.selectedAccount,
@@ -29,6 +31,7 @@ function mapStateToProps (state) {
     unconfTxs: valuesFor(state.metamask.unconfTxs),
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
     isEthWarningConfirmed: state.metamask.isEthConfirmed,
+    shapeShiftTxList: state.metamask.shapeShiftTxList,
   }
 }
 
@@ -42,6 +45,7 @@ AccountDetailScreen.prototype.render = function () {
   var selected = props.address || Object.keys(props.accounts)[0]
   var identity = props.identities[selected]
   var account = props.accounts[selected]
+  const { network } = props
 
   return (
 
@@ -125,6 +129,9 @@ AccountDetailScreen.prototype.render = function () {
                   bottom: '15px',
                 },
               }, [
+
+                h(AccountInfoLink, { selected, network }),
+
                 h(CopyButton, {
                   value: ethUtil.toChecksumAddress(selected),
                 }),
@@ -134,16 +141,15 @@ AccountDetailScreen.prototype.render = function () {
                 }, [
                   h('div', {
                     style: {
-                      margin: '5px',
+                      display: 'flex',
+                      alignItems: 'center',
                     },
                   }, [
                     h('img.cursor-pointer.color-orange', {
                       src: 'images/key-32.png',
                       onClick: () => this.requestAccountExport(selected),
                       style: {
-                        margin: '0px 5px',
-                        width: '20px',
-                        height: '20px',
+                        height: '19px',
                       },
                     }),
                   ]),
@@ -162,9 +168,8 @@ AccountDetailScreen.prototype.render = function () {
           },
         }, [
 
-          h(EtherBalance, {
+          h(AccountEtherBalance, {
             value: account && account.balance,
-            mainBalance: true,
             style: {
               lineHeight: '7px',
               marginTop: '10px',
@@ -172,7 +177,7 @@ AccountDetailScreen.prototype.render = function () {
           }),
 
           h('button', {
-            onClick: () => props.dispatch(actions.buyEth(selected)),
+            onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
@@ -220,13 +225,15 @@ AccountDetailScreen.prototype.subview = function () {
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
+    case 'buyForm':
+      return h(BuyButtonSubview, extend({key: 'buyForm'}, this.props))
     default:
       return this.transactionList()
   }
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
-  const { transactions, unconfTxs, unconfMsgs, address, network } = this.props
+  const { transactions, unconfTxs, unconfMsgs, address, network, shapeShiftTxList } = this.props
 
   var txsToRender = transactions
   // only transactions that are from the current address
@@ -241,6 +248,8 @@ AccountDetailScreen.prototype.transactionList = function () {
     network,
     unconfTxs,
     unconfMsgs,
+    address,
+    shapeShiftTxList,
     viewPendingTx: (txId) => {
       this.props.dispatch(actions.viewPendingTx(txId))
     },
@@ -251,3 +260,13 @@ AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
 
+
+AccountDetailScreen.prototype.buyButtonDeligator = function () {
+  var props = this.props
+
+  if (this.props.accountDetail.subview === 'buyForm') {
+    props.dispatch(actions.backToAccountDetail(props.address))
+  } else {
+    props.dispatch(actions.buyEthView())
+  }
+}

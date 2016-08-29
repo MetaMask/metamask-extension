@@ -14,7 +14,11 @@ function TransactionList () {
 
 TransactionList.prototype.render = function () {
   const { txsToRender, network, unconfMsgs } = this.props
-  const transactions = txsToRender.concat(unconfMsgs)
+  var shapeShiftTxList
+  if (network === '1') {
+    shapeShiftTxList = this.props.shapeShiftTxList
+  }
+  const transactions = !shapeShiftTxList ? txsToRender.concat(unconfMsgs) : txsToRender.concat(unconfMsgs, shapeShiftTxList)
   .sort((a, b) => b.time - a.time)
 
   return (
@@ -39,33 +43,46 @@ TransactionList.prototype.render = function () {
           paddingBottom: '4px',
         },
       }, [
-        'Transactions',
+        'History',
       ]),
 
       h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '305px',
+          height: '300px',
           padding: '0 20px',
           textAlign: 'center',
         },
-      }, (
+      }, [
 
         transactions.length
           ? transactions.map((transaction, i) => {
+            let key
+            switch (transaction.key) {
+              case 'shapeshift':
+                const { depositAddress, time } = transaction
+                key = `shift-tx-${depositAddress}-${time}-${i}`
+                break
+              default:
+                key = `tx-${transaction.id}-${i}`
+            }
             return h(TransactionListItem, {
-              transaction, i, network,
+              transaction, i, network, key,
               showTx: (txId) => {
                 this.props.viewPendingTx(txId)
               },
             })
           })
-        : [h('.flex-center', {
+        : h('.flex-center', {
           style: {
+            flexDirection: 'column',
             height: '100%',
           },
-        }, 'No transaction history...')]
-      )),
+        }, [
+          'No transaction history.',
+        ]),
+      ]),
     ])
   )
 }
+

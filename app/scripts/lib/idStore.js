@@ -45,7 +45,11 @@ function IdentityStore (opts = {}) {
 
 IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   delete this._keyStore
+  var serializedKeystore = this.configManager.getWallet()
 
+  if (serializedKeystore) {
+    this.configManager.setData({})
+  }
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
 
@@ -100,6 +104,10 @@ IdentityStore.prototype.getState = function () {
     unconfMsgs: messageManager.unconfirmedMsgs(),
     messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),
+    shapeShiftTxList: configManager.getShapeShiftTxList(),
+    currentFiat: configManager.getCurrentFiat(),
+    conversionRate: configManager.getConversionRate(),
+    conversionDate: configManager.getConversionDate(),
   }))
 }
 
@@ -153,8 +161,9 @@ IdentityStore.prototype.getNetwork = function (err) {
       this._currentState.network = 'loading'
       return this._didUpdate()
     }
-
-    console.log('web3.getNetwork returned ' + network)
+    if (global.METAMASK_DEBUG) {
+      console.log('web3.getNetwork returned ' + network)
+    }
     this._currentState.network = network
     this._didUpdate()
   })
@@ -432,6 +441,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
 
 IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
   const configManager = this.configManager
+
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
@@ -475,7 +485,9 @@ IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey)
 
   keyStore.generateNewAddress(derivedKey, 3)
   configManager.setWallet(keyStore.serialize())
-  console.log('restored from seed. saved to keystore')
+  if (global.METAMASK_DEBUG) {
+    console.log('restored from seed. saved to keystore')
+  }
   return keyStore
 }
 

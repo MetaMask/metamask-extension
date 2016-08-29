@@ -28,7 +28,8 @@ const DropMenuItem = require('./components/drop-menu-item')
 const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
 const EthStoreWarning = require('./eth-store-warning')
-
+const BuyView = require('./components/buy-button-subview')
+const QrView = require('./components/qr-code')
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -50,6 +51,7 @@ function mapStateToProps (state) {
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    forgottenPassword: state.appState.forgottenPassword,
   }
 }
 
@@ -88,6 +90,7 @@ App.prototype.render = function () {
           transitionLeaveTimeout: 300,
         }, [
           this.renderPrimary(),
+          this.renderBackToInitButton(),
         ]),
       ]),
     ])
@@ -95,6 +98,11 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
+
+  if (window.METAMASK_UI_TYPE === 'notification') {
+    return null
+  }
+
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
@@ -226,15 +234,6 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Ethereum Classic Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('classic')),
-      icon: h('.menu-icon.hollow-diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
-
-    h(DropMenuItem, {
       label: 'Morden Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
@@ -248,6 +247,13 @@ App.prototype.renderNetworkDropdown = function () {
       action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
       icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
       activeNetworkRender: props.provider.rpcTarget,
+    }),
+
+    h(DropMenuItem, {
+      label: 'Custom RPC',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
     }),
 
     this.renderCustomOption(props.provider.rpcTarget),
@@ -301,6 +307,92 @@ App.prototype.renderDropdown = function () {
     }),
   ])
 }
+App.prototype.renderBackButton = function (style, justArrow = false) {
+  var props = this.props
+  return (
+    h('.flex-row', {
+      key: 'leftArrow',
+      transForward: false,
+      style: style,
+      onClick: () => props.dispatch(actions.goBackToInitView()),
+    }, [
+      h('i.fa.fa-arrow-left.cursor-pointer'),
+      justArrow ? null : h('div.cursor-pointer', {
+        style: {
+          marginLeft: '3px',
+        },
+        onClick: () => props.dispatch(actions.goBackToInitView()),
+      }, 'BACK'),
+    ])
+  )
+
+}
+App.prototype.renderBackToInitButton = function () {
+  var props = this.props
+  var button = null
+  if (!props.isUnlocked) {
+    if (props.currentView.name === 'InitMenu') {
+      button = props.forgottenPassword ? h('.flex-row', {
+        key: 'rightArrow',
+        style: {
+          position: 'absolute',
+          bottom: '10px',
+          right: '15px',
+          fontSize: '21px',
+          fontFamily: 'Montserrat Light',
+          color: '#7F8082',
+          width: '77.578px',
+          alignItems: 'flex-end',
+        },
+      }, [
+        h('div.cursor-pointer', {
+          style: {
+            marginRight: '3px',
+          },
+          onClick: () => props.dispatch(actions.backToUnlockView()),
+        }, 'LOGIN'),
+        h('i.fa.fa-arrow-right.cursor-pointer'),
+      ]) : null
+    } else if (props.isInitialized) {
+      var style
+      switch (props.currentView.name) {
+        case 'createVault':
+          style = {
+            position: 'absolute',
+            top: '41px',
+            left: '80px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Bold',
+            color: 'rgb(174, 174, 174)',
+          }
+          return this.renderBackButton(style, true)
+        case 'restoreVault':
+          style = {
+            position: 'absolute',
+            top: '41px',
+            left: '70px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Bold',
+            color: 'rgb(174, 174, 174)',
+          }
+          return this.renderBackButton(style, true)
+        default:
+          style = {
+            position: 'absolute',
+            bottom: '10px',
+            left: '15px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Light',
+            color: '#7F8082',
+            width: '71.969px',
+            alignItems: 'flex-end',
+          }
+          return this.renderBackButton(style)
+      }
+    }
+  }
+  return button
+}
 
 App.prototype.renderPrimary = function () {
   var props = this.props
@@ -314,7 +406,7 @@ App.prototype.renderPrimary = function () {
   }
 
   // show initialize screen
-  if (!props.isInitialized) {
+  if (!props.isInitialized || props.forgottenPassword) {
     // show current view
     switch (props.currentView.name) {
 
@@ -366,6 +458,35 @@ App.prototype.renderPrimary = function () {
 
     case 'createVault':
       return h(CreateVaultScreen, {key: 'createVault'})
+    case 'buyEth':
+      return h(BuyView, {key: 'buyEthView'})
+    case 'qr':
+      return h('div', {
+        style: {
+          position: 'absolute',
+          height: '100%',
+          top: '0px',
+          left: '0px',
+        },
+      }, [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+          onClick: () => props.dispatch(actions.backToAccountDetail(props.activeAddress)),
+          style: {
+            marginLeft: '10px',
+            marginTop: '50px',
+          },
+        }),
+        h('div', {
+          style: {
+            position: 'absolute',
+            bottom: '115px',
+            left: '44px',
+            width: '285px',
+          },
+        }, [
+          h(QrView, {key: 'qr'}),
+        ]),
+      ])
 
     default:
       return h(AccountDetailScreen, {key: 'account-detail'})
@@ -387,12 +508,8 @@ App.prototype.toggleMetamaskActive = function () {
 App.prototype.renderCustomOption = function (rpcTarget) {
   switch (rpcTarget) {
     case undefined:
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
-      })
+      return null
+
     case 'http://localhost:8545':
       return h(DropMenuItem, {
         label: 'Custom RPC',

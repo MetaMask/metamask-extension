@@ -156,7 +156,12 @@ describe('util', function() {
       var result = util.formatBalance(input)
       assert.equal(result, '0.00032 ETH')
     })
-
+    it('should not parse the balance and return value with 2 decimal points with ETH at the end', function() {
+      var value = '1.2456789'
+      var needsParse = false
+      var result = util.formatBalance(value, 2, needsParse)
+      assert.equal(result, '1.24 ETH')
+    })
   })
 
   describe('normalizing values', function() {
