@@ -249,6 +249,13 @@ App.prototype.renderNetworkDropdown = function () {
       activeNetworkRender: props.provider.rpcTarget,
     }),
 
+    h(DropMenuItem, {
+      label: 'Custom RPC',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+    }),
+
     this.renderCustomOption(props.provider.rpcTarget),
   ])
 }
@@ -501,12 +508,8 @@ App.prototype.toggleMetamaskActive = function () {
 App.prototype.renderCustomOption = function (rpcTarget) {
   switch (rpcTarget) {
     case undefined:
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
-      })
+      return null
+
     case 'http://localhost:8545':
       return h(DropMenuItem, {
         label: 'Custom RPC',
