@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where provider menu did not allow switching to custom network from a custom network.
+
 ## 2.10.0 2016-08-29
 
 - Changed transaction approval from notifications system to popup system.
