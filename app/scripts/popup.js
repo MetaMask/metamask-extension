@@ -74,21 +74,11 @@ function getCurrentDomain (cb) {
   })
 }
 
-function clearNotifications(){
-  extension.notifications.getAll(function (object) {
-    for (let notification in object){
-      extension.notifications.clear(notification)
-    }
-  })
-}
-
 function setupApp (err, opts) {
   if (err) {
     alert(err.stack)
     throw err
   }
-
-  clearNotifications()
 
   var container = document.getElementById('app-content')
 
