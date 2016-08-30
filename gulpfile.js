@@ -34,6 +34,7 @@ gulp.task('copy:locales', copyTask({
   destinations: [
     './dist/firefox/_locales',
     './dist/chrome/_locales',
+    './dist/edge/_locales',
   ]
 }))
 gulp.task('copy:images', copyTask({
@@ -41,6 +42,7 @@ gulp.task('copy:images', copyTask({
   destinations: [
     './dist/firefox/images',
     './dist/chrome/images',
+    './dist/edge/images',
   ],
 }))
 gulp.task('copy:fonts', copyTask({
@@ -48,6 +50,7 @@ gulp.task('copy:fonts', copyTask({
   destinations: [
     './dist/firefox/fonts',
     './dist/chrome/fonts',
+    './dist/edge/fonts',
   ],
 }))
 gulp.task('copy:reload', copyTask({
@@ -55,6 +58,7 @@ gulp.task('copy:reload', copyTask({
   destinations: [
     './dist/firefox/scripts',
     './dist/chrome/scripts',
+    './dist/edge/scripts',
   ],
   pattern: '/chromereload.js',
 }))
@@ -63,6 +67,7 @@ gulp.task('copy:root', copyTask({
   destinations: [
     './dist/firefox',
     './dist/chrome',
+    './dist/edge',
   ],
   pattern: '/*',
 }))
@@ -131,13 +136,18 @@ gulp.task('zip:chrome', () => {
   return gulp.src('dist/chrome/**')
   .pipe(zip(`metamask-chrome-${manifest.version}.zip`))
   .pipe(gulp.dest('builds'));
-});
+})
 gulp.task('zip:firefox', () => {
   return gulp.src('dist/firefox/**')
   .pipe(zip(`metamask-firefox-${manifest.version}.zip`))
   .pipe(gulp.dest('builds'));
-});
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
+})
+gulp.task('zip:edge', () => {
+  return gulp.src('dist/edge/**')
+  .pipe(zip(`metamask-edge-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
+})
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge'))
 
 // high level tasks
 
@@ -200,6 +210,7 @@ function bundleTask(opts) {
       .pipe(sourcemaps.write('./')) // writes .map file
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
+      .pipe(gulp.dest('./dist/edge/scripts'))
       .pipe(livereload())
 
     )

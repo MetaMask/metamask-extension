@@ -14,9 +14,10 @@ function show () {
       return extension.windows.update(popup.id, { focused: true })
     }
 
+
     extension.windows.create({
       url: 'notification.html',
-      type: 'detached_panel',
+      type: 'popup',
       focused: true,
       width: 360,
       height: 500,
