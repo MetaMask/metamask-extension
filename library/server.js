@@ -45,9 +45,9 @@ dappServer.get('/app.js', function(req, res){
 // serve static
 dappServer.use(express.static('./example'))
 
-
-dappServer.listen('9002')
-
+const dappPort = '9002'
+dappServer.listen(dappPort)
+console.log(`Dapp listening on port ${dappPort}`)
 
 function createBundle(entryPoint){
 
@@ -67,7 +67,7 @@ function createBundle(entryPoint){
     global: true,
     presets: [bablePreset],
   })
-  
+
 
   bundler.on('update', bundle)
   bundle()
