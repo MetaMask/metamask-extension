@@ -33,15 +33,29 @@ function MetamaskInpageProvider (connectionStream) {
   })
   asyncProvider.on('error', console.error.bind(console))
   self.asyncProvider = asyncProvider
+  
+  self.idMap = {}
   // handle sendAsync requests via asyncProvider
   self.sendAsync = function(payload, cb){
     // rewrite request ids
-    var request = jsonrpcMessageTransform(payload, (message) => {
-      message.id = createRandomId()
+    var request = eachJsonMessage(payload, (message) => {
+      var newId = createRandomId()
+      self.idMap[newId] = message.id
+      message.id = newId
       return message
     })
     // forward to asyncProvider
-    asyncProvider.sendAsync(request, cb)
+    asyncProvider.sendAsync(request, function(err, res){
+      if (err) return cb(err)
+      // transform messages to original ids
+      eachJsonMessage(res, (message) => {
+        var oldId = self.idMap[message.id]
+        delete self.idMap[message.id]
+        message.id = oldId
+        return message
+      })
+      cb(null, res)
+    })
   }
 }
 
@@ -111,7 +125,7 @@ function createRandomId(){
   return datePart + extraPart
 }
 
-function jsonrpcMessageTransform(payload, transformFn){
+function eachJsonMessage(payload, transformFn){
   if (Array.isArray(payload)) {
     return payload.map(transformFn)
   } else {
