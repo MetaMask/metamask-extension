@@ -12,8 +12,6 @@ const appBundle = createBundle('./example/index.js')
 // Iframe Server
 //
 
-// beefy frame.js:bundle.js 9001 --live -- -t [ babelify --global --presets [ es2015 ] ]
-
 const iframeServer = express()
 
 // serve controller bundle
@@ -30,8 +28,6 @@ iframeServer.listen('9001')
 //
 // Dapp Server
 //
-
-// beefy example/index.js:bundle.js index.js:zero.js --cwd example/ 9002 --live --open -- -t [ babelify --global --presets [ es2015 ] ]
 
 const dappServer = express()
 
@@ -64,6 +60,7 @@ function createBundle(entryPoint){
     plugin: [watchify],
   })
 
+  // global transpile
   var bablePreset = path.resolve(__dirname, '../node_modules/babel-preset-es2015')
 
   bundler.transform(babelify, {

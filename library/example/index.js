@@ -5,23 +5,23 @@ function web3Detect() {
   if (global.web3) {
     document.body.innerHTML += 'web3 detected!'
     console.log('web3 detected!')
+    startApp()
   } else {
     document.body.innerHTML += 'no web3 detected!'
     console.log('no web3 detected!')
   }
-  startApp()
 }
-
-var primaryAccount = null
-web3.eth.getAccounts(function(err, addresses){
-  if (err) throw err
-  console.log('set address')
-  primaryAccount = addresses[0]
-})
-
 
 function startApp(){
   console.log('app started')
+
+  var primaryAccount = null
+  console.log('getting main account...')
+  web3.eth.getAccounts(function(err, addresses){
+    if (err) throw err
+    console.log('set address')
+    primaryAccount = addresses[0]
+  })
 
   document.querySelector('.action-button-1').addEventListener('click', function(){
     console.log('saw click')

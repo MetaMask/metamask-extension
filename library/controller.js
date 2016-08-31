@@ -4,10 +4,8 @@ const handleRequestsFromStream = require('web3-stream-provider/handler')
 const Streams = require('mississippi')
 const ObjectMultiplex = require('../app/scripts/lib/obj-multiplex')
 
-console.log('yes, this is iframe')
 
 initializeZeroClient()
-
 
 function initializeZeroClient() {
 
