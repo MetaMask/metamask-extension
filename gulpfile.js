@@ -19,6 +19,8 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 
+var production = false
+
 // browser reload
 
 gulp.task('dev:reload', function() {
@@ -83,7 +85,20 @@ gulp.task('manifest:chrome', function() {
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
-gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:chrome'))
+gulp.task('manifest:production', function() {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+    './dist/edge/manifest.json',
+  ],{base: './dist/'})
+  .pipe(gulpif(production,jsoneditor(function(json) {
+    json.background.scripts = ["scripts/background.js"]
+    return json
+  })))
+  .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
+gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:production', 'manifest:chrome'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
