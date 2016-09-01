@@ -9,11 +9,12 @@ module.exports = notifications
 window.METAMASK_NOTIFIER = notifications
 
 function show () {
-  getPopup((popup) => {
-    if (popup) {
-      return extension.windows.update(popup.id, { focused: true })
-    }
+  getWindows((windows) => {
 
+    if (windows.length > 0) {
+      const win = windows[0]
+      return extension.windows.update(win.id, { focused: true })
+    }
 
     extension.windows.create({
       url: 'notification.html',
@@ -25,20 +26,27 @@ function show () {
   })
 }
 
-function getPopup(cb) {
-
+function getWindows(cb) {
   // Ignore in test environment
   if (!extension.windows) {
-    return cb(null)
+    return cb()
   }
 
   extension.windows.getAll({}, (windows) => {
-    let popup = windows.find((win) => {
-      return win.type === 'popup'
-    })
-
-    cb(popup)
+    cb(null, windows)
   })
+}
+
+function getPopup(cb) {
+  getWindows((windows) => {
+    cb(getPopupIn(windows))
+  })
+}
+
+function getPopupIn(windows) {
+  return  windows ? windows.find((win) => {
+    return win.type === 'popup'
+  }) : null
 }
 
 function closePopup() {
