@@ -276,8 +276,6 @@ function signMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-
     web3.eth.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
 
@@ -285,6 +283,7 @@ function signTx (txData) {
       dispatch(actions.hideWarning())
       dispatch(actions.goHome())
     })
+    dispatch(this.showConfTxPage())
   }
 }
 

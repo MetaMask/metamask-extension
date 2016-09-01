@@ -236,7 +236,6 @@ SendTransactionScreen.prototype.onSubmit = function () {
   }
 
   this.props.dispatch(actions.hideWarning())
-  this.props.dispatch(actions.showLoadingIndication())
 
   var txParams = {
     from: this.props.address,
