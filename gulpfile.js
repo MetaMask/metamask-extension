@@ -16,6 +16,8 @@ var eslint = require('gulp-eslint')
 var fs = require('fs')
 var path = require('path')
 var manifest = require('./app/manifest.json')
+var gulpif = require('gulp-if')
+var replace = require('gulp-replace')
 
 // browser reload
 
@@ -72,8 +74,8 @@ gulp.task('copy:root', copyTask({
   pattern: '/*',
 }))
 
-gulp.task('manifest:cleanup', function() {
-  return gulp.src('./dist/firefox/manifest.json')
+gulp.task('manifest:chrome', function() {
+  return gulp.src('./dist/chrome/manifest.json')
   .pipe(jsoneditor(function(json) {
     delete json.applications
     return json
@@ -81,7 +83,7 @@ gulp.task('manifest:cleanup', function() {
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
-gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:cleanup'))
+gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:chrome'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
