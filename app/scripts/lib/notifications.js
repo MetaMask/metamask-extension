@@ -44,7 +44,7 @@ function getPopup(cb) {
 }
 
 function getPopupIn(windows) {
-  return  windows ? windows.find((win) => {
+  return windows ? windows.find((win) => {
     return win.type === 'popup'
   }) : null
 }
