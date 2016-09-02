@@ -205,7 +205,7 @@ function copyTask(opts){
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(gulpif(disableLiveReload,livereload()))
+    stream.pipe(gulpif(!disableLiveReload,livereload()))
 
     return stream
   }
