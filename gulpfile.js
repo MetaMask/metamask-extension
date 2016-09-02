@@ -19,7 +19,7 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 
-var production = false
+var production = gutil.env.production
 
 // browser reload
 
@@ -98,7 +98,20 @@ gulp.task('manifest:production', function() {
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
-gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:production', 'manifest:chrome'))
+const staticFiles = [
+  'locales',
+  'images',
+  'fonts',
+  'root'
+]
+
+var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
+
+if (!production) {
+  copyStrings.push('copy:`reload`')
+}
+
+gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:production', 'manifest:chrome'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -132,14 +145,18 @@ const jsFiles = [
   'popup',
 ]
 
+var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
+var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
+
 jsFiles.forEach((jsFile) => {
   gulp.task(`dev:js:${jsFile}`, bundleTask({ watch: true, filename: `${jsFile}.js` }))
   gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
 })
 
-gulp.task('dev:js', gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
+gulp.task('dev:js', gulp.parallel(...jsDevStrings))
 
-gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup'))
+gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+
 
 // clean dist
 
@@ -169,6 +186,7 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge'))
 // high level tasks
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+
 gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
 gulp.task('dist', gulp.series('build', 'zip'))
 
@@ -187,7 +205,7 @@ function copyTask(opts){
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(livereload())
+    stream.pipe(gulpif(production,livereload()))
 
     return stream
   }
@@ -228,7 +246,7 @@ function bundleTask(opts) {
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
-      .pipe(livereload())
+      .pipe(gulpif(!production,livereload()))
 
     )
   }
