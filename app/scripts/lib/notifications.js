@@ -9,20 +9,26 @@ module.exports = notifications
 window.METAMASK_NOTIFIER = notifications
 
 function show () {
-  getWindows((windows) => {
+  getPopup((err, popup) => {
+    if (err) throw err
 
-    if (windows.length > 0) {
-      const win = windows[0]
-      return extension.windows.update(win.id, { focused: true })
+    if (popup) {
+
+      // bring focus to existing popup
+      extension.windows.update(popup.id, { focused: true })
+
+    } else {
+
+      // create new popup
+      extension.windows.create({
+        url: 'notification.html',
+        type: 'popup',
+        focused: true,
+        width: 360,
+        height: 500,
+      })
+
     }
-
-    extension.windows.create({
-      url: 'notification.html',
-      type: 'popup',
-      focused: true,
-      width: 360,
-      height: 500,
-    })
   })
 }
 
@@ -38,19 +44,19 @@ function getWindows(cb) {
 }
 
 function getPopup(cb) {
-  getWindows((windows) => {
-    cb(getPopupIn(windows))
+  getWindows((err, windows) => {
+    if (err) throw err
+    cb(null, getPopupIn(windows))
   })
 }
 
 function getPopupIn(windows) {
-  return windows ? windows.find((win) => {
-    return win.type === 'popup'
-  }) : null
+  return windows ? windows.find((win) => win.type === 'popup') : null
 }
 
 function closePopup() {
-  getPopup((popup) => {
+  getPopup((err, popup) => {
+    if (err) throw err
     if (!popup) return
     extension.windows.remove(popup.id, console.error)
   })
