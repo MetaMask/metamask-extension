@@ -19,7 +19,7 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 
-var production = gutil.env.production
+var disableLiveReload = gutil.env.disableLiveReload
 
 // browser reload
 
@@ -91,7 +91,7 @@ gulp.task('manifest:production', function() {
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
   ],{base: './dist/'})
-  .pipe(gulpif(production,jsoneditor(function(json) {
+  .pipe(gulpif(disableLiveReload,jsoneditor(function(json) {
     json.background.scripts = ["scripts/background.js"]
     return json
   })))
@@ -107,8 +107,8 @@ const staticFiles = [
 
 var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
 
-if (!production) {
-  copyStrings.push('copy:`reload`')
+if (!disableLiveReload) {
+  copyStrings.push('copy:reload')
 }
 
 gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:production', 'manifest:chrome'))
@@ -205,7 +205,7 @@ function copyTask(opts){
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(gulpif(production,livereload()))
+    stream.pipe(gulpif(disableLiveReload,livereload()))
 
     return stream
   }
@@ -246,7 +246,7 @@ function bundleTask(opts) {
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
-      .pipe(gulpif(!production,livereload()))
+      .pipe(gulpif(!disableLiveReload,livereload()))
 
     )
   }

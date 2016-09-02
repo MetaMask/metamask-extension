@@ -4,6 +4,7 @@
 
 - Fix bug where provider menu did not allow switching to custom network from a custom network.
 - Sending a transaction from within MetaMask no longer triggers a popup.
+- The ability to build without livereload features (such as for production) can be enabled with the gulp --disableLiveReload
 
 ## 2.10.0 2016-08-29
 
