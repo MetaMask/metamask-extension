@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 2.10.2 2016-09-02
+
+- Fix bug where notification popup would not display.
+
 ## 2.10.1 2016-09-02
 
 - Fix bug where provider menu did not allow switching to custom network from a custom network.
