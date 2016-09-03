@@ -1,20 +1,12 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
 const formatBalance = require('../util').formatBalance
 const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
+const FiatValue = require('./fiat-value')
 
-module.exports = connect(mapStateToProps)(EthBalanceComponent)
-
-function mapStateToProps (state) {
-  return {
-    conversionRate: state.metamask.conversionRate,
-    conversionDate: state.metamask.conversionDate,
-    currentFiat: state.metamask.currentFiat,
-  }
-}
+module.exports = EthBalanceComponent
 
 inherits(EthBalanceComponent, Component)
 function EthBalanceComponent () {
@@ -22,11 +14,10 @@ function EthBalanceComponent () {
 }
 
 EthBalanceComponent.prototype.render = function () {
-  var state = this.props
-  var style = state.style
+  var props = this.props
+  var style = props.style
 
-  const value = formatBalance(state.value, 6)
-  var width = state.width
+  var width = props.width
 
   return (
 
@@ -38,30 +29,23 @@ EthBalanceComponent.prototype.render = function () {
           display: 'inline',
           width: width,
         },
-      }, this.renderBalance(value, state)),
+      }, this.renderBalance()),
     ])
-
   )
 }
-EthBalanceComponent.prototype.renderBalance = function (value, state) {
+
+EthBalanceComponent.prototype.renderBalance = function () {
+  const props = this.props
+  const value = formatBalance(props.value, 6)
+
   if (value === 'None') return value
-  var balanceObj = generateBalanceObject(value, state.shorten ? 1 : 3)
-  var balance, fiatDisplayNumber, fiatTooltipNumber
+  var balanceObj = generateBalanceObject(value, props.shorten ? 1 : 3)
+  var balance
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
 
-
-  if (state.conversionRate !== 0) {
-    fiatTooltipNumber = Number(splitBalance[0]) * state.conversionRate
-    fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
-  } else {
-    fiatDisplayNumber = 'N/A'
-  }
-
-  var fiatSuffix = state.currentFiat
-
-  if (state.shorten) {
+  if (props.shorten) {
     balance = balanceObj.shortBalance
   } else {
     balance = balanceObj.balance
@@ -98,43 +82,8 @@ EthBalanceComponent.prototype.renderBalance = function (value, state) {
           }, label),
         ]),
       ]),
-      h(Tooltip, {
-        position: 'bottom',
-        title: `${fiatTooltipNumber} ${fiatSuffix}`,
-      }, [
-        fiatDisplay(fiatDisplayNumber, fiatSuffix),
-      ]),
+      h(FiatValue, { value: props.value }),
     ])
   )
 }
 
-function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
-  if (fiatDisplayNumber !== 'N/A') {
-    return h('.flex-row', {
-      style: {
-        alignItems: 'flex-end',
-        lineHeight: '13px',
-        fontFamily: 'Montserrat Light',
-        textRendering: 'geometricPrecision',
-      },
-    }, [
-      h('div', {
-        style: {
-          width: '100%',
-          textAlign: 'right',
-          fontSize: '12px',
-          color: '#333333',
-        },
-      }, fiatDisplayNumber),
-      h('div', {
-        style: {
-          color: '#AEAEAE',
-          marginLeft: '5px',
-          fontSize: '12px',
-        },
-      }, fiatSuffix),
-    ])
-  } else {
-    return h('div')
-  }
-}
