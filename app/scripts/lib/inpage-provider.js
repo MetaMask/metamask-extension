@@ -80,7 +80,8 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     // throw not-supported Error
     default:
-      var message = 'The MetaMask Web3 object does not support synchronous methods. See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#all-async---think-of-metamask-as-a-light-client for details.'
+      var message = 'The MetaMask Web3 object does not support synchronous methods like ' + payload.method +
+        '. See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#all-async---think-of-metamask-as-a-light-client for details.'
       throw new Error(message)
 
   }
