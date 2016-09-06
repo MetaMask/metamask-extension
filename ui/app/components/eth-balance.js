@@ -19,7 +19,6 @@ EthBalanceComponent.prototype.render = function () {
   var needsParse = this.props.needsParse !== undefined ? this.props.needsParse : true
   const value = formatBalance(props.value, 6, needsParse)
   var width = props.width
-  const showFiat = 'showFiat' in props ? props.showFiat : true
 
   return (
 
@@ -44,6 +43,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
+  const showFiat = 'showFiat' in props ? props.showFiat : true
 
   if (props.shorten) {
     balance = balanceObj.shortBalance
@@ -80,7 +80,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
         }, label),
       ]),
 
-      fiatValue ? h(FiatValue, { value: props.value }) : null,
+      showFiat ? h(FiatValue, { value: props.value }) : null,
     ])
   )
 }

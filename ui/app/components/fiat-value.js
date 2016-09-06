@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const formatBalance = require('../util').formatBalance
 const generateBalanceObject = require('../util').generateBalanceObject
-const Tooltip = require('./tooltip.js')
+const Tooltip = require('./tooltip')
 
 module.exports = connect(mapStateToProps)(FiatValue)
 
@@ -25,7 +25,6 @@ FiatValue.prototype.render = function () {
   const value = formatBalance(props.value, 6)
 
   if (value === 'None') return value
-  var balanceObj = generateBalanceObject(value, props.shorten ? 1 : 3)
   var fiatDisplayNumber, fiatTooltipNumber
   var splitBalance = value.split(' ')
 
