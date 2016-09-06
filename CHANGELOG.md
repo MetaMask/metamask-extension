@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- On fresh install, open a new tab with the MetaMask Introduction video.
+
 ## 2.10.2 2016-09-02
 
 - Fix bug where notification popup would not display.
