@@ -35,6 +35,12 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
   notification.show()
 }
 
+// On first install, open a window to MetaMask website to how-it-works.
+
+chrome.runtime.onInstalled.addListener(function (object) {
+  chrome.tabs.create({url: 'https://metamask.io/#how-it-works'})
+})
+
 //
 // connect to other contexts
 //
@@ -160,4 +166,3 @@ function getOldStyleData () {
 function setData (data) {
   window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }
-
