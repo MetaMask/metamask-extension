@@ -35,10 +35,9 @@ EthStoreWarning.prototype.render = function () {
           margin: '10px 10px 10px 10px',
         },
       },
-        `The MetaMask team would like to
-        remind you that MetaMask is currently in beta - so
-        don't store large
-        amounts of ether in MetaMask.
+        `MetaMask is currently in beta; use
+        caution in storing large
+        amounts of ether.
         `),
 
       h('i.fa.fa-exclamation-triangle.fa-4', {
