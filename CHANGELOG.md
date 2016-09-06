@@ -3,6 +3,7 @@
 ## Current Master
 
 - On fresh install, open a new tab with the MetaMask Introduction video.
+- Block negative values from transactions.
 
 ## 2.10.2 2016-09-02
 
