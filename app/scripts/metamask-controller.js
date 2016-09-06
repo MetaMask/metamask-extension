@@ -199,6 +199,9 @@ module.exports = class MetamaskController {
     const idStore = this.idStore
     var state = idStore.getState()
 
+    let err = this.enforceTxValidations(txParams)
+    if (err) return onTxDoneCb(err)
+
     // It's locked
     if (!state.isUnlocked) {
 
@@ -213,6 +216,13 @@ module.exports = class MetamaskController {
         this.sendUpdate()
         this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
       })
+    }
+  }
+
+  enforceTxValidations (txParams) {
+    if (txParams.value.indexOf('-') === 0) {
+      const msg = `Invalid transaction value of ${txParams.value} not a positive number.`
+      return new Error(msg)
     }
   }
 

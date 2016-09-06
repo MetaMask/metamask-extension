@@ -2,8 +2,16 @@
 
 ## Current Master
 
+## 2.10.2 2016-09-02
+
+- Fix bug where notification popup would not display.
+
+## 2.10.1 2016-09-02
+
 - Fix bug where provider menu did not allow switching to custom network from a custom network.
 - Sending a transaction from within MetaMask no longer triggers a popup.
+- The ability to build without livereload features (such as for production) can be enabled with the gulp --disableLiveReload flag.
+- Fix Ethereum JSON RPC Filters bug.
 
 ## 2.10.0 2016-08-29
 
