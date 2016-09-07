@@ -220,7 +220,7 @@ module.exports = class MetamaskController {
   }
 
   enforceTxValidations (txParams) {
-    if (txParams.value.indexOf('-') === 0) {
+    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
       const msg = `Invalid transaction value of ${txParams.value} not a positive number.`
       return new Error(msg)
     }
