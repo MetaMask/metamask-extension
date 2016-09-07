@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add fiat conversion values to more views.
+
 ## 2.10.2 2016-09-02
 
 - Fix bug where notification popup would not display.
