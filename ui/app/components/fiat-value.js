@@ -32,6 +32,7 @@ FiatValue.prototype.render = function () {
     fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
   } else {
     fiatDisplayNumber = 'N/A'
+    fiatTooltipNumber = 'Unknown'
   }
 
   var fiatSuffix = props.currentFiat

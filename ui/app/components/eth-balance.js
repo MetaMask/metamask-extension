@@ -57,30 +57,32 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
     h(Tooltip, {
       position: 'bottom',
       title: `${ethNumber} ${ethSuffix}`,
-    }, [
-      h('.flex-column', {
-        style: {
-          alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Montserrat Light',
-          textRendering: 'geometricPrecision',
-        },
-      }, [
-        h('div', {
+    }, h('div.flex-column', [
+        h('.flex-row', {
           style: {
-            width: '100%',
-            textAlign: 'right',
+            alignItems: 'flex-end',
+            lineHeight: '13px',
+            fontFamily: 'Montserrat Light',
+            textRendering: 'geometricPrecision',
           },
-        }, this.props.incoming ? `+${balance}` : balance),
-        h('div', {
-          style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
-          },
-        }, label),
-      ]),
+        }, [
+          h('div', {
+            style: {
+              width: '100%',
+              textAlign: 'right',
+            },
+          }, this.props.incoming ? `+${balance}` : balance),
+          h('div', {
+            style: {
+              color: ' #AEAEAE',
+              fontSize: '12px',
+              marginLeft: '5px',
+            },
+          }, label),
+        ]),
 
-      showFiat ? h(FiatValue, { value: props.value }) : null,
-    ])
+        showFiat ? h(FiatValue, { value: props.value }) : null,
+      ])
+    )
   )
 }
