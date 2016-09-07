@@ -4,6 +4,7 @@
 
 - On fresh install, open a new tab with the MetaMask Introduction video.
 - Block negative values from transactions.
+- Fixed a memory leak.
 
 ## 2.10.2 2016-09-02
 
