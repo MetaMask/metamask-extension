@@ -35,6 +35,12 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
   notification.show()
 }
 
+// On first install, open a window to MetaMask website to how-it-works.
+
+extension.runtime.onInstalled.addListener(function (object) {
+  extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+})
+
 //
 // connect to other contexts
 //
@@ -80,6 +86,7 @@ function setupControllerConnection (stream) {
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', (remote) => {
     // push updates to popup
+    controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
     controller.ethStore.on('update', controller.sendUpdate.bind(controller))
     controller.listeners.push(remote)
     idStore.on('update', controller.sendUpdate.bind(controller))
@@ -160,4 +167,3 @@ function getOldStyleData () {
 function setData (data) {
   window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }
-
