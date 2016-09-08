@@ -14,7 +14,6 @@ function Mascot () {
     pxNotRatio: true,
     width: 200,
     height: 200,
-    staticImage: './images/icon-512.png',
   })
   if (!this.logo.webGLSupport) return
   this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
@@ -27,28 +26,18 @@ Mascot.prototype.render = function () {
   // and we dont get that until render
   this.handleAnimationEvents()
 
-  return (
-
-    h('#metamask-mascot-container')
-
-  )
+  return h('#metamask-mascot-container')
 }
 
 Mascot.prototype.componentDidMount = function () {
   var targetDivId = 'metamask-mascot-container'
   var container = document.getElementById(targetDivId)
-  if (!this.logo.webGLSupport) {
-    var staticLogo = this.logo.staticLogo
-    staticLogo.style.marginBottom = '40px'
-    container.appendChild(staticLogo)
-  } else {
-    container.appendChild(this.logo.canvas)
-  }
+  container.appendChild(this.logo.container)
 }
 
 Mascot.prototype.componentWillUnmount = function () {
   if (!this.logo.webGLSupport) return
-  this.logo.canvas.remove()
+  this.logo.container.remove()
 }
 
 Mascot.prototype.handleAnimationEvents = function () {
