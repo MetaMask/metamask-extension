@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
-
+const txHelper = require('./lib/tx-helper')
 module.exports = launchApp
 
 function launchApp (opts) {
@@ -34,7 +34,8 @@ function startApp (metamaskState, accountManager, opts) {
   })
 
   // if unconfirmed txs, start on txConf page
-  if (Object.keys(metamaskState.unconfTxs || {}).length) {
+  var unconfirmedTxsAll = txHelper(metamaskState.unconfTxs, metamaskState.unconfMsgs, metamaskState.network)
+  if (unconfirmedTxsAll.length > 0) {
     store.dispatch(actions.showConfTxPage())
   }
 

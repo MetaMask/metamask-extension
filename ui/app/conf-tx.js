@@ -21,6 +21,7 @@ function mapStateToProps (state) {
     unconfMsgs: state.metamask.unconfMsgs,
     index: state.appState.currentView.context,
     warning: state.appState.warning,
+    network: state.metamask.network,
   }
 }
 
@@ -32,9 +33,10 @@ function ConfirmTxScreen () {
 ConfirmTxScreen.prototype.render = function () {
   var state = this.props
 
+  var network = state.network
   var unconfTxs = state.unconfTxs
   var unconfMsgs = state.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
   var txData = unconfTxList[index] || unconfTxList[0] || {}
   var isNotification = isPopupOrNotification() === 'notification'
