@@ -7,7 +7,6 @@ module.exports = reduceApp
 
 function reduceApp (state, action) {
   // clone and defaults
-  console.log(action.type)
   const selectedAccount = state.metamask.selectedAccount
   const pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
