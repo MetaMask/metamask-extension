@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const formatBalance = require('../util').formatBalance
-const Tooltip = require('./tooltip')
 
 module.exports = connect(mapStateToProps)(FiatValue)
 
@@ -28,7 +27,6 @@ FiatValue.prototype.render = function () {
   var splitBalance = value.split(' ')
 
   if (props.conversionRate !== 0) {
-    fiatTooltipNumber = Number(splitBalance[0]) * props.conversionRate
     fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
   } else {
     fiatDisplayNumber = 'N/A'
@@ -37,14 +35,7 @@ FiatValue.prototype.render = function () {
 
   var fiatSuffix = props.currentFiat
 
-  return (
-    h(Tooltip, {
-      position: 'bottom',
-      title: `${fiatTooltipNumber} ${fiatSuffix}`,
-    }, [
-      fiatDisplay(fiatDisplayNumber, fiatSuffix),
-    ])
-  )
+  return fiatDisplay(fiatDisplayNumber, fiatSuffix)
 }
 
 function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
