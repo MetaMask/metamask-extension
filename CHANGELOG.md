@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add fiat conversion values to more views.
 - On fresh install, open a new tab with the MetaMask Introduction video.
 - Block negative values from transactions.
 - Fixed a memory leak.

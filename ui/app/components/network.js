@@ -75,7 +75,6 @@ Network.prototype.render = function () {
           default:
             return h('.network-indicator', [
               h('i.fa.fa-question-circle.fa-lg', {
-                ariaHidden: true,
                 style: {
                   margin: '10px',
                   color: 'rgb(125, 128, 130)',

@@ -4,9 +4,8 @@ const inherits = require('util').inherits
 const carratInline = require('fs').readFileSync('./images/forward-carrat.svg', 'utf8')
 
 const MiniAccountPanel = require('./mini-account-panel')
-const EtherBalance = require('./eth-balance')
+const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const formatBalance = require('../util').formatBalance
 const nameForAddress = require('../../lib/contract-namer')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -70,7 +69,7 @@ PTXP.render = function () {
               fontFamily: 'Montserrat Light, Montserrat, sans-serif',
             },
           }, [
-            h(EtherBalance, {
+            h(EthBalance, {
               value: balance,
               inline: true,
               labelColor: '#F7861C',
@@ -107,12 +106,12 @@ PTXP.render = function () {
 
         h('.row', [
           h('.cell.label', 'Amount'),
-          h('.cell.value', formatBalance(txParams.value)),
+          h(EthBalance, { value: txParams.value }),
         ]),
 
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
-          h('.cell.value', formatBalance(txFee.toString(16))),
+          h(EthBalance, { value: txFee.toString(16) }),
         ]),
 
         h('.cell.row', {
@@ -129,7 +128,7 @@ PTXP.render = function () {
               alignItems: 'center',
             },
           }, [
-            h(EtherBalance, {
+            h(EthBalance, {
               value: maxCost.toString(16),
               inline: true,
               labelColor: 'black',
