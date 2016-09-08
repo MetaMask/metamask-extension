@@ -35,7 +35,7 @@ function startApp (metamaskState, accountManager, opts) {
 
   // if unconfirmed txs, start on txConf page
   var unconfirmedTxsAll = txHelper(metamaskState.unconfTxs, metamaskState.unconfMsgs, metamaskState.network)
-  if (unconfirmedTxsAll > 0) {
+  if (unconfirmedTxsAll.length > 0) {
     store.dispatch(actions.showConfTxPage())
   }
 
