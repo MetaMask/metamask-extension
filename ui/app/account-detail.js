@@ -235,7 +235,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.transactionList = function () {
   const { transactions, unconfTxs, unconfMsgs, address, network, shapeShiftTxList } = this.props
 
-  var txsToRender = transactions
+  var txsToRender = transactions.concat(unconfTxs)
   // only transactions that are from the current address
   .filter(tx => tx.txParams.from === address)
   // only transactions that are on the current network
