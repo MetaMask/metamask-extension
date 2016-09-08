@@ -26,7 +26,9 @@ Mascot.prototype.render = function () {
   // and we dont get that until render
   this.handleAnimationEvents()
 
-  return h('#metamask-mascot-container')
+  return h('#metamask-mascot-container', {
+    style: { zIndex: 2 },
+  })
 }
 
 Mascot.prototype.componentDidMount = function () {
@@ -36,12 +38,13 @@ Mascot.prototype.componentDidMount = function () {
 }
 
 Mascot.prototype.componentWillUnmount = function () {
-  if (!this.logo.webGLSupport) return
+  this.animations = this.props.animationEventEmitter
+  this.animations.removeAllListeners()
   this.logo.container.remove()
+  this.logo.stopAnimation()
 }
 
 Mascot.prototype.handleAnimationEvents = function () {
-  if (!this.logo.webGLSupport) return
   // only setup listeners once
   if (this.animations) return
   this.animations = this.props.animationEventEmitter
