@@ -16,15 +16,6 @@ function reduceApp (state, action) {
   }
   if (pendingTxs) {
     name = 'confTx'
-  } else {
-    try {
-      if (state.appState.currentView.name === 'confTx') {
-        name = 'accountDetail'
-      }
-    } catch (e) {
-      null
-    }
-
   }
 
   var defaultView = {
