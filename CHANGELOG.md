@@ -6,6 +6,7 @@
 - On fresh install, open a new tab with the MetaMask Introduction video.
 - Block negative values from transactions.
 - Fixed a memory leak.
+- MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
 
 ## 2.10.2 2016-09-02
 
