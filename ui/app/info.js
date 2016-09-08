@@ -67,7 +67,7 @@ InfoScreen.prototype.render = function () {
             `For more information on MetaMask
              you can visit our web site. If you want to
              contact us with questions or just
-             say 'Hi', you can find us on theise platforms:`),
+             say 'Hi', you can find us on these platforms:`),
 
           h('div', {
             style: {
