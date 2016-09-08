@@ -86,7 +86,6 @@ function setupControllerConnection (stream) {
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', (remote) => {
     // push updates to popup
-    controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
     controller.ethStore.on('update', controller.sendUpdate.bind(controller))
     controller.listeners.push(remote)
     idStore.on('update', controller.sendUpdate.bind(controller))
