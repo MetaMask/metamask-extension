@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix bug where pending transactions from Test net (or other networks) show up In Main net.
 - Add fiat conversion values to more views.
 - On fresh install, open a new tab with the MetaMask Introduction video.
 - Block negative values from transactions.
