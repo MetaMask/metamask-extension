@@ -7,6 +7,7 @@ module.exports = reduceApp
 
 function reduceApp (state, action) {
   // clone and defaults
+  console.log(action.type)
   const selectedAccount = state.metamask.selectedAccount
   const pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
@@ -15,6 +16,15 @@ function reduceApp (state, action) {
   }
   if (pendingTxs) {
     name = 'confTx'
+  } else {
+    try {
+      if (state.appState.currentView.name === 'confTx') {
+        name = 'accountDetail'
+      }
+    } catch (e) {
+      null
+    }
+
   }
 
   var defaultView = {
@@ -258,8 +268,9 @@ function reduceApp (state, action) {
     case actions.COMPLETED_TX:
       var unconfTxs = state.metamask.unconfTxs
       var unconfMsgs = state.metamask.unconfMsgs
+      var network = state.metamask.network
 
-      var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+      var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
     .filter(tx => tx !== tx.id)
 
       if (unconfTxList && unconfTxList.length > 0) {
@@ -523,14 +534,16 @@ function reduceApp (state, action) {
 function hasPendingTxs (state) {
   var unconfTxs = state.metamask.unconfTxs
   var unconfMsgs = state.metamask.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var network = state.metamask.network
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   return unconfTxList.length > 0
 }
 
 function indexForPending (state, txId) {
   var unconfTxs = state.metamask.unconfTxs
   var unconfMsgs = state.metamask.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var network = state.metamask.network
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   let idx
   unconfTxList.forEach((tx, i) => {
     if (tx.id === txId) {
