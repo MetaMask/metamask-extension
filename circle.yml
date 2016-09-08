@@ -3,6 +3,5 @@ machine:
     version: 6.0.0
 dependencies:
   pre:
-    - "npm i"
     - "npm i -g testem"
     - "npm i -g mocha"
