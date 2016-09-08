@@ -245,7 +245,7 @@ App.prototype.renderNetworkDropdown = function () {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
-      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
       activeNetworkRender: props.provider.rpcTarget,
     }),
 
@@ -253,7 +253,7 @@ App.prototype.renderNetworkDropdown = function () {
       label: 'Custom RPC',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
     }),
 
     this.renderCustomOption(props.provider.rpcTarget),
@@ -289,21 +289,21 @@ App.prototype.renderDropdown = function () {
       label: 'Settings',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-gear.fa-lg'),
     }),
 
     h(DropMenuItem, {
       label: 'Lock',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-lock.fa-lg'),
     }),
 
     h(DropMenuItem, {
       label: 'Help',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question.fa-lg'),
     }),
   ])
 }
@@ -312,7 +312,6 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
   return (
     h('.flex-row', {
       key: 'leftArrow',
-      transForward: false,
       style: style,
       onClick: () => props.dispatch(actions.goBackToInitView()),
     }, [
@@ -515,14 +514,14 @@ App.prototype.renderCustomOption = function (rpcTarget) {
         label: 'Custom RPC',
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+        icon: h('i.fa.fa-question-circle.fa-lg'),
       })
 
     default:
       return h(DropMenuItem, {
         label: `${rpcTarget}`,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+        icon: h('i.fa.fa-question-circle.fa-lg'),
         activeNetworkRender: 'custom',
       })
   }
