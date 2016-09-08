@@ -27,6 +27,7 @@ FiatValue.prototype.render = function () {
   var splitBalance = value.split(' ')
 
   if (props.conversionRate !== 0) {
+    fiatTooltipNumber = Number(splitBalance[0]) * props.conversionRate
     fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
   } else {
     fiatDisplayNumber = 'N/A'
