@@ -483,7 +483,7 @@ IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey)
   keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
-  keyStore.generateNewAddress(derivedKey, 3)
+  keyStore.generateNewAddress(derivedKey, 1)
   configManager.setWallet(keyStore.serialize())
   if (global.METAMASK_DEBUG) {
     console.log('restored from seed. saved to keystore')
