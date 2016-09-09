@@ -15,7 +15,7 @@ function Mascot () {
     width: 200,
     height: 200,
   })
-  if (!this.logo.webGLSupport) return
+
   this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
@@ -53,7 +53,6 @@ Mascot.prototype.handleAnimationEvents = function () {
 }
 
 Mascot.prototype.lookAt = function (target) {
-  if (!this.logo.webGLSupport) return
   this.unfollowMouse()
   this.logo.lookAt(target)
   this.refollowMouse()
