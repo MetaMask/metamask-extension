@@ -8,6 +8,7 @@
 - Block negative values from transactions.
 - Fixed a memory leak.
 - MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
+- Now showing loading indication during vault unlocking, to clarify behavior for users who are experience slow unlocks.
 
 ## 2.10.2 2016-09-02
 
