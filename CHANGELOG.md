@@ -4,7 +4,7 @@
 
 - Fix bug where pending transactions from Test net (or other networks) show up In Main net.
 - Add fiat conversion values to more views.
-- On fresh install, open a new tab with the MetaMask Introduction video.
+- On fresh install, open a new tab with the MetaMask Introduction video. Does not open on update.
 - Block negative values from transactions.
 - Fixed a memory leak.
 - MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
