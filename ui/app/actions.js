@@ -162,8 +162,10 @@ function goHome () {
 
 function tryUnlockMetamask (password) {
   return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
     _accountManager.submitPassword(password, (err, selectedAccount) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed())
       } else {
