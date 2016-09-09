@@ -37,8 +37,10 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
 
 // On first install, open a window to MetaMask website to how-it-works.
 
-extension.runtime.onInstalled.addListener(function (object) {
-  extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+extension.runtime.onInstalled.addListener(function (details) {
+  if (details.reason === 'install') {
+    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+  }
 })
 
 //
