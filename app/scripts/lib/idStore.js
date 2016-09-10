@@ -464,6 +464,11 @@ IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy,
     keyStore.keyFromPassword(password, (err, derivedKey) => {
       if (err) return cb(err)
 
+      this._ethStore._currentState = {
+        accounts: {},
+        transactions: {},
+      }
+
       keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
 
       this._createFirstWallet(derivedKey)

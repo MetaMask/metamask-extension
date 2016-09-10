@@ -83,8 +83,19 @@ describe('IdentityStore', function() {
         assert.ifError(err)
 
         let newKeystore = idStore._idmgmt.keyStore
+
         assert.equal(accounts[0], firstAccount)
-        done()
+
+        accounts = []
+        const secondSeed = 'radar blur cabbage chef fix engine embark joy scheme fiction master release'
+        const secondAcct = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9'
+
+        idStore.recoverFromSeed(password, secondSeed, (err) => {
+
+          let accounts = idStore._getAddresses()
+          assert.equal(accounts[0], secondAcct)
+          done()
+        })
       })
     })
   })
