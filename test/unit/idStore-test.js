@@ -86,7 +86,15 @@ describe('IdentityStore', function() {
       {
         seed: 'half glimpse tape cute harvest sweet bike voyage actual floor poet lazy',
         account: '0x28e9044597b625ac4beda7250011670223de43b2',
-      }
+      },
+      {
+        seed: 'flavor tiger carpet motor angry hungry document inquiry large critic usage liar',
+        account: '0xb571be96558940c4e9292e1999461aa7499fb6cd',
+      },
+      {
+        seed: 'this is a twelve word phrase seven eight nine ten eleven twelve',
+        account: '0x814e8ec0c3647e140b8e09228fc374b2a867fe48',
+      },
     ]
 
     before(function() {
