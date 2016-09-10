@@ -75,7 +75,6 @@ IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
     if (err) return cb(err)
 
     this._loadIdentities()
-    this._didUpdate()
     cb(null, this.getState())
   })
 }
@@ -394,7 +393,6 @@ IdentityStore.prototype._loadIdentities = function () {
   var addresses = this._getAddresses()
   addresses.forEach((address, i) => {
     // // add to ethStore
-    this._ethStore.addAccount(address)
     // add to identities
     const defaultLabel = 'Wallet ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)
@@ -413,7 +411,6 @@ IdentityStore.prototype.saveAccountLabel = function (account, label, cb) {
   configManager.setNicknameForWallet(account, label)
   this._loadIdentities()
   cb(null, label)
-  this._didUpdate()
 }
 
 // mayBeFauceting
@@ -481,8 +478,6 @@ IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy,
       })
 
       cb()
-      this._loadIdentities()
-      this._didUpdate()
     })
   })
 }
@@ -497,9 +492,9 @@ IdentityStore.prototype._createFirstWallet = function (derivedKey) {
   const keyStore = this._keyStore
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
   keyStore.generateNewAddress(derivedKey, 1)
+  this.configManager.setWallet(keyStore.serialize())
   var addresses = keyStore.getAddresses()
   this._ethStore.addAccount(addresses[0])
-  this.configManager.setWallet(keyStore.serialize())
 }
 
 // get addresses and normalize address hexString

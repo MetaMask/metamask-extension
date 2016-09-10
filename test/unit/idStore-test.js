@@ -73,7 +73,7 @@ describe('IdentityStore', function() {
       },
       {
         seed: 'radar blur cabbage chef fix engine embark joy scheme fiction master release',
-        account: '0xe15D894BeCB0354c501AE69429B05143679F39e0',
+        account: '0xe15d894becb0354c501ae69429b05143679f39e0',
       },
       {
          seed: 'phone coyote caught pattern found table wedding list tumble broccoli chief swing',
@@ -90,10 +90,6 @@ describe('IdentityStore', function() {
       {
         seed: 'flavor tiger carpet motor angry hungry document inquiry large critic usage liar',
         account: '0xb571be96558940c4e9292e1999461aa7499fb6cd',
-      },
-      {
-        seed: 'this is a twelve word phrase seven eight nine ten eleven twelve',
-        account: '0x814e8ec0c3647e140b8e09228fc374b2a867fe48',
       },
     ]
 
@@ -115,10 +111,13 @@ describe('IdentityStore', function() {
     it('should enforce seed compliance with TestRPC', function (done) {
       const tests = assertions.map((assertion) => {
         return function (cb) {
+          accounts = []
           idStore.recoverFromSeed(password, assertion.seed, (err) => {
             assert.ifError(err)
 
-            assert.equal(accounts[0], assertion.account)
+            var received = accounts[0].toLowerCase()
+            var expected = assertion.account.toLowerCase()
+            assert.equal(received, expected)
             cb()
           })
         }
