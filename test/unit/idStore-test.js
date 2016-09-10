@@ -118,7 +118,6 @@ describe('IdentityStore', function() {
           idStore.recoverFromSeed(password, assertion.seed, (err) => {
             assert.ifError(err)
 
-            console.log('comparing %s to %s', accounts[0], assertion.account)
             assert.equal(accounts[0], assertion.account)
             cb()
           })
