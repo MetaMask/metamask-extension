@@ -73,7 +73,7 @@ describe('IdentityStore', function() {
       },
       {
         seed: 'radar blur cabbage chef fix engine embark joy scheme fiction master release',
-        account: '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9',
+        account: '0xe15D894BeCB0354c501AE69429B05143679F39e0',
       },
       {
          seed: 'phone coyote caught pattern found table wedding list tumble broccoli chief swing',
