@@ -1,6 +1,7 @@
 var assert = require('assert')
 var IdentityStore = require('../../app/scripts/lib/idStore')
 var configManagerGen = require('../lib/mock-config-manager')
+const ethUtil = require('ethereumjs-util')
 
 describe('IdentityStore', function() {
 
@@ -18,7 +19,7 @@ describe('IdentityStore', function() {
       idStore = new IdentityStore({
         configManager: configManagerGen(),
         ethStore: {
-          addAccount(acct) { accounts.push(acct) },
+          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
         },
       })
 
@@ -39,7 +40,7 @@ describe('IdentityStore', function() {
         idStore = new IdentityStore({
           configManager: configManagerGen(),
           ethStore: {
-            addAccount(acct) { newAccounts.push(acct) },
+            addAccount(acct) { newAccounts.push(ethUtil.addHexPrefix(acct)) },
           },
         })
       })
@@ -62,6 +63,9 @@ describe('IdentityStore', function() {
     let firstAccount = '0x5d8de92c205279c10e5669f797b853ccef4f739a'
     const salt = 'lightwalletSalt'
 
+    const secondSeed = 'radar blur cabbage chef fix engine embark joy scheme fiction master release'
+    const secondAcct = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9'
+
     let password = 'secret!'
     let accounts = []
     let idStore
@@ -72,9 +76,13 @@ describe('IdentityStore', function() {
       idStore = new IdentityStore({
         configManager: configManagerGen(),
         ethStore: {
-          addAccount(acct) { accounts.push('0x' + acct) },
+          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
         },
       })
+    })
+
+    beforeEach(function() {
+      accounts = []
     })
 
     it('should return the expected first account', function (done) {
@@ -87,15 +95,23 @@ describe('IdentityStore', function() {
         assert.equal(accounts[0], firstAccount)
 
         accounts = []
-        const secondSeed = 'radar blur cabbage chef fix engine embark joy scheme fiction master release'
-        const secondAcct = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9'
-
         idStore.recoverFromSeed(password, secondSeed, (err) => {
 
           let accounts = idStore._getAddresses()
           assert.equal(accounts[0], secondAcct)
           done()
         })
+      })
+    })
+
+    it('should return the expected second account', function (done) {
+      idStore.recoverFromSeed(password, secondSeed, (err) => {
+        assert.ifError(err)
+
+        let newKeystore = idStore._idmgmt.keyStore
+
+        assert.equal(accounts[0], firstAccount)
+        done()
       })
     })
   })

@@ -451,7 +451,11 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
 }
 
 IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy, cb) {
-  const opts = { password }
+  const opts = {
+    password,
+    hdPathString: this.hdPathString,
+  }
+
   if (seedPhrase) {
     opts.seedPhrase = seedPhrase
   }
@@ -464,10 +468,7 @@ IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy,
     keyStore.keyFromPassword(password, (err, derivedKey) => {
       if (err) return cb(err)
 
-      this._ethStore._currentState = {
-        accounts: {},
-        transactions: {},
-      }
+      this.purgeCache()
 
       keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
 
@@ -486,10 +487,16 @@ IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy,
   })
 }
 
+IdentityStore.prototype.purgeCache = function () {
+  this._getAddresses().forEach((address) => {
+    this._ethStore.del(address)
+  })
+}
+
 IdentityStore.prototype._createFirstWallet = function (derivedKey) {
   const keyStore = this._keyStore
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
-  keyStore.generateNewAddress(derivedKey)
+  keyStore.generateNewAddress(derivedKey, 1)
   var addresses = keyStore.getAddresses()
   this._ethStore.addAccount(addresses[0])
   this.configManager.setWallet(keyStore.serialize())
@@ -497,7 +504,9 @@ IdentityStore.prototype._createFirstWallet = function (derivedKey) {
 
 // get addresses and normalize address hexString
 IdentityStore.prototype._getAddresses = function () {
-  return this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x' + address })
+  return this._keyStore.getAddresses(this.hdPathString).map((address) => {
+    return ethUtil.addHexPrefix(address)
+  })
 }
 
 IdentityStore.prototype._autoFaucet = function () {
