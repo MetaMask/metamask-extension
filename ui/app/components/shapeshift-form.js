@@ -69,7 +69,7 @@ ShapeshiftForm.prototype.renderMain = function () {
         h('input#fromCoin.buy-inputs.ex-coins', {
           type: 'text',
           list: 'coinList',
-          dataSet: {
+          dataset: {
             persistentFormId: 'input-coin',
           },
           style: {
@@ -165,7 +165,7 @@ ShapeshiftForm.prototype.renderMain = function () {
       h('input#fromCoinAddress.buy-inputs', {
         type: 'text',
         placeholder: `Your ${coin} Refund Address`,
-        dataSet: {
+        dataset: {
           persistentFormId: 'refund-address',
         },
         style: {

@@ -84,7 +84,7 @@ AccountsScreen.prototype.render = function () {
             })
           }),
 
-          h('hr.horizontal-line'),
+          h('hr.horizontal-line', {key: 'horizontal-line1'}),
           h('div.footer.hover-white.pointer', {
             key: 'reveal-account-bar',
             onClick: () => {
@@ -92,6 +92,7 @@ AccountsScreen.prototype.render = function () {
             },
             style: {
               display: 'flex',
+              flex: '1 0 auto',
               height: '40px',
               paddint: '10px',
               justifyContent: 'center',
@@ -100,7 +101,6 @@ AccountsScreen.prototype.render = function () {
           }, [
             h('i.fa.fa-plus.fa-lg', {key: ''}),
           ]),
-          h('hr.horizontal-line'),
         ]),
 
       unconfTxList.length ? (
