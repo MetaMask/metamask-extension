@@ -41,7 +41,7 @@ RestoreVaultScreen.prototype.render = function () {
       // wallet seed entry
       h('h3', 'Wallet Seed'),
       h('textarea.twelve-word-phrase.letter-spacey', {
-        dataset: {
+        dataSet: {
           persistentFormId: 'wallet-seed',
         },
         placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
@@ -52,7 +52,7 @@ RestoreVaultScreen.prototype.render = function () {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
-        dataset: {
+        dataSet: {
           persistentFormId: 'password',
         },
         style: {
@@ -67,7 +67,7 @@ RestoreVaultScreen.prototype.render = function () {
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
         onKeyPress: this.onMaybeCreate.bind(this),
-        dataset: {
+        dataSet: {
           persistentFormId: 'password-confirmation',
         },
         style: {
