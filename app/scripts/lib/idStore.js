@@ -494,7 +494,7 @@ IdentityStore.prototype._createFirstWallet = function (derivedKey) {
   keyStore.generateNewAddress(derivedKey, 1)
   this.configManager.setWallet(keyStore.serialize())
   var addresses = keyStore.getAddresses()
-  this._ethStore.addAccount(addresses[0])
+  this._ethStore.addAccount(ethUtil.addHexPrefix(addresses[0]))
 }
 
 // get addresses and normalize address hexString
