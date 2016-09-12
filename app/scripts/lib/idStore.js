@@ -51,7 +51,7 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
     this.configManager.setData({})
   }
 
-  this._createIdmgmt(password, null, entropy, (err) => {
+  this._createVault(password, null, entropy, (err) => {
     if (err) return cb(err)
 
     this._autoFaucet()
@@ -72,7 +72,7 @@ IdentityStore.prototype.recoverSeed = function (cb) {
 }
 
 IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
-  this._createIdmgmt(password, seed, null, (err) => {
+  this._createVault(password, seed, null, (err) => {
     if (err) return cb(err)
 
     this._loadIdentities()
@@ -449,11 +449,12 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
     const isCorrect = keyStore.isDerivedKeyCorrect(pwDerivedKey)
     if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
+    this._createIdMgmt(derivedKey)
     cb()
   })
 }
 
-IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy, cb) {
+IdentityStore.prototype._createVault = function (password, seedPhrase, entropy, cb) {
   const opts = {
     password,
     hdPathString: this.hdPathString,
@@ -476,17 +477,19 @@ IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy,
       keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
 
       this._createFirstWallet(derivedKey)
-
-      this._idmgmt = new IdManagement({
-        keyStore: keyStore,
-        derivedKey: derivedKey,
-        configManager: this.configManager,
-      })
-
+      this._createIdMgmt(derivedKey)
       this.setSelectedAddressSync()
 
       cb()
     })
+  })
+}
+
+IdentityStore.prototype._createIdMgmt = function (derivedKey) {
+  this._idmgmt = new IdManagement({
+    keyStore: this.keyStore,
+    derivedKey: derivedKey,
+    configManager: this.configManager,
   })
 }
 

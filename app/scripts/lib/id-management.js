@@ -1,3 +1,11 @@
+/* ID Management
+ *
+ * This module exists to hold the decrypted credentials for the current session.
+ * It therefore exposes sign methods, because it is able to perform these
+ * with noa dditional authentication, because its very instantiation
+ * means the vault is unlocked.
+ */
+
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 

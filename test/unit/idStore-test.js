@@ -109,6 +109,7 @@ describe('IdentityStore', function() {
     })
 
     it('should enforce seed compliance with TestRPC', function (done) {
+      this.timeout(5000)
       const tests = assertions.map((assertion) => {
         return function (cb) {
           accounts = []
@@ -118,7 +119,17 @@ describe('IdentityStore', function() {
             var received = accounts[0].toLowerCase()
             var expected = assertion.account.toLowerCase()
             assert.equal(received, expected)
-            cb()
+
+            idStore.tryPassword(password, function (err) {
+
+              assert.ok(idStore.isUnlocked(), 'should unlock the id store')
+
+              idStore.submitPassword(password, function(err, account) {
+                assert.ifError(err)
+                assert.equal(account, expected)
+                cb()
+              })
+            })
           })
         }
       })
@@ -126,24 +137,6 @@ describe('IdentityStore', function() {
       async.series(tests, function(err, results) {
         assert.ifError(err)
         done()
-      })
-    })
-
-    it('should allow restoring and unlocking again', function (done) {
-      const assertion = assertions[0]
-      idStore.recoverFromSeed(password, assertion.seed, (err) => {
-        assert.ifError(err)
-
-        var received = accounts[0].toLowerCase()
-        var expected = assertion.account.toLowerCase()
-        assert.equal(received, expected)
-
-
-        idStore.submitPassword(password, function(err, account) {
-          assert.ifError(err)
-          assert.equal(account, expected)
-          done()
-        })
       })
     })
   })
