@@ -138,7 +138,7 @@ SendTransactionScreen.prototype.render = function () {
         h('input.large-input', {
           name: 'address',
           placeholder: 'Recipient Address',
-          dataSet: {
+          dataset: {
             persistentFormId: 'recipient-address',
           },
         }),
@@ -154,7 +154,7 @@ SendTransactionScreen.prototype.render = function () {
           style: {
             marginRight: 6,
           },
-          dataSet: {
+          dataset: {
             persistentFormId: 'tx-amount',
           },
         }),
@@ -192,7 +192,7 @@ SendTransactionScreen.prototype.render = function () {
             width: '100%',
             resize: 'none',
           },
-          dataSet: {
+          dataset: {
             persistentFormId: 'tx-data',
           },
         }),
