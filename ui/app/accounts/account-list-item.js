@@ -7,14 +7,14 @@ const EthBalance = require('../components/eth-balance')
 const CopyButton = require('../components/copyButton')
 const Identicon = require('../components/identicon')
 
-module.exports = AccountListItem
+module.exports = NewComponent
 
-inherits(AccountListItem, Component)
-function AccountListItem () {
+inherits(NewComponent, Component)
+function NewComponent () {
   Component.call(this)
 }
 
-AccountListItem.prototype.render = function () {
+NewComponent.prototype.render = function () {
   const identity = this.props.identity
   var isSelected = this.props.selectedAddress === identity.address
   var account = this.props.accounts[identity.address]
@@ -23,6 +23,9 @@ AccountListItem.prototype.render = function () {
   return (
     h(`.accounts-list-option.flex-row.flex-space-between.pointer.hover-white${selectedClass}`, {
       key: `account-panel-${identity.address}`,
+      style: {
+        flex: '1 0 auto',
+      },
       onClick: (event) => this.props.onShowDetail(identity.address, event),
     }, [
 
@@ -70,7 +73,7 @@ AccountListItem.prototype.render = function () {
   )
 }
 
-AccountListItem.prototype.pendingOrNot = function () {
+NewComponent.prototype.pendingOrNot = function () {
   const pending = this.props.pending
   if (pending.length === 0) return null
   return h('.pending-dot', pending.length)

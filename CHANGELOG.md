@@ -10,7 +10,6 @@
 - MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
 - Now showing loading indication during vault unlocking, to clarify behavior for users who are experience slow unlocks.
 - Now only initially creates one wallet when restoring a vault, to reduce some users' confusion.
-- Improved the security of vault encryption by ensuring passwords are always uniquely salted.
 
 ## 2.10.2 2016-09-02
 
