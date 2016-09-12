@@ -128,5 +128,23 @@ describe('IdentityStore', function() {
         done()
       })
     })
+
+    it('should allow restoring and unlocking again', function (done) {
+      const assertion = assertions[0]
+      idStore.recoverFromSeed(password, assertion.seed, (err) => {
+        assert.ifError(err)
+
+        var received = accounts[0].toLowerCase()
+        var expected = assertion.account.toLowerCase()
+        assert.equal(received, expected)
+
+
+        idStore.submitPassword(password, function(err, account) {
+          assert.ifError(err)
+          assert.equal(account, expected)
+          done()
+        })
+      })
+    })
   })
 })

@@ -59,6 +59,7 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
     this.configManager.setShowSeedWords(true)
     var seedWords = this._idmgmt.getSeed()
 
+
     cb(null, seedWords)
   })
 }
@@ -124,7 +125,7 @@ IdentityStore.prototype.getSelectedAddress = function () {
   return configManager.getSelectedAccount()
 }
 
-IdentityStore.prototype.setSelectedAddress = function (address, cb) {
+IdentityStore.prototype.setSelectedAddressSync = function (address) {
   const configManager = this.configManager
   if (!address) {
     var addresses = this._getAddresses()
@@ -132,7 +133,12 @@ IdentityStore.prototype.setSelectedAddress = function (address, cb) {
   }
 
   configManager.setSelectedAccount(address)
-  if (cb) return cb(null, address)
+  return address
+}
+
+IdentityStore.prototype.setSelectedAddress = function (address, cb) {
+  const resultAddress = this.setSelectedAddressSync(address)
+  if (cb) return cb(null, resultAddress)
 }
 
 IdentityStore.prototype.revealAccount = function (cb) {
@@ -476,6 +482,8 @@ IdentityStore.prototype._createIdmgmt = function (password, seedPhrase, entropy,
         derivedKey: derivedKey,
         configManager: this.configManager,
       })
+
+      this.setSelectedAddressSync()
 
       cb()
     })
