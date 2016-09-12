@@ -23,9 +23,6 @@ AccountListItem.prototype.render = function () {
   return (
     h(`.accounts-list-option.flex-row.flex-space-between.pointer.hover-white${selectedClass}`, {
       key: `account-panel-${identity.address}`,
-      style: {
-        flex: '1 0 auto',
-      },
       onClick: (event) => this.props.onShowDetail(identity.address, event),
     }, [
 
