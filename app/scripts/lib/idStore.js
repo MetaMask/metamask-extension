@@ -148,8 +148,8 @@ IdentityStore.prototype.revealAccount = function (cb) {
 
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
   keyStore.generateNewAddress(derivedKey, 1)
-  const addresses = ks.getAddresses();
-  const address = addresses[ addresses.length -1 ]
+  const addresses = keyStore.getAddresses()
+  const address = addresses[ addresses.length - 1 ]
 
   this._ethStore.addAccount(ethUtil.addHexPrefix(address))
 
