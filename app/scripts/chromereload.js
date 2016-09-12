@@ -324,13 +324,13 @@ window.LiveReloadOptions = { host: 'localhost' };
         this.pluginIdentifiers = {}
         this.console = this.window.console && this.window.console.log && this.window.console.error ? this.window.location.href.match(/LR-verbose/) ? this.window.console : {
           log: function () {},
-          error: this.window.console.error.bind(this.window.console),
+          error: console.error,
         } : {
           log: function () {},
           error: function () {},
         }
         if (!(this.WebSocket = this.window.WebSocket || this.window.MozWebSocket)) {
-          this.console.error('LiveReload disabled because the browser does not seem to support web sockets')
+          console.error('LiveReload disabled because the browser does not seem to support web sockets')
           return
         }
         if ('LiveReloadOptions' in window) {
@@ -344,7 +344,7 @@ window.LiveReloadOptions = { host: 'localhost' };
         } else {
           this.options = Options.extract(this.window.document)
           if (!this.options) {
-            this.console.error('LiveReload disabled because it could not find its own <SCRIPT> tag')
+            console.error('LiveReload disabled because it could not find its own <SCRIPT> tag')
             return
           }
         }

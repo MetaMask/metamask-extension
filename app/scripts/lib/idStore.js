@@ -45,7 +45,11 @@ function IdentityStore (opts = {}) {
 
 IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   delete this._keyStore
+  var serializedKeystore = this.configManager.getWallet()
 
+  if (serializedKeystore) {
+    this.configManager.setData({})
+  }
   this._createIdmgmt(password, null, entropy, (err) => {
     if (err) return cb(err)
 
@@ -437,6 +441,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
 
 IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
   const configManager = this.configManager
+
   var keyStore = null
   LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
     if (err) return cb(err)
@@ -478,7 +483,7 @@ IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey)
   keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
 
-  keyStore.generateNewAddress(derivedKey, 3)
+  keyStore.generateNewAddress(derivedKey, 1)
   configManager.setWallet(keyStore.serialize())
   if (global.METAMASK_DEBUG) {
     console.log('restored from seed. saved to keystore')

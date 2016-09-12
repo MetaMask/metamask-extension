@@ -33,15 +33,29 @@ function MetamaskInpageProvider (connectionStream) {
   })
   asyncProvider.on('error', console.error.bind(console))
   self.asyncProvider = asyncProvider
+  
+  self.idMap = {}
   // handle sendAsync requests via asyncProvider
   self.sendAsync = function(payload, cb){
     // rewrite request ids
-    var request = jsonrpcMessageTransform(payload, (message) => {
-      message.id = createRandomId()
+    var request = eachJsonMessage(payload, (message) => {
+      var newId = createRandomId()
+      self.idMap[newId] = message.id
+      message.id = newId
       return message
     })
     // forward to asyncProvider
-    asyncProvider.sendAsync(request, cb)
+    asyncProvider.sendAsync(request, function(err, res){
+      if (err) return cb(err)
+      // transform messages to original ids
+      eachJsonMessage(res, (message) => {
+        var oldId = self.idMap[message.id]
+        delete self.idMap[message.id]
+        message.id = oldId
+        return message
+      })
+      cb(null, res)
+    })
   }
 }
 
@@ -66,7 +80,8 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     // throw not-supported Error
     default:
-      var message = 'The MetaMask Web3 object does not support synchronous methods. See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#all-async---think-of-metamask-as-a-light-client for details.'
+      var message = 'The MetaMask Web3 object does not support synchronous methods like ' + payload.method +
+        '. See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#all-async---think-of-metamask-as-a-light-client for details.'
       throw new Error(message)
 
   }
@@ -111,7 +126,7 @@ function createRandomId(){
   return datePart + extraPart
 }
 
-function jsonrpcMessageTransform(payload, transformFn){
+function eachJsonMessage(payload, transformFn){
   if (Array.isArray(payload)) {
     return payload.map(transformFn)
   } else {

@@ -9,6 +9,34 @@ var Extension = require(path.join(__dirname, '..', '..', 'app', 'scripts', 'lib'
 
 describe('extension', function() {
 
+  describe('extension.getURL', function() {
+    const desiredResult = 'http://the-desired-result.io'
+
+    describe('in Chrome or Firefox', function() {
+      GLOBAL.chrome.extension = {
+        getURL: () => desiredResult
+      }
+
+      it('returns the desired result', function() {
+        const extension = new Extension()
+        const result = extension.extension.getURL()
+        assert.equal(result, desiredResult)
+      })
+    })
+
+    describe('in Microsoft Edge', function() {
+      GLOBAL.browser.extension = {
+        getURL: () => desiredResult
+      }
+
+      it('returns the desired result', function() {
+        const extension = new Extension()
+        const result = extension.extension.getURL()
+        assert.equal(result, desiredResult)
+      })
+    })
+  })
+
   describe('with chrome global', function() {
     let extension
 
@@ -44,5 +72,6 @@ describe('extension', function() {
       assert.equal(extension.alarms, 'foo')
     })
   })
+
 
 })

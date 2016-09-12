@@ -16,6 +16,10 @@ var eslint = require('gulp-eslint')
 var fs = require('fs')
 var path = require('path')
 var manifest = require('./app/manifest.json')
+var gulpif = require('gulp-if')
+var replace = require('gulp-replace')
+
+var disableLiveReload = gutil.env.disableLiveReload
 
 // browser reload
 
@@ -34,6 +38,7 @@ gulp.task('copy:locales', copyTask({
   destinations: [
     './dist/firefox/_locales',
     './dist/chrome/_locales',
+    './dist/edge/_locales',
   ]
 }))
 gulp.task('copy:images', copyTask({
@@ -41,6 +46,7 @@ gulp.task('copy:images', copyTask({
   destinations: [
     './dist/firefox/images',
     './dist/chrome/images',
+    './dist/edge/images',
   ],
 }))
 gulp.task('copy:fonts', copyTask({
@@ -48,6 +54,7 @@ gulp.task('copy:fonts', copyTask({
   destinations: [
     './dist/firefox/fonts',
     './dist/chrome/fonts',
+    './dist/edge/fonts',
   ],
 }))
 gulp.task('copy:reload', copyTask({
@@ -55,6 +62,7 @@ gulp.task('copy:reload', copyTask({
   destinations: [
     './dist/firefox/scripts',
     './dist/chrome/scripts',
+    './dist/edge/scripts',
   ],
   pattern: '/chromereload.js',
 }))
@@ -63,12 +71,13 @@ gulp.task('copy:root', copyTask({
   destinations: [
     './dist/firefox',
     './dist/chrome',
+    './dist/edge',
   ],
   pattern: '/*',
 }))
 
-gulp.task('manifest:cleanup', function() {
-  return gulp.src('./dist/firefox/manifest.json')
+gulp.task('manifest:chrome', function() {
+  return gulp.src('./dist/chrome/manifest.json')
   .pipe(jsoneditor(function(json) {
     delete json.applications
     return json
@@ -76,7 +85,33 @@ gulp.task('manifest:cleanup', function() {
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
 })
 
-gulp.task('copy', gulp.series(gulp.parallel('copy:locales','copy:images','copy:fonts','copy:reload','copy:root'), 'manifest:cleanup'))
+gulp.task('manifest:production', function() {
+  return gulp.src([
+    './dist/firefox/manifest.json',
+    './dist/chrome/manifest.json',
+    './dist/edge/manifest.json',
+  ],{base: './dist/'})
+  .pipe(gulpif(disableLiveReload,jsoneditor(function(json) {
+    json.background.scripts = ["scripts/background.js"]
+    return json
+  })))
+  .pipe(gulp.dest('./dist/', { overwrite: true }))
+})
+
+const staticFiles = [
+  'locales',
+  'images',
+  'fonts',
+  'root'
+]
+
+var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
+
+if (!disableLiveReload) {
+  copyStrings.push('copy:reload')
+}
+
+gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:production', 'manifest:chrome'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -110,14 +145,18 @@ const jsFiles = [
   'popup',
 ]
 
+var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
+var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
+
 jsFiles.forEach((jsFile) => {
   gulp.task(`dev:js:${jsFile}`, bundleTask({ watch: true, filename: `${jsFile}.js` }))
   gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
 })
 
-gulp.task('dev:js', gulp.parallel('dev:js:inpage','dev:js:contentscript','dev:js:background','dev:js:popup'))
+gulp.task('dev:js', gulp.parallel(...jsDevStrings))
 
-gulp.task('build:js',  gulp.parallel('build:js:inpage','build:js:contentscript','build:js:background','build:js:popup'))
+gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+
 
 // clean dist
 
@@ -131,17 +170,23 @@ gulp.task('zip:chrome', () => {
   return gulp.src('dist/chrome/**')
   .pipe(zip(`metamask-chrome-${manifest.version}.zip`))
   .pipe(gulp.dest('builds'));
-});
+})
 gulp.task('zip:firefox', () => {
   return gulp.src('dist/firefox/**')
   .pipe(zip(`metamask-firefox-${manifest.version}.zip`))
   .pipe(gulp.dest('builds'));
-});
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox'))
+})
+gulp.task('zip:edge', () => {
+  return gulp.src('dist/edge/**')
+  .pipe(zip(`metamask-edge-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
+})
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge'))
 
 // high level tasks
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+
 gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
 gulp.task('dist', gulp.series('build', 'zip'))
 
@@ -160,7 +205,7 @@ function copyTask(opts){
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(livereload())
+    stream.pipe(gulpif(!disableLiveReload,livereload()))
 
     return stream
   }
@@ -200,7 +245,8 @@ function bundleTask(opts) {
       .pipe(sourcemaps.write('./')) // writes .map file
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
-      .pipe(livereload())
+      .pipe(gulp.dest('./dist/edge/scripts'))
+      .pipe(gulpif(!disableLiveReload,livereload()))
 
     )
   }

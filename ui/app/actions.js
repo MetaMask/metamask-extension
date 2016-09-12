@@ -137,6 +137,12 @@ var actions = {
   getQr: getQr,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
+// FORGOT PASSWORD:
+  BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
+  goBackToInitView: goBackToInitView,
+  RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
+  BACK_TO_UNLOCK_VIEW: 'BACK_TO_UNLOCK_VIEW',
+  backToUnlockView: backToUnlockView,
 }
 
 module.exports = actions
@@ -156,8 +162,10 @@ function goHome () {
 
 function tryUnlockMetamask (password) {
   return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
     _accountManager.submitPassword(password, (err, selectedAccount) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed())
       } else {
@@ -270,8 +278,6 @@ function signMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-
     web3.eth.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
 
@@ -279,6 +285,7 @@ function signTx (txData) {
       dispatch(actions.hideWarning())
       dispatch(actions.goHome())
     })
+    dispatch(this.showConfTxPage())
   }
 }
 
@@ -367,6 +374,12 @@ function showNewVaultSeed (seed) {
   return {
     type: actions.SHOW_NEW_VAULT_SEED,
     value: seed,
+  }
+}
+
+function backToUnlockView () {
+  return {
+    type: actions.BACK_TO_UNLOCK_VIEW,
   }
 }
 
@@ -495,6 +508,12 @@ function showConfigPage (transitionForward = true) {
   return {
     type: actions.SHOW_CONFIG_PAGE,
     value: transitionForward,
+  }
+}
+
+function goBackToInitView () {
+  return {
+    type: actions.BACK_TO_INIT_MENU,
   }
 }
 

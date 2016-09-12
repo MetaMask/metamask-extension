@@ -2,10 +2,36 @@
 
 ## Current Master
 
+- Fix bug where pending transactions from Test net (or other networks) show up In Main net.
+- Add fiat conversion values to more views.
+- On fresh install, open a new tab with the MetaMask Introduction video. Does not open on update.
+- Block negative values from transactions.
+- Fixed a memory leak.
+- MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
+- Now showing loading indication during vault unlocking, to clarify behavior for users who are experience slow unlocks.
+- Now only initially creates one wallet when restoring a vault, to reduce some users' confusion.
+
+## 2.10.2 2016-09-02
+
+- Fix bug where notification popup would not display.
+
+## 2.10.1 2016-09-02
+
+- Fix bug where provider menu did not allow switching to custom network from a custom network.
+- Sending a transaction from within MetaMask no longer triggers a popup.
+- The ability to build without livereload features (such as for production) can be enabled with the gulp --disableLiveReload flag.
+- Fix Ethereum JSON RPC Filters bug.
+
+## 2.10.0 2016-08-29
+
+- Changed transaction approval from notifications system to popup system.
+- Add a back button to locked screen to allow restoring vault from seed words when password is forgotten.
+- Forms now retain their values even when closing the popup and reopening it.
+- Fixed a spelling error in provider menu.
+
 ## 2.9.2 2016-08-24
 
 - Fixed shortcut bug from preventing installation.
-
 
 ## 2.9.1 2016-08-24
 
@@ -27,7 +53,7 @@
 ## 2.8.0 2016-08-15
 
 - Integrate ShapeShift
-- Add a for for Coinbase to specify amount to buy
+- Add a form for Coinbase to specify amount to buy
 - Fix various typos.
 - Make dapp-metamask connection more reliable
 - Remove Ethereum Classic from provider menu.

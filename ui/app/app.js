@@ -51,6 +51,7 @@ function mapStateToProps (state) {
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    forgottenPassword: state.appState.forgottenPassword,
   }
 }
 
@@ -89,6 +90,7 @@ App.prototype.render = function () {
           transitionLeaveTimeout: 300,
         }, [
           this.renderPrimary(),
+          this.renderBackToInitButton(),
         ]),
       ]),
     ])
@@ -96,6 +98,11 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
+
+  if (window.METAMASK_UI_TYPE === 'notification') {
+    return null
+  }
+
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
@@ -238,8 +245,15 @@ App.prototype.renderNetworkDropdown = function () {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
-      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
       activeNetworkRender: props.provider.rpcTarget,
+    }),
+
+    h(DropMenuItem, {
+      label: 'Custom RPC',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
     }),
 
     this.renderCustomOption(props.provider.rpcTarget),
@@ -275,23 +289,108 @@ App.prototype.renderDropdown = function () {
       label: 'Settings',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-gear.fa-lg'),
     }),
 
     h(DropMenuItem, {
       label: 'Lock',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-lock.fa-lg'),
     }),
 
     h(DropMenuItem, {
       label: 'Help',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question.fa-lg'),
     }),
   ])
+}
+App.prototype.renderBackButton = function (style, justArrow = false) {
+  var props = this.props
+  return (
+    h('.flex-row', {
+      key: 'leftArrow',
+      style: style,
+      onClick: () => props.dispatch(actions.goBackToInitView()),
+    }, [
+      h('i.fa.fa-arrow-left.cursor-pointer'),
+      justArrow ? null : h('div.cursor-pointer', {
+        style: {
+          marginLeft: '3px',
+        },
+        onClick: () => props.dispatch(actions.goBackToInitView()),
+      }, 'BACK'),
+    ])
+  )
+
+}
+App.prototype.renderBackToInitButton = function () {
+  var props = this.props
+  var button = null
+  if (!props.isUnlocked) {
+    if (props.currentView.name === 'InitMenu') {
+      button = props.forgottenPassword ? h('.flex-row', {
+        key: 'rightArrow',
+        style: {
+          position: 'absolute',
+          bottom: '10px',
+          right: '15px',
+          fontSize: '21px',
+          fontFamily: 'Montserrat Light',
+          color: '#7F8082',
+          width: '77.578px',
+          alignItems: 'flex-end',
+        },
+      }, [
+        h('div.cursor-pointer', {
+          style: {
+            marginRight: '3px',
+          },
+          onClick: () => props.dispatch(actions.backToUnlockView()),
+        }, 'LOGIN'),
+        h('i.fa.fa-arrow-right.cursor-pointer'),
+      ]) : null
+    } else if (props.isInitialized) {
+      var style
+      switch (props.currentView.name) {
+        case 'createVault':
+          style = {
+            position: 'absolute',
+            top: '41px',
+            left: '80px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Bold',
+            color: 'rgb(174, 174, 174)',
+          }
+          return this.renderBackButton(style, true)
+        case 'restoreVault':
+          style = {
+            position: 'absolute',
+            top: '41px',
+            left: '70px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Bold',
+            color: 'rgb(174, 174, 174)',
+          }
+          return this.renderBackButton(style, true)
+        default:
+          style = {
+            position: 'absolute',
+            bottom: '10px',
+            left: '15px',
+            fontSize: '21px',
+            fontFamily: 'Montserrat Light',
+            color: '#7F8082',
+            width: '71.969px',
+            alignItems: 'flex-end',
+          }
+          return this.renderBackButton(style)
+      }
+    }
+  }
+  return button
 }
 
 App.prototype.renderPrimary = function () {
@@ -306,7 +405,7 @@ App.prototype.renderPrimary = function () {
   }
 
   // show initialize screen
-  if (!props.isInitialized) {
+  if (!props.isInitialized || props.forgottenPassword) {
     // show current view
     switch (props.currentView.name) {
 
@@ -408,25 +507,21 @@ App.prototype.toggleMetamaskActive = function () {
 App.prototype.renderCustomOption = function (rpcTarget) {
   switch (rpcTarget) {
     case undefined:
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
-      })
+      return null
+
     case 'http://localhost:8545':
       return h(DropMenuItem, {
         label: 'Custom RPC',
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+        icon: h('i.fa.fa-question-circle.fa-lg'),
       })
 
     default:
       return h(DropMenuItem, {
         label: `${rpcTarget}`,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+        icon: h('i.fa.fa-question-circle.fa-lg'),
         activeNetworkRender: 'custom',
       })
   }

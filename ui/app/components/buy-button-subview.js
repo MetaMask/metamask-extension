@@ -106,7 +106,7 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
         style: {
           width: '225px',
         },
-      }, 'In order to access this feature please switch too the Main Network'),
+      }, 'In order to access this feature please switch to the Main Network'),
       h('h3.text-transform-uppercase', 'or:'),
       this.props.network === '2' ? h('button.text-transform-uppercase', {
         onClick: () => this.props.dispatch(actions.buyEth()),

@@ -1,41 +1,36 @@
 {
   "metamask": {
-    "isInitialized": true,
+    "isInitialized": false,
     "isUnlocked": false,
-    "isEthConfirmed": true,
+    "isEthConfirmed": false,
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {},
     "unconfTxs": {},
     "currentFiat": "USD",
-    "conversionRate": 11.4379398,
-    "conversionDate": 1473358355,
+    "conversionRate": 0,
+    "conversionDate": "N/A",
     "accounts": {},
     "transactions": [],
-    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
-    "network": "1473186153102",
     "seedWords": null,
     "isConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],
     "provider": {
-      "type": "rpc",
-      "rpcTarget": "http://localhost:8545"
+      "type": "testnet"
     },
-    "selectedAccount": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+    "network": "2"
   },
   "appState": {
     "menuOpen": false,
     "currentView": {
-      "name": "accountDetail",
-      "detailView": null,
-      "context": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+      "name": "restoreVault"
     },
     "accountDetail": {
       "subview": "transactions"
     },
-    "currentDomain": "127.0.0.1:9966",
+    "currentDomain": "extensions",
     "transForward": true,
     "isLoading": false,
     "warning": null

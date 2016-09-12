@@ -10,7 +10,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
 
 const Identicon = require('./components/identicon')
-const AccountEtherBalance = require('./components/account-eth-balance')
+const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
@@ -168,7 +168,7 @@ AccountDetailScreen.prototype.render = function () {
           },
         }, [
 
-          h(AccountEtherBalance, {
+          h(EthBalance, {
             value: account && account.balance,
             style: {
               lineHeight: '7px',
@@ -235,7 +235,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.transactionList = function () {
   const { transactions, unconfTxs, unconfMsgs, address, network, shapeShiftTxList } = this.props
 
-  var txsToRender = transactions
+  var txsToRender = transactions.concat(unconfTxs)
   // only transactions that are from the current address
   .filter(tx => tx.txParams.from === address)
   // only transactions that are on the current network

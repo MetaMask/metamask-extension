@@ -73,9 +73,7 @@ InitializeMenuScreen.prototype.renderMenu = function () {
           margin: 12,
         },
       }, 'Restore Existing Vault'),
-
     ])
-
   )
 }
 

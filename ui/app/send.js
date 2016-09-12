@@ -1,5 +1,5 @@
 const inherits = require('util').inherits
-const Component = require('react').Component
+const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
@@ -7,7 +7,7 @@ const actions = require('./actions')
 const util = require('./util')
 const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
-const EtherBalance = require('./components/eth-balance')
+const EthBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
@@ -29,12 +29,14 @@ function mapStateToProps (state) {
   return result
 }
 
-inherits(SendTransactionScreen, Component)
+inherits(SendTransactionScreen, PersistentForm)
 function SendTransactionScreen () {
-  Component.call(this)
+  PersistentForm.call(this)
 }
 
 SendTransactionScreen.prototype.render = function () {
+  this.persistentFormParentId = 'send-tx-form'
+
   var state = this.props
   var address = state.address
   var account = state.account
@@ -105,8 +107,7 @@ SendTransactionScreen.prototype.render = function () {
         // balance
         h('.flex-row.flex-center', [
 
-          // h('div', formatBalance(account && account.balance)),
-          h(EtherBalance, {
+          h(EthBalance, {
             value: account && account.balance,
           }),
 
@@ -137,6 +138,9 @@ SendTransactionScreen.prototype.render = function () {
         h('input.large-input', {
           name: 'address',
           placeholder: 'Recipient Address',
+          dataset: {
+            persistentFormId: 'recipient-address',
+          },
         }),
       ]),
 
@@ -149,6 +153,9 @@ SendTransactionScreen.prototype.render = function () {
           type: 'number',
           style: {
             marginRight: 6,
+          },
+          dataset: {
+            persistentFormId: 'tx-amount',
           },
         }),
 
@@ -185,11 +192,12 @@ SendTransactionScreen.prototype.render = function () {
             width: '100%',
             resize: 'none',
           },
+          dataset: {
+            persistentFormId: 'tx-data',
+          },
         }),
       ]),
-
     ])
-
   )
 }
 
@@ -227,7 +235,6 @@ SendTransactionScreen.prototype.onSubmit = function () {
   }
 
   this.props.dispatch(actions.hideWarning())
-  this.props.dispatch(actions.showLoadingIndication())
 
   var txParams = {
     from: this.props.address,

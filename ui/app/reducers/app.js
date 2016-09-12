@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const notification = require('../../../app/scripts/lib/notifications')
 
 module.exports = reduceApp
 
@@ -123,6 +124,7 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         detailView: {},
         transForward: true,
         isLoading: false,
@@ -136,6 +138,25 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.BACK_TO_INIT_MENU:
+      return extend(appState, {
+        warning: null,
+        transForward: false,
+        forgottenPassword: true,
+        currentView: {
+          name: 'InitMenu',
+        },
+      })
+
+    case actions.BACK_TO_UNLOCK_VIEW:
+      return extend(appState, {
+        warning: null,
+        transForward: true,
+        forgottenPassword: !appState.forgottenPassword,
+        currentView: {
+          name: 'UnlockScreen',
+        },
+      })
   // reveal seed words
 
     case actions.REVEAL_SEED_CONFIRMATION:
@@ -170,6 +191,7 @@ function reduceApp (state, action) {
 
     case actions.SHOW_ACCOUNT_DETAIL:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         currentView: {
           name: 'accountDetail',
           context: action.value,
@@ -236,8 +258,9 @@ function reduceApp (state, action) {
     case actions.COMPLETED_TX:
       var unconfTxs = state.metamask.unconfTxs
       var unconfMsgs = state.metamask.unconfMsgs
+      var network = state.metamask.network
 
-      var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+      var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
     .filter(tx => tx !== tx.id)
 
       if (unconfTxList && unconfTxList.length > 0) {
@@ -250,6 +273,9 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
+
+        notification.closePopup()
+
         return extend(appState, {
           transForward: false,
           warning: null,
@@ -498,14 +524,16 @@ function reduceApp (state, action) {
 function hasPendingTxs (state) {
   var unconfTxs = state.metamask.unconfTxs
   var unconfMsgs = state.metamask.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var network = state.metamask.network
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   return unconfTxList.length > 0
 }
 
 function indexForPending (state, txId) {
   var unconfTxs = state.metamask.unconfTxs
   var unconfMsgs = state.metamask.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var network = state.metamask.network
+  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   let idx
   unconfTxList.forEach((tx, i) => {
     if (tx.id === txId) {
@@ -514,5 +542,4 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-
 

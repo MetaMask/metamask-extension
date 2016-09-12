@@ -42,10 +42,27 @@ function Extension () {
     } catch (e) {}
 
     try {
+      if (browser[api]) {
+        _this[api] = browser[api]
+      }
+    } catch (e) {}
+    try {
       _this.api = browser.extension[api]
     } catch (e) {}
-
   })
+
+  try {
+    if (browser && browser.runtime) {
+      this.runtime = browser.runtime
+    }
+  } catch (e) {}
+
+  try {
+    if (browser && browser.browserAction) {
+      this.browserAction = browser.browserAction
+    }
+  } catch (e) {}
+
 }
 
 module.exports = Extension

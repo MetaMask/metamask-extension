@@ -3,9 +3,7 @@ const extend = require('xtend')
 const Dnode = require('dnode')
 const eos = require('end-of-stream')
 const PortStream = require('./lib/port-stream.js')
-const createUnlockRequestNotification = require('./lib/notifications.js').createUnlockRequestNotification
-const createTxNotification = require('./lib/notifications.js').createTxNotification
-const createMsgNotification = require('./lib/notifications.js').createMsgNotification
+const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const MetamaskController = require('./metamask-controller')
@@ -26,42 +24,24 @@ const controller = new MetamaskController({
 const idStore = controller.idStore
 
 function unlockAccountMessage () {
-  createUnlockRequestNotification({
-    title: 'Account Unlock Request',
-  })
+  notification.show()
 }
 
 function showUnconfirmedMessage (msgParams, msgId) {
-  var controllerState = controller.getState()
-
-  createMsgNotification({
-    imageifyIdenticons: false,
-    txData: {
-      msgParams: msgParams,
-      time: (new Date()).getTime(),
-    },
-    identities: controllerState.identities,
-    accounts: controllerState.accounts,
-    onConfirm: idStore.approveMessage.bind(idStore, msgId, noop),
-    onCancel: idStore.cancelMessage.bind(idStore, msgId),
-  })
+  notification.show()
 }
 
 function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
-  var controllerState = controller.getState()
-
-  createTxNotification({
-    imageifyIdenticons: false,
-    txData: {
-      txParams: txParams,
-      time: (new Date()).getTime(),
-    },
-    identities: controllerState.identities,
-    accounts: controllerState.accounts,
-    onConfirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
-    onCancel: idStore.cancelTransaction.bind(idStore, txData.id),
-  })
+  notification.show()
 }
+
+// On first install, open a window to MetaMask website to how-it-works.
+
+extension.runtime.onInstalled.addListener(function (details) {
+  if (details.reason === 'install') {
+    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+  }
+})
 
 //
 // connect to other contexts
@@ -69,7 +49,7 @@ function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
 
 extension.runtime.onConnect.addListener(connectRemote)
 function connectRemote (remotePort) {
-  var isMetaMaskInternalProcess = (remotePort.name === 'popup')
+  var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
   var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
@@ -109,7 +89,7 @@ function setupControllerConnection (stream) {
   dnode.on('remote', (remote) => {
     // push updates to popup
     controller.ethStore.on('update', controller.sendUpdate.bind(controller))
-    controller.remote = remote
+    controller.listeners.push(remote)
     idStore.on('update', controller.sendUpdate.bind(controller))
 
     // teardown on disconnect
@@ -188,5 +168,3 @@ function getOldStyleData () {
 function setData (data) {
   window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }
-
-function noop () {}
