@@ -449,6 +449,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
     const isCorrect = keyStore.isDerivedKeyCorrect(pwDerivedKey)
     if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
+    this._keyStore = keyStore
     this._createIdMgmt(pwDerivedKey)
     cb()
   })
