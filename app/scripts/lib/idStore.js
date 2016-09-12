@@ -503,7 +503,12 @@ IdentityStore.prototype._createIdMgmt = function (derivedKey) {
 
 IdentityStore.prototype.purgeCache = function () {
   this._currentState.identities = {}
-  var accounts = Object.keys(this._ethStore._currentState.accounts)
+  let accounts
+  try {
+    Object.keys(this._ethStore._currentState.accounts)
+  } catch (e) {
+    accounts = []
+  }
   accounts.forEach((address) => {
     this._ethStore.removeAccount(address)
   })
