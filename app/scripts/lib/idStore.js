@@ -403,6 +403,7 @@ IdentityStore.prototype._loadIdentities = function () {
   var addresses = this._getAddresses()
   addresses.forEach((address, i) => {
     // // add to ethStore
+    this._ethStore.addAccount(ethUtil.addHexPrefix(address))
     // add to identities
     const defaultLabel = 'Wallet ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)
