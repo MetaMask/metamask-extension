@@ -109,7 +109,7 @@ describe('IdentityStore', function() {
     })
 
     it('should enforce seed compliance with TestRPC', function (done) {
-      this.timeout(5000)
+      this.timeout(10000)
       const tests = assertions.map((assertion) => {
         return function (cb) {
           accounts = []
@@ -122,7 +122,7 @@ describe('IdentityStore', function() {
 
             idStore.tryPassword(password, function (err) {
 
-              assert.ok(idStore.isUnlocked(), 'should unlock the id store')
+              assert.ok(idStore._isUnlocked(), 'should unlock the id store')
 
               idStore.submitPassword(password, function(err, account) {
                 assert.ifError(err)

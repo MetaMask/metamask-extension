@@ -449,7 +449,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
     const isCorrect = keyStore.isDerivedKeyCorrect(pwDerivedKey)
     if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
-    this._createIdMgmt(derivedKey)
+    this._createIdMgmt(pwDerivedKey)
     cb()
   })
 }
@@ -487,7 +487,7 @@ IdentityStore.prototype._createVault = function (password, seedPhrase, entropy, 
 
 IdentityStore.prototype._createIdMgmt = function (derivedKey) {
   this._idmgmt = new IdManagement({
-    keyStore: this.keyStore,
+    keyStore: this._keyStore,
     derivedKey: derivedKey,
     configManager: this.configManager,
   })
