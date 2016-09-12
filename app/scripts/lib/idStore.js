@@ -148,6 +148,10 @@ IdentityStore.prototype.revealAccount = function (cb) {
 
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
   keyStore.generateNewAddress(derivedKey, 1)
+  const addresses = ks.getAddresses();
+  const address = addresses[ addresses.length -1 ]
+
+  this._ethStore.addAccount(ethUtil.addHexPrefix(address))
 
   configManager.setWallet(keyStore.serialize())
 
@@ -496,7 +500,7 @@ IdentityStore.prototype._createIdMgmt = function (derivedKey) {
 
 IdentityStore.prototype.purgeCache = function () {
   this._getAddresses().forEach((address) => {
-    this._ethStore.del(address)
+    this._ethStore.del(ethUtil.addHexPrefix(address))
   })
 }
 
