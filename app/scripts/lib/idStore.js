@@ -51,6 +51,7 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
     this.configManager.setData({})
   }
 
+  this.purgeCache()
   this._createVault(password, null, entropy, (err) => {
     if (err) return cb(err)
 
@@ -58,7 +59,6 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
 
     this.configManager.setShowSeedWords(true)
     var seedWords = this._idmgmt.getSeed()
-
 
     cb(null, seedWords)
   })
@@ -72,6 +72,8 @@ IdentityStore.prototype.recoverSeed = function (cb) {
 }
 
 IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
+  this.purgeCache()
+
   this._createVault(password, seed, null, (err) => {
     if (err) return cb(err)
 
@@ -500,8 +502,10 @@ IdentityStore.prototype._createIdMgmt = function (derivedKey) {
 }
 
 IdentityStore.prototype.purgeCache = function () {
-  this._getAddresses().forEach((address) => {
-    this._ethStore.del(ethUtil.addHexPrefix(address))
+  this._currentState.identities = {}
+  var accounts = Object.keys(this._ethStore._currentState.accounts)
+  accounts.forEach((address) => {
+    this._ethStore.removeAccount(address)
   })
 }
 

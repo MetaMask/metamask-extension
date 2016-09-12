@@ -63,7 +63,7 @@ describe('IdentityStore', function() {
    const salt = 'lightwalletSalt'
 
     let password = 'secret!'
-    let accounts = []
+    let accounts = {}
     let idStore
 
     var assertions = [
@@ -99,25 +99,22 @@ describe('IdentityStore', function() {
       idStore = new IdentityStore({
         configManager: configManagerGen(),
         ethStore: {
-          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
+          addAccount(acct) { accounts[acct] = acct},
+          del(acct) { delete accounts[acct] },
         },
       })
-    })
-
-    beforeEach(function() {
-      accounts = []
     })
 
     it('should enforce seed compliance with TestRPC', function (done) {
       this.timeout(10000)
       const tests = assertions.map((assertion) => {
         return function (cb) {
-          accounts = []
+
           idStore.recoverFromSeed(password, assertion.seed, (err) => {
             assert.ifError(err)
 
-            var received = accounts[0].toLowerCase()
             var expected = assertion.account.toLowerCase()
+            var received = accounts[expected].toLowerCase()
             assert.equal(received, expected)
 
             idStore.tryPassword(password, function (err) {
@@ -127,6 +124,7 @@ describe('IdentityStore', function() {
               idStore.submitPassword(password, function(err, account) {
                 assert.ifError(err)
                 assert.equal(account, expected)
+                assert.equal(Object.keys(idStore._getAddresses()).length, 1, 'only one account on restore')
                 cb()
               })
             })
