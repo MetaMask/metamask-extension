@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fixed bug where opening MetaMask could close a non-metamask popup.
+- Fixed memory leak that caused occasional crashes.
+
 ## 2.11.1 2016-09-12
 
 - Fix bug that prevented caches from being cleared in Opera.
