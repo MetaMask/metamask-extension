@@ -134,7 +134,7 @@ var actions = {
   hideSubLoadingIndication: hideSubLoadingIndication,
 // QR STUFF:
   SHOW_QR: 'SHOW_QR',
-  getQr: getQr,
+  showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
 // FORGOT PASSWORD:
@@ -739,25 +739,18 @@ function coinShiftRquest (data, marketData) {
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
       _accountManager.createShapeShiftTx(response.deposit, response.depositType)
-      dispatch(actions.getQr(response.deposit, '125x125', [message].concat(marketData)))
+      dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
     })
   }
 }
 
-function getQr (data, size, message) {
-  return (dispatch) => {
-    qrRequest(data, size, (response) => {
-      dispatch(actions.hideLoadingIndication())
-      if (response.error) return dispatch(actions.showWarning(response.error))
-      dispatch({
-        type: actions.SHOW_QR,
-        value: {
-          qr: response,
-          message: message,
-          data: data,
-        },
-      })
-    })
+function showQrView (data, message) {
+  return {
+    type: actions.SHOW_QR_VIEW,
+    value: {
+      message: message,
+      data: data,
+    },
   }
 }
 function reshowQrCode (data, coin) {
@@ -772,17 +765,8 @@ function reshowQrCode (data, coin) {
         `Deposit Minimum:${mktResponse.minimum}`,
       ]
 
-      qrRequest(data, '125x125', (response) => {
-        dispatch(actions.hideLoadingIndication())
-        dispatch({
-          type: actions.SHOW_QR_VIEW,
-          value: {
-            qr: response,
-            message: message,
-            data: data,
-          },
-        })
-      })
+      dispatch(actions.hideLoadingIndication())
+      return dispatch(actions.showQrView(data, message))
     })
   }
 }
@@ -809,16 +793,4 @@ function shapeShiftRequest (query, options, cb) {
   } else {
     return shapShiftReq.send()
   }
-}
-
-function qrRequest (data, size, cb) {
-  var requestListner = function (request) {
-    cb ? cb(this.responseText) : null
-    return this.responseText
-  }
-
-  var qrReq = new XMLHttpRequest()
-  qrReq.addEventListener('load', requestListner)
-  qrReq.open('GET', `https://api.qrserver.com/v1/create-qr-code/?size=${size}&format=svg&data=${data}`, true)
-  qrReq.send()
 }
