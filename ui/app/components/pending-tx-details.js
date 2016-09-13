@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const carratInline = require('fs').readFileSync('./images/forward-carrat.svg', 'utf8')
 
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
@@ -78,7 +77,7 @@ PTXP.render = function () {
 
         ]),
 
-        forwardCarrat(imageify),
+        forwardCarrat(),
 
         this.miniAccountPanelForRecipient(),
       ]),
@@ -223,30 +222,16 @@ PTXP.warnIfNeeded = function () {
 }
 
 
-function forwardCarrat (imageify) {
-  if (imageify) {
-    return (
+function forwardCarrat () {
+  return (
 
-      h('img', {
-        src: 'images/forward-carrat.svg',
-        style: {
-          padding: '5px 6px 0px 10px',
-          height: '37px',
-        },
-      })
+    h('img', {
+      src: 'images/forward-carrat.svg',
+      style: {
+        padding: '5px 6px 0px 10px',
+        height: '37px',
+      },
+    })
 
-    )
-  } else {
-    return (
-
-      h('div', {
-        dangerouslySetInnerHTML: { __html: carratInline },
-        style: {
-          padding: '0px 6px 0px 10px',
-          height: '45px',
-        },
-      })
-
-    )
-  }
+  )
 }

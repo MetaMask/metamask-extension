@@ -39,7 +39,6 @@ function reduceApp (state, action) {
     accountDetail: {
       subview: 'transactions',
     },
-    currentDomain: 'example.com',
     transForward: true, // Used to render transition direction
     isLoading: false,   // Used to display loading indicator
     warning: null,      // Used to display error text

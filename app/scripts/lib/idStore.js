@@ -505,7 +505,7 @@ IdentityStore.prototype.purgeCache = function () {
   this._currentState.identities = {}
   let accounts
   try {
-    Object.keys(this._ethStore._currentState.accounts)
+    accounts = Object.keys(this._ethStore._currentState.accounts)
   } catch (e) {
     accounts = []
   }
