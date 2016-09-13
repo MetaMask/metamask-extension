@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add a QR button to the Account detail screen
 - Fix bug where pending transactions from Test net (or other networks) show up In Main net.
 - Add fiat conversion values to more views.
 - On fresh install, open a new tab with the MetaMask Introduction video. Does not open on update.
