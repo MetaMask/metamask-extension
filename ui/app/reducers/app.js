@@ -495,9 +495,9 @@ function reduceApp (state, action) {
       return extend(appState, {
         qrRequested: true,
         transForward: true,
+
         Qr: {
           message: action.value.message,
-          image: action.value.qr,
           data: action.value.data,
         },
       })
@@ -511,7 +511,6 @@ function reduceApp (state, action) {
         transForward: true,
         Qr: {
           message: action.value.message,
-          image: action.value.qr,
           data: action.value.data,
         },
       })

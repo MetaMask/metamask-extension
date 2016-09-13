@@ -1,4 +1,6 @@
 const extension = require('./extension')
+const height = 500
+const width = 360
 
 const notifications = {
   show,
@@ -24,8 +26,8 @@ function show () {
         url: 'notification.html',
         type: 'popup',
         focused: true,
-        width: 360,
-        height: 500,
+        width,
+        height,
       })
 
     }
@@ -51,7 +53,11 @@ function getPopup(cb) {
 }
 
 function getPopupIn(windows) {
-  return windows ? windows.find((win) => win.type === 'popup') : null
+  return windows ? windows.find((win) => {
+    return (win && win.type === 'popup' &&
+      win.height === height &&
+      win.width === width)
+  }) : null
 }
 
 function closePopup() {
