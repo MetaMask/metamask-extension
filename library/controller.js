@@ -1,67 +1,158 @@
-const ZeroClientProvider = require('web3-provider-engine/zero')
+const urlUtil = require('url')
+const extend = require('xtend')
+const Dnode = require('dnode')
+const eos = require('end-of-stream')
 const ParentStream = require('iframe-stream').ParentStream
-const handleRequestsFromStream = require('web3-stream-provider/handler')
-const Streams = require('mississippi')
-const ObjectMultiplex = require('../app/scripts/lib/obj-multiplex')
+const PortStream = require('../app/scripts/lib/port-stream.js')
+const notification = require('../app/scripts/lib/notifications.js')
+const messageManager = require('../app/scripts/lib/message-manager')
+const setupMultiplex = require('../app/scripts/lib/stream-utils.js').setupMultiplex
+const MetamaskController = require('../app/scripts/metamask-controller')
+const extension = require('../app/scripts/lib/extension')
+
+const STORAGE_KEY = 'metamask-config'
 
 
 initializeZeroClient()
 
 function initializeZeroClient() {
 
-  var provider = ZeroClientProvider({
-    // rpcUrl: configManager.getCurrentRpcAddress(),
-    rpcUrl: 'https://morden.infura.io/',
-    // account mgmt
-    // getAccounts: function(cb){
-    //   var selectedAddress = idStore.getSelectedAddress()
-    //   var result = selectedAddress ? [selectedAddress] : []
-    //   cb(null, result)
-    // },
-    getAccounts: function(cb){
-      cb(null, ['0x8F331A98aC5C9431d04A5d6Bf8Fa84ed7Ed439f3'.toLowerCase()])
-    },
-    // tx signing
-    // approveTransaction: addUnconfirmedTx,
-    // signTransaction: idStore.signTransaction.bind(idStore),
-    signTransaction: function(txParams, cb){
-      var privKey = new Buffer('7ef33e339ba5a5af0e57fa900ad0ae53deaa978c21ef30a0947532135eb639a8', 'hex')
-      var Transaction = require('ethereumjs-tx')
-      console.log('signing tx:', txParams)
-      txParams.gasLimit = txParams.gas
-      var tx = new Transaction(txParams)
-      tx.sign(privKey)
-      var serialiedTx = '0x'+tx.serialize().toString('hex')
-      cb(null, serialiedTx)
-    },
-    // msg signing
-    // approveMessage: addUnconfirmedMsg,
-    // signMessage: idStore.signMessage.bind(idStore),
+  const controller = new MetamaskController({
+    // User confirmation callbacks:
+    showUnconfirmedMessage,
+    unlockAccountMessage,
+    showUnconfirmedTx,
+    // Persistence Methods:
+    setData,
+    loadData,
   })
+  const idStore = controller.idStore
 
-  provider.on('block', function(block){
-    console.log('BLOCK CHANGED:', '#'+block.number.toString('hex'), '0x'+block.hash.toString('hex'))
-  })
+  function unlockAccountMessage () {
+    console.log('notif stub - unlockAccountMessage')
+  }
+
+  function showUnconfirmedMessage (msgParams, msgId) {
+    console.log('notif stub - showUnconfirmedMessage')
+  }
+
+  function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
+    console.log('notif stub - showUnconfirmedTx')
+  }
+
+  //
+  // connect to other contexts
+  //
 
   var connectionStream = new ParentStream()
-  // setup connectionStream multiplexing 
-  var multiStream = ObjectMultiplex()
-  Streams.pipe(connectionStream, multiStream, connectionStream, function(err){
-    console.warn('MetamaskIframe - lost connection to Dapp')
-    if (err) throw err
-  })
 
-  // connectionStream.on('data', function(chunk){ console.log('connectionStream chuck', chunk) })
-  // multiStream.on('data', function(chunk){ console.log('multiStream chuck', chunk) })
+  connectRemote(connectionStream, getParentHref())
 
-  var providerStream = multiStream.createStream('provider')
-  handleRequestsFromStream(providerStream, provider, logger)
+  function connectRemote (connectionStream, originDomain) {
+    var isMetaMaskInternalProcess = (originDomain === '127.0.0.1:9001')
+    if (isMetaMaskInternalProcess) {
+      // communication with popup
+      setupTrustedCommunication(connectionStream, 'MetaMask')
+    } else {
+      // communication with page
+      setupUntrustedCommunication(connectionStream, originDomain)
+    }
+  }
 
-  function logger(err, request, response){
-    if (err) return console.error(err.stack)
-    if (!request.isMetamaskInternal) {
-      console.log('MetaMaskIframe - RPC complete:', request, '->', response)
-      if (response.error) console.error('Error in RPC response:\n'+response.error.message)
+  function setupUntrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    controller.setupProviderConnection(mx.createStream('provider'), originDomain)
+    controller.setupPublicConfig(mx.createStream('publicConfig'))
+  }
+
+  function setupTrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    setupControllerConnection(mx.createStream('controller'))
+    controller.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  //
+  // remote features
+  //
+
+  function setupControllerConnection (stream) {
+    controller.stream = stream
+    var api = controller.getApi()
+    var dnode = Dnode(api)
+    stream.pipe(dnode).pipe(stream)
+    dnode.on('remote', (remote) => {
+      // push updates to popup
+      controller.ethStore.on('update', controller.sendUpdate.bind(controller))
+      controller.listeners.push(remote)
+      idStore.on('update', controller.sendUpdate.bind(controller))
+
+      // teardown on disconnect
+      eos(stream, () => {
+        controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
+      })
+    })
+  }
+
+  function loadData () {
+    var oldData = getOldStyleData()
+    var newData
+    try {
+      newData = JSON.parse(window.localStorage[STORAGE_KEY])
+    } catch (e) {}
+
+    var data = extend({
+      meta: {
+        version: 0,
+      },
+      data: {
+        config: {
+          provider: {
+            type: 'testnet',
+          },
+        },
+      },
+    }, oldData || null, newData || null)
+    return data
+  }
+
+  function getOldStyleData () {
+    var config, wallet, seedWords
+
+    var result = {
+      meta: { version: 0 },
+      data: {},
+    }
+
+    try {
+      config = JSON.parse(window.localStorage['config'])
+      result.data.config = config
+    } catch (e) {}
+    try {
+      wallet = JSON.parse(window.localStorage['lightwallet'])
+      result.data.wallet = wallet
+    } catch (e) {}
+    try {
+      seedWords = window.localStorage['seedWords']
+      result.data.seedWords = seedWords
+    } catch (e) {}
+
+    return result
+  }
+
+  function setData (data) {
+    window.localStorage[STORAGE_KEY] = JSON.stringify(data)
+  }
+
+  function getParentHref(){
+    try {
+      var parentLocation = window.parent.location
+      return parentLocation.hostname + ':' + parentLocation.port
+    } catch (err) {
+      return 'unknown'
     }
   }
 
