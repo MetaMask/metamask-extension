@@ -6,6 +6,7 @@ const path = require('path')
 
 const zeroBundle = createBundle('./index.js')
 const controllerBundle = createBundle('./controller.js')
+// const popupBundle = createBundle('./popup.js')
 const appBundle = createBundle('./example/index.js')
 
 //
@@ -14,6 +15,12 @@ const appBundle = createBundle('./example/index.js')
 
 const iframeServer = express()
 
+// serve popup window
+// iframeServer.get('/popup/scripts/popup.js', function(req, res){
+//   res.send(popupBundle.latest)
+// })
+iframeServer.use('/popup', express.static('../dist/chrome'))
+
 // serve controller bundle
 iframeServer.get('/controller.js', function(req, res){
   res.send(controllerBundle.latest)
@@ -21,8 +28,7 @@ iframeServer.get('/controller.js', function(req, res){
 
 // serve background controller
 iframeServer.use(express.static('./server'))
-// serve popup window
-// iframeServer.use('/popup', express.static('../dist/chrome'))
+
 
 iframeServer.listen('9001')
 
