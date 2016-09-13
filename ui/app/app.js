@@ -478,7 +478,6 @@ App.prototype.renderPrimary = function () {
         h('div', {
           style: {
             position: 'absolute',
-            bottom: '115px',
             left: '44px',
             width: '285px',
           },
