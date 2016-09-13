@@ -1,4 +1,3 @@
-const url = require('url')
 const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const Dnode = require('dnode')
@@ -18,7 +17,6 @@ var css = MetaMaskUiCss()
 injectCss(css)
 
 async.parallel({
-  currentDomain: getCurrentDomain,
   accountManager: connectToAccountManager,
 }, setupApp)
 
@@ -46,6 +44,8 @@ function setupWeb3Connection (stream) {
 }
 
 function setupControllerConnection (stream, cb) {
+  // this is a really sneaky way of adding EventEmitter api 
+  // to a bi-directional dnode instance
   var eventEmitter = new EventEmitter()
   var background = Dnode({
     sendUpdate: function (state) {
@@ -60,20 +60,6 @@ function setupControllerConnection (stream, cb) {
   })
 }
 
-function getCurrentDomain (cb) {
-  const unknown = '<unknown>'
-  if (!extension.tabs) return cb(null, unknown)
-  extension.tabs.query({active: true, currentWindow: true}, function (results) {
-    var activeTab = results[0]
-    var currentUrl = activeTab && activeTab.url
-    var currentDomain = url.parse(currentUrl).host
-    if (!currentUrl) {
-      return cb(null, unknown)
-    }
-    cb(null, currentDomain)
-  })
-}
-
 function setupApp (err, opts) {
   if (err) {
     alert(err.stack)
@@ -85,7 +71,6 @@ function setupApp (err, opts) {
   MetaMaskUi({
     container: container,
     accountManager: opts.accountManager,
-    currentDomain: opts.currentDomain,
     networkVersion: opts.networkVersion,
   })
 }

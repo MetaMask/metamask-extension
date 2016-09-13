@@ -20,7 +20,6 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     unconfTxs: state.metamask.unconfTxs,
     selectedAddress: state.metamask.selectedAddress,
-    currentDomain: state.appState.currentDomain,
     scrollToBottom: state.appState.scrollToBottom,
     pending,
   }
