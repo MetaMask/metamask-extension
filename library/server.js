@@ -2,11 +2,10 @@ const express = require('express')
 const browserify = require('browserify')
 const watchify = require('watchify')
 const babelify = require('babelify')
-const path = require('path')
 
 const zeroBundle = createBundle('./index.js')
 const controllerBundle = createBundle('./controller.js')
-// const popupBundle = createBundle('./popup.js')
+const popupBundle = createBundle('./popup.js')
 const appBundle = createBundle('./example/index.js')
 
 //
@@ -16,9 +15,9 @@ const appBundle = createBundle('./example/index.js')
 const iframeServer = express()
 
 // serve popup window
-// iframeServer.get('/popup/scripts/popup.js', function(req, res){
-//   res.send(popupBundle.latest)
-// })
+iframeServer.get('/popup/scripts/popup.js', function(req, res){
+  res.send(popupBundle.latest)
+})
 iframeServer.use('/popup', express.static('../dist/chrome'))
 
 // serve controller bundle
@@ -29,8 +28,10 @@ iframeServer.get('/controller.js', function(req, res){
 // serve background controller
 iframeServer.use(express.static('./server'))
 
-
-iframeServer.listen('9001')
+// start the server
+const mascaraPort = 9001
+iframeServer.listen(mascaraPort)
+console.log(`Mascara service listening on port ${mascaraPort}`)
 
 
 //
@@ -38,7 +39,6 @@ iframeServer.listen('9001')
 //
 
 const dappServer = express()
-
 
 // serve metamask-lib bundle
 dappServer.get('/zero.js', function(req, res){
@@ -53,9 +53,21 @@ dappServer.get('/app.js', function(req, res){
 // serve static
 dappServer.use(express.static('./example'))
 
+// start the server
 const dappPort = '9002'
 dappServer.listen(dappPort)
 console.log(`Dapp listening on port ${dappPort}`)
+
+//
+// util
+//
+
+function serveBundle(entryPoint){
+  const bundle = createBundle(entryPoint)
+  return function(req, res){
+    res.send(bundle.latest)
+  }
+}
 
 function createBundle(entryPoint){
 
@@ -69,13 +81,13 @@ function createBundle(entryPoint){
   })
 
   // global transpile
-  var bablePreset = path.resolve(__dirname, '../node_modules/babel-preset-es2015')
+  var bablePreset = require.resolve('babel-preset-es2015')
 
   bundler.transform(babelify, {
     global: true,
     presets: [bablePreset],
+    babelrc: false,
   })
-
 
   bundler.on('update', bundle)
   bundle()
