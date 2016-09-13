@@ -30,6 +30,7 @@ LoadingIndicator.prototype.render = function () {
 
       isLoading ? h('div', {
         style: {
+          zIndex: 10,
           position: 'absolute',
           display: 'flex',
           justifyContent: 'center',
