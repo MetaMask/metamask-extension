@@ -583,12 +583,18 @@ input.large-input {
   margin-left: 5px;
 }
 
+.qr-header {
+    font-size: 25px;
+    margin-top: 40px;
+}
+
 .qr-message {
   font-size: 12px;
   color: #F7861C;
 }
 
 div.message-container > div:first-child {
+  margin-top: 18px;
   font-size: 15px;
   color: #4D4D4D;
 }

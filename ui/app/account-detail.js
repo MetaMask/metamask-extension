@@ -137,6 +137,22 @@ AccountDetailScreen.prototype.render = function () {
                 }),
 
                 h(Tooltip, {
+                  title: 'QR Code',
+                }, [
+                  h('i.fa.fa-qrcode.pointer.pop-hover', {
+                    onClick: () => props.dispatch(actions.showQrView(selected, identity ? identity.name : '')),
+                    style: {
+                      fontSize: '18px',
+                      position: 'relative',
+                      color: 'rgb(247, 134, 28)',
+                      top: '5px',
+                      marginLeft: '3px',
+                      marginRight: '3px',
+                    },
+                  }),
+                ]),
+
+                h(Tooltip, {
                   title: 'Export Private Key',
                 }, [
                   h('div', {
