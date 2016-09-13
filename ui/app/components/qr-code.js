@@ -1,5 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const qrCode = require('qrcode-npm').qrcode
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const CopyButton = require('./copyButton')
@@ -23,15 +24,22 @@ function QrCodeView () {
 QrCodeView.prototype.render = function () {
   var props = this.props
   var Qr = props.Qr
+  var qrImage = qrCode(4, 'M')
+
+  qrImage.addData(Qr.data)
+  qrImage.make()
+
   return h('.main-container.flex-column', {
     key: 'qr',
     style: {
       justifyContent: 'center',
-      padding: '45px',
+      paddingBottom: '45px',
+      paddingLeft: '45px',
+      paddingRight: '45px',
       alignItems: 'center',
     },
   }, [
-    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('h3', Qr.message),
+    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
 
     this.props.warning ? this.props.warning && h('span.error.flex-center', {
       style: {
@@ -48,7 +56,7 @@ QrCodeView.prototype.render = function () {
         marginBottom: '15px',
       },
       dangerouslySetInnerHTML: {
-        __html: Qr.image,
+        __html: qrImage.createTableTag(4),
       },
     }),
     h('.flex-row', [

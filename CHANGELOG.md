@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add a QR button to the Account detail screen
 ## 2.11.1 2016-09-12
 
 - Fix bug that prevented caches from being cleared in Opera.
