@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fixed bug where opening MetaMask could close a non-metamask popup.
+- Fixed memory leak that caused occasional crashes.
+
 - Add a QR button to the Account detail screen
 ## 2.11.1 2016-09-12
 
