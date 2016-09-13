@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 2.11.1 2016-09-12
+
+- Fix bug that prevented caches from being cleared in Opera.
+
 ## 2.11.0 2016-09-12
 
 - Fix bug where pending transactions from Test net (or other networks) show up In Main net.
