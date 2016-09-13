@@ -51,7 +51,8 @@ function initializeZeroClient() {
     if (err) throw err
   })
 
-  multiStream.on('data', function(chunk){ console.log(chunk) })
+  // connectionStream.on('data', function(chunk){ console.log('connectionStream chuck', chunk) })
+  // multiStream.on('data', function(chunk){ console.log('multiStream chuck', chunk) })
 
   var providerStream = multiStream.createStream('provider')
   handleRequestsFromStream(providerStream, provider, logger)

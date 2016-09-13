@@ -3,12 +3,10 @@ window.addEventListener('load', web3Detect)
 
 function web3Detect() {
   if (global.web3) {
-    document.body.innerHTML += 'web3 detected!'
-    console.log('web3 detected!')
+    logToDom('web3 detected!')
     startApp()
   } else {
-    document.body.innerHTML += 'no web3 detected!'
-    console.log('no web3 detected!')
+    logToDom('no web3 detected!')
   }
 }
 
@@ -48,4 +46,9 @@ function startApp(){
     })
   })
 
+}
+
+function logToDom(message){
+  document.body.appendChild(document.createTextNode(message))
+  console.log(message)
 }
