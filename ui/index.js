@@ -25,9 +25,7 @@ function startApp (metamaskState, accountManager, opts) {
     metamask: metamaskState,
 
     // appState represents the current tab's popup state
-    appState: {
-      currentDomain: opts.currentDomain,
-    },
+    appState: {},
 
     // Which blockchain we are using:
     networkVersion: opts.networkVersion,

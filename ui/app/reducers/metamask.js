@@ -11,7 +11,6 @@ function reduceMetamask (state, action) {
     isInitialized: false,
     isUnlocked: false,
     isEthConfirmed: false,
-    currentDomain: 'example.com',
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unconfTxs: {},
