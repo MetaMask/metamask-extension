@@ -30,8 +30,7 @@ PortDuplexStream.prototype._onMessage = function (msg) {
 
 PortDuplexStream.prototype._onDisconnect = function () {
   try {
-    // this.end()
-    this.emit('close')
+    this.push(null)
   } catch (err) {
     this.emit('error', err)
   }
