@@ -3,7 +3,7 @@ const inherits = require('util').inherits
 const async = require('async')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('eth-query')
-const LightwalletKeyStore = require('eth-lightwallet').keystore
+const KeyStore = require('eth-lightwallet').keystore
 const clone = require('clone')
 const extend = require('xtend')
 const createId = require('web3-provider-engine/util/random-id')
@@ -50,15 +50,16 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   if (serializedKeystore) {
     this.configManager.setData({})
   }
-  this._createIdmgmt(password, null, entropy, (err) => {
+
+  this.purgeCache()
+  this._createVault(password, null, entropy, (err) => {
     if (err) return cb(err)
 
-    this._loadIdentities()
-    this._didUpdate()
     this._autoFaucet()
 
     this.configManager.setShowSeedWords(true)
     var seedWords = this._idmgmt.getSeed()
+
     cb(null, seedWords)
   })
 }
@@ -71,11 +72,12 @@ IdentityStore.prototype.recoverSeed = function (cb) {
 }
 
 IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
-  this._createIdmgmt(password, seed, null, (err) => {
+  this.purgeCache()
+
+  this._createVault(password, seed, null, (err) => {
     if (err) return cb(err)
 
     this._loadIdentities()
-    this._didUpdate()
     cb(null, this.getState())
   })
 }
@@ -125,7 +127,7 @@ IdentityStore.prototype.getSelectedAddress = function () {
   return configManager.getSelectedAccount()
 }
 
-IdentityStore.prototype.setSelectedAddress = function (address, cb) {
+IdentityStore.prototype.setSelectedAddressSync = function (address) {
   const configManager = this.configManager
   if (!address) {
     var addresses = this._getAddresses()
@@ -133,7 +135,12 @@ IdentityStore.prototype.setSelectedAddress = function (address, cb) {
   }
 
   configManager.setSelectedAccount(address)
-  if (cb) return cb(null, address)
+  return address
+}
+
+IdentityStore.prototype.setSelectedAddress = function (address, cb) {
+  const resultAddress = this.setSelectedAddressSync(address)
+  if (cb) return cb(null, resultAddress)
 }
 
 IdentityStore.prototype.revealAccount = function (cb) {
@@ -143,6 +150,11 @@ IdentityStore.prototype.revealAccount = function (cb) {
 
   keyStore.setDefaultHdDerivationPath(this.hdPathString)
   keyStore.generateNewAddress(derivedKey, 1)
+  const addresses = keyStore.getAddresses()
+  const address = addresses[ addresses.length - 1 ]
+
+  this._ethStore.addAccount(ethUtil.addHexPrefix(address))
+
   configManager.setWallet(keyStore.serialize())
 
   this._loadIdentities()
@@ -393,7 +405,7 @@ IdentityStore.prototype._loadIdentities = function () {
   var addresses = this._getAddresses()
   addresses.forEach((address, i) => {
     // // add to ethStore
-    this._ethStore.addAccount(address)
+    this._ethStore.addAccount(ethUtil.addHexPrefix(address))
     // add to identities
     const defaultLabel = 'Wallet ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)
@@ -412,7 +424,6 @@ IdentityStore.prototype.saveAccountLabel = function (account, label, cb) {
   configManager.setNicknameForWallet(account, label)
   this._loadIdentities()
   cb(null, label)
-  this._didUpdate()
 }
 
 // mayBeFauceting
@@ -436,77 +447,87 @@ IdentityStore.prototype._mayBeFauceting = function (i) {
 //
 
 IdentityStore.prototype.tryPassword = function (password, cb) {
-  this._createIdmgmt(password, null, null, cb)
-}
+  var serializedKeystore = this.configManager.getWallet()
+  var keyStore = KeyStore.deserialize(serializedKeystore)
 
-IdentityStore.prototype._createIdmgmt = function (password, seed, entropy, cb) {
-  const configManager = this.configManager
-
-  var keyStore = null
-  LightwalletKeyStore.deriveKeyFromPassword(password, (err, derivedKey) => {
+  keyStore.keyFromPassword(password, (err, pwDerivedKey) => {
     if (err) return cb(err)
-    var serializedKeystore = configManager.getWallet()
 
-    if (seed) {
-      try {
-        keyStore = this._restoreFromSeed(password, seed, derivedKey)
-      } catch (e) {
-        return cb(e)
-      }
-
-    // returning user, recovering from storage
-    } else if (serializedKeystore) {
-      keyStore = LightwalletKeyStore.deserialize(serializedKeystore)
-      var isCorrect = keyStore.isDerivedKeyCorrect(derivedKey)
-      if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
-
-   // first time here
-    } else {
-      keyStore = this._createFirstWallet(entropy, derivedKey)
-    }
+    const isCorrect = keyStore.isDerivedKeyCorrect(pwDerivedKey)
+    if (!isCorrect) return cb(new Error('Lightwallet - password incorrect'))
 
     this._keyStore = keyStore
-    this._idmgmt = new IdManagement({
-      keyStore: keyStore,
-      derivedKey: derivedKey,
-      hdPathSTring: this.hdPathString,
-      configManager: this.configManager,
-    })
-
+    this._createIdMgmt(pwDerivedKey)
     cb()
   })
 }
 
-IdentityStore.prototype._restoreFromSeed = function (password, seed, derivedKey) {
-  const configManager = this.configManager
-  var keyStore = new LightwalletKeyStore(seed, derivedKey, this.hdPathString)
-  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
-  keyStore.setDefaultHdDerivationPath(this.hdPathString)
-
-  keyStore.generateNewAddress(derivedKey, 1)
-  configManager.setWallet(keyStore.serialize())
-  if (global.METAMASK_DEBUG) {
-    console.log('restored from seed. saved to keystore')
+IdentityStore.prototype._createVault = function (password, seedPhrase, entropy, cb) {
+  const opts = {
+    password,
+    hdPathString: this.hdPathString,
   }
-  return keyStore
+
+  if (seedPhrase) {
+    opts.seedPhrase = seedPhrase
+  }
+
+  KeyStore.createVault(opts, (err, keyStore) => {
+    if (err) return cb(err)
+
+    this._keyStore = keyStore
+
+    keyStore.keyFromPassword(password, (err, derivedKey) => {
+      if (err) return cb(err)
+
+      this.purgeCache()
+
+      keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
+
+      this._createFirstWallet(derivedKey)
+      this._createIdMgmt(derivedKey)
+      this.setSelectedAddressSync()
+
+      cb()
+    })
+  })
 }
 
-IdentityStore.prototype._createFirstWallet = function (entropy, derivedKey) {
-  const configManager = this.configManager
-  var secretSeed = LightwalletKeyStore.generateRandomSeed(entropy)
-  var keyStore = new LightwalletKeyStore(secretSeed, derivedKey, this.hdPathString)
-  keyStore.addHdDerivationPath(this.hdPathString, derivedKey, {curve: 'secp256k1', purpose: 'sign'})
-  keyStore.setDefaultHdDerivationPath(this.hdPathString)
+IdentityStore.prototype._createIdMgmt = function (derivedKey) {
+  this._idmgmt = new IdManagement({
+    keyStore: this._keyStore,
+    derivedKey: derivedKey,
+    configManager: this.configManager,
+  })
+}
 
+IdentityStore.prototype.purgeCache = function () {
+  this._currentState.identities = {}
+  let accounts
+  try {
+    accounts = Object.keys(this._ethStore._currentState.accounts)
+  } catch (e) {
+    accounts = []
+  }
+  accounts.forEach((address) => {
+    this._ethStore.removeAccount(address)
+  })
+}
+
+IdentityStore.prototype._createFirstWallet = function (derivedKey) {
+  const keyStore = this._keyStore
+  keyStore.setDefaultHdDerivationPath(this.hdPathString)
   keyStore.generateNewAddress(derivedKey, 1)
-  configManager.setWallet(keyStore.serialize())
-  console.log('saved to keystore')
-  return keyStore
+  this.configManager.setWallet(keyStore.serialize())
+  var addresses = keyStore.getAddresses()
+  this._ethStore.addAccount(ethUtil.addHexPrefix(addresses[0]))
 }
 
 // get addresses and normalize address hexString
 IdentityStore.prototype._getAddresses = function () {
-  return this._keyStore.getAddresses(this.hdPathString).map((address) => { return '0x' + address })
+  return this._keyStore.getAddresses(this.hdPathString).map((address) => {
+    return ethUtil.addHexPrefix(address)
+  })
 }
 
 IdentityStore.prototype._autoFaucet = function () {
