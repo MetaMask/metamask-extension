@@ -19,8 +19,10 @@ iframeServer.get('/controller.js', function(req, res){
   res.send(controllerBundle.latest)
 })
 
-// serve static
+// serve background controller
 iframeServer.use(express.static('./server'))
+// serve popup window
+// iframeServer.use('/popup', express.static('../dist/chrome'))
 
 iframeServer.listen('9001')
 
