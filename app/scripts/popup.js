@@ -1,5 +1,4 @@
 const EventEmitter = require('events').EventEmitter
-const async = require('async')
 const Dnode = require('dnode')
 const Web3 = require('web3')
 const MetaMaskUi = require('../../ui')
@@ -16,9 +15,7 @@ const notification = require('./lib/notifications')
 var css = MetaMaskUiCss()
 injectCss(css)
 
-async.parallel({
-  accountManager: connectToAccountManager,
-}, setupApp)
+connectToAccountManager(setupApp)
 
 function connectToAccountManager (cb) {
   // setup communication with background
@@ -35,32 +32,32 @@ function connectToAccountManager (cb) {
   setupWeb3Connection(mx.createStream('provider'))
 }
 
-function setupWeb3Connection (stream) {
-  var remoteProvider = new StreamProvider()
-  remoteProvider.pipe(stream).pipe(remoteProvider)
-  stream.on('error', console.error.bind(console))
-  remoteProvider.on('error', console.error.bind(console))
-  global.web3 = new Web3(remoteProvider)
+function setupWeb3Connection (connectionStream) {
+  var providerStream = new StreamProvider()
+  providerStream.pipe(connectionStream).pipe(providerStream)
+  connectionStream.on('error', console.error.bind(console))
+  providerStream.on('error', console.error.bind(console))
+  global.web3 = new Web3(providerStream)
 }
 
-function setupControllerConnection (stream, cb) {
+function setupControllerConnection (connectionStream, cb) {
   // this is a really sneaky way of adding EventEmitter api 
   // to a bi-directional dnode instance
   var eventEmitter = new EventEmitter()
-  var background = Dnode({
+  var accountManagerDnode = Dnode({
     sendUpdate: function (state) {
       eventEmitter.emit('update', state)
     },
   })
-  stream.pipe(background).pipe(stream)
-  background.once('remote', function (accountManager) {
+  connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
+  accountManagerDnode.once('remote', function (accountManager) {
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)
     cb(null, accountManager)
   })
 }
 
-function setupApp (err, opts) {
+function setupApp (err, accountManager) {
   if (err) {
     alert(err.stack)
     throw err
@@ -70,8 +67,7 @@ function setupApp (err, opts) {
 
   MetaMaskUi({
     container: container,
-    accountManager: opts.accountManager,
-    networkVersion: opts.networkVersion,
+    accountManager: accountManager,
   })
 }
 
