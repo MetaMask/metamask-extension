@@ -26,6 +26,7 @@ function startApp(){
     console.log('sending tx')
     web3.eth.sendTransaction({
       from: primaryAccount,
+      to: primaryAccount,
       value: 0,
     }, function(err, txHash){
       if (err) throw err
@@ -38,6 +39,7 @@ function startApp(){
       console.log('sending tx')
       web3.eth.sendTransaction({
         from: primaryAccount,
+        to: primaryAccount,
         value: 0,
       }, function(err, txHash){
         if (err) throw err
