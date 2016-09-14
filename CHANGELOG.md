@@ -2,15 +2,17 @@
 
 ## Current Master
 
+## 2.12.1 2016-09-14
+
 - Fixed bug where if you send a transaction from within MetaMask extension the
 popup notification opens up.
+- Fixed bug where some tx errors would block subsequent txs until the plugin was refreshed.
 
 ## 2.12.0 2016-09-14
 
 - Add a QR button to the Account detail screen
 - Fixed bug where opening MetaMask could close a non-metamask popup.
 - Fixed memory leak that caused occasional crashes.
-- Fixed bug where some tx errors would block subsequent txs until the plugin was refreshed.
 
 ## 2.11.1 2016-09-12
 
