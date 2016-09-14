@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fixed bug where if you send a transaction from within MetaMask extension the
+popup notification opens up.
+
 - Fixed bug where opening MetaMask could close a non-metamask popup.
 - Fixed memory leak that caused occasional crashes.
 
