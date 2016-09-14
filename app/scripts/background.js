@@ -44,7 +44,7 @@ function connectRemote (remotePort) {
   var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
-    remotePort.name === 'popup' ? popupIsOpen = true : popupIsOpen = false
+    popupIsOpen = remotePort.name === 'popup'
     setupTrustedCommunication(portStream, 'MetaMask', remotePort.name)
   } else {
     // communication with page
@@ -67,7 +67,6 @@ function setupTrustedCommunication (connectionStream, originDomain, metamaskCont
   // connect features
   setupControllerConnection(mx.createStream('controller'))
   controller.setupProviderConnection(mx.createStream('provider'), originDomain)
-  if (metamaskContext === 'popup') popupIsOpen = true
 }
 
 //
