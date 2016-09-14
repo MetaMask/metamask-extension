@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fixed bug where if you send a transaction from within MetaMask extension the
+popup notification opens up.
+
 ## 2.12.0 2016-09-14
 
 - Add a QR button to the Account detail screen
