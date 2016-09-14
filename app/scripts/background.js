@@ -10,31 +10,22 @@ const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 
 const STORAGE_KEY = 'metamask-config'
-
+var popupIsOpen = false
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
-  showUnconfirmedMessage,
-  unlockAccountMessage,
-  showUnconfirmedTx,
+  showUnconfirmedMessage: triggerUi,
+  unlockAccountMessage: triggerUi,
+  showUnconfirmedTx: triggerUi,
   // Persistence Methods:
   setData,
   loadData,
 })
 const idStore = controller.idStore
 
-function unlockAccountMessage () {
-  notification.show()
+function triggerUi () {
+  if (!popupIsOpen) notification.show()
 }
-
-function showUnconfirmedMessage (msgParams, msgId) {
-  notification.show()
-}
-
-function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
-  notification.show()
-}
-
 // On first install, open a window to MetaMask website to how-it-works.
 
 extension.runtime.onInstalled.addListener(function (details) {
@@ -53,7 +44,8 @@ function connectRemote (remotePort) {
   var portStream = new PortStream(remotePort)
   if (isMetaMaskInternalProcess) {
     // communication with popup
-    setupTrustedCommunication(portStream, 'MetaMask')
+    remotePort.name === 'popup' ? popupIsOpen = true : popupIsOpen = false
+    setupTrustedCommunication(portStream, 'MetaMask', remotePort.name)
   } else {
     // communication with page
     var originDomain = urlUtil.parse(remotePort.sender.url).hostname
@@ -69,12 +61,13 @@ function setupUntrustedCommunication (connectionStream, originDomain) {
   controller.setupPublicConfig(mx.createStream('publicConfig'))
 }
 
-function setupTrustedCommunication (connectionStream, originDomain) {
+function setupTrustedCommunication (connectionStream, originDomain, metamaskContext) {
   // setup multiplexing
   var mx = setupMultiplex(connectionStream)
   // connect features
   setupControllerConnection(mx.createStream('controller'))
   controller.setupProviderConnection(mx.createStream('provider'), originDomain)
+  if (metamaskContext === 'popup') popupIsOpen = true
 }
 
 //
@@ -95,6 +88,7 @@ function setupControllerConnection (stream) {
     // teardown on disconnect
     eos(stream, () => {
       controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
+      popupIsOpen = false
     })
   })
 }
