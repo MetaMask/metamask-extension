@@ -61,7 +61,7 @@ function setupUntrustedCommunication (connectionStream, originDomain) {
   controller.setupPublicConfig(mx.createStream('publicConfig'))
 }
 
-function setupTrustedCommunication (connectionStream, originDomain, metamaskContext) {
+function setupTrustedCommunication (connectionStream, originDomain) {
   // setup multiplexing
   var mx = setupMultiplex(connectionStream)
   // connect features
