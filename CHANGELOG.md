@@ -2,10 +2,13 @@
 
 ## Current Master
 
-- Fixed bug where opening MetaMask could close a non-metamask popup.
-- Fixed memory leak that caused occasional crashes.
+## 2.12.0 2016-09-14
 
 - Add a QR button to the Account detail screen
+- Fixed bug where opening MetaMask could close a non-metamask popup.
+- Fixed memory leak that caused occasional crashes.
+- Fixed bug where some tx errors would block subsequent txs until the plugin was refreshed.
+
 ## 2.11.1 2016-09-12
 
 - Fix bug that prevented caches from being cleared in Opera.
