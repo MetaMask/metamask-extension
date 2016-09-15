@@ -16,6 +16,21 @@ function PendingTx () {
 PendingTx.prototype.render = function () {
   var state = this.props
   var txData = state.txData
+  var txParams = txData.txParams || {}
+  var address = txParams.from || state.selectedAddress
+
+  var account = state.accounts[address]
+  var balance = account ? account.balance : '0x0'
+
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
+
+  var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
+  var insufficientBalance = maxCost.gt(balanceBn)
+
   return (
 
     h('div', {
@@ -41,42 +56,23 @@ PendingTx.prototype.render = function () {
         },
       }, [
 
-        this.buttonDeligator(),
+        ( insufficientBalance ?
+          h('button.btn-green', {
+            onClick: state.sendTransaction,
+          }, 'Buy Ether')
+        : 
+          null
+        ),
 
-        h('button.cancel', {
+        h('button.confirm', {
+          disabled: insufficientBalance,
+          onClick: state.sendTransaction,
+        }, 'Accept'),
+
+        h('button.cancel.btn-red', {
           onClick: state.cancelTransaction,
-          style: { background: 'rgb(254,35,17)' },
         }, 'Reject'),
       ]),
     ])
   )
-}
-
-PendingTx.prototype.buttonDeligator = function () {
-  var state = this.props
-  var txData = state.txData
-  var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAddress
-
-  var account = state.accounts[address]
-  var balance = account ? account.balance : '0x0'
-
-  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
-  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  var txFee = gasCost.mul(gasPrice)
-  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-  var maxCost = txValue.add(txFee)
-
-  var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
-  if (maxCost.gt(balanceBn)) {
-    return h('button.confirm', {
-      onClick: state.sendTransaction,
-      style: { background: 'rgb(251,117,1)' },
-    }, 'Buy')
-  } else {
-    return h('button.confirm', {
-      onClick: state.sendTransaction,
-      style: { background: 'rgb(251,117,1)' },
-    }, 'Accept')
-  }
 }
