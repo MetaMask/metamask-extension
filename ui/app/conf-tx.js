@@ -160,7 +160,9 @@ ConfirmTxScreen.prototype.goHome = function (event) {
 }
 
 function warningIfExists (warning) {
-  if (warning) {
+  if (warning &&
+      // Do not display user rejections on this screen:
+     warning.indexOf('User denied transaction signature') === -1) {
     return h('span.error', { style: { margin: 'auto' } }, warning)
   }
 }
