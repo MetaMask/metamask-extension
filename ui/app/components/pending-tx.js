@@ -47,6 +47,10 @@ PendingTx.prototype.render = function () {
         }
       `),
 
+      insufficientBalance ?
+        h('span.error', { style: { marginLeft: 36 } }, 'Insufficient balance for transaction.')
+      : null,
+
       // send + cancel
       h('.flex-row.flex-space-around.conf-buttons', {
         style: {
@@ -56,13 +60,11 @@ PendingTx.prototype.render = function () {
         },
       }, [
 
-        ( insufficientBalance ?
+        insufficientBalance ?
           h('button.btn-green', {
             onClick: state.sendTransaction,
           }, 'Buy Ether')
-        : 
-          null
-        ),
+        : null,
 
         h('button.confirm', {
           disabled: insufficientBalance,
