@@ -6,6 +6,8 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
@@ -113,8 +115,26 @@ function currentTxView (opts) {
 }
 
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
+  var state = this.props
+
+  var txParams = txData.txParams || {}
+  var address = txParams.from || state.selectedAddress
+  var account = state.accounts[address]
+  var balance = account ? account.balance : '0x0'
+
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
+
+  var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
   event.stopPropagation()
-  this.props.dispatch(actions.sendTx(txData))
+  if (maxCost.gt(balanceBn)) {
+    this.props.dispatch(actions.buyEthView(address))
+  } else {
+    this.props.dispatch(actions.sendTx(txData))
+  }
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {

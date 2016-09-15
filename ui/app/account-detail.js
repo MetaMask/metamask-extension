@@ -279,10 +279,11 @@ AccountDetailScreen.prototype.requestAccountExport = function () {
 
 AccountDetailScreen.prototype.buyButtonDeligator = function () {
   var props = this.props
+  var selected = props.address || Object.keys(props.accounts)[0]
 
   if (this.props.accountDetail.subview === 'buyForm') {
     props.dispatch(actions.backToAccountDetail(props.address))
   } else {
-    props.dispatch(actions.buyEthView())
+    props.dispatch(actions.buyEthView(selected))
   }
 }
