@@ -48,7 +48,12 @@ PendingTx.prototype.render = function () {
       `),
 
       insufficientBalance ?
-        h('span.error', { style: { marginLeft: 36 } }, 'Insufficient balance for transaction.')
+        h('span.error', {
+          style: {
+            marginLeft: 50,
+            fontSize: '0.9em',
+          },
+        }, 'Insufficient balance for transaction')
       : null,
 
       // send + cancel
