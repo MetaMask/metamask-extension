@@ -334,7 +334,7 @@ module.exports = class MetamaskController {
     var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
 
     if (network === '2') {
-      url = 'https://testfaucet.metamask.io/'
+      url = 'https://faucet.metamask.io/'
     }
 
     extension.tabs.create({

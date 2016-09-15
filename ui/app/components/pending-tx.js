@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-tx-details')
 
-
 module.exports = PendingTx
 
 inherits(PendingTx, Component)
@@ -31,6 +30,15 @@ PendingTx.prototype.render = function () {
         }
       `),
 
+      state.insufficientBalance ?
+        h('span.error', {
+          style: {
+            marginLeft: 50,
+            fontSize: '0.9em',
+          },
+        }, 'Insufficient balance for transaction')
+      : null,
+
       // send + cancel
       h('.flex-row.flex-space-around.conf-buttons', {
         style: {
@@ -39,17 +47,22 @@ PendingTx.prototype.render = function () {
           margin: '14px 25px',
         },
       }, [
+
+        state.insufficientBalance ?
+          h('button.btn-green', {
+            onClick: state.buyEth,
+          }, 'Buy Ether')
+        : null,
+
         h('button.confirm', {
+          disabled: state.insufficientBalance,
           onClick: state.sendTransaction,
-          style: { background: 'rgb(251,117,1)' },
         }, 'Accept'),
 
-        h('button.cancel', {
+        h('button.cancel.btn-red', {
           onClick: state.cancelTransaction,
-          style: { background: 'rgb(254,35,17)' },
         }, 'Reject'),
       ]),
     ])
   )
 }
-

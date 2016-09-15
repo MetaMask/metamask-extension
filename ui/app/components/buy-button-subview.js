@@ -16,6 +16,7 @@ function mapStateToProps (state) {
     buyView: state.appState.buyView,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    context: state.appState.currentView.context,
   }
 }
 
@@ -38,7 +39,7 @@ BuyButtonSubview.prototype.render = function () {
         },
       }, [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-          onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAccount)),
+          onClick: this.backButtonContext.bind(this),
           style: {
             position: 'absolute',
             left: '10px',
@@ -120,4 +121,12 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
 
 BuyButtonSubview.prototype.navigateTo = function (url) {
   extension.tabs.create({ url })
+}
+
+BuyButtonSubview.prototype.backButtonContext = function () {
+  if (this.props.context === 'confTx') {
+    this.props.dispatch(actions.showConfTxPage(false))
+  } else {
+    this.props.dispatch(actions.goHome())
+  }
 }

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
 
 ## 2.12.1 2016-09-14
 
