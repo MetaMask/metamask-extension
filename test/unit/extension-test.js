@@ -18,9 +18,7 @@ describe('extension', function() {
       }
 
       it('returns the desired result', function() {
-        console.dir(Extension)
         const extension = new Extension()
-        console.dir(extension)
         const result = extension.extension.getURL()
         assert.equal(result, desiredResult)
       })
