@@ -41,6 +41,7 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
   var txData = unconfTxList[index] || unconfTxList[0] || {}
+  var txParams = txData.txParams || {}
   var isNotification = isPopupOrNotification() === 'notification'
 
   return (
@@ -92,7 +93,9 @@ ConfirmTxScreen.prototype.render = function () {
           selectedAddress: state.selectedAddress,
           accounts: state.accounts,
           identities: state.identities,
+          insufficientBalance: this.checkBalnceAgainstTx(txData),
           // Actions
+          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
@@ -113,8 +116,7 @@ function currentTxView (opts) {
     return h(PendingMsg, opts)
   }
 }
-
-ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
+ConfirmTxScreen.prototype.checkBalnceAgainstTx = function (txData) {
   var state = this.props
 
   var txParams = txData.txParams || {}
@@ -129,12 +131,17 @@ ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   var maxCost = txValue.add(txFee)
 
   var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
+  return maxCost.gt(balanceBn)
+}
+
+ConfirmTxScreen.prototype.buyEth = function (address, event) {
   event.stopPropagation()
-  if (maxCost.gt(balanceBn)) {
-    this.props.dispatch(actions.buyEthView(address))
-  } else {
-    this.props.dispatch(actions.sendTx(txData))
-  }
+  this.props.dispatch(actions.buyEthView(address))
+}
+
+ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
+  event.stopPropagation()
+  this.props.dispatch(actions.sendTx(txData))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
