@@ -53,32 +53,33 @@ TransactionListItem.prototype.render = function () {
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
         transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {
           style: {
-            fontSize: '27px'
-          }
-      }) : h( '.pop-hover', {
-        onClick: () => {
-          if (!isTx || isPending) return
-          var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
-          extension.tabs.create({ url })
-        },
-      }, [
+            fontSize: '27px',
+          },
+        }) : h( '.pop-hover', {
+          onClick: () => {
+            if (!isTx || isPending) return
+            var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
+            extension.tabs.create({ url })
+          },
+        }, [
           h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
         ]),
       ]),
 
       h('.flex-column', {
-       onClick: (event) => {
-        if (isPending) {
-          this.props.showTx(transaction.id)
-        }
+        onClick: (event) => {
+          if (isPending) {
+            this.props.showTx(transaction.id)
+          }
 
-        if (!transaction.hash || !isLinkable) return
-        var url = explorerLink(transaction.hash, parseInt(network))
-        extension.tabs.create({ url })
-      },
-      style: {
-        width: '200px',
-        overflow: 'hidden'}
+          if (!transaction.hash || !isLinkable) return
+          var url = explorerLink(transaction.hash, parseInt(network))
+          extension.tabs.create({ url })
+        },
+        style: {
+          width: '200px',
+          overflow: 'hidden',
+        },
       }, [
         domainField(txParams),
         h('div', date),
