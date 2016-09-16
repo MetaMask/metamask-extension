@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
+too help visualize transactions and to where they are going.
+
 ## 2.12.1 2016-09-14
 
 - Fixed bug where if you send a transaction from within MetaMask extension the
