@@ -4,11 +4,11 @@ const inherits = require('util').inherits
 
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
-const addressSummary = require('../util').addressSummary
+const util = require('../util')
+const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-
 
 module.exports = PendingTxDetails
 

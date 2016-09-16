@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
 
 - Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
 too help visualize transactions and to where they are going.
