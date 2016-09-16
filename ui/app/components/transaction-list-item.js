@@ -48,7 +48,7 @@ TransactionListItem.prototype.render = function () {
         if (isPending) {
           this.props.showTx(transaction.id)
         }
-
+        event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
         var url = explorerLink(transaction.hash, parseInt(network))
         extension.tabs.create({ url })
@@ -58,10 +58,21 @@ TransactionListItem.prototype.render = function () {
       },
     }, [
 
-      // large identicon
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {style: { fontSize: '27px' }})
-         : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {
+          style: {
+            fontSize: '27px',
+          },
+        }) : h( '.pop-hover', {
+          onClick: (event) => {
+            event.stopPropagation()
+            if (!isTx || isPending) return
+            var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
+            extension.tabs.create({ url })
+          },
+        }, [
+          h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        ]),
       ]),
 
       h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
