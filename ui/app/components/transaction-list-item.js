@@ -44,7 +44,30 @@ TransactionListItem.prototype.render = function () {
 
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
-      onClick: (event) => {
+      style: {
+        padding: '20px 0',
+      },
+    }, [
+
+      // large identicon
+      h('.identicon-wrapper.flex-column.flex-center.select-none', [
+        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {
+          style: {
+            fontSize: '27px'
+          }
+      }) : h( '.pop-hover', {
+        onClick: () => {
+          if (!isTx || isPending) return
+          var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
+          extension.tabs.create({ url })
+        },
+      }, [
+          h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        ]),
+      ]),
+
+      h('.flex-column', {
+       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)
         }
@@ -54,17 +77,9 @@ TransactionListItem.prototype.render = function () {
         extension.tabs.create({ url })
       },
       style: {
-        padding: '20px 0',
-      },
-    }, [
-
-      // large identicon
-      h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {style: { fontSize: '27px' }})
-         : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
-      ]),
-
-      h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
+        width: '200px',
+        overflow: 'hidden'}
+      }, [
         domainField(txParams),
         h('div', date),
         recipientField(txParams, transaction, isTx, isMsg),
