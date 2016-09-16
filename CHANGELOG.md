@@ -1,7 +1,9 @@
 # Changelog
 
 ## Current Master
+
 - Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
+- Show loading indication when selecting ShapeShift as purchasing method.
 
 ## 2.12.1 2016-09-14
 
