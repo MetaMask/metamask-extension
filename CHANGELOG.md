@@ -2,10 +2,12 @@
 
 ## Current Master
 
+## 2.13.0 2016-09-18
+
+- Add Parity compatibility, fixing Geth dependency issues.
 - Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
 too help visualize transactions and to where they are going.
 - Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
-- Change behavior that prevented Parity client compatibility, where we included a request site origin on rpc calls.
 
 ## 2.12.1 2016-09-14
 
