@@ -240,7 +240,7 @@ function reduceApp (state, action) {
           name: 'confTx',
           context: 0,
         },
-        transForward: true,
+        transForward: action.transForward,
         warning: null,
       })
 
@@ -408,7 +408,7 @@ function reduceApp (state, action) {
         transForward: true,
         currentView: {
           name: 'buyEth',
-          context: appState.currentView.context,
+          context: appState.currentView.name,
         },
         buyView: {
           subview: 'buyForm',

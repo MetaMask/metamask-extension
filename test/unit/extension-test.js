@@ -1,8 +1,8 @@
 var assert = require('assert')
 var sinon = require('sinon')
 const ethUtil = require('ethereumjs-util')
-GLOBAL.chrome = {}
-GLOBAL.browser = {}
+global.chrome = {}
+global.browser = {}
 
 var path = require('path')
 var Extension = require(path.join(__dirname, '..', '..', 'app', 'scripts', 'lib', 'extension-instance.js'))
@@ -13,7 +13,7 @@ describe('extension', function() {
     const desiredResult = 'http://the-desired-result.io'
 
     describe('in Chrome or Firefox', function() {
-      GLOBAL.chrome.extension = {
+      global.chrome.extension = {
         getURL: () => desiredResult
       }
 
@@ -25,7 +25,7 @@ describe('extension', function() {
     })
 
     describe('in Microsoft Edge', function() {
-      GLOBAL.browser.extension = {
+      global.browser.extension = {
         getURL: () => desiredResult
       }
 
@@ -41,7 +41,7 @@ describe('extension', function() {
     let extension
 
     beforeEach(function() {
-      GLOBAL.chrome = {
+      global.chrome = {
         alarms: 'foo'
       }
       extension = new Extension()
@@ -58,9 +58,9 @@ describe('extension', function() {
 
     beforeEach(function() {
       realWindow = window
-      window = GLOBAL
-      GLOBAL.chrome = undefined
-      GLOBAL.alarms = 'foo'
+      window = global
+      global.chrome = undefined
+      global.alarms = 'foo'
       extension = new Extension()
     })
 

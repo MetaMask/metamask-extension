@@ -479,9 +479,10 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage () {
+function showConfTxPage (transForward = true) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
+    transForward: transForward,
   }
 }
 

@@ -6,6 +6,8 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
@@ -39,6 +41,7 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
   var txData = unconfTxList[index] || unconfTxList[0] || {}
+  var txParams = txData.txParams || {}
   var isNotification = isPopupOrNotification() === 'notification'
 
   return (
@@ -90,7 +93,9 @@ ConfirmTxScreen.prototype.render = function () {
           selectedAddress: state.selectedAddress,
           accounts: state.accounts,
           identities: state.identities,
+          insufficientBalance: this.checkBalnceAgainstTx(txData),
           // Actions
+          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
@@ -110,6 +115,28 @@ function currentTxView (opts) {
     // This is a pending message to sign
     return h(PendingMsg, opts)
   }
+}
+ConfirmTxScreen.prototype.checkBalnceAgainstTx = function (txData) {
+  var state = this.props
+
+  var txParams = txData.txParams || {}
+  var address = txParams.from || state.selectedAddress
+  var account = state.accounts[address]
+  var balance = account ? account.balance : '0x0'
+
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
+
+  var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
+  return maxCost.gt(balanceBn)
+}
+
+ConfirmTxScreen.prototype.buyEth = function (address, event) {
+  event.stopPropagation()
+  this.props.dispatch(actions.buyEthView(address))
 }
 
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
