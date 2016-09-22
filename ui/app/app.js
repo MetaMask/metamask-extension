@@ -21,7 +21,7 @@ const ConfirmTxScreen = require('./conf-tx')
 const ConfigScreen = require('./config')
 const RevealSeedConfirmation = require('./recover-seed/confirmation')
 const InfoScreen = require('./info')
-const LoadingIndicator = require('./loading')
+const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
@@ -38,6 +38,7 @@ function App () { Component.call(this) }
 function mapStateToProps (state) {
   return {
     // state from plugin
+    isLoading: state.appState.isLoading,
     isConfirmed: state.metamask.isConfirmed,
     isEthConfirmed: state.metamask.isEthConfirmed,
     isInitialized: state.metamask.isInitialized,
@@ -57,7 +58,7 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  var transForward = props.transForward
+  const { isLoading, transForward } = props
 
   return (
 
@@ -69,7 +70,7 @@ App.prototype.render = function () {
       },
     }, [
 
-      h(LoadingIndicator),
+      h(LoadingIndicator, { isLoading }),
 
       // app bar
       this.renderAppBar(),

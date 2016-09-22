@@ -6,6 +6,7 @@ const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
 const extension = require('../../../app/scripts/lib/extension')
+const Loading = require('./loading')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -17,6 +18,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     context: state.appState.currentView.context,
+    isSubLoading: state.appState.isSubLoading,
   }
 }
 
@@ -28,6 +30,7 @@ function BuyButtonSubview () {
 BuyButtonSubview.prototype.render = function () {
   const props = this.props
   const currentForm = props.buyView.formView
+  const isLoading = props.isSubLoading
 
   return (
     h('.buy-eth-section', [
@@ -47,6 +50,9 @@ BuyButtonSubview.prototype.render = function () {
         }),
         h('h2.page-subtitle', 'Buy Eth'),
       ]),
+
+      h(Loading, { isLoading }),
+
       h('h3.flex-row.text-transform-uppercase', {
         style: {
           background: '#EBEBEB',

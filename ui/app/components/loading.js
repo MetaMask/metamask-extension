@@ -1,18 +1,12 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
-module.exports = connect(mapStateToProps)(LoadingIndicator)
-
-function mapStateToProps (state) {
-  return {
-    isLoading: state.appState.isLoading,
-  }
-}
 
 inherits(LoadingIndicator, Component)
+module.exports = LoadingIndicator
+
 function LoadingIndicator () {
   Component.call(this)
 }
