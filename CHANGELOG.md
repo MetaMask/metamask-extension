@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where chosen FIAT exchange rate does no persist when switching networks
+
 ## 2.13.1 2016-09-23
 
 - Fix a bug with estimating gas on Parity
