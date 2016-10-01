@@ -22,7 +22,7 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
-    var currentFiat = this.configManager.getCurrentFiat() ? this.configManager.getCurrentFiat() : 'USD'
+    var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
     this.scheduleConversionInterval()
