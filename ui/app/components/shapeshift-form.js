@@ -128,7 +128,6 @@ ShapeshiftForm.prototype.renderMain = function () {
     this.props.isSubLoading ? this.renderLoading() : null,
     h('.flex-column', {
       style: {
-        width: '235px',
         alignItems: 'flex-start',
       },
     }, [
@@ -270,17 +269,17 @@ ShapeshiftForm.prototype.renderInfo = function () {
 
   return h('span', {
     style: {
-      marginTop: '15px',
+      marginTop: '10px',
       marginBottom: '15px',
     },
   }, [
     h('h3.flex-row.text-transform-uppercase', {
       style: {
-        color: '#AEAEAE',
+        color: '#868686',
         paddingTop: '4px',
         justifyContent: 'space-around',
         textAlign: 'center',
-        fontSize: '14px',
+        fontSize: '17px',
       },
     }, `Market Info for ${marketinfo.pair.replace('_', ' to ').toUpperCase()}:`),
     h('.marketinfo', ['Status : ', `${coinOptions[coin].status}`]),

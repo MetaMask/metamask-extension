@@ -2,6 +2,16 @@
 
 ## Current Master
 
+- Fix bug where chosen FIAT exchange rate does no persist when switching networks
+
+## 2.13.1 2016-09-23
+
+- Fix a bug with estimating gas on Parity
+- Show loading indication when selecting ShapeShift as purchasing method.
+
+## 2.13.0 2016-09-18
+
+- Add Parity compatibility, fixing Geth dependency issues.
 - Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
 too help visualize transactions and to where they are going.
 - Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient

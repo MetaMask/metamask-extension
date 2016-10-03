@@ -22,7 +22,8 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
-    this.configManager.setCurrentFiat('USD')
+    var currentFiat = this.configManager.getCurrentFiat() || 'USD'
+    this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
     this.scheduleConversionInterval()
   }
@@ -75,6 +76,10 @@ module.exports = class MetamaskController {
   }
 
   onRpcRequest (stream, originDomain, request) {
+
+    /* Commented out for Parity compliance
+     * Parity does not permit additional keys, like `origin`,
+     * and Infura is not currently filtering this key out.
     var payloads = Array.isArray(request) ? request : [request]
     payloads.forEach(function (payload) {
       // Append origin to rpc payload
@@ -86,6 +91,7 @@ module.exports = class MetamaskController {
         payload.params.push({ origin: originDomain })
       }
     })
+    */
 
     // handle rpc request
     this.provider.sendAsync(request, function onPayloadHandled (err, response) {
