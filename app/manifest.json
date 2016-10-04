@@ -10,7 +10,7 @@
       "suggested_key": {
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
-        "chromeos": "Search+M",
+        "chromeos": "Alt+Shift+M",
         "linux": "Alt+Shift+M"
       }
     }
@@ -55,9 +55,10 @@
     }
   ],
   "permissions": [
-    "notifications",
     "storage",
     "tabs",
+    "clipboardWrite",
+    "clipboardRead",
     "http://localhost:8545/"
   ],
   "web_accessible_resources": [
