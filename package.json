@@ -15,7 +15,8 @@
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "buildMock": "browserify ./mock-dev.js -o ./development/bundle.js",
     "testem": "npm run buildMock && testem",
-    "ci": "npm run buildMock && testem ci -P 2"
+    "ci": "npm run buildMock && testem ci -P 2",
+    "announce": "node development/announcer.js"
   },
   "browserify": {
     "transform": [
