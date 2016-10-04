@@ -10,6 +10,7 @@
 - Fix bug where chosen FIAT exchange rate does no persist when switching networks
 - Fix additional parameters that made MetaMask sometimes receive errors from Parity.
 - Fix bug where invalid transactions would still open the MetaMask popup.
+- Removed hex prefix from private key export, to increase compatibility with Geth, MyEtherWallet, and Jaxx.
 
 ## 2.13.1 2016-09-23
 
