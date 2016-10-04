@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Decreased vault confirmation button font size to help some Linux users who could not see it.
+- Made popup a little taller because it would sometimes cut off buttons.
+
 ## 2.13.2 2016-10-4
 
 - Fix bug where chosen FIAT exchange rate does no persist when switching networks

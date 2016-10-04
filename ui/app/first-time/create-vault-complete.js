@@ -61,6 +61,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
         onClick: () => this.confirmSeedWords(),
         style: {
           margin: '24px',
+          fontSize: '0.9em',
         },
       }, 'I\'ve copied it somewhere safe'),
     ])
