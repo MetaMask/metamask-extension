@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 2.13.3 2016-10-4
+
+- Fix bug where log queries were filtered out.
+
 ## 2.13.2 2016-10-4
 
 - Fix bug where chosen FIAT exchange rate does no persist when switching networks
