@@ -1,5 +1,5 @@
 const extension = require('./extension')
-const height = 500
+const height = 520
 const width = 360
 
 const notifications = {
