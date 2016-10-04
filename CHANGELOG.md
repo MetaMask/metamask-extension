@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug where chosen FIAT exchange rate does no persist when switching networks
+- Fix additional parameters that made MetaMask sometimes receive errors from Parity.
 
 ## 2.13.1 2016-09-23
 
