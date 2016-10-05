@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
+const ethUtil = require('ethereumjs-util')
 
 module.exports = ExportAccountView
 
@@ -61,7 +62,9 @@ ExportAccountView.prototype.render = function () {
 
   if (accountExported) {
     return h('div.privateKey', {
-
+      style: {
+        margin: '0 20px',
+      },
     }, [
       h('label', 'Your private key (click to copy):'),
       h('p.error.cursor-pointer', {
@@ -72,9 +75,9 @@ ExportAccountView.prototype.render = function () {
           width: '100%',
         },
         onClick: function (event) {
-          copyToClipboard(accountDetail.privateKey)
+          copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
         },
-      }, accountDetail.privateKey),
+      }, ethUtil.stripHexPrefix(accountDetail.privateKey)),
       h('button', {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
       }, 'Done'),

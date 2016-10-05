@@ -15,7 +15,8 @@
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "buildMock": "browserify ./mock-dev.js -o ./development/bundle.js",
     "testem": "npm run buildMock && testem",
-    "ci": "npm run buildMock && testem ci -P 2"
+    "ci": "npm run buildMock && testem ci -P 2",
+    "announce": "node development/announcer.js"
   },
   "browserify": {
     "transform": [
@@ -81,7 +82,7 @@
     "through2": "^2.0.1",
     "vreme": "^3.0.2",
     "web3": "ethereum/web3.js#260ac6e78a8ce4b2e13f5bb0fdb65f4088585876",
-    "web3-provider-engine": "^8.0.7",
+    "web3-provider-engine": "^8.1.0",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
   },
