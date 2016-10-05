@@ -43,8 +43,14 @@ DisclaimerScreen.prototype.render = function () {
         }
         .markdown h1, .markdown h2, .markdown h3 {
           margin: 10px 0;
-          font-family: arial sans-serif;
           font-weight: bold;
+        }
+
+        .markdown strong {
+          font-weight: bold;
+        }
+        .markdown em {
+          font-style: italic;
         }
 
       `),
