@@ -53,6 +53,10 @@ DisclaimerScreen.prototype.render = function () {
           font-style: italic;
         }
 
+        .markdown p {
+          margin: 10px 0;
+        }
+
       `),
 
       h('div.markdown', {
