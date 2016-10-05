@@ -62,9 +62,11 @@ DisclaimerScreen.prototype.render = function () {
       h('div.markdown', {
         onScroll: (e) => {
           var object = e.currentTarget
-          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
-            var button = document.getElementById('agree')
+          var button = document.getElementById('agree')
+          if ((object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) && button.disabled) {
             button.disabled = false
+            button.innerHTML = 'I Agree'
+            console.log("YAHALLO")
             button.addEventListener('click', () => this.props.dispatch(actions.agreeToDisclaimer()))
           }
         },
@@ -89,7 +91,7 @@ DisclaimerScreen.prototype.render = function () {
         style: { marginTop: '18px' },
         disabled: true,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
-      }, 'I Agree'),
+      }, 'Scroll to Enable'),
     ])
   )
 }
