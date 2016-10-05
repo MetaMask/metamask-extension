@@ -50,6 +50,14 @@ DisclaimerScreen.prototype.render = function () {
       `),
 
       h('div.markdown', {
+        onScroll: (e) => {
+          var object = e.currentTarget
+          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
+            var button = document.getElementById('agree')
+            button.disabled = false
+            button.addEventListener('click', () => this.props.dispatch(actions.agreeToDisclaimer()))
+          }
+        },
         style: {
           // whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
@@ -67,11 +75,11 @@ DisclaimerScreen.prototype.render = function () {
 
       ]),
 
-      h('button', {
+      h('button#agree', {
         style: { marginTop: '18px' },
+        disabled: true,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
       }, 'I Agree'),
     ])
   )
 }
-
