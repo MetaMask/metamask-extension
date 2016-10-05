@@ -1,0 +1,8 @@
+MetaMask is an extension for accessing Ethereum enabled distributed applications, or "Dapps" in your normal browser!
+
+The extension injects the Ethereum web3 API into every website's javascript context, so that dapps can read from the blockchain.
+
+MetaMask also lets the user create and manage their own identities, so when a Dapp wants to perform a transaction and write to the blockchain, the user gets a secure interface to review the transaction, before approving or rejecting it.
+
+Because it adds functionality to the normal browser context, MetaMask requires the permission to read and write to any webpage. You can always "view the source" of MetaMask the way you do any extension, or view the source code on Github:
+https://github.com/MetaMask/metamask-plugin
