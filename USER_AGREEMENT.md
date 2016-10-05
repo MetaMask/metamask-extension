@@ -64,7 +64,7 @@ SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMIT
 
 ## 8. Our Proprietary Rights ##
 
-All title, ownership and intellectual property rights in and to the Service are owned by MetaMask or its licensors. You acknowledge and agree that the Service contains proprietary and confidential information that is protected by applicable intellectual property and other laws. Except as expressly authorized by MetaMask, you agree not to copy, modify, rent, lease, loan, sell, distribute, perform, display or create derivative works based on the Service, in whole or in part. MetaMask issues a license for MetaMask, found [here](https://github.com/MetaMask/metamask-plugin/blob/master/LICENSE). For information on other licenses utilized in the development of MetaMask, please see our attribution page at: https://metamask.io/attributions
+All title, ownership and intellectual property rights in and to the Service are owned by MetaMask or its licensors. You acknowledge and agree that the Service contains proprietary and confidential information that is protected by applicable intellectual property and other laws. Except as expressly authorized by MetaMask, you agree not to copy, modify, rent, lease, loan, sell, distribute, perform, display or create derivative works based on the Service, in whole or in part. MetaMask issues a license for MetaMask, found [here](https://github.com/MetaMask/metamask-plugin/blob/master/LICENSE). For information on other licenses utilized in the development of MetaMask, please see our attribution page at: [https://metamask.io/attributions.html](https://metamask.io/attributions.html)
 
 ## 9. Links ##
 
@@ -170,7 +170,12 @@ The section titles in the Terms are for convenience only and have no legal or co
 
 ### 14.5 Communications ###
 
-Users with questions, complaints or claims with respect to the Service may contact us using the relevant contact information set forth above.
+Users with questions, complaints or claims with respect to the Service may contact us using the relevant contact information set forth above and at communications@metamask.io.
 
+## 15 Related Links ##
 
-communications@metamask.io
+**[Terms of Use](https://metamask.io/terms.html)**
+
+**[Privacy](https://metamask.io/privacy.html)**
+
+**[Attributions](https://metamask.io/attributions.html)**

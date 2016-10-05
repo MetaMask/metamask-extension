@@ -40,6 +40,7 @@ DisclaimerScreen.prototype.render = function () {
 
         .markdown {
           font-family: Times New Roman;
+          overflow-x: hidden;
         }
         .markdown h1, .markdown h2, .markdown h3 {
           margin: 10px 0;
@@ -57,6 +58,10 @@ DisclaimerScreen.prototype.render = function () {
           margin: 10px 0;
         }
 
+        .markdown a {
+          color: blue;
+        }
+
       `),
 
       h('div.markdown', {
@@ -66,7 +71,6 @@ DisclaimerScreen.prototype.render = function () {
           if ((object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) && button.disabled) {
             button.disabled = false
             button.innerHTML = 'I Agree'
-            console.log("YAHALLO")
             button.addEventListener('click', () => this.props.dispatch(actions.agreeToDisclaimer()))
           }
         },
@@ -91,7 +95,7 @@ DisclaimerScreen.prototype.render = function () {
         style: { marginTop: '18px' },
         disabled: true,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
-      }, 'Scroll to Enable'),
+      }, 'Scroll Down to Enable'),
     ])
   )
 }
