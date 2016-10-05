@@ -112,9 +112,9 @@ InfoScreen.prototype.render = function () {
                   h('img.icon-size', {
                     src: manifest.icons[128],
                     style: {
-                      filter: "grayscale(100%)", /* IE6-9 */
-                      WebkitFilter: "grayscale(100%)", /* Microsoft Edge and Firefox 35+ */
-                    }
+                      filter: 'grayscale(100%)', /* IE6-9 */
+                      WebkitFilter: 'grayscale(100%)', /* Microsoft Edge and Firefox 35+ */
+                    },
                   }),
                   h('div.info', 'Visit our web site'),
                 ]),
