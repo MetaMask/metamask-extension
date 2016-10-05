@@ -19,6 +19,9 @@ function DisclaimerScreen () {
 }
 
 DisclaimerScreen.prototype.render = function () {
+  const state = this.state || {disclaimerDisabled: true}
+  const disabled = state.disclaimerDisabled
+
   return (
     h('.flex-column.flex-center.flex-grow', [
 
@@ -67,15 +70,11 @@ DisclaimerScreen.prototype.render = function () {
       h('div.markdown', {
         onScroll: (e) => {
           var object = e.currentTarget
-          var button = document.getElementById('agree')
-          if ((object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) && button.disabled) {
-            button.disabled = false
-            button.innerHTML = 'I Agree'
-            button.addEventListener('click', () => this.props.dispatch(actions.agreeToDisclaimer()))
+          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
+            this.setState({disclaimerDisabled: false})
           }
         },
         style: {
-          // whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
           height: '310px',
           padding: '6px',
@@ -91,11 +90,11 @@ DisclaimerScreen.prototype.render = function () {
 
       ]),
 
-      h('button#agree', {
+      h('button', {
         style: { marginTop: '18px' },
-        disabled: true,
+        disabled: disabled,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
-      }, 'Scroll Down to Enable'),
+      }, disabled ? 'Scroll Down to Enable' : 'I Agree'),
     ])
   )
 }

@@ -11,7 +11,7 @@ QUnit.test('agree to terms', function (assert) {
   wait().then(function() {
 
     var title = app.find('h1').text()
-    assert.equal(title, 'MetaMask', 'title screen')
+    assert.equal(title, 'Terms of Use Version 1', 'title screen')
 
     var buttons = app.find('button')
     assert.equal(buttons.length, 2, 'two buttons: create and restore')
