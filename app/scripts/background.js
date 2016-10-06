@@ -8,6 +8,9 @@ const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
+const fs = require('fs')
+const disclaimer = fs.readFileSync(path.join(__dirname, '..', '..', 'USER_AGREEMENT.md')).toString()
+const stringHash = require('string-hash')
 
 const STORAGE_KEY = 'metamask-config'
 var popupIsOpen = false
@@ -29,8 +32,20 @@ function triggerUi () {
 // On first install, open a window to MetaMask website to how-it-works.
 
 extension.runtime.onInstalled.addListener(function (details) {
+  const newTOSHash = stringHash(disclaimer)
   if (details.reason === 'install') {
-    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+    controller.setTOSHash(newTOSHash, () => {
+      extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+    })
+  } else if (details.reason === 'update') {
+    controller.checkTOSChange(newTOSHash, (hasChanged) => {
+      if (hasChanged) {
+        controller.resetDisclaimer()
+        controller.setTOSHash(newTOSHash, () => {
+          extension.tabs.create({url: 'https://metamask.io/terms.html'})
+        })
+      }
+    })
   }
 })
 
