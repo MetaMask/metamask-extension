@@ -25,6 +25,7 @@ module.exports = class MetamaskController {
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
+    this.configManager.setTOSHash(0)
     this.scheduleConversionInterval()
   }
 
@@ -45,8 +46,11 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      resetDisclaimer: this.resetDisclaimer.bind(this),
       setCurrentFiat: this.setCurrentFiat.bind(this),
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
+      setTOSHash: this.setTOSHash.bind(this),
+      checkTOSChange: this.checkTOSChange.bind(this),
 
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
@@ -261,12 +265,40 @@ module.exports = class MetamaskController {
   // config
   //
 
+  setTOSHash (hash, cb) {
+    try {
+      this.configManager.setTOSHash(hash)
+      cb(this.configManager.getTOSHash())
+    } catch (e) {
+      cb(null, e)
+    }
+  }
+
+  checkTOSChange (newHash, cb) {
+    try {
+      var currentHash = this.configManager.getTOSHash()
+      var change = !(currentHash === newHash)
+      cb(change)
+    } catch (e) {
+      cb(null, e)
+    }
+
+  }
+
   agreeToDisclaimer (cb) {
     try {
       this.configManager.setConfirmed(true)
       cb()
     } catch (e) {
       cb(e)
+    }
+  }
+
+  resetDisclaimer () {
+    try {
+      this.configManager.setConfirmed(false)
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -303,6 +335,8 @@ module.exports = class MetamaskController {
       cb(e)
     }
   }
+
+
 
   // called from popup
   setRpcTarget (rpcTarget) {
@@ -341,4 +375,3 @@ module.exports = class MetamaskController {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
 }
-
