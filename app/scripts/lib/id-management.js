@@ -7,6 +7,7 @@
  */
 
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
 
 module.exports = IdManagement
@@ -24,7 +25,13 @@ function IdManagement (opts) {
   }
 
   this.signTx = function (txParams) {
+    //  calculate gas with custom gas multiplier
+    var gasMultiplier = txParams.gasMultiplier || 1
+    delete txParams.gasMultiplier
+    var gasPrice = parseFloat(new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16).toString()) * gasMultiplier
+    txParams.gasPrice = ethUtil.intToHex(parseInt(gasPrice))
     // normalize values
+
     txParams.to = ethUtil.addHexPrefix(txParams.to)
     txParams.from = ethUtil.addHexPrefix(txParams.from)
     txParams.value = ethUtil.addHexPrefix(txParams.value)
