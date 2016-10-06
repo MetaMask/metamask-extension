@@ -277,6 +277,17 @@ ConfigManager.prototype.getConfirmed = function () {
   return ('isConfirmed' in data) && data.isConfirmed
 }
 
+ConfigManager.prototype.setTOSHash = function (version) {
+  var data = this.getData()
+  data.TOSHash = version
+  this.setData(data)
+}
+
+ConfigManager.prototype.getTOSHash = function () {
+  var data = this.getData()
+  return ('TOSHash' in data) && data.TOSHash
+}
+
 ConfigManager.prototype.setCurrentFiat = function (currency) {
   var data = this.getData()
   data.fiatCurrency = currency
