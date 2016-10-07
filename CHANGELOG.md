@@ -10,6 +10,7 @@
 - Add legal information to relevant pages.
 - Rename UI elements to be more consistent with one another.
 - Updated Terms of Service and Usage.
+- Prompt users to re-agree to the Terms of Service when they are updated.
 
 ## 2.13.2 2016-10-4
 
