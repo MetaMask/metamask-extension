@@ -25,7 +25,7 @@ module.exports = class MetamaskController {
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
-    this.configManager.setTOSHash(0)
+    var currentHash = this.configManager.getTOSHash() || 0
     this.scheduleConversionInterval()
   }
 
