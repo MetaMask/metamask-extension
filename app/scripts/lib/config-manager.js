@@ -277,9 +277,9 @@ ConfigManager.prototype.getConfirmed = function () {
   return ('isConfirmed' in data) && data.isConfirmed
 }
 
-ConfigManager.prototype.setTOSHash = function (version) {
+ConfigManager.prototype.setTOSHash = function (hash) {
   var data = this.getData()
-  data.TOSHash = version
+  data.TOSHash = hash
   this.setData(data)
 }
 
