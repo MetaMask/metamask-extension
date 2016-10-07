@@ -26,6 +26,7 @@ module.exports = class MetamaskController {
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
     var currentHash = this.configManager.getTOSHash() || 0
+    this.configManager.setTOSHash(currentHash)
     this.scheduleConversionInterval()
   }
 
