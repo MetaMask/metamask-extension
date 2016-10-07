@@ -9,6 +9,7 @@ const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 const fs = require('fs')
+const path = require('path')
 const disclaimer = fs.readFileSync(path.join(__dirname, '..', '..', 'USER_AGREEMENT.md')).toString()
 const stringHash = require('string-hash')
 
