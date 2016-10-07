@@ -330,6 +330,7 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderBackToInitButton = function () {
   var props = this.props
   var button = null
+  if (!props.isConfirmed) return button
   if (!props.isUnlocked) {
     if (props.currentView.name === 'InitMenu') {
       button = props.forgottenPassword ? h('.flex-row', {
