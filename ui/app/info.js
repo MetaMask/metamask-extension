@@ -56,18 +56,47 @@ InfoScreen.prototype.render = function () {
             }, `Version: ${manifest.version}`),
           ]),
 
+          h('div', {
+            style: {
+              marginBottom: '10px',
+            }},
+            [
+              h('div', [
+                h('a', {
+                  href: 'https://metamask.io/privacy.html',
+                  target: '_blank',
+                  onClick (event) { this.navigateTo(event.target.href) },
+                }, [
+                  h('div.info', 'Privacy Policy'),
+                ]),
+              ]),
+              h('div', [
+                h('a', {
+                  href: 'https://metamask.io/terms.html',
+                  target: '_blank',
+                  onClick (event) { this.navigateTo(event.target.href) },
+                }, [
+                  h('div.info', 'Terms of Use'),
+                ]),
+              ]),
+              h('div', [
+                h('a', {
+                  href: 'https://metamask.io/attributions.html',
+                  target: '_blank',
+                  onClick (event) { this.navigateTo(event.target.href) },
+                }, [
+                  h('div.info', 'Attributions'),
+                ]),
+              ]),
+            ]
+          ),
+
           h('hr', {
             style: {
               margin: '20px 0 ',
               width: '7em',
             },
           }),
-
-          h('.info',
-            `For more information on MetaMask
-             you can visit our web site. If you want to
-             contact us with questions or just
-             say 'Hi', you can find us on these platforms:`),
 
           h('div', {
             style: {
@@ -82,6 +111,10 @@ InfoScreen.prototype.render = function () {
                 }, [
                   h('img.icon-size', {
                     src: manifest.icons[128],
+                    style: {
+                      filter: 'grayscale(100%)', /* IE6-9 */
+                      WebkitFilter: 'grayscale(100%)', /* Microsoft Edge and Firefox 35+ */
+                    },
                   }),
                   h('div.info', 'Visit our web site'),
                 ]),
@@ -107,7 +140,7 @@ InfoScreen.prototype.render = function () {
                   target: '_blank',
                   style: { width: '85vw' },
                   onClick () { extension.tabs.create({url: 'mailto:help@metamask.io?subject=Feedback'}) },
-                }, 'Email us any questions or comments!'),
+                }, 'Email us!'),
               ]),
 
               h('div.fa.fa-github', [
@@ -115,7 +148,7 @@ InfoScreen.prototype.render = function () {
                   href: 'https://github.com/metamask/talk/issues',
                   target: '_blank',
                   onClick (event) { this.navigateTo(event.target.href) },
-                }, 'Start a thread on Github'),
+                }, 'Start a thread on GitHub'),
               ]),
             ]),
         ]),

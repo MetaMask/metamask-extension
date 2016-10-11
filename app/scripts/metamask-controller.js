@@ -22,10 +22,15 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
+
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
+
+    this.checkTOSChange()
+
     this.scheduleConversionInterval()
+
   }
 
   getState () {
@@ -45,8 +50,11 @@ module.exports = class MetamaskController {
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
+      resetDisclaimer: this.resetDisclaimer.bind(this),
       setCurrentFiat: this.setCurrentFiat.bind(this),
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
+      setTOSHash: this.setTOSHash.bind(this),
+      checkTOSChange: this.checkTOSChange.bind(this),
 
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
@@ -261,12 +269,41 @@ module.exports = class MetamaskController {
   // config
   //
 
+  setTOSHash (hash) {
+    try {
+      this.configManager.setTOSHash(hash)
+    } catch (e) {
+      console.error('Error in setting terms of service hash.')
+    }
+  }
+
+  checkTOSChange () {
+    try {
+      const storedHash = this.configManager.getTOSHash() || 0
+      if (storedHash !== global.newTOSHash) {
+        this.resetDisclaimer()
+        this.setTOSHash(global.newTOSHash)
+      }
+    } catch (e) {
+      console.error('Error in checking TOS change.')
+    }
+
+  }
+
   agreeToDisclaimer (cb) {
     try {
       this.configManager.setConfirmed(true)
       cb()
     } catch (e) {
       cb(e)
+    }
+  }
+
+  resetDisclaimer () {
+    try {
+      this.configManager.setConfirmed(false)
+    } catch (e) {
+      console.error(e)
     }
   }
 
@@ -341,4 +378,3 @@ module.exports = class MetamaskController {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
 }
-
