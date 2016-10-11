@@ -1,10 +1,8 @@
-# Terms of Use Version 1 #
-
+# Terms of Use #
 
 **THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN SECTION 13. PLEASE READ THE AGREEMENT CAREFULLY.**
 
 _Our Terms of Use have been updated as of September 5, 2016_
-
 
 ## 1. Acceptance of Terms ##
 
