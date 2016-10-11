@@ -7,6 +7,7 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
+const newTOSHash = global.TOS_HASH
 
 module.exports = class MetamaskController {
 
@@ -22,12 +23,15 @@ module.exports = class MetamaskController {
     this.idStore.setStore(this.ethStore)
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
+
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
-    var currentHash = this.configManager.getTOSHash() || 0
-    this.configManager.setTOSHash(currentHash)
+
+    this.checkTOSChange()
+
     this.scheduleConversionInterval()
+
   }
 
   getState () {
@@ -266,22 +270,23 @@ module.exports = class MetamaskController {
   // config
   //
 
-  setTOSHash (hash, cb) {
+  setTOSHash (hash) {
     try {
       this.configManager.setTOSHash(hash)
-      cb(this.configManager.getTOSHash())
     } catch (e) {
-      cb(null, e)
+      console.error('Error in setting terms of service hash.')
     }
   }
 
-  checkTOSChange (newHash, cb) {
+  checkTOSChange () {
     try {
-      var currentHash = this.configManager.getTOSHash()
-      var change = !(currentHash === newHash)
-      cb(change)
+      const storedHash = this.configManager.getTOSHash() || 0
+      if (storedHash !== global.newTOSHash) {
+        this.resetDisclaimer()
+        this.setTOSHash(global.newTOSHash)
+      }
     } catch (e) {
-      cb(null, e)
+      console.error("Error in checking TOS change.")
     }
 
   }
