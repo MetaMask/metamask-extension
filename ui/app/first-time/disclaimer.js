@@ -19,6 +19,9 @@ function DisclaimerScreen () {
 }
 
 DisclaimerScreen.prototype.render = function () {
+  const state = this.state || {disclaimerDisabled: true}
+  const disabled = state.disclaimerDisabled
+
   return (
     h('.flex-column.flex-center.flex-grow', [
 
@@ -40,18 +43,38 @@ DisclaimerScreen.prototype.render = function () {
 
         .markdown {
           font-family: Times New Roman;
+          overflow-x: hidden;
         }
         .markdown h1, .markdown h2, .markdown h3 {
           margin: 10px 0;
-          font-family: arial sans-serif;
           font-weight: bold;
+        }
+
+        .markdown strong {
+          font-weight: bold;
+        }
+        .markdown em {
+          font-style: italic;
+        }
+
+        .markdown p {
+          margin: 10px 0;
+        }
+
+        .markdown a {
+          color: blue;
         }
 
       `),
 
       h('div.markdown', {
+        onScroll: (e) => {
+          var object = e.currentTarget
+          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
+            this.setState({disclaimerDisabled: false})
+          }
+        },
         style: {
-          // whiteSpace: 'pre-line',
           background: 'rgb(235, 235, 235)',
           height: '310px',
           padding: '6px',
@@ -69,9 +92,9 @@ DisclaimerScreen.prototype.render = function () {
 
       h('button', {
         style: { marginTop: '18px' },
+        disabled,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
-      }, 'I Agree'),
+      }, disabled ? 'Scroll Down to Enable' : 'I Agree'),
     ])
   )
 }
-

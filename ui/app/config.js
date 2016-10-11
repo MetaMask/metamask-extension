@@ -31,7 +31,7 @@ ConfigScreen.prototype.render = function () {
             state.dispatch(actions.goHome())
           },
         }),
-        h('h2.page-subtitle', 'Configuration'),
+        h('h2.page-subtitle', 'Settings'),
       ]),
 
       // conf view

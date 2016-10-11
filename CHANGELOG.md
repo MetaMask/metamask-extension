@@ -8,6 +8,10 @@
 - Decreased vault confirmation button font size to help some Linux users who could not see it.
 - Made popup a little taller because it would sometimes cut off buttons.
 - Fix bug where long account lists would get scrunched instead of scrolling.
+- Add legal information to relevant pages.
+- Rename UI elements to be more consistent with one another.
+- Updated Terms of Service and Usage.
+- Prompt users to re-agree to the Terms of Service when they are updated.
 
 ## 2.13.2 2016-10-4
 
