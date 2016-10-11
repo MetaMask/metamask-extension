@@ -92,7 +92,7 @@ DisclaimerScreen.prototype.render = function () {
 
       h('button', {
         style: { marginTop: '18px' },
-        disabled: disabled,
+        disabled,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
       }, disabled ? 'Scroll Down to Enable' : 'I Agree'),
     ])

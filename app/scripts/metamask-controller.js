@@ -341,8 +341,6 @@ module.exports = class MetamaskController {
     }
   }
 
-
-
   // called from popup
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)

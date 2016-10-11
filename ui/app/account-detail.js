@@ -44,6 +44,9 @@ AccountDetailScreen.prototype.render = function () {
   var props = this.props
   var selected = props.address || Object.keys(props.accounts)[0]
   var identity = props.identities[selected]
+  console.log(props)
+  console.log(selected)
+  console.log(identity)
   var account = props.accounts[selected]
   const { network } = props
 
