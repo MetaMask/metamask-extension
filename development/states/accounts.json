@@ -2,67 +2,104 @@
   "metamask": {
     "isInitialized": true,
     "isUnlocked": true,
-    "currentDomain": "example.com",
+    "isEthConfirmed": true,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80": {
         "name": "Wallet 1",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+        "address": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
         "mayBeFauceting": false
       },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
+      "0xc4692812f03d96edf4ac88c9d08106222578407b": {
         "name": "Wallet 2",
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+        "address": "0xc4692812f03d96edf4ac88c9d08106222578407b",
         "mayBeFauceting": false
       },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
+      "0x1abda824194d3583509c97e6faefd575e194844d": {
         "name": "Wallet 3",
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "address": "0x1abda824194d3583509c97e6faefd575e194844d",
         "mayBeFauceting": false
       },
-      "0x704107d04affddd9b66ab9de3dd7b095852e9b69": {
+      "0xa7ea108f933abe81ddafc0b2279b1d828dd0e8d6": {
         "name": "Wallet 4",
-        "address": "0x704107d04affddd9b66ab9de3dd7b095852e9b69",
+        "address": "0xa7ea108f933abe81ddafc0b2279b1d828dd0e8d6",
+        "mayBeFauceting": false
+      },
+      "0xab64bed4528feed6a85ab3f3da91479954da9e46": {
+        "name": "Wallet 5",
+        "address": "0xab64bed4528feed6a85ab3f3da91479954da9e46",
+        "mayBeFauceting": false
+      },
+      "0x69e90083dabd9acc9ea6d706eb6dccf245ae4d6b": {
+        "name": "Wallet 6",
+        "address": "0x69e90083dabd9acc9ea6d706eb6dccf245ae4d6b",
+        "mayBeFauceting": false
+      },
+      "0xebcc86684ef70e0ec3ad85f996b22e1bdad2d024": {
+        "name": "Wallet 7",
+        "address": "0xebcc86684ef70e0ec3ad85f996b22e1bdad2d024",
         "mayBeFauceting": false
       }
     },
     "unconfTxs": {},
+    "currentFiat": "USD",
+    "conversionRate": 11.84461814,
+    "conversionDate": 1476226414,
     "accounts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "balance": "0x100000000000000",
-        "nonce": "0x0",
+      "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80": {
+        "balance": "0x0de0b6b3a7640000",
+        "nonce": "0x100000",
         "code": "0x",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        "address": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80"
       },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "balance": "0x100000000000000",
-        "nonce": "0x0",
+      "0xc4692812f03d96edf4ac88c9d08106222578407b": {
+        "balance": "0x00",
+        "nonce": "0x100000",
         "code": "0x",
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
+        "address": "0xc4692812f03d96edf4ac88c9d08106222578407b"
       },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "balance": "0x100000000000",
-        "nonce": "0x0",
+      "0x1abda824194d3583509c97e6faefd575e194844d": {
+        "balance": "0x00",
+        "nonce": "0x100000",
         "code": "0x",
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+        "address": "0x1abda824194d3583509c97e6faefd575e194844d"
       },
-      "0x704107d04affddd9b66ab9de3dd7b095852e9b69": {
-        "balance": "0x100000000000",
+      "0xa7ea108f933abe81ddafc0b2279b1d828dd0e8d6": {
+        "balance": "0x00",
+        "nonce": "0x100000",
         "code": "0x",
-        "nonce": "0x0",
-        "address": "0x704107d04affddd9b66ab9de3dd7b095852e9b69"
+        "address": "0xa7ea108f933abe81ddafc0b2279b1d828dd0e8d6"
+      },
+      "0xab64bed4528feed6a85ab3f3da91479954da9e46": {
+        "balance": "0x00",
+        "nonce": "0x100000",
+        "code": "0x",
+        "address": "0xab64bed4528feed6a85ab3f3da91479954da9e46"
+      },
+      "0x69e90083dabd9acc9ea6d706eb6dccf245ae4d6b": {
+        "balance": "0x00",
+        "nonce": "0x100000",
+        "code": "0x",
+        "address": "0x69e90083dabd9acc9ea6d706eb6dccf245ae4d6b"
+      },
+      "0xebcc86684ef70e0ec3ad85f996b22e1bdad2d024": {
+        "balance": "0x00",
+        "nonce": "0x100000",
+        "code": "0x",
+        "address": "0xebcc86684ef70e0ec3ad85f996b22e1bdad2d024"
       }
     },
     "transactions": [],
+    "selectedAddress": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
     "network": "2",
     "isConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
+    "shapeShiftTxList": [],
     "provider": {
       "type": "testnet"
     },
-    "selectedAccount": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+    "selectedAccount": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
     "seedWords": null
   },
   "appState": {
@@ -71,11 +108,8 @@
       "name": "accounts"
     },
     "accountDetail": {
-      "subview": "transactions",
-      "accountExport": "none",
-      "privateKey": ""
+      "subview": "transactions"
     },
-    "currentDomain": "extensions",
     "transForward": true,
     "isLoading": false,
     "warning": null,

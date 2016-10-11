@@ -18,8 +18,15 @@ var path = require('path')
 var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
+var disclaimer = fs.readFileSync(path.join(__dirname, 'USER_AGREEMENT.md')).toString()
+var crypto = require('crypto')
+var hash = crypto.createHash('sha256')
+
+hash.update(disclaimer)
+var tosHash = hash.digest('hex')
 
 var disableLiveReload = gutil.env.disableLiveReload
+var debug = gutil.env.debug
 
 // browser reload
 
@@ -237,6 +244,8 @@ function bundleTask(opts) {
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source(opts.filename))
       .pipe(brfs())
+      .pipe(replace('GULP_TOS_HASH', tosHash))
+      .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
       // optional, remove if you don't need to buffer file contents
       .pipe(buffer())
       // optional, remove if you dont want sourcemaps
