@@ -7,7 +7,6 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
-const newTOSHash = global.TOS_HASH
 
 module.exports = class MetamaskController {
 
@@ -286,7 +285,7 @@ module.exports = class MetamaskController {
         this.setTOSHash(global.newTOSHash)
       }
     } catch (e) {
-      console.error("Error in checking TOS change.")
+      console.error('Error in checking TOS change.')
     }
 
   }
