@@ -85,6 +85,12 @@ If we adopt a ReactStore style unidirectional action dispatching data flow, thes
 - saveAccountLabel()
 - recoverSeed()
 
+Additional methods, new to this:
+- serialize()
+  - Returns pojo with optional `secret` key whose contents will be encrypted with the users' password and salt when written to disk.
+  - The isolation of secrets is to preserve performance when decrypting user data.
+- deserialize(pojo)
+
 ### KeyChain (ReduxStore?)
 	// attributes
 	@name
@@ -98,6 +104,9 @@ If we adopt a ReactStore style unidirectional action dispatching data flow, thes
 
     serialize(cb) -> obj
     deserialize(obj)
+
+  dispatch({ type: <str>, value: <pojo> })
+
 
 ### KeyChainViewState
 	// The serialized, renderable keychain data
@@ -172,4 +181,8 @@ KeyChainViewState {
 		// arbitrary, internal
 	}
 }
+
+## A note on the security of arbitrary action dispatchers
+
+Since keychains will be dispatching actions that are then passed through the background process to be routed, we should not trust or require them to include their own keychain ID as a prefix to their action, but we should tack it on ourselves, so that no action dispatched by a KeyChainComponent ever reaches any KeyChain other than its own.
 
