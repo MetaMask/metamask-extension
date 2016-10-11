@@ -33,7 +33,7 @@ function IdManagement (opts) {
     // normalize values
 
     txParams.to = ethUtil.addHexPrefix(txParams.to)
-    txParams.from = ethUtil.addHexPrefix(txParams.from)
+    txParams.from = ethUtil.addHexPrefix(txParams.from.toLowerCase())
     txParams.value = ethUtil.addHexPrefix(txParams.value)
     txParams.data = ethUtil.addHexPrefix(txParams.data)
     txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
@@ -58,7 +58,7 @@ function IdManagement (opts) {
 
   this.signMsg = function (address, message) {
     // sign message
-    var privKeyHex = this.exportPrivateKey(address)
+    var privKeyHex = this.exportPrivateKey(address.toLowerCase())
     var privKey = ethUtil.toBuffer(privKeyHex)
     var msgSig = ethUtil.ecsign(new Buffer(message.replace('0x', ''), 'hex'), privKey)
     var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))

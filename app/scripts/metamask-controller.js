@@ -203,26 +203,15 @@ module.exports = class MetamaskController {
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
     const idStore = this.idStore
-    var state = idStore.getState()
 
     let err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
 
-    // It's locked
-    if (!state.isUnlocked) {
-
-      // Allow the environment to define an unlock message.
-      this.opts.unlockAccountMessage()
-      idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, noop)
-
-    // It's unlocked
-    } else {
-      idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
-        if (err) return onTxDoneCb(err)
-        this.sendUpdate()
-        this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
-      })
-    }
+    idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
+      if (err) return onTxDoneCb(err)
+      this.sendUpdate()
+      this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
+    })
   }
 
   enforceTxValidations (txParams) {
@@ -353,4 +342,3 @@ module.exports = class MetamaskController {
   }
 }
 
-function noop () {}

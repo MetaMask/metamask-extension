@@ -33,7 +33,7 @@ function MetamaskInpageProvider (connectionStream) {
   })
   asyncProvider.on('error', console.error.bind(console))
   self.asyncProvider = asyncProvider
-  
+
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
   self.sendAsync = function(payload, cb){
@@ -61,7 +61,7 @@ function MetamaskInpageProvider (connectionStream) {
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
-  
+
   let selectedAddress
   let result = null
   switch (payload.method) {
@@ -80,8 +80,8 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     // throw not-supported Error
     default:
-      var message = 'The MetaMask Web3 object does not support synchronous methods like ' + payload.method +
-        '. See https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#all-async---think-of-metamask-as-a-light-client for details.'
+      var link = 'https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#dizzy-all-async---think-of-metamask-as-a-light-client'
+      var message = `The MetaMask Web3 object does not support synchronous methods like ${payload.method}. See ${link} for details.`
       throw new Error(message)
 
   }
