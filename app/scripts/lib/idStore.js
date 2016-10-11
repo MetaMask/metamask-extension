@@ -60,6 +60,8 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
     this.configManager.setShowSeedWords(true)
     var seedWords = this._idmgmt.getSeed()
 
+    this._loadIdentities()
+
     cb(null, seedWords)
   })
 }
