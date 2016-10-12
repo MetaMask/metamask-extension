@@ -53,8 +53,7 @@ PortDuplexStream.prototype._write = function (msg, encoding, cb) {
     }
     cb()
   } catch (err) {
-    console.error(err)
-    // this.emit('error', err)
+    // console.error(err)
     cb(new Error('PortDuplexStream - disconnected'))
   }
 }
