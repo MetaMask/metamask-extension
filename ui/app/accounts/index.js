@@ -54,7 +54,7 @@ AccountsScreen.prototype.render = function () {
       h('hr.horizontal-line'),
 
       // identity selection
-      h('section.identity-section.flex-column', {
+      h('section.identity-section', {
         style: {
           height: '418px',
           overflowY: 'auto',

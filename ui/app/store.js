@@ -4,7 +4,7 @@ const thunkMiddleware = require('redux-thunk')
 const rootReducer = require('./reducers')
 const createLogger = require('redux-logger')
 
-global.METAMASK_DEBUG = false
+global.METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 
 module.exports = configureStore
 
