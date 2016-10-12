@@ -301,7 +301,7 @@ App.prototype.renderDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Help',
+      label: 'Info',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
       icon: h('i.fa.fa-question.fa-lg'),
@@ -330,6 +330,7 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderBackToInitButton = function () {
   var props = this.props
   var button = null
+  if (!props.isConfirmed) return button
   if (!props.isUnlocked) {
     if (props.currentView.name === 'InitMenu') {
       button = props.forgottenPassword ? h('.flex-row', {

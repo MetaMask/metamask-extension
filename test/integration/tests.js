@@ -4,12 +4,13 @@ QUnit.test('agree to terms', function (assert) {
   // Select the mock app root
   var app = $('iframe').contents().find('#app-content .mock-app-root')
 
-  // Agree to terms
-  app.find('button').click()
+  app.find('.markdown').prop('scrollTop', 100000000)
 
-  // Wait for view to transition:
   wait().then(function() {
-
+    app.find('button').click()
+  }).then(function() {
+    return wait()
+  }).then(function() {
     var title = app.find('h1').text()
     assert.equal(title, 'MetaMask', 'title screen')
 
@@ -18,4 +19,6 @@ QUnit.test('agree to terms', function (assert) {
 
     done()
   })
+
+  // Wait for view to transition:
 })
