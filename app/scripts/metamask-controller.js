@@ -1,7 +1,7 @@
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
-const IdentityStore = require('./lib/idStore')
+const IdentityStore = require('./keyring-controller')
 const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
@@ -11,6 +11,7 @@ const extension = require('./lib/extension')
 module.exports = class MetamaskController {
 
   constructor (opts) {
+    this.state = { network: 'loading' }
     this.opts = opts
     this.listeners = []
     this.configManager = new ConfigManager(opts)
@@ -20,6 +21,7 @@ module.exports = class MetamaskController {
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)
+    this.getNetwork()
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
 
@@ -30,11 +32,11 @@ module.exports = class MetamaskController {
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
-
   }
 
   getState () {
     return extend(
+      this.state,
       this.ethStore.getState(),
       this.idStore.getState(),
       this.configManager.getConfig()
@@ -58,7 +60,6 @@ module.exports = class MetamaskController {
 
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
-      recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
       submitPassword: idStore.submitPassword.bind(idStore),
       setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
       approveTransaction: idStore.approveTransaction.bind(idStore),
@@ -66,12 +67,9 @@ module.exports = class MetamaskController {
       signMessage: idStore.signMessage.bind(idStore),
       cancelMessage: idStore.cancelMessage.bind(idStore),
       setLocked: idStore.setLocked.bind(idStore),
-      clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
       exportAccount: idStore.exportAccount.bind(idStore),
-      revealAccount: idStore.revealAccount.bind(idStore),
       saveAccountLabel: idStore.saveAccountLabel.bind(idStore),
       tryPassword: idStore.tryPassword.bind(idStore),
-      recoverSeed: idStore.recoverSeed.bind(idStore),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -160,11 +158,11 @@ module.exports = class MetamaskController {
 
     var provider = MetaMaskProvider(providerOpts)
     var web3 = new Web3(provider)
+    this.web3 = web3
     idStore.web3 = web3
-    idStore.getNetwork()
 
     provider.on('block', this.processBlock.bind(this))
-    provider.on('error', idStore.getNetwork.bind(idStore))
+    provider.on('error', this.getNetwork.bind(this))
 
     return provider
   }
@@ -261,8 +259,8 @@ module.exports = class MetamaskController {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.idStore._currentState.network === 'loading') {
-      this.idStore.getNetwork()
+    if (this.state.network === 'loading') {
+      this.getNetwork()
     }
   }
 
@@ -345,13 +343,13 @@ module.exports = class MetamaskController {
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
     extension.runtime.reload()
-    this.idStore.getNetwork()
+    this.getNetwork()
   }
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
     extension.runtime.reload()
-    this.idStore.getNetwork()
+    this.getNetwork()
   }
 
   useEtherscanProvider () {
@@ -362,7 +360,7 @@ module.exports = class MetamaskController {
   buyEth (address, amount) {
     if (!amount) amount = '5'
 
-    var network = this.idStore._currentState.network
+    var network = this.state.network
     var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
 
     if (network === '2') {
@@ -377,4 +375,24 @@ module.exports = class MetamaskController {
   createShapeShiftTx (depositAddress, depositType) {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
+
+  getNetwork(err) {
+    if (err) {
+      this.state.network = 'loading'
+      this.sendUpdate()
+    }
+
+    this.web3.version.getNetwork((err, network) => {
+      if (err) {
+        this.state.network = 'loading'
+        return this.sendUpdate()
+      }
+      if (global.METAMASK_DEBUG) {
+        console.log('web3.getNetwork returned ' + network)
+      }
+      this.state.network = network
+      this.sendUpdate()
+    })
+  }
+
 }

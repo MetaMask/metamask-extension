@@ -1,11 +1,14 @@
 const scrypt = require('scrypt-async')
 const bitcore = require('bitcore-lib')
 const configManager = require('./lib/config-manager')
+const EventEmitter = require('events').EventEmitter
 
-module.exports = class KeyringController {
+module.exports = class KeyringController extends EventEmitter {
 
   constructor (opts) {
+    super()
     this.configManager = opts.configManager
+    this.ethStore = opts.ethStore
     this.keyChains = []
   }
 
@@ -33,6 +36,63 @@ module.exports = class KeyringController {
     }
 
     scrypt(password, salt, logN, r, dkLen, interruptStep, cb, null)
+  }
+
+  getState() {
+    return {}
+  }
+
+  setStore(ethStore) {
+    this.ethStore = ethStore
+  }
+
+  createNewVault(password, entropy, cb) {
+    cb()
+  }
+
+  submitPassword(password, cb) {
+    cb()
+  }
+
+  setSelectedAddress(address, cb) {
+    this.selectedAddress = address
+    cb(null, address)
+  }
+
+  approveTransaction(txId, cb) {
+    cb()
+  }
+
+  cancelTransaction(txId, cb) {
+    if (cb && typeof cb === 'function') {
+      cb()
+    }
+  }
+
+  signMessage(msgParams, cb) {
+    cb()
+  }
+
+  cancelMessage(msgId, cb) {
+    if (cb && typeof cb === 'function') {
+      cb()
+    }
+  }
+
+  setLocked(cb) {
+    cb()
+  }
+
+  exportAccount(address, cb) {
+    cb(null, '0xPrivateKey')
+  }
+
+  saveAccountLabel(account, label, cb) {
+    cb(/* null, label */)
+  }
+
+  tryPassword(password, cb) {
+    cb()
   }
 
 }

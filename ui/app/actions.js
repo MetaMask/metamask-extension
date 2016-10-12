@@ -171,7 +171,8 @@ function createNewVault (password, entropy) {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
-      dispatch(actions.goHome())
+      dispatch(this.goHome())
+      dispatch(this.hideLoadingIndication())
     })
   }
 }
