@@ -45,8 +45,6 @@ var actions = {
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
-  REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
-  revealAccount: revealAccount,
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   setCurrentFiat: setCurrentFiat,
   // account detail screen
@@ -187,19 +185,6 @@ function showInfoPage () {
 function setSelectedAddress (address) {
   return (dispatch) => {
     _accountManager.setSelectedAddress(address)
-  }
-}
-
-function revealAccount () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    _accountManager.revealAccount((err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch({
-        type: actions.REVEAL_ACCOUNT,
-      })
-    })
   }
 }
 
