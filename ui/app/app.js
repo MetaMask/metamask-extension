@@ -8,8 +8,6 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
 const CreateVaultScreen = require('./first-time/create-vault')
-const CreateVaultCompleteScreen = require('./first-time/create-vault-complete')
-const RestoreVaultScreen = require('./first-time/restore-vault')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
@@ -19,7 +17,6 @@ const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // other views
 const ConfigScreen = require('./config')
-const RevealSeedConfirmation = require('./recover-seed/confirmation')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
@@ -402,10 +399,6 @@ App.prototype.renderPrimary = function () {
     return h(DisclaimerScreen, {key: 'disclaimerScreen'})
   }
 
-  if (props.seedWords) {
-    return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
-  }
-
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
     // show current view
@@ -413,12 +406,6 @@ App.prototype.renderPrimary = function () {
 
       case 'createVault':
         return h(CreateVaultScreen, {key: 'createVault'})
-
-      case 'restoreVault':
-        return h(RestoreVaultScreen, {key: 'restoreVault'})
-
-      case 'createVaultComplete':
-        return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
@@ -451,16 +438,15 @@ App.prototype.renderPrimary = function () {
     case 'config':
       return h(ConfigScreen, {key: 'config'})
 
-    case 'reveal-seed-conf':
-      return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
-
     case 'info':
       return h(InfoScreen, {key: 'info'})
 
     case 'createVault':
       return h(CreateVaultScreen, {key: 'createVault'})
+
     case 'buyEth':
       return h(BuyView, {key: 'buyEthView'})
+
     case 'qr':
       return h('div', {
         style: {
