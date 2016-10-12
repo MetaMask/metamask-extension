@@ -280,9 +280,9 @@ module.exports = class MetamaskController {
   checkTOSChange () {
     try {
       const storedHash = this.configManager.getTOSHash() || 0
-      if (storedHash !== global.newTOSHash) {
+      if (storedHash !== global.TOS_HASH) {
         this.resetDisclaimer()
-        this.setTOSHash(global.newTOSHash)
+        this.setTOSHash(global.TOS_HASH)
       }
     } catch (e) {
       console.error('Error in checking TOS change.')
