@@ -3,7 +3,7 @@ const ensnare = require('ensnare')
 
 module.exports = setupDappAutoReload
 
-function setupDappAutoReload (web3, controlStream) {
+function setupDappAutoReload (web3) {
   // export web3 as a global, checking for usage
   var pageIsUsingWeb3 = false
   var resetWasRequested = false
@@ -16,19 +16,19 @@ function setupDappAutoReload (web3, controlStream) {
     global.web3 = web3
   }))
 
-  // listen for reset requests from metamask
-  controlStream.once('data', function () {
+  return handleResetRequest
+
+  function handleResetRequest() {
     resetWasRequested = true
     // ignore if web3 was not used
     if (!pageIsUsingWeb3) return
     // reload after short timeout
-    triggerReset()
-  })
-
-  // reload the page
-  function triggerReset () {
-    setTimeout(function () {
-      global.location.reload()
-    }, 500)
+    setTimeout(triggerReset, 500)
   }
+
+}
+
+// reload the page
+function triggerReset () {
+  global.location.reload()
 }
