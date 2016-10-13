@@ -16,10 +16,6 @@ var actions = {
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
-  RECOVER_FROM_SEED: 'RECOVER_FROM_SEED',
-  CLEAR_SEED_WORD_CACHE: 'CLEAR_SEED_WORD_CACHE',
-  clearSeedWordCache: clearSeedWordCache,
-  recoverFromSeed: recoverFromSeed,
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
@@ -29,10 +25,6 @@ var actions = {
   createNewVaultInProgress: createNewVaultInProgress,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
-  // seed recovery actions
-  REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
-  revealSeedConfirmation: revealSeedConfirmation,
-  requestRevealSeed: requestRevealSeed,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -53,8 +45,6 @@ var actions = {
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
-  REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
-  revealAccount: revealAccount,
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   setCurrentFiat: setCurrentFiat,
   // account detail screen
@@ -95,7 +85,6 @@ var actions = {
   backToAccountDetail: backToAccountDetail,
   showAccountsPage: showAccountsPage,
   showConfTxPage: showConfTxPage,
-  confirmSeedWords: confirmSeedWords,
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
@@ -182,41 +171,8 @@ function createNewVault (password, entropy) {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
-      dispatch(actions.showNewVaultSeed(result))
-    })
-  }
-}
-
-function revealSeedConfirmation () {
-  return {
-    type: this.REVEAL_SEED_CONFIRMATION,
-  }
-}
-
-function requestRevealSeed (password) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    _accountManager.tryPassword(password, (err, seed) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      _accountManager.recoverSeed((err, seed) => {
-        if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.showNewVaultSeed(seed))
-      })
-    })
-  }
-}
-
-function recoverFromSeed (password, seed) {
-  return (dispatch) => {
-    // dispatch(actions.createNewVaultInProgress())
-    dispatch(actions.showLoadingIndication())
-    _accountManager.recoverFromSeed(password, seed, (err, metamaskState) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-
-      var account = Object.keys(metamaskState.identities)[0]
-      dispatch(actions.unlockMetamask(account))
+      dispatch(this.goHome())
+      dispatch(this.hideLoadingIndication())
     })
   }
 }
@@ -230,19 +186,6 @@ function showInfoPage () {
 function setSelectedAddress (address) {
   return (dispatch) => {
     _accountManager.setSelectedAddress(address)
-  }
-}
-
-function revealAccount () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    _accountManager.revealAccount((err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch({
-        type: actions.REVEAL_ACCOUNT,
-      })
-    })
   }
 }
 
@@ -449,27 +392,6 @@ function backToAccountDetail (address) {
   return {
     type: actions.BACK_TO_ACCOUNT_DETAIL,
     value: address,
-  }
-}
-function clearSeedWordCache (account) {
-  return {
-    type: actions.CLEAR_SEED_WORD_CACHE,
-    value: account,
-  }
-}
-
-function confirmSeedWords () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    _accountManager.clearSeedWordCache((err, account) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.showWarning(err.message))
-      }
-
-      console.log('Seed word cache cleared. ' + account)
-      dispatch(actions.showAccountDetail(account))
-    })
   }
 }
 

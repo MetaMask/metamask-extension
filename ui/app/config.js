@@ -77,22 +77,6 @@ ConfigScreen.prototype.render = function () {
           currentConversionInformation(metamaskState, state),
           h('hr.horizontal-line'),
 
-          h('div', {
-            style: {
-              marginTop: '20px',
-            },
-          }, [
-            h('button', {
-              style: {
-                alignSelf: 'center',
-              },
-              onClick (event) {
-                event.preventDefault()
-                state.dispatch(actions.revealSeedConfirmation())
-              },
-            }, 'Reveal Seed Words'),
-          ]),
-
         ]),
       ]),
     ])

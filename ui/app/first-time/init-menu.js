@@ -63,33 +63,15 @@ InitializeMenuScreen.prototype.renderMenu = function () {
 
       h('.flex-row.flex-center.flex-grow', [
         h('hr'),
-        h('div', 'OR'),
+        h('div', 'Advanced (Eventually?)'),
         h('hr'),
       ]),
 
-      h('button.primary', {
-        onClick: this.showRestoreVault.bind(this),
-        style: {
-          margin: 12,
-        },
-      }, 'Restore Existing Vault'),
     ])
   )
 }
 
-// InitializeMenuScreen.prototype.splitWor = function() {
-//   this.props.dispatch(actions.showInitializeMenu())
-// }
-
-InitializeMenuScreen.prototype.showInitializeMenu = function () {
-  this.props.dispatch(actions.showInitializeMenu())
-}
-
 InitializeMenuScreen.prototype.showCreateVault = function () {
   this.props.dispatch(actions.showCreateVault())
-}
-
-InitializeMenuScreen.prototype.showRestoreVault = function () {
-  this.props.dispatch(actions.showRestoreVault())
 }
 
