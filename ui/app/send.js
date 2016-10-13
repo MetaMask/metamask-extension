@@ -207,7 +207,7 @@ SendTransactionScreen.prototype.render = function () {
           },
         }),
       ]),
-      // custom gas field
+      // custom gasPrice field
       h('h3.flex-center.text-transform-uppercase', {
         style: {
           background: '#EBEBEB',

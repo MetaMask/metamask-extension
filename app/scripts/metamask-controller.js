@@ -379,7 +379,12 @@ module.exports = class MetamaskController {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
 
-  setGasMultiplier (gasMultiplier) {
-    this.configManager.setGasMultiplier(gasMultiplier)
+  setGasMultiplier (gasMultiplier, cb) {
+    try{
+      this.configManager.setGasMultiplier(gasMultiplier)
+      cb()
+    } catch (e) {
+      cb(e)
+    }
   }
 }
