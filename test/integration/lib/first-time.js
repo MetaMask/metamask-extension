@@ -15,10 +15,11 @@ QUnit.test('agree to terms', function (assert) {
     assert.equal(title, 'MetaMask', 'title screen')
 
     var buttons = app.find('button')
-    assert.equal(buttons.length, 2, 'two buttons: create and restore')
+    assert.equal(buttons.length, 1, 'one button: create new vault')
 
     done()
   })
 
   // Wait for view to transition:
 })
+

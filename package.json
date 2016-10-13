@@ -8,6 +8,7 @@
     "lint": "gulp lint",
     "dev": "gulp dev",
     "dist": "gulp dist",
+    "buildCiUnits": "node test/integration/index.js",
     "test": "npm run fastTest && npm run ci && npm run lint",
     "fastTest": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
@@ -15,7 +16,7 @@
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "buildMock": "browserify ./mock-dev.js -o ./development/bundle.js",
     "testem": "npm run buildMock && testem",
-    "ci": "npm run buildMock && testem ci -P 2",
+    "ci": "npm run buildMock && npm run buildCiUnits && testem ci -P 2",
     "announce": "node development/announcer.js"
   },
   "browserify": {
