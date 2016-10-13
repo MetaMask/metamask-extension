@@ -10,9 +10,9 @@ function ObjectMultiplex (opts) {
     var data = chunk.data
     var substream = mx.streams[name]
     if (!substream) {
-      console.warn('orphaned data for stream ' + name)
+      console.warn(`orphaned data for stream "${name}"`)
     } else {
-      substream.push(data)
+      if (substream.push) substream.push(data)
     }
     return cb()
   })
@@ -35,6 +35,10 @@ function ObjectMultiplex (opts) {
       })
     }
     return substream
+  }
+  // ignore streams (dont display orphaned data warning)
+  mx.ignoreStream = function (name) {
+    mx.streams[name] = true
   }
   return mx
 }

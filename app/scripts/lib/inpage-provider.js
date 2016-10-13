@@ -1,6 +1,6 @@
 const Streams = require('mississippi')
-const ObjectMultiplex = require('./obj-multiplex')
 const StreamProvider = require('web3-stream-provider')
+const ObjectMultiplex = require('./obj-multiplex')
 const RemoteStore = require('./remote-store.js').RemoteStore
 
 module.exports = MetamaskInpageProvider
@@ -11,8 +11,9 @@ function MetamaskInpageProvider (connectionStream) {
   // setup connectionStream multiplexing
   var multiStream = ObjectMultiplex()
   Streams.pipe(connectionStream, multiStream, connectionStream, function (err) {
-    console.warn('MetamaskInpageProvider - lost connection to MetaMask')
-    if (err) throw err
+    let warningMsg = 'MetamaskInpageProvider - lost connection to MetaMask'
+    if (err) warningMsg += '\n' + err.stack
+    console.warn(warningMsg)
   })
   self.multiStream = multiStream
 
@@ -20,16 +21,18 @@ function MetamaskInpageProvider (connectionStream) {
   var publicConfigStore = remoteStoreWithLocalStorageCache('MetaMask-Config')
   var storeStream = publicConfigStore.createStream()
   Streams.pipe(storeStream, multiStream.createStream('publicConfig'), storeStream, function (err) {
-    console.warn('MetamaskInpageProvider - lost connection to MetaMask publicConfig')
-    if (err) throw err
+    let warningMsg = 'MetamaskInpageProvider - lost connection to MetaMask publicConfig'
+    if (err) warningMsg += '\n' + err.stack
+    console.warn(warningMsg)
   })
   self.publicConfigStore = publicConfigStore
 
   // connect to async provider
   var asyncProvider = new StreamProvider()
   Streams.pipe(asyncProvider, multiStream.createStream('provider'), asyncProvider, function (err) {
-    console.warn('MetamaskInpageProvider - lost connection to MetaMask provider')
-    if (err) throw err
+    let warningMsg = 'MetamaskInpageProvider - lost connection to MetaMask provider'
+    if (err) warningMsg += '\n' + err.stack
+    console.warn(warningMsg)
   })
   asyncProvider.on('error', console.error.bind(console))
   self.asyncProvider = asyncProvider
