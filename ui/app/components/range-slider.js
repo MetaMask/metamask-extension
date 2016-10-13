@@ -10,8 +10,9 @@ function RangeSlider () {
 }
 
 RangeSlider.prototype.render = function () {
+  const state = this.state || {}
   const props = this.props
-  const onChange = props.onChange || function () {}
+  const onInput = props.onInput || function () {}
   const name = props.name
   const {
     min = 0,
@@ -33,8 +34,8 @@ RangeSlider.prototype.render = function () {
         max: max,
         step: increment,
         style: range,
-        defaultValue: defaultValue,
-        onChange: mirrorInput ? this.mirrorInputs.bind(this, name) : onChange,
+        value: state.value || defaultValue,
+        onChange: mirrorInput ? this.mirrorInputs.bind(this, name) : onInput,
       }),
 
       // Mirrored input for range
@@ -43,7 +44,7 @@ RangeSlider.prototype.render = function () {
         name: `${name}Mirror`,
         min: min,
         max: max,
-        defaultValue: defaultValue,
+        value: state.value || defaultValue,
         step: increment,
         style: input,
         onChange: this.mirrorInputs.bind(this, `${name}Mirror`),
@@ -52,12 +53,6 @@ RangeSlider.prototype.render = function () {
   )
 }
 
-RangeSlider.prototype.mirrorInputs = function (active) {
-  var range = document.querySelector(`input[name="${this.props.name}"]`)
-  var inputMirror = document.querySelector(`input[name="${this.props.name}Mirror"]`)
-  if (active === this.props.name) {
-    inputMirror.value = range.value
-  } else {
-    range.value = inputMirror.value
-  }
+RangeSlider.prototype.mirrorInputs = function (active, event) {
+  this.setState({value: event.target.value})
 }

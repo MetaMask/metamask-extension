@@ -384,3 +384,15 @@ ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositTy
   }
   this.setData(data)
 }
+
+ConfigManager.prototype.getGasMultiplier = function () {
+  var data = this.getData()
+  return ('gasMultiplier' in data) && data.gasMultiplier
+}
+
+ConfigManager.prototype.setGasMultiplier = function (gasMultiplier) {
+  var data = this.getData()
+
+  data.gasMultiplier = gasMultiplier
+  this.setData(data)
+}

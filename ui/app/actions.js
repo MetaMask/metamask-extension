@@ -277,10 +277,10 @@ function signMsg (msgData) {
 }
 
 function signTx (txData) {
+  _accountManager.setGasMultiplier(txData.gasMultiplier)
   return (dispatch) => {
     web3.eth.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
-
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
       dispatch(actions.goHome())

@@ -319,10 +319,11 @@ SendTransactionScreen.prototype.onSubmit = function (gasPrice) {
   var txParams = {
     from: this.props.address,
     value: '0x' + value.toString(16),
+    gasMultiplier: gasMultiplier * 0.01,
   }
 
   if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)
   if (txData) txParams.data = txData
-  txParams.gasMultiplier = gasMultiplier * 0.01
+
   this.props.dispatch(actions.signTx(txParams))
 }

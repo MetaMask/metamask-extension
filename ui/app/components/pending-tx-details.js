@@ -29,10 +29,10 @@ PTXP.render = function () {
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
 
-  var gasMultiplier = txParams.gasMultiplier
+  var gasMultiplier = txData.gasMultiplier
   var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
   var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  gasPrice = new BN(parseFloat(gasPrice.toString()) * gasMultiplier)
+  gasPrice = gasPrice.mul(new BN(gasMultiplier * 100)).div(new BN(100, 10))
   var txFee = gasCost.mul(gasPrice)
   var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
   var maxCost = txValue.add(txFee)

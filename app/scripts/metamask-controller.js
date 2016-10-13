@@ -55,6 +55,7 @@ module.exports = class MetamaskController {
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
+      setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
@@ -376,5 +377,9 @@ module.exports = class MetamaskController {
 
   createShapeShiftTx (depositAddress, depositType) {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
+  }
+
+  setGasMultiplier (gasMultiplier) {
+    this.configManager.setGasMultiplier(gasMultiplier)
   }
 }
