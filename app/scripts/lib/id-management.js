@@ -28,7 +28,7 @@ function IdManagement (opts) {
     //  calculate gas with custom gas multiplier
     var gasMultiplier = this.configManager.getGasMultiplier() || 1
     var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100)).div(new BN(100, 10))
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
     txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
     // normalize values
 
