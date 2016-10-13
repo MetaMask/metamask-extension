@@ -218,10 +218,8 @@ SendTransactionScreen.prototype.render = function () {
         'Transaction Fee (optional)',
         h(Tooltip, {
           title: `
-          This is used to set the transactions
-          gas price. seting it to 100% will use
-          the full recomend value.
-          `,
+            This is used to set the transaction's gas price.
+            Setting it to 100% will use the full recommended value.          `,
         }, [
           h('i.fa.fa-question-circle', {
             style: {
