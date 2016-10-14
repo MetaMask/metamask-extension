@@ -1,6 +1,27 @@
 var encryptor = require('../../../app/scripts/lib/encryptor')
 
-QUnit.test('encryptor', function(assert) {
+QUnit.test('encryptor:serializeBufferForStorage', function (assert) {
+  assert.expect(1)
+  var buf = new Buffer(2)
+  buf[0] = 16
+  buf[1] = 1
+
+  var output = encryptor.serializeBufferForStorage(buf)
+
+  var expect = '0x1001'
+  assert.equal(expect, output)
+})
+
+QUnit.test('encryptor:serializeBufferFromStorage', function (assert) {
+  assert.expect(2)
+  var input = '0x1001'
+  var output = encryptor.serializeBufferFromStorage(input)
+
+  assert.equal(output[0], 16)
+  assert.equal(output[1], 1)
+})
+
+QUnit.test('encryptor:encrypt & decrypt', function(assert) {
   var done = assert.async();
   var password, data, encrypted
 
@@ -9,19 +30,15 @@ QUnit.test('encryptor', function(assert) {
 
   encryptor.encrypt(password, data)
   .then(function(encryptedStr) {
-
     assert.equal(typeof encryptedStr, 'string', 'returns a string')
-
-    // Now try decrypting!jk
-    //
     return encryptor.decrypt(password, encryptedStr)
-
   })
   .then(function (decryptedObj) {
-    assert.equal(decryptedObj, data, 'decrypted what was encrypted')
+    assert.deepEqual(decryptedObj, data, 'decrypted what was encrypted')
     done()
   })
   .catch(function(reason) {
+    debugger
     assert.ifError(reason, 'threw an error')
   })
 

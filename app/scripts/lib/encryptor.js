@@ -1,3 +1,4 @@
+var ethUtil = require('ethereumjs-util')
 var vector = global.crypto.getRandomValues(new Uint8Array(16))
 
 module.exports = {
@@ -7,6 +8,8 @@ module.exports = {
   keyFromPassword,
   encryptWithKey,
   decryptWithKey,
+  serializeBufferForStorage,
+  serializeBufferFromStorage,
 }
 
 // Takes a Pojo, returns encrypted text.
@@ -24,10 +27,9 @@ function encryptWithKey (key, dataObj) {
   return global.crypto.subtle.encrypt({
     name: 'AES-GCM',
     iv: vector
-  }, key, dataBuffer).then(function(result){
-    const encryptedData = new Uint8Array(result)
-    const encryptedStr =  encryptedData.toString()
-    return encryptedStr
+  }, key, dataBuffer).then(function(buf){
+    var buffer = new Uint8Array(buf)
+    return serializeBufferForStorage(buffer)
   })
 }
 
@@ -41,11 +43,12 @@ function decrypt (password, text) {
 
 // AUDIT: See if this still works when generating a fresh vector
 function decryptWithKey (key, text) {
-  return crypto.subtle.decrypt({name: "AES-CBC", iv: vector}, key, encrypted_data)
+  const encryptedData = serializeBufferFromStorage(text)
+  return crypto.subtle.decrypt({name: "AES-GCM", iv: vector}, key, encryptedData)
   .then(function(result){
-    debugger
     const decryptedData = new Uint8Array(result)
-    const decryptedStr = convertArrayBufferViewtoString(decryptedData))
+    const decryptedStr = convertArrayBufferViewtoString(decryptedData)
+    const numArr = decryptedStr.split(',')
     const decryptedObj = JSON.parse(decryptedStr)
     return decryptedObj
   })
@@ -77,3 +80,30 @@ function keyFromPassword (password) {
   })
 }
 
+function serializeBufferFromStorage (str) {
+  str = ethUtil.stripHexPrefix(str)
+  var buf = new Uint8Array(str.length/2)
+  for (var i = 0; i < str.length; i+= 2) {
+    var seg = str.substr(i, 2)
+    buf[i/2] = parseInt(seg, 16)
+  }
+  return buf
+}
+
+// Should return a string, ready for storage, in hex format.
+function serializeBufferForStorage (buffer) {
+  var result = '0x'
+  var len = buffer.length || buffer.byteLength
+  for (var i = 0; i < len; i++) {
+    result += unprefixedHex(buffer[i])
+  }
+  return result
+}
+
+function unprefixedHex (num) {
+  var hex = num.toString(16)
+  while (hex.length < 2) {
+    hex = '0' + hex
+  }
+  return hex
+}
