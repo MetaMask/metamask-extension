@@ -1,5 +1,4 @@
 var ethUtil = require('ethereumjs-util')
-var vector = global.crypto.getRandomValues(new Uint8Array(16))
 
 module.exports = {
 
@@ -36,7 +35,7 @@ function encryptWithKey (key, dataObj) {
 
   return global.crypto.subtle.encrypt({
     name: 'AES-GCM',
-    iv: vector
+    iv: vector,
   }, key, dataBuffer).then(function(buf){
     var buffer = new Uint8Array(buf)
     var vectorStr = serializeBufferForStorage(vector)
@@ -52,17 +51,14 @@ function decrypt (password, text) {
   })
 }
 
-// AUDIT: See if this still works when generating a fresh vector
 function decryptWithKey (key, text) {
   const parts = text.split('0x')
   const encryptedData = serializeBufferFromStorage(parts[1])
   const vector = serializeBufferFromStorage(parts[2])
-  debugger
-  return crypto.subtle.decrypt({name: "AES-GCM", iv: vector}, key, encryptedData)
+  return crypto.subtle.decrypt({name: 'AES-GCM', iv: vector}, key, encryptedData)
   .then(function(result){
     const decryptedData = new Uint8Array(result)
     const decryptedStr = convertArrayBufferViewtoString(decryptedData)
-    const numArr = decryptedStr.split(',')
     const decryptedObj = JSON.parse(decryptedStr)
     return decryptedObj
   })
@@ -96,10 +92,10 @@ function keyFromPassword (password) {
 
 function serializeBufferFromStorage (str) {
   str = ethUtil.stripHexPrefix(str)
-  var buf = new Uint8Array(str.length/2)
-  for (var i = 0; i < str.length; i+= 2) {
+  var buf = new Uint8Array(str.length / 2)
+  for (var i = 0; i < str.length; i += 2) {
     var seg = str.substr(i, 2)
-    buf[i/2] = parseInt(seg, 16)
+    buf[i / 2] = parseInt(seg, 16)
   }
   return buf
 }

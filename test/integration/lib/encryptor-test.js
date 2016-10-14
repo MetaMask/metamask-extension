@@ -38,7 +38,6 @@ QUnit.test('encryptor:encrypt & decrypt', function(assert) {
     done()
   })
   .catch(function(reason) {
-    debugger
     assert.ifError(reason, 'threw an error')
   })
 
