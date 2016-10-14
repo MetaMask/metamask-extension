@@ -380,7 +380,7 @@ module.exports = class MetamaskController {
   }
 
   setGasMultiplier (gasMultiplier, cb) {
-    try{
+    try {
       this.configManager.setGasMultiplier(gasMultiplier)
       cb()
     } catch (e) {
