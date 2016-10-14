@@ -1,28 +1,54 @@
 var vector = global.crypto.getRandomValues(new Uint8Array(16))
-var key = null
 
 module.exports = {
   encrypt,
   decrypt,
   convertArrayBufferViewtoString,
   keyFromPassword,
+  encryptWithKey,
+  decryptWithKey,
 }
 
 // Takes a Pojo, returns encrypted text.
 function encrypt (password, dataObj) {
+  return keyFromPassword(password)
+  .then(function (passwordDerivedKey) {
+    return encryptWithKey(passwordDerivedKey, dataObj)
+  })
+}
+
+function encryptWithKey (key, dataObj) {
   var data = JSON.stringify(dataObj)
-  global.crypto.subtle.encrypt({name: 'AES-CBC', iv: vector}, key, convertStringToArrayBufferView(data)).then(function(result){
+  var dataBuffer = convertStringToArrayBufferView(data)
+
+  return global.crypto.subtle.encrypt({
+    name: 'AES-GCM',
+    iv: vector
+  }, key, dataBuffer).then(function(result){
     const encryptedData = new Uint8Array(result)
-    return encryptedData
-  },
-  function(e){
-    console.log(e.message)
+    const encryptedStr =  encryptedData.toString()
+    return encryptedStr
   })
 }
 
 // Takes encrypted text, returns the restored Pojo.
 function decrypt (password, text) {
+  return keyFromPassword(password)
+  .then(function (key) {
+    return decryptWithKey(key, text)
+  })
+}
 
+// AUDIT: See if this still works when generating a fresh vector
+function decryptWithKey (key, text) {
+  return crypto.subtle.decrypt({name: "AES-CBC", iv: vector}, key, encrypted_data)
+  .then(function(result){
+    debugger
+    const decryptedData = new Uint8Array(result)
+    const decryptedStr = convertArrayBufferViewtoString(decryptedData))
+    const decryptedObj = JSON.parse(decryptedStr)
+    return decryptedObj
+  })
 }
 
 function convertStringToArrayBufferView (str) {
@@ -44,8 +70,10 @@ function convertArrayBufferViewtoString (buffer) {
 }
 
 function keyFromPassword (password) {
-  global.crypto.subtle.digest({name: 'SHA-256'}, convertStringToArrayBufferView(password)).then(function(result){
-    return global.crypto.subtle.importKey('raw', result, {name: 'AES-CBC'}, false, ['encrypt', 'decrypt'])
+  var passBuffer = convertStringToArrayBufferView(password)
+  return global.crypto.subtle.digest('SHA-256', passBuffer)
+  .then(function (passHash){
+    return global.crypto.subtle.importKey('raw', passHash, {name: 'AES-GCM'}, false, ['encrypt', 'decrypt'])
   })
 }
 

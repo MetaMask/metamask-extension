@@ -1,5 +1,4 @@
 dist
-
 node_modules
 temp
 .tmp
@@ -7,10 +6,10 @@ temp
 app/bower_components
 test/bower_components
 package
-
 .DS_Store
 builds/
 notes.txt
 app/.DS_Store
 development/bundle.js
 builds.zip
+test/integration/bundle.js
