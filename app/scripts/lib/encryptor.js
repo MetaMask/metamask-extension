@@ -2,12 +2,21 @@ var ethUtil = require('ethereumjs-util')
 var vector = global.crypto.getRandomValues(new Uint8Array(16))
 
 module.exports = {
+
+  // Simple encryption methods:
   encrypt,
   decrypt,
-  convertArrayBufferViewtoString,
+
+  // More advanced encryption methods:
   keyFromPassword,
   encryptWithKey,
   decryptWithKey,
+
+  // Buffer <-> String methods
+  convertArrayBufferViewtoString,
+  convertStringToArrayBufferView,
+
+  // Buffer <-> Hex string methods
   serializeBufferForStorage,
   serializeBufferFromStorage,
 }
@@ -23,13 +32,15 @@ function encrypt (password, dataObj) {
 function encryptWithKey (key, dataObj) {
   var data = JSON.stringify(dataObj)
   var dataBuffer = convertStringToArrayBufferView(data)
+  var vector = global.crypto.getRandomValues(new Uint8Array(16))
 
   return global.crypto.subtle.encrypt({
     name: 'AES-GCM',
     iv: vector
   }, key, dataBuffer).then(function(buf){
     var buffer = new Uint8Array(buf)
-    return serializeBufferForStorage(buffer)
+    var vectorStr = serializeBufferForStorage(vector)
+    return serializeBufferForStorage(buffer) + vectorStr
   })
 }
 
@@ -43,7 +54,10 @@ function decrypt (password, text) {
 
 // AUDIT: See if this still works when generating a fresh vector
 function decryptWithKey (key, text) {
-  const encryptedData = serializeBufferFromStorage(text)
+  const parts = text.split('0x')
+  const encryptedData = serializeBufferFromStorage(parts[1])
+  const vector = serializeBufferFromStorage(parts[2])
+  debugger
   return crypto.subtle.decrypt({name: "AES-GCM", iv: vector}, key, encryptedData)
   .then(function(result){
     const decryptedData = new Uint8Array(result)
