@@ -73,7 +73,7 @@ function shouldInjectWeb3(){
 }
 
 function isAllowedSuffix(testCase) {
-  var prohibitedTypes = ['xml','pdf']
+  var prohibitedTypes = ['xml', 'pdf']
   var currentUrl = window.location.href
   var currentRegex
   for (let i = 0; i < prohibitedTypes.length; i++) {
