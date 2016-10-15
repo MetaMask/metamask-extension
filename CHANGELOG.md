@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where web3 was being injected into XML files.
+
 ## 2.13.3 2016-10-4
 
 - Fix bug where log queries were filtered out.
