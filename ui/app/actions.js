@@ -132,6 +132,10 @@ var actions = {
   RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
   BACK_TO_UNLOCK_VIEW: 'BACK_TO_UNLOCK_VIEW',
   backToUnlockView: backToUnlockView,
+  // SHOWING KEYCHAIN
+  SHOW_NEW_KEYCHAIN: 'SHOW_NEW_KEYCHAIN',
+  showNewKeychain: showNewKeychain,
+
 }
 
 module.exports = actions
@@ -323,6 +327,12 @@ function showNewVaultSeed (seed) {
 function backToUnlockView () {
   return {
     type: actions.BACK_TO_UNLOCK_VIEW,
+  }
+}
+
+function showNewKeychain () {
+  return {
+    type: actions.SHOW_NEW_KEYCHAIN
   }
 }
 

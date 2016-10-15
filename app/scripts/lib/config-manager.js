@@ -110,6 +110,16 @@ ConfigManager.prototype.setWallet = function (wallet) {
   this.setData(data)
 }
 
+ConfigManager.prototype.getKeychains = function () {
+  return this.migrator.getData().keychains || []
+}
+
+ConfigManager.prototype.setKeychains = function (keychains) {
+  var data = this.migrator.getData()
+  data.keychains = keychains
+  this.setData(data)
+}
+
 ConfigManager.prototype.getSelectedAccount = function () {
   var config = this.getConfig()
   return config.selectedAccount
@@ -248,6 +258,17 @@ ConfigManager.prototype.setNicknameForWallet = function (account, nickname) {
 }
 
 // observable
+
+ConfigManager.prototype.getSalt = function () {
+  var data = this.getData()
+  return ('salt' in data) && data.salt
+}
+
+ConfigManager.prototype.setSalt = function(salt) {
+  var data = this.getData()
+  data.salt = salt
+  this.setData(data)
+}
 
 ConfigManager.prototype.subscribe = function (fn) {
   this._subs.push(fn)

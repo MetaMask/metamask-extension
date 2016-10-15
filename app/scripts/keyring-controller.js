@@ -12,6 +12,11 @@ module.exports = class KeyringController extends EventEmitter {
     this.keyChains = []
   }
 
+  keyFromPassword(password, callback) {
+    deriveKeyFromPassword(password, callback);
+  }
+
+  // Takes a pw and callback, returns a password-dervied key
   getKeyForPassword(password, callback) {
     let salt = this.configManager.getSalt()
 
