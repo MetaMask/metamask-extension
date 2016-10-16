@@ -112,6 +112,8 @@ IdentityStore.prototype.getState = function () {
     currentFiat: configManager.getCurrentFiat(),
     conversionRate: configManager.getConversionRate(),
     conversionDate: configManager.getConversionDate(),
+    gasMultiplier: configManager.getGasMultiplier(),
+
   }))
 }
 
@@ -211,6 +213,7 @@ IdentityStore.prototype.exportAccount = function (address, cb) {
 // comes from dapp via zero-client hooked-wallet provider
 IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDoneCb, cb) {
   const configManager = this.configManager
+
   var self = this
   // create txData obj with parameters and meta data
   var time = (new Date()).getTime()
@@ -222,6 +225,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     txParams: txParams,
     time: time,
     status: 'unconfirmed',
+    gasMultiplier: configManager.getGasMultiplier() || 1,
   }
 
   console.log('addUnconfirmedTransaction:', txData)

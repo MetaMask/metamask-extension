@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add a custom transaction fee field to send form.
+
 ## 2.13.3 2016-10-4
 
 - Fix bug where log queries were filtered out.
