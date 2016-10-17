@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Increase default max gas to `100000` over the RPC's `estimateGas` response.
+
 ## 2.13.4 2016-10-17
 
 - Add custom transaction fee field to send form.

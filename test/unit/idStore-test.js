@@ -2,6 +2,7 @@ var assert = require('assert')
 var IdentityStore = require('../../app/scripts/lib/idStore')
 var configManagerGen = require('../lib/mock-config-manager')
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const async = require('async')
 
 describe('IdentityStore', function() {
@@ -137,5 +138,22 @@ describe('IdentityStore', function() {
         done()
       })
     })
+  })
+
+  describe('#addGasBuffer', function() {
+    const idStore = new IdentityStore({
+      configManager: configManagerGen(),
+      ethStore: {
+        addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
+      },
+    })
+
+    const gas = '0x01'
+    const bnGas = new BN(gas, 16)
+    const result = idStore.addGasBuffer(gas)
+    const bnResult = new BN(result, 16)
+
+    assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
+    assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
   })
 })

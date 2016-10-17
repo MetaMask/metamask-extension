@@ -2,6 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
 const async = require('async')
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const EthQuery = require('eth-query')
 const KeyStore = require('eth-lightwallet').keystore
 const clone = require('clone')
@@ -266,7 +267,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   function estimateGas(cb){
     query.estimateGas(txParams, function(err, result){
       if (err) return cb(err)
-      txData.estimatedGas = result
+      txData.estimatedGas = self.addGasBuffer(result)
       cb()
     })
   }
@@ -279,6 +280,13 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     // signal completion of add tx
     cb(null, txData)
   }
+}
+
+IdentityStore.prototype.addGasBuffer = function (gasHex) {
+  var gas = new BN(gasHex, 16)
+  var buffer = new BN('100000', 10)
+  var result = gas.add(buffer)
+  return ethUtil.addHexPrefix(result.toString(16))
 }
 
 // comes from metamask ui
