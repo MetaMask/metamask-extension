@@ -286,7 +286,7 @@ IdentityStore.prototype.addGasBuffer = function (gasHex) {
   var gas = new BN(gasHex, 16)
   var buffer = new BN('100000', 10)
   var result = gas.add(buffer)
-  return result.toString(16)
+  return ethUtil.addHexPrefix(result.toString(16))
 }
 
 // comes from metamask ui

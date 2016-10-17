@@ -154,5 +154,6 @@ describe('IdentityStore', function() {
     const bnResult = new BN(result, 16)
 
     assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
+    assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
   })
 })
