@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug where web3 was being injected into XML files.
+- Add a custom transaction fee field to send form.
 
 ## 2.13.3 2016-10-4
 
