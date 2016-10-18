@@ -2,7 +2,7 @@
 
 ## Current Master
 
-## 2.13.5 2016-10-17
+## 2.13.5 2016-10-18
 
 - Increase default max gas to `100000` over the RPC's `estimateGas` response.
 - Fix bug where slow-loading dapps would sometimes trigger infinite reload loops.
