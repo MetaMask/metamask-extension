@@ -3,11 +3,13 @@
 ## Current Master
 
 - Increase default max gas to `100000` over the RPC's `estimateGas` response.
+- Fix bug where slow-loading dapps would sometimes trigger infinite reload loops.
 
 ## 2.13.4 2016-10-17
 
 - Add custom transaction fee field to send form.
 - Fix bug where web3 was being injected into XML files.
+- Fix bug where changing network would not reload current Dapps.
 
 ## 2.13.3 2016-10-4
 
