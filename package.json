@@ -7,7 +7,7 @@
     "start": "gulp dev",
     "lint": "gulp lint",
     "dev": "gulp dev",
-    "dist": "gulp dist",
+    "dist": "gulp dist --disableLiveReload",
     "test": "npm run fastTest && npm run ci && npm run lint",
     "fastTest": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
