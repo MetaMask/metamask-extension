@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add a check for improper Transaction data.
 - Increase default max gas to `100000` over the RPC's `estimateGas` response.
 
 ## 2.13.4 2016-10-17
