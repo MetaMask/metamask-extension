@@ -57,6 +57,7 @@ module.exports = class MetamaskController {
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
+      setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
@@ -395,4 +396,12 @@ module.exports = class MetamaskController {
     })
   }
 
+  setGasMultiplier (gasMultiplier, cb) {
+    try {
+      this.configManager.setGasMultiplier(gasMultiplier)
+      cb()
+    } catch (e) {
+      cb(e)
+    }
+  }
 }

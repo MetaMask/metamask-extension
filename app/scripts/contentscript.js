@@ -69,6 +69,18 @@ function setupStreams(){
 }
 
 function shouldInjectWeb3(){
-  var shouldInject = (window.location.href.indexOf('.pdf') === -1)
-  return shouldInject
+  return isAllowedSuffix(window.location.href)
+}
+
+function isAllowedSuffix(testCase) {
+  var prohibitedTypes = ['xml', 'pdf']
+  var currentUrl = window.location.href
+  var currentRegex
+  for (let i = 0; i < prohibitedTypes.length; i++) {
+    currentRegex = new RegExp(`\.${prohibitedTypes[i]}$`)
+    if (currentRegex.test(currentUrl)) {
+      return false
+    }
+  }
+  return true
 }

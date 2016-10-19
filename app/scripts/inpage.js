@@ -43,7 +43,7 @@ reloadStream.once('data', triggerReload)
 var pingChannel = inpageProvider.multiStream.createStream('pingpong')
 var pingStream = new PingStream({ objectMode: true })
 // wait for first successful reponse
-metamaskStream.once('data', function(){
+metamaskStream.once('_data', function(){
   pingStream.pipe(pingChannel).pipe(pingStream)
 })
 endOfStream(pingStream, triggerReload)

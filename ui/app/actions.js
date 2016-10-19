@@ -225,14 +225,16 @@ function signMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    web3.eth.sendTransaction(txData, (err, data) => {
-      dispatch(actions.hideLoadingIndication())
-
+    _accountManager.setGasMultiplier(txData.gasMultiplier, (err) => {
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
-      dispatch(actions.goHome())
+      web3.eth.sendTransaction(txData, (err, data) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) return dispatch(actions.displayWarning(err.message))
+        dispatch(actions.hideWarning())
+        dispatch(actions.goHome())
+      })
+      dispatch(this.showConfTxPage())
     })
-    dispatch(this.showConfTxPage())
   }
 }
 

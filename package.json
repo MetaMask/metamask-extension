@@ -6,9 +6,9 @@
   "scripts": {
     "start": "gulp dev",
     "lint": "gulp lint",
-    "dev": "gulp dev --debug",
-    "dist": "gulp dist",
     "buildCiUnits": "node test/integration/index.js",
+    "dev": "gulp dev --debug",
+    "dist": "gulp dist --disableLiveReload",
     "test": "npm run fastTest && npm run ci && npm run lint",
     "fastTest": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
