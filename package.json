@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "async": "^1.5.2",
+    "bitcore-lib": "^0.13.19",
     "browserify-derequire": "^0.9.4",
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
@@ -79,6 +80,7 @@
     "redux-thunk": "^1.0.2",
     "request-promise": "^4.1.1",
     "sandwich-expando": "^1.0.5",
+    "scrypt-async": "^1.3.0",
     "textarea-caret": "^3.0.1",
     "three.js": "^0.73.2",
     "through2": "^2.0.1",
