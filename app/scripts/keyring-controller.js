@@ -1,5 +1,3 @@
-const scrypt = require('scrypt-async')
-const bitcore = require('bitcore-lib')
 const configManager = require('./lib/config-manager')
 const EventEmitter = require('events').EventEmitter
 
