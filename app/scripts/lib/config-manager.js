@@ -110,6 +110,17 @@ ConfigManager.prototype.setWallet = function (wallet) {
   this.setData(data)
 }
 
+ConfigManager.prototype.setVault = function (encryptedString) {
+  var data = this.getData()
+  data.vault = encryptedString
+  this.setData(data)
+}
+
+ConfigManager.prototype.getVault = function () {
+  var data = this.getData()
+  return ('vault' in data)  && data.vault
+}
+
 ConfigManager.prototype.getKeychains = function () {
   return this.migrator.getData().keychains || []
 }

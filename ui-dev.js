@@ -41,7 +41,7 @@ function updateQueryParams(newView) {
 }
 
 const actions = {
-  _setAccountManager(){},
+  _setKeyringController(){},
   update: function(stateName) {
     selectedView = stateName
     updateQueryParams(stateName)

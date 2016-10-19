@@ -95,7 +95,7 @@ var actions = {
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
   // hacky - need a way to get a reference to account manager
-  _setAccountManager: _setAccountManager,
+  _setKeyringController: _setKeyringController,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -140,9 +140,9 @@ var actions = {
 
 module.exports = actions
 
-var _accountManager = null
-function _setAccountManager (accountManager) {
-  _accountManager = accountManager
+var _keyringController = null
+function _setKeyringController (accountManager) {
+  _keyringController = accountManager
 }
 
 function goHome () {
@@ -157,7 +157,7 @@ function tryUnlockMetamask (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    _accountManager.submitPassword(password, (err, selectedAccount) => {
+    _keyringController.submitPassword(password, (err, selectedAccount) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed())
@@ -171,11 +171,11 @@ function tryUnlockMetamask (password) {
 function createNewVault (password, entropy) {
   return (dispatch) => {
     dispatch(actions.createNewVaultInProgress())
-    _accountManager.createNewVault(password, entropy, (err, result) => {
+    _keyringController.createNewVault(password, entropy, (err, result) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
-      dispatch(this.goHome())
+      dispatch(this.showAccountsPage())
       dispatch(this.hideLoadingIndication())
     })
   }
@@ -189,14 +189,14 @@ function showInfoPage () {
 
 function setSelectedAddress (address) {
   return (dispatch) => {
-    _accountManager.setSelectedAddress(address)
+    _keyringController.setSelectedAddress(address)
   }
 }
 
 function setCurrentFiat (fiat) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.setCurrentFiat(fiat, (data, err) => {
+    _keyringController.setCurrentFiat(fiat, (data, err) => {
       dispatch(this.hideLoadingIndication())
       dispatch({
         type: this.SET_CURRENT_FIAT,
@@ -214,7 +214,7 @@ function signMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
-    _accountManager.signMessage(msgData, (err) => {
+    _keyringController.signMessage(msgData, (err) => {
       dispatch(actions.hideLoadingIndication())
 
       if (err) return dispatch(actions.displayWarning(err.message))
@@ -238,7 +238,7 @@ function signTx (txData) {
 
 function sendTx (txData) {
   return (dispatch) => {
-    _accountManager.approveTransaction(txData.id, (err) => {
+    _keyringController.approveTransaction(txData.id, (err) => {
       if (err) {
         alert(err.message)
         dispatch(actions.txError(err))
@@ -264,12 +264,12 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  _accountManager.cancelMessage(msgData.id)
+  _keyringController.cancelMessage(msgData.id)
   return actions.completedTx(msgData.id)
 }
 
 function cancelTx (txData) {
-  _accountManager.cancelTransaction(txData.id)
+  _keyringController.cancelTransaction(txData.id)
   return actions.completedTx(txData.id)
 }
 
@@ -298,7 +298,7 @@ function showInitializeMenu () {
 function agreeToDisclaimer () {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.agreeToDisclaimer((err) => {
+    _keyringController.agreeToDisclaimer((err) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
@@ -368,7 +368,7 @@ function updateMetamaskState (newState) {
 
 function lockMetamask () {
   return (dispatch) => {
-    _accountManager.setLocked((err) => {
+    _keyringController.setLocked((err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err.message))
@@ -384,7 +384,7 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _accountManager.setSelectedAddress(address, (err, address) => {
+    _keyringController.setSelectedAddress(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err.message))
@@ -455,7 +455,7 @@ function goBackToInitView () {
 //
 
 function setRpcTarget (newRpc) {
-  _accountManager.setRpcTarget(newRpc)
+  _keyringController.setRpcTarget(newRpc)
   return {
     type: actions.SET_RPC_TARGET,
     value: newRpc,
@@ -463,7 +463,7 @@ function setRpcTarget (newRpc) {
 }
 
 function setProviderType (type) {
-  _accountManager.setProviderType(type)
+  _keyringController.setProviderType(type)
   return {
     type: actions.SET_PROVIDER_TYPE,
     value: type,
@@ -471,7 +471,7 @@ function setProviderType (type) {
 }
 
 function useEtherscanProvider () {
-  _accountManager.useEtherscanProvider()
+  _keyringController.useEtherscanProvider()
   return {
     type: actions.USE_ETHERSCAN_PROVIDER,
   }
@@ -530,7 +530,7 @@ function exportAccount (address) {
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
 
-    _accountManager.exportAccount(address, function (err, result) {
+    _keyringController.exportAccount(address, function (err, result) {
       dispatch(self.hideLoadingIndication())
 
       if (err) {
@@ -553,7 +553,7 @@ function showPrivateKey (key) {
 function saveAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _accountManager.saveAccountLabel(account, label, (err) => {
+    _keyringController.saveAccountLabel(account, label, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err.message))
@@ -574,7 +574,7 @@ function showSendPage () {
 
 function agreeToEthWarning () {
   return (dispatch) => {
-    _accountManager.agreeToEthWarning((err) => {
+    _keyringController.agreeToEthWarning((err) => {
       if (err) {
         return dispatch(actions.showEthWarning(err.message))
       }
@@ -593,7 +593,7 @@ function showEthWarning () {
 
 function buyEth (address, amount) {
   return (dispatch) => {
-    _accountManager.buyEth(address, amount)
+    _keyringController.buyEth(address, amount)
     dispatch({
       type: actions.BUY_ETH,
     })
@@ -671,7 +671,7 @@ function coinShiftRquest (data, marketData) {
       if (response.error) return dispatch(actions.showWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
-      _accountManager.createShapeShiftTx(response.deposit, response.depositType)
+      _keyringController.createShapeShiftTx(response.deposit, response.depositType)
       dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
     })
   }

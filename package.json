@@ -6,7 +6,7 @@
   "scripts": {
     "start": "gulp dev",
     "lint": "gulp lint",
-    "dev": "gulp dev",
+    "dev": "gulp dev --debug",
     "dist": "gulp dist",
     "buildCiUnits": "node test/integration/index.js",
     "test": "npm run fastTest && npm run ci && npm run lint",

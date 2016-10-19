@@ -1,5 +1,7 @@
-const configManager = require('./lib/config-manager')
 const EventEmitter = require('events').EventEmitter
+const encryptor = require('./lib/encryptor')
+const messageManager = require('./lib/message-manager')
+
 
 module.exports = class KeyringController extends EventEmitter {
 
@@ -20,7 +22,7 @@ module.exports = class KeyringController extends EventEmitter {
 
     if (!salt) {
       salt = generateSalt(32)
-      configManager.setSalt(salt)
+      this.configManager.setSalt(salt)
     }
 
     var logN = 14
@@ -42,7 +44,21 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   getState() {
-    return {}
+    return {
+      isInitialized: !!this.key,
+      isUnlocked: !!this.key,
+      isConfirmed: true, // this.configManager.getConfirmed(),
+      isEthConfirmed: this.configManager.getShouldntShowWarning(),
+      unconfTxs: this.configManager.unconfirmedTxs(),
+      transactions: this.configManager.getTxList(),
+      unconfMsgs: messageManager.unconfirmedMsgs(),
+      messages: messageManager.getMsgList(),
+      selectedAddress: this.configManager.getSelectedAccount(),
+      shapeShiftTxList: this.configManager.getShapeShiftTxList(),
+      currentFiat: this.configManager.getCurrentFiat(),
+      conversionRate: this.configManager.getConversionRate(),
+      conversionDate: this.configManager.getConversionDate(),
+    }
   }
 
   setStore(ethStore) {
@@ -50,8 +66,21 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVault(password, entropy, cb) {
-    cb()
+    encryptor.keyFromPassword(password)
+    .then((key) => {
+      this.key = key
+      return encryptor.encryptWithKey(key, {})
+    })
+    .then((encryptedString) =>  {
+      this.configManager.setVault(encryptedString)
+      cb(null, [])
+    })
+    .catch((err) => {
+      cb(err)
+    })
   }
+
+
 
   submitPassword(password, cb) {
     cb()
