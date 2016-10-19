@@ -90,6 +90,10 @@ You can also test with a continuously watching process, via `npm run watch`.
 
 You can run the linter by itself with `gulp lint`.
 
+#### Writing Browser Tests
+
+To write tests that will be run in the browser using QUnit, add your test files to `test/integration/lib`.
+
 ### Deploying the UI
 
  You must be authorized already on the MetaMask plugin.
