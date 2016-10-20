@@ -243,6 +243,11 @@ describe('util', function() {
         assert.equal(result, false)
       })
 
+      it('should return true when given a hex string with hex-prefix', function() {
+        var result = util.isHex('0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        assert.equal(result, true)
+      })
+
     })
   })
 })
