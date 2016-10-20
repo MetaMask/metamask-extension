@@ -61,6 +61,7 @@ module.exports = class MetamaskController {
 
       // forward directly to idStore
       createNewVault: idStore.createNewVault.bind(idStore),
+      addNewKeyring: idStore.addNewKeyring.bind(idStore),
       submitPassword: idStore.submitPassword.bind(idStore),
       setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
       approveTransaction: idStore.approveTransaction.bind(idStore),
@@ -183,6 +184,7 @@ module.exports = class MetamaskController {
     })
     this.idStore.on('update', function (state) {
       storeSetFromObj(publicConfigStore, idStoreToPublic(state))
+      this.sendUpdate()
     })
 
     // idStore substate

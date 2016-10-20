@@ -47,6 +47,7 @@
     "eth-store": "^1.1.0",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.4.0",
+    "ethereumjs-wallet": "^0.6.0",
     "express": "^4.14.0",
     "gulp-eslint": "^2.0.0",
     "hat": "0.0.3",

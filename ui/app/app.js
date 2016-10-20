@@ -405,7 +405,6 @@ App.prototype.renderPrimary = function () {
 
     // show current view
     switch (props.currentView.name) {
-
       case 'createVault':
         return h(CreateVaultScreen, {key: 'createVault'})
 
