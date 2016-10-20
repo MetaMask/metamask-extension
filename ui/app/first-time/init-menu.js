@@ -61,11 +61,13 @@ InitializeMenuScreen.prototype.renderMenu = function () {
         },
       }, 'Create New Vault'),
 
+      /*
       h('.flex-row.flex-center.flex-grow', [
         h('hr'),
         h('div', 'Advanced (Eventually?)'),
         h('hr'),
       ]),
+      */
 
     ])
   )
