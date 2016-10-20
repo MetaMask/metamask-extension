@@ -8,7 +8,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
 const CreateVaultScreen = require('./first-time/create-vault')
-const NewKeychainScreen = require('./new-keychain')
+const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts

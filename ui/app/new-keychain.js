@@ -15,7 +15,7 @@ function NewKeychain () {
 }
 
 NewKeychain.prototype.render = function () {
-  const props = this.props
+  // const props = this.props
 
   return (
     h('div', {
@@ -23,11 +23,7 @@ NewKeychain.prototype.render = function () {
         background: 'blue',
       },
     }, [
-      h('h1',`Here's a list!!!!`),
-      h('button',
-        {
-          onClick: () => this.props.dispatch(actions.goHome())
-        })
+      h('h1', `Here's a list!!!!`),
     ])
   )
 }

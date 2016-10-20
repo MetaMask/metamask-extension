@@ -12,37 +12,6 @@ module.exports = class KeyringController extends EventEmitter {
     this.keyChains = []
   }
 
-  keyFromPassword(password, callback) {
-    deriveKeyFromPassword(password, callback);
-  }
-
-  // Takes a pw and callback, returns a password-dervied key
-  getKeyForPassword(password, callback) {
-    let salt = this.configManager.getSalt()
-
-    if (!salt) {
-      salt = generateSalt(32)
-      this.configManager.setSalt(salt)
-    }
-
-    var logN = 14
-    var r = 8
-    var dkLen = 32
-    var interruptStep = 200
-
-    var cb = function(derKey) {
-      try {
-        var ui8arr = (new Uint8Array(derKey))
-        this.pwDerivedKey = ui8arr
-        callback(null, ui8arr)
-      } catch (err) {
-        callback(err)
-      }
-    }
-
-    scrypt(password, salt, logN, r, dkLen, interruptStep, cb, null)
-  }
-
   getState() {
     return {
       isInitialized: !!this.configManager.getVault(),
@@ -66,11 +35,13 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVault(password, entropy, cb) {
+    const salt = generateNewSalt()
+    this.configManager.setSalt(salt)
     this.loadKey(password)
     .then((key) => {
       return encryptor.encryptWithKey(key, {})
     })
-    .then((encryptedString) =>  {
+    .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
       cb(null, this.getState())
     })
@@ -90,7 +61,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   loadKey(password) {
-     return encryptor.keyFromPassword(password)
+    const salt = this.configManager.getSalt()
+    return encryptor.keyFromPassword(password + salt)
     .then((key) => {
       this.key = key
       return key
@@ -141,5 +113,8 @@ module.exports = class KeyringController extends EventEmitter {
 }
 
 function generateSalt (byteCount) {
-  return bitcore.crypto.Random.getRandomBuffer(byteCount || 32).toString('base64')
+  var view = new Uint8Array(32)
+  global.crypto.getRandomValues(view)
+  var b64encoded = btoa(String.fromCharCode.apply(null, view))
+  return b64encoded
 }

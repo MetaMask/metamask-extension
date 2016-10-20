@@ -18,6 +18,10 @@ module.exports = {
   // Buffer <-> Hex string methods
   serializeBufferForStorage,
   serializeBufferFromStorage,
+
+  // Buffer <-> base64 string methods
+  encodeBufferToBase64,
+  decodeBase64ToBuffer,
 }
 
 // Takes a Pojo, returns encrypted text.
@@ -116,4 +120,16 @@ function unprefixedHex (num) {
     hex = '0' + hex
   }
   return hex
+}
+
+function encodeBufferToBase64 (buf) {
+  var b64encoded = btoa(String.fromCharCode.apply(null, buf))
+  return b64encoded
+}
+
+function decodeBase64ToBuffer (base64) {
+  var u8_2 = new Uint8Array(atob(b64encoded).split("")
+  .map(function(c) {
+    return c.charCodeAt(0)
+  }))
 }

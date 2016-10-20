@@ -340,7 +340,7 @@ function backToUnlockView () {
 
 function showNewKeychain () {
   return {
-    type: actions.SHOW_NEW_KEYCHAIN
+    type: actions.SHOW_NEW_KEYCHAIN,
   }
 }
 
