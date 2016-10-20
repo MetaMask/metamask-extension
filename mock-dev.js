@@ -107,7 +107,7 @@ function getOldStyleData () {
   return result
 }
 
-actions._setKeyringController(controller.getApi())
+actions._setBackgroundConnection(controller.getApi())
 actions.update = function(stateName) {
   selectedView = stateName
   updateQueryParams(stateName)

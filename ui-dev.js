@@ -41,7 +41,7 @@ function updateQueryParams(newView) {
 }
 
 const actions = {
-  _setKeyringController(){},
+  _setBackgroundConnection(){},
   update: function(stateName) {
     selectedView = stateName
     updateQueryParams(stateName)
