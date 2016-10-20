@@ -191,7 +191,7 @@ SendTransactionScreen.prototype.render = function () {
           marginBottom: '16px',
         },
       }, [
-        'Transactional Data (optional)',
+        'Transaction Data (optional)',
       ]),
 
       // 'data' field
