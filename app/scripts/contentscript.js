@@ -1,4 +1,5 @@
 const LocalMessageDuplexStream = require('post-message-stream')
+const PongStream = require('ping-pong-stream/pong')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
 const extension = require('./lib/extension')
@@ -51,20 +52,35 @@ function setupStreams(){
   // forward communication plugin->inpage
   pageStream.pipe(pluginStream).pipe(pageStream)
 
-  // connect contentscript->inpage reload stream
+  // setup local multistream channels
   var mx = ObjectMultiplex()
   mx.on('error', console.error)
-  mx.pipe(pageStream)
-  var reloadStream = mx.createStream('reload')
-  reloadStream.on('error', console.error)
+  mx.pipe(pageStream).pipe(mx)
 
-  // if we lose connection with the plugin, trigger tab refresh
-  pluginStream.on('close', function () {
-    reloadStream.write({ method: 'reset' })
-  })
+  // connect ping stream
+  var pongStream = new PongStream({ objectMode: true })
+  pongStream.pipe(mx.createStream('pingpong')).pipe(pongStream)
+
+  // ignore unused channels (handled by background)
+  mx.ignoreStream('provider')
+  mx.ignoreStream('publicConfig')
+  mx.ignoreStream('reload')
+
 }
 
 function shouldInjectWeb3(){
-  var shouldInject = (window.location.href.indexOf('.pdf') === -1)
-  return shouldInject
+  return isAllowedSuffix(window.location.href)
+}
+
+function isAllowedSuffix(testCase) {
+  var prohibitedTypes = ['xml', 'pdf']
+  var currentUrl = window.location.href
+  var currentRegex
+  for (let i = 0; i < prohibitedTypes.length; i++) {
+    currentRegex = new RegExp(`\.${prohibitedTypes[i]}$`)
+    if (currentRegex.test(currentUrl)) {
+      return false
+    }
+  }
+  return true
 }

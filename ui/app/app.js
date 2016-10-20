@@ -8,6 +8,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
 const CreateVaultScreen = require('./first-time/create-vault')
+const NewKeychainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
@@ -431,6 +432,9 @@ App.prototype.renderPrimary = function () {
 
     case 'sendTransaction':
       return h(SendTransactionScreen, {key: 'send-transaction'})
+
+    case 'newKeychain':
+      return h(NewKeyChainScreen, {key: 'new-keychain'})
 
     case 'confTx':
       return h(ConfirmTxScreen, {key: 'confirm-tx'})

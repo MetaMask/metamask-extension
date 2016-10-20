@@ -20,7 +20,7 @@ describe('#recoverFromSeed(password, seed)', function() {
   })
 
   // stub out account manager
-  actions._setAccountManager({
+  actions._setKeyringController({
     recoverFromSeed(pw, seed, cb) {
       cb(null, {
         identities: {

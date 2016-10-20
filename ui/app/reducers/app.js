@@ -119,6 +119,15 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_NEW_KEYCHAIN:
+      return extend(appState, {
+        currentView: {
+          name: 'newKeychain',
+          context: appState.currentView.context
+        },
+        transForward: true,
+      })
+
   // unlock
 
     case actions.UNLOCK_METAMASK:
@@ -540,4 +549,3 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-

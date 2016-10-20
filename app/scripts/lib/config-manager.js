@@ -110,6 +110,27 @@ ConfigManager.prototype.setWallet = function (wallet) {
   this.setData(data)
 }
 
+ConfigManager.prototype.setVault = function (encryptedString) {
+  var data = this.getData()
+  data.vault = encryptedString
+  this.setData(data)
+}
+
+ConfigManager.prototype.getVault = function () {
+  var data = this.getData()
+  return ('vault' in data)  && data.vault
+}
+
+ConfigManager.prototype.getKeychains = function () {
+  return this.migrator.getData().keychains || []
+}
+
+ConfigManager.prototype.setKeychains = function (keychains) {
+  var data = this.migrator.getData()
+  data.keychains = keychains
+  this.setData(data)
+}
+
 ConfigManager.prototype.getSelectedAccount = function () {
   var config = this.getConfig()
   return config.selectedAccount
@@ -249,6 +270,17 @@ ConfigManager.prototype.setNicknameForWallet = function (account, nickname) {
 
 // observable
 
+ConfigManager.prototype.getSalt = function () {
+  var data = this.getData()
+  return ('salt' in data) && data.salt
+}
+
+ConfigManager.prototype.setSalt = function(salt) {
+  var data = this.getData()
+  data.salt = salt
+  this.setData(data)
+}
+
 ConfigManager.prototype.subscribe = function (fn) {
   this._subs.push(fn)
   var unsubscribe = this.unsubscribe.bind(this, fn)
@@ -382,5 +414,17 @@ ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositTy
   } else {
     data.shapeShiftTxList.push(shapeShiftTx)
   }
+  this.setData(data)
+}
+
+ConfigManager.prototype.getGasMultiplier = function () {
+  var data = this.getData()
+  return ('gasMultiplier' in data) && data.gasMultiplier
+}
+
+ConfigManager.prototype.setGasMultiplier = function (gasMultiplier) {
+  var data = this.getData()
+
+  data.gasMultiplier = gasMultiplier
   this.setData(data)
 }
