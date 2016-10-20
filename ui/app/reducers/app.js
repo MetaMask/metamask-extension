@@ -123,7 +123,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'newKeychain',
-          context: appState.currentView.context
+          context: appState.currentView.context,
         },
         transForward: true,
       })
