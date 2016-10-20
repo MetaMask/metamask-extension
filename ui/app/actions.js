@@ -1,4 +1,6 @@
 var actions = {
+  _setBackgroundConnection: _setBackgroundConnection,
+
   GO_HOME: 'GO_HOME',
   goHome: goHome,
   // menu state
@@ -94,8 +96,6 @@ var actions = {
   showConfigPage: showConfigPage,
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
-  // hacky - need a way to get a reference to account manager
-  _setBackgroundConnection: _setBackgroundConnection,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',

@@ -46,7 +46,7 @@ describe('tx confirmation screen', function() {
     describe('cancelTx', function() {
 
       before(function(done) {
-        actions._setKeyringController({
+        actions._setBackgroundConnection({
           approveTransaction(txId, cb) { cb('An error!') },
           cancelTransaction(txId) { /* noop */ },
           clearSeedWordCache(cb) { cb() },
@@ -75,7 +75,7 @@ describe('tx confirmation screen', function() {
         before(function(done) {
           alert = () => {/* noop */}
 
-          actions._setKeyringController({
+          actions._setBackgroundConnection({
             approveTransaction(txId, cb) { cb({message: 'An error!'}) },
           })
 
@@ -96,7 +96,7 @@ describe('tx confirmation screen', function() {
 
       describe('when there is success', function() {
         it('should complete tx and go home', function() {
-          actions._setKeyringController({
+          actions._setBackgroundConnection({
             approveTransaction(txId, cb) { cb() },
           })
 
@@ -135,7 +135,7 @@ describe('tx confirmation screen', function() {
         }
         freeze(initialState)
 
-        actions._setKeyringController({
+        actions._setBackgroundConnection({
           approveTransaction(txId, cb) { cb() },
         })
 

@@ -42,8 +42,9 @@ function encryptWithKey (key, dataObj) {
     iv: vector,
   }, key, dataBuffer).then(function(buf){
     var buffer = new Uint8Array(buf)
-    var vectorStr = serializeBufferForStorage(vector)
-    return serializeBufferForStorage(buffer) + vectorStr
+    var vectorStr = encodeBufferToBase64(vector)
+    var vaultStr = encodeBufferToBase64(buffer)
+    return `${vaultStr}\\${vectorStr}`
   })
 }
 
@@ -56,9 +57,9 @@ function decrypt (password, text) {
 }
 
 function decryptWithKey (key, text) {
-  const parts = text.split('0x')
-  const encryptedData = serializeBufferFromStorage(parts[1])
-  const vector = serializeBufferFromStorage(parts[2])
+  const parts = text.split('\\')
+  const encryptedData = decodeBase64ToBuffer(parts[0])
+  const vector = decodeBase64ToBuffer(parts[1])
   return crypto.subtle.decrypt({name: 'AES-GCM', iv: vector}, key, encryptedData)
   .then(function(result){
     const decryptedData = new Uint8Array(result)
@@ -128,8 +129,9 @@ function encodeBufferToBase64 (buf) {
 }
 
 function decodeBase64ToBuffer (base64) {
-  var u8_2 = new Uint8Array(atob(b64encoded).split("")
+  var buf = new Uint8Array(atob(base64).split('')
   .map(function(c) {
     return c.charCodeAt(0)
   }))
+  return buf
 }

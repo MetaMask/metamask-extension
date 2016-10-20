@@ -35,7 +35,7 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVault(password, entropy, cb) {
-    const salt = generateNewSalt()
+    const salt = generateSalt()
     this.configManager.setSalt(salt)
     this.loadKey(password)
     .then((key) => {
