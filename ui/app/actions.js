@@ -157,11 +157,16 @@ function tryUnlockMetamask (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    background.submitPassword(password, (err, selectedAccount) => {
+    background.submitPassword(password, (err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed())
       } else {
+        dispatch(this.updateMetamaskState(newState))
+        let selectedAccount
+        try {
+          selectedAccount = newState.metamask.selectedAccount
+        } catch (e) {}
         dispatch(actions.unlockMetamask(selectedAccount))
       }
     })
@@ -171,10 +176,11 @@ function tryUnlockMetamask (password) {
 function createNewVault (password, entropy) {
   return (dispatch) => {
     dispatch(actions.createNewVaultInProgress())
-    background.createNewVault(password, entropy, (err, result) => {
+    background.createNewVault(password, entropy, (err, newState) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
+      dispatch(this.updateMetamaskState(newState))
       dispatch(this.showAccountsPage())
       dispatch(this.hideLoadingIndication())
     })

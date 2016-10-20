@@ -72,7 +72,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
     .then((encryptedString) =>  {
       this.configManager.setVault(encryptedString)
-      cb(null, [])
+      cb(null, this.getState())
     })
     .catch((err) => {
       cb(err)
@@ -82,7 +82,7 @@ module.exports = class KeyringController extends EventEmitter {
   submitPassword(password, cb) {
     this.loadKey(password)
     .then((key) => {
-      cb(null, [])
+      cb(null, this.getState())
     })
     .catch((err) => {
       cb(err)

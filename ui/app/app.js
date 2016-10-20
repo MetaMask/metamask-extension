@@ -402,6 +402,7 @@ App.prototype.renderPrimary = function () {
 
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
+
     // show current view
     switch (props.currentView.name) {
 
