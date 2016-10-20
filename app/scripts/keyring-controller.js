@@ -45,7 +45,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   getState() {
     return {
-      isInitialized: !!this.key,
+      isInitialized: !!this.configManager.getVault(),
       isUnlocked: !!this.key,
       isConfirmed: true, // this.configManager.getConfirmed(),
       isEthConfirmed: this.configManager.getShouldntShowWarning(),
@@ -66,9 +66,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVault(password, entropy, cb) {
-    encryptor.keyFromPassword(password)
+    this.loadKey(password)
     .then((key) => {
-      this.key = key
       return encryptor.encryptWithKey(key, {})
     })
     .then((encryptedString) =>  {
@@ -80,10 +79,22 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-
-
   submitPassword(password, cb) {
-    cb()
+    this.loadKey(password)
+    .then((key) => {
+      cb(null, [])
+    })
+    .catch((err) => {
+      cb(err)
+    })
+  }
+
+  loadKey(password) {
+     return encryptor.keyFromPassword(password)
+    .then((key) => {
+      this.key = key
+      return key
+    })
   }
 
   setSelectedAddress(address, cb) {
