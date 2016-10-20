@@ -8,7 +8,7 @@ module.exports = launchApp
 
 function launchApp (opts) {
   var accountManager = opts.accountManager
-  actions._setKeyringController(accountManager)
+  actions._setBackgroundConnection(accountManager)
 
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {

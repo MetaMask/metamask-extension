@@ -95,7 +95,7 @@ var actions = {
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
   // hacky - need a way to get a reference to account manager
-  _setKeyringController: _setKeyringController,
+  _setBackgroundConnection: _setBackgroundConnection,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -140,9 +140,9 @@ var actions = {
 
 module.exports = actions
 
-var _keyringController = null
-function _setKeyringController (accountManager) {
-  _keyringController = accountManager
+var background = null
+function _setBackgroundConnection(backgroundConnection) {
+  background = backgroundConnection
 }
 
 function goHome () {
@@ -157,7 +157,7 @@ function tryUnlockMetamask (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    _keyringController.submitPassword(password, (err, selectedAccount) => {
+    background.submitPassword(password, (err, selectedAccount) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed())
@@ -171,7 +171,7 @@ function tryUnlockMetamask (password) {
 function createNewVault (password, entropy) {
   return (dispatch) => {
     dispatch(actions.createNewVaultInProgress())
-    _keyringController.createNewVault(password, entropy, (err, result) => {
+    background.createNewVault(password, entropy, (err, result) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
@@ -189,14 +189,14 @@ function showInfoPage () {
 
 function setSelectedAddress (address) {
   return (dispatch) => {
-    _keyringController.setSelectedAddress(address)
+    background.setSelectedAddress(address)
   }
 }
 
 function setCurrentFiat (fiat) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _keyringController.setCurrentFiat(fiat, (data, err) => {
+    background.setCurrentFiat(fiat, (data, err) => {
       dispatch(this.hideLoadingIndication())
       dispatch({
         type: this.SET_CURRENT_FIAT,
@@ -214,7 +214,7 @@ function signMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
-    _keyringController.signMessage(msgData, (err) => {
+    background.signMessage(msgData, (err) => {
       dispatch(actions.hideLoadingIndication())
 
       if (err) return dispatch(actions.displayWarning(err.message))
@@ -225,7 +225,7 @@ function signMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    _accountManager.setGasMultiplier(txData.gasMultiplier, (err) => {
+    background.setGasMultiplier(txData.gasMultiplier, (err) => {
       if (err) return dispatch(actions.displayWarning(err.message))
       web3.eth.sendTransaction(txData, (err, data) => {
         dispatch(actions.hideLoadingIndication())
@@ -240,7 +240,7 @@ function signTx (txData) {
 
 function sendTx (txData) {
   return (dispatch) => {
-    _keyringController.approveTransaction(txData.id, (err) => {
+    background.approveTransaction(txData.id, (err) => {
       if (err) {
         alert(err.message)
         dispatch(actions.txError(err))
@@ -266,12 +266,12 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  _keyringController.cancelMessage(msgData.id)
+  background.cancelMessage(msgData.id)
   return actions.completedTx(msgData.id)
 }
 
 function cancelTx (txData) {
-  _keyringController.cancelTransaction(txData.id)
+  background.cancelTransaction(txData.id)
   return actions.completedTx(txData.id)
 }
 
@@ -300,7 +300,7 @@ function showInitializeMenu () {
 function agreeToDisclaimer () {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _keyringController.agreeToDisclaimer((err) => {
+    background.agreeToDisclaimer((err) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
@@ -370,7 +370,7 @@ function updateMetamaskState (newState) {
 
 function lockMetamask () {
   return (dispatch) => {
-    _keyringController.setLocked((err) => {
+    background.setLocked((err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err.message))
@@ -386,7 +386,7 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _keyringController.setSelectedAddress(address, (err, address) => {
+    background.setSelectedAddress(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err.message))
@@ -457,7 +457,7 @@ function goBackToInitView () {
 //
 
 function setRpcTarget (newRpc) {
-  _keyringController.setRpcTarget(newRpc)
+  background.setRpcTarget(newRpc)
   return {
     type: actions.SET_RPC_TARGET,
     value: newRpc,
@@ -465,7 +465,7 @@ function setRpcTarget (newRpc) {
 }
 
 function setProviderType (type) {
-  _keyringController.setProviderType(type)
+  background.setProviderType(type)
   return {
     type: actions.SET_PROVIDER_TYPE,
     value: type,
@@ -473,7 +473,7 @@ function setProviderType (type) {
 }
 
 function useEtherscanProvider () {
-  _keyringController.useEtherscanProvider()
+  background.useEtherscanProvider()
   return {
     type: actions.USE_ETHERSCAN_PROVIDER,
   }
@@ -532,7 +532,7 @@ function exportAccount (address) {
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
 
-    _keyringController.exportAccount(address, function (err, result) {
+    background.exportAccount(address, function (err, result) {
       dispatch(self.hideLoadingIndication())
 
       if (err) {
@@ -555,7 +555,7 @@ function showPrivateKey (key) {
 function saveAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _keyringController.saveAccountLabel(account, label, (err) => {
+    background.saveAccountLabel(account, label, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err.message))
@@ -576,7 +576,7 @@ function showSendPage () {
 
 function agreeToEthWarning () {
   return (dispatch) => {
-    _keyringController.agreeToEthWarning((err) => {
+    background.agreeToEthWarning((err) => {
       if (err) {
         return dispatch(actions.showEthWarning(err.message))
       }
@@ -595,7 +595,7 @@ function showEthWarning () {
 
 function buyEth (address, amount) {
   return (dispatch) => {
-    _keyringController.buyEth(address, amount)
+    background.buyEth(address, amount)
     dispatch({
       type: actions.BUY_ETH,
     })
@@ -673,7 +673,7 @@ function coinShiftRquest (data, marketData) {
       if (response.error) return dispatch(actions.showWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
-      _keyringController.createShapeShiftTx(response.deposit, response.depositType)
+      background.createShapeShiftTx(response.deposit, response.depositType)
       dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
     })
   }
