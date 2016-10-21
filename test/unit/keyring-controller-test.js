@@ -14,7 +14,7 @@ describe('KeyringController', function() {
   let accounts = []
   let originalKeystore
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     window.localStorage = {} // Hacking localStorage support into JSDom
 
     keyringController = new KeyringController({
@@ -27,6 +27,10 @@ describe('KeyringController', function() {
     // Stub out the browser crypto for a mock encryptor.
     // Browser crypto is tested in the integration test suite.
     keyringController.encryptor = mockEncryptor
+
+    keyringController.createNewVault(password, null, function (err, state) {
+      done()
+    })
   })
 
   describe('#createNewVault', function () {
@@ -36,12 +40,10 @@ describe('KeyringController', function() {
         assert.ifError(err)
         const vault = keyringController.configManager.getVault()
         assert(vault, 'vault created')
-
         done()
       })
     })
   })
-
 })
 
 
