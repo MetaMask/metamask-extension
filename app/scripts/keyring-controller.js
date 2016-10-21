@@ -2,6 +2,8 @@ const EventEmitter = require('events').EventEmitter
 const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
+const Transaction = require('ethereumjs-tx')
 
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
@@ -198,8 +200,60 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
+  signTransaction(txParams, cb) {
+    try {
+      const address = ethUtil.addHexPrefix(txParams.from.toLowercase())
+      const keyring = this.getKeyringForAccount(address)
+
+      // Handle gas pricing
+      var gasMultiplier = this.configManager.getGasMultiplier() || 1
+      var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+      gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+      txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+
+      // normalize values
+      txParams.to = ethUtil.addHexPrefix(txParams.to.toLowerCase())
+      txParams.from = ethUtil.addHexPrefix(txParams.from.toLowerCase())
+      txParams.value = ethUtil.addHexPrefix(txParams.value)
+      txParams.data = ethUtil.addHexPrefix(txParams.data)
+      txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
+      txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
+
+      let tx = new Transaction(txParams)
+      tx = keyring.signTransaction(address, tx)
+
+      // Add the tx hash to the persisted meta-tx object
+      var txHash = ethUtil.bufferToHex(tx.hash())
+      var metaTx = this.configManager.getTx(txParams.metamaskId)
+      metaTx.hash = txHash
+      this.configManager.updateTx(metaTx)
+
+      // return raw serialized tx
+      var rawTx = ethUtil.bufferToHex(tx.serialize())
+      cb(null, rawTx)
+    } catch (e) {
+      cb(e)
+    }
+  }
+
   signMessage(msgParams, cb) {
-    cb()
+    try {
+      const keyring = this.getKeyringForAccount(msgParams.from)
+      const address = ethUtil.addHexPrefix(msgParams.from.toLowercase())
+      const rawSig = keyring.signMessage(address, msgParams.data)
+      cb(null, rawSig)
+    } catch (e) {
+      cb(e)
+    }
+  }
+
+  getKeyringForAccount(address) {
+    const hexed = ethUtil.addHexPrefix(address.toLowerCase())
+    return this.keyrings.find((ring) => {
+      return ring.getAccounts()
+      .map(acct => ethUtil.addHexPrefix(acct.toLowerCase()))
+      .includes(hexed)
+    })
   }
 
   cancelMessage(msgId, cb) {
