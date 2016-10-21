@@ -17,6 +17,7 @@ module.exports = class KeyringController extends EventEmitter {
     super()
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
+    this.encryptor = encryptor
     this.keyrings = []
     this.identities = {} // Essentially a name hash
   }
@@ -46,11 +47,11 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVault(password, entropy, cb) {
-    const salt = generateSalt()
+    const salt = this.encryptor.generateSalt()
     this.configManager.setSalt(salt)
     this.loadKey(password)
     .then((key) => {
-      return encryptor.encryptWithKey(key, [])
+      return this.encryptor.encryptWithKey(key, [])
     })
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
@@ -75,8 +76,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   loadKey(password) {
-    const salt = this.configManager.getSalt() || generateSalt()
-    return encryptor.keyFromPassword(password + salt)
+    const salt = this.configManager.getSalt() || this.encryptor.generateSalt()
+    return this.encryptor.keyFromPassword(password + salt)
     .then((key) => {
       this.key = key
       return key
@@ -134,7 +135,7 @@ module.exports = class KeyringController extends EventEmitter {
         data: k.serialize(),
       }
     })
-    return encryptor.encryptWithKey(this.key, serialized)
+    return this.encryptor.encryptWithKey(this.key, serialized)
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
       return true
@@ -146,7 +147,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   unlockKeyrings(key) {
     const encryptedVault = this.configManager.getVault()
-    return encryptor.decryptWithKey(key, encryptedVault)
+    return this.encryptor.decryptWithKey(key, encryptedVault)
     .then((vault) => {
       this.keyrings = vault.map(this.restoreKeyring.bind(this, 0))
       return this.keyrings
@@ -278,9 +279,3 @@ module.exports = class KeyringController extends EventEmitter {
 
 }
 
-function generateSalt (byteCount = 32) {
-  var view = new Uint8Array(byteCount)
-  global.crypto.getRandomValues(view)
-  var b64encoded = btoa(String.fromCharCode.apply(null, view))
-  return b64encoded
-}
