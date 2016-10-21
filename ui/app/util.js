@@ -212,8 +212,5 @@ function readableDate (ms) {
 }
 
 function isHex (str) {
-  if (str.startsWith('0x')) {
-    return !str.substring(2).match(/([g-zG-Z]|\W)/)
-  }
-  return !str.match(/([g-zG-Z]|\W)/)
+  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
 }
