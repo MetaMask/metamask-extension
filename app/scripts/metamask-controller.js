@@ -182,7 +182,8 @@ module.exports = class MetamaskController {
     this.configManager.subscribe(function (state) {
       storeSetFromObj(publicConfigStore, configToPublic(state))
     })
-    this.keyringController.on('update', function (state) {
+    this.keyringController.on('update', () => {
+      const state = this.keyringController.getState()
       storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
       this.sendUpdate()
     })
