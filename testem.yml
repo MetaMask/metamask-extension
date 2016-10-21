@@ -1,9 +1,11 @@
 launch_in_dev:
   - Chrome
   - Firefox
+  - Opera
 launch_in_ci:
   - Chrome
   - Firefox
+  - Opera
 framework:
   - qunit
 test_page: "test/integration/index.html"
