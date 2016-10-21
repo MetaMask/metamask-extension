@@ -195,7 +195,7 @@ function addNewKeyring (type, opts) {
     background.addNewKeyring(type, opts, (err, newState) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.showWarning(err))
       }
       dispatch(this.updateMetamaskState(newState))
       dispatch(this.showAccountsPage())

@@ -16,7 +16,7 @@ module.exports = class KeyringController extends EventEmitter {
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.keyrings = []
-    this.identities = {} // Essentially a nickname hash
+    this.identities = {} // Essentially a name hash
   }
 
   getState() {
@@ -64,8 +64,7 @@ module.exports = class KeyringController extends EventEmitter {
     .then((key) => {
       return this.unlockKeyrings(key)
     })
-    .then((keyrings) => {
-      this.keyrings = keyrings
+    .then(() => {
       cb(null, this.getState())
     })
     .catch((err) => {
@@ -74,7 +73,7 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   loadKey(password) {
-    const salt = this.configManager.getSalt()
+    const salt = this.configManager.getSalt() || generateSalt()
     return encryptor.keyFromPassword(password + salt)
     .then((key) => {
       this.key = key
@@ -89,9 +88,10 @@ module.exports = class KeyringController extends EventEmitter {
     const accounts = keyring.addAccounts(1)
 
     accounts.forEach((account) => {
-      this.createBalanceAndNickname(account, i)
+      this.loadBalanceAndNickname(account, i)
     })
 
+    this.keyrings.push(keyring)
     this.persistAllKeyrings()
     .then(() => {
       cb(this.getState())
@@ -102,28 +102,36 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   // Takes an account address and an iterator representing
-  // the current number of nicknamed accounts.
-  createBalanceAndNickname(account, i) {
-    this.ethStore.addAccount(ethUtil.addHexPrefix(account))
-    const oldNickname = this.configManager.nicknameForWallet(account)
-    const nickname = oldNickname || `Account ${++i}`
-    this.identities[account] = {
-      address: account,
-      nickname,
+  // the current number of named accounts.
+  loadBalanceAndNickname(account, i) {
+    const address = ethUtil.addHexPrefix(account)
+    this.ethStore.addAccount(address)
+    const oldNickname = this.configManager.nicknameForWallet(address)
+    const name = oldNickname || `Account ${++i}`
+    this.identities[address] = {
+      address,
+      name,
     }
-    this.saveAccountLabel(account, nickname)
+    this.saveAccountLabel(address, name)
   }
 
   saveAccountLabel (account, label, cb) {
+    const address = ethUtil.addHexPrefix(account)
     const configManager = this.configManager
-    configManager.setNicknameForWallet(account, label)
+    configManager.setNicknameForWallet(address, label)
     if (cb) {
       cb(null, label)
     }
   }
 
   persistAllKeyrings() {
-    const serialized = this.keyrings.map(k => k.serialize())
+    const serialized = this.keyrings.map((k) => {
+      return {
+        type: k.type,
+        // keyring.serialize() must return a JSON-encodable object.
+        data: k.serialize(),
+      }
+    })
     return encryptor.encryptWithKey(this.key, serialized)
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
@@ -138,15 +146,21 @@ module.exports = class KeyringController extends EventEmitter {
     const encryptedVault = this.configManager.getVault()
     return encryptor.decryptWithKey(key, encryptedVault)
     .then((vault) => {
-      this.keyrings = vault.map(this.restoreKeyring)
+      this.keyrings = vault.map(this.restoreKeyring.bind(this, 0))
       return this.keyrings
     })
   }
 
-  restoreKeyring(serialized) {
-    const { type } = serialized
+  restoreKeyring(serialized, i) {
+    const { type, data } = serialized
     const Keyring = this.getKeyringClassForType(type)
-    const keyring = new Keyring(serialized)
+    const keyring = new Keyring()
+    keyring.deserialize(data)
+
+    keyring.getAccounts().forEach((account) => {
+      this.loadBalanceAndNickname(account, i)
+    })
+
     return keyring
   }
 
@@ -162,7 +176,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   getAccounts() {
-    return this.keyrings.map(kr => kr.getAccounts())
+    const keyrings = this.keyrings || []
+    return keyrings.map(kr => kr.getAccounts())
     .reduce((res, arr) => {
       return res.concat(arr)
     }, [])
@@ -207,8 +222,8 @@ module.exports = class KeyringController extends EventEmitter {
 
 }
 
-function generateSalt (byteCount) {
-  var view = new Uint8Array(32)
+function generateSalt (byteCount = 32) {
+  var view = new Uint8Array(byteCount)
   global.crypto.getRandomValues(view)
   var b64encoded = btoa(String.fromCharCode.apply(null, view))
   return b64encoded

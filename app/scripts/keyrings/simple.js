@@ -12,17 +12,19 @@ module.exports = class SimpleKeyring extends EventEmitter {
     super()
     this.type = type
     this.opts = opts || {}
-    const walletData = this.opts.wallets || []
-    this.wallets = walletData.map((w) => {
-      return Wallet.fromPrivateKey(w)
-    })
+    this.wallets = []
   }
 
   serialize() {
-    return {
-      type,
-      wallets: this.wallets.map(w => w.getPrivateKey()),
-    }
+    return this.wallets.map(w => w.getPrivateKey().toString('hex'))
+  }
+
+  deserialize(wallets = []) {
+    this.wallets = wallets.map((w) => {
+      var b = new Buffer(w, 'hex')
+      const wallet = Wallet.fromPrivateKey(b)
+      return wallet
+    })
   }
 
   addAccounts(n = 1) {
@@ -30,12 +32,12 @@ module.exports = class SimpleKeyring extends EventEmitter {
     for (var i = 0; i < n; i++) {
       newWallets.push(Wallet.generate())
     }
-    this.wallets.concat(newWallets)
-    return newWallets.map(w => w.getAddress())
+    this.wallets = this.wallets.concat(newWallets)
+    return newWallets.map(w => w.getAddress().toString('hex'))
   }
 
   getAccounts() {
-    return this.wallets.map(w => w.getAddress())
+    return this.wallets.map(w => w.getAddress().toString('hex'))
   }
 
 }
