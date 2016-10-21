@@ -18,6 +18,8 @@ module.exports = class KeyringController extends EventEmitter {
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
+    this.keyringTypes = keyringTypes
+
     this.keyrings = []
     this.identities = {} // Essentially a name hash
   }
@@ -37,7 +39,7 @@ module.exports = class KeyringController extends EventEmitter {
       currentFiat: this.configManager.getCurrentFiat(),
       conversionRate: this.configManager.getConversionRate(),
       conversionDate: this.configManager.getConversionDate(),
-      keyringTypes: keyringTypes.map((krt) => krt.type()),
+      keyringTypes: this.keyringTypes.map((krt) => krt.type()),
       identities: this.identities,
     }
   }
@@ -154,7 +156,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  restoreKeyring(serialized, i) {
+  restoreKeyring(i, serialized) {
     const { type, data } = serialized
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring()
@@ -168,7 +170,7 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   getKeyringClassForType(type) {
-    const Keyring = keyringTypes.reduce((res, kr) => {
+    const Keyring = this.keyringTypes.reduce((res, kr) => {
       if (kr.type() === type) {
         return kr
       } else {

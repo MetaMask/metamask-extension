@@ -4,6 +4,8 @@ var configManagerGen = require('../lib/mock-config-manager')
 const ethUtil = require('ethereumjs-util')
 const async = require('async')
 const mockEncryptor = require('../lib/mock-encryptor')
+const MockSimpleKeychain = require('../lib/mock-simple-keychain')
+const sinon = require('sinon')
 
 describe('KeyringController', function() {
 
@@ -15,6 +17,7 @@ describe('KeyringController', function() {
   let originalKeystore
 
   beforeEach(function(done) {
+    this.sinon = sinon.sandbox.create()
     window.localStorage = {} // Hacking localStorage support into JSDom
 
     keyringController = new KeyringController({
@@ -33,8 +36,14 @@ describe('KeyringController', function() {
     })
   })
 
+  afterEach(function() {
+    // Cleanup mocks
+    this.sinon.restore()
+  })
+
   describe('#createNewVault', function () {
     it('should set a vault on the configManager', function(done) {
+      keyringController.configManager.setVault(null)
       assert(!keyringController.configManager.getVault(), 'no previous vault')
       keyringController.createNewVault(password, null, function (err, state) {
         assert.ifError(err)
@@ -44,6 +53,28 @@ describe('KeyringController', function() {
       })
     })
   })
+
+  describe('#restoreKeyring', function(done) {
+
+    it(`should pass a keyring's serialized data back to the correct type.`, function() {
+      keyringController.keyringTypes = [ MockSimpleKeychain ]
+
+      const mockSerialized = {
+        type: MockSimpleKeychain.type(),
+        data: [ '0x123456null788890abcdef' ],
+      }
+      const mock = this.sinon.mock(keyringController)
+
+      mock.expects('loadBalanceAndNickname')
+      .exactly(1)
+
+      var keyring = keyringController.restoreKeyring(0, mockSerialized)
+      assert.equal(keyring.wallets.length, 1, 'one wallet restored')
+      mock.verify()
+    })
+
+  })
+
 })
 
 
