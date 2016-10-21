@@ -501,12 +501,7 @@ App.prototype.renderCustomOption = function (rpcTarget) {
       return null
 
     case 'http://localhost:8545':
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-      })
+      return null
 
     default:
       return h(DropMenuItem, {
