@@ -31,7 +31,7 @@ module.exports = class KeyringController extends EventEmitter {
     this._unconfTxCbs = {}
     this._unconfMsgCbs = {}
 
-    this.network = 'loading'
+    this.network = null
   }
 
   getState() {
