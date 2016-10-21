@@ -263,6 +263,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   setLocked(cb) {
+    this.key = null
+    this.keyrings = []
     cb()
   }
 

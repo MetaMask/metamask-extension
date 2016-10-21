@@ -2,6 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const Wallet = require('ethereumjs-wallet')
 const ethUtil = require('ethereumjs-util')
 const type = 'Simple Key Pair'
+const sigUtil = require('../lib/sig-util')
 
 module.exports = class SimpleKeyring extends EventEmitter {
 
@@ -55,7 +56,7 @@ module.exports = class SimpleKeyring extends EventEmitter {
     const message = ethUtil.removeHexPrefix(data)
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
-    var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))
+    var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
     return rawMsgSig
   }
 
@@ -65,20 +66,3 @@ module.exports = class SimpleKeyring extends EventEmitter {
 
 }
 
-function concatSig (v, r, s) {
-  const rSig = ethUtil.fromSigned(r)
-  const sSig = ethUtil.fromSigned(s)
-  const vSig = ethUtil.bufferToInt(v)
-  const rStr = padWithZeroes(ethUtil.toUnsigned(rSig).toString('hex'), 64)
-  const sStr = padWithZeroes(ethUtil.toUnsigned(sSig).toString('hex'), 64)
-  const vStr = ethUtil.stripHexPrefix(ethUtil.intToHex(vSig))
-  return ethUtil.addHexPrefix(rStr.concat(sStr, vStr)).toString('hex')
-}
-
-function padWithZeroes (number, length) {
-  var myString = '' + number
-  while (myString.length < length) {
-    myString = '0' + myString
-  }
-  return myString
-}
