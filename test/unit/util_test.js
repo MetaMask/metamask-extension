@@ -227,5 +227,27 @@ describe('util', function() {
         assert.equal(result.toString(10), '1111000000000000000', 'accepts decimals')
       })
     })
+    describe('#isHex', function(){
+      it('should return true when given a hex string', function() {
+        var result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        assert(result)
+      })
+
+      it('should return false when given a non-hex string', function() {
+        var result = util.isHex('c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714imnotreal')
+        assert(!result)
+      })
+
+      it('should return false when given a string containing a non letter/number character', function() {
+        var result = util.isHex('c3ab8ff13720!8ad9047dd39466b3c%8974e592c2fa383d4a396071imnotreal')
+        assert(!result)
+      })
+
+      it('should return true when given a hex string with hex-prefix', function() {
+        var result = util.isHex('0xc3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2')
+        assert(result)
+      })
+
+    })
   })
 })

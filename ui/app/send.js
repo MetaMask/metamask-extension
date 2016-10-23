@@ -7,6 +7,7 @@ const actions = require('./actions')
 const util = require('./util')
 const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
+const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
 const RangeSlider = require('./components/range-slider')
@@ -190,7 +191,7 @@ SendTransactionScreen.prototype.render = function () {
           marginBottom: '16px',
         },
       }, [
-        'Transactional Data (optional)',
+        'Transaction Data (optional)',
       ]),
 
       // 'data' field
@@ -309,6 +310,11 @@ SendTransactionScreen.prototype.onSubmit = function (gasPrice) {
 
   if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
     message = 'Recipient address is invalid.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
+  if (!isHex(ethUtil.stripHexPrefix(txData)) && txData) {
+    message = 'Transaction data must be hex string.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
