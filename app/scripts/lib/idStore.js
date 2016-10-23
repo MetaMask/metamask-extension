@@ -114,7 +114,6 @@ IdentityStore.prototype.getState = function () {
     conversionRate: configManager.getConversionRate(),
     conversionDate: configManager.getConversionDate(),
     gasMultiplier: configManager.getGasMultiplier(),
-
   }))
 }
 

@@ -21,7 +21,7 @@ const controller = new MetamaskController({
   setData,
   loadData,
 })
-const idStore = controller.idStore
+const keyringController = controller.keyringController
 
 function triggerUi () {
   if (!popupIsOpen) notification.show()
@@ -82,7 +82,7 @@ function setupControllerConnection (stream) {
     // push updates to popup
     controller.ethStore.on('update', controller.sendUpdate.bind(controller))
     controller.listeners.push(remote)
-    idStore.on('update', controller.sendUpdate.bind(controller))
+    keyringController.on('update', controller.sendUpdate.bind(controller))
 
     // teardown on disconnect
     eos(stream, () => {
@@ -96,9 +96,9 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-idStore.on('update', updateBadge)
+keyringController.on('update', updateBadge)
 
-function updateBadge (state) {
+function updateBadge () {
   var label = ''
   var unconfTxs = controller.configManager.unconfirmedTxs()
   var unconfTxLen = Object.keys(unconfTxs).length

@@ -22,6 +22,8 @@ module.exports = {
   // Buffer <-> base64 string methods
   encodeBufferToBase64,
   decodeBase64ToBuffer,
+
+  generateSalt,
 }
 
 // Takes a Pojo, returns encrypted text.
@@ -134,4 +136,11 @@ function decodeBase64ToBuffer (base64) {
     return c.charCodeAt(0)
   }))
   return buf
+}
+
+function generateSalt (byteCount = 32) {
+  var view = new Uint8Array(byteCount)
+  global.crypto.getRandomValues(view)
+  var b64encoded = btoa(String.fromCharCode.apply(null, view))
+  return b64encoded
 }

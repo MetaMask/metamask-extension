@@ -25,6 +25,7 @@ var actions = {
   showInitializeMenu: showInitializeMenu,
   createNewVault: createNewVault,
   createNewVaultInProgress: createNewVaultInProgress,
+  addNewKeyring: addNewKeyring,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // unlock screen
@@ -136,6 +137,7 @@ var actions = {
   SHOW_NEW_KEYCHAIN: 'SHOW_NEW_KEYCHAIN',
   showNewKeychain: showNewKeychain,
 
+
 }
 
 module.exports = actions
@@ -183,6 +185,20 @@ function createNewVault (password, entropy) {
       dispatch(this.updateMetamaskState(newState))
       dispatch(this.showAccountsPage())
       dispatch(this.hideLoadingIndication())
+    })
+  }
+}
+
+function addNewKeyring (type, opts) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.addNewKeyring(type, opts, (err, newState) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err))
+      }
+      dispatch(this.updateMetamaskState(newState))
+      dispatch(this.showAccountsPage())
     })
   }
 }

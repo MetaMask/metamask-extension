@@ -1,7 +1,7 @@
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
-const IdentityStore = require('./keyring-controller')
+const KeyringController = require('./keyring-controller')
 const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
@@ -15,12 +15,12 @@ module.exports = class MetamaskController {
     this.opts = opts
     this.listeners = []
     this.configManager = new ConfigManager(opts)
-    this.idStore = new IdentityStore({
+    this.keyringController = new KeyringController({
       configManager: this.configManager,
     })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
-    this.idStore.setStore(this.ethStore)
+    this.keyringController.setStore(this.ethStore)
     this.getNetwork()
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
@@ -38,13 +38,13 @@ module.exports = class MetamaskController {
     return extend(
       this.state,
       this.ethStore.getState(),
-      this.idStore.getState(),
+      this.keyringController.getState(),
       this.configManager.getConfig()
     )
   }
 
   getApi () {
-    const idStore = this.idStore
+    const keyringController = this.keyringController
 
     return {
       getState: (cb) => { cb(null, this.getState()) },
@@ -59,18 +59,19 @@ module.exports = class MetamaskController {
       checkTOSChange: this.checkTOSChange.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
-      // forward directly to idStore
-      createNewVault: idStore.createNewVault.bind(idStore),
-      submitPassword: idStore.submitPassword.bind(idStore),
-      setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
-      approveTransaction: idStore.approveTransaction.bind(idStore),
-      cancelTransaction: idStore.cancelTransaction.bind(idStore),
-      signMessage: idStore.signMessage.bind(idStore),
-      cancelMessage: idStore.cancelMessage.bind(idStore),
-      setLocked: idStore.setLocked.bind(idStore),
-      exportAccount: idStore.exportAccount.bind(idStore),
-      saveAccountLabel: idStore.saveAccountLabel.bind(idStore),
-      tryPassword: idStore.tryPassword.bind(idStore),
+      // forward directly to keyringController
+      createNewVault: keyringController.createNewVault.bind(keyringController),
+      addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
+      submitPassword: keyringController.submitPassword.bind(keyringController),
+      setSelectedAddress: keyringController.setSelectedAddress.bind(keyringController),
+      approveTransaction: keyringController.approveTransaction.bind(keyringController),
+      cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
+      signMessage: keyringController.signMessage.bind(keyringController),
+      cancelMessage: keyringController.cancelMessage.bind(keyringController),
+      setLocked: keyringController.setLocked.bind(keyringController),
+      exportAccount: keyringController.exportAccount.bind(keyringController),
+      saveAccountLabel: keyringController.saveAccountLabel.bind(keyringController),
+      tryPassword: keyringController.tryPassword.bind(keyringController),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -132,27 +133,27 @@ module.exports = class MetamaskController {
   }
 
   initializeProvider (opts) {
-    const idStore = this.idStore
+    const keyringController = this.keyringController
 
     var providerOpts = {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        var selectedAddress = idStore.getSelectedAddress()
+        var selectedAddress = this.configManager.getSelectedAccount()
         var result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
       },
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: (...args) => {
-        idStore.signTransaction(...args)
+        keyringController.signTransaction(...args)
         this.sendUpdate()
       },
 
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: (...args) => {
-        idStore.signMessage(...args)
+        keyringController.signMessage(...args)
         this.sendUpdate()
       },
     }
@@ -160,7 +161,7 @@ module.exports = class MetamaskController {
     var provider = MetaMaskProvider(providerOpts)
     var web3 = new Web3(provider)
     this.web3 = web3
-    idStore.web3 = web3
+    keyringController.web3 = web3
 
     provider.on('block', this.processBlock.bind(this))
     provider.on('error', this.getNetwork.bind(this))
@@ -171,7 +172,7 @@ module.exports = class MetamaskController {
   initPublicConfigStore () {
     // get init state
     var initPublicState = extend(
-      idStoreToPublic(this.idStore.getState()),
+      keyringControllerToPublic(this.keyringController.getState()),
       configToPublic(this.configManager.getConfig())
     )
 
@@ -181,12 +182,14 @@ module.exports = class MetamaskController {
     this.configManager.subscribe(function (state) {
       storeSetFromObj(publicConfigStore, configToPublic(state))
     })
-    this.idStore.on('update', function (state) {
-      storeSetFromObj(publicConfigStore, idStoreToPublic(state))
+    this.keyringController.on('update', () => {
+      const state = this.keyringController.getState()
+      storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
+      this.sendUpdate()
     })
 
-    // idStore substate
-    function idStoreToPublic (state) {
+    // keyringController substate
+    function keyringControllerToPublic (state) {
       return {
         selectedAddress: state.selectedAddress,
       }
@@ -209,12 +212,12 @@ module.exports = class MetamaskController {
   }
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
-    const idStore = this.idStore
+    const keyringController = this.keyringController
 
     let err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
 
-    idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
+    keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
       if (err) return onTxDoneCb(err)
       this.sendUpdate()
       this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
@@ -229,9 +232,9 @@ module.exports = class MetamaskController {
   }
 
   newUnsignedMessage (msgParams, cb) {
-    var state = this.idStore.getState()
+    var state = this.keyringController.getState()
     if (!state.isUnlocked) {
-      this.idStore.addUnconfirmedMessage(msgParams, cb)
+      this.keyringController.addUnconfirmedMessage(msgParams, cb)
       this.opts.unlockAccountMessage()
     } else {
       this.addUnconfirmedMessage(msgParams, cb)
@@ -240,8 +243,8 @@ module.exports = class MetamaskController {
   }
 
   addUnconfirmedMessage (msgParams, cb) {
-    const idStore = this.idStore
-    const msgId = idStore.addUnconfirmedMessage(msgParams, cb)
+    const keyringController = this.keyringController
+    const msgId = keyringController.addUnconfirmedMessage(msgParams, cb)
     this.opts.showUnconfirmedMessage(msgParams, msgId)
   }
 
