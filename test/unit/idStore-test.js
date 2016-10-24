@@ -1,14 +1,10 @@
+const async = require('async')
 const assert = require('assert')
-const IdentityStore = require('../../app/scripts/lib/idStore')
-const configManagerGen = require('../lib/mock-config-manager')
-const fs = require('fs')
-const path = require('path')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const async = require('async')
-
-const nonDelegatePath = path.join(__dirname, '..', 'lib', 'non-delegate-code.txt')
-const nonDelegateCode = fs.readFileSync(nonDelegatePath).toString()
+const configManagerGen = require('../lib/mock-config-manager')
+const delegateCallCode = require('../lib/example-code.json').delegateCallCode
+const IdentityStore = require('../../app/scripts/lib/idStore')
 
 describe('IdentityStore', function() {
 
@@ -170,7 +166,7 @@ describe('IdentityStore', function() {
       },
     })
 
-    var result = idStore.checkForDelegateCall(nonDelegateCode)
-    assert.equal(result, false, 'no delegate call in provided code')
+    var result = idStore.checkForDelegateCall(delegateCallCode)
+    assert.equal(result, true, 'no delegate call in provided code')
   })
 })
