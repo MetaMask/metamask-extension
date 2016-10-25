@@ -368,21 +368,6 @@ ConfigManager.prototype.getConversionDate = function () {
   return (('conversionDate' in data) && data.conversionDate) || 'N/A'
 }
 
-ConfigManager.prototype.setShouldntShowWarning = function () {
-  var data = this.getData()
-  if (data.isEthConfirmed) {
-    data.isEthConfirmed = !data.isEthConfirmed
-  } else {
-    data.isEthConfirmed = true
-  }
-  this.setData(data)
-}
-
-ConfigManager.prototype.getShouldntShowWarning = function () {
-  var data = this.getData()
-  return ('isEthConfirmed' in data) && data.isEthConfirmed
-}
-
 ConfigManager.prototype.getShapeShiftTxList = function () {
   var data = this.getData()
   var shapeShiftTxList = data.shapeShiftTxList ? data.shapeShiftTxList : []

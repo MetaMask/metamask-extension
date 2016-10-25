@@ -54,7 +54,6 @@ module.exports = class MetamaskController {
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
       resetDisclaimer: this.resetDisclaimer.bind(this),
       setCurrentFiat: this.setCurrentFiat.bind(this),
-      agreeToEthWarning: this.agreeToEthWarning.bind(this),
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
@@ -332,15 +331,6 @@ module.exports = class MetamaskController {
     this.conversionInterval = setInterval(() => {
       this.configManager.updateConversionRate()
     }, 300000)
-  }
-
-  agreeToEthWarning (cb) {
-    try {
-      this.configManager.setShouldntShowWarning()
-      cb()
-    } catch (e) {
-      cb(e)
-    }
   }
 
   // called from popup

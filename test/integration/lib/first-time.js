@@ -5,7 +5,7 @@ QUnit.test('agree to terms', function (assert) {
   var app = $('iframe').contents().find('#app-content .mock-app-root')
 
   app.find('.markdown').prop('scrollTop', 100000000)
-
+  debugger;
   wait().then(function() {
     app.find('button').click()
   }).then(function() {
@@ -22,4 +22,3 @@ QUnit.test('agree to terms', function (assert) {
 
   // Wait for view to transition:
 })
-

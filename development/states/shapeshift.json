@@ -2,7 +2,6 @@
   "metamask": {
     "isInitialized": true,
     "isUnlocked": true,
-    "isEthConfirmed": true,
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
