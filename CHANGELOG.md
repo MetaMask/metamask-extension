@@ -3,6 +3,8 @@
 ## Current Master
 
 - Add a check for improper Transaction data.
+- Fix bug where custom provider selection could show duplicate items.
+- Fix bug where connecting to a local morden node would make two providers appear selected.
 
 ## 2.13.5 2016-10-18
 
