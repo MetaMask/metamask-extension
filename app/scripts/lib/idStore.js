@@ -248,15 +248,9 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     if (txParams.to) {
       query.getCode(txParams.to, function (err, result) {
         if (err) return cb(err)
-        var code = ethUtil.toBuffer(result)
-        if (code !== '0x') {
-          var ops = ethBinToOps(code)
-          var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
-          txData.containsDelegateCall = containsDelegateCall
-          cb()
-        } else {
-          cb()
-        }
+        var containsDelegateCall = this.checkForDelegateCall(result)
+        txData.containsDelegateCall = containsDelegateCall
+        cb()
       })
     } else {
       cb()
@@ -278,6 +272,17 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     self._didUpdate()
     // signal completion of add tx
     cb(null, txData)
+  }
+}
+
+IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
+  const code = ethUtil.toBuffer(codeHex)
+  if (code !== '0x') {
+    const ops = ethBinToOps(code)
+    const containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
+    return containsDelegateCall
+  } else {
+    return false
   }
 }
 
