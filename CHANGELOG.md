@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add a check for improper Transaction data.
+- Inject up to date version of web3.js
 
 ## 2.13.5 2016-10-18
 

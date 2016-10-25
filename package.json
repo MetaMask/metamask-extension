@@ -82,7 +82,7 @@
     "three.js": "^0.73.2",
     "through2": "^2.0.1",
     "vreme": "^3.0.2",
-    "web3": "ethereum/web3.js#260ac6e78a8ce4b2e13f5bb0fdb65f4088585876",
+    "web3": "ethereum/web3.js",
     "web3-provider-engine": "^8.1.5",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
