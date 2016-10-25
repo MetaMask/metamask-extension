@@ -247,7 +247,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   // perform static analyis on the target contract code
   function analyzeForDelegateCall(cb){
     if (txParams.to) {
-      query.getCode(txParams.to, function (err, result) {
+      query.getCode(txParams.to, (err, result) => {
         if (err) return cb(err)
         var containsDelegateCall = this.checkForDelegateCall(result)
         txData.containsDelegateCall = containsDelegateCall
