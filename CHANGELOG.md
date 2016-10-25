@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add a check for improper Transaction data.
+- Now nicknaming new accounts "Account #" instead of "Wallet #" for clarity.
 
 ## 2.13.5 2016-10-18
 
