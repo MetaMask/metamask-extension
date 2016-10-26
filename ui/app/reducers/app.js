@@ -29,13 +29,10 @@ function reduceApp (state, action) {
     name: 'createVaultComplete',
     seedWords,
   }
-  var ethStoreWarning = {
-    name: 'EthStoreWarning',
-  }
 
   var appState = extend({
     menuOpen: false,
-    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning : defaultView,
+    currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
     },

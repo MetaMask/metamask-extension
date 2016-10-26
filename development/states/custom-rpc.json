@@ -161,7 +161,6 @@
     "network": "166",
     "seedWords": null,
     "isConfirmed": true,
-    "isEthConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "provider": {
