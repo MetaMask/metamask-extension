@@ -16,7 +16,7 @@ to build MetaMask and have it live reload if you make changes
 
 - navigate to: http://127.0.0.1:9001/popup/popup.html
 - Create an Account
-- go back too http://localhost:9002/
+- go back to http://localhost:9002/
 - open devTools
 - click Sync Tx
 

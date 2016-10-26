@@ -4,7 +4,6 @@ const setupProvider = require('./lib/setup-provider.js')
 //
 // setup web3
 //
-console.log('hello world im here')
 var provider = setupProvider()
 hijackProvider(provider)
 var web3 = new Web3(provider)
