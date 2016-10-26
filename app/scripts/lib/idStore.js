@@ -249,7 +249,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     if (txParams.to) {
       query.getCode(txParams.to, (err, result) => {
         if (err) return cb(err)
-        var containsDelegateCall = this.checkForDelegateCall(result)
+        var containsDelegateCall = self.checkForDelegateCall(result)
         txData.containsDelegateCall = containsDelegateCall
         cb()
       })
