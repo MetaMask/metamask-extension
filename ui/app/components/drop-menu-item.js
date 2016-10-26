@@ -42,7 +42,7 @@ DropMenuItem.prototype.activeNetworkRender = function () {
       if (providerType === 'mainnet') return h('.check', '✓')
       break
     case 'Morden Test Network':
-      if (activeNetwork === '2') return h('.check', '✓')
+      if (provider.type === 'testnet') return h('.check', '✓')
       break
     case 'Localhost 8545':
       if (activeNetwork === 'http://localhost:8545') return h('.check', '✓')
