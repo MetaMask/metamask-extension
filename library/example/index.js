@@ -17,7 +17,7 @@ function startApp(){
   console.log('getting main account...')
   web3.eth.getAccounts(function(err, addresses){
     if (err) throw err
-    console.log('set address')
+    console.log('set address', addresses[0])
     primaryAccount = addresses[0]
   })
 
