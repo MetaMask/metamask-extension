@@ -426,7 +426,7 @@ IdentityStore.prototype._loadIdentities = function () {
     // // add to ethStore
     this._ethStore.addAccount(ethUtil.addHexPrefix(address))
     // add to identities
-    const defaultLabel = 'Wallet ' + (i + 1)
+    const defaultLabel = 'Account ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)
     var identity = {
       name: nickname || defaultLabel,

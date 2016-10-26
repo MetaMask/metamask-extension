@@ -2,7 +2,12 @@
 
 ## Current Master
 
+## 2.13.6 2016-10-26
+
 - Add a check for improper Transaction data.
+- Now nicknaming new accounts "Account #" instead of "Wallet #" for clarity.
+- Fix bug where custom provider selection could show duplicate items.
+- Fix bug where connecting to a local morden node would make two providers appear selected.
 - Fix bug that was sometimes preventing transactions from being sent.
 
 ## 2.13.5 2016-10-18
