@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.13.6 2016-10-26
+
 - Add a check for improper Transaction data.
 - Now nicknaming new accounts "Account #" instead of "Wallet #" for clarity.
 - Fix bug where custom provider selection could show duplicate items.
