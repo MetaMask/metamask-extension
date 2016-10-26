@@ -4,6 +4,7 @@
 
 - Add a check for improper Transaction data.
 - Now nicknaming new accounts "Account #" instead of "Wallet #" for clarity.
+- Fix bug that was sometimes preventing transactions from being sent.
 
 ## 2.13.5 2016-10-18
 
