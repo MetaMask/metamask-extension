@@ -1,0 +1,39 @@
+{
+  "metamask": {
+    "isInitialized": false,
+    "isUnlocked": false,
+    "rpcTarget": "https://rawtestrpc.metamask.io/",
+    "identities": {},
+    "unconfTxs": {},
+    "currentFiat": "USD",
+    "conversionRate": 11.47635827,
+    "conversionDate": 1477606503,
+    "network": null,
+    "accounts": {},
+    "transactions": [],
+    "isConfirmed": true,
+    "unconfMsgs": {},
+    "messages": [],
+    "shapeShiftTxList": [],
+    "keyringTypes": [
+      "Simple Key Pair"
+    ],
+    "provider": {
+      "type": "testnet"
+    }
+  },
+  "appState": {
+    "menuOpen": false,
+    "currentView": {
+      "name": "accounts",
+      "detailView": null
+    },
+    "accountDetail": {
+      "subview": "transactions"
+    },
+    "transForward": true,
+    "isLoading": false,
+    "warning": null
+  },
+  "identities": {}
+}
