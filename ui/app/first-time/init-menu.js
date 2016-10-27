@@ -5,6 +5,8 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
+const Tooltip = require('../components/tooltip')
+const getCaretCoordinates = require('textarea-caret')
 
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 
@@ -54,18 +56,73 @@ InitializeMenuScreen.prototype.renderMenu = function () {
         },
       }, 'MetaMask'),
 
+
+      h('div', [
+        h('h3', {
+          style: {
+            fontSize: '0.8em',
+            color: '#7F8082',
+            display: 'inline',
+          },
+        }, 'Encrypt your new DEN'),
+
+        h(Tooltip, {
+          title: 'Your DEN is your password-encrypted storage within MetaMask.',
+        }, [
+          h('i.fa.fa-question-circle.pointer', {
+            style: {
+              fontSize: '18px',
+              position: 'relative',
+              color: 'rgb(247, 134, 28)',
+              top: '2px',
+              marginLeft: '4px',
+            },
+          }),
+        ]),
+      ]),
+
+      // password
+      h('input.large-input.letter-spacey', {
+        type: 'password',
+        id: 'password-box',
+        placeholder: 'New Password (min 8 chars)',
+        onInput: this.inputChanged.bind(this),
+        style: {
+          width: 260,
+          marginTop: 12,
+        },
+      }),
+
+      // confirm password
+      h('input.large-input.letter-spacey', {
+        type: 'password',
+        id: 'password-box-confirm',
+        placeholder: 'Confirm Password',
+        onKeyPress: this.createVaultOnEnter.bind(this),
+        onInput: this.inputChanged.bind(this),
+        style: {
+          width: 260,
+          marginTop: 16,
+        },
+      }),
+
+
       h('button.primary', {
-        onClick: this.showCreateVault.bind(this),
+        onClick: this.createNewVault.bind(this),
         style: {
           margin: 12,
         },
-      }, 'Create New Vault'),
+      }, 'Create'),
 
       /*
       h('.flex-row.flex-center.flex-grow', [
-        h('hr'),
-        h('div', 'Advanced (Eventually?)'),
-        h('hr'),
+        h('p.pointer', {
+          style: {
+            fontSize: '0.8em',
+            color: 'rgb(247, 134, 28)',
+            textDecoration: 'underline',
+          },
+        }, 'I already have a DEN that I would like to import'),
       ]),
       */
 
@@ -73,7 +130,42 @@ InitializeMenuScreen.prototype.renderMenu = function () {
   )
 }
 
-InitializeMenuScreen.prototype.showCreateVault = function () {
-  this.props.dispatch(actions.showCreateVault())
+InitializeMenuScreen.prototype.createVaultOnEnter = function (event) {
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    this.createNewVault()
+  }
+}
+
+InitializeMenuScreen.prototype.createNewVault = function () {
+  var passwordBox = document.getElementById('password-box')
+  var password = passwordBox.value
+  var passwordConfirmBox = document.getElementById('password-box-confirm')
+  var passwordConfirm = passwordConfirmBox.value
+  // var entropy = document.getElementById('entropy-text-entry').value
+
+  if (password.length < 8) {
+    this.warning = 'password not long enough'
+    this.props.dispatch(actions.displayWarning(this.warning))
+    return
+  }
+  if (password !== passwordConfirm) {
+    this.warning = 'passwords don\'t match'
+    this.props.dispatch(actions.displayWarning(this.warning))
+    return
+  }
+
+  this.props.dispatch(actions.createNewVault(password, ''/* entropy*/))
+}
+
+InitializeMenuScreen.prototype.inputChanged = function (event) {
+  // tell mascot to look at page action
+  var element = event.target
+  var boundingRect = element.getBoundingClientRect()
+  var coordinates = getCaretCoordinates(element, element.selectionEnd)
+  this.animationEventEmitter.emit('point', {
+    x: boundingRect.left + coordinates.left - element.scrollLeft,
+    y: boundingRect.top + coordinates.top - element.scrollTop,
+  })
 }
 
