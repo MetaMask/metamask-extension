@@ -25,7 +25,8 @@ var actions = {
   showInitializeMenu: showInitializeMenu,
   createNewVault: createNewVault,
   createNewVaultInProgress: createNewVaultInProgress,
-  addNewKeyring: addNewKeyring,
+  addNewKeyring,
+  addNewAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // unlock screen
@@ -178,6 +179,7 @@ function createNewVault (password, entropy) {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
+
       dispatch(this.updateMetamaskState(newState))
       dispatch(this.showAccountsPage())
       dispatch(this.hideLoadingIndication())
@@ -195,6 +197,19 @@ function addNewKeyring (type, opts) {
       }
       dispatch(this.updateMetamaskState(newState))
       dispatch(this.showAccountsPage())
+    })
+  }
+}
+
+function addNewAccount (ringNumber = 0) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.addNewAccount(ringNumber, (err, newState) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err))
+      }
+      dispatch(this.updateMetamaskState(newState))
     })
   }
 }

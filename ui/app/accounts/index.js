@@ -87,7 +87,7 @@ AccountsScreen.prototype.render = function () {
           h('div.footer.hover-white.pointer', {
             key: 'reveal-account-bar',
             onClick: () => {
-              this.addNewKeyring()
+              this.addNewAccount()
             },
             style: {
               display: 'flex',
@@ -146,8 +146,8 @@ AccountsScreen.prototype.onShowDetail = function (address, event) {
   this.props.dispatch(actions.showAccountDetail(address))
 }
 
-AccountsScreen.prototype.addNewKeyring = function () {
-  this.props.dispatch(actions.addNewKeyring('Simple Key Pair'))
+AccountsScreen.prototype.addNewAccount = function () {
+  this.props.dispatch(actions.addNewAccount(0))
 }
 
 AccountsScreen.prototype.goHome = function () {

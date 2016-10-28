@@ -104,6 +104,3 @@ UnlockScreen.prototype.inputChanged = function (event) {
   })
 }
 
-UnlockScreen.prototype.emitAnim = function (name, a, b, c) {
-  this.animationEventEmitter.emit(name, a, b, c)
-}
