@@ -1,9 +1,10 @@
-var assert = require('assert')
-var IdentityStore = require('../../app/scripts/lib/idStore')
-var configManagerGen = require('../lib/mock-config-manager')
+const async = require('async')
+const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const async = require('async')
+const configManagerGen = require('../lib/mock-config-manager')
+const delegateCallCode = require('../lib/example-code.json').delegateCallCode
+const IdentityStore = require('../../app/scripts/lib/idStore')
 
 describe('IdentityStore', function() {
 
@@ -155,5 +156,17 @@ describe('IdentityStore', function() {
 
     assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
     assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
+  })
+
+  describe('#checkForDelegateCall', function() {
+    const idStore = new IdentityStore({
+      configManager: configManagerGen(),
+      ethStore: {
+        addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
+      },
+    })
+
+    var result = idStore.checkForDelegateCall(delegateCallCode)
+    assert.equal(result, true, 'no delegate call in provided code')
   })
 })

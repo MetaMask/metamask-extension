@@ -80,15 +80,6 @@ function createBundle(entryPoint){
     plugin: [watchify],
   })
 
-  // global transpile
-  var bablePreset = require.resolve('babel-preset-es2015')
-
-  bundler.transform(babelify, {
-    global: true,
-    presets: [bablePreset],
-    babelrc: false,
-  })
-
   bundler.on('update', bundle)
   bundle()
 

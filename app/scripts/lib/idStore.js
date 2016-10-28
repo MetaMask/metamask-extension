@@ -245,17 +245,11 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   // perform static analyis on the target contract code
   function analyzeForDelegateCall(cb){
     if (txParams.to) {
-      query.getCode(txParams.to, function (err, result) {
+      query.getCode(txParams.to, (err, result) => {
         if (err) return cb(err)
-        var code = ethUtil.toBuffer(result)
-        if (code !== '0x') {
-          var ops = ethBinToOps(code)
-          var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
-          txData.containsDelegateCall = containsDelegateCall
-          cb()
-        } else {
-          cb()
-        }
+        var containsDelegateCall = self.checkForDelegateCall(result)
+        txData.containsDelegateCall = containsDelegateCall
+        cb()
       })
     } else {
       cb()
@@ -277,6 +271,17 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     self._didUpdate()
     // signal completion of add tx
     cb(null, txData)
+  }
+}
+
+IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
+  const code = ethUtil.toBuffer(codeHex)
+  if (code !== '0x') {
+    const ops = ethBinToOps(code)
+    const containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
+    return containsDelegateCall
+  } else {
+    return false
   }
 }
 
@@ -419,7 +424,7 @@ IdentityStore.prototype._loadIdentities = function () {
     // // add to ethStore
     this._ethStore.addAccount(ethUtil.addHexPrefix(address))
     // add to identities
-    const defaultLabel = 'Wallet ' + (i + 1)
+    const defaultLabel = 'Account ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)
     var identity = {
       name: nickname || defaultLabel,
