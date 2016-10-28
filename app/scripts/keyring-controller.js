@@ -11,8 +11,10 @@ const createId = require('web3-provider-engine/util/random-id')
 
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
+const HdKeyring = require('./keyrings/hd')
 const keyringTypes = [
   SimpleKeyring,
+  HdKeyring,
 ]
 
 module.exports = class KeyringController extends EventEmitter {
@@ -67,7 +69,12 @@ module.exports = class KeyringController extends EventEmitter {
     })
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
-      cb(null, this.getState())
+
+      // TEMPORARY SINGLE-KEYRING CONFIG:
+      this.addNewKeyring('HD Key Tree', null, cb)
+
+      // NORMAL BEHAVIOR:
+      // cb(null, this.getState())
     })
     .catch((err) => {
       cb(err)
@@ -97,22 +104,32 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   addNewKeyring(type, opts, cb) {
-    const i = this.getAccounts().length
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
     const accounts = keyring.addAccounts(1)
 
-    accounts.forEach((account) => {
-      this.loadBalanceAndNickname(account, i)
-    })
-
+    this.setupAccounts(accounts)
     this.keyrings.push(keyring)
     this.persistAllKeyrings()
     .then(() => {
-      cb(this.getState())
+      cb(null, this.getState())
     })
     .catch((reason) => {
       cb(reason)
+    })
+  }
+
+  addNewAccount(keyRingNum = 0, cb) {
+    const ring = this.keyrings[keyRingNum]
+    const accounts = ring.addAccounts(1)
+    this.setupAccounts(accounts)
+    cb(null, this.getState())
+  }
+
+  setupAccounts(accounts) {
+    const i = this.getAccounts().length
+    accounts.forEach((account) => {
+      this.loadBalanceAndNickname(account, i)
     })
   }
 
