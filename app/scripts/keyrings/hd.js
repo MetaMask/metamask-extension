@@ -5,7 +5,9 @@ const ethUtil = require('ethereumjs-util')
 const type = 'HD Key Tree'
 const sigUtil = require('../lib/sig-util')
 
-module.exports = class SimpleKeyring extends EventEmitter {
+const hdPathString = `m/44'/60'/0'/0`
+
+module.exports = class HdKeyring extends EventEmitter {
 
   static type() {
     return type
@@ -28,7 +30,7 @@ module.exports = class SimpleKeyring extends EventEmitter {
     const seed = bip39.mnemonicToSeed(mnemonic)
     this.mnemonic = mnemonic
     this.hdWallet = hdkey.fromMasterSeed(seed)
-    this.seed = bip39.mnemonicToSeedHex(seed)
+    this.root = this.hdWallet.derivePath(hdPathString)
   }
 
   serialize() {
@@ -39,9 +41,15 @@ module.exports = class SimpleKeyring extends EventEmitter {
   }
 
   addAccounts(n = 1) {
+    if (!this.root) {
+      this.initFromMnemonic(bip39.generateMnemonic())
+    }
+
+    const oldLen = this.wallets.length
     const newWallets = []
-    for (let i = 0; i < n; i++) {
-      const wallet = this.hdWallet.getWallet()
+    for (let i = oldLen; i < n + oldLen; i++) {
+      const child = this.root.deriveChild(i)
+      const wallet = child.getWallet()
       newWallets.push(wallet)
       this.wallets.push(wallet)
     }
