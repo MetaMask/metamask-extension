@@ -2,11 +2,13 @@ const async = require('async')
 const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const configManagerGen = require('../lib/mock-config-manager')
+const ConfigManager = require('../../app/scripts/lib/config-manager')
 const delegateCallCode = require('../lib/example-code.json').delegateCallCode
 
 // The old way:
 const IdentityStore = require('../../app/scripts/lib/idStore')
+const STORAGE_KEY = 'metamask-config'
+const extend = require('xtend')
 
 // The new ways:
 var KeyringController = require('../../app/scripts/keyring-controller')
@@ -22,7 +24,7 @@ const mockVault = {
 describe('IdentityStore to KeyringController migration', function() {
 
   // The stars of the show:
-  let idStore, keyringController, seedWords
+  let idStore, keyringController, seedWords, configManager
 
   let password = 'password123'
   let entropy = 'entripppppyy duuude'
@@ -36,19 +38,21 @@ describe('IdentityStore to KeyringController migration', function() {
   beforeEach(function(done) {
     this.sinon = sinon.sandbox.create()
     window.localStorage = {} // Hacking localStorage support into JSDom
-    var configManager = configManagerGen()
+    configManager = new ConfigManager({
+      loadData,
+      setData: (d) => { global.localStorage = d }
+    })
 
-    window.localStorage = {} // Hacking localStorage support into JSDom
 
     idStore = new IdentityStore({
-      configManager: configManagerGen(),
+      configManager: configManager,
       ethStore: {
         addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
         del(acct) { delete accounts[acct] },
       },
     })
 
-    idStore._createVault(password, mockVault.seed, null, function (err, seeds) {
+    idStore._createVault(password, mockVault.seed, null, function (err) {
       assert.ifError(err, 'createNewVault threw error')
       originalKeystore = idStore._idmgmt.keyStore
 
@@ -58,6 +62,7 @@ describe('IdentityStore to KeyringController migration', function() {
           configManager,
           ethStore: {
             addAccount(acct) { newAccounts.push(ethUtil.addHexPrefix(acct)) },
+            del(acct) { delete newAccounts[acct] },
           },
         })
 
@@ -71,14 +76,13 @@ describe('IdentityStore to KeyringController migration', function() {
 
   describe('creating new vault type', function() {
     it('should use the password to migrate the old vault', function(done) {
+      this.timeout(5000)
       keyringController.createNewVault(password, null, function (err, state) {
         assert.ifError(err, 'createNewVault threw error')
 
         let newAccounts = keyringController.getAccounts()
         let newAccount = ethUtil.addHexPrefix(newAccounts[0])
-        assert.equal(newAccount, accounts[0], 'restored the account')
-        assert.equal(newAccount, mockVault.account, 'restored the correct account')
-
+        assert.equal(ethUtil.addHexPrefix(newAccount), mockVault.account, 'restored the correct account')
         const newSeed = keyringController.keyrings[0].mnemonic
         assert.equal(newSeed, mockVault.seed, 'seed phrase transferred.')
 
@@ -89,3 +93,52 @@ describe('IdentityStore to KeyringController migration', function() {
   })
 })
 
+function loadData () {
+  var oldData = getOldStyleData()
+  var newData
+  try {
+    newData = JSON.parse(window.localStorage[STORAGE_KEY])
+  } catch (e) {}
+
+  var data = extend({
+    meta: {
+      version: 0,
+    },
+    data: {
+      config: {
+        provider: {
+          type: 'testnet',
+        },
+      },
+    },
+  }, oldData || null, newData || null)
+  return data
+}
+
+function setData (data) {
+  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
+}
+
+function getOldStyleData () {
+  var config, wallet, seedWords
+
+  var result = {
+    meta: { version: 0 },
+    data: {},
+  }
+
+  try {
+    config = JSON.parse(window.localStorage['config'])
+    result.data.config = config
+  } catch (e) {}
+  try {
+    wallet = JSON.parse(window.localStorage['lightwallet'])
+    result.data.wallet = wallet
+  } catch (e) {}
+  try {
+    seedWords = window.localStorage['seedWords']
+    result.data.seedWords = seedWords
+  } catch (e) {}
+
+  return result
+}
