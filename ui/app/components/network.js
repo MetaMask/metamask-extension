@@ -36,13 +36,14 @@ Network.prototype.render = function () {
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
-  } else if (parseInt(networkNumber) === 2) {
+  } else if (providerName === 'testnet') {
     hoverText = 'Morden Test Network'
     iconName = 'morden-test-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
   }
+
   return (
     h('#network_component.flex-center.pointer', {
       style: {

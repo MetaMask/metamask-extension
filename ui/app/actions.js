@@ -174,7 +174,7 @@ function tryUnlockMetamask (password) {
 
 function createNewVault (password, entropy) {
   return (dispatch) => {
-    dispatch(actions.createNewVaultInProgress())
+    // dispatch(actions.createNewVaultInProgress())
     background.createNewVault(password, entropy, (err, newState) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
