@@ -49,7 +49,7 @@ InitializeMenuScreen.prototype.renderMenu = function () {
 
       h('h1', {
         style: {
-          fontSize: '1.4em',
+          fontSize: '1.7em',
           textTransform: 'uppercase',
           color: '#7F8082',
           marginBottom: 20,
@@ -90,6 +90,7 @@ InitializeMenuScreen.prototype.renderMenu = function () {
         style: {
           width: 260,
           marginTop: 12,
+          textAlign: 'center',
         },
       }),
 
@@ -103,6 +104,7 @@ InitializeMenuScreen.prototype.renderMenu = function () {
         style: {
           width: 260,
           marginTop: 16,
+          textAlign: 'center',
         },
       }),
 
@@ -168,4 +170,3 @@ InitializeMenuScreen.prototype.inputChanged = function (event) {
     y: boundingRect.top + coordinates.top - element.scrollTop,
   })
 }
-
