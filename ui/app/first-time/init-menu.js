@@ -144,6 +144,10 @@ InitializeMenuScreen.prototype.createVaultOnEnter = function (event) {
   }
 }
 
+InitializeMenuScreen.prototype.componentDidMount = function () {
+  document.getElementById('password-box').focus()
+}
+
 InitializeMenuScreen.prototype.createNewVault = function () {
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value
