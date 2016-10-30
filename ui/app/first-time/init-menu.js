@@ -20,6 +20,7 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     currentView: state.appState.currentView,
+    warning: state.appState.warning,
   }
 }
 
@@ -29,7 +30,7 @@ InitializeMenuScreen.prototype.render = function () {
   switch (state.currentView.name) {
 
     default:
-      return this.renderMenu()
+      return this.renderMenu(state)
 
   }
 }
@@ -38,7 +39,7 @@ InitializeMenuScreen.prototype.render = function () {
 //   document.getElementById('password-box').focus()
 // }
 
-InitializeMenuScreen.prototype.renderMenu = function () {
+InitializeMenuScreen.prototype.renderMenu = function (state) {
   return (
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
@@ -115,6 +116,10 @@ InitializeMenuScreen.prototype.renderMenu = function () {
           margin: 12,
         },
       }, 'Create'),
+
+      (!state.inProgress && state.warning) && (
+        h('span.in-progress-notification', state.warning)
+      ),
 
       /*
       h('.flex-row.flex-center.flex-grow', [
