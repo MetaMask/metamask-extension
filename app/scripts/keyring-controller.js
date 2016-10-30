@@ -9,6 +9,9 @@ const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
 const createId = require('web3-provider-engine/util/random-id')
 
+// TEMPORARY UNTIL FULL DEPRECATION:
+const IdStoreMigrator = require('./lib/idStore-migrator')
+
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
 const HdKeyring = require('./keyrings/hd')
@@ -34,6 +37,11 @@ module.exports = class KeyringController extends EventEmitter {
     this._unconfMsgCbs = {}
 
     this.network = null
+
+    // TEMPORARY UNTIL FULL DEPRECATION:
+    this.idStoreMigrator = new IdStoreMigrator({
+      configManager: this.configManager,
+    })
   }
 
   getState() {
@@ -63,18 +71,32 @@ module.exports = class KeyringController extends EventEmitter {
   createNewVault(password, entropy, cb) {
     const salt = this.encryptor.generateSalt()
     this.configManager.setSalt(salt)
-    this.loadKey(password)
+
+    let serialized
+
+    this.idStoreMigrator.oldSeedForPassword(password)
+    .then((oldSerialized) => {
+      if (oldSerialized) {
+        serialized = oldSerialized
+      }
+      return this.loadKey(password)
+    })
     .then((key) => {
-      return this.encryptor.encryptWithKey(key, [])
+      const first = serialized ? [serialized] : []
+      return this.encryptor.encryptWithKey(key, first)
     })
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
 
-      // TEMPORARY SINGLE-KEYRING CONFIG:
-      this.addNewKeyring('HD Key Tree', null, cb)
+      if (!serialized) {
+        // TEMPORARY SINGLE-KEYRING CONFIG:
+        return this.addNewKeyring('HD Key Tree', null, cb)
+      } else {
+        return this.submitPassword(password, cb)
+      }
 
       // NORMAL BEHAVIOR:
-      // cb(null, this.getState())
+      // return cb(null, this.getState())
     })
     .catch((err) => {
       cb(err)
@@ -99,6 +121,7 @@ module.exports = class KeyringController extends EventEmitter {
     return this.encryptor.keyFromPassword(password + salt)
     .then((key) => {
       this.key = key
+      this.configManager.setSalt(salt)
       return key
     })
   }
