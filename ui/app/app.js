@@ -37,7 +37,6 @@ function App () { Component.call(this) }
 function mapStateToProps (state) {
   return {
     // state from plugin
-    seedWords: state.metamask.seedWords,
     isLoading: state.appState.isLoading,
     isConfirmed: state.metamask.isConfirmed,
     isInitialized: state.metamask.isInitialized,
