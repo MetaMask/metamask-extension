@@ -8,6 +8,7 @@ const EthQuery = require('eth-query')
 const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
 const createId = require('web3-provider-engine/util/random-id')
+const autoFaucet = require('./lib/auto-faucet')
 
 // TEMPORARY UNTIL FULL DEPRECATION:
 const IdStoreMigrator = require('./lib/idStore-migrator')
@@ -90,7 +91,11 @@ module.exports = class KeyringController extends EventEmitter {
 
       if (!serialized) {
         // TEMPORARY SINGLE-KEYRING CONFIG:
-        return this.addNewKeyring('HD Key Tree', null, cb)
+        return this.addNewKeyring('HD Key Tree', null, (err, newState) => {
+          const firstAccount = this.keyrings[0].getAccounts()[0]
+          autoFaucet(ethUtil.addHexPrefix(firstAccount))
+          cb(err, newState)
+        })
       } else {
         return this.submitPassword(password, cb)
       }
