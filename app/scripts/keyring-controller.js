@@ -47,6 +47,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   getState() {
     return {
+      seedWords: this.configManager.getSeedWords(),
       isInitialized: !!this.configManager.getVault(),
       isUnlocked: !!this.key,
       isConfirmed: true, // AUDIT this.configManager.getConfirmed(),
@@ -90,10 +91,14 @@ module.exports = class KeyringController extends EventEmitter {
       this.configManager.setVault(encryptedString)
 
       if (!serialized) {
-        // TEMPORARY SINGLE-KEYRING CONFIG:
-        return this.addNewKeyring('HD Key Tree', null, (err, newState) => {
-          const firstAccount = this.keyrings[0].getAccounts()[0]
-          autoFaucet(ethUtil.addHexPrefix(firstAccount))
+        this.addNewKeyring('HD Key Tree', null, (err, newState) => {
+          const firstKeyring = this.keyrings[0]
+          const firstAccount = firstKeyring.getAccounts()[0]
+          const hexAccount = ethUtil.addHexPrefix(firstAccount)
+          const seedWords = firstKeyring.serialize().mnemonic
+          this.configManager.setSelectedAccount(hexAccount)
+          this.configManager.setSeedWords(seedWords)
+          autoFaucet(hexAccount)
           cb(err, newState)
         })
       } else {
@@ -468,6 +473,11 @@ module.exports = class KeyringController extends EventEmitter {
     var buffer = new BN('100000', 10)
     var result = gas.add(buffer)
     return ethUtil.addHexPrefix(result.toString(16))
+  }
+
+  clearSeedWordCache(cb) {
+    this.configManager.setSeedWords(null)
+    cb(null, this.configManager.getSelectedAccount())
   }
 
 }

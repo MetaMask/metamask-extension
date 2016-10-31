@@ -2,6 +2,7 @@ const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
 const rp = require('request-promise')
+const ethUtil = require('ethereumjs-util')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -138,7 +139,7 @@ ConfigManager.prototype.getSelectedAccount = function () {
 
 ConfigManager.prototype.setSelectedAccount = function (address) {
   var config = this.getConfig()
-  config.selectedAccount = address
+  config.selectedAccount = ethUtil.addHexPrefix(address)
   this.setConfig(config)
 }
 
@@ -153,9 +154,21 @@ ConfigManager.prototype.setShowSeedWords = function (should) {
   this.setData(data)
 }
 
+
 ConfigManager.prototype.getShouldShowSeedWords = function () {
   var data = this.migrator.getData()
   return data.showSeedWords
+}
+
+ConfigManager.prototype.setSeedWords = function (words) {
+  var data = this.getData()
+  data.seedWords = words
+  this.setData(data)
+}
+
+ConfigManager.prototype.getSeedWords = function () {
+  var data = this.getData()
+  return ('seedWords' in data) && data.seedWords
 }
 
 ConfigManager.prototype.getCurrentRpcAddress = function () {

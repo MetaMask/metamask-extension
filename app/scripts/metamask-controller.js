@@ -60,6 +60,7 @@ module.exports = class MetamaskController {
 
       // forward directly to keyringController
       createNewVault: keyringController.createNewVault.bind(keyringController),
+      clearSeedWordCache: keyringController.clearSeedWordCache.bind(keyringController),
       addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
       addNewAccount: keyringController.addNewAccount.bind(keyringController),
       submitPassword: keyringController.submitPassword.bind(keyringController),

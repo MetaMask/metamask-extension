@@ -27,6 +27,8 @@ const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
+const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
+
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -35,6 +37,7 @@ function App () { Component.call(this) }
 function mapStateToProps (state) {
   return {
     // state from plugin
+    seedWords: state.metamask.seedWords,
     isLoading: state.appState.isLoading,
     isConfirmed: state.metamask.isConfirmed,
     isInitialized: state.metamask.isInitialized,
@@ -390,6 +393,10 @@ App.prototype.renderPrimary = function () {
 
   if (!props.isConfirmed) {
     return h(DisclaimerScreen, {key: 'disclaimerScreen'})
+  }
+
+  if (props.seedWords) {
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show initialize screen

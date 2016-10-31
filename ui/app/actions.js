@@ -80,6 +80,7 @@ var actions = {
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
+  confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
   BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
   backToAccountDetail: backToAccountDetail,
@@ -168,6 +169,21 @@ function tryUnlockMetamask (password) {
         } catch (e) {}
         dispatch(actions.unlockMetamask(selectedAccount))
       }
+    })
+  }
+}
+
+function confirmSeedWords () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.clearSeedWordCache((err, account) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err.message))
+      }
+
+      console.log('Seed word cache cleared. ' + account)
+      dispatch(actions.showAccountDetail(account))
     })
   }
 }
