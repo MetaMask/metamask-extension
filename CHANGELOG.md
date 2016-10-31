@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix github link on info page to point at current repository.
+
 ## 2.13.6 2016-10-26
 
 - Add a check for improper Transaction data.
