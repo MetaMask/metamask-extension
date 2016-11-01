@@ -10,6 +10,7 @@ const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 
 const STORAGE_KEY = 'metamask-config'
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
 
 const controller = new MetamaskController({
@@ -29,7 +30,7 @@ function triggerUi () {
 // On first install, open a window to MetaMask website to how-it-works.
 
 extension.runtime.onInstalled.addListener(function (details) {
-  if (details.reason === 'install') {
+  if ((details.reason === 'install') && (!METAMASK_DEBUG))  {
     extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
   }
 })
