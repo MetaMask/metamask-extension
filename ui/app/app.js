@@ -300,6 +300,7 @@ App.prototype.renderDropdown = function () {
     }),
   ])
 }
+
 App.prototype.renderBackButton = function (style, justArrow = false) {
   var props = this.props
   return (
@@ -317,12 +318,13 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
       }, 'BACK'),
     ])
   )
-
 }
+
 App.prototype.renderBackToInitButton = function () {
   var props = this.props
   var button = null
   if (!props.isConfirmed) return button
+
   if (!props.isUnlocked) {
     if (props.currentView.name === 'InitMenu') {
       button = props.forgottenPassword ? h('.flex-row', {
@@ -346,32 +348,6 @@ App.prototype.renderBackToInitButton = function () {
         }, 'LOGIN'),
         h('i.fa.fa-arrow-right.cursor-pointer'),
       ]) : null
-    } else if (props.isInitialized) {
-      var style
-      switch (props.currentView.name) {
-        case 'restoreVault':
-          style = {
-            position: 'absolute',
-            top: '41px',
-            left: '70px',
-            fontSize: '21px',
-            fontFamily: 'Montserrat Bold',
-            color: 'rgb(174, 174, 174)',
-          }
-          return this.renderBackButton(style, true)
-        default:
-          style = {
-            position: 'absolute',
-            bottom: '10px',
-            left: '15px',
-            fontSize: '21px',
-            fontFamily: 'Montserrat Light',
-            color: '#7F8082',
-            width: '71.969px',
-            alignItems: 'flex-end',
-          }
-          return this.renderBackButton(style)
-      }
     }
   }
   return button
@@ -399,17 +375,24 @@ App.prototype.renderPrimary = function () {
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-
     }
   }
 
   // show unlock screen
   if (!props.isUnlocked) {
-    return h(UnlockScreen, {key: 'locked'})
+    switch (props.currentView.name) {
+
+      case 'restoreVault':
+        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+
+      default:
+        return h(UnlockScreen, {key: 'locked'})
+    }
   }
 
   // show current view
   switch (props.currentView.name) {
+
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})
 

@@ -117,8 +117,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         },
       }, 'Create'),
 
-
-
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
           onClick: this.showRestoreVault.bind(this),
@@ -129,7 +127,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           },
         }, 'I already have a DEN that I would like to import'),
       ]),
-
 
     ])
   )

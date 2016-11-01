@@ -65,6 +65,17 @@ UnlockScreen.prototype.render = function () {
           },
         }, 'Unlock'),
       ]),
+
+      h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: () => this.props.dispatch(actions.showRestoreVault()),
+          style: {
+            fontSize: '0.8em',
+            color: 'rgb(247, 134, 28)',
+            textDecoration: 'underline',
+          },
+        }, 'I forgot my password.'),
+      ]),
     ])
   )
 }
