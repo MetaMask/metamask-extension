@@ -3,7 +3,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('../actions')
+const actions = require('../../../actions')
 
 module.exports = connect(mapStateToProps)(RevealSeedConfirmatoin)
 
@@ -68,7 +68,7 @@ RevealSeedConfirmatoin.prototype.render = function () {
           style: {
             marginTop: '12px',
           },
-        }, 'Enter the phrase "I understand" to proceed.'),
+        }, `Enter the phrase "${this.confirmationPhrase}" to proceed.`),
 
         // confirm confirmation
         h('input.large-input.letter-spacey', {

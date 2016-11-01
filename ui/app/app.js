@@ -7,7 +7,6 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
 const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
-const CreateVaultScreen = require('./first-time/create-vault')
 const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
@@ -28,6 +27,7 @@ const Tooltip = require('./components/tooltip')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
+const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -349,16 +349,6 @@ App.prototype.renderBackToInitButton = function () {
     } else if (props.isInitialized) {
       var style
       switch (props.currentView.name) {
-        case 'createVault':
-          style = {
-            position: 'absolute',
-            top: '41px',
-            left: '80px',
-            fontSize: '21px',
-            fontFamily: 'Montserrat Bold',
-            color: 'rgb(174, 174, 174)',
-          }
-          return this.renderBackButton(style, true)
         case 'restoreVault':
           style = {
             position: 'absolute',
@@ -403,8 +393,9 @@ App.prototype.renderPrimary = function () {
 
     // show current view
     switch (props.currentView.name) {
-      case 'createVault':
-        return h(CreateVaultScreen, {key: 'createVault'})
+
+      case 'restoreVault':
+        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
@@ -439,9 +430,6 @@ App.prototype.renderPrimary = function () {
 
     case 'info':
       return h(InfoScreen, {key: 'info'})
-
-    case 'createVault':
-      return h(CreateVaultScreen, {key: 'createVault'})
 
     case 'buyEth':
       return h(BuyView, {key: 'buyEthView'})

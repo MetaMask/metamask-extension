@@ -70,6 +70,23 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = ethStore
   }
 
+  createNewVaultAndKeychain(password, entropy, cb) {
+    this.createNewVault(password, entropy, (err, serialized) => {
+      if (err) return cb(err)
+      this.createFirstKeyTree(serialized, password, cb)
+    })
+  }
+
+  createNewVaultAndRestore(password, seed, cb) {
+    this.createNewVault(password, '', (err) => {
+      if (err) return cb(err)
+      this.addNewKeyring('HD Key Tree', {
+        mnemonic: seed,
+        n: 0,
+      }, cb)
+    })
+  }
+
   createNewVault(password, entropy, cb) {
     const salt = this.encryptor.generateSalt()
     this.configManager.setSalt(salt)
@@ -89,28 +106,30 @@ module.exports = class KeyringController extends EventEmitter {
     })
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
-
-      if (!serialized) {
-        this.addNewKeyring('HD Key Tree', null, (err, newState) => {
-          const firstKeyring = this.keyrings[0]
-          const firstAccount = firstKeyring.getAccounts()[0]
-          const hexAccount = ethUtil.addHexPrefix(firstAccount)
-          const seedWords = firstKeyring.serialize().mnemonic
-          this.configManager.setSelectedAccount(hexAccount)
-          this.configManager.setSeedWords(seedWords)
-          autoFaucet(hexAccount)
-          cb(err, newState)
-        })
-      } else {
-        return this.submitPassword(password, cb)
-      }
-
+      cb(null, serialized)
       // NORMAL BEHAVIOR:
       // return cb(null, this.getState())
     })
     .catch((err) => {
       cb(err)
     })
+  }
+
+  createFirstKeyTree(serialized, password, cb) {
+    if (!serialized) {
+      this.addNewKeyring('HD Key Tree', {n: 1}, (err, newState) => {
+        const firstKeyring = this.keyrings[0]
+        const firstAccount = firstKeyring.getAccounts()[0]
+        const hexAccount = ethUtil.addHexPrefix(firstAccount)
+        const seedWords = firstKeyring.serialize().mnemonic
+        this.configManager.setSelectedAccount(hexAccount)
+        this.configManager.setSeedWords(seedWords)
+        autoFaucet(hexAccount)
+        cb(err, this.getState())
+      })
+    } else {
+      return this.submitPassword(password, cb)
+    }
   }
 
   submitPassword(password, cb) {
@@ -139,10 +158,10 @@ module.exports = class KeyringController extends EventEmitter {
   addNewKeyring(type, opts, cb) {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
-    const accounts = keyring.addAccounts(1)
+    const accounts = keyring.getAccounts()
 
-    this.setupAccounts(accounts)
     this.keyrings.push(keyring)
+    this.setupAccounts(accounts)
     this.persistAllKeyrings()
     .then(() => {
       cb(null, this.getState())
@@ -160,17 +179,21 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   setupAccounts(accounts) {
-    const i = this.getAccounts().length
     accounts.forEach((account) => {
-      this.loadBalanceAndNickname(account, i)
+      this.loadBalanceAndNickname(account)
     })
   }
 
   // Takes an account address and an iterator representing
   // the current number of named accounts.
-  loadBalanceAndNickname(account, i) {
+  loadBalanceAndNickname(account) {
     const address = ethUtil.addHexPrefix(account)
     this.ethStore.addAccount(address)
+    this.createNickname(address)
+  }
+
+  createNickname(address) {
+    var i = Object.keys(this.identities).length
     const oldNickname = this.configManager.nicknameForWallet(address)
     const name = oldNickname || `Account ${++i}`
     this.identities[address] = {

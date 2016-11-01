@@ -23,7 +23,8 @@ var actions = {
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
-  createNewVault: createNewVault,
+  createNewVaultAndKeychain: createNewVaultAndKeychain,
+  createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
   addNewKeyring,
   addNewAccount,
@@ -188,17 +189,27 @@ function confirmSeedWords () {
   }
 }
 
-function createNewVault (password, entropy) {
+function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
-    // dispatch(actions.createNewVaultInProgress())
-    background.createNewVault(password, entropy, (err, newState) => {
+    dispatch(actions.showLoadingIndication())
+    background.createNewVaultAndRestore(password, seed, (err, newState) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+
+      dispatch(this.updateMetamaskState(newState))
+    })
+  }
+}
+
+function createNewVaultAndKeychain (password, entropy) {
+  return (dispatch) => {
+    background.createNewVaultAndKeychain(password, entropy, (err, newState) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
 
       dispatch(this.updateMetamaskState(newState))
-      dispatch(this.showAccountsPage())
-      dispatch(this.hideLoadingIndication())
+      dispatch(this.showNewVaultSeed())
     })
   }
 }

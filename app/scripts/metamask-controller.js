@@ -59,7 +59,8 @@ module.exports = class MetamaskController {
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to keyringController
-      createNewVault: keyringController.createNewVault.bind(keyringController),
+      createNewVaultAndKeychain: keyringController.createNewVaultAndKeychain.bind(keyringController),
+      createNewVaultAndRestore: keyringController.createNewVaultAndRestore.bind(keyringController),
       clearSeedWordCache: keyringController.clearSeedWordCache.bind(keyringController),
       addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
       addNewAccount: keyringController.addNewAccount.bind(keyringController),

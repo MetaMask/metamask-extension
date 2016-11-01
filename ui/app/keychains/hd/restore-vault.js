@@ -1,8 +1,8 @@
 const inherits = require('util').inherits
-const PersistentForm = require('../../lib/persistent-form')
+const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('../actions')
+const actions = require('../../actions')
 
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 
@@ -96,7 +96,7 @@ RestoreVaultScreen.prototype.render = function () {
 
         // submit
         h('button.primary', {
-          onClick: this.restoreVault.bind(this),
+          onClick: this.createNewVaultAndRestore.bind(this),
         }, 'OK'),
 
       ]),
@@ -116,7 +116,7 @@ RestoreVaultScreen.prototype.onMaybeCreate = function (event) {
   }
 }
 
-RestoreVaultScreen.prototype.restoreVault = function () {
+RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   // check password
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value
@@ -144,5 +144,5 @@ RestoreVaultScreen.prototype.restoreVault = function () {
   // submit
   this.warning = null
   this.props.dispatch(actions.displayWarning(this.warning))
-  this.props.dispatch(actions.recoverFromSeed(password, seed))
+  this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
 }

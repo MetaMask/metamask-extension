@@ -50,10 +50,10 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
 
       h('h1', {
         style: {
-          fontSize: '1.7em',
+          fontSize: '1.3em',
           textTransform: 'uppercase',
           color: '#7F8082',
-          marginBottom: 20,
+          marginBottom: 10,
         },
       }, 'MetaMask'),
 
@@ -82,6 +82,8 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         ]),
       ]),
 
+      h('span.in-progress-notification', state.warning),
+
       // password
       h('input.large-input.letter-spacey', {
         type: 'password',
@@ -91,7 +93,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           width: 260,
           marginTop: 12,
-          textAlign: 'center',
         },
       }),
 
@@ -105,25 +106,22 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           width: 260,
           marginTop: 16,
-          textAlign: 'center',
         },
       }),
 
 
       h('button.primary', {
-        onClick: this.createNewVault.bind(this),
+        onClick: this.createNewVaultAndKeychain.bind(this),
         style: {
           margin: 12,
         },
       }, 'Create'),
 
-      (!state.inProgress && state.warning) && (
-        h('span.in-progress-notification', state.warning)
-      ),
 
-      /*
+
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
+          onClick: this.showRestoreVault.bind(this),
           style: {
             fontSize: '0.8em',
             color: 'rgb(247, 134, 28)',
@@ -131,7 +129,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           },
         }, 'I already have a DEN that I would like to import'),
       ]),
-      */
+
 
     ])
   )
@@ -140,7 +138,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
 InitializeMenuScreen.prototype.createVaultOnEnter = function (event) {
   if (event.key === 'Enter') {
     event.preventDefault()
-    this.createNewVault()
+    this.createNewVaultAndKeychain()
   }
 }
 
@@ -148,7 +146,11 @@ InitializeMenuScreen.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
-InitializeMenuScreen.prototype.createNewVault = function () {
+InitializeMenuScreen.prototype.showRestoreVault = function () {
+  this.props.dispatch(actions.showRestoreVault())
+}
+
+InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value
   var passwordConfirmBox = document.getElementById('password-box-confirm')
@@ -166,7 +168,7 @@ InitializeMenuScreen.prototype.createNewVault = function () {
     return
   }
 
-  this.props.dispatch(actions.createNewVault(password, ''/* entropy*/))
+  this.props.dispatch(actions.createNewVaultAndKeychain(password, ''/* entropy*/))
 }
 
 InitializeMenuScreen.prototype.inputChanged = function (event) {
