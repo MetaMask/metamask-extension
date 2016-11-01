@@ -82,7 +82,7 @@ module.exports = class KeyringController extends EventEmitter {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
-        n: 0,
+        n: 1,
       }, cb)
     })
   }

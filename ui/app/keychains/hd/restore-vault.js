@@ -66,7 +66,7 @@ RestoreVaultScreen.prototype.render = function () {
         type: 'password',
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
-        onKeyPress: this.onMaybeCreate.bind(this),
+        onKeyPress: this.createOnEnter.bind(this),
         dataset: {
           persistentFormId: 'password-confirmation',
         },
@@ -110,9 +110,9 @@ RestoreVaultScreen.prototype.showInitializeMenu = function () {
   this.props.dispatch(actions.showInitializeMenu())
 }
 
-RestoreVaultScreen.prototype.onMaybeCreate = function (event) {
+RestoreVaultScreen.prototype.createOnEnter = function (event) {
   if (event.key === 'Enter') {
-    this.restoreVault()
+    this.createNewVaultAndRestore()
   }
 }
 
