@@ -122,6 +122,7 @@ module.exports = class KeyringController extends EventEmitter {
     return this.loadKey(password)
     .then((derivedKey) => {
       key = derivedKey
+      this.key = key
       return this.idStoreMigrator.oldSeedForPassword(password)
     })
     .then((serialized) => {
@@ -144,10 +145,13 @@ module.exports = class KeyringController extends EventEmitter {
     const salt = this.encryptor.generateSalt()
     configManager.setSalt(salt)
 
-    return new Promise((res, rej) => {
-      this.createFirstKeyTree(password, (err, state) => {
-        if (err) return rej(err)
-        res(configManager.getVault())
+    return this.migrateAndGetKey(password)
+    .then((key) => {
+      return new Promise((res, rej) => {
+        this.createFirstKeyTree(password, (err, state) => {
+          if (err) return rej(err)
+          res(configManager.getVault())
+        })
       })
     })
     .then((encryptedString) => {
