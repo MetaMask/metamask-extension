@@ -131,12 +131,10 @@ module.exports = class KeyringController extends EventEmitter {
         const keyring = this.restoreKeyring(accountLength, serialized)
         this.keyrings.push(keyring)
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
-        return this.persistAllKeyrings().then(() => {
-          return key
-        })
-      } else {
-        return Promise.resolve(key)
       }
+      return this.persistAllKeyrings().then(() => {
+        return key
+      })
     })
   }
 
@@ -147,12 +145,7 @@ module.exports = class KeyringController extends EventEmitter {
 
     return this.migrateAndGetKey(password)
     .then((key) => {
-      return new Promise((res, rej) => {
-        this.createFirstKeyTree(password, (err, state) => {
-          if (err) return rej(err)
-          res(configManager.getVault())
-        })
-      })
+      cb(null, configManager.getVault())
     })
     .then((encryptedString) => {
       const serialized = this.keyrings[0].serialize()

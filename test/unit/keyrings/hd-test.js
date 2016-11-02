@@ -9,11 +9,22 @@ const sampleMnemonic = 'finish oppose decorate face calm tragic certain desk hou
 const firstAcct = '1c96099350f13d558464ec79b9be4445aa0ef579'
 const secondAcct = '1b00aed43a693f3a957f9feb5cc08afa031e37a0'
 
-describe('simple-keyring', function() {
+describe('hd-keyring', function() {
 
   let keyring
   beforeEach(function() {
     keyring = new HdKeyring()
+  })
+
+  describe('constructor', function() {
+    keyring = new HdKeyring({
+      mnemonic: sampleMnemonic,
+      n: 2,
+    })
+
+    const accounts = keyring.getAccounts()
+    assert.equal(accounts[0], firstAcct)
+    assert.equal(accounts[1], secondAcct)
   })
 
   describe('Keyring.type()', function() {
