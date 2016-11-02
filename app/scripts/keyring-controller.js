@@ -132,8 +132,6 @@ module.exports = class KeyringController extends EventEmitter {
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
       cb(null, serialized)
-      // NORMAL BEHAVIOR:
-      // return cb(null, this.getState())
     })
     .catch((err) => {
       cb(err)
@@ -156,6 +154,14 @@ module.exports = class KeyringController extends EventEmitter {
       return this.submitPassword(password, cb)
     }
   }
+
+  placeSeedWords () {
+    const firstKeyring = this.keyrings[0]
+    const seedWords = firstKeyring.serialize().mnemonic
+    this.configManager.setSeedWords(seedWords)
+  }
+
+
 
   submitPassword(password, cb) {
     this.loadKey(password)

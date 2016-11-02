@@ -30,6 +30,10 @@ var actions = {
   addNewAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
+  // seed recovery actions
+  REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
+  revealSeedConfirmation: revealSeedConfirmation,
+  requestRevealSeed: requestRevealSeed,
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -212,6 +216,25 @@ function createNewVaultAndKeychain (password, entropy) {
     })
   }
 }
+
+function revealSeedConfirmation () {
+  return {
+    type: this.REVEAL_SEED_CONFIRMATION,
+  }
+}
+
+function requestRevealSeed (password) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.submitPassword(password, (err, newState) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      background.placeSeedWords()
+      dispatch(actions.showNewVaultSeed())
+    })
+  }
+}
+
 
 function addNewKeyring (type, opts) {
   return (dispatch) => {

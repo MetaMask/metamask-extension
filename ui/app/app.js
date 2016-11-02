@@ -28,6 +28,7 @@ const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
+const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -410,6 +411,9 @@ App.prototype.renderPrimary = function () {
 
     case 'config':
       return h(ConfigScreen, {key: 'config'})
+
+    case 'reveal-seed-conf':
+      return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
 
     case 'info':
       return h(InfoScreen, {key: 'info'})
