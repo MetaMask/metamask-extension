@@ -44,3 +44,20 @@ IdenticonComponent.prototype.componentDidMount = function () {
   container.appendChild(img)
 }
 
+IdenticonComponent.prototype.componentDidUpdate = function () {
+  var props = this.props
+  var address = props.address
+
+  if (!address) return
+
+  var container = findDOMNode(this)
+
+  var children = container.children
+  for (var i = 0; i < children.length; i++) {
+    container.removeChild(children[i])
+  }
+
+  var diameter = props.diameter || this.defaultDiameter
+  var img = iconFactory.iconForAddress(address, diameter, false)
+  container.appendChild(img)
+}
