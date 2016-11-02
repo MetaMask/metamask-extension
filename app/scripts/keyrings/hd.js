@@ -13,7 +13,7 @@ module.exports = class HdKeyring extends EventEmitter {
     return type
   }
 
-  constructor(opts) {
+  constructor(opts = {}) {
     super()
     this.type = type
     this.opts = opts || {}

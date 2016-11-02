@@ -38,8 +38,8 @@ module.exports = class MetamaskController {
     return extend(
       this.state,
       this.ethStore.getState(),
-      this.keyringController.getState(),
-      this.configManager.getConfig()
+      this.configManager.getConfig(),
+      this.keyringController.getState()
     )
   }
 
@@ -73,7 +73,6 @@ module.exports = class MetamaskController {
       setLocked: keyringController.setLocked.bind(keyringController),
       exportAccount: keyringController.exportAccount.bind(keyringController),
       saveAccountLabel: keyringController.saveAccountLabel.bind(keyringController),
-      tryPassword: keyringController.tryPassword.bind(keyringController),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift

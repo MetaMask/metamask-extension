@@ -55,6 +55,8 @@ UnlockScreen.prototype.render = function () {
         h('.error', {
           style: {
             display: warning ? 'block' : 'none',
+            padding: '0 20px',
+            textAlign: 'center',
           },
         }, warning),
 

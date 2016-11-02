@@ -9,6 +9,7 @@ const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
 const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./lib/auto-faucet')
+const bip39 = require('bip39')
 
 // TEMPORARY UNTIL FULL DEPRECATION:
 const IdStoreMigrator = require('./lib/idStore-migrator')
@@ -46,6 +47,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   getState() {
+    let address = this.configManager.getSelectedAccount()
+
     return {
       seedWords: this.configManager.getSeedWords(),
       isInitialized: !!this.configManager.getVault(),
@@ -55,7 +58,8 @@ module.exports = class KeyringController extends EventEmitter {
       transactions: this.configManager.getTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
-      selectedAddress: this.configManager.getSelectedAccount(),
+      selectedAddress: address,
+      selectedAccount: address,
       shapeShiftTxList: this.configManager.getShapeShiftTxList(),
       currentFiat: this.configManager.getCurrentFiat(),
       conversionRate: this.configManager.getConversionRate(),
@@ -78,12 +82,33 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVaultAndRestore(password, seed, cb) {
+    if (typeof password !== 'string') {
+      return cb('Password must be text.')
+    }
+
+    if (!bip39.validateMnemonic(seed)) {
+      return cb('Seed phrase is invalid.')
+    }
+
+    this.clearKeyrings()
+
     this.createNewVault(password, '', (err) => {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
         n: 1,
-      }, cb)
+      }, (err) => {
+        if (err) return cb(err)
+        const firstKeyring = this.keyrings[0]
+        const accounts = firstKeyring.getAccounts()
+        const firstAccount = accounts[0]
+        const hexAccount = ethUtil.addHexPrefix(firstAccount)
+        this.configManager.setSelectedAccount(hexAccount)
+
+        this.setupAccounts(accounts)
+        this.emit('update')
+        cb(null, this.getState())
+      })
     })
   }
 
@@ -138,6 +163,7 @@ module.exports = class KeyringController extends EventEmitter {
       return this.unlockKeyrings(key)
     })
     .then(() => {
+      this.emit('update')
       cb(null, this.getState())
     })
     .catch((err) => {
@@ -175,6 +201,7 @@ module.exports = class KeyringController extends EventEmitter {
     const ring = this.keyrings[keyRingNum]
     const accounts = ring.addAccounts(1)
     this.setupAccounts(accounts)
+    this.persistAllKeyrings()
     cb(null, this.getState())
   }
 
@@ -468,10 +495,6 @@ module.exports = class KeyringController extends EventEmitter {
     cb(null, '0xPrivateKey')
   }
 
-  tryPassword(password, cb) {
-    cb()
-  }
-
   getNetwork(err) {
     if (err) {
       this.network = 'loading'
@@ -501,6 +524,22 @@ module.exports = class KeyringController extends EventEmitter {
   clearSeedWordCache(cb) {
     this.configManager.setSeedWords(null)
     cb(null, this.configManager.getSelectedAccount())
+  }
+
+  clearKeyrings() {
+    let accounts
+    try {
+      accounts = Object.keys(this.ethStore._currentState.accounts)
+    } catch (e) {
+      accounts = []
+    }
+    accounts.forEach((address) => {
+      this.ethStore.removeAccount(address)
+    })
+
+    this.keyrings = []
+    this.identities = {}
+    this.configManager.setSelectedAccount()
   }
 
 }

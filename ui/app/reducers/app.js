@@ -335,7 +335,7 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_FAILED:
       return extend(appState, {
-        warning: 'Incorrect password. Try again.',
+        warning: action.value || 'Incorrect password. Try again.',
       })
 
     case actions.SHOW_LOADING:
