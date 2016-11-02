@@ -31,7 +31,7 @@ describe('KeyringController', function() {
     // Browser crypto is tested in the integration test suite.
     keyringController.encryptor = mockEncryptor
 
-    keyringController.createNewVault(password, null, function (err, state) {
+    keyringController.createNewVaultAndKeychain(password, null, function (err, state) {
       done()
     })
   })
@@ -41,11 +41,11 @@ describe('KeyringController', function() {
     this.sinon.restore()
   })
 
-  describe('#createNewVault', function () {
+  describe('#createNewVaultAndKeychain', function () {
     it('should set a vault on the configManager', function(done) {
       keyringController.configManager.setVault(null)
       assert(!keyringController.configManager.getVault(), 'no previous vault')
-      keyringController.createNewVault(password, null, function (err, state) {
+      keyringController.createNewVaultAndKeychain(password, null, (err, state) => {
         assert.ifError(err)
         const vault = keyringController.configManager.getVault()
         assert(vault, 'vault created')
@@ -54,7 +54,7 @@ describe('KeyringController', function() {
     })
   })
 
-  describe('#restoreKeyring', function(done) {
+  describe('#restoreKeyring', function() {
 
     it(`should pass a keyring's serialized data back to the correct type.`, function() {
       keyringController.keyringTypes = [ MockSimpleKeychain ]
@@ -73,6 +73,16 @@ describe('KeyringController', function() {
       mock.verify()
     })
 
+  })
+
+  describe('#migrateAndGetKey', function() {
+    it('should return the key for that password', function(done) {
+      keyringController.migrateAndGetKey(password)
+      .then((key) => {
+        assert(key, 'a key is returned')
+        done()
+      })
+    })
   })
 
 })

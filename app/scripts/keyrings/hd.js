@@ -16,11 +16,11 @@ module.exports = class HdKeyring extends EventEmitter {
   constructor(opts = {}) {
     super()
     this.type = type
-    this.opts = opts || {}
     this.deserialize(opts)
   }
 
-  deserialize(opts) {
+  deserialize(opts = {}) {
+    this.opts = opts || {}
     this.wallets = []
     this.mnemonic = null
     this.root = null
@@ -32,12 +32,11 @@ module.exports = class HdKeyring extends EventEmitter {
     if ('n' in opts) {
       this.addAccounts(opts.n)
     }
-
   }
 
   initFromMnemonic(mnemonic) {
-    const seed = bip39.mnemonicToSeed(mnemonic)
     this.mnemonic = mnemonic
+    const seed = bip39.mnemonicToSeed(mnemonic)
     this.hdWallet = hdkey.fromMasterSeed(seed)
     this.root = this.hdWallet.derivePath(hdPathString)
   }

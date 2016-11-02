@@ -5,12 +5,21 @@ module.exports = class IdentityStoreMigrator {
 
   constructor ({ configManager }) {
     this.configManager = configManager
-    this.idStore = new IdentityStore({ configManager })
+    const hasOldVault = this.hasOldVault()
+    if (!hasOldVault) {
+      this.idStore = new IdentityStore({ configManager })
+    }
   }
 
   oldSeedForPassword( password ) {
-    const isOldVault = this.hasOldVault()
-    if (!isOldVault) {
+    const hasOldVault = this.hasOldVault()
+    const configManager = this.configManager
+
+    if (!this.idStore) {
+      this.idStore = new IdentityStore({ configManager })
+    }
+
+    if (!hasOldVault) {
       return Promise.resolve(null)
     }
 
