@@ -9,10 +9,11 @@ const sinon = require('sinon')
 
 describe('KeyringController', function() {
 
-  let keyringController
+  let keyringController, state
   let password = 'password123'
   let entropy = 'entripppppyy duuude'
-  let seedWords
+  let seedWords = 'puzzle seed penalty soldier say clay field arctic metal hen cage runway'
+  let addresses = ['eF35cA8EbB9669A35c31b5F6f249A9941a812AC1'.toLowerCase()]
   let accounts = []
   let originalKeystore
 
@@ -31,7 +32,9 @@ describe('KeyringController', function() {
     // Browser crypto is tested in the integration test suite.
     keyringController.encryptor = mockEncryptor
 
-    keyringController.createNewVaultAndKeychain(password, null, function (err, state) {
+    keyringController.createNewVaultAndKeychain(password, null, function (err, newState) {
+      assert.ifError(err)
+      state = newState
       done()
     })
   })
@@ -42,6 +45,8 @@ describe('KeyringController', function() {
   })
 
   describe('#createNewVaultAndKeychain', function () {
+    this.timeout(10000)
+
     it('should set a vault on the configManager', function(done) {
       keyringController.configManager.setVault(null)
       assert(!keyringController.configManager.getVault(), 'no previous vault')
@@ -57,19 +62,21 @@ describe('KeyringController', function() {
   describe('#restoreKeyring', function() {
 
     it(`should pass a keyring's serialized data back to the correct type.`, function() {
-      keyringController.keyringTypes = [ MockSimpleKeychain ]
-
       const mockSerialized = {
-        type: MockSimpleKeychain.type(),
-        data: [ '0x123456null788890abcdef' ],
+        type: 'HD Key Tree',
+        data: {
+          mnemonic: seedWords,
+          n: 1,
+        }
       }
       const mock = this.sinon.mock(keyringController)
 
       mock.expects('loadBalanceAndNickname')
       .exactly(1)
 
-      var keyring = keyringController.restoreKeyring(0, mockSerialized)
+      var keyring = keyringController.restoreKeyring(mockSerialized)
       assert.equal(keyring.wallets.length, 1, 'one wallet restored')
+      assert.equal(keyring.getAccounts()[0], addresses[0])
       mock.verify()
     })
 
@@ -82,6 +89,19 @@ describe('KeyringController', function() {
         assert(key, 'a key is returned')
         done()
       })
+    })
+  })
+
+  describe('#createNickname', function() {
+    it('should add the address to the identities hash', function() {
+      const fakeAddress = '0x12345678'
+      keyringController.createNickname(fakeAddress)
+      const identities = keyringController.identities
+      const identity = identities[fakeAddress]
+      assert.equal(identity.address, fakeAddress)
+
+      const nick = keyringController.configManager.nicknameForWallet(fakeAddress)
+      assert.equal(typeof nick, 'string')
     })
   })
 

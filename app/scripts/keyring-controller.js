@@ -78,7 +78,7 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   createNewVaultAndKeychain(password, entropy, cb) {
-    this.createNewVault(password, entropy, (err, serialized) => {
+    this.createNewVault(password, entropy, (err) => {
       if (err) return cb(err)
       this.createFirstKeyTree(password, cb)
     })
@@ -107,8 +107,8 @@ module.exports = class KeyringController extends EventEmitter {
         const firstAccount = accounts[0]
         const hexAccount = ethUtil.addHexPrefix(firstAccount)
         this.configManager.setSelectedAccount(hexAccount)
-
         this.setupAccounts(accounts)
+
         this.emit('update')
         cb(null, this.getState())
       })
@@ -127,8 +127,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
     .then((serialized) => {
       if (serialized && shouldMigrate) {
-        const accountLength = this.getAccounts().length
-        const keyring = this.restoreKeyring(accountLength, serialized)
+        const keyring = this.restoreKeyring(serialized)
         this.keyrings.push(keyring)
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
       }
@@ -144,12 +143,8 @@ module.exports = class KeyringController extends EventEmitter {
     configManager.setSalt(salt)
 
     return this.migrateAndGetKey(password)
-    .then((key) => {
-      cb(null, configManager.getVault())
-    })
-    .then((encryptedString) => {
-      const serialized = this.keyrings[0].serialize()
-      cb(null, serialized)
+    .then(() => {
+      cb(null)
     })
     .catch((err) => {
       cb(err)
@@ -160,12 +155,14 @@ module.exports = class KeyringController extends EventEmitter {
     this.clearKeyrings()
     this.addNewKeyring('HD Key Tree', {n: 1}, (err) => {
       const firstKeyring = this.keyrings[0]
-      const firstAccount = firstKeyring.getAccounts()[0]
+      const accounts = firstKeyring.getAccounts()
+      const firstAccount = accounts[0]
       const hexAccount = ethUtil.addHexPrefix(firstAccount)
       const seedWords = firstKeyring.serialize().mnemonic
-      this.configManager.setSelectedAccount(hexAccount)
+      this.configManager.setSelectedAccount(firstAccount)
       this.configManager.setSeedWords(seedWords)
       autoFaucet(hexAccount)
+      this.setupAccounts(accounts)
       this.persistAllKeyrings()
       cb(err, this.getState())
     })
@@ -284,7 +281,7 @@ module.exports = class KeyringController extends EventEmitter {
     const encryptedVault = this.configManager.getVault()
     return this.encryptor.decryptWithKey(key, encryptedVault)
     .then((vault) => {
-      this.keyrings = vault.map(this.restoreKeyring.bind(this, 0))
+      this.keyrings = vault.map(this.restoreKeyring.bind(this))
       return this.persistAllKeyrings()
     })
     .then(() => {
@@ -292,15 +289,14 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  restoreKeyring(i, serialized) {
+  restoreKeyring(serialized) {
     const { type, data } = serialized
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring()
     keyring.deserialize(data)
 
-    keyring.getAccounts().forEach((account) => {
-      this.loadBalanceAndNickname(account, i)
-    })
+    const accounts = keyring.getAccounts()
+    this.setupAccounts(accounts)
 
     this.keyrings.push(keyring)
     return keyring
