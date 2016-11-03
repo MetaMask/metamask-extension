@@ -43,3 +43,25 @@ QUnit.test('encryptor:encrypt & decrypt', function(assert) {
   })
 
 })
+
+QUnit.test('encryptor:encrypt & decrypt with wrong password', function(assert) {
+  var done = assert.async();
+  var password, data, encrypted, wrongPassword
+
+  password = 'a sample passw0rd'
+  wrongPassword = 'a wrong password'
+  data = { foo: 'data to encrypt' }
+
+  encryptor.encrypt(password, data)
+  .then(function(encryptedStr) {
+    assert.equal(typeof encryptedStr, 'string', 'returns a string')
+    return encryptor.decrypt(wrongPassword, encryptedStr)
+  })
+  .then(function (decryptedObj) {
+    assert.equal(!decryptedObj, true, 'Wrong password should not decrypt')
+    done()
+  })
+  .catch(function(reason) {
+    done()
+  })
+})

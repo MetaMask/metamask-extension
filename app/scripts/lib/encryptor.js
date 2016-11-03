@@ -69,6 +69,9 @@ function decryptWithKey (key, text) {
     const decryptedObj = JSON.parse(decryptedStr)
     return decryptedObj
   })
+  .catch(function(reason) {
+    throw new Error('Incorrect password')
+  })
 }
 
 function convertStringToArrayBufferView (str) {

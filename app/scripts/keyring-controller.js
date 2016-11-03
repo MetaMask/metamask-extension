@@ -131,9 +131,7 @@ module.exports = class KeyringController extends EventEmitter {
         this.keyrings.push(keyring)
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
       }
-      return this.persistAllKeyrings().then(() => {
-        return key
-      })
+      return key
     })
   }
 
@@ -143,6 +141,9 @@ module.exports = class KeyringController extends EventEmitter {
     configManager.setSalt(salt)
 
     return this.migrateAndGetKey(password)
+    .then(() => {
+      return this.persistAllKeyrings()
+    })
     .then(() => {
       cb(null)
     })
@@ -173,7 +174,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  placeSeedWords () {
+  placeSeedWords (cb) {
     const firstKeyring = this.keyrings[0]
     const seedWords = firstKeyring.serialize().mnemonic
     this.configManager.setSeedWords(seedWords)
