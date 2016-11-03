@@ -48,6 +48,11 @@ module.exports = class HdKeyring extends EventEmitter {
     }
   }
 
+  exportAccount(address) {
+    const wallet = this.getWalletForAccount(address)
+    return wallet.getPrivateKey().toString('hex')
+  }
+
   addAccounts(n = 1) {
     if (!this.root) {
       this.initFromMnemonic(bip39.generateMnemonic())
@@ -87,7 +92,16 @@ module.exports = class HdKeyring extends EventEmitter {
   }
 
   getWalletForAccount(account) {
-    return this.wallets.find(w => w.getAddress().toString('hex') === account)
+    return this.wallets.find((w) => {
+      const address = w.getAddress().toString('hex')
+      return ((address === account) || (normalize(address) === account))
+    })
   }
 
+
+
+}
+
+function normalize(address) {
+  return ethUtil.addHexPrefix(address.toLowerCase())
 }

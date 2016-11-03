@@ -353,7 +353,6 @@ module.exports = class KeyringController extends EventEmitter {
       gasMultiplier: configManager.getGasMultiplier() || 1,
     }
 
-    console.log('addUnconfirmedTransaction:', txData)
 
     // keep the onTxDoneCb around for after approval/denial (requires user interaction)
     // This onTxDoneCb fires completion to the Dapp's write operation.
@@ -525,7 +524,13 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   exportAccount(address, cb) {
-    cb(null, '0xPrivateKey')
+    try {
+      const keyring = this.getKeyringForAccount(address)
+      const privateKey = keyring.exportAccount(normalize(address))
+      cb(null, privateKey)
+    } catch (e) {
+      cb(e)
+    }
   }
 
   getNetwork(err) {
