@@ -250,7 +250,7 @@ module.exports = class KeyringController extends EventEmitter {
       address,
       name,
     }
-    this.saveAccountLabel(address, name)
+    return this.saveAccountLabel(address, name)
   }
 
   saveAccountLabel (account, label, cb) {
@@ -259,6 +259,8 @@ module.exports = class KeyringController extends EventEmitter {
     configManager.setNicknameForWallet(address, label)
     if (cb) {
       cb(null, label)
+    } else {
+      return label
     }
   }
 
@@ -270,6 +272,7 @@ module.exports = class KeyringController extends EventEmitter {
         data: k.serialize(),
       }
     })
+
     return this.encryptor.encryptWithKey(this.key, serialized)
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)

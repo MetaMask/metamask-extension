@@ -269,13 +269,15 @@ ConfigManager.prototype.getWalletNicknames = function () {
 }
 
 ConfigManager.prototype.nicknameForWallet = function (account) {
+  const address = ethUtil.addHexPrefix(account.toLowerCase())
   const nicknames = this.getWalletNicknames()
-  return nicknames[account]
+  return nicknames[address]
 }
 
 ConfigManager.prototype.setNicknameForWallet = function (account, nickname) {
+  const address = ethUtil.addHexPrefix(account.toLowerCase())
   const nicknames = this.getWalletNicknames()
-  nicknames[account] = nickname
+  nicknames[address] = nickname
   var data = this.getData()
   data.walletNicknames = nicknames
   this.setData(data)

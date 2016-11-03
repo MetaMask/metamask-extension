@@ -105,6 +105,17 @@ describe('KeyringController', function() {
     })
   })
 
+  describe('#saveAccountLabel', function() {
+    it ('sets the nickname', function() {
+      const account = addresses[0]
+      var nick = 'Test nickname'
+      const label = keyringController.saveAccountLabel(account, nick)
+      assert.equal(label, nick)
+
+      const persisted = keyringController.configManager.nicknameForWallet(account)
+      assert.equal(persisted, nick)
+    })
+  })
 })
 
 
