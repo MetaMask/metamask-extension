@@ -105,7 +105,7 @@ module.exports = class KeyringController extends EventEmitter {
         const firstKeyring = this.keyrings[0]
         const accounts = firstKeyring.getAccounts()
         const firstAccount = accounts[0]
-        const hexAccount = ethUtil.addHexPrefix(firstAccount)
+        const hexAccount = normalize(firstAccount)
         this.configManager.setSelectedAccount(hexAccount)
         this.setupAccounts(accounts)
 
@@ -157,14 +157,19 @@ module.exports = class KeyringController extends EventEmitter {
       const firstKeyring = this.keyrings[0]
       const accounts = firstKeyring.getAccounts()
       const firstAccount = accounts[0]
-      const hexAccount = ethUtil.addHexPrefix(firstAccount)
+      const hexAccount = normalize(firstAccount)
       const seedWords = firstKeyring.serialize().mnemonic
       this.configManager.setSelectedAccount(firstAccount)
       this.configManager.setSeedWords(seedWords)
       autoFaucet(hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
-      cb(err, this.getState())
+      .then(() => {
+        cb(err, this.getState())
+      })
+      .catch((reason) => {
+        cb(reason)
+      })
     })
   }
 
@@ -179,7 +184,9 @@ module.exports = class KeyringController extends EventEmitter {
     .then((key) => {
       return this.unlockKeyrings(key)
     })
-    .then(() => {
+    .then((keyrings) => {
+      this.keyrings = keyrings
+      this.setupAccounts()
       this.emit('update')
       cb(null, this.getState())
     })
@@ -229,7 +236,8 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   setupAccounts(accounts) {
-    accounts.forEach((account) => {
+    var arr = accounts || this.getAccounts()
+    arr.forEach((account) => {
       this.loadBalanceAndNickname(account)
     })
   }
@@ -237,26 +245,28 @@ module.exports = class KeyringController extends EventEmitter {
   // Takes an account address and an iterator representing
   // the current number of named accounts.
   loadBalanceAndNickname(account) {
-    const address = ethUtil.addHexPrefix(account)
+    const address = normalize(account)
     this.ethStore.addAccount(address)
     this.createNickname(address)
   }
 
   createNickname(address) {
+    const hexAddress = normalize(address)
     var i = Object.keys(this.identities).length
     const oldNickname = this.configManager.nicknameForWallet(address)
     const name = oldNickname || `Account ${++i}`
-    this.identities[address] = {
-      address,
+    this.identities[hexAddress] = {
+      address: hexAddress,
       name,
     }
-    return this.saveAccountLabel(address, name)
+    return this.saveAccountLabel(hexAddress, name)
   }
 
   saveAccountLabel (account, label, cb) {
-    const address = ethUtil.addHexPrefix(account)
+    const address = normalize(account)
     const configManager = this.configManager
     configManager.setNicknameForWallet(address, label)
+    this.identities[address].name = label
     if (cb) {
       cb(null, label)
     } else {
@@ -268,7 +278,6 @@ module.exports = class KeyringController extends EventEmitter {
     const serialized = this.keyrings.map((k) => {
       return {
         type: k.type,
-        // keyring.serialize() must return a JSON-encodable object.
         data: k.serialize(),
       }
     })
@@ -284,10 +293,7 @@ module.exports = class KeyringController extends EventEmitter {
     const encryptedVault = this.configManager.getVault()
     return this.encryptor.decryptWithKey(key, encryptedVault)
     .then((vault) => {
-      this.keyrings = vault.map(this.restoreKeyring.bind(this))
-      return this.persistAllKeyrings()
-    })
-    .then(() => {
+      vault.forEach(this.restoreKeyring.bind(this))
       return this.keyrings
     })
   }
@@ -325,8 +331,9 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   setSelectedAddress(address, cb) {
-    this.configManager.setSelectedAccount(address)
-    cb(null, address)
+    var addr = normalize(address)
+    this.configManager.setSelectedAccount(addr)
+    cb(null, addr)
   }
 
   addUnconfirmedTransaction(txParams, onTxDoneCb, cb) {
@@ -451,7 +458,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   signTransaction(txParams, cb) {
     try {
-      const address = ethUtil.addHexPrefix(txParams.from.toLowercase())
+      const address = normalize(txParams.from)
       const keyring = this.getKeyringForAccount(address)
 
       // Handle gas pricing
@@ -461,12 +468,12 @@ module.exports = class KeyringController extends EventEmitter {
       txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
 
       // normalize values
-      txParams.to = ethUtil.addHexPrefix(txParams.to.toLowerCase())
-      txParams.from = ethUtil.addHexPrefix(txParams.from.toLowerCase())
-      txParams.value = ethUtil.addHexPrefix(txParams.value)
-      txParams.data = ethUtil.addHexPrefix(txParams.data)
-      txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
-      txParams.nonce = ethUtil.addHexPrefix(txParams.nonce)
+      txParams.to = normalize(txParams.to)
+      txParams.from = normalize(txParams.from)
+      txParams.value = normalize(txParams.value)
+      txParams.data = normalize(txParams.data)
+      txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+      txParams.nonce = normalize(txParams.nonce)
 
       let tx = new Transaction(txParams)
       tx = keyring.signTransaction(address, tx)
@@ -488,7 +495,7 @@ module.exports = class KeyringController extends EventEmitter {
   signMessage(msgParams, cb) {
     try {
       const keyring = this.getKeyringForAccount(msgParams.from)
-      const address = ethUtil.addHexPrefix(msgParams.from.toLowercase())
+      const address = normalize(msgParams.from)
       const rawSig = keyring.signMessage(address, msgParams.data)
       cb(null, rawSig)
     } catch (e) {
@@ -497,10 +504,10 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   getKeyringForAccount(address) {
-    const hexed = ethUtil.addHexPrefix(address.toLowerCase())
+    const hexed = normalize(address)
     return this.keyrings.find((ring) => {
       return ring.getAccounts()
-      .map(acct => ethUtil.addHexPrefix(acct.toLowerCase()))
+      .map(normalize)
       .includes(hexed)
     })
   }
@@ -544,7 +551,7 @@ module.exports = class KeyringController extends EventEmitter {
     var gas = new BN(gasHex, 16)
     var buffer = new BN('100000', 10)
     var result = gas.add(buffer)
-    return ethUtil.addHexPrefix(result.toString(16))
+    return normalize(result.toString(16))
   }
 
   clearSeedWordCache(cb) {
@@ -568,6 +575,10 @@ module.exports = class KeyringController extends EventEmitter {
     this.configManager.setSelectedAccount()
   }
 
+}
+
+function normalize(address) {
+  return ethUtil.addHexPrefix(address.toLowerCase())
 }
 
 function noop () {}

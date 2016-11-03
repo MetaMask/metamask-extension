@@ -115,7 +115,38 @@ describe('KeyringController', function() {
       const persisted = keyringController.configManager.nicknameForWallet(account)
       assert.equal(persisted, nick)
     })
+
+    this.timeout(10000)
+    it('retrieves the persisted nickname', function(done) {
+      const account = addresses[0]
+      var nick = 'Test nickname'
+      keyringController.configManager.setNicknameForWallet(account, nick)
+      console.log('calling to restore')
+      keyringController.createNewVaultAndRestore(password, seedWords, (err, state) => {
+        console.dir({err})
+        assert.ifError(err)
+
+        const identity = keyringController.identities['0x' + account]
+        assert.equal(identity.name, nick)
+
+        assert(accounts)
+        done()
+      })
+    })
   })
+
+  describe('#getAccounts', function() {
+    it('returns the result of getAccounts for each keyring', function() {
+      keyringController.keyrings = [
+        { getAccounts() { return [1,2,3] } },
+        { getAccounts() { return [4,5,6] } },
+      ]
+
+      const result = keyringController.getAccounts()
+      assert.deepEqual(result, [1,2,3,4,5,6])
+    })
+  })
+
 })
 
 
