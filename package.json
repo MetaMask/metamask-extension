@@ -10,7 +10,7 @@
     "dev": "gulp dev --debug",
     "dist": "gulp dist --disableLiveReload",
     "test": "npm run fastTest && npm run ci && npm run lint",
-    "fastTest": "mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
+    "fastTest": "METAMASK_ENV=test mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
