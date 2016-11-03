@@ -584,6 +584,7 @@ module.exports = class KeyringController extends EventEmitter {
 }
 
 function normalize(address) {
+  if (!address) return
   return ethUtil.addHexPrefix(address.toLowerCase())
 }
 
