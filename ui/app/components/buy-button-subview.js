@@ -7,6 +7,7 @@ const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
 const extension = require('../../../app/scripts/lib/extension')
 const Loading = require('./loading')
+const TabBar = require('./tab-bar')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -53,43 +54,53 @@ BuyButtonSubview.prototype.render = function () {
 
       h(Loading, { isLoading }),
 
-      h('h3.flex-row.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          paddingTop: '4px',
-          justifyContent: 'space-around',
-        },
-      }, [
-        h(currentForm.coinbase ? '.activeForm' : '.inactiveForm.pointer', {
-          onClick: () => props.dispatch(actions.coinBaseSubview()),
-        }, 'Coinbase'),
-        h('a', {
-          onClick: (event) => this.navigateTo('https://github.com/MetaMask/faq/blob/master/COINBASE.md'),
-        }, [
-          h('i.fa.fa-question-circle', {
-            style: {
-              position: 'relative',
-              right: '33px',
-            },
-          }),
-        ]),
-        h(currentForm.shapeshift ? '.activeForm' : '.inactiveForm.pointer', {
-          onClick: () => props.dispatch(actions.shapeShiftSubview(props.provider.type)),
-        }, 'Shapeshift'),
+      h(TabBar, {
+        tabs: [
+          {
+            content: [
+              'Coinbase',
+              h('a', {
+                onClick: (event) => this.navigateTo('https://github.com/MetaMask/faq/blob/master/COINBASE.md'),
+              }, [
+                h('i.fa.fa-question-circle', {
+                  style: {
+                    margin: '0px 5px',
+                  },
+                }),
+              ]),
+            ],
+            key: 'coinbase'
+          },
+          {
+            content: [
+              'Shapeshift',
+              h('a', {
+                href: 'https://github.com/MetaMask/faq/blob/master/COINBASE.md',
+                onClick: (event) => this.navigateTo('https://info.shapeshift.io/about'),
+              }, [
+                h('i.fa.fa-question-circle', {
+                  style: {
+                    margin: '0px 5px',
+                  },
+                }),
+              ])
+            ],
+            key: 'shapeshift'
+          },
+        ],
+        defaultTab: 'coinbase',
+        tabSelected: (key) => {
+          switch (key) {
+            case 'coinbase':
+              props.dispatch(actions.coinBaseSubview())
+              break
+            case 'shapeshift':
+              props.dispatch(actions.shapeShiftSubview(props.provider.type))
+              break
+          }
+        }
+      }),
 
-        h('a', {
-          href: 'https://github.com/MetaMask/faq/blob/master/COINBASE.md',
-          onClick: (event) => this.navigateTo('https://info.shapeshift.io/about'),
-        }, [
-          h('i.fa.fa-question-circle', {
-            style: {
-              position: 'relative',
-              right: '28px',
-            },
-          }),
-        ]),
-      ]),
       this.formVersionSubview(),
     ])
   )
