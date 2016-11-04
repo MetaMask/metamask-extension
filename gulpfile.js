@@ -1,5 +1,6 @@
 var watchify = require('watchify')
 var browserify = require('browserify')
+var babelify = require('babelify')
 var gulp = require('gulp')
 var source = require('vinyl-source-stream')
 var buffer = require('vinyl-buffer')
@@ -226,6 +227,9 @@ function bundleTask(opts) {
   })
 
   var bundler = browserify(browserifyOpts)
+  bundler.transform(babelify.configure({
+    presets: ['es2015'],
+  }))
   bundler.transform('brfs')
   if (opts.watch) {
     bundler = watchify(bundler)
