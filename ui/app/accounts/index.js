@@ -34,11 +34,7 @@ AccountsScreen.prototype.render = function () {
   var state = this.props
   var identityList = valuesFor(state.identities)
   var unconfTxList = valuesFor(state.unconfTxs)
-  var actions = {
-    onSelect: this.onSelect.bind(this),
-    onShowDetail: this.onShowDetail.bind(this),
-    goHome: this.goHome.bind(this),
-  }
+
   return (
 
     h('.accounts-section.flex-grow', [
@@ -46,7 +42,7 @@ AccountsScreen.prototype.render = function () {
       // subtitle and nav
       h('.section-title.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: actions.goHome,
+          onClick: this.goHome.bind(this),
         }),
         h('h2.page-subtitle', 'Select Account'),
       ]),
