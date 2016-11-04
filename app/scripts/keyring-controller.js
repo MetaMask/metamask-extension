@@ -38,7 +38,7 @@ module.exports = class KeyringController extends EventEmitter {
     this._unconfTxCbs = {}
     this._unconfMsgCbs = {}
 
-    this.network = null
+    this.network = opts.network
 
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
@@ -69,7 +69,6 @@ module.exports = class KeyringController extends EventEmitter {
       conversionDate: this.configManager.getConversionDate(),
       keyringTypes: this.keyringTypes.map((krt) => krt.type()),
       identities: this.identities,
-      network: this.network,
     }
   }
 
@@ -532,25 +531,6 @@ module.exports = class KeyringController extends EventEmitter {
     } catch (e) {
       cb(e)
     }
-  }
-
-  getNetwork(err) {
-    if (err) {
-      this.network = 'loading'
-      this.emit('update')
-    }
-
-    this.web3.version.getNetwork((err, network) => {
-      if (err) {
-        this.network = 'loading'
-        return this.emit('update')
-      }
-      if (global.METAMASK_DEBUG) {
-        console.log('web3.getNetwork returned ' + network)
-      }
-      this.network = network
-      this.emit('update')
-    })
   }
 
   addGasBuffer(gasHex) {
