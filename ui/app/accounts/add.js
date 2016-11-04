@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const actions = require('../../actions')
+const actions = require('../actions')
 
 // Components
 const TabBar = require('../components/tab-bar')
@@ -23,9 +23,6 @@ function AddAccountScreen () {
 }
 
 AddAccountScreen.prototype.render = function () {
-  const props = this.props
-  const state = this.state || {}
-  const subview = state.subview || 'new'
 
   return (
     h('.flex-column', {
@@ -38,7 +35,7 @@ AddAccountScreen.prototype.render = function () {
         style: {
           alignItems: 'center',
           padding: '0px 20px',
-        }
+        },
       }, [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
@@ -55,7 +52,7 @@ AddAccountScreen.prototype.render = function () {
         defaultTab: 'new',
         tabSelected: (key) => {
           this.setState({ subview: key })
-        }
+        },
       }),
 
       this.renderNewOrImport(),

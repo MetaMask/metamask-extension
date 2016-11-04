@@ -30,7 +30,6 @@ function BuyButtonSubview () {
 
 BuyButtonSubview.prototype.render = function () {
   const props = this.props
-  const currentForm = props.buyView.formView
   const isLoading = props.isSubLoading
 
   return (
@@ -69,7 +68,7 @@ BuyButtonSubview.prototype.render = function () {
                 }),
               ]),
             ],
-            key: 'coinbase'
+            key: 'coinbase',
           },
           {
             content: [
@@ -83,9 +82,9 @@ BuyButtonSubview.prototype.render = function () {
                     margin: '0px 5px',
                   },
                 }),
-              ])
+              ]),
             ],
-            key: 'shapeshift'
+            key: 'shapeshift',
           },
         ],
         defaultTab: 'coinbase',
@@ -98,7 +97,7 @@ BuyButtonSubview.prototype.render = function () {
               props.dispatch(actions.shapeShiftSubview(props.provider.type))
               break
           }
-        }
+        },
       }),
 
       this.formVersionSubview(),

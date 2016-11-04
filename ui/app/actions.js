@@ -254,7 +254,7 @@ function addNewKeyring (type, opts) {
 
 function navigateToNewAccountScreen() {
   return {
-    type: this.NEW_ACCOUNT_SCREEN
+    type: this.NEW_ACCOUNT_SCREEN,
   }
 }
 
