@@ -29,7 +29,7 @@ const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
-const NewAccountScreen = require('./accounts/new')
+const AddAccountScreen = require('./accounts/add')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -402,7 +402,7 @@ App.prototype.renderPrimary = function () {
       return h(AccountDetailScreen, {key: 'account-detail'})
 
     case 'new-account':
-      return h(NewAccountScreen, {key: 'new-account'})
+      return h(AddAccountScreen, {key: 'new-account'})
 
     case 'sendTransaction':
       return h(SendTransactionScreen, {key: 'send-transaction'})

@@ -20,7 +20,7 @@ COMPONENTNAME.prototype.render = function () {
   return (
     h('div', {
       style: {
-        background: 'red',
+        background: 'blue',
       },
     }, [
       `Hello, ${props.sender}`,
