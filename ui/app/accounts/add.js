@@ -62,7 +62,7 @@ AddAccountScreen.prototype.render = function () {
 }
 
 AddAccountScreen.prototype.goHome = function() {
-  this.props.dispatch(actions.showAccountPage())
+  this.props.dispatch(actions.showAccountsPage())
 }
 
 AddAccountScreen.prototype.renderNewOrImport = function() {
