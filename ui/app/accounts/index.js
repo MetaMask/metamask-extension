@@ -143,7 +143,7 @@ AccountsScreen.prototype.onShowDetail = function (address, event) {
 }
 
 AccountsScreen.prototype.addNewAccount = function () {
-  this.props.dispatch(actions.addNewAccount(0))
+  this.props.dispatch(actions.navigateToNewAccountScreen())
 }
 
 AccountsScreen.prototype.goHome = function () {

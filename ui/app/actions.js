@@ -28,6 +28,8 @@ var actions = {
   createNewVaultInProgress: createNewVaultInProgress,
   addNewKeyring,
   addNewAccount,
+  NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
+  navigateToNewAccountScreen,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // seed recovery actions
@@ -247,6 +249,12 @@ function addNewKeyring (type, opts) {
       dispatch(this.updateMetamaskState(newState))
       dispatch(this.showAccountsPage())
     })
+  }
+}
+
+function navigateToNewAccountScreen() {
+  return {
+    type: this.NEW_ACCOUNT_SCREEN
   }
 }
 
