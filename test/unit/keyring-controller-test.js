@@ -2,6 +2,7 @@ var assert = require('assert')
 var KeyringController = require('../../app/scripts/keyring-controller')
 var configManagerGen = require('../lib/mock-config-manager')
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const async = require('async')
 const mockEncryptor = require('../lib/mock-encryptor')
 const MockSimpleKeychain = require('../lib/mock-simple-keychain')
