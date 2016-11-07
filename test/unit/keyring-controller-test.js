@@ -110,6 +110,7 @@ describe('KeyringController', function() {
     it ('sets the nickname', function() {
       const account = addresses[0]
       var nick = 'Test nickname'
+      keyringController.identities[ethUtil.addHexPrefix(account)] = {}
       const label = keyringController.saveAccountLabel(account, nick)
       assert.equal(label, nick)
 
