@@ -147,9 +147,25 @@ describe('KeyringController', function() {
     })
   })
 
+  describe('#addGasBuffer', function() {
+    it('adds 100k gas buffer to estimates', function() {
+
+      const gas = '0x04ee59' // Actual estimated gas example
+      const tooBigOutput = '0x80674f9' // Actual bad output
+      const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+      const correctBuffer = new BN('100000', 10)
+      const correct = bnGas.add(correctBuffer)
+
+      const tooBig = new BN(tooBigOutput, 16)
+      const result = keyringController.addGasBuffer(gas)
+      const bnResult = new BN(ethUtil.stripHexPrefix(result), 16)
+
+      assert.equal(result.indexOf('0x'), 0, 'included hex prefix')
+      assert(bnResult.gt(bnGas), 'Estimate increased in value.')
+      assert.equal(bnResult.sub(bnGas).toString(10), '100000', 'added 100k gas')
+      assert.equal(result, '0x' + correct.toString(16), 'Added the right amount')
+      assert.notEqual(result, tooBigOutput, 'not that bad estimate')
+    })
+  })
 })
-
-
-
-
 

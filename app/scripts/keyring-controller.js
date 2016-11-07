@@ -533,11 +533,11 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  addGasBuffer(gasHex) {
-    var gas = new BN(gasHex, 16)
-    var buffer = new BN('100000', 10)
-    var result = gas.add(buffer)
-    return normalize(result.toString(16))
+  addGasBuffer(gas) {
+    const gasBuffer = new BN('100000', 10)
+    const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+    const correct = bnGas.add(gasBuffer)
+    return ethUtil.addHexPrefix(correct.toString(16))
   }
 
   clearSeedWordCache(cb) {
