@@ -25,7 +25,7 @@ const Selector = require('./development/selector')
 // Query String
 const qs = require('qs')
 let queryString = qs.parse(window.location.href.split('#')[1])
-let selectedView = queryString.view || 'account detail'
+let selectedView = queryString.view || 'first time'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
