@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix gas estimation bug.
 - Fix github link on info page to point at current repository.
 
 ## 2.13.6 2016-10-26
