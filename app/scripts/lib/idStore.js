@@ -287,11 +287,11 @@ IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
   }
 }
 
-IdentityStore.prototype.addGasBuffer = function (gasHex) {
-  var gas = new BN(gasHex, 16)
-  var buffer = new BN('100000', 10)
-  var result = gas.add(buffer)
-  return ethUtil.addHexPrefix(result.toString(16))
+const gasBuffer = new BN('100000', 10)
+IdentityStore.prototype.addGasBuffer = function (gas) {
+  const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+  const correct = bnGas.add(gasBuffer)
+  return ethUtil.addHexPrefix(correct.toString(16))
 }
 
 // comes from metamask ui
