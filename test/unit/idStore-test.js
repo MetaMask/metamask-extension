@@ -142,20 +142,47 @@ describe('IdentityStore', function() {
   })
 
   describe('#addGasBuffer', function() {
-    const idStore = new IdentityStore({
-      configManager: configManagerGen(),
-      ethStore: {
-        addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
-      },
+    it('formats the result correctly', function() {
+      const idStore = new IdentityStore({
+        configManager: configManagerGen(),
+        ethStore: {
+          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
+        },
+      })
+
+      const gas = '0x01'
+      const bnGas = new BN(gas, 16)
+      const result = idStore.addGasBuffer(gas)
+      const bnResult = new BN(result, 16)
+
+      assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
+      assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
     })
 
-    const gas = '0x01'
-    const bnGas = new BN(gas, 16)
-    const result = idStore.addGasBuffer(gas)
-    const bnResult = new BN(result, 16)
+    it('buffers reasonably', function() {
+      const idStore = new IdentityStore({
+        configManager: configManagerGen(),
+        ethStore: {
+          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
+        },
+      })
 
-    assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
-    assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
+      const gas = '0x04ee59' // Actual estimated gas example
+      const tooBigOutput = '0x80674f9' // Actual bad output
+      const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+      const correctBuffer = new BN('100000', 10)
+      const correct = bnGas.add(correctBuffer)
+
+      const tooBig = new BN(tooBigOutput, 16)
+      const result = idStore.addGasBuffer(gas)
+      const bnResult = new BN(ethUtil.stripHexPrefix(result), 16)
+
+      assert.equal(result.indexOf('0x'), 0, 'included hex prefix')
+      assert(bnResult.gt(bnGas), 'Estimate increased in value.')
+      assert.equal(bnResult.sub(bnGas).toString(10), '100000', 'added 100k gas')
+      assert.equal(result, '0x' + correct.toString(16), 'Added the right amount')
+      assert.notEqual(result, tooBigOutput, 'not that bad estimate')
+    })
   })
 
   describe('#checkForDelegateCall', function() {
@@ -169,4 +196,5 @@ describe('IdentityStore', function() {
     var result = idStore.checkForDelegateCall(delegateCallCode)
     assert.equal(result, true, 'no delegate call in provided code')
   })
+
 })

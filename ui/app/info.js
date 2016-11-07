@@ -145,7 +145,7 @@ InfoScreen.prototype.render = function () {
 
               h('div.fa.fa-github', [
                 h('a.info', {
-                  href: 'https://github.com/metamask/talk/issues',
+                  href: 'https://github.com/MetaMask/metamask-plugin/issues',
                   target: '_blank',
                   onClick (event) { this.navigateTo(event.target.href) },
                 }, 'Start a thread on GitHub'),
