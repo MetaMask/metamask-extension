@@ -3,7 +3,7 @@
 ## Current Master
 
 - Fix bug where gas estimate would sometimes be very high.
-- Increased our gas estimate safety buffer to avoid Out of Gas errors.
+- Increased our gas estimate from 100k gas to 20% of estimate.
 - Fix github link on info page to point at current repository.
 
 ## 2.13.6 2016-10-26

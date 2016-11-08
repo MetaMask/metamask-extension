@@ -287,9 +287,10 @@ IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
   }
 }
 
-const gasBuffer = new BN('200000', 10)
 IdentityStore.prototype.addGasBuffer = function (gas) {
   const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+  const five = new BN('5', 10)
+  const gasBuffer = bnGas.div(five)
   const correct = bnGas.add(gasBuffer)
   return ethUtil.addHexPrefix(correct.toString(16))
 }

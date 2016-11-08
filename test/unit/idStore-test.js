@@ -159,7 +159,7 @@ describe('IdentityStore', function() {
       assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
     })
 
-    it('buffers reasonably', function() {
+    it('buffers 20%', function() {
       const idStore = new IdentityStore({
         configManager: configManagerGen(),
         ethStore: {
@@ -169,18 +169,17 @@ describe('IdentityStore', function() {
 
       const gas = '0x04ee59' // Actual estimated gas example
       const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-      const correctBuffer = new BN('200000', 10)
+      const five = new BN('5', 10)
+      const correctBuffer = bnGas.div(five)
       const correct = bnGas.add(correctBuffer)
 
-      const tooBig = new BN(tooBigOutput, 16)
       const result = idStore.addGasBuffer(gas)
       const bnResult = new BN(ethUtil.stripHexPrefix(result), 16)
 
       assert.equal(result.indexOf('0x'), 0, 'included hex prefix')
       assert(bnResult.gt(bnGas), 'Estimate increased in value.')
-      assert.equal(bnResult.sub(bnGas).toString(10), '100000', 'added 100k gas')
+      assert.equal(bnResult.sub(bnGas).toString(10), correctBuffer.toString(10), 'added 20% gas')
       assert.equal(result, '0x' + correct.toString(16), 'Added the right amount')
-      assert.notEqual(result, tooBigOutput, 'not that bad estimate')
     })
   })
 
