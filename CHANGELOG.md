@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.13.7 2016-11-8
+
 - Fix bug where gas estimate would sometimes be very high.
 - Increased our gas estimate from 100k gas to 20% of estimate.
 - Fix github link on info page to point at current repository.
