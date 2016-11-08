@@ -168,9 +168,8 @@ describe('IdentityStore', function() {
       })
 
       const gas = '0x04ee59' // Actual estimated gas example
-      const tooBigOutput = '0x80674f9' // Actual bad output
       const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-      const correctBuffer = new BN('100000', 10)
+      const correctBuffer = new BN('200000', 10)
       const correct = bnGas.add(correctBuffer)
 
       const tooBig = new BN(tooBigOutput, 16)
