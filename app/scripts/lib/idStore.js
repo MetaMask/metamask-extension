@@ -262,6 +262,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     query.estimateGas(txParams, function(err, result){
       if (err) return cb(err)
       txData.estimatedGas = self.addGasBuffer(result)
+      txData.txParams.gasLimit = txData.estimatedGas
       cb()
     })
   }

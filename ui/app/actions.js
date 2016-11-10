@@ -43,7 +43,6 @@ var actions = {
   unlockInProgress: unlockInProgress,
   // error handling
   displayWarning: displayWarning,
-  showWarning: showWarning, // alias
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -180,7 +179,7 @@ function createNewVault (password, entropy) {
     dispatch(actions.createNewVaultInProgress())
     _accountManager.createNewVault(password, entropy, (err, result) => {
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
       dispatch(actions.showNewVaultSeed(result))
     })
@@ -355,7 +354,7 @@ function agreeToDisclaimer () {
     dispatch(this.showLoadingIndication())
     _accountManager.agreeToDisclaimer((err) => {
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch(this.hideLoadingIndication())
@@ -420,7 +419,7 @@ function lockMetamask () {
     _accountManager.setLocked((err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch({
@@ -436,7 +435,7 @@ function showAccountDetail (address) {
     _accountManager.setSelectedAddress(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch({
@@ -466,7 +465,7 @@ function confirmSeedWords () {
     _accountManager.clearSeedWordCache((err, account) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       console.log('Seed word cache cleared. ' + account)
@@ -571,10 +570,6 @@ function hideSubLoadingIndication () {
   }
 }
 
-function showWarning (text) {
-  return this.displayWarning(text)
-}
-
 function displayWarning (text) {
   return {
     type: actions.DISPLAY_WARNING,
@@ -626,7 +621,7 @@ function saveAccountLabel (account, label) {
     _accountManager.saveAccountLabel(account, label, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
         type: actions.SAVE_ACCOUNT_LABEL,
@@ -721,7 +716,7 @@ function shapeShiftSubview (network) {
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+        if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
         dispatch({
           type: actions.SHAPESHIFT_SUBVIEW,
           value: {
@@ -738,7 +733,7 @@ function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      if (response.error) return dispatch(actions.showWarning(response.error))
+      if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
       _accountManager.createShapeShiftTx(response.deposit, response.depositType)
@@ -760,7 +755,7 @@ function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
-      if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [
         `Deposit your ${coin} to the address bellow:`,
