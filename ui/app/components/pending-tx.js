@@ -31,7 +31,7 @@ PendingTx.prototype.render = function () {
       `),
 
       txData.simulationFails ?
-        h('span.error', {
+        h('.error', {
           style: {
             marginLeft: 50,
             fontSize: '0.9em',
