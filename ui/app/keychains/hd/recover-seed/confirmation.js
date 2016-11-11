@@ -5,10 +5,10 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
 
-module.exports = connect(mapStateToProps)(RevealSeedConfirmatoin)
+module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
 
-inherits(RevealSeedConfirmatoin, Component)
-function RevealSeedConfirmatoin () {
+inherits(RevealSeedConfirmation, Component)
+function RevealSeedConfirmation () {
   Component.call(this)
 }
 
@@ -18,9 +18,9 @@ function mapStateToProps (state) {
   }
 }
 
-RevealSeedConfirmatoin.prototype.confirmationPhrase = 'I understand'
+RevealSeedConfirmation.prototype.confirmationPhrase = 'I understand'
 
-RevealSeedConfirmatoin.prototype.render = function () {
+RevealSeedConfirmation.prototype.render = function () {
   const props = this.props
   const state = this.state
 
@@ -116,24 +116,24 @@ RevealSeedConfirmatoin.prototype.render = function () {
   )
 }
 
-RevealSeedConfirmatoin.prototype.componentDidMount = function () {
+RevealSeedConfirmation.prototype.componentDidMount = function () {
   document.getElementById('password-box').focus()
 }
 
-RevealSeedConfirmatoin.prototype.goHome = function () {
+RevealSeedConfirmation.prototype.goHome = function () {
   this.props.dispatch(actions.showConfigPage(false))
 }
 
 // create vault
 
-RevealSeedConfirmatoin.prototype.checkConfirmation = function (event) {
+RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
   if (event.key === 'Enter') {
     event.preventDefault()
     this.revealSeedWords()
   }
 }
 
-RevealSeedConfirmatoin.prototype.revealSeedWords = function () {
+RevealSeedConfirmation.prototype.revealSeedWords = function () {
   this.setState({ confirmationWrong: false })
 
   const confirmBox = document.getElementById('confirm-box')
