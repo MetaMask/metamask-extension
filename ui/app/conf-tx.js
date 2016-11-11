@@ -170,6 +170,9 @@ function warningIfExists (warning) {
   if (warning &&
       // Do not display user rejections on this screen:
      warning.indexOf('User denied transaction signature') === -1) {
-    return h('span.error', { style: { margin: 'auto' } }, warning)
+    return h('.error', {
+      style: {
+        margin: 'auto',
+    }}, warning)
   }
 }
