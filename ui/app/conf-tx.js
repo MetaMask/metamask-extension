@@ -173,6 +173,7 @@ function warningIfExists (warning) {
     return h('.error', {
       style: {
         margin: 'auto',
-    }}, warning)
+      },
+    }, warning)
   }
 }
