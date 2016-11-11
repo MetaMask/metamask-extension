@@ -127,7 +127,7 @@
     "no-whitespace-before-property": 2,
     "no-with": 2,
     "one-var": [2, { "initialized": "never" }],
-    "operator-linebreak": [1, "after", { "overrides": { "?": "before", ":": "before" } }],
+    "operator-linebreak": [1, "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
     "padded-blocks": [1, "never"],
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
     "semi": [2, "never"],

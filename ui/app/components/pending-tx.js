@@ -30,22 +30,22 @@ PendingTx.prototype.render = function () {
         }
       `),
 
-      txData.simulationFails
-      ? h('.error', {
-        style: {
-          marginLeft: 50,
-          fontSize: '0.9em',
-        },
-      }, 'Transaction Error. Exception thrown in contract code.')
+      txData.simulationFails ?
+        h('.error', {
+          style: {
+            marginLeft: 50,
+            fontSize: '0.9em',
+          },
+        }, 'Transaction Error. Exception thrown in contract code.')
       : null,
 
-      state.insufficientBalance
-      ? h('span.error', {
-        style: {
-          marginLeft: 50,
-          fontSize: '0.9em',
-        },
-      }, 'Insufficient balance for transaction')
+      state.insufficientBalance ?
+        h('span.error', {
+          style: {
+            marginLeft: 50,
+            fontSize: '0.9em',
+          },
+        }, 'Insufficient balance for transaction')
       : null,
 
       // send + cancel
@@ -57,10 +57,10 @@ PendingTx.prototype.render = function () {
         },
       }, [
 
-        state.insufficientBalance
-        ? h('button.btn-green', {
-          onClick: state.buyEth,
-        }, 'Buy Ether')
+        state.insufficientBalance ?
+          h('button.btn-green', {
+            onClick: state.buyEth,
+          }, 'Buy Ether')
         : null,
 
         h('button.confirm', {
