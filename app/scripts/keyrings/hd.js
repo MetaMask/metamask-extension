@@ -2,8 +2,9 @@ const EventEmitter = require('events').EventEmitter
 const hdkey = require('ethereumjs-wallet/hdkey')
 const bip39 = require('bip39')
 const ethUtil = require('ethereumjs-util')
-const type = 'HD Key Tree'
 const sigUtil = require('../lib/sig-util')
+
+const type = 'HD Key Tree'
 
 const hdPathString = `m/44'/60'/0'/0`
 
@@ -29,8 +30,8 @@ module.exports = class HdKeyring extends EventEmitter {
       this.initFromMnemonic(opts.mnemonic)
     }
 
-    if ('n' in opts) {
-      this.addAccounts(opts.n)
+    if ('numberOfAccounts' in opts) {
+      this.addAccounts(opts.numberOfAccounts)
     }
   }
 
@@ -44,7 +45,7 @@ module.exports = class HdKeyring extends EventEmitter {
   serialize () {
     return {
       mnemonic: this.mnemonic,
-      n: this.wallets.length,
+      numberOfAccounts: this.wallets.length,
     }
   }
 
@@ -53,14 +54,14 @@ module.exports = class HdKeyring extends EventEmitter {
     return wallet.getPrivateKey().toString('hex')
   }
 
-  addAccounts (n = 1) {
+  addAccounts (numberOfAccounts = 1) {
     if (!this.root) {
       this.initFromMnemonic(bip39.generateMnemonic())
     }
 
     const oldLen = this.wallets.length
     const newWallets = []
-    for (let i = oldLen; i < n + oldLen; i++) {
+    for (let i = oldLen; i < numberOfAccounts + oldLen; i++) {
       const child = this.root.deriveChild(i)
       const wallet = child.getWallet()
       newWallets.push(wallet)
@@ -94,11 +95,7 @@ module.exports = class HdKeyring extends EventEmitter {
   getWalletForAccount (account) {
     return this.wallets.find((w) => {
       const address = w.getAddress().toString('hex')
-      return ((address === account) || (normalize(address) === account))
+      return ((address === account) || (sigUtil.normalize(address) === account))
     })
   }
-}
-
-function normalize (address) {
-  return ethUtil.addHexPrefix(address.toLowerCase())
 }
