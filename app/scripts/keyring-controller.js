@@ -1,18 +1,18 @@
 const async = require('async')
-const EventEmitter = require('events').EventEmitter
-const encryptor = require('./lib/encryptor')
-const messageManager = require('./lib/message-manager')
 const ethUtil = require('ethereumjs-util')
 const ethBinToOps = require('eth-bin-to-ops')
 const EthQuery = require('eth-query')
-const BN = ethUtil.BN
-const Transaction = require('ethereumjs-tx')
-const createId = require('web3-provider-engine/util/random-id')
-const autoFaucet = require('./lib/auto-faucet')
 const bip39 = require('bip39')
+const Transaction = require('ethereumjs-tx')
+const EventEmitter = require('events').EventEmitter
 
-// TEMPORARY UNTIL FULL DEPRECATION:
+const createId = require('web3-provider-engine/util/random-id')
+const normalize = require('./lib/sig-util').normalize
+const encryptor = require('./lib/encryptor')
+const messageManager = require('./lib/message-manager')
+const autoFaucet = require('./lib/auto-faucet')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const BN = ethUtil.BN
 
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
@@ -26,7 +26,6 @@ module.exports = class KeyringController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.web3 = opts.web3
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
@@ -98,7 +97,7 @@ module.exports = class KeyringController extends EventEmitter {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
-        n: 1,
+        numberOfAccounts: 1,
       }, (err) => {
         if (err) return cb(err)
         const firstKeyring = this.keyrings[0]
@@ -143,9 +142,7 @@ module.exports = class KeyringController extends EventEmitter {
     .then(() => {
       return this.persistAllKeyrings()
     })
-    .then(() => {
-      cb(null)
-    })
+    .then(cb)
     .catch((err) => {
       cb(err)
     })
@@ -153,7 +150,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   createFirstKeyTree (password, cb) {
     this.clearKeyrings()
-    this.addNewKeyring('HD Key Tree', {n: 1}, (err) => {
+    this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
       const firstKeyring = this.keyrings[0]
       const accounts = firstKeyring.getAccounts()
       const firstAccount = accounts[0]
@@ -562,11 +559,6 @@ module.exports = class KeyringController extends EventEmitter {
     this.configManager.setSelectedAccount()
   }
 
-}
-
-function normalize (address) {
-  if (!address) return
-  return ethUtil.addHexPrefix(address.toLowerCase())
 }
 
 function noop () {}
