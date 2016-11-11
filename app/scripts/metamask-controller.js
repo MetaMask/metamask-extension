@@ -1,7 +1,7 @@
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
-const IdentityStore = require('./lib/idStore')
+const KeyringController = require('./keyring-controller')
 const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
@@ -11,15 +11,18 @@ const extension = require('./lib/extension')
 module.exports = class MetamaskController {
 
   constructor (opts) {
+    this.state = { network: 'loading' }
     this.opts = opts
     this.listeners = []
     this.configManager = new ConfigManager(opts)
-    this.idStore = new IdentityStore({
+    this.keyringController = new KeyringController({
       configManager: this.configManager,
+      getNetwork: this.getStateNetwork.bind(this),
     })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
-    this.idStore.setStore(this.ethStore)
+    this.keyringController.setStore(this.ethStore)
+    this.getNetwork()
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
 
@@ -30,19 +33,19 @@ module.exports = class MetamaskController {
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
-
   }
 
   getState () {
     return extend(
+      this.state,
       this.ethStore.getState(),
-      this.idStore.getState(),
-      this.configManager.getConfig()
+      this.configManager.getConfig(),
+      this.keyringController.getState()
     )
   }
 
   getApi () {
-    const idStore = this.idStore
+    const keyringController = this.keyringController
 
     return {
       getState: (cb) => { cb(null, this.getState()) },
@@ -52,27 +55,26 @@ module.exports = class MetamaskController {
       agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
       resetDisclaimer: this.resetDisclaimer.bind(this),
       setCurrentFiat: this.setCurrentFiat.bind(this),
-      agreeToEthWarning: this.agreeToEthWarning.bind(this),
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
-      // forward directly to idStore
-      createNewVault: idStore.createNewVault.bind(idStore),
-      recoverFromSeed: idStore.recoverFromSeed.bind(idStore),
-      submitPassword: idStore.submitPassword.bind(idStore),
-      setSelectedAddress: idStore.setSelectedAddress.bind(idStore),
-      approveTransaction: idStore.approveTransaction.bind(idStore),
-      cancelTransaction: idStore.cancelTransaction.bind(idStore),
-      signMessage: idStore.signMessage.bind(idStore),
-      cancelMessage: idStore.cancelMessage.bind(idStore),
-      setLocked: idStore.setLocked.bind(idStore),
-      clearSeedWordCache: idStore.clearSeedWordCache.bind(idStore),
-      exportAccount: idStore.exportAccount.bind(idStore),
-      revealAccount: idStore.revealAccount.bind(idStore),
-      saveAccountLabel: idStore.saveAccountLabel.bind(idStore),
-      tryPassword: idStore.tryPassword.bind(idStore),
-      recoverSeed: idStore.recoverSeed.bind(idStore),
+      // forward directly to keyringController
+      placeSeedWords: keyringController.placeSeedWords.bind(keyringController),
+      createNewVaultAndKeychain: keyringController.createNewVaultAndKeychain.bind(keyringController),
+      createNewVaultAndRestore: keyringController.createNewVaultAndRestore.bind(keyringController),
+      clearSeedWordCache: keyringController.clearSeedWordCache.bind(keyringController),
+      addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
+      addNewAccount: keyringController.addNewAccount.bind(keyringController),
+      submitPassword: keyringController.submitPassword.bind(keyringController),
+      setSelectedAddress: keyringController.setSelectedAddress.bind(keyringController),
+      approveTransaction: keyringController.approveTransaction.bind(keyringController),
+      cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
+      signMessage: keyringController.signMessage.bind(keyringController),
+      cancelMessage: keyringController.cancelMessage.bind(keyringController),
+      setLocked: keyringController.setLocked.bind(keyringController),
+      exportAccount: keyringController.exportAccount.bind(keyringController),
+      saveAccountLabel: keyringController.saveAccountLabel.bind(keyringController),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -85,23 +87,6 @@ module.exports = class MetamaskController {
   }
 
   onRpcRequest (stream, originDomain, request) {
-
-    /* Commented out for Parity compliance
-     * Parity does not permit additional keys, like `origin`,
-     * and Infura is not currently filtering this key out.
-    var payloads = Array.isArray(request) ? request : [request]
-    payloads.forEach(function (payload) {
-      // Append origin to rpc payload
-      payload.origin = originDomain
-      // Append origin to signature request
-      if (payload.method === 'eth_sendTransaction') {
-        payload.params[0].origin = originDomain
-      } else if (payload.method === 'eth_sign') {
-        payload.params.push({ origin: originDomain })
-      }
-    })
-    */
-
     // handle rpc request
     this.provider.sendAsync(request, function onPayloadHandled (err, response) {
       logger(err, request, response)
@@ -134,38 +119,38 @@ module.exports = class MetamaskController {
   }
 
   initializeProvider (opts) {
-    const idStore = this.idStore
+    const keyringController = this.keyringController
 
     var providerOpts = {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        var selectedAddress = idStore.getSelectedAddress()
+        var selectedAddress = this.configManager.getSelectedAccount()
         var result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
       },
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: (...args) => {
-        idStore.signTransaction(...args)
+        keyringController.signTransaction(...args)
         this.sendUpdate()
       },
 
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: (...args) => {
-        idStore.signMessage(...args)
+        keyringController.signMessage(...args)
         this.sendUpdate()
       },
     }
 
     var provider = MetaMaskProvider(providerOpts)
     var web3 = new Web3(provider)
-    idStore.web3 = web3
-    idStore.getNetwork()
+    this.web3 = web3
+    keyringController.web3 = web3
 
     provider.on('block', this.processBlock.bind(this))
-    provider.on('error', idStore.getNetwork.bind(idStore))
+    provider.on('error', this.getNetwork.bind(this))
 
     return provider
   }
@@ -173,7 +158,7 @@ module.exports = class MetamaskController {
   initPublicConfigStore () {
     // get init state
     var initPublicState = extend(
-      idStoreToPublic(this.idStore.getState()),
+      keyringControllerToPublic(this.keyringController.getState()),
       configToPublic(this.configManager.getConfig())
     )
 
@@ -183,12 +168,14 @@ module.exports = class MetamaskController {
     this.configManager.subscribe(function (state) {
       storeSetFromObj(publicConfigStore, configToPublic(state))
     })
-    this.idStore.on('update', function (state) {
-      storeSetFromObj(publicConfigStore, idStoreToPublic(state))
+    this.keyringController.on('update', () => {
+      const state = this.keyringController.getState()
+      storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
+      this.sendUpdate()
     })
 
-    // idStore substate
-    function idStoreToPublic (state) {
+    // keyringController substate
+    function keyringControllerToPublic (state) {
       return {
         selectedAddress: state.selectedAddress,
       }
@@ -211,11 +198,11 @@ module.exports = class MetamaskController {
   }
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
-    const idStore = this.idStore
+    const keyringController = this.keyringController
 
-    let err = this.enforceTxValidations(txParams)
+    const err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
-    idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
+    keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
       if (err) return onTxDoneCb(err)
       this.sendUpdate()
       this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
@@ -230,9 +217,9 @@ module.exports = class MetamaskController {
   }
 
   newUnsignedMessage (msgParams, cb) {
-    var state = this.idStore.getState()
+    var state = this.keyringController.getState()
     if (!state.isUnlocked) {
-      this.idStore.addUnconfirmedMessage(msgParams, cb)
+      this.keyringController.addUnconfirmedMessage(msgParams, cb)
       this.opts.unlockAccountMessage()
     } else {
       this.addUnconfirmedMessage(msgParams, cb)
@@ -241,8 +228,8 @@ module.exports = class MetamaskController {
   }
 
   addUnconfirmedMessage (msgParams, cb) {
-    const idStore = this.idStore
-    const msgId = idStore.addUnconfirmedMessage(msgParams, cb)
+    const keyringController = this.keyringController
+    const msgId = keyringController.addUnconfirmedMessage(msgParams, cb)
     this.opts.showUnconfirmedMessage(msgParams, msgId)
   }
 
@@ -261,8 +248,8 @@ module.exports = class MetamaskController {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.idStore._currentState.network === 'loading') {
-      this.idStore.getNetwork()
+    if (this.state.network === 'loading') {
+      this.getNetwork()
     }
   }
 
@@ -287,7 +274,6 @@ module.exports = class MetamaskController {
     } catch (e) {
       console.error('Error in checking TOS change.')
     }
-
   }
 
   agreeToDisclaimer (cb) {
@@ -332,26 +318,17 @@ module.exports = class MetamaskController {
     }, 300000)
   }
 
-  agreeToEthWarning (cb) {
-    try {
-      this.configManager.setShouldntShowWarning()
-      cb()
-    } catch (e) {
-      cb(e)
-    }
-  }
-
   // called from popup
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
     extension.runtime.reload()
-    this.idStore.getNetwork()
+    this.getNetwork()
   }
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
     extension.runtime.reload()
-    this.idStore.getNetwork()
+    this.getNetwork()
   }
 
   useEtherscanProvider () {
@@ -362,7 +339,7 @@ module.exports = class MetamaskController {
   buyEth (address, amount) {
     if (!amount) amount = '5'
 
-    var network = this.idStore._currentState.network
+    var network = this.state.network
     var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
 
     if (network === '2') {
@@ -378,6 +355,25 @@ module.exports = class MetamaskController {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
 
+  getNetwork (err) {
+    if (err) {
+      this.state.network = 'loading'
+      this.sendUpdate()
+    }
+
+    this.web3.version.getNetwork((err, network) => {
+      if (err) {
+        this.state.network = 'loading'
+        return this.sendUpdate()
+      }
+      if (global.METAMASK_DEBUG) {
+        console.log('web3.getNetwork returned ' + network)
+      }
+      this.state.network = network
+      this.sendUpdate()
+    })
+  }
+
   setGasMultiplier (gasMultiplier, cb) {
     try {
       this.configManager.setGasMultiplier(gasMultiplier)
@@ -385,5 +381,9 @@ module.exports = class MetamaskController {
     } catch (e) {
       cb(e)
     }
+  }
+
+  getStateNetwork () {
+    return this.state.network
   }
 }

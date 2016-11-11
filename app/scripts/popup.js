@@ -18,7 +18,7 @@ var portStream = new PortStream(pluginPort)
 
 startPopup(portStream)
 
-function closePopupIfOpen(name) {
+function closePopupIfOpen (name) {
   if (name !== 'notification') {
     notification.closePopup()
   }
