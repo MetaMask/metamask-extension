@@ -44,7 +44,6 @@ var actions = {
   unlockInProgress: unlockInProgress,
   // error handling
   displayWarning: displayWarning,
-  showWarning: showWarning, // alias
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -184,7 +183,7 @@ function confirmSeedWords () {
     background.clearSeedWordCache((err, account) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       console.log('Seed word cache cleared. ' + account)
@@ -384,7 +383,7 @@ function agreeToDisclaimer () {
     dispatch(this.showLoadingIndication())
     background.agreeToDisclaimer((err) => {
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch(this.hideLoadingIndication())
@@ -456,7 +455,7 @@ function lockMetamask () {
     background.setLocked((err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch({
@@ -472,7 +471,7 @@ function showAccountDetail (address) {
     background.setSelectedAddress(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch({
@@ -586,10 +585,6 @@ function hideSubLoadingIndication () {
   }
 }
 
-function showWarning (text) {
-  return this.displayWarning(text)
-}
-
 function displayWarning (text) {
   return {
     type: actions.DISPLAY_WARNING,
@@ -641,7 +636,7 @@ function saveAccountLabel (account, label) {
     background.saveAccountLabel(account, label, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
         type: actions.SAVE_ACCOUNT_LABEL,
@@ -717,7 +712,7 @@ function shapeShiftSubview (network) {
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+        if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
         dispatch({
           type: actions.SHAPESHIFT_SUBVIEW,
           value: {
@@ -734,7 +729,7 @@ function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      if (response.error) return dispatch(actions.showWarning(response.error))
+      if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
       background.createShapeShiftTx(response.deposit, response.depositType)
@@ -756,7 +751,7 @@ function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
-      if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [
         `Deposit your ${coin} to the address bellow:`,

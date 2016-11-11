@@ -244,7 +244,7 @@ ShapeshiftForm.prototype.updateCoin = function (event) {
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
     var message = 'Not a valid coin'
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   } else {
     return props.dispatch(actions.pairUpdate(coin))
   }
