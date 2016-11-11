@@ -12,6 +12,11 @@ module.exports = {
     return ethUtil.addHexPrefix(rStr.concat(sStr, vStr)).toString('hex')
   },
 
+  normalize: function (address) {
+    if (!address) return
+    return ethUtil.addHexPrefix(address.toLowerCase())
+  },
+
 }
 
 function padWithZeroes (number, length) {
