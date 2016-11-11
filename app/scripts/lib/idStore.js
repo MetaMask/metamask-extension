@@ -260,6 +260,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     query.estimateGas(txParams, function(err, result){
       if (err) return cb(err)
       txData.estimatedGas = self.addGasBuffer(result)
+      txData.txParams.gasLimit = txData.estimatedGas
       cb()
     })
   }
@@ -285,9 +286,10 @@ IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
   }
 }
 
-const gasBuffer = new BN('100000', 10)
 IdentityStore.prototype.addGasBuffer = function (gas) {
   const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+  const five = new BN('5', 10)
+  const gasBuffer = bnGas.div(five)
   const correct = bnGas.add(gasBuffer)
   return ethUtil.addHexPrefix(correct.toString(16))
 }

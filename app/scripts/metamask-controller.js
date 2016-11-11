@@ -17,6 +17,7 @@ module.exports = class MetamaskController {
     this.configManager = new ConfigManager(opts)
     this.keyringController = new KeyringController({
       configManager: this.configManager,
+      getNetwork: this.getStateNetwork.bind(this),
     })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
@@ -218,7 +219,6 @@ module.exports = class MetamaskController {
 
     let err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
-
     keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
       if (err) return onTxDoneCb(err)
       this.sendUpdate()
@@ -400,4 +400,9 @@ module.exports = class MetamaskController {
       cb(e)
     }
   }
+
+  getStateNetwork () {
+    return this.state.network
+  }
 }
+

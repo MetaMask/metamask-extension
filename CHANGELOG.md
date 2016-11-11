@@ -1,8 +1,12 @@
 # Changelog
 
 ## Current Master
+- Fix bug where 20% of gas estimate was not being added properly.
 
-- Fix gas estimation bug.
+## 2.13.7 2016-11-8
+
+- Fix bug where gas estimate would sometimes be very high.
+- Increased our gas estimate from 100k gas to 20% of estimate.
 - Fix github link on info page to point at current repository.
 
 ## 2.13.6 2016-10-26

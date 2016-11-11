@@ -38,7 +38,7 @@ module.exports = class KeyringController extends EventEmitter {
     this._unconfTxCbs = {}
     this._unconfMsgCbs = {}
 
-    this.network = opts.network
+    this.getNetwork = opts.getNetwork
 
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
@@ -344,13 +344,14 @@ module.exports = class KeyringController extends EventEmitter {
     var time = (new Date()).getTime()
     var txId = createId()
     txParams.metamaskId = txId
-    txParams.metamaskNetworkId = this.network
+    txParams.metamaskNetworkId = this.getNetwork()
     var txData = {
       id: txId,
       txParams: txParams,
       time: time,
       status: 'unconfirmed',
       gasMultiplier: configManager.getGasMultiplier() || 1,
+      metamaskNetworkId: this.getNetwork(),
     }
 
 
