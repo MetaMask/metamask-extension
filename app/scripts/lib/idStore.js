@@ -257,10 +257,24 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   }
 
   function estimateGas(cb){
-    query.estimateGas(txParams, function(err, result){
+    var estimationParams = extend(txParams)
+    // 1 billion gas for estimation
+    var gasLimit = '0x3b9aca00'
+    estimationParams.gas = gasLimit
+    query.estimateGas(estimationParams, function(err, result){
       if (err) return cb(err)
+      if (result === estimationParams.gas) {
+        txData.simulationFails = true
+        query.getBlockByNumber('latest', true, function(err, block){
+          if (err) return cb(err)
+          txData.estimatedGas = block.gasLimit
+          txData.txParams.gas = block.gasLimit
+          cb()
+        })
+        return
+      }
       txData.estimatedGas = self.addGasBuffer(result)
-      txData.txParams.gasLimit = txData.estimatedGas
+      txData.txParams.gas = txData.estimatedGas
       cb()
     })
   }
