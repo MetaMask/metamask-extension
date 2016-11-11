@@ -145,7 +145,7 @@ var actions = {
 module.exports = actions
 
 var background = null
-function _setBackgroundConnection(backgroundConnection) {
+function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
 }
 

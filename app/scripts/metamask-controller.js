@@ -87,23 +87,6 @@ module.exports = class MetamaskController {
   }
 
   onRpcRequest (stream, originDomain, request) {
-
-    /* Commented out for Parity compliance
-     * Parity does not permit additional keys, like `origin`,
-     * and Infura is not currently filtering this key out.
-    var payloads = Array.isArray(request) ? request : [request]
-    payloads.forEach(function (payload) {
-      // Append origin to rpc payload
-      payload.origin = originDomain
-      // Append origin to signature request
-      if (payload.method === 'eth_sendTransaction') {
-        payload.params[0].origin = originDomain
-      } else if (payload.method === 'eth_sign') {
-        payload.params.push({ origin: originDomain })
-      }
-    })
-    */
-
     // handle rpc request
     this.provider.sendAsync(request, function onPayloadHandled (err, response) {
       logger(err, request, response)
@@ -217,7 +200,7 @@ module.exports = class MetamaskController {
   newUnsignedTransaction (txParams, onTxDoneCb) {
     const keyringController = this.keyringController
 
-    let err = this.enforceTxValidations(txParams)
+    const err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
     keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
       if (err) return onTxDoneCb(err)
@@ -291,7 +274,6 @@ module.exports = class MetamaskController {
     } catch (e) {
       console.error('Error in checking TOS change.')
     }
-
   }
 
   agreeToDisclaimer (cb) {
@@ -373,7 +355,7 @@ module.exports = class MetamaskController {
     this.configManager.createShapeShiftTx(depositAddress, depositType)
   }
 
-  getNetwork(err) {
+  getNetwork (err) {
     if (err) {
       this.state.network = 'loading'
       this.sendUpdate()
@@ -405,4 +387,3 @@ module.exports = class MetamaskController {
     return this.state.network
   }
 }
-

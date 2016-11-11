@@ -42,7 +42,7 @@ function encryptWithKey (key, dataObj) {
   return global.crypto.subtle.encrypt({
     name: 'AES-GCM',
     iv: vector,
-  }, key, dataBuffer).then(function(buf){
+  }, key, dataBuffer).then(function (buf) {
     var buffer = new Uint8Array(buf)
     var vectorStr = encodeBufferToBase64(vector)
     var vaultStr = encodeBufferToBase64(buffer)
@@ -63,13 +63,13 @@ function decryptWithKey (key, text) {
   const encryptedData = decodeBase64ToBuffer(parts[0])
   const vector = decodeBase64ToBuffer(parts[1])
   return crypto.subtle.decrypt({name: 'AES-GCM', iv: vector}, key, encryptedData)
-  .then(function(result){
+  .then(function (result) {
     const decryptedData = new Uint8Array(result)
     const decryptedStr = convertArrayBufferViewtoString(decryptedData)
     const decryptedObj = JSON.parse(decryptedStr)
     return decryptedObj
   })
-  .catch(function(reason) {
+  .catch(function (reason) {
     throw new Error('Incorrect password')
   })
 }
@@ -95,7 +95,7 @@ function convertArrayBufferViewtoString (buffer) {
 function keyFromPassword (password) {
   var passBuffer = convertStringToArrayBufferView(password)
   return global.crypto.subtle.digest('SHA-256', passBuffer)
-  .then(function (passHash){
+  .then(function (passHash) {
     return global.crypto.subtle.importKey('raw', passHash, {name: 'AES-GCM'}, false, ['encrypt', 'decrypt'])
   })
 }
@@ -135,7 +135,7 @@ function encodeBufferToBase64 (buf) {
 
 function decodeBase64ToBuffer (base64) {
   var buf = new Uint8Array(atob(base64).split('')
-  .map(function(c) {
+  .map(function (c) {
     return c.charCodeAt(0)
   }))
   return buf

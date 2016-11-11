@@ -98,7 +98,6 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
-
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
@@ -367,7 +366,6 @@ App.prototype.renderPrimary = function () {
 
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
-
     // show current view
     switch (props.currentView.name) {
 

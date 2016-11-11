@@ -290,7 +290,7 @@ ConfigManager.prototype.getSalt = function () {
   return ('salt' in data) && data.salt
 }
 
-ConfigManager.prototype.setSalt = function(salt) {
+ConfigManager.prototype.setSalt = function (salt) {
   var data = this.getData()
   data.salt = salt
   this.setData(data)
@@ -358,7 +358,6 @@ ConfigManager.prototype.updateConversionRate = function () {
     this.setConversionPrice(0)
     this.setConversionDate('N/A')
   })
-
 }
 
 ConfigManager.prototype.setConversionPrice = function (price) {

@@ -243,7 +243,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   ], didComplete)
 
   // perform static analyis on the target contract code
-  function analyzeForDelegateCall(cb){
+  function analyzeForDelegateCall (cb) {
     if (txParams.to) {
       query.getCode(txParams.to, (err, result) => {
         if (err) return cb(err)
@@ -256,16 +256,16 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     }
   }
 
-  function estimateGas(cb){
+  function estimateGas (cb) {
     var estimationParams = extend(txParams)
     // 1 billion gas for estimation
     var gasLimit = '0x3b9aca00'
     estimationParams.gas = gasLimit
-    query.estimateGas(estimationParams, function(err, result){
+    query.estimateGas(estimationParams, function (err, result) {
       if (err) return cb(err)
       if (result === estimationParams.gas) {
         txData.simulationFails = true
-        query.getBlockByNumber('latest', true, function(err, block){
+        query.getBlockByNumber('latest', true, function (err, block) {
           if (err) return cb(err)
           txData.estimatedGas = block.gasLimit
           txData.txParams.gas = block.gasLimit

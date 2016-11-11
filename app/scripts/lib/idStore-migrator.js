@@ -11,7 +11,7 @@ module.exports = class IdentityStoreMigrator {
     }
   }
 
-  oldSeedForPassword( password ) {
+  oldSeedForPassword (password) {
     const hasOldVault = this.hasOldVault()
     const configManager = this.configManager
 
@@ -35,7 +35,7 @@ module.exports = class IdentityStoreMigrator {
     })
   }
 
-  serializeVault() {
+  serializeVault () {
     const mnemonic = this.idStore._idmgmt.getSeed()
     const n = this.idStore._getAddresses().length
 
@@ -45,7 +45,7 @@ module.exports = class IdentityStoreMigrator {
     }
   }
 
-  hasOldVault() {
+  hasOldVault () {
     const wallet = this.configManager.getWallet()
     return wallet
   }
