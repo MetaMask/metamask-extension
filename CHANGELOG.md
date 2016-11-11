@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Show a warning when a transaction fails during simulation.
 - Fix bug where 20% of gas estimate was not being added properly.
 
 ## 2.13.7 2016-11-8
