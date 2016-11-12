@@ -142,7 +142,9 @@ module.exports = class KeyringController extends EventEmitter {
     .then(() => {
       return this.persistAllKeyrings()
     })
-    .then(cb)
+    .then(() => {
+      cb()
+    })
     .catch((err) => {
       cb(err)
     })
