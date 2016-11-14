@@ -212,7 +212,6 @@ module.exports = class MetamaskController {
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
     const idStore = this.idStore
-
     let err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
     idStore.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
