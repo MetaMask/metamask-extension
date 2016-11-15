@@ -246,7 +246,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   function analyzeForDelegateCall (cb) {
     if (txParams.to) {
       query.getCode(txParams.to, (err, result) => {
-        if (err) return cb(err)
+        if (err) return cb(err.message || err)
         var containsDelegateCall = self.checkForDelegateCall(result)
         txData.containsDelegateCall = containsDelegateCall
         cb()
@@ -261,8 +261,8 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     // 1 billion gas for estimation
     var gasLimit = '0x3b9aca00'
     estimationParams.gas = gasLimit
-    query.estimateGas(estimationParams, function (err, result) {
-      if (err) return cb(err)
+    query.estimateGas(estimationParams, function(err, result){
+      if (err) return cb(err.message || err)
       if (result === estimationParams.gas) {
         txData.simulationFails = true
         query.getBlockByNumber('latest', true, function (err, block) {
@@ -280,7 +280,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   }
 
   function didComplete (err) {
-    if (err) return cb(err)
+    if (err) return cb(err.message || err)
     configManager.addTx(txData)
     // signal update
     self._didUpdate()
