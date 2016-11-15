@@ -173,7 +173,9 @@ module.exports = class KeyringController extends EventEmitter {
 
   placeSeedWords () {
     const firstKeyring = this.keyrings[0]
+    console.log(firstKeyring)
     const seedWords = firstKeyring.serialize().mnemonic
+    console.log(seedWords)
     this.configManager.setSeedWords(seedWords)
   }
 
