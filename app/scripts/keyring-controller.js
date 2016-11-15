@@ -153,13 +153,12 @@ module.exports = class KeyringController extends EventEmitter {
   createFirstKeyTree (password, cb) {
     this.clearKeyrings()
     this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
-      const firstKeyring = this.keyrings[0]
-      const accounts = firstKeyring.getAccounts()
+      const accounts = this.keyrings[0].getAccounts()
       const firstAccount = accounts[0]
       const hexAccount = normalize(firstAccount)
-      const seedWords = firstKeyring.serialize().mnemonic
       this.configManager.setSelectedAccount(firstAccount)
-      this.configManager.setSeedWords(seedWords)
+
+      this.placeSeedWords()
       autoFaucet(hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
@@ -172,9 +171,11 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  placeSeedWords (cb) {
+  placeSeedWords () {
     const firstKeyring = this.keyrings[0]
+    console.log(firstKeyring)
     const seedWords = firstKeyring.serialize().mnemonic
+    console.log(seedWords)
     this.configManager.setSeedWords(seedWords)
   }
 
