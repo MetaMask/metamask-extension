@@ -199,7 +199,6 @@ module.exports = class MetamaskController {
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
     const keyringController = this.keyringController
-
     const err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
     keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
