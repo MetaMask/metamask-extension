@@ -278,7 +278,7 @@ module.exports = class MetamaskController {
 
   agreeToDisclaimer (cb) {
     try {
-      this.configManager.setConfirmed(true)
+      this.configManager.setConfirmedDisclaimer(true)
       cb()
     } catch (e) {
       cb(e)
@@ -287,7 +287,7 @@ module.exports = class MetamaskController {
 
   resetDisclaimer () {
     try {
-      this.configManager.setConfirmed(false)
+      this.configManager.setConfirmedDisclaimer(false)
     } catch (e) {
       console.error(e)
     }

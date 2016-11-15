@@ -100,31 +100,31 @@ describe('config-manager', function() {
 
   describe('confirmation', function() {
 
-    describe('#getConfirmed', function() {
+    describe('#getConfirmedDisclaimer', function() {
       it('should return false if no previous key exists', function() {
-        var result = configManager.getConfirmed()
+        var result = configManager.getConfirmedDisclaimer()
         assert.ok(!result)
       })
     })
 
-    describe('#setConfirmed', function() {
-      it('should make getConfirmed return true once set', function() {
-        assert.equal(configManager.getConfirmed(), false)
-        configManager.setConfirmed(true)
-        var result = configManager.getConfirmed()
+    describe('#setConfirmedDisclaimer', function() {
+      it('should make getConfirmedDisclaimer return true once set', function() {
+        assert.equal(configManager.getConfirmedDisclaimer(), false)
+        configManager.setConfirmedDisclaimer(true)
+        var result = configManager.getConfirmedDisclaimer()
         assert.equal(result, true)
       })
 
       it('should be able to set false', function() {
-        configManager.setConfirmed(false)
-        var result = configManager.getConfirmed()
+        configManager.setConfirmedDisclaimer(false)
+        var result = configManager.getConfirmedDisclaimer()
         assert.equal(result, false)
       })
 
       it('should persist to local storage', function() {
-        configManager.setConfirmed(true)
+        configManager.setConfirmedDisclaimer(true)
         var data = configManager.getData()
-        assert.equal(data.isConfirmed, true)
+        assert.equal(data.isDisclaimerConfirmed, true)
       })
     })
   })
@@ -153,7 +153,7 @@ describe('config-manager', function() {
           rpcTarget: 'foobar'
         },
       }
-      configManager.setConfirmed(true)
+      configManager.setConfirmedDisclaimer(true)
       configManager.setConfig(testConfig)
 
       var testWallet = {
@@ -164,7 +164,7 @@ describe('config-manager', function() {
       var result = configManager.getData()
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
-      assert.equal(configManager.getConfirmed(), true)
+      assert.equal(configManager.getConfirmedDisclaimer(), true)
 
       testConfig.provider.type = 'something else!'
       configManager.setConfig(testConfig)
@@ -173,7 +173,7 @@ describe('config-manager', function() {
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
       assert.equal(result.config.provider.type, testConfig.provider.type)
-      assert.equal(configManager.getConfirmed(), true)
+      assert.equal(configManager.getConfirmedDisclaimer(), true)
     })
   })
 

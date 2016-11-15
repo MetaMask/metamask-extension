@@ -313,15 +313,15 @@ ConfigManager.prototype._emitUpdates = function (state) {
   })
 }
 
-ConfigManager.prototype.setConfirmed = function (confirmed) {
+ConfigManager.prototype.setConfirmedDisclaimer = function (confirmed) {
   var data = this.getData()
-  data.isConfirmed = confirmed
+  data.isDisclaimerConfirmed = confirmed
   this.setData(data)
 }
 
-ConfigManager.prototype.getConfirmed = function () {
+ConfigManager.prototype.getConfirmedDisclaimer = function () {
   var data = this.getData()
-  return ('isConfirmed' in data) && data.isConfirmed
+  return ('isDisclaimerConfirmed' in data) && data.isDisclaimerConfirmed
 }
 
 ConfigManager.prototype.setTOSHash = function (hash) {

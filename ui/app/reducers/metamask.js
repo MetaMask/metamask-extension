@@ -30,7 +30,7 @@ function reduceMetamask (state, action) {
 
     case actions.AGREE_TO_DISCLAIMER:
       return extend(metamaskState, {
-        isConfirmed: true,
+        isDisclaimerConfirmed: true,
       })
 
     case actions.UNLOCK_METAMASK:
