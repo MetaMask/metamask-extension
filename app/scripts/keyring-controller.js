@@ -153,13 +153,12 @@ module.exports = class KeyringController extends EventEmitter {
   createFirstKeyTree (password, cb) {
     this.clearKeyrings()
     this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
-      const firstKeyring = this.keyrings[0]
-      const accounts = firstKeyring.getAccounts()
+      const accounts = this.keyrings[0].getAccounts()
       const firstAccount = accounts[0]
       const hexAccount = normalize(firstAccount)
-      const seedWords = firstKeyring.serialize().mnemonic
       this.configManager.setSelectedAccount(firstAccount)
-      this.configManager.setSeedWords(seedWords)
+
+      this.placeSeedWords()
       autoFaucet(hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
@@ -172,7 +171,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  placeSeedWords (cb) {
+  placeSeedWords () {
     const firstKeyring = this.keyrings[0]
     const seedWords = firstKeyring.serialize().mnemonic
     this.configManager.setSeedWords(seedWords)
@@ -237,13 +236,13 @@ module.exports = class KeyringController extends EventEmitter {
   setupAccounts (accounts) {
     var arr = accounts || this.getAccounts()
     arr.forEach((account) => {
-      this.loadBalanceAndNickname(account)
+      this.getBalanceAndNickname(account)
     })
   }
 
   // Takes an account address and an iterator representing
   // the current number of named accounts.
-  loadBalanceAndNickname (account) {
+  getBalanceAndNickname (account) {
     const address = normalize(account)
     this.ethStore.addAccount(address)
     this.createNickname(address)

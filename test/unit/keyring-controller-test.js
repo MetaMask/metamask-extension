@@ -72,7 +72,7 @@ describe('KeyringController', function() {
       }
       const mock = this.sinon.mock(keyringController)
 
-      mock.expects('loadBalanceAndNickname')
+      mock.expects('getBalanceAndNickname')
       .exactly(1)
 
       var keyring = keyringController.restoreKeyring(mockSerialized)
