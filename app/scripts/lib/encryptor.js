@@ -26,7 +26,7 @@ module.exports = {
   generateSalt,
 }
 
-// Takes a Pojo, returns encrypted text.
+// Takes a Pojo, returns cypher text.
 function encrypt (password, dataObj) {
   return keyFromPassword(password)
   .then(function (passwordDerivedKey) {
