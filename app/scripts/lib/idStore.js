@@ -261,7 +261,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     // 1 billion gas for estimation
     var gasLimit = '0x3b9aca00'
     estimationParams.gas = gasLimit
-    query.estimateGas(estimationParams, function(err, result){
+    query.estimateGas(estimationParams, function (err, result) {
       if (err) return cb(err.message || err)
       if (result === estimationParams.gas) {
         txData.simulationFails = true
