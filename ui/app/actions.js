@@ -161,7 +161,7 @@ function tryUnlockMetamask (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    background.submitPassword(password, (err) => {
+    background.submitPassword(password, (err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed(err.message))

@@ -186,7 +186,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.keyrings = keyrings
       this.setupAccounts()
       this.emit('update')
-      cb()
+      cb(null, this.getState())
     })
     .catch((err) => {
       console.error(err)
