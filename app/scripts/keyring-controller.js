@@ -108,7 +108,7 @@ module.exports = class KeyringController extends EventEmitter {
         this.setupAccounts(accounts)
 
         this.emit('update')
-        cb(null, this.getState())
+        cb()
       })
     })
   }
@@ -163,7 +163,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
       .then(() => {
-        cb(err, this.getState())
+        cb(err)
       })
       .catch((reason) => {
         cb(reason)
@@ -173,9 +173,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   placeSeedWords () {
     const firstKeyring = this.keyrings[0]
-    console.log(firstKeyring)
     const seedWords = firstKeyring.serialize().mnemonic
-    console.log(seedWords)
     this.configManager.setSeedWords(seedWords)
   }
 
@@ -188,7 +186,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.keyrings = keyrings
       this.setupAccounts()
       this.emit('update')
-      cb(null, this.getState())
+      cb()
     })
     .catch((err) => {
       console.error(err)
@@ -215,7 +213,7 @@ module.exports = class KeyringController extends EventEmitter {
     this.setupAccounts(accounts)
     this.persistAllKeyrings()
     .then(() => {
-      cb(null, this.getState())
+      cb()
     })
     .catch((reason) => {
       cb(reason)
@@ -228,7 +226,7 @@ module.exports = class KeyringController extends EventEmitter {
     this.setupAccounts(accounts)
     this.persistAllKeyrings()
     .then(() => {
-      cb(null, this.getState())
+      cb()
     })
     .catch((reason) => {
       cb(reason)
@@ -521,6 +519,7 @@ module.exports = class KeyringController extends EventEmitter {
   setLocked (cb) {
     this.key = null
     this.keyrings = []
+    this.emit('update')
     cb()
   }
 

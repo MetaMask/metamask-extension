@@ -161,12 +161,11 @@ function tryUnlockMetamask (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    background.submitPassword(password, (err, newState) => {
+    background.submitPassword(password, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
-        dispatch(this.updateMetamaskState(newState))
         let selectedAccount
         try {
           selectedAccount = newState.metamask.selectedAccount
@@ -195,23 +194,19 @@ function confirmSeedWords () {
 function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.createNewVaultAndRestore(password, seed, (err, newState) => {
+    background.createNewVaultAndRestore(password, seed, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(this.updateMetamaskState(newState))
     })
   }
 }
 
 function createNewVaultAndKeychain (password, entropy) {
   return (dispatch) => {
-    background.createNewVaultAndKeychain(password, entropy, (err, newState) => {
+    background.createNewVaultAndKeychain(password, entropy, (err) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
-
-      dispatch(this.updateMetamaskState(newState))
-      dispatch(this.showNewVaultSeed())
     })
   }
 }
@@ -225,11 +220,10 @@ function revealSeedConfirmation () {
 function requestRevealSeed (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.submitPassword(password, (err, newState) => {
+    background.submitPassword(password, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       background.placeSeedWords()
-      dispatch(actions.showNewVaultSeed())
     })
   }
 }
@@ -238,13 +232,11 @@ function requestRevealSeed (password) {
 function addNewKeyring (type, opts) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addNewKeyring(type, opts, (err, newState) => {
+    background.addNewKeyring(type, opts, (err) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err))
       }
-      dispatch(this.updateMetamaskState(newState))
-      dispatch(this.showAccountsPage())
     })
   }
 }
@@ -252,12 +244,11 @@ function addNewKeyring (type, opts) {
 function addNewAccount (ringNumber = 0) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addNewAccount(ringNumber, (err, newState) => {
+    background.addNewAccount(ringNumber, (err) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err))
       }
-      dispatch(this.updateMetamaskState(newState))
     })
   }
 }
@@ -457,10 +448,6 @@ function lockMetamask () {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-
-      dispatch({
-        type: actions.LOCK_METAMASK,
-      })
     })
   }
 }
