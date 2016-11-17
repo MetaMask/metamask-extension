@@ -10,6 +10,7 @@ const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 
 const STORAGE_KEY = 'metamask-config'
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
 
 const controller = new MetamaskController({
@@ -21,7 +22,7 @@ const controller = new MetamaskController({
   setData,
   loadData,
 })
-const idStore = controller.idStore
+const keyringController = controller.keyringController
 
 function triggerUi () {
   if (!popupIsOpen) notification.show()
@@ -29,7 +30,7 @@ function triggerUi () {
 // On first install, open a window to MetaMask website to how-it-works.
 
 extension.runtime.onInstalled.addListener(function (details) {
-  if (details.reason === 'install') {
+  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
     extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
   }
 })
@@ -82,7 +83,7 @@ function setupControllerConnection (stream) {
     // push updates to popup
     controller.ethStore.on('update', controller.sendUpdate.bind(controller))
     controller.listeners.push(remote)
-    idStore.on('update', controller.sendUpdate.bind(controller))
+    keyringController.on('update', controller.sendUpdate.bind(controller))
 
     // teardown on disconnect
     eos(stream, () => {
@@ -96,9 +97,9 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-idStore.on('update', updateBadge)
+keyringController.on('update', updateBadge)
 
-function updateBadge (state) {
+function updateBadge () {
   var label = ''
   var unconfTxs = controller.configManager.unconfirmedTxs()
   var unconfTxLen = Object.keys(unconfTxs).length

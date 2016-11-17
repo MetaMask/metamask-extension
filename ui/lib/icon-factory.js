@@ -55,6 +55,6 @@ function jsNumberForAddress (address) {
   return seed
 }
 
-function toDataUri(identiconSrc){
+function toDataUri (identiconSrc) {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(identiconSrc)
 }

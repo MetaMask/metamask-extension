@@ -16,8 +16,8 @@ function IdenticonComponent () {
 }
 
 IdenticonComponent.prototype.render = function () {
-  var state = this.props
-  var diameter = state.diameter || this.defaultDiameter
+  var props = this.props
+  var diameter = props.diameter || this.defaultDiameter
   return (
     h('div', {
       key: 'identicon-' + this.props.address,
@@ -33,15 +33,31 @@ IdenticonComponent.prototype.render = function () {
 }
 
 IdenticonComponent.prototype.componentDidMount = function () {
-  var state = this.props
-  var address = state.address
+  var props = this.props
+  var address = props.address
 
   if (!address) return
 
   var container = findDOMNode(this)
-  var diameter = state.diameter || this.defaultDiameter
-  var imageify = state.imageify === undefined ? true : state.imageify
-  var img = iconFactory.iconForAddress(address, diameter, imageify)
+  var diameter = props.diameter || this.defaultDiameter
+  var img = iconFactory.iconForAddress(address, diameter, false)
   container.appendChild(img)
 }
 
+IdenticonComponent.prototype.componentDidUpdate = function () {
+  var props = this.props
+  var address = props.address
+
+  if (!address) return
+
+  var container = findDOMNode(this)
+
+  var children = container.children
+  for (var i = 0; i < children.length; i++) {
+    container.removeChild(children[i])
+  }
+
+  var diameter = props.diameter || this.defaultDiameter
+  var img = iconFactory.iconForAddress(address, diameter, false)
+  container.appendChild(img)
+}

@@ -102,8 +102,7 @@ IdentityStore.prototype.getState = function () {
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
-    isConfirmed: configManager.getConfirmed(),
-    isEthConfirmed: configManager.getShouldntShowWarning(),
+    isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
     unconfMsgs: messageManager.unconfirmedMsgs(),
@@ -114,7 +113,6 @@ IdentityStore.prototype.getState = function () {
     conversionRate: configManager.getConversionRate(),
     conversionDate: configManager.getConversionDate(),
     gasMultiplier: configManager.getGasMultiplier(),
-
   }))
 }
 
@@ -245,10 +243,10 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   ], didComplete)
 
   // perform static analyis on the target contract code
-  function analyzeForDelegateCall(cb){
+  function analyzeForDelegateCall (cb) {
     if (txParams.to) {
       query.getCode(txParams.to, (err, result) => {
-        if (err) return cb(err)
+        if (err) return cb(err.message || err)
         var containsDelegateCall = self.checkForDelegateCall(result)
         txData.containsDelegateCall = containsDelegateCall
         cb()
@@ -258,16 +256,16 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     }
   }
 
-  function estimateGas(cb){
+  function estimateGas (cb) {
     var estimationParams = extend(txParams)
     // 1 billion gas for estimation
     var gasLimit = '0x3b9aca00'
     estimationParams.gas = gasLimit
-    query.estimateGas(estimationParams, function(err, result){
-      if (err) return cb(err)
+    query.estimateGas(estimationParams, function (err, result) {
+      if (err) return cb(err.message || err)
       if (result === estimationParams.gas) {
         txData.simulationFails = true
-        query.getBlockByNumber('latest', true, function(err, block){
+        query.getBlockByNumber('latest', true, function (err, block) {
           if (err) return cb(err)
           txData.estimatedGas = block.gasLimit
           txData.txParams.gas = block.gasLimit
@@ -282,7 +280,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   }
 
   function didComplete (err) {
-    if (err) return cb(err)
+    if (err) return cb(err.message || err)
     configManager.addTx(txData)
     // signal update
     self._didUpdate()
@@ -440,7 +438,9 @@ IdentityStore.prototype._loadIdentities = function () {
   var addresses = this._getAddresses()
   addresses.forEach((address, i) => {
     // // add to ethStore
-    this._ethStore.addAccount(ethUtil.addHexPrefix(address))
+    if (this._ethStore) {
+      this._ethStore.addAccount(ethUtil.addHexPrefix(address))
+    }
     // add to identities
     const defaultLabel = 'Account ' + (i + 1)
     const nickname = configManager.nicknameForWallet(address)

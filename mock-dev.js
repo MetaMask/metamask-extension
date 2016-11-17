@@ -26,7 +26,7 @@ const extension = require('./development/mockExtension')
 // Query String
 const qs = require('qs')
 let queryString = qs.parse(window.location.href.split('#')[1])
-let selectedView = queryString.view || 'terms'
+let selectedView = queryString.view || 'first time'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
@@ -107,7 +107,7 @@ function getOldStyleData () {
   return result
 }
 
-actions._setAccountManager(controller.getApi())
+actions._setBackgroundConnection(controller.getApi())
 actions.update = function(stateName) {
   selectedView = stateName
   updateQueryParams(stateName)

@@ -2,6 +2,7 @@ const Streams = require('mississippi')
 const StreamProvider = require('web3-stream-provider')
 const ObjectMultiplex = require('./obj-multiplex')
 const RemoteStore = require('./remote-store.js').RemoteStore
+const createRandomId = require('./random-id')
 
 module.exports = MetamaskInpageProvider
 
@@ -39,7 +40,7 @@ function MetamaskInpageProvider (connectionStream) {
 
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
-  self.sendAsync = function(payload, cb){
+  self.sendAsync = function (payload, cb) {
     // rewrite request ids
     var request = eachJsonMessage(payload, (message) => {
       var newId = createRandomId()
@@ -48,7 +49,7 @@ function MetamaskInpageProvider (connectionStream) {
       return message
     })
     // forward to asyncProvider
-    asyncProvider.sendAsync(request, function(err, res){
+    asyncProvider.sendAsync(request, function (err, res) {
       if (err) return cb(err)
       // transform messages to original ids
       eachJsonMessage(res, (message) => {
@@ -117,16 +118,6 @@ function remoteStoreWithLocalStorageCache (storageKey) {
   })
 
   return store
-}
-
-function createRandomId(){
-  const extraDigits = 3
-  // 13 time digits
-  const datePart = new Date().getTime() * Math.pow(10, extraDigits)
-  // 3 random digits
-  const extraPart = Math.floor(Math.random() * Math.pow(10, extraDigits))
-  // 16 digits
-  return datePart + extraPart
 }
 
 function eachJsonMessage(payload, transformFn){
