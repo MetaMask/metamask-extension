@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug that would cause MetaMask to occasionally lose its StreamProvider connection and drop requests.
+
 ## 2.13.8 2016-11-16
 
 - Show a warning when a transaction fails during simulation.
