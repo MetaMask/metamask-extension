@@ -1,9 +1,12 @@
 # Changelog
 
 ## Current Master
+
+## 2.13.8 2016-11-16
+
 - Show a warning when a transaction fails during simulation.
 - Fix bug where 20% of gas estimate was not being added properly.
-- Render error messages in our confirmation screen more gracefully.
+- Render error messages in confirmation screen more gracefully.
 
 ## 2.13.7 2016-11-8
 
