@@ -102,7 +102,7 @@ IdentityStore.prototype.getState = function () {
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
-    isConfirmed: configManager.getConfirmed(),
+    isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
     unconfTxs: configManager.unconfirmedTxs(),
     transactions: configManager.getTxList(),
     unconfMsgs: messageManager.unconfirmedMsgs(),
@@ -243,10 +243,10 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
   ], didComplete)
 
   // perform static analyis on the target contract code
-  function analyzeForDelegateCall(cb){
+  function analyzeForDelegateCall (cb) {
     if (txParams.to) {
       query.getCode(txParams.to, (err, result) => {
-        if (err) return cb(err)
+        if (err) return cb(err.message || err)
         var containsDelegateCall = self.checkForDelegateCall(result)
         txData.containsDelegateCall = containsDelegateCall
         cb()
@@ -256,16 +256,31 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
     }
   }
 
-  function estimateGas(cb){
-    query.estimateGas(txParams, function(err, result){
-      if (err) return cb(err)
+  function estimateGas (cb) {
+    var estimationParams = extend(txParams)
+    // 1 billion gas for estimation
+    var gasLimit = '0x3b9aca00'
+    estimationParams.gas = gasLimit
+    query.estimateGas(estimationParams, function (err, result) {
+      if (err) return cb(err.message || err)
+      if (result === estimationParams.gas) {
+        txData.simulationFails = true
+        query.getBlockByNumber('latest', true, function (err, block) {
+          if (err) return cb(err)
+          txData.estimatedGas = block.gasLimit
+          txData.txParams.gas = block.gasLimit
+          cb()
+        })
+        return
+      }
       txData.estimatedGas = self.addGasBuffer(result)
+      txData.txParams.gas = txData.estimatedGas
       cb()
     })
   }
 
   function didComplete (err) {
-    if (err) return cb(err)
+    if (err) return cb(err.message || err)
     configManager.addTx(txData)
     // signal update
     self._didUpdate()
@@ -285,9 +300,10 @@ IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
   }
 }
 
-const gasBuffer = new BN('100000', 10)
 IdentityStore.prototype.addGasBuffer = function (gas) {
   const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
+  const five = new BN('5', 10)
+  const gasBuffer = bnGas.div(five)
   const correct = bnGas.add(gasBuffer)
   return ethUtil.addHexPrefix(correct.toString(16))
 }

@@ -18,14 +18,13 @@ function setupDappAutoReload (web3) {
 
   return handleResetRequest
 
-  function handleResetRequest() {
+  function handleResetRequest () {
     resetWasRequested = true
     // ignore if web3 was not used
     if (!pageIsUsingWeb3) return
     // reload after short timeout
     setTimeout(triggerReset, 500)
   }
-
 }
 
 // reload the page

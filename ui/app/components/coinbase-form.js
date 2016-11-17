@@ -7,7 +7,7 @@ const actions = require('../actions')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(CoinbaseForm)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
@@ -16,7 +16,7 @@ function mapStateToProps(state) {
 
 inherits(CoinbaseForm, Component)
 
-function CoinbaseForm() {
+function CoinbaseForm () {
   Component.call(this)
 }
 
@@ -116,15 +116,14 @@ CoinbaseForm.prototype.toCoinbase = function () {
     props.dispatch(actions.buyEth(address, props.buyView.amount))
   } else if (!isValidAmountforCoinBase(amount).valid) {
     message = isValidAmountforCoinBase(amount).message
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   } else {
     message = 'Receiving address is invalid.'
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   }
 }
 
 CoinbaseForm.prototype.renderLoading = function () {
-
   return h('img', {
     style: {
       width: '27px',
@@ -134,9 +133,8 @@ CoinbaseForm.prototype.renderLoading = function () {
   })
 }
 
-function isValidAmountforCoinBase(amount) {
+function isValidAmountforCoinBase (amount) {
   amount = parseFloat(amount)
-
   if (amount) {
     if (amount <= 5 && amount > 0) {
       return {

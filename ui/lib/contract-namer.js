@@ -8,23 +8,22 @@
 // Nickname keys must be stored in lower case.
 const nicknames = {}
 
-module.exports = function(addr, identities = {}) {
-
+module.exports = function (addr, identities = {}) {
   const address = addr.toLowerCase()
   const ids = hashFromIdentities(identities)
 
   return addrFromHash(address, ids) || addrFromHash(address, nicknames)
 }
 
-function hashFromIdentities(identities) {
+function hashFromIdentities (identities) {
   const result = {}
-  for (let key in identities) {
+  for (const key in identities) {
     result[key] = identities[key].name
   }
   return result
 }
 
-function addrFromHash(addr, hash) {
+function addrFromHash (addr, hash) {
   const address = addr.toLowerCase()
   return hash[address] || null
 }

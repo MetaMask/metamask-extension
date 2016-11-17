@@ -1,17 +1,17 @@
 const async = require('async')
-const EventEmitter = require('events').EventEmitter
-const encryptor = require('./lib/encryptor')
-const messageManager = require('./lib/message-manager')
 const ethUtil = require('ethereumjs-util')
 const ethBinToOps = require('eth-bin-to-ops')
 const EthQuery = require('eth-query')
-const BN = ethUtil.BN
-const Transaction = require('ethereumjs-tx')
-const autoFaucet = require('./lib/auto-faucet')
 const bip39 = require('bip39')
+const Transaction = require('ethereumjs-tx')
+const EventEmitter = require('events').EventEmitter
 
-// TEMPORARY UNTIL FULL DEPRECATION:
+const normalize = require('./lib/sig-util').normalize
+const encryptor = require('./lib/encryptor')
+const messageManager = require('./lib/message-manager')
+const autoFaucet = require('./lib/auto-faucet')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const BN = ethUtil.BN
 
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
@@ -27,7 +27,6 @@ module.exports = class KeyringController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.web3 = opts.web3
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
@@ -39,7 +38,7 @@ module.exports = class KeyringController extends EventEmitter {
     this._unconfTxCbs = {}
     this._unconfMsgCbs = {}
 
-    this.network = opts.network
+    this.getNetwork = opts.getNetwork
 
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
@@ -47,7 +46,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  getState() {
+  getState () {
     const configManager = this.configManager
     const address = configManager.getSelectedAccount()
     const wallet = configManager.getWallet() // old style vault
@@ -57,7 +56,7 @@ module.exports = class KeyringController extends EventEmitter {
       seedWords: this.configManager.getSeedWords(),
       isInitialized: (!!wallet || !!vault),
       isUnlocked: !!this.key,
-      isConfirmed: true, // AUDIT this.configManager.getConfirmed(),
+      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
       unconfTxs: this.configManager.unconfirmedTxs(),
       transactions: this.configManager.getTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
@@ -73,18 +72,18 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  setStore(ethStore) {
+  setStore (ethStore) {
     this.ethStore = ethStore
   }
 
-  createNewVaultAndKeychain(password, entropy, cb) {
+  createNewVaultAndKeychain (password, entropy, cb) {
     this.createNewVault(password, entropy, (err) => {
       if (err) return cb(err)
       this.createFirstKeyTree(password, cb)
     })
   }
 
-  createNewVaultAndRestore(password, seed, cb) {
+  createNewVaultAndRestore (password, seed, cb) {
     if (typeof password !== 'string') {
       return cb('Password must be text.')
     }
@@ -99,7 +98,7 @@ module.exports = class KeyringController extends EventEmitter {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
-        n: 1,
+        numberOfAccounts: 1,
       }, (err) => {
         if (err) return cb(err)
         const firstKeyring = this.keyrings[0]
@@ -110,12 +109,12 @@ module.exports = class KeyringController extends EventEmitter {
         this.setupAccounts(accounts)
 
         this.emit('update')
-        cb(null, this.getState())
+        cb()
       })
     })
   }
 
-  migrateAndGetKey(password) {
+  migrateAndGetKey (password) {
     let key
     const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
 
@@ -135,7 +134,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  createNewVault(password, entropy, cb) {
+  createNewVault (password, entropy, cb) {
     const configManager = this.configManager
     const salt = this.encryptor.generateSalt()
     configManager.setSalt(salt)
@@ -145,28 +144,27 @@ module.exports = class KeyringController extends EventEmitter {
       return this.persistAllKeyrings()
     })
     .then(() => {
-      cb(null)
+      cb()
     })
     .catch((err) => {
       cb(err)
     })
   }
 
-  createFirstKeyTree(password, cb) {
+  createFirstKeyTree (password, cb) {
     this.clearKeyrings()
-    this.addNewKeyring('HD Key Tree', {n: 1}, (err) => {
-      const firstKeyring = this.keyrings[0]
-      const accounts = firstKeyring.getAccounts()
+    this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
+      const accounts = this.keyrings[0].getAccounts()
       const firstAccount = accounts[0]
       const hexAccount = normalize(firstAccount)
-      const seedWords = firstKeyring.serialize().mnemonic
       this.configManager.setSelectedAccount(firstAccount)
-      this.configManager.setSeedWords(seedWords)
+
+      this.placeSeedWords()
       autoFaucet(hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
       .then(() => {
-        cb(err, this.getState())
+        cb(err)
       })
       .catch((reason) => {
         cb(reason)
@@ -174,13 +172,13 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  placeSeedWords (cb) {
+  placeSeedWords () {
     const firstKeyring = this.keyrings[0]
     const seedWords = firstKeyring.serialize().mnemonic
     this.configManager.setSeedWords(seedWords)
   }
 
-  submitPassword(password, cb) {
+  submitPassword (password, cb) {
     this.migrateAndGetKey(password)
     .then((key) => {
       return this.unlockKeyrings(key)
@@ -197,7 +195,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  loadKey(password) {
+  loadKey (password) {
     const salt = this.configManager.getSalt() || this.encryptor.generateSalt()
     return this.encryptor.keyFromPassword(password + salt)
     .then((key) => {
@@ -207,7 +205,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  addNewKeyring(type, opts, cb) {
+  addNewKeyring (type, opts, cb) {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
     const accounts = keyring.getAccounts()
@@ -216,42 +214,42 @@ module.exports = class KeyringController extends EventEmitter {
     this.setupAccounts(accounts)
     this.persistAllKeyrings()
     .then(() => {
-      cb(null, this.getState())
+      cb()
     })
     .catch((reason) => {
       cb(reason)
     })
   }
 
-  addNewAccount(keyRingNum = 0, cb) {
+  addNewAccount (keyRingNum = 0, cb) {
     const ring = this.keyrings[keyRingNum]
     const accounts = ring.addAccounts(1)
     this.setupAccounts(accounts)
     this.persistAllKeyrings()
     .then(() => {
-      cb(null, this.getState())
+      cb()
     })
     .catch((reason) => {
       cb(reason)
     })
   }
 
-  setupAccounts(accounts) {
+  setupAccounts (accounts) {
     var arr = accounts || this.getAccounts()
     arr.forEach((account) => {
-      this.loadBalanceAndNickname(account)
+      this.getBalanceAndNickname(account)
     })
   }
 
   // Takes an account address and an iterator representing
   // the current number of named accounts.
-  loadBalanceAndNickname(account) {
+  getBalanceAndNickname (account) {
     const address = normalize(account)
     this.ethStore.addAccount(address)
     this.createNickname(address)
   }
 
-  createNickname(address) {
+  createNickname (address) {
     const hexAddress = normalize(address)
     var i = Object.keys(this.identities).length
     const oldNickname = this.configManager.nicknameForWallet(address)
@@ -275,7 +273,7 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  persistAllKeyrings() {
+  persistAllKeyrings () {
     const serialized = this.keyrings.map((k) => {
       return {
         type: k.type,
@@ -290,7 +288,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  unlockKeyrings(key) {
+  unlockKeyrings (key) {
     const encryptedVault = this.configManager.getVault()
     return this.encryptor.decryptWithKey(key, encryptedVault)
     .then((vault) => {
@@ -299,7 +297,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  restoreKeyring(serialized) {
+  restoreKeyring (serialized) {
     const { type, data } = serialized
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring()
@@ -312,7 +310,7 @@ module.exports = class KeyringController extends EventEmitter {
     return keyring
   }
 
-  getKeyringClassForType(type) {
+  getKeyringClassForType (type) {
     const Keyring = this.keyringTypes.reduce((res, kr) => {
       if (kr.type() === type) {
         return kr
@@ -323,7 +321,7 @@ module.exports = class KeyringController extends EventEmitter {
     return Keyring
   }
 
-  getAccounts() {
+  getAccounts () {
     const keyrings = this.keyrings || []
     return keyrings.map(kr => kr.getAccounts())
     .reduce((res, arr) => {
@@ -331,13 +329,13 @@ module.exports = class KeyringController extends EventEmitter {
     }, [])
   }
 
-  setSelectedAddress(address, cb) {
+  setSelectedAddress (address, cb) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
     cb(null, addr)
   }
 
-  addUnconfirmedTransaction(txParams, onTxDoneCb, cb) {
+  addUnconfirmedTransaction (txParams, onTxDoneCb, cb) {
     var self = this
     const configManager = this.configManager
 
@@ -345,13 +343,14 @@ module.exports = class KeyringController extends EventEmitter {
     var time = (new Date()).getTime()
     var txId = createId()
     txParams.metamaskId = txId
-    txParams.metamaskNetworkId = this.network
+    txParams.metamaskNetworkId = this.getNetwork()
     var txData = {
       id: txId,
       txParams: txParams,
       time: time,
       status: 'unconfirmed',
       gasMultiplier: configManager.getGasMultiplier() || 1,
+      metamaskNetworkId: this.getNetwork(),
     }
 
 
@@ -369,7 +368,7 @@ module.exports = class KeyringController extends EventEmitter {
     ], didComplete)
 
     // perform static analyis on the target contract code
-    function analyzeForDelegateCall(cb){
+    function analyzeForDelegateCall (cb) {
       if (txParams.to) {
         query.getCode(txParams.to, function (err, result) {
           if (err) return cb(err)
@@ -388,8 +387,8 @@ module.exports = class KeyringController extends EventEmitter {
       }
     }
 
-    function estimateGas(cb){
-      query.estimateGas(txParams, function(err, result){
+    function estimateGas (cb) {
+      query.estimateGas(txParams, function (err, result) {
         if (err) return cb(err)
         txData.estimatedGas = self.addGasBuffer(result)
         cb()
@@ -406,7 +405,7 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  addUnconfirmedMessage(msgParams, cb) {
+  addUnconfirmedMessage (msgParams, cb) {
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
     var msgId = createId()
@@ -428,7 +427,7 @@ module.exports = class KeyringController extends EventEmitter {
     return msgId
   }
 
-  approveTransaction(txId, cb) {
+  approveTransaction (txId, cb) {
     const configManager = this.configManager
     var approvalCb = this._unconfTxCbs[txId] || noop
 
@@ -441,7 +440,7 @@ module.exports = class KeyringController extends EventEmitter {
     this.emit('update')
   }
 
-  cancelTransaction(txId, cb) {
+  cancelTransaction (txId, cb) {
     const configManager = this.configManager
     var approvalCb = this._unconfTxCbs[txId] || noop
 
@@ -456,7 +455,7 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  signTransaction(txParams, cb) {
+  signTransaction (txParams, cb) {
     try {
       const address = normalize(txParams.from)
       const keyring = this.getKeyringForAccount(address)
@@ -492,7 +491,7 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  signMessage(msgParams, cb) {
+  signMessage (msgParams, cb) {
     try {
       const keyring = this.getKeyringForAccount(msgParams.from)
       const address = normalize(msgParams.from)
@@ -503,7 +502,7 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  getKeyringForAccount(address) {
+  getKeyringForAccount (address) {
     const hexed = normalize(address)
     return this.keyrings.find((ring) => {
       return ring.getAccounts()
@@ -512,19 +511,20 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  cancelMessage(msgId, cb) {
+  cancelMessage (msgId, cb) {
     if (cb && typeof cb === 'function') {
       cb()
     }
   }
 
-  setLocked(cb) {
+  setLocked (cb) {
     this.key = null
     this.keyrings = []
+    this.emit('update')
     cb()
   }
 
-  exportAccount(address, cb) {
+  exportAccount (address, cb) {
     try {
       const keyring = this.getKeyringForAccount(address)
       const privateKey = keyring.exportAccount(normalize(address))
@@ -534,19 +534,19 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  addGasBuffer(gas) {
+  addGasBuffer (gas) {
     const gasBuffer = new BN('100000', 10)
     const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
     const correct = bnGas.add(gasBuffer)
     return ethUtil.addHexPrefix(correct.toString(16))
   }
 
-  clearSeedWordCache(cb) {
+  clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
     cb(null, this.configManager.getSelectedAccount())
   }
 
-  clearKeyrings() {
+  clearKeyrings () {
     let accounts
     try {
       accounts = Object.keys(this.ethStore._currentState.accounts)
@@ -562,11 +562,6 @@ module.exports = class KeyringController extends EventEmitter {
     this.configManager.setSelectedAccount()
   }
 
-}
-
-function normalize(address) {
-  if (!address) return
-  return ethUtil.addHexPrefix(address.toLowerCase())
 }
 
 function noop () {}

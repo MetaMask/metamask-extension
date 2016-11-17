@@ -44,7 +44,6 @@ var actions = {
   unlockInProgress: unlockInProgress,
   // error handling
   displayWarning: displayWarning,
-  showWarning: showWarning, // alias
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -146,7 +145,7 @@ var actions = {
 module.exports = actions
 
 var background = null
-function _setBackgroundConnection(backgroundConnection) {
+function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
 }
 
@@ -167,7 +166,6 @@ function tryUnlockMetamask (password) {
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
-        dispatch(this.updateMetamaskState(newState))
         let selectedAccount
         try {
           selectedAccount = newState.metamask.selectedAccount
@@ -184,7 +182,7 @@ function confirmSeedWords () {
     background.clearSeedWordCache((err, account) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       console.log('Seed word cache cleared. ' + account)
@@ -196,23 +194,19 @@ function confirmSeedWords () {
 function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.createNewVaultAndRestore(password, seed, (err, newState) => {
+    background.createNewVaultAndRestore(password, seed, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(this.updateMetamaskState(newState))
     })
   }
 }
 
 function createNewVaultAndKeychain (password, entropy) {
   return (dispatch) => {
-    background.createNewVaultAndKeychain(password, entropy, (err, newState) => {
+    background.createNewVaultAndKeychain(password, entropy, (err) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
-
-      dispatch(this.updateMetamaskState(newState))
-      dispatch(this.showNewVaultSeed())
     })
   }
 }
@@ -226,11 +220,10 @@ function revealSeedConfirmation () {
 function requestRevealSeed (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.submitPassword(password, (err, newState) => {
+    background.submitPassword(password, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       background.placeSeedWords()
-      dispatch(actions.showNewVaultSeed())
     })
   }
 }
@@ -239,13 +232,11 @@ function requestRevealSeed (password) {
 function addNewKeyring (type, opts) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addNewKeyring(type, opts, (err, newState) => {
+    background.addNewKeyring(type, opts, (err) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err))
       }
-      dispatch(this.updateMetamaskState(newState))
-      dispatch(this.showAccountsPage())
     })
   }
 }
@@ -253,12 +244,11 @@ function addNewKeyring (type, opts) {
 function addNewAccount (ringNumber = 0) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addNewAccount(ringNumber, (err, newState) => {
+    background.addNewAccount(ringNumber, (err) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err))
       }
-      dispatch(this.updateMetamaskState(newState))
     })
   }
 }
@@ -384,7 +374,7 @@ function agreeToDisclaimer () {
     dispatch(this.showLoadingIndication())
     background.agreeToDisclaimer((err) => {
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch(this.hideLoadingIndication())
@@ -456,12 +446,8 @@ function lockMetamask () {
     background.setLocked((err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
-
-      dispatch({
-        type: actions.LOCK_METAMASK,
-      })
     })
   }
 }
@@ -472,7 +458,7 @@ function showAccountDetail (address) {
     background.setSelectedAddress(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
 
       dispatch({
@@ -586,10 +572,6 @@ function hideSubLoadingIndication () {
   }
 }
 
-function showWarning (text) {
-  return this.displayWarning(text)
-}
-
 function displayWarning (text) {
   return {
     type: actions.DISPLAY_WARNING,
@@ -641,7 +623,7 @@ function saveAccountLabel (account, label) {
     background.saveAccountLabel(account, label, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
         type: actions.SAVE_ACCOUNT_LABEL,
@@ -717,7 +699,7 @@ function shapeShiftSubview (network) {
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+        if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
         dispatch({
           type: actions.SHAPESHIFT_SUBVIEW,
           value: {
@@ -734,7 +716,7 @@ function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      if (response.error) return dispatch(actions.showWarning(response.error))
+      if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
       background.createShapeShiftTx(response.deposit, response.depositType)
@@ -756,7 +738,7 @@ function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
-      if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [
         `Deposit your ${coin} to the address bellow:`,

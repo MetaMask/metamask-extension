@@ -6,22 +6,22 @@ const sigUtil = require('../lib/sig-util')
 
 module.exports = class SimpleKeyring extends EventEmitter {
 
-  static type() {
+  static type () {
     return type
   }
 
-  constructor(opts) {
+  constructor (opts) {
     super()
     this.type = type
     this.opts = opts || {}
     this.wallets = []
   }
 
-  serialize() {
+  serialize () {
     return this.wallets.map(w => w.getPrivateKey().toString('hex'))
   }
 
-  deserialize(wallets = []) {
+  deserialize (wallets = []) {
     this.wallets = wallets.map((w) => {
       var b = new Buffer(w, 'hex')
       const wallet = Wallet.fromPrivateKey(b)
@@ -29,7 +29,7 @@ module.exports = class SimpleKeyring extends EventEmitter {
     })
   }
 
-  addAccounts(n = 1) {
+  addAccounts (n = 1) {
     var newWallets = []
     for (var i = 0; i < n; i++) {
       newWallets.push(Wallet.generate())
@@ -38,12 +38,12 @@ module.exports = class SimpleKeyring extends EventEmitter {
     return newWallets.map(w => w.getAddress().toString('hex'))
   }
 
-  getAccounts() {
+  getAccounts () {
     return this.wallets.map(w => w.getAddress().toString('hex'))
   }
 
   // tx is an instance of the ethereumjs-transaction class.
-  signTransaction(address, tx) {
+  signTransaction (address, tx) {
     const wallet = this.getWalletForAccount(address)
     var privKey = wallet.getPrivateKey()
     tx.sign(privKey)
@@ -51,7 +51,7 @@ module.exports = class SimpleKeyring extends EventEmitter {
   }
 
   // For eth_sign, we need to sign transactions:
-  signMessage(withAccount, data) {
+  signMessage (withAccount, data) {
     const wallet = this.getWalletForAccount(withAccount)
     const message = ethUtil.removeHexPrefix(data)
     var privKey = wallet.getPrivateKey()
@@ -60,9 +60,8 @@ module.exports = class SimpleKeyring extends EventEmitter {
     return rawMsgSig
   }
 
-  getWalletForAccount(account) {
+  getWalletForAccount (account) {
     return this.wallets.find(w => w.getAddress().toString('hex') === account)
   }
 
 }
-

@@ -30,6 +30,15 @@ PendingTx.prototype.render = function () {
         }
       `),
 
+      txData.simulationFails ?
+        h('.error', {
+          style: {
+            marginLeft: 50,
+            fontSize: '0.9em',
+          },
+        }, 'Transaction Error. Exception thrown in contract code.')
+      : null,
+
       state.insufficientBalance ?
         h('span.error', {
           style: {

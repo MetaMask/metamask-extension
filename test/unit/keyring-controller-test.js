@@ -67,12 +67,12 @@ describe('KeyringController', function() {
         type: 'HD Key Tree',
         data: {
           mnemonic: seedWords,
-          n: 1,
+          numberOfAccounts: 1,
         }
       }
       const mock = this.sinon.mock(keyringController)
 
-      mock.expects('loadBalanceAndNickname')
+      mock.expects('getBalanceAndNickname')
       .exactly(1)
 
       var keyring = keyringController.restoreKeyring(mockSerialized)
@@ -170,4 +170,3 @@ describe('KeyringController', function() {
     })
   })
 })
-

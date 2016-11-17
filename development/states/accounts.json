@@ -91,7 +91,7 @@
     "transactions": [],
     "selectedAddress": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
     "network": "2",
-    "isConfirmed": true,
+    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

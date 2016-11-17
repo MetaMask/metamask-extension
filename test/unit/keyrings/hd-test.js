@@ -19,7 +19,7 @@ describe('hd-keyring', function() {
   describe('constructor', function() {
     keyring = new HdKeyring({
       mnemonic: sampleMnemonic,
-      n: 2,
+      numberOfAccounts: 2,
     })
 
     const accounts = keyring.getAccounts()
@@ -45,7 +45,7 @@ describe('hd-keyring', function() {
   describe('#serialize empty wallets.', function() {
     it('serializes a new mnemonic', function() {
       const output = keyring.serialize()
-      assert.equal(output.n, 0)
+      assert.equal(output.numberOfAccounts, 0)
       assert.equal(output.mnemonic, null)
     })
   })
@@ -54,7 +54,7 @@ describe('hd-keyring', function() {
     it('serializes what it deserializes', function() {
       keyring.deserialize({
         mnemonic: sampleMnemonic,
-        n: 1
+        numberOfAccounts: 1
       })
       assert.equal(keyring.wallets.length, 1, 'restores two accounts')
       keyring.addAccounts(1)

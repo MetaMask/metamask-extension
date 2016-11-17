@@ -12,7 +12,7 @@
     "accounts": {},
     "transactions": [],
     "seedWords": null,
-    "isConfirmed": true,
+    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

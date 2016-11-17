@@ -39,7 +39,7 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
-    isConfirmed: state.metamask.isConfirmed,
+    isDisclaimerConfirmed: state.metamask.isDisclaimerConfirmed,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
@@ -98,7 +98,6 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
-
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
@@ -324,7 +323,7 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderBackToInitButton = function () {
   var props = this.props
   var button = null
-  if (!props.isConfirmed) return button
+  if (!props.isDisclaimerConfirmed) return button
 
   if (!props.isUnlocked) {
     if (props.currentView.name === 'InitMenu') {
@@ -357,7 +356,7 @@ App.prototype.renderBackToInitButton = function () {
 App.prototype.renderPrimary = function () {
   var props = this.props
 
-  if (!props.isConfirmed) {
+  if (!props.isDisclaimerConfirmed) {
     return h(DisclaimerScreen, {key: 'disclaimerScreen'})
   }
 
@@ -367,7 +366,6 @@ App.prototype.renderPrimary = function () {
 
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
-
     // show current view
     switch (props.currentView.name) {
 

@@ -8,7 +8,7 @@ const Qr = require('./qr-code')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(ShapeshiftForm)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
@@ -25,7 +25,6 @@ function ShapeshiftForm () {
 }
 
 ShapeshiftForm.prototype.render = function () {
-
   return h(ReactCSSTransitionGroup, {
     className: 'css-transition-group',
     transitionName: 'main',
@@ -34,7 +33,6 @@ ShapeshiftForm.prototype.render = function () {
   }, [
     this.props.qrRequested ? h(Qr, {key: 'qr'}) : this.renderMain(),
   ])
-
 }
 
 ShapeshiftForm.prototype.renderMain = function () {
@@ -244,7 +242,7 @@ ShapeshiftForm.prototype.updateCoin = function (event) {
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
     var message = 'Not a valid coin'
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   } else {
     return props.dispatch(actions.pairUpdate(coin))
   }

@@ -278,7 +278,6 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
-
         notification.closePopup()
 
         return extend(appState, {
