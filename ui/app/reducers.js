@@ -41,7 +41,7 @@ function rootReducer (state, action) {
   return state
 }
 
-window.logState = function() {
+window.logState = function () {
   var stateString = JSON.stringify(window.METAMASK_CACHED_LOG_STATE, null, 2)
   console.log(stateString)
 }

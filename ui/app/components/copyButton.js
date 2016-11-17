@@ -50,12 +50,10 @@ CopyButton.prototype.render = function () {
   ])
 }
 
-CopyButton.prototype.debounceRestore = function() {
-
+CopyButton.prototype.debounceRestore = function () {
   this.setState({ copied: true })
   clearTimeout(this.timeout)
   this.timeout = setTimeout(() => {
     this.setState({ copied: false })
   }, 850)
-
 }

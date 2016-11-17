@@ -11,7 +11,6 @@ function Tooltip () {
 }
 
 Tooltip.prototype.render = function () {
-
   const props = this.props
   const { position, title, children } = props
 
@@ -20,5 +19,4 @@ Tooltip.prototype.render = function () {
     title,
     fixed: false,
   }, children)
-
 }

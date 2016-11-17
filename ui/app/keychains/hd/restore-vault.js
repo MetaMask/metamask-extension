@@ -1,15 +1,14 @@
 const inherits = require('util').inherits
-
-const Component = require('react').Component
+const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('../actions')
+const actions = require('../../actions')
 
-module.exports = connect(mapStateToProps)(CreateVaultScreen)
+module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 
-inherits(CreateVaultScreen, Component)
-function CreateVaultScreen () {
-  Component.call(this)
+inherits(RestoreVaultScreen, PersistentForm)
+function RestoreVaultScreen () {
+  PersistentForm.call(this)
 }
 
 function mapStateToProps (state) {
@@ -18,8 +17,10 @@ function mapStateToProps (state) {
   }
 }
 
-CreateVaultScreen.prototype.render = function () {
+RestoreVaultScreen.prototype.render = function () {
   var state = this.props
+  this.persistentFormParentId = 'restore-vault-form'
+
   return (
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
@@ -34,14 +35,26 @@ CreateVaultScreen.prototype.render = function () {
           padding: 6,
         },
       }, [
-        'Create Vault',
+        'Restore Vault',
       ]),
+
+      // wallet seed entry
+      h('h3', 'Wallet Seed'),
+      h('textarea.twelve-word-phrase.letter-spacey', {
+        dataset: {
+          persistentFormId: 'wallet-seed',
+        },
+        placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
+      }),
 
       // password
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box',
         placeholder: 'New Password (min 8 chars)',
+        dataset: {
+          persistentFormId: 'password',
+        },
         style: {
           width: 260,
           marginTop: 12,
@@ -53,12 +66,21 @@ CreateVaultScreen.prototype.render = function () {
         type: 'password',
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
-        onKeyPress: this.createVaultOnEnter.bind(this),
+        onKeyPress: this.createOnEnter.bind(this),
+        dataset: {
+          persistentFormId: 'password-confirmation',
+        },
         style: {
           width: 260,
           marginTop: 16,
         },
       }),
+
+      (state.warning) && (
+        h('span.error.in-progress-notification', state.warning)
+      ),
+
+      // submit
 
       h('.flex-row.flex-space-between', {
         style: {
@@ -74,56 +96,53 @@ CreateVaultScreen.prototype.render = function () {
 
         // submit
         h('button.primary', {
-          onClick: this.createNewVault.bind(this),
+          onClick: this.createNewVaultAndRestore.bind(this),
         }, 'OK'),
 
       ]),
 
-      (!state.inProgress && state.warning) && (
-        h('span.in-progress-notification', state.warning)
-      ),
-
-      state.inProgress && (
-        h('span.in-progress-notification', 'Generating Seed...')
-      ),
     ])
+
   )
 }
 
-CreateVaultScreen.prototype.componentDidMount = function () {
-  document.getElementById('password-box').focus()
-}
-
-CreateVaultScreen.prototype.showInitializeMenu = function () {
+RestoreVaultScreen.prototype.showInitializeMenu = function () {
   this.props.dispatch(actions.showInitializeMenu())
 }
 
-// create vault
-
-CreateVaultScreen.prototype.createVaultOnEnter = function (event) {
+RestoreVaultScreen.prototype.createOnEnter = function (event) {
   if (event.key === 'Enter') {
-    event.preventDefault()
-    this.createNewVault()
+    this.createNewVaultAndRestore()
   }
 }
 
-CreateVaultScreen.prototype.createNewVault = function () {
+RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
+  // check password
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value
   var passwordConfirmBox = document.getElementById('password-box-confirm')
   var passwordConfirm = passwordConfirmBox.value
-  // var entropy = document.getElementById('entropy-text-entry').value
-
   if (password.length < 8) {
-    this.warning = 'password not long enough'
+    this.warning = 'Password not long enough'
+
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (password !== passwordConfirm) {
-    this.warning = 'passwords don\'t match'
+    this.warning = 'Passwords don\'t match'
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
-
-  this.props.dispatch(actions.createNewVault(password, ''/* entropy*/))
+  // check seed
+  var seedBox = document.querySelector('textarea.twelve-word-phrase')
+  var seed = seedBox.value.trim()
+  if (seed.split(' ').length !== 12) {
+    this.warning = 'seed phrases are 12 words long'
+    this.props.dispatch(actions.displayWarning(this.warning))
+    return
+  }
+  // submit
+  this.warning = null
+  this.props.dispatch(actions.displayWarning(this.warning))
+  this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
 }

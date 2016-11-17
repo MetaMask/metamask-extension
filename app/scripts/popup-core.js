@@ -9,7 +9,7 @@ const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 module.exports = initializePopup
 
 
-function initializePopup(connectionStream){
+function initializePopup (connectionStream) {
   // setup app
   connectToAccountManager(connectionStream, setupApp)
 }
@@ -32,7 +32,7 @@ function setupWeb3Connection (connectionStream) {
 }
 
 function setupControllerConnection (connectionStream, cb) {
-  // this is a really sneaky way of adding EventEmitter api 
+  // this is a really sneaky way of adding EventEmitter api
   // to a bi-directional dnode instance
   var eventEmitter = new EventEmitter()
   var accountManagerDnode = Dnode({

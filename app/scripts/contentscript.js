@@ -6,7 +6,7 @@ const extension = require('./lib/extension')
 
 const fs = require('fs')
 const path = require('path')
-const inpageText = fs.readFileSync(path.join(__dirname + '/inpage.js')).toString()
+const inpageText = fs.readFileSync(path.join(__dirname, 'inpage.js')).toString()
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -20,9 +20,8 @@ if (shouldInjectWeb3()) {
   setupStreams()
 }
 
-function setupInjection(){
+function setupInjection () {
   try {
-
     // inject in-page script
     var scriptTag = document.createElement('script')
     scriptTag.src = extension.extension.getURL('scripts/inpage.js')
@@ -31,14 +30,12 @@ function setupInjection(){
     var container = document.head || document.documentElement
     // append as first child
     container.insertBefore(scriptTag, container.children[0])
-
   } catch (e) {
     console.error('Metamask injection failed.', e)
   }
 }
 
-function setupStreams(){
-
+function setupStreams () {
   // setup communication to page and plugin
   var pageStream = new LocalMessageDuplexStream({
     name: 'contentscript',
@@ -65,14 +62,13 @@ function setupStreams(){
   mx.ignoreStream('provider')
   mx.ignoreStream('publicConfig')
   mx.ignoreStream('reload')
-
 }
 
-function shouldInjectWeb3(){
+function shouldInjectWeb3 () {
   return isAllowedSuffix(window.location.href)
 }
 
-function isAllowedSuffix(testCase) {
+function isAllowedSuffix (testCase) {
   var prohibitedTypes = ['xml', 'pdf']
   var currentUrl = window.location.href
   var currentRegex

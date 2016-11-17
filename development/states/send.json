@@ -2,7 +2,6 @@
   "metamask": {
     "isInitialized": true,
     "isUnlocked": true,
-    "isEthConfirmed": false,
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
@@ -49,7 +48,7 @@
     "transactions": [],
     "network": "2",
     "seedWords": null,
-    "isConfirmed": true,
+    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],
