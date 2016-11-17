@@ -7,7 +7,6 @@ const ethBinToOps = require('eth-bin-to-ops')
 const EthQuery = require('eth-query')
 const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
-const createId = require('web3-provider-engine/util/random-id')
 const autoFaucet = require('./lib/auto-faucet')
 const bip39 = require('bip39')
 
@@ -21,6 +20,8 @@ const keyringTypes = [
   SimpleKeyring,
   HdKeyring,
 ]
+
+const createId = require('./lib/random-id')
 
 module.exports = class KeyringController extends EventEmitter {
 
