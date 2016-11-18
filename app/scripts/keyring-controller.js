@@ -127,8 +127,9 @@ module.exports = class KeyringController extends EventEmitter {
       if (serialized && shouldMigrate) {
         const keyring = this.restoreKeyring(serialized)
         this.keyrings.push(keyring)
-        this.persistAllKeyrings()
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
+        return this.persistAllKeyrings()
+        .then(() => { return key })
       }
       return key
     })
@@ -274,13 +275,12 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   persistAllKeyrings () {
-    const serialized = this.keyrings.map((k) => {
+    const serialized = this.keyrings.map((keyring) => {
       return {
-        type: k.type,
-        data: k.serialize(),
+        type: keyring.type,
+        data: keyring.serialize(),
       }
     })
-
     return this.encryptor.encryptWithKey(this.key, serialized)
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
