@@ -55,6 +55,8 @@ UnlockScreen.prototype.render = function () {
         h('.error', {
           style: {
             display: warning ? 'block' : 'none',
+            padding: '0 20px',
+            textAlign: 'center',
           },
         }, warning),
 
@@ -64,6 +66,17 @@ UnlockScreen.prototype.render = function () {
             margin: 10,
           },
         }, 'Unlock'),
+      ]),
+
+      h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: () => this.props.dispatch(actions.showRestoreVault()),
+          style: {
+            fontSize: '0.8em',
+            color: 'rgb(247, 134, 28)',
+            textDecoration: 'underline',
+          },
+        }, 'I forgot my password.'),
       ]),
     ])
   )
@@ -104,6 +117,3 @@ UnlockScreen.prototype.inputChanged = function (event) {
   })
 }
 
-UnlockScreen.prototype.emitAnim = function (name, a, b, c) {
-  this.animationEventEmitter.emit(name, a, b, c)
-}

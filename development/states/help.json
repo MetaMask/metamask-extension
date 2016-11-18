@@ -55,7 +55,7 @@
     },
     "transactions": [],
     "network": "2",
-    "isConfirmed": true,
+    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "provider": {

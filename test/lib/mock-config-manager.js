@@ -1,5 +1,5 @@
 var ConfigManager = require('../../app/scripts/lib/config-manager')
-const STORAGE_KEY = 'metamask-persistance-key'
+const STORAGE_KEY = 'metamask-config'
 const extend = require('xtend')
 
 module.exports = function() {

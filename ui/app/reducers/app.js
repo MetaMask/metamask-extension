@@ -29,13 +29,10 @@ function reduceApp (state, action) {
     name: 'createVaultComplete',
     seedWords,
   }
-  var ethStoreWarning = {
-    name: 'EthStoreWarning',
-  }
 
   var appState = extend({
     menuOpen: false,
-    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning : defaultView,
+    currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -117,6 +114,15 @@ function reduceApp (state, action) {
         },
         transForward: true,
         warning: null,
+      })
+
+    case actions.SHOW_NEW_KEYCHAIN:
+      return extend(appState, {
+        currentView: {
+          name: 'newKeychain',
+          context: appState.currentView.context,
+        },
+        transForward: true,
       })
 
   // unlock
@@ -272,7 +278,6 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
-
         notification.closePopup()
 
         return extend(appState, {
@@ -329,7 +334,7 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_FAILED:
       return extend(appState, {
-        warning: 'Incorrect password. Try again.',
+        warning: action.value || 'Incorrect password. Try again.',
       })
 
     case actions.SHOW_LOADING:
@@ -540,4 +545,3 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-
