@@ -117,7 +117,6 @@ module.exports = class KeyringController extends EventEmitter {
   migrateAndGetKey (password) {
     let key
     const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
-
     return this.loadKey(password)
     .then((derivedKey) => {
       key = derivedKey
@@ -128,6 +127,7 @@ module.exports = class KeyringController extends EventEmitter {
       if (serialized && shouldMigrate) {
         const keyring = this.restoreKeyring(serialized)
         this.keyrings.push(keyring)
+        this.persistAllKeyrings()
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
       }
       return key

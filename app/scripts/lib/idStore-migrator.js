@@ -37,11 +37,11 @@ module.exports = class IdentityStoreMigrator {
 
   serializeVault () {
     const mnemonic = this.idStore._idmgmt.getSeed()
-    const n = this.idStore._getAddresses().length
+    const numberOfAccounts = this.idStore._getAddresses().length
 
     return {
       type: 'HD Key Tree',
-      data: { mnemonic, n },
+      data: { mnemonic, numberOfAccounts },
     }
   }
 
