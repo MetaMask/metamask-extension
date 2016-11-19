@@ -120,7 +120,7 @@ function remoteStoreWithLocalStorageCache (storageKey) {
   return store
 }
 
-function eachJsonMessage(payload, transformFn){
+function eachJsonMessage (payload, transformFn) {
   if (Array.isArray(payload)) {
     return payload.map(transformFn)
   } else {
