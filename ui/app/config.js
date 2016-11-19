@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const currencies = require('./conversion-util').availableCurrencies.rows
+const currencies = require('./conversion.json').rows
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
 function mapStateToProps (state) {
