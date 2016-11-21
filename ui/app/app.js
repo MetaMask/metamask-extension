@@ -233,9 +233,18 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Morden Test Network',
+      label: 'Ropsten Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
+      icon: h('.menu-icon.red-dot'),
+      activeNetworkRender: props.network,
+      provider: props.provider,
+    }),
+
+    h(DropMenuItem, {
+      label: 'Morden Test Network',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => props.dispatch(actions.setProviderType('morden')),
       icon: h('.menu-icon.red-dot'),
       activeNetworkRender: props.network,
       provider: props.provider,
