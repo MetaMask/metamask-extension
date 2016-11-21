@@ -26,6 +26,7 @@ If you're a web dapp developer, we've got two types of guides for you:
 
 ```bash
 npm install
+npm run dist
 ```
 
 #### In Chrome
