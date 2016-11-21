@@ -26,6 +26,13 @@ If you're a web dapp developer, we've got two types of guides for you:
 
 ```bash
 npm install
+npm start
+```
+
+## Build for Publishing
+
+```bash
+npm run dist
 ```
 
 #### In Chrome
@@ -78,7 +85,7 @@ To enjoy the live-reloading that `gulp dev` offers while working on the `web3-pr
  2. `npm install` in its folder.
  3. Run `npm link` in its folder.
  4. Run `npm link $DEP_NAME` in this project folder.
- 5. Next time you `gulp dev` it will watch the dependency for changes as well!
+ 5. Next time you `npm start` it will watch the dependency for changes as well!
 
 ### Running Tests
 
