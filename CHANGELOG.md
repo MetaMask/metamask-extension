@@ -4,6 +4,7 @@
 
 - Add support for the new, default Ropsten Test Network.
 - Fix bug that would cause MetaMask to occasionally lose its StreamProvider connection and drop requests.
+- Fix bug that would cause the Custom RPC menu item to not appear when Localhost 8545 was selected.
 
 ## 2.13.8 2016-11-16
 
