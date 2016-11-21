@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.13.9 2016-11-21
+
 - Add support for the new, default Ropsten Test Network.
 - Fix bug that would cause MetaMask to occasionally lose its StreamProvider connection and drop requests.
 
