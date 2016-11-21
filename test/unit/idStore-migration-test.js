@@ -52,7 +52,7 @@ describe('IdentityStore to KeyringController migration', function() {
       },
     })
 
-    idStore._createVault(password, mockVault.seed, null, (err) => {
+    idStore._createVault(password, mockVault.seed, (err) => {
       assert.ifError(err, 'createNewVault threw error')
       originalKeystore = idStore._idmgmt.keyStore
 

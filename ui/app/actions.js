@@ -201,9 +201,9 @@ function createNewVaultAndRestore (password, seed) {
   }
 }
 
-function createNewVaultAndKeychain (password, entropy) {
+function createNewVaultAndKeychain (password) {
   return (dispatch) => {
-    background.createNewVaultAndKeychain(password, entropy, (err) => {
+    background.createNewVaultAndKeychain(password, (err) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }

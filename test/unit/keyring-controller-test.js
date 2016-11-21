@@ -12,7 +12,6 @@ describe('KeyringController', function() {
 
   let keyringController, state
   let password = 'password123'
-  let entropy = 'entripppppyy duuude'
   let seedWords = 'puzzle seed penalty soldier say clay field arctic metal hen cage runway'
   let addresses = ['eF35cA8EbB9669A35c31b5F6f249A9941a812AC1'.toLowerCase()]
   let accounts = []
@@ -33,7 +32,7 @@ describe('KeyringController', function() {
     // Browser crypto is tested in the integration test suite.
     keyringController.encryptor = mockEncryptor
 
-    keyringController.createNewVaultAndKeychain(password, null, function (err, newState) {
+    keyringController.createNewVaultAndKeychain(password, function (err, newState) {
       assert.ifError(err)
       state = newState
       done()
@@ -51,7 +50,7 @@ describe('KeyringController', function() {
     it('should set a vault on the configManager', function(done) {
       keyringController.configManager.setVault(null)
       assert(!keyringController.configManager.getVault(), 'no previous vault')
-      keyringController.createNewVaultAndKeychain(password, null, (err, state) => {
+      keyringController.createNewVaultAndKeychain(password, (err, state) => {
         assert.ifError(err)
         const vault = keyringController.configManager.getVault()
         assert(vault, 'vault created')

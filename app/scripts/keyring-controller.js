@@ -76,8 +76,8 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = ethStore
   }
 
-  createNewVaultAndKeychain (password, entropy, cb) {
-    this.createNewVault(password, entropy, (err) => {
+  createNewVaultAndKeychain (password, cb) {
+    this.createNewVault(password, (err) => {
       if (err) return cb(err)
       this.createFirstKeyTree(password, cb)
     })
@@ -94,7 +94,7 @@ module.exports = class KeyringController extends EventEmitter {
 
     this.clearKeyrings()
 
-    this.createNewVault(password, '', (err) => {
+    this.createNewVault(password, (err) => {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
@@ -135,7 +135,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  createNewVault (password, entropy, cb) {
+  createNewVault (password, cb) {
     const configManager = this.configManager
     const salt = this.encryptor.generateSalt()
     configManager.setSalt(salt)
