@@ -15,12 +15,9 @@ function show () {
     if (err) throw err
 
     if (popup) {
-
       // bring focus to existing popup
       extension.windows.update(popup.id, { focused: true })
-
     } else {
-
       // create new popup
       extension.windows.create({
         url: 'notification.html',
@@ -29,12 +26,11 @@ function show () {
         width,
         height,
       })
-
     }
   })
 }
 
-function getWindows(cb) {
+function getWindows (cb) {
   // Ignore in test environment
   if (!extension.windows) {
     return cb()
@@ -45,14 +41,14 @@ function getWindows(cb) {
   })
 }
 
-function getPopup(cb) {
+function getPopup (cb) {
   getWindows((err, windows) => {
     if (err) throw err
     cb(null, getPopupIn(windows))
   })
 }
 
-function getPopupIn(windows) {
+function getPopupIn (windows) {
   return windows ? windows.find((win) => {
     return (win && win.type === 'popup' &&
       win.height === height &&
@@ -60,7 +56,7 @@ function getPopupIn(windows) {
   }) : null
 }
 
-function closePopup() {
+function closePopup () {
   getPopup((err, popup) => {
     if (err) throw err
     if (!popup) return

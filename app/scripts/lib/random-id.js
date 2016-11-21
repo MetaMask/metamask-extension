@@ -1,7 +1,7 @@
-const MAX = 1000000000
+const MAX = Number.MAX_SAFE_INTEGER
 
-let idCounter = Math.round( Math.random() * MAX )
-function createRandomId() {
+let idCounter = Math.round(Math.random() * MAX)
+function createRandomId () {
   idCounter = idCounter % MAX
   return idCounter++
 }

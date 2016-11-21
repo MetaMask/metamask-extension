@@ -1,4 +1,4 @@
-module.exports = function(address, network) {
+module.exports = function (address, network) {
   const net = parseInt(network)
   let link
 

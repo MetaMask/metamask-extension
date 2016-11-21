@@ -63,7 +63,7 @@ TransactionListItem.prototype.render = function () {
           style: {
             fontSize: '27px',
           },
-        }) : h( '.pop-hover', {
+        }) : h('.pop-hover', {
           onClick: (event) => {
             event.stopPropagation()
             if (!isTx || isPending) return

@@ -7,7 +7,7 @@ const actions = require('../actions')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(CoinbaseForm)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
@@ -16,7 +16,7 @@ function mapStateToProps(state) {
 
 inherits(CoinbaseForm, Component)
 
-function CoinbaseForm() {
+function CoinbaseForm () {
   Component.call(this)
 }
 
@@ -124,7 +124,6 @@ CoinbaseForm.prototype.toCoinbase = function () {
 }
 
 CoinbaseForm.prototype.renderLoading = function () {
-
   return h('img', {
     style: {
       width: '27px',
@@ -134,9 +133,8 @@ CoinbaseForm.prototype.renderLoading = function () {
   })
 }
 
-function isValidAmountforCoinBase(amount) {
+function isValidAmountforCoinBase (amount) {
   amount = parseFloat(amount)
-
   if (amount) {
     if (amount <= 5 && amount > 0) {
       return {

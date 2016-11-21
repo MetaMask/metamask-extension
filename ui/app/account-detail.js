@@ -30,7 +30,6 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     unconfTxs: valuesFor(state.metamask.unconfTxs),
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
-    isEthWarningConfirmed: state.metamask.isEthConfirmed,
     shapeShiftTxList: state.metamask.shapeShiftTxList,
   }
 }

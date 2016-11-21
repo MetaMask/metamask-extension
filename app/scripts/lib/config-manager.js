@@ -2,6 +2,7 @@ const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
 const rp = require('request-promise')
+const ethUtil = require('ethereumjs-util')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -111,6 +112,27 @@ ConfigManager.prototype.setWallet = function (wallet) {
   this.setData(data)
 }
 
+ConfigManager.prototype.setVault = function (encryptedString) {
+  var data = this.getData()
+  data.vault = encryptedString
+  this.setData(data)
+}
+
+ConfigManager.prototype.getVault = function () {
+  var data = this.getData()
+  return ('vault' in data) && data.vault
+}
+
+ConfigManager.prototype.getKeychains = function () {
+  return this.migrator.getData().keychains || []
+}
+
+ConfigManager.prototype.setKeychains = function (keychains) {
+  var data = this.migrator.getData()
+  data.keychains = keychains
+  this.setData(data)
+}
+
 ConfigManager.prototype.getSelectedAccount = function () {
   var config = this.getConfig()
   return config.selectedAccount
@@ -118,7 +140,7 @@ ConfigManager.prototype.getSelectedAccount = function () {
 
 ConfigManager.prototype.setSelectedAccount = function (address) {
   var config = this.getConfig()
-  config.selectedAccount = address
+  config.selectedAccount = ethUtil.addHexPrefix(address)
   this.setConfig(config)
 }
 
@@ -133,9 +155,21 @@ ConfigManager.prototype.setShowSeedWords = function (should) {
   this.setData(data)
 }
 
+
 ConfigManager.prototype.getShouldShowSeedWords = function () {
   var data = this.migrator.getData()
   return data.showSeedWords
+}
+
+ConfigManager.prototype.setSeedWords = function (words) {
+  var data = this.getData()
+  data.seedWords = words
+  this.setData(data)
+}
+
+ConfigManager.prototype.getSeedWords = function () {
+  var data = this.getData()
+  return ('seedWords' in data) && data.seedWords
 }
 
 ConfigManager.prototype.getCurrentRpcAddress = function () {
@@ -239,19 +273,32 @@ ConfigManager.prototype.getWalletNicknames = function () {
 }
 
 ConfigManager.prototype.nicknameForWallet = function (account) {
+  const address = ethUtil.addHexPrefix(account.toLowerCase())
   const nicknames = this.getWalletNicknames()
-  return nicknames[account]
+  return nicknames[address]
 }
 
 ConfigManager.prototype.setNicknameForWallet = function (account, nickname) {
+  const address = ethUtil.addHexPrefix(account.toLowerCase())
   const nicknames = this.getWalletNicknames()
-  nicknames[account] = nickname
+  nicknames[address] = nickname
   var data = this.getData()
   data.walletNicknames = nicknames
   this.setData(data)
 }
 
 // observable
+
+ConfigManager.prototype.getSalt = function () {
+  var data = this.getData()
+  return ('salt' in data) && data.salt
+}
+
+ConfigManager.prototype.setSalt = function (salt) {
+  var data = this.getData()
+  data.salt = salt
+  this.setData(data)
+}
 
 ConfigManager.prototype.subscribe = function (fn) {
   this._subs.push(fn)
@@ -270,15 +317,15 @@ ConfigManager.prototype._emitUpdates = function (state) {
   })
 }
 
-ConfigManager.prototype.setConfirmed = function (confirmed) {
+ConfigManager.prototype.setConfirmedDisclaimer = function (confirmed) {
   var data = this.getData()
-  data.isConfirmed = confirmed
+  data.isDisclaimerConfirmed = confirmed
   this.setData(data)
 }
 
-ConfigManager.prototype.getConfirmed = function () {
+ConfigManager.prototype.getConfirmedDisclaimer = function () {
   var data = this.getData()
-  return ('isConfirmed' in data) && data.isConfirmed
+  return ('isDisclaimerConfirmed' in data) && data.isDisclaimerConfirmed
 }
 
 ConfigManager.prototype.setTOSHash = function (hash) {
@@ -315,7 +362,6 @@ ConfigManager.prototype.updateConversionRate = function () {
     this.setConversionPrice(0)
     this.setConversionDate('N/A')
   })
-
 }
 
 ConfigManager.prototype.setConversionPrice = function (price) {
@@ -338,21 +384,6 @@ ConfigManager.prototype.getConversionRate = function () {
 ConfigManager.prototype.getConversionDate = function () {
   var data = this.getData()
   return (('conversionDate' in data) && data.conversionDate) || 'N/A'
-}
-
-ConfigManager.prototype.setShouldntShowWarning = function () {
-  var data = this.getData()
-  if (data.isEthConfirmed) {
-    data.isEthConfirmed = !data.isEthConfirmed
-  } else {
-    data.isEthConfirmed = true
-  }
-  this.setData(data)
-}
-
-ConfigManager.prototype.getShouldntShowWarning = function () {
-  var data = this.getData()
-  return ('isEthConfirmed' in data) && data.isEthConfirmed
 }
 
 ConfigManager.prototype.getShapeShiftTxList = function () {

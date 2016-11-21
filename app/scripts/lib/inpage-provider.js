@@ -40,7 +40,7 @@ function MetamaskInpageProvider (connectionStream) {
 
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
-  self.sendAsync = function(payload, cb){
+  self.sendAsync = function (payload, cb) {
     // rewrite request ids
     var request = eachJsonMessage(payload, (message) => {
       var newId = createRandomId()
@@ -49,7 +49,7 @@ function MetamaskInpageProvider (connectionStream) {
       return message
     })
     // forward to asyncProvider
-    asyncProvider.sendAsync(request, function(err, res){
+    asyncProvider.sendAsync(request, function (err, res) {
       if (err) return cb(err)
       // transform messages to original ids
       eachJsonMessage(res, (message) => {
@@ -120,7 +120,7 @@ function remoteStoreWithLocalStorageCache (storageKey) {
   return store
 }
 
-function eachJsonMessage(payload, transformFn){
+function eachJsonMessage (payload, transformFn) {
   if (Array.isArray(payload)) {
     return payload.map(transformFn)
   } else {
