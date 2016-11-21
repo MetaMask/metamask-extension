@@ -5,6 +5,7 @@ const rp = require('request-promise')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
+const MORDEN_RPC = MetamaskConfig.network.morden
 const txLimit = 40
 
 /* The config-manager is a convenience object
@@ -147,6 +148,9 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
 
     case 'testnet':
       return TESTNET_RPC
+
+    case 'morden':
+      return MORDEN_RPC
 
     default:
       return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
