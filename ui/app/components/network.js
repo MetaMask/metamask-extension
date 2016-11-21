@@ -36,6 +36,12 @@ Network.prototype.render = function () {
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
+  } else if (providerName === 'testnet') {
+    hoverText = 'Ropsten Test Network'
+    iconName = 'ropsten-test-network'
+  } else if (parseInt(networkNumber) === 3) {
+    hoverText = 'Ropsten Test Network'
+    iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 2) {
     hoverText = 'Morden Test Network'
     iconName = 'morden-test-network'
@@ -43,6 +49,7 @@ Network.prototype.render = function () {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
   }
+
   return (
     h('#network_component.flex-center.pointer', {
       style: {
@@ -62,6 +69,15 @@ Network.prototype.render = function () {
                   color: '#039396',
                 }},
               'Ethereum Main Net'),
+            ])
+          case 'ropsten-test-network':
+            return h('.network-indicator', [
+              h('.menu-icon.red-dot'),
+              h('.network-name', {
+                style: {
+                  color: '#ff6666',
+                }},
+              'Ropsten Test Net'),
             ])
           case 'morden-test-network':
             return h('.network-indicator', [
