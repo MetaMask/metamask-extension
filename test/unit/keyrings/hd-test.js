@@ -37,7 +37,7 @@ describe('hd-keyring', function() {
   describe('#type', function() {
     it('returns the correct value', function() {
       const type = keyring.type
-      const correct = HdKeyring.type()
+      const correct = HdKeyring.type
       assert.equal(type, correct)
     })
   })
