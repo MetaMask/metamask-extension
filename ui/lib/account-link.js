@@ -7,10 +7,10 @@ module.exports = function(address, network) {
       link = `http://etherscan.io/address/${address}`
       break
     case 2: // morden test net
-      link = `http://testnet.etherscan.io/address/${address}`
+      link = ''
       break
     case 3: // ropsten test net
-      link = ''
+      link = `http://testnet.etherscan.io/address/${address}`
       break
     default:
       link = ''
