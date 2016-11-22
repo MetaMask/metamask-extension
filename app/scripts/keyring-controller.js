@@ -180,8 +180,8 @@ module.exports = class KeyringController extends EventEmitter {
 
     if (cb) {
       cb()
-      this.emit('update')
     }
+    this.emit('update')
   }
 
   submitPassword (password, cb) {
