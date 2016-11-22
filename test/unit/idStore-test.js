@@ -152,11 +152,9 @@ describe('IdentityStore', function() {
 
       const gas = '0x01'
       const bnGas = new BN(gas, 16)
-      const result = idStore.addGasBuffer(gas)
-      const bnResult = new BN(result, 16)
+      const bnResult = idStore.addGasBuffer(bnGas)
 
       assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
-      assert.equal(result.indexOf('0x'), 0, 'include hex prefix')
     })
 
     it('buffers 20%', function() {
@@ -173,13 +171,10 @@ describe('IdentityStore', function() {
       const correctBuffer = bnGas.div(five)
       const correct = bnGas.add(correctBuffer)
 
-      const result = idStore.addGasBuffer(gas)
-      const bnResult = new BN(ethUtil.stripHexPrefix(result), 16)
+      const bnResult = idStore.addGasBuffer(bnGas)
 
-      assert.equal(result.indexOf('0x'), 0, 'included hex prefix')
       assert(bnResult.gt(bnGas), 'Estimate increased in value.')
       assert.equal(bnResult.sub(bnGas).toString(10), correctBuffer.toString(10), 'added 20% gas')
-      assert.equal(result, '0x' + correct.toString(16), 'Added the right amount')
     })
   })
 
