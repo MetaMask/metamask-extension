@@ -1,4 +1,5 @@
 const async = require('async')
+const bind = require('ap').partial
 const ethUtil = require('ethereumjs-util')
 const ethBinToOps = require('eth-bin-to-ops')
 const EthQuery = require('eth-query')
@@ -9,7 +10,6 @@ const EventEmitter = require('events').EventEmitter
 const normalize = require('./lib/sig-util').normalize
 const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
-const autoFaucet = require('./lib/auto-faucet')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const BN = ethUtil.BN
 
@@ -61,13 +61,12 @@ module.exports = class KeyringController extends EventEmitter {
       transactions: this.configManager.getTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
-      selectedAddress: address,
       selectedAccount: address,
       shapeShiftTxList: this.configManager.getShapeShiftTxList(),
       currentFiat: this.configManager.getCurrentFiat(),
       conversionRate: this.configManager.getConversionRate(),
       conversionDate: this.configManager.getConversionDate(),
-      keyringTypes: this.keyringTypes.map((krt) => krt.type()),
+      keyringTypes: this.keyringTypes.map(krt => krt.type),
       identities: this.identities,
     }
   }
@@ -76,8 +75,8 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = ethStore
   }
 
-  createNewVaultAndKeychain (password, entropy, cb) {
-    this.createNewVault(password, entropy, (err) => {
+  createNewVaultAndKeychain (password, cb) {
+    this.createNewVault(password, (err) => {
       if (err) return cb(err)
       this.createFirstKeyTree(password, cb)
     })
@@ -94,7 +93,7 @@ module.exports = class KeyringController extends EventEmitter {
 
     this.clearKeyrings()
 
-    this.createNewVault(password, '', (err) => {
+    this.createNewVault(password, (err) => {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
@@ -121,7 +120,7 @@ module.exports = class KeyringController extends EventEmitter {
     .then((derivedKey) => {
       key = derivedKey
       this.key = key
-      return this.idStoreMigrator.oldSeedForPassword(password)
+      return this.idStoreMigrator.migratedVaultForPassword(password)
     })
     .then((serialized) => {
       if (serialized && shouldMigrate) {
@@ -135,7 +134,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  createNewVault (password, entropy, cb) {
+  createNewVault (password, cb) {
     const configManager = this.configManager
     const salt = this.getSalt()
     configManager.setSalt(salt)
@@ -161,7 +160,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.configManager.setSelectedAccount(firstAccount)
 
       this.placeSeedWords()
-      autoFaucet(hexAccount)
+      this.emit('newAccount', hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
       .then(() => {
@@ -173,10 +172,15 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  placeSeedWords () {
+  placeSeedWords (cb) {
     const firstKeyring = this.keyrings[0]
     const seedWords = firstKeyring.serialize().mnemonic
     this.configManager.setSeedWords(seedWords)
+
+    if (cb) {
+      cb()
+    }
+    this.emit('update')
   }
 
   submitPassword (password, cb) {
@@ -317,7 +321,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   getKeyringClassForType (type) {
     const Keyring = this.keyringTypes.reduce((res, kr) => {
-      if (kr.type() === type) {
+      if (kr.type === type) {
         return kr
       } else {
         return res
@@ -334,7 +338,7 @@ module.exports = class KeyringController extends EventEmitter {
     }, [])
   }
 
-  setSelectedAddress (address, cb) {
+  setSelectedAccount (address, cb) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
     cb(null, addr)
@@ -369,7 +373,7 @@ module.exports = class KeyringController extends EventEmitter {
     // calculate metadata for tx
     async.parallel([
       analyzeForDelegateCall,
-      estimateGas,
+      analyzeGasUsage,
     ], didComplete)
 
     // perform static analyis on the target contract code
@@ -392,12 +396,67 @@ module.exports = class KeyringController extends EventEmitter {
       }
     }
 
-    function estimateGas (cb) {
-      query.estimateGas(txParams, function (err, result) {
+    function analyzeGasUsage (cb) {
+      query.getBlockByNumber('latest', true, function (err, block) {
         if (err) return cb(err)
-        txData.estimatedGas = self.addGasBuffer(result)
-        cb()
+        async.waterfall([
+          bind(estimateGas, txData, block.gasLimit),
+          bind(checkForGasError, txData),
+          bind(setTxGas, txData, block.gasLimit),
+        ], cb)
       })
+    }
+
+    function estimateGas(txData, blockGasLimitHex, cb) {
+      const txParams = txData.txParams
+      // check if gasLimit is already specified
+      txData.gasLimitSpecified = Boolean(txParams.gas)
+      // if not, fallback to block gasLimit
+      if (!txData.gasLimitSpecified) {
+        txParams.gas = blockGasLimitHex
+      }
+      // run tx, see if it will OOG
+      query.estimateGas(txParams, cb)
+    }
+
+    function checkForGasError(txData, estimatedGasHex) {
+      txData.estimatedGas = estimatedGasHex
+      // all gas used - must be an error
+      if (estimatedGasHex === txData.txParams.gas) {
+        txData.simulationFails = true
+      }
+      cb()
+    }
+
+    function setTxGas(txData, blockGasLimitHex) {
+      const txParams = txData.txParams
+      // if OOG, nothing more to do
+      if (txData.simulationFails) {
+        cb()
+        return
+      }
+      // if gasLimit was specified and doesnt OOG,
+      // use original specified amount
+      if (txData.gasLimitSpecified) {
+        txData.estimatedGas = txParams.gas
+        cb()
+        return
+      }
+      // if gasLimit not originally specified,
+      // try adding an additional gas buffer to our estimation for safety
+      const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
+      const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
+      const estimationWithBuffer = self.addGasBuffer(estimatedGasBn)
+      // added gas buffer is too high
+      if (estimationWithBuffer.gt(blockGasLimitBn)) {
+        txParams.gas = txData.estimatedGas
+      // added gas buffer is safe
+      } else {
+        const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
+        txParams.gas = gasWithBufferHex
+      }
+      cb()
+      return
     }
 
     function didComplete (err) {

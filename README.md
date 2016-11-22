@@ -18,6 +18,12 @@ If you're a web dapp developer, we've got two types of guides for you:
 
  Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
+## Installing Local Builds on Chrome
+
+To install your locally built extension on Chrome, [follow this guide](http://stackoverflow.com/a/24577660/272576).
+
+The built extension is stored in `./dist/chrome/`.
+
 ## Architecture
 
 [![Architecture Diagram](./docs/architecture.png)][1]

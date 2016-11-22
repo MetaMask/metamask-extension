@@ -11,7 +11,6 @@ describe('IdentityStore', function() {
   describe('#createNewVault', function () {
     let idStore
     let password = 'password123'
-    let entropy = 'entripppppyy duuude'
     let seedWords
     let accounts = []
     let originalKeystore
@@ -26,7 +25,7 @@ describe('IdentityStore', function() {
         },
       })
 
-      idStore.createNewVault(password, entropy, (err, seeds) => {
+      idStore.createNewVault(password, (err, seeds) => {
         assert.ifError(err, 'createNewVault threw error')
         seedWords = seeds
         originalKeystore = idStore._idmgmt.keyStore

@@ -1,5 +1,3 @@
-var ethUtil = require('ethereumjs-util')
-
 module.exports = {
 
   // Simple encryption methods:
@@ -101,10 +99,10 @@ function keyFromPassword (password) {
 }
 
 function serializeBufferFromStorage (str) {
-  str = ethUtil.stripHexPrefix(str)
-  var buf = new Uint8Array(str.length / 2)
-  for (var i = 0; i < str.length; i += 2) {
-    var seg = str.substr(i, 2)
+  var stripStr = (str.slice(0, 2) === '0x') ? str.slice(2) : str
+  var buf = new Uint8Array(stripStr.length / 2)
+  for (var i = 0; i < stripStr.length; i += 2) {
+    var seg = stripStr.substr(i, 2)
     buf[i / 2] = parseInt(seg, 16)
   }
   return buf

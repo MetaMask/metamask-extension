@@ -2,44 +2,22 @@ const EventEmitter = require('events').EventEmitter
 const hdkey = require('ethereumjs-wallet/hdkey')
 const bip39 = require('bip39')
 const ethUtil = require('ethereumjs-util')
+
+// *Internal Deps
 const sigUtil = require('../lib/sig-util')
 
+// Options:
+const hdPathString = `m/44'/60'/0'/0`
 const type = 'HD Key Tree'
 
-const hdPathString = `m/44'/60'/0'/0`
+class HdKeyring extends EventEmitter {
 
-module.exports = class HdKeyring extends EventEmitter {
-
-  static type () {
-    return type
-  }
+  /* PUBLIC METHODS */
 
   constructor (opts = {}) {
     super()
     this.type = type
     this.deserialize(opts)
-  }
-
-  deserialize (opts = {}) {
-    this.opts = opts || {}
-    this.wallets = []
-    this.mnemonic = null
-    this.root = null
-
-    if ('mnemonic' in opts) {
-      this.initFromMnemonic(opts.mnemonic)
-    }
-
-    if ('numberOfAccounts' in opts) {
-      this.addAccounts(opts.numberOfAccounts)
-    }
-  }
-
-  initFromMnemonic (mnemonic) {
-    this.mnemonic = mnemonic
-    const seed = bip39.mnemonicToSeed(mnemonic)
-    this.hdWallet = hdkey.fromMasterSeed(seed)
-    this.root = this.hdWallet.derivePath(hdPathString)
   }
 
   serialize () {
@@ -49,14 +27,24 @@ module.exports = class HdKeyring extends EventEmitter {
     }
   }
 
-  exportAccount (address) {
-    const wallet = this.getWalletForAccount(address)
-    return wallet.getPrivateKey().toString('hex')
+  deserialize (opts = {}) {
+    this.opts = opts || {}
+    this.wallets = []
+    this.mnemonic = null
+    this.root = null
+
+    if ('mnemonic' in opts) {
+      this._initFromMnemonic(opts.mnemonic)
+    }
+
+    if ('numberOfAccounts' in opts) {
+      this.addAccounts(opts.numberOfAccounts)
+    }
   }
 
   addAccounts (numberOfAccounts = 1) {
     if (!this.root) {
-      this.initFromMnemonic(bip39.generateMnemonic())
+      this._initFromMnemonic(bip39.generateMnemonic())
     }
 
     const oldLen = this.wallets.length
@@ -76,7 +64,7 @@ module.exports = class HdKeyring extends EventEmitter {
 
   // tx is an instance of the ethereumjs-transaction class.
   signTransaction (address, tx) {
-    const wallet = this.getWalletForAccount(address)
+    const wallet = this._getWalletForAccount(address)
     var privKey = wallet.getPrivateKey()
     tx.sign(privKey)
     return tx
@@ -84,7 +72,7 @@ module.exports = class HdKeyring extends EventEmitter {
 
   // For eth_sign, we need to sign transactions:
   signMessage (withAccount, data) {
-    const wallet = this.getWalletForAccount(withAccount)
+    const wallet = this._getWalletForAccount(withAccount)
     const message = ethUtil.removeHexPrefix(data)
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
@@ -92,10 +80,29 @@ module.exports = class HdKeyring extends EventEmitter {
     return rawMsgSig
   }
 
-  getWalletForAccount (account) {
+  exportAccount (address) {
+    const wallet = this._getWalletForAccount(address)
+    return wallet.getPrivateKey().toString('hex')
+  }
+
+
+  /* PRIVATE METHODS */
+
+  _initFromMnemonic (mnemonic) {
+    this.mnemonic = mnemonic
+    const seed = bip39.mnemonicToSeed(mnemonic)
+    this.hdWallet = hdkey.fromMasterSeed(seed)
+    this.root = this.hdWallet.derivePath(hdPathString)
+  }
+
+
+  _getWalletForAccount (account) {
     return this.wallets.find((w) => {
       const address = w.getAddress().toString('hex')
       return ((address === account) || (sigUtil.normalize(address) === account))
     })
   }
 }
+
+HdKeyring.type = type
+module.exports = HdKeyring

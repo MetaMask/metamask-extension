@@ -18,7 +18,7 @@ function mapStateToProps (state) {
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-    selectedAddress: state.metamask.selectedAddress,
+    selectedAccount: state.metamask.selectedAccount,
     unconfTxs: state.metamask.unconfTxs,
     unconfMsgs: state.metamask.unconfMsgs,
     index: state.appState.currentView.context,
@@ -90,12 +90,12 @@ ConfirmTxScreen.prototype.render = function () {
           // Properties
           txData: txData,
           key: txData.id,
-          selectedAddress: state.selectedAddress,
+          selectedAccount: state.selectedAccount,
           accounts: state.accounts,
           identities: state.identities,
           insufficientBalance: this.checkBalnceAgainstTx(txData),
           // Actions
-          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAddress),
+          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAccount),
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
@@ -120,7 +120,7 @@ ConfirmTxScreen.prototype.checkBalnceAgainstTx = function (txData) {
   var state = this.props
 
   var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAddress
+  var address = txParams.from || state.selectedAccount
   var account = state.accounts[address]
   var balance = account ? account.balance : '0x0'
 
