@@ -55,7 +55,7 @@ module.exports = class KeyringController extends EventEmitter {
     return {
       seedWords: this.configManager.getSeedWords(),
       isInitialized: (!!wallet || !!vault),
-      isUnlocked: this.keyrings.length > 0,
+      isUnlocked: Boolean(this.password),
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
       unconfTxs: this.configManager.unconfirmedTxs(),
       transactions: this.configManager.getTxList(),
