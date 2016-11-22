@@ -71,7 +71,7 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
-  setselectedAccount: setselectedAccount,
+  setSelectedAccount: setSelectedAccount,
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   sendTx: sendTx,
@@ -259,7 +259,7 @@ function showInfoPage () {
   }
 }
 
-function setselectedAccount (address) {
+function setSelectedAccount (address) {
   return (dispatch) => {
     background.setSelectedAccount(address)
   }

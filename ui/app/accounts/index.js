@@ -134,7 +134,7 @@ AccountsScreen.prototype.onSelect = function (address, event) {
   event.stopPropagation()
   // if already selected, deselect
   if (this.props.selectedAccount === address) address = null
-  this.props.dispatch(actions.setselectedAccount(address))
+  this.props.dispatch(actions.setSelectedAccount(address))
 }
 
 AccountsScreen.prototype.onShowDetail = function (address, event) {

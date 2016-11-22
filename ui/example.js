@@ -85,7 +85,7 @@ accountManager.submitPassword = function (password, cb) {
   }
 }
 
-accountManager.setselectedAccount = function (address, cb) {
+accountManager.setSelectedAccount = function (address, cb) {
   selectedAccount = address
   cb(null, getState())
   this._didUpdate()
