@@ -11,7 +11,7 @@ module.exports = class IdentityStoreMigrator {
     }
   }
 
-  oldSeedForPassword (password) {
+  migratedVaultForPassword (password) {
     const hasOldVault = this.hasOldVault()
     const configManager = this.configManager
 
