@@ -221,9 +221,11 @@ function requestRevealSeed (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     background.submitPassword(password, (err) => {
-      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      background.placeSeedWords()
+      background.placeSeedWords((err) => {
+        if (err) return dispatch(actions.displayWarning(err.message))
+        dispatch(actions.hideLoadingIndication())
+      })
     })
   }
 }
