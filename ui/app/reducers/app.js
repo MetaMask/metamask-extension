@@ -285,7 +285,7 @@ function reduceApp (state, action) {
           warning: null,
           currentView: {
             name: 'accountDetail',
-            context: state.metamask.selectedAddress,
+            context: state.metamask.selectedAccount,
           },
           accountDetail: {
             subview: 'transactions',

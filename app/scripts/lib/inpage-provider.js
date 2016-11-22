@@ -66,20 +66,20 @@ function MetamaskInpageProvider (connectionStream) {
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
 
-  let selectedAddress
+  let selectedAccount
   let result = null
   switch (payload.method) {
 
     case 'eth_accounts':
       // read from localStorage
-      selectedAddress = self.publicConfigStore.get('selectedAddress')
-      result = selectedAddress ? [selectedAddress] : []
+      selectedAccount = self.publicConfigStore.get('selectedAddress')
+      result = selectedAccount ? [selectedAccount] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      selectedAddress = self.publicConfigStore.get('selectedAddress')
-      result = selectedAddress || '0x0000000000000000000000000000000000000000'
+      selectedAccount = self.publicConfigStore.get('selectedAddress')
+      result = selectedAccount || '0x0000000000000000000000000000000000000000'
       break
 
     // throw not-supported Error

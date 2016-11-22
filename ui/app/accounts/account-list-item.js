@@ -16,7 +16,7 @@ function AccountListItem () {
 
 AccountListItem.prototype.render = function () {
   const identity = this.props.identity
-  var isSelected = this.props.selectedAddress === identity.address
+  var isSelected = this.props.selectedAccount === identity.address
   var account = this.props.accounts[identity.address]
   const selectedClass = isSelected ? '.selected' : ''
 

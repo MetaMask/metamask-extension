@@ -61,7 +61,6 @@ module.exports = class KeyringController extends EventEmitter {
       transactions: this.configManager.getTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
-      selectedAddress: address,
       selectedAccount: address,
       shapeShiftTxList: this.configManager.getShapeShiftTxList(),
       currentFiat: this.configManager.getCurrentFiat(),
@@ -329,7 +328,7 @@ module.exports = class KeyringController extends EventEmitter {
     }, [])
   }
 
-  setSelectedAddress (address, cb) {
+  setSelectedAccount (address, cb) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
     cb(null, addr)

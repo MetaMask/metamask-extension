@@ -71,7 +71,7 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
-  setSelectedAddress: setSelectedAddress,
+  setselectedAccount: setselectedAccount,
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   sendTx: sendTx,
@@ -259,9 +259,9 @@ function showInfoPage () {
   }
 }
 
-function setSelectedAddress (address) {
+function setselectedAccount (address) {
   return (dispatch) => {
-    background.setSelectedAddress(address)
+    background.setselectedAccount(address)
   }
 }
 
@@ -455,7 +455,7 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.setSelectedAddress(address, (err, address) => {
+    background.setselectedAccount(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))

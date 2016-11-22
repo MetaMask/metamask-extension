@@ -44,6 +44,5 @@ describe('SHOW_ACCOUNT_DETAIL', function() {
 
     var resultingState = reducers(initialState, action)
     assert.equal(resultingState.metamask.selectedAccount, action.value)
-    assert.equal(resultingState.metamask.selectedAddress, action.value)
   })
 })

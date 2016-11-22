@@ -67,7 +67,7 @@ module.exports = class MetamaskController {
       addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
       addNewAccount: keyringController.addNewAccount.bind(keyringController),
       submitPassword: keyringController.submitPassword.bind(keyringController),
-      setSelectedAddress: keyringController.setSelectedAddress.bind(keyringController),
+      setSelectedAccount: keyringController.setSelectedAccount.bind(keyringController),
       approveTransaction: keyringController.approveTransaction.bind(keyringController),
       cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
       signMessage: keyringController.signMessage.bind(keyringController),
@@ -125,8 +125,8 @@ module.exports = class MetamaskController {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        var selectedAddress = this.configManager.getSelectedAccount()
-        var result = selectedAddress ? [selectedAddress] : []
+        var selectedAccount = this.configManager.getSelectedAccount()
+        var result = selectedAccount ? [selectedAccount] : []
         cb(null, result)
       },
       // tx signing
@@ -177,14 +177,14 @@ module.exports = class MetamaskController {
     // keyringController substate
     function keyringControllerToPublic (state) {
       return {
-        selectedAddress: state.selectedAddress,
+        selectedAccount: state.selectedAccount,
       }
     }
     // config substate
     function configToPublic (state) {
       return {
         provider: state.provider,
-        selectedAddress: state.selectedAccount,
+        selectedAccount: state.selectedAccount,
       }
     }
     // dump obj into store

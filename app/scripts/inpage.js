@@ -50,7 +50,7 @@ endOfStream(pingStream, triggerReload)
 
 // set web3 defaultAcount
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
+  web3.eth.defaultAccount = state.selectedAccount
 })
 
 //

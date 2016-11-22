@@ -98,7 +98,6 @@ function reduceMetamask (state, action) {
         isUnlocked: true,
         isInitialized: true,
         selectedAccount: action.value,
-        selectedAddress: action.value,
       })
       delete newState.seedWords
       return newState

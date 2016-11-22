@@ -53,14 +53,14 @@ function addUnconfTx (txParams) {
 }
 
 var isUnlocked = false
-var selectedAddress = null
+var selectedAccount = null
 
 function getState () {
   return {
     isUnlocked: isUnlocked,
     identities: isUnlocked ? identities : {},
     unconfTxs: isUnlocked ? unconfTxs : {},
-    selectedAddress: selectedAddress,
+    selectedAccount: selectedAccount,
   }
 }
 
@@ -85,8 +85,8 @@ accountManager.submitPassword = function (password, cb) {
   }
 }
 
-accountManager.setSelectedAddress = function (address, cb) {
-  selectedAddress = address
+accountManager.setselectedAccount = function (address, cb) {
+  selectedAccount = address
   cb(null, getState())
   this._didUpdate()
 }

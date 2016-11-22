@@ -19,7 +19,7 @@ function mapStateToProps (state) {
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
     unconfTxs: state.metamask.unconfTxs,
-    selectedAddress: state.metamask.selectedAddress,
+    selectedAccount: state.metamask.selectedAccount,
     scrollToBottom: state.appState.scrollToBottom,
     pending,
   }
@@ -72,7 +72,7 @@ AccountsScreen.prototype.render = function () {
             return h(AccountListItem, {
               key: `acct-panel-${identity.address}`,
               identity,
-              selectedAddress: this.props.selectedAddress,
+              selectedAccount: this.props.selectedAccount,
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,
@@ -133,8 +133,8 @@ AccountsScreen.prototype.navigateToConfTx = function () {
 AccountsScreen.prototype.onSelect = function (address, event) {
   event.stopPropagation()
   // if already selected, deselect
-  if (this.props.selectedAddress === address) address = null
-  this.props.dispatch(actions.setSelectedAddress(address))
+  if (this.props.selectedAccount === address) address = null
+  this.props.dispatch(actions.setselectedAccount(address))
 }
 
 AccountsScreen.prototype.onShowDetail = function (address, event) {
