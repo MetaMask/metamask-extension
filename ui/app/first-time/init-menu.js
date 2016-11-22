@@ -165,7 +165,7 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
     return
   }
 
-  this.props.dispatch(actions.createNewVaultAndKeychain(password, ''/* entropy*/))
+  this.props.dispatch(actions.createNewVaultAndKeychain(password))
 }
 
 InitializeMenuScreen.prototype.inputChanged = function (event) {

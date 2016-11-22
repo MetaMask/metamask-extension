@@ -44,7 +44,7 @@ function IdentityStore (opts = {}) {
 // public
 //
 
-IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
+IdentityStore.prototype.createNewVault = function (password, cb) {
   delete this._keyStore
   var serializedKeystore = this.configManager.getWallet()
 
@@ -53,7 +53,7 @@ IdentityStore.prototype.createNewVault = function (password, entropy, cb) {
   }
 
   this.purgeCache()
-  this._createVault(password, null, entropy, (err) => {
+  this._createVault(password, null, (err) => {
     if (err) return cb(err)
 
     this._autoFaucet()
@@ -77,7 +77,7 @@ IdentityStore.prototype.recoverSeed = function (cb) {
 IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
   this.purgeCache()
 
-  this._createVault(password, seed, null, (err) => {
+  this._createVault(password, seed, (err) => {
     if (err) return cb(err)
 
     this._loadIdentities()
@@ -497,7 +497,7 @@ IdentityStore.prototype.tryPassword = function (password, cb) {
   })
 }
 
-IdentityStore.prototype._createVault = function (password, seedPhrase, entropy, cb) {
+IdentityStore.prototype._createVault = function (password, seedPhrase, cb) {
   const opts = {
     password,
     hdPathString: this.hdPathString,

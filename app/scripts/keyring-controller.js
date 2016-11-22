@@ -9,7 +9,6 @@ const EventEmitter = require('events').EventEmitter
 const normalize = require('./lib/sig-util').normalize
 const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
-const autoFaucet = require('./lib/auto-faucet')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const BN = ethUtil.BN
 
@@ -61,7 +60,6 @@ module.exports = class KeyringController extends EventEmitter {
       transactions: this.configManager.getTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
-      selectedAddress: address,
       selectedAccount: address,
       shapeShiftTxList: this.configManager.getShapeShiftTxList(),
       currentFiat: this.configManager.getCurrentFiat(),
@@ -76,8 +74,8 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = ethStore
   }
 
-  createNewVaultAndKeychain (password, entropy, cb) {
-    this.createNewVault(password, entropy, (err) => {
+  createNewVaultAndKeychain (password, cb) {
+    this.createNewVault(password, (err) => {
       if (err) return cb(err)
       this.createFirstKeyTree(password, cb)
     })
@@ -94,7 +92,7 @@ module.exports = class KeyringController extends EventEmitter {
 
     this.clearKeyrings()
 
-    this.createNewVault(password, '', (err) => {
+    this.createNewVault(password, (err) => {
       if (err) return cb(err)
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
@@ -135,7 +133,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  createNewVault (password, entropy, cb) {
+  createNewVault (password, cb) {
     const configManager = this.configManager
     const salt = this.encryptor.generateSalt()
     configManager.setSalt(salt)
@@ -161,7 +159,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.configManager.setSelectedAccount(firstAccount)
 
       this.placeSeedWords()
-      autoFaucet(hexAccount)
+      this.emit('newAccount', hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
       .then(() => {
@@ -329,7 +327,7 @@ module.exports = class KeyringController extends EventEmitter {
     }, [])
   }
 
-  setSelectedAddress (address, cb) {
+  setSelectedAccount (address, cb) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
     cb(null, addr)

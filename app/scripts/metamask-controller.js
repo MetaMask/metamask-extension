@@ -7,6 +7,8 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
+const autoFaucet = require('./lib/auto-faucet')
+
 
 module.exports = class MetamaskController {
 
@@ -67,7 +69,7 @@ module.exports = class MetamaskController {
       addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
       addNewAccount: keyringController.addNewAccount.bind(keyringController),
       submitPassword: keyringController.submitPassword.bind(keyringController),
-      setSelectedAddress: keyringController.setSelectedAddress.bind(keyringController),
+      setSelectedAccount: keyringController.setSelectedAccount.bind(keyringController),
       approveTransaction: keyringController.approveTransaction.bind(keyringController),
       cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
       signMessage: keyringController.signMessage.bind(keyringController),
@@ -125,8 +127,8 @@ module.exports = class MetamaskController {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        var selectedAddress = this.configManager.getSelectedAccount()
-        var result = selectedAddress ? [selectedAddress] : []
+        var selectedAccount = this.configManager.getSelectedAccount()
+        var result = selectedAccount ? [selectedAccount] : []
         cb(null, result)
       },
       // tx signing
@@ -174,17 +176,21 @@ module.exports = class MetamaskController {
       this.sendUpdate()
     })
 
+    this.keyringController.on('newAccount', (account) => {
+      autoFaucet(account)
+    })
+
     // keyringController substate
     function keyringControllerToPublic (state) {
       return {
-        selectedAddress: state.selectedAddress,
+        selectedAccount: state.selectedAccount,
       }
     }
     // config substate
     function configToPublic (state) {
       return {
         provider: state.provider,
-        selectedAddress: state.selectedAccount,
+        selectedAccount: state.selectedAccount,
       }
     }
     // dump obj into store

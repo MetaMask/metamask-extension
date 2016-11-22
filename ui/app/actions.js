@@ -71,7 +71,7 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
-  setSelectedAddress: setSelectedAddress,
+  setSelectedAccount: setSelectedAccount,
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   sendTx: sendTx,
@@ -201,9 +201,9 @@ function createNewVaultAndRestore (password, seed) {
   }
 }
 
-function createNewVaultAndKeychain (password, entropy) {
+function createNewVaultAndKeychain (password) {
   return (dispatch) => {
-    background.createNewVaultAndKeychain(password, entropy, (err) => {
+    background.createNewVaultAndKeychain(password, (err) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
@@ -259,9 +259,9 @@ function showInfoPage () {
   }
 }
 
-function setSelectedAddress (address) {
+function setSelectedAccount (address) {
   return (dispatch) => {
-    background.setSelectedAddress(address)
+    background.setSelectedAccount(address)
   }
 }
 
@@ -455,7 +455,7 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.setSelectedAddress(address, (err, address) => {
+    background.setSelectedAccount(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
