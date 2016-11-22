@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "ap": "^0.2.0",
     "async": "^1.5.2",
     "bip39": "^2.2.0",
     "browserify-derequire": "^0.9.4",
