@@ -1,6 +1,9 @@
 # Changelog
 
 ## Current Master
+- Ropsten networks now properly point to the faucet when attempting to buy ether.
+
+- Make Ropsten transactions link to etherscan correctly.
 
 ## 2.13.9 2016-11-21
 
