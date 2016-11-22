@@ -341,7 +341,7 @@ module.exports = class MetamaskController {
     var network = this.state.network
     var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
 
-    if (network === '2') {
+    if (network === '3') {
       url = 'https://faucet.metamask.io/'
     }
 
