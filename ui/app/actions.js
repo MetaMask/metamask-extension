@@ -261,7 +261,7 @@ function showInfoPage () {
 
 function setselectedAccount (address) {
   return (dispatch) => {
-    background.setselectedAccount(address)
+    background.setSelectedAccount(address)
   }
 }
 
@@ -455,7 +455,7 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.setselectedAccount(address, (err, address) => {
+    background.setSelectedAccount(address, (err, address) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))

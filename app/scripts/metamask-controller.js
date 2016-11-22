@@ -7,6 +7,8 @@ const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
+const autoFaucet = require('./lib/auto-faucet')
+
 
 module.exports = class MetamaskController {
 
@@ -172,6 +174,10 @@ module.exports = class MetamaskController {
       const state = this.keyringController.getState()
       storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
       this.sendUpdate()
+    })
+
+    this.keyringController.on('newAccount', (account) => {
+      autoFaucet(account)
     })
 
     // keyringController substate

@@ -9,7 +9,6 @@ const EventEmitter = require('events').EventEmitter
 const normalize = require('./lib/sig-util').normalize
 const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
-const autoFaucet = require('./lib/auto-faucet')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const BN = ethUtil.BN
 
@@ -160,7 +159,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.configManager.setSelectedAccount(firstAccount)
 
       this.placeSeedWords()
-      autoFaucet(hexAccount)
+      this.emit('newAccount', hexAccount)
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
       .then(() => {
