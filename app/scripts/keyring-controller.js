@@ -178,7 +178,7 @@ module.exports = class KeyringController extends EventEmitter {
     const seedWords = firstKeyring.serialize().mnemonic
     this.configManager.setSeedWords(seedWords)
 
-    if (cb && typeof cb === 'function') {
+    if (cb) {
       cb()
       this.emit('update')
     }
