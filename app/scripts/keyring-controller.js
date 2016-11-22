@@ -171,10 +171,15 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  placeSeedWords () {
+  placeSeedWords (cb) {
     const firstKeyring = this.keyrings[0]
     const seedWords = firstKeyring.serialize().mnemonic
     this.configManager.setSeedWords(seedWords)
+
+    if (cb) {
+      cb()
+    }
+    this.emit('update')
   }
 
   submitPassword (password, cb) {
