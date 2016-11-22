@@ -82,12 +82,14 @@ describe('KeyringController', function() {
 
   })
 
-  describe('#migrateAndGetKey', function() {
+  describe('#migrateOldVaultIfAny', function() {
     it('should return the key for that password', function(done) {
-      keyringController.migrateAndGetKey(password)
-      .then((key) => {
-        assert(key, 'a key is returned')
+      keyringController.migrateOldVaultIfAny(password)
+      .then(() => {
         done()
+      })
+      .catch((reason) => {
+        assert.ifError(reason)
       })
     })
   })
