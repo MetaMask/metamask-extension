@@ -1,4 +1,5 @@
 const async = require('async')
+const bind = require('ap').partial
 const ethUtil = require('ethereumjs-util')
 const ethBinToOps = require('eth-bin-to-ops')
 const EthQuery = require('eth-query')
@@ -362,7 +363,7 @@ module.exports = class KeyringController extends EventEmitter {
     // calculate metadata for tx
     async.parallel([
       analyzeForDelegateCall,
-      estimateGas,
+      analyzeGasUsage,
     ], didComplete)
 
     // perform static analyis on the target contract code
@@ -385,12 +386,67 @@ module.exports = class KeyringController extends EventEmitter {
       }
     }
 
-    function estimateGas (cb) {
-      query.estimateGas(txParams, function (err, result) {
+    function analyzeGasUsage (cb) {
+      query.getBlockByNumber('latest', true, function (err, block) {
         if (err) return cb(err)
-        txData.estimatedGas = self.addGasBuffer(result)
-        cb()
+        async.waterfall([
+          bind(estimateGas, txData, block.gasLimit),
+          bind(checkForGasError, txData),
+          bind(setTxGas, txData, block.gasLimit),
+        ], cb)
       })
+    }
+
+    function estimateGas(txData, blockGasLimitHex, cb) {
+      const txParams = txData.txParams
+      // check if gasLimit is already specified
+      txData.gasLimitSpecified = Boolean(txParams.gas)
+      // if not, fallback to block gasLimit
+      if (!txData.gasLimitSpecified) {
+        txParams.gas = blockGasLimitHex
+      }
+      // run tx, see if it will OOG
+      query.estimateGas(txParams, cb)
+    }
+
+    function checkForGasError(txData, estimatedGasHex) {
+      txData.estimatedGas = estimatedGasHex
+      // all gas used - must be an error
+      if (estimatedGasHex === txData.txParams.gas) {
+        txData.simulationFails = true
+      }
+      cb()
+    }
+
+    function setTxGas(txData, blockGasLimitHex) {
+      const txParams = txData.txParams
+      // if OOG, nothing more to do
+      if (txData.simulationFails) {
+        cb()
+        return
+      }
+      // if gasLimit was specified and doesnt OOG,
+      // use original specified amount
+      if (txData.gasLimitSpecified) {
+        txData.estimatedGas = txParams.gas
+        cb()
+        return
+      }
+      // if gasLimit not originally specified,
+      // try adding an additional gas buffer to our estimation for safety
+      const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
+      const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
+      const estimationWithBuffer = self.addGasBuffer(estimatedGasBn)
+      // added gas buffer is too high
+      if (estimationWithBuffer.gt(blockGasLimitBn)) {
+        txParams.gas = txData.estimatedGas
+      // added gas buffer is safe
+      } else {
+        const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
+        txParams.gas = gasWithBufferHex
+      }
+      cb()
+      return
     }
 
     function didComplete (err) {
