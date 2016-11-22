@@ -27,9 +27,9 @@ describe('hd-keyring', function() {
     assert.equal(accounts[1], secondAcct)
   })
 
-  describe('Keyring.type()', function() {
-    it('is a class method that returns the type string.', function() {
-      const type = HdKeyring.type()
+  describe('Keyring.type', function() {
+    it('is a class property that returns the type string.', function() {
+      const type = HdKeyring.type
       assert.equal(typeof type, 'string')
     })
   })

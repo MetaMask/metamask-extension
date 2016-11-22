@@ -13,9 +13,9 @@ describe('simple-keyring', function() {
     keyring = new SimpleKeyring()
   })
 
-  describe('Keyring.type()', function() {
-    it('is a class method that returns the type string.', function() {
-      const type = SimpleKeyring.type()
+  describe('Keyring.type', function() {
+    it('is a class property that returns the type string.', function() {
+      const type = SimpleKeyring.type
       assert.equal(type, TYPE_STR)
     })
   })

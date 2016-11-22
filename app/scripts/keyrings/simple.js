@@ -4,7 +4,9 @@ const ethUtil = require('ethereumjs-util')
 const type = 'Simple Key Pair'
 const sigUtil = require('../lib/sig-util')
 
-module.exports = class SimpleKeyring extends EventEmitter {
+class SimpleKeyring extends EventEmitter {
+
+  /* PUBLIC METHODS */
 
   static type () {
     return type
@@ -44,7 +46,7 @@ module.exports = class SimpleKeyring extends EventEmitter {
 
   // tx is an instance of the ethereumjs-transaction class.
   signTransaction (address, tx) {
-    const wallet = this.getWalletForAccount(address)
+    const wallet = this._getWalletForAccount(address)
     var privKey = wallet.getPrivateKey()
     tx.sign(privKey)
     return tx
@@ -52,7 +54,7 @@ module.exports = class SimpleKeyring extends EventEmitter {
 
   // For eth_sign, we need to sign transactions:
   signMessage (withAccount, data) {
-    const wallet = this.getWalletForAccount(withAccount)
+    const wallet = this._getWalletForAccount(withAccount)
     const message = ethUtil.removeHexPrefix(data)
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
@@ -60,8 +62,19 @@ module.exports = class SimpleKeyring extends EventEmitter {
     return rawMsgSig
   }
 
-  getWalletForAccount (account) {
+  exportAccount (address) {
+    const wallet = this._getWalletForAccount(address)
+    return wallet.getPrivateKey().toString('hex')
+  }
+
+
+  /* PRIVATE METHODS */
+
+  _getWalletForAccount (account) {
     return this.wallets.find(w => w.getAddress().toString('hex') === account)
   }
 
 }
+
+SimpleKeyring.type = type
+module.exports = SimpleKeyring
