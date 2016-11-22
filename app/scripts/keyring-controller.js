@@ -55,7 +55,7 @@ module.exports = class KeyringController extends EventEmitter {
     return {
       seedWords: this.configManager.getSeedWords(),
       isInitialized: (!!wallet || !!vault),
-      isUnlocked: !!this.key,
+      isUnlocked: this.keyrings.length > 0,
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
       unconfTxs: this.configManager.unconfirmedTxs(),
       transactions: this.configManager.getTxList(),
@@ -137,7 +137,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   createNewVault (password, entropy, cb) {
     const configManager = this.configManager
-    const salt = this.encryptor.generateSalt()
+    const salt = this.getSalt()
     configManager.setSalt(salt)
 
     return this.migrateAndGetKey(password)
@@ -182,7 +182,7 @@ module.exports = class KeyringController extends EventEmitter {
   submitPassword (password, cb) {
     this.migrateAndGetKey(password)
     .then((key) => {
-      return this.unlockKeyrings(key)
+      return this.unlockKeyrings(password)
     })
     .then((keyrings) => {
       this.keyrings = keyrings
@@ -197,13 +197,18 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   loadKey (password) {
-    const salt = this.configManager.getSalt() || this.encryptor.generateSalt()
+    const salt = this.getSalt()
     return this.encryptor.keyFromPassword(password + salt)
     .then((key) => {
       this.key = key
       this.configManager.setSalt(salt)
       return key
     })
+  }
+
+  getSalt () {
+    const vault = this.configManager.getVault()
+    const salt = vault.salt || this.encryptor.generateSalt()
   }
 
   addNewKeyring (type, opts, cb) {
@@ -288,7 +293,7 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  unlockKeyrings (key) {
+  unlockKeyrings (password) {
     const encryptedVault = this.configManager.getVault()
     return this.encryptor.decryptWithKey(key, encryptedVault)
     .then((vault) => {
