@@ -65,7 +65,7 @@ module.exports = class KeyringController extends EventEmitter {
       currentFiat: this.configManager.getCurrentFiat(),
       conversionRate: this.configManager.getConversionRate(),
       conversionDate: this.configManager.getConversionDate(),
-      keyringTypes: this.keyringTypes.map((krt) => krt.type()),
+      keyringTypes: this.keyringTypes.map(krt => krt.type),
       identities: this.identities,
     }
   }
@@ -310,7 +310,7 @@ module.exports = class KeyringController extends EventEmitter {
 
   getKeyringClassForType (type) {
     const Keyring = this.keyringTypes.reduce((res, kr) => {
-      if (kr.type() === type) {
+      if (kr.type === type) {
         return kr
       } else {
         return res
