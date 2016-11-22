@@ -260,24 +260,51 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
 
   function estimateGas(cb){
     var estimationParams = extend(txParams)
-    // 1 billion gas for estimation
-    var gasLimit = '0x3b9aca00'
-    estimationParams.gas = gasLimit
-    query.estimateGas(estimationParams, function(err, result){
-      if (err) return cb(err.message || err)
-      if (result === estimationParams.gas) {
-        txData.simulationFails = true
-        query.getBlockByNumber('latest', true, function(err, block){
-          if (err) return cb(err)
-          txData.estimatedGas = block.gasLimit
-          txData.txParams.gas = block.gasLimit
-          cb()
-        })
-        return
+    query.getBlockByNumber('latest', true, function(err, block){
+      if (err) return cb(err)
+      // check if gasLimit is already specified
+      const gasLimitSpecified = Boolean(txParams.gas)
+      // if not, fallback to block gasLimit
+      if (!gasLimitSpecified) {
+        estimationParams.gas = block.gasLimit
       }
-      txData.estimatedGas = self.addGasBuffer(result)
-      txData.txParams.gas = txData.estimatedGas
-      cb()
+      // run tx, see if it will OOG
+      query.estimateGas(estimationParams, function(err, estimatedGasHex){
+        if (err) return cb(err.message || err)
+        // all gas used - must be an error
+        if (estimatedGasHex === estimationParams.gas) {
+          txData.simulationFails = true
+          txData.estimatedGas = estimatedGasHex
+          txData.txParams.gas = estimatedGasHex
+          cb()
+          return
+        }
+        // otherwise, did not use all gas, must be ok
+
+        // if specified gasLimit and no error, we're done
+        if (gasLimitSpecified) {
+          txData.estimatedGas = txParams.gas
+          cb()
+          return
+        }
+
+        // try adding an additional gas buffer to our estimation for safety
+        const estimatedGasBn = new BN(ethUtil.stripHexPrefix(estimatedGasHex), 16)
+        const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(block.gasLimit), 16)
+        const estimationWithBuffer = self.addGasBuffer(estimatedGasBn)
+        // added gas buffer is too high
+        if (estimationWithBuffer.gt(blockGasLimitBn)) {
+          txData.estimatedGas = estimatedGasHex
+          txData.txParams.gas = estimatedGasHex
+        // added gas buffer is safe
+        } else {
+          const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
+          txData.estimatedGas = gasWithBufferHex
+          txData.txParams.gas = gasWithBufferHex
+        }
+        cb()
+        return
+      })
     })
   }
 
@@ -302,12 +329,11 @@ IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
   }
 }
 
-IdentityStore.prototype.addGasBuffer = function (gas) {
-  const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-  const five = new BN('5', 10)
-  const gasBuffer = bnGas.div(five)
-  const correct = bnGas.add(gasBuffer)
-  return ethUtil.addHexPrefix(correct.toString(16))
+IdentityStore.prototype.addGasBuffer = function (gasBn) {
+  // add 20% to specified gas
+  const gasBuffer = gasBn.div(new BN('5', 10))
+  const gasWithBuffer = gasBn.add(gasBuffer)
+  return gasWithBuffer
 }
 
 // comes from metamask ui
