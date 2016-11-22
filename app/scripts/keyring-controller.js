@@ -119,7 +119,7 @@ module.exports = class KeyringController extends EventEmitter {
     .then((derivedKey) => {
       key = derivedKey
       this.key = key
-      return this.idStoreMigrator.oldSeedForPassword(password)
+      return this.idStoreMigrator.migratedVaultForPassword(password)
     })
     .then((serialized) => {
       if (serialized && shouldMigrate) {
