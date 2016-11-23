@@ -98,9 +98,11 @@ module.exports = class KeyringController extends EventEmitter {
       this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
         numberOfAccounts: 1,
-      }, (err) => {
+      }).then(() => {
         const firstKeyring = this.keyrings[0]
-        const accounts = firstKeyring.getAccounts()
+        return firstKeyring.getAccounts()
+      })
+      .then((accounts) => {
         const firstAccount = accounts[0]
         const hexAccount = normalize(firstAccount)
         this.configManager.setSelectedAccount(hexAccount)
@@ -108,7 +110,7 @@ module.exports = class KeyringController extends EventEmitter {
         this.persistAllKeyrings()
         .then(() => {
           this.emit('update')
-          cb(err)
+          cb(err, this.getState())
         })
       })
     })
@@ -129,7 +131,6 @@ module.exports = class KeyringController extends EventEmitter {
           this.configManager.setSelectedAccount(accounts[0])
           return this.persistAllKeyrings()
         })
-
       } else {
         return Promise.resolve()
       }
@@ -154,15 +155,17 @@ module.exports = class KeyringController extends EventEmitter {
     this.clearKeyrings()
     this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
       if (err) return cb(err)
-      const accounts = this.keyrings[0].getAccounts()
-      const firstAccount = accounts[0]
-      const hexAccount = normalize(firstAccount)
-      this.configManager.setSelectedAccount(firstAccount)
+      this.keyrings[0].getAccounts()
+      .then((accounts) => {
+        const firstAccount = accounts[0]
+        const hexAccount = normalize(firstAccount)
+        this.configManager.setSelectedAccount(firstAccount)
 
-      this.placeSeedWords()
-      this.emit('newAccount', hexAccount)
-      this.setupAccounts(accounts)
-      this.persistAllKeyrings()
+        this.placeSeedWords()
+        this.emit('newAccount', hexAccount)
+        this.setupAccounts(accounts)
+        return this.persistAllKeyrings()
+      })
       .then(() => {
         cb()
       })
@@ -176,7 +179,6 @@ module.exports = class KeyringController extends EventEmitter {
     const firstKeyring = this.keyrings[0]
     firstKeyring.serialize()
     .then((serialized) => {
-
       const seedWords = serialized.mnemonic
       this.configManager.setSeedWords(seedWords)
 
@@ -207,16 +209,23 @@ module.exports = class KeyringController extends EventEmitter {
   addNewKeyring (type, opts, cb) {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
-    const accounts = keyring.getAccounts()
-
-    this.keyrings.push(keyring)
-    this.setupAccounts(accounts)
-    this.persistAllKeyrings()
-    .then(() => {
-      cb()
+    return keyring.getAccounts()
+    .then((accounts) => {
+      this.keyrings.push(keyring)
+      return this.setupAccounts(accounts)
+    }).then(() => {
+      return this.persistAllKeyrings()
+    }).then(() => {
+      if (cb) {
+        cb(null, keyring)
+      }
+      return keyring
     })
     .catch((reason) => {
-      cb(reason)
+      if (cb) {
+        cb(reason)
+      }
+      return reason
     })
   }
 
@@ -240,8 +249,7 @@ module.exports = class KeyringController extends EventEmitter {
   setupAccounts (accounts) {
     return this.getAccounts()
     .then((loadedAccounts) => {
-      var arr = accounts || loadedAccounts
-
+      const arr = accounts || loadedAccounts
       arr.forEach((account) => {
         this.getBalanceAndNickname(account)
       })
@@ -544,7 +552,7 @@ module.exports = class KeyringController extends EventEmitter {
       txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
       txParams.nonce = normalize(txParams.nonce)
 
-      let tx = new Transaction(txParams)
+      const tx = new Transaction(txParams)
       keyring.signTransaction(address, tx)
       .then((tx) => {
         // Add the tx hash to the persisted meta-tx object
@@ -557,7 +565,6 @@ module.exports = class KeyringController extends EventEmitter {
         var rawTx = ethUtil.bufferToHex(tx.serialize())
         cb(null, rawTx)
       })
-
     } catch (e) {
       cb(e)
     }
