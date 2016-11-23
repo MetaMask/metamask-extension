@@ -117,17 +117,21 @@ module.exports = class KeyringController extends EventEmitter {
     const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
     return this.idStoreMigrator.migratedVaultForPassword(password)
     .then((serialized) => {
+      this.password = password
+
       if (serialized && shouldMigrate) {
-        this.password = password
-        const keyring = this.restoreKeyring(serialized)
-        this.keyrings.push(keyring)
-        keyring.getAccounts()
+        return this.restoreKeyring(serialized)
+        .then((keyring) => {
+          return keyring.getAccounts()
+        })
         .then((accounts) => {
           this.configManager.setSelectedAccount(accounts[0])
           return this.persistAllKeyrings()
         })
+
+      } else {
+        return Promise.resolve()
       }
-      return Promise.resolve()
     })
   }
 
@@ -216,9 +220,13 @@ module.exports = class KeyringController extends EventEmitter {
 
   addNewAccount (keyRingNum = 0, cb) {
     const ring = this.keyrings[keyRingNum]
-    const accounts = ring.addAccounts(1)
-    this.setupAccounts(accounts)
-    this.persistAllKeyrings()
+    return ring.addAccounts(1)
+    .then((accounts) => {
+      return this.setupAccounts(accounts)
+    })
+    .then(() => {
+      return this.persistAllKeyrings()
+    })
     .then(() => {
       cb()
     })
@@ -228,9 +236,13 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   setupAccounts (accounts) {
-    var arr = accounts || this.getAccounts()
-    arr.forEach((account) => {
-      this.getBalanceAndNickname(account)
+    return this.getAccounts()
+    .then((loadedAccounts) => {
+      var arr = accounts || loadedAccounts
+
+      arr.forEach((account) => {
+        this.getBalanceAndNickname(account)
+      })
     })
   }
 
@@ -301,12 +313,13 @@ module.exports = class KeyringController extends EventEmitter {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring()
     keyring.deserialize(data)
-
-    const accounts = keyring.getAccounts()
-    this.setupAccounts(accounts)
-
-    this.keyrings.push(keyring)
-    return keyring
+    .then(() => {
+      return keyring.getAccounts()
+    })
+    .then((accounts) => {
+      this.setupAccounts(accounts)
+      this.keyrings.push(keyring)
+    })
   }
 
   getKeyringClassForType (type) {
@@ -529,17 +542,19 @@ module.exports = class KeyringController extends EventEmitter {
       txParams.nonce = normalize(txParams.nonce)
 
       let tx = new Transaction(txParams)
-      tx = keyring.signTransaction(address, tx)
+      keyring.signTransaction(address, tx)
+      .then((tx) => {
+        // Add the tx hash to the persisted meta-tx object
+        var txHash = ethUtil.bufferToHex(tx.hash())
+        var metaTx = this.configManager.getTx(txParams.metamaskId)
+        metaTx.hash = txHash
+        this.configManager.updateTx(metaTx)
 
-      // Add the tx hash to the persisted meta-tx object
-      var txHash = ethUtil.bufferToHex(tx.hash())
-      var metaTx = this.configManager.getTx(txParams.metamaskId)
-      metaTx.hash = txHash
-      this.configManager.updateTx(metaTx)
+        // return raw serialized tx
+        var rawTx = ethUtil.bufferToHex(tx.serialize())
+        cb(null, rawTx)
+      })
 
-      // return raw serialized tx
-      var rawTx = ethUtil.bufferToHex(tx.serialize())
-      cb(null, rawTx)
     } catch (e) {
       cb(e)
     }
@@ -549,8 +564,11 @@ module.exports = class KeyringController extends EventEmitter {
     try {
       const keyring = this.getKeyringForAccount(msgParams.from)
       const address = normalize(msgParams.from)
-      const rawSig = keyring.signMessage(address, msgParams.data)
-      cb(null, rawSig)
+      return keyring.signMessage(address, msgParams.data)
+      .then((rawSig) => {
+        cb(null, rawSig)
+        return rawSig
+      })
     } catch (e) {
       cb(e)
     }
@@ -581,10 +599,14 @@ module.exports = class KeyringController extends EventEmitter {
   exportAccount (address, cb) {
     try {
       const keyring = this.getKeyringForAccount(address)
-      const privateKey = keyring.exportAccount(normalize(address))
-      cb(null, privateKey)
+      return keyring.exportAccount(normalize(address))
+      .then((privateKey) => {
+        cb(null, privateKey)
+        return privateKey
+      })
     } catch (e) {
       cb(e)
+      return Promise.reject(e)
     }
   }
 
