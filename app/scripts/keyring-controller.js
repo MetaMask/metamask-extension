@@ -274,8 +274,9 @@ module.exports = class KeyringController extends EventEmitter {
 
   unlockKeyrings (password) {
     const encryptedVault = this.configManager.getVault()
-    return this.encryptor.decrypt(this.password, encryptedVault)
+    return this.encryptor.decrypt(password, encryptedVault)
     .then((vault) => {
+      this.password = password
       vault.forEach(this.restoreKeyring.bind(this))
       return this.keyrings
     })

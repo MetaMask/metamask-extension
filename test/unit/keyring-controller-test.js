@@ -87,6 +87,7 @@ describe('KeyringController', function() {
       keyringController.migrateOldVaultIfAny(password)
       .then(() => {
         assert(keyringController.configManager.getVault(), 'now has a vault')
+        assert(keyringController.password, 'has a password set')
         done()
       })
       .catch((reason) => {
