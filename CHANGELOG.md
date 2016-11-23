@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add support for synchronous RPC method "eth_uninstallFilter".
+
 ## 2.13.10 2016-11-22
 
 - Improve gas calculation logic.
