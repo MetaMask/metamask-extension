@@ -26,9 +26,15 @@ module.exports = {
 
 // Takes a Pojo, returns cypher text.
 function encrypt (password, dataObj) {
-  return keyFromPassword(password)
+  const salt = this.generateSalt()
+
+  return keyFromPassword(password + salt)
   .then(function (passwordDerivedKey) {
     return encryptWithKey(passwordDerivedKey, dataObj)
+  })
+  .then(function (payload) {
+    payload.salt = salt
+    return JSON.stringify(payload)
   })
 }
 
@@ -44,22 +50,26 @@ function encryptWithKey (key, dataObj) {
     var buffer = new Uint8Array(buf)
     var vectorStr = encodeBufferToBase64(vector)
     var vaultStr = encodeBufferToBase64(buffer)
-    return `${vaultStr}\\${vectorStr}`
+    return {
+      data: vaultStr,
+      iv: vectorStr,
+    }
   })
 }
 
 // Takes encrypted text, returns the restored Pojo.
 function decrypt (password, text) {
-  return keyFromPassword(password)
+  const payload = JSON.parse(text)
+  const salt = payload.salt
+  return keyFromPassword(password + salt)
   .then(function (key) {
-    return decryptWithKey(key, text)
+    return decryptWithKey(key, payload)
   })
 }
 
-function decryptWithKey (key, text) {
-  const parts = text.split('\\')
-  const encryptedData = decodeBase64ToBuffer(parts[0])
-  const vector = decodeBase64ToBuffer(parts[1])
+function decryptWithKey (key, payload) {
+  const encryptedData = decodeBase64ToBuffer(payload.data)
+  const vector = decodeBase64ToBuffer(payload.iv)
   return crypto.subtle.decrypt({name: 'AES-GCM', iv: vector}, key, encryptedData)
   .then(function (result) {
     const decryptedData = new Uint8Array(result)

@@ -55,7 +55,7 @@ module.exports = class KeyringController extends EventEmitter {
     return {
       seedWords: this.configManager.getSeedWords(),
       isInitialized: (!!wallet || !!vault),
-      isUnlocked: !!this.key,
+      isUnlocked: Boolean(this.password),
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
       unconfTxs: this.configManager.unconfirmedTxs(),
       transactions: this.configManager.getTxList(),
@@ -113,34 +113,24 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  migrateAndGetKey (password) {
-    let key
+  migrateOldVaultIfAny (password) {
     const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
-    return this.loadKey(password)
-    .then((derivedKey) => {
-      key = derivedKey
-      this.key = key
-      return this.idStoreMigrator.migratedVaultForPassword(password)
-    })
+    return this.idStoreMigrator.migratedVaultForPassword(password)
     .then((serialized) => {
       if (serialized && shouldMigrate) {
         const keyring = this.restoreKeyring(serialized)
         this.keyrings.push(keyring)
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
         return this.persistAllKeyrings()
-        .then(() => { return key })
       }
-      return key
+      return
     })
   }
 
   createNewVault (password, cb) {
-    const configManager = this.configManager
-    const salt = this.encryptor.generateSalt()
-    configManager.setSalt(salt)
-
-    return this.migrateAndGetKey(password)
+    return this.migrateOldVaultIfAny(password)
     .then(() => {
+      this.password = password
       return this.persistAllKeyrings()
     })
     .then(() => {
@@ -184,9 +174,9 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   submitPassword (password, cb) {
-    this.migrateAndGetKey(password)
-    .then((key) => {
-      return this.unlockKeyrings(key)
+    this.migrateOldVaultIfAny(password)
+    .then(() => {
+      return this.unlockKeyrings(password)
     })
     .then((keyrings) => {
       this.keyrings = keyrings
@@ -197,16 +187,6 @@ module.exports = class KeyringController extends EventEmitter {
     .catch((err) => {
       console.error(err)
       cb(err)
-    })
-  }
-
-  loadKey (password) {
-    const salt = this.configManager.getSalt() || this.encryptor.generateSalt()
-    return this.encryptor.keyFromPassword(password + salt)
-    .then((key) => {
-      this.key = key
-      this.configManager.setSalt(salt)
-      return key
     })
   }
 
@@ -285,16 +265,16 @@ module.exports = class KeyringController extends EventEmitter {
         data: keyring.serialize(),
       }
     })
-    return this.encryptor.encryptWithKey(this.key, serialized)
+    return this.encryptor.encrypt(this.password, serialized)
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
       return true
     })
   }
 
-  unlockKeyrings (key) {
+  unlockKeyrings (password) {
     const encryptedVault = this.configManager.getVault()
-    return this.encryptor.decryptWithKey(key, encryptedVault)
+    return this.encryptor.decrypt(this.password, encryptedVault)
     .then((vault) => {
       vault.forEach(this.restoreKeyring.bind(this))
       return this.keyrings
@@ -402,7 +382,7 @@ module.exports = class KeyringController extends EventEmitter {
       })
     }
 
-    function estimateGas(txData, blockGasLimitHex, cb) {
+    function estimateGas (txData, blockGasLimitHex, cb) {
       const txParams = txData.txParams
       // check if gasLimit is already specified
       txData.gasLimitSpecified = Boolean(txParams.gas)
@@ -414,7 +394,7 @@ module.exports = class KeyringController extends EventEmitter {
       query.estimateGas(txParams, cb)
     }
 
-    function checkForGasError(txData, estimatedGasHex) {
+    function checkForGasError (txData, estimatedGasHex) {
       txData.estimatedGas = estimatedGasHex
       // all gas used - must be an error
       if (estimatedGasHex === txData.txParams.gas) {
@@ -423,7 +403,7 @@ module.exports = class KeyringController extends EventEmitter {
       cb()
     }
 
-    function setTxGas(txData, blockGasLimitHex) {
+    function setTxGas (txData, blockGasLimitHex) {
       const txParams = txData.txParams
       // if OOG, nothing more to do
       if (txData.simulationFails) {
