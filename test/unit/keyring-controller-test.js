@@ -61,7 +61,7 @@ describe('KeyringController', function() {
 
   describe('#restoreKeyring', function() {
 
-    it(`should pass a keyring's serialized data back to the correct type.`, function() {
+    it(`should pass a keyring's serialized data back to the correct type.`, function(done) {
       const mockSerialized = {
         type: 'HD Key Tree',
         data: {
@@ -74,12 +74,14 @@ describe('KeyringController', function() {
       mock.expects('getBalanceAndNickname')
       .exactly(1)
 
-      var keyring = keyringController.restoreKeyring(mockSerialized)
-      assert.equal(keyring.wallets.length, 1, 'one wallet restored')
-      assert.equal(keyring.getAccounts()[0], addresses[0])
-      mock.verify()
+      keyringController.restoreKeyring(mockSerialized)
+      .then((keyring) => {
+        assert.equal(keyring.wallets.length, 1, 'one wallet restored')
+        assert.equal(keyring.getAccounts()[0], addresses[0])
+        mock.verify()
+        done()
+      })
     })
-
   })
 
   describe('#migrateOldVaultIfAny', function() {
@@ -92,6 +94,7 @@ describe('KeyringController', function() {
       })
       .catch((reason) => {
         assert.ifError(reason)
+        done()
       })
     })
   })
@@ -110,15 +113,17 @@ describe('KeyringController', function() {
   })
 
   describe('#saveAccountLabel', function() {
-    it ('sets the nickname', function() {
+    it ('sets the nickname', function(done) {
       const account = addresses[0]
       var nick = 'Test nickname'
       keyringController.identities[ethUtil.addHexPrefix(account)] = {}
-      const label = keyringController.saveAccountLabel(account, nick)
-      assert.equal(label, nick)
-
-      const persisted = keyringController.configManager.nicknameForWallet(account)
-      assert.equal(persisted, nick)
+      keyringController.saveAccountLabel(account, nick, (err, label) => {
+        assert.ifError(err)
+        assert.equal(label, nick)
+        const persisted = keyringController.configManager.nicknameForWallet(account)
+        assert.equal(persisted, nick)
+        done()
+      })
     })
 
     this.timeout(10000)
@@ -126,9 +131,7 @@ describe('KeyringController', function() {
       const account = addresses[0]
       var nick = 'Test nickname'
       keyringController.configManager.setNicknameForWallet(account, nick)
-      console.log('calling to restore')
       keyringController.createNewVaultAndRestore(password, seedWords, (err, state) => {
-        console.dir({err})
         assert.ifError(err)
 
         const identity = keyringController.identities['0x' + account]
@@ -143,12 +146,15 @@ describe('KeyringController', function() {
   describe('#getAccounts', function() {
     it('returns the result of getAccounts for each keyring', function() {
       keyringController.keyrings = [
-        { getAccounts() { return [1,2,3] } },
-        { getAccounts() { return [4,5,6] } },
+        { getAccounts() { return Promise.resolve([1,2,3]) } },
+        { getAccounts() { return Promise.resolve([4,5,6]) } },
       ]
 
-      const result = keyringController.getAccounts()
-      assert.deepEqual(result, [1,2,3,4,5,6])
+      keyringController.getAccounts()
+      .then((result) => {
+        assert.deepEqual(result, [1,2,3,4,5,6])
+        done()
+      })
     })
   })
 

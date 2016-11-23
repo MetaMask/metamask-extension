@@ -16,15 +16,18 @@ describe('hd-keyring', function() {
     keyring = new HdKeyring()
   })
 
-  describe('constructor', function() {
+  describe('constructor', function(done) {
     keyring = new HdKeyring({
       mnemonic: sampleMnemonic,
       numberOfAccounts: 2,
     })
 
     const accounts = keyring.getAccounts()
-    assert.equal(accounts[0], firstAcct)
-    assert.equal(accounts[1], secondAcct)
+    .then((accounts) => {
+      assert.equal(accounts[0], firstAcct)
+      assert.equal(accounts[1], secondAcct)
+      done()
+    })
   })
 
   describe('Keyring.type', function() {
@@ -44,49 +47,62 @@ describe('hd-keyring', function() {
 
   describe('#serialize empty wallets.', function() {
     it('serializes a new mnemonic', function() {
-      const output = keyring.serialize()
-      assert.equal(output.numberOfAccounts, 0)
-      assert.equal(output.mnemonic, null)
+      keyring.serialize()
+      .then((output) => {
+        assert.equal(output.numberOfAccounts, 0)
+        assert.equal(output.mnemonic, null)
+      })
     })
   })
 
   describe('#deserialize a private key', function() {
-    it('serializes what it deserializes', function() {
+    it('serializes what it deserializes', function(done) {
       keyring.deserialize({
         mnemonic: sampleMnemonic,
         numberOfAccounts: 1
       })
-      assert.equal(keyring.wallets.length, 1, 'restores two accounts')
-      keyring.addAccounts(1)
+      .then(() => {
+        assert.equal(keyring.wallets.length, 1, 'restores two accounts')
+        keyring.addAccounts(1)
 
-      const accounts = keyring.getAccounts()
-      assert.equal(accounts[0], firstAcct)
-      assert.equal(accounts[1], secondAcct)
-      assert.equal(accounts.length, 2)
+        const accounts = keyring.getAccounts()
+        assert.equal(accounts[0], firstAcct)
+        assert.equal(accounts[1], secondAcct)
+        assert.equal(accounts.length, 2)
 
-      const serialized = keyring.serialize()
-      assert.equal(serialized.mnemonic, sampleMnemonic)
+        keyring.serialize()
+        .then((serialized) => {
+          assert.equal(serialized.mnemonic, sampleMnemonic)
+          done()
+        })
+      })
     })
   })
 
   describe('#addAccounts', function() {
     describe('with no arguments', function() {
-      it('creates a single wallet', function() {
+      it('creates a single wallet', function(done) {
         keyring.addAccounts()
-        assert.equal(keyring.wallets.length, 1)
+        .then(() => {
+          assert.equal(keyring.wallets.length, 1)
+          done()
+        })
       })
     })
 
     describe('with a numeric argument', function() {
-      it('creates that number of wallets', function() {
+      it('creates that number of wallets', function(done) {
         keyring.addAccounts(3)
-        assert.equal(keyring.wallets.length, 3)
+        .then(() => {
+          assert.equal(keyring.wallets.length, 3)
+          done()
+        })
       })
     })
   })
 
   describe('#getAccounts', function() {
-    it('calls getAddress on each wallet', function() {
+    it('calls getAddress on each wallet', function(done) {
 
       // Push a mock wallet
       const desiredOutput = 'foo'
@@ -101,8 +117,11 @@ describe('hd-keyring', function() {
       })
 
       const output = keyring.getAccounts()
-      assert.equal(output[0], desiredOutput)
-      assert.equal(output.length, 1)
+      .then((output) => {
+        assert.equal(output[0], desiredOutput)
+        assert.equal(output.length, 1)
+        done()
+      })
     })
   })
 })

@@ -28,19 +28,23 @@ describe('simple-keyring', function() {
   })
 
   describe('#serialize empty wallets.', function() {
-    it('serializes an empty array', function() {
-      const output = keyring.serialize()
-      assert.deepEqual(output, [])
+    it('serializes an empty array', function(done) {
+      keyring.serialize()
+      .then((output) => {
+        assert.deepEqual(output, [])
+        done()
+      })
     })
   })
 
   describe('#deserialize a private key', function() {
     it('serializes what it deserializes', function() {
       keyring.deserialize([privKeyHex])
-      assert.equal(keyring.wallets.length, 1, 'has one wallet')
-
-      const serialized = keyring.serialize()
-      assert.equal(serialized[0], privKeyHex)
+      .then(() => {
+        assert.equal(keyring.wallets.length, 1, 'has one wallet')
+        const serialized = keyring.serialize()
+        assert.equal(serialized[0], privKeyHex)
+      })
     })
   })
 
@@ -48,20 +52,24 @@ describe('simple-keyring', function() {
     describe('with no arguments', function() {
       it('creates a single wallet', function() {
         keyring.addAccounts()
-        assert.equal(keyring.wallets.length, 1)
+        .then(() => {
+          assert.equal(keyring.wallets.length, 1)
+        })
       })
     })
 
     describe('with a numeric argument', function() {
       it('creates that number of wallets', function() {
         keyring.addAccounts(3)
-        assert.equal(keyring.wallets.length, 3)
+        .then(() => {
+          assert.equal(keyring.wallets.length, 3)
+        })
       })
     })
   })
 
   describe('#getAccounts', function() {
-    it('calls getAddress on each wallet', function() {
+    it('calls getAddress on each wallet', function(done) {
 
       // Push a mock wallet
       const desiredOutput = 'foo'
@@ -75,9 +83,12 @@ describe('simple-keyring', function() {
         }
       })
 
-      const output = keyring.getAccounts()
-      assert.equal(output[0], desiredOutput)
-      assert.equal(output.length, 1)
+      keyring.getAccounts()
+      .then((output) => {
+        assert.equal(output[0], desiredOutput)
+        assert.equal(output.length, 1)
+        done()
+      })
     })
   })
 })

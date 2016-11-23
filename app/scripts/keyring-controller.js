@@ -99,16 +99,17 @@ module.exports = class KeyringController extends EventEmitter {
         mnemonic: seed,
         numberOfAccounts: 1,
       }, (err) => {
-        if (err) return cb(err)
         const firstKeyring = this.keyrings[0]
         const accounts = firstKeyring.getAccounts()
         const firstAccount = accounts[0]
         const hexAccount = normalize(firstAccount)
         this.configManager.setSelectedAccount(hexAccount)
         this.setupAccounts(accounts)
-
-        this.emit('update')
-        cb()
+        this.persistAllKeyrings()
+        .then(() => {
+          this.emit('update')
+          cb(err)
+        })
       })
     })
   }
@@ -152,6 +153,7 @@ module.exports = class KeyringController extends EventEmitter {
   createFirstKeyTree (password, cb) {
     this.clearKeyrings()
     this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
+      if (err) return cb(err)
       const accounts = this.keyrings[0].getAccounts()
       const firstAccount = accounts[0]
       const hexAccount = normalize(firstAccount)
@@ -162,7 +164,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.setupAccounts(accounts)
       this.persistAllKeyrings()
       .then(() => {
-        cb(err)
+        cb()
       })
       .catch((reason) => {
         cb(reason)
@@ -335,10 +337,10 @@ module.exports = class KeyringController extends EventEmitter {
 
   getAccounts () {
     const keyrings = this.keyrings || []
-    return keyrings.map(kr => kr.getAccounts())
+    return Promise.all(keyrings.map(kr => kr.getAccounts())
     .reduce((res, arr) => {
       return res.concat(arr)
-    }, [])
+    }, []))
   }
 
   setSelectedAccount (address, cb) {
