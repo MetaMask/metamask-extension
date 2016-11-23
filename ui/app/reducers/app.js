@@ -233,6 +233,7 @@ function reduceApp (state, action) {
         isLoading: false,
         warning: null,
         scrollToBottom: false,
+        forgottenPassword: false,
       })
 
     case actions.REVEAL_ACCOUNT:
