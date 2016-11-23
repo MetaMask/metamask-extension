@@ -21,10 +21,10 @@ class HdKeyring extends EventEmitter {
   }
 
   serialize () {
-    return {
+    return Promise.resolve({
       mnemonic: this.mnemonic,
       numberOfAccounts: this.wallets.length,
-    }
+    })
   }
 
   deserialize (opts = {}) {
@@ -40,6 +40,8 @@ class HdKeyring extends EventEmitter {
     if ('numberOfAccounts' in opts) {
       this.addAccounts(opts.numberOfAccounts)
     }
+
+    return Promise.resolve()
   }
 
   addAccounts (numberOfAccounts = 1) {
@@ -55,11 +57,12 @@ class HdKeyring extends EventEmitter {
       newWallets.push(wallet)
       this.wallets.push(wallet)
     }
-    return newWallets.map(w => w.getAddress().toString('hex'))
+    const hexWallets = newWallets.map(w => w.getAddress().toString('hex'))
+    return Promise.resolve(hexWallets)
   }
 
   getAccounts () {
-    return this.wallets.map(w => w.getAddress().toString('hex'))
+    return Promise.resolve(this.wallets.map(w => w.getAddress().toString('hex')))
   }
 
   // tx is an instance of the ethereumjs-transaction class.
@@ -67,7 +70,7 @@ class HdKeyring extends EventEmitter {
     const wallet = this._getWalletForAccount(address)
     var privKey = wallet.getPrivateKey()
     tx.sign(privKey)
-    return tx
+    return Promise.resolve(tx)
   }
 
   // For eth_sign, we need to sign transactions:
@@ -77,12 +80,12 @@ class HdKeyring extends EventEmitter {
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
     var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
-    return rawMsgSig
+    return Promise.resolve(rawMsgSig)
   }
 
   exportAccount (address) {
     const wallet = this._getWalletForAccount(address)
-    return wallet.getPrivateKey().toString('hex')
+    return Promise.resolve(wallet.getPrivateKey().toString('hex'))
   }
 
 

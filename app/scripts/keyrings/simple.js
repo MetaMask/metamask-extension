@@ -8,10 +8,6 @@ class SimpleKeyring extends EventEmitter {
 
   /* PUBLIC METHODS */
 
-  static type () {
-    return type
-  }
-
   constructor (opts) {
     super()
     this.type = type
@@ -20,7 +16,7 @@ class SimpleKeyring extends EventEmitter {
   }
 
   serialize () {
-    return this.wallets.map(w => w.getPrivateKey().toString('hex'))
+    return Promise.resolve(this.wallets.map(w => w.getPrivateKey().toString('hex')))
   }
 
   deserialize (wallets = []) {
@@ -29,6 +25,7 @@ class SimpleKeyring extends EventEmitter {
       const wallet = Wallet.fromPrivateKey(b)
       return wallet
     })
+    return Promise.resolve()
   }
 
   addAccounts (n = 1) {
@@ -37,11 +34,12 @@ class SimpleKeyring extends EventEmitter {
       newWallets.push(Wallet.generate())
     }
     this.wallets = this.wallets.concat(newWallets)
-    return newWallets.map(w => w.getAddress().toString('hex'))
+    const hexWallets = newWallets.map(w => w.getAddress().toString('hex'))
+    return Promise.resolve(hexWallets)
   }
 
   getAccounts () {
-    return this.wallets.map(w => w.getAddress().toString('hex'))
+    return Promise.resolve(this.wallets.map(w => w.getAddress().toString('hex')))
   }
 
   // tx is an instance of the ethereumjs-transaction class.
@@ -49,7 +47,7 @@ class SimpleKeyring extends EventEmitter {
     const wallet = this._getWalletForAccount(address)
     var privKey = wallet.getPrivateKey()
     tx.sign(privKey)
-    return tx
+    return Promise.resolve(tx)
   }
 
   // For eth_sign, we need to sign transactions:
@@ -59,12 +57,12 @@ class SimpleKeyring extends EventEmitter {
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
     var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
-    return rawMsgSig
+    return Promise.resolve(rawMsgSig)
   }
 
   exportAccount (address) {
     const wallet = this._getWalletForAccount(address)
-    return wallet.getPrivateKey().toString('hex')
+    return Promise.resolve(wallet.getPrivateKey().toString('hex'))
   }
 
 
