@@ -42,7 +42,6 @@ function encryptWithKey (key, dataObj) {
   var data = JSON.stringify(dataObj)
   var dataBuffer = convertStringToArrayBufferView(data)
   var vector = global.crypto.getRandomValues(new Uint8Array(16))
-
   return global.crypto.subtle.encrypt({
     name: 'AES-GCM',
     iv: vector,

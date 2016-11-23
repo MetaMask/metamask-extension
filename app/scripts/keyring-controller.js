@@ -118,6 +118,7 @@ module.exports = class KeyringController extends EventEmitter {
     return this.idStoreMigrator.migratedVaultForPassword(password)
     .then((serialized) => {
       if (serialized && shouldMigrate) {
+        this.password = password
         const keyring = this.restoreKeyring(serialized)
         this.keyrings.push(keyring)
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
@@ -185,7 +186,6 @@ module.exports = class KeyringController extends EventEmitter {
       cb(null, this.getState())
     })
     .catch((err) => {
-      console.error(err)
       cb(err)
     })
   }
@@ -558,7 +558,7 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   setLocked (cb) {
-    this.key = null
+    this.password = null
     this.keyrings = []
     this.emit('update')
     cb()
