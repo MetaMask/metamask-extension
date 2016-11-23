@@ -86,7 +86,7 @@ describe('KeyringController', function() {
     it('should return and init a new vault', function(done) {
       keyringController.migrateOldVaultIfAny(password)
       .then(() => {
-        assert(Boolean(localStorage['vault']))
+        assert(keyringController.configManager.getVault(), 'now has a vault')
         done()
       })
       .catch((reason) => {
