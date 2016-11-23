@@ -90,7 +90,6 @@ App.prototype.render = function () {
           transitionLeaveTimeout: 300,
         }, [
           this.renderPrimary(),
-          this.renderBackToInitButton(),
         ]),
       ]),
     ])
@@ -335,39 +334,6 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
       }, 'BACK'),
     ])
   )
-}
-
-App.prototype.renderBackToInitButton = function () {
-  var props = this.props
-  var button = null
-  if (!props.isDisclaimerConfirmed) return button
-
-  if (!props.isUnlocked) {
-    if (props.currentView.name === 'InitMenu') {
-      button = props.forgottenPassword ? h('.flex-row', {
-        key: 'rightArrow',
-        style: {
-          position: 'absolute',
-          bottom: '10px',
-          right: '15px',
-          fontSize: '21px',
-          fontFamily: 'Montserrat Light',
-          color: '#7F8082',
-          width: '77.578px',
-          alignItems: 'flex-end',
-        },
-      }, [
-        h('div.cursor-pointer', {
-          style: {
-            marginRight: '3px',
-          },
-          onClick: () => props.dispatch(actions.backToUnlockView()),
-        }, 'LOGIN'),
-        h('i.fa.fa-arrow-right.cursor-pointer'),
-      ]) : null
-    }
-  }
-  return button
 }
 
 App.prototype.renderPrimary = function () {
