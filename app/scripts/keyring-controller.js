@@ -122,7 +122,6 @@ module.exports = class KeyringController extends EventEmitter {
         this.keyrings.push(keyring)
         this.configManager.setSelectedAccount(keyring.getAccounts()[0])
         return this.persistAllKeyrings()
-        .then(() => { return })
       }
       return
     })
