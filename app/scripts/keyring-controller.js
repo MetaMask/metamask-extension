@@ -281,7 +281,7 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   persistAllKeyrings () {
-    Promise.all(this.keyrings.map((keyring) => {
+    return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([keyring.type, keyring.serialize()])
       .then((serializedKeyringArray) => {
         // Label the output values on each serialized Keyring:
@@ -314,13 +314,14 @@ module.exports = class KeyringController extends EventEmitter {
     const { type, data } = serialized
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring()
-    keyring.deserialize(data)
+    return keyring.deserialize(data)
     .then(() => {
       return keyring.getAccounts()
     })
     .then((accounts) => {
       this.setupAccounts(accounts)
       this.keyrings.push(keyring)
+      return keyring
     })
   }
 

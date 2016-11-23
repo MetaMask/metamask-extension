@@ -77,8 +77,15 @@ describe('KeyringController', function() {
       keyringController.restoreKeyring(mockSerialized)
       .then((keyring) => {
         assert.equal(keyring.wallets.length, 1, 'one wallet restored')
-        assert.equal(keyring.getAccounts()[0], addresses[0])
+        return keyring.getAccounts()
+      })
+      .then((accounts) => {
+        assert.equal(accounts[0], addresses[0])
         mock.verify()
+        done()
+      })
+      .catch((reason) => {
+        assert.ifError(reason)
         done()
       })
     })
