@@ -258,7 +258,7 @@ App.prototype.renderNetworkDropdown = function () {
       activeNetworkRender: props.provider.rpcTarget,
     }),
 
-    this.renderCustomOption(props.provider.rpcTarget),
+    this.renderCustomOption(props.provider),
 
     h(DropMenuItem, {
       label: 'Custom RPC',
@@ -480,7 +480,10 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (rpcTarget) {
+App.prototype.renderCustomOption = function (provider) {
+  const { rpcTarget, type } = provider
+  if (type !== 'rpc') return null
+
   switch (rpcTarget) {
 
     case 'http://localhost:8545':
