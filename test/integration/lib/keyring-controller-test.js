@@ -44,3 +44,14 @@ QUnit.test('keyringController:submitPassword', function (assert) {
     done()
   })
 })
+
+QUnit.test('keyringController:setLocked', function (assert) {
+  var done = assert.async()
+  var self = this
+
+  this.keyringController.setLocked(function(err) {
+    assert.notOk(self.keyringController.password, 'password should be deallocated')
+    assert.deepEqual(self.keyringController.keyrings, [], 'keyrings should be deallocated')
+    done()
+  })
+})
