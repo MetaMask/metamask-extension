@@ -57,24 +57,26 @@ describe('hd-keyring', function() {
 
   describe('#deserialize a private key', function() {
     it('serializes what it deserializes', function(done) {
+      console.log('deserializing ' + sampleMnemonic)
       keyring.deserialize({
         mnemonic: sampleMnemonic,
         numberOfAccounts: 1
       })
       .then(() => {
+        console.dir(keyring)
         assert.equal(keyring.wallets.length, 1, 'restores two accounts')
-        keyring.addAccounts(1)
-
-        const accounts = keyring.getAccounts()
+        return keyring.addAccounts(1)
+      }).then(() => {
+        return keyring.getAccounts()
+      }).then((accounts) => {
         assert.equal(accounts[0], firstAcct)
         assert.equal(accounts[1], secondAcct)
         assert.equal(accounts.length, 2)
 
-        keyring.serialize()
-        .then((serialized) => {
-          assert.equal(serialized.mnemonic, sampleMnemonic)
-          done()
-        })
+        return keyring.serialize()
+      }).then((serialized) => {
+        assert.equal(serialized.mnemonic, sampleMnemonic)
+        done()
       })
     })
   })
