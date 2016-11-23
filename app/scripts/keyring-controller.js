@@ -121,10 +121,13 @@ module.exports = class KeyringController extends EventEmitter {
         this.password = password
         const keyring = this.restoreKeyring(serialized)
         this.keyrings.push(keyring)
-        this.configManager.setSelectedAccount(keyring.getAccounts()[0])
-        return this.persistAllKeyrings()
+        keyring.getAccounts()
+        .then((accounts) => {
+          this.configManager.setSelectedAccount(accounts[0])
+          return this.persistAllKeyrings()
+        })
       }
-      return
+      return Promise.resolve()
     })
   }
 
@@ -165,13 +168,18 @@ module.exports = class KeyringController extends EventEmitter {
 
   placeSeedWords (cb) {
     const firstKeyring = this.keyrings[0]
-    const seedWords = firstKeyring.serialize().mnemonic
-    this.configManager.setSeedWords(seedWords)
+    firstKeyring.serialize()
+    .then((serialized) => {
 
-    if (cb) {
-      cb()
-    }
-    this.emit('update')
+      const seedWords = serialized.mnemonic
+      this.configManager.setSeedWords(seedWords)
+
+      if (cb) {
+        cb()
+      }
+
+      this.emit('update')
+    })
   }
 
   submitPassword (password, cb) {
@@ -259,13 +267,19 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
   persistAllKeyrings () {
-    const serialized = this.keyrings.map((keyring) => {
-      return {
-        type: keyring.type,
-        data: keyring.serialize(),
-      }
+    Promise.all(this.keyrings.map((keyring) => {
+      return Promise.all([keyring.type, keyring.serialize()])
+      .then((serializedKeyringArray) => {
+        // Label the output values on each serialized Keyring:
+        return {
+          type: serializedKeyringArray[0],
+          data: serializedKeyringArray[1],
+        }
+      })
+    }))
+    .then((serializedKeyrings) => {
+      return this.encryptor.encrypt(this.password, serializedKeyrings)
     })
-    return this.encryptor.encrypt(this.password, serialized)
     .then((encryptedString) => {
       this.configManager.setVault(encryptedString)
       return true
