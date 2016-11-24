@@ -82,6 +82,11 @@ MetamaskInpageProvider.prototype.send = function (payload) {
       result = selectedAccount || '0x0000000000000000000000000000000000000000'
       break
 
+    case 'eth_uninstallFilter':
+      self.sendAsync(payload, noop)
+      result = true
+      break
+
     // throw not-supported Error
     default:
       var link = 'https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#dizzy-all-async---think-of-metamask-as-a-light-client'
@@ -127,3 +132,5 @@ function eachJsonMessage (payload, transformFn) {
     return transformFn(payload)
   }
 }
+
+function noop () {}

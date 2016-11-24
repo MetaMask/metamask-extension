@@ -2,6 +2,17 @@
 
 ## Current Master
 
+- Add support for synchronous RPC method "eth_uninstallFilter".
+
+## 2.13.10 2016-11-22
+
+- Improve gas calculation logic.
+- Default to Dapp-specified gas limits for transactions.
+- Ropsten networks now properly point to the faucet when attempting to buy ether.
+- Ropsten transactions now link to etherscan correctly.
+
+## 2.13.9 2016-11-21
+
 - Add support for the new, default Ropsten Test Network.
 - Fix bug that would cause MetaMask to occasionally lose its StreamProvider connection and drop requests.
 - Fix bug that would cause the Custom RPC menu item to not appear when Localhost 8545 was selected.
