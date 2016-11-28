@@ -75,45 +75,41 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = ethStore
   }
 
-  createNewVaultAndKeychain (password, cb) {
-    this.createNewVault(password, (err) => {
-      if (err) return cb(err)
-      this.createFirstKeyTree(password, cb)
-    })
+  createNewVaultAndKeychain (password) {
+    return this.createNewVault(password)
+    .then(this.createFirstKeyTree.bind(this))
+    .then(this.fullUpdate.bind(this))
   }
 
-  createNewVaultAndRestore (password, seed, cb) {
+  createNewVaultAndRestore (password, seed) {
     if (typeof password !== 'string') {
-      return cb('Password must be text.')
+      return Promise.reject('Password must be text.')
     }
 
     if (!bip39.validateMnemonic(seed)) {
-      return cb('Seed phrase is invalid.')
+      return Promise.reject('Seed phrase is invalid.')
     }
 
     this.clearKeyrings()
 
-    this.createNewVault(password, (err) => {
-      if (err) return cb(err)
-      this.addNewKeyring('HD Key Tree', {
+    return this.createNewVault(password)
+    .then(() => {
+      return this.addNewKeyring('HD Key Tree', {
         mnemonic: seed,
         numberOfAccounts: 1,
-      }).then(() => {
-        const firstKeyring = this.keyrings[0]
-        return firstKeyring.getAccounts()
       })
-      .then((accounts) => {
-        const firstAccount = accounts[0]
-        const hexAccount = normalize(firstAccount)
-        this.configManager.setSelectedAccount(hexAccount)
-        this.setupAccounts(accounts)
-        this.persistAllKeyrings()
-        .then(() => {
-          this.emit('update')
-          cb(err, this.getState())
-        })
-      })
+    }).then(() => {
+      const firstKeyring = this.keyrings[0]
+      return firstKeyring.getAccounts()
     })
+    .then((accounts) => {
+      const firstAccount = accounts[0]
+      const hexAccount = normalize(firstAccount)
+      this.configManager.setSelectedAccount(hexAccount)
+      return this.setupAccounts(accounts)
+    })
+    .then(this.persistAllKeyrings.bind(this))
+    .then(this.fullUpdate.bind(this))
   }
 
   migrateOldVaultIfAny (password) {
@@ -124,9 +120,7 @@ module.exports = class KeyringController extends EventEmitter {
 
       if (serialized && shouldMigrate) {
         return this.restoreKeyring(serialized)
-        .then((keyring) => {
-          return keyring.getAccounts()
-        })
+        .then(keyring => keyring.getAccounts())
         .then((accounts) => {
           this.configManager.setSelectedAccount(accounts[0])
           return this.persistAllKeyrings()
@@ -137,122 +131,91 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  createNewVault (password, cb) {
+  createNewVault (password) {
     return this.migrateOldVaultIfAny(password)
     .then(() => {
       this.password = password
       return this.persistAllKeyrings()
     })
     .then(() => {
-      cb()
-    })
-    .catch((err) => {
-      cb(err)
+      return password
     })
   }
 
-  createFirstKeyTree (password, cb) {
+  createFirstKeyTree (password) {
     this.clearKeyrings()
-    this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1}, (err) => {
-      if (err) return cb(err)
-      this.keyrings[0].getAccounts()
-      .then((accounts) => {
-        const firstAccount = accounts[0]
-        const hexAccount = normalize(firstAccount)
-        this.configManager.setSelectedAccount(firstAccount)
-
-        this.placeSeedWords()
-        this.emit('newAccount', hexAccount)
-        this.setupAccounts(accounts)
-        return this.persistAllKeyrings()
-      })
-      .then(() => {
-        cb()
-      })
-      .catch((reason) => {
-        cb(reason)
-      })
+    return this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1})
+    .then(() => {
+      return this.keyrings[0].getAccounts()
     })
+    .then((accounts) => {
+      const firstAccount = accounts[0]
+      const hexAccount = normalize(firstAccount)
+      this.configManager.setSelectedAccount(hexAccount)
+      this.emit('newAccount', hexAccount)
+      return this.setupAccounts(accounts)
+    }).then(() => {
+      return this.placeSeedWords()
+    })
+    .then(this.persistAllKeyrings.bind(this))
   }
 
-  placeSeedWords (cb) {
+  placeSeedWords () {
     const firstKeyring = this.keyrings[0]
-    firstKeyring.serialize()
+    return firstKeyring.serialize()
     .then((serialized) => {
       const seedWords = serialized.mnemonic
       this.configManager.setSeedWords(seedWords)
-
-      if (cb) {
-        cb()
-      }
-
       this.emit('update')
+      return
     })
   }
 
-  submitPassword (password, cb) {
-    this.migrateOldVaultIfAny(password)
+  submitPassword (password) {
+    return this.migrateOldVaultIfAny(password)
     .then(() => {
       return this.unlockKeyrings(password)
     })
     .then((keyrings) => {
       this.keyrings = keyrings
-      this.setupAccounts()
-      this.emit('update')
-      cb(null, this.getState())
+      return this.setupAccounts()
     })
-    .catch((err) => {
-      cb(err)
-    })
+    .then(this.fullUpdate.bind(this))
   }
 
-  addNewKeyring (type, opts, cb) {
+  fullUpdate() {
+    this.emit('update')
+    return Promise.resolve(this.getState())
+  }
+
+  addNewKeyring (type, opts) {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
     return keyring.getAccounts()
     .then((accounts) => {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)
-    }).then(() => {
-      return this.persistAllKeyrings()
-    }).then(() => {
-      if (cb) {
-        cb(null, keyring)
-      }
-      return keyring
     })
-    .catch((reason) => {
-      if (cb) {
-        cb(reason)
-      }
-      return reason
+    .then(this.persistAllKeyrings.bind(this))
+    .then(() => {
+      return keyring
     })
   }
 
-  addNewAccount (keyRingNum = 0, cb) {
+  addNewAccount (keyRingNum = 0) {
     const ring = this.keyrings[keyRingNum]
     return ring.addAccounts(1)
-    .then((accounts) => {
-      return this.setupAccounts(accounts)
-    })
-    .then(() => {
-      return this.persistAllKeyrings()
-    })
-    .then(() => {
-      cb()
-    })
-    .catch((reason) => {
-      cb(reason)
-    })
+    .then(this.setupAccounts.bind(this))
+    .then(this.persistAllKeyrings.bind(this))
   }
 
   setupAccounts (accounts) {
     return this.getAccounts()
     .then((loadedAccounts) => {
       const arr = accounts || loadedAccounts
-      arr.forEach((account) => {
-        this.getBalanceAndNickname(account)
-      })
+      return Promise.all(arr.map((account) => {
+        return this.getBalanceAndNickname(account)
+      }))
     })
   }
 
@@ -261,7 +224,7 @@ module.exports = class KeyringController extends EventEmitter {
   getBalanceAndNickname (account) {
     const address = normalize(account)
     this.ethStore.addAccount(address)
-    this.createNickname(address)
+    return this.createNickname(address)
   }
 
   createNickname (address) {
@@ -276,16 +239,12 @@ module.exports = class KeyringController extends EventEmitter {
     return this.saveAccountLabel(hexAddress, name)
   }
 
-  saveAccountLabel (account, label, cb) {
+  saveAccountLabel (account, label) {
     const address = normalize(account)
     const configManager = this.configManager
     configManager.setNicknameForWallet(address, label)
     this.identities[address].name = label
-    if (cb) {
-      cb(null, label)
-    } else {
-      return label
-    }
+    return Promise.resolve(label)
   }
 
   persistAllKeyrings () {
@@ -327,7 +286,9 @@ module.exports = class KeyringController extends EventEmitter {
       return keyring.getAccounts()
     })
     .then((accounts) => {
-      this.setupAccounts(accounts)
+      return this.setupAccounts(accounts)
+    })
+    .then(() => {
       this.keyrings.push(keyring)
       return keyring
     })
@@ -346,16 +307,18 @@ module.exports = class KeyringController extends EventEmitter {
 
   getAccounts () {
     const keyrings = this.keyrings || []
-    return Promise.all(keyrings.map(kr => kr.getAccounts())
-    .reduce((res, arr) => {
-      return res.concat(arr)
-    }, []))
+    return Promise.all(keyrings.map(kr => kr.getAccounts()))
+    .then((keyringArrays) => {
+      return keyringArrays.reduce((res, arr) => {
+        return res.concat(arr)
+      }, [])
+    })
   }
 
-  setSelectedAccount (address, cb) {
+  setSelectedAccount (address) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
-    cb(null, addr)
+    Promise.resolve(addr)
   }
 
   addUnconfirmedTransaction (txParams, onTxDoneCb, cb) {
@@ -536,24 +499,25 @@ module.exports = class KeyringController extends EventEmitter {
   signTransaction (txParams, cb) {
     try {
       const address = normalize(txParams.from)
-      const keyring = this.getKeyringForAccount(address)
+      return this.getKeyringForAccount(address)
+      .then((keyring) => {
+        // Handle gas pricing
+        var gasMultiplier = this.configManager.getGasMultiplier() || 1
+        var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+        gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+        txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
 
-      // Handle gas pricing
-      var gasMultiplier = this.configManager.getGasMultiplier() || 1
-      var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-      gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-      txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+        // normalize values
+        txParams.to = normalize(txParams.to)
+        txParams.from = normalize(txParams.from)
+        txParams.value = normalize(txParams.value)
+        txParams.data = normalize(txParams.data)
+        txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+        txParams.nonce = normalize(txParams.nonce)
 
-      // normalize values
-      txParams.to = normalize(txParams.to)
-      txParams.from = normalize(txParams.from)
-      txParams.value = normalize(txParams.value)
-      txParams.data = normalize(txParams.data)
-      txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-      txParams.nonce = normalize(txParams.nonce)
-
-      const tx = new Transaction(txParams)
-      keyring.signTransaction(address, tx)
+        const tx = new Transaction(txParams)
+        return keyring.signTransaction(address, tx)
+      })
       .then((tx) => {
         // Add the tx hash to the persisted meta-tx object
         var txHash = ethUtil.bufferToHex(tx.hash())
@@ -572,10 +536,11 @@ module.exports = class KeyringController extends EventEmitter {
 
   signMessage (msgParams, cb) {
     try {
-      const keyring = this.getKeyringForAccount(msgParams.from)
       const address = normalize(msgParams.from)
-      return keyring.signMessage(address, msgParams.data)
-      .then((rawSig) => {
+      return this.getKeyringForAccount(address)
+      .then((keyring) => {
+        return keyring.signMessage(address, msgParams.data)
+      }).then((rawSig) => {
         cb(null, rawSig)
         return rawSig
       })
@@ -586,10 +551,28 @@ module.exports = class KeyringController extends EventEmitter {
 
   getKeyringForAccount (address) {
     const hexed = normalize(address)
-    return this.keyrings.find((ring) => {
-      return ring.getAccounts()
-      .map(normalize)
-      .includes(hexed)
+    return new Promise((resolve, reject) => {
+
+      // Get all the keyrings, and associate them with their account list:
+      Promise.all(this.keyrings.map((keyring) => {
+        const accounts = keyring.getAccounts()
+        return Promise.all({
+          keyring,
+          accounts,
+        })
+      }))
+
+      // Find the keyring with the matching account and return it:
+      .then((result) => {
+        const match = result.find((candidate) => {
+          return candidate.accounts.map(normalize).includes(hexed)
+        })
+        if (match) {
+          resolve(match.keyring)
+        } else {
+          reject('No keyring found for the requested account.')
+        }
+      })
     })
   }
 
@@ -599,23 +582,19 @@ module.exports = class KeyringController extends EventEmitter {
     }
   }
 
-  setLocked (cb) {
+  setLocked () {
     this.password = null
     this.keyrings = []
-    this.emit('update')
-    cb()
+    return this.fullUpdate()
   }
 
-  exportAccount (address, cb) {
+  exportAccount (address) {
     try {
-      const keyring = this.getKeyringForAccount(address)
-      return keyring.exportAccount(normalize(address))
-      .then((privateKey) => {
-        cb(null, privateKey)
-        return privateKey
+      return this.getKeyringForAccount(address)
+      .then((keyring) => {
+        return keyring.exportAccount(normalize(address))
       })
     } catch (e) {
-      cb(e)
       return Promise.reject(e)
     }
   }
@@ -627,9 +606,9 @@ module.exports = class KeyringController extends EventEmitter {
     return ethUtil.addHexPrefix(correct.toString(16))
   }
 
-  clearSeedWordCache (cb) {
+  clearSeedWordCache () {
     this.configManager.setSeedWords(null)
-    cb(null, this.configManager.getSelectedAccount())
+    return Promise.resolve(this.configManager.getSelectedAccount())
   }
 
   clearKeyrings () {

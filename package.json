@@ -57,6 +57,7 @@
     "iframe": "^1.0.0",
     "iframe-stream": "^1.0.2",
     "inject-css": "^0.1.1",
+    "is-promise": "^2.1.0",
     "jazzicon": "^1.2.0",
     "menu-droppo": "^1.1.0",
     "metamask-logo": "^2.1.2",

@@ -32,8 +32,8 @@ describe('KeyringController', function() {
     // Browser crypto is tested in the integration test suite.
     keyringController.encryptor = mockEncryptor
 
-    keyringController.createNewVaultAndKeychain(password, function (err, newState) {
-      assert.ifError(err)
+    keyringController.createNewVaultAndKeychain(password)
+    .then(function (newState) {
       state = newState
       done()
     })
@@ -50,10 +50,14 @@ describe('KeyringController', function() {
     it('should set a vault on the configManager', function(done) {
       keyringController.configManager.setVault(null)
       assert(!keyringController.configManager.getVault(), 'no previous vault')
-      keyringController.createNewVaultAndKeychain(password, (err, state) => {
-        assert.ifError(err)
+      keyringController.createNewVaultAndKeychain(password)
+      .then(() => {
         const vault = keyringController.configManager.getVault()
         assert(vault, 'vault created')
+        done()
+      })
+      .catch((reason) => {
+        assert.ifError(reason)
         done()
       })
     })
@@ -124,11 +128,15 @@ describe('KeyringController', function() {
       const account = addresses[0]
       var nick = 'Test nickname'
       keyringController.identities[ethUtil.addHexPrefix(account)] = {}
-      keyringController.saveAccountLabel(account, nick, (err, label) => {
-        assert.ifError(err)
+      keyringController.saveAccountLabel(account, nick)
+      .then((label) => {
         assert.equal(label, nick)
         const persisted = keyringController.configManager.nicknameForWallet(account)
         assert.equal(persisted, nick)
+        done()
+      })
+      .catch((reason) => {
+        assert.ifError(reason)
         done()
       })
     })
@@ -138,13 +146,17 @@ describe('KeyringController', function() {
       const account = addresses[0]
       var nick = 'Test nickname'
       keyringController.configManager.setNicknameForWallet(account, nick)
-      keyringController.createNewVaultAndRestore(password, seedWords, (err, state) => {
-        assert.ifError(err)
+      keyringController.createNewVaultAndRestore(password, seedWords)
+      .then((state) => {
 
         const identity = keyringController.identities['0x' + account]
         assert.equal(identity.name, nick)
 
         assert(accounts)
+        done()
+      })
+      .catch((reason) => {
+        assert.ifError(reason)
         done()
       })
     })
