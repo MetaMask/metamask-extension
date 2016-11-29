@@ -1,7 +1,6 @@
 const async = require('async')
 const bind = require('ap').partial
 const ethUtil = require('ethereumjs-util')
-const ethBinToOps = require('eth-bin-to-ops')
 const EthQuery = require('eth-query')
 const bip39 = require('bip39')
 const Transaction = require('ethereumjs-tx')
@@ -369,29 +368,8 @@ module.exports = class KeyringController extends EventEmitter {
 
     // calculate metadata for tx
     async.parallel([
-      analyzeForDelegateCall,
       analyzeGasUsage,
     ], didComplete)
-
-    // perform static analyis on the target contract code
-    function analyzeForDelegateCall (cb) {
-      if (txParams.to) {
-        query.getCode(txParams.to, function (err, result) {
-          if (err) return cb(err)
-          var code = ethUtil.toBuffer(result)
-          if (code !== '0x') {
-            var ops = ethBinToOps(code)
-            var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
-            txData.containsDelegateCall = containsDelegateCall
-            cb()
-          } else {
-            cb()
-          }
-        })
-      } else {
-        cb()
-      }
-    }
 
     function analyzeGasUsage (cb) {
       query.getBlockByNumber('latest', true, function (err, block) {
@@ -416,7 +394,7 @@ module.exports = class KeyringController extends EventEmitter {
       query.estimateGas(txParams, cb)
     }
 
-    function checkForGasError (txData, estimatedGasHex) {
+    function checkForGasError (txData, estimatedGasHex, cb) {
       txData.estimatedGas = estimatedGasHex
       // all gas used - must be an error
       if (estimatedGasHex === txData.txParams.gas) {
@@ -425,7 +403,7 @@ module.exports = class KeyringController extends EventEmitter {
       cb()
     }
 
-    function setTxGas (txData, blockGasLimitHex) {
+    function setTxGas (txData, blockGasLimitHex, cb) {
       const txParams = txData.txParams
       // if OOG, nothing more to do
       if (txData.simulationFails) {
@@ -443,7 +421,7 @@ module.exports = class KeyringController extends EventEmitter {
       // try adding an additional gas buffer to our estimation for safety
       const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
       const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-      const estimationWithBuffer = self.addGasBuffer(estimatedGasBn)
+      const estimationWithBuffer = new BN(self.addGasBuffer(estimatedGasBn), 16)
       // added gas buffer is too high
       if (estimationWithBuffer.gt(blockGasLimitBn)) {
         txParams.gas = txData.estimatedGas
