@@ -611,7 +611,11 @@ module.exports = class KeyringController extends EventEmitter {
   // Attempts to sign the provided @object msgParams.
   signMessage (msgParams, cb) {
     try {
-      var approvalCb = this._unconfMsgCbs[msgId] || noop
+
+      const msgId = msgParams.metamaskId
+      delete msgParams.metamaskId
+      const approvalCb = this._unconfMsgCbs[msgId] || noop
+
       const address = normalize(msgParams.from)
       return this.getKeyringForAccount(address)
       .then((keyring) => {

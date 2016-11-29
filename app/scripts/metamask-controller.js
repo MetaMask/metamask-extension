@@ -63,17 +63,17 @@ module.exports = class MetamaskController {
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to keyringController
-      placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
+      placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
+      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
+      submitPassword: nodeify(keyringController.submitPassword).bind(keyringController),
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
-      submitPassword: nodeify(keyringController.submitPassword).bind(keyringController),
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
-      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
+      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
 
       // signing methods
       approveTransaction: keyringController.approveTransaction.bind(keyringController),
