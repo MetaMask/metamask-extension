@@ -1,11 +1,10 @@
 const async = require('async')
-const bind = require('ap').partial
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('eth-query')
 const bip39 = require('bip39')
 const Transaction = require('ethereumjs-tx')
 const EventEmitter = require('events').EventEmitter
-
+const filter = require('promise-filter')
 const normalize = require('./lib/sig-util').normalize
 const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
@@ -341,7 +340,6 @@ module.exports = class KeyringController extends EventEmitter {
   // Estimates gas and other preparatory steps.
   // Caches the requesting Dapp's callback, `onTxDoneCb`, for resolution later.
   addUnconfirmedTransaction (txParams, onTxDoneCb, cb) {
-    var self = this
     const configManager = this.configManager
 
     // create txData obj with parameters and meta data
@@ -358,7 +356,6 @@ module.exports = class KeyringController extends EventEmitter {
       metamaskNetworkId: this.getNetwork(),
     }
 
-
     // keep the onTxDoneCb around for after approval/denial (requires user interaction)
     // This onTxDoneCb fires completion to the Dapp's write operation.
     this._unconfTxCbs[txId] = onTxDoneCb
@@ -367,81 +364,80 @@ module.exports = class KeyringController extends EventEmitter {
     var query = new EthQuery(provider)
 
     // calculate metadata for tx
-    async.parallel([
-      analyzeGasUsage,
-    ], didComplete)
+    this.analyzeTxGasUsage(query, txData, this.txDidComplete.bind(this, txData, cb))
+  }
 
-    function analyzeGasUsage (cb) {
-      query.getBlockByNumber('latest', true, function (err, block) {
-        if (err) return cb(err)
-        async.waterfall([
-          bind(estimateGas, query, txData, block.gasLimit),
-          bind(checkForGasError, txData),
-          bind(setTxGas, txData, block.gasLimit),
-        ], cb)
-      })
+  estimateTxGas (query, txData, blockGasLimitHex, cb) {
+    const txParams = txData.txParams
+    // check if gasLimit is already specified
+    txData.gasLimitSpecified = Boolean(txParams.gas)
+    // if not, fallback to block gasLimit
+    if (!txData.gasLimitSpecified) {
+      txParams.gas = blockGasLimitHex
     }
+    // run tx, see if it will OOG
+    query.estimateGas(txParams, cb)
+  }
 
-    function estimateGas (query, txData, blockGasLimitHex, cb) {
-      const txParams = txData.txParams
-      // check if gasLimit is already specified
-      txData.gasLimitSpecified = Boolean(txParams.gas)
-      // if not, fallback to block gasLimit
-      if (!txData.gasLimitSpecified) {
-        txParams.gas = blockGasLimitHex
-      }
-      // run tx, see if it will OOG
-      query.estimateGas(txParams, cb)
+  checkForTxGasError (txData, estimatedGasHex, cb) {
+    txData.estimatedGas = estimatedGasHex
+    // all gas used - must be an error
+    if (estimatedGasHex === txData.txParams.gas) {
+      txData.simulationFails = true
     }
+    cb()
+  }
 
-    function checkForGasError (txData, estimatedGasHex, cb) {
-      txData.estimatedGas = estimatedGasHex
-      // all gas used - must be an error
-      if (estimatedGasHex === txData.txParams.gas) {
-        txData.simulationFails = true
-      }
-      cb()
-    }
-
-    function setTxGas (txData, blockGasLimitHex, cb) {
-      const txParams = txData.txParams
-      // if OOG, nothing more to do
-      if (txData.simulationFails) {
-        cb()
-        return
-      }
-      // if gasLimit was specified and doesnt OOG,
-      // use original specified amount
-      if (txData.gasLimitSpecified) {
-        txData.estimatedGas = txParams.gas
-        cb()
-        return
-      }
-      // if gasLimit not originally specified,
-      // try adding an additional gas buffer to our estimation for safety
-      const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
-      const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-      const estimationWithBuffer = new BN(self.addGasBuffer(estimatedGasBn), 16)
-      // added gas buffer is too high
-      if (estimationWithBuffer.gt(blockGasLimitBn)) {
-        txParams.gas = txData.estimatedGas
-      // added gas buffer is safe
-      } else {
-        const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
-        txParams.gas = gasWithBufferHex
-      }
+  setTxGas (txData, blockGasLimitHex, cb) {
+    const txParams = txData.txParams
+    // if OOG, nothing more to do
+    if (txData.simulationFails) {
       cb()
       return
     }
-
-    function didComplete (err) {
-      if (err) return cb(err)
-      configManager.addTx(txData)
-      // signal update
-      self.emit('update')
-      // signal completion of add tx
-      cb(null, txData)
+    // if gasLimit was specified and doesnt OOG,
+    // use original specified amount
+    if (txData.gasLimitSpecified) {
+      txData.estimatedGas = txParams.gas
+      cb()
+      return
     }
+    // if gasLimit not originally specified,
+    // try adding an additional gas buffer to our estimation for safety
+    const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
+    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
+    const estimationWithBuffer = new BN(this.addGasBuffer(estimatedGasBn), 16)
+    // added gas buffer is too high
+    if (estimationWithBuffer.gt(blockGasLimitBn)) {
+      txParams.gas = txData.estimatedGas
+    // added gas buffer is safe
+    } else {
+      const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
+      txParams.gas = gasWithBufferHex
+    }
+    cb()
+    return
+  }
+
+  txDidComplete (txData, cb, err) {
+    if (err) return cb(err)
+    const configManager = this.configManager
+    configManager.addTx(txData)
+    // signal update
+    this.emit('update')
+    // signal completion of add tx
+    cb(null, txData)
+  }
+
+  analyzeTxGasUsage (query, txData, cb) {
+    query.getBlockByNumber('latest', true, (err, block) => {
+      if (err) return cb(err)
+      async.waterfall([
+        this.estimateTxGas.bind(this, query, txData, block.gasLimit),
+        this.checkForTxGasError.bind(this, txData),
+        this.setTxGas.bind(this, txData, block.gasLimit),
+      ], cb)
+    })
   }
 
   // Cancel Transaction
@@ -488,6 +484,7 @@ module.exports = class KeyringController extends EventEmitter {
     delete this._unconfTxCbs[txId]
     this.emit('update')
   }
+
   signTransaction (txParams, cb) {
     try {
       const address = normalize(txParams.from)
@@ -828,28 +825,23 @@ module.exports = class KeyringController extends EventEmitter {
   // the specified `address` if one exists.
   getKeyringForAccount (address) {
     const hexed = normalize(address)
-    return new Promise((resolve, reject) => {
 
-      // Get all the keyrings, and associate them with their account list:
-      Promise.all(this.keyrings.map((keyring) => {
-        const accounts = keyring.getAccounts()
-        return Promise.all({
-          keyring,
-          accounts,
-        })
-      }))
-
-      // Find the keyring with the matching account and return it:
-      .then((result) => {
-        const match = result.find((candidate) => {
-          return candidate.accounts.map(normalize).includes(hexed)
-        })
-        if (match) {
-          resolve(match.keyring)
-        } else {
-          reject('No keyring found for the requested account.')
-        }
-      })
+    return Promise.all(this.keyrings.map((keyring) => {
+      return Promise.all([
+        keyring,
+        keyring.getAccounts(),
+      ])
+    }))
+    .then(filter((candidate) => {
+      const accounts = candidate[1].map(normalize)
+      return accounts.includes(hexed)
+    }))
+    .then((winners) => {
+      if (winners && winners.length > 0) {
+        return winners[0][0]
+      } else {
+        throw new Error('No keyring found for the requested account.')
+      }
     })
   }
 
@@ -887,5 +879,6 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
 }
+
 
 function noop () {}
