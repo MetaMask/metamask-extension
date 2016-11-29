@@ -6,12 +6,19 @@ module.exports = function (promiseFn) {
     }
     var cb = arguments[arguments.length - 1]
 
-    return promiseFn.apply(this, args)
-    .then(function (result) {
+    const nodeified = promiseFn.apply(this, args)
+
+    if (!nodeified) {
+      const methodName = String(promiseFn).split('(')[0]
+      throw new Error(`The ${methodName} did not return a Promise, but was nodeified.`)
+    }
+    nodeified.then(function (result) {
       cb(null, result)
     })
     .catch(function (reason) {
       cb(reason)
     })
+
+    return nodeified
   }
 }
