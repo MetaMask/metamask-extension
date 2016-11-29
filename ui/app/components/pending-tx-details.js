@@ -154,8 +154,6 @@ PTXP.render = function () {
         ]),
       ]), // End of Table
 
-      this.warnIfNeeded(),
-
     ])
   )
 }
@@ -200,29 +198,6 @@ PTXP.miniAccountPanelForRecipient = function () {
     ])
   }
 }
-
-// Should analyze if there is a DELEGATECALL opcode
-// in the recipient contract, and show a warning if so.
-PTXP.warnIfNeeded = function () {
-  const containsDelegateCall = !!this.props.txData.containsDelegateCall
-
-  if (!containsDelegateCall) {
-    return null
-  }
-
-  return h('span.error', {
-    style: {
-      fontFamily: 'Montserrat Light',
-      fontSize: '13px',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-  }, [
-    h('i.fa.fa-lg.fa-info-circle', { style: { margin: '5px' } }),
-    h('span', ' Your identity may be used in other contracts!'),
-  ])
-}
-
 
 function forwardCarrat () {
   return (

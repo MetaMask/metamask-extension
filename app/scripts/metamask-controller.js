@@ -8,6 +8,7 @@ const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
+const nodeify = require('./lib/nodeify')
 
 
 module.exports = class MetamaskController {
@@ -62,21 +63,24 @@ module.exports = class MetamaskController {
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to keyringController
-      placeSeedWords: keyringController.placeSeedWords.bind(keyringController),
-      createNewVaultAndKeychain: keyringController.createNewVaultAndKeychain.bind(keyringController),
-      createNewVaultAndRestore: keyringController.createNewVaultAndRestore.bind(keyringController),
-      clearSeedWordCache: keyringController.clearSeedWordCache.bind(keyringController),
-      addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
-      addNewAccount: keyringController.addNewAccount.bind(keyringController),
-      submitPassword: keyringController.submitPassword.bind(keyringController),
-      setSelectedAccount: keyringController.setSelectedAccount.bind(keyringController),
+      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
+      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
+      placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
+      clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
+      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
+      submitPassword: nodeify(keyringController.submitPassword).bind(keyringController),
+      addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
+      addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
+      setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
+      saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
+      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
+
+      // signing methods
       approveTransaction: keyringController.approveTransaction.bind(keyringController),
       cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
       signMessage: keyringController.signMessage.bind(keyringController),
       cancelMessage: keyringController.cancelMessage.bind(keyringController),
-      setLocked: keyringController.setLocked.bind(keyringController),
-      exportAccount: keyringController.exportAccount.bind(keyringController),
-      saveAccountLabel: keyringController.saveAccountLabel.bind(keyringController),
+
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift

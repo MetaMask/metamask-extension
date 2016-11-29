@@ -38,8 +38,8 @@ QUnit.test('keyringController:isInitialized', function (assert) {
 QUnit.test('keyringController:submitPassword', function (assert) {
   var done = assert.async()
 
-  this.keyringController.submitPassword(PASSWORD, (err, state) => {
-    assert.notOk(err)
+  this.keyringController.submitPassword(PASSWORD)
+  .then((state) => {
     assert.ok(state.identities[FIRST_ADDRESS])
     done()
   })
@@ -49,9 +49,14 @@ QUnit.test('keyringController:setLocked', function (assert) {
   var done = assert.async()
   var self = this
 
-  this.keyringController.setLocked(function(err) {
+  this.keyringController.setLocked()
+  .then(function() {
     assert.notOk(self.keyringController.password, 'password should be deallocated')
     assert.deepEqual(self.keyringController.keyrings, [], 'keyrings should be deallocated')
+    done()
+  })
+  .catch((reason) => {
+    assert.ifError(reason)
     done()
   })
 })
