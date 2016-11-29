@@ -375,14 +375,14 @@ module.exports = class KeyringController extends EventEmitter {
       query.getBlockByNumber('latest', true, function (err, block) {
         if (err) return cb(err)
         async.waterfall([
-          bind(estimateGas, txData, block.gasLimit),
+          bind(estimateGas, query, txData, block.gasLimit),
           bind(checkForGasError, txData),
           bind(setTxGas, txData, block.gasLimit),
         ], cb)
       })
     }
 
-    function estimateGas (txData, blockGasLimitHex, cb) {
+    function estimateGas (query, txData, blockGasLimitHex, cb) {
       const txParams = txData.txParams
       // check if gasLimit is already specified
       txData.gasLimitSpecified = Boolean(txParams.gas)
