@@ -204,10 +204,11 @@ function createNewVaultAndRestore (password, seed) {
 
 function createNewVaultAndKeychain (password) {
   return (dispatch) => {
-    background.createNewVaultAndKeychain(password, (err) => {
+    background.createNewVaultAndKeychain(password, (err, newState) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
+      dispatch(actions.updateMetamaskState(newState))
     })
   }
 }
