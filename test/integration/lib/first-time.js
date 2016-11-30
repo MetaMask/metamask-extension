@@ -32,6 +32,31 @@ QUnit.test('agree to terms', function (assert) {
     var terms = app.find('h3.terms-header')[0]
     assert.equal(terms.textContent, 'MetaMask Terms & Conditions', 'Showing TOS')
 
+    // Scroll through terms
+    var scrollable = app.find('.markdown')[0]
+    scrollable.scrollTop = scrollable.scrollHeight
+
+    return wait(10)
+  }).then(function() {
+
+    var button = app.find('button')[0] // Agree button
+    button.click()
+
+    return wait(1000)
+  }).then(function() {
+
+    var created = app.find('h3')[0]
+    assert.equal(created.textContent, 'Vault Created', 'Vault created screen')
+
+    var button = app.find('button')[0] // Agree button
+    button.click()
+
+    return wait(1000)
+  }).then(function() {
+
+    var detail = app.find('.account-detail-section')[0]
+    assert.ok(detail, 'Account detail section loaded.')
     done()
+
   })
 })
