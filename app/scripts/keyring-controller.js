@@ -228,9 +228,6 @@ module.exports = class KeyringController extends EventEmitter {
       this.keyrings = keyrings
       return this.fullUpdate()
     })
-    .catch((reason) => {
-      return reason
-    })
   }
 
   // Add New Keyring
