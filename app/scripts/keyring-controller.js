@@ -167,7 +167,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.configManager.setSelectedAccount(hexAccount)
       return this.setupAccounts(accounts)
     })
-    .then(this.persistAllKeyrings.bind(this))
+    .then(this.persistAllKeyrings.bind(this, password))
     .then(this.fullUpdate.bind(this))
   }
 
@@ -226,9 +226,8 @@ module.exports = class KeyringController extends EventEmitter {
     })
     .then((keyrings) => {
       this.keyrings = keyrings
-      return this.setupAccounts()
+      return this.fullUpdate()
     })
-    .then(this.fullUpdate.bind(this))
   }
 
   // Add New Keyring
@@ -250,6 +249,7 @@ module.exports = class KeyringController extends EventEmitter {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)
     })
+    .then(() => { return this.password })
     .then(this.persistAllKeyrings.bind(this))
     .then(() => {
       return keyring
@@ -692,6 +692,9 @@ module.exports = class KeyringController extends EventEmitter {
   // Takes an account address and an iterator representing
   // the current number of named accounts.
   getBalanceAndNickname (account) {
+    if (!account) {
+      throw new Error('Problem loading account.')
+    }
     const address = normalize(account)
     this.ethStore.addAccount(address)
     return this.createNickname(address)
@@ -725,7 +728,9 @@ module.exports = class KeyringController extends EventEmitter {
   // encrypts that array with the provided `password`,
   // and persists that encrypted string to storage.
   persistAllKeyrings (password = this.password) {
-    this.password = password
+    if (typeof password === 'string') {
+      this.password = password
+    }
     return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([keyring.type, keyring.serialize()])
       .then((serializedKeyringArray) => {

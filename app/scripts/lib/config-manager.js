@@ -3,6 +3,7 @@ const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
 const rp = require('request-promise')
 const ethUtil = require('ethereumjs-util')
+const normalize = require('./sig-util').normalize
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -273,13 +274,13 @@ ConfigManager.prototype.getWalletNicknames = function () {
 }
 
 ConfigManager.prototype.nicknameForWallet = function (account) {
-  const address = ethUtil.addHexPrefix(account.toLowerCase())
+  const address = normalize(account)
   const nicknames = this.getWalletNicknames()
   return nicknames[address]
 }
 
 ConfigManager.prototype.setNicknameForWallet = function (account, nickname) {
-  const address = ethUtil.addHexPrefix(account.toLowerCase())
+  const address = normalize(account)
   const nicknames = this.getWalletNicknames()
   nicknames[address] = nickname
   var data = this.getData()

@@ -5,7 +5,11 @@ var actions = {
   goHome: goHome,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
-
+  // transition state
+  TRANSITION_FORWARD: 'TRANSITION_FORWARD',
+  TRANSITION_BACKWARD: 'TRANSITION_BACKWARD',
+  transitionForward,
+  transitionBackward,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
@@ -166,13 +170,22 @@ function tryUnlockMetamask (password) {
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
-        let selectedAccount
-        try {
-          selectedAccount = newState.metamask.selectedAccount
-        } catch (e) {}
-        dispatch(actions.unlockMetamask(selectedAccount))
+        dispatch(actions.transitionForward())
+        dispatch(actions.updateMetamaskState(newState))
       }
     })
+  }
+}
+
+function transitionForward() {
+  return {
+    type: this.TRANSITION_FORWARD,
+  }
+}
+
+function transitionBackward() {
+  return {
+    type: this.TRANSITION_BACKWARD,
   }
 }
 
@@ -204,10 +217,11 @@ function createNewVaultAndRestore (password, seed) {
 
 function createNewVaultAndKeychain (password) {
   return (dispatch) => {
-    background.createNewVaultAndKeychain(password, (err) => {
+    background.createNewVaultAndKeychain(password, (err, newState) => {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
+      dispatch(actions.updateMetamaskState(newState))
     })
   }
 }
@@ -446,11 +460,12 @@ function updateMetamaskState (newState) {
 
 function lockMetamask () {
   return (dispatch) => {
-    background.setLocked((err) => {
+    background.setLocked((err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      dispatch(actions.updateMetamaskState(newState))
     })
   }
 }
