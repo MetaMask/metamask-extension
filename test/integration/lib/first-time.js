@@ -1,5 +1,7 @@
 const PASSWORD = 'password123'
 
+QUnit.module('first time usage')
+
 QUnit.test('agree to terms', function (assert) {
   var done = assert.async()
   let app

@@ -1,5 +1,7 @@
 var encryptor = require('../../../app/scripts/lib/encryptor')
 
+QUnit.module('encryptor')
+
 QUnit.test('encryptor:serializeBufferForStorage', function (assert) {
   assert.expect(1)
   var buf = new Buffer(2)
@@ -65,3 +67,5 @@ QUnit.test('encryptor:encrypt & decrypt with wrong password', function(assert) {
     done()
   })
 })
+
+

@@ -43,7 +43,19 @@ function reduceApp (state, action) {
 
   switch (action.type) {
 
-  // intialize
+    // transition methods
+
+    case actions.TRANSITION_FORWARD:
+      return extend(appState, {
+        transForward: true,
+      })
+
+    case actions.TRANSITION_BACKWARD:
+      return extend(appState, {
+        transForward: false,
+      })
+
+    // intialize
 
     case actions.SHOW_CREATE_VAULT:
       return extend(appState, {
