@@ -447,11 +447,12 @@ function updateMetamaskState (newState) {
 
 function lockMetamask () {
   return (dispatch) => {
-    background.setLocked((err) => {
+    background.setLocked((err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      dispatch(actions.updateMetamaskState(newState))
     })
   }
 }
