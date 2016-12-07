@@ -21,6 +21,9 @@ module.exports = class MetamaskController {
     this.noticeController = new NoticeController({
       configManager: this.configManager,
     })
+    this.noticeController = new NoticeController({
+      configManager: this.configManager,
+    })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)
@@ -298,14 +301,6 @@ module.exports = class MetamaskController {
 
   }
 
-  checkNotices () {
-    try {
-      this.configManager.updateNoticesList()
-    } catch (e) {
-      console.error('Error in checking notices.')
-    }
-  }
-
   // notice
 
   markNoticeRead (notice, cb) {
@@ -316,6 +311,25 @@ module.exports = class MetamaskController {
       cb(e)
     }
   }
+
+  checkNotices () {
+    try {
+      this.configManager.updateNoticesList()
+    } catch (e) {
+      console.error('Error in checking notices.')
+    }
+  }
+
+  scheduleNoticeCheck () {
+    if (this.noticeCheck) {
+      clearInterval(this.noticeCheck)
+    }
+    this.noticeCheck = setInterval(() => {
+      this.configManager.updateNoticesList()
+    }, 300000)
+  }
+
+  // disclaimer
 
   agreeToDisclaimer (cb) {
     try {
@@ -359,7 +373,6 @@ module.exports = class MetamaskController {
     }, 300000)
   }
 
-<<<<<<< HEAD
   agreeToEthWarning (cb) {
     try {
       this.configManager.setShouldntShowWarning()
@@ -367,15 +380,6 @@ module.exports = class MetamaskController {
     } catch (e) {
       cb(e)
     }
-=======
-  scheduleNoticeCheck () {
-    if (this.noticeCheck) {
-      clearInterval(this.noticeCheck)
-    }
-    this.noticeCheck = setInterval(() => {
-      this.configManager.updateNoticesList()
-    }, 300000)
->>>>>>> 25acad7... Add ability to show notices to user & get confirmation.
   }
 
   // called from popup

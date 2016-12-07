@@ -533,7 +533,7 @@ function goBackToInitView () {
 function markNoticeRead (notice) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    background.markNoticeRead(notice, (err, notice) => {
+    _accountManager.markNoticeRead(notice, (err, notice) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
         return dispatch(actions.showWarning(err))
