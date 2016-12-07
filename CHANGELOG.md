@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix broken reload detection.
+
 ## 2.13.11 2016-11-23
 
 - Add support for synchronous RPC method "eth_uninstallFilter".
