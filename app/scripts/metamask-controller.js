@@ -2,6 +2,7 @@ const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const IdentityStore = require('./lib/idStore')
+const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
@@ -17,6 +18,9 @@ module.exports = class MetamaskController {
     this.idStore = new IdentityStore({
       configManager: this.configManager,
     })
+    this.noticeController = new NoticeController({
+      configManager: this.configManager,
+    })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)
@@ -27,17 +31,19 @@ module.exports = class MetamaskController {
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
 
+    this.checkNotices()
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
-
+    this.scheduleNoticeCheck()
   }
 
   getState () {
     return extend(
       this.ethStore.getState(),
       this.idStore.getState(),
-      this.configManager.getConfig()
+      this.configManager.getConfig(),
+      this.noticeController.getState()
     )
   }
 
@@ -55,6 +61,7 @@ module.exports = class MetamaskController {
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
+      checkNotices: this.checkNotices.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to idStore
@@ -77,6 +84,8 @@ module.exports = class MetamaskController {
       buyEth: this.buyEth.bind(this),
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
+      // notices
+      markNoticeRead: this.markNoticeRead.bind(this),
     }
   }
 
@@ -289,6 +298,25 @@ module.exports = class MetamaskController {
 
   }
 
+  checkNotices () {
+    try {
+      this.configManager.updateNoticesList()
+    } catch (e) {
+      console.error('Error in checking notices.')
+    }
+  }
+
+  // notice
+
+  markNoticeRead (notice, cb) {
+    try {
+      this.configManager.markNoticeRead(notice)
+      cb(null, this.configManager.getLatestUnreadNotice())
+    } catch (e) {
+      cb(e)
+    }
+  }
+
   agreeToDisclaimer (cb) {
     try {
       this.configManager.setConfirmed(true)
@@ -331,6 +359,7 @@ module.exports = class MetamaskController {
     }, 300000)
   }
 
+<<<<<<< HEAD
   agreeToEthWarning (cb) {
     try {
       this.configManager.setShouldntShowWarning()
@@ -338,6 +367,15 @@ module.exports = class MetamaskController {
     } catch (e) {
       cb(e)
     }
+=======
+  scheduleNoticeCheck () {
+    if (this.noticeCheck) {
+      clearInterval(this.noticeCheck)
+    }
+    this.noticeCheck = setInterval(() => {
+      this.configManager.updateNoticesList()
+    }, 300000)
+>>>>>>> 25acad7... Add ability to show notices to user & get confirmation.
   }
 
   // called from popup

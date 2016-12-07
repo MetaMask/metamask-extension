@@ -2,6 +2,7 @@ const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
 const rp = require('request-promise')
+const notices = require('../../../development/notices.json')
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -160,6 +161,69 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
 ConfigManager.prototype.setData = function (data) {
   this.migrator.saveData(data)
 }
+
+//
+// Notices
+//
+
+ConfigManager.prototype.getNoticesList = function () {
+  var data = this.getData()
+  if ('noticesList' in data) {
+    return data.noticesList
+  } else {
+    return []
+  }
+}
+
+ConfigManager.prototype.setNoticesList = function (list) {
+  var data = this.getData()
+  data.noticesList = list
+  this.setData(data)
+  return Promise.resolve(true)
+}
+
+ConfigManager.prototype.markNoticeRead = function (notice) {
+  var notices = this.getNoticesList()
+  var id = notice.id
+  notices[id].read = true
+  this.setNoticesList(notices)
+}
+
+ConfigManager.prototype.updateNoticesList = function () {
+  return this._retrieveNoticeData().then((newNotices) => {
+    var oldNotices = this.getNoticesList()
+    var combinedNotices = this._mergeNotices(oldNotices, newNotices)
+    return Promise.resolve(this.setNoticesList(combinedNotices))
+  })
+}
+
+ConfigManager.prototype.getLatestUnreadNotice = function () {
+  var notices = this.getNoticesList()
+  var filteredNotices = notices.filter((notice) => {
+    return notice.read === false
+  })
+  return filteredNotices[filteredNotices.length - 1]
+}
+
+ConfigManager.prototype._mergeNotices = function (oldNotices, newNotices) {
+  var noticeMap = this._mapNoticeIds(oldNotices)
+  newNotices.forEach((notice) => {
+    if (noticeMap.indexOf(notice.id) === -1) {
+      oldNotices.push(notice)
+    }
+  })
+  return oldNotices
+}
+
+ConfigManager.prototype._mapNoticeIds = function (notices) {
+  return notices.map((notice) => notice.id)
+}
+
+ConfigManager.prototype._retrieveNoticeData = function () {
+  // Placeholder for the API.
+  return Promise.resolve(notices)
+}
+
 
 //
 // Tx
