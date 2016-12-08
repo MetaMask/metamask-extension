@@ -1,7 +1,7 @@
 const assert = require('assert')
 const nodeify = require('../../app/scripts/lib/nodeify')
 
-describe.only('nodeify', function() {
+describe('nodeify', function() {
 
   var obj = {
     foo: 'bar',
