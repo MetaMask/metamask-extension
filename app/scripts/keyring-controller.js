@@ -113,6 +113,7 @@ module.exports = class KeyringController extends EventEmitter {
       conversionDate: this.configManager.getConversionDate(),
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       identities: this.identities,
+      lostAccounts: this.configManager.getLostAccounts(),
     }
   }
 
@@ -623,7 +624,12 @@ module.exports = class KeyringController extends EventEmitter {
   migrateOldVaultIfAny (password) {
     const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
     return this.idStoreMigrator.migratedVaultForPassword(password)
-    .then((serialized) => {
+    .then((result) => {
+      console.log('migrator called back with')
+      console.dir(result)
+      const { serialized, lostAccounts } = result
+      console.dir({ serialized, lostAccounts })
+      this.configManager.setLostAccounts(lostAccounts)
       this.password = password
 
       if (serialized && shouldMigrate) {

@@ -21,6 +21,10 @@ const mockVault = {
   account: '0x5d8de92c205279c10e5669f797b853ccef4f739a',
 }
 
+const badVault = {
+  seed: 'radar blur cabbage chef fix engine embark joy scheme fiction master release',
+}
+
 describe('IdentityStore to KeyringController migration', function() {
 
   // The stars of the show:
@@ -79,33 +83,9 @@ describe('IdentityStore to KeyringController migration', function() {
       keyringController.configManager.setWallet('something')
       const state = keyringController.getState()
       assert(state.isInitialized, 'old vault counted as initialized.')
+      console.dir(state)
+      assert.equal(state.lostAccounts.length, 0, 'no lost accounts')
     })
-
-    /*
-    it('should use the password to migrate the old vault', function(done) {
-      this.timeout(5000)
-      console.log('calling submitPassword')
-      console.dir(keyringController)
-      keyringController.submitPassword(password, function (err, state) {
-        assert.ifError(err, 'submitPassword threw error')
-
-        function log(str, dat) { console.log(str + ': ' + JSON.stringify(dat)) }
-
-        let newAccounts = keyringController.getAccounts()
-        log('new accounts: ', newAccounts)
-
-        let newAccount = ethUtil.addHexPrefix(newAccounts[0])
-        assert.equal(ethUtil.addHexPrefix(newAccount), mockVault.account, 'restored the correct account')
-        const newSeed = keyringController.keyrings[0].mnemonic
-        log('keyringController keyrings', keyringController.keyrings)
-        assert.equal(newSeed, mockVault.seed, 'seed phrase transferred.')
-
-        assert(configManager.getVault(), 'new type of vault is persisted')
-        done()
-      })
-    })
-    */
-
   })
 })
 
