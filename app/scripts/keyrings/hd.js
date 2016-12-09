@@ -38,7 +38,6 @@ class HdKeyring extends EventEmitter {
     }
 
     if ('numberOfAccounts' in opts) {
-      console.log('number of accounts detected, adding accounts.')
       return this.addAccounts(opts.numberOfAccounts)
     }
 
@@ -49,7 +48,6 @@ class HdKeyring extends EventEmitter {
     if (!this.root) {
       this._initFromMnemonic(bip39.generateMnemonic())
     }
-    console.log('attempting to add %s accounts', numberOfAccounts)
 
     const oldLen = this.wallets.length
     const newWallets = []
@@ -59,9 +57,7 @@ class HdKeyring extends EventEmitter {
       newWallets.push(wallet)
       this.wallets.push(wallet)
     }
-    console.log('hd has %s wallets', this.wallets.length)
     const hexWallets = newWallets.map(w => w.getAddress().toString('hex'))
-    console.log('hd calling back w promise of hex wallets ' + hexWallets)
     return Promise.resolve(hexWallets)
   }
 

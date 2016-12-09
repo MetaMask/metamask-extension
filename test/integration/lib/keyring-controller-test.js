@@ -8,6 +8,8 @@ var STORAGE_KEY = 'metamask-config'
 var PASSWORD = '12345678'
 var FIRST_ADDRESS = '0x4dd5d356c5A016A220bCD69e82e5AF680a430d00'.toLowerCase()
 
+var BAD_STYLE_FIRST_ADDRESS = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9'
+
 
 QUnit.module('Old Style Vaults', {
   beforeEach: function () {
@@ -87,7 +89,7 @@ QUnit.module('Old Style Vaults with bad HD seed', {
 })
 
 QUnit.test('keyringController:isInitialized', function (assert) {
-  assert.ok(this.keyringController.getState().isInitialized)
+  assert.ok(this.keyringController.getState().isInitialized, 'vault is initialized')
 })
 
 QUnit.test('keyringController:submitPassword', function (assert) {
@@ -95,9 +97,9 @@ QUnit.test('keyringController:submitPassword', function (assert) {
 
   this.keyringController.submitPassword(PASSWORD)
   .then((state) => {
-    assert.ok(state.identities[FIRST_ADDRESS])
+    assert.ok(state.identities[BAD_STYLE_FIRST_ADDRESS])
     assert.equal(state.lostAccounts.length, 1, 'one lost account')
-    assert.equal(state.lostAccounts[0], 'e15D894BeCB0354c501AE69429B05143679F39e0'.toLowerCase())
+    assert.equal(state.lostAccounts[0], '0xe15D894BeCB0354c501AE69429B05143679F39e0'.toLowerCase())
     assert.deepEqual(this.configManager.getLostAccounts(), state.lostAccounts, 'persisted')
     done()
   })
