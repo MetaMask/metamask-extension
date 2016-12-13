@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix broken reload detection.
+- Fix transaction forever cached-as-pending bug.
 
 ## 2.13.11 2016-11-23
 
