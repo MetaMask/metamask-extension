@@ -83,7 +83,7 @@
     "through2": "^2.0.1",
     "vreme": "^3.0.2",
     "web3": "0.17.0-beta",
-    "web3-provider-engine": "^8.1.5",
+    "web3-provider-engine": "^8.1.14",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
   },
