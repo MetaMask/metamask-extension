@@ -70,7 +70,7 @@ AccountDetailScreen.prototype.render = function () {
           // large identicon and addresses
           h('.identicon-wrapper.select-none', [
             h(Identicon, {
-              diameter: 62,
+              diameter: 48,
               address: selected,
             }),
           ]),
@@ -82,16 +82,12 @@ AccountDetailScreen.prototype.render = function () {
           }, [
             h(EditableLabel, {
               textValue: identity ? identity.name : '',
-              state: {
-                isEditingLabel: false,
-              },
               saveText: (text) => {
                 props.dispatch(actions.saveAccountLabel(selected, text))
               },
             }, [
 
               // What is shown when not editing + edit text:
-              h('label.editing-label', [h('.edit-text', 'edit')]),
               h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
             ]),
             h('.flex-row', {

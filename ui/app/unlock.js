@@ -63,7 +63,10 @@ UnlockScreen.prototype.render = function () {
         h('button.primary.cursor-pointer', {
           onClick: this.onSubmit.bind(this),
           style: {
-            margin: 10,
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
           },
         }, 'Unlock'),
       ]),
@@ -72,11 +75,12 @@ UnlockScreen.prototype.render = function () {
         h('p.pointer', {
           onClick: () => this.props.dispatch(actions.goBackToInitView()),
           style: {
+            marginTop: '1rem',
             fontSize: '0.8em',
             color: 'rgb(247, 134, 28)',
             textDecoration: 'underline',
           },
-        }, 'I forgot my password.'),
+        }, 'I forgot my password'),
       ]),
     ])
   )
