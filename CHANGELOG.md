@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add a check for when a tx is included in a block.
 - Add support for synchronous RPC method "eth_uninstallFilter".
 
 ## 2.13.10 2016-11-22
