@@ -1,6 +1,4 @@
-const async = require('async')
 const ethUtil = require('ethereumjs-util')
-const EthQuery = require('eth-query')
 const bip39 = require('bip39')
 const Transaction = require('ethereumjs-tx')
 const EventEmitter = require('events').EventEmitter
@@ -36,7 +34,7 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyringTypes = keyringTypes
-
+    this.txManager = opts.txManager
     this.keyrings = []
     this.identities = {} // Essentially a name hash
 
@@ -73,7 +71,7 @@ module.exports = class KeyringController extends EventEmitter {
   // or accept a state-resolving promise to consume their results.
   //
   // Not all methods end with this, that might be a nice refactor.
-  fullUpdate() {
+  fullUpdate () {
     this.emit('update')
     return Promise.resolve(this.getState())
   }
@@ -102,8 +100,8 @@ module.exports = class KeyringController extends EventEmitter {
       isInitialized: (!!wallet || !!vault),
       isUnlocked: Boolean(this.password),
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
-      unconfTxs: this.configManager.unconfirmedTxs(),
-      transactions: this.configManager.getTxList(),
+      transactions: this.txManager.getTxList(),
+      unconfTxs: this.txManager.getUnapprovedTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
       selectedAccount: address,
@@ -341,7 +339,7 @@ module.exports = class KeyringController extends EventEmitter {
   // Caches the requesting Dapp's callback, `onTxDoneCb`, for resolution later.
   addUnconfirmedTransaction (txParams, onTxDoneCb, cb) {
     const configManager = this.configManager
-
+    const txManager = this.txManager
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
     var txId = createId()
@@ -351,93 +349,24 @@ module.exports = class KeyringController extends EventEmitter {
       id: txId,
       txParams: txParams,
       time: time,
-      status: 'unconfirmed',
+      status: 'unapproved',
       gasMultiplier: configManager.getGasMultiplier() || 1,
       metamaskNetworkId: this.getNetwork(),
     }
-
     // keep the onTxDoneCb around for after approval/denial (requires user interaction)
     // This onTxDoneCb fires completion to the Dapp's write operation.
-    this._unconfTxCbs[txId] = onTxDoneCb
-
-    var provider = this.ethStore._query.currentProvider
-    var query = new EthQuery(provider)
-
+    txManager.txProviderUtils.analyzeGasUsage(txData, this.txDidComplete.bind(this, txData, onTxDoneCb, cb))
     // calculate metadata for tx
-    this.analyzeTxGasUsage(query, txData, this.txDidComplete.bind(this, txData, cb))
   }
 
-  estimateTxGas (query, txData, blockGasLimitHex, cb) {
-    const txParams = txData.txParams
-    // check if gasLimit is already specified
-    txData.gasLimitSpecified = Boolean(txParams.gas)
-    // if not, fallback to block gasLimit
-    if (!txData.gasLimitSpecified) {
-      txParams.gas = blockGasLimitHex
-    }
-    // run tx, see if it will OOG
-    query.estimateGas(txParams, cb)
-  }
-
-  checkForTxGasError (txData, estimatedGasHex, cb) {
-    txData.estimatedGas = estimatedGasHex
-    // all gas used - must be an error
-    if (estimatedGasHex === txData.txParams.gas) {
-      txData.simulationFails = true
-    }
-    cb()
-  }
-
-  setTxGas (txData, blockGasLimitHex, cb) {
-    const txParams = txData.txParams
-    // if OOG, nothing more to do
-    if (txData.simulationFails) {
-      cb()
-      return
-    }
-    // if gasLimit was specified and doesnt OOG,
-    // use original specified amount
-    if (txData.gasLimitSpecified) {
-      txData.estimatedGas = txParams.gas
-      cb()
-      return
-    }
-    // if gasLimit not originally specified,
-    // try adding an additional gas buffer to our estimation for safety
-    const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
-    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const estimationWithBuffer = new BN(this.addGasBuffer(estimatedGasBn), 16)
-    // added gas buffer is too high
-    if (estimationWithBuffer.gt(blockGasLimitBn)) {
-      txParams.gas = txData.estimatedGas
-    // added gas buffer is safe
-    } else {
-      const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
-      txParams.gas = gasWithBufferHex
-    }
-    cb()
-    return
-  }
-
-  txDidComplete (txData, cb, err) {
+  txDidComplete (txData, onTxDoneCb, cb, err) {
     if (err) return cb(err)
-    const configManager = this.configManager
-    configManager.addTx(txData)
+    const txManager = this.txManager
+    txManager.addTx(txData, onTxDoneCb)
     // signal update
     this.emit('update')
     // signal completion of add tx
     cb(null, txData)
-  }
-
-  analyzeTxGasUsage (query, txData, cb) {
-    query.getBlockByNumber('latest', true, (err, block) => {
-      if (err) return cb(err)
-      async.waterfall([
-        this.estimateTxGas.bind(this, query, txData, block.gasLimit),
-        this.checkForTxGasError.bind(this, txData),
-        this.setTxGas.bind(this, txData, block.gasLimit),
-      ], cb)
-    })
   }
 
   // Cancel Transaction
@@ -448,14 +377,8 @@ module.exports = class KeyringController extends EventEmitter {
   //
   // Forgets any tx matching `txId`.
   cancelTransaction (txId, cb) {
-    const configManager = this.configManager
-    var approvalCb = this._unconfTxCbs[txId] || noop
-
-    // reject tx
-    approvalCb(null, false)
-    // clean up
-    configManager.rejectTx(txId)
-    delete this._unconfTxCbs[txId]
+    const txManager = this.txManager
+    txManager.setTxStatusRejected(txId)
 
     if (cb && typeof cb === 'function') {
       cb()
@@ -473,16 +396,10 @@ module.exports = class KeyringController extends EventEmitter {
   //
   // Calls back the cached Dapp's confirmation callback, also.
   approveTransaction (txId, cb) {
-    const configManager = this.configManager
-    var approvalCb = this._unconfTxCbs[txId] || noop
-
-    // accept tx
-    cb()
-    approvalCb(null, true)
-    // clean up
-    configManager.confirmTx(txId)
-    delete this._unconfTxCbs[txId]
+    const txManager = this.txManager
+    txManager.setTxStatusSigned(txId)
     this.emit('update')
+    cb()
   }
 
   signTransaction (txParams, cb) {
@@ -510,9 +427,9 @@ module.exports = class KeyringController extends EventEmitter {
       .then((tx) => {
         // Add the tx hash to the persisted meta-tx object
         var txHash = ethUtil.bufferToHex(tx.hash())
-        var metaTx = this.configManager.getTx(txParams.metamaskId)
+        var metaTx = this.txManager.getTx(txParams.metamaskId)
         metaTx.hash = txHash
-        this.configManager.updateTx(metaTx)
+        this.txManager.updateTx(metaTx)
 
         // return raw serialized tx
         var rawTx = ethUtil.bufferToHex(tx.serialize())
@@ -586,7 +503,6 @@ module.exports = class KeyringController extends EventEmitter {
   // Attempts to sign the provided @object msgParams.
   signMessage (msgParams, cb) {
     try {
-
       const msgId = msgParams.metamaskId
       delete msgParams.metamaskId
       const approvalCb = this._unconfMsgCbs[msgId] || noop

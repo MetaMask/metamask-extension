@@ -13,6 +13,8 @@ const autoFaucet = require('./auto-faucet')
 const messageManager = require('./message-manager')
 const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 const IdManagement = require('./id-management')
+const TxManager = require('../transaction-manager')
+
 
 module.exports = IdentityStore
 
@@ -36,6 +38,11 @@ function IdentityStore (opts = {}) {
   }
 
   // not part of serilized metamask state - only kept in memory
+  this.txManager = new TxManager({
+    TxListFromStore: opts.configManager.getTxList(),
+    setTxList: opts.configManager.setTxList.bind(opts.configManager),
+    txLimit: 40,
+  })
   this._unconfTxCbs = {}
   this._unconfMsgCbs = {}
 }
@@ -87,6 +94,7 @@ IdentityStore.prototype.recoverFromSeed = function (password, seed, cb) {
 
 IdentityStore.prototype.setStore = function (store) {
   this._ethStore = store
+  this.txManager.setProvider(this._ethStore._query.currentProvider)
 }
 
 IdentityStore.prototype.clearSeedWordCache = function (cb) {
@@ -97,14 +105,15 @@ IdentityStore.prototype.clearSeedWordCache = function (cb) {
 
 IdentityStore.prototype.getState = function () {
   const configManager = this.configManager
+  const TxManager = this.txManager
   var seedWords = this.getSeedIfUnlocked()
   return clone(extend(this._currentState, {
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
     isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
-    unconfTxs: configManager.unconfirmedTxs(),
-    transactions: configManager.getTxList(),
+    unconfTxs: TxManager.getUnapprovedTxList(),
+    transactions: TxManager.getTxList(),
     unconfMsgs: messageManager.unconfirmedMsgs(),
     messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),

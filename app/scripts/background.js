@@ -23,7 +23,7 @@ const controller = new MetamaskController({
   loadData,
 })
 const keyringController = controller.keyringController
-
+const txManager = controller.txManager
 function triggerUi () {
   if (!popupIsOpen) notification.show()
 }
@@ -97,12 +97,11 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-keyringController.on('update', updateBadge)
+txManager.on('update', updateBadge)
 
 function updateBadge () {
   var label = ''
-  var unconfTxs = controller.configManager.unconfirmedTxs()
-  var unconfTxLen = Object.keys(unconfTxs).length
+  var unconfTxLen = controller.txManager.unConftxCount
   var unconfMsgs = messageManager.unconfirmedMsgs()
   var unconfMsgLen = Object.keys(unconfMsgs).length
   var count = unconfTxLen + unconfMsgLen
@@ -112,6 +111,25 @@ function updateBadge () {
   extension.browserAction.setBadgeText({ text: label })
   extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
 }
+
+// txManger :: tx approvals and rejection cb's
+
+txManager.on('signed', function (txId) {
+  var approvalCb = this._unconfTxCbs[txId]
+
+  approvalCb(null, true)
+  // clean up
+  delete this._unconfTxCbs[txId]
+})
+
+txManager.on('rejected', function (txId) {
+  var approvalCb = this._unconfTxCbs[txId]
+  approvalCb(null, false)
+  // clean up
+  delete this._unconfTxCbs[txId]
+})
+
+// data :: setters/getters
 
 function loadData () {
   var oldData = getOldStyleData()

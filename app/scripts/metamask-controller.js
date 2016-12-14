@@ -3,6 +3,7 @@ const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
 const messageManager = require('./lib/message-manager')
+const TxManager = require('./transaction-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
@@ -18,13 +19,21 @@ module.exports = class MetamaskController {
     this.opts = opts
     this.listeners = []
     this.configManager = new ConfigManager(opts)
+    this.txManager = new TxManager({
+      TxListFromStore: this.configManager.getTxList(),
+      txLimit: this.configManager.txLimit,
+      setTxList: this.configManager.setTxList.bind(this.configManager),
+    })
+
     this.keyringController = new KeyringController({
       configManager: this.configManager,
+      txManager: this.txManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.keyringController.setStore(this.ethStore)
+    this.txManager.setProvider(this.provider)
     this.getNetwork()
     this.messageManager = messageManager
     this.publicConfigStore = this.initPublicConfigStore()
@@ -49,7 +58,7 @@ module.exports = class MetamaskController {
 
   getApi () {
     const keyringController = this.keyringController
-
+    const txManager = this.txManager
     return {
       getState: (cb) => { cb(null, this.getState()) },
       setRpcTarget: this.setRpcTarget.bind(this),
@@ -81,6 +90,9 @@ module.exports = class MetamaskController {
       signMessage: keyringController.signMessage.bind(keyringController),
       cancelMessage: keyringController.cancelMessage.bind(keyringController),
 
+      // forward directly to txManager
+      getUnapprovedTxList: txManager.getTxList.bind(txManager),
+      getFilterdTxList: txManager.getFilterdTxList.bind(txManager),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -154,7 +166,7 @@ module.exports = class MetamaskController {
     var web3 = new Web3(provider)
     this.web3 = web3
     keyringController.web3 = web3
-
+    this.txManager.web3 = web3
     provider.on('block', this.processBlock.bind(this))
     provider.on('error', this.getNetwork.bind(this))
 
