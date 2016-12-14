@@ -115,18 +115,11 @@ function updateBadge () {
 // txManger :: tx approvals and rejection cb's
 
 txManager.on('signed', function (txId) {
-  var approvalCb = this._unconfTxCbs[txId]
-
-  approvalCb(null, true)
-  // clean up
-  delete this._unconfTxCbs[txId]
+  this.execOnTxDoneCb(txId, true)
 })
 
 txManager.on('rejected', function (txId) {
-  var approvalCb = this._unconfTxCbs[txId]
-  approvalCb(null, false)
-  // clean up
-  delete this._unconfTxCbs[txId]
+  this.execOnTxDoneCb(txId, false)
 })
 
 // data :: setters/getters

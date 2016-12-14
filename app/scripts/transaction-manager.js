@@ -38,12 +38,14 @@ module.exports = class TransactionManager extends EventEmitter {
     this.emit('update')
   }
 
+  // gets tx by Id and returns it
   getTx (txId, cb) {
     var txList = this.getTxList()
     var tx = txList.find((tx) => tx.id === txId)
     return cb ? cb(tx) : tx
   }
 
+  //
   updateTx (txData) {
     var txId = txData.id
     var txList = this.getTxList()
@@ -75,6 +77,21 @@ module.exports = class TransactionManager extends EventEmitter {
     }, {})
   }
 
+  /*
+  Takes an object of fields to search for eg:
+  var thingsToLookFor = {
+    to: '0x0..',
+    from: '0x0..',
+    status: 'signed',
+  }
+  and returns a list of tx with all
+  options matching
+
+  this is for things like filtering a the tx list
+  for only tx's from 1 account
+  or for filltering for all txs from one account
+  and that have been 'confirmed'
+  */
   getFilterdTxList (opts) {
     var filteredTxList
     Object.keys(opts).forEach((key) => {
@@ -93,8 +110,17 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
+// keeps around the txCbs for later
   addOnTxDoneCb (txId, cb) {
     this._unconfTxCbs[txId] = cb || noop
+  }
+
+  execOnTxDoneCb (txId, conf) {
+    var approvalCb = this._unconfTxCbs[txId]
+
+    approvalCb(null, conf)
+    // clean up
+    delete this._unconfTxCbs[txId]
   }
 
   //   should return the tx
@@ -136,7 +162,6 @@ module.exports = class TransactionManager extends EventEmitter {
 
   setTxStatusConfirmed (txId) {
     this.setTxStatus(txId, 'confirmed')
-    // this.removeListener(`check${txId}`, this.checkForTxInBlock)
   }
 
   // merges txParams obj onto txData.txParams
@@ -147,12 +172,15 @@ module.exports = class TransactionManager extends EventEmitter {
     this.updateTx(txData)
   }
 
+  //  sets provider for provider utils and event listener
   setProvider (provider) {
     this.provider = provider
     this.txProviderUtils = new TxProviderUtil(provider)
     this.provider.on('block', this.checkForTxInBlock.bind(this))
   }
 
+  //  checks if a signed tx is in a block and
+  // if included sets the tx status as 'confirmed'
   checkForTxInBlock () {
     var signedTxList = this.getFilterdTxList({status: 'signed'})
     if (!signedTxList.length) return
