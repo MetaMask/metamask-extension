@@ -112,9 +112,7 @@ button.btn-thin {
   font-size: 13px;
 }
 
-.app-header {
-  padding: 6px 8px;
-}
+.app-header {}
 
 .app-header h1 {
   font-family: 'Montserrat Regular';

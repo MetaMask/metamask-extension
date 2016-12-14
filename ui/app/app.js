@@ -114,7 +114,6 @@ App.prototype.renderAppBar = function () {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: props.isUnlocked ? 'white' : 'none',
-          height: '36px',
           position: 'relative',
           zIndex: 2,
         },

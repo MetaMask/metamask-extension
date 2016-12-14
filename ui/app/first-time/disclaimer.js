@@ -29,7 +29,8 @@ DisclaimerScreen.prototype.render = function () {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
-          marginBottom: 24,
+          marginTop: 0,
+          marginBottom: 0,
           width: '100%',
           fontSize: '20px',
           textAlign: 'center',
@@ -42,8 +43,8 @@ DisclaimerScreen.prototype.render = function () {
       h('style', `
 
         .markdown {
-          font-family: Times New Roman;
           overflow-x: hidden;
+          font-weight: lighter;
         }
         .markdown h1, .markdown h2, .markdown h3 {
           margin: 10px 0;
@@ -75,10 +76,10 @@ DisclaimerScreen.prototype.render = function () {
           }
         },
         style: {
-          background: 'rgb(235, 235, 235)',
-          height: '310px',
-          padding: '6px',
-          width: '80%',
+          background: 'transparent',
+          height: '415px',
+          padding: '0 5px',
+          width: '100%',
           overflowY: 'scroll',
         },
       }, [
@@ -91,7 +92,12 @@ DisclaimerScreen.prototype.render = function () {
       ]),
 
       h('button', {
-        style: { marginTop: '18px' },
+        style: {
+          width: '100%',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+        },
         disabled,
         onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
       }, disabled ? 'Scroll Down to Enable' : 'I Agree'),
