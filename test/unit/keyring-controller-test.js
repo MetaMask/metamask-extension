@@ -23,6 +23,10 @@ describe('KeyringController', function() {
 
     keyringController = new KeyringController({
       configManager: configManagerGen(),
+      txManager: {
+        getTxList: () => [],
+        getUnapprovedTxList: () => []
+      },
       ethStore: {
         addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
       },

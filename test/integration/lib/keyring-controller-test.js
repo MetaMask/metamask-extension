@@ -20,6 +20,10 @@ QUnit.module('Old Style Vaults', {
     this.keyringController = new KeyringController({
       configManager: this.configManager,
       getNetwork: () => { return '2' },
+      txManager: {
+        getTxList: () => [],
+        getUnapprovedTxList: () => []
+      },
     })
 
     this.ethStore = {
