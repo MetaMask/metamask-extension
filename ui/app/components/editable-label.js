@@ -13,7 +13,10 @@ function EditableLabel () {
 EditableLabel.prototype.render = function () {
   return h('div.name-label', {
     contentEditable: true,
-    style: { outline: 'none' },
+    style: {
+      outline: 'none',
+      marginTop: '0.5rem',
+    },
     onInput: (event) => this.saveText(),
   }, this.props.children)
 }

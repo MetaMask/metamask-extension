@@ -76,6 +76,7 @@ AccountDetailScreen.prototype.render = function () {
           ]),
           h('flex-column', {
             style: {
+              width: '100%',
               lineHeight: '10px',
               marginLeft: '15px',
             },
@@ -92,28 +93,20 @@ AccountDetailScreen.prototype.render = function () {
             ]),
             h('.flex-row', {
               style: {
-                width: '15em',
+                width: '100%',
                 justifyContent: 'space-between',
                 alignItems: 'baseline',
               },
             }, [
 
-              // address
-
-              h('div', {
+              // balance
+              h(EthBalance, {
+                value: account && account.balance,
                 style: {
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  paddingTop: '3px',
-                  width: '5em',
-                  fontSize: '13px',
-                  fontFamily: 'Montserrat Light',
-                  textRendering: 'geometricPrecision',
+                  lineHeight: '7px',
                   marginTop: '10px',
-                  marginBottom: '15px',
-                  color: '#AEAEAE',
                 },
-              }, ethUtil.toChecksumAddress(selected)),
+              }),
 
               // copy and export
 
@@ -167,33 +160,18 @@ AccountDetailScreen.prototype.render = function () {
                 ]),
               ]),
             ]),
-
-            // account ballence
-
           ]),
         ]),
         h('.flex-row', {
           style: {
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
+            justifyContent: 'flex-end',
           },
         }, [
-
-          h(EthBalance, {
-            value: account && account.balance,
-            style: {
-              lineHeight: '7px',
-              marginTop: '10px',
-            },
-          }),
-
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
-              position: 'absolute',
-              left: '219px',
             },
           }, 'BUY'),
 

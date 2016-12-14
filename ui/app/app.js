@@ -126,14 +126,6 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
-          // mini logo
-          h('img', {
-            height: 24,
-            width: 24,
-            src: '/images/icon-128.png',
-          }),
-
           h(NetworkIndicator, {
             network: this.props.network,
             provider: this.props.provider,
