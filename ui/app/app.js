@@ -140,8 +140,9 @@ App.prototype.renderAppBar = function () {
         // metamask name
         h('h1', {
           style: {
-            position: 'relative',
-            left: '9px',
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
           },
         }, 'MetaMask'),
 

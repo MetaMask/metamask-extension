@@ -163,9 +163,6 @@ textarea.twelve-word-phrase {
 }
 
 .network-name {
-  position: absolute;
-  top: 8px;
-  left: 60px;
   width: 5.2em;
   line-height: 9px;
   text-rendering: geometricPrecision;
