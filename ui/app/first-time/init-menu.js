@@ -114,7 +114,10 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('button.primary', {
         onClick: this.createNewVaultAndKeychain.bind(this),
         style: {
-          margin: 12,
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          width: '100%',
         },
       }, 'Create'),
 

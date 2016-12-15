@@ -67,7 +67,7 @@ button.spaced {
 }
 
 button:not([disabled]):hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 button:not([disabled]):active {
   transform: scale(0.95);
@@ -112,9 +112,7 @@ button.btn-thin {
   font-size: 13px;
 }
 
-.app-header {
-  padding: 6px 8px;
-}
+.app-header {}
 
 .app-header h1 {
   font-family: 'Montserrat Regular';
@@ -165,9 +163,6 @@ textarea.twelve-word-phrase {
 }
 
 .network-name {
-  position: absolute;
-  top: 8px;
-  left: 60px;
   width: 5.2em;
   line-height: 9px;
   text-rendering: geometricPrecision;

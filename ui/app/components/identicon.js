@@ -12,7 +12,7 @@ inherits(IdenticonComponent, Component)
 function IdenticonComponent () {
   Component.call(this)
 
-  this.defaultDiameter = 46
+  this.defaultDiameter = 32
 }
 
 IdenticonComponent.prototype.render = function () {

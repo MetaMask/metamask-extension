@@ -70,54 +70,43 @@ AccountDetailScreen.prototype.render = function () {
           // large identicon and addresses
           h('.identicon-wrapper.select-none', [
             h(Identicon, {
-              diameter: 62,
+              diameter: 48,
               address: selected,
             }),
           ]),
           h('flex-column', {
             style: {
+              width: '100%',
               lineHeight: '10px',
               marginLeft: '15px',
             },
           }, [
             h(EditableLabel, {
               textValue: identity ? identity.name : '',
-              state: {
-                isEditingLabel: false,
-              },
               saveText: (text) => {
                 props.dispatch(actions.saveAccountLabel(selected, text))
               },
             }, [
 
               // What is shown when not editing + edit text:
-              h('label.editing-label', [h('.edit-text', 'edit')]),
               h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
             ]),
             h('.flex-row', {
               style: {
-                width: '15em',
+                width: '100%',
                 justifyContent: 'space-between',
                 alignItems: 'baseline',
               },
             }, [
 
-              // address
-
-              h('div', {
+              // balance
+              h(EthBalance, {
+                value: account && account.balance,
                 style: {
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  paddingTop: '3px',
-                  width: '5em',
-                  fontSize: '13px',
-                  fontFamily: 'Montserrat Light',
-                  textRendering: 'geometricPrecision',
+                  lineHeight: '7px',
                   marginTop: '10px',
-                  marginBottom: '15px',
-                  color: '#AEAEAE',
                 },
-              }, ethUtil.toChecksumAddress(selected)),
+              }),
 
               // copy and export
 
@@ -171,33 +160,18 @@ AccountDetailScreen.prototype.render = function () {
                 ]),
               ]),
             ]),
-
-            // account ballence
-
           ]),
         ]),
         h('.flex-row', {
           style: {
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
+            justifyContent: 'flex-end',
           },
         }, [
-
-          h(EthBalance, {
-            value: account && account.balance,
-            style: {
-              lineHeight: '7px',
-              marginTop: '10px',
-            },
-          }),
-
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
-              position: 'absolute',
-              left: '219px',
             },
           }, 'BUY'),
 
