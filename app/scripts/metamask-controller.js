@@ -18,9 +18,13 @@ module.exports = class MetamaskController {
     this.idStore = new IdentityStore({
       configManager: this.configManager,
     })
+    // notices
     this.noticeController = new NoticeController({
       configManager: this.configManager,
     })
+    this.noticeController.updateNoticesList()
+    // to be uncommented when retrieving notices from a remote server.
+    // this.noticeController.startPolling()
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)
@@ -31,13 +35,9 @@ module.exports = class MetamaskController {
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
 
-    this.checkNotices()
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
-
-    // to be uncommented when retrieving notices from a remote server.
-    // this.scheduleNoticeCheck()
   }
 
   getState () {
@@ -51,6 +51,7 @@ module.exports = class MetamaskController {
 
   getApi () {
     const idStore = this.idStore
+    const noticeController = this.noticeController
 
     return {
       getState: (cb) => { cb(null, this.getState()) },
@@ -63,7 +64,6 @@ module.exports = class MetamaskController {
       agreeToEthWarning: this.agreeToEthWarning.bind(this),
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
-      checkNotices: this.checkNotices.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
 
       // forward directly to idStore
@@ -87,7 +87,8 @@ module.exports = class MetamaskController {
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
       // notices
-      markNoticeRead: this.markNoticeRead.bind(this),
+      checkNotices: noticeController.updateNoticesList.bind(noticeController),
+      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
     }
   }
 
@@ -282,7 +283,7 @@ module.exports = class MetamaskController {
   setTOSHash (hash) {
     try {
       this.configManager.setTOSHash(hash)
-    } catch (e) {
+    } catch (err) {
       console.error('Error in setting terms of service hash.')
     }
   }
@@ -294,38 +295,10 @@ module.exports = class MetamaskController {
         this.resetDisclaimer()
         this.setTOSHash(global.TOS_HASH)
       }
-    } catch (e) {
+    } catch (err) {
       console.error('Error in checking TOS change.')
     }
 
-  }
-
-  // notice
-
-  markNoticeRead (notice, cb) {
-    try {
-      this.configManager.markNoticeRead(notice)
-      cb(null, this.configManager.getLatestUnreadNotice())
-    } catch (e) {
-      cb(e)
-    }
-  }
-
-  checkNotices () {
-    try {
-      this.configManager.updateNoticesList()
-    } catch (e) {
-      console.error('Error in checking notices.')
-    }
-  }
-
-  scheduleNoticeCheck () {
-    if (this.noticeCheck) {
-      clearInterval(this.noticeCheck)
-    }
-    this.noticeCheck = setInterval(() => {
-      this.configManager.updateNoticesList()
-    }, 300000)
   }
 
   // disclaimer
@@ -334,16 +307,16 @@ module.exports = class MetamaskController {
     try {
       this.configManager.setConfirmed(true)
       cb()
-    } catch (e) {
-      cb(e)
+    } catch (err) {
+      cb(err)
     }
   }
 
   resetDisclaimer () {
     try {
       this.configManager.setConfirmed(false)
-    } catch (e) {
-      console.error(e)
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -358,8 +331,8 @@ module.exports = class MetamaskController {
         conversionDate: this.configManager.getConversionDate(),
       }
       cb(data)
-    } catch (e) {
-      cb(null, e)
+    } catch (err) {
+      cb(null, err)
     }
   }
 
@@ -376,8 +349,8 @@ module.exports = class MetamaskController {
     try {
       this.configManager.setShouldntShowWarning()
       cb()
-    } catch (e) {
-      cb(e)
+    } catch (err) {
+      cb(err)
     }
   }
 
@@ -422,8 +395,8 @@ module.exports = class MetamaskController {
     try {
       this.configManager.setGasMultiplier(gasMultiplier)
       cb()
-    } catch (e) {
-      cb(e)
+    } catch (err) {
+      cb(err)
     }
   }
 }
