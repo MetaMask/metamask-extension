@@ -1,13 +1,12 @@
 const assert = require('assert')
 const extend = require('xtend')
-const STORAGE_KEY = 'metamask-persistance-key'
-var configManagerGen = require('../lib/mock-config-manager')
-var configManager
-var testList
 const rp = require('request-promise')
 const nock = require('nock')
+var configManagerGen = require('../lib/mock-config-manager')
+const STORAGE_KEY = 'metamask-persistance-key'
 
 describe('config-manager', function() {
+  var configManager
 
   beforeEach(function() {
     window.localStorage = {} // Hacking localStorage support into JSDom

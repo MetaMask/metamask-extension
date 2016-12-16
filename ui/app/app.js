@@ -432,10 +432,6 @@ App.prototype.renderPrimary = function () {
     return h(NoticeScreen, {key: 'NoticeScreen'})
   }
 
-  if (!props.noActiveNotices) {
-    return h(NoticeScreen, {key: 'NoticeScreen'})
-  }
-
   // show current view
   switch (props.currentView.name) {
     case 'EthStoreWarning':
