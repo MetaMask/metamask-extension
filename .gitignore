@@ -1,5 +1,6 @@
 dist
 
+npm-debug.log
 node_modules
 temp
 .tmp
@@ -15,3 +16,4 @@ app/.DS_Store
 development/bundle.js
 builds.zip
 test/integration/bundle.js
+development/states.js

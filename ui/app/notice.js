@@ -1,33 +1,46 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../actions')
 const ReactMarkdown = require('react-markdown')
-const fs = require('fs')
-const path = require('path')
+const connect = require('react-redux').connect
+const actions = require('./actions')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
-const disclaimer = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'USER_AGREEMENT.md')).toString()
-module.exports = connect(mapStateToProps)(DisclaimerScreen)
+
+module.exports = connect(mapStateToProps)(Notice)
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    lastUnreadNotice: state.metamask.lastUnreadNotice,
+  }
 }
 
-inherits(DisclaimerScreen, Component)
-function DisclaimerScreen () {
+inherits(Notice, Component)
+function Notice () {
   Component.call(this)
 }
 
-DisclaimerScreen.prototype.render = function () {
-  const state = this.state || {disclaimerDisabled: true}
-  const disabled = state.disclaimerDisabled
+Notice.prototype.render = function () {
+  const props = this.props
+  const title = props.lastUnreadNotice.title
+  const date = props.lastUnreadNotice.date
 
   return (
     h('.flex-column.flex-center.flex-grow', [
+      h('h3.flex-center.text-transform-uppercacse.terms-header', {
+        style: {
+          background: '#EBEBEB',
+          color: '#AEAEAE',
+          width: '100%',
+          fontSize: '20px',
+          textAlign: 'center',
+          padding: 6,
+        },
+      }, [
+        title,
+      ]),
 
-      h('h3.flex-center.text-transform-uppercase.terms-header', {
+      h('h5.flex-center.text-transform-uppercacse.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
@@ -38,13 +51,12 @@ DisclaimerScreen.prototype.render = function () {
           padding: 6,
         },
       }, [
-        'MetaMask Terms & Conditions',
+        date,
       ]),
 
       h('style', `
 
         .markdown {
-          font-family: Times New Roman;
           overflow-x: hidden;
         }
         .markdown h1, .markdown h2, .markdown h3 {
@@ -64,49 +76,43 @@ DisclaimerScreen.prototype.render = function () {
         }
 
         .markdown a {
-          color: blue;
+          color: #df6b0e;
         }
 
       `),
 
       h('div.markdown', {
-        onScroll: (e) => {
-          var object = e.currentTarget
-          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
-            this.setState({disclaimerDisabled: false})
-          }
-        },
         style: {
           background: 'rgb(235, 235, 235)',
           height: '310px',
           padding: '6px',
-          width: '80%',
+          width: '90%',
           overflowY: 'scroll',
+          scroll: 'auto',
         },
       }, [
-
         h(ReactMarkdown, {
-          source: disclaimer,
+          source: props.lastUnreadNotice.body,
           skipHtml: true,
         }),
-
       ]),
 
       h('button', {
-        style: { marginTop: '18px' },
-        disabled,
-        onClick: () => this.props.dispatch(actions.agreeToDisclaimer()),
-      }, disabled ? 'Scroll Down to Enable' : 'I Agree'),
+        onClick: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+        style: {
+          marginTop: '18px',
+        },
+      }, 'Continue'),
     ])
   )
 }
 
-DisclaimerScreen.prototype.componentDidMount = function () {
+Notice.prototype.componentDidMount = function () {
   var node = findDOMNode(this)
   linker.setupListener(node)
 }
 
-DisclaimerScreen.prototype.componentWillUnmount = function () {
+Notice.prototype.componentWillUnmount = function () {
   var node = findDOMNode(this)
   linker.teardownListener(node)
 }

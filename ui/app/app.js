@@ -17,6 +17,8 @@ const AccountsScreen = require('./accounts')
 const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
+// notice
+const NoticeScreen = require('./notice')
 // other views
 const ConfigScreen = require('./config')
 const RevealSeedConfirmation = require('./recover-seed/confirmation')
@@ -41,6 +43,7 @@ function mapStateToProps (state) {
     isLoading: state.appState.isLoading,
     isConfirmed: state.metamask.isConfirmed,
     isEthConfirmed: state.metamask.isEthConfirmed,
+    noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
@@ -423,6 +426,10 @@ App.prototype.renderPrimary = function () {
   // show unlock screen
   if (!props.isUnlocked) {
     return h(UnlockScreen, {key: 'locked'})
+  }
+
+  if (!props.noActiveNotices) {
+    return h(NoticeScreen, {key: 'NoticeScreen'})
   }
 
   // show current view
