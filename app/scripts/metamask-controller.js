@@ -35,7 +35,9 @@ module.exports = class MetamaskController {
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
-    this.scheduleNoticeCheck()
+
+    // to be uncommented when retrieving notices from a remote server.
+    // this.scheduleNoticeCheck()
   }
 
   getState () {
