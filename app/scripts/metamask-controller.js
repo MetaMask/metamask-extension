@@ -21,9 +21,6 @@ module.exports = class MetamaskController {
     this.noticeController = new NoticeController({
       configManager: this.configManager,
     })
-    this.noticeController = new NoticeController({
-      configManager: this.configManager,
-    })
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.idStore.setStore(this.ethStore)

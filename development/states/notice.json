@@ -2,7 +2,6 @@
   "metamask": {
     "isInitialized": true,
     "isUnlocked": true,
-    "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {
       "0x24a1d059462456aa332d6da9117aa7f91a46f2ac": {
         "address": "0x24a1d059462456aa332d6da9117aa7f91a46f2ac",
