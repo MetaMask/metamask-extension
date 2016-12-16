@@ -35,7 +35,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
-          marginTop: 0,
+          marginTop: 36,
           marginBottom: 8,
           width: '100%',
           fontSize: '20px',
@@ -60,10 +60,8 @@ CreateVaultCompleteScreen.prototype.render = function () {
       h('button.primary', {
         onClick: () => this.confirmSeedWords(),
         style: {
-          position: 'absolute',
-          left: 0,
-          bottom: 0,
-          width: '100%',
+          margin: '24px',
+          fontSize: '0.9em',
         },
       }, 'I\'ve copied it somewhere safe'),
     ])

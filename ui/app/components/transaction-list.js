@@ -79,9 +79,10 @@ TransactionList.prototype.render = function () {
             height: '100%',
           },
         }, [
-          'No transaction history',
+          'No transaction history.',
         ]),
       ]),
     ])
   )
 }
+
