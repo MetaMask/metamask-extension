@@ -76,7 +76,7 @@ Notice.prototype.render = function () {
         }
 
         .markdown a {
-          color: blue;
+          color: #df6b0e;
         }
 
       `),
@@ -91,7 +91,6 @@ Notice.prototype.render = function () {
           scroll: 'auto',
         },
       }, [
-        `${props.lastUnreadNotice.title}`,
         h(ReactMarkdown, {
           source: props.lastUnreadNotice.body,
           skipHtml: true,

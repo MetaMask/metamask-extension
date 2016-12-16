@@ -7,5 +7,6 @@ Please use the new Ropsten Network as your new default test network.
 You can fund your Ropsten account using the buy button on your account page.
 
 Best wishes!
+
 The MetaMask Team
 
