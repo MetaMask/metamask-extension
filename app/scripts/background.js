@@ -17,7 +17,7 @@ const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: triggerUi,
   unlockAccountMessage: triggerUi,
-  showUnconfirmedTx: triggerUi,
+  showUnapprovedTx: triggerUi,
   // Persistence Methods:
   setData,
   loadData,
@@ -101,7 +101,7 @@ txManager.on('update', updateBadge)
 
 function updateBadge () {
   var label = ''
-  var unconfTxLen = controller.txManager.unConftxCount
+  var unconfTxLen = controller.txManager.unconfTxCount
   var unconfMsgs = messageManager.unconfirmedMsgs()
   var unconfMsgLen = Object.keys(unconfMsgs).length
   var count = unconfTxLen + unconfMsgLen
@@ -111,16 +111,6 @@ function updateBadge () {
   extension.browserAction.setBadgeText({ text: label })
   extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
 }
-
-// txManger :: tx approvals and rejection cb's
-
-txManager.on('signed', function (txId) {
-  this.execOnTxDoneCb(txId, true)
-})
-
-txManager.on('rejected', function (txId) {
-  this.execOnTxDoneCb(txId, false)
-})
 
 // data :: setters/getters
 

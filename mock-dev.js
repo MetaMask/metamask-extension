@@ -46,7 +46,7 @@ const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
   unlockAccountMessage: noop,
-  showUnconfirmedTx: noop,
+  showUnapprovedTx: noop,
   // Persistence Methods:
   setData,
   loadData,

@@ -2,7 +2,12 @@ const async = require('async')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const ethBinToOps = require('eth-bin-to-ops')
+
+/*
+tx-utils are utility methods for Transaction manager
+its passed a provider and that is passed to ethquery
+and used to do things like calculate gas of a tx.
+*/
 
 module.exports = class txProviderUtils {
   constructor (provider) {
@@ -19,26 +24,6 @@ module.exports = class txProviderUtils {
         self.setTxGas.bind(self, txData, block.gasLimit),
       ], cb)
     })
-  }
-
-    // perform static analyis on the target contract code
-  analyzeForDelegateCall (txParams, cb) {
-    if (txParams.to) {
-      this.query.getCode(txParams.to, function (err, result) {
-        if (err) return cb(err)
-
-        var code = ethUtil.toBuffer(result)
-        if (code !== '0x') {
-          var ops = ethBinToOps(code)
-          var containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
-          cb(containsDelegateCall)
-        } else {
-          cb()
-        }
-      })
-    } else {
-      cb()
-    }
   }
 
   estimateTxGas (txData, blockGasLimitHex, cb) {
@@ -60,10 +45,6 @@ module.exports = class txProviderUtils {
       txData.simulationFails = true
     }
     cb()
-  }
-
-  handleFork (block) {
-
   }
 
   setTxGas (txData, blockGasLimitHex, cb) {

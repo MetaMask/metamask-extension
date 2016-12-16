@@ -8,7 +8,6 @@ const normalize = require('./sig-util').normalize
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
 const MORDEN_RPC = MetamaskConfig.network.morden
-const txLimit = 40
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -19,8 +18,6 @@ const txLimit = 40
  */
 module.exports = ConfigManager
 function ConfigManager (opts) {
-  this.txLimit = txLimit
-
   // ConfigManager is observable and will emit updates
   this._subs = []
 

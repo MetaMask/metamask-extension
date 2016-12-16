@@ -100,8 +100,6 @@ module.exports = class KeyringController extends EventEmitter {
       isInitialized: (!!wallet || !!vault),
       isUnlocked: Boolean(this.password),
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
-      transactions: this.txManager.getTxList(),
-      unconfTxs: this.txManager.getUnapprovedTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
       selectedAccount: address,
@@ -319,89 +317,10 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
 
-  // SIGNING RELATED METHODS
+  // SIGNING METHODS
   //
-  // SIGN, SUBMIT TX, CANCEL, AND APPROVE.
-  // THIS SECTION INVOLVES THE REQUEST, STORING, AND SIGNING OF DATA
-  // WITH THE KEYS STORED IN THIS CONTROLLER.
-
-
-  // Add Unconfirmed Transaction
-  // @object txParams
-  // @function onTxDoneCb
-  // @function cb
-  //
-  // Calls back `cb` with @object txData = { txParams }
-  // Calls back `onTxDoneCb` with `true` or an `error` depending on result.
-  //
-  // Prepares the given `txParams` for final confirmation and approval.
-  // Estimates gas and other preparatory steps.
-  // Caches the requesting Dapp's callback, `onTxDoneCb`, for resolution later.
-  addUnconfirmedTransaction (txParams, onTxDoneCb, cb) {
-    const configManager = this.configManager
-    const txManager = this.txManager
-    // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var txId = createId()
-    txParams.metamaskId = txId
-    txParams.metamaskNetworkId = this.getNetwork()
-    var txData = {
-      id: txId,
-      txParams: txParams,
-      time: time,
-      status: 'unapproved',
-      gasMultiplier: configManager.getGasMultiplier() || 1,
-      metamaskNetworkId: this.getNetwork(),
-    }
-    // keep the onTxDoneCb around for after approval/denial (requires user interaction)
-    // This onTxDoneCb fires completion to the Dapp's write operation.
-    txManager.txProviderUtils.analyzeGasUsage(txData, this.txDidComplete.bind(this, txData, onTxDoneCb, cb))
-    // calculate metadata for tx
-  }
-
-  txDidComplete (txData, onTxDoneCb, cb, err) {
-    if (err) return cb(err)
-    const txManager = this.txManager
-    txManager.addTx(txData, onTxDoneCb)
-    // signal update
-    this.emit('update')
-    // signal completion of add tx
-    cb(null, txData)
-  }
-
-  // Cancel Transaction
-  // @string txId
-  // @function cb
-  //
-  // Calls back `cb` with no error if provided.
-  //
-  // Forgets any tx matching `txId`.
-  cancelTransaction (txId, cb) {
-    const txManager = this.txManager
-    txManager.setTxStatusRejected(txId)
-
-    if (cb && typeof cb === 'function') {
-      cb()
-    }
-  }
-
-  // Approve Transaction
-  // @string txId
-  // @function cb
-  //
-  // Calls back `cb` with no error always.
-  //
-  // Attempts to sign a Transaction with `txId`
-  // and submit it to the blockchain.
-  //
-  // Calls back the cached Dapp's confirmation callback, also.
-  approveTransaction (txId, cb) {
-    const txManager = this.txManager
-    txManager.setTxStatusSigned(txId)
-    this.emit('update')
-    cb()
-  }
-
+  // This method signs tx and returns a promise for
+  // TX Manager to update the state after signing
   signTransaction (txParams, cb) {
     try {
       const address = normalize(txParams.from)
@@ -420,20 +339,10 @@ module.exports = class KeyringController extends EventEmitter {
         txParams.data = normalize(txParams.data)
         txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
         txParams.nonce = normalize(txParams.nonce)
-
         const tx = new Transaction(txParams)
         return keyring.signTransaction(address, tx)
-      })
-      .then((tx) => {
-        // Add the tx hash to the persisted meta-tx object
-        var txHash = ethUtil.bufferToHex(tx.hash())
-        var metaTx = this.txManager.getTx(txParams.metamaskId)
-        metaTx.hash = txHash
-        this.txManager.updateTx(metaTx)
-
-        // return raw serialized tx
-        var rawTx = ethUtil.bufferToHex(tx.serialize())
-        cb(null, rawTx)
+      }).then((tx) => {
+        return {tx, txParams, cb}
       })
     } catch (e) {
       cb(e)

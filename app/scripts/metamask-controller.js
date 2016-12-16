@@ -11,7 +11,6 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 
-
 module.exports = class MetamaskController {
 
   constructor (opts) {
@@ -19,12 +18,6 @@ module.exports = class MetamaskController {
     this.opts = opts
     this.listeners = []
     this.configManager = new ConfigManager(opts)
-    this.txManager = new TxManager({
-      TxListFromStore: this.configManager.getTxList(),
-      txLimit: this.configManager.txLimit,
-      setTxList: this.configManager.setTxList.bind(this.configManager),
-    })
-
     this.keyringController = new KeyringController({
       configManager: this.configManager,
       txManager: this.txManager,
@@ -33,9 +26,17 @@ module.exports = class MetamaskController {
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.keyringController.setStore(this.ethStore)
-    this.txManager.setProvider(this.provider)
     this.getNetwork()
     this.messageManager = messageManager
+    this.txManager = new TxManager({
+      txList: this.configManager.getTxList(),
+      txHistoryLimit: 40,
+      setTxList: this.configManager.setTxList.bind(this.configManager),
+      getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
+      getNetwork: this.getStateNetwork.bind(this),
+      provider: this.provider,
+      blockTracker: this.provider,
+    })
     this.publicConfigStore = this.initPublicConfigStore()
 
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
@@ -52,7 +53,8 @@ module.exports = class MetamaskController {
       this.state,
       this.ethStore.getState(),
       this.configManager.getConfig(),
-      this.keyringController.getState()
+      this.keyringController.getState(),
+      this.txManager.getState()
     )
   }
 
@@ -85,14 +87,14 @@ module.exports = class MetamaskController {
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
 
       // signing methods
-      approveTransaction: keyringController.approveTransaction.bind(keyringController),
-      cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
+      approveTransaction: txManager.approveTransaction.bind(txManager),
+      cancelTransaction: txManager.cancelTransaction.bind(txManager),
       signMessage: keyringController.signMessage.bind(keyringController),
       cancelMessage: keyringController.cancelMessage.bind(keyringController),
 
       // forward directly to txManager
-      getUnapprovedTxList: txManager.getTxList.bind(txManager),
-      getFilterdTxList: txManager.getFilterdTxList.bind(txManager),
+      getUnapprovedTxList: txManager.getUnapprovedTxList.bind(txManager),
+      getFilteredTxList: txManager.getFilteredTxList.bind(txManager),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -150,7 +152,8 @@ module.exports = class MetamaskController {
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: (...args) => {
-        keyringController.signTransaction(...args)
+        var signedTxPromise = keyringController.signTransaction(...args)
+        this.txManager.resolveSignedTransaction(signedTxPromise)
         this.sendUpdate()
       },
 
@@ -166,7 +169,6 @@ module.exports = class MetamaskController {
     var web3 = new Web3(provider)
     this.web3 = web3
     keyringController.web3 = web3
-    this.txManager.web3 = web3
     provider.on('block', this.processBlock.bind(this))
     provider.on('error', this.getNetwork.bind(this))
 
@@ -220,13 +222,13 @@ module.exports = class MetamaskController {
   }
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
-    const keyringController = this.keyringController
+    const txManager = this.txManager
     const err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
-    keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
+    txManager.addUnapprovedTransaction(txParams, onTxDoneCb, (err, txData) => {
       if (err) return onTxDoneCb(err)
       this.sendUpdate()
-      this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
+      this.opts.showUnapprovedTx(txParams, txData, onTxDoneCb)
     })
   }
 

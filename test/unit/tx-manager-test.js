@@ -1,5 +1,6 @@
 const assert = require('assert')
 const extend = require('xtend')
+const EventEmitter = require('events')
 const STORAGE_KEY = 'metamask-persistance-key'
 const TransactionManager = require('../../app/scripts/transaction-manager')
 
@@ -9,10 +10,11 @@ describe('Transaction Manager', function() {
   const onTxDoneCb = () => true
   beforeEach(function() {
     txManager = new TransactionManager ({
-      TxListFromStore: [],
+      txList: [],
       setTxList: () => {},
       provider: "testnet",
-      txLimit: 40,
+      txHistoryLimit: 10,
+      blockTracker: new EventEmitter(),
     })
   })
 
@@ -38,7 +40,7 @@ describe('Transaction Manager', function() {
 
   describe('#addTx', function() {
     it('adds a tx returned in getTxList', function() {
-      var tx = { id: 1 }
+      var tx = { id: 1, status: 'confirmed',}
       txManager.addTx(tx, onTxDoneCb)
       var result = txManager.getTxList()
       assert.ok(Array.isArray(result))
@@ -47,14 +49,40 @@ describe('Transaction Manager', function() {
     })
 
     it('cuts off early txs beyond a limit', function() {
-      const limit = txManager.txLimit
+      const limit = txManager.txHistoryLimit
       for (let i = 0; i < limit + 1; i++) {
-        let tx = { id: i, time: new Date()}
+        let tx = { id: i, time: new Date(), status: 'confirmed'}
         txManager.addTx(tx, onTxDoneCb)
       }
       var result = txManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
       assert.equal(result[0].id, 1, 'early txs truncted')
+    })
+
+    it('cuts off early txs beyond a limit weather or not it is confirmed or rejected', function() {
+      const limit = txManager.txHistoryLimit
+      for (let i = 0; i < limit + 1; i++) {
+        let tx = { id: i, time: new Date(), status: 'rejected'}
+        txManager.addTx(tx, onTxDoneCb)
+      }
+      var result = txManager.getTxList()
+      assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
+      assert.equal(result[0].id, 1, 'early txs truncted')
+    })
+
+    it('cuts off early txs beyond a limit but does not cut unapproved txs', function() {
+      var unconfirmedTx = { id: 0, time: new Date(), status: 'unapproved'}
+      txManager.addTx(unconfirmedTx, onTxDoneCb)
+      const limit = txManager.txHistoryLimit
+      for (let i = 1; i < limit + 1; i++) {
+        let tx = { id: i, time: new Date(), status: 'confirmed'}
+        txManager.addTx(tx, onTxDoneCb)
+      }
+      var result = txManager.getTxList()
+      assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
+      assert.equal(result[0].id, 0, 'first tx should still be their')
+      assert.equal(result[0].status, 'unapproved', 'first tx should be unapproved')
+      assert.equal(result[1].id, 2, 'early txs truncted')
     })
   })
 
@@ -72,13 +100,10 @@ describe('Transaction Manager', function() {
     it('should emit a signed event to signal the exciton of callback', (done) => {
       this.timeout(10000)
       var tx = { id: 1, status: 'unapproved' }
-      txManager.on('signed', function (txId) {
-        var approvalCb = this._unconfTxCbs[txId]
-        assert(approvalCb(), 'txCb was retrieved')
-        assert.equal(txId, 1)
-        assert(true, 'event listener has been triggered')
+      let onTxDoneCb = function (err, txId) {
+        assert(true, 'event listener has been triggered and onTxDoneCb executed')
         done()
-      })
+      }
       txManager.addTx(tx, onTxDoneCb)
       txManager.setTxStatusSigned(1)
     })
@@ -87,7 +112,7 @@ describe('Transaction Manager', function() {
   describe('#setTxStatusRejected', function() {
     it('sets the tx status to rejected', function() {
       var tx = { id: 1, status: 'unapproved' }
-      txManager.addTx(tx)
+      txManager.addTx(tx, onTxDoneCb)
       txManager.setTxStatusRejected(1)
       var result = txManager.getTxList()
       assert.ok(Array.isArray(result))
@@ -98,13 +123,10 @@ describe('Transaction Manager', function() {
     it('should emit a rejected event to signal the exciton of callback', (done) => {
       this.timeout(10000)
       var tx = { id: 1, status: 'unapproved' }
-      txManager.on('rejected', function (txId) {
-        var approvalCb = this._unconfTxCbs[txId]
-        assert(approvalCb(), 'txCb was retrieved')
-        assert.equal(txId, 1)
-        assert(true, 'event listener has been triggered')
+      let onTxDoneCb = function (err, txId) {
+        assert(true, 'event listener has been triggered and onTxDoneCb executed')
         done()
-      })
+      }
       txManager.addTx(tx, onTxDoneCb)
       txManager.setTxStatusRejected(1)
     })
@@ -128,7 +150,6 @@ describe('Transaction Manager', function() {
       let result = txManager.getUnapprovedTxList()
       assert.equal(typeof result, 'object')
       assert.equal(result['1'].status, 'unapproved')
-      assert.equal(result['0'], undefined)
       assert.equal(result['2'], undefined)
     })
   })
@@ -142,7 +163,7 @@ describe('Transaction Manager', function() {
     })
   })
 
-  describe('#getFilterdTxList', function() {
+  describe('#getFilteredTxList', function() {
     it('returns a tx with the requested data', function() {
       var foop = 0
       var zoop = 0
@@ -157,12 +178,12 @@ describe('Transaction Manager', function() {
         }, onTxDoneCb)
         evryOther ? ++foop : ++zoop
       }
-      assert.equal(txManager.getFilterdTxList({status: 'confirmed', from: 'zoop'}).length, zoop)
-      assert.equal(txManager.getFilterdTxList({status: 'confirmed', to: 'foop'}).length, zoop)
-      assert.equal(txManager.getFilterdTxList({status: 'confirmed', from: 'foop'}).length, 0)
-      assert.equal(txManager.getFilterdTxList({status: 'confirmed'}).length, zoop)
-      assert.equal(txManager.getFilterdTxList({from: 'foop'}).length, foop)
-      assert.equal(txManager.getFilterdTxList({from: 'zoop'}).length, zoop)
+      assert.equal(txManager.getFilteredTxList({status: 'confirmed', from: 'zoop'}).length, zoop)
+      assert.equal(txManager.getFilteredTxList({status: 'confirmed', to: 'foop'}).length, zoop)
+      assert.equal(txManager.getFilteredTxList({status: 'confirmed', from: 'foop'}).length, 0)
+      assert.equal(txManager.getFilteredTxList({status: 'confirmed'}).length, zoop)
+      assert.equal(txManager.getFilteredTxList({from: 'foop'}).length, foop)
+      assert.equal(txManager.getFilteredTxList({from: 'zoop'}).length, zoop)
     })
   })
 
