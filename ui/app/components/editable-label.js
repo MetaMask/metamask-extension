@@ -11,18 +11,40 @@ function EditableLabel () {
 }
 
 EditableLabel.prototype.render = function () {
-  return h('div.name-label', {
-    contentEditable: true,
-    style: {
-      outline: 'none',
-      marginTop: '0.5rem',
-    },
-    onInput: (event) => this.saveText(),
-  }, this.props.children)
+  const props = this.props
+  const state = this.state
+
+  if (state && state.isEditingLabel) {
+    return h('div.editable-label', [
+      h('input.sizing-input', {
+        defaultValue: props.textValue,
+        maxLength: '20',
+        onKeyPress: (event) => {
+          this.saveIfEnter(event)
+        },
+      }),
+      h('button.editable-button', {
+        onClick: () => this.saveText(),
+      }, 'Save'),
+    ])
+  } else {
+    return h('div.name-label', {
+      onClick: (event) => {
+        this.setState({ isEditingLabel: true })
+      },
+    }, this.props.children)
+  }
+}
+
+EditableLabel.prototype.saveIfEnter = function (event) {
+  if (event.key === 'Enter') {
+    this.saveText()
+  }
 }
 
 EditableLabel.prototype.saveText = function () {
-  var text = findDOMNode(this).textContent.trim()
+  var container = findDOMNode(this)
+  var text = container.querySelector('.editable-label input').value
   var truncatedText = text.substring(0, 20)
   this.props.saveText(truncatedText)
   this.setState({ isEditingLabel: false, textLabel: truncatedText })
