@@ -4,6 +4,7 @@
 
 - Fix broken reload detection.
 - Fix transaction forever cached-as-pending bug.
+- Removed Morden testnet provider from provider menu.
 
 ## 2.13.11 2016-11-23
 
