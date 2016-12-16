@@ -23,10 +23,24 @@ function Notice () {
 Notice.prototype.render = function () {
   const props = this.props
   const title = props.lastUnreadNotice.title
+  const date = props.lastUnreadNotice.date
 
   return (
     h('.flex-column.flex-center.flex-grow', [
       h('h3.flex-center.text-transform-uppercacse.terms-header', {
+        style: {
+          background: '#EBEBEB',
+          color: '#AEAEAE',
+          width: '100%',
+          fontSize: '20px',
+          textAlign: 'center',
+          padding: 6,
+        },
+      }, [
+        title,
+      ]),
+
+      h('h5.flex-center.text-transform-uppercacse.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
@@ -37,7 +51,7 @@ Notice.prototype.render = function () {
           padding: 6,
         },
       }, [
-        title,
+        date,
       ]),
 
       h('style', `
