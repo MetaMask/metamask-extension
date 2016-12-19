@@ -3,6 +3,7 @@
 ## Current Master
 
 - Temporarily disable extension reload detection causing infinite reload bug.
+
 ## 2.14.0 2016-12-16
 
 - Removed Morden testnet provider from provider menu.
