@@ -16,6 +16,8 @@ function reduceMetamask (state, action) {
     currentFiat: 'USD',
     conversionRate: 0,
     conversionDate: 'N/A',
+    noActiveNotices: true,
+    lastUnreadNotice: undefined,
   }, state.metamask)
 
   switch (action.type) {
@@ -24,6 +26,17 @@ function reduceMetamask (state, action) {
       newState = extend(metamaskState)
       delete newState.seedWords
       return newState
+
+    case actions.SHOW_NOTICE:
+      return extend(metamaskState, {
+        noActiveNotices: false,
+        lastUnreadNotice: action.value,
+      })
+
+    case actions.CLEAR_NOTICES:
+      return extend(metamaskState, {
+        noActiveNotices: true,
+      })
 
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)

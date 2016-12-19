@@ -248,6 +248,12 @@ function reduceApp (state, action) {
         forgottenPassword: false,
       })
 
+    case actions.SHOW_NOTICE:
+      return extend(appState, {
+        transForward: true,
+        isLoading: false,
+      })
+
     case actions.REVEAL_ACCOUNT:
       return extend(appState, {
         scrollToBottom: true,
