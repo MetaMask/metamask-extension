@@ -2,7 +2,7 @@
 
 ## Current Master
 
-- Fix broken reload detection.
+- Temporarily disable extension reload detection causing infinite reload bug.
 - Fix transaction forever cached-as-pending bug.
 - Removed Morden testnet provider from provider menu.
 
