@@ -72,6 +72,7 @@ function reduceApp (state, action) {
           name: 'restoreVault',
         },
         transForward: true,
+        forgottenPassword: true,
       })
 
     case actions.SHOW_INIT_MENU:
@@ -169,7 +170,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         warning: null,
         transForward: true,
-        forgottenPassword: !appState.forgottenPassword,
+        forgottenPassword: false,
         currentView: {
           name: 'UnlockScreen',
         },

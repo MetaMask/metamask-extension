@@ -14,6 +14,7 @@ function RestoreVaultScreen () {
 function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
+    forgottenPassword: state.appState.forgottenPassword,
   }
 }
 
@@ -100,14 +101,17 @@ RestoreVaultScreen.prototype.render = function () {
         }, 'OK'),
 
       ]),
-
     ])
 
   )
 }
 
 RestoreVaultScreen.prototype.showInitializeMenu = function () {
-  this.props.dispatch(actions.showInitializeMenu())
+  if (this.props.forgottenPassword) {
+    this.props.dispatch(actions.backToUnlockView())
+  } else {
+    this.props.dispatch(actions.showInitializeMenu())
+  }
 }
 
 RestoreVaultScreen.prototype.createOnEnter = function (event) {
