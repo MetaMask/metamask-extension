@@ -2,8 +2,8 @@
 cleanContextForImports()
 require('web3/dist/web3.min.js')
 const LocalMessageDuplexStream = require('post-message-stream')
-const PingStream = require('ping-pong-stream/ping')
-const endOfStream = require('end-of-stream')
+// const PingStream = require('ping-pong-stream/ping')
+// const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
@@ -40,13 +40,14 @@ reloadStream.once('data', triggerReload)
 
 // setup ping timeout autoreload
 // LocalMessageDuplexStream does not self-close, so reload if pingStream fails
-var pingChannel = inpageProvider.multiStream.createStream('pingpong')
-var pingStream = new PingStream({ objectMode: true })
+// var pingChannel = inpageProvider.multiStream.createStream('pingpong')
+// var pingStream = new PingStream({ objectMode: true })
 // wait for first successful reponse
-metamaskStream.once('data', function(){
-  pingStream.pipe(pingChannel).pipe(pingStream)
-})
-endOfStream(pingStream, triggerReload)
+// disable pingStream until https://github.com/MetaMask/metamask-plugin/issues/746 is resolved more gracefully
+// metamaskStream.once('data', function(){
+//   pingStream.pipe(pingChannel).pipe(pingStream)
+// })
+// endOfStream(pingStream, triggerReload)
 
 // set web3 defaultAcount
 inpageProvider.publicConfigStore.subscribe(function (state) {
