@@ -73,7 +73,7 @@ module.exports = class KeyringController extends EventEmitter {
   // or accept a state-resolving promise to consume their results.
   //
   // Not all methods end with this, that might be a nice refactor.
-  fullUpdate() {
+  fullUpdate () {
     this.emit('update')
     return Promise.resolve(this.getState())
   }
@@ -586,7 +586,6 @@ module.exports = class KeyringController extends EventEmitter {
   // Attempts to sign the provided @object msgParams.
   signMessage (msgParams, cb) {
     try {
-
       const msgId = msgParams.metamaskId
       delete msgParams.metamaskId
       const approvalCb = this._unconfMsgCbs[msgId] || noop

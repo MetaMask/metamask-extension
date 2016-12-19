@@ -177,13 +177,13 @@ function tryUnlockMetamask (password) {
   }
 }
 
-function transitionForward() {
+function transitionForward () {
   return {
     type: this.TRANSITION_FORWARD,
   }
 }
 
-function transitionBackward() {
+function transitionBackward () {
   return {
     type: this.TRANSITION_BACKWARD,
   }

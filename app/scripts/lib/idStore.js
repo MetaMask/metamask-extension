@@ -258,7 +258,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
 
   function estimateGas (cb) {
     var estimationParams = extend(txParams)
-    query.getBlockByNumber('latest', true, function(err, block){
+    query.getBlockByNumber('latest', true, function (err, block) {
       if (err) return cb(err)
       // check if gasLimit is already specified
       const gasLimitSpecified = Boolean(txParams.gas)
@@ -267,7 +267,7 @@ IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDone
         estimationParams.gas = block.gasLimit
       }
       // run tx, see if it will OOG
-      query.estimateGas(estimationParams, function(err, estimatedGasHex){
+      query.estimateGas(estimationParams, function (err, estimatedGasHex) {
         if (err) return cb(err.message || err)
         // all gas used - must be an error
         if (estimatedGasHex === estimationParams.gas) {
