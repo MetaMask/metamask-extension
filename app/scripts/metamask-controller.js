@@ -2,6 +2,7 @@ const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
+const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
@@ -22,6 +23,13 @@ module.exports = class MetamaskController {
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
+    // notices
+    this.noticeController = new NoticeController({
+      configManager: this.configManager,
+    })
+    this.noticeController.updateNoticesList()
+    // to be uncommented when retrieving notices from a remote server.
+    // this.noticeController.startPolling()
     this.provider = this.initializeProvider(opts)
     this.ethStore = new EthStore(this.provider)
     this.keyringController.setStore(this.ethStore)
@@ -43,12 +51,14 @@ module.exports = class MetamaskController {
       this.state,
       this.ethStore.getState(),
       this.configManager.getConfig(),
-      this.keyringController.getState()
+      this.keyringController.getState(),
+      this.noticeController.getState()
     )
   }
 
   getApi () {
     const keyringController = this.keyringController
+    const noticeController = this.noticeController
 
     return {
       getState: (cb) => { cb(null, this.getState()) },
@@ -85,6 +95,9 @@ module.exports = class MetamaskController {
       buyEth: this.buyEth.bind(this),
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
+      // notices
+      checkNotices: noticeController.updateNoticesList.bind(noticeController),
+      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
     }
   }
 
@@ -268,7 +281,7 @@ module.exports = class MetamaskController {
   setTOSHash (hash) {
     try {
       this.configManager.setTOSHash(hash)
-    } catch (e) {
+    } catch (err) {
       console.error('Error in setting terms of service hash.')
     }
   }
@@ -280,17 +293,19 @@ module.exports = class MetamaskController {
         this.resetDisclaimer()
         this.setTOSHash(global.TOS_HASH)
       }
-    } catch (e) {
+    } catch (err) {
       console.error('Error in checking TOS change.')
     }
   }
+
+  // disclaimer
 
   agreeToDisclaimer (cb) {
     try {
       this.configManager.setConfirmedDisclaimer(true)
       cb()
-    } catch (e) {
-      cb(e)
+    } catch (err) {
+      cb(err)
     }
   }
 
@@ -313,8 +328,8 @@ module.exports = class MetamaskController {
         conversionDate: this.configManager.getConversionDate(),
       }
       cb(data)
-    } catch (e) {
-      cb(null, e)
+    } catch (err) {
+      cb(null, err)
     }
   }
 
@@ -387,8 +402,8 @@ module.exports = class MetamaskController {
     try {
       this.configManager.setGasMultiplier(gasMultiplier)
       cb()
-    } catch (e) {
-      cb(e)
+    } catch (err) {
+      cb(err)
     }
   }
 

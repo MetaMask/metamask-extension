@@ -2,6 +2,17 @@
 
 ## Current Master
 
+- Temporarily disable extension reload detection causing infinite reload bug.
+
+## 2.14.0 2016-12-16
+
+- Removed Morden testnet provider from provider menu.
+- Add support for notices.
+- Fix broken reload detection.
+- Fix transaction forever cached-as-pending bug.
+
+## 2.13.11 2016-11-23
+
 - Add support for synchronous RPC method "eth_uninstallFilter".
 
 ## 2.13.10 2016-11-22

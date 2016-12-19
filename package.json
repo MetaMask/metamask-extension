@@ -12,12 +12,14 @@
     "test": "npm run fastTest && npm run ci && npm run lint",
     "fastTest": "METAMASK_ENV=test mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
-    "ui": "node development/genStates.js && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
+    "genStates": "node development/genStates.js",
+    "ui": "npm run genStates && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
-    "buildMock": "browserify ./mock-dev.js -o ./development/bundle.js",
+    "buildMock": "npm run genStates && browserify ./mock-dev.js -o ./development/bundle.js",
     "testem": "npm run buildMock && testem",
     "ci": "npm run buildMock && npm run buildCiUnits && testem ci -P 2",
-    "announce": "node development/announcer.js"
+    "announce": "node development/announcer.js",
+    "generateNotice": "node development/notice-generator.js"
   },
   "browserify": {
     "transform": [
@@ -50,6 +52,8 @@
     "ethereumjs-util": "^4.4.0",
     "ethereumjs-wallet": "^0.6.0",
     "express": "^4.14.0",
+    "extension-link-enabler": "^1.0.0",
+    "extensionizer": "^1.0.0",
     "gulp-eslint": "^2.0.0",
     "hat": "0.0.3",
     "identicon.js": "^1.2.1",
@@ -87,7 +91,7 @@
     "through2": "^2.0.1",
     "vreme": "^3.0.2",
     "web3": "0.17.0-beta",
-    "web3-provider-engine": "^8.1.5",
+    "web3-provider-engine": "^8.1.14",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
   },
@@ -101,6 +105,7 @@
     "chai": "^3.5.0",
     "deep-freeze-strict": "^1.1.1",
     "del": "^2.2.0",
+    "fs-promise": "^1.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-brfs": "^0.1.0",
     "gulp-if": "^2.0.1",
@@ -120,6 +125,8 @@
     "mocha-jsdom": "^1.1.0",
     "mocha-sinon": "^1.1.5",
     "nock": "^8.0.0",
+    "open": "0.0.5",
+    "prompt": "^1.0.0",
     "qs": "^6.2.0",
     "qunit": "^0.9.1",
     "sinon": "^1.17.3",
