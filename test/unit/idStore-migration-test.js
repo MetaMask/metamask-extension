@@ -83,7 +83,6 @@ describe('IdentityStore to KeyringController migration', function() {
       keyringController.configManager.setWallet('something')
       const state = keyringController.getState()
       assert(state.isInitialized, 'old vault counted as initialized.')
-      console.dir(state)
       assert.equal(state.lostAccounts.length, 0, 'no lost accounts')
     })
   })

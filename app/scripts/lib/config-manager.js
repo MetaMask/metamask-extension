@@ -441,6 +441,5 @@ ConfigManager.prototype.setLostAccounts = function (lostAccounts) {
 
 ConfigManager.prototype.getLostAccounts = function () {
   var data = this.getData()
-  return ('lostAccounts' in data) && data.lostAccounts || []
+  return data.lostAccounts || []
 }
-
