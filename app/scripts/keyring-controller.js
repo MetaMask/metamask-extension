@@ -5,8 +5,9 @@ const bip39 = require('bip39')
 const Transaction = require('ethereumjs-tx')
 const EventEmitter = require('events').EventEmitter
 const filter = require('promise-filter')
+const encryptor = require('browser-passworder')
+
 const normalize = require('./lib/sig-util').normalize
-const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const BN = ethUtil.BN
