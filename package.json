@@ -37,6 +37,7 @@
   "dependencies": {
     "async": "^1.5.2",
     "bip39": "^2.2.0",
+    "browser-passworder": "^1.0.1",
     "browserify-derequire": "^0.9.4",
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
