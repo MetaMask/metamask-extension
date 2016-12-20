@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 2.14.1 2016-12-20
+
 - Temporarily disable extension reload detection causing infinite reload bug.
 
 ## 2.14.0 2016-12-16
