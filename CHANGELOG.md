@@ -2,7 +2,7 @@
 
 ## Current Master
 
-- Removed network Id 2 from the explorer links and added network Id 3
+- Fixed ropsten transaction links
 - Temporarily disable extension reload detection causing infinite reload bug.
 
 ## 2.14.0 2016-12-16
