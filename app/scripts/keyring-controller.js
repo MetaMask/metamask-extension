@@ -114,7 +114,6 @@ module.exports = class KeyringController extends EventEmitter {
       conversionDate: this.configManager.getConversionDate(),
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       identities: this.identities,
-      lostAccounts: this.configManager.getLostAccounts(),
     }
   }
 

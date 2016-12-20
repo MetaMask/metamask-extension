@@ -52,7 +52,9 @@ module.exports = class MetamaskController {
       this.ethStore.getState(),
       this.configManager.getConfig(),
       this.keyringController.getState(),
-      this.noticeController.getState()
+      this.noticeController.getState(), {
+        lostAccounts: this.configManager.getLostAccounts(),
+      }
     )
   }
 
@@ -71,6 +73,7 @@ module.exports = class MetamaskController {
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
+      markAccountsFound: this.markAccountsFound.bind(this),
 
       // forward directly to keyringController
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
@@ -409,5 +412,17 @@ module.exports = class MetamaskController {
 
   getStateNetwork () {
     return this.state.network
+  }
+
+  markAccountsFound(cb) {
+    this.configManager.setLostAccounts([])
+    this.keyringController.getAccounts()
+    .then((accounts) => {
+      return this.keyringController.setSelectedAccount(accounts[0])
+    })
+    .then(() => {
+      this.sendUpdate()
+      cb(null, this.getState())
+    })
   }
 }
