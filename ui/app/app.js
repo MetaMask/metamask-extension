@@ -16,7 +16,7 @@ const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
-const NoticeScreen = require('./notice')
+const NoticeScreen = require('./components/notice')
 const lostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
@@ -374,7 +374,7 @@ App.prototype.renderPrimary = function () {
     return h(NoticeScreen, {
       notice: props.lastUnreadNotice,
       key: 'NoticeScreen',
-      onConfirm: () => props.dispatch(actions.markNoticeRead(notice)),
+      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
     })
   } else if (props.lostAccounts && props.lostAccounts.length > 0) {
     return h(NoticeScreen, {

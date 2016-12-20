@@ -2,8 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const ReactMarkdown = require('react-markdown')
-const connect = require('react-redux').connect
-const actions = require('./actions')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
 
