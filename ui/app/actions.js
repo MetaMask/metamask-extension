@@ -26,6 +26,8 @@ var actions = {
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+  forgotPassword: forgotPassword,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
@@ -184,13 +186,13 @@ function tryUnlockMetamask (password) {
   }
 }
 
-function transitionForward() {
+function transitionForward () {
   return {
     type: this.TRANSITION_FORWARD,
   }
 }
 
-function transitionBackward() {
+function transitionBackward () {
   return {
     type: this.TRANSITION_BACKWARD,
   }
@@ -384,6 +386,12 @@ function showCreateVault () {
 function showRestoreVault () {
   return {
     type: actions.SHOW_RESTORE_VAULT,
+  }
+}
+
+function forgotPassword () {
+  return {
+    type: actions.FORGOT_PASSWORD,
   }
 }
 
