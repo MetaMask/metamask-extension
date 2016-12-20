@@ -33,15 +33,15 @@ class HdKeyring extends EventEmitter {
     this.mnemonic = null
     this.root = null
 
-    if ('mnemonic' in opts) {
+    if (opts.mnemonic) {
       this._initFromMnemonic(opts.mnemonic)
     }
 
-    if ('numberOfAccounts' in opts) {
-      this.addAccounts(opts.numberOfAccounts)
+    if (opts.numberOfAccounts) {
+      return this.addAccounts(opts.numberOfAccounts)
     }
 
-    return Promise.resolve()
+    return Promise.resolve([])
   }
 
   addAccounts (numberOfAccounts = 1) {

@@ -1,5 +1,8 @@
 const IdentityStore = require('./idStore')
-
+const HdKeyring = require('../keyrings/hd')
+const sigUtil = require('./sig-util')
+const normalize = sigUtil.normalize
+const denodeify = require('denodeify')
 
 module.exports = class IdentityStoreMigrator {
 
@@ -23,15 +26,13 @@ module.exports = class IdentityStoreMigrator {
       return Promise.resolve(null)
     }
 
-    return new Promise((resolve, reject) => {
-      this.idStore.submitPassword(password, (err) => {
-        if (err) return reject(err)
-        try {
-          resolve(this.serializeVault())
-        } catch (e) {
-          reject(e)
-        }
-      })
+    const idStore = this.idStore
+    const submitPassword = denodeify(idStore.submitPassword.bind(idStore))
+
+    return submitPassword(password)
+    .then(() => {
+      const serialized = this.serializeVault()
+      return this.checkForLostAccounts(serialized)
     })
   }
 
@@ -43,6 +44,28 @@ module.exports = class IdentityStoreMigrator {
       type: 'HD Key Tree',
       data: { mnemonic, numberOfAccounts },
     }
+  }
+
+  checkForLostAccounts (serialized) {
+    const hd = new HdKeyring()
+    return hd.deserialize(serialized.data)
+    .then((hexAccounts) => {
+      const newAccounts = hexAccounts.map(normalize)
+      const oldAccounts = this.idStore._getAddresses().map(normalize)
+      const lostAccounts = oldAccounts.reduce((result, account) => {
+        if (newAccounts.includes(account)) {
+          return result
+        } else {
+          result.push(account)
+          return result
+        }
+      }, [])
+
+      return {
+        serialized,
+        lostAccounts,
+      }
+    })
   }
 
   hasOldVault () {

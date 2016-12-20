@@ -95,21 +95,6 @@ describe('KeyringController', function() {
     })
   })
 
-  describe('#migrateOldVaultIfAny', function() {
-    it('should return and init a new vault', function(done) {
-      keyringController.migrateOldVaultIfAny(password)
-      .then(() => {
-        assert(keyringController.configManager.getVault(), 'now has a vault')
-        assert(keyringController.password, 'has a password set')
-        done()
-      })
-      .catch((reason) => {
-        assert.ifError(reason)
-        done()
-      })
-    })
-  })
-
   describe('#createNickname', function() {
     it('should add the address to the identities hash', function() {
       const fakeAddress = '0x12345678'
