@@ -1,8 +1,11 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
 const ethUtil = require('ethereumjs-util')
+const Transaction = require('ethereumjs-tx')
+const BN = ethUtil.BN
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
+const normalize = require('./lib/sig-util').normalize
 
 module.exports = class TransactionManager extends EventEmitter {
   constructor (opts) {
@@ -75,7 +78,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this._saveTxList(txList)
   }
 
-  get unconfTxCount () {
+  get unapprovedTxCount () {
     return Object.keys(this.getUnapprovedTxList()).length
   }
 
@@ -128,19 +131,39 @@ module.exports = class TransactionManager extends EventEmitter {
     }
   }
 
-  resolveSignedTransaction (txPromise) {
-    const self = this
+  // formats txParams so the keyringController can sign it
+  formatTxForSigining (txParams, cb) {
+    var address = txParams.from
+    var metaTx = this.getTx(txParams.metamaskId)
+    var gasMultiplier = metaTx.gasMultiplier
+    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
 
-    txPromise.then(({tx, txParams, cb}) => {
-      // Add the tx hash to the persisted meta-tx object
-      var txHash = ethUtil.bufferToHex(tx.hash())
+    // normalize values
+    txParams.to = normalize(txParams.to)
+    txParams.from = normalize(txParams.from)
+    txParams.value = normalize(txParams.value)
+    txParams.data = normalize(txParams.data)
+    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+    txParams.nonce = normalize(txParams.nonce)
+    const ethTx = new Transaction(txParams)
+    // this.updateTxParams(txParams.metamaskId, ethTx)
 
-      var metaTx = self.getTx(txParams.metamaskId)
-      metaTx.hash = txHash
-      // return raw serialized tx
-      var rawTx = ethUtil.bufferToHex(tx.serialize())
-      cb(null, rawTx)
-    })
+    // listener is assigned in metamaskController
+    this.emit(`${txParams.metamaskId}:formated`, ethTx, address, txParams.metamaskId, cb)
+  }
+
+  // receives a signed tx object and updates the tx hash
+  // and pass it to the cb to be sent off
+  resolveSignedTransaction ({tx, txId, cb}) {
+    // Add the tx hash to the persisted meta-tx object
+    var txHash = ethUtil.bufferToHex(tx.hash())
+    var metaTx = this.getTx(txId)
+    metaTx.hash = txHash
+    this.updateTx(metaTx)
+    var rawTx = ethUtil.bufferToHex(tx.serialize())
+    cb(null, rawTx)
   }
 
   /*
@@ -176,20 +199,23 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
-  //   should return the status of the tx.
-  getTxStatus (txId, cb) {
+  // STATUS METHODS
+  // get::set status
+
+  // should return the status of the tx.
+  getTxStatus (txId) {
     const txMeta = this.getTx(txId)
-    return cb ? cb(txMeta.staus) : txMeta.status
+    return txMeta.status
   }
 
 
-  //   should update the status of the tx to 'signed'.
+  // should update the status of the tx to 'signed'.
   setTxStatusSigned (txId) {
     this._setTxStatus(txId, 'signed')
     this.emit('update')
   }
 
-  //     should update the status of the tx to 'rejected'.
+  // should update the status of the tx to 'rejected'.
   setTxStatusRejected (txId) {
     this._setTxStatus(txId, 'rejected')
     this.emit('update')
@@ -203,7 +229,7 @@ module.exports = class TransactionManager extends EventEmitter {
   // use extend to ensure that all fields are filled
   updateTxParams (txId, txParams) {
     var txMeta = this.getTx(txId)
-    txMeta.txParams = extend(txMeta, txParams)
+    txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta)
   }
 
@@ -218,7 +244,7 @@ module.exports = class TransactionManager extends EventEmitter {
       if (!txHash) return
       this.txProviderUtils.query.getTransactionByHash(txHash, (err, txMeta) => {
         if (err || !txMeta) {
-          tx.err = err || 'Tx could possibly have not submitted'
+          tx.err = err || 'Tx could possibly have not been submitted'
           this.updateTx(tx)
           return txMeta ? console.error(err) : console.debug(`txMeta is ${txMeta} for:`, tx)
         }
@@ -229,16 +255,7 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
-  // Private functions
-
-  // Saves the new/updated txList.
-  // Function is intended only for internal use
-  _saveTxList (txList) {
-    this.txList = txList
-    this._setTxList(txList)
-  }
-
-    //   should return the tx
+  // PRIVATE METHODS
 
   //  Should find the tx in the tx list and
   //  update it.
@@ -255,7 +272,12 @@ module.exports = class TransactionManager extends EventEmitter {
     this.updateTx(txMeta)
   }
 
-
+  // Saves the new/updated txList.
+  // Function is intended only for internal use
+  _saveTxList (txList) {
+    this.txList = txList
+    this._setTxList(txList)
+  }
 }
 
 

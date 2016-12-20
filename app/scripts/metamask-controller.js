@@ -39,6 +39,8 @@ module.exports = class MetamaskController {
     })
     this.publicConfigStore = this.initPublicConfigStore()
 
+
+
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
     this.configManager.updateConversionRate()
@@ -152,8 +154,8 @@ module.exports = class MetamaskController {
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: (...args) => {
-        var signedTxPromise = keyringController.signTransaction(...args)
-        this.txManager.resolveSignedTransaction(signedTxPromise)
+        this.setupSigningListners(...args)
+        this.txManager.formatTxForSigining(...args)
         this.sendUpdate()
       },
 
@@ -231,6 +233,14 @@ module.exports = class MetamaskController {
       this.opts.showUnapprovedTx(txParams, txData, onTxDoneCb)
     })
   }
+
+  setupSigningListners (txParams) {
+    var txId = txParams.metamaskId
+    // apply event listeners for signing and formating events
+    this.txManager.once(`${txId}:formated`, this.keyringController.signTransaction.bind(this.keyringController))
+    this.keyringController.once(`${txId}:signed`, this.txManager.resolveSignedTransaction.bind(this.txManager))
+  }
+
 
   enforceTxValidations (txParams) {
     if (('value' in txParams) && txParams.value.indexOf('-') === 0) {

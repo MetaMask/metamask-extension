@@ -101,10 +101,10 @@ txManager.on('update', updateBadge)
 
 function updateBadge () {
   var label = ''
-  var unconfTxLen = controller.txManager.unconfTxCount
+  var unapprovedTxCount = controller.txManager.unapprovedTxCount
   var unconfMsgs = messageManager.unconfirmedMsgs()
   var unconfMsgLen = Object.keys(unconfMsgs).length
-  var count = unconfTxLen + unconfMsgLen
+  var count = unapprovedTxCount + unconfMsgLen
   if (count) {
     label = String(count)
   }

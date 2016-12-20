@@ -1,6 +1,5 @@
 const ethUtil = require('ethereumjs-util')
 const bip39 = require('bip39')
-const Transaction = require('ethereumjs-tx')
 const EventEmitter = require('events').EventEmitter
 const filter = require('promise-filter')
 const normalize = require('./lib/sig-util').normalize
@@ -321,28 +320,14 @@ module.exports = class KeyringController extends EventEmitter {
   //
   // This method signs tx and returns a promise for
   // TX Manager to update the state after signing
-  signTransaction (txParams, cb) {
+  signTransaction (ethTx, selectedAddress, txId, cb) {
     try {
-      const address = normalize(txParams.from)
+      const address = normalize(selectedAddress)
       return this.getKeyringForAccount(address)
       .then((keyring) => {
-        // Handle gas pricing
-        var gasMultiplier = this.configManager.getGasMultiplier() || 1
-        var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-        gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-        txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
-
-        // normalize values
-        txParams.to = normalize(txParams.to)
-        txParams.from = normalize(txParams.from)
-        txParams.value = normalize(txParams.value)
-        txParams.data = normalize(txParams.data)
-        txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-        txParams.nonce = normalize(txParams.nonce)
-        const tx = new Transaction(txParams)
-        return keyring.signTransaction(address, tx)
+        return keyring.signTransaction(address, ethTx)
       }).then((tx) => {
-        return {tx, txParams, cb}
+        this.emit(`${txId}:signed`, {tx, txId, cb})
       })
     } catch (e) {
       cb(e)
