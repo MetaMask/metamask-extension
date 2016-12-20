@@ -27,7 +27,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 2
+  isLinkable = numericNet === 1 || numericNet === 3
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -41,7 +41,6 @@ TransactionListItem.prototype.render = function () {
   }
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
-
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
       onClick: (event) => {
