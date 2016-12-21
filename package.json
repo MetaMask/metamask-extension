@@ -91,6 +91,7 @@
     "textarea-caret": "^3.0.1",
     "three.js": "^0.73.2",
     "through2": "^2.0.1",
+    "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "0.17.0-beta",
     "web3-provider-engine": "^8.1.14",
