@@ -64,7 +64,7 @@ module.exports = class MetamaskController {
       this.ethStore.getState(),
       this.configManager.getConfig(),
       this.keyringController.getState(),
-      this.txManager.getState()
+      this.txManager.getState(),
       this.noticeController.getState()
     )
   }
