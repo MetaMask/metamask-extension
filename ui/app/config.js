@@ -10,7 +10,7 @@ module.exports = connect(mapStateToProps)(ConfigScreen)
 function mapStateToProps (state) {
   return {
     metamask: state.metamask,
-    warning: state.appState.warning
+    warning: state.appState.warning,
   }
 }
 
