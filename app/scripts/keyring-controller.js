@@ -33,11 +33,9 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyringTypes = keyringTypes
-    this.txManager = opts.txManager
     this.keyrings = []
     this.identities = {} // Essentially a name hash
 
-    this._unconfTxCbs = {}
     this._unconfMsgCbs = {}
 
     this.getNetwork = opts.getNetwork
