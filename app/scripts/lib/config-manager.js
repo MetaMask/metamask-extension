@@ -380,3 +380,14 @@ ConfigManager.prototype.setGasMultiplier = function (gasMultiplier) {
   data.gasMultiplier = gasMultiplier
   this.setData(data)
 }
+
+ConfigManager.prototype.setLostAccounts = function (lostAccounts) {
+  var data = this.getData()
+  data.lostAccounts = lostAccounts
+  this.setData(data)
+}
+
+ConfigManager.prototype.getLostAccounts = function () {
+  var data = this.getData()
+  return data.lostAccounts || []
+}

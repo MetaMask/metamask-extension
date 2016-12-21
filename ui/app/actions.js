@@ -13,12 +13,21 @@ var actions = {
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
+  // notices
+  MARK_NOTICE_READ: 'MARK_NOTICE_READ',
+  markNoticeRead: markNoticeRead,
+  SHOW_NOTICE: 'SHOW_NOTICE',
+  showNotice: showNotice,
+  CLEAR_NOTICES: 'CLEAR_NOTICES',
+  clearNotices: clearNotices,
   // intialize screen
   AGREE_TO_DISCLAIMER: 'AGREE_TO_DISCLAIMER',
   agreeToDisclaimer: agreeToDisclaimer,
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+  forgotPassword: forgotPassword,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
@@ -177,13 +186,13 @@ function tryUnlockMetamask (password) {
   }
 }
 
-function transitionForward() {
+function transitionForward () {
   return {
     type: this.TRANSITION_FORWARD,
   }
 }
 
-function transitionBackward() {
+function transitionBackward () {
   return {
     type: this.TRANSITION_BACKWARD,
   }
@@ -380,6 +389,12 @@ function showRestoreVault () {
   }
 }
 
+function forgotPassword () {
+  return {
+    type: actions.FORGOT_PASSWORD,
+  }
+}
+
 function showInitializeMenu () {
   return {
     type: actions.SHOW_INIT_MENU,
@@ -536,6 +551,43 @@ function showConfigPage (transitionForward = true) {
 function goBackToInitView () {
   return {
     type: actions.BACK_TO_INIT_MENU,
+  }
+}
+
+//
+// notice
+//
+
+function markNoticeRead (notice) {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    background.markNoticeRead(notice, (err, notice) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.showWarning(err))
+      }
+      if (notice) {
+        return dispatch(actions.showNotice(notice))
+      } else {
+        dispatch(this.clearNotices())
+        return {
+          type: actions.SHOW_ACCOUNTS_PAGE,
+        }
+      }
+    })
+  }
+}
+
+function showNotice (notice) {
+  return {
+    type: actions.SHOW_NOTICE,
+    value: notice,
+  }
+}
+
+function clearNotices () {
+  return {
+    type: actions.CLEAR_NOTICES,
   }
 }
 

@@ -21,7 +21,6 @@ function mapStateToProps (state) {
     // state from plugin
     currentView: state.appState.currentView,
     warning: state.appState.warning,
-    forgottenPassword: state.metamask.isInitialized,
   }
 }
 
@@ -118,17 +117,6 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         },
       }, 'Create'),
 
-      state.forgottenPassword ? h('.flex-row.flex-center.flex-grow', [
-        h('p.pointer', {
-          onClick: this.backToUnlockView.bind(this),
-          style: {
-            fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
-            textDecoration: 'underline',
-          },
-        }, 'Return to Login'),
-      ]) : null,
-
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
           onClick: this.showRestoreVault.bind(this),
@@ -157,10 +145,6 @@ InitializeMenuScreen.prototype.componentDidMount = function () {
 
 InitializeMenuScreen.prototype.showRestoreVault = function () {
   this.props.dispatch(actions.showRestoreVault())
-}
-
-InitializeMenuScreen.prototype.backToUnlockView = function () {
-  this.props.dispatch(actions.backToUnlockView())
 }
 
 InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {

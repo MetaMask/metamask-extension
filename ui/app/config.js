@@ -4,11 +4,13 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const currencies = require('./conversion.json').rows
+const validUrl = require('valid-url')
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
 function mapStateToProps (state) {
   return {
     metamask: state.metamask,
+    warning: state.appState.warning,
   }
 }
 
@@ -20,6 +22,7 @@ function ConfigScreen () {
 ConfigScreen.prototype.render = function () {
   var state = this.props
   var metamaskState = state.metamask
+  var warning = state.warning
 
   return (
     h('.flex-column.flex-grow', [
@@ -33,6 +36,14 @@ ConfigScreen.prototype.render = function () {
         }),
         h('h2.page-subtitle', 'Settings'),
       ]),
+
+      h('.error', {
+        style: {
+          display: warning ? 'block' : 'none',
+          padding: '0 20px',
+          textAlign: 'center',
+        },
+      }, warning),
 
       // conf view
       h('.flex-column.flex-justify-center.flex-grow.select-none', [
@@ -57,7 +68,7 @@ ConfigScreen.prototype.render = function () {
                 if (event.key === 'Enter') {
                   var element = event.target
                   var newRpc = element.value
-                  state.dispatch(actions.setRpcTarget(newRpc))
+                  rpcValidation(newRpc, state)
                 }
               },
             }),
@@ -69,7 +80,7 @@ ConfigScreen.prototype.render = function () {
                 event.preventDefault()
                 var element = document.querySelector('input#new_rpc')
                 var newRpc = element.value
-                state.dispatch(actions.setRpcTarget(newRpc))
+                rpcValidation(newRpc, state)
               },
             }, 'Save'),
           ]),
@@ -97,6 +108,19 @@ ConfigScreen.prototype.render = function () {
       ]),
     ])
   )
+}
+
+function rpcValidation (newRpc, state) {
+  if (validUrl.isWebUri(newRpc)) {
+    state.dispatch(actions.setRpcTarget(newRpc))
+  } else {
+    var appendedRpc = `http://${newRpc}`
+    if (validUrl.isWebUri(appendedRpc)) {
+      state.dispatch(actions.displayWarning('URIs require the appropriate HTTP/HTTPS prefix.'))
+    } else {
+      state.dispatch(actions.displayWarning('Invalid RPC URI'))
+    }
+  }
 }
 
 function currentConversionInformation (metamaskState, state) {
@@ -133,7 +157,7 @@ function currentProviderDisplay (metamaskState) {
 
     case 'testnet':
       title = 'Current Network'
-      value = 'Morden Test Network'
+      value = 'Ropsten Test Network'
       break
 
     default:

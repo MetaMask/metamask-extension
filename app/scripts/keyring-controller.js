@@ -2,8 +2,9 @@ const ethUtil = require('ethereumjs-util')
 const bip39 = require('bip39')
 const EventEmitter = require('events').EventEmitter
 const filter = require('promise-filter')
+const encryptor = require('browser-passworder')
+
 const normalize = require('./lib/sig-util').normalize
-const encryptor = require('./lib/encryptor')
 const messageManager = require('./lib/message-manager')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const BN = ethUtil.BN
@@ -106,6 +107,7 @@ module.exports = class KeyringController extends EventEmitter {
       conversionDate: this.configManager.getConversionDate(),
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       identities: this.identities,
+      lostAccounts: this.configManager.getLostAccounts(),
     }
   }
 
@@ -430,11 +432,17 @@ module.exports = class KeyringController extends EventEmitter {
   // may be completed without interruption.
   migrateOldVaultIfAny (password) {
     const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
+    if (!shouldMigrate) {
+      return Promise.resolve()
+    }
+
     return this.idStoreMigrator.migratedVaultForPassword(password)
-    .then((serialized) => {
+    .then((result) => {
       this.password = password
 
-      if (serialized && shouldMigrate) {
+      if (result && shouldMigrate) {
+        const { serialized, lostAccounts } = result
+        this.configManager.setLostAccounts(lostAccounts)
         return this.restoreKeyring(serialized)
         .then(keyring => keyring.getAccounts())
         .then((accounts) => {
