@@ -5,6 +5,7 @@
 ## 2.14.1 2016-12-20
 
 - Temporarily disable extension reload detection causing infinite reload bug.
+- Implemented basic checking for valid RPC URIs.
 
 ## 2.14.0 2016-12-16
 
