@@ -10,6 +10,7 @@ const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
+const IdStoreMigrator = require('./lib/idStore-migrator')
 
 
 module.exports = class MetamaskController {
@@ -44,6 +45,11 @@ module.exports = class MetamaskController {
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
+
+    // TEMPORARY UNTIL FULL DEPRECATION:
+    this.idStoreMigrator = new IdStoreMigrator({
+      configManager: this.configManager,
+    })
   }
 
   getState () {
@@ -61,6 +67,7 @@ module.exports = class MetamaskController {
   getApi () {
     const keyringController = this.keyringController
     const noticeController = this.noticeController
+    const submitPassword = keyringController.submitPassword.bind(keyringController)
 
     return {
       getState: (cb) => { cb(null, this.getState()) },
@@ -81,7 +88,12 @@ module.exports = class MetamaskController {
       placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
-      submitPassword: nodeify(keyringController.submitPassword).bind(keyringController),
+      submitPassword: (password, cb) => {
+        this.migrateOldVaultIfAny()
+        .then(submitPassword)
+        .then((newState) => { cb(null, newState) })
+        .catch((reason) => { cb(reason) })
+      },
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
@@ -425,4 +437,40 @@ module.exports = class MetamaskController {
       cb(null, this.getState())
     })
   }
+
+  // Migrate Old Vault If Any
+  // @string password
+  //
+  // returns Promise()
+  //
+  // Temporary step used when logging in.
+  // Checks if old style (pre-3.0.0) Metamask Vault exists.
+  // If so, persists that vault in the new vault format
+  // with the provided password, so the other unlock steps
+  // may be completed without interruption.
+  migrateOldVaultIfAny (password) {
+    const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
+    if (!shouldMigrate) {
+      return Promise.resolve(password)
+    }
+
+    return this.idStoreMigrator.migratedVaultForPassword(password)
+    .then((result) => {
+      if (result && shouldMigrate) {
+        const { serialized, lostAccounts } = result
+        this.configManager.setLostAccounts(lostAccounts)
+        return this.keyringController.restoreKeyring(serialized)
+        .then(keyring => keyring.getAccounts())
+        .then((accounts) => {
+          this.configManager.setSelectedAccount(accounts[0])
+          return this.keyringController.persistAllKeyrings()
+          .then(() => password)
+        })
+      } else {
+        return Promise.resolve(password)
+      }
+    })
+  }
+
+
 }
