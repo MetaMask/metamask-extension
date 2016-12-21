@@ -44,7 +44,7 @@ QUnit.test('keyringController:submitPassword', function (assert) {
   this.keyringController.submitPassword(PASSWORD)
   .then((state) => {
     assert.ok(state.identities[FIRST_ADDRESS])
-    assert.equal(state.lostAccounts.length, 0, 'no lost accounts')
+    assert.ok(state.lostAccounts, 'no lost accounts')
     done()
   })
 })
