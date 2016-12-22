@@ -79,7 +79,7 @@ QUnit.test('agree to terms', function (assert) {
     var createButton = app.find('button.primary')[0]
     createButton.click()
 
-    return wait(1500)
+    return wait(1000)
   }).then(function() {
 
     var detail = app.find('.account-detail-section')[0]

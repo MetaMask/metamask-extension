@@ -202,7 +202,8 @@ IdentityStore.prototype.submitPassword = function (password, cb) {
 
 IdentityStore.prototype.exportAccount = function (address, cb) {
   var privateKey = this._idmgmt.exportPrivateKey(address)
-  cb(null, privateKey)
+  if (cb) cb(null, privateKey)
+  return privateKey
 }
 
 //

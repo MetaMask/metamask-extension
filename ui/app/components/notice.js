@@ -2,18 +2,10 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const ReactMarkdown = require('react-markdown')
-const connect = require('react-redux').connect
-const actions = require('./actions')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
 
-module.exports = connect(mapStateToProps)(Notice)
-
-function mapStateToProps (state) {
-  return {
-    lastUnreadNotice: state.metamask.lastUnreadNotice,
-  }
-}
+module.exports = Notice
 
 inherits(Notice, Component)
 function Notice () {
@@ -21,9 +13,8 @@ function Notice () {
 }
 
 Notice.prototype.render = function () {
-  const props = this.props
-  const title = props.lastUnreadNotice.title
-  const date = props.lastUnreadNotice.date
+  const { notice, onConfirm } = this.props
+  const { title, date, body } = notice
 
   return (
     h('.flex-column.flex-center.flex-grow', [
@@ -59,6 +50,7 @@ Notice.prototype.render = function () {
         .markdown {
           overflow-x: hidden;
         }
+
         .markdown h1, .markdown h2, .markdown h3 {
           margin: 10px 0;
           font-weight: bold;
@@ -92,13 +84,13 @@ Notice.prototype.render = function () {
         },
       }, [
         h(ReactMarkdown, {
-          source: props.lastUnreadNotice.body,
+          source: body,
           skipHtml: true,
         }),
       ]),
 
       h('button', {
-        onClick: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+        onClick: onConfirm,
         style: {
           marginTop: '18px',
         },

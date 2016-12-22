@@ -16,7 +16,8 @@ const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
-const NoticeScreen = require('./notice')
+const NoticeScreen = require('./components/notice')
+const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
 const InfoScreen = require('./info')
@@ -55,6 +56,8 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     forgottenPassword: state.appState.forgottenPassword,
+    lastUnreadNotice: state.metamask.lastUnreadNotice,
+    lostAccounts: state.metamask.lostAccounts,
   }
 }
 
@@ -366,8 +369,19 @@ App.prototype.renderPrimary = function () {
     }
   }
 
+  // notices
   if (!props.noActiveNotices) {
-    return h(NoticeScreen, {key: 'NoticeScreen'})
+    return h(NoticeScreen, {
+      notice: props.lastUnreadNotice,
+      key: 'NoticeScreen',
+      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+    })
+  } else if (props.lostAccounts && props.lostAccounts.length > 0) {
+    return h(NoticeScreen, {
+      notice: generateLostAccountsNotice(props.lostAccounts),
+      key: 'LostAccountsNotice',
+      onConfirm: () => props.dispatch(actions.markAccountsFound()),
+    })
   }
 
   // show current view

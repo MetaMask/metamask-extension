@@ -10,6 +10,7 @@ const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
+const IdStoreMigrator = require('./lib/idStore-migrator')
 
 
 module.exports = class MetamaskController {
@@ -44,6 +45,11 @@ module.exports = class MetamaskController {
     this.checkTOSChange()
 
     this.scheduleConversionInterval()
+
+    // TEMPORARY UNTIL FULL DEPRECATION:
+    this.idStoreMigrator = new IdStoreMigrator({
+      configManager: this.configManager,
+    })
   }
 
   getState () {
@@ -52,7 +58,9 @@ module.exports = class MetamaskController {
       this.ethStore.getState(),
       this.configManager.getConfig(),
       this.keyringController.getState(),
-      this.noticeController.getState()
+      this.noticeController.getState(), {
+        lostAccounts: this.configManager.getLostAccounts(),
+      }
     )
   }
 
@@ -71,6 +79,7 @@ module.exports = class MetamaskController {
       setTOSHash: this.setTOSHash.bind(this),
       checkTOSChange: this.checkTOSChange.bind(this),
       setGasMultiplier: this.setGasMultiplier.bind(this),
+      markAccountsFound: this.markAccountsFound.bind(this),
 
       // forward directly to keyringController
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
@@ -78,7 +87,12 @@ module.exports = class MetamaskController {
       placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
-      submitPassword: nodeify(keyringController.submitPassword).bind(keyringController),
+      submitPassword: (password, cb) => {
+        this.migrateOldVaultIfAny(password)
+        .then(keyringController.submitPassword.bind(keyringController))
+        .then((newState) => { cb(null, newState) })
+        .catch((reason) => { cb(reason) })
+      },
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
@@ -409,5 +423,67 @@ module.exports = class MetamaskController {
 
   getStateNetwork () {
     return this.state.network
+  }
+
+  markAccountsFound(cb) {
+    this.configManager.setLostAccounts([])
+    this.sendUpdate()
+    cb(null, this.getState())
+  }
+
+  // Migrate Old Vault If Any
+  // @string password
+  //
+  // returns Promise()
+  //
+  // Temporary step used when logging in.
+  // Checks if old style (pre-3.0.0) Metamask Vault exists.
+  // If so, persists that vault in the new vault format
+  // with the provided password, so the other unlock steps
+  // may be completed without interruption.
+  migrateOldVaultIfAny (password) {
+
+    if (!this.checkIfShouldMigrate()) {
+      return Promise.resolve(password)
+    }
+
+    const keyringController = this.keyringController
+
+    return this.idStoreMigrator.migratedVaultForPassword(password)
+    .then(this.restoreOldVaultAccounts.bind(this))
+    .then(this.restoreOldLostAccounts.bind(this))
+    .then(keyringController.persistAllKeyrings.bind(keyringController))
+    .then(() => password)
+  }
+
+  checkIfShouldMigrate() {
+    return !!this.configManager.getWallet() && !this.configManager.getVault()
+  }
+
+  restoreOldVaultAccounts(migratorOutput) {
+    const { serialized } = migratorOutput
+    return this.keyringController.restoreKeyring(serialized)
+    .then(() => migratorOutput)
+  }
+
+  restoreOldLostAccounts(migratorOutput) {
+    const { lostAccounts } = migratorOutput
+    if (lostAccounts) {
+      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
+      return this.importLostAccounts(migratorOutput)
+    }
+    return Promise.resolve(migratorOutput)
+  }
+
+  // IMPORT LOST ACCOUNTS
+  // @Object with key lostAccounts: @Array accounts <{ address, privateKey }>
+  // Uses the array's private keys to create a new Simple Key Pair keychain
+  // and add it to the keyring controller.
+  importLostAccounts ({ lostAccounts }) {
+    const privKeys = lostAccounts.map(acct => acct.privateKey)
+    return this.keyringController.restoreKeyring({
+      type: 'Simple Key Pair',
+      data: privKeys,
+    })
   }
 }

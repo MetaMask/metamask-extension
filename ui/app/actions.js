@@ -20,6 +20,7 @@ var actions = {
   showNotice: showNotice,
   CLEAR_NOTICES: 'CLEAR_NOTICES',
   clearNotices: clearNotices,
+  markAccountsFound,
   // intialize screen
   AGREE_TO_DISCLAIMER: 'AGREE_TO_DISCLAIMER',
   agreeToDisclaimer: agreeToDisclaimer,
@@ -588,6 +589,17 @@ function showNotice (notice) {
 function clearNotices () {
   return {
     type: actions.CLEAR_NOTICES,
+  }
+}
+
+function markAccountsFound() {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    background.markAccountsFound((err, newState) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) return dispatch(this.showWarning(err.message))
+      dispatch(actions.updateMetamaskState(newState))
+    })
   }
 }
 

@@ -63,7 +63,12 @@ module.exports = class IdentityStoreMigrator {
 
       return {
         serialized,
-        lostAccounts,
+        lostAccounts: lostAccounts.map((address) => {
+          return {
+            address,
+            privateKey: this.idStore.exportAccount(address),
+          }
+        }),
       }
     })
   }

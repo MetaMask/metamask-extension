@@ -9,7 +9,6 @@ const encryptor = require('browser-passworder')
 
 const normalize = require('./lib/sig-util').normalize
 const messageManager = require('./lib/message-manager')
-const IdStoreMigrator = require('./lib/idStore-migrator')
 const BN = ethUtil.BN
 
 // Keyrings:
@@ -45,11 +44,6 @@ module.exports = class KeyringController extends EventEmitter {
     this._unconfMsgCbs = {}
 
     this.getNetwork = opts.getNetwork
-
-    // TEMPORARY UNTIL FULL DEPRECATION:
-    this.idStoreMigrator = new IdStoreMigrator({
-      configManager: this.configManager,
-    })
   }
 
   // Set Store
@@ -114,7 +108,6 @@ module.exports = class KeyringController extends EventEmitter {
       conversionDate: this.configManager.getConversionDate(),
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       identities: this.identities,
-      lostAccounts: this.configManager.getLostAccounts(),
     }
   }
 
@@ -222,10 +215,7 @@ module.exports = class KeyringController extends EventEmitter {
   // Temporarily also migrates any old-style vaults first, as well.
   // (Pre MetaMask 3.0.0)
   submitPassword (password) {
-    return this.migrateOldVaultIfAny(password)
-    .then(() => {
-      return this.unlockKeyrings(password)
-    })
+    return this.unlockKeyrings(password)
     .then((keyrings) => {
       this.keyrings = keyrings
       return this.fullUpdate()
@@ -611,41 +601,6 @@ module.exports = class KeyringController extends EventEmitter {
   // THESE METHODS ARE ONLY USED INTERNALLY TO THE KEYRING-CONTROLLER
   // AND SO MAY BE CHANGED MORE LIBERALLY THAN THE ABOVE METHODS.
 
-  // Migrate Old Vault If Any
-  // @string password
-  //
-  // returns Promise()
-  //
-  // Temporary step used when logging in.
-  // Checks if old style (pre-3.0.0) Metamask Vault exists.
-  // If so, persists that vault in the new vault format
-  // with the provided password, so the other unlock steps
-  // may be completed without interruption.
-  migrateOldVaultIfAny (password) {
-    const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
-    if (!shouldMigrate) {
-      return Promise.resolve()
-    }
-
-    return this.idStoreMigrator.migratedVaultForPassword(password)
-    .then((result) => {
-      this.password = password
-
-      if (result && shouldMigrate) {
-        const { serialized, lostAccounts } = result
-        this.configManager.setLostAccounts(lostAccounts)
-        return this.restoreKeyring(serialized)
-        .then(keyring => keyring.getAccounts())
-        .then((accounts) => {
-          this.configManager.setSelectedAccount(accounts[0])
-          return this.persistAllKeyrings()
-        })
-      } else {
-        return Promise.resolve()
-      }
-    })
-  }
-
   // Create First Key Tree
   // returns @Promise
   //
@@ -766,6 +721,10 @@ module.exports = class KeyringController extends EventEmitter {
   // initializing the persisted keyrings to RAM.
   unlockKeyrings (password) {
     const encryptedVault = this.configManager.getVault()
+    if (!encryptedVault) {
+      throw new Error('Cannot unlock without a previous vault.')
+    }
+
     return this.encryptor.decrypt(password, encryptedVault)
     .then((vault) => {
       this.password = password
