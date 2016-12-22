@@ -67,7 +67,6 @@ module.exports = class MetamaskController {
   getApi () {
     const keyringController = this.keyringController
     const noticeController = this.noticeController
-    const submitPassword = keyringController.submitPassword.bind(keyringController)
 
     return {
       getState: (cb) => { cb(null, this.getState()) },
@@ -89,10 +88,10 @@ module.exports = class MetamaskController {
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       submitPassword: (password, cb) => {
-        this.migrateOldVaultIfAny()
-        .then(submitPassword)
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
+        this.migrateOldVaultIfAny(password)
+        .then(keyringController.submitPassword.bind(keyringController))
+        .then((newState) => { console.log('succeeded submitting!'); cb(null, newState) })
+        .catch((reason) => { console.error(reason); cb(reason) })
       },
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
@@ -456,21 +455,46 @@ module.exports = class MetamaskController {
 
     return this.idStoreMigrator.migratedVaultForPassword(password)
     .then((result) => {
-      if (result && shouldMigrate) {
-        const { serialized, lostAccounts } = result
-        this.configManager.setLostAccounts(lostAccounts)
-        return this.keyringController.restoreKeyring(serialized)
-        .then(keyring => keyring.getAccounts())
-        .then((accounts) => {
-          this.configManager.setSelectedAccount(accounts[0])
-          return this.keyringController.persistAllKeyrings()
-          .then(() => password)
-        })
-      } else {
-        return Promise.resolve(password)
+
+      this.keyringController.password = password
+      const { serialized, lostAccounts } = result
+
+      // Restore the correct accounts first:
+      return this.keyringController.restoreKeyring(serialized)
+      .then(keyring => keyring.getAccounts())
+      .then((accounts) => {
+        this.configManager.setSelectedAccount(accounts[0])
+        return result
+      })
+
+    }).then((result) => {
+
+      // Now we restore any lost accounts:
+      const { serialized, lostAccounts } = result
+      if (result && lostAccounts) {
+        this.configManager.setLostAccounts(lostAccounts.map((acct) => acct.address))
+        return this.importLostAccounts(result)
       }
-    })
+      return Promise.resolve(result)
+    }).then(() => {
+
+      // Persist all these newly restored items to disk:
+      return this.keyringController.persistAllKeyrings()
+
+    // Ultimately pass the password back for normal unlocking:
+    }).then((result) => password)
   }
 
-
+  // IMPORT LOST ACCOUNTS
+  // @Object with key lostAccounts: @Array accounts <{ address, privateKey }>
+  // Uses the array's private keys to create a new Simple Key Pair keychain
+  // and add it to the keyring controller.
+  importLostAccounts (result) {
+    const { serialized, lostAccounts } = result
+    const privKeys = lostAccounts.map(acct => acct.privateKey)
+    return this.keyringController.restoreKeyring({
+      type: 'Simple Key Pair',
+      data: privKeys,
+    })
+  }
 }
