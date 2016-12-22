@@ -457,7 +457,7 @@ module.exports = class MetamaskController {
     .then((result) => {
 
       this.keyringController.password = password
-      const { serialized, lostAccounts } = result
+      const { serialized } = result
 
       // Restore the correct accounts first:
       return this.keyringController.restoreKeyring(serialized)
@@ -470,7 +470,7 @@ module.exports = class MetamaskController {
     }).then((result) => {
 
       // Now we restore any lost accounts:
-      const { serialized, lostAccounts } = result
+      const { lostAccounts } = result
       if (result && lostAccounts) {
         this.configManager.setLostAccounts(lostAccounts.map((acct) => acct.address))
         return this.importLostAccounts(result)
@@ -489,8 +489,7 @@ module.exports = class MetamaskController {
   // @Object with key lostAccounts: @Array accounts <{ address, privateKey }>
   // Uses the array's private keys to create a new Simple Key Pair keychain
   // and add it to the keyring controller.
-  importLostAccounts (result) {
-    const { serialized, lostAccounts } = result
+  importLostAccounts ({ lostAccounts }) {
     const privKeys = lostAccounts.map(acct => acct.privateKey)
     return this.keyringController.restoreKeyring({
       type: 'Simple Key Pair',
