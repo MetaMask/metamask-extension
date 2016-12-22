@@ -119,7 +119,6 @@ function remoteStoreWithLocalStorageCache (storageKey) {
   var store = new RemoteStore(initState)
   // cache the latest state locally
   store.subscribe(function (state) {
-    console.log('received state update %s of %s', storageKey, state)
     localStorage[storageKey] = JSON.stringify(state)
   })
 
