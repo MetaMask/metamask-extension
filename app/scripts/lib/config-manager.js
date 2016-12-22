@@ -121,7 +121,7 @@ ConfigManager.prototype.setVault = function (encryptedString) {
 
 ConfigManager.prototype.getVault = function () {
   var data = this.getData()
-  return ('vault' in data) && data.vault
+  return data.vault
 }
 
 ConfigManager.prototype.getKeychains = function () {
