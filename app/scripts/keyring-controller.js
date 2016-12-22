@@ -721,6 +721,10 @@ module.exports = class KeyringController extends EventEmitter {
   // initializing the persisted keyrings to RAM.
   unlockKeyrings (password) {
     const encryptedVault = this.configManager.getVault()
+    if (!encryptedVault) {
+      throw new Error('Cannot unlock without a previous vault.')
+    }
+
     return this.encryptor.decrypt(password, encryptedVault)
     .then((vault) => {
       this.password = password
