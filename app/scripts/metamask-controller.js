@@ -427,14 +427,8 @@ module.exports = class MetamaskController {
 
   markAccountsFound(cb) {
     this.configManager.setLostAccounts([])
-    this.keyringController.getAccounts()
-    .then((accounts) => {
-      return this.keyringController.setSelectedAccount(accounts[0])
-    })
-    .then(() => {
-      this.sendUpdate()
-      cb(null, this.getState())
-    })
+    this.sendUpdate()
+    cb(null, this.getState())
   }
 
   // Migrate Old Vault If Any
@@ -461,11 +455,7 @@ module.exports = class MetamaskController {
 
       // Restore the correct accounts first:
       return this.keyringController.restoreKeyring(serialized)
-      .then(keyring => keyring.getAccounts())
-      .then((accounts) => {
-        this.configManager.setSelectedAccount(accounts[0])
-        return result
-      })
+      .then(() => result)
 
     }).then((result) => {
 
