@@ -90,8 +90,8 @@ module.exports = class MetamaskController {
       submitPassword: (password, cb) => {
         this.migrateOldVaultIfAny(password)
         .then(keyringController.submitPassword.bind(keyringController))
-        .then((newState) => { console.log('succeeded submitting!'); cb(null, newState) })
-        .catch((reason) => { console.error(reason); cb(reason) })
+        .then((newState) => { cb(null, newState) })
+        .catch((reason) => { cb(reason) })
       },
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
