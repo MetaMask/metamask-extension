@@ -72,13 +72,13 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     case 'eth_accounts':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.get('selectedAddress')
+      selectedAccount = self.publicConfigStore.get('selectedAccount')
       result = selectedAccount ? [selectedAccount] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.get('selectedAddress')
+      selectedAccount = self.publicConfigStore.get('selectedAccount')
       result = selectedAccount || '0x0000000000000000000000000000000000000000'
       break
 
@@ -119,6 +119,7 @@ function remoteStoreWithLocalStorageCache (storageKey) {
   var store = new RemoteStore(initState)
   // cache the latest state locally
   store.subscribe(function (state) {
+    console.log('received state update %s of %s', storageKey, state)
     localStorage[storageKey] = JSON.stringify(state)
   })
 
