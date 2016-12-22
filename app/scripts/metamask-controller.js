@@ -442,37 +442,37 @@ module.exports = class MetamaskController {
   // with the provided password, so the other unlock steps
   // may be completed without interruption.
   migrateOldVaultIfAny (password) {
-    const shouldMigrate = !!this.configManager.getWallet() && !this.configManager.getVault()
-    if (!shouldMigrate) {
+
+    if (!this.checkIfShouldMigrate()) {
       return Promise.resolve(password)
     }
 
+    const keyringController = this.keyringController
+
     return this.idStoreMigrator.migratedVaultForPassword(password)
-    .then((result) => {
+    .then(this.restoreOldVaultAccounts.bind(this))
+    .then(this.restoreOldLostAccounts.bind(this))
+    .then(keyringController.persistAllKeyrings.bind(keyringController))
+    .then(() => password)
+  }
 
-      this.keyringController.password = password
-      const { serialized } = result
+  checkIfShouldMigrate() {
+    return !!this.configManager.getWallet() && !this.configManager.getVault()
+  }
 
-      // Restore the correct accounts first:
-      return this.keyringController.restoreKeyring(serialized)
-      .then(() => result)
+  restoreOldVaultAccounts(migratorOutput) {
+    const { serialized } = migratorOutput
+    return this.keyringController.restoreKeyring(serialized)
+    .then(() => migratorOutput)
+  }
 
-    }).then((result) => {
-
-      // Now we restore any lost accounts:
-      const { lostAccounts } = result
-      if (result && lostAccounts) {
-        this.configManager.setLostAccounts(lostAccounts.map((acct) => acct.address))
-        return this.importLostAccounts(result)
-      }
-      return Promise.resolve(result)
-    }).then(() => {
-
-      // Persist all these newly restored items to disk:
-      return this.keyringController.persistAllKeyrings()
-
-    // Ultimately pass the password back for normal unlocking:
-    }).then((result) => password)
+  restoreOldLostAccounts(migratorOutput) {
+    const { lostAccounts } = migratorOutput
+    if (lostAccounts) {
+      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
+      return this.importLostAccounts(migratorOutput)
+    }
+    return Promise.resolve(migratorOutput)
   }
 
   // IMPORT LOST ACCOUNTS
