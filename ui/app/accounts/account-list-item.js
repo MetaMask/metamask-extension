@@ -15,19 +15,21 @@ function AccountListItem () {
 }
 
 AccountListItem.prototype.render = function () {
-  const identity = this.props.identity
-  var isSelected = this.props.selectedAccount === identity.address
-  var account = this.props.accounts[identity.address]
+  const { identity, selectedAccount, accounts, onShowDetail } = this.props
+
+  const isSelected = selectedAccount === identity.address
+  const account = accounts[identity.address]
   const selectedClass = isSelected ? '.selected' : ''
 
   return (
     h(`.accounts-list-option.flex-row.flex-space-between.pointer.hover-white${selectedClass}`, {
       key: `account-panel-${identity.address}`,
-      onClick: (event) => this.props.onShowDetail(identity.address, event),
+      onClick: (event) => onShowDetail(identity.address, event),
     }, [
 
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
         this.pendingOrNot(),
+        this.indicateIfLoose(),
         h(Identicon, {
           address: identity.address,
           imageify: true,
@@ -68,6 +70,14 @@ AccountListItem.prototype.render = function () {
       ]),
     ])
   )
+}
+
+AccountListItem.prototype.indicateIfLoose = function () {
+  try { // Sometimes keyrings aren't loaded yet:
+    const type = this.props.keyring.type
+    const isLoose = type !== 'HD Key Tree'
+    return isLoose ? h('.pending-dot', 'LOOSE') : null
+  } catch (e) { return }
 }
 
 AccountListItem.prototype.pendingOrNot = function () {

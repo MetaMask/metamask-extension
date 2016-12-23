@@ -196,6 +196,23 @@ hr.horizontal-line {
   align-items: center;
   justify-content: center;
   padding: 4px;
+  z-index: 1;
+}
+
+.keyring-label {
+  z-index: 1;
+  font-size: 11px;
+  background: rgba(255,0,0,0.8);
+  bottom: -47px;
+  color: white;
+  border-radius: 10px;
+  height: 20px;
+  min-width: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 }
 
 .ether-balance {
