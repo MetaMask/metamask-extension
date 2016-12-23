@@ -21,7 +21,6 @@ module.exports = class MetamaskController {
     this.configManager = new ConfigManager(opts)
     this.keyringController = new KeyringController({
       configManager: this.configManager,
-      txManager: this.txManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
     // notices
@@ -40,14 +39,13 @@ module.exports = class MetamaskController {
       txList: this.configManager.getTxList(),
       txHistoryLimit: 40,
       setTxList: this.configManager.setTxList.bind(this.configManager),
+      getSelectedAccount: this.configManager.getSelectedAccount.bind(this.configManager),
       getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
       getNetwork: this.getStateNetwork.bind(this),
       provider: this.provider,
       blockTracker: this.provider,
     })
     this.publicConfigStore = this.initPublicConfigStore()
-
-
 
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
     this.configManager.setCurrentFiat(currentFiat)
@@ -105,9 +103,6 @@ module.exports = class MetamaskController {
       signMessage: keyringController.signMessage.bind(keyringController),
       cancelMessage: keyringController.cancelMessage.bind(keyringController),
 
-      // forward directly to txManager
-      getUnapprovedTxList: txManager.getUnapprovedTxList.bind(txManager),
-      getFilteredTxList: txManager.getFilteredTxList.bind(txManager),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -251,10 +246,9 @@ module.exports = class MetamaskController {
   setupSigningListners (txParams) {
     var txId = txParams.metamaskId
     // apply event listeners for signing and formating events
-    this.txManager.once(`${txId}:formated`, this.keyringController.signTransaction.bind(this.keyringController))
+    this.txManager.once(`${txId}:formatted`, this.keyringController.signTransaction.bind(this.keyringController))
     this.keyringController.once(`${txId}:signed`, this.txManager.resolveSignedTransaction.bind(this.txManager))
   }
-
 
   enforceTxValidations (txParams) {
     if (('value' in txParams) && txParams.value.indexOf('-') === 0) {

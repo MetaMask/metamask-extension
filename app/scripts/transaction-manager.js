@@ -12,10 +12,8 @@ module.exports = class TransactionManager extends EventEmitter {
     super()
     this.txList = opts.txList || []
     this._setTxList = opts.setTxList
-    this._unconfTxCbs = {}
     this.txHistoryLimit = opts.txHistoryLimit
-  // txManager :: tx approvals and rejection cb's
-
+    this.getSelectedAccount = opts.getSelectedAccount
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
@@ -25,9 +23,11 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   getState () {
+    var selectedAccount = this.getSelectedAccount()
     return {
       transactions: this.getTxList(),
       unconfTxs: this.getUnapprovedTxList(),
+      selectedAccountTxList: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAccount}),
     }
   }
 
@@ -37,14 +37,21 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   // Adds a tx to the txlist
-  addTx (txMeta, onTxDoneCb = noop) {
+  addTx (txMeta, onTxDoneCb = warn) {
     var txList = this.getTxList()
     var txHistoryLimit = this.txHistoryLimit
+
+    // checks if the length of th tx history is
+    // longer then desired persistence limit
+    // and then if it is removes only confirmed
+    // or rejected tx's.
+    // not tx's that are pending or unapproved
     if (txList.length > txHistoryLimit - 1) {
       var index = txList.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
-      index ? txList.splice(index, index) : txList.shift()
+      txList.splice(index, 1)
     }
     txList.push(txMeta)
+
     this._saveTxList(txList)
     // keep the onTxDoneCb around in a listener
     // for after approval/denial (requires user interaction)
@@ -58,14 +65,14 @@ module.exports = class TransactionManager extends EventEmitter {
       onTxDoneCb(null, false)
     })
 
-    this.emit('update')
+    this.emit('updateBadge')
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
   // gets tx by Id and returns it
   getTx (txId, cb) {
     var txList = this.getTxList()
-    var txMeta = txList.find((txData) => txData.id === txId)
+    var txMeta = txList.find(txData => txData.id === txId)
     return cb ? cb(txMeta) : txMeta
   }
 
@@ -73,7 +80,7 @@ module.exports = class TransactionManager extends EventEmitter {
   updateTx (txMeta) {
     var txId = txMeta.id
     var txList = this.getTxList()
-    var index = txList.findIndex((txData) => txData.id === txId)
+    var index = txList.findIndex(txData => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
   }
@@ -119,16 +126,14 @@ module.exports = class TransactionManager extends EventEmitter {
     }, {})
   }
 
-  approveTransaction (txId, cb) {
+  approveTransaction (txId, cb = warn) {
     this.setTxStatusSigned(txId)
     cb()
   }
 
-  cancelTransaction (txId, cb) {
+  cancelTransaction (txId, cb = warn) {
     this.setTxStatusRejected(txId)
-    if (cb && typeof cb === 'function') {
-      cb()
-    }
+    cb()
   }
 
   // formats txParams so the keyringController can sign it
@@ -148,15 +153,14 @@ module.exports = class TransactionManager extends EventEmitter {
     txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
     txParams.nonce = normalize(txParams.nonce)
     const ethTx = new Transaction(txParams)
-    // this.updateTxParams(txParams.metamaskId, ethTx)
 
     // listener is assigned in metamaskController
-    this.emit(`${txParams.metamaskId}:formated`, ethTx, address, txParams.metamaskId, cb)
+    this.emit(`${txParams.metamaskId}:formatted`, ethTx, address, txParams.metamaskId, cb)
   }
 
   // receives a signed tx object and updates the tx hash
   // and pass it to the cb to be sent off
-  resolveSignedTransaction ({tx, txId, cb}) {
+  resolveSignedTransaction ({tx, txId, cb = warn}) {
     // Add the tx hash to the persisted meta-tx object
     var txHash = ethUtil.bufferToHex(tx.hash())
     var metaTx = this.getTx(txId)
@@ -212,13 +216,13 @@ module.exports = class TransactionManager extends EventEmitter {
   // should update the status of the tx to 'signed'.
   setTxStatusSigned (txId) {
     this._setTxStatus(txId, 'signed')
-    this.emit('update')
+    this.emit('updateBadge')
   }
 
   // should update the status of the tx to 'rejected'.
   setTxStatusRejected (txId) {
     this._setTxStatus(txId, 'rejected')
-    this.emit('update')
+    this.emit('updateBadge')
   }
 
   setTxStatusConfirmed (txId) {
@@ -281,4 +285,4 @@ module.exports = class TransactionManager extends EventEmitter {
 }
 
 
-const noop = () => console.warn('noop was used no cb provided')
+const warn = () => console.warn('warn was used no cb provided')

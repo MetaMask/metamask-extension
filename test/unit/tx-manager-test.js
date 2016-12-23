@@ -80,7 +80,7 @@ describe('Transaction Manager', function() {
       }
       var result = txManager.getTxList()
       assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-      assert.equal(result[0].id, 0, 'first tx should still be their')
+      assert.equal(result[0].id, 0, 'first tx should still be there')
       assert.equal(result[0].status, 'unapproved', 'first tx should be unapproved')
       assert.equal(result[1].id, 2, 'early txs truncted')
     })
@@ -168,15 +168,15 @@ describe('Transaction Manager', function() {
       var foop = 0
       var zoop = 0
       for (let i = 0; i < 10; ++i ){
-        let evryOther = i % 2
+        let everyOther = i % 2
         txManager.addTx({ id: i,
-          status: evryOther ? 'unapproved' : 'confirmed',
+          status: everyOther ? 'unapproved' : 'confirmed',
           txParams: {
-            from: evryOther ? 'foop' : 'zoop',
-            to: evryOther ? 'zoop' : 'foop',
+            from: everyOther ? 'foop' : 'zoop',
+            to: everyOther ? 'zoop' : 'foop',
           }
         }, onTxDoneCb)
-        evryOther ? ++foop : ++zoop
+        everyOther ? ++foop : ++zoop
       }
       assert.equal(txManager.getFilteredTxList({status: 'confirmed', from: 'zoop'}).length, zoop)
       assert.equal(txManager.getFilteredTxList({status: 'confirmed', to: 'foop'}).length, zoop)

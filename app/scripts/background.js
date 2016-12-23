@@ -97,7 +97,7 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-txManager.on('update', updateBadge)
+txManager.on('updateBadge', updateBadge)
 
 function updateBadge () {
   var label = ''
