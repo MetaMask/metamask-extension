@@ -53,15 +53,18 @@ module.exports = class MetamaskController {
   }
 
   getState () {
-    return extend(
-      this.state,
-      this.ethStore.getState(),
-      this.configManager.getConfig(),
-      this.keyringController.getState(),
-      this.noticeController.getState(), {
-        lostAccounts: this.configManager.getLostAccounts(),
-      }
-    )
+    return this.keyringController.getState()
+    .then((keyringControllerState) => {
+      return extend(
+        this.state,
+        this.ethStore.getState(),
+        this.configManager.getConfig(),
+        keyringControllerState,
+        this.noticeController.getState(), {
+          lostAccounts: this.configManager.getLostAccounts(),
+        }
+      )
+    })
   }
 
   getApi () {
@@ -69,7 +72,7 @@ module.exports = class MetamaskController {
     const noticeController = this.noticeController
 
     return {
-      getState: (cb) => { cb(null, this.getState()) },
+      getState: nodeify(this.getState.bind(this)),
       setRpcTarget: this.setRpcTarget.bind(this),
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),

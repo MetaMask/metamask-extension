@@ -91,25 +91,31 @@ module.exports = class KeyringController extends EventEmitter {
     const address = configManager.getSelectedAccount()
     const wallet = configManager.getWallet() // old style vault
     const vault = configManager.getVault() // new style vault
+    const keyrings = this.keyrings
 
-    return {
-      seedWords: this.configManager.getSeedWords(),
-      isInitialized: (!!wallet || !!vault),
-      isUnlocked: Boolean(this.password),
-      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
-      unconfTxs: this.configManager.unconfirmedTxs(),
-      transactions: this.configManager.getTxList(),
-      unconfMsgs: messageManager.unconfirmedMsgs(),
-      messages: messageManager.getMsgList(),
-      selectedAccount: address,
-      shapeShiftTxList: this.configManager.getShapeShiftTxList(),
-      currentFiat: this.configManager.getCurrentFiat(),
-      conversionRate: this.configManager.getConversionRate(),
-      conversionDate: this.configManager.getConversionDate(),
-      keyringTypes: this.keyringTypes.map(krt => krt.type),
-      identities: this.identities,
-    }
+    return Promise.all(keyrings.map(this.displayForKeyring))
+    .then((displayKeyrings) => {
+      return {
+        seedWords: this.configManager.getSeedWords(),
+        isInitialized: (!!wallet || !!vault),
+        isUnlocked: Boolean(this.password),
+        isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+        unconfTxs: this.configManager.unconfirmedTxs(),
+        transactions: this.configManager.getTxList(),
+        unconfMsgs: messageManager.unconfirmedMsgs(),
+        messages: messageManager.getMsgList(),
+        selectedAccount: address,
+        shapeShiftTxList: this.configManager.getShapeShiftTxList(),
+        currentFiat: this.configManager.getCurrentFiat(),
+        conversionRate: this.configManager.getConversionRate(),
+        conversionDate: this.configManager.getConversionDate(),
+        keyringTypes: this.keyringTypes.map(krt => krt.type),
+        identities: this.identities,
+        keyrings: displayKeyrings,
+      }
+    })
   }
+
 
   // Create New Vault And Keychain
   // @string password - The password to encrypt the vault with
@@ -693,7 +699,7 @@ module.exports = class KeyringController extends EventEmitter {
     if (typeof password === 'string') {
       this.password = password
     }
-    return Promise.all(this.keyrings.map((keyring) => {
+    return Promise.all(this.keyrings.map((keyring, i) => {
       return Promise.all([keyring.type, keyring.serialize()])
       .then((serializedKeyringArray) => {
         // Label the output values on each serialized Keyring:
@@ -744,6 +750,7 @@ module.exports = class KeyringController extends EventEmitter {
   // On success, returns the resulting @Keyring instance.
   restoreKeyring (serialized) {
     const { type, data } = serialized
+
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring()
     return keyring.deserialize(data)
@@ -812,6 +819,22 @@ module.exports = class KeyringController extends EventEmitter {
         return winners[0][0]
       } else {
         throw new Error('No keyring found for the requested account.')
+      }
+    })
+  }
+
+  // Display For Keyring
+  // @Keyring keyring
+  //
+  // returns Promise( @Object { type:String, accounts:Array } )
+  //
+  // Is used for adding the current keyrings to the state object.
+  displayForKeyring (keyring) {
+    return keyring.getAccounts()
+    .then((accounts) => {
+      return {
+        type: keyring.type,
+        accounts: accounts,
       }
     })
   }
