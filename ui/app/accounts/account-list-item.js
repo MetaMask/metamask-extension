@@ -50,7 +50,7 @@ AccountListItem.prototype.render = function () {
           },
         }, ethUtil.toChecksumAddress(identity.address)),
         h(EthBalance, {
-          value: account.balance,
+          value: account && account.balance,
           style: {
             lineHeight: '7px',
             marginTop: '10px',
@@ -76,7 +76,7 @@ AccountListItem.prototype.indicateIfLoose = function () {
   try { // Sometimes keyrings aren't loaded yet:
     const type = this.props.keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.pending-dot', 'LOOSE') : null
+    return isLoose ? h('.keyring-label', 'LOOSE') : null
   } catch (e) { return }
 }
 
