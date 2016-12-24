@@ -89,7 +89,7 @@ module.exports = class MetamaskController {
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       submitPassword: (password, cb) => {
         this.migrateOldVaultIfAny(password)
-        .then(keyringController.submitPassword.bind(keyringController))
+        .then(keyringController.submitPassword.bind(keyringController, password))
         .then((newState) => { cb(null, newState) })
         .catch((reason) => { cb(reason) })
       },
@@ -452,7 +452,7 @@ module.exports = class MetamaskController {
     return this.idStoreMigrator.migratedVaultForPassword(password)
     .then(this.restoreOldVaultAccounts.bind(this))
     .then(this.restoreOldLostAccounts.bind(this))
-    .then(keyringController.persistAllKeyrings.bind(keyringController))
+    .then(keyringController.persistAllKeyrings.bind(keyringController, password))
     .then(() => password)
   }
 
