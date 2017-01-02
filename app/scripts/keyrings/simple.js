@@ -20,10 +20,10 @@ class SimpleKeyring extends EventEmitter {
   }
 
   deserialize (privateKeys = []) {
-    this.wallets = privateKeys.map((w) => {
-      const stripped = ethUtil.stripHexPrefix(w)
-      const b = new Buffer(stripped, 'hex')
-      const wallet = Wallet.fromPrivateKey(b)
+    this.wallets = privateKeys.map((privateKey) => {
+      const stripped = ethUtil.stripHexPrefix(privateKey)
+      const buffer = new Buffer(stripped, 'hex')
+      const wallet = Wallet.fromPrivateKey(buffer)
       return wallet
     })
     return Promise.resolve()

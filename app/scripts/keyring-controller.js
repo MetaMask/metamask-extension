@@ -508,7 +508,7 @@ module.exports = class KeyringController extends EventEmitter {
     if (typeof password === 'string') {
       this.password = password
     }
-    return Promise.all(this.keyrings.map((keyring, i) => {
+    return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([keyring.type, keyring.serialize()])
       .then((serializedKeyringArray) => {
         // Label the output values on each serialized Keyring:
