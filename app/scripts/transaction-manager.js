@@ -162,8 +162,8 @@ module.exports = class TransactionManager extends EventEmitter {
 
       // listener is assigned in metamaskController
       this.emit(`${txParams.metamaskId}:formatted`, ethTx, address, txParams.metamaskId, cb)
-      })
-    }
+    })
+  }
 
   // receives a signed tx object and updates the tx hash
   // and pass it to the cb to be sent off
