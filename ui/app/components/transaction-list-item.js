@@ -31,7 +31,7 @@ TransactionListItem.prototype.render = function () {
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
-  var isPending = transaction.status === 'unconfirmed'
+  var isPending = transaction.status === 'unapproved'
 
   let txParams
   if (isTx) {
@@ -59,7 +59,7 @@ TransactionListItem.prototype.render = function () {
     }, [
 
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {
+        transaction.status === 'unapproved' ? h('i.fa.fa-ellipsis-h', {
           style: {
             fontSize: '27px',
           },

@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add a check for when a tx is included in a block.
+
 ## 2.14.1 2016-12-20
 
 - Temporarily disable extension reload detection causing infinite reload bug.

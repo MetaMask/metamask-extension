@@ -4,6 +4,7 @@ const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
+const TxManager = require('./transaction-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
@@ -11,7 +12,6 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
-
 
 module.exports = class MetamaskController {
 
@@ -36,6 +36,16 @@ module.exports = class MetamaskController {
     this.keyringController.setStore(this.ethStore)
     this.getNetwork()
     this.messageManager = messageManager
+    this.txManager = new TxManager({
+      txList: this.configManager.getTxList(),
+      txHistoryLimit: 40,
+      setTxList: this.configManager.setTxList.bind(this.configManager),
+      getSelectedAccount: this.configManager.getSelectedAccount.bind(this.configManager),
+      getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
+      getNetwork: this.getStateNetwork.bind(this),
+      provider: this.provider,
+      blockTracker: this.provider,
+    })
     this.publicConfigStore = this.initPublicConfigStore()
 
     var currentFiat = this.configManager.getCurrentFiat() || 'USD'
@@ -59,6 +69,7 @@ module.exports = class MetamaskController {
         this.state,
         this.ethStore.getState(),
         this.configManager.getConfig(),
+        this.txManager.getState(),
         keyringControllerState,
         this.noticeController.getState(), {
           lostAccounts: this.configManager.getLostAccounts(),
@@ -69,6 +80,7 @@ module.exports = class MetamaskController {
 
   getApi () {
     const keyringController = this.keyringController
+    const txManager = this.txManager
     const noticeController = this.noticeController
 
     return {
@@ -103,8 +115,8 @@ module.exports = class MetamaskController {
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
 
       // signing methods
-      approveTransaction: keyringController.approveTransaction.bind(keyringController),
-      cancelTransaction: keyringController.cancelTransaction.bind(keyringController),
+      approveTransaction: txManager.approveTransaction.bind(txManager),
+      cancelTransaction: txManager.cancelTransaction.bind(txManager),
       signMessage: keyringController.signMessage.bind(keyringController),
       cancelMessage: keyringController.cancelMessage.bind(keyringController),
 
@@ -168,7 +180,8 @@ module.exports = class MetamaskController {
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: (...args) => {
-        keyringController.signTransaction(...args)
+        this.setupSigningListners(...args)
+        this.txManager.formatTxForSigining(...args)
         this.sendUpdate()
       },
 
@@ -184,7 +197,6 @@ module.exports = class MetamaskController {
     var web3 = new Web3(provider)
     this.web3 = web3
     keyringController.web3 = web3
-
     provider.on('block', this.processBlock.bind(this))
     provider.on('error', this.getNetwork.bind(this))
 
@@ -238,14 +250,21 @@ module.exports = class MetamaskController {
   }
 
   newUnsignedTransaction (txParams, onTxDoneCb) {
-    const keyringController = this.keyringController
+    const txManager = this.txManager
     const err = this.enforceTxValidations(txParams)
     if (err) return onTxDoneCb(err)
-    keyringController.addUnconfirmedTransaction(txParams, onTxDoneCb, (err, txData) => {
+    txManager.addUnapprovedTransaction(txParams, onTxDoneCb, (err, txData) => {
       if (err) return onTxDoneCb(err)
       this.sendUpdate()
-      this.opts.showUnconfirmedTx(txParams, txData, onTxDoneCb)
+      this.opts.showUnapprovedTx(txParams, txData, onTxDoneCb)
     })
+  }
+
+  setupSigningListners (txParams) {
+    var txId = txParams.metamaskId
+    // apply event listeners for signing and formating events
+    this.txManager.once(`${txId}:formatted`, this.keyringController.signTransaction.bind(this.keyringController))
+    this.keyringController.once(`${txId}:signed`, this.txManager.resolveSignedTransaction.bind(this.txManager))
   }
 
   enforceTxValidations (txParams) {

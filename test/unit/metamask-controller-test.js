@@ -9,7 +9,7 @@ describe('MetaMaskController', function() {
   let controller = new MetaMaskController({
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,
-    showUnconfirmedTx: noop,
+    showUnapprovedTx: noop,
     setData,
     loadData,
   })

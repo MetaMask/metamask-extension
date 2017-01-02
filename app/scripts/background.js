@@ -17,13 +17,13 @@ const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: triggerUi,
   unlockAccountMessage: triggerUi,
-  showUnconfirmedTx: triggerUi,
+  showUnapprovedTx: triggerUi,
   // Persistence Methods:
   setData,
   loadData,
 })
 const keyringController = controller.keyringController
-
+const txManager = controller.txManager
 function triggerUi () {
   if (!popupIsOpen) notification.show()
 }
@@ -97,21 +97,22 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-keyringController.on('update', updateBadge)
+txManager.on('updateBadge', updateBadge)
 
 function updateBadge () {
   var label = ''
-  var unconfTxs = controller.configManager.unconfirmedTxs()
-  var unconfTxLen = Object.keys(unconfTxs).length
+  var unapprovedTxCount = controller.txManager.unapprovedTxCount
   var unconfMsgs = messageManager.unconfirmedMsgs()
   var unconfMsgLen = Object.keys(unconfMsgs).length
-  var count = unconfTxLen + unconfMsgLen
+  var count = unapprovedTxCount + unconfMsgLen
   if (count) {
     label = String(count)
   }
   extension.browserAction.setBadgeText({ text: label })
   extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
 }
+
+// data :: setters/getters
 
 function loadData () {
   var oldData = getOldStyleData()
