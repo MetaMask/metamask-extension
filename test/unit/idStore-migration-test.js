@@ -68,6 +68,10 @@ describe('IdentityStore to KeyringController migration', function() {
             addAccount(acct) { newAccounts.push(ethUtil.addHexPrefix(acct)) },
             del(acct) { delete newAccounts[acct] },
           },
+          txManager: {
+            getTxList: () => [],
+            getUnapprovedTxList: () => []
+          },
         })
 
         // Stub out the browser crypto for a mock encryptor.

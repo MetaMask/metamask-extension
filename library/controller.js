@@ -21,7 +21,7 @@ function initializeZeroClient() {
     // User confirmation callbacks:
     showUnconfirmedMessage,
     unlockAccountMessage,
-    showUnconfirmedTx,
+    showUnapprovedTx,
     // Persistence Methods:
     setData,
     loadData,
@@ -36,8 +36,8 @@ function initializeZeroClient() {
     console.log('notif stub - showUnconfirmedMessage')
   }
 
-  function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
-    console.log('notif stub - showUnconfirmedTx')
+  function showUnapprovedTx (txParams, txData, onTxDoneCb) {
+    console.log('notif stub - showUnapprovedTx')
   }
 
   //

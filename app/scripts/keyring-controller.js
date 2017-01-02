@@ -1,8 +1,5 @@
-const async = require('async')
 const ethUtil = require('ethereumjs-util')
-const EthQuery = require('eth-query')
 const bip39 = require('bip39')
-const Transaction = require('ethereumjs-tx')
 const EventEmitter = require('events').EventEmitter
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
@@ -36,11 +33,9 @@ module.exports = class KeyringController extends EventEmitter {
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyringTypes = keyringTypes
-
     this.keyrings = []
     this.identities = {} // Essentially a name hash
 
-    this._unconfTxCbs = {}
     this._unconfMsgCbs = {}
 
     this.getNetwork = opts.getNetwork
@@ -97,8 +92,6 @@ module.exports = class KeyringController extends EventEmitter {
       isInitialized: (!!wallet || !!vault),
       isUnlocked: Boolean(this.password),
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(), // AUDIT this.configManager.getConfirmedDisclaimer(),
-      unconfTxs: this.configManager.unconfirmedTxs(),
-      transactions: this.configManager.getTxList(),
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
       selectedAccount: address,
@@ -313,202 +306,18 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
 
-  // SIGNING RELATED METHODS
+  // SIGNING METHODS
   //
-  // SIGN, SUBMIT TX, CANCEL, AND APPROVE.
-  // THIS SECTION INVOLVES THE REQUEST, STORING, AND SIGNING OF DATA
-  // WITH THE KEYS STORED IN THIS CONTROLLER.
-
-
-  // Add Unconfirmed Transaction
-  // @object txParams
-  // @function onTxDoneCb
-  // @function cb
-  //
-  // Calls back `cb` with @object txData = { txParams }
-  // Calls back `onTxDoneCb` with `true` or an `error` depending on result.
-  //
-  // Prepares the given `txParams` for final confirmation and approval.
-  // Estimates gas and other preparatory steps.
-  // Caches the requesting Dapp's callback, `onTxDoneCb`, for resolution later.
-  addUnconfirmedTransaction (txParams, onTxDoneCb, cb) {
-    const configManager = this.configManager
-
-    // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var txId = createId()
-    txParams.metamaskId = txId
-    txParams.metamaskNetworkId = this.getNetwork()
-    var txData = {
-      id: txId,
-      txParams: txParams,
-      time: time,
-      status: 'unconfirmed',
-      gasMultiplier: configManager.getGasMultiplier() || 1,
-      metamaskNetworkId: this.getNetwork(),
-    }
-
-    // keep the onTxDoneCb around for after approval/denial (requires user interaction)
-    // This onTxDoneCb fires completion to the Dapp's write operation.
-    this._unconfTxCbs[txId] = onTxDoneCb
-
-    var provider = this.ethStore._query.currentProvider
-    var query = new EthQuery(provider)
-
-    // calculate metadata for tx
-    this.analyzeTxGasUsage(query, txData, this.txDidComplete.bind(this, txData, cb))
-  }
-
-  estimateTxGas (query, txData, blockGasLimitHex, cb) {
-    const txParams = txData.txParams
-    // check if gasLimit is already specified
-    txData.gasLimitSpecified = Boolean(txParams.gas)
-    // if not, fallback to block gasLimit
-    if (!txData.gasLimitSpecified) {
-      txParams.gas = blockGasLimitHex
-    }
-    // run tx, see if it will OOG
-    query.estimateGas(txParams, cb)
-  }
-
-  checkForTxGasError (txData, estimatedGasHex, cb) {
-    txData.estimatedGas = estimatedGasHex
-    // all gas used - must be an error
-    if (estimatedGasHex === txData.txParams.gas) {
-      txData.simulationFails = true
-    }
-    cb()
-  }
-
-  setTxGas (txData, blockGasLimitHex, cb) {
-    const txParams = txData.txParams
-    // if OOG, nothing more to do
-    if (txData.simulationFails) {
-      cb()
-      return
-    }
-    // if gasLimit was specified and doesnt OOG,
-    // use original specified amount
-    if (txData.gasLimitSpecified) {
-      txData.estimatedGas = txParams.gas
-      cb()
-      return
-    }
-    // if gasLimit not originally specified,
-    // try adding an additional gas buffer to our estimation for safety
-    const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
-    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const estimationWithBuffer = new BN(this.addGasBuffer(estimatedGasBn), 16)
-    // added gas buffer is too high
-    if (estimationWithBuffer.gt(blockGasLimitBn)) {
-      txParams.gas = txData.estimatedGas
-    // added gas buffer is safe
-    } else {
-      const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
-      txParams.gas = gasWithBufferHex
-    }
-    cb()
-    return
-  }
-
-  txDidComplete (txData, cb, err) {
-    if (err) return cb(err)
-    const configManager = this.configManager
-    configManager.addTx(txData)
-    // signal update
-    this.emit('update')
-    // signal completion of add tx
-    cb(null, txData)
-  }
-
-  analyzeTxGasUsage (query, txData, cb) {
-    query.getBlockByNumber('latest', true, (err, block) => {
-      if (err) return cb(err)
-      async.waterfall([
-        this.estimateTxGas.bind(this, query, txData, block.gasLimit),
-        this.checkForTxGasError.bind(this, txData),
-        this.setTxGas.bind(this, txData, block.gasLimit),
-      ], cb)
-    })
-  }
-
-  // Cancel Transaction
-  // @string txId
-  // @function cb
-  //
-  // Calls back `cb` with no error if provided.
-  //
-  // Forgets any tx matching `txId`.
-  cancelTransaction (txId, cb) {
-    const configManager = this.configManager
-    var approvalCb = this._unconfTxCbs[txId] || noop
-
-    // reject tx
-    approvalCb(null, false)
-    // clean up
-    configManager.rejectTx(txId)
-    delete this._unconfTxCbs[txId]
-
-    if (cb && typeof cb === 'function') {
-      cb()
-    }
-  }
-
-  // Approve Transaction
-  // @string txId
-  // @function cb
-  //
-  // Calls back `cb` with no error always.
-  //
-  // Attempts to sign a Transaction with `txId`
-  // and submit it to the blockchain.
-  //
-  // Calls back the cached Dapp's confirmation callback, also.
-  approveTransaction (txId, cb) {
-    const configManager = this.configManager
-    var approvalCb = this._unconfTxCbs[txId] || noop
-
-    // accept tx
-    cb()
-    approvalCb(null, true)
-    // clean up
-    configManager.confirmTx(txId)
-    delete this._unconfTxCbs[txId]
-    this.emit('update')
-  }
-
-  signTransaction (txParams, cb) {
+  // This method signs tx and returns a promise for
+  // TX Manager to update the state after signing
+  signTransaction (ethTx, selectedAddress, txId, cb) {
     try {
-      const address = normalize(txParams.from)
+      const address = normalize(selectedAddress)
       return this.getKeyringForAccount(address)
       .then((keyring) => {
-        // Handle gas pricing
-        var gasMultiplier = this.configManager.getGasMultiplier() || 1
-        var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-        gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-        txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
-
-        // normalize values
-        txParams.to = normalize(txParams.to)
-        txParams.from = normalize(txParams.from)
-        txParams.value = normalize(txParams.value)
-        txParams.data = normalize(txParams.data)
-        txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-        txParams.nonce = normalize(txParams.nonce)
-
-        const tx = new Transaction(txParams)
-        return keyring.signTransaction(address, tx)
-      })
-      .then((tx) => {
-        // Add the tx hash to the persisted meta-tx object
-        var txHash = ethUtil.bufferToHex(tx.hash())
-        var metaTx = this.configManager.getTx(txParams.metamaskId)
-        metaTx.hash = txHash
-        this.configManager.updateTx(metaTx)
-
-        // return raw serialized tx
-        var rawTx = ethUtil.bufferToHex(tx.serialize())
-        cb(null, rawTx)
+        return keyring.signTransaction(address, ethTx)
+      }).then((tx) => {
+        this.emit(`${txId}:signed`, {tx, txId, cb})
       })
     } catch (e) {
       cb(e)
