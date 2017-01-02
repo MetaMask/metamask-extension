@@ -177,8 +177,8 @@ module.exports = class MetamaskController {
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
       signTransaction: (...args) => {
-        this.setupSigningListners(...args)
-        this.txManager.formatTxForSigining(...args)
+        this.setupSigningListeners(...args)
+        this.txManager.formatTxForSigning(...args)
         this.sendUpdate()
       },
 
@@ -257,7 +257,7 @@ module.exports = class MetamaskController {
     })
   }
 
-  setupSigningListners (txParams) {
+  setupSigningListeners (txParams) {
     var txId = txParams.metamaskId
     // apply event listeners for signing and formating events
     this.txManager.once(`${txId}:formatted`, this.keyringController.signTransaction.bind(this.keyringController))
