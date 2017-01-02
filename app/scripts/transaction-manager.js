@@ -157,8 +157,9 @@ module.exports = class TransactionManager extends EventEmitter {
       txParams.data = normalize(txParams.data)
       txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
       txParams.nonce = normalize(txParams.nonce)
+      txParams.chainId = parseInt(networkId)
 
-      const ethTx = new Transaction(txParams, parseInt(networkId))
+      const ethTx = new Transaction(txParams)
 
       // listener is assigned in metamaskController
       this.emit(`${txParams.metamaskId}:formatted`, ethTx, address, txParams.metamaskId, cb)
