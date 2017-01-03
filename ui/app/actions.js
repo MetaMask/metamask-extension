@@ -229,7 +229,7 @@ function createNewVaultAndKeychain (password) {
   return (dispatch) => {
     background.createNewVaultAndKeychain(password, (err, newState) => {
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
     })
   }
@@ -261,7 +261,7 @@ function addNewKeyring (type, opts) {
     background.addNewKeyring(type, opts, (err) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err))
+        return dispatch(actions.displayWarning(err))
       }
     })
   }
@@ -548,7 +548,7 @@ function markNoticeRead (notice) {
     background.markNoticeRead(notice, (err, notice) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err))
+        return dispatch(actions.displayWarning(err))
       }
       if (notice) {
         return dispatch(actions.showNotice(notice))
