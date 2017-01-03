@@ -60,6 +60,8 @@ module.exports = class MetamaskController {
     this.idStoreMigrator = new IdStoreMigrator({
       configManager: this.configManager,
     })
+
+    this.ethStore.on('update', this.sendUpdate.bind(this))
   }
 
   getState () {
