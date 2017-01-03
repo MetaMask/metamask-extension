@@ -69,6 +69,7 @@ module.exports = class MetamaskController {
         this.state,
         this.ethStore.getState(),
         this.configManager.getConfig(),
+        this.txManager.getState(),
         keyringControllerState,
         this.noticeController.getState(), {
           lostAccounts: this.configManager.getLostAccounts(),

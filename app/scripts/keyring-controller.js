@@ -95,7 +95,6 @@ module.exports = class KeyringController extends EventEmitter {
         isInitialized: (!!wallet || !!vault),
         isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        unconfTxs: this.configManager.unconfirmedTxs(),
         transactions: this.configManager.getTxList(),
         unconfMsgs: messageManager.unconfirmedMsgs(),
         messages: messageManager.getMsgList(),
@@ -110,7 +109,6 @@ module.exports = class KeyringController extends EventEmitter {
       }
     })
   }
-
 
   // Create New Vault And Keychain
   // @string password - The password to encrypt the vault with
@@ -510,7 +508,7 @@ module.exports = class KeyringController extends EventEmitter {
     if (typeof password === 'string') {
       this.password = password
     }
-    return Promise.all(this.keyrings.map((keyring, i) => {
+    return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([keyring.type, keyring.serialize()])
       .then((serializedKeyringArray) => {
         // Label the output values on each serialized Keyring:
