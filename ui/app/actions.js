@@ -153,7 +153,7 @@ var actions = {
   SHOW_NEW_KEYCHAIN: 'SHOW_NEW_KEYCHAIN',
   showNewKeychain: showNewKeychain,
 
-
+  callBackgroundThenUpdate,
 }
 
 module.exports = actions
@@ -269,15 +269,7 @@ function addNewKeyring (type, opts) {
 }
 
 function addNewAccount (ringNumber = 0) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    background.addNewAccount(ringNumber, (err) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.showWarning(err))
-      }
-    })
-  }
+  return callBackgroundThenUpdate(background.addNewAccount, ringNumber)
 }
 
 function showInfoPage () {
@@ -476,6 +468,7 @@ function updateMetamaskState (newState) {
 
 function lockMetamask () {
   return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
     background.setLocked((err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
@@ -855,5 +848,26 @@ function shapeShiftRequest (query, options, cb) {
     return shapShiftReq.send(jsonObj)
   } else {
     return shapShiftReq.send()
+  }
+}
+
+// Call Background Then Update
+//
+// A function generator for a common pattern wherein:
+// We show loading indication.
+// We call a background method.
+// We hide loading indication.
+// If it errored, we show a warning.
+// If it didn't, we update the state.
+function callBackgroundThenUpdate (method, ...args) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    method.call(background, ...args, (err, newState) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch(actions.updateMetamaskState(newState))
+    })
   }
 }
