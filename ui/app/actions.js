@@ -231,7 +231,6 @@ function createNewVaultAndKeychain (password) {
       if (err) {
         return dispatch(actions.showWarning(err.message))
       }
-      dispatch(actions.updateMetamaskState(newState))
     })
   }
 }
@@ -467,16 +466,7 @@ function updateMetamaskState (newState) {
 }
 
 function lockMetamask () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    background.setLocked((err, newState) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      dispatch(actions.updateMetamaskState(newState))
-    })
-  }
+  return callBackgroundThenUpdate(background.setLocked)
 }
 
 function showAccountDetail (address) {
@@ -586,14 +576,7 @@ function clearNotices () {
 }
 
 function markAccountsFound() {
-  return (dispatch) => {
-    dispatch(this.showLoadingIndication())
-    background.markAccountsFound((err, newState) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) return dispatch(this.showWarning(err.message))
-      dispatch(actions.updateMetamaskState(newState))
-    })
-  }
+  return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
 //
