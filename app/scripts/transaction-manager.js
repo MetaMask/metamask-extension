@@ -137,25 +137,33 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   // formats txParams so the keyringController can sign it
-  formatTxForSigining (txParams, cb) {
-    var address = txParams.from
-    var metaTx = this.getTx(txParams.metamaskId)
-    var gasMultiplier = metaTx.gasMultiplier
-    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+  formatTxForSigning (txParams, cb) {
+    this.getNetwork((err, networkId) => {
+      if (err) {
+        return cb(err)
+      }
 
-    // normalize values
-    txParams.to = normalize(txParams.to)
-    txParams.from = normalize(txParams.from)
-    txParams.value = normalize(txParams.value)
-    txParams.data = normalize(txParams.data)
-    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-    txParams.nonce = normalize(txParams.nonce)
-    const ethTx = new Transaction(txParams)
+      var address = txParams.from
+      var metaTx = this.getTx(txParams.metamaskId)
+      var gasMultiplier = metaTx.gasMultiplier
+      var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+      gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+      txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
 
-    // listener is assigned in metamaskController
-    this.emit(`${txParams.metamaskId}:formatted`, ethTx, address, txParams.metamaskId, cb)
+      // normalize values
+      txParams.to = normalize(txParams.to)
+      txParams.from = normalize(txParams.from)
+      txParams.value = normalize(txParams.value)
+      txParams.data = normalize(txParams.data)
+      txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+      txParams.nonce = normalize(txParams.nonce)
+      txParams.chainId = parseInt(networkId)
+
+      const ethTx = new Transaction(txParams)
+
+      // listener is assigned in metamaskController
+      this.emit(`${txParams.metamaskId}:formatted`, ethTx, address, txParams.metamaskId, cb)
+    })
   }
 
   // receives a signed tx object and updates the tx hash
