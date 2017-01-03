@@ -226,14 +226,7 @@ function createNewVaultAndRestore (password, seed) {
 }
 
 function createNewVaultAndKeychain (password) {
-  return (dispatch) => {
-    background.createNewVaultAndKeychain(password, (err, newState) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      dispatch(actions.updateMetamaskState(newState))
-    })
-  }
+  return callBackgroundThenUpdate(background.createNewVaultAndKeychain, password)
 }
 
 function revealSeedConfirmation () {
@@ -255,17 +248,8 @@ function requestRevealSeed (password) {
   }
 }
 
-
 function addNewKeyring (type, opts) {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    background.addNewKeyring(type, opts, (err) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err))
-      }
-    })
-  }
+  return callBackgroundThenUpdate(background.addNewKeyring, type, opts)
 }
 
 function addNewAccount (ringNumber = 0) {
