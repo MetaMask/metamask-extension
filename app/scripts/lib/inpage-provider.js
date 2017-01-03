@@ -111,6 +111,8 @@ MetamaskInpageProvider.prototype.isConnected = function () {
   return true
 }
 
+MetamaskInpageProvider.prototype.isMetaMask = true
+
 // util
 
 function remoteStoreWithLocalStorageCache (storageKey) {
