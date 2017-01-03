@@ -46,6 +46,7 @@ gulp.task('copy:locales', copyTask({
     './dist/firefox/_locales',
     './dist/chrome/_locales',
     './dist/edge/_locales',
+    './dist/opera/_locales',
   ]
 }))
 gulp.task('copy:images', copyTask({
@@ -54,6 +55,7 @@ gulp.task('copy:images', copyTask({
     './dist/firefox/images',
     './dist/chrome/images',
     './dist/edge/images',
+    './dist/opera/images',
   ],
 }))
 gulp.task('copy:fonts', copyTask({
@@ -62,6 +64,7 @@ gulp.task('copy:fonts', copyTask({
     './dist/firefox/fonts',
     './dist/chrome/fonts',
     './dist/edge/fonts',
+    './dist/opera/fonts',
   ],
 }))
 gulp.task('copy:reload', copyTask({
@@ -70,6 +73,7 @@ gulp.task('copy:reload', copyTask({
     './dist/firefox/scripts',
     './dist/chrome/scripts',
     './dist/edge/scripts',
+    './dist/opera/scripts',
   ],
   pattern: '/chromereload.js',
 }))
@@ -79,6 +83,7 @@ gulp.task('copy:root', copyTask({
     './dist/firefox',
     './dist/chrome',
     './dist/edge',
+    './dist/opera',
   ],
   pattern: '/*',
 }))
@@ -90,6 +95,21 @@ gulp.task('manifest:chrome', function() {
     return json
   }))
   .pipe(gulp.dest('./dist/chrome', { overwrite: true }))
+})
+
+gulp.task('manifest:opera', function() {
+  return gulp.src('./dist/opera/manifest.json')
+  .pipe(jsoneditor(function(json) {
+    json.permissions = [
+      "storage",
+      "tabs",
+      "clipboardWrite",
+      "clipboardRead",
+      "http://localhost:8545/"
+    ]
+    return json
+  }))
+  .pipe(gulp.dest('./dist/opera', { overwrite: true }))
 })
 
 gulp.task('manifest:production', function() {
@@ -118,7 +138,7 @@ if (!disableLiveReload) {
   copyStrings.push('copy:reload')
 }
 
-gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:production', 'manifest:chrome'))
+gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:production', 'manifest:chrome', 'manifest:opera'))
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -188,7 +208,12 @@ gulp.task('zip:edge', () => {
   .pipe(zip(`metamask-edge-${manifest.version}.zip`))
   .pipe(gulp.dest('builds'));
 })
-gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge'))
+gulp.task('zip:opera', () => {
+  return gulp.src('dist/opera/**')
+  .pipe(zip(`metamask-opera-${manifest.version}.zip`))
+  .pipe(gulp.dest('builds'));
+})
+gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
 // high level tasks
 
@@ -255,6 +280,7 @@ function bundleTask(opts) {
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
+      .pipe(gulp.dest('./dist/opera/scripts'))
       .pipe(gulpif(!disableLiveReload,livereload()))
 
     )
