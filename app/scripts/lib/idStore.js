@@ -1,18 +1,13 @@
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
-const async = require('async')
 const ethUtil = require('ethereumjs-util')
-const BN = ethUtil.BN
-const EthQuery = require('eth-query')
 const KeyStore = require('eth-lightwallet').keystore
 const clone = require('clone')
 const extend = require('xtend')
-const createId = require('./random-id')
-const ethBinToOps = require('eth-bin-to-ops')
 const autoFaucet = require('./auto-faucet')
-const messageManager = require('./message-manager')
 const DEFAULT_RPC = 'https://testrpc.metamask.io/'
 const IdManagement = require('./id-management')
+
 
 module.exports = IdentityStore
 
@@ -34,10 +29,7 @@ function IdentityStore (opts = {}) {
     selectedAddress: null,
     identities: {},
   }
-
   // not part of serilized metamask state - only kept in memory
-  this._unconfTxCbs = {}
-  this._unconfMsgCbs = {}
 }
 
 //
@@ -103,10 +95,6 @@ IdentityStore.prototype.getState = function () {
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
     isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
-    unconfTxs: configManager.unconfirmedTxs(),
-    transactions: configManager.getTxList(),
-    unconfMsgs: messageManager.unconfirmedMsgs(),
-    messages: messageManager.getMsgList(),
     selectedAddress: configManager.getSelectedAccount(),
     shapeShiftTxList: configManager.getShapeShiftTxList(),
     currentFiat: configManager.getCurrentFiat(),
@@ -206,245 +194,6 @@ IdentityStore.prototype.exportAccount = function (address, cb) {
   return privateKey
 }
 
-//
-// Transactions
-//
-
-// comes from dapp via zero-client hooked-wallet provider
-IdentityStore.prototype.addUnconfirmedTransaction = function (txParams, onTxDoneCb, cb) {
-  const configManager = this.configManager
-
-  var self = this
-  // create txData obj with parameters and meta data
-  var time = (new Date()).getTime()
-  var txId = createId()
-  txParams.metamaskId = txId
-  txParams.metamaskNetworkId = self._currentState.network
-  var txData = {
-    id: txId,
-    txParams: txParams,
-    time: time,
-    status: 'unconfirmed',
-    gasMultiplier: configManager.getGasMultiplier() || 1,
-  }
-
-  console.log('addUnconfirmedTransaction:', txData)
-
-  // keep the onTxDoneCb around for after approval/denial (requires user interaction)
-  // This onTxDoneCb fires completion to the Dapp's write operation.
-  self._unconfTxCbs[txId] = onTxDoneCb
-
-  var provider = self._ethStore._query.currentProvider
-  var query = new EthQuery(provider)
-
-  // calculate metadata for tx
-  async.parallel([
-    analyzeForDelegateCall,
-    estimateGas,
-  ], didComplete)
-
-  // perform static analyis on the target contract code
-  function analyzeForDelegateCall (cb) {
-    if (txParams.to) {
-      query.getCode(txParams.to, (err, result) => {
-        if (err) return cb(err.message || err)
-        var containsDelegateCall = self.checkForDelegateCall(result)
-        txData.containsDelegateCall = containsDelegateCall
-        cb()
-      })
-    } else {
-      cb()
-    }
-  }
-
-  function estimateGas (cb) {
-    var estimationParams = extend(txParams)
-    query.getBlockByNumber('latest', true, function (err, block) {
-      if (err) return cb(err)
-      // check if gasLimit is already specified
-      const gasLimitSpecified = Boolean(txParams.gas)
-      // if not, fallback to block gasLimit
-      if (!gasLimitSpecified) {
-        estimationParams.gas = block.gasLimit
-      }
-      // run tx, see if it will OOG
-      query.estimateGas(estimationParams, function (err, estimatedGasHex) {
-        if (err) return cb(err.message || err)
-        // all gas used - must be an error
-        if (estimatedGasHex === estimationParams.gas) {
-          txData.simulationFails = true
-          txData.estimatedGas = estimatedGasHex
-          txData.txParams.gas = estimatedGasHex
-          cb()
-          return
-        }
-        // otherwise, did not use all gas, must be ok
-
-        // if specified gasLimit and no error, we're done
-        if (gasLimitSpecified) {
-          txData.estimatedGas = txParams.gas
-          cb()
-          return
-        }
-
-        // try adding an additional gas buffer to our estimation for safety
-        const estimatedGasBn = new BN(ethUtil.stripHexPrefix(estimatedGasHex), 16)
-        const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(block.gasLimit), 16)
-        const estimationWithBuffer = self.addGasBuffer(estimatedGasBn)
-        // added gas buffer is too high
-        if (estimationWithBuffer.gt(blockGasLimitBn)) {
-          txData.estimatedGas = estimatedGasHex
-          txData.txParams.gas = estimatedGasHex
-        // added gas buffer is safe
-        } else {
-          const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
-          txData.estimatedGas = gasWithBufferHex
-          txData.txParams.gas = gasWithBufferHex
-        }
-        cb()
-        return
-      })
-    })
-  }
-
-  function didComplete (err) {
-    if (err) return cb(err.message || err)
-    configManager.addTx(txData)
-    // signal update
-    self._didUpdate()
-    // signal completion of add tx
-    cb(null, txData)
-  }
-}
-
-IdentityStore.prototype.checkForDelegateCall = function (codeHex) {
-  const code = ethUtil.toBuffer(codeHex)
-  if (code !== '0x') {
-    const ops = ethBinToOps(code)
-    const containsDelegateCall = ops.some((op) => op.name === 'DELEGATECALL')
-    return containsDelegateCall
-  } else {
-    return false
-  }
-}
-
-IdentityStore.prototype.addGasBuffer = function (gasBn) {
-  // add 20% to specified gas
-  const gasBuffer = gasBn.div(new BN('5', 10))
-  const gasWithBuffer = gasBn.add(gasBuffer)
-  return gasWithBuffer
-}
-
-// comes from metamask ui
-IdentityStore.prototype.approveTransaction = function (txId, cb) {
-  const configManager = this.configManager
-  var approvalCb = this._unconfTxCbs[txId] || noop
-
-  // accept tx
-  cb()
-  approvalCb(null, true)
-  // clean up
-  configManager.confirmTx(txId)
-  delete this._unconfTxCbs[txId]
-  this._didUpdate()
-}
-
-// comes from metamask ui
-IdentityStore.prototype.cancelTransaction = function (txId) {
-  const configManager = this.configManager
-  var approvalCb = this._unconfTxCbs[txId] || noop
-
-  // reject tx
-  approvalCb(null, false)
-  // clean up
-  configManager.rejectTx(txId)
-  delete this._unconfTxCbs[txId]
-  this._didUpdate()
-}
-
-// performs the actual signing, no autofill of params
-IdentityStore.prototype.signTransaction = function (txParams, cb) {
-  try {
-    console.log('signing tx...', txParams)
-    var rawTx = this._idmgmt.signTx(txParams)
-    cb(null, rawTx)
-  } catch (err) {
-    cb(err)
-  }
-}
-
-//
-// Messages
-//
-
-// comes from dapp via zero-client hooked-wallet provider
-IdentityStore.prototype.addUnconfirmedMessage = function (msgParams, cb) {
-  // create txData obj with parameters and meta data
-  var time = (new Date()).getTime()
-  var msgId = createId()
-  var msgData = {
-    id: msgId,
-    msgParams: msgParams,
-    time: time,
-    status: 'unconfirmed',
-  }
-  messageManager.addMsg(msgData)
-  console.log('addUnconfirmedMessage:', msgData)
-
-  // keep the cb around for after approval (requires user interaction)
-  // This cb fires completion to the Dapp's write operation.
-  this._unconfMsgCbs[msgId] = cb
-
-  // signal update
-  this._didUpdate()
-
-  return msgId
-}
-
-// comes from metamask ui
-IdentityStore.prototype.approveMessage = function (msgId, cb) {
-  var approvalCb = this._unconfMsgCbs[msgId] || noop
-
-  // accept msg
-  cb()
-  approvalCb(null, true)
-  // clean up
-  messageManager.confirmMsg(msgId)
-  delete this._unconfMsgCbs[msgId]
-  this._didUpdate()
-}
-
-// comes from metamask ui
-IdentityStore.prototype.cancelMessage = function (msgId) {
-  var approvalCb = this._unconfMsgCbs[msgId] || noop
-
-  // reject tx
-  approvalCb(null, false)
-  // clean up
-  messageManager.rejectMsg(msgId)
-  delete this._unconfTxCbs[msgId]
-  this._didUpdate()
-}
-
-// performs the actual signing, no autofill of params
-IdentityStore.prototype.signMessage = function (msgParams, cb) {
-  try {
-    console.log('signing msg...', msgParams.data)
-    var rawMsg = this._idmgmt.signMsg(msgParams.from, msgParams.data)
-    if ('metamaskId' in msgParams) {
-      var id = msgParams.metamaskId
-      delete msgParams.metamaskId
-
-      this.approveMessage(id, cb)
-    } else {
-      cb(null, rawMsg)
-    }
-  } catch (err) {
-    cb(err)
-  }
-}
-
-//
 // private
 //
 
@@ -599,4 +348,3 @@ IdentityStore.prototype._autoFaucet = function () {
 
 // util
 
-function noop () {}
