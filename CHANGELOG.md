@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add a check for when a tx is included in a block.
+- Remove certain non-essential permissions from certain builds.
 
 ## 2.14.1 2016-12-20
 
