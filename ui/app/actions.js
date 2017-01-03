@@ -231,6 +231,7 @@ function createNewVaultAndKeychain (password) {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      dispatch(actions.updateMetamaskState(newState))
     })
   }
 }
