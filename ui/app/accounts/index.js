@@ -22,6 +22,7 @@ function mapStateToProps (state) {
     selectedAccount: state.metamask.selectedAccount,
     scrollToBottom: state.appState.scrollToBottom,
     pending,
+    keyrings: state.metamask.keyrings,
   }
 }
 
@@ -31,9 +32,10 @@ function AccountsScreen () {
 }
 
 AccountsScreen.prototype.render = function () {
-  var state = this.props
-  var identityList = valuesFor(state.identities)
-  var unconfTxList = valuesFor(state.unconfTxs)
+  const props = this.props
+  const { keyrings } = props
+  const identityList = valuesFor(props.identities)
+  const unconfTxList = valuesFor(props.unconfTxs)
 
   return (
 
@@ -69,6 +71,11 @@ AccountsScreen.prototype.render = function () {
               }
             })
 
+            const simpleAddress = identity.address.substring(2).toLowerCase()
+            const keyring = keyrings.find((kr) => {
+              return kr.accounts.includes(simpleAddress)
+            })
+
             return h(AccountListItem, {
               key: `acct-panel-${identity.address}`,
               identity,
@@ -76,6 +83,7 @@ AccountsScreen.prototype.render = function () {
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,
+              keyring,
             })
           }),
 

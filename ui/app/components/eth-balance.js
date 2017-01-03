@@ -15,9 +15,10 @@ function EthBalanceComponent () {
 
 EthBalanceComponent.prototype.render = function () {
   var props = this.props
+  let { value } = props
   var style = props.style
   var needsParse = this.props.needsParse !== undefined ? this.props.needsParse : true
-  const value = formatBalance(props.value, 6, needsParse)
+  value = value ? formatBalance(value, 6, needsParse) : '...'
   var width = props.width
 
   return (
@@ -38,6 +39,7 @@ EthBalanceComponent.prototype.render = function () {
 EthBalanceComponent.prototype.renderBalance = function (value) {
   var props = this.props
   if (value === 'None') return value
+  if (value === '...') return value
   var balanceObj = generateBalanceObject(value, props.shorten ? 1 : 3)
   var balance
   var splitBalance = value.split(' ')
