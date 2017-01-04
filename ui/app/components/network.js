@@ -13,6 +13,7 @@ function Network () {
 Network.prototype.render = function () {
   const props = this.props
   const networkNumber = props.network
+  const style = props.style
   let providerName
   try {
     providerName = props.provider.type
@@ -46,11 +47,7 @@ Network.prototype.render = function () {
   }
 
   return (
-    h('#network_component.flex-center.pointer', {
-      style: {
-        marginRight: '-27px',
-        marginLeft: '-3px',
-      },
+    h('#network_component.pointer', {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [

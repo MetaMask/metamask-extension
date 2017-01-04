@@ -4,6 +4,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const NetworkIndicator = require('./components/network')
 const txHelper = require('../lib/tx-helper')
 const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
 const ethUtil = require('ethereumjs-util')
@@ -24,6 +25,7 @@ function mapStateToProps (state) {
     index: state.appState.currentView.context,
     warning: state.appState.warning,
     network: state.metamask.network,
+    provider: state.metamask.provider,
   }
 }
 
@@ -36,6 +38,7 @@ ConfirmTxScreen.prototype.render = function () {
   var state = this.props
 
   var network = state.network
+  var provider = state.provider
   var unconfTxs = state.unconfTxs
   var unconfMsgs = state.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
@@ -52,6 +55,10 @@ ConfirmTxScreen.prototype.render = function () {
       h('.section-title.flex-row.flex-center', [
         !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
+        }) : null,
+        isNotification ? h(NetworkIndicator, {
+          network: network,
+          provider: provider,
         }) : null,
         h('h2.page-subtitle', 'Confirm Transaction'),
       ]),
