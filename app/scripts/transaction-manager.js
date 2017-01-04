@@ -17,7 +17,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
-    // this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
+    this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.getGasMultiplier = opts.getGasMultiplier
     this.getNetwork = opts.getNetwork
   }
