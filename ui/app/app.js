@@ -144,7 +144,7 @@ App.prototype.renderAppBar = function () {
           h('#network-spacer.flex-center', {
             style: {
               marginRight: '-72px',
-            }
+            },
           }, [
             h(NetworkIndicator, {
               network: this.props.network,

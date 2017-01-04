@@ -13,7 +13,6 @@ function Network () {
 Network.prototype.render = function () {
   const props = this.props
   const networkNumber = props.network
-  const style = props.style
   let providerName
   try {
     providerName = props.provider.type
