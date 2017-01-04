@@ -43,7 +43,7 @@ EthereumStore.prototype.addAccount = function (address) {
   self._currentState.accounts[address] = {}
   self._didUpdate()
   if (!self.currentBlockNumber) return
-  self._updateAccount(self.currentBlockNumber, address, noop)
+  self._updateAccount(address, noop)
 }
 
 EthereumStore.prototype.removeAccount = function (address) {
@@ -87,37 +87,35 @@ EthereumStore.prototype._updateForBlock = function (block) {
   ], function (err) {
     if (err) return console.error(err)
     self.emit('block', self.getState())
+    self._didUpdate()
   })
 }
 
 EthereumStore.prototype._updateAccounts = function (cb) {
-  const self = this
-  var accountsState = self._currentState.accounts
+  var accountsState = this._currentState.accounts
   var addresses = Object.keys(accountsState)
-  async.each(addresses, self._updateAccount.bind(self), cb)
+  async.each(addresses, this._updateAccount.bind(this), cb)
 }
 
 EthereumStore.prototype._updateAccount = function (address, cb) {
-  const self = this
-  var accountsState = self._currentState.accounts
-  self._query.getAccount(address, function (err, result) {
+  var accountsState = this._currentState.accounts
+  this.getAccount(address, function (err, result) {
     if (err) return cb(err)
     result.address = address
     // only populate if the entry is still present
     if (accountsState[address]) {
       accountsState[address] = result
-      self._didUpdate()
     }
     cb(null, result)
   })
 }
 
 EthereumStore.prototype.getAccount = function (address, cb) {
-  const block = 'latest'
+  const query = this._query
   async.parallel({
-    balance: this._query.getBalance.bind(this, address, block),
-    nonce: this._query.getNonce.bind(this, address, block),
-    code: this._query.getCode.bind(this, address, block),
+    balance: query.getBalance.bind(query, address),
+    nonce: query.getTransactionCount.bind(query, address),
+    code: query.getCode.bind(query, address),
   }, cb)
 }
 
