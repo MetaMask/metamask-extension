@@ -4,6 +4,8 @@
 
 - Remove certain non-essential permissions from certain builds.
 - Add a check for when a tx is included in a block.
+- Minor modifications to network display.
+- Network now displays properly for pending transactions.
 
 ## 2.14.1 2016-12-20
 
