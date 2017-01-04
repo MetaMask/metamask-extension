@@ -79,7 +79,7 @@ EthereumStore.prototype._didUpdate = function () {
 
 EthereumStore.prototype._updateForBlock = function (block) {
   const self = this
-  var blockNumber = '0x'+block.number.toString('hex')
+  var blockNumber = '0x' + block.number.toString('hex')
   self.currentBlockNumber = blockNumber
   async.parallel([
     self._updateAccounts.bind(self),
@@ -134,7 +134,8 @@ EthereumStore.prototype._updateTransaction = function (block, txHash, cb) {
   var transactionsState = self._currentState.transactions
   self._query.getTransaction(txHash, function (err, result) {
     if (err) return cb(err)
-    // only populate if the entry is still present if (transactionsState[txHash]) {
+    // only populate if the entry is still present
+    if (transactionsState[txHash]) {
       transactionsState[txHash] = result
       self._didUpdate()
     }
