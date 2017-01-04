@@ -176,10 +176,25 @@ module.exports = class MetamaskController {
       },
       // tx signing
       approveTransaction: this.newUnsignedTransaction.bind(this),
-      signTransaction: (...args) => {
-        this.setupSigningListners(...args)
-        this.txManager.formatTxForSigining(...args)
-        this.sendUpdate()
+      signTransaction: (txParams, cb) => {
+        this.txManager.formatTxForSigining(txParams)
+        .then(({ethTx, address, txId}) => {
+          return this.keyringController.signTransaction(ethTx, address, txId)
+        })
+        .then(({tx, txId}) => {
+          return this.txManager.resolveSignedTransaction({tx, txId})
+        })
+        .then((rawTx) => {
+          cb(null, rawTx)
+        })
+        .catch((err) => {
+          console.error(err)
+          cb(err)
+        })
+        .then(() => {
+          this.sendUpdate()
+          this.txManager.emit(`${txParams.metamaskId}:signingComplete`)
+        })
       },
 
       // msg signing
@@ -255,13 +270,6 @@ module.exports = class MetamaskController {
       this.sendUpdate()
       this.opts.showUnapprovedTx(txParams, txData, onTxDoneCb)
     })
-  }
-
-  setupSigningListners (txParams) {
-    var txId = txParams.metamaskId
-    // apply event listeners for signing and formating events
-    this.txManager.once(`${txId}:formatted`, this.keyringController.signTransaction.bind(this.keyringController))
-    this.keyringController.once(`${txId}:signed`, this.txManager.resolveSignedTransaction.bind(this.txManager))
   }
 
   enforceTxValidations (txParams) {

@@ -17,7 +17,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
-    this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
+    // this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.getGasMultiplier = opts.getGasMultiplier
     this.getNetwork = opts.getNetwork
   }
@@ -128,7 +128,7 @@ module.exports = class TransactionManager extends EventEmitter {
 
   approveTransaction (txId, cb = warn) {
     this.setTxStatusSigned(txId)
-    cb()
+    this.once(`${txId}:signingComplete`, cb)
   }
 
   cancelTransaction (txId, cb = warn) {
@@ -137,25 +137,30 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   // formats txParams so the keyringController can sign it
-  formatTxForSigining (txParams, cb) {
-    var address = txParams.from
-    var metaTx = this.getTx(txParams.metamaskId)
-    var gasMultiplier = metaTx.gasMultiplier
-    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+  formatTxForSigining (txParams) {
+    return new Promise((resolve, reject) => {
+      try {
+        var address = txParams.from
+        var metaTx = this.getTx(txParams.metamaskId)
+        var gasMultiplier = metaTx.gasMultiplier
+        var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+        gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+        txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
 
-    // normalize values
-    txParams.to = normalize(txParams.to)
-    txParams.from = normalize(txParams.from)
-    txParams.value = normalize(txParams.value)
-    txParams.data = normalize(txParams.data)
-    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-    txParams.nonce = normalize(txParams.nonce)
-    const ethTx = new Transaction(txParams)
-
-    // listener is assigned in metamaskController
-    this.emit(`${txParams.metamaskId}:formatted`, ethTx, address, txParams.metamaskId, cb)
+        // normalize values
+        txParams.to = normalize(txParams.to)
+        txParams.from = normalize(txParams.from)
+        txParams.value = normalize(txParams.value)
+        txParams.data = normalize(txParams.data)
+        txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+        txParams.nonce = normalize(txParams.nonce)
+        const ethTx = new Transaction(txParams)
+        var txId = txParams.metamaskId
+        resolve({ethTx, address, txId})
+      } catch (err) {
+        reject(err)
+      }
+    })
   }
 
   // receives a signed tx object and updates the tx hash
@@ -167,7 +172,8 @@ module.exports = class TransactionManager extends EventEmitter {
     metaTx.hash = txHash
     this.updateTx(metaTx)
     var rawTx = ethUtil.bufferToHex(tx.serialize())
-    cb(null, rawTx)
+    return Promise.resolve(rawTx)
+
   }
 
   /*
