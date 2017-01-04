@@ -19,10 +19,11 @@ class SimpleKeyring extends EventEmitter {
     return Promise.resolve(this.wallets.map(w => w.getPrivateKey().toString('hex')))
   }
 
-  deserialize (wallets = []) {
-    this.wallets = wallets.map((w) => {
-      var b = new Buffer(w, 'hex')
-      const wallet = Wallet.fromPrivateKey(b)
+  deserialize (privateKeys = []) {
+    this.wallets = privateKeys.map((privateKey) => {
+      const stripped = ethUtil.stripHexPrefix(privateKey)
+      const buffer = new Buffer(stripped, 'hex')
+      const wallet = Wallet.fromPrivateKey(buffer)
       return wallet
     })
     return Promise.resolve()

@@ -60,19 +60,24 @@ module.exports = class MetamaskController {
     this.idStoreMigrator = new IdStoreMigrator({
       configManager: this.configManager,
     })
+
+    this.ethStore.on('update', this.sendUpdate.bind(this))
   }
 
   getState () {
-    return extend(
-      this.state,
-      this.ethStore.getState(),
-      this.configManager.getConfig(),
-      this.keyringController.getState(),
-      this.txManager.getState(),
-      this.noticeController.getState(), {
-        lostAccounts: this.configManager.getLostAccounts(),
-      }
-    )
+    return this.keyringController.getState()
+    .then((keyringControllerState) => {
+      return extend(
+        this.state,
+        this.ethStore.getState(),
+        this.configManager.getConfig(),
+        this.txManager.getState(),
+        keyringControllerState,
+        this.noticeController.getState(), {
+          lostAccounts: this.configManager.getLostAccounts(),
+        }
+      )
+    })
   }
 
   getApi () {
@@ -81,7 +86,7 @@ module.exports = class MetamaskController {
     const noticeController = this.noticeController
 
     return {
-      getState: (cb) => { cb(null, this.getState()) },
+      getState: nodeify(this.getState.bind(this)),
       setRpcTarget: this.setRpcTarget.bind(this),
       setProviderType: this.setProviderType.bind(this),
       useEtherscanProvider: this.useEtherscanProvider.bind(this),
@@ -101,7 +106,7 @@ module.exports = class MetamaskController {
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       submitPassword: (password, cb) => {
         this.migrateOldVaultIfAny(password)
-        .then(keyringController.submitPassword.bind(keyringController))
+        .then(keyringController.submitPassword.bind(keyringController, password))
         .then((newState) => { cb(null, newState) })
         .catch((reason) => { cb(reason) })
       },
@@ -158,8 +163,12 @@ module.exports = class MetamaskController {
   }
 
   sendUpdate () {
-    this.listeners.forEach((remote) => {
-      remote.sendUpdate(this.getState())
+    this.getState()
+    .then((state) => {
+
+      this.listeners.forEach((remote) => {
+        remote.sendUpdate(state)
+      })
     })
   }
 
@@ -479,7 +488,7 @@ module.exports = class MetamaskController {
     return this.idStoreMigrator.migratedVaultForPassword(password)
     .then(this.restoreOldVaultAccounts.bind(this))
     .then(this.restoreOldLostAccounts.bind(this))
-    .then(keyringController.persistAllKeyrings.bind(keyringController))
+    .then(keyringController.persistAllKeyrings.bind(keyringController, password))
     .then(() => password)
   }
 
