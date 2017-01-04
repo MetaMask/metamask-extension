@@ -1,3 +1,12 @@
+/* Ethereum Store
+ *
+ * This module is responsible for tracking any number of accounts
+ * and caching their current balances & transaction counts.
+ *
+ * It also tracks transaction hashes, and checks their inclusion status
+ * on each new block.
+ */
+
 const EventEmitter = require('events').EventEmitter
 const inherits = require('util').inherits
 const async = require('async')
