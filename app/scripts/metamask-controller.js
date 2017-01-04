@@ -165,7 +165,6 @@ module.exports = class MetamaskController {
   sendUpdate () {
     this.getState()
     .then((state) => {
-
       this.listeners.forEach((remote) => {
         remote.sendUpdate(state)
       })
@@ -461,7 +460,7 @@ module.exports = class MetamaskController {
     return this.state.network
   }
 
-  markAccountsFound(cb) {
+  markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
     this.sendUpdate()
     cb(null, this.getState())

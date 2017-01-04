@@ -138,29 +138,23 @@ module.exports = class TransactionManager extends EventEmitter {
 
   // formats txParams so the keyringController can sign it
   formatTxForSigining (txParams) {
-    return new Promise((resolve, reject) => {
-      try {
-        var address = txParams.from
-        var metaTx = this.getTx(txParams.metamaskId)
-        var gasMultiplier = metaTx.gasMultiplier
-        var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-        gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-        txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+    var address = txParams.from
+    var metaTx = this.getTx(txParams.metamaskId)
+    var gasMultiplier = metaTx.gasMultiplier
+    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
 
-        // normalize values
-        txParams.to = normalize(txParams.to)
-        txParams.from = normalize(txParams.from)
-        txParams.value = normalize(txParams.value)
-        txParams.data = normalize(txParams.data)
-        txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-        txParams.nonce = normalize(txParams.nonce)
-        const ethTx = new Transaction(txParams)
-        var txId = txParams.metamaskId
-        resolve({ethTx, address, txId})
-      } catch (err) {
-        reject(err)
-      }
-    })
+    // normalize values
+    txParams.to = normalize(txParams.to)
+    txParams.from = normalize(txParams.from)
+    txParams.value = normalize(txParams.value)
+    txParams.data = normalize(txParams.data)
+    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+    txParams.nonce = normalize(txParams.nonce)
+    const ethTx = new Transaction(txParams)
+    var txId = txParams.metamaskId
+    return Promise.resolve({ethTx, address, txId})
   }
 
   // receives a signed tx object and updates the tx hash
