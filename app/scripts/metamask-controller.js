@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
@@ -13,12 +14,12 @@ const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 
-module.exports = class MetamaskController {
+module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
+    super()
     this.state = { network: 'loading' }
     this.opts = opts
-    this.listeners = []
     this.configManager = new ConfigManager(opts)
     this.keyringController = new KeyringController({
       configManager: this.configManager,
@@ -62,6 +63,7 @@ module.exports = class MetamaskController {
     })
 
     this.ethStore.on('update', this.sendUpdate.bind(this))
+    this.keyringController.on('update', this.sendUpdate.bind(this))
   }
 
   getState () {
@@ -165,10 +167,7 @@ module.exports = class MetamaskController {
   sendUpdate () {
     this.getState()
     .then((state) => {
-
-      this.listeners.forEach((remote) => {
-        remote.sendUpdate(state)
-      })
+      this.emit('update', state)
     })
   }
 
