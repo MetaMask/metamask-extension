@@ -56,11 +56,11 @@ ConfirmTxScreen.prototype.render = function () {
         !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
         }) : null,
+        h('h2.page-subtitle', 'Confirm Transaction'),
         isNotification ? h(NetworkIndicator, {
           network: network,
           provider: provider,
         }) : null,
-        h('h2.page-subtitle', 'Confirm Transaction'),
       ]),
 
       h('h3', {
