@@ -194,14 +194,12 @@ module.exports = class MetamaskController {
         })
         .then((rawTx) => {
           cb(null, rawTx)
+          this.sendUpdate()
+          this.txManager.emit(`${txParams.metamaskId}:signingComplete`)
         })
         .catch((err) => {
           console.error(err)
           cb(err)
-        })
-        .then(() => {
-          this.sendUpdate()
-          this.txManager.emit(`${txParams.metamaskId}:signingComplete`)
         })
       },
 
