@@ -316,20 +316,16 @@ module.exports = class KeyringController extends EventEmitter {
   //
   // This method signs tx and returns a promise for
   // TX Manager to update the state after signing
-  signTransaction (ethTx, selectedAddress, txId, cb) {
-    try {
-      const address = normalize(selectedAddress)
-      return this.getKeyringForAccount(address)
-      .then((keyring) => {
-        return keyring.signTransaction(address, ethTx)
-      }).then((tx) => {
-        this.emit(`${txId}:signed`, {tx, txId, cb})
-      })
-    } catch (e) {
-      cb(e)
-    }
-  }
 
+  signTransaction (ethTx, selectedAddress, txId) {
+    const address = normalize(selectedAddress)
+    return this.getKeyringForAccount(address)
+    .then((keyring) => {
+      return keyring.signTransaction(address, ethTx)
+    }).then((tx) => {
+      return {tx, txId}
+    })
+  }
   // Add Unconfirmed Message
   // @object msgParams
   // @function cb
