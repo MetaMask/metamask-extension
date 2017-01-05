@@ -49,7 +49,6 @@
     "eth-bin-to-ops": "^1.0.1",
     "eth-lightwallet": "^2.3.3",
     "eth-query": "^1.0.3",
-    "eth-store": "^1.1.0",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.4.0",
     "ethereumjs-wallet": "^0.6.0",

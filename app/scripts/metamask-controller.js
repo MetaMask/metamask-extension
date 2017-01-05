@@ -1,6 +1,6 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
-const EthStore = require('eth-store')
+const EthStore = require('./lib/eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
