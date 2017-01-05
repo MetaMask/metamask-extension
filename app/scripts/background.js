@@ -22,7 +22,6 @@ const controller = new MetamaskController({
   setData,
   loadData,
 })
-const keyringController = controller.keyringController
 const txManager = controller.txManager
 function triggerUi () {
   if (!popupIsOpen) notification.show()
@@ -81,13 +80,11 @@ function setupControllerConnection (stream) {
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', (remote) => {
     // push updates to popup
-    controller.ethStore.on('update', controller.sendUpdate.bind(controller))
-    controller.listeners.push(remote)
-    keyringController.on('update', controller.sendUpdate.bind(controller))
-
+    var sendUpdate = remote.sendUpdate.bind(remote)
+    controller.on('update', sendUpdate)
     // teardown on disconnect
     eos(stream, () => {
-      controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
+      controller.removeListener('update', sendUpdate)
       popupIsOpen = false
     })
   })
