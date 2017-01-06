@@ -100,7 +100,7 @@ ConfirmTxScreen.prototype.render = function () {
           selectedAccount: state.selectedAccount,
           accounts: state.accounts,
           identities: state.identities,
-          insufficientBalance: this.checkBalnceAgainstTx(txData),
+          insufficientBalance: this.checkBalanceAgainstTx(txData),
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || state.selectedAccount),
           sendTransaction: this.sendTransaction.bind(this, txData),
@@ -123,7 +123,7 @@ function currentTxView (opts) {
     return h(PendingMsg, opts)
   }
 }
-ConfirmTxScreen.prototype.checkBalnceAgainstTx = function (txData) {
+ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   var state = this.props
 
   var txParams = txData.txParams || {}
