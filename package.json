@@ -30,8 +30,7 @@
             "es2015"
           ]
         }
-      ],
-      "brfs"
+      ]
     ]
   },
   "dependencies": {

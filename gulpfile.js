@@ -193,26 +193,10 @@ gulp.task('clean', function clean() {
 })
 
 // zip tasks for distribution
-gulp.task('zip:chrome', () => {
-  return gulp.src('dist/chrome/**')
-  .pipe(zip(`metamask-chrome-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
-gulp.task('zip:firefox', () => {
-  return gulp.src('dist/firefox/**')
-  .pipe(zip(`metamask-firefox-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
-gulp.task('zip:edge', () => {
-  return gulp.src('dist/edge/**')
-  .pipe(zip(`metamask-edge-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
-gulp.task('zip:opera', () => {
-  return gulp.src('dist/opera/**')
-  .pipe(zip(`metamask-opera-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
+gulp.task('zip:chrome', zipTask('chrome'))
+gulp.task('zip:firefox', zipTask('firefox'))
+gulp.task('zip:edge', zipTask('edge'))
+gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
 // high level tasks
@@ -243,15 +227,23 @@ function copyTask(opts){
   }
 }
 
+function zipTask(target) {
+  return () => {
+    return gulp.src(`dist/${target}/**`)
+    .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
+    .pipe(gulp.dest('builds'));
+  }
+}
+
 function bundleTask(opts) {
   var browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
-    debug: true,
     plugin: 'browserify-derequire',
+    debug: debug,
+    fullPaths: debug,
   })
 
   var bundler = browserify(browserifyOpts)
-  bundler.transform('brfs')
   if (opts.watch) {
     bundler = watchify(bundler)
     bundler.on('update', performBundle) // on any dep update, runs the bundler
@@ -281,7 +273,7 @@ function bundleTask(opts) {
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
       .pipe(gulp.dest('./dist/opera/scripts'))
-      .pipe(gulpif(!disableLiveReload,livereload()))
+      .pipe(gulpif(!disableLiveReload, livereload()))
 
     )
   }
