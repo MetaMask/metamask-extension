@@ -35,7 +35,6 @@ var debug = gutil.env.debug
 gulp.task('dev:reload', function() {
   livereload.listen({
     port: 35729,
-    // basePath: './dist/firefox/'
   })
 })
 
@@ -262,10 +261,12 @@ function discTask(opts) {
 
   if (opts.watch) {
     bundler = watchify(bundler)
-    bundler.on('update', performBundle) // on any dep update, runs the bundler
+    // on any dep update, runs the bundler
+    bundler.on('update', performBundle)
   }
 
-  bundler.on('log', gutil.log) // output build logs to terminal
+  // output build logs to terminal
+  bundler.on('log', gutil.log)
 
   return performBundle
 
@@ -279,9 +280,6 @@ function discTask(opts) {
       bundler.bundle()
       .pipe(disc())
       .pipe(fs.createWriteStream(discPath))
-      // .once('close', function() {
-      //   console.log(`disc: ${opts.label} build completed.`)
-      // })
     )
   }
 }
@@ -292,10 +290,12 @@ function bundleTask(opts) {
 
   if (opts.watch) {
     bundler = watchify(bundler)
-    bundler.on('update', performBundle) // on any dep update, runs the bundler
+    // on any file update, re-runs the bundler
+    bundler.on('update', performBundle)
   }
 
-  bundler.on('log', gutil.log) // output build logs to terminal
+  // output build logs to terminal
+  bundler.on('log', gutil.log)
 
   return performBundle
 
@@ -305,20 +305,26 @@ function bundleTask(opts) {
       bundler.bundle()
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+      // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
+      // gulp-level browserify transforms
       .pipe(brfs())
+      // inject variables into bundle
       .pipe(replace('GULP_TOS_HASH', tosHash))
       .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
-      // optional, remove if you don't need to buffer file contents
+      // buffer file contents (?)
       .pipe(buffer())
-      // optional, remove if you dont want sourcemaps
-      .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-      // Add transformation tasks to the pipeline here.
-      .pipe(sourcemaps.write('./')) // writes .map file
+      // sourcemaps
+      // loads map from browserify file
+      .pipe(sourcemaps.init({loadMaps: true}))
+      // writes .map file
+      .pipe(sourcemaps.write('./'))
+      // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
       .pipe(gulp.dest('./dist/opera/scripts'))
+      // finally, trigger live reload
       .pipe(gulpif(!disableLiveReload, livereload()))
 
     )
