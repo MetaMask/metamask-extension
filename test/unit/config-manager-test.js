@@ -1,8 +1,10 @@
+// polyfill fetch
+global.fetch = global.fetch || require('isomorphic-fetch')
 const assert = require('assert')
 const extend = require('xtend')
 const rp = require('request-promise')
 const nock = require('nock')
-var configManagerGen = require('../lib/mock-config-manager')
+const configManagerGen = require('../lib/mock-config-manager')
 const STORAGE_KEY = 'metamask-persistance-key'
 
 describe('config-manager', function() {
