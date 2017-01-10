@@ -648,19 +648,6 @@ module.exports = class KeyringController extends EventEmitter {
     })
   }
 
-  // Add Gas Buffer
-  // @string gas (as hexadecimal value)
-  //
-  // returns @string bufferedGas (as hexadecimal value)
-  //
-  // Adds a healthy buffer of gas to an initial gas estimate.
-  addGasBuffer (gas) {
-    const gasBuffer = new BN('100000', 10)
-    const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-    const correct = bnGas.add(gasBuffer)
-    return ethUtil.addHexPrefix(correct.toString(16))
-  }
-
   // Clear Keyrings
   //
   // Deallocates all currently managed keyrings and accounts.
