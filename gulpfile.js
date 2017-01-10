@@ -1,5 +1,6 @@
 var watchify = require('watchify')
 var browserify = require('browserify')
+var disc = require('disc')
 var gulp = require('gulp')
 var source = require('vinyl-source-stream')
 var buffer = require('vinyl-buffer')
@@ -10,7 +11,6 @@ var jsoneditor = require('gulp-json-editor')
 var zip = require('gulp-zip')
 var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
-var brfs = require('gulp-brfs')
 var del = require('del')
 var eslint = require('gulp-eslint')
 var fs = require('fs')
@@ -21,6 +21,7 @@ var replace = require('gulp-replace')
 var disclaimer = fs.readFileSync(path.join(__dirname, 'USER_AGREEMENT.md')).toString()
 var crypto = require('crypto')
 var hash = crypto.createHash('sha256')
+var mkdirp = require('mkdirp')
 
 hash.update(disclaimer)
 var tosHash = hash.digest('hex')
@@ -33,7 +34,6 @@ var debug = gutil.env.debug
 gulp.task('dev:reload', function() {
   livereload.listen({
     port: 35729,
-    // basePath: './dist/firefox/'
   })
 })
 
@@ -172,17 +172,26 @@ const jsFiles = [
   'popup',
 ]
 
+// bundle tasks
+
 var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
 var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`dev:js:${jsFile}`, bundleTask({ watch: true, filename: `${jsFile}.js` }))
-  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
+  gulp.task(`dev:js:${jsFile}`,   bundleTask({ watch: true,  label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
 })
 
 gulp.task('dev:js', gulp.parallel(...jsDevStrings))
-
 gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+
+// disc bundle analyzer tasks
+
+jsFiles.forEach((jsFile) => {
+  gulp.task(`disc:${jsFile}`,   bundleTask({ label: jsFile, filename: `${jsFile}.js` }))
+})
+
+gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
 
 
 // clean dist
@@ -193,26 +202,10 @@ gulp.task('clean', function clean() {
 })
 
 // zip tasks for distribution
-gulp.task('zip:chrome', () => {
-  return gulp.src('dist/chrome/**')
-  .pipe(zip(`metamask-chrome-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
-gulp.task('zip:firefox', () => {
-  return gulp.src('dist/firefox/**')
-  .pipe(zip(`metamask-firefox-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
-gulp.task('zip:edge', () => {
-  return gulp.src('dist/edge/**')
-  .pipe(zip(`metamask-edge-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
-gulp.task('zip:opera', () => {
-  return gulp.src('dist/opera/**')
-  .pipe(zip(`metamask-opera-${manifest.version}.zip`))
-  .pipe(gulp.dest('builds'));
-})
+gulp.task('zip:chrome', zipTask('chrome'))
+gulp.task('zip:firefox', zipTask('firefox'))
+gulp.task('zip:edge', zipTask('edge'))
+gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
 // high level tasks
@@ -243,21 +236,65 @@ function copyTask(opts){
   }
 }
 
-function bundleTask(opts) {
+function zipTask(target) {
+  return () => {
+    return gulp.src(`dist/${target}/**`)
+    .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
+    .pipe(gulp.dest('builds'));
+  }
+}
+
+function generateBundler(opts) {
   var browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
-    debug: true,
     plugin: 'browserify-derequire',
+    debug: debug,
+    fullPaths: debug,
   })
 
-  var bundler = browserify(browserifyOpts)
-  bundler.transform('brfs')
+  return browserify(browserifyOpts)
+}
+
+function discTask(opts) {
+  let bundler = generateBundler(opts)
+
   if (opts.watch) {
     bundler = watchify(bundler)
-    bundler.on('update', performBundle) // on any dep update, runs the bundler
+    // on any dep update, runs the bundler
+    bundler.on('update', performBundle)
   }
 
-  bundler.on('log', gutil.log) // output build logs to terminal
+  // output build logs to terminal
+  bundler.on('log', gutil.log)
+
+  return performBundle
+
+  function performBundle(){
+    // start "disc" build
+    let discDir = path.join(__dirname, 'disc')
+    mkdirp.sync(discDir)
+    let discPath = path.join(discDir, `${opts.label}.html`)
+
+    return (
+      bundler.bundle()
+      .pipe(disc())
+      .pipe(fs.createWriteStream(discPath))
+    )
+  }
+}
+
+
+function bundleTask(opts) {
+  let bundler = generateBundler(opts)
+
+  if (opts.watch) {
+    bundler = watchify(bundler)
+    // on any file update, re-runs the bundler
+    bundler.on('update', performBundle)
+  }
+
+  // output build logs to terminal
+  bundler.on('log', gutil.log)
 
   return performBundle
 
@@ -267,21 +304,25 @@ function bundleTask(opts) {
       bundler.bundle()
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+      // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
-      .pipe(brfs())
+      // inject variables into bundle
       .pipe(replace('GULP_TOS_HASH', tosHash))
       .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
-      // optional, remove if you don't need to buffer file contents
+      // buffer file contents (?)
       .pipe(buffer())
-      // optional, remove if you dont want sourcemaps
-      .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-      // Add transformation tasks to the pipeline here.
-      .pipe(sourcemaps.write('./')) // writes .map file
+      // sourcemaps
+      // loads map from browserify file
+      .pipe(sourcemaps.init({loadMaps: true}))
+      // writes .map file
+      .pipe(sourcemaps.write('./'))
+      // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
       .pipe(gulp.dest('./dist/opera/scripts'))
-      .pipe(gulpif(!disableLiveReload,livereload()))
+      // finally, trigger live reload
+      .pipe(gulpif(!disableLiveReload, livereload()))
 
     )
   }
