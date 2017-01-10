@@ -1,5 +1,6 @@
 var watchify = require('watchify')
 var browserify = require('browserify')
+var disc = require('disc')
 var gulp = require('gulp')
 var source = require('vinyl-source-stream')
 var buffer = require('vinyl-buffer')
@@ -21,6 +22,7 @@ var replace = require('gulp-replace')
 var disclaimer = fs.readFileSync(path.join(__dirname, 'USER_AGREEMENT.md')).toString()
 var crypto = require('crypto')
 var hash = crypto.createHash('sha256')
+var mkdirp = require('mkdirp')
 
 hash.update(disclaimer)
 var tosHash = hash.digest('hex')
@@ -172,17 +174,26 @@ const jsFiles = [
   'popup',
 ]
 
+// bundle tasks
+
 var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
 var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`dev:js:${jsFile}`, bundleTask({ watch: true, filename: `${jsFile}.js` }))
-  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, filename: `${jsFile}.js` }))
+  gulp.task(`dev:js:${jsFile}`,   bundleTask({ watch: true,  label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
 })
 
 gulp.task('dev:js', gulp.parallel(...jsDevStrings))
-
 gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+
+// disc bundle analyzer tasks
+
+jsFiles.forEach((jsFile) => {
+  gulp.task(`disc:${jsFile}`,   bundleTask({ label: jsFile, filename: `${jsFile}.js` }))
+})
+
+gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
 
 
 // clean dist
@@ -235,7 +246,7 @@ function zipTask(target) {
   }
 }
 
-function bundleTask(opts) {
+function generateBundler(opts) {
   var browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
     plugin: 'browserify-derequire',
@@ -243,7 +254,42 @@ function bundleTask(opts) {
     fullPaths: debug,
   })
 
-  var bundler = browserify(browserifyOpts)
+  return browserify(browserifyOpts)
+}
+
+function discTask(opts) {
+  let bundler = generateBundler(opts)
+
+  if (opts.watch) {
+    bundler = watchify(bundler)
+    bundler.on('update', performBundle) // on any dep update, runs the bundler
+  }
+
+  bundler.on('log', gutil.log) // output build logs to terminal
+
+  return performBundle
+
+  function performBundle(){
+    // start "disc" build
+    let discDir = path.join(__dirname, 'disc')
+    mkdirp.sync(discDir)
+    let discPath = path.join(discDir, `${opts.label}.html`)
+
+    return (
+      bundler.bundle()
+      .pipe(disc())
+      .pipe(fs.createWriteStream(discPath))
+      // .once('close', function() {
+      //   console.log(`disc: ${opts.label} build completed.`)
+      // })
+    )
+  }
+}
+
+
+function bundleTask(opts) {
+  let bundler = generateBundler(opts)
+
   if (opts.watch) {
     bundler = watchify(bundler)
     bundler.on('update', performBundle) // on any dep update, runs the bundler
