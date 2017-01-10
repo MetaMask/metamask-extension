@@ -20,7 +20,6 @@ module.exports = class txProviderUtils {
       if (err) return cb(err)
       async.waterfall([
         self.estimateTxGas.bind(self, txData, block.gasLimit),
-        self.checkForTxGasError.bind(self, txData),
         self.setTxGas.bind(self, txData, block.gasLimit),
       ], cb)
     })
@@ -38,22 +37,10 @@ module.exports = class txProviderUtils {
     this.query.estimateGas(txParams, cb)
   }
 
-  checkForTxGasError (txData, estimatedGasHex, cb) {
+  setTxGas (txData, blockGasLimitHex, estimatedGasHex, cb) {
     txData.estimatedGas = estimatedGasHex
-    // all gas used - must be an error
-    if (estimatedGasHex === txData.txParams.gas) {
-      txData.simulationFails = true
-    }
-    cb()
-  }
-
-  setTxGas (txData, blockGasLimitHex, cb) {
     const txParams = txData.txParams
-    // if OOG, nothing more to do
-    if (txData.simulationFails) {
-      cb()
-      return
-    }
+
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
     if (txData.gasLimitSpecified) {
