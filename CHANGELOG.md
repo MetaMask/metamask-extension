@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Update Coinbase info. and increase the buy amount to $15
 - Fixed ropsten transaction links
 - Temporarily disable extension reload detection causing infinite reload bug.
 
