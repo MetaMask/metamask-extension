@@ -72,7 +72,7 @@ CoinbaseForm.prototype.render = function () {
         lineHeight: '13px',
       },
     },
-      `there is a USD$ 5 a day max and a USD$ 50
+      `there is a USD$ 15 a day max and a USD$ 50
           dollar limit per the life time of an account without a
           coinbase account. A fee of 3.75% will be aplied to debit/credit cards.`),
 
@@ -138,14 +138,14 @@ function isValidAmountforCoinBase(amount) {
   amount = parseFloat(amount)
 
   if (amount) {
-    if (amount <= 5 && amount > 0) {
+    if (amount <= 15 && amount > 0) {
       return {
         valid: true,
       }
-    } else if (amount > 5) {
+    } else if (amount > 15) {
       return {
         valid: false,
-        message: 'The amount can not be greater then $5',
+        message: 'The amount can not be greater then $15',
       }
     } else {
       return {
