@@ -1,7 +1,6 @@
 const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
 const migrations = require('./migrations')
-const rp = require('request-promise')
 const ethUtil = require('ethereumjs-util')
 const normalize = require('./sig-util').normalize
 
@@ -301,9 +300,9 @@ ConfigManager.prototype.getCurrentFiat = function () {
 
 ConfigManager.prototype.updateConversionRate = function () {
   var data = this.getData()
-  return rp(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
-  .then((response) => {
-    const parsedResponse = JSON.parse(response)
+  return fetch(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
+  .then(response => response.json())
+  .then((parsedResponse) => {
     this.setConversionPrice(parsedResponse.ticker.price)
     this.setConversionDate(parsedResponse.timestamp)
   }).catch((err) => {
