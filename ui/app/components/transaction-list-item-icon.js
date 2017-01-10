@@ -13,14 +13,30 @@ function TransactionIcon () {
 
 TransactionIcon.prototype.render = function () {
   const { transaction, txParams, isMsg } = this.props
+  if (transaction.status === 'unapproved') {
+    return h('.unapproved-tx', {
+      style: {
+        width: '15px',
+        height: '15px',
+        background: '#00bfff',
+        borderRadius: '13px',
+      },
+    })
 
-  if (transaction.status === 'rejected') {
+  } else if (transaction.status === 'rejected') {
     return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {
       style: {
         width: '24px',
       },
     })
+  } else if (transaction.status === 'signed') {
+    return h('i.fa.fa-ellipsis-h', {
+      style: {
+        fontSize: '27px',
+      },
+    })
   }
+
 
   if (isMsg) {
     return h('i.fa.fa-certificate.fa-lg', {

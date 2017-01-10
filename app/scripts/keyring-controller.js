@@ -95,7 +95,6 @@ module.exports = class KeyringController extends EventEmitter {
         isInitialized: (!!wallet || !!vault),
         isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        transactions: this.configManager.getTxList(),
         unconfMsgs: messageManager.unconfirmedMsgs(),
         messages: messageManager.getMsgList(),
         selectedAccount: address,
@@ -273,6 +272,7 @@ module.exports = class KeyringController extends EventEmitter {
   setSelectedAccount (address) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
+    this.emit('update')
     return Promise.resolve(addr)
   }
 

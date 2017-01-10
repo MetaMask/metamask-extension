@@ -25,9 +25,8 @@ module.exports = class TransactionManager extends EventEmitter {
   getState () {
     var selectedAccount = this.getSelectedAccount()
     return {
-      transactions: this.getTxList(),
       unconfTxs: this.getUnapprovedTxList(),
-      selectedAccountTxList: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAccount}),
+      transactions: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAccount}),
     }
   }
 
@@ -113,8 +112,24 @@ module.exports = class TransactionManager extends EventEmitter {
 
   txDidComplete (txMeta, onTxDoneCb, cb, err) {
     if (err) return cb(err)
+    var {maxCost, txFee} = this.getMaxTxCostAndFee(txMeta)
+    txMeta.maxCost = maxCost
+    txMeta.txFee = txFee
     this.addTx(txMeta, onTxDoneCb)
     cb(null, txMeta)
+  }
+
+  getMaxTxCostAndFee (txMeta) {
+    var txParams = txMeta.txParams
+
+    var gasMultiplier = txMeta.gasMultiplier
+    var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
+    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100), 10).div(new BN(100, 10))
+    var txFee = gasCost.mul(gasPrice)
+    var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+    var maxCost = txValue.add(txFee)
+    return {maxCost, txFee}
   }
 
   getUnapprovedTxList () {
@@ -227,6 +242,7 @@ module.exports = class TransactionManager extends EventEmitter {
 
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
+    this.emit('update')
   }
 
   // merges txParams obj onto txData.txParams
@@ -240,17 +256,20 @@ module.exports = class TransactionManager extends EventEmitter {
   //  checks if a signed tx is in a block and
   // if included sets the tx status as 'confirmed'
   checkForTxInBlock () {
-    var signedTxList = this.getFilteredTxList({status: 'signed', err: undefined})
+    var signedTxList = this.getFilteredTxList({status: 'signed'})
     if (!signedTxList.length) return
     signedTxList.forEach((tx) => {
       var txHash = tx.hash
       var txId = tx.id
-      if (!txHash) return
+      if (!txHash) {
+        tx.err = { errCode: 'No hash was provided', message: 'Tx could possibly have not been submitted or an error accrued during signing'}
+        return this.updateTx(tx)
+      }
       this.txProviderUtils.query.getTransactionByHash(txHash, (err, txMeta) => {
-        if (err || !txMeta) {
-          tx.err = err || 'Tx could possibly have not been submitted'
+        if (err) {
+          tx.err = {errorCode: err, message: 'Tx could possibly have not been submitted to the block chain',}
           this.updateTx(tx)
-          return txMeta ? console.error(err) : console.debug(`txMeta is ${txMeta} for:`, tx)
+          return console.error(err)
         }
         if (txMeta.blockNumber) {
           this.setTxStatusConfirmed(txId)

@@ -64,6 +64,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.ethStore.on('update', this.sendUpdate.bind(this))
     this.keyringController.on('update', this.sendUpdate.bind(this))
+    this.txManager.on('update', this.sendUpdate.bind(this))
   }
 
   getState () {

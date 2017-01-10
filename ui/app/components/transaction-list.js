@@ -13,12 +13,13 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { txsToRender, network, unconfMsgs } = this.props
+  const { transactions = [], network, unconfMsgs } = this.props
+
   var shapeShiftTxList
   if (network === '1') {
     shapeShiftTxList = this.props.shapeShiftTxList
   }
-  const transactions = !shapeShiftTxList ? txsToRender.concat(unconfMsgs) : txsToRender.concat(unconfMsgs, shapeShiftTxList)
+  const txsToRender = !shapeShiftTxList ? transactions.concat(unconfMsgs) : txsToRender.concat(unconfMsgs, shapeShiftTxList)
   .sort((a, b) => b.time - a.time)
 
   return (
@@ -55,8 +56,8 @@ TransactionList.prototype.render = function () {
         },
       }, [
 
-        transactions.length
-          ? transactions.map((transaction, i) => {
+        txsToRender.length
+          ? txsToRender.map((transaction, i) => {
             let key
             switch (transaction.key) {
               case 'shapeshift':
