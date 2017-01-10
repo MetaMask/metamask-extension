@@ -11,7 +11,6 @@ var jsoneditor = require('gulp-json-editor')
 var zip = require('gulp-zip')
 var assign = require('lodash.assign')
 var livereload = require('gulp-livereload')
-var brfs = require('gulp-brfs')
 var del = require('del')
 var eslint = require('gulp-eslint')
 var fs = require('fs')
@@ -307,8 +306,6 @@ function bundleTask(opts) {
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
-      // gulp-level browserify transforms
-      .pipe(brfs())
       // inject variables into bundle
       .pipe(replace('GULP_TOS_HASH', tosHash))
       .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
