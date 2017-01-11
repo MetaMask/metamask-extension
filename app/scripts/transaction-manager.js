@@ -262,12 +262,18 @@ module.exports = class TransactionManager extends EventEmitter {
       var txHash = tx.hash
       var txId = tx.id
       if (!txHash) {
-        tx.err = { errCode: 'No hash was provided', message: 'Tx could possibly have not been submitted or an error accrued during signing'}
+        tx.err = {
+          errCode: 'No hash was provided',
+          message: 'Tx could possibly have not been submitted or an error accrued during signing',
+        }
         return this.updateTx(tx)
       }
       this.txProviderUtils.query.getTransactionByHash(txHash, (err, txMeta) => {
         if (err) {
-          tx.err = {errorCode: err, message: 'Tx could possibly have not been submitted to the block chain',}
+          tx.err = {
+            errorCode: err,
+            message: 'Tx could possibly have not been submitted to the block chain',
+          }
           this.updateTx(tx)
           return console.error(err)
         }
