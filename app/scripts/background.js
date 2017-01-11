@@ -6,7 +6,6 @@ const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
-const ObservableStore = require('./lib/observable-store')
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 
@@ -14,12 +13,7 @@ const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
 
-// init state
 const initState = JSON.parse(window.localStorage[STORAGE_KEY] || '')
-const store = new ObservableStore(initState)
-store.subscribe((state) => {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(state)
-})
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
@@ -29,6 +23,7 @@ const controller = new MetamaskController({
   // Persistence Methods:
   setData,
   loadData,
+  initState,
 })
 const txManager = controller.txManager
 function triggerUi () {
@@ -133,9 +128,10 @@ function loadData () {
     },
   }
 
-  return extend(defaultData, store.get())
+  const persisted = JSON.parse(window.localStorage[STORAGE_KEY] || '')
+  return extend(defaultData, persisted)
 }
 
 function setData (data) {
-  store.put(data)
+  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }

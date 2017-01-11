@@ -14,14 +14,24 @@ const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const version = require('../manifest.json').version
+const ObservableStore = require('./lib/observable-store')
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.state = { network: 'loading' }
     this.opts = opts
+    this.state = { network: 'loading' }
+
+    // Observable wrapper around persistence strategy:
+    this.configStore = new ObservableStore(opts.initState)
+    this.configStore.subscribe(opts.setData)
+
     this.configManager = new ConfigManager(opts)
+    this.configManager.subscribe((state) => {
+      this.configStore.put(state)
+    })
+
     this.keyringController = new KeyringController({
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),

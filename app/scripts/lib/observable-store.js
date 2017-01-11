@@ -1,10 +1,7 @@
 const EventEmitter = require('events').EventEmitter
 
-module.exports = ObservableStore
-
-
 class ObservableStore extends EventEmitter {
-  
+
   constructor (initialState) {
     super()
     this._state = initialState
@@ -28,3 +25,5 @@ class ObservableStore extends EventEmitter {
   }
 
 }
+
+module.exports = ObservableStore
