@@ -82,6 +82,7 @@ module.exports = class TransactionManager extends EventEmitter {
     var index = txList.findIndex(txData => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
+    this.emit('update')
   }
 
   get unapprovedTxCount () {
@@ -182,7 +183,6 @@ module.exports = class TransactionManager extends EventEmitter {
     this.updateTx(metaTx)
     var rawTx = ethUtil.bufferToHex(tx.serialize())
     return Promise.resolve(rawTx)
-
   }
 
   /*
@@ -242,7 +242,6 @@ module.exports = class TransactionManager extends EventEmitter {
 
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
-    this.emit('update')
   }
 
   // merges txParams obj onto txData.txParams
@@ -258,26 +257,29 @@ module.exports = class TransactionManager extends EventEmitter {
   checkForTxInBlock () {
     var signedTxList = this.getFilteredTxList({status: 'signed'})
     if (!signedTxList.length) return
-    signedTxList.forEach((tx) => {
-      var txHash = tx.hash
-      var txId = tx.id
+    signedTxList.forEach((txMeta) => {
+      var txHash = txMeta.hash
+      var txId = txMeta.id
       if (!txHash) {
-        tx.err = {
+        txMeta.err = {
           errCode: 'No hash was provided',
-          message: 'Tx could possibly have not been submitted or an error accrued during signing',
+          message: 'We had an error while submitting this transaction, please try again.',
         }
-        return this.updateTx(tx)
+        this.updateTx(txMeta)
+        return this._setTxStatus(txId, 'failed')
       }
-      this.txProviderUtils.query.getTransactionByHash(txHash, (err, txMeta) => {
-        if (err) {
-          tx.err = {
+      this.txProviderUtils.query.getTransactionByHash(txHash, (err, txParams) => {
+        if (err || !txParams) {
+          if (!txParams) return
+          txMeta.err = {
+            isWarning: true,
             errorCode: err,
-            message: 'Tx could possibly have not been submitted to the block chain',
+            message: 'There was a problem loading this transaction.',
           }
-          this.updateTx(tx)
+          this.updateTx(txMeta)
           return console.error(err)
         }
-        if (txMeta.blockNumber) {
+        if (txParams.blockNumber) {
           this.setTxStatusConfirmed(txId)
         }
       })

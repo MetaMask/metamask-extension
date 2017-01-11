@@ -272,7 +272,6 @@ module.exports = class KeyringController extends EventEmitter {
   setSelectedAccount (address) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
-    this.emit('update')
     return Promise.resolve(addr)
   }
 

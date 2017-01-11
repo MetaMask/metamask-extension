@@ -35,6 +35,12 @@ TransactionIcon.prototype.render = function () {
         fontSize: '27px',
       },
     })
+  } else if (transaction.status === 'failed') {
+    return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {
+      style: {
+        fontSize: '24px',
+      },
+    })
   }
 
 
