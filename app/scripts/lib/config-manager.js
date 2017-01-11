@@ -306,7 +306,7 @@ ConfigManager.prototype.updateConversionRate = function () {
     this.setConversionPrice(parsedResponse.ticker.price)
     this.setConversionDate(parsedResponse.timestamp)
   }).catch((err) => {
-    console.error('Error in conversion.', err)
+    console.warn('MetaMask - Failed to query currency conversion.')
     this.setConversionPrice(0)
     this.setConversionDate('N/A')
   })
