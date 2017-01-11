@@ -13,7 +13,13 @@ const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
 
-const initState = JSON.parse(window.localStorage[STORAGE_KEY] || '')
+// load persisted state
+const initState
+try {
+  initState = JSON.parse(window.localStorage[STORAGE_KEY])
+} catch (err) {
+  initState = null
+}
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
