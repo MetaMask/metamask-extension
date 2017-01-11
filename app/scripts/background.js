@@ -6,12 +6,20 @@ const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const ObservableStore = require('./lib/observable-store')
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
+
+// init state
+const initState = JSON.parse(window.localStorage[STORAGE_KEY] || '')
+const store = new ObservableStore(initState)
+store.subscribe((state) => {
+  window.localStorage[STORAGE_KEY] = JSON.stringify(state)
+})
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
@@ -112,13 +120,7 @@ function updateBadge () {
 // data :: setters/getters
 
 function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
-
-  var data = extend({
+  let defaultData = {
     meta: {
       version: 0,
     },
@@ -129,34 +131,11 @@ function loadData () {
         },
       },
     },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
   }
 
-  try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
-
-  return result
+  return extend(defaultData, store.get())
 }
 
 function setData (data) {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
+  store.put(data)
 }
