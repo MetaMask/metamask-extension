@@ -13,6 +13,7 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -175,6 +176,10 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
 
     var providerOpts = {
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
