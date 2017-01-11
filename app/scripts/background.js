@@ -14,12 +14,7 @@ const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
 
 // load persisted state
-const initState
-try {
-  initState = JSON.parse(window.localStorage[STORAGE_KEY])
-} catch (err) {
-  initState = null
-}
+const initState = loadData()
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
@@ -28,7 +23,6 @@ const controller = new MetamaskController({
   showUnapprovedTx: triggerUi,
   // Persistence Methods:
   setData,
-  loadData,
   initState,
 })
 const txManager = controller.txManager
@@ -134,7 +128,13 @@ function loadData () {
     },
   }
 
-  const persisted = JSON.parse(window.localStorage[STORAGE_KEY] || '')
+  var persisted
+  try {
+    persisted = JSON.parse(window.localStorage[STORAGE_KEY])
+  } catch (err) {
+    persisted = null
+  }
+
   return extend(defaultData, persisted)
 }
 

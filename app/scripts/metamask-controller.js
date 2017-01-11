@@ -23,11 +23,18 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts = opts
     this.state = { network: 'loading' }
 
-    // Observable wrapper around persistence strategy:
+    // Observable wrapper around persistence strategy,
+    // also caches the current state, so reads
+    // can be synchronous, allows us to  avoid
+    // race conditions related to late reads.
     this.configStore = new ObservableStore(opts.initState)
     this.configStore.subscribe(opts.setData)
 
-    this.configManager = new ConfigManager(opts)
+    const confManagerOpts = {
+      loadData: this.configStore.get.bind(this.configStore),
+      setData: opts.setData,
+    }
+    this.configManager = new ConfigManager(confManagerOpts)
     this.configManager.subscribe((state) => {
       this.configStore.put(state)
     })
