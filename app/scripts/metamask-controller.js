@@ -13,6 +13,7 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -176,6 +177,10 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
 
     var providerOpts = {
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
@@ -224,37 +229,21 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = extend(
-      keyringControllerToPublic(this.keyringController.getState()),
-      configToPublic(this.configManager.getConfig())
-    )
-
+    var initPublicState = configToPublic(this.configManager.getConfig())
     var publicConfigStore = new HostStore(initPublicState)
 
     // subscribe to changes
     this.configManager.subscribe(function (state) {
       storeSetFromObj(publicConfigStore, configToPublic(state))
     })
-    this.keyringController.on('update', () => {
-      const state = this.keyringController.getState()
-      storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
-      this.sendUpdate()
-    })
 
     this.keyringController.on('newAccount', (account) => {
       autoFaucet(account)
     })
 
-    // keyringController substate
-    function keyringControllerToPublic (state) {
-      return {
-        selectedAccount: state.selectedAccount,
-      }
-    }
     // config substate
     function configToPublic (state) {
       return {
-        provider: state.provider,
         selectedAccount: state.selectedAccount,
       }
     }
