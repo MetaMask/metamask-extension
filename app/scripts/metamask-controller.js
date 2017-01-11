@@ -228,37 +228,21 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = extend(
-      keyringControllerToPublic(this.keyringController.getState()),
-      configToPublic(this.configManager.getConfig())
-    )
-
+    var initPublicState = configToPublic(this.configManager.getConfig())
     var publicConfigStore = new HostStore(initPublicState)
 
     // subscribe to changes
     this.configManager.subscribe(function (state) {
       storeSetFromObj(publicConfigStore, configToPublic(state))
     })
-    this.keyringController.on('update', () => {
-      const state = this.keyringController.getState()
-      storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
-      this.sendUpdate()
-    })
 
     this.keyringController.on('newAccount', (account) => {
       autoFaucet(account)
     })
 
-    // keyringController substate
-    function keyringControllerToPublic (state) {
-      return {
-        selectedAccount: state.selectedAccount,
-      }
-    }
     // config substate
     function configToPublic (state) {
       return {
-        provider: state.provider,
         selectedAccount: state.selectedAccount,
       }
     }
