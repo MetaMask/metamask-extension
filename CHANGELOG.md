@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix memory leak in RPC Cache
+- Override RPC commands eth_syncing and web3_clientVersion
 - Remove certain non-essential permissions from certain builds.
 - Add a check for when a tx is included in a block.
 - Fix bug where browser-solidity would sometimes warn of a contract creation error when there was none.
