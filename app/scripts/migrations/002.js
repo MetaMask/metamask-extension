@@ -1,13 +1,16 @@
-module.exports = {
-  version: 2,
+const version = 2
 
-  migrate: function (data) {
+module.exports = {
+  version,
+
+  migrate: function (meta) {
+    meta.version = version
     try {
-      if (data.config.provider.type === 'etherscan') {
-        data.config.provider.type = 'rpc'
-        data.config.provider.rpcTarget = 'https://rpc.metamask.io/'
+      if (meta.data.config.provider.type === 'etherscan') {
+        meta.data.config.provider.type = 'rpc'
+        meta.data.config.provider.rpcTarget = 'https://rpc.metamask.io/'
       }
     } catch (e) {}
-    return data
+    return Promise.resolve(meta)
   },
 }

@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "async": "^1.5.2",
+    "async-q": "^0.3.1",
     "bip39": "^2.2.0",
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
