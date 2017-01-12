@@ -5,6 +5,7 @@ const asyncQ = require('async-q')
 const Migrator = require('./lib/migrator/')
 const migrations = require('./lib/migrations/')
 const LocalStorageStore = require('./lib/observable/local-storage')
+const synchronizeStore = require('./lib/observable/util/sync')
 const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
@@ -68,7 +69,11 @@ function setupController (initState) {
   global.metamaskController = controller
 
   // setup state persistence
-  controller.store.subscribe((newState) => diskStore)
+  synchronizeStore(controller.store, diskStore, (state) => {
+    let versionedData = diskStore.get()
+    versionedData.data = state
+    return versionedData
+  })
 
   //
   // connect to other contexts
