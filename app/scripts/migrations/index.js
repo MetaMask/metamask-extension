@@ -12,7 +12,7 @@
 // config data format, and returns the new one.
 
 module.exports = [
-  require('../migrations/002'),
-  require('../migrations/003'),
-  require('../migrations/004'),
+  require('./002'),
+  require('./003'),
+  require('./004'),
 ]

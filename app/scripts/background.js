@@ -3,7 +3,7 @@ const Dnode = require('dnode')
 const eos = require('end-of-stream')
 const asyncQ = require('async-q')
 const Migrator = require('./lib/migrator/')
-const migrations = require('./lib/migrations')
+const migrations = require('./lib/migrations/')
 const LocalStorageStore = require('./lib/observable/local-storage')
 const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
@@ -35,10 +35,7 @@ asyncQ.waterfall([
 function loadStateFromPersistence() {
   // migrations
   let migrator = new Migrator({ migrations })
-  let initialState = {
-    meta: { version: migrator.defaultVersion },
-    data: firstTimeState,
-  }
+  let initialState = migrator.generateInitialState(firstTimeState)
   return asyncQ.waterfall([
     // read from disk
     () => Promise.resolve(diskStore.get() || initialState),
@@ -68,6 +65,7 @@ function setupController (initState) {
     // initial state
     initState,
   })
+  global.metamaskController = controller
 
   // setup state persistence
   controller.store.subscribe((newState) => diskStore)

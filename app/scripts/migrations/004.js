@@ -3,23 +3,23 @@ const version = 4
 module.exports = {
   version,  
 
-  migrate: function (meta) {
-    meta.version = version
+  migrate: function (versionedData) {
+    versionedData.meta.version = version
     try {
-      if (meta.data.config.provider.type !== 'rpc') return Promise.resolve(meta)
-      switch (meta.data.config.provider.rpcTarget) {
+      if (versionedData.data.config.provider.type !== 'rpc') return Promise.resolve(versionedData)
+      switch (versionedData.data.config.provider.rpcTarget) {
         case 'https://testrpc.metamask.io/':
-          meta.data.config.provider = {
+          versionedData.data.config.provider = {
             type: 'testnet',
           }
           break
         case 'https://rpc.metamask.io/':
-          meta.data.config.provider = {
+          versionedData.data.config.provider = {
             type: 'mainnet',
           }
           break
       }
     } catch (_) {}
-    return Promise.resolve(meta)
+    return Promise.resolve(versionedData)
   },
 }
