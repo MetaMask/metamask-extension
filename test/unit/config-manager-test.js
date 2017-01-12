@@ -1,5 +1,8 @@
 // polyfill fetch
 global.fetch = global.fetch || require('isomorphic-fetch')
+// pollyfill localStorage support into JSDom
+global.localStorage = global.localStorage || polyfillLocalStorage()
+
 const assert = require('assert')
 const extend = require('xtend')
 const rp = require('request-promise')
@@ -11,7 +14,7 @@ describe('config-manager', function() {
   var configManager
 
   beforeEach(function() {
-    window.localStorage = {} // Hacking localStorage support into JSDom
+    global.localStorage.clear()
     configManager = configManagerGen()
   })
 
@@ -132,7 +135,6 @@ describe('config-manager', function() {
   })
 
   describe('#setConfig', function() {
-    window.localStorage = {} // Hacking localStorage support into JSDom
 
     it('should set the config key', function () {
       var testConfig = {
@@ -238,3 +240,7 @@ describe('config-manager', function() {
     })
   })
 })
+
+function polyfillLocalStorage(){
+  return Object.create({ clear: function(){ global.localStorage = polyfillLocalStorage() } })
+}

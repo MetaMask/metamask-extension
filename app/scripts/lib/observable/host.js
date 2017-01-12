@@ -12,14 +12,14 @@ class HostStore extends ObservableStore {
 
   constructor (initState, opts) {
     super(initState)
-    this.opts = opts || {}
+    this._opts = opts || {}
   }
 
   createStream () {
     const self = this
     // setup remotely exposed api
     let remoteApi = {}
-    if (!self.opts.readOnly) {
+    if (!self._opts.readOnly) {
       remoteApi.put = (newState) => self.put(newState)
     }
     // listen for connection to remote

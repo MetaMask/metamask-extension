@@ -1,6 +1,4 @@
-const Migrator = require('pojo-migrator')
 const MetamaskConfig = require('../config.js')
-const migrations = require('./migrations')
 const ethUtil = require('ethereumjs-util')
 const normalize = require('./sig-util').normalize
 
@@ -20,38 +18,17 @@ function ConfigManager (opts) {
   // ConfigManager is observable and will emit updates
   this._subs = []
   this.store = opts.store
-
-  /* The migrator exported on the config-manager
-   * has two methods the user should be concerned with:
-   *
-   * getData(), which returns the app-consumable data object
-   * saveData(), which persists the app-consumable data object.
-   */
-  this.migrator = new Migrator({
-
-    // Migrations must start at version 1 or later.
-    // They are objects with a `version` number
-    // and a `migrate` function.
-    //
-    // The `migrate` function receives the previous
-    // config data format, and returns the new one.
-    migrations: migrations,
-
-    // Data persistence methods
-    loadData: () => this.store.get(),
-    setData: (value) => this.store.put(value),
-  })
 }
 
 ConfigManager.prototype.setConfig = function (config) {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   data.config = config
   this.setData(data)
   this._emitUpdates(config)
 }
 
 ConfigManager.prototype.getConfig = function () {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   if ('config' in data) {
     return data.config
   } else {
@@ -94,15 +71,15 @@ ConfigManager.prototype.getProvider = function () {
 }
 
 ConfigManager.prototype.setData = function (data) {
-  this.migrator.saveData(data)
+  this.store.put(data)
 }
 
 ConfigManager.prototype.getData = function () {
-  return this.migrator.getData()
+  return this.store.get()
 }
 
 ConfigManager.prototype.setWallet = function (wallet) {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   data.wallet = wallet
   this.setData(data)
 }
@@ -119,11 +96,11 @@ ConfigManager.prototype.getVault = function () {
 }
 
 ConfigManager.prototype.getKeychains = function () {
-  return this.migrator.getData().keychains || []
+  return this.store.get().keychains || []
 }
 
 ConfigManager.prototype.setKeychains = function (keychains) {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   data.keychains = keychains
   this.setData(data)
 }
@@ -140,19 +117,19 @@ ConfigManager.prototype.setSelectedAccount = function (address) {
 }
 
 ConfigManager.prototype.getWallet = function () {
-  return this.migrator.getData().wallet
+  return this.store.get().wallet
 }
 
 // Takes a boolean
 ConfigManager.prototype.setShowSeedWords = function (should) {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   data.showSeedWords = should
   this.setData(data)
 }
 
 
 ConfigManager.prototype.getShouldShowSeedWords = function () {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   return data.showSeedWords
 }
 
@@ -187,7 +164,7 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
 }
 
 ConfigManager.prototype.setData = function (data) {
-  this.migrator.saveData(data)
+  this.store.put(data)
 }
 
 //
@@ -195,7 +172,7 @@ ConfigManager.prototype.setData = function (data) {
 //
 
 ConfigManager.prototype.getTxList = function () {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   if (data.transactions !== undefined) {
     return data.transactions
   } else {
@@ -204,7 +181,7 @@ ConfigManager.prototype.getTxList = function () {
 }
 
 ConfigManager.prototype.setTxList = function (txList) {
-  var data = this.migrator.getData()
+  var data = this.store.get()
   data.transactions = txList
   this.setData(data)
 }

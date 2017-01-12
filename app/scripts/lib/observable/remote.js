@@ -12,7 +12,7 @@ class RemoteStore extends ObservableStore {
 
   constructor (initState, opts) {
     super(initState)
-    this.opts = opts || {}
+    this._opts = opts || {}
     this._remote = null
   }
 

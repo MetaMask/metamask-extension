@@ -4,8 +4,8 @@ const IdStoreMigrator = require('../../../app/scripts/lib/idStore-migrator')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
 const normalize = require('../../../app/scripts/lib/sig-util').normalize
 
-const oldStyleVault = require('../mocks/oldVault.json')
-const badStyleVault = require('../mocks/badVault.json')
+const oldStyleVault = require('../mocks/oldVault.json').data
+const badStyleVault = require('../mocks/badVault.json').data
 
 const PASSWORD = '12345678'
 const FIRST_ADDRESS = '0x4dd5d356c5A016A220bCD69e82e5AF680a430d00'.toLowerCase()
@@ -14,15 +14,10 @@ const SEED = 'fringe damage bounce extend tunnel afraid alert sound all soldier 
 
 QUnit.module('Old Style Vaults', {
   beforeEach: function () {
-    let store = new ObservableStore(oldStyleVault)
-
-    this.configManager = new ConfigManager({
-      store: store,
-    })
-
-    this.migrator = new IdStoreMigrator({
-      configManager: this.configManager,
-    })
+    let managers = managersFromInitState(oldStyleVault)
+    
+    this.configManager = managers.configManager
+    this.migrator = managers.migrator
   }
 })
 
@@ -35,6 +30,7 @@ QUnit.test('migrator:migratedVaultForPassword', function (assert) {
 
   this.migrator.migratedVaultForPassword(PASSWORD)
   .then((result) => {
+    assert.ok(result, 'migratedVaultForPassword returned result')
     const { serialized, lostAccounts } = result
     assert.equal(serialized.data.mnemonic, SEED, 'seed phrase recovered')
     assert.equal(lostAccounts.length, 0, 'no lost accounts')
@@ -44,15 +40,10 @@ QUnit.test('migrator:migratedVaultForPassword', function (assert) {
 
 QUnit.module('Old Style Vaults with bad HD seed', {
   beforeEach: function () {
-    let store = new ObservableStore(badStyleVault)
-
-    this.configManager = new ConfigManager({
-      store: store,
-    })
-
-    this.migrator = new IdStoreMigrator({
-      configManager: this.configManager,
-    })
+    let managers = managersFromInitState(badStyleVault)
+    
+    this.configManager = managers.configManager
+    this.migrator = managers.migrator
   }
 })
 
@@ -61,6 +52,7 @@ QUnit.test('migrator:migratedVaultForPassword', function (assert) {
 
   this.migrator.migratedVaultForPassword(PASSWORD)
   .then((result) => {
+    assert.ok(result, 'migratedVaultForPassword returned result')
     const { serialized, lostAccounts } = result
 
     assert.equal(lostAccounts.length, 1, 'one lost account')
@@ -86,3 +78,15 @@ QUnit.test('migrator:migratedVaultForPassword', function (assert) {
   })
 })
 
+function managersFromInitState(initState){
+
+  let configManager = new ConfigManager({
+    store: new ObservableStore(initState),
+  })
+
+  let migrator = new IdStoreMigrator({
+    configManager: configManager,
+  })
+
+  return { configManager, migrator }
+}

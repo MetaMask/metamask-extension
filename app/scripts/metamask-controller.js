@@ -14,7 +14,7 @@ const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const ObservableStore = require('./lib/observable/')
 const HostStore = require('./lib/observable/host')
-const transformStore = require('./lib/observable/util/transform')
+const synchronizeStore = require('./lib/observable/util/sync')
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -244,12 +244,12 @@ module.exports = class MetamaskController extends EventEmitter {
     var publicConfigStore = new HostStore(initPublicState, { readOnly: true })
 
     // sync publicConfigStore with transform
-    transformStore(this.store, publicConfigStore, selectPublicState)
+    synchronizeStore(this.store, publicConfigStore, selectPublicState)
 
     function selectPublicState(state) {
       let result = { selectedAccount: undefined }
       try {
-        result.selectedAccount = state.data.config.selectedAccount
+        result.selectedAccount = state.config.selectedAccount
       } catch (err) {
         console.warn('Error in "selectPublicState": ' + err.message)
       }

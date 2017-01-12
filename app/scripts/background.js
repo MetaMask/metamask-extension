@@ -1,18 +1,46 @@
 const urlUtil = require('url')
-const extend = require('xtend')
 const Dnode = require('dnode')
 const eos = require('end-of-stream')
+const Migrator = require('pojo-migrator')
+const migrations = require('./lib/migrations')
+const LocalStorageStore = require('./lib/observable/local-storage')
 const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
+const firstTimeState = require('./first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
-var popupIsOpen = false
+let popupIsOpen = false
 
+
+//
+// State and Persistence
+//
+
+// state persistence
+
+let dataStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
+// initial state for first time users
+if (!dataStore.get()) {
+  dataStore.put({ meta: { version: 0 }, data: firstTimeState })
+}
+
+// migrations
+
+let migrator = new Migrator({
+  migrations,
+  // Data persistence methods
+  loadData: () => dataStore.get(),
+  setData: (newState) => dataStore.put(newState),
+})
+
+//
+// MetaMask Controller
+//
 
 const controller = new MetamaskController({
   // User confirmation callbacks:
@@ -20,22 +48,10 @@ const controller = new MetamaskController({
   unlockAccountMessage: triggerUi,
   showUnapprovedTx: triggerUi,
   // initial state
-  initState: loadData(),
+  initState: migrator.getData(),
 })
 // setup state persistence
-controller.store.subscribe(setData)
-
-const txManager = controller.txManager
-function triggerUi () {
-  if (!popupIsOpen) notification.show()
-}
-// On first install, open a window to MetaMask website to how-it-works.
-
-extension.runtime.onInstalled.addListener(function (details) {
-  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
-    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
-  }
-})
+controller.store.subscribe((newState) => migrator.saveData(newState))
 
 //
 // connect to other contexts
@@ -94,11 +110,23 @@ function setupControllerConnection (stream) {
 }
 
 //
-// plugin badge text
+// User Interface setup
 //
 
-txManager.on('updateBadge', updateBadge)
+// popup trigger
+function triggerUi () {
+  if (!popupIsOpen) notification.show()
+}
 
+// On first install, open a window to MetaMask website to how-it-works.
+extension.runtime.onInstalled.addListener(function (details) {
+  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
+    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+  }
+})
+
+// plugin badge text
+controller.txManager.on('updateBadge', updateBadge)
 function updateBadge () {
   var label = ''
   var unapprovedTxCount = controller.txManager.unapprovedTxCount
@@ -110,34 +138,4 @@ function updateBadge () {
   }
   extension.browserAction.setBadgeText({ text: label })
   extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
-}
-
-// data :: setters/getters
-
-function loadData () {
-  let defaultData = {
-    meta: {
-      version: 0,
-    },
-    data: {
-      config: {
-        provider: {
-          type: 'testnet',
-        },
-      },
-    },
-  }
-
-  var persisted
-  try {
-    persisted = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (err) {
-    persisted = null
-  }
-
-  return extend(defaultData, persisted)
-}
-
-function setData (data) {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
 }
