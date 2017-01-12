@@ -43,7 +43,7 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfMsgs = state.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
-  var txData = unconfTxList[index] || unconfTxList[0] || {}
+  var txData = unconfTxList[index] || unconfTxList[0] || {txParams:{}}
   var txParams = txData.txParams || {}
   var isNotification = isPopupOrNotification() === 'notification'
   return (

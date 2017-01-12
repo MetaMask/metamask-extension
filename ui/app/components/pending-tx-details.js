@@ -27,8 +27,8 @@ PTXP.render = function () {
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
 
-  var txFee = txData.txFee
-  var maxCost = txData.maxCost
+  var txFee = txData.txFee || ''
+  var maxCost = txData.maxCost || ''
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
