@@ -263,9 +263,7 @@ function showInfoPage () {
 }
 
 function setSelectedAccount (address) {
-  return (dispatch) => {
-    background.setSelectedAccount(address)
-  }
+  return callBackgroundThenUpdate(background.setSelectedAccount, address)
 }
 
 function setCurrentFiat (fiat) {
@@ -457,15 +455,16 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.setSelectedAccount(address, (err, address) => {
+    background.setSelectedAccount(address, (err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
 
+      dispatch(actions.updateMetamaskState(newState))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
-        value: address,
+        value: newState.selectedAccount,
       })
     })
   }
