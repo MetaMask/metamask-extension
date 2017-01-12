@@ -6,25 +6,37 @@ const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
-const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const ObservableStore = require('./lib/observable/')
+const HostStore = require('./lib/observable/host')
+const transformStore = require('./lib/observable/util/transform')
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.state = { network: 'loading' }
     this.opts = opts
-    this.configManager = new ConfigManager(opts)
+    this.state = { network: 'loading' }
+
+    // observable state store
+    this.store = new ObservableStore(opts.initState)
+    // config manager
+    this.configManager = new ConfigManager({
+      store: this.store,
+    })
+    // key mgmt
     this.keyringController = new KeyringController({
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
+    })
+    this.keyringController.on('newAccount', (account) => {
+      autoFaucet(account)
     })
     // notices
     this.noticeController = new NoticeController({
@@ -228,29 +240,20 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = configToPublic(this.configManager.getConfig())
-    var publicConfigStore = new HostStore(initPublicState)
+    var initPublicState = this.store.get()
+    var publicConfigStore = new HostStore(initPublicState, { readOnly: true })
 
-    // subscribe to changes
-    this.configManager.subscribe(function (state) {
-      storeSetFromObj(publicConfigStore, configToPublic(state))
-    })
+    // sync publicConfigStore with transform
+    transformStore(this.store, publicConfigStore, selectPublicState)
 
-    this.keyringController.on('newAccount', (account) => {
-      autoFaucet(account)
-    })
-
-    // config substate
-    function configToPublic (state) {
-      return {
-        selectedAccount: state.selectedAccount,
+    function selectPublicState(state) {
+      let result = { selectedAccount: undefined }
+      try {
+        result.selectedAccount = state.data.config.selectedAccount
+      } catch (err) {
+        console.warn('Error in "selectPublicState": ' + err.message)
       }
-    }
-    // dump obj into store
-    function storeSetFromObj (store, obj) {
-      Object.keys(obj).forEach(function (key) {
-        store.set(key, obj[key])
-      })
+      return result
     }
 
     return publicConfigStore

@@ -1,7 +1,7 @@
 const Streams = require('mississippi')
 const StreamProvider = require('web3-stream-provider')
 const ObjectMultiplex = require('./obj-multiplex')
-const RemoteStore = require('./remote-store.js').RemoteStore
+const RemoteStore = require('./observable/remote')
 const createRandomId = require('./random-id')
 
 module.exports = MetamaskInpageProvider
@@ -72,13 +72,13 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     case 'eth_accounts':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.get('selectedAccount')
+      selectedAccount = self.publicConfigStore.get().selectedAccount
       result = selectedAccount ? [selectedAccount] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.get('selectedAccount')
+      selectedAccount = self.publicConfigStore.get().selectedAccount
       result = selectedAccount || '0x0000000000000000000000000000000000000000'
       break
 
@@ -117,9 +117,15 @@ MetamaskInpageProvider.prototype.isMetaMask = true
 
 function remoteStoreWithLocalStorageCache (storageKey) {
   // read local cache
-  var initState = JSON.parse(localStorage[storageKey] || '{}')
-  var store = new RemoteStore(initState)
-  // cache the latest state locally
+  let initState
+  try {
+    initState = JSON.parse(localStorage[storageKey] || '{}')
+  } catch (err) {
+    initState = {}
+  }
+  // intialize store
+  const store = new RemoteStore(initState)
+  // write local cache
   store.subscribe(function (state) {
     localStorage[storageKey] = JSON.stringify(state)
   })

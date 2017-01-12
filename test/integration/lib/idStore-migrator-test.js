@@ -1,25 +1,23 @@
-var ConfigManager = require('../../../app/scripts/lib/config-manager')
-var IdStoreMigrator = require('../../../app/scripts/lib/idStore-migrator')
-var SimpleKeyring = require('../../../app/scripts/keyrings/simple')
-var normalize = require('../../../app/scripts/lib/sig-util').normalize
+const ObservableStore = require('../../../app/scripts/lib/observable/')
+const ConfigManager = require('../../../app/scripts/lib/config-manager')
+const IdStoreMigrator = require('../../../app/scripts/lib/idStore-migrator')
+const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
+const normalize = require('../../../app/scripts/lib/sig-util').normalize
 
-var oldStyleVault = require('../mocks/oldVault.json')
-var badStyleVault = require('../mocks/badVault.json')
+const oldStyleVault = require('../mocks/oldVault.json')
+const badStyleVault = require('../mocks/badVault.json')
 
-var STORAGE_KEY = 'metamask-config'
-var PASSWORD = '12345678'
-var FIRST_ADDRESS = '0x4dd5d356c5A016A220bCD69e82e5AF680a430d00'.toLowerCase()
-var SEED = 'fringe damage bounce extend tunnel afraid alert sound all soldier all dinner'
-
-var BAD_STYLE_FIRST_ADDRESS = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9'
+const PASSWORD = '12345678'
+const FIRST_ADDRESS = '0x4dd5d356c5A016A220bCD69e82e5AF680a430d00'.toLowerCase()
+const BAD_STYLE_FIRST_ADDRESS = '0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9'
+const SEED = 'fringe damage bounce extend tunnel afraid alert sound all soldier all dinner'
 
 QUnit.module('Old Style Vaults', {
   beforeEach: function () {
-    window.localStorage[STORAGE_KEY] = JSON.stringify(oldStyleVault)
+    let store = new ObservableStore(oldStyleVault)
 
     this.configManager = new ConfigManager({
-      loadData: () => { return JSON.parse(window.localStorage[STORAGE_KEY]) },
-      setData: (data) => { window.localStorage[STORAGE_KEY] = JSON.stringify(data) },
+      store: store,
     })
 
     this.migrator = new IdStoreMigrator({
@@ -46,11 +44,10 @@ QUnit.test('migrator:migratedVaultForPassword', function (assert) {
 
 QUnit.module('Old Style Vaults with bad HD seed', {
   beforeEach: function () {
-    window.localStorage[STORAGE_KEY] = JSON.stringify(badStyleVault)
+    let store = new ObservableStore(badStyleVault)
 
     this.configManager = new ConfigManager({
-      loadData: () => { return JSON.parse(window.localStorage[STORAGE_KEY]) },
-      setData: (data) => { window.localStorage[STORAGE_KEY] = JSON.stringify(data) },
+      store: store,
     })
 
     this.migrator = new IdStoreMigrator({

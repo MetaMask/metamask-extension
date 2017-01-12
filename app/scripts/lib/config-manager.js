@@ -19,6 +19,7 @@ module.exports = ConfigManager
 function ConfigManager (opts) {
   // ConfigManager is observable and will emit updates
   this._subs = []
+  this.store = opts.store
 
   /* The migrator exported on the config-manager
    * has two methods the user should be concerned with:
@@ -36,12 +37,9 @@ function ConfigManager (opts) {
     // config data format, and returns the new one.
     migrations: migrations,
 
-    // How to load initial config.
-    // Includes step on migrating pre-pojo-migrator data.
-    loadData: opts.loadData,
-
-    // How to persist migrated config.
-    setData: opts.setData,
+    // Data persistence methods
+    loadData: () => this.store.get(),
+    setData: (value) => this.store.put(value),
   })
 }
 

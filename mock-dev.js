@@ -47,10 +47,12 @@ const controller = new MetamaskController({
   showUnconfirmedMessage: noop,
   unlockAccountMessage: noop,
   showUnapprovedTx: noop,
-  // Persistence Methods:
-  setData,
-  loadData,
+  // initial state
+  initState: loadData(),
 })
+
+// setup state persistence
+controller.store.subscribe(setData)
 
 // Stub out localStorage for non-browser environments
 if (!window.localStorage) {

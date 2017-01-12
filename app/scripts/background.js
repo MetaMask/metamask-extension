@@ -13,15 +13,18 @@ const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 var popupIsOpen = false
 
+
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: triggerUi,
   unlockAccountMessage: triggerUi,
   showUnapprovedTx: triggerUi,
-  // Persistence Methods:
-  setData,
-  loadData,
+  // initial state
+  initState: loadData(),
 })
+// setup state persistence
+controller.store.subscribe(setData)
+
 const txManager = controller.txManager
 function triggerUi () {
   if (!popupIsOpen) notification.show()
@@ -112,13 +115,7 @@ function updateBadge () {
 // data :: setters/getters
 
 function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
-
-  var data = extend({
+  let defaultData = {
     meta: {
       version: 0,
     },
@@ -129,32 +126,16 @@ function loadData () {
         },
       },
     },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
   }
 
+  var persisted
   try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
+    persisted = JSON.parse(window.localStorage[STORAGE_KEY])
+  } catch (err) {
+    persisted = null
+  }
 
-  return result
+  return extend(defaultData, persisted)
 }
 
 function setData (data) {
