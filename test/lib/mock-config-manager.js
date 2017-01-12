@@ -1,9 +1,12 @@
-var ConfigManager = require('../../app/scripts/lib/config-manager')
+const ConfigManager = require('../../app/scripts/lib/config-manager')
+const ObservableStore = require('../../app/scripts/lib/observable/')
 const STORAGE_KEY = 'metamask-config'
 const extend = require('xtend')
 
 module.exports = function() {
-  return new ConfigManager({ loadData, setData })
+  let store = new ObservableStore(loadData())
+  store.subscribe(setData)
+  return new ConfigManager({ store })
 }
 
 function loadData () {

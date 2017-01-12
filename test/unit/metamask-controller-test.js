@@ -10,9 +10,11 @@ describe('MetaMaskController', function() {
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,
     showUnapprovedTx: noop,
-    setData,
-    loadData,
+    // initial state
+    initState: loadData(),
   })
+  // setup state persistence
+  controller.store.subscribe(setData)
 
   beforeEach(function() {
     // sinon allows stubbing methods that are easily verified
