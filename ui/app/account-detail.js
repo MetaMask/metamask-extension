@@ -249,7 +249,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.transactionList = function () {
   const {transactions, unconfMsgs, address, network, shapeShiftTxList } = this.props
   // sort by recency
-    var soretedTxs = transactions.sort((a, b) => b.time - a.time)
+  var soretedTxs = transactions.sort((a, b) => b.time - a.time)
   return h(TransactionList, {
     transactions: soretedTxs,
     network,
