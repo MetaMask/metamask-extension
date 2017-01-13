@@ -95,7 +95,6 @@ module.exports = class KeyringController extends EventEmitter {
         isInitialized: (!!wallet || !!vault),
         isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        transactions: this.configManager.getTxList(),
         unconfMsgs: messageManager.unconfirmedMsgs(),
         messages: messageManager.getMsgList(),
         selectedAccount: address,
