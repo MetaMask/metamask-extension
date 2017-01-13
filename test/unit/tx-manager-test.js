@@ -18,6 +18,27 @@ describe('Transaction Manager', function() {
     })
   })
 
+  describe('#validateTxParams', function () {
+    it('returns null for positive values', function() {
+      var sample = {
+        value: '0x01'
+      }
+      var res = txManager.validateTxParams(sample, (err) => {
+        assert.equal(err, null, 'no error')
+      })
+    })
+
+
+    it('returns error for negative values', function() {
+      var sample = {
+        value: '-0x01'
+      }
+      var res = txManager.validateTxParams(sample, (err) => {
+        assert.ok(err, 'error')
+      })
+    })
+  })
+
   describe('#getTxList', function() {
     it('when new should return empty array', function() {
       var result = txManager.getTxList()
@@ -100,11 +121,12 @@ describe('Transaction Manager', function() {
     it('should emit a signed event to signal the exciton of callback', (done) => {
       this.timeout(10000)
       var tx = { id: 1, status: 'unapproved' }
-      let onTxDoneCb = function (err, txId) {
+      let onTxDoneCb = function () {
         assert(true, 'event listener has been triggered and onTxDoneCb executed')
         done()
       }
-      txManager.addTx(tx, onTxDoneCb)
+      txManager.addTx(tx)
+      txManager.on('1:signed', onTxDoneCb)
       txManager.setTxStatusSigned(1)
     })
   })
@@ -112,7 +134,7 @@ describe('Transaction Manager', function() {
   describe('#setTxStatusRejected', function() {
     it('sets the tx status to rejected', function() {
       var tx = { id: 1, status: 'unapproved' }
-      txManager.addTx(tx, onTxDoneCb)
+      txManager.addTx(tx)
       txManager.setTxStatusRejected(1)
       var result = txManager.getTxList()
       assert.ok(Array.isArray(result))
@@ -123,11 +145,12 @@ describe('Transaction Manager', function() {
     it('should emit a rejected event to signal the exciton of callback', (done) => {
       this.timeout(10000)
       var tx = { id: 1, status: 'unapproved' }
+      txManager.addTx(tx)
       let onTxDoneCb = function (err, txId) {
         assert(true, 'event listener has been triggered and onTxDoneCb executed')
         done()
       }
-      txManager.addTx(tx, onTxDoneCb)
+      txManager.on('1:rejected', onTxDoneCb)
       txManager.setTxStatusRejected(1)
     })
 

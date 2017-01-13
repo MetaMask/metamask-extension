@@ -1,11 +1,10 @@
 const EventEmitter = require('events')
+const async = require('async')
 const extend = require('xtend')
+const Semaphore = require('semaphore')
 const ethUtil = require('ethereumjs-util')
-const Transaction = require('ethereumjs-tx')
-const BN = ethUtil.BN
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
-const normalize = require('./lib/sig-util').normalize
 
 module.exports = class TransactionManager extends EventEmitter {
   constructor (opts) {
@@ -15,11 +14,14 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.getSelectedAccount = opts.getSelectedAccount
     this.provider = opts.provider
+    this.query = opts.query
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.getGasMultiplier = opts.getGasMultiplier
     this.getNetwork = opts.getNetwork
+    this.signEthTx = opts.signTransaction
+    this.nonceLock = Semaphore(1)
   }
 
   getState () {
@@ -37,7 +39,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   // Adds a tx to the txlist
-  addTx (txMeta, onTxDoneCb = warn) {
+  addTx (txMeta) {
     var txList = this.getTxList()
     var txHistoryLimit = this.txHistoryLimit
 
@@ -53,16 +55,11 @@ module.exports = class TransactionManager extends EventEmitter {
     txList.push(txMeta)
 
     this._saveTxList(txList)
-    // keep the onTxDoneCb around in a listener
-    // for after approval/denial (requires user interaction)
-    // This onTxDoneCb fires completion to the Dapp's write operation.
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)
-      onTxDoneCb(null, true)
     })
     this.once(`${txMeta.id}:rejected`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:signed`)
-      onTxDoneCb(null, false)
     })
 
     this.emit('updateBadge')
@@ -93,28 +90,35 @@ module.exports = class TransactionManager extends EventEmitter {
     return this.getTxsByMetaData('status', 'signed').length
   }
 
-  addUnapprovedTransaction (txParams, onTxDoneCb, cb) {
-    // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var txId = createId()
-    txParams.metamaskId = txId
-    txParams.metamaskNetworkId = this.getNetwork()
-    var txData = {
-      id: txId,
-      txParams: txParams,
-      time: time,
-      status: 'unapproved',
-      gasMultiplier: this.getGasMultiplier() || 1,
-      metamaskNetworkId: this.getNetwork(),
-    }
-    this.txProviderUtils.analyzeGasUsage(txData, this.txDidComplete.bind(this, txData, onTxDoneCb, cb))
-    // calculate metadata for tx
-  }
-
-  txDidComplete (txMeta, onTxDoneCb, cb, err) {
-    if (err) return cb(err)
-    this.addTx(txMeta, onTxDoneCb)
-    cb(null, txMeta)
+  addUnapprovedTransaction (txParams, done) {
+    let txMeta
+    async.waterfall([
+      // validate
+      (cb) => this.validateTxParams(txParams, cb),
+      // prepare txMeta
+      (cb) => {
+        // create txMeta obj with parameters and meta data
+        let time = (new Date()).getTime()
+        let txId = createId()
+        txParams.metamaskId = txId
+        txParams.metamaskNetworkId = this.getNetwork()
+        txMeta = {
+          id: txId,
+          time: time,
+          status: 'unapproved',
+          gasMultiplier: this.getGasMultiplier() || 1,
+          metamaskNetworkId: this.getNetwork(),
+          txParams: txParams,
+        }
+        // calculate metadata for tx
+        this.txProviderUtils.analyzeGasUsage(txMeta, cb)
+      },
+      // save txMeta
+      (cb) => {
+        this.addTx(txMeta)
+        cb(null, txMeta)
+      },
+    ], done)
   }
 
   getUnapprovedTxList () {
@@ -127,8 +131,23 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   approveTransaction (txId, cb = warn) {
-    this.setTxStatusSigned(txId)
-    this.once(`${txId}:signingComplete`, cb)
+    const self = this
+    // approve
+    self.setTxStatusApproved(txId)
+    // only allow one tx at a time for atomic nonce usage
+    self.nonceLock.take(() => {
+      // begin signature process
+      async.waterfall([
+        (cb) => self.fillInTxParams(txId, cb),
+        (cb) => self.signTransaction(txId, cb),
+        (rawTx, cb) => self.publishTransaction(txId, rawTx, cb),
+      ], (err) => {
+        self.nonceLock.leave()
+        // TODO: move tx to error state
+        if (err) return cb(err)
+        cb()
+      })
+    })
   }
 
   cancelTransaction (txId, cb = warn) {
@@ -136,38 +155,52 @@ module.exports = class TransactionManager extends EventEmitter {
     cb()
   }
 
-  // formats txParams so the keyringController can sign it
-  formatTxForSigining (txParams) {
-    var address = txParams.from
-    var metaTx = this.getTx(txParams.metamaskId)
-    var gasMultiplier = metaTx.gasMultiplier
-    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+  fillInTxParams (txId, cb) {
+    let txMeta = this.getTx(txId)
+    this.txProviderUtils.fillInTxParams(txMeta.txParams, (err) => {
+      if (err) return cb(err)
+      this.updateTx(txMeta)
+      cb()
+    })
+  }
 
-    // normalize values
-    txParams.to = normalize(txParams.to)
-    txParams.from = normalize(txParams.from)
-    txParams.value = normalize(txParams.value)
-    txParams.data = normalize(txParams.data)
-    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
-    txParams.nonce = normalize(txParams.nonce)
-    const ethTx = new Transaction(txParams)
-    var txId = txParams.metamaskId
-    return Promise.resolve({ethTx, address, txId})
+  signTransaction (txId, cb) {
+    let txMeta = this.getTx(txId)
+    let txParams = txMeta.txParams
+    let fromAddress = txParams.from
+    let ethTx = this.txProviderUtils.buildEthTxFromParams(txParams, txMeta.gasMultiplier)
+    this.signEthTx(ethTx, fromAddress).then(() => {
+      this.updateTxAsSigned(txMeta.id, ethTx)
+      cb(null, ethUtil.bufferToHex(ethTx.serialize()))
+    }).catch((err) => {
+      cb(err)
+    })
+  }
+
+  publishTransaction (txId, rawTx, cb) {
+    this.txProviderUtils.publishTransaction(rawTx, (err) => {
+      if (err) return cb(err)
+      this.setTxStatusSubmitted(txId, rawTx)
+      cb()
+    })
+  }
+
+  validateTxParams (txParams, cb) {
+    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
+      cb(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
+    } else {
+      cb()
+    }
   }
 
   // receives a signed tx object and updates the tx hash
-  // and pass it to the cb to be sent off
-  resolveSignedTransaction ({tx, txId, cb = warn}) {
+  updateTxAsSigned (txId, ethTx) {
     // Add the tx hash to the persisted meta-tx object
-    var txHash = ethUtil.bufferToHex(tx.hash())
-    var metaTx = this.getTx(txId)
-    metaTx.hash = txHash
-    this.updateTx(metaTx)
-    var rawTx = ethUtil.bufferToHex(tx.serialize())
-    return Promise.resolve(rawTx)
-
+    let txHash = ethUtil.bufferToHex(ethTx.hash())
+    let txMeta = this.getTx(txId)
+    txMeta.hash = txHash
+    this.updateTx(txMeta)
+    this.setTxStatusSigned(txMeta.id)
   }
 
   /*
@@ -212,22 +245,31 @@ module.exports = class TransactionManager extends EventEmitter {
     return txMeta.status
   }
 
+  // should update the status of the tx to 'rejected'.
+  setTxStatusRejected (txId) {
+    this._setTxStatus(txId, 'rejected')
+  }
+  
+  // should update the status of the tx to 'approved'.
+  setTxStatusApproved (txId) {
+    this._setTxStatus(txId, 'approved')
+  }
 
   // should update the status of the tx to 'signed'.
   setTxStatusSigned (txId) {
     this._setTxStatus(txId, 'signed')
-    this.emit('updateBadge')
   }
 
-  // should update the status of the tx to 'rejected'.
-  setTxStatusRejected (txId) {
-    this._setTxStatus(txId, 'rejected')
-    this.emit('updateBadge')
+  // should update the status of the tx to 'submitted'.
+  setTxStatusSubmitted (txId, rawTx) {
+    this._setTxStatus(txId, 'submitted', rawTx)
   }
 
+  // should update the status of the tx to 'confirmed'.
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
   }
+
 
   // merges txParams obj onto txData.txParams
   // use extend to ensure that all fields are filled
@@ -266,13 +308,16 @@ module.exports = class TransactionManager extends EventEmitter {
   //  should set the status in txData
   //    - `'unapproved'` the user has not responded
   //    - `'rejected'` the user has responded no!
+  //    - `'approved'` the user has approved the tx
   //    - `'signed'` the tx is signed
   //    - `'submitted'` the tx is sent to a server
   //    - `'confirmed'` the tx has been included in a block.
-  _setTxStatus (txId, status) {
+  // "value" is an optional parameter to emit
+  _setTxStatus (txId, status, value) {
     var txMeta = this.getTx(txId)
     txMeta.status = status
-    this.emit(`${txMeta.id}:${status}`, txId)
+    this.emit(`${txMeta.id}:${status}`, value)
+    this.emit('updateBadge')
     this.updateTx(txMeta)
   }
 
