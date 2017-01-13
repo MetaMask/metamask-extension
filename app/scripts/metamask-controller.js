@@ -1,12 +1,13 @@
 const extend = require('xtend')
 const EthStore = require('eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
+const Web3 = require('web3')
+const EthQuery = require('eth-query')
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
 const HostStore = require('./lib/remote-store.js').HostStore
-const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
@@ -32,8 +33,13 @@ module.exports = class MetamaskController {
     // to be uncommented when retrieving notices from a remote server.
     // this.noticeController.startPolling()
     this.provider = this.initializeProvider(opts)
+    this.provider.on('block', this.processBlock.bind(this))
+    this.provider.on('error', this.getNetwork.bind(this))
+    this.web3 = new Web3(this.provider)
+    this.query = new EthQuery(this.provider)
     this.ethStore = new EthStore(this.provider)
     this.keyringController.setStore(this.ethStore)
+    this.keyringController.setQuery(this.query)
     this.getNetwork()
     this.messageManager = messageManager
     this.txManager = new TxManager({
@@ -173,8 +179,6 @@ module.exports = class MetamaskController {
   }
 
   initializeProvider (opts) {
-    const keyringController = this.keyringController
-
     var providerOpts = {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
@@ -194,19 +198,12 @@ module.exports = class MetamaskController {
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: (...args) => {
-        keyringController.signMessage(...args)
+        this.keyringController.signMessage(...args)
         this.sendUpdate()
       },
     }
 
-    var provider = MetaMaskProvider(providerOpts)
-    var web3 = new Web3(provider)
-    this.web3 = web3
-    keyringController.web3 = web3
-    provider.on('block', this.processBlock.bind(this))
-    provider.on('error', this.getNetwork.bind(this))
-
-    return provider
+    return MetaMaskProvider(providerOpts)
   }
 
   initPublicConfigStore () {
