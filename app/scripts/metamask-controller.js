@@ -239,13 +239,14 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   newUnapprovedTransaction (txParams, cb) {
-    this.txManager.addUnapprovedTransaction(txParams, (err, txMeta) => {
+    const self = this
+    self.txManager.addUnapprovedTransaction(txParams, (err, txMeta) => {
       if (err) return cb(err)
-      this.sendUpdate()
-      this.opts.showUnapprovedTx(txMeta)
+      self.sendUpdate()
+      self.opts.showUnapprovedTx(txMeta)
       // listen for tx completion (success, fail)
-      this.txManager.once(`${txMeta.id}:submitted`, successHandler)
-      this.txManager.once(`${txMeta.id}:rejected`, failHandler)
+      self.txManager.once(`${txMeta.id}:submitted`, successHandler)
+      self.txManager.once(`${txMeta.id}:rejected`, failHandler)
       function successHandler(rawTx) {
         removeHandlers()
         cb(null, rawTx)
@@ -255,8 +256,8 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(new Error('User denied message signature.'))
       }
       function removeHandlers() {
-        this.txManager.removeListener(`${txMeta.id}:submitted`, successHandler)
-        this.txManager.removeListener(`${txMeta.id}:rejected`, failHandler)
+        self.txManager.removeListener(`${txMeta.id}:submitted`, successHandler)
+        self.txManager.removeListener(`${txMeta.id}:rejected`, failHandler)
       }
     })
   }
