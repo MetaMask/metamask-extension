@@ -1,4 +1,3 @@
-const ethUtil = require('ethereumjs-util')
 const bip39 = require('bip39')
 const EventEmitter = require('events').EventEmitter
 const filter = require('promise-filter')
@@ -6,7 +5,6 @@ const encryptor = require('browser-passworder')
 
 const normalize = require('./lib/sig-util').normalize
 const messageManager = require('./lib/message-manager')
-const BN = ethUtil.BN
 
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
@@ -41,8 +39,6 @@ module.exports = class KeyringController extends EventEmitter {
 
     this.getNetwork = opts.getNetwork
   }
-
-
 
   // Full Update
   // returns Promise( @object state )
@@ -226,7 +222,8 @@ module.exports = class KeyringController extends EventEmitter {
   // and this is used to retrieve them from the keyringTypes array.
   addNewKeyring (type, opts) {
     const Keyring = this.getKeyringClassForType(type)
-    const keyring = new Keyring(opts)
+    const keyring = new Keyring({query: this.query})
+    keyring.deserialize(opts)
     return keyring.getAccounts()
     .then((accounts) => {
       this.keyrings.push(keyring)

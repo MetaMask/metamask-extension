@@ -25,7 +25,8 @@ describe('hd-keyring', function() {
   })
 
   describe('constructor', function(done) {
-    keyring = new HdKeyring({
+    keyring = new HdKeyring()
+    keyring.deserialize({
       mnemonic: sampleMnemonic,
       numberOfAccounts: 2,
     })
@@ -133,68 +134,5 @@ describe('hd-keyring', function() {
     })
   })
 
-  describe('#restoreManyAccounts', function () {
-    it('restores only one account if it is a fresh HD tree.', function (done) {
-      var emptyQuery = sinon.stub()
-      emptyQuery.returns('0')
-
-
-      keyring.deserialize({
-        mnemonic: sampleMnemonic,
-        query: emptyQuery,
-      })
-      .then(() => { assert.equal(keyring.wallets.length, 1, 'needed to restore one account') })
-    })
-
-    it('restores only one acccount when only the first account has a balance.', function (done) {
-      var singleQuery = sinon.stub()
-      singleQuery.onFirstCall().returns('2000000000000000000')
-      singleQuery.returns('0')
-
-      keyring.deserialize({
-        mnemonic: sampleMnemonic,
-        query: singleQuery,
-      })
-      .then(() => { assert.equal(keyring.wallets.length, 1, 'needed to restore one account') })
-    })
-
-    it('restores three accounts when the third account has a balance.', function (done) {
-      var thirdQuery = sinon.stub()
-      thirdQuery.onThirdCall().returns('2000000000000000000')
-      thirdQuery.returns('0')
-
-      keyring.deserialize({
-        mnemonic: sampleMnemonic,
-        query: thirdQuery,
-      })
-      .then(() => { assert.equal(keyring.wallets.length, 3, 'needed to restore three accounts') })
-    })
-
-    it('restores twelve accounts when the third and the twelfth have balances.', function (done) {
-      var thirdTwelfthQuery = sinon.stub()
-      thirdTwelfthQuery.onThirdCall().returns('2000000000000000000')
-      thirdTwelfthQuery.onCall(12).returns('2000000000000000000')
-      thirdTwelfthQuery.returns('0')
-
-      keyring.deserialize({
-        mnemonic: sampleMnemonic,
-        query: thirdTwelfthQuery,
-      })
-      .then(() => { assert.equal(keyring.wallets.length, 12, 'needed to restore twelve accounts') })
-    })
-
-    it('restores three accounts when the first three have balances.', function (done) {
-      var firstThreeQuery = sinon.stub()
-      firstThreeQuery.onFirstCall().returns('2000000000000000000')
-      firstThreeQuery.onSecondCcall().returns('2000000000000000000')
-      firstThreeQuery.onThirdCall().returns('2000000000000000000')
-      firstThreeQuery.returns('0')
-
-      keyring.deserialize({
-        mnemonic: firstThreeMnemonic,
-        query: firstThreeQuery,
-      })
-      .then(() => { assert.equal(keyring.wallets.length, 3, 'needed to restore three accounts') })
-    })
-  })
+  x
 })

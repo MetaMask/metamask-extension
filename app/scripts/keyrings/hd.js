@@ -2,6 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const hdkey = require('ethereumjs-wallet/hdkey')
 const bip39 = require('bip39')
 const ethUtil = require('ethereumjs-util')
+const async = require('async')
 
 // *Internal Deps
 const sigUtil = require('../lib/sig-util')
@@ -17,6 +18,7 @@ class HdKeyring extends EventEmitter {
   constructor (opts = {}) {
     super()
     this.type = type
+    this.query = opts.query
     this.deserialize(opts)
   }
 
@@ -37,7 +39,9 @@ class HdKeyring extends EventEmitter {
       this._initFromMnemonic(opts.mnemonic)
     }
 
-    if (opts.numberOfAccounts) {
+    if (opts.auto) {
+      return this.restoreManyAccounts(10)
+    } else if (opts.numberOfAccounts) {
       return this.addAccounts(opts.numberOfAccounts)
     }
 
