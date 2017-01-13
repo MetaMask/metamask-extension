@@ -80,6 +80,7 @@ module.exports = class TransactionManager extends EventEmitter {
     var index = txList.findIndex(txData => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
+    this.emit('update')
   }
 
   get unapprovedTxCount () {
@@ -119,6 +120,19 @@ module.exports = class TransactionManager extends EventEmitter {
         cb(null, txMeta)
       },
     ], done)
+  }
+
+  getMaxTxCostAndFee (txMeta) {
+    var txParams = txMeta.txParams
+
+    var gasMultiplier = txMeta.gasMultiplier
+    var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
+    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100), 10).div(new BN(100, 10))
+    var txFee = gasCost.mul(gasPrice)
+    var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+    var maxCost = txValue.add(txFee)
+    return {maxCost, txFee}
   }
 
   getUnapprovedTxList () {
@@ -282,19 +296,31 @@ module.exports = class TransactionManager extends EventEmitter {
   //  checks if a signed tx is in a block and
   // if included sets the tx status as 'confirmed'
   checkForTxInBlock () {
-    var signedTxList = this.getFilteredTxList({status: 'signed', err: undefined})
+    var signedTxList = this.getFilteredTxList({status: 'signed'})
     if (!signedTxList.length) return
-    signedTxList.forEach((tx) => {
-      var txHash = tx.hash
-      var txId = tx.id
-      if (!txHash) return
-      this.txProviderUtils.query.getTransactionByHash(txHash, (err, txMeta) => {
-        if (err || !txMeta) {
-          tx.err = err || 'Tx could possibly have not been submitted'
-          this.updateTx(tx)
-          return txMeta ? console.error(err) : console.debug(`txMeta is ${txMeta} for:`, tx)
+    signedTxList.forEach((txMeta) => {
+      var txHash = txMeta.hash
+      var txId = txMeta.id
+      if (!txHash) {
+        txMeta.err = {
+          errCode: 'No hash was provided',
+          message: 'We had an error while submitting this transaction, please try again.',
         }
-        if (txMeta.blockNumber) {
+        this.updateTx(txMeta)
+        return this._setTxStatus(txId, 'failed')
+      }
+      this.txProviderUtils.query.getTransactionByHash(txHash, (err, txParams) => {
+        if (err || !txParams) {
+          if (!txParams) return
+          txMeta.err = {
+            isWarning: true,
+            errorCode: err,
+            message: 'There was a problem loading this transaction.',
+          }
+          this.updateTx(txMeta)
+          return console.error(err)
+        }
+        if (txParams.blockNumber) {
           this.setTxStatusConfirmed(txId)
         }
       })

@@ -43,10 +43,9 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfMsgs = state.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
-  var txData = unconfTxList[index] || unconfTxList[0] || {}
+  var txData = unconfTxList[index] || {txParams: {}}
   var txParams = txData.txParams || {}
   var isNotification = isPopupOrNotification() === 'notification'
-
   return (
 
     h('.flex-column.flex-grow', [
@@ -125,17 +124,10 @@ function currentTxView (opts) {
 }
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   var state = this.props
-
-  var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAccount
+  var address = txData.txParams.from || state.selectedAccount
   var account = state.accounts[address]
   var balance = account ? account.balance : '0x0'
-
-  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
-  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  var txFee = gasCost.mul(gasPrice)
-  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-  var maxCost = txValue.add(txFee)
+  var maxCost = new BN(txData.maxCost)
 
   var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
   return maxCost.gt(balanceBn)
