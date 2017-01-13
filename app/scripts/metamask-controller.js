@@ -21,10 +21,6 @@ module.exports = class MetamaskController {
     this.opts = opts
     this.listeners = []
     this.configManager = new ConfigManager(opts)
-    this.keyringController = new KeyringController({
-      configManager: this.configManager,
-      getNetwork: this.getStateNetwork.bind(this),
-    })
     // notices
     this.noticeController = new NoticeController({
       configManager: this.configManager,
@@ -38,8 +34,12 @@ module.exports = class MetamaskController {
     this.web3 = new Web3(this.provider)
     this.query = new EthQuery(this.provider)
     this.ethStore = new EthStore(this.provider)
-    this.keyringController.setStore(this.ethStore)
-    this.keyringController.setQuery(this.query)
+    this.keyringController = new KeyringController({
+      configManager: this.configManager,
+      getNetwork: this.getStateNetwork.bind(this),
+      ethStore: this.ethStore,
+      query: this.query,
+    })
     this.getNetwork()
     this.messageManager = messageManager
     this.txManager = new TxManager({

@@ -31,6 +31,7 @@ module.exports = class KeyringController extends EventEmitter {
     super()
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
+    this.query = opts.query
     this.encryptor = encryptor
     this.keyringTypes = keyringTypes
     this.keyrings = []
@@ -41,16 +42,7 @@ module.exports = class KeyringController extends EventEmitter {
     this.getNetwork = opts.getNetwork
   }
 
-  // Set Store
-  //
-  // Allows setting the ethStore after the constructor.
-  // This is currently required because of the initialization order
-  // of the ethStore and this class.
-  //
-  // Eventually would be nice to be able to add this in the constructor.
-  setStore (ethStore) {
-    this.ethStore = ethStore
-  }
+
 
   // Full Update
   // returns Promise( @object state )
