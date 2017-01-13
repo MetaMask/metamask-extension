@@ -29,7 +29,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
     shapeShiftTxList: state.metamask.shapeShiftTxList,
-    transactions: state.metamask.transactions,
+    transactions: state.metamask.selectedAccountTxList || [],
   }
 }
 
@@ -249,9 +249,8 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.transactionList = function () {
   const {transactions, unconfMsgs, address, network, shapeShiftTxList } = this.props
   // sort by recency
-  var soretedTxs = transactions.sort((a, b) => b.time - a.time)
   return h(TransactionList, {
-    transactions: soretedTxs,
+    transactions: transactions.sort((a, b) => b.time - a.time),
     network,
     unconfMsgs,
     address,
