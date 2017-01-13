@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Create visible difference in transaction history between a approved but not yet included in a block transaction and a transaction who has been confirmed.
 - Fix memory leak in RPC Cache
 - Override RPC commands eth_syncing and web3_clientVersion
 - Remove certain non-essential permissions from certain builds.
