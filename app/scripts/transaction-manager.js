@@ -117,12 +117,14 @@ module.exports = class TransactionManager extends EventEmitter {
       // save txMeta
       (cb) => {
         this.addTx(txMeta)
+        debugger
+        this.setMaxTxCostAndFee(txMeta)
         cb(null, txMeta)
       },
     ], done)
   }
 
-  getMaxTxCostAndFee (txMeta) {
+  setMaxTxCostAndFee (txMeta) {
     var txParams = txMeta.txParams
 
     var gasMultiplier = txMeta.gasMultiplier
@@ -132,7 +134,9 @@ module.exports = class TransactionManager extends EventEmitter {
     var txFee = gasCost.mul(gasPrice)
     var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
     var maxCost = txValue.add(txFee)
-    return {maxCost, txFee}
+    txMeta.txValue = txValue
+    txMeta.maxCost = maxCost
+    this.updateTx(txMeta)
   }
 
   getUnapprovedTxList () {
@@ -263,7 +267,7 @@ module.exports = class TransactionManager extends EventEmitter {
   setTxStatusRejected (txId) {
     this._setTxStatus(txId, 'rejected')
   }
-  
+
   // should update the status of the tx to 'approved'.
   setTxStatusApproved (txId) {
     this._setTxStatus(txId, 'approved')
