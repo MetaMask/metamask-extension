@@ -14,7 +14,6 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.getSelectedAccount = opts.getSelectedAccount
     this.provider = opts.provider
-    this.query = opts.query
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
@@ -95,7 +94,7 @@ module.exports = class TransactionManager extends EventEmitter {
     let txMeta
     async.waterfall([
       // validate
-      (cb) => this.validateTxParams(txParams, cb),
+      (cb) => this.txProviderUtils.validateTxParams(txParams, cb),
       // prepare txMeta
       (cb) => {
         // create txMeta obj with parameters and meta data
@@ -117,7 +116,6 @@ module.exports = class TransactionManager extends EventEmitter {
       // save txMeta
       (cb) => {
         this.addTx(txMeta)
-        debugger
         this.setMaxTxCostAndFee(txMeta)
         cb(null, txMeta)
       },
@@ -161,7 +159,7 @@ module.exports = class TransactionManager extends EventEmitter {
         (rawTx, cb) => self.publishTransaction(txId, rawTx, cb),
       ], (err) => {
         self.nonceLock.leave()
-        // TODO: move tx to error state
+        this.setTxStatusFailed(txId)
         if (err) return cb(err)
         cb()
       })
@@ -198,17 +196,9 @@ module.exports = class TransactionManager extends EventEmitter {
   publishTransaction (txId, rawTx, cb) {
     this.txProviderUtils.publishTransaction(rawTx, (err) => {
       if (err) return cb(err)
-      this.setTxStatusSubmitted(txId, rawTx)
+      this.setTxStatusSubmitted(txId)
       cb()
     })
-  }
-
-  validateTxParams (txParams, cb) {
-    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
-      cb(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
-    } else {
-      cb()
-    }
   }
 
   // receives a signed tx object and updates the tx hash
@@ -279,8 +269,8 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   // should update the status of the tx to 'submitted'.
-  setTxStatusSubmitted (txId, rawTx) {
-    this._setTxStatus(txId, 'submitted', rawTx)
+  setTxStatusSubmitted (txId) {
+    this._setTxStatus(txId, 'submitted')
   }
 
   // should update the status of the tx to 'confirmed'.
@@ -288,6 +278,9 @@ module.exports = class TransactionManager extends EventEmitter {
     this._setTxStatus(txId, 'confirmed')
   }
 
+  setTxStatusFailed (txId) {
+    this._setTxStatus(txId, 'failed')
+  }
 
   // merges txParams obj onto txData.txParams
   // use extend to ensure that all fields are filled
@@ -311,7 +304,7 @@ module.exports = class TransactionManager extends EventEmitter {
           message: 'We had an error while submitting this transaction, please try again.',
         }
         this.updateTx(txMeta)
-        return this._setTxStatus(txId, 'failed')
+        return this.setTxStatusFailed(txId)
       }
       this.txProviderUtils.query.getTransactionByHash(txHash, (err, txParams) => {
         if (err || !txParams) {
@@ -342,11 +335,10 @@ module.exports = class TransactionManager extends EventEmitter {
   //    - `'signed'` the tx is signed
   //    - `'submitted'` the tx is sent to a server
   //    - `'confirmed'` the tx has been included in a block.
-  // "value" is an optional parameter to emit
-  _setTxStatus (txId, status, value) {
+  _setTxStatus (txId, status) {
     var txMeta = this.getTx(txId)
     txMeta.status = status
-    this.emit(`${txMeta.id}:${status}`, value)
+    this.emit(`${txMeta.id}:${status}`, txId)
     this.emit('updateBadge')
     this.updateTx(txMeta)
   }

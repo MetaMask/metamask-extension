@@ -16,7 +16,7 @@ module.exports = class txProviderUtils {
     this.provider = provider
     this.query = new EthQuery(provider)
   }
-  
+
   analyzeGasUsage (txData, cb) {
     var self = this
     this.query.getBlockByNumber('latest', true, (err, block) => {
@@ -113,6 +113,16 @@ module.exports = class txProviderUtils {
   publishTransaction (rawTx, cb) {
     this.query.sendRawTransaction(rawTx, cb)
   }
+
+  validateTxParams (txParams, cb) {
+    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
+      cb(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
+    } else {
+      cb()
+    }
+  }
+
+
 }
 
 // util
