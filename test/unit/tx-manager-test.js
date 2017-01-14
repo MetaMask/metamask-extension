@@ -23,7 +23,7 @@ describe('Transaction Manager', function() {
       var sample = {
         value: '0x01'
       }
-      var res = txManager.validateTxParams(sample, (err) => {
+      var res = txManager.txProviderUtils.validateTxParams(sample, (err) => {
         assert.equal(err, null, 'no error')
       })
     })
@@ -33,7 +33,7 @@ describe('Transaction Manager', function() {
       var sample = {
         value: '-0x01'
       }
-      var res = txManager.validateTxParams(sample, (err) => {
+      var res = txManager.txProviderUtils.validateTxParams(sample, (err) => {
         assert.ok(err, 'error')
       })
     })

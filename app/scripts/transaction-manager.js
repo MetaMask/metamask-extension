@@ -3,6 +3,7 @@ const async = require('async')
 const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ethUtil = require('ethereumjs-util')
+const BN = require('ethereumjs-util').BN
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
 
