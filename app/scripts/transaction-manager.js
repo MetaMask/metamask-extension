@@ -125,7 +125,6 @@ module.exports = class TransactionManager extends EventEmitter {
 
   setMaxTxCostAndFee (txMeta) {
     var txParams = txMeta.txParams
-
     var gasMultiplier = txMeta.gasMultiplier
     var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
     var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
@@ -133,6 +132,7 @@ module.exports = class TransactionManager extends EventEmitter {
     var txFee = gasCost.mul(gasPrice)
     var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
     var maxCost = txValue.add(txFee)
+    txMeta.txFee = txFee
     txMeta.txValue = txValue
     txMeta.maxCost = maxCost
     this.updateTx(txMeta)
@@ -160,8 +160,10 @@ module.exports = class TransactionManager extends EventEmitter {
         (rawTx, cb) => self.publishTransaction(txId, rawTx, cb),
       ], (err) => {
         self.nonceLock.leave()
-        this.setTxStatusFailed(txId)
-        if (err) return cb(err)
+        if (err) {
+          this.setTxStatusFailed(txId)
+          return cb(err)
+        }
         cb()
       })
     })
