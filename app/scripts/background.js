@@ -22,7 +22,7 @@ const controller = new MetamaskController({
   setData,
   loadData,
 })
-const txManager = controller.txManager
+
 function triggerUi () {
   if (!popupIsOpen) notification.show()
 }
@@ -93,7 +93,8 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-txManager.on('updateBadge', updateBadge)
+controller.txManager.on('updateBadge', updateBadge)
+updateBadge()
 
 function updateBadge () {
   var label = ''
