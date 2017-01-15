@@ -15,6 +15,7 @@ describe('Transaction Manager', function() {
       provider: "testnet",
       txHistoryLimit: 10,
       blockTracker: new EventEmitter(),
+      getNetwork: function(){ return 'unit test' }
     })
   })
 
