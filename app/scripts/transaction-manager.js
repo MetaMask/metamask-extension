@@ -342,6 +342,9 @@ module.exports = class TransactionManager extends EventEmitter {
     var txMeta = this.getTx(txId)
     txMeta.status = status
     this.emit(`${txMeta.id}:${status}`, txId)
+    if (status === 'submitted' || status === 'rejected') {
+      this.emit(`${txMeta.id}:finished`, status)
+    }
     this.emit('updateBadge')
     this.updateTx(txMeta)
   }
