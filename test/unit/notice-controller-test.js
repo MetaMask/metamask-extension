@@ -6,6 +6,7 @@ const configManagerGen = require('../lib/mock-config-manager')
 const NoticeController = require('../../app/scripts/notice-controller')
 const STORAGE_KEY = 'metamask-persistance-key'
 // Hacking localStorage support into JSDom
+if (window.localStorage) window.localStorage.clear()
 window.localStorage = {}
 
 describe('notice-controller', function() {
