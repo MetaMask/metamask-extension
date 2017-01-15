@@ -35,7 +35,8 @@ module.exports = class TransactionManager extends EventEmitter {
 
 //   Returns the tx list
   getTxList () {
-    return this.txList
+    let network = this.getNetwork()
+    return this.txList.filter(txMeta => txMeta.metamaskNetworkId === network)
   }
 
   // Adds a tx to the txlist
@@ -345,8 +346,8 @@ module.exports = class TransactionManager extends EventEmitter {
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, status)
     }
-    this.emit('updateBadge')
     this.updateTx(txMeta)
+    this.emit('updateBadge')
   }
 
   // Saves the new/updated txList.
