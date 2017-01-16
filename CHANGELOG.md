@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.0.0 2017-1-16
+
 - Fix seed word account generation (https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd#.t4i1qmmsz).
 - Fix Bug where you see a empty transaction flash by on the confirm transaction view.
 - Create visible difference in transaction history between a approved but not yet included in a block transaction and a transaction who has been confirmed.
