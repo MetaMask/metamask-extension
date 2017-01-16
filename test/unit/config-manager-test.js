@@ -1,8 +1,10 @@
+// polyfill fetch
+global.fetch = global.fetch || require('isomorphic-fetch')
 const assert = require('assert')
 const extend = require('xtend')
 const rp = require('request-promise')
 const nock = require('nock')
-var configManagerGen = require('../lib/mock-config-manager')
+const configManagerGen = require('../lib/mock-config-manager')
 const STORAGE_KEY = 'metamask-persistance-key'
 
 describe('config-manager', function() {
@@ -100,31 +102,31 @@ describe('config-manager', function() {
 
   describe('confirmation', function() {
 
-    describe('#getConfirmed', function() {
+    describe('#getConfirmedDisclaimer', function() {
       it('should return false if no previous key exists', function() {
-        var result = configManager.getConfirmed()
+        var result = configManager.getConfirmedDisclaimer()
         assert.ok(!result)
       })
     })
 
-    describe('#setConfirmed', function() {
-      it('should make getConfirmed return true once set', function() {
-        assert.equal(configManager.getConfirmed(), false)
-        configManager.setConfirmed(true)
-        var result = configManager.getConfirmed()
+    describe('#setConfirmedDisclaimer', function() {
+      it('should make getConfirmedDisclaimer return true once set', function() {
+        assert.equal(configManager.getConfirmedDisclaimer(), false)
+        configManager.setConfirmedDisclaimer(true)
+        var result = configManager.getConfirmedDisclaimer()
         assert.equal(result, true)
       })
 
       it('should be able to set false', function() {
-        configManager.setConfirmed(false)
-        var result = configManager.getConfirmed()
+        configManager.setConfirmedDisclaimer(false)
+        var result = configManager.getConfirmedDisclaimer()
         assert.equal(result, false)
       })
 
       it('should persist to local storage', function() {
-        configManager.setConfirmed(true)
+        configManager.setConfirmedDisclaimer(true)
         var data = configManager.getData()
-        assert.equal(data.isConfirmed, true)
+        assert.equal(data.isDisclaimerConfirmed, true)
       })
     })
   })
@@ -153,7 +155,7 @@ describe('config-manager', function() {
           rpcTarget: 'foobar'
         },
       }
-      configManager.setConfirmed(true)
+      configManager.setConfirmedDisclaimer(true)
       configManager.setConfig(testConfig)
 
       var testWallet = {
@@ -164,7 +166,7 @@ describe('config-manager', function() {
       var result = configManager.getData()
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
-      assert.equal(configManager.getConfirmed(), true)
+      assert.equal(configManager.getConfirmedDisclaimer(), true)
 
       testConfig.provider.type = 'something else!'
       configManager.setConfig(testConfig)
@@ -173,7 +175,7 @@ describe('config-manager', function() {
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
       assert.equal(result.config.provider.type, testConfig.provider.type)
-      assert.equal(configManager.getConfirmed(), true)
+      assert.equal(configManager.getConfirmedDisclaimer(), true)
     })
   })
 
@@ -215,7 +217,7 @@ describe('config-manager', function() {
 
   describe('transactions', function() {
     beforeEach(function() {
-      configManager._saveTxList([])
+      configManager.setTxList([])
     })
 
     describe('#getTxList', function() {
@@ -226,89 +228,12 @@ describe('config-manager', function() {
       })
     })
 
-    describe('#_saveTxList', function() {
+    describe('#setTxList', function() {
       it('saves the submitted data to the tx list', function() {
         var target = [{ foo: 'bar' }]
-        configManager._saveTxList(target)
+        configManager.setTxList(target)
         var result = configManager.getTxList()
         assert.equal(result[0].foo, 'bar')
-      })
-    })
-
-    describe('#addTx', function() {
-      it('adds a tx returned in getTxList', function() {
-        var tx = { id: 1 }
-        configManager.addTx(tx)
-        var result = configManager.getTxList()
-        assert.ok(Array.isArray(result))
-        assert.equal(result.length, 1)
-        assert.equal(result[0].id, 1)
-      })
-
-      it('cuts off early txs beyond a limit', function() {
-        const limit = configManager.txLimit
-        for (let i = 0; i < limit + 1; i++) {
-          let tx = { id: i }
-          configManager.addTx(tx)
-        }
-        var result = configManager.getTxList()
-        assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-        assert.equal(result[0].id, 1, 'early txs truncted')
-      })
-    })
-
-    describe('#confirmTx', function() {
-      it('sets the tx status to confirmed', function() {
-        var tx = { id: 1, status: 'unconfirmed' }
-        configManager.addTx(tx)
-        configManager.confirmTx(1)
-        var result = configManager.getTxList()
-        assert.ok(Array.isArray(result))
-        assert.equal(result.length, 1)
-        assert.equal(result[0].status, 'confirmed')
-      })
-    })
-
-    describe('#rejectTx', function() {
-      it('sets the tx status to rejected', function() {
-        var tx = { id: 1, status: 'unconfirmed' }
-        configManager.addTx(tx)
-        configManager.rejectTx(1)
-        var result = configManager.getTxList()
-        assert.ok(Array.isArray(result))
-        assert.equal(result.length, 1)
-        assert.equal(result[0].status, 'rejected')
-      })
-    })
-
-    describe('#updateTx', function() {
-      it('replaces the tx with the same id', function() {
-        configManager.addTx({ id: '1', status: 'unconfirmed' })
-        configManager.addTx({ id: '2', status: 'confirmed' })
-        configManager.updateTx({ id: '1', status: 'blah', hash: 'foo' })
-        var result = configManager.getTx('1')
-        assert.equal(result.hash, 'foo')
-      })
-    })
-
-    describe('#unconfirmedTxs', function() {
-      it('returns unconfirmed txs in a hash', function() {
-        configManager.addTx({ id: '1', status: 'unconfirmed' })
-        configManager.addTx({ id: '2', status: 'confirmed' })
-        let result = configManager.unconfirmedTxs()
-        assert.equal(typeof result, 'object')
-        assert.equal(result['1'].status, 'unconfirmed')
-        assert.equal(result['0'], undefined)
-        assert.equal(result['2'], undefined)
-      })
-    })
-
-    describe('#getTx', function() {
-      it('returns a tx with the requested id', function() {
-        configManager.addTx({ id: '1', status: 'unconfirmed' })
-        configManager.addTx({ id: '2', status: 'confirmed' })
-        assert.equal(configManager.getTx('1').status, 'unconfirmed')
-        assert.equal(configManager.getTx('2').status, 'confirmed')
       })
     })
   })

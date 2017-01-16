@@ -8,6 +8,7 @@ const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const extension = require('../../../app/scripts/lib/extension')
+const Tooltip = require('./tooltip')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -31,7 +32,7 @@ TransactionListItem.prototype.render = function () {
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
-  var isPending = transaction.status === 'unconfirmed'
+  var isPending = transaction.status === 'unapproved'
 
   let txParams
   if (isTx) {
@@ -58,11 +59,7 @@ TransactionListItem.prototype.render = function () {
     }, [
 
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {
-          style: {
-            fontSize: '27px',
-          },
-        }) : h( '.pop-hover', {
+        h('.pop-hover', {
           onClick: (event) => {
             event.stopPropagation()
             if (!isTx || isPending) return
@@ -138,7 +135,14 @@ function failIfFailed (transaction) {
   if (transaction.status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }
-  if (transaction.status === 'failed') {
-    return h('span.error', ' (Failed)')
+  if (transaction.err) {
+
+    return h(Tooltip, {
+      title: transaction.err.message,
+      position: 'bottom',
+    }, [
+      h('span.error', ' (Failed)'),
+    ])
   }
+
 }

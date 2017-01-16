@@ -5,13 +5,14 @@ const nock = require('nock')
 const configManagerGen = require('../lib/mock-config-manager')
 const NoticeController = require('../../app/scripts/notice-controller')
 const STORAGE_KEY = 'metamask-persistance-key'
-// Hacking localStorage support into JSDom
-window.localStorage = {}
 
 describe('notice-controller', function() {
   var noticeController
 
   beforeEach(function() {
+    // simple localStorage polyfill
+    window.localStorage = {}
+    if (window.localStorage.clear) window.localStorage.clear()
     let configManager = configManagerGen()
     noticeController = new NoticeController({
       configManager: configManager,

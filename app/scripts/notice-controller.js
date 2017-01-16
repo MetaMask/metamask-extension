@@ -9,7 +9,7 @@ module.exports = class NoticeController extends EventEmitter {
     this.noticePoller = null
   }
 
-  getState() {
+  getState () {
     var lastUnreadNotice = this.getLatestUnreadNotice()
 
     return {
@@ -18,7 +18,7 @@ module.exports = class NoticeController extends EventEmitter {
     }
   }
 
-  getNoticesList() {
+  getNoticesList () {
     var data = this.configManager.getData()
     if ('noticesList' in data) {
       return data.noticesList
@@ -27,28 +27,28 @@ module.exports = class NoticeController extends EventEmitter {
     }
   }
 
-  setNoticesList(list) {
+  setNoticesList (list) {
     var data = this.configManager.getData()
     data.noticesList = list
     this.configManager.setData(data)
     return Promise.resolve(true)
   }
 
-  markNoticeRead(notice, cb) {
-    cb = cb || function(err){ if (err) throw err }
+  markNoticeRead (notice, cb) {
+    cb = cb || function (err) { if (err) throw err }
     try {
       var notices = this.getNoticesList()
       var id = notice.id
       notices[id].read = true
       this.setNoticesList(notices)
-      let latestNotice = this.getLatestUnreadNotice()
+      const latestNotice = this.getLatestUnreadNotice()
       cb(null, latestNotice)
     } catch (err) {
       cb(err)
     }
   }
 
-  updateNoticesList() {
+  updateNoticesList () {
     return this._retrieveNoticeData().then((newNotices) => {
       var oldNotices = this.getNoticesList()
       var combinedNotices = this._mergeNotices(oldNotices, newNotices)
@@ -56,7 +56,7 @@ module.exports = class NoticeController extends EventEmitter {
     })
   }
 
-  getLatestUnreadNotice() {
+  getLatestUnreadNotice () {
     var notices = this.getNoticesList()
     var filteredNotices = notices.filter((notice) => {
       return notice.read === false
@@ -73,7 +73,7 @@ module.exports = class NoticeController extends EventEmitter {
     }, 300000)
   }
 
-  _mergeNotices(oldNotices, newNotices) {
+  _mergeNotices (oldNotices, newNotices) {
     var noticeMap = this._mapNoticeIds(oldNotices)
     newNotices.forEach((notice) => {
       if (noticeMap.indexOf(notice.id) === -1) {
@@ -83,11 +83,11 @@ module.exports = class NoticeController extends EventEmitter {
     return oldNotices
   }
 
-  _mapNoticeIds(notices) {
+  _mapNoticeIds (notices) {
     return notices.map((notice) => notice.id)
   }
 
-  _retrieveNoticeData() {
+  _retrieveNoticeData () {
     // Placeholder for the API.
     return Promise.resolve(hardCodedNotices)
   }

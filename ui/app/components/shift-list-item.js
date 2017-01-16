@@ -26,7 +26,6 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
-
   return (
     h('.transaction-list-item.flex-row', {
       style: {

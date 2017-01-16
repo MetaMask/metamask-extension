@@ -7,9 +7,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
 const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
-const CreateVaultScreen = require('./first-time/create-vault')
-const CreateVaultCompleteScreen = require('./first-time/create-vault-complete')
-const RestoreVaultScreen = require('./first-time/restore-vault')
+const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
@@ -18,10 +16,10 @@ const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
-const NoticeScreen = require('./notice')
+const NoticeScreen = require('./components/notice')
+const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
-const RevealSeedConfirmation = require('./recover-seed/confirmation')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
@@ -29,9 +27,12 @@ const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
 const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
-const EthStoreWarning = require('./eth-store-warning')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
+const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
+const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
+const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -41,8 +42,7 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
-    isConfirmed: state.metamask.isConfirmed,
-    isEthConfirmed: state.metamask.isEthConfirmed,
+    isDisclaimerConfirmed: state.metamask.isDisclaimerConfirmed,
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
@@ -56,6 +56,8 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     provider: state.metamask.provider,
     forgottenPassword: state.appState.forgottenPassword,
+    lastUnreadNotice: state.metamask.lastUnreadNotice,
+    lostAccounts: state.metamask.lostAccounts,
   }
 }
 
@@ -94,7 +96,6 @@ App.prototype.render = function () {
           transitionLeaveTimeout: 300,
         }, [
           this.renderPrimary(),
-          this.renderBackToInitButton(),
         ]),
       ]),
     ])
@@ -102,7 +103,6 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
-
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
@@ -141,15 +141,21 @@ App.prototype.renderAppBar = function () {
             src: '/images/icon-128.png',
           }),
 
-          h(NetworkIndicator, {
-            network: this.props.network,
-            provider: this.props.provider,
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+          h('#network-spacer.flex-center', {
+            style: {
+              marginRight: '-72px',
             },
-          }),
+          }, [
+            h(NetworkIndicator, {
+              network: this.props.network,
+              provider: this.props.provider,
+              onClick: (event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+              },
+            }),
+          ]),
         ]),
 
         // metamask name
@@ -254,7 +260,15 @@ App.prototype.renderNetworkDropdown = function () {
       activeNetworkRender: props.provider.rpcTarget,
     }),
 
-    this.renderCustomOption(props.provider.rpcTarget),
+    this.renderCustomOption(props.provider),
+
+    h(DropMenuItem, {
+      label: 'Custom RPC',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
+    }),
+
   ])
 }
 
@@ -305,6 +319,7 @@ App.prototype.renderDropdown = function () {
     }),
   ])
 }
+
 App.prototype.renderBackButton = function (style, justArrow = false) {
   var props = this.props
   return (
@@ -322,85 +337,17 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
       }, 'BACK'),
     ])
   )
-
-}
-App.prototype.renderBackToInitButton = function () {
-  var props = this.props
-  var button = null
-  if (!props.isConfirmed) return button
-  if (!props.isUnlocked) {
-    if (props.currentView.name === 'InitMenu') {
-      button = props.forgottenPassword ? h('.flex-row', {
-        key: 'rightArrow',
-        style: {
-          position: 'absolute',
-          bottom: '10px',
-          right: '15px',
-          fontSize: '21px',
-          fontFamily: 'Montserrat Light',
-          color: '#7F8082',
-          width: '77.578px',
-          alignItems: 'flex-end',
-        },
-      }, [
-        h('div.cursor-pointer', {
-          style: {
-            marginRight: '3px',
-          },
-          onClick: () => props.dispatch(actions.backToUnlockView()),
-        }, 'LOGIN'),
-        h('i.fa.fa-arrow-right.cursor-pointer'),
-      ]) : null
-    } else if (props.isInitialized) {
-      var style
-      switch (props.currentView.name) {
-        case 'createVault':
-          style = {
-            position: 'absolute',
-            top: '41px',
-            left: '80px',
-            fontSize: '21px',
-            fontFamily: 'Montserrat Bold',
-            color: 'rgb(174, 174, 174)',
-          }
-          return this.renderBackButton(style, true)
-        case 'restoreVault':
-          style = {
-            position: 'absolute',
-            top: '41px',
-            left: '70px',
-            fontSize: '21px',
-            fontFamily: 'Montserrat Bold',
-            color: 'rgb(174, 174, 174)',
-          }
-          return this.renderBackButton(style, true)
-        default:
-          style = {
-            position: 'absolute',
-            bottom: '10px',
-            left: '15px',
-            fontSize: '21px',
-            fontFamily: 'Montserrat Light',
-            color: '#7F8082',
-            width: '71.969px',
-            alignItems: 'flex-end',
-          }
-          return this.renderBackButton(style)
-      }
-    }
-  }
-  return button
 }
 
 App.prototype.renderPrimary = function () {
   var props = this.props
 
-  if (!props.isConfirmed) {
+  if (!props.isDisclaimerConfirmed) {
     return h(DisclaimerScreen, {key: 'disclaimerScreen'})
   }
 
   if (props.seedWords) {
-    return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show initialize screen
@@ -408,34 +355,43 @@ App.prototype.renderPrimary = function () {
     // show current view
     switch (props.currentView.name) {
 
-      case 'createVault':
-        return h(CreateVaultScreen, {key: 'createVault'})
-
       case 'restoreVault':
-        return h(RestoreVaultScreen, {key: 'restoreVault'})
-
-      case 'createVaultComplete':
-        return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
+        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-
     }
   }
 
   // show unlock screen
   if (!props.isUnlocked) {
-    return h(UnlockScreen, {key: 'locked'})
+    switch (props.currentView.name) {
+
+      case 'restoreVault':
+        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+
+      default:
+        return h(UnlockScreen, {key: 'locked'})
+    }
   }
 
+  // notices
   if (!props.noActiveNotices) {
-    return h(NoticeScreen, {key: 'NoticeScreen'})
+    return h(NoticeScreen, {
+      notice: props.lastUnreadNotice,
+      key: 'NoticeScreen',
+      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+    })
+  } else if (props.lostAccounts && props.lostAccounts.length > 0) {
+    return h(NoticeScreen, {
+      notice: generateLostAccountsNotice(props.lostAccounts),
+      key: 'LostAccountsNotice',
+      onConfirm: () => props.dispatch(actions.markAccountsFound()),
+    })
   }
 
   // show current view
   switch (props.currentView.name) {
-    case 'EthStoreWarning':
-      return h(EthStoreWarning, {key: 'ethWarning'})
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})
@@ -445,6 +401,9 @@ App.prototype.renderPrimary = function () {
 
     case 'sendTransaction':
       return h(SendTransactionScreen, {key: 'send-transaction'})
+
+    case 'newKeychain':
+      return h(NewKeyChainScreen, {key: 'new-keychain'})
 
     case 'confTx':
       return h(ConfirmTxScreen, {key: 'confirm-tx'})
@@ -458,10 +417,9 @@ App.prototype.renderPrimary = function () {
     case 'info':
       return h(InfoScreen, {key: 'info'})
 
-    case 'createVault':
-      return h(CreateVaultScreen, {key: 'createVault'})
     case 'buyEth':
       return h(BuyView, {key: 'buyEthView'})
+
     case 'qr':
       return h('div', {
         style: {
@@ -506,23 +464,14 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (rpcTarget) {
+App.prototype.renderCustomOption = function (provider) {
+  const { rpcTarget, type } = provider
+  if (type !== 'rpc') return null
+
   switch (rpcTarget) {
-    case undefined:
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-      })
 
     case 'http://localhost:8545':
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-      })
+      return null
 
     default:
       return h(DropMenuItem, {

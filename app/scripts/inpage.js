@@ -43,6 +43,7 @@ reloadStream.once('data', triggerReload)
 // var pingChannel = inpageProvider.multiStream.createStream('pingpong')
 // var pingStream = new PingStream({ objectMode: true })
 // wait for first successful reponse
+
 // disable pingStream until https://github.com/MetaMask/metamask-plugin/issues/746 is resolved more gracefully
 // metamaskStream.once('data', function(){
 //   pingStream.pipe(pingChannel).pipe(pingStream)
@@ -51,7 +52,7 @@ reloadStream.once('data', triggerReload)
 
 // set web3 defaultAcount
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
+  web3.eth.defaultAccount = state.selectedAccount
 })
 
 //

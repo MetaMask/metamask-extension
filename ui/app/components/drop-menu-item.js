@@ -32,9 +32,9 @@ DropMenuItem.prototype.render = function () {
 }
 
 DropMenuItem.prototype.activeNetworkRender = function () {
-  let activeNetwork = this.props.activeNetworkRender
-  let { provider } = this.props
-  let providerType = provider ? provider.type : null
+  const activeNetwork = this.props.activeNetworkRender
+  const { provider } = this.props
+  const providerType = provider ? provider.type : null
   if (activeNetwork === undefined) return
 
   switch (this.props.label) {

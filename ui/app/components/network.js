@@ -22,7 +22,6 @@ Network.prototype.render = function () {
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
-
     return h('img.network-indicator', {
       title: 'Attempting to connect to blockchain.',
       onClick: (event) => this.props.onClick(event),
@@ -32,7 +31,6 @@ Network.prototype.render = function () {
       },
       src: 'images/loading.svg',
     })
-
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
@@ -48,11 +46,7 @@ Network.prototype.render = function () {
   }
 
   return (
-    h('#network_component.flex-center.pointer', {
-      style: {
-        marginRight: '-27px',
-        marginLeft: '-3px',
-      },
+    h('#network_component.pointer', {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [

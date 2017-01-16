@@ -9,7 +9,7 @@ describe('MetaMaskController', function() {
   let controller = new MetaMaskController({
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,
-    showUnconfirmedTx: noop,
+    showUnapprovedTx: noop,
     setData,
     loadData,
   })
@@ -25,24 +25,6 @@ describe('MetaMaskController', function() {
     this.sinon.restore()
   })
 
-  describe('#enforceTxValidations', function () {
-    it('returns null for positive values', function() {
-      var sample = {
-        value: '0x01'
-      }
-      var res = controller.enforceTxValidations(sample)
-      assert.equal(res, null, 'no error')
-    })
-
-
-    it('returns error for negative values', function() {
-      var sample = {
-        value: '-0x01'
-      }
-      var res = controller.enforceTxValidations(sample)
-      assert.ok(res, 'error')
-    })
-  })
 })
 
 

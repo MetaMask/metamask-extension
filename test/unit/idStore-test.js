@@ -11,7 +11,6 @@ describe('IdentityStore', function() {
   describe('#createNewVault', function () {
     let idStore
     let password = 'password123'
-    let entropy = 'entripppppyy duuude'
     let seedWords
     let accounts = []
     let originalKeystore
@@ -26,7 +25,7 @@ describe('IdentityStore', function() {
         },
       })
 
-      idStore.createNewVault(password, entropy, (err, seeds) => {
+      idStore.createNewVault(password, (err, seeds) => {
         assert.ifError(err, 'createNewVault threw error')
         seedWords = seeds
         originalKeystore = idStore._idmgmt.keyStore
@@ -140,54 +139,4 @@ describe('IdentityStore', function() {
       })
     })
   })
-
-  describe('#addGasBuffer', function() {
-    it('formats the result correctly', function() {
-      const idStore = new IdentityStore({
-        configManager: configManagerGen(),
-        ethStore: {
-          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
-        },
-      })
-
-      const gas = '0x01'
-      const bnGas = new BN(gas, 16)
-      const bnResult = idStore.addGasBuffer(bnGas)
-
-      assert.ok(bnResult.gt(gas), 'added more gas as buffer.')
-    })
-
-    it('buffers 20%', function() {
-      const idStore = new IdentityStore({
-        configManager: configManagerGen(),
-        ethStore: {
-          addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
-        },
-      })
-
-      const gas = '0x04ee59' // Actual estimated gas example
-      const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-      const five = new BN('5', 10)
-      const correctBuffer = bnGas.div(five)
-      const correct = bnGas.add(correctBuffer)
-
-      const bnResult = idStore.addGasBuffer(bnGas)
-
-      assert(bnResult.gt(bnGas), 'Estimate increased in value.')
-      assert.equal(bnResult.sub(bnGas).toString(10), correctBuffer.toString(10), 'added 20% gas')
-    })
-  })
-
-  describe('#checkForDelegateCall', function() {
-    const idStore = new IdentityStore({
-      configManager: configManagerGen(),
-      ethStore: {
-        addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
-      },
-    })
-
-    var result = idStore.checkForDelegateCall(delegateCallCode)
-    assert.equal(result, true, 'no delegate call in provided code')
-  })
-
 })

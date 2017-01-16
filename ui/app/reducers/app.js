@@ -29,13 +29,10 @@ function reduceApp (state, action) {
     name: 'createVaultComplete',
     seedWords,
   }
-  var ethStoreWarning = {
-    name: 'EthStoreWarning',
-  }
 
   var appState = extend({
     menuOpen: false,
-    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning : defaultView,
+    currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -46,7 +43,19 @@ function reduceApp (state, action) {
 
   switch (action.type) {
 
-  // intialize
+    // transition methods
+
+    case actions.TRANSITION_FORWARD:
+      return extend(appState, {
+        transForward: true,
+      })
+
+    case actions.TRANSITION_BACKWARD:
+      return extend(appState, {
+        transForward: false,
+      })
+
+    // intialize
 
     case actions.SHOW_CREATE_VAULT:
       return extend(appState, {
@@ -63,6 +72,16 @@ function reduceApp (state, action) {
           name: 'restoreVault',
         },
         transForward: true,
+        forgottenPassword: true,
+      })
+
+    case actions.FORGOT_PASSWORD:
+      return extend(appState, {
+        currentView: {
+          name: 'restoreVault',
+        },
+        transForward: false,
+        forgottenPassword: true,
       })
 
     case actions.SHOW_INIT_MENU:
@@ -119,6 +138,15 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_NEW_KEYCHAIN:
+      return extend(appState, {
+        currentView: {
+          name: 'newKeychain',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+      })
+
   // unlock
 
     case actions.UNLOCK_METAMASK:
@@ -151,7 +179,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         warning: null,
         transForward: true,
-        forgottenPassword: !appState.forgottenPassword,
+        forgottenPassword: false,
         currentView: {
           name: 'UnlockScreen',
         },
@@ -227,6 +255,7 @@ function reduceApp (state, action) {
         isLoading: false,
         warning: null,
         scrollToBottom: false,
+        forgottenPassword: false,
       })
 
     case actions.SHOW_NOTICE:
@@ -278,7 +307,6 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
-
         notification.closePopup()
 
         return extend(appState, {
@@ -286,7 +314,7 @@ function reduceApp (state, action) {
           warning: null,
           currentView: {
             name: 'accountDetail',
-            context: state.metamask.selectedAddress,
+            context: state.metamask.selectedAccount,
           },
           accountDetail: {
             subview: 'transactions',
@@ -335,7 +363,7 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_FAILED:
       return extend(appState, {
-        warning: 'Incorrect password. Try again.',
+        warning: action.value || 'Incorrect password. Try again.',
       })
 
     case actions.SHOW_LOADING:
@@ -546,4 +574,3 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-

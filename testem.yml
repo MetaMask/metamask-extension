@@ -6,4 +6,5 @@ launch_in_ci:
   - Firefox
 framework:
   - qunit
+before_tests: "npm run buildCiUnits"
 test_page: "test/integration/index.html"

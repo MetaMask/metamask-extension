@@ -1,8 +1,8 @@
 const inherits = require('util').inherits
-const PersistentForm = require('../../lib/persistent-form')
+const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('../actions')
+const actions = require('../../actions')
 
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 
@@ -14,6 +14,7 @@ function RestoreVaultScreen () {
 function mapStateToProps (state) {
   return {
     warning: state.appState.warning,
+    forgottenPassword: state.appState.forgottenPassword,
   }
 }
 
@@ -66,7 +67,7 @@ RestoreVaultScreen.prototype.render = function () {
         type: 'password',
         id: 'password-box-confirm',
         placeholder: 'Confirm Password',
-        onKeyPress: this.onMaybeCreate.bind(this),
+        onKeyPress: this.createOnEnter.bind(this),
         dataset: {
           persistentFormId: 'password-confirmation',
         },
@@ -96,27 +97,30 @@ RestoreVaultScreen.prototype.render = function () {
 
         // submit
         h('button.primary', {
-          onClick: this.restoreVault.bind(this),
+          onClick: this.createNewVaultAndRestore.bind(this),
         }, 'OK'),
 
       ]),
-
     ])
 
   )
 }
 
 RestoreVaultScreen.prototype.showInitializeMenu = function () {
-  this.props.dispatch(actions.showInitializeMenu())
-}
-
-RestoreVaultScreen.prototype.onMaybeCreate = function (event) {
-  if (event.key === 'Enter') {
-    this.restoreVault()
+  if (this.props.forgottenPassword) {
+    this.props.dispatch(actions.backToUnlockView())
+  } else {
+    this.props.dispatch(actions.showInitializeMenu())
   }
 }
 
-RestoreVaultScreen.prototype.restoreVault = function () {
+RestoreVaultScreen.prototype.createOnEnter = function (event) {
+  if (event.key === 'Enter') {
+    this.createNewVaultAndRestore()
+  }
+}
+
+RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   // check password
   var passwordBox = document.getElementById('password-box')
   var password = passwordBox.value
@@ -144,5 +148,5 @@ RestoreVaultScreen.prototype.restoreVault = function () {
   // submit
   this.warning = null
   this.props.dispatch(actions.displayWarning(this.warning))
-  this.props.dispatch(actions.recoverFromSeed(password, seed))
+  this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
 }

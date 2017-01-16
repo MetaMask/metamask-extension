@@ -1,5 +1,4 @@
 dist
-
 npm-debug.log
 node_modules
 temp
@@ -8,9 +7,9 @@ temp
 app/bower_components
 test/bower_components
 package
-
 .DS_Store
 builds/
+disc/
 notes.txt
 app/.DS_Store
 development/bundle.js
