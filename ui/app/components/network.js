@@ -46,11 +46,7 @@ Network.prototype.render = function () {
   }
 
   return (
-    h('#network_component.flex-center.pointer', {
-      style: {
-        marginRight: '-27px',
-        marginLeft: '-3px',
-      },
+    h('#network_component.pointer', {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [

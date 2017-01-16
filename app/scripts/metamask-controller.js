@@ -1,5 +1,6 @@
+const EventEmitter = require('events')
 const extend = require('xtend')
-const EthStore = require('eth-store')
+const EthStore = require('./lib/eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const Web3 = require('web3')
 const EthQuery = require('eth-query')
@@ -13,13 +14,14 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const version = require('../manifest.json').version
 
-module.exports = class MetamaskController {
+module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
+    super()
     this.state = { network: 'loading' }
     this.opts = opts
-    this.listeners = []
     this.configManager = new ConfigManager(opts)
     // notices
     this.noticeController = new NoticeController({
@@ -49,6 +51,7 @@ module.exports = class MetamaskController {
       getSelectedAccount: this.configManager.getSelectedAccount.bind(this.configManager),
       getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
       getNetwork: this.getStateNetwork.bind(this),
+      signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
     })
@@ -68,6 +71,8 @@ module.exports = class MetamaskController {
     })
 
     this.ethStore.on('update', this.sendUpdate.bind(this))
+    this.keyringController.on('update', this.sendUpdate.bind(this))
+    this.txManager.on('update', this.sendUpdate.bind(this))
   }
 
   getState () {
@@ -171,15 +176,16 @@ module.exports = class MetamaskController {
   sendUpdate () {
     this.getState()
     .then((state) => {
-
-      this.listeners.forEach((remote) => {
-        remote.sendUpdate(state)
-      })
+      this.emit('update', state)
     })
   }
 
   initializeProvider (opts) {
     var providerOpts = {
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
@@ -188,13 +194,7 @@ module.exports = class MetamaskController {
         cb(null, result)
       },
       // tx signing
-      approveTransaction: this.newUnsignedTransaction.bind(this),
-      signTransaction: (...args) => {
-        this.setupSigningListners(...args)
-        this.txManager.formatTxForSigining(...args)
-        this.sendUpdate()
-      },
-
+      processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: (...args) => {
@@ -208,37 +208,21 @@ module.exports = class MetamaskController {
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = extend(
-      keyringControllerToPublic(this.keyringController.getState()),
-      configToPublic(this.configManager.getConfig())
-    )
-
+    var initPublicState = configToPublic(this.configManager.getConfig())
     var publicConfigStore = new HostStore(initPublicState)
 
     // subscribe to changes
     this.configManager.subscribe(function (state) {
       storeSetFromObj(publicConfigStore, configToPublic(state))
     })
-    this.keyringController.on('update', () => {
-      const state = this.keyringController.getState()
-      storeSetFromObj(publicConfigStore, keyringControllerToPublic(state))
-      this.sendUpdate()
-    })
 
     this.keyringController.on('newAccount', (account) => {
       autoFaucet(account)
     })
 
-    // keyringController substate
-    function keyringControllerToPublic (state) {
-      return {
-        selectedAccount: state.selectedAccount,
-      }
-    }
     // config substate
     function configToPublic (state) {
       return {
-        provider: state.provider,
         selectedAccount: state.selectedAccount,
       }
     }
@@ -252,29 +236,24 @@ module.exports = class MetamaskController {
     return publicConfigStore
   }
 
-  newUnsignedTransaction (txParams, onTxDoneCb) {
-    const txManager = this.txManager
-    const err = this.enforceTxValidations(txParams)
-    if (err) return onTxDoneCb(err)
-    txManager.addUnapprovedTransaction(txParams, onTxDoneCb, (err, txData) => {
-      if (err) return onTxDoneCb(err)
-      this.sendUpdate()
-      this.opts.showUnapprovedTx(txParams, txData, onTxDoneCb)
+  newUnapprovedTransaction (txParams, cb) {
+    const self = this
+    self.txManager.addUnapprovedTransaction(txParams, (err, txMeta) => {
+      if (err) return cb(err)
+      self.sendUpdate()
+      self.opts.showUnapprovedTx(txMeta)
+      // listen for tx completion (success, fail)
+      self.txManager.once(`${txMeta.id}:finished`, (status) => {
+        switch (status) {
+          case 'submitted':
+            return cb(null, txMeta.hash)
+          case 'rejected':
+            return cb(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+          default:
+            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(txMeta.txParams)}`))
+        }
+      })
     })
-  }
-
-  setupSigningListners (txParams) {
-    var txId = txParams.metamaskId
-    // apply event listeners for signing and formating events
-    this.txManager.once(`${txId}:formatted`, this.keyringController.signTransaction.bind(this.keyringController))
-    this.keyringController.once(`${txId}:signed`, this.txManager.resolveSignedTransaction.bind(this.txManager))
-  }
-
-  enforceTxValidations (txParams) {
-    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
-      const msg = `Invalid transaction value of ${txParams.value} not a positive number.`
-      return new Error(msg)
-    }
   }
 
   newUnsignedMessage (msgParams, cb) {
@@ -450,7 +429,7 @@ module.exports = class MetamaskController {
     return this.state.network
   }
 
-  markAccountsFound(cb) {
+  markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
     this.sendUpdate()
     cb(null, this.getState())

@@ -22,13 +22,11 @@ const controller = new MetamaskController({
   setData,
   loadData,
 })
-const keyringController = controller.keyringController
-const txManager = controller.txManager
+
 function triggerUi () {
   if (!popupIsOpen) notification.show()
 }
 // On first install, open a window to MetaMask website to how-it-works.
-
 extension.runtime.onInstalled.addListener(function (details) {
   if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
     extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
@@ -81,13 +79,11 @@ function setupControllerConnection (stream) {
   stream.pipe(dnode).pipe(stream)
   dnode.on('remote', (remote) => {
     // push updates to popup
-    controller.ethStore.on('update', controller.sendUpdate.bind(controller))
-    controller.listeners.push(remote)
-    keyringController.on('update', controller.sendUpdate.bind(controller))
-
+    var sendUpdate = remote.sendUpdate.bind(remote)
+    controller.on('update', sendUpdate)
     // teardown on disconnect
     eos(stream, () => {
-      controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
+      controller.removeListener('update', sendUpdate)
       popupIsOpen = false
     })
   })
@@ -97,7 +93,8 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-txManager.on('updateBadge', updateBadge)
+controller.txManager.on('updateBadge', updateBadge)
+updateBadge()
 
 function updateBadge () {
   var label = ''

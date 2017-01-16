@@ -9,6 +9,7 @@ test/bower_components
 package
 .DS_Store
 builds/
+disc/
 notes.txt
 app/.DS_Store
 development/bundle.js

@@ -8,6 +8,7 @@ const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const extension = require('../../../app/scripts/lib/extension')
+const Tooltip = require('./tooltip')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -27,7 +28,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 2
+  isLinkable = numericNet === 1 || numericNet === 3
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -41,7 +42,6 @@ TransactionListItem.prototype.render = function () {
   }
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
-
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
       onClick: (event) => {
@@ -59,11 +59,7 @@ TransactionListItem.prototype.render = function () {
     }, [
 
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unapproved' ? h('i.fa.fa-ellipsis-h', {
-          style: {
-            fontSize: '27px',
-          },
-        }) : h('.pop-hover', {
+        h('.pop-hover', {
           onClick: (event) => {
             event.stopPropagation()
             if (!isTx || isPending) return
@@ -139,7 +135,14 @@ function failIfFailed (transaction) {
   if (transaction.status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }
-  if (transaction.status === 'failed') {
-    return h('span.error', ' (Failed)')
+  if (transaction.err) {
+
+    return h(Tooltip, {
+      title: transaction.err.message,
+      position: 'bottom',
+    }, [
+      h('span.error', ' (Failed)'),
+    ])
   }
+
 }

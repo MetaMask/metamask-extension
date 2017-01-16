@@ -1,6 +1,8 @@
 const async = require('async')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
+const Transaction = require('ethereumjs-tx')
+const normalize = require('./sig-util').normalize
 const BN = ethUtil.BN
 
 /*
@@ -14,13 +16,13 @@ module.exports = class txProviderUtils {
     this.provider = provider
     this.query = new EthQuery(provider)
   }
+
   analyzeGasUsage (txData, cb) {
     var self = this
     this.query.getBlockByNumber('latest', true, (err, block) => {
       if (err) return cb(err)
       async.waterfall([
         self.estimateTxGas.bind(self, txData, block.gasLimit),
-        self.checkForTxGasError.bind(self, txData),
         self.setTxGas.bind(self, txData, block.gasLimit),
       ], cb)
     })
@@ -38,22 +40,10 @@ module.exports = class txProviderUtils {
     this.query.estimateGas(txParams, cb)
   }
 
-  checkForTxGasError (txData, estimatedGasHex, cb) {
+  setTxGas (txData, blockGasLimitHex, estimatedGasHex, cb) {
     txData.estimatedGas = estimatedGasHex
-    // all gas used - must be an error
-    if (estimatedGasHex === txData.txParams.gas) {
-      txData.simulationFails = true
-    }
-    cb()
-  }
-
-  setTxGas (txData, blockGasLimitHex, cb) {
     const txParams = txData.txParams
-    // if OOG, nothing more to do
-    if (txData.simulationFails) {
-      cb()
-      return
-    }
+
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
     if (txData.gasLimitSpecified) {
@@ -84,4 +74,59 @@ module.exports = class txProviderUtils {
     const correct = bnGas.add(gasBuffer)
     return ethUtil.addHexPrefix(correct.toString(16))
   }
+
+  fillInTxParams (txParams, cb) {
+    let fromAddress = txParams.from
+    let reqs = {}
+
+    if (isUndef(txParams.gas)) reqs.gas = (cb) => this.query.estimateGas(txParams, cb)
+    if (isUndef(txParams.gasPrice)) reqs.gasPrice = (cb) => this.query.gasPrice(cb)
+    if (isUndef(txParams.nonce)) reqs.nonce = (cb) => this.query.getTransactionCount(fromAddress, 'pending', cb)
+
+    async.parallel(reqs, function(err, result) {
+      if (err) return cb(err)
+      // write results to txParams obj
+      Object.assign(txParams, result)
+      cb()
+    })
+  }
+
+  // builds ethTx from txParams object
+  buildEthTxFromParams (txParams, gasMultiplier = 1) {
+    // apply gas multiplyer
+    let gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+    // multiply and divide by 100 so as to add percision to integer mul
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
+    // normalize values
+    txParams.to = normalize(txParams.to)
+    txParams.from = normalize(txParams.from)
+    txParams.value = normalize(txParams.value)
+    txParams.data = normalize(txParams.data)
+    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+    txParams.nonce = normalize(txParams.nonce)
+    // build ethTx
+    const ethTx = new Transaction(txParams)
+    return ethTx
+  }
+
+  publishTransaction (rawTx, cb) {
+    this.query.sendRawTransaction(rawTx, cb)
+  }
+
+  validateTxParams (txParams, cb) {
+    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
+      cb(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
+    } else {
+      cb()
+    }
+  }
+
+
+}
+
+// util
+
+function isUndef(value) {
+  return value === undefined
 }

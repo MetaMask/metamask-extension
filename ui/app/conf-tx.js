@@ -4,6 +4,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const NetworkIndicator = require('./components/network')
 const txHelper = require('../lib/tx-helper')
 const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
 const ethUtil = require('ethereumjs-util')
@@ -24,6 +25,7 @@ function mapStateToProps (state) {
     index: state.appState.currentView.context,
     warning: state.appState.warning,
     network: state.metamask.network,
+    provider: state.metamask.provider,
   }
 }
 
@@ -36,13 +38,15 @@ ConfirmTxScreen.prototype.render = function () {
   var state = this.props
 
   var network = state.network
+  var provider = state.provider
   var unconfTxs = state.unconfTxs
   var unconfMsgs = state.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
-  var txData = unconfTxList[index] || unconfTxList[0] || {}
-  var txParams = txData.txParams || {}
+  var txData = unconfTxList[index] || {}
+  var txParams = txData.txParams
   var isNotification = isPopupOrNotification() === 'notification'
+  if (!txParams) return null
 
   return (
 
@@ -54,6 +58,10 @@ ConfirmTxScreen.prototype.render = function () {
           onClick: this.goHome.bind(this),
         }) : null,
         h('h2.page-subtitle', 'Confirm Transaction'),
+        isNotification ? h(NetworkIndicator, {
+          network: network,
+          provider: provider,
+        }) : null,
       ]),
 
       h('h3', {
@@ -93,7 +101,7 @@ ConfirmTxScreen.prototype.render = function () {
           selectedAccount: state.selectedAccount,
           accounts: state.accounts,
           identities: state.identities,
-          insufficientBalance: this.checkBalnceAgainstTx(txData),
+          insufficientBalance: this.checkBalanceAgainstTx(txData),
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || state.selectedAccount),
           sendTransaction: this.sendTransaction.bind(this, txData),
@@ -116,19 +124,12 @@ function currentTxView (opts) {
     return h(PendingMsg, opts)
   }
 }
-ConfirmTxScreen.prototype.checkBalnceAgainstTx = function (txData) {
+ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   var state = this.props
-
-  var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAccount
+  var address = txData.txParams.from || state.selectedAccount
   var account = state.accounts[address]
   var balance = account ? account.balance : '0x0'
-
-  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
-  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  var txFee = gasCost.mul(gasPrice)
-  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-  var maxCost = txValue.add(txFee)
+  var maxCost = new BN(txData.maxCost)
 
   var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
   return maxCost.gt(balanceBn)

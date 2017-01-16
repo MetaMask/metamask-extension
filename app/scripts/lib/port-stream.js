@@ -51,11 +51,11 @@ PortDuplexStream.prototype._write = function (msg, encoding, cb) {
       // console.log('PortDuplexStream - sent message', msg)
       this._port.postMessage(msg)
     }
-    cb()
   } catch (err) {
     // console.error(err)
-    cb(new Error('PortDuplexStream - disconnected'))
+    return cb(new Error('PortDuplexStream - disconnected'))
   }
+  cb()
 }
 
 // util
