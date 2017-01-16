@@ -16,6 +16,8 @@
 
 ## 2.14.1 2016-12-20
 
+- Update Coinbase info. and increase the buy amount to $15
+- Fixed ropsten transaction links
 - Temporarily disable extension reload detection causing infinite reload bug.
 - Implemented basic checking for valid RPC URIs.
 
