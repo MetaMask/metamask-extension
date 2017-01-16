@@ -54,6 +54,7 @@ class SimpleKeyring extends EventEmitter {
   // For eth_sign, we need to sign transactions:
   signMessage (withAccount, data) {
     const wallet = this._getWalletForAccount(withAccount)
+
     const message = ethUtil.removeHexPrefix(data)
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
@@ -70,7 +71,9 @@ class SimpleKeyring extends EventEmitter {
   /* PRIVATE METHODS */
 
   _getWalletForAccount (account) {
-    return this.wallets.find(w => ethUtil.bufferToHex(w.getAddress()) === account)
+    let wallet = this.wallets.find(w => ethUtil.bufferToHex(w.getAddress()) === account)
+    if (!wallet) throw new Error('Simple Keyring - Unable to find matching address.')
+    return wallet
   }
 
 }
