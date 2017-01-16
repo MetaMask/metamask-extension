@@ -35,12 +35,12 @@ class SimpleKeyring extends EventEmitter {
       newWallets.push(Wallet.generate())
     }
     this.wallets = this.wallets.concat(newWallets)
-    const hexWallets = newWallets.map(w => w.getAddress().toString('hex'))
+    const hexWallets = newWallets.map(w => ethUtil.bufferToHex(w.getAddress()))
     return Promise.resolve(hexWallets)
   }
 
   getAccounts () {
-    return Promise.resolve(this.wallets.map(w => w.getAddress().toString('hex')))
+    return Promise.resolve(this.wallets.map(w => ethUtil.bufferToHex(w.getAddress())))
   }
 
   // tx is an instance of the ethereumjs-transaction class.
@@ -70,7 +70,7 @@ class SimpleKeyring extends EventEmitter {
   /* PRIVATE METHODS */
 
   _getWalletForAccount (account) {
-    return this.wallets.find(w => w.getAddress().toString('hex') === account)
+    return this.wallets.find(w => ethUtil.bufferToHex(w.getAddress()) === account)
   }
 
 }
