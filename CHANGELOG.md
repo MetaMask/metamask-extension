@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix seed word account generation (https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd#.t4i1qmmsz).
 - Fix Bug where you see a empty transaction flash by on the confirm transaction view.
 - Create visible difference in transaction history between a approved but not yet included in a block transaction and a transaction who has been confirmed.
 - Fix memory leak in RPC Cache
@@ -16,6 +17,8 @@
 
 ## 2.14.1 2016-12-20
 
+- Update Coinbase info. and increase the buy amount to $15
+- Fixed ropsten transaction links
 - Temporarily disable extension reload detection causing infinite reload bug.
 - Implemented basic checking for valid RPC URIs.
 

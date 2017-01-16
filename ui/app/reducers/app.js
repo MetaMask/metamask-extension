@@ -446,7 +446,7 @@ function reduceApp (state, action) {
         },
         buyView: {
           subview: 'buyForm',
-          amount: '5.00',
+          amount: '15.00',
           buyAddress: action.value,
           formView: {
             coinbase: true,
