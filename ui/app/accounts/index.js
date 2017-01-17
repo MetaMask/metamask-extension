@@ -154,6 +154,13 @@ AccountsScreen.prototype.addNewAccount = function () {
   this.props.dispatch(actions.addNewAccount(0))
 }
 
+/* An optional view proposed in this design:
+ * https://consensys.quip.com/zZVrAysM5znY
+AccountsScreen.prototype.addNewAccount = function () {
+  this.props.dispatch(actions.navigateToNewAccountScreen())
+}
+*/
+
 AccountsScreen.prototype.goHome = function () {
   this.props.dispatch(actions.goHome())
 }

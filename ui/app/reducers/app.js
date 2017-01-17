@@ -136,6 +136,15 @@ function reduceApp (state, action) {
         isLoading: false,
       })
 
+    case actions.NEW_ACCOUNT_SCREEN:
+      return extend(appState, {
+        currentView: {
+          name: 'new-account',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+      })
+
     case actions.SHOW_SEND_PAGE:
       return extend(appState, {
         currentView: {

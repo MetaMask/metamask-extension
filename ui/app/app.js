@@ -20,7 +20,7 @@ const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
-const Import = require('./import')
+const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
@@ -33,6 +33,7 @@ const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const AddAccountScreen = require('./accounts/add')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -406,6 +407,9 @@ App.prototype.renderPrimary = function () {
 
     case 'accountDetail':
       return h(AccountDetailScreen, {key: 'account-detail'})
+
+    case 'new-account':
+      return h(AddAccountScreen, {key: 'new-account'})
 
     case 'sendTransaction':
       return h(SendTransactionScreen, {key: 'send-transaction'})
