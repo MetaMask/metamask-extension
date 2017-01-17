@@ -397,6 +397,7 @@ module.exports = class KeyringController extends EventEmitter {
       }).then((rawSig) => {
         cb(null, rawSig)
         approvalCb(null, true)
+        messageManager.confirmMsg(msgId)
         return rawSig
       })
     } catch (e) {

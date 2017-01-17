@@ -41,12 +41,13 @@ ConfirmTxScreen.prototype.render = function () {
   var provider = state.provider
   var unconfTxs = state.unconfTxs
   var unconfMsgs = state.unconfMsgs
+
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
-  var index = state.index !== undefined ? state.index : 0
+  var index = state.index !== undefined && unconfTxList[index] ? state.index : 0
   var txData = unconfTxList[index] || {}
-  var txParams = txData.txParams
+  var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
-  if (!txParams) return null
+  if (unconfTxList.length === 0) return null
 
   return (
 
@@ -116,15 +117,19 @@ ConfirmTxScreen.prototype.render = function () {
 }
 
 function currentTxView (opts) {
-  if ('txParams' in opts.txData) {
+  const { txData } = opts
+  const { txParams, msgParams } = txData
+
+  if (txParams) {
     // This is a pending transaction
     return h(PendingTx, opts)
-  } else if ('msgParams' in opts.txData) {
+  } else if (msgParams) {
     // This is a pending message to sign
     return h(PendingMsg, opts)
   }
 }
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
+  if (!txData.txParams) return false
   var state = this.props
   var address = txData.txParams.from || state.selectedAccount
   var account = state.accounts[address]
