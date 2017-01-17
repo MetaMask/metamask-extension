@@ -133,6 +133,4 @@ describe('hd-keyring', function() {
       })
     })
   })
-
-  x
 })
