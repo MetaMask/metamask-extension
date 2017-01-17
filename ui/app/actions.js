@@ -32,11 +32,13 @@ var actions = {
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
+  SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
+  showImportPage,
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
@@ -373,6 +375,12 @@ function forgotPassword () {
 function showInitializeMenu () {
   return {
     type: actions.SHOW_INIT_MENU,
+  }
+}
+
+function showImportPage () {
+  return {
+    type: actions.SHOW_IMPORT_PAGE,
   }
 }
 

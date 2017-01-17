@@ -99,6 +99,14 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
+    case actions.SHOW_IMPORT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'import-menu',
+        },
+        transForward: true,
+      })
+
     case actions.SHOW_INFO_PAGE:
       return extend(appState, {
         currentView: {
