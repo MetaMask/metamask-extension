@@ -22,12 +22,11 @@ const controller = new MetamaskController({
   setData,
   loadData,
 })
-const txManager = controller.txManager
+
 function triggerUi () {
   if (!popupIsOpen) notification.show()
 }
 // On first install, open a window to MetaMask website to how-it-works.
-
 extension.runtime.onInstalled.addListener(function (details) {
   if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
     extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
@@ -94,7 +93,8 @@ function setupControllerConnection (stream) {
 // plugin badge text
 //
 
-txManager.on('updateBadge', updateBadge)
+controller.txManager.on('updateBadge', updateBadge)
+updateBadge()
 
 function updateBadge () {
   var label = ''

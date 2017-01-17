@@ -1,5 +1,6 @@
 const assert = require('assert')
 const extend = require('xtend')
+const ethUtil = require('ethereumjs-util')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
 const TYPE_STR = 'Simple Key Pair'
 
@@ -48,6 +49,24 @@ describe('simple-keyring', function() {
     })
   })
 
+  describe('#signMessage', function() {
+    const address = '0x9858e7d8b79fc3e6d989636721584498926da38a'
+    const message = '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0'
+    const privateKey = '0x7dd98753d7b4394095de7d176c58128e2ed6ee600abe97c9f6d9fd65015d9b18'
+    const expectedResult = '0x28fcb6768e5110144a55b2e6ce9d1ea5a58103033632d272d2b5cf506906f7941a00b539383fd872109633d8c71c404e13dba87bc84166ee31b0e36061a69e161c'
+
+    it('passes the dennis test', function(done) {
+      keyring.deserialize([ privateKey ])
+      .then(() => {
+        return keyring.signMessage(address, message)
+      })
+      .then((result) => {
+        assert.equal(result, expectedResult)
+        done()
+      })
+    })
+  })
+
   describe('#addAccounts', function() {
     describe('with no arguments', function() {
       it('creates a single wallet', function() {
@@ -72,14 +91,10 @@ describe('simple-keyring', function() {
     it('calls getAddress on each wallet', function(done) {
 
       // Push a mock wallet
-      const desiredOutput = 'foo'
+      const desiredOutput = '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761'
       keyring.wallets.push({
         getAddress() {
-          return {
-            toString() {
-              return desiredOutput
-            }
-          }
+          return ethUtil.toBuffer(desiredOutput)
         }
       })
 

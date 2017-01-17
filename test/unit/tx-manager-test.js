@@ -15,6 +15,28 @@ describe('Transaction Manager', function() {
       provider: "testnet",
       txHistoryLimit: 10,
       blockTracker: new EventEmitter(),
+      getNetwork: function(){ return 'unit test' }
+    })
+  })
+
+  describe('#validateTxParams', function () {
+    it('returns null for positive values', function() {
+      var sample = {
+        value: '0x01'
+      }
+      var res = txManager.txProviderUtils.validateTxParams(sample, (err) => {
+        assert.equal(err, null, 'no error')
+      })
+    })
+
+
+    it('returns error for negative values', function() {
+      var sample = {
+        value: '-0x01'
+      }
+      var res = txManager.txProviderUtils.validateTxParams(sample, (err) => {
+        assert.ok(err, 'error')
+      })
     })
   })
 
@@ -31,7 +53,7 @@ describe('Transaction Manager', function() {
 
   describe('#_saveTxList', function() {
     it('saves the submitted data to the tx list', function() {
-      var target = [{ foo: 'bar' }]
+      var target = [{ foo: 'bar', metamaskNetworkId: 'unit test' }]
       txManager._saveTxList(target)
       var result = txManager.getTxList()
       assert.equal(result[0].foo, 'bar')
@@ -40,7 +62,7 @@ describe('Transaction Manager', function() {
 
   describe('#addTx', function() {
     it('adds a tx returned in getTxList', function() {
-      var tx = { id: 1, status: 'confirmed',}
+      var tx = { id: 1, status: 'confirmed', metamaskNetworkId: 'unit test' }
       txManager.addTx(tx, onTxDoneCb)
       var result = txManager.getTxList()
       assert.ok(Array.isArray(result))
@@ -51,7 +73,7 @@ describe('Transaction Manager', function() {
     it('cuts off early txs beyond a limit', function() {
       const limit = txManager.txHistoryLimit
       for (let i = 0; i < limit + 1; i++) {
-        let tx = { id: i, time: new Date(), status: 'confirmed'}
+        let tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: 'unit test' }
         txManager.addTx(tx, onTxDoneCb)
       }
       var result = txManager.getTxList()
@@ -59,10 +81,10 @@ describe('Transaction Manager', function() {
       assert.equal(result[0].id, 1, 'early txs truncted')
     })
 
-    it('cuts off early txs beyond a limit weather or not it is confirmed or rejected', function() {
+    it('cuts off early txs beyond a limit whether or not it is confirmed or rejected', function() {
       const limit = txManager.txHistoryLimit
       for (let i = 0; i < limit + 1; i++) {
-        let tx = { id: i, time: new Date(), status: 'rejected'}
+        let tx = { id: i, time: new Date(), status: 'rejected', metamaskNetworkId: 'unit test' }
         txManager.addTx(tx, onTxDoneCb)
       }
       var result = txManager.getTxList()
@@ -71,11 +93,11 @@ describe('Transaction Manager', function() {
     })
 
     it('cuts off early txs beyond a limit but does not cut unapproved txs', function() {
-      var unconfirmedTx = { id: 0, time: new Date(), status: 'unapproved'}
+      var unconfirmedTx = { id: 0, time: new Date(), status: 'unapproved', metamaskNetworkId: 'unit test' }
       txManager.addTx(unconfirmedTx, onTxDoneCb)
       const limit = txManager.txHistoryLimit
       for (let i = 1; i < limit + 1; i++) {
-        let tx = { id: i, time: new Date(), status: 'confirmed'}
+        let tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: 'unit test' }
         txManager.addTx(tx, onTxDoneCb)
       }
       var result = txManager.getTxList()
@@ -88,7 +110,7 @@ describe('Transaction Manager', function() {
 
   describe('#setTxStatusSigned', function() {
     it('sets the tx status to signed', function() {
-      var tx = { id: 1, status: 'unapproved' }
+      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       txManager.addTx(tx, onTxDoneCb)
       txManager.setTxStatusSigned(1)
       var result = txManager.getTxList()
@@ -99,20 +121,21 @@ describe('Transaction Manager', function() {
 
     it('should emit a signed event to signal the exciton of callback', (done) => {
       this.timeout(10000)
-      var tx = { id: 1, status: 'unapproved' }
-      let onTxDoneCb = function (err, txId) {
+      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      let onTxDoneCb = function () {
         assert(true, 'event listener has been triggered and onTxDoneCb executed')
         done()
       }
-      txManager.addTx(tx, onTxDoneCb)
+      txManager.addTx(tx)
+      txManager.on('1:signed', onTxDoneCb)
       txManager.setTxStatusSigned(1)
     })
   })
 
   describe('#setTxStatusRejected', function() {
     it('sets the tx status to rejected', function() {
-      var tx = { id: 1, status: 'unapproved' }
-      txManager.addTx(tx, onTxDoneCb)
+      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      txManager.addTx(tx)
       txManager.setTxStatusRejected(1)
       var result = txManager.getTxList()
       assert.ok(Array.isArray(result))
@@ -122,12 +145,13 @@ describe('Transaction Manager', function() {
 
     it('should emit a rejected event to signal the exciton of callback', (done) => {
       this.timeout(10000)
-      var tx = { id: 1, status: 'unapproved' }
+      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
+      txManager.addTx(tx)
       let onTxDoneCb = function (err, txId) {
         assert(true, 'event listener has been triggered and onTxDoneCb executed')
         done()
       }
-      txManager.addTx(tx, onTxDoneCb)
+      txManager.on('1:rejected', onTxDoneCb)
       txManager.setTxStatusRejected(1)
     })
 
@@ -135,9 +159,9 @@ describe('Transaction Manager', function() {
 
   describe('#updateTx', function() {
     it('replaces the tx with the same id', function() {
-      txManager.addTx({ id: '1', status: 'unapproved' }, onTxDoneCb)
-      txManager.addTx({ id: '2', status: 'confirmed' }, onTxDoneCb)
-      txManager.updateTx({ id: '1', status: 'blah', hash: 'foo' })
+      txManager.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' }, onTxDoneCb)
+      txManager.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: 'unit test' }, onTxDoneCb)
+      txManager.updateTx({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: 'unit test' })
       var result = txManager.getTx('1')
       assert.equal(result.hash, 'foo')
     })
@@ -145,8 +169,8 @@ describe('Transaction Manager', function() {
 
   describe('#getUnapprovedTxList', function() {
     it('returns unapproved txs in a hash', function() {
-      txManager.addTx({ id: '1', status: 'unapproved' }, onTxDoneCb)
-      txManager.addTx({ id: '2', status: 'confirmed' }, onTxDoneCb)
+      txManager.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' }, onTxDoneCb)
+      txManager.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: 'unit test' }, onTxDoneCb)
       let result = txManager.getUnapprovedTxList()
       assert.equal(typeof result, 'object')
       assert.equal(result['1'].status, 'unapproved')
@@ -156,8 +180,8 @@ describe('Transaction Manager', function() {
 
   describe('#getTx', function() {
     it('returns a tx with the requested id', function() {
-      txManager.addTx({ id: '1', status: 'unapproved' }, onTxDoneCb)
-      txManager.addTx({ id: '2', status: 'confirmed' }, onTxDoneCb)
+      txManager.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: 'unit test' }, onTxDoneCb)
+      txManager.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: 'unit test' }, onTxDoneCb)
       assert.equal(txManager.getTx('1').status, 'unapproved')
       assert.equal(txManager.getTx('2').status, 'confirmed')
     })
@@ -171,6 +195,7 @@ describe('Transaction Manager', function() {
         let everyOther = i % 2
         txManager.addTx({ id: i,
           status: everyOther ? 'unapproved' : 'confirmed',
+          metamaskNetworkId: 'unit test',
           txParams: {
             from: everyOther ? 'foop' : 'zoop',
             to: everyOther ? 'zoop' : 'foop',

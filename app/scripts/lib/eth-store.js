@@ -43,7 +43,9 @@ EthereumStore.prototype.addAccount = function (address) {
   self._currentState.accounts[address] = {}
   self._didUpdate()
   if (!self.currentBlockNumber) return
-  self._updateAccount(address, noop)
+  self._updateAccount(address, () => {
+    self._didUpdate()
+  })
 }
 
 EthereumStore.prototype.removeAccount = function (address) {

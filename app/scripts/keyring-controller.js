@@ -95,7 +95,6 @@ module.exports = class KeyringController extends EventEmitter {
         isInitialized: (!!wallet || !!vault),
         isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        transactions: this.configManager.getTxList(),
         unconfMsgs: messageManager.unconfirmedMsgs(),
         messages: messageManager.getMsgList(),
         selectedAccount: address,
@@ -273,7 +272,7 @@ module.exports = class KeyringController extends EventEmitter {
   setSelectedAccount (address) {
     var addr = normalize(address)
     this.configManager.setSelectedAccount(addr)
-    return Promise.resolve(addr)
+    return this.fullUpdate()
   }
 
   // Save Account Label
@@ -317,13 +316,11 @@ module.exports = class KeyringController extends EventEmitter {
   // This method signs tx and returns a promise for
   // TX Manager to update the state after signing
 
-  signTransaction (ethTx, selectedAddress, txId) {
-    const address = normalize(selectedAddress)
-    return this.getKeyringForAccount(address)
+  signTransaction (ethTx, _fromAddress) {
+    const fromAddress = normalize(_fromAddress)
+    return this.getKeyringForAccount(fromAddress)
     .then((keyring) => {
-      return keyring.signTransaction(address, ethTx)
-    }).then((tx) => {
-      return {tx, txId}
+      return keyring.signTransaction(fromAddress, ethTx)
     })
   }
   // Add Unconfirmed Message
@@ -400,6 +397,7 @@ module.exports = class KeyringController extends EventEmitter {
       }).then((rawSig) => {
         cb(null, rawSig)
         approvalCb(null, true)
+        messageManager.confirmMsg(msgId)
         return rawSig
       })
     } catch (e) {
