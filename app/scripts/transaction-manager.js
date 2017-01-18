@@ -190,7 +190,7 @@ module.exports = class TransactionManager extends EventEmitter {
     let fromAddress = txParams.from
     let ethTx = this.txProviderUtils.buildEthTxFromParams(txParams, txMeta.gasMultiplier)
     this.signEthTx(ethTx, fromAddress).then(() => {
-      this.updateTxAsSigned(txMeta.id, ethTx)
+      this.setTxStatusSigned(txMeta.id)
       cb(null, ethUtil.bufferToHex(ethTx.serialize()))
     }).catch((err) => {
       cb(err)
@@ -198,21 +198,20 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   publishTransaction (txId, rawTx, cb) {
-    this.txProviderUtils.publishTransaction(rawTx, (err) => {
+    this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
       if (err) return cb(err)
+      this.setTxHash(txId, txHash)
       this.setTxStatusSubmitted(txId)
       cb()
     })
   }
 
-  // receives a signed tx object and updates the tx hash
-  updateTxAsSigned (txId, ethTx) {
+  // receives a txHash records the tx as signed
+  setTxHash (txId, txHash) {
     // Add the tx hash to the persisted meta-tx object
-    let txHash = ethUtil.bufferToHex(ethTx.hash())
     let txMeta = this.getTx(txId)
     txMeta.hash = txHash
     this.updateTx(txMeta)
-    this.setTxStatusSigned(txMeta.id)
   }
 
   /*
