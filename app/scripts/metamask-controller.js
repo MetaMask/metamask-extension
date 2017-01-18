@@ -115,7 +115,12 @@ module.exports = class MetamaskController extends EventEmitter {
         .then((newState) => { cb(null, newState) })
         .catch((reason) => { cb(reason) })
       },
-      addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
+      addNewKeyring: (type, opts, cb) => {
+        keyringController.addNewKeyring(type, opts)
+        .then(() => keyringController.fullUpdate())
+        .then((newState) => { cb(null, newState) })
+        .catch((reason) => { cb(reason) })
+      },
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),

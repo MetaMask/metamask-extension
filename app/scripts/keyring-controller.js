@@ -234,7 +234,10 @@ module.exports = class KeyringController extends EventEmitter {
   addNewKeyring (type, opts) {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
-    return keyring.getAccounts()
+    return keyring.deserialize(opts)
+    .then(() => {
+      return keyring.getAccounts()
+    })
     .then((accounts) => {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)

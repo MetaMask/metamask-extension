@@ -73,7 +73,8 @@ AccountsScreen.prototype.render = function () {
 
             const simpleAddress = identity.address.substring(2).toLowerCase()
             const keyring = keyrings.find((kr) => {
-              return kr.accounts.includes(simpleAddress)
+              return kr.accounts.includes(simpleAddress) ||
+                kr.accounts.includes(identity.address)
             })
 
             return h(AccountListItem, {
