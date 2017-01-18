@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add ability to import accounts by private key.
+
 ## 3.0.1 2017-1-17
 
 - Fixed bug that prevented eth.sign from working.
