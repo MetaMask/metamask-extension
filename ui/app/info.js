@@ -110,7 +110,7 @@ InfoScreen.prototype.render = function () {
                   onClick (event) { this.navigateTo(event.target.href) },
                 }, [
                   h('img.icon-size', {
-                    src: manifest.icons[128],
+                    src: manifest.icons['128'],
                     style: {
                       filter: 'grayscale(100%)', /* IE6-9 */
                       WebkitFilter: 'grayscale(100%)', /* Microsoft Edge and Firefox 35+ */
