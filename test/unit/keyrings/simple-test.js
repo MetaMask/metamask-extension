@@ -1,5 +1,6 @@
 const assert = require('assert')
 const extend = require('xtend')
+const ethUtil = require('ethereumjs-util')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
 const TYPE_STR = 'Simple Key Pair'
 
@@ -72,14 +73,10 @@ describe('simple-keyring', function() {
     it('calls getAddress on each wallet', function(done) {
 
       // Push a mock wallet
-      const desiredOutput = 'foo'
+      const desiredOutput = '0x18a3462427bcc9133bb46e88bcbe39cd7ef0e761'
       keyring.wallets.push({
         getAddress() {
-          return {
-            toString() {
-              return desiredOutput
-            }
-          }
+          return ethUtil.toBuffer(desiredOutput)
         }
       })
 

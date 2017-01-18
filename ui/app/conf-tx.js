@@ -43,9 +43,11 @@ ConfirmTxScreen.prototype.render = function () {
   var unconfMsgs = state.unconfMsgs
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
   var index = state.index !== undefined ? state.index : 0
-  var txData = unconfTxList[index] || {txParams: {}}
-  var txParams = txData.txParams || {}
+  var txData = unconfTxList[index] || {}
+  var txParams = txData.txParams
   var isNotification = isPopupOrNotification() === 'notification'
+  if (!txParams) return null
+
   return (
 
     h('.flex-column.flex-grow', [
