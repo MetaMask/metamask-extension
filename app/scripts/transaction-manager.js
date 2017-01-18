@@ -297,7 +297,7 @@ module.exports = class TransactionManager extends EventEmitter {
   //  checks if a signed tx is in a block and
   // if included sets the tx status as 'confirmed'
   checkForTxInBlock () {
-    var signedTxList = this.getFilteredTxList({status: 'signed'})
+    var signedTxList = this.getFilteredTxList({status: 'submitted'})
     if (!signedTxList.length) return
     signedTxList.forEach((txMeta) => {
       var txHash = txMeta.hash

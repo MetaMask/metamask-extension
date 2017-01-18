@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix the displaying of transactions that have been submitted to the network in Transaction History
+
 ## 3.0.0 2017-1-16
 
 - Fix seed word account generation (https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd#.t4i1qmmsz).
