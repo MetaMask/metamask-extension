@@ -10,6 +10,7 @@
 ## 3.0.1 2017-1-17
 
 - Fixed bug that prevented eth.sign from working.
+- Fix the displaying of transactions that have been submitted to the network in Transaction History
 
 ## 3.0.0 2017-1-16
 

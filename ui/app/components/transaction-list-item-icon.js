@@ -41,7 +41,7 @@ TransactionIcon.prototype.render = function () {
         },
       })
 
-    case 'signed':
+    case 'submitted':
       return h('i.fa.fa-ellipsis-h', {
         style: {
           fontSize: '27px',
