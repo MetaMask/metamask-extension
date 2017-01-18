@@ -99,6 +99,14 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
+    case actions.SHOW_IMPORT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'import-menu',
+        },
+        transForward: true,
+      })
+
     case actions.SHOW_INFO_PAGE:
       return extend(appState, {
         currentView: {
@@ -126,6 +134,15 @@ function reduceApp (state, action) {
         },
         transForward: true,
         isLoading: false,
+      })
+
+    case actions.NEW_ACCOUNT_SCREEN:
+      return extend(appState, {
+        currentView: {
+          name: 'new-account',
+          context: appState.currentView.context,
+        },
+        transForward: true,
       })
 
     case actions.SHOW_SEND_PAGE:
