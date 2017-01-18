@@ -66,7 +66,8 @@ QUnit.test('agree to terms', function (assert) {
   }).then(function() {
 
     var sandwich = app.find('.menu-droppo')[0]
-    var lock = sandwich.children[2]
+    var children = sandwich.children
+    var lock = children[children.length - 2]
     assert.ok(lock, 'Lock menu item found')
     lock.click()
 

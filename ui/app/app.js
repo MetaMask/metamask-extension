@@ -20,6 +20,7 @@ const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
+const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
@@ -305,6 +306,13 @@ App.prototype.renderDropdown = function () {
     }),
 
     h(DropMenuItem, {
+      label: 'Import Account',
+      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
+      action: () => this.props.dispatch(actions.showImportPage()),
+      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
+    }),
+
+    h(DropMenuItem, {
       label: 'Lock',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.lockMetamask()),
@@ -410,6 +418,9 @@ App.prototype.renderPrimary = function () {
 
     case 'config':
       return h(ConfigScreen, {key: 'config'})
+
+    case 'import-menu':
+      return h(Import, {key: 'import-menu'})
 
     case 'reveal-seed-conf':
       return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})

@@ -32,16 +32,20 @@ var actions = {
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
+  SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
+  showImportPage,
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
   addNewKeyring,
   addNewAccount,
+  NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
+  navigateToNewAccountScreen,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // seed recovery actions
@@ -249,7 +253,21 @@ function requestRevealSeed (password) {
 }
 
 function addNewKeyring (type, opts) {
-  return callBackgroundThenUpdate(background.addNewKeyring, type, opts)
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.addNewKeyring(type, opts, (err, newState) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.updateMetamaskState(newState))
+      dispatch(actions.showAccountsPage())
+    })
+  }
+}
+
+function navigateToNewAccountScreen() {
+  return {
+    type: this.NEW_ACCOUNT_SCREEN,
+  }
 }
 
 function addNewAccount (ringNumber = 0) {
@@ -373,6 +391,12 @@ function forgotPassword () {
 function showInitializeMenu () {
   return {
     type: actions.SHOW_INIT_MENU,
+  }
+}
+
+function showImportPage () {
+  return {
+    type: actions.SHOW_IMPORT_PAGE,
   }
 }
 

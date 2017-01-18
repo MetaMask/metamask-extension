@@ -26,7 +26,7 @@ UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
-    h('.flex-column.hey-im-here', [
+    h('.flex-column', [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
         h(Mascot, {

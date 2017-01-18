@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add ability to import accounts by private key.
 - Fixed bug that returned the wrong transaction hashes on private networks that had not implemented EIP 155 replay protection (like TestRPC).
 
 ## 3.0.1 2017-1-17
