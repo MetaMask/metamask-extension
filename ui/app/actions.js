@@ -267,7 +267,7 @@ function addNewKeyring (type, opts) {
 
 function importNewAccount (strategy, args) {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
+    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     background.importAccountWithStrategy(strategy, args, (err, newState) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
@@ -630,9 +630,10 @@ function useEtherscanProvider () {
   }
 }
 
-function showLoadingIndication () {
+function showLoadingIndication (message) {
   return {
     type: actions.SHOW_LOADING,
+    value: message,
   }
 }
 

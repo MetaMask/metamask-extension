@@ -7,8 +7,7 @@ const accountImporter = {
   importAccount(strategy, args) {
     try {
       const importer = this.strategies[strategy]
-      const wallet = importer.apply(null, args)
-      const privateKeyHex = walletToPrivateKey(wallet)
+      const privateKeyHex = importer.apply(null, args)
       return Promise.resolve(privateKeyHex)
     } catch (e) {
       return Promise.reject(e)
@@ -18,11 +17,20 @@ const accountImporter = {
   strategies: {
     'Private Key': (privateKey) => {
       const stripped = ethUtil.stripHexPrefix(privateKey)
-      const buffer = new Buffer(stripped, 'hex')
-      return Wallet.fromPrivateKey(buffer)
+      return stripped
     },
     'JSON File': (input, password) => {
-      const wallet = importers.fromEtherWallet(input, password)
+      let wallet
+      try {
+        wallet = importers.fromEtherWallet(input, password)
+      } catch (e) {
+        console.log('Attempt to import as EtherWallet format failed, trying V3...')
+      }
+
+      if (!wallet) {
+        wallet = Wallet.fromV3(input, password, true)
+      }
+
       return walletToPrivateKey(wallet)
     },
   },
