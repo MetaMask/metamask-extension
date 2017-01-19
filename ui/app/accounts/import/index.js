@@ -6,11 +6,11 @@ import Select from 'react-select'
 
 // Subviews
 const JsonImportView = require('./json.js')
-const SeedImportView = require('./seed.js')
 const PrivateKeyImportView = require('./private-key.js')
 
 const menuItems = [
   'Private Key',
+  'JSON File',
 ]
 
 module.exports = connect(mapStateToProps)(AccountImportSubview)
@@ -81,10 +81,10 @@ AccountImportSubview.prototype.renderImportView = function() {
   const current = type || menuItems[0]
 
   switch (current) {
-    case 'HD Key Tree':
-      return h(SeedImportView)
     case 'Private Key':
       return h(PrivateKeyImportView)
+    case 'JSON File':
+      return h(JsonImportView)
     default:
       return h(JsonImportView)
   }
