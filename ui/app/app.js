@@ -43,6 +43,7 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
+    loadingMessage: state.appState.loadingMessage,
     isDisclaimerConfirmed: state.metamask.isDisclaimerConfirmed,
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
@@ -64,7 +65,7 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, transForward } = props
+  const { isLoading, loadingMessage, transForward } = props
 
   return (
 
@@ -76,7 +77,7 @@ App.prototype.render = function () {
       },
     }, [
 
-      h(LoadingIndicator, { isLoading }),
+      h(LoadingIndicator, { isLoading, loadingMessage }),
 
       // app bar
       this.renderAppBar(),

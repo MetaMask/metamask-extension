@@ -13,6 +13,7 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const accountImporter = require('./account-import-strategies')
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -119,6 +120,16 @@ module.exports = class MetamaskController extends EventEmitter {
         keyringController.addNewKeyring(type, opts)
         .then(() => keyringController.fullUpdate())
         .then((newState) => { cb(null, newState) })
+        .catch((reason) => { cb(reason) })
+      },
+      importAccountWithStrategy: (strategy, args, cb) => {
+        accountImporter.importAccount(strategy, args)
+        .then((privateKey) => {
+          return keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+        })
+        .then(keyring => keyring.getAccounts())
+        .then((accounts) => keyringController.setSelectedAccount(accounts[0]))
+        .then(() => { cb(null, keyringController.fullUpdate()) })
         .catch((reason) => { cb(reason) })
       },
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),

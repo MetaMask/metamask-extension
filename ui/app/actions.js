@@ -43,6 +43,7 @@ var actions = {
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
   addNewKeyring,
+  importNewAccount,
   addNewAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
@@ -260,6 +261,21 @@ function addNewKeyring (type, opts) {
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.updateMetamaskState(newState))
       dispatch(actions.showAccountsPage())
+    })
+  }
+}
+
+function importNewAccount (strategy, args) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
+    background.importAccountWithStrategy(strategy, args, (err, newState) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.updateMetamaskState(newState))
+      dispatch({
+        type: actions.SHOW_ACCOUNT_DETAIL,
+        value: newState.selectedAccount,
+      })
     })
   }
 }
@@ -614,9 +630,10 @@ function useEtherscanProvider () {
   }
 }
 
-function showLoadingIndication () {
+function showLoadingIndication (message) {
   return {
     type: actions.SHOW_LOADING,
+    value: message,
   }
 }
 
