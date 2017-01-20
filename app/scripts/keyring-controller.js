@@ -172,7 +172,9 @@ module.exports = class KeyringController extends EventEmitter {
   // Used when creating a first vault, to allow confirmation.
   // Also used when revealing the seed words in the confirmation view.
   placeSeedWords () {
-    const firstKeyring = this.keyrings[0]
+    const hdKeyrings = this.keyrings.filter((keyring) => keyring.type === 'HD Key Tree')
+    const firstKeyring = hdKeyrings[0]
+    if (!firstKeyring) throw new Error('KeyringController - No HD Key Tree found')
     return firstKeyring.serialize()
     .then((serialized) => {
       const seedWords = serialized.mnemonic
