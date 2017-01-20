@@ -4,6 +4,10 @@
 
 - Add ability to import accounts in JSON file format (used by Mist, Geth, MyEtherWallet, and more!)
 
+## 3.1.1 2017-1-20
+
+- Fix HD wallet seed export
+
 ## 3.1.0 2017-1-18
 
 - Add ability to import accounts by private key.
