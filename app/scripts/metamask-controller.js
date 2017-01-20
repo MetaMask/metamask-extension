@@ -15,14 +15,31 @@ const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const accountImporter = require('./account-import-strategies')
 const version = require('../manifest.json').version
+const ObservableStore = require('./lib/observable-store')
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.state = { network: 'loading' }
     this.opts = opts
-    this.configManager = new ConfigManager(opts)
+    this.state = { network: 'loading' }
+
+    // Observable wrapper around persistence strategy,
+    // also caches the current state, so reads
+    // can be synchronous, allows us to  avoid
+    // race conditions related to late reads.
+    this.configStore = new ObservableStore(opts.initState)
+    this.configStore.subscribe(opts.setData)
+
+    const confManagerOpts = {
+      loadData: this.configStore.get.bind(this.configStore),
+      setData: opts.setData,
+    }
+    this.configManager = new ConfigManager(confManagerOpts)
+    this.configManager.subscribe((state) => {
+      this.configStore.put(state)
+    })
+
     this.keyringController = new KeyringController({
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
