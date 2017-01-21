@@ -20,6 +20,7 @@ const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
+const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
@@ -42,6 +43,7 @@ function mapStateToProps (state) {
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
+    loadingMessage: state.appState.loadingMessage,
     isDisclaimerConfirmed: state.metamask.isDisclaimerConfirmed,
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
@@ -63,7 +65,7 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, transForward } = props
+  const { isLoading, loadingMessage, transForward } = props
 
   return (
 
@@ -75,7 +77,7 @@ App.prototype.render = function () {
       },
     }, [
 
-      h(LoadingIndicator, { isLoading }),
+      h(LoadingIndicator, { isLoading, loadingMessage }),
 
       // app bar
       this.renderAppBar(),
@@ -305,6 +307,13 @@ App.prototype.renderDropdown = function () {
     }),
 
     h(DropMenuItem, {
+      label: 'Import Account',
+      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
+      action: () => this.props.dispatch(actions.showImportPage()),
+      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
+    }),
+
+    h(DropMenuItem, {
       label: 'Lock',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.lockMetamask()),
@@ -410,6 +419,9 @@ App.prototype.renderPrimary = function () {
 
     case 'config':
       return h(ConfigScreen, {key: 'config'})
+
+    case 'import-menu':
+      return h(Import, {key: 'import-menu'})
 
     case 'reveal-seed-conf':
       return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})

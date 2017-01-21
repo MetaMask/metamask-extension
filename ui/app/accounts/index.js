@@ -73,7 +73,8 @@ AccountsScreen.prototype.render = function () {
 
             const simpleAddress = identity.address.substring(2).toLowerCase()
             const keyring = keyrings.find((kr) => {
-              return kr.accounts.includes(simpleAddress)
+              return kr.accounts.includes(simpleAddress) ||
+                kr.accounts.includes(identity.address)
             })
 
             return h(AccountListItem, {
@@ -153,6 +154,13 @@ AccountsScreen.prototype.onShowDetail = function (address, event) {
 AccountsScreen.prototype.addNewAccount = function () {
   this.props.dispatch(actions.addNewAccount(0))
 }
+
+/* An optional view proposed in this design:
+ * https://consensys.quip.com/zZVrAysM5znY
+AccountsScreen.prototype.addNewAccount = function () {
+  this.props.dispatch(actions.navigateToNewAccountScreen())
+}
+*/
 
 AccountsScreen.prototype.goHome = function () {
   this.props.dispatch(actions.goHome())

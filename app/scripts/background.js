@@ -16,6 +16,7 @@ const firstTimeState = require('./first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+
 let popupIsOpen = false
 
 // state persistence
@@ -135,6 +136,7 @@ function setupController (initState) {
   // User Interface setup
   //
 
+  updateBadge()
   controller.txManager.on('updateBadge', updateBadge)
 
   // plugin badge text

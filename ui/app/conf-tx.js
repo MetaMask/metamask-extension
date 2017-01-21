@@ -41,11 +41,13 @@ ConfirmTxScreen.prototype.render = function () {
   var provider = state.provider
   var unconfTxs = state.unconfTxs
   var unconfMsgs = state.unconfMsgs
+
   var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
-  var index = state.index !== undefined ? state.index : 0
-  var txData = unconfTxList[index] || unconfTxList[0] || {}
-  var txParams = txData.txParams || {}
+  var index = state.index !== undefined && unconfTxList[index] ? state.index : 0
+  var txData = unconfTxList[index] || {}
+  var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
+  if (unconfTxList.length === 0) return null
 
   return (
 
@@ -115,27 +117,24 @@ ConfirmTxScreen.prototype.render = function () {
 }
 
 function currentTxView (opts) {
-  if ('txParams' in opts.txData) {
+  const { txData } = opts
+  const { txParams, msgParams } = txData
+
+  if (txParams) {
     // This is a pending transaction
     return h(PendingTx, opts)
-  } else if ('msgParams' in opts.txData) {
+  } else if (msgParams) {
     // This is a pending message to sign
     return h(PendingMsg, opts)
   }
 }
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
+  if (!txData.txParams) return false
   var state = this.props
-
-  var txParams = txData.txParams || {}
-  var address = txParams.from || state.selectedAccount
+  var address = txData.txParams.from || state.selectedAccount
   var account = state.accounts[address]
   var balance = account ? account.balance : '0x0'
-
-  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txData.estimatedGas), 16)
-  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  var txFee = gasCost.mul(gasPrice)
-  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-  var maxCost = txValue.add(txFee)
+  var maxCost = new BN(txData.maxCost)
 
   var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
   return maxCost.gt(balanceBn)

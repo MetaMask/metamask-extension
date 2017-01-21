@@ -12,7 +12,7 @@ function LoadingIndicator () {
 }
 
 LoadingIndicator.prototype.render = function () {
-  var isLoading = this.props.isLoading
+  const { isLoading, loadingMessage } = this.props
 
   return (
     h(ReactCSSTransitionGroup, {
@@ -37,8 +37,14 @@ LoadingIndicator.prototype.render = function () {
         h('img', {
           src: 'images/loading.svg',
         }),
+
+        showMessageIfAny(loadingMessage),
       ]) : null,
     ])
   )
 }
 
+function showMessageIfAny (loadingMessage) {
+  if (!loadingMessage) return null
+  return h('span', loadingMessage)
+}

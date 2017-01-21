@@ -20,13 +20,19 @@ class SimpleKeyring extends EventEmitter {
   }
 
   deserialize (privateKeys = []) {
-    this.wallets = privateKeys.map((privateKey) => {
-      const stripped = ethUtil.stripHexPrefix(privateKey)
-      const buffer = new Buffer(stripped, 'hex')
-      const wallet = Wallet.fromPrivateKey(buffer)
-      return wallet
+    return new Promise((resolve, reject) => {
+      try {
+        this.wallets = privateKeys.map((privateKey) => {
+          const stripped = ethUtil.stripHexPrefix(privateKey)
+          const buffer = new Buffer(stripped, 'hex')
+          const wallet = Wallet.fromPrivateKey(buffer)
+          return wallet
+        })
+      } catch (e) {
+        reject(e)
+      }
+      resolve()
     })
-    return Promise.resolve()
   }
 
   addAccounts (n = 1) {
@@ -35,12 +41,12 @@ class SimpleKeyring extends EventEmitter {
       newWallets.push(Wallet.generate())
     }
     this.wallets = this.wallets.concat(newWallets)
-    const hexWallets = newWallets.map(w => w.getAddress().toString('hex'))
+    const hexWallets = newWallets.map(w => ethUtil.bufferToHex(w.getAddress()))
     return Promise.resolve(hexWallets)
   }
 
   getAccounts () {
-    return Promise.resolve(this.wallets.map(w => w.getAddress().toString('hex')))
+    return Promise.resolve(this.wallets.map(w => ethUtil.bufferToHex(w.getAddress())))
   }
 
   // tx is an instance of the ethereumjs-transaction class.
@@ -54,7 +60,7 @@ class SimpleKeyring extends EventEmitter {
   // For eth_sign, we need to sign transactions:
   signMessage (withAccount, data) {
     const wallet = this._getWalletForAccount(withAccount)
-    const message = ethUtil.removeHexPrefix(data)
+    const message = ethUtil.stripHexPrefix(data)
     var privKey = wallet.getPrivateKey()
     var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
     var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
@@ -70,7 +76,9 @@ class SimpleKeyring extends EventEmitter {
   /* PRIVATE METHODS */
 
   _getWalletForAccount (account) {
-    return this.wallets.find(w => w.getAddress().toString('hex') === account)
+    let wallet = this.wallets.find(w => ethUtil.bufferToHex(w.getAddress()) === account)
+    if (!wallet) throw new Error('Simple Keyring - Unable to find matching address.')
+    return wallet
   }
 
 }

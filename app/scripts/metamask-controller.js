@@ -15,6 +15,8 @@ const IdStoreMigrator = require('./lib/idStore-migrator')
 const ObservableStore = require('./lib/observable/')
 const HostStore = require('./lib/observable/host')
 const synchronizeStore = require('./lib/observable/util/sync')
+const accountImporter = require('./account-import-strategies')
+
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -57,6 +59,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getSelectedAccount: this.configManager.getSelectedAccount.bind(this.configManager),
       getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
       getNetwork: this.getStateNetwork.bind(this),
+      signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
     })
@@ -77,6 +80,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.ethStore.on('update', this.sendUpdate.bind(this))
     this.keyringController.on('update', this.sendUpdate.bind(this))
+    this.txManager.on('update', this.sendUpdate.bind(this))
   }
 
   getState () {
@@ -125,7 +129,22 @@ module.exports = class MetamaskController extends EventEmitter {
         .then((newState) => { cb(null, newState) })
         .catch((reason) => { cb(reason) })
       },
-      addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
+      addNewKeyring: (type, opts, cb) => {
+        keyringController.addNewKeyring(type, opts)
+        .then(() => keyringController.fullUpdate())
+        .then((newState) => { cb(null, newState) })
+        .catch((reason) => { cb(reason) })
+      },
+      importAccountWithStrategy: (strategy, args, cb) => {
+        accountImporter.importAccount(strategy, args)
+        .then((privateKey) => {
+          return keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+        })
+        .then(keyring => keyring.getAccounts())
+        .then((accounts) => keyringController.setSelectedAccount(accounts[0]))
+        .then(() => { cb(null, keyringController.fullUpdate()) })
+        .catch((reason) => { cb(reason) })
+      },
       addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
@@ -200,26 +219,7 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      approveTransaction: this.newUnsignedTransaction.bind(this),
-      signTransaction: (txParams, cb) => {
-        this.txManager.formatTxForSigining(txParams)
-        .then(({ethTx, address, txId}) => {
-          return this.keyringController.signTransaction(ethTx, address, txId)
-        })
-        .then(({tx, txId}) => {
-          return this.txManager.resolveSignedTransaction({tx, txId})
-        })
-        .then((rawTx) => {
-          cb(null, rawTx)
-          this.sendUpdate()
-          this.txManager.emit(`${txParams.metamaskId}:signingComplete`)
-        })
-        .catch((err) => {
-          console.error(err)
-          cb(err)
-        })
-      },
-
+      processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: (...args) => {
@@ -259,22 +259,24 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
-  newUnsignedTransaction (txParams, onTxDoneCb) {
-    const txManager = this.txManager
-    const err = this.enforceTxValidations(txParams)
-    if (err) return onTxDoneCb(err)
-    txManager.addUnapprovedTransaction(txParams, onTxDoneCb, (err, txData) => {
-      if (err) return onTxDoneCb(err)
-      this.sendUpdate()
-      this.opts.showUnapprovedTx(txParams, txData, onTxDoneCb)
+  newUnapprovedTransaction (txParams, cb) {
+    const self = this
+    self.txManager.addUnapprovedTransaction(txParams, (err, txMeta) => {
+      if (err) return cb(err)
+      self.sendUpdate()
+      self.opts.showUnapprovedTx(txMeta)
+      // listen for tx completion (success, fail)
+      self.txManager.once(`${txMeta.id}:finished`, (status) => {
+        switch (status) {
+          case 'submitted':
+            return cb(null, txMeta.hash)
+          case 'rejected':
+            return cb(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+          default:
+            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(txMeta.txParams)}`))
+        }
+      })
     })
-  }
-
-  enforceTxValidations (txParams) {
-    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
-      const msg = `Invalid transaction value of ${txParams.value} not a positive number.`
-      return new Error(msg)
-    }
   }
 
   newUnsignedMessage (msgParams, cb) {

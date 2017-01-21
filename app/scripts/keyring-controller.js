@@ -95,7 +95,6 @@ module.exports = class KeyringController extends EventEmitter {
         isInitialized: (!!wallet || !!vault),
         isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        transactions: this.configManager.getTxList(),
         unconfMsgs: messageManager.unconfirmedMsgs(),
         messages: messageManager.getMsgList(),
         selectedAccount: address,
@@ -173,7 +172,9 @@ module.exports = class KeyringController extends EventEmitter {
   // Used when creating a first vault, to allow confirmation.
   // Also used when revealing the seed words in the confirmation view.
   placeSeedWords () {
-    const firstKeyring = this.keyrings[0]
+    const hdKeyrings = this.keyrings.filter((keyring) => keyring.type === 'HD Key Tree')
+    const firstKeyring = hdKeyrings[0]
+    if (!firstKeyring) throw new Error('KeyringController - No HD Key Tree found')
     return firstKeyring.serialize()
     .then((serialized) => {
       const seedWords = serialized.mnemonic
@@ -235,7 +236,10 @@ module.exports = class KeyringController extends EventEmitter {
   addNewKeyring (type, opts) {
     const Keyring = this.getKeyringClassForType(type)
     const keyring = new Keyring(opts)
-    return keyring.getAccounts()
+    return keyring.deserialize(opts)
+    .then(() => {
+      return keyring.getAccounts()
+    })
     .then((accounts) => {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)
@@ -317,13 +321,11 @@ module.exports = class KeyringController extends EventEmitter {
   // This method signs tx and returns a promise for
   // TX Manager to update the state after signing
 
-  signTransaction (ethTx, selectedAddress, txId) {
-    const address = normalize(selectedAddress)
-    return this.getKeyringForAccount(address)
+  signTransaction (ethTx, _fromAddress) {
+    const fromAddress = normalize(_fromAddress)
+    return this.getKeyringForAccount(fromAddress)
     .then((keyring) => {
-      return keyring.signTransaction(address, ethTx)
-    }).then((tx) => {
-      return {tx, txId}
+      return keyring.signTransaction(fromAddress, ethTx)
     })
   }
   // Add Unconfirmed Message
@@ -400,6 +402,7 @@ module.exports = class KeyringController extends EventEmitter {
       }).then((rawSig) => {
         cb(null, rawSig)
         approvalCb(null, true)
+        messageManager.confirmMsg(msgId)
         return rawSig
       })
     } catch (e) {
