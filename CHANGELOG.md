@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix issue with HD accounts being generated as loose keys.
+
 ## 3.1.1 2017-1-20
 
 - Fix HD wallet seed export
