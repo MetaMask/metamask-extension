@@ -134,7 +134,7 @@ ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   var address = txData.txParams.from || state.selectedAccount
   var account = state.accounts[address]
   var balance = account ? account.balance : '0x0'
-  var maxCost = new BN(txData.maxCost)
+  var maxCost = new BN(txData.maxCost, 16)
 
   var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
   return maxCost.gt(balanceBn)

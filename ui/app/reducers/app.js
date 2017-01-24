@@ -386,6 +386,7 @@ function reduceApp (state, action) {
     case actions.SHOW_LOADING:
       return extend(appState, {
         isLoading: true,
+        loadingMessage: action.value,
       })
 
     case actions.HIDE_LOADING:
