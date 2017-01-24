@@ -107,7 +107,11 @@ module.exports = class MetamaskController extends EventEmitter {
       // forward directly to keyringController
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
-      placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
+      placeSeedWords: (cb) => {
+        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
+        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+        promiseToCallback(keyringController.placeSeedWords(primaryKeyring))(cb)
+      },
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       submitPassword: (password, cb) => {
