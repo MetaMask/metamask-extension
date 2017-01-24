@@ -259,9 +259,11 @@ module.exports = class KeyringController extends EventEmitter {
   // Calls the `addAccounts` method on the Keyring
   // in the kryings array at index `keyringNum`,
   // and then saves those changes.
-  addNewAccount (keyRingNum = 0) {
-    const ring = this.keyrings[keyRingNum]
-    return ring.addAccounts(1)
+  addNewAccount () {
+    const hdKeyrings = this.keyrings.filter((keyring) => keyring.type === 'HD Key Tree')
+    const firstKeyring = hdKeyrings[0]
+    if (!firstKeyring) throw new Error('KeyringController - No HD Key Tree found')
+    return firstKeyring.addAccounts(1)
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
     .then(this.fullUpdate.bind(this))
