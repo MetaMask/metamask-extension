@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
+const promiseToCallback = require('promise-to-callback')
 const EthStore = require('./lib/eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
@@ -121,7 +122,11 @@ module.exports = class MetamaskController extends EventEmitter {
         .then((newState) => { cb(null, newState) })
         .catch((reason) => { cb(reason) })
       },
-      addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
+      addNewAccount: (cb) => {
+        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
+        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+        promiseToCallback(keyringController.addNewAccount(primaryKeyring))(cb)
+      },
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),

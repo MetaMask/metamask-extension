@@ -259,9 +259,8 @@ module.exports = class KeyringController extends EventEmitter {
   // Calls the `addAccounts` method on the Keyring
   // in the kryings array at index `keyringNum`,
   // and then saves those changes.
-  addNewAccount (keyRingNum = 0) {
-    const ring = this.keyrings[keyRingNum]
-    return ring.addAccounts(1)
+  addNewAccount (selectedKeyring) {
+    return selectedKeyring.addAccounts(1)
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
     .then(this.fullUpdate.bind(this))
@@ -585,6 +584,10 @@ module.exports = class KeyringController extends EventEmitter {
   // returning it if it exists.
   getKeyringClassForType (type) {
     return this.keyringTypes.find(kr => kr.type === type)
+  }
+
+  getKeyringsByType (type) {
+    return this.keyrings.filter((keyring) => keyring.type === type)
   }
 
   // Get Accounts
