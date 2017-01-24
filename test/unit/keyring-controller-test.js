@@ -41,6 +41,9 @@ describe('KeyringController', function() {
       state = newState
       done()
     })
+    .catch((err) => {
+      done(err)
+    })
   })
 
   afterEach(function() {
