@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
+const promiseToCallback = require('promise-to-callback')
 const EthStore = require('./lib/eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
@@ -106,7 +107,20 @@ module.exports = class MetamaskController extends EventEmitter {
       // forward directly to keyringController
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
-      placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
+      // Adds the current vault's seed words to the UI's state tree.
+      //
+      // Used when creating a first vault, to allow confirmation.
+      // Also used when revealing the seed words in the confirmation view.
+      placeSeedWords: (cb) => {
+        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
+        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+        primaryKeyring.serialize()
+        .then((serialized) => {
+          const seedWords = serialized.mnemonic
+          this.configManager.setSeedWords(seedWords)
+          promiseToCallback(this.keyringController.fullUpdate())(cb)
+        })
+      },
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       submitPassword: (password, cb) => {
@@ -121,7 +135,11 @@ module.exports = class MetamaskController extends EventEmitter {
         .then((newState) => { cb(null, newState) })
         .catch((reason) => { cb(reason) })
       },
-      addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
+      addNewAccount: (cb) => {
+        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
+        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+        promiseToCallback(keyringController.addNewAccount(primaryKeyring))(cb)
+      },
       setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
