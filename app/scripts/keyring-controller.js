@@ -422,9 +422,10 @@ module.exports = class KeyringController extends EventEmitter {
   // puts the current seed words into the state tree.
   createFirstKeyTree () {
     this.clearKeyrings()
-    return this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1})
+    return this.addNewKeyring('HD Key Tree', { numberOfAccounts: 1 })
     .then((keyring) => {
-      const firstAccount = keyring.getAccounts()[0]
+      const accounts = keyring.getAccounts()
+      const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalize(firstAccount)
       this.configManager.setSelectedAccount(hexAccount)
