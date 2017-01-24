@@ -150,34 +150,19 @@ module.exports = class KeyringController extends EventEmitter {
         mnemonic: seed,
         numberOfAccounts: 1,
       })
-    }).then(() => {
-      const firstKeyring = this.keyrings[0]
+    })
+    .then((firstKeyring) => {
       return firstKeyring.getAccounts()
     })
     .then((accounts) => {
       const firstAccount = accounts[0]
+      if (!firstAccount) throw new Error('KeyringController - First Account not found.')
       const hexAccount = normalize(firstAccount)
       this.configManager.setSelectedAccount(hexAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this, password))
     .then(this.fullUpdate.bind(this))
-  }
-
-  // PlaceSeedWords
-  // returns Promise( @object state )
-  //
-  // Adds the current vault's seed words to the UI's state tree.
-  //
-  // Used when creating a first vault, to allow confirmation.
-  // Also used when revealing the seed words in the confirmation view.
-  placeSeedWords (selectedKeyring) {
-    return selectedKeyring.serialize()
-    .then((serialized) => {
-      const seedWords = serialized.mnemonic
-      this.configManager.setSeedWords(seedWords)
-      return this.fullUpdate()
-    })
   }
 
   // ClearSeedWordCache
@@ -424,15 +409,15 @@ module.exports = class KeyringController extends EventEmitter {
     this.clearKeyrings()
     return this.addNewKeyring('HD Key Tree', { numberOfAccounts: 1 })
     .then((keyring) => {
-      const accounts = keyring.getAccounts()
+      return keyring.getAccounts()
+    })
+    .then((accounts) => {
       const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalize(firstAccount)
       this.configManager.setSelectedAccount(hexAccount)
       this.emit('newAccount', hexAccount)
       return this.setupAccounts(accounts)
-    }).then(() => {
-      return this.placeSeedWords(this.getKeyringsByType('HD Key Tree')[0])
     })
     .then(this.persistAllKeyrings.bind(this))
   }

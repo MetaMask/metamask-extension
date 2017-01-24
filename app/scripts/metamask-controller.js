@@ -107,10 +107,19 @@ module.exports = class MetamaskController extends EventEmitter {
       // forward directly to keyringController
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
+      // Adds the current vault's seed words to the UI's state tree.
+      //
+      // Used when creating a first vault, to allow confirmation.
+      // Also used when revealing the seed words in the confirmation view.
       placeSeedWords: (cb) => {
         const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
         if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-        promiseToCallback(keyringController.placeSeedWords(primaryKeyring))(cb)
+        primaryKeyring.serialize()
+        .then((serialized) => {
+          const seedWords = serialized.mnemonic
+          this.configManager.setSeedWords(seedWords)
+          promiseToCallback(this.keyringController.fullUpdate())(cb)
+        })
       },
       clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
