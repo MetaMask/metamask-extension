@@ -136,7 +136,7 @@ ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   var balance = account ? account.balance : '0x0'
   var maxCost = new BN(txData.maxCost)
 
-  var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
+  var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 10)
   return maxCost.gt(balanceBn)
 }
 
