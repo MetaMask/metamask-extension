@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix rendering bug where the Confirm transaction view would lets you approve transactions when the account has insufficient balance.
 - Add ability to import accounts in JSON file format (used by Mist, Geth, MyEtherWallet, and more!)
 ## 3.1.1 2017-1-20
 
