@@ -423,11 +423,9 @@ module.exports = class KeyringController extends EventEmitter {
   createFirstKeyTree () {
     this.clearKeyrings()
     return this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1})
-    .then(() => {
-      return this.keyrings[0].getAccounts()
-    })
-    .then((accounts) => {
-      const firstAccount = accounts[0]
+    .then((keyring) => {
+      const firstAccount = keyring.getAccounts()[0]
+      if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalize(firstAccount)
       this.configManager.setSelectedAccount(hexAccount)
       this.emit('newAccount', hexAccount)
