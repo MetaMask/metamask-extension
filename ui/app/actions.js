@@ -286,8 +286,8 @@ function navigateToNewAccountScreen() {
   }
 }
 
-function addNewAccount (ringNumber = 0) {
-  return callBackgroundThenUpdate(background.addNewAccount, ringNumber)
+function addNewAccount () {
+  return callBackgroundThenUpdate(background.addNewAccount)
 }
 
 function showInfoPage () {
