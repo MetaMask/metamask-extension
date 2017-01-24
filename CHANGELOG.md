@@ -2,7 +2,10 @@
 
 ## Current Master
 
-- Fix issue with HD accounts being generated as loose keys.
+
+## 3.1.2 2017-1-24
+
+- Fix "New Account" default keychain
 
 ## 3.1.1 2017-1-20
 
