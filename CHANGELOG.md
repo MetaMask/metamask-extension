@@ -2,6 +2,11 @@
 
 ## Current Master
 
+
+## 3.1.2 2017-1-24
+
+- Fix "New Account" default keychain
+
 ## 3.1.1 2017-1-20
 
 - Fix HD wallet seed export
