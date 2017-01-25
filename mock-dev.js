@@ -12,9 +12,6 @@
  * To use, run `npm run mock`.
  */
 
-// pollyfill localStorage for non-browser environments
-if (!global.localStorage) global.localStorage
-
 const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
