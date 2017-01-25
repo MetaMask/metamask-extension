@@ -1,5 +1,12 @@
 const version = 5
 
+/*
+
+This is an incomplete migration bc it requires post-decrypted data
+which we dont have access to at the time of this writing.
+
+*/
+
 const ObservableStore = require('../../app/scripts/lib/observable/')
 const ConfigManager = require('../../app/scripts/lib/config-manager')
 const IdentityStoreMigrator = require('../../app/scripts/lib/idStore-migrator')
