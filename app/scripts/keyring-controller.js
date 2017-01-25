@@ -150,37 +150,19 @@ module.exports = class KeyringController extends EventEmitter {
         mnemonic: seed,
         numberOfAccounts: 1,
       })
-    }).then(() => {
-      const firstKeyring = this.keyrings[0]
+    })
+    .then((firstKeyring) => {
       return firstKeyring.getAccounts()
     })
     .then((accounts) => {
       const firstAccount = accounts[0]
+      if (!firstAccount) throw new Error('KeyringController - First Account not found.')
       const hexAccount = normalize(firstAccount)
       this.configManager.setSelectedAccount(hexAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this, password))
     .then(this.fullUpdate.bind(this))
-  }
-
-  // PlaceSeedWords
-  // returns Promise( @object state )
-  //
-  // Adds the current vault's seed words to the UI's state tree.
-  //
-  // Used when creating a first vault, to allow confirmation.
-  // Also used when revealing the seed words in the confirmation view.
-  placeSeedWords () {
-    const hdKeyrings = this.keyrings.filter((keyring) => keyring.type === 'HD Key Tree')
-    const firstKeyring = hdKeyrings[0]
-    if (!firstKeyring) throw new Error('KeyringController - No HD Key Tree found')
-    return firstKeyring.serialize()
-    .then((serialized) => {
-      const seedWords = serialized.mnemonic
-      this.configManager.setSeedWords(seedWords)
-      return this.fullUpdate()
-    })
   }
 
   // ClearSeedWordCache
@@ -259,9 +241,8 @@ module.exports = class KeyringController extends EventEmitter {
   // Calls the `addAccounts` method on the Keyring
   // in the kryings array at index `keyringNum`,
   // and then saves those changes.
-  addNewAccount (keyRingNum = 0) {
-    const ring = this.keyrings[keyRingNum]
-    return ring.addAccounts(1)
+  addNewAccount (selectedKeyring) {
+    return selectedKeyring.addAccounts(1)
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
     .then(this.fullUpdate.bind(this))
@@ -426,18 +407,17 @@ module.exports = class KeyringController extends EventEmitter {
   // puts the current seed words into the state tree.
   createFirstKeyTree () {
     this.clearKeyrings()
-    return this.addNewKeyring('HD Key Tree', {numberOfAccounts: 1})
-    .then(() => {
-      return this.keyrings[0].getAccounts()
+    return this.addNewKeyring('HD Key Tree', { numberOfAccounts: 1 })
+    .then((keyring) => {
+      return keyring.getAccounts()
     })
     .then((accounts) => {
       const firstAccount = accounts[0]
+      if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalize(firstAccount)
       this.configManager.setSelectedAccount(hexAccount)
       this.emit('newAccount', hexAccount)
       return this.setupAccounts(accounts)
-    }).then(() => {
-      return this.placeSeedWords()
     })
     .then(this.persistAllKeyrings.bind(this))
   }
@@ -585,6 +565,10 @@ module.exports = class KeyringController extends EventEmitter {
   // returning it if it exists.
   getKeyringClassForType (type) {
     return this.keyringTypes.find(kr => kr.type === type)
+  }
+
+  getKeyringsByType (type) {
+    return this.keyrings.filter((keyring) => keyring.type === type)
   }
 
   // Get Accounts

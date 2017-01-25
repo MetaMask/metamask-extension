@@ -231,7 +231,21 @@ function createNewVaultAndRestore (password, seed) {
 }
 
 function createNewVaultAndKeychain (password) {
-  return callBackgroundThenUpdate(background.createNewVaultAndKeychain, password)
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.createNewVaultAndKeychain(password, (err, newState) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      background.placeSeedWords((err, newState) => {
+        if (err) {
+          return dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.updateMetamaskState(newState))
+      })
+    })
+  }
 }
 
 function revealSeedConfirmation () {
@@ -286,8 +300,8 @@ function navigateToNewAccountScreen() {
   }
 }
 
-function addNewAccount (ringNumber = 0) {
-  return callBackgroundThenUpdate(background.addNewAccount, ringNumber)
+function addNewAccount () {
+  return callBackgroundThenUpdate(background.addNewAccount)
 }
 
 function showInfoPage () {
