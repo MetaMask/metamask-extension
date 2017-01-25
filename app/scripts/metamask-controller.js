@@ -1,13 +1,15 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
+const pipe = require('pump')
+const ObservableStore = require('obs-store')
+const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
-const HostStore = require('./lib/remote-store.js').HostStore
 const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
@@ -15,18 +17,29 @@ const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const accountImporter = require('./account-import-strategies')
+
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.state = { network: 'loading' }
     this.opts = opts
-    this.configManager = new ConfigManager(opts)
+    this.state = { network: 'loading' }
+
+    // observable state store
+    this.store = new ObservableStore(opts.initState)
+    // config manager
+    this.configManager = new ConfigManager({
+      store: this.store,
+    })
+    // key mgmt
     this.keyringController = new KeyringController({
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
+    })
+    this.keyringController.on('newAccount', (account) => {
+      autoFaucet(account)
     })
     // notices
     this.noticeController = new NoticeController({
@@ -245,29 +258,23 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = configToPublic(this.configManager.getConfig())
-    var publicConfigStore = new HostStore(initPublicState)
+    const publicConfigStore = new ObservableStore()
 
-    // subscribe to changes
-    this.configManager.subscribe(function (state) {
-      storeSetFromObj(publicConfigStore, configToPublic(state))
-    })
+    // sync publicConfigStore with transform
+    pipe(
+      this.store,
+      storeTransform(selectPublicState),
+      publicConfigStore
+    )
 
-    this.keyringController.on('newAccount', (account) => {
-      autoFaucet(account)
-    })
-
-    // config substate
-    function configToPublic (state) {
-      return {
-        selectedAccount: state.selectedAccount,
+    function selectPublicState(state) {
+      const result = { selectedAccount: undefined }
+      try {
+        result.selectedAccount = state.config.selectedAccount
+      } catch (_) {
+        // thats fine, im sure it will be there next time...
       }
-    }
-    // dump obj into store
-    function storeSetFromObj (store, obj) {
-      Object.keys(obj).forEach(function (key) {
-        store.set(key, obj[key])
-      })
+      return result
     }
 
     return publicConfigStore
@@ -310,9 +317,11 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts.showUnconfirmedMessage(msgParams, msgId)
   }
 
-  setupPublicConfig (stream) {
-    var storeStream = this.publicConfigStore.createStream()
-    stream.pipe(storeStream).pipe(stream)
+  setupPublicConfig (outStream) {
+    pipe(
+      this.publicConfigStore,
+      outStream
+    )
   }
 
   // Log blocks

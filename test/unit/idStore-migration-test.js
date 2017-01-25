@@ -1,5 +1,6 @@
 const async = require('async')
 const assert = require('assert')
+const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const ConfigManager = require('../../app/scripts/lib/config-manager')
@@ -42,10 +43,9 @@ describe('IdentityStore to KeyringController migration', function() {
   beforeEach(function(done) {
     this.sinon = sinon.sandbox.create()
     window.localStorage = {} // Hacking localStorage support into JSDom
-    configManager = new ConfigManager({
-      loadData,
-      setData: (d) => { window.localStorage = d }
-    })
+    let store = new ObservableStore(loadData())
+    store.subscribe(setData)
+    configManager = new ConfigManager({ store })
 
 
     idStore = new IdentityStore({

@@ -1,34 +1,34 @@
-var assert = require('assert')
-var path = require('path')
+const assert = require('assert')
+const path = require('path')
 
-var wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
+const wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
 
-var migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
-var migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
-var migration4 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '004'))
+const migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
+const migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
+const migration4 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '004'))
+
+const oldTestRpc = 'https://rawtestrpc.metamask.io/'
+const newTestRpc = 'https://testrpc.metamask.io/'
 
 describe('wallet1 is migrated successfully', function() {
-
-  it('should convert providers', function(done) {
+  it('should convert providers', function() {
 
     wallet1.data.config.provider = { type: 'etherscan', rpcTarget: null }
 
-    var firstResult = migration2.migrate(wallet1.data)
-    assert.equal(firstResult.config.provider.type, 'rpc', 'provider should be rpc')
-    assert.equal(firstResult.config.provider.rpcTarget, 'https://rpc.metamask.io/', 'main provider should be our rpc')
-
-    var oldTestRpc = 'https://rawtestrpc.metamask.io/'
-    var newTestRpc = 'https://testrpc.metamask.io/'
-    firstResult.config.provider.rpcTarget = oldTestRpc
-
-    var secondResult = migration3.migrate(firstResult)
-    assert.equal(secondResult.config.provider.rpcTarget, newTestRpc)
-
-    var thirdResult = migration4.migrate(secondResult)
-    assert.equal(secondResult.config.provider.rpcTarget, null)
-    assert.equal(secondResult.config.provider.type, 'testnet')
-
-    done()
+    return migration2.migrate(wallet1)
+    .then((firstResult) => {
+      assert.equal(firstResult.data.config.provider.type, 'rpc', 'provider should be rpc')
+      assert.equal(firstResult.data.config.provider.rpcTarget, 'https://rpc.metamask.io/', 'main provider should be our rpc')
+      firstResult.data.config.provider.rpcTarget = oldTestRpc
+      return migration3.migrate(firstResult)
+    }).then((secondResult) => {
+      assert.equal(secondResult.data.config.provider.rpcTarget, newTestRpc)
+      return migration4.migrate(secondResult)
+    }).then((thirdResult) => {
+      assert.equal(thirdResult.data.config.provider.rpcTarget, null)
+      assert.equal(thirdResult.data.config.provider.type, 'testnet')
+    })
+    
   })
 })
 
