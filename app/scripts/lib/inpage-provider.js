@@ -1,7 +1,7 @@
-const Streams = require('mississippi')
+const pipe = require('pump')
 const StreamProvider = require('web3-stream-provider')
+const LocalStorageStore = require('obs-store')
 const ObjectMultiplex = require('./obj-multiplex')
-const RemoteStore = require('./observable/remote')
 const createRandomId = require('./random-id')
 
 module.exports = MetamaskInpageProvider
@@ -10,33 +10,30 @@ function MetamaskInpageProvider (connectionStream) {
   const self = this
 
   // setup connectionStream multiplexing
-  var multiStream = ObjectMultiplex()
-  Streams.pipe(connectionStream, multiStream, connectionStream, function (err) {
-    let warningMsg = 'MetamaskInpageProvider - lost connection to MetaMask'
-    if (err) warningMsg += '\n' + err.stack
-    console.warn(warningMsg)
-  })
-  self.multiStream = multiStream
+  var multiStream = self.multiStream = ObjectMultiplex()
+  pipe(
+    connectionStream,
+    multiStream,
+    connectionStream,
+    (err) => logStreamDisconnectWarning('MetaMask', err)
+  )
 
-  // subscribe to metamask public config
-  var publicConfigStore = remoteStoreWithLocalStorageCache('MetaMask-Config')
-  var storeStream = publicConfigStore.createStream()
-  Streams.pipe(storeStream, multiStream.createStream('publicConfig'), storeStream, function (err) {
-    let warningMsg = 'MetamaskInpageProvider - lost connection to MetaMask publicConfig'
-    if (err) warningMsg += '\n' + err.stack
-    console.warn(warningMsg)
-  })
-  self.publicConfigStore = publicConfigStore
+  // subscribe to metamask public config (one-way)
+  self.publicConfigStore = new LocalStorageStore({ storageKey: 'MetaMask-Config' })
+  pipe(
+    multiStream.createStream('publicConfig'),
+    self.publicConfigStore,
+    (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
+  )
 
   // connect to async provider
-  var asyncProvider = new StreamProvider()
-  Streams.pipe(asyncProvider, multiStream.createStream('provider'), asyncProvider, function (err) {
-    let warningMsg = 'MetamaskInpageProvider - lost connection to MetaMask provider'
-    if (err) warningMsg += '\n' + err.stack
-    console.warn(warningMsg)
-  })
-  asyncProvider.on('error', console.error.bind(console))
-  self.asyncProvider = asyncProvider
+  const asyncProvider = self.asyncProvider = new StreamProvider()
+  pipe(
+    asyncProvider,
+    multiStream.createStream('provider'),
+    asyncProvider,
+    (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
+  )
 
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
@@ -72,13 +69,13 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     case 'eth_accounts':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.get().selectedAccount
+      selectedAccount = self.publicConfigStore.getState().selectedAccount
       result = selectedAccount ? [selectedAccount] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.get().selectedAccount
+      selectedAccount = self.publicConfigStore.getState().selectedAccount
       result = selectedAccount || '0x0000000000000000000000000000000000000000'
       break
 
@@ -115,30 +112,18 @@ MetamaskInpageProvider.prototype.isMetaMask = true
 
 // util
 
-function remoteStoreWithLocalStorageCache (storageKey) {
-  // read local cache
-  let initState
-  try {
-    initState = JSON.parse(localStorage[storageKey] || '{}')
-  } catch (err) {
-    initState = {}
-  }
-  // intialize store
-  const store = new RemoteStore(initState)
-  // write local cache
-  store.subscribe(function (state) {
-    localStorage[storageKey] = JSON.stringify(state)
-  })
-
-  return store
-}
-
 function eachJsonMessage (payload, transformFn) {
   if (Array.isArray(payload)) {
     return payload.map(transformFn)
   } else {
     return transformFn(payload)
   }
+}
+
+function logStreamDisconnectWarning(remoteLabel, err){
+  let warningMsg = `MetamaskInpageProvider - lost connection to ${remoteLabel}`
+  if (err) warningMsg += '\n' + err.stack
+  console.warn(warningMsg)
 }
 
 function noop () {}

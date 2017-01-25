@@ -1,6 +1,9 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
+const pipe = require('pump')
+const ObservableStore = require('obs-store')
+const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
@@ -13,9 +16,6 @@ const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
-const ObservableStore = require('./lib/observable/')
-const HostStore = require('./lib/observable/host')
-const synchronizeStore = require('./lib/observable/util/sync')
 const accountImporter = require('./account-import-strategies')
 
 const version = require('../manifest.json').version
@@ -258,18 +258,21 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = this.store.get()
-    var publicConfigStore = new HostStore(initPublicState, { readOnly: true })
+    const publicConfigStore = new ObservableStore()
 
     // sync publicConfigStore with transform
-    synchronizeStore(this.store, publicConfigStore, selectPublicState)
+    pipe(
+      this.store,
+      storeTransform(selectPublicState),
+      publicConfigStore
+    )
 
     function selectPublicState(state) {
-      let result = { selectedAccount: undefined }
+      const result = { selectedAccount: undefined }
       try {
         result.selectedAccount = state.config.selectedAccount
-      } catch (err) {
-        console.warn('Error in "selectPublicState": ' + err.message)
+      } catch (_) {
+        // thats fine, im sure it will be there next time...
       }
       return result
     }
@@ -314,9 +317,11 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts.showUnconfirmedMessage(msgParams, msgId)
   }
 
-  setupPublicConfig (stream) {
-    var storeStream = this.publicConfigStore.createStream()
-    stream.pipe(storeStream).pipe(stream)
+  setupPublicConfig (outStream) {
+    pipe(
+      this.publicConfigStore,
+      outStream
+    )
   }
 
   // Log blocks

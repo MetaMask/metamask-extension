@@ -2,10 +2,11 @@ const urlUtil = require('url')
 const Dnode = require('dnode')
 const eos = require('end-of-stream')
 const asyncQ = require('async-q')
+const pipe = require('pump')
+const LocalStorageStore = require('obs-store/lib/localStorage')
+const storeTransform = require('obs-store/lib/transform')
 const Migrator = require('./lib/migrator/')
-const migrations = require('./lib/migrations/')
-const LocalStorageStore = require('./lib/observable/local-storage')
-const synchronizeStore = require('./lib/observable/util/sync')
+const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
@@ -40,12 +41,12 @@ function loadStateFromPersistence() {
   let initialState = migrator.generateInitialState(firstTimeState)
   return asyncQ.waterfall([
     // read from disk
-    () => Promise.resolve(diskStore.get() || initialState),
+    () => Promise.resolve(diskStore.getState() || initialState),
     // migrate data
     (versionedData) => migrator.migrateData(versionedData),
     // write to disk
     (versionedData) => {
-      diskStore.put(versionedData)
+      diskStore.putState(versionedData)
       return Promise.resolve(versionedData)
     },
     // resolve to just data
@@ -70,11 +71,17 @@ function setupController (initState) {
   global.metamaskController = controller
 
   // setup state persistence
-  synchronizeStore(controller.store, diskStore, (state) => {
-    let versionedData = diskStore.get()
+  pipe(
+    controller.store,
+    storeTransform(versionifyData),
+    diskStore
+  )
+
+  function versionifyData(state) {
+    let versionedData = diskStore.getState()
     versionedData.data = state
     return versionedData
-  })
+  }
 
   //
   // connect to other contexts

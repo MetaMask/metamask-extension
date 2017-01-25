@@ -1,9 +1,9 @@
 const async = require('async')
 const assert = require('assert')
+const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const ConfigManager = require('../../app/scripts/lib/config-manager')
-const ObservableStore = require('../../app/scripts/lib/observable/')
 const delegateCallCode = require('../lib/example-code.json').delegateCallCode
 
 // The old way:

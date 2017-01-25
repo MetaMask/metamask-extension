@@ -18,6 +18,8 @@ if (!global.localStorage) global.localStorage
 const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
+const pipe = require('mississippi').pipe
+const LocalStorageStore = require('obs-store/lib/localStorage')
 const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
@@ -25,8 +27,6 @@ const states = require('./development/states')
 const Selector = require('./development/selector')
 const MetamaskController = require('./app/scripts/metamask-controller')
 const firstTimeState = require('./app/scripts/first-time-state')
-const LocalStorageStore = require('./app/scripts/lib/observable/local-storage')
-const synchronizeStore = require('./app/scripts/lib/observable/util/sync')
 const extension = require('./development/mockExtension')
 const noop = function () {}
 
@@ -61,8 +61,8 @@ const injectCss = require('inject-css')
 
 let dataStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 // initial state for first time users
-if (!dataStore.get()) {
-  dataStore.put(firstTimeState)
+if (!dataStore.getState()) {
+  dataStore.putState(firstTimeState)
 }
 
 const controller = new MetamaskController({
@@ -71,11 +71,14 @@ const controller = new MetamaskController({
   unlockAccountMessage: noop,
   showUnapprovedTx: noop,
   // initial state
-  initState: dataStore.get(),
+  initState: dataStore.getState(),
 })
 
 // setup state persistence
-synchronizeStore(controller.store, dataStore)
+pipe(
+  controller.store,
+  dataStore
+)
 
 //
 // User Interface

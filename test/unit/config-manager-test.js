@@ -1,27 +1,23 @@
 // polyfill fetch
 global.fetch = global.fetch || require('isomorphic-fetch')
-// pollyfill localStorage support into JSDom
-global.localStorage = global.localStorage || polyfillLocalStorage()
 
 const assert = require('assert')
 const extend = require('xtend')
 const rp = require('request-promise')
 const nock = require('nock')
 const configManagerGen = require('../lib/mock-config-manager')
-const STORAGE_KEY = 'metamask-persistance-key'
 
 describe('config-manager', function() {
   var configManager
 
   beforeEach(function() {
-    global.localStorage.clear()
     configManager = configManagerGen()
   })
 
   describe('currency conversions', function() {
 
     describe('#getCurrentFiat', function() {
-      it('should return false if no previous key exists', function() {
+      it('should return undefined if no previous key exists', function() {
         var result = configManager.getCurrentFiat()
         assert.ok(!result)
       })
@@ -29,14 +25,14 @@ describe('config-manager', function() {
 
     describe('#setCurrentFiat', function() {
       it('should make getCurrentFiat return true once set', function() {
-        assert.equal(configManager.getCurrentFiat(), false)
+        assert.equal(configManager.getCurrentFiat(), undefined)
         configManager.setCurrentFiat('USD')
         var result = configManager.getCurrentFiat()
         assert.equal(result, 'USD')
       })
 
       it('should work with other currencies as well', function() {
-        assert.equal(configManager.getCurrentFiat(), false)
+        assert.equal(configManager.getCurrentFiat(), undefined)
         configManager.setCurrentFiat('JPY')
         var result = configManager.getCurrentFiat()
         assert.equal(result, 'JPY')
@@ -44,7 +40,7 @@ describe('config-manager', function() {
     })
 
     describe('#getConversionRate', function() {
-      it('should return false if non-existent', function() {
+      it('should return undefined if non-existent', function() {
         var result = configManager.getConversionRate()
         assert.ok(!result)
       })
@@ -57,7 +53,7 @@ describe('config-manager', function() {
           .get('/api/ticker/eth-USD')
           .reply(200, '{"ticker":{"base":"ETH","target":"USD","price":"11.02456145","volume":"44948.91745289","change":"-0.01472534"},"timestamp":1472072136,"success":true,"error":""}')
 
-        assert.equal(configManager.getConversionRate(), false)
+        assert.equal(configManager.getConversionRate(), 0)
         var promise = new Promise(
           function (resolve, reject) {
             configManager.setCurrentFiat('USD')
@@ -78,7 +74,7 @@ describe('config-manager', function() {
 
       it('should work for JPY as well.', function() {
         this.timeout(15000)
-        assert.equal(configManager.getConversionRate(), false)
+        assert.equal(configManager.getConversionRate(), 0)
 
         var jpyMock = nock('https://www.cryptonator.com')
           .get('/api/ticker/eth-JPY')
@@ -106,7 +102,7 @@ describe('config-manager', function() {
   describe('confirmation', function() {
 
     describe('#getConfirmedDisclaimer', function() {
-      it('should return false if no previous key exists', function() {
+      it('should return undefined if no previous key exists', function() {
         var result = configManager.getConfirmedDisclaimer()
         assert.ok(!result)
       })
@@ -114,16 +110,16 @@ describe('config-manager', function() {
 
     describe('#setConfirmedDisclaimer', function() {
       it('should make getConfirmedDisclaimer return true once set', function() {
-        assert.equal(configManager.getConfirmedDisclaimer(), false)
+        assert.equal(configManager.getConfirmedDisclaimer(), undefined)
         configManager.setConfirmedDisclaimer(true)
         var result = configManager.getConfirmedDisclaimer()
         assert.equal(result, true)
       })
 
-      it('should be able to set false', function() {
-        configManager.setConfirmedDisclaimer(false)
+      it('should be able to set undefined', function() {
+        configManager.setConfirmedDisclaimer(undefined)
         var result = configManager.getConfirmedDisclaimer()
-        assert.equal(result, false)
+        assert.equal(result, undefined)
       })
 
       it('should persist to local storage', function() {
@@ -240,7 +236,3 @@ describe('config-manager', function() {
     })
   })
 })
-
-function polyfillLocalStorage(){
-  return Object.create({ clear: function(){ global.localStorage = polyfillLocalStorage() } })
-}

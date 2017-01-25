@@ -1,4 +1,4 @@
-const ObservableStore = require('../../../app/scripts/lib/observable/')
+const ObservableStore = require('obs-store')
 const ConfigManager = require('../../../app/scripts/lib/config-manager')
 const IdStoreMigrator = require('../../../app/scripts/lib/idStore-migrator')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')

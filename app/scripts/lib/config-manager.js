@@ -21,14 +21,14 @@ function ConfigManager (opts) {
 }
 
 ConfigManager.prototype.setConfig = function (config) {
-  var data = this.store.get()
+  var data = this.getData()
   data.config = config
   this.setData(data)
   this._emitUpdates(config)
 }
 
 ConfigManager.prototype.getConfig = function () {
-  var data = this.store.get()
+  var data = this.getData()
   if ('config' in data) {
     return data.config
   } else {
@@ -71,15 +71,15 @@ ConfigManager.prototype.getProvider = function () {
 }
 
 ConfigManager.prototype.setData = function (data) {
-  this.store.put(data)
+  this.store.putState(data)
 }
 
 ConfigManager.prototype.getData = function () {
-  return this.store.get()
+  return this.store.getState()
 }
 
 ConfigManager.prototype.setWallet = function (wallet) {
-  var data = this.store.get()
+  var data = this.getData()
   data.wallet = wallet
   this.setData(data)
 }
@@ -96,11 +96,11 @@ ConfigManager.prototype.getVault = function () {
 }
 
 ConfigManager.prototype.getKeychains = function () {
-  return this.store.get().keychains || []
+  return this.getData().keychains || []
 }
 
 ConfigManager.prototype.setKeychains = function (keychains) {
-  var data = this.store.get()
+  var data = this.getData()
   data.keychains = keychains
   this.setData(data)
 }
@@ -117,19 +117,19 @@ ConfigManager.prototype.setSelectedAccount = function (address) {
 }
 
 ConfigManager.prototype.getWallet = function () {
-  return this.store.get().wallet
+  return this.getData().wallet
 }
 
 // Takes a boolean
 ConfigManager.prototype.setShowSeedWords = function (should) {
-  var data = this.store.get()
+  var data = this.getData()
   data.showSeedWords = should
   this.setData(data)
 }
 
 
 ConfigManager.prototype.getShouldShowSeedWords = function () {
-  var data = this.store.get()
+  var data = this.getData()
   return data.showSeedWords
 }
 
@@ -141,7 +141,7 @@ ConfigManager.prototype.setSeedWords = function (words) {
 
 ConfigManager.prototype.getSeedWords = function () {
   var data = this.getData()
-  return ('seedWords' in data) && data.seedWords
+  return data.seedWords
 }
 
 ConfigManager.prototype.getCurrentRpcAddress = function () {
@@ -163,16 +163,12 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
   }
 }
 
-ConfigManager.prototype.setData = function (data) {
-  this.store.put(data)
-}
-
 //
 // Tx
 //
 
 ConfigManager.prototype.getTxList = function () {
-  var data = this.store.get()
+  var data = this.getData()
   if (data.transactions !== undefined) {
     return data.transactions
   } else {
@@ -181,7 +177,7 @@ ConfigManager.prototype.getTxList = function () {
 }
 
 ConfigManager.prototype.setTxList = function (txList) {
-  var data = this.store.get()
+  var data = this.getData()
   data.transactions = txList
   this.setData(data)
 }
@@ -214,7 +210,7 @@ ConfigManager.prototype.setNicknameForWallet = function (account, nickname) {
 
 ConfigManager.prototype.getSalt = function () {
   var data = this.getData()
-  return ('salt' in data) && data.salt
+  return data.salt
 }
 
 ConfigManager.prototype.setSalt = function (salt) {
@@ -248,7 +244,7 @@ ConfigManager.prototype.setConfirmedDisclaimer = function (confirmed) {
 
 ConfigManager.prototype.getConfirmedDisclaimer = function () {
   var data = this.getData()
-  return ('isDisclaimerConfirmed' in data) && data.isDisclaimerConfirmed
+  return data.isDisclaimerConfirmed
 }
 
 ConfigManager.prototype.setTOSHash = function (hash) {
@@ -259,7 +255,7 @@ ConfigManager.prototype.setTOSHash = function (hash) {
 
 ConfigManager.prototype.getTOSHash = function () {
   var data = this.getData()
-  return ('TOSHash' in data) && data.TOSHash
+  return data.TOSHash
 }
 
 ConfigManager.prototype.setCurrentFiat = function (currency) {
@@ -270,7 +266,7 @@ ConfigManager.prototype.setCurrentFiat = function (currency) {
 
 ConfigManager.prototype.getCurrentFiat = function () {
   var data = this.getData()
-  return ('fiatCurrency' in data) && data.fiatCurrency
+  return data.fiatCurrency
 }
 
 ConfigManager.prototype.updateConversionRate = function () {
@@ -301,12 +297,12 @@ ConfigManager.prototype.setConversionDate = function (datestring) {
 
 ConfigManager.prototype.getConversionRate = function () {
   var data = this.getData()
-  return (('conversionRate' in data) && data.conversionRate) || 0
+  return (data.conversionRate) || 0
 }
 
 ConfigManager.prototype.getConversionDate = function () {
   var data = this.getData()
-  return (('conversionDate' in data) && data.conversionDate) || 'N/A'
+  return (data.conversionDate) || 'N/A'
 }
 
 ConfigManager.prototype.getShapeShiftTxList = function () {
@@ -345,7 +341,7 @@ ConfigManager.prototype.createShapeShiftTx = function (depositAddress, depositTy
 
 ConfigManager.prototype.getGasMultiplier = function () {
   var data = this.getData()
-  return ('gasMultiplier' in data) && data.gasMultiplier
+  return data.gasMultiplier
 }
 
 ConfigManager.prototype.setGasMultiplier = function (gasMultiplier) {
