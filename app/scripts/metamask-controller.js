@@ -5,12 +5,12 @@ const pipe = require('pump')
 const ObservableStore = require('obs-store')
 const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
+const EthQuery = require('eth-query')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
-const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
@@ -29,30 +29,33 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // observable state store
     this.store = new ObservableStore(opts.initState)
+    
     // config manager
     this.configManager = new ConfigManager({
       store: this.store,
     })
+    this.configManager.updateConversionRate()
+
+    // rpc provider
+    this.provider = this.initializeProvider(opts)
+    this.provider.on('block', this.processBlock.bind(this))
+    this.provider.on('error', this.getNetwork.bind(this))
+
+    // eth data query tools
+    this.ethQuery = new EthQuery(this.provider)
+    this.ethStore = new EthStore(this.provider)
+    
     // key mgmt
     this.keyringController = new KeyringController({
+      ethStore: this.ethStore,
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
     this.keyringController.on('newAccount', (account) => {
       autoFaucet(account)
     })
-    // notices
-    this.noticeController = new NoticeController({
-      configManager: this.configManager,
-    })
-    this.noticeController.updateNoticesList()
-    // to be uncommented when retrieving notices from a remote server.
-    // this.noticeController.startPolling()
-    this.provider = this.initializeProvider(opts)
-    this.ethStore = new EthStore(this.provider)
-    this.keyringController.setStore(this.ethStore)
-    this.getNetwork()
-    this.messageManager = messageManager
+
+    // tx mgmt
     this.txManager = new TxManager({
       txList: this.configManager.getTxList(),
       txHistoryLimit: 40,
@@ -64,11 +67,18 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.provider,
     })
-    this.publicConfigStore = this.initPublicConfigStore()
+    
+    // notices
+    this.noticeController = new NoticeController({
+      configManager: this.configManager,
+    })
+    this.noticeController.updateNoticesList()
+    // to be uncommented when retrieving notices from a remote server.
+    // this.noticeController.startPolling()
 
-    var currentFiat = this.configManager.getCurrentFiat() || 'USD'
-    this.configManager.setCurrentFiat(currentFiat)
-    this.configManager.updateConversionRate()
+    this.getNetwork()
+    this.messageManager = messageManager
+    this.publicConfigStore = this.initPublicConfigStore()
 
     this.checkTOSChange()
 
@@ -79,6 +89,7 @@ module.exports = class MetamaskController extends EventEmitter {
       configManager: this.configManager,
     })
 
+    // manual state subscriptions
     this.ethStore.on('update', this.sendUpdate.bind(this))
     this.keyringController.on('update', this.sendUpdate.bind(this))
     this.txManager.on('update', this.sendUpdate.bind(this))
@@ -221,10 +232,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  initializeProvider (opts) {
-    const keyringController = this.keyringController
-
-    var providerOpts = {
+  initializeProvider () {
+    let provider = MetaMaskProvider({
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
@@ -232,8 +241,8 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        var selectedAccount = this.configManager.getSelectedAccount()
-        var result = selectedAccount ? [selectedAccount] : []
+        let selectedAccount = this.configManager.getSelectedAccount()
+        let result = selectedAccount ? [selectedAccount] : []
         cb(null, result)
       },
       // tx signing
@@ -241,18 +250,10 @@ module.exports = class MetamaskController extends EventEmitter {
       // msg signing
       approveMessage: this.newUnsignedMessage.bind(this),
       signMessage: (...args) => {
-        keyringController.signMessage(...args)
+        this.keyringController.signMessage(...args)
         this.sendUpdate()
       },
-    }
-
-    var provider = MetaMaskProvider(providerOpts)
-    var web3 = new Web3(provider)
-    this.web3 = web3
-    keyringController.web3 = web3
-    provider.on('block', this.processBlock.bind(this))
-    provider.on('error', this.getNetwork.bind(this))
-
+    })
     return provider
   }
 
@@ -449,7 +450,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.sendUpdate()
     }
 
-    this.web3.version.getNetwork((err, network) => {
+    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) {
         this.state.network = 'loading'
         return this.sendUpdate()
