@@ -16,23 +16,13 @@ describe('config-manager', function() {
 
   describe('currency conversions', function() {
 
-    describe('#getCurrentFiat', function() {
-      it('should return undefined if no previous key exists', function() {
-        var result = configManager.getCurrentFiat()
-        assert.ok(!result)
-      })
-    })
-
     describe('#setCurrentFiat', function() {
-      it('should make getCurrentFiat return true once set', function() {
-        assert.equal(configManager.getCurrentFiat(), undefined)
-        configManager.setCurrentFiat('USD')
-        var result = configManager.getCurrentFiat()
-        assert.equal(result, 'USD')
+      it('should return USD as default', function() {
+        assert.equal(configManager.getCurrentFiat(), 'USD')
       })
 
-      it('should work with other currencies as well', function() {
-        assert.equal(configManager.getCurrentFiat(), undefined)
+      it('should be able to set to other currency', function() {
+        assert.equal(configManager.getCurrentFiat(), 'USD')
         configManager.setCurrentFiat('JPY')
         var result = configManager.getCurrentFiat()
         assert.equal(result, 'JPY')
