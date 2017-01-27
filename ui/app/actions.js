@@ -270,10 +270,9 @@ function requestRevealSeed (password) {
 function addNewKeyring (type, opts) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addNewKeyring(type, opts, (err, newState) => {
+    background.addNewKeyring(type, opts, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.updateMetamaskState(newState))
       dispatch(actions.showAccountsPage())
     })
   }

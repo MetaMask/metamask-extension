@@ -10,7 +10,7 @@
     "dev": "gulp dev --debug",
     "disc": "gulp disc --debug",
     "dist": "gulp dist --disableLiveReload",
-    "test": "npm run fastTest && npm run ci && npm run lint",
+    "test": "npm run lint && npm run fastTest && npm run ci",
     "fastTest": "METAMASK_ENV=test mocha --require test/helper.js --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "watch": "mocha watch --compilers js:babel-register --recursive \"test/unit/**/*.js\"",
     "genStates": "node development/genStates.js",

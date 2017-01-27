@@ -1,4 +1,5 @@
 const Through = require('through2')
+const endOfStream = require('end-of-stream')
 const ObjectMultiplex = require('./obj-multiplex')
 
 module.exports = {
@@ -24,11 +25,11 @@ function jsonStringifyStream () {
 function setupMultiplex (connectionStream) {
   var mx = ObjectMultiplex()
   connectionStream.pipe(mx).pipe(connectionStream)
-  mx.on('error', function (err) {
-    console.error(err)
+  endOfStream(mx, function (err) {
+    if (err) console.error(err)
   })
-  connectionStream.on('error', function (err) {
-    console.error(err)
+  endOfStream(connectionStream, function (err) {
+    if (err) console.error(err)
     mx.destroy()
   })
   return mx

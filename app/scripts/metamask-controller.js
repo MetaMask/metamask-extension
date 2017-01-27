@@ -2,11 +2,14 @@ const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
 const pipe = require('pump')
+const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
+const streamIntoProvider = require('web3-stream-provider/handler')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
@@ -95,142 +98,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txManager.on('update', this.sendUpdate.bind(this))
   }
 
-  getState () {
-    return this.keyringController.getState()
-    .then((keyringControllerState) => {
-      return extend(
-        this.state,
-        this.ethStore.getState(),
-        this.configManager.getConfig(),
-        this.txManager.getState(),
-        keyringControllerState,
-        this.noticeController.getState(), {
-          lostAccounts: this.configManager.getLostAccounts(),
-        }
-      )
-    })
-  }
-
-  getApi () {
-    const keyringController = this.keyringController
-    const txManager = this.txManager
-    const noticeController = this.noticeController
-
-    return {
-      getState: nodeify(this.getState.bind(this)),
-      setRpcTarget: this.setRpcTarget.bind(this),
-      setProviderType: this.setProviderType.bind(this),
-      useEtherscanProvider: this.useEtherscanProvider.bind(this),
-      agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
-      resetDisclaimer: this.resetDisclaimer.bind(this),
-      setCurrentFiat: this.setCurrentFiat.bind(this),
-      setTOSHash: this.setTOSHash.bind(this),
-      checkTOSChange: this.checkTOSChange.bind(this),
-      setGasMultiplier: this.setGasMultiplier.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
-
-      // forward directly to keyringController
-      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
-      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
-      // Adds the current vault's seed words to the UI's state tree.
-      //
-      // Used when creating a first vault, to allow confirmation.
-      // Also used when revealing the seed words in the confirmation view.
-      placeSeedWords: (cb) => {
-        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
-        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-        primaryKeyring.serialize()
-        .then((serialized) => {
-          const seedWords = serialized.mnemonic
-          this.configManager.setSeedWords(seedWords)
-          promiseToCallback(this.keyringController.fullUpdate())(cb)
-        })
-      },
-      clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
-      submitPassword: (password, cb) => {
-        this.migrateOldVaultIfAny(password)
-        .then(keyringController.submitPassword.bind(keyringController, password))
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
-      },
-      addNewKeyring: (type, opts, cb) => {
-        keyringController.addNewKeyring(type, opts)
-        .then(() => keyringController.fullUpdate())
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
-      },
-      addNewAccount: (cb) => {
-        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
-        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-        promiseToCallback(keyringController.addNewAccount(primaryKeyring))(cb)
-      },
-      importAccountWithStrategy: (strategy, args, cb) => {
-        accountImporter.importAccount(strategy, args)
-        .then((privateKey) => {
-          return keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
-        })
-        .then(keyring => keyring.getAccounts())
-        .then((accounts) => keyringController.setSelectedAccount(accounts[0]))
-        .then(() => { cb(null, keyringController.fullUpdate()) })
-        .catch((reason) => { cb(reason) })
-      },
-      setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
-      saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
-      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
-
-      // signing methods
-      approveTransaction: txManager.approveTransaction.bind(txManager),
-      cancelTransaction: txManager.cancelTransaction.bind(txManager),
-      signMessage: keyringController.signMessage.bind(keyringController),
-      cancelMessage: keyringController.cancelMessage.bind(keyringController),
-
-      // coinbase
-      buyEth: this.buyEth.bind(this),
-      // shapeshift
-      createShapeShiftTx: this.createShapeShiftTx.bind(this),
-      // notices
-      checkNotices: noticeController.updateNoticesList.bind(noticeController),
-      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
-    }
-  }
-
-  setupProviderConnection (stream, originDomain) {
-    stream.on('data', this.onRpcRequest.bind(this, stream, originDomain))
-  }
-
-  onRpcRequest (stream, originDomain, request) {
-    // handle rpc request
-    this.provider.sendAsync(request, function onPayloadHandled (err, response) {
-      logger(err, request, response)
-      if (response) {
-        try {
-          stream.write(response)
-        } catch (err) {
-          logger(err)
-        }
-      }
-    })
-
-    function logger (err, request, response) {
-      if (err) return console.error(err)
-      if (!request.isMetamaskInternal) {
-        if (global.METAMASK_DEBUG) {
-          console.log(`RPC (${originDomain}):`, request, '->', response)
-        }
-        if (response.error) {
-          console.error('Error in RPC response:\n', response.error)
-        }
-      }
-    }
-  }
-
-  sendUpdate () {
-    this.getState()
-    .then((state) => {
-      this.emit('update', state)
-    })
-  }
+  //
+  // Constructor helpers
+  //
 
   initializeProvider () {
     let provider = MetaMaskProvider({
@@ -281,6 +151,192 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
+  //
+  // State Management
+  //
+
+  getState () {
+    return this.keyringController.getState()
+    .then((keyringControllerState) => {
+      return extend(
+        this.state,
+        this.ethStore.getState(),
+        this.configManager.getConfig(),
+        this.txManager.getState(),
+        keyringControllerState,
+        this.noticeController.getState(), {
+          lostAccounts: this.configManager.getLostAccounts(),
+        }
+      )
+    })
+  }
+
+  //
+  // Remote Features
+  //
+
+  getApi () {
+    const keyringController = this.keyringController
+    const txManager = this.txManager
+    const noticeController = this.noticeController
+
+    return {
+      // etc
+      getState:              nodeify(this.getState.bind(this)),
+      setRpcTarget:          this.setRpcTarget.bind(this),
+      setProviderType:       this.setProviderType.bind(this),
+      useEtherscanProvider:  this.useEtherscanProvider.bind(this),
+      agreeToDisclaimer:     this.agreeToDisclaimer.bind(this),
+      resetDisclaimer:       this.resetDisclaimer.bind(this),
+      setCurrentFiat:        this.setCurrentFiat.bind(this),
+      setTOSHash:            this.setTOSHash.bind(this),
+      checkTOSChange:        this.checkTOSChange.bind(this),
+      setGasMultiplier:      this.setGasMultiplier.bind(this),
+      markAccountsFound:     this.markAccountsFound.bind(this),
+      // coinbase
+      buyEth: this.buyEth.bind(this),
+      // shapeshift
+      createShapeShiftTx: this.createShapeShiftTx.bind(this),
+      
+      // primary HD keyring management
+      addNewAccount:              this.addNewAccount.bind(this),
+      placeSeedWords:             this.placeSeedWords.bind(this),
+      clearSeedWordCache:         this.clearSeedWordCache.bind(this),
+      importAccountWithStrategy:  this.importAccountWithStrategy.bind(this),
+
+      // vault management
+      submitPassword: this.submitPassword.bind(this),
+
+      // KeyringController
+      setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
+      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
+      createNewVaultAndRestore:  nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
+      addNewKeyring:             nodeify(keyringController.addNewKeyring).bind(keyringController),
+      setSelectedAccount:        nodeify(keyringController.setSelectedAccount).bind(keyringController),
+      saveAccountLabel:          nodeify(keyringController.saveAccountLabel).bind(keyringController),
+      exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
+
+      // signing methods
+      approveTransaction:    txManager.approveTransaction.bind(txManager),
+      cancelTransaction:     txManager.cancelTransaction.bind(txManager),
+      signMessage:           keyringController.signMessage.bind(keyringController),
+      cancelMessage:         keyringController.cancelMessage.bind(keyringController),
+
+      // notices
+      checkNotices:   noticeController.updateNoticesList.bind(noticeController),
+      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
+    }
+  }
+
+  setupUntrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+    this.setupPublicConfig(mx.createStream('publicConfig'))
+  }
+
+  setupTrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    this.setupControllerConnection(mx.createStream('controller'))
+    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  setupControllerConnection (outStream) {
+    const api = this.getApi()
+    const dnode = Dnode(api)
+    outStream.pipe(dnode).pipe(outStream)
+    dnode.on('remote', (remote) => {
+      // push updates to popup
+      const sendUpdate = remote.sendUpdate.bind(remote)
+      this.on('update', sendUpdate)
+    })
+  }
+
+  setupProviderConnection (outStream, originDomain) {
+    streamIntoProvider(outStream, this.provider, logger)
+    function logger (err, request, response) {
+      if (err) return console.error(err)
+      if (response.error) {
+        console.error('Error in RPC response:\n', response.error)
+      }
+      if (request.isMetamaskInternal) return
+      if (global.METAMASK_DEBUG) {
+        console.log(`RPC (${originDomain}):`, request, '->', response)
+      }
+    }
+  }
+
+  sendUpdate () {
+    this.getState()
+    .then((state) => {
+      this.emit('update', state)
+    })
+  }
+
+  //
+  // Vault Management
+  //
+
+  submitPassword (password, cb) {
+    this.migrateOldVaultIfAny(password)
+    .then(this.keyringController.submitPassword.bind(this.keyringController, password))
+    .then((newState) => { cb(null, newState) })
+    .catch((reason) => { cb(reason) })
+  }
+
+  //
+  // Opinionated Keyring Management
+  //
+
+  addNewAccount (cb) {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    promiseToCallback(this.keyringController.addNewAccount(primaryKeyring))(cb)
+  }
+
+  // Adds the current vault's seed words to the UI's state tree.
+  //
+  // Used when creating a first vault, to allow confirmation.
+  // Also used when revealing the seed words in the confirmation view.
+  placeSeedWords (cb) {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    primaryKeyring.serialize()
+    .then((serialized) => {
+      const seedWords = serialized.mnemonic
+      this.configManager.setSeedWords(seedWords)
+      promiseToCallback(this.keyringController.fullUpdate())(cb)
+    })
+  }
+
+  // ClearSeedWordCache
+  //
+  // Removes the primary account's seed words from the UI's state tree,
+  // ensuring they are only ever available in the background process.
+  clearSeedWordCache (cb) {
+    this.configManager.setSeedWords(null)
+    cb(null, this.configManager.getSelectedAccount())
+  }
+
+  importAccountWithStrategy (strategy, args, cb) {
+    accountImporter.importAccount(strategy, args)
+    .then((privateKey) => {
+      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    })
+    .then(keyring => keyring.getAccounts())
+    .then((accounts) => this.keyringController.setSelectedAccount(accounts[0]))
+    .then(() => { cb(null, this.keyringController.fullUpdate()) })
+    .catch((reason) => { cb(reason) })
+  }
+
+
+  //
+  // Identity Management
+  //
+
   newUnapprovedTransaction (txParams, cb) {
     const self = this
     self.txManager.addUnapprovedTransaction(txParams, (err, txMeta) => {
@@ -321,9 +377,7 @@ module.exports = class MetamaskController extends EventEmitter {
   setupPublicConfig (outStream) {
     pipe(
       this.publicConfigStore,
-      outStream,
-      // cleanup on disconnect
-      () => this.publicConfigStore.unpipe(outStream)
+      outStream
     )
   }
 
