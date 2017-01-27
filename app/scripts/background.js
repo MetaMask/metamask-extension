@@ -122,17 +122,16 @@ function setupController (initState) {
   // remote features
   //
 
-  function setupControllerConnection (stream) {
-    controller.stream = stream
+  function setupControllerConnection (outStream) {
     var api = controller.getApi()
     var dnode = Dnode(api)
-    stream.pipe(dnode).pipe(stream)
+    outStream.pipe(dnode).pipe(outStream)
     dnode.on('remote', (remote) => {
       // push updates to popup
       var sendUpdate = remote.sendUpdate.bind(remote)
       controller.on('update', sendUpdate)
       // teardown on disconnect
-      eos(stream, () => {
+      eos(outStream, () => {
         controller.removeListener('update', sendUpdate)
         popupIsOpen = false
       })
