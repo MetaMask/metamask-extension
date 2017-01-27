@@ -204,8 +204,8 @@ module.exports = class KeyringController extends EventEmitter {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)
     })
-    .then(() => { return this.password })
-    .then(this.persistAllKeyrings.bind(this))
+    .then(() => this.persistAllKeyrings())
+    .then(() => this.fullUpdate())
     .then(() => {
       return keyring
     })
