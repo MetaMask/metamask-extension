@@ -98,6 +98,63 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txManager.on('update', this.sendUpdate.bind(this))
   }
 
+  //
+  // Constructor helpers
+  //
+
+  initializeProvider () {
+    let provider = MetaMaskProvider({
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      rpcUrl: this.configManager.getCurrentRpcAddress(),
+      // account mgmt
+      getAccounts: (cb) => {
+        let selectedAccount = this.configManager.getSelectedAccount()
+        let result = selectedAccount ? [selectedAccount] : []
+        cb(null, result)
+      },
+      // tx signing
+      processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
+      // msg signing
+      approveMessage: this.newUnsignedMessage.bind(this),
+      signMessage: (...args) => {
+        this.keyringController.signMessage(...args)
+        this.sendUpdate()
+      },
+    })
+    return provider
+  }
+
+  initPublicConfigStore () {
+    // get init state
+    const publicConfigStore = new ObservableStore()
+
+    // sync publicConfigStore with transform
+    pipe(
+      this.store,
+      storeTransform(selectPublicState),
+      publicConfigStore
+    )
+
+    function selectPublicState(state) {
+      const result = { selectedAccount: undefined }
+      try {
+        result.selectedAccount = state.config.selectedAccount
+      } catch (_) {
+        // thats fine, im sure it will be there next time...
+      }
+      return result
+    }
+
+    return publicConfigStore
+  }
+
+  //
+  // Constructor helpers
+  //
+
   getState () {
     return this.keyringController.getState()
     .then((keyringControllerState) => {
@@ -113,6 +170,10 @@ module.exports = class MetamaskController extends EventEmitter {
       )
     })
   }
+
+  //
+  // Remote Features
+  //
 
   getApi () {
     const keyringController = this.keyringController
@@ -251,55 +312,6 @@ module.exports = class MetamaskController extends EventEmitter {
     .then((state) => {
       this.emit('update', state)
     })
-  }
-
-  initializeProvider () {
-    let provider = MetaMaskProvider({
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
-      rpcUrl: this.configManager.getCurrentRpcAddress(),
-      // account mgmt
-      getAccounts: (cb) => {
-        let selectedAccount = this.configManager.getSelectedAccount()
-        let result = selectedAccount ? [selectedAccount] : []
-        cb(null, result)
-      },
-      // tx signing
-      processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
-      // msg signing
-      approveMessage: this.newUnsignedMessage.bind(this),
-      signMessage: (...args) => {
-        this.keyringController.signMessage(...args)
-        this.sendUpdate()
-      },
-    })
-    return provider
-  }
-
-  initPublicConfigStore () {
-    // get init state
-    const publicConfigStore = new ObservableStore()
-
-    // sync publicConfigStore with transform
-    pipe(
-      this.store,
-      storeTransform(selectPublicState),
-      publicConfigStore
-    )
-
-    function selectPublicState(state) {
-      const result = { selectedAccount: undefined }
-      try {
-        result.selectedAccount = state.config.selectedAccount
-      } catch (_) {
-        // thats fine, im sure it will be there next time...
-      }
-      return result
-    }
-
-    return publicConfigStore
   }
 
   newUnapprovedTransaction (txParams, cb) {
