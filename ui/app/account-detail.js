@@ -123,8 +123,6 @@ AccountDetailScreen.prototype.render = function () {
               h('.flex-row', {
                 style: {
                   justifyContent: 'flex-end',
-                  position: 'relative',
-                  bottom: '15px',
                 },
               }, [
 
