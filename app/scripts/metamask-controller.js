@@ -146,7 +146,14 @@ module.exports = class MetamaskController extends EventEmitter {
           promiseToCallback(this.keyringController.fullUpdate())(cb)
         })
       },
-      clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
+      // ClearSeedWordCache
+      //
+      // Removes the primary account's seed words from the UI's state tree,
+      // ensuring they are only ever available in the background process.
+      clearSeedWordCache: (cb) => {
+        this.configManager.setSeedWords(null)
+        cb(null, this.configManager.getSelectedAccount())
+      },
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       submitPassword: (password, cb) => {
         this.migrateOldVaultIfAny(password)
@@ -321,9 +328,7 @@ module.exports = class MetamaskController extends EventEmitter {
   setupPublicConfig (outStream) {
     pipe(
       this.publicConfigStore,
-      outStream,
-      // cleanup on disconnect
-      () => this.publicConfigStore.unpipe(outStream)
+      outStream
     )
   }
 

@@ -154,17 +154,6 @@ module.exports = class KeyringController extends EventEmitter {
     .then(this.fullUpdate.bind(this))
   }
 
-  // ClearSeedWordCache
-  //
-  // returns Promise( @string currentSelectedAccount )
-  //
-  // Removes the current vault's seed words from the UI's state tree,
-  // ensuring they are only ever available in the background process.
-  clearSeedWordCache () {
-    this.configManager.setSeedWords(null)
-    return Promise.resolve(this.configManager.getSelectedAccount())
-  }
-
   // Set Locked
   // returns Promise( @object state )
   //
