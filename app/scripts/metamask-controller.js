@@ -256,7 +256,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupProviderConnection (outStream, originDomain) {
-    streamIntoProvider(outStream, originDomain, logger)
+    streamIntoProvider(outStream, this.provider, logger)
     function logger (err, request, response) {
       if (err) return console.error(err)
       if (response.error) {
