@@ -321,7 +321,9 @@ module.exports = class MetamaskController extends EventEmitter {
   setupPublicConfig (outStream) {
     pipe(
       this.publicConfigStore,
-      outStream
+      outStream,
+      // cleanup on disconnect
+      () => this.publicConfigStore.unpipe(outStream)
     )
   }
 
