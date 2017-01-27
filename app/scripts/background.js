@@ -1,6 +1,5 @@
 const urlUtil = require('url')
-const Dnode = require('dnode')
-const eos = require('end-of-stream')
+const endOfStream = require('end-of-stream')
 const asyncQ = require('async-q')
 const pipe = require('pump')
 const LocalStorageStore = require('obs-store/lib/localStorage')
@@ -10,7 +9,6 @@ const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
 const messageManager = require('./lib/message-manager')
-const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 const firstTimeState = require('./first-time-state')
@@ -93,49 +91,19 @@ function setupController (initState) {
     var portStream = new PortStream(remotePort)
     if (isMetaMaskInternalProcess) {
       // communication with popup
-      popupIsOpen = remotePort.name === 'popup'
-      setupTrustedCommunication(portStream, 'MetaMask', remotePort.name)
+      popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
+      controller.setupTrustedCommunication(portStream, 'MetaMask', remotePort.name)
+      // record popup as closed
+      if (remotePort.name === 'popup') {
+        endOfStream(portStream, () => {
+          popupIsOpen = false
+        })
+      }
     } else {
       // communication with page
       var originDomain = urlUtil.parse(remotePort.sender.url).hostname
-      setupUntrustedCommunication(portStream, originDomain)
+      controller.setupUntrustedCommunication(portStream, originDomain)
     }
-  }
-
-  function setupUntrustedCommunication (connectionStream, originDomain) {
-    // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
-    // connect features
-    controller.setupProviderConnection(mx.createStream('provider'), originDomain)
-    controller.setupPublicConfig(mx.createStream('publicConfig'))
-  }
-
-  function setupTrustedCommunication (connectionStream, originDomain) {
-    // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
-    // connect features
-    setupControllerConnection(mx.createStream('controller'))
-    controller.setupProviderConnection(mx.createStream('provider'), originDomain)
-  }
-
-  //
-  // remote features
-  //
-
-  function setupControllerConnection (outStream) {
-    var api = controller.getApi()
-    var dnode = Dnode(api)
-    outStream.pipe(dnode).pipe(outStream)
-    dnode.on('remote', (remote) => {
-      // push updates to popup
-      var sendUpdate = remote.sendUpdate.bind(remote)
-      controller.on('update', sendUpdate)
-      // teardown on disconnect
-      eos(outStream, () => {
-        controller.removeListener('update', sendUpdate)
-        popupIsOpen = false
-      })
-    })
   }
 
   //

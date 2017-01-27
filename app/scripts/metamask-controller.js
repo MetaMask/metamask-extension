@@ -2,11 +2,13 @@ const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
 const pipe = require('pump')
+const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
@@ -202,8 +204,35 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  setupProviderConnection (stream, originDomain) {
-    stream.on('data', this.onRpcRequest.bind(this, stream, originDomain))
+  setupUntrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+    this.setupPublicConfig(mx.createStream('publicConfig'))
+  }
+
+  setupTrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    this.setupControllerConnection(mx.createStream('controller'))
+    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  setupControllerConnection (outStream) {
+    const api = this.getApi()
+    const dnode = Dnode(api)
+    outStream.pipe(dnode).pipe(outStream)
+    dnode.on('remote', (remote) => {
+      // push updates to popup
+      const sendUpdate = remote.sendUpdate.bind(remote)
+      this.on('update', sendUpdate)
+    })
+  }
+
+  setupProviderConnection (outStream, originDomain) {
+    outStream.on('data', this.onRpcRequest.bind(this, outStream, originDomain))
   }
 
   onRpcRequest (stream, originDomain, request) {
