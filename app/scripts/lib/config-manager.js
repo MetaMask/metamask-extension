@@ -266,7 +266,7 @@ ConfigManager.prototype.setCurrentFiat = function (currency) {
 
 ConfigManager.prototype.getCurrentFiat = function () {
   var data = this.getData()
-  return data.fiatCurrency
+  return data.fiatCurrency || 'USD'
 }
 
 ConfigManager.prototype.updateConversionRate = function () {
