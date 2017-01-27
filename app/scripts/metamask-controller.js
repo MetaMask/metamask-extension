@@ -152,7 +152,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   //
-  // Constructor helpers
+  // State Management
   //
 
   getState () {
@@ -181,87 +181,49 @@ module.exports = class MetamaskController extends EventEmitter {
     const noticeController = this.noticeController
 
     return {
-      getState: nodeify(this.getState.bind(this)),
-      setRpcTarget: this.setRpcTarget.bind(this),
-      setProviderType: this.setProviderType.bind(this),
-      useEtherscanProvider: this.useEtherscanProvider.bind(this),
-      agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
-      resetDisclaimer: this.resetDisclaimer.bind(this),
-      setCurrentFiat: this.setCurrentFiat.bind(this),
-      setTOSHash: this.setTOSHash.bind(this),
-      checkTOSChange: this.checkTOSChange.bind(this),
-      setGasMultiplier: this.setGasMultiplier.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
-
-      // forward directly to keyringController
-      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
-      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
-      // Adds the current vault's seed words to the UI's state tree.
-      //
-      // Used when creating a first vault, to allow confirmation.
-      // Also used when revealing the seed words in the confirmation view.
-      placeSeedWords: (cb) => {
-        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
-        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-        primaryKeyring.serialize()
-        .then((serialized) => {
-          const seedWords = serialized.mnemonic
-          this.configManager.setSeedWords(seedWords)
-          promiseToCallback(this.keyringController.fullUpdate())(cb)
-        })
-      },
-      // ClearSeedWordCache
-      //
-      // Removes the primary account's seed words from the UI's state tree,
-      // ensuring they are only ever available in the background process.
-      clearSeedWordCache: (cb) => {
-        this.configManager.setSeedWords(null)
-        cb(null, this.configManager.getSelectedAccount())
-      },
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
-      submitPassword: (password, cb) => {
-        this.migrateOldVaultIfAny(password)
-        .then(keyringController.submitPassword.bind(keyringController, password))
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
-      },
-      addNewKeyring: (type, opts, cb) => {
-        keyringController.addNewKeyring(type, opts)
-        .then(() => keyringController.fullUpdate())
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
-      },
-      addNewAccount: (cb) => {
-        const primaryKeyring = keyringController.getKeyringsByType('HD Key Tree')[0]
-        if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-        promiseToCallback(keyringController.addNewAccount(primaryKeyring))(cb)
-      },
-      importAccountWithStrategy: (strategy, args, cb) => {
-        accountImporter.importAccount(strategy, args)
-        .then((privateKey) => {
-          return keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
-        })
-        .then(keyring => keyring.getAccounts())
-        .then((accounts) => keyringController.setSelectedAccount(accounts[0]))
-        .then(() => { cb(null, keyringController.fullUpdate()) })
-        .catch((reason) => { cb(reason) })
-      },
-      setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
-      saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
-      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
-
-      // signing methods
-      approveTransaction: txManager.approveTransaction.bind(txManager),
-      cancelTransaction: txManager.cancelTransaction.bind(txManager),
-      signMessage: keyringController.signMessage.bind(keyringController),
-      cancelMessage: keyringController.cancelMessage.bind(keyringController),
-
+      // etc
+      getState:              nodeify(this.getState.bind(this)),
+      setRpcTarget:          this.setRpcTarget.bind(this),
+      setProviderType:       this.setProviderType.bind(this),
+      useEtherscanProvider:  this.useEtherscanProvider.bind(this),
+      agreeToDisclaimer:     this.agreeToDisclaimer.bind(this),
+      resetDisclaimer:       this.resetDisclaimer.bind(this),
+      setCurrentFiat:        this.setCurrentFiat.bind(this),
+      setTOSHash:            this.setTOSHash.bind(this),
+      checkTOSChange:        this.checkTOSChange.bind(this),
+      setGasMultiplier:      this.setGasMultiplier.bind(this),
+      markAccountsFound:     this.markAccountsFound.bind(this),
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
+      
+      // primary HD keyring management
+      addNewAccount:              this.addNewAccount.bind(this),
+      placeSeedWords:             this.placeSeedWords.bind(this),
+      clearSeedWordCache:         this.clearSeedWordCache.bind(this),
+      importAccountWithStrategy:  this.importAccountWithStrategy.bind(this),
+
+      // vault management
+      submitPassword: this.submitPassword.bind(this),
+
+      // KeyringController
+      setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
+      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
+      createNewVaultAndRestore:  nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
+      addNewKeyring:             nodeify(keyringController.addNewKeyring).bind(keyringController),
+      setSelectedAccount:        nodeify(keyringController.setSelectedAccount).bind(keyringController),
+      saveAccountLabel:          nodeify(keyringController.saveAccountLabel).bind(keyringController),
+      exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
+
+      // signing methods
+      approveTransaction:    txManager.approveTransaction.bind(txManager),
+      cancelTransaction:     txManager.cancelTransaction.bind(txManager),
+      signMessage:           keyringController.signMessage.bind(keyringController),
+      cancelMessage:         keyringController.cancelMessage.bind(keyringController),
+
       // notices
-      checkNotices: noticeController.updateNoticesList.bind(noticeController),
+      checkNotices:   noticeController.updateNoticesList.bind(noticeController),
       markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
     }
   }
@@ -313,6 +275,67 @@ module.exports = class MetamaskController extends EventEmitter {
       this.emit('update', state)
     })
   }
+
+  //
+  // Vault Management
+  //
+
+  submitPassword (password, cb) {
+    this.migrateOldVaultIfAny(password)
+    .then(this.keyringController.submitPassword.bind(this.keyringController, password))
+    .then((newState) => { cb(null, newState) })
+    .catch((reason) => { cb(reason) })
+  }
+
+  //
+  // Opinionated Keyring Management
+  //
+
+  addNewAccount (cb) {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    promiseToCallback(this.keyringController.addNewAccount(primaryKeyring))(cb)
+  }
+
+  // Adds the current vault's seed words to the UI's state tree.
+  //
+  // Used when creating a first vault, to allow confirmation.
+  // Also used when revealing the seed words in the confirmation view.
+  placeSeedWords (cb) {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    primaryKeyring.serialize()
+    .then((serialized) => {
+      const seedWords = serialized.mnemonic
+      this.configManager.setSeedWords(seedWords)
+      promiseToCallback(this.keyringController.fullUpdate())(cb)
+    })
+  }
+
+  // ClearSeedWordCache
+  //
+  // Removes the primary account's seed words from the UI's state tree,
+  // ensuring they are only ever available in the background process.
+  clearSeedWordCache (cb) {
+    this.configManager.setSeedWords(null)
+    cb(null, this.configManager.getSelectedAccount())
+  }
+
+  importAccountWithStrategy (strategy, args, cb) {
+    accountImporter.importAccount(strategy, args)
+    .then((privateKey) => {
+      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    })
+    .then(keyring => keyring.getAccounts())
+    .then((accounts) => this.keyringController.setSelectedAccount(accounts[0]))
+    .then(() => { cb(null, this.keyringController.fullUpdate()) })
+    .catch((reason) => { cb(reason) })
+  }
+
+
+  //
+  // Identity Management
+  //
 
   newUnapprovedTransaction (txParams, cb) {
     const self = this
