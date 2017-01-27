@@ -7,6 +7,7 @@ const ObservableStore = require('obs-store')
 const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
+const streamIntoProvider = require('web3-stream-provider/handler')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
@@ -232,31 +233,15 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupProviderConnection (outStream, originDomain) {
-    outStream.on('data', this.onRpcRequest.bind(this, outStream, originDomain))
-  }
-
-  onRpcRequest (stream, originDomain, request) {
-    // handle rpc request
-    this.provider.sendAsync(request, function onPayloadHandled (err, response) {
-      logger(err, request, response)
-      if (response) {
-        try {
-          stream.write(response)
-        } catch (err) {
-          logger(err)
-        }
-      }
-    })
-
+    streamIntoProvider(outStream, originDomain, logger)
     function logger (err, request, response) {
       if (err) return console.error(err)
-      if (!request.isMetamaskInternal) {
-        if (global.METAMASK_DEBUG) {
-          console.log(`RPC (${originDomain}):`, request, '->', response)
-        }
-        if (response.error) {
-          console.error('Error in RPC response:\n', response.error)
-        }
+      if (response.error) {
+        console.error('Error in RPC response:\n', response.error)
+      }
+      if (request.isMetamaskInternal) return
+      if (global.METAMASK_DEBUG) {
+        console.log(`RPC (${originDomain}):`, request, '->', response)
       }
     }
   }
