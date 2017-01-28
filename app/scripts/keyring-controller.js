@@ -87,7 +87,6 @@ module.exports = class KeyringController extends EventEmitter {
         unconfMsgs: messageManager.unconfirmedMsgs(),
         messages: messageManager.getMsgList(),
         selectedAccount: address,
-        shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         currentFiat: this.configManager.getCurrentFiat(),
         conversionRate: this.configManager.getConversionRate(),
         conversionDate: this.configManager.getConversionDate(),

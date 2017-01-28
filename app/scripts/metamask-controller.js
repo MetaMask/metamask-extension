@@ -162,7 +162,9 @@ module.exports = class MetamaskController extends EventEmitter {
         this.configManager.getConfig(),
         this.txManager.getState(),
         keyringControllerState,
-        this.noticeController.getState(), {
+        this.noticeController.getState(),
+        {
+          shapeShiftTxList: this.configManager.getShapeShiftTxList(),
           lostAccounts: this.configManager.getLostAccounts(),
         }
       )
