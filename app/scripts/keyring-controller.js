@@ -5,7 +5,6 @@ const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
 
 const normalize = require('./lib/sig-util').normalize
-const messageManager = require('./lib/message-manager')
 const BN = ethUtil.BN
 
 // Keyrings:
@@ -15,8 +14,6 @@ const keyringTypes = [
   SimpleKeyring,
   HdKeyring,
 ]
-
-const createId = require('./lib/random-id')
 
 module.exports = class KeyringController extends EventEmitter {
 
@@ -35,9 +32,6 @@ module.exports = class KeyringController extends EventEmitter {
     this.keyringTypes = keyringTypes
     this.keyrings = []
     this.identities = {} // Essentially a name hash
-
-    this._unconfMsgCbs = {}
-
     this.getNetwork = opts.getNetwork
   }
 
@@ -84,8 +78,6 @@ module.exports = class KeyringController extends EventEmitter {
         isInitialized: (!!wallet || !!vault),
         isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        unconfMsgs: messageManager.unconfirmedMsgs(),
-        messages: messageManager.getMsgList(),
         selectedAccount: address,
         shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         currentFiat: this.configManager.getCurrentFiat(),
@@ -154,6 +146,17 @@ module.exports = class KeyringController extends EventEmitter {
     .then(this.fullUpdate.bind(this))
   }
 
+  // ClearSeedWordCache
+  //
+  // returns Promise( @string currentSelectedAccount )
+  //
+  // Removes the current vault's seed words from the UI's state tree,
+  // ensuring they are only ever available in the background process.
+  clearSeedWordCache () {
+    this.configManager.setSeedWords(null)
+    return Promise.resolve(this.configManager.getSelectedAccount())
+  }
+
   // Set Locked
   // returns Promise( @object state )
   //
@@ -204,8 +207,8 @@ module.exports = class KeyringController extends EventEmitter {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)
     })
-    .then(() => this.persistAllKeyrings())
-    .then(() => this.fullUpdate())
+    .then(() => { return this.password })
+    .then(this.persistAllKeyrings.bind(this))
     .then(() => {
       return keyring
     })
@@ -287,86 +290,19 @@ module.exports = class KeyringController extends EventEmitter {
       return keyring.signTransaction(fromAddress, ethTx)
     })
   }
-  // Add Unconfirmed Message
-  // @object msgParams
-  // @function cb
-  //
-  // Does not call back, only emits an `update` event.
-  //
-  // Adds the given `msgParams` and `cb` to a local cache,
-  // for displaying to a user for approval before signing or canceling.
-  addUnconfirmedMessage (msgParams, cb) {
-    // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var msgId = createId()
-    var msgData = {
-      id: msgId,
-      msgParams: msgParams,
-      time: time,
-      status: 'unconfirmed',
-    }
-    messageManager.addMsg(msgData)
-    console.log('addUnconfirmedMessage:', msgData)
-
-    // keep the cb around for after approval (requires user interaction)
-    // This cb fires completion to the Dapp's write operation.
-    this._unconfMsgCbs[msgId] = cb
-
-    // signal update
-    this.emit('update')
-    return msgId
-  }
-
-  // Cancel Message
-  // @string msgId
-  // @function cb (optional)
-  //
-  // Calls back to cached `unconfMsgCb`.
-  // Calls back to `cb` if provided.
-  //
-  // Forgets any messages matching `msgId`.
-  cancelMessage (msgId, cb) {
-    var approvalCb = this._unconfMsgCbs[msgId] || noop
-
-    // reject tx
-    approvalCb(null, false)
-    // clean up
-    messageManager.rejectMsg(msgId)
-    delete this._unconfTxCbs[msgId]
-
-    if (cb && typeof cb === 'function') {
-      cb()
-    }
-  }
 
   // Sign Message
   // @object msgParams
-  // @function cb
   //
   // returns Promise(@buffer rawSig)
-  // calls back @function cb with @buffer rawSig
-  // calls back cached Dapp's @function unconfMsgCb.
   //
   // Attempts to sign the provided @object msgParams.
-  signMessage (msgParams, cb) {
-    try {
-      const msgId = msgParams.metamaskId
-      delete msgParams.metamaskId
-      const approvalCb = this._unconfMsgCbs[msgId] || noop
-
-      const address = normalize(msgParams.from)
-      return this.getKeyringForAccount(address)
-      .then((keyring) => {
-        return keyring.signMessage(address, msgParams.data)
-      }).then((rawSig) => {
-        cb(null, rawSig)
-        approvalCb(null, true)
-        messageManager.confirmMsg(msgId)
-        return rawSig
-      })
-    } catch (e) {
-      cb(e)
-    }
+  signMessage (msgParams) {
+    const address = normalize(msgParams.from)
+    return this.getKeyringForAccount(address)
+    .then((keyring) => {
+      return keyring.signMessage(address, msgParams.data)
+    })
   }
 
   // PRIVATE METHODS
@@ -643,6 +579,3 @@ module.exports = class KeyringController extends EventEmitter {
   }
 
 }
-
-
-function noop () {}

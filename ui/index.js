@@ -32,8 +32,8 @@ function startApp (metamaskState, accountManager, opts) {
   })
 
   // if unconfirmed txs, start on txConf page
-  var unconfirmedTxsAll = txHelper(metamaskState.unconfTxs, metamaskState.unconfMsgs, metamaskState.network)
-  if (unconfirmedTxsAll.length > 0) {
+  var unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.network)
+  if (unapprovedTxsAll.length > 0) {
     store.dispatch(actions.showConfTxPage())
   }
 

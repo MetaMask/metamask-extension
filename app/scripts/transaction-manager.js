@@ -28,7 +28,7 @@ module.exports = class TransactionManager extends EventEmitter {
     var selectedAccount = this.getSelectedAccount()
     return {
       transactions: this.getTxList(),
-      unconfTxs: this.getUnapprovedTxList(),
+      unapprovedTxs: this.getUnapprovedTxList(),
       selectedAccountTxList: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAccount}),
     }
   }

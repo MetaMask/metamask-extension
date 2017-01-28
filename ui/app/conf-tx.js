@@ -20,8 +20,8 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     selectedAccount: state.metamask.selectedAccount,
-    unconfTxs: state.metamask.unconfTxs,
-    unconfMsgs: state.metamask.unconfMsgs,
+    unapprovedTxs: state.metamask.unapprovedTxs,
+    unapprovedMsgs: state.metamask.unapprovedMsgs,
     index: state.appState.currentView.context,
     warning: state.appState.warning,
     network: state.metamask.network,
@@ -39,10 +39,10 @@ ConfirmTxScreen.prototype.render = function () {
 
   var network = state.network
   var provider = state.provider
-  var unconfTxs = state.unconfTxs
-  var unconfMsgs = state.unconfMsgs
+  var unapprovedTxs = state.unapprovedTxs
+  var unapprovedMsgs = state.unapprovedMsgs
 
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   var index = state.index !== undefined && unconfTxList[index] ? state.index : 0
   var txData = unconfTxList[index] || {}
   var txParams = txData.params || {}

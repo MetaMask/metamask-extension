@@ -10,15 +10,15 @@ const AccountListItem = require('./account-list-item')
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
 function mapStateToProps (state) {
-  const pendingTxs = valuesFor(state.metamask.unconfTxs)
+  const pendingTxs = valuesFor(state.metamask.unapprovedTxs)
   .filter(tx => tx.txParams.metamaskNetworkId === state.metamask.network)
-  const pendingMsgs = valuesFor(state.metamask.unconfMsgs)
+  const pendingMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const pending = pendingTxs.concat(pendingMsgs)
 
   return {
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
-    unconfTxs: state.metamask.unconfTxs,
+    unapprovedTxs: state.metamask.unapprovedTxs,
     selectedAccount: state.metamask.selectedAccount,
     scrollToBottom: state.appState.scrollToBottom,
     pending,
@@ -35,7 +35,7 @@ AccountsScreen.prototype.render = function () {
   const props = this.props
   const { keyrings } = props
   const identityList = valuesFor(props.identities)
-  const unconfTxList = valuesFor(props.unconfTxs)
+  const unapprovedTxList = valuesFor(props.unapprovedTxs)
 
   return (
 
@@ -107,7 +107,7 @@ AccountsScreen.prototype.render = function () {
           h('hr.horizontal-line'),
         ]),
 
-      unconfTxList.length ? (
+      unapprovedTxList.length ? (
 
         h('.unconftx-link.flex-row.flex-center', {
           onClick: this.navigateToConfTx.bind(this),

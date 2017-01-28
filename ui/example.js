@@ -29,7 +29,7 @@ var identities = {
   },
 }
 
-var unconfTxs = {}
+var unapprovedTxs = {}
 addUnconfTx({
   from: '0x222462427bcc9133bb46e88bcbe39cd7ef0e7222',
   to: '0x1113462427bcc9133bb46e88bcbe39cd7ef0e111',
@@ -45,7 +45,7 @@ addUnconfTx({
 function addUnconfTx (txParams) {
   var time = (new Date()).getTime()
   var id = createRandomId()
-  unconfTxs[id] = {
+  unapprovedTxs[id] = {
     id: id,
     txParams: txParams,
     time: time,
@@ -59,7 +59,7 @@ function getState () {
   return {
     isUnlocked: isUnlocked,
     identities: isUnlocked ? identities : {},
-    unconfTxs: isUnlocked ? unconfTxs : {},
+    unapprovedTxs: isUnlocked ? unapprovedTxs : {},
     selectedAccount: selectedAccount,
   }
 }

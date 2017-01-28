@@ -307,11 +307,11 @@ function reduceApp (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      var unconfTxs = state.metamask.unconfTxs
-      var unconfMsgs = state.metamask.unconfMsgs
+      var unapprovedTxs = state.metamask.unapprovedTxs
+      var unapprovedMsgs = state.metamask.unapprovedMsgs
       var network = state.metamask.network
 
-      var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
     .filter(tx => tx !== tx.id)
 
       if (unconfTxList && unconfTxList.length > 0) {
@@ -572,18 +572,18 @@ function reduceApp (state, action) {
 }
 
 function hasPendingTxs (state) {
-  var unconfTxs = state.metamask.unconfTxs
-  var unconfMsgs = state.metamask.unconfMsgs
+  var unapprovedTxs = state.metamask.unapprovedTxs
+  var unapprovedMsgs = state.metamask.unapprovedMsgs
   var network = state.metamask.network
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   return unconfTxList.length > 0
 }
 
 function indexForPending (state, txId) {
-  var unconfTxs = state.metamask.unconfTxs
-  var unconfMsgs = state.metamask.unconfMsgs
+  var unapprovedTxs = state.metamask.unapprovedTxs
+  var unapprovedMsgs = state.metamask.unapprovedMsgs
   var network = state.metamask.network
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   let idx
   unconfTxList.forEach((tx, i) => {
     if (tx.id === txId) {
