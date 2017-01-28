@@ -1,12 +1,14 @@
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const bip39 = require('bip39')
 const EventEmitter = require('events').EventEmitter
+const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
-
+const createId = require('./lib/random-id')
 const normalize = require('./lib/sig-util').normalize
 const messageManager = require('./lib/message-manager')
-const BN = ethUtil.BN
+function noop () {}
 
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
@@ -16,9 +18,8 @@ const keyringTypes = [
   HdKeyring,
 ]
 
-const createId = require('./lib/random-id')
 
-module.exports = class KeyringController extends EventEmitter {
+class KeyringController extends EventEmitter {
 
   // PUBLIC METHODS
   //
@@ -29,6 +30,8 @@ module.exports = class KeyringController extends EventEmitter {
 
   constructor (opts) {
     super()
+    const initState = opts.initState || {}
+    this.store = new ObservableStore(initState)
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
@@ -643,5 +646,30 @@ module.exports = class KeyringController extends EventEmitter {
 
 }
 
+//
+// Static Class Methods
+//
 
-function noop () {}
+KeyringController.selectFromState = (state) => {
+  const config = state.config
+  return {
+    vault: state.vault,
+    selectedAccount: config.selectedAccount,
+    walletNicknames: state.walletNicknames,
+  }
+}
+
+KeyringController.flattenToOldState = (state) => {
+  const data = {
+    vault: state.vault,
+    walletNicknames: state.walletNicknames,
+    config: {
+      selectedAccount: state.selectedAccount,
+    },
+  }
+  return data
+}
+
+
+module.exports = KeyringController
+

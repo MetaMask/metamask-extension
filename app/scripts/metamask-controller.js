@@ -29,9 +29,10 @@ module.exports = class MetamaskController extends EventEmitter {
     super()
     this.opts = opts
     this.state = { network: 'loading' }
+    let initState = opts.initState || {}
 
     // observable state store
-    this.store = new ObservableStore(opts.initState)
+    this.store = new ObservableStore(initState)
     
     // config manager
     this.configManager = new ConfigManager({
@@ -50,6 +51,7 @@ module.exports = class MetamaskController extends EventEmitter {
     
     // key mgmt
     this.keyringController = new KeyringController({
+      initState: initState.KeyringController,
       ethStore: this.ethStore,
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
