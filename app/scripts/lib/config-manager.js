@@ -29,15 +29,7 @@ ConfigManager.prototype.setConfig = function (config) {
 
 ConfigManager.prototype.getConfig = function () {
   var data = this.getData()
-  if ('config' in data) {
-    return data.config
-  } else {
-    return {
-      provider: {
-        type: 'testnet',
-      },
-    }
-  }
+  return data.config
 }
 
 ConfigManager.prototype.setRpcTarget = function (rpcUrl) {

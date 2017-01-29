@@ -29,9 +29,10 @@ module.exports = class MetamaskController extends EventEmitter {
     super()
     this.opts = opts
     this.state = { network: 'loading' }
+    let initState = opts.initState || {}
 
     // observable state store
-    this.store = new ObservableStore(opts.initState)
+    this.store = new ObservableStore(initState)
 
     // config manager
     this.configManager = new ConfigManager({
@@ -41,7 +42,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider(opts)
-    this.provider.on('block', this.processBlock.bind(this))
+    this.provider.on('block', this.logBlock.bind(this))
     this.provider.on('error', this.getNetwork.bind(this))
 
     // eth data query tools
@@ -50,6 +51,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // key mgmt
     this.keyringController = new KeyringController({
+      initState: initState.KeyringController,
       ethStore: this.ethStore,
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
@@ -97,6 +99,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController.on('update', this.sendUpdate.bind(this))
     this.txManager.on('update', this.sendUpdate.bind(this))
     this.messageManager.on('update', this.sendUpdate.bind(this))
+    this.keyringController.store.subscribe((state) => {
+      this.store.updateState({ KeyringController: state })
+    })
   }
 
   //
@@ -139,9 +144,7 @@ module.exports = class MetamaskController extends EventEmitter {
       const result = { selectedAccount: undefined }
       try {
         result.selectedAccount = state.config.selectedAccount
-      } catch (_) {
-        // thats fine, im sure it will be there next time...
-      }
+      } catch (_) {}
       return result
     }
 
@@ -162,7 +165,9 @@ module.exports = class MetamaskController extends EventEmitter {
         this.txManager.getState(),
         this.messageManager.getState(),
         keyringControllerState,
-        this.noticeController.getState(), {
+        this.noticeController.getState(),
+        {
+          shapeShiftTxList: this.configManager.getShapeShiftTxList(),
           lostAccounts: this.configManager.getLostAccounts(),
         }
       )
@@ -266,6 +271,13 @@ module.exports = class MetamaskController extends EventEmitter {
         console.log(`RPC (${originDomain}):`, request, '->', response)
       }
     }
+  }
+
+  setupPublicConfig (outStream) {
+    pipe(
+      this.publicConfigStore,
+      outStream
+    )
   }
 
   sendUpdate () {
@@ -388,163 +400,6 @@ module.exports = class MetamaskController extends EventEmitter {
     }).catch((err) => cb(err))
   }
 
-  setupPublicConfig (outStream) {
-    pipe(
-      this.publicConfigStore,
-      outStream
-    )
-  }
-
-  // Log blocks
-  processBlock (block) {
-    if (global.METAMASK_DEBUG) {
-      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    }
-    this.verifyNetwork()
-  }
-
-  verifyNetwork () {
-    // Check network when restoring connectivity:
-    if (this.state.network === 'loading') {
-      this.getNetwork()
-    }
-  }
-
-  // config
-  //
-
-  setTOSHash (hash) {
-    try {
-      this.configManager.setTOSHash(hash)
-    } catch (err) {
-      console.error('Error in setting terms of service hash.')
-    }
-  }
-
-  checkTOSChange () {
-    try {
-      const storedHash = this.configManager.getTOSHash() || 0
-      if (storedHash !== global.TOS_HASH) {
-        this.resetDisclaimer()
-        this.setTOSHash(global.TOS_HASH)
-      }
-    } catch (err) {
-      console.error('Error in checking TOS change.')
-    }
-  }
-
-  // disclaimer
-
-  agreeToDisclaimer (cb) {
-    try {
-      this.configManager.setConfirmedDisclaimer(true)
-      cb()
-    } catch (err) {
-      cb(err)
-    }
-  }
-
-  resetDisclaimer () {
-    try {
-      this.configManager.setConfirmedDisclaimer(false)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  setCurrentFiat (fiat, cb) {
-    try {
-      this.configManager.setCurrentFiat(fiat)
-      this.configManager.updateConversionRate()
-      this.scheduleConversionInterval()
-      const data = {
-        conversionRate: this.configManager.getConversionRate(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionDate: this.configManager.getConversionDate(),
-      }
-      cb(data)
-    } catch (err) {
-      cb(null, err)
-    }
-  }
-
-  scheduleConversionInterval () {
-    if (this.conversionInterval) {
-      clearInterval(this.conversionInterval)
-    }
-    this.conversionInterval = setInterval(() => {
-      this.configManager.updateConversionRate()
-    }, 300000)
-  }
-
-  // called from popup
-  setRpcTarget (rpcTarget) {
-    this.configManager.setRpcTarget(rpcTarget)
-    extension.runtime.reload()
-    this.getNetwork()
-  }
-
-  setProviderType (type) {
-    this.configManager.setProviderType(type)
-    extension.runtime.reload()
-    this.getNetwork()
-  }
-
-  useEtherscanProvider () {
-    this.configManager.useEtherscanProvider()
-    extension.runtime.reload()
-  }
-
-  buyEth (address, amount) {
-    if (!amount) amount = '5'
-
-    var network = this.state.network
-    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
-
-    if (network === '3') {
-      url = 'https://faucet.metamask.io/'
-    }
-
-    extension.tabs.create({
-      url,
-    })
-  }
-
-  createShapeShiftTx (depositAddress, depositType) {
-    this.configManager.createShapeShiftTx(depositAddress, depositType)
-  }
-
-  getNetwork (err) {
-    if (err) {
-      this.state.network = 'loading'
-      this.sendUpdate()
-    }
-
-    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) {
-        this.state.network = 'loading'
-        return this.sendUpdate()
-      }
-      if (global.METAMASK_DEBUG) {
-        console.log('web3.getNetwork returned ' + network)
-      }
-      this.state.network = network
-      this.sendUpdate()
-    })
-  }
-
-  setGasMultiplier (gasMultiplier, cb) {
-    try {
-      this.configManager.setGasMultiplier(gasMultiplier)
-      cb()
-    } catch (err) {
-      cb(err)
-    }
-  }
-
-  getStateNetwork () {
-    return this.state.network
-  }
 
   markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
@@ -607,4 +462,162 @@ module.exports = class MetamaskController extends EventEmitter {
       data: privKeys,
     })
   }
+
+  //
+  // disclaimer
+  //
+
+  agreeToDisclaimer (cb) {
+    try {
+      this.configManager.setConfirmedDisclaimer(true)
+      cb()
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  resetDisclaimer () {
+    try {
+      this.configManager.setConfirmedDisclaimer(false)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  setTOSHash (hash) {
+    try {
+      this.configManager.setTOSHash(hash)
+    } catch (err) {
+      console.error('Error in setting terms of service hash.')
+    }
+  }
+
+  checkTOSChange () {
+    try {
+      const storedHash = this.configManager.getTOSHash() || 0
+      if (storedHash !== global.TOS_HASH) {
+        this.resetDisclaimer()
+        this.setTOSHash(global.TOS_HASH)
+      }
+    } catch (err) {
+      console.error('Error in checking TOS change.')
+    }
+  }
+
+  //
+  // config
+  //
+
+  // Log blocks
+  logBlock (block) {
+    if (global.METAMASK_DEBUG) {
+      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    }
+    this.verifyNetwork()
+  }
+
+  setCurrentFiat (fiat, cb) {
+    try {
+      this.configManager.setCurrentFiat(fiat)
+      this.configManager.updateConversionRate()
+      this.scheduleConversionInterval()
+      const data = {
+        conversionRate: this.configManager.getConversionRate(),
+        currentFiat: this.configManager.getCurrentFiat(),
+        conversionDate: this.configManager.getConversionDate(),
+      }
+      cb(data)
+    } catch (err) {
+      cb(null, err)
+    }
+  }
+
+  scheduleConversionInterval () {
+    if (this.conversionInterval) {
+      clearInterval(this.conversionInterval)
+    }
+    this.conversionInterval = setInterval(() => {
+      this.configManager.updateConversionRate()
+    }, 300000)
+  }
+
+  buyEth (address, amount) {
+    if (!amount) amount = '5'
+
+    var network = this.state.network
+    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+
+    if (network === '3') {
+      url = 'https://faucet.metamask.io/'
+    }
+
+    extension.tabs.create({
+      url,
+    })
+  }
+
+  createShapeShiftTx (depositAddress, depositType) {
+    this.configManager.createShapeShiftTx(depositAddress, depositType)
+  }
+
+  setGasMultiplier (gasMultiplier, cb) {
+    try {
+      this.configManager.setGasMultiplier(gasMultiplier)
+      cb()
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  //
+  // network
+  //
+
+  verifyNetwork () {
+    // Check network when restoring connectivity:
+    if (this.state.network === 'loading') {
+      this.getNetwork()
+    }
+  }
+
+  setRpcTarget (rpcTarget) {
+    this.configManager.setRpcTarget(rpcTarget)
+    extension.runtime.reload()
+    this.getNetwork()
+  }
+
+  setProviderType (type) {
+    this.configManager.setProviderType(type)
+    extension.runtime.reload()
+    this.getNetwork()
+  }
+
+  useEtherscanProvider () {
+    this.configManager.useEtherscanProvider()
+    extension.runtime.reload()
+  }
+
+  getStateNetwork () {
+    return this.state.network
+  }
+
+  getNetwork (err) {
+    if (err) {
+      this.state.network = 'loading'
+      this.sendUpdate()
+    }
+
+    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
+      if (err) {
+        this.state.network = 'loading'
+        return this.sendUpdate()
+      }
+      if (global.METAMASK_DEBUG) {
+        console.log('web3.getNetwork returned ' + network)
+      }
+      this.state.network = network
+      this.sendUpdate()
+    })
+  }
+
 }

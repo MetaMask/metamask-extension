@@ -17,6 +17,7 @@ function AccountListItem () {
 AccountListItem.prototype.render = function () {
   const { identity, selectedAccount, accounts, onShowDetail } = this.props
 
+  const checksumAddress = identity && identity.address && ethUtil.toChecksumAddress(identity.address)
   const isSelected = selectedAccount === identity.address
   const account = accounts[identity.address]
   const selectedClass = isSelected ? '.selected' : ''
@@ -48,7 +49,7 @@ AccountListItem.prototype.render = function () {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
           },
-        }, ethUtil.toChecksumAddress(identity.address)),
+        }, checksumAddress),
         h(EthBalance, {
           value: account && account.balance,
           style: {
@@ -65,7 +66,7 @@ AccountListItem.prototype.render = function () {
         },
       }, [
         h(CopyButton, {
-          value: ethUtil.toChecksumAddress(identity.address),
+          value: checksumAddress,
         }),
       ]),
     ])

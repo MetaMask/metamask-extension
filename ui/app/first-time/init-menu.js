@@ -152,7 +152,6 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
   var password = passwordBox.value
   var passwordConfirmBox = document.getElementById('password-box-confirm')
   var passwordConfirm = passwordConfirmBox.value
-  // var entropy = document.getElementById('entropy-text-entry').value
 
   if (password.length < 8) {
     this.warning = 'password not long enough'
