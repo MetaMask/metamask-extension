@@ -6,7 +6,7 @@ const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
 const createId = require('./lib/random-id')
-const normalize = require('./lib/sig-util').normalize
+const normalizeAddress = require('./lib/sig-util').normalize
 const messageManager = require('./lib/message-manager')
 function noop () {}
 
@@ -74,28 +74,31 @@ class KeyringController extends EventEmitter {
   // in this class, but will need to be Promisified when we move our
   // persistence to an async model.
   getState () {
-    const configManager = this.configManager
-    const address = configManager.getSelectedAccount()
-    const wallet = configManager.getWallet() // old style vault
-    const vault = configManager.getVault() // new style vault
-    const keyrings = this.keyrings
-
-    return Promise.all(keyrings.map(this.displayForKeyring))
+    return Promise.all(this.keyrings.map(this.displayForKeyring))
     .then((displayKeyrings) => {
+      const state = this.store.getState()
+      // old wallet
+      const wallet = this.configManager.getWallet()
       return {
+        // computed
+        isInitialized: (!!wallet || !!state.vault),
+        isUnlocked: (!!this.password),
+        keyrings: displayKeyrings,
+        // hard coded
+        keyringTypes: this.keyringTypes.map(krt => krt.type),
+        // memStore
+        identities: this.identities,
+        // diskStore
+        selectedAccount: state.selectedAccount,
+        // configManager
         seedWords: this.configManager.getSeedWords(),
-        isInitialized: (!!wallet || !!vault),
-        isUnlocked: Boolean(this.password),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        unconfMsgs: messageManager.unconfirmedMsgs(),
-        messages: messageManager.getMsgList(),
-        selectedAccount: address,
         currentFiat: this.configManager.getCurrentFiat(),
         conversionRate: this.configManager.getConversionRate(),
         conversionDate: this.configManager.getConversionDate(),
-        keyringTypes: this.keyringTypes.map(krt => krt.type),
-        identities: this.identities,
-        keyrings: displayKeyrings,
+        // messageManager
+        unconfMsgs: messageManager.unconfirmedMsgs(),
+        messages: messageManager.getMsgList(),
       }
     })
   }
@@ -148,8 +151,8 @@ class KeyringController extends EventEmitter {
     .then((accounts) => {
       const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - First Account not found.')
-      const hexAccount = normalize(firstAccount)
-      this.configManager.setSelectedAccount(hexAccount)
+      const hexAccount = normalizeAddress(firstAccount)
+      this.setSelectedAccount(hexAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this, password))
@@ -235,9 +238,9 @@ class KeyringController extends EventEmitter {
   //
   // Sets the state's `selectedAccount` value
   // to the specified address.
-  setSelectedAccount (address) {
-    var addr = normalize(address)
-    this.configManager.setSelectedAccount(addr)
+  setSelectedAccount (account) {
+    var address = normalizeAddress(account)
+    this.store.updateState({ selectedAccount: address })
     return this.fullUpdate()
   }
 
@@ -249,11 +252,19 @@ class KeyringController extends EventEmitter {
   //
   // Persists a nickname equal to `label` for the specified account.
   saveAccountLabel (account, label) {
-    const address = normalize(account)
-    const configManager = this.configManager
-    configManager.setNicknameForWallet(address, label)
-    this.identities[address].name = label
-    return Promise.resolve(label)
+    try {
+      const hexAddress = normalizeAddress(account)
+      // update state on diskStore
+      const state = this.store.getState()
+      const walletNicknames = state.walletNicknames || {}
+      walletNicknames[hexAddress] = label
+      this.store.updateState({ walletNicknames })
+      // update state on memStore
+      this.identities[hexAddress].name = label
+      return Promise.resolve(label)
+    } catch (err) {
+      return Promise.reject(err)
+    }
   }
 
   // Export Account
@@ -269,7 +280,7 @@ class KeyringController extends EventEmitter {
     try {
       return this.getKeyringForAccount(address)
       .then((keyring) => {
-        return keyring.exportAccount(normalize(address))
+        return keyring.exportAccount(normalizeAddress(address))
       })
     } catch (e) {
       return Promise.reject(e)
@@ -283,7 +294,7 @@ class KeyringController extends EventEmitter {
   // TX Manager to update the state after signing
 
   signTransaction (ethTx, _fromAddress) {
-    const fromAddress = normalize(_fromAddress)
+    const fromAddress = normalizeAddress(_fromAddress)
     return this.getKeyringForAccount(fromAddress)
     .then((keyring) => {
       return keyring.signTransaction(fromAddress, ethTx)
@@ -356,7 +367,7 @@ class KeyringController extends EventEmitter {
       delete msgParams.metamaskId
       const approvalCb = this._unconfMsgCbs[msgId] || noop
 
-      const address = normalize(msgParams.from)
+      const address = normalizeAddress(msgParams.from)
       return this.getKeyringForAccount(address)
       .then((keyring) => {
         return keyring.signMessage(address, msgParams.data)
@@ -394,8 +405,8 @@ class KeyringController extends EventEmitter {
     .then((accounts) => {
       const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
-      const hexAccount = normalize(firstAccount)
-      this.configManager.setSelectedAccount(hexAccount)
+      const hexAccount = normalizeAddress(firstAccount)
+      this.setSelectedAccount(hexAccount)
       this.emit('newAccount', hexAccount)
       return this.setupAccounts(accounts)
     })
@@ -431,7 +442,7 @@ class KeyringController extends EventEmitter {
     if (!account) {
       throw new Error('Problem loading account.')
     }
-    const address = normalize(account)
+    const address = normalizeAddress(account)
     this.ethStore.addAccount(address)
     return this.createNickname(address)
   }
@@ -443,10 +454,11 @@ class KeyringController extends EventEmitter {
   //
   // Takes an address, and assigns it an incremented nickname, persisting it.
   createNickname (address) {
-    const hexAddress = normalize(address)
-    var i = Object.keys(this.identities).length
-    const oldNickname = this.configManager.nicknameForWallet(address)
-    const name = oldNickname || `Account ${++i}`
+    const hexAddress = normalizeAddress(address)
+    const currentIdentityCount = Object.keys(this.identities).length + 1
+    const nicknames = this.store.getState().walletNicknames || {}
+    const existingNickname = nicknames[hexAddress]
+    const name = existingNickname || `Account ${currentIdentityCount}`
     this.identities[hexAddress] = {
       address: hexAddress,
       name,
@@ -481,7 +493,7 @@ class KeyringController extends EventEmitter {
       return this.encryptor.encrypt(this.password, serializedKeyrings)
     })
     .then((encryptedString) => {
-      this.configManager.setVault(encryptedString)
+      this.store.updateState({ vault: encryptedString })
       return true
     })
   }
@@ -494,7 +506,7 @@ class KeyringController extends EventEmitter {
   // Attempts to unlock the persisted encrypted storage,
   // initializing the persisted keyrings to RAM.
   unlockKeyrings (password) {
-    const encryptedVault = this.configManager.getVault()
+    const encryptedVault = this.store.getState().vault
     if (!encryptedVault) {
       throw new Error('Cannot unlock without a previous vault.')
     }
@@ -574,7 +586,7 @@ class KeyringController extends EventEmitter {
   // Returns the currently initialized keyring that manages
   // the specified `address` if one exists.
   getKeyringForAccount (address) {
-    const hexed = normalize(address)
+    const hexed = normalizeAddress(address)
 
     return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([
@@ -583,7 +595,7 @@ class KeyringController extends EventEmitter {
       ])
     }))
     .then(filter((candidate) => {
-      const accounts = candidate[1].map(normalize)
+      const accounts = candidate[1].map(normalizeAddress)
       return accounts.includes(hexed)
     }))
     .then((winners) => {
@@ -641,35 +653,9 @@ class KeyringController extends EventEmitter {
 
     this.keyrings = []
     this.identities = {}
-    this.configManager.setSelectedAccount()
+    this.setSelectedAccount()
   }
 
 }
-
-//
-// Static Class Methods
-//
-
-KeyringController.selectFromState = (state) => {
-  const config = state.config
-  return {
-    vault: state.vault,
-    selectedAccount: config.selectedAccount,
-    walletNicknames: state.walletNicknames,
-  }
-}
-
-KeyringController.flattenToOldState = (state) => {
-  const data = {
-    vault: state.vault,
-    walletNicknames: state.walletNicknames,
-    config: {
-      selectedAccount: state.selectedAccount,
-    },
-  }
-  return data
-}
-
 
 module.exports = KeyringController
-

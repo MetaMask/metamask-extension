@@ -41,6 +41,7 @@ function AccountDetailScreen () {
 AccountDetailScreen.prototype.render = function () {
   var props = this.props
   var selected = props.address || Object.keys(props.accounts)[0]
+  var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
   const { network } = props
@@ -116,7 +117,7 @@ AccountDetailScreen.prototype.render = function () {
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },
-              }, ethUtil.toChecksumAddress(selected)),
+              }, checksumAddress),
 
               // copy and export
 
@@ -129,7 +130,7 @@ AccountDetailScreen.prototype.render = function () {
                 h(AccountInfoLink, { selected, network }),
 
                 h(CopyButton, {
-                  value: ethUtil.toChecksumAddress(selected),
+                  value: checksumAddress,
                 }),
 
                 h(Tooltip, {

@@ -89,6 +89,9 @@ describe('IdentityStore to KeyringController migration', function() {
         assert(!state.lostAccounts, 'no lost accounts')
         done()
       })
+      .catch((err) => {
+        done(err)
+      })
     })
   })
 })
