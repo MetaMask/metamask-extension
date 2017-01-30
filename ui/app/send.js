@@ -16,7 +16,7 @@ module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   var result = {
-    address: state.metamask.selectedAccount,
+    address: state.metamask.selectedAddress,
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,

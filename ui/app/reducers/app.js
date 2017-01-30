@@ -7,10 +7,10 @@ module.exports = reduceApp
 
 function reduceApp (state, action) {
   // clone and defaults
-  const selectedAccount = state.metamask.selectedAccount
+  const selectedAddress = state.metamask.selectedAddress
   const pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
-  if (selectedAccount) {
+  if (selectedAddress) {
     name = 'accountDetail'
   }
   if (pendingTxs) {
@@ -20,7 +20,7 @@ function reduceApp (state, action) {
   var defaultView = {
     name,
     detailView: null,
-    context: selectedAccount,
+    context: selectedAddress,
   }
 
   // confirm seed words
@@ -331,7 +331,7 @@ function reduceApp (state, action) {
           warning: null,
           currentView: {
             name: 'accountDetail',
-            context: state.metamask.selectedAccount,
+            context: state.metamask.selectedAddress,
           },
           accountDetail: {
             subview: 'transactions',

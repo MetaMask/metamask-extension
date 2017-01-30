@@ -13,7 +13,6 @@ module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
 function mapStateToProps (state) {
   return {
-    selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
     buyView: state.appState.buyView,
     network: state.metamask.network,

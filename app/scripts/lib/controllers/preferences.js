@@ -13,8 +13,11 @@ class PreferencesController {
   //
 
   setSelectedAddress(_address) {
-    const address = normalizeAddress(_address)
-    this.store.updateState({ selectedAddress: address })
+    return new Promise((resolve, reject) => {
+      const address = normalizeAddress(_address)
+      this.store.updateState({ selectedAddress: address })
+      resolve()
+    })
   }
 
   getSelectedAddress(_address) {

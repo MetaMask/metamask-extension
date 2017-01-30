@@ -62,8 +62,9 @@ module.exports = class MetamaskController extends EventEmitter {
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
-    this.keyringController.on('newAccount', (account) => {
-      autoFaucet(account)
+    this.keyringController.on('newAccount', (address) => {
+      this.preferencesController.setSelectedAddress(address)
+      autoFaucet(address)
     })
 
     // tx mgmt
@@ -176,6 +177,7 @@ module.exports = class MetamaskController extends EventEmitter {
         this.configManager.getConfig(),
         this.txManager.getState(),
         keyringControllerState,
+        this.preferencesController.store.getState(),
         this.noticeController.getState(),
         {
           shapeShiftTxList: this.configManager.getShapeShiftTxList(),
@@ -223,7 +225,7 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: this.submitPassword.bind(this),
 
       // PreferencesController
-      setSelectedAccount:        nodeify(preferencesController.setSelectedAccount).bind(preferencesController),
+      setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
 
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
@@ -351,7 +353,7 @@ module.exports = class MetamaskController extends EventEmitter {
       return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
     })
     .then(keyring => keyring.getAccounts())
-    .then((accounts) => this.preferencesController.setSelectedAccount(accounts[0]))
+    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
     .then(() => { cb(null, this.keyringController.fullUpdate()) })
     .catch((reason) => { cb(reason) })
   }

@@ -9,7 +9,6 @@ module.exports = connect(mapStateToProps)(CoinbaseForm)
 
 function mapStateToProps (state) {
   return {
-    selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
   }
 }

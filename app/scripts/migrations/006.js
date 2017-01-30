@@ -30,7 +30,7 @@ function migrateState (state) {
   // add new state
   const newState = extend(state, {
     PreferencesController: {
-      selectedAccount: config.selectedAccount,
+      selectedAddress: config.selectedAccount,
     },
   })
 

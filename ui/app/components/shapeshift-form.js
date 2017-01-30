@@ -10,7 +10,6 @@ module.exports = connect(mapStateToProps)(ShapeshiftForm)
 
 function mapStateToProps (state) {
   return {
-    selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
     isSubLoading: state.appState.isSubLoading,
     qrRequested: state.appState.qrRequested,

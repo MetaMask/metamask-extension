@@ -22,7 +22,7 @@ PTXP.render = function () {
   var txData = props.txData
 
   var txParams = txData.txParams || {}
-  var address = txParams.from || props.selectedAccount
+  var address = txParams.from || props.selectedAddress
   var identity = props.identities[address] || { address: address }
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
