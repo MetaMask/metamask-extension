@@ -146,7 +146,7 @@ module.exports = class MetamaskController extends EventEmitter {
     function selectPublicState(state) {
       const result = { selectedAccount: undefined }
       try {
-        result.selectedAccount = state.config.selectedAccount
+        result.selectedAccount = state.KeyringController.selectedAccount
       } catch (_) {}
       return result
     }
