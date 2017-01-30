@@ -25,12 +25,12 @@ module.exports = {
 }
 
 function migrateState (state) {
-  const config = state.config
+  const keyringSubstate = state.KeyringController
 
   // add new state
   const newState = extend(state, {
     PreferencesController: {
-      selectedAddress: config.selectedAccount,
+      selectedAddress: keyringSubstate.selectedAccount,
     },
   })
 
