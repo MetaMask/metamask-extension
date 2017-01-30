@@ -88,8 +88,6 @@ class KeyringController extends EventEmitter {
         keyringTypes: this.keyringTypes.map(krt => krt.type),
         // memStore
         identities: this.identities,
-        // diskStore
-        selectedAccount: state.selectedAccount,
         // configManager
         seedWords: this.configManager.getSeedWords(),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
@@ -229,28 +227,6 @@ class KeyringController extends EventEmitter {
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
     .then(this.fullUpdate.bind(this))
-  }
-
-  // Set Selected Account
-  // @string address
-  //
-  // returns Promise( @string address )
-  //
-  // Sets the state's `selectedAccount` value
-  // to the specified address.
-  setSelectedAccount (account) {
-    var address = normalizeAddress(account)
-    this.store.updateState({ selectedAccount: address })
-    return this.fullUpdate()
-  }
-
-  // Get Selected Account
-  //
-  // returns String
-  //
-  // Gets the state's `selectedAccount` value
-  getSelectedAccount () {
-    return this.store.getState().selectedAccount
   }
 
   // Save Account Label
