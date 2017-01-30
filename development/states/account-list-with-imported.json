@@ -37,7 +37,7 @@
     "provider": {
       "type": "testnet"
     },
-    "selectedAccount": "0x9858e7d8b79fc3e6d989636721584498926da38a",
+    "selectedAddress": "0x9858e7d8b79fc3e6d989636721584498926da38a",
     "selectedAccountTxList": [],
     "isDisclaimerConfirmed": true,
     "unconfMsgs": {},

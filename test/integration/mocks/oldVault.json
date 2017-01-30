@@ -13,7 +13,7 @@
       "provider": {
         "type": "testnet"
       },
-      "selectedAccount": "0x4dd5d356c5a016a220bcd69e82e5af680a430d00"
+      "selectedAddress": "0x4dd5d356c5a016a220bcd69e82e5af680a430d00"
     },
     "showSeedWords": false,
     "isEthConfirmed": true

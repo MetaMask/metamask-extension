@@ -126,8 +126,8 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        let selectedAccount = this.preferencesController.getSelectedAddress()
-        let result = selectedAccount ? [selectedAccount] : []
+        let selectedAddress = this.preferencesController.getSelectedAddress()
+        let result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
       },
       // tx signing
@@ -154,9 +154,9 @@ module.exports = class MetamaskController extends EventEmitter {
     )
 
     function selectPublicState(state) {
-      const result = { selectedAccount: undefined }
+      const result = { selectedAddress: undefined }
       try {
-        result.selectedAccount = state.KeyringController.selectedAccount
+        result.selectedAddress = state.KeyringController.selectedAddress
       } catch (_) {}
       return result
     }
