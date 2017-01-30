@@ -157,7 +157,6 @@
         "estimatedGas": "0x5208"
       }
     ],
-    "selectedAccount": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
     "network": "166",
     "seedWords": null,
     "isDisclaimerConfirmed": true,
@@ -167,7 +166,7 @@
       "type": "rpc",
       "rpcTarget": "555.203.16.244"
     },
-    "selectedAccount": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
+    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
   },
   "appState": {
     "menuOpen": false,

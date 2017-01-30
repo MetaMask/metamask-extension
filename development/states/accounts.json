@@ -89,7 +89,6 @@
       }
     },
     "transactions": [],
-    "selectedAccount": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
     "network": "2",
     "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
@@ -98,7 +97,7 @@
     "provider": {
       "type": "testnet"
     },
-    "selectedAccount": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
+    "selectedAddress": "0x0abdd95cafcabec9b3e99dcd09fc4b441037cb80",
     "seedWords": null
   },
   "appState": {

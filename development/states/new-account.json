@@ -36,7 +36,7 @@
     "provider": {
       "type": "testnet"
     },
-    "selectedAccount": "0xa6ef573d60594731178b7f85d80da13cc2af52dd",
+    "selectedAddress": "0xa6ef573d60594731178b7f85d80da13cc2af52dd",
     "isConfirmed": true,
     "unconfMsgs": {},
     "messages": [],

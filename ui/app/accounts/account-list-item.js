@@ -15,10 +15,10 @@ function AccountListItem () {
 }
 
 AccountListItem.prototype.render = function () {
-  const { identity, selectedAccount, accounts, onShowDetail } = this.props
+  const { identity, selectedAddress, accounts, onShowDetail } = this.props
 
   const checksumAddress = identity && identity.address && ethUtil.toChecksumAddress(identity.address)
-  const isSelected = selectedAccount === identity.address
+  const isSelected = selectedAddress === identity.address
   const account = accounts[identity.address]
   const selectedClass = isSelected ? '.selected' : ''
 
