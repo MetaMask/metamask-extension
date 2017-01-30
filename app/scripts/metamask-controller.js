@@ -11,6 +11,7 @@ const streamIntoProvider = require('web3-stream-provider/handler')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
+const PreferencesController = require('./lib/controllers/preferences')
 const NoticeController = require('./notice-controller')
 const messageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
@@ -39,6 +40,11 @@ module.exports = class MetamaskController extends EventEmitter {
       store: this.store,
     })
     this.configManager.updateConversionRate()
+
+    // preferences controller
+    this.prefencesController = new PreferencesController({
+      initState: initState.PrefencesController,
+    })
 
     // rpc provider
     this.provider = this.initializeProvider(opts)
@@ -100,6 +106,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txManager.on('update', this.sendUpdate.bind(this))
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
+    })
+    this.prefencesController.store.subscribe((state) => {
+      this.store.updateState({ PrefencesController: state })
     })
   }
 
