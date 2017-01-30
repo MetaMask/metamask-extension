@@ -52,7 +52,7 @@ reloadStream.once('data', triggerReload)
 
 // set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.PreferencesController.selectedAddress
+  web3.eth.defaultAccount = state.selectedAddress
 })
 
 //
