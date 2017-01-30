@@ -65,7 +65,7 @@ module.exports = class MetamaskController extends EventEmitter {
       txList: this.configManager.getTxList(),
       txHistoryLimit: 40,
       setTxList: this.configManager.setTxList.bind(this.configManager),
-      getSelectedAccount: this.configManager.getSelectedAccount.bind(this.configManager),
+      getSelectedAccount: this.keyringController.getSelectedAccount.bind(this.keyringController),
       getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
       getNetwork: this.getStateNetwork.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
@@ -117,7 +117,7 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        let selectedAccount = this.configManager.getSelectedAccount()
+        let selectedAccount = this.keyringController.getSelectedAccount()
         let result = selectedAccount ? [selectedAccount] : []
         cb(null, result)
       },
@@ -143,7 +143,7 @@ module.exports = class MetamaskController extends EventEmitter {
     function selectPublicState(state) {
       const result = { selectedAccount: undefined }
       try {
-        result.selectedAccount = state.config.selectedAccount
+        result.selectedAccount = state.KeyringController.selectedAccount
       } catch (_) {}
       return result
     }
@@ -329,7 +329,7 @@ module.exports = class MetamaskController extends EventEmitter {
   // ensuring they are only ever available in the background process.
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
-    cb(null, this.configManager.getSelectedAccount())
+    cb(null, this.keyringController.getSelectedAccount())
   }
 
   importAccountWithStrategy (strategy, args, cb) {
