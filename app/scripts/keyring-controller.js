@@ -244,6 +244,15 @@ class KeyringController extends EventEmitter {
     return this.fullUpdate()
   }
 
+  // Get Selected Account
+  //
+  // returns String
+  //
+  // Gets the state's `selectedAccount` value
+  getSelectedAccount () {
+    return this.store.getState().selectedAccount
+  }
+
   // Save Account Label
   // @string account
   // @string label
