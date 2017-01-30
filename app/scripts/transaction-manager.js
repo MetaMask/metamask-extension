@@ -13,7 +13,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txList = opts.txList || []
     this._setTxList = opts.setTxList
     this.txHistoryLimit = opts.txHistoryLimit
-    this.getSelectedAccount = opts.getSelectedAccount
+    this.getSelectedAddress = opts.getSelectedAddress
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
@@ -25,7 +25,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   getState () {
-    var selectedAccount = this.getSelectedAccount()
+    var selectedAccount = this.getSelectedAddress()
     return {
       transactions: this.getTxList(),
       unconfTxs: this.getUnapprovedTxList(),
