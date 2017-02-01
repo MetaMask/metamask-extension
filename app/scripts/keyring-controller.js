@@ -37,7 +37,6 @@ class KeyringController extends EventEmitter {
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyrings = []
-    this.identities = {} // Essentially a name hash
     this.getNetwork = opts.getNetwork
   }
 
@@ -144,17 +143,6 @@ class KeyringController extends EventEmitter {
     .then(this.fullUpdate.bind(this))
   }
 
-  // ClearSeedWordCache
-  //
-  // returns Promise( @string currentSelectedAccount )
-  //
-  // Removes the current vault's seed words from the UI's state tree,
-  // ensuring they are only ever available in the background process.
-  clearSeedWordCache () {
-    this.configManager.setSeedWords(null)
-    return Promise.resolve(this.configManager.getSelectedAccount())
-  }
-
   // Set Locked
   // returns Promise( @object state )
   //
@@ -206,8 +194,8 @@ class KeyringController extends EventEmitter {
       this.keyrings.push(keyring)
       return this.setupAccounts(accounts)
     })
-    .then(() => { return this.password })
-    .then(this.persistAllKeyrings.bind(this))
+    .then(() => this.persistAllKeyrings())
+    .then(() => this.fullUpdate())
     .then(() => {
       return keyring
     })
