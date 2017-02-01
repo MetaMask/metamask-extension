@@ -78,13 +78,10 @@ class KeyringController extends EventEmitter {
   // in this class, but will need to be Promisified when we move our
   // persistence to an async model.
   getState () {
-    const state = this.store.getState()
     // old wallet
-    const wallet = this.configManager.getWallet()
     const memState = this.memStore.getState()
     const result = {
       // computed
-      isInitialized: (!!wallet || !!state.vault),
       isUnlocked: (!!this.password),
       // memStore
       keyringTypes: memState.keyringTypes,

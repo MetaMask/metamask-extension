@@ -169,14 +169,21 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   getState () {
+    const wallet = this.configManager.getWallet()
+    const vault = this.keyringController.store.getState().vault
+    const isInitialized = (!!wallet || !!vault)
     return extend(
+      {
+        isInitialized,
+      },
       this.state,
       this.ethStore.getState(),
-      this.configManager.getConfig(),
       this.txManager.getState(),
       this.keyringController.getState(),
       this.preferencesController.store.getState(),
       this.noticeController.getState(),
+      // config manager
+      this.configManager.getConfig(),
       {
         shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         lostAccounts: this.configManager.getLostAccounts(),
