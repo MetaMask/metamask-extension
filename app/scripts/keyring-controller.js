@@ -2,6 +2,7 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const bip39 = require('bip39')
 const EventEmitter = require('events').EventEmitter
+const extend = require('xtend')
 const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
@@ -32,6 +33,7 @@ class KeyringController extends EventEmitter {
     super()
     const initState = opts.initState || {}
     this.store = new ObservableStore(initState)
+    this.memStore = new ObservableStore({})
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
@@ -74,30 +76,27 @@ class KeyringController extends EventEmitter {
   // in this class, but will need to be Promisified when we move our
   // persistence to an async model.
   getState () {
-    return Promise.all(this.keyrings.map(this.displayForKeyring))
-    .then((displayKeyrings) => {
-      const state = this.store.getState()
-      // old wallet
-      const wallet = this.configManager.getWallet()
-      return {
-        // computed
-        isInitialized: (!!wallet || !!state.vault),
-        isUnlocked: (!!this.password),
-        keyrings: displayKeyrings,
-        // hard coded
-        keyringTypes: this.keyringTypes.map(krt => krt.type),
-        // memStore
-        identities: this.identities,
-        // configManager
-        seedWords: this.configManager.getSeedWords(),
-        isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionRate: this.configManager.getConversionRate(),
-        conversionDate: this.configManager.getConversionDate(),
-        // messageManager
-        unconfMsgs: messageManager.unconfirmedMsgs(),
-        messages: messageManager.getMsgList(),
-      }
+    const state = this.store.getState()
+    // old wallet
+    const wallet = this.configManager.getWallet()
+    const memState = this.memStore.getState()
+    return extend(memState, {
+      // computed
+      isInitialized: (!!wallet || !!state.vault),
+      isUnlocked: (!!this.password),
+      // hard coded
+      keyringTypes: this.keyringTypes.map(krt => krt.type),
+      // memStore
+      identities: this.identities,
+      // configManager
+      seedWords: this.configManager.getSeedWords(),
+      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+      currentFiat: this.configManager.getCurrentFiat(),
+      conversionRate: this.configManager.getConversionRate(),
+      conversionDate: this.configManager.getConversionDate(),
+      // messageManager
+      unconfMsgs: messageManager.unconfirmedMsgs(),
+      messages: messageManager.getMsgList(),
     })
   }
 
@@ -164,6 +163,7 @@ class KeyringController extends EventEmitter {
   setLocked () {
     this.password = null
     this.keyrings = []
+    this._updateMemStoreKeyrings()
     return this.fullUpdate()
   }
 
@@ -637,6 +637,13 @@ class KeyringController extends EventEmitter {
 
     this.keyrings = []
     this.identities = {}
+  }
+
+  _updateMemStoreKeyrings() {
+    Promise.all(this.keyrings.map(this.displayForKeyring))
+    .then((keyrings) => {
+      this.memStore.updateState({ keyrings })
+    })
   }
 
 }

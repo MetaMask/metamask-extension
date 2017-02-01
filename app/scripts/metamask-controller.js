@@ -169,22 +169,19 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   getState () {
-    return this.keyringController.getState()
-    .then((keyringControllerState) => {
-      return extend(
-        this.state,
-        this.ethStore.getState(),
-        this.configManager.getConfig(),
-        this.txManager.getState(),
-        keyringControllerState,
-        this.preferencesController.store.getState(),
-        this.noticeController.getState(),
-        {
-          shapeShiftTxList: this.configManager.getShapeShiftTxList(),
-          lostAccounts: this.configManager.getLostAccounts(),
-        }
-      )
-    })
+    return extend(
+      this.state,
+      this.ethStore.getState(),
+      this.configManager.getConfig(),
+      this.txManager.getState(),
+      this.keyringController.getState(),
+      this.preferencesController.store.getState(),
+      this.noticeController.getState(),
+      {
+        shapeShiftTxList: this.configManager.getShapeShiftTxList(),
+        lostAccounts: this.configManager.getLostAccounts(),
+      }
+    )
   }
 
   //
@@ -199,7 +196,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     return {
       // etc
-      getState:              nodeify(this.getState.bind(this)),
+      getState:              (cb) => cb(null, this.getState()),
       setRpcTarget:          this.setRpcTarget.bind(this),
       setProviderType:       this.setProviderType.bind(this),
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
@@ -295,11 +292,8 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  sendUpdate () {
-    this.getState()
-    .then((state) => {
-      this.emit('update', state)
-    })
+  sendUpdate () {  
+    this.emit('update', this.getState())
   }
 
   //
