@@ -91,7 +91,6 @@ module.exports = class MessageManager extends EventEmitter{
     let msg = this.getMsg(msgId)
     if (msg) msg.status = status
     this._updateMsg(msg)
-    this.emit('updateBadge')
   }
 
   _updateMsg (msg) {
@@ -104,6 +103,7 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   _saveMsgList (msgList) {
+    this.emit('updateBadge')
     this.memStore.updateState({ messages: msgList })
   }
 
