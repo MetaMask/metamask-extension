@@ -90,7 +90,6 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
-  setSelectedAccount: setSelectedAccount,
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   sendTx: sendTx,
@@ -287,7 +286,7 @@ function importNewAccount (strategy, args) {
       dispatch(actions.updateMetamaskState(newState))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
-        value: newState.selectedAccount,
+        value: newState.selectedAddress,
       })
     })
   }
@@ -307,10 +306,6 @@ function showInfoPage () {
   return {
     type: actions.SHOW_INFO_PAGE,
   }
-}
-
-function setSelectedAccount (address) {
-  return callBackgroundThenUpdate(background.setSelectedAccount, address)
 }
 
 function setCurrentFiat (fiat) {
@@ -508,16 +503,14 @@ function lockMetamask () {
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.setSelectedAccount(address, (err, newState) => {
+    background.setSelectedAddress(address, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-
-      dispatch(actions.updateMetamaskState(newState))
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
-        value: newState.selectedAccount,
+        value: address,
       })
     })
   }

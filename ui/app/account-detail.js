@@ -24,7 +24,7 @@ function mapStateToProps (state) {
     metamask: state.metamask,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-    address: state.metamask.selectedAccount,
+    address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
     network: state.metamask.network,
     unapprovedMsgs: valuesFor(state.metamask.unapprovedMsgs),

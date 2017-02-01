@@ -63,20 +63,20 @@ function MetamaskInpageProvider (connectionStream) {
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
 
-  let selectedAccount
+  let selectedAddress
   let result = null
   switch (payload.method) {
 
     case 'eth_accounts':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.getState().selectedAccount
-      result = selectedAccount ? [selectedAccount] : []
+      selectedAddress = self.publicConfigStore.getState().selectedAddress
+      result = selectedAddress ? [selectedAddress] : []
       break
 
     case 'eth_coinbase':
       // read from localStorage
-      selectedAccount = self.publicConfigStore.getState().selectedAccount
-      result = selectedAccount || '0x0000000000000000000000000000000000000000'
+      selectedAddress = self.publicConfigStore.getState().selectedAddress
+      result = selectedAddress
       break
 
     case 'eth_uninstallFilter':

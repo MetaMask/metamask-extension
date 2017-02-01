@@ -95,7 +95,7 @@
     "provider": {
       "type": "testnet"
     },
-    "selectedAccount": "0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9",
+    "selectedAddress": "0xac39b311dceb2a4b2f5d8461c1cdaf756f4f7ae9",
     "seedWords": false,
     "isDisclaimerConfirmed": true,
     "unconfMsgs": {},

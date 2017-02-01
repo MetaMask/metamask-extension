@@ -13,7 +13,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txList = opts.txList || []
     this._setTxList = opts.setTxList
     this.txHistoryLimit = opts.txHistoryLimit
-    this.getSelectedAccount = opts.getSelectedAccount
+    this.getSelectedAddress = opts.getSelectedAddress
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
@@ -25,11 +25,11 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   getState () {
-    var selectedAccount = this.getSelectedAccount()
+    var selectedAddress = this.getSelectedAddress()
     return {
       transactions: this.getTxList(),
       unapprovedTxs: this.getUnapprovedTxList(),
-      selectedAccountTxList: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAccount}),
+      selectedAddressTxList: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAddress}),
     }
   }
 

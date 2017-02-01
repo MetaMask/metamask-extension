@@ -11,6 +11,7 @@ const streamIntoProvider = require('web3-stream-provider/handler')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
+const PreferencesController = require('./lib/controllers/preferences')
 const NoticeController = require('./notice-controller')
 const MessageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
@@ -40,6 +41,11 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.configManager.updateConversionRate()
 
+    // preferences controller
+    this.preferencesController = new PreferencesController({
+      initState: initState.PreferencesController,
+    })
+
     // rpc provider
     this.provider = this.initializeProvider(opts)
     this.provider.on('block', this.logBlock.bind(this))
@@ -56,8 +62,9 @@ module.exports = class MetamaskController extends EventEmitter {
       configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
-    this.keyringController.on('newAccount', (account) => {
-      autoFaucet(account)
+    this.keyringController.on('newAccount', (address) => {
+      this.preferencesController.setSelectedAddress(address)
+      autoFaucet(address)
     })
 
     // tx mgmt
@@ -65,7 +72,7 @@ module.exports = class MetamaskController extends EventEmitter {
       txList: this.configManager.getTxList(),
       txHistoryLimit: 40,
       setTxList: this.configManager.setTxList.bind(this.configManager),
-      getSelectedAccount: this.keyringController.getSelectedAccount.bind(this.keyringController),
+      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
       getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
       getNetwork: this.getStateNetwork.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
@@ -102,6 +109,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
     })
+    this.preferencesController.store.subscribe((state) => {
+      this.store.updateState({ PreferencesController: state })
+    })
   }
 
   //
@@ -117,8 +127,8 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        let selectedAccount = this.keyringController.getSelectedAccount()
-        let result = selectedAccount ? [selectedAccount] : []
+        let selectedAddress = this.preferencesController.getSelectedAddress()
+        let result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
       },
       // tx signing
@@ -141,9 +151,9 @@ module.exports = class MetamaskController extends EventEmitter {
     )
 
     function selectPublicState(state) {
-      const result = { selectedAccount: undefined }
+      const result = { selectedAddress: undefined }
       try {
-        result.selectedAccount = state.KeyringController.selectedAccount
+        result.selectedAddress = state.PreferencesController.selectedAddress
       } catch (_) {}
       return result
     }
@@ -165,6 +175,7 @@ module.exports = class MetamaskController extends EventEmitter {
         this.txManager.getState(),
         this.messageManager.getState(),
         keyringControllerState,
+        this.preferencesController.store.getState(),
         this.noticeController.getState(),
         {
           shapeShiftTxList: this.configManager.getShapeShiftTxList(),
@@ -180,6 +191,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   getApi () {
     const keyringController = this.keyringController
+    const preferencesController = this.preferencesController
     const txManager = this.txManager
     const messageManager = this.messageManager
     const noticeController = this.noticeController
@@ -211,12 +223,14 @@ module.exports = class MetamaskController extends EventEmitter {
       // vault management
       submitPassword: this.submitPassword.bind(this),
 
+      // PreferencesController
+      setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
+
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore:  nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
       addNewKeyring:             nodeify(keyringController.addNewKeyring).bind(keyringController),
-      setSelectedAccount:        nodeify(keyringController.setSelectedAccount).bind(keyringController),
       saveAccountLabel:          nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
 
@@ -329,7 +343,7 @@ module.exports = class MetamaskController extends EventEmitter {
   // ensuring they are only ever available in the background process.
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
-    cb(null, this.keyringController.getSelectedAccount())
+    cb(null, this.preferencesController.getSelectedAddress())
   }
 
   importAccountWithStrategy (strategy, args, cb) {
@@ -338,7 +352,7 @@ module.exports = class MetamaskController extends EventEmitter {
       return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
     })
     .then(keyring => keyring.getAccounts())
-    .then((accounts) => this.keyringController.setSelectedAccount(accounts[0]))
+    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
     .then(() => { cb(null, this.keyringController.fullUpdate()) })
     .catch((reason) => { cb(reason) })
   }
