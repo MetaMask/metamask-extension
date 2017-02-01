@@ -16,7 +16,6 @@ const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
 const pipe = require('mississippi').pipe
-const LocalStorageStore = require('obs-store/lib/localStorage')
 const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
@@ -27,7 +26,6 @@ const firstTimeState = require('./app/scripts/first-time-state')
 const extension = require('./development/mockExtension')
 const noop = function () {}
 
-const STORAGE_KEY = 'metamask-config'
 
 //
 // Query String
@@ -56,26 +54,14 @@ const injectCss = require('inject-css')
 // MetaMask Controller
 //
 
-let dataStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
-// initial state for first time users
-if (!dataStore.getState()) {
-  dataStore.putState(firstTimeState)
-}
-
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
   unlockAccountMessage: noop,
   showUnapprovedTx: noop,
   // initial state
-  initState: dataStore.getState(),
+  initState: firstTimeState,
 })
-
-// setup state persistence
-pipe(
-  controller.store,
-  dataStore
-)
 
 //
 // User Interface

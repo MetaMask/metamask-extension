@@ -104,7 +104,7 @@ describe('KeyringController', function() {
     it('should add the address to the identities hash', function() {
       const fakeAddress = '0x12345678'
       keyringController.createNickname(fakeAddress)
-      const identities = keyringController.identities
+      const identities = keyringController.memStore.getState().identities
       const identity = identities[fakeAddress]
       assert.equal(identity.address, fakeAddress)
     })
@@ -114,7 +114,9 @@ describe('KeyringController', function() {
     it ('sets the nickname', function(done) {
       const account = addresses[0]
       var nick = 'Test nickname'
-      keyringController.identities[ethUtil.addHexPrefix(account)] = {}
+      const identities = keyringController.memStore.getState().identities
+      identities[ethUtil.addHexPrefix(account)] = {}
+      keyringController.memStore.updateState({ identities })
       keyringController.saveAccountLabel(account, nick)
       .then((label) => {
         try {
