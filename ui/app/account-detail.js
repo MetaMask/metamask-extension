@@ -29,7 +29,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     unconfMsgs: valuesFor(state.metamask.unconfMsgs),
     shapeShiftTxList: state.metamask.shapeShiftTxList,
-    transactions: state.metamask.selectedAccountTxList || [],
+    transactions: state.metamask.selectedAddressTxList
   }
 }
 
