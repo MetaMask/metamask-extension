@@ -2,7 +2,6 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const bip39 = require('bip39')
 const EventEmitter = require('events').EventEmitter
-const extend = require('xtend')
 const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
@@ -33,7 +32,9 @@ class KeyringController extends EventEmitter {
     super()
     const initState = opts.initState || {}
     this.store = new ObservableStore(initState)
-    this.memStore = new ObservableStore({})
+    this.memStore = new ObservableStore({
+      keyrings: [],
+    })
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
@@ -80,7 +81,7 @@ class KeyringController extends EventEmitter {
     // old wallet
     const wallet = this.configManager.getWallet()
     const memState = this.memStore.getState()
-    return extend(memState, {
+    const result = {
       // computed
       isInitialized: (!!wallet || !!state.vault),
       isUnlocked: (!!this.password),
@@ -88,16 +89,15 @@ class KeyringController extends EventEmitter {
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       // memStore
       identities: this.identities,
-      // configManager
-      seedWords: this.configManager.getSeedWords(),
-      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-      currentFiat: this.configManager.getCurrentFiat(),
-      conversionRate: this.configManager.getConversionRate(),
-      conversionDate: this.configManager.getConversionDate(),
+      keyrings: memState.keyrings,
       // messageManager
       unconfMsgs: messageManager.unconfirmedMsgs(),
       messages: messageManager.getMsgList(),
-    })
+      // configManager
+      seedWords: this.configManager.getSeedWords(),
+      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+    }
+    return result
   }
 
   // Create New Vault And Keychain

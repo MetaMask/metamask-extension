@@ -180,6 +180,9 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         lostAccounts: this.configManager.getLostAccounts(),
+        currentFiat: this.configManager.getCurrentFiat(),
+        conversionRate: this.configManager.getConversionRate(),
+        conversionDate: this.configManager.getConversionDate(),
       }
     )
   }
