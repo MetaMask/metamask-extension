@@ -91,6 +91,7 @@ module.exports = class MessageManager extends EventEmitter{
     let msg = this.getMsg(msgId)
     if (msg) msg.status = status
     this._updateMsg(msg)
+    this.emit('updateBadge')
   }
 
   _updateMsg (msg) {
