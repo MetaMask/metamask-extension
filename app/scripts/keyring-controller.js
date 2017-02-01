@@ -6,7 +6,6 @@ const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
 const normalizeAddress = require('./lib/sig-util').normalize
-function noop () {}
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
 const HdKeyring = require('./keyrings/hd')
@@ -89,7 +88,6 @@ class KeyringController extends EventEmitter {
         currentFiat: this.configManager.getCurrentFiat(),
         conversionRate: this.configManager.getConversionRate(),
         conversionDate: this.configManager.getConversionDate(),
-        // messageManager
       }
     })
   }
@@ -319,7 +317,7 @@ class KeyringController extends EventEmitter {
   //
   // Attempts to sign the provided @object msgParams.
   signMessage (msgParams) {
-    const address = normalize(msgParams.from)
+    const address = normalizeAddress(msgParams.from)
     return this.getKeyringForAccount(address)
     .then((keyring) => {
       return keyring.signMessage(address, msgParams.data)

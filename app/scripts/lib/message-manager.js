@@ -11,7 +11,7 @@ module.exports = class MessageManager extends EventEmitter{
 
   getState() {
     return {
-      unapprovedMsgs: this.unapprovedMsgs(),
+      unapprovedMsgs: this.getUnapprovedMsgs(),
       messages: this.getMsgList(),
     }
   }
@@ -21,20 +21,13 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   get unapprovedMsgCount () {
-    return Object.keys(this.unapprovedMsgs()).length
+    return Object.keys(this.getUnapprovedMsgs()).length
   }
 
-  unapprovedMsgs () {
+  getUnapprovedMsgs () {
     let messages = this.getMsgList()
     return messages.filter(msg => msg.status === 'unapproved')
     .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
-  }
-
-  _saveMsgList (msgList) {
-    this.emit('updateBadge')
-    let state = this.memStore.getState()
-    state.messages = msgList
-    this.memStore.putState(state)
   }
 
   addUnapprovedMessage (msgParams) {
@@ -70,33 +63,29 @@ module.exports = class MessageManager extends EventEmitter{
     return matching.length > 0 ? matching[0] : null
   }
 
-  brodcastMessage (rawSig, msgId, status) {
-    this.emit(`${msgId}:finished`, {status, rawSig})
-  }
-
   approveMessage (msgParams) {
-    this.setMessageApproved(msgParams.metamaskId)
+    this.setMsgStatusApproved(msgParams.metamaskId)
     return this.prepMsgForSigning(msgParams)
   }
 
-  setMessageApproved (msgId) {
+  setMsgStatusApproved (msgId) {
     this._setMsgStatus(msgId, 'approved')
   }
+
   prepMsgForSigning (msgParams) {
     delete msgParams.metamaskId
     return Promise.resolve(msgParams)
   }
 
-  cancelMessage (msgId) {
-    // reject tx
-    // clean up
-    this.brodcastMessage(null, msgId, 'rejected')
-    this.rejectMsg(msgId)
-  }
-
   rejectMsg (msgId) {
+    this.brodcastMessage(null, msgId, 'rejected')
     this._setMsgStatus(msgId, 'rejected')
   }
+
+  brodcastMessage (rawSig, msgId, status) {
+    this.emit(`${msgId}:finished`, {status, rawSig})
+  }
+// PRIVATE METHODS
 
   _setMsgStatus (msgId, status) {
     let msg = this.getMsg(msgId)
@@ -112,4 +101,13 @@ module.exports = class MessageManager extends EventEmitter{
     }
     this._saveMsgList(messages)
   }
+
+  _saveMsgList (msgList) {
+    this.emit('updateBadge')
+    let state = this.memStore.getState()
+    state.messages = msgList
+    this.memStore.putState(state)
+  }
+
+
 }

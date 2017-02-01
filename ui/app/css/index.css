@@ -413,9 +413,9 @@ input.large-input {
   height: 24px;
   background: #4dffff;
   border: solid;
-  borderColor: #AEAEAE;
-  borderWidth: 0.5px;
-  borderRadius: 13px;
+  border-color: #AEAEAE;
+  border-width: 0.5px;
+  border-radius: 13px;
 }
 
 .edit-text {

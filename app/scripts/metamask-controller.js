@@ -224,7 +224,7 @@ module.exports = class MetamaskController extends EventEmitter {
       approveTransaction:    txManager.approveTransaction.bind(txManager),
       cancelTransaction:     txManager.cancelTransaction.bind(txManager),
       signMessage: this.signMessage.bind(this),
-      cancelMessage: messageManager.cancelMessage.bind(messageManager),
+      cancelMessage: messageManager.rejectMsg.bind(messageManager),
 
       // notices
       checkNotices:   noticeController.updateNoticesList.bind(noticeController),
@@ -369,31 +369,33 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   newUnsignedMessage (msgParams, cb) {
-    this.keyringController.getState()
-    .then((state) => {
-      let msgId = this.messageManager.addUnapprovedMessage(msgParams)
-      this.sendUpdate()
-      state.isUnlocked ? this.opts.unlockAccountMessage() : this.opts.showUnconfirmedMessage()
-      this.messageManager.once(`${msgId}:finished`, (data) => {
-        switch (data.status) {
-          case 'approved':
-            return cb(null, data.rawSig)
-          case 'rejected':
-            return cb(new Error('MetaMask Tx Signature: User denied transaction signature.'))
-          default:
-            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-        }
-      })
+    let msgId = this.messageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.messageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'approved':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
     })
   }
 
   signMessage (msgParams, cb) {
     const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
     return this.messageManager.approveMessage(msgParams)
     .then((cleanMsgParams) => {
+      // signs the message
       return this.keyringController.signMessage(cleanMsgParams)
     })
     .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
       this.messageManager.brodcastMessage(rawSig, msgId, 'approved')
     }).then(() => {
       cb()
