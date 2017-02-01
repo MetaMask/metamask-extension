@@ -103,10 +103,7 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   _saveMsgList (msgList) {
-    this.emit('updateBadge')
-    let state = this.memStore.getState()
-    state.messages = msgList
-    this.memStore.putState(state)
+    this.memStore.updateState({ messages: msgList })
   }
 
 
