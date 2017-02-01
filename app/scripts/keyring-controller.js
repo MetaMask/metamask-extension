@@ -26,11 +26,16 @@ class KeyringController extends EventEmitter {
   constructor (opts) {
     super()
     const initState = opts.initState || {}
+    this.keyringTypes = keyringTypes
     this.store = new ObservableStore(initState)
+    this.memStore = new ObservableStore({
+      keyringTypes: this.keyringTypes.map(krt => krt.type),
+      keyrings: [],
+      identities: {},
+    })
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
-    this.keyringTypes = keyringTypes
     this.keyrings = []
     this.identities = {} // Essentially a name hash
     this.getNetwork = opts.getNetwork
@@ -66,28 +71,21 @@ class KeyringController extends EventEmitter {
   // in this class, but will need to be Promisified when we move our
   // persistence to an async model.
   getState () {
-    return Promise.all(this.keyrings.map(this.displayForKeyring))
-    .then((displayKeyrings) => {
-      const state = this.store.getState()
-      // old wallet
-      const wallet = this.configManager.getWallet()
-      return {
-        // computed
-        isInitialized: (!!wallet || !!state.vault),
-        isUnlocked: (!!this.password),
-        keyrings: displayKeyrings,
-        // hard coded
-        keyringTypes: this.keyringTypes.map(krt => krt.type),
-        // memStore
-        identities: this.identities,
-        // configManager
-        seedWords: this.configManager.getSeedWords(),
-        isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionRate: this.configManager.getConversionRate(),
-        conversionDate: this.configManager.getConversionDate(),
-      }
-    })
+
+    // old wallet
+    const memState = this.memStore.getState()
+    const result = {
+      // computed
+      isUnlocked: (!!this.password),
+      // memStore
+      keyringTypes: memState.keyringTypes,
+      identities: memState.identities,
+      keyrings: memState.keyrings,
+      // configManager
+      seedWords: this.configManager.getSeedWords(),
+      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+    }
+    return result
   }
 
   // Create New Vault And Keychain
@@ -164,6 +162,7 @@ class KeyringController extends EventEmitter {
   setLocked () {
     this.password = null
     this.keyrings = []
+    this._updateMemStoreKeyrings()
     return this.fullUpdate()
   }
 
@@ -245,7 +244,9 @@ class KeyringController extends EventEmitter {
       walletNicknames[hexAddress] = label
       this.store.updateState({ walletNicknames })
       // update state on memStore
-      this.identities[hexAddress].name = label
+      const identities = this.memStore.getState().identities
+      identities[hexAddress].name = label
+      this.memStore.updateState({ identities })
       return Promise.resolve(label)
     } catch (err) {
       return Promise.reject(err)
@@ -372,14 +373,16 @@ class KeyringController extends EventEmitter {
   // Takes an address, and assigns it an incremented nickname, persisting it.
   createNickname (address) {
     const hexAddress = normalizeAddress(address)
-    const currentIdentityCount = Object.keys(this.identities).length + 1
+    const identities = this.memStore.getState().identities
+    const currentIdentityCount = Object.keys(identities).length + 1
     const nicknames = this.store.getState().walletNicknames || {}
     const existingNickname = nicknames[hexAddress]
     const name = existingNickname || `Account ${currentIdentityCount}`
-    this.identities[hexAddress] = {
+    identities[hexAddress] = {
       address: hexAddress,
       name,
     }
+    this.memStore.updateState({ identities })
     return this.saveAccountLabel(hexAddress, name)
   }
 
@@ -568,8 +571,19 @@ class KeyringController extends EventEmitter {
       this.ethStore.removeAccount(address)
     })
 
+    // clear keyrings from memory
     this.keyrings = []
-    this.identities = {}
+    this.memStore.updateState({
+      keyrings: [],
+      identities: {},
+    })
+  }
+
+  _updateMemStoreKeyrings() {
+    Promise.all(this.keyrings.map(this.displayForKeyring))
+    .then((keyrings) => {
+      this.memStore.updateState({ keyrings })
+    })
   }
 
 }
