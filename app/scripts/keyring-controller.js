@@ -31,14 +31,15 @@ class KeyringController extends EventEmitter {
   constructor (opts) {
     super()
     const initState = opts.initState || {}
+    this.keyringTypes = keyringTypes
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({
       keyrings: [],
+      keyringTypes: this.keyringTypes.map(krt => krt.type),
     })
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
-    this.keyringTypes = keyringTypes
     this.keyrings = []
     this.identities = {} // Essentially a name hash
 
@@ -85,9 +86,8 @@ class KeyringController extends EventEmitter {
       // computed
       isInitialized: (!!wallet || !!state.vault),
       isUnlocked: (!!this.password),
-      // hard coded
-      keyringTypes: this.keyringTypes.map(krt => krt.type),
       // memStore
+      keyringTypes: memState.keyringTypes,
       identities: this.identities,
       keyrings: memState.keyrings,
       // messageManager
