@@ -1,61 +1,110 @@
-module.exports = new MessageManager()
+const EventEmitter = require('events')
+const ObservableStore = require('obs-store')
+const createId = require('./random-id')
 
-function MessageManager (opts) {
-  this.messages = []
-}
 
-MessageManager.prototype.getMsgList = function () {
-  return this.messages
-}
-
-MessageManager.prototype.unconfirmedMsgs = function () {
-  var messages = this.getMsgList()
-  return messages.filter(msg => msg.status === 'unconfirmed')
-  .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
-}
-
-MessageManager.prototype._saveMsgList = function (msgList) {
-  this.messages = msgList
-}
-
-MessageManager.prototype.addMsg = function (msg) {
-  var messages = this.getMsgList()
-  messages.push(msg)
-  this._saveMsgList(messages)
-}
-
-MessageManager.prototype.getMsg = function (msgId) {
-  var messages = this.getMsgList()
-  var matching = messages.filter(msg => msg.id === msgId)
-  return matching.length > 0 ? matching[0] : null
-}
-
-MessageManager.prototype.confirmMsg = function (msgId) {
-  this._setMsgStatus(msgId, 'confirmed')
-}
-
-MessageManager.prototype.rejectMsg = function (msgId) {
-  this._setMsgStatus(msgId, 'rejected')
-}
-
-MessageManager.prototype._setMsgStatus = function (msgId, status) {
-  var msg = this.getMsg(msgId)
-  if (msg) msg.status = status
-  this.updateMsg(msg)
-}
-
-MessageManager.prototype.updateMsg = function (msg) {
-  var messages = this.getMsgList()
-  var found, index
-  messages.forEach((otherMsg, i) => {
-    if (otherMsg.id === msg.id) {
-      found = true
-      index = i
-    }
-  })
-  if (found) {
-    messages[index] = msg
+module.exports = class MessageManager extends EventEmitter{
+  constructor (opts) {
+    super()
+    this.memStore = new ObservableStore({ messages: [] })
   }
-  this._saveMsgList(messages)
-}
 
+  getState() {
+    return {
+      unapprovedMsgs: this.getUnapprovedMsgs(),
+      messages: this.getMsgList(),
+    }
+  }
+
+  getMsgList () {
+    return this.memStore.getState().messages
+  }
+
+  get unapprovedMsgCount () {
+    return Object.keys(this.getUnapprovedMsgs()).length
+  }
+
+  getUnapprovedMsgs () {
+    let messages = this.getMsgList()
+    return messages.filter(msg => msg.status === 'unapproved')
+    .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
+  }
+
+  addUnapprovedMessage (msgParams) {
+    // create txData obj with parameters and meta data
+    var time = (new Date()).getTime()
+    var msgId = createId()
+    var msgData = {
+      id: msgId,
+      msgParams: msgParams,
+      time: time,
+      status: 'unapproved',
+    }
+    this.addMsg(msgData)
+    console.log('addUnapprovedMessage:', msgData)
+
+    // keep the cb around for after approval (requires user interaction)
+    // This cb fires completion to the Dapp's write operation.
+
+    // signal update
+    this.emit('update')
+    return msgId
+  }
+
+  addMsg (msg) {
+    let messages = this.getMsgList()
+    messages.push(msg)
+    this._saveMsgList(messages)
+  }
+
+  getMsg (msgId) {
+    let messages = this.getMsgList()
+    let matching = messages.filter(msg => msg.id === msgId)
+    return matching.length > 0 ? matching[0] : null
+  }
+
+  approveMessage (msgParams) {
+    this.setMsgStatusApproved(msgParams.metamaskId)
+    return this.prepMsgForSigning(msgParams)
+  }
+
+  setMsgStatusApproved (msgId) {
+    this._setMsgStatus(msgId, 'approved')
+  }
+
+  prepMsgForSigning (msgParams) {
+    delete msgParams.metamaskId
+    return Promise.resolve(msgParams)
+  }
+
+  rejectMsg (msgId) {
+    this.brodcastMessage(null, msgId, 'rejected')
+    this._setMsgStatus(msgId, 'rejected')
+  }
+
+  brodcastMessage (rawSig, msgId, status) {
+    this.emit(`${msgId}:finished`, {status, rawSig})
+  }
+// PRIVATE METHODS
+
+  _setMsgStatus (msgId, status) {
+    let msg = this.getMsg(msgId)
+    if (msg) msg.status = status
+    this._updateMsg(msg)
+  }
+
+  _updateMsg (msg) {
+    let messages = this.getMsgList()
+    let index = messages.findIndex((message) => message.id === msg.id)
+    if (index !== -1) {
+      messages[index] = msg
+    }
+    this._saveMsgList(messages)
+  }
+
+  _saveMsgList (msgList) {
+    this.memStore.updateState({ messages: msgList })
+  }
+
+
+}

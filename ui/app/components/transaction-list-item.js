@@ -33,7 +33,6 @@ TransactionListItem.prototype.render = function () {
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
   var isPending = transaction.status === 'unapproved'
-
   let txParams
   if (isTx) {
     txParams = transaction.txParams

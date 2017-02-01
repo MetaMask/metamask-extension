@@ -5,11 +5,7 @@ const EventEmitter = require('events').EventEmitter
 const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
-const createId = require('./lib/random-id')
 const normalizeAddress = require('./lib/sig-util').normalize
-const messageManager = require('./lib/message-manager')
-function noop () {}
-
 // Keyrings:
 const SimpleKeyring = require('./keyrings/simple')
 const HdKeyring = require('./keyrings/hd')
@@ -17,7 +13,6 @@ const keyringTypes = [
   SimpleKeyring,
   HdKeyring,
 ]
-
 
 class KeyringController extends EventEmitter {
 
@@ -42,9 +37,6 @@ class KeyringController extends EventEmitter {
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyrings = []
-
-    this._unconfMsgCbs = {}
-
     this.getNetwork = opts.getNetwork
   }
 
@@ -78,6 +70,7 @@ class KeyringController extends EventEmitter {
   // in this class, but will need to be Promisified when we move our
   // persistence to an async model.
   getState () {
+
     // old wallet
     const memState = this.memStore.getState()
     const result = {
@@ -87,9 +80,6 @@ class KeyringController extends EventEmitter {
       keyringTypes: memState.keyringTypes,
       identities: memState.identities,
       keyrings: memState.keyrings,
-      // messageManager
-      unconfMsgs: messageManager.unconfirmedMsgs(),
-      messages: messageManager.getMsgList(),
       // configManager
       seedWords: this.configManager.getSeedWords(),
       isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
@@ -284,86 +274,19 @@ class KeyringController extends EventEmitter {
       return keyring.signTransaction(fromAddress, ethTx)
     })
   }
-  // Add Unconfirmed Message
-  // @object msgParams
-  // @function cb
-  //
-  // Does not call back, only emits an `update` event.
-  //
-  // Adds the given `msgParams` and `cb` to a local cache,
-  // for displaying to a user for approval before signing or canceling.
-  addUnconfirmedMessage (msgParams, cb) {
-    // create txData obj with parameters and meta data
-    var time = (new Date()).getTime()
-    var msgId = createId()
-    var msgData = {
-      id: msgId,
-      msgParams: msgParams,
-      time: time,
-      status: 'unconfirmed',
-    }
-    messageManager.addMsg(msgData)
-    console.log('addUnconfirmedMessage:', msgData)
-
-    // keep the cb around for after approval (requires user interaction)
-    // This cb fires completion to the Dapp's write operation.
-    this._unconfMsgCbs[msgId] = cb
-
-    // signal update
-    this.emit('update')
-    return msgId
-  }
-
-  // Cancel Message
-  // @string msgId
-  // @function cb (optional)
-  //
-  // Calls back to cached `unconfMsgCb`.
-  // Calls back to `cb` if provided.
-  //
-  // Forgets any messages matching `msgId`.
-  cancelMessage (msgId, cb) {
-    var approvalCb = this._unconfMsgCbs[msgId] || noop
-
-    // reject tx
-    approvalCb(null, false)
-    // clean up
-    messageManager.rejectMsg(msgId)
-    delete this._unconfTxCbs[msgId]
-
-    if (cb && typeof cb === 'function') {
-      cb()
-    }
-  }
 
   // Sign Message
   // @object msgParams
-  // @function cb
   //
   // returns Promise(@buffer rawSig)
-  // calls back @function cb with @buffer rawSig
-  // calls back cached Dapp's @function unconfMsgCb.
   //
   // Attempts to sign the provided @object msgParams.
-  signMessage (msgParams, cb) {
-    try {
-      const msgId = msgParams.metamaskId
-      delete msgParams.metamaskId
-      const approvalCb = this._unconfMsgCbs[msgId] || noop
-
-      const address = normalizeAddress(msgParams.from)
-      return this.getKeyringForAccount(address)
-      .then((keyring) => {
-        return keyring.signMessage(address, msgParams.data)
-      }).then((rawSig) => {
-        cb(null, rawSig)
-        approvalCb(null, true)
-        messageManager.confirmMsg(msgId)
-        return rawSig
-      })
-    } catch (e) {
-      cb(e)
-    }
+  signMessage (msgParams) {
+    const address = normalizeAddress(msgParams.from)
+    return this.getKeyringForAccount(address)
+    .then((keyring) => {
+      return keyring.signMessage(address, msgParams.data)
+    })
   }
 
   // PRIVATE METHODS

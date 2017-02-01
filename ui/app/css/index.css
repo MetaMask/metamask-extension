@@ -408,6 +408,16 @@ input.large-input {
 .name-label{
 
 }
+
+.unapproved-tx-icon {
+  height: 24px;
+  background: #4dffff;
+  border: solid;
+  border-color: #AEAEAE;
+  border-width: 0.5px;
+  border-radius: 13px;
+}
+
 .edit-text {
   height: 100%;
   visibility: hidden;

@@ -27,7 +27,7 @@ function mapStateToProps (state) {
     address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
     network: state.metamask.network,
-    unconfMsgs: valuesFor(state.metamask.unconfMsgs),
+    unapprovedMsgs: valuesFor(state.metamask.unapprovedMsgs),
     shapeShiftTxList: state.metamask.shapeShiftTxList,
     transactions: state.metamask.selectedAddressTxList || [],
   }
@@ -246,11 +246,11 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
-  const {transactions, unconfMsgs, address, network, shapeShiftTxList } = this.props
+  const {transactions, unapprovedMsgs, address, network, shapeShiftTxList } = this.props
   return h(TransactionList, {
     transactions: transactions.sort((a, b) => b.time - a.time),
     network,
-    unconfMsgs,
+    unapprovedMsgs,
     address,
     shapeShiftTxList,
     viewPendingTx: (txId) => {

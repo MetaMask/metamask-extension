@@ -13,7 +13,7 @@ const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const PreferencesController = require('./lib/controllers/preferences')
 const NoticeController = require('./notice-controller')
-const messageManager = require('./lib/message-manager')
+const MessageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
@@ -34,7 +34,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // observable state store
     this.store = new ObservableStore(initState)
-    
+
     // config manager
     this.configManager = new ConfigManager({
       store: this.store,
@@ -54,7 +54,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
     this.ethStore = new EthStore(this.provider)
-    
+
     // key mgmt
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
@@ -79,7 +79,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.provider,
     })
-    
+
     // notices
     this.noticeController = new NoticeController({
       configManager: this.configManager,
@@ -89,7 +89,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // this.noticeController.startPolling()
 
     this.getNetwork()
-    this.messageManager = messageManager
+    this.messageManager = new MessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
     this.checkTOSChange()
@@ -105,6 +105,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.ethStore.on('update', this.sendUpdate.bind(this))
     this.keyringController.on('update', this.sendUpdate.bind(this))
     this.txManager.on('update', this.sendUpdate.bind(this))
+    this.messageManager.on('update', this.sendUpdate.bind(this))
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
     })
@@ -133,11 +134,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
       // msg signing
-      approveMessage: this.newUnsignedMessage.bind(this),
-      signMessage: (...args) => {
-        this.keyringController.signMessage(...args)
-        this.sendUpdate()
-      },
+      processMessage: this.newUnsignedMessage.bind(this),
     })
     return provider
   }
@@ -169,6 +166,7 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   getState () {
+
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
@@ -179,6 +177,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.state,
       this.ethStore.getState(),
       this.txManager.getState(),
+      this.messageManager.getState(),
       this.keyringController.getState(),
       this.preferencesController.store.getState(),
       this.noticeController.getState(),
@@ -202,6 +201,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
     const txManager = this.txManager
+    const messageManager = this.messageManager
     const noticeController = this.noticeController
 
     return {
@@ -221,7 +221,7 @@ module.exports = class MetamaskController extends EventEmitter {
       buyEth: this.buyEth.bind(this),
       // shapeshift
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
-      
+
       // primary HD keyring management
       addNewAccount:              this.addNewAccount.bind(this),
       placeSeedWords:             this.placeSeedWords.bind(this),
@@ -245,8 +245,8 @@ module.exports = class MetamaskController extends EventEmitter {
       // signing methods
       approveTransaction:    txManager.approveTransaction.bind(txManager),
       cancelTransaction:     txManager.cancelTransaction.bind(txManager),
-      signMessage:           keyringController.signMessage.bind(keyringController),
-      cancelMessage:         keyringController.cancelMessage.bind(keyringController),
+      signMessage: this.signMessage.bind(this),
+      cancelMessage: messageManager.rejectMsg.bind(messageManager),
 
       // notices
       checkNotices:   noticeController.updateNoticesList.bind(noticeController),
@@ -388,20 +388,37 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   newUnsignedMessage (msgParams, cb) {
-    var state = this.keyringController.getState()
-    if (!state.isUnlocked) {
-      this.keyringController.addUnconfirmedMessage(msgParams, cb)
-      this.opts.unlockAccountMessage()
-    } else {
-      this.addUnconfirmedMessage(msgParams, cb)
-      this.sendUpdate()
-    }
+    let msgId = this.messageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.messageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'approved':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
   }
 
-  addUnconfirmedMessage (msgParams, cb) {
-    const keyringController = this.keyringController
-    const msgId = keyringController.addUnconfirmedMessage(msgParams, cb)
-    this.opts.showUnconfirmedMessage(msgParams, msgId)
+  signMessage (msgParams, cb) {
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.messageManager.approveMessage(msgParams)
+    .then((cleanMsgParams) => {
+      // signs the message
+      return this.keyringController.signMessage(cleanMsgParams)
+    })
+    .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.messageManager.brodcastMessage(rawSig, msgId, 'approved')
+    }).then(() => {
+      cb()
+    }).catch((err) => cb(err))
   }
 
 

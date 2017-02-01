@@ -8,7 +8,6 @@ const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const notification = require('./lib/notifications.js')
-const messageManager = require('./lib/message-manager')
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
 const firstTimeState = require('./first-time-state')
@@ -112,14 +111,14 @@ function setupController (initState) {
 
   updateBadge()
   controller.txManager.on('updateBadge', updateBadge)
+  controller.messageManager.on('updateBadge', updateBadge)
 
   // plugin badge text
   function updateBadge () {
     var label = ''
     var unapprovedTxCount = controller.txManager.unapprovedTxCount
-    var unconfMsgs = messageManager.unconfirmedMsgs()
-    var unconfMsgLen = Object.keys(unconfMsgs).length
-    var count = unapprovedTxCount + unconfMsgLen
+    var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
+    var count = unapprovedTxCount + unapprovedMsgCount
     if (count) {
       label = String(count)
     }
