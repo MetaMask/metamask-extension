@@ -34,14 +34,14 @@ class KeyringController extends EventEmitter {
     this.keyringTypes = keyringTypes
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({
-      keyrings: [],
       keyringTypes: this.keyringTypes.map(krt => krt.type),
+      keyrings: [],
+      identities: {},
     })
     this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyrings = []
-    this.identities = {} // Essentially a name hash
 
     this._unconfMsgCbs = {}
 
@@ -88,7 +88,7 @@ class KeyringController extends EventEmitter {
       isUnlocked: (!!this.password),
       // memStore
       keyringTypes: memState.keyringTypes,
-      identities: this.identities,
+      identities: memState.identities,
       keyrings: memState.keyrings,
       // messageManager
       unconfMsgs: messageManager.unconfirmedMsgs(),
@@ -245,7 +245,9 @@ class KeyringController extends EventEmitter {
       walletNicknames[hexAddress] = label
       this.store.updateState({ walletNicknames })
       // update state on memStore
-      this.identities[hexAddress].name = label
+      const identities = this.memStore.getState().identities
+      identities[hexAddress].name = label
+      this.memStore.updateState({ identities })
       return Promise.resolve(label)
     } catch (err) {
       return Promise.reject(err)
@@ -439,14 +441,16 @@ class KeyringController extends EventEmitter {
   // Takes an address, and assigns it an incremented nickname, persisting it.
   createNickname (address) {
     const hexAddress = normalizeAddress(address)
-    const currentIdentityCount = Object.keys(this.identities).length + 1
+    const identities = this.memStore.getState().identities
+    const currentIdentityCount = Object.keys(identities).length + 1
     const nicknames = this.store.getState().walletNicknames || {}
     const existingNickname = nicknames[hexAddress]
     const name = existingNickname || `Account ${currentIdentityCount}`
-    this.identities[hexAddress] = {
+    identities[hexAddress] = {
       address: hexAddress,
       name,
     }
+    this.memStore.updateState({ identities })
     return this.saveAccountLabel(hexAddress, name)
   }
 
@@ -635,8 +639,12 @@ class KeyringController extends EventEmitter {
       this.ethStore.removeAccount(address)
     })
 
+    // clear keyrings from memory
     this.keyrings = []
-    this.identities = {}
+    this.memStore.updateState({
+      keyrings: [],
+      identities: {},
+    })
   }
 
   _updateMemStoreKeyrings() {
