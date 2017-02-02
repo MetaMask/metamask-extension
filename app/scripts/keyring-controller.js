@@ -82,7 +82,6 @@ class KeyringController extends EventEmitter {
       keyrings: memState.keyrings,
       // configManager
       seedWords: this.configManager.getSeedWords(),
-      isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
     }
     return result
   }
