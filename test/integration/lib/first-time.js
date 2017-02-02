@@ -10,6 +10,8 @@ QUnit.test('agree to terms', function (assert) {
     app = $('iframe').contents().find('#app-content .mock-app-root')
 
     // Scroll through terms
+    var termsHeader = app.find('h3.terms-header')[0]
+    assert.equal(termsHeader.textContent, 'MetaMask Terms & Conditions', 'Showing TOS')
     let termsPage = app.find('.markdown')[0]
     assert.ok(termsPage, 'on terms page')
     termsPage.scrollTop = termsPage.scrollHeight
