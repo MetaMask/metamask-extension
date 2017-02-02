@@ -62,6 +62,7 @@ const controller = new MetamaskController({
   // initial state
   initState: firstTimeState,
 })
+global.metamaskController = controller
 
 //
 // User Interface

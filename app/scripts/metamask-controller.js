@@ -189,6 +189,7 @@ module.exports = class MetamaskController extends EventEmitter {
         currentFiat: this.configManager.getCurrentFiat(),
         conversionRate: this.configManager.getConversionRate(),
         conversionDate: this.configManager.getConversionDate(),
+        isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
       }
     )
   }

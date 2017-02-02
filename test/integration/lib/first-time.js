@@ -8,49 +8,49 @@ QUnit.test('agree to terms', function (assert) {
 
   wait().then(function() {
     app = $('iframe').contents().find('#app-content .mock-app-root')
-    app.find('.markdown').prop('scrollTop', 100000000)
-    return wait()
 
+    // Scroll through terms
+    var termsHeader = app.find('h3.terms-header')[0]
+    assert.equal(termsHeader.textContent, 'MetaMask Terms & Conditions', 'Showing TOS')
+    let termsPage = app.find('.markdown')[0]
+    assert.ok(termsPage, 'on terms page')
+    termsPage.scrollTop = termsPage.scrollHeight
+
+    return wait()
+  }).then(function() {
+
+    // Agree to terms
+    var button = app.find('button')[0]
+    button.click()    
+
+    return wait()
   }).then(function() {
 
     var title = app.find('h1').text()
     assert.equal(title, 'MetaMask', 'title screen')
 
+    // enter password
     var pwBox = app.find('#password-box')[0]
     var confBox = app.find('#password-box-confirm')[0]
-
     pwBox.value = PASSWORD
     confBox.value = PASSWORD
+    
     return wait()
-
   }).then(function() {
 
+    // create vault
     var createButton = app.find('button.primary')[0]
     createButton.click()
 
     return wait(1500)
   }).then(function() {
 
-    var terms = app.find('h3.terms-header')[0]
-    assert.equal(terms.textContent, 'MetaMask Terms & Conditions', 'Showing TOS')
-
-    // Scroll through terms
-    var scrollable = app.find('.markdown')[0]
-    scrollable.scrollTop = scrollable.scrollHeight
-
-    return wait(10)
-  }).then(function() {
-
-    var button = app.find('button')[0] // Agree button
-    button.click()
-
-    return wait(1000)
-  }).then(function() {
-
     var created = app.find('h3')[0]
     assert.equal(created.textContent, 'Vault Created', 'Vault created screen')
 
-    var button = app.find('button')[0] // Agree button
+    // Agree button
+    var button = app.find('button')[0]
+    assert.ok(button, 'button present')
     button.click()
 
     return wait(1000)
