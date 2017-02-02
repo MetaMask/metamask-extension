@@ -13,23 +13,23 @@ var notice = {
   date: date,
 }
 
-fsp.readdir('notices')
+fsp.readdir('notices/archive')
   .then((files) => {
     files.forEach(file => { id ++ })
     Promise.resolve()
   }).then(() => {
-    fsp.writeFile(`notices/notice_${id}.md`,'Message goes here. Please write out your notice and save before proceeding at the command line.')
+    fsp.writeFile(`notices/archive/notice_${id}.md`,'Message goes here. Please write out your notice and save before proceeding at the command line.')
       .then(() =>  {
-        open(`notices/notice_${id}.md`)
+        open(`notices/archive/notice_${id}.md`)
         prompt.start()
         prompt.get(['title'], (err, result) => {
           notice.title = result.title
-          fsp.readFile(`notices/notice_${id}.md`)
+          fsp.readFile(`notices/archive/notice_${id}.md`)
             .then((body) => {
               notice.body = body.toString()
               notice.id = id
               notices.push(notice)
-              return fsp.writeFile(`development/notices.json`, JSON.stringify(notices))
+              return fsp.writeFile(`notices/notices.json`, JSON.stringify(notices))
             })
         })
       })

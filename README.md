@@ -153,3 +153,14 @@ gource \
   --output-framerate 30 \
   | ffmpeg -y -r 30 -f image2pipe -vcodec ppm -i - -b 65536K metamask-dev-history.mp4
 ```
+
+## Generating Notices
+
+To add a notice:
+```
+npm run generateNotice
+```
+To delete a notice:
+```
+npm run deleteNotice
+```

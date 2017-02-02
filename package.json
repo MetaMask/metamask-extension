@@ -20,7 +20,8 @@
     "testem": "npm run buildMock && testem",
     "ci": "npm run buildMock && npm run buildCiUnits && testem ci -P 2",
     "announce": "node development/announcer.js",
-    "generateNotice": "node development/notice-generator.js"
+    "generateNotice": "node notices/notice-generator.js",
+    "deleteNotice": "node notices/notice-delete.js"
   },
   "browserify": {
     "transform": [
