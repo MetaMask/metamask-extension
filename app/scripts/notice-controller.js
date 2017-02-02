@@ -1,5 +1,5 @@
 const EventEmitter = require('events').EventEmitter
-const hardCodedNotices = require('../../development/notices.json')
+const hardCodedNotices = require('../../notices/notices.json')
 
 module.exports = class NoticeController extends EventEmitter {
 
