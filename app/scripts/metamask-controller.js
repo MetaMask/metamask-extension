@@ -110,26 +110,31 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // manual disk state subscriptions
+    this.txManager.store.subscribe((state) => {
+      this.store.updateState({ TransactionManager: state })
+    })
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
     })
     this.preferencesController.store.subscribe((state) => {
       this.store.updateState({ PreferencesController: state })
     })
-    this.txManager.store.subscribe((state) => {
-      this.store.updateState({ TransactionManager: state })
-    })
     this.currencyController.store.subscribe((state) => {
       this.store.updateState({ CurrencyController: state })
     })
+    this.noticeController.store.subscribe((state) => {
+      this.store.updateState({ NoticeController: state })
+    })
 
     // manual mem state subscriptions
-    this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.networkStore.subscribe(this.sendUpdate.bind(this))
-    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
+    this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
+    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
+    this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
   //
