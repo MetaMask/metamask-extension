@@ -325,12 +325,16 @@ function showInfoPage () {
   }
 }
 
-function setCurrentFiat (fiat) {
+function setCurrentFiat (currencyCode) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
     if (global.METAMASK_DEBUG) console.log(`background.setCurrentFiat`)
-    background.setCurrentFiat(fiat, (data, err) => {
+    background.setCurrentCurrency(currencyCode, (err, data) => {
       dispatch(this.hideLoadingIndication())
+      if (err) {
+        console.error(err.stack)
+        return dispatch(actions.displayWarning(err.message))
+      }
       dispatch({
         type: this.SET_CURRENT_FIAT,
         value: {

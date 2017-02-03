@@ -12,6 +12,7 @@ const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const PreferencesController = require('./lib/controllers/preferences')
+const CurrencyController = require('./lib/controllers/currency')
 const NoticeController = require('./notice-controller')
 const MessageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
@@ -41,12 +42,18 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager = new ConfigManager({
       store: this.store,
     })
-    this.configManager.updateConversionRate()
 
     // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
     })
+
+    // currency controller
+    this.currencyController = new CurrencyController({
+      initState: initState.CurrencyController,
+    })
+    this.currencyController.updateConversionRate()
+    this.currencyController.scheduleConversionInterval()
 
     // rpc provider
     this.provider = this.initializeProvider(opts)
@@ -97,8 +104,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.checkTOSChange()
 
-    this.scheduleConversionInterval()
-
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
       configManager: this.configManager,
@@ -114,11 +119,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txManager.store.subscribe((state) => {
       this.store.updateState({ TransactionManager: state })
     })
+    this.currencyController.store.subscribe((state) => {
+      this.store.updateState({ CurrencyController: state })
+    })
 
     // manual mem state subscriptions
     this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.networkStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
     this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
   }
@@ -189,15 +198,13 @@ module.exports = class MetamaskController extends EventEmitter {
       this.messageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
+      this.currencyController.store.getState(),
       this.noticeController.memStore.getState(),
       // config manager
       this.configManager.getConfig(),
       {
         shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         lostAccounts: this.configManager.getLostAccounts(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionRate: this.configManager.getConversionRate(),
-        conversionDate: this.configManager.getConversionDate(),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
         seedWords: this.configManager.getSeedWords(),
       }
@@ -223,7 +230,7 @@ module.exports = class MetamaskController extends EventEmitter {
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
       agreeToDisclaimer:     this.agreeToDisclaimer.bind(this),
       resetDisclaimer:       this.resetDisclaimer.bind(this),
-      setCurrentFiat:        this.setCurrentFiat.bind(this),
+      setCurrentCurrency:    this.setCurrentCurrency.bind(this),
       setTOSHash:            this.setTOSHash.bind(this),
       checkTOSChange:        this.checkTOSChange.bind(this),
       setGasMultiplier:      this.setGasMultiplier.bind(this),
@@ -550,29 +557,19 @@ module.exports = class MetamaskController extends EventEmitter {
     this.verifyNetwork()
   }
 
-  setCurrentFiat (fiat, cb) {
+  setCurrentCurrency (currencyCode, cb) {
     try {
-      this.configManager.setCurrentFiat(fiat)
-      this.configManager.updateConversionRate()
-      this.scheduleConversionInterval()
+      this.currencyController.setCurrentCurrency(currencyCode)
+      this.currencyController.updateConversionRate()
       const data = {
-        conversionRate: this.configManager.getConversionRate(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionDate: this.configManager.getConversionDate(),
+        conversionRate: this.currencyController.getConversionRate(),
+        currentFiat: this.currencyController.getCurrentCurrency(),
+        conversionDate: this.currencyController.getConversionDate(),
       }
-      cb(data)
+      cb(null, data)
     } catch (err) {
-      cb(null, err)
+      cb(err)
     }
-  }
-
-  scheduleConversionInterval () {
-    if (this.conversionInterval) {
-      clearInterval(this.conversionInterval)
-    }
-    this.conversionInterval = setInterval(() => {
-      this.configManager.updateConversionRate()
-    }, 300000)
   }
 
   buyEth (address, amount) {

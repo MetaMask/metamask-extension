@@ -97,9 +97,6 @@ IdentityStore.prototype.getState = function () {
     isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
     selectedAddress: configManager.getSelectedAccount(),
     shapeShiftTxList: configManager.getShapeShiftTxList(),
-    currentFiat: configManager.getCurrentFiat(),
-    conversionRate: configManager.getConversionRate(),
-    conversionDate: configManager.getConversionDate(),
     gasMultiplier: configManager.getGasMultiplier(),
   }))
 }
