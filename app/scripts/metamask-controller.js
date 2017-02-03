@@ -12,6 +12,7 @@ const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const PreferencesController = require('./lib/controllers/preferences')
+const CurrencyController = require('./lib/controllers/currency')
 const NoticeController = require('./notice-controller')
 const MessageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
@@ -29,38 +30,48 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
     this.opts = opts
-    this.state = { network: 'loading' }
     let initState = opts.initState || {}
 
     // observable state store
     this.store = new ObservableStore(initState)
 
+    // network store
+    this.networkStore = new ObservableStore({ network: 'loading' })
+
     // config manager
     this.configManager = new ConfigManager({
       store: this.store,
     })
-    this.configManager.updateConversionRate()
 
     // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
     })
 
+    // currency controller
+    this.currencyController = new CurrencyController({
+      initState: initState.CurrencyController,
+    })
+    this.currencyController.updateConversionRate()
+    this.currencyController.scheduleConversionInterval()
+
     // rpc provider
     this.provider = this.initializeProvider(opts)
     this.provider.on('block', this.logBlock.bind(this))
-    this.provider.on('error', this.getNetwork.bind(this))
+    this.provider.on('error', this.verifyNetwork.bind(this))
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
-    this.ethStore = new EthStore(this.provider)
+    this.ethStore = new EthStore({
+      provider: this.provider,
+      blockTracker: this.provider,
+    })
 
     // key mgmt
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
       ethStore: this.ethStore,
-      configManager: this.configManager,
-      getNetwork: this.getStateNetwork.bind(this),
+      getNetwork: this.getNetworkState.bind(this),
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
@@ -69,12 +80,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // tx mgmt
     this.txManager = new TxManager({
-      txList: this.configManager.getTxList(),
+      initState: initState.TransactionManager,
+      networkStore: this.networkStore,
+      preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
-      setTxList: this.configManager.setTxList.bind(this.configManager),
-      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
-      getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
-      getNetwork: this.getStateNetwork.bind(this),
+      getNetwork: this.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
@@ -82,36 +92,49 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // notices
     this.noticeController = new NoticeController({
-      configManager: this.configManager,
+      initState: initState.NoticeController,
     })
     this.noticeController.updateNoticesList()
     // to be uncommented when retrieving notices from a remote server.
     // this.noticeController.startPolling()
 
-    this.getNetwork()
+    this.lookupNetwork()
     this.messageManager = new MessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
     this.checkTOSChange()
-
-    this.scheduleConversionInterval()
 
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
       configManager: this.configManager,
     })
 
-    // manual state subscriptions
-    this.ethStore.on('update', this.sendUpdate.bind(this))
-    this.keyringController.on('update', this.sendUpdate.bind(this))
-    this.txManager.on('update', this.sendUpdate.bind(this))
-    this.messageManager.on('update', this.sendUpdate.bind(this))
+    // manual disk state subscriptions
+    this.txManager.store.subscribe((state) => {
+      this.store.updateState({ TransactionManager: state })
+    })
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
     })
     this.preferencesController.store.subscribe((state) => {
       this.store.updateState({ PreferencesController: state })
     })
+    this.currencyController.store.subscribe((state) => {
+      this.store.updateState({ CurrencyController: state })
+    })
+    this.noticeController.store.subscribe((state) => {
+      this.store.updateState({ NoticeController: state })
+    })
+
+    // manual mem state subscriptions
+    this.networkStore.subscribe(this.sendUpdate.bind(this))
+    this.ethStore.subscribe(this.sendUpdate.bind(this))
+    this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
+    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
+    this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
   //
@@ -174,22 +197,21 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         isInitialized,
       },
-      this.state,
+      this.networkStore.getState(),
       this.ethStore.getState(),
-      this.txManager.getState(),
-      this.messageManager.getState(),
-      this.keyringController.getState(),
+      this.txManager.memStore.getState(),
+      this.messageManager.memStore.getState(),
+      this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
-      this.noticeController.getState(),
+      this.currencyController.store.getState(),
+      this.noticeController.memStore.getState(),
       // config manager
       this.configManager.getConfig(),
       {
         shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         lostAccounts: this.configManager.getLostAccounts(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionRate: this.configManager.getConversionRate(),
-        conversionDate: this.configManager.getConversionDate(),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+        seedWords: this.configManager.getSeedWords(),
       }
     )
   }
@@ -213,7 +235,7 @@ module.exports = class MetamaskController extends EventEmitter {
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
       agreeToDisclaimer:     this.agreeToDisclaimer.bind(this),
       resetDisclaimer:       this.resetDisclaimer.bind(this),
-      setCurrentFiat:        this.setCurrentFiat.bind(this),
+      setCurrentCurrency:    this.setCurrentCurrency.bind(this),
       setTOSHash:            this.setTOSHash.bind(this),
       checkTOSChange:        this.checkTOSChange.bind(this),
       setGasMultiplier:      this.setGasMultiplier.bind(this),
@@ -243,11 +265,13 @@ module.exports = class MetamaskController extends EventEmitter {
       saveAccountLabel:          nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
 
-      // signing methods
+      // txManager
       approveTransaction:    txManager.approveTransaction.bind(txManager),
       cancelTransaction:     txManager.cancelTransaction.bind(txManager),
-      signMessage: this.signMessage.bind(this),
-      cancelMessage: messageManager.rejectMsg.bind(messageManager),
+
+      // messageManager
+      signMessage:           this.signMessage.bind(this),
+      cancelMessage:         messageManager.rejectMsg.bind(messageManager),
 
       // notices
       checkNotices:   noticeController.updateNoticesList.bind(noticeController),
@@ -339,7 +363,7 @@ module.exports = class MetamaskController extends EventEmitter {
     .then((serialized) => {
       const seedWords = serialized.mnemonic
       this.configManager.setSeedWords(seedWords)
-      promiseToCallback(this.keyringController.fullUpdate())(cb)
+      cb()
     })
   }
 
@@ -538,44 +562,38 @@ module.exports = class MetamaskController extends EventEmitter {
     this.verifyNetwork()
   }
 
-  setCurrentFiat (fiat, cb) {
+  setCurrentCurrency (currencyCode, cb) {
     try {
-      this.configManager.setCurrentFiat(fiat)
-      this.configManager.updateConversionRate()
-      this.scheduleConversionInterval()
+      this.currencyController.setCurrentCurrency(currencyCode)
+      this.currencyController.updateConversionRate()
       const data = {
-        conversionRate: this.configManager.getConversionRate(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionDate: this.configManager.getConversionDate(),
+        conversionRate: this.currencyController.getConversionRate(),
+        currentFiat: this.currencyController.getCurrentCurrency(),
+        conversionDate: this.currencyController.getConversionDate(),
       }
-      cb(data)
+      cb(null, data)
     } catch (err) {
-      cb(null, err)
+      cb(err)
     }
-  }
-
-  scheduleConversionInterval () {
-    if (this.conversionInterval) {
-      clearInterval(this.conversionInterval)
-    }
-    this.conversionInterval = setInterval(() => {
-      this.configManager.updateConversionRate()
-    }, 300000)
   }
 
   buyEth (address, amount) {
     if (!amount) amount = '5'
 
-    var network = this.state.network
-    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+    const network = this.getNetworkState()
+    let url
 
-    if (network === '3') {
-      url = 'https://faucet.metamask.io/'
+    switch (network) {
+      case '1':
+        url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+        break
+
+      case '3':
+        url = 'https://faucet.metamask.io/'
+        break
     }
 
-    extension.tabs.create({
-      url,
-    })
+    if (url) extension.tabs.create({ url })
   }
 
   createShapeShiftTx (depositAddress, depositType) {
@@ -584,7 +602,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setGasMultiplier (gasMultiplier, cb) {
     try {
-      this.configManager.setGasMultiplier(gasMultiplier)
+      this.txManager.setGasMultiplier(gasMultiplier)
       cb()
     } catch (err) {
       cb(err)
@@ -597,21 +615,19 @@ module.exports = class MetamaskController extends EventEmitter {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.state.network === 'loading') {
-      this.getNetwork()
-    }
+    if (this.isNetworkLoading()) this.lookupNetwork()
   }
 
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
     extension.runtime.reload()
-    this.getNetwork()
+    this.lookupNetwork()
   }
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
     extension.runtime.reload()
-    this.getNetwork()
+    this.lookupNetwork()
   }
 
   useEtherscanProvider () {
@@ -619,26 +635,32 @@ module.exports = class MetamaskController extends EventEmitter {
     extension.runtime.reload()
   }
 
-  getStateNetwork () {
-    return this.state.network
+  getNetworkState () {
+    return this.networkStore.getState().network
   }
 
-  getNetwork (err) {
+  setNetworkState (network) {
+    return this.networkStore.updateState({ network })
+  }
+
+  isNetworkLoading () {
+    return this.getNetworkState() === 'loading'
+  }
+
+  lookupNetwork (err) {
     if (err) {
-      this.state.network = 'loading'
-      this.sendUpdate()
+      this.setNetworkState('loading')
     }
 
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) {
-        this.state.network = 'loading'
-        return this.sendUpdate()
+        this.setNetworkState('loading')
+        return
       }
       if (global.METAMASK_DEBUG) {
         console.log('web3.getNetwork returned ' + network)
       }
-      this.state.network = network
-      this.sendUpdate()
+      this.setNetworkState(network)
     })
   }
 

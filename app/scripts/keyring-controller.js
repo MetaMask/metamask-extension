@@ -29,11 +29,11 @@ class KeyringController extends EventEmitter {
     this.keyringTypes = keyringTypes
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({
+      isUnlocked: false,
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       keyrings: [],
       identities: {},
     })
-    this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyrings = []
@@ -53,37 +53,7 @@ class KeyringController extends EventEmitter {
   // Not all methods end with this, that might be a nice refactor.
   fullUpdate () {
     this.emit('update')
-    return Promise.resolve(this.getState())
-  }
-
-  // Get State
-  // returns @object state
-  //
-  // This method returns a hash representing the current state
-  // that the keyringController manages.
-  //
-  // It is extended in the MetamaskController along with the EthStore
-  // state, and its own state, to create the metamask state branch
-  // that is passed to the UI.
-  //
-  // This is currently a rare example of a synchronously resolving method
-  // in this class, but will need to be Promisified when we move our
-  // persistence to an async model.
-  getState () {
-
-    // old wallet
-    const memState = this.memStore.getState()
-    const result = {
-      // computed
-      isUnlocked: (!!this.password),
-      // memStore
-      keyringTypes: memState.keyringTypes,
-      identities: memState.identities,
-      keyrings: memState.keyrings,
-      // configManager
-      seedWords: this.configManager.getSeedWords(),
-    }
-    return result
+    return Promise.resolve(this.memStore.getState())
   }
 
   // Create New Vault And Keychain
@@ -147,7 +117,10 @@ class KeyringController extends EventEmitter {
   //
   // This method deallocates all secrets, and effectively locks metamask.
   setLocked () {
+    // set locked
     this.password = null
+    this.memStore.updateState({ isUnlocked: false })
+    // remove keyrings
     this.keyrings = []
     this._updateMemStoreKeyrings()
     return this.fullUpdate()
@@ -385,6 +358,7 @@ class KeyringController extends EventEmitter {
   persistAllKeyrings (password = this.password) {
     if (typeof password === 'string') {
       this.password = password
+      this.memStore.updateState({ isUnlocked: true })
     }
     return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([keyring.type, keyring.serialize()])
@@ -421,6 +395,7 @@ class KeyringController extends EventEmitter {
     return this.encryptor.decrypt(password, encryptedVault)
     .then((vault) => {
       this.password = password
+      this.memStore.updateState({ isUnlocked: true })
       vault.forEach(this.restoreKeyring.bind(this))
       return this.keyrings
     })

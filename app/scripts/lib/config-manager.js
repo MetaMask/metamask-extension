@@ -250,53 +250,6 @@ ConfigManager.prototype.getTOSHash = function () {
   return data.TOSHash
 }
 
-ConfigManager.prototype.setCurrentFiat = function (currency) {
-  var data = this.getData()
-  data.fiatCurrency = currency
-  this.setData(data)
-}
-
-ConfigManager.prototype.getCurrentFiat = function () {
-  var data = this.getData()
-  return data.fiatCurrency || 'USD'
-}
-
-ConfigManager.prototype.updateConversionRate = function () {
-  var data = this.getData()
-  return fetch(`https://www.cryptonator.com/api/ticker/eth-${data.fiatCurrency}`)
-  .then(response => response.json())
-  .then((parsedResponse) => {
-    this.setConversionPrice(parsedResponse.ticker.price)
-    this.setConversionDate(parsedResponse.timestamp)
-  }).catch((err) => {
-    console.warn('MetaMask - Failed to query currency conversion.')
-    this.setConversionPrice(0)
-    this.setConversionDate('N/A')
-  })
-}
-
-ConfigManager.prototype.setConversionPrice = function (price) {
-  var data = this.getData()
-  data.conversionRate = Number(price)
-  this.setData(data)
-}
-
-ConfigManager.prototype.setConversionDate = function (datestring) {
-  var data = this.getData()
-  data.conversionDate = datestring
-  this.setData(data)
-}
-
-ConfigManager.prototype.getConversionRate = function () {
-  var data = this.getData()
-  return (data.conversionRate) || 0
-}
-
-ConfigManager.prototype.getConversionDate = function () {
-  var data = this.getData()
-  return (data.conversionDate) || 'N/A'
-}
-
 ConfigManager.prototype.getShapeShiftTxList = function () {
   var data = this.getData()
   var shapeShiftTxList = data.shapeShiftTxList ? data.shapeShiftTxList : []

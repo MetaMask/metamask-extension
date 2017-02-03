@@ -17,4 +17,7 @@ module.exports = [
   require('./004'),
   require('./005'),
   require('./006'),
+  require('./007'),
+  require('./008'),
+  require('./009'),
 ]

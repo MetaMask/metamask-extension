@@ -13,7 +13,7 @@ describe('Transaction Manager', function() {
 
   describe('#getMsgList', function() {
     it('when new should return empty array', function() {
-      var result = messageManager.getMsgList()
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
     })
@@ -22,20 +22,11 @@ describe('Transaction Manager', function() {
     })
   })
 
-  describe('#_saveMsgList', function() {
-    it('saves the submitted data to the Msg list', function() {
-      var target = [{ foo: 'bar', metamaskNetworkId: 'unit test' }]
-      messageManager._saveMsgList(target)
-      var result = messageManager.getMsgList()
-      assert.equal(result[0].foo, 'bar')
-    })
-  })
-
   describe('#addMsg', function() {
     it('adds a Msg returned in getMsgList', function() {
       var Msg = { id: 1, status: 'approved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
-      var result = messageManager.getMsgList()
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].id, 1)
@@ -47,7 +38,7 @@ describe('Transaction Manager', function() {
       var Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
       messageManager.setMsgStatusApproved(1)
-      var result = messageManager.getMsgList()
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'approved')
@@ -59,7 +50,7 @@ describe('Transaction Manager', function() {
       var Msg = { id: 1, status: 'unapproved', metamaskNetworkId: 'unit test' }
       messageManager.addMsg(Msg)
       messageManager.rejectMsg(1)
-      var result = messageManager.getMsgList()
+      var result = messageManager.messages
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 1)
       assert.equal(result[0].status, 'rejected')
