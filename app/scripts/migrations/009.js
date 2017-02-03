@@ -6,7 +6,7 @@ This migration breaks out the CurrencyController substate
 
 */
 
-const merge = require('deep-merge')
+const merge = require('deep-extend')
 
 module.exports = {
   version,  
@@ -25,7 +25,7 @@ module.exports = {
 }
 
 function transformState (state) {
-  const newState = merge(state, {
+  const newState = merge({}, state, {
     CurrencyController: {
       currentCurrency: state.currentFiat || 'USD',
       conversionRate: state.conversionRate,

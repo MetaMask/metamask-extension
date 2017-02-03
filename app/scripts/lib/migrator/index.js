@@ -15,7 +15,7 @@ class Migrator {
     let remaining = this.migrations.filter(migrationIsPending)
     
     return (
-      asyncQ.eachSeries(remaining, (migration) => migration.migrate(versionedData))
+      asyncQ.eachSeries(remaining, (migration) => this.runMigration(versionedData, migration))
       .then(() => versionedData)
     )
 
@@ -24,6 +24,17 @@ class Migrator {
     function migrationIsPending(migration) {
       return migration.version > versionedData.meta.version
     }
+  }
+
+  runMigration(versionedData, migration) {
+    return (
+      migration.migrate(versionedData)
+      .then((versionedData) => {
+        if (!versionedData.data) return Promise.reject(new Error('Migrator - Migration returned empty data'))
+        if (migration.version !== undefined && versionedData.meta.version !== migration.version) return Promise.reject(new Error('Migrator - Migration did not update version number correctly'))
+        return Promise.resolve(versionedData)
+      })
+    )
   }
 
   generateInitialState (initState) {
