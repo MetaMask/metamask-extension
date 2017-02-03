@@ -25,6 +25,8 @@ class EthereumStore extends ObservableStore {
     this._blockTracker = opts.blockTracker
     // subscribe to latest block
     this._blockTracker.on('block', this._updateForBlock.bind(this))
+    // blockTracker.currentBlock may be null
+    this._currentBlockNumber = this._blockTracker.currentBlock
   }
 
   //
