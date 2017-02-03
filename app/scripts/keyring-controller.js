@@ -33,7 +33,6 @@ class KeyringController extends EventEmitter {
       keyrings: [],
       identities: {},
     })
-    this.configManager = opts.configManager
     this.ethStore = opts.ethStore
     this.encryptor = encryptor
     this.keyrings = []
@@ -80,8 +79,6 @@ class KeyringController extends EventEmitter {
       keyringTypes: memState.keyringTypes,
       identities: memState.identities,
       keyrings: memState.keyrings,
-      // configManager
-      seedWords: this.configManager.getSeedWords(),
     }
     return result
   }

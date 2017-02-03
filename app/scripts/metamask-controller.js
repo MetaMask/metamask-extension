@@ -59,7 +59,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
       ethStore: this.ethStore,
-      configManager: this.configManager,
       getNetwork: this.getStateNetwork.bind(this),
     })
     this.keyringController.on('newAccount', (address) => {
@@ -190,6 +189,7 @@ module.exports = class MetamaskController extends EventEmitter {
         conversionRate: this.configManager.getConversionRate(),
         conversionDate: this.configManager.getConversionDate(),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+        seedWords: this.configManager.getSeedWords(),
       }
     )
   }
@@ -339,7 +339,7 @@ module.exports = class MetamaskController extends EventEmitter {
     .then((serialized) => {
       const seedWords = serialized.mnemonic
       this.configManager.setSeedWords(seedWords)
-      promiseToCallback(this.keyringController.fullUpdate())(cb)
+      cb()
     })
   }
 
