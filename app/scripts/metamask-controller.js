@@ -100,17 +100,19 @@ module.exports = class MetamaskController extends EventEmitter {
       configManager: this.configManager,
     })
 
-    // manual state subscriptions
-    this.ethStore.on('update', this.sendUpdate.bind(this))
-    this.keyringController.on('update', this.sendUpdate.bind(this))
-    this.txManager.on('update', this.sendUpdate.bind(this))
-    this.messageManager.on('update', this.sendUpdate.bind(this))
+    // manual disk state subscriptions
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
     })
     this.preferencesController.store.subscribe((state) => {
       this.store.updateState({ PreferencesController: state })
     })
+
+    // manual mem state subscriptions
+    this.ethStore.on('update', this.sendUpdate.bind(this))
+    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.txManager.on('update', this.sendUpdate.bind(this))
+    this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
   //
@@ -176,7 +178,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.state,
       this.ethStore.getState(),
       this.txManager.getState(),
-      this.messageManager.getState(),
+      this.messageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
       this.noticeController.getState(),

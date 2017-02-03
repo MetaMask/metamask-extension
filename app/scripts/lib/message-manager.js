@@ -6,18 +6,11 @@ const createId = require('./random-id')
 module.exports = class MessageManager extends EventEmitter{
   constructor (opts) {
     super()
-    this.memStore = new ObservableStore({ messages: [] })
-  }
-
-  getState() {
-    return {
-      unapprovedMsgs: this.getUnapprovedMsgs(),
-      messages: this.getMsgList(),
-    }
-  }
-
-  getMsgList () {
-    return this.memStore.getState().messages
+    this.memStore = new ObservableStore({
+      unapprovedMsgs: {},
+      unapprovedMsgCount: 0,
+    })
+    this.messages = []
   }
 
   get unapprovedMsgCount () {
@@ -25,8 +18,7 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   getUnapprovedMsgs () {
-    let messages = this.getMsgList()
-    return messages.filter(msg => msg.status === 'unapproved')
+    return this.messages.filter(msg => msg.status === 'unapproved')
     .reduce((result, msg) => { result[msg.id] = msg; return result }, {})
   }
 
@@ -41,10 +33,6 @@ module.exports = class MessageManager extends EventEmitter{
       status: 'unapproved',
     }
     this.addMsg(msgData)
-    console.log('addUnapprovedMessage:', msgData)
-
-    // keep the cb around for after approval (requires user interaction)
-    // This cb fires completion to the Dapp's write operation.
 
     // signal update
     this.emit('update')
@@ -52,15 +40,12 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   addMsg (msg) {
-    let messages = this.getMsgList()
-    messages.push(msg)
-    this._saveMsgList(messages)
+    this.messages.push(msg)
+    this._saveMsgList()
   }
 
   getMsg (msgId) {
-    let messages = this.getMsgList()
-    let matching = messages.filter(msg => msg.id === msgId)
-    return matching.length > 0 ? matching[0] : null
+    return this.messages.find(msg => msg.id === msgId)
   }
 
   approveMessage (msgParams) {
@@ -85,7 +70,10 @@ module.exports = class MessageManager extends EventEmitter{
   brodcastMessage (rawSig, msgId, status) {
     this.emit(`${msgId}:finished`, {status, rawSig})
   }
-// PRIVATE METHODS
+
+  //
+  // PRIVATE METHODS
+  //
 
   _setMsgStatus (msgId, status) {
     let msg = this.getMsg(msgId)
@@ -94,18 +82,18 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   _updateMsg (msg) {
-    let messages = this.getMsgList()
-    let index = messages.findIndex((message) => message.id === msg.id)
+    let index = this.messages.findIndex((message) => message.id === msg.id)
     if (index !== -1) {
-      messages[index] = msg
+      this.messages[index] = msg
     }
-    this._saveMsgList(messages)
+    this._saveMsgList()
   }
 
-  _saveMsgList (msgList) {
+  _saveMsgList () {
+    const unapprovedMsgs = this.getUnapprovedMsgs()
+    const unapprovedMsgCount = Object.keys(unapprovedMsgs).length
+    this.memStore.updateState({ unapprovedMsgs, unapprovedMsgCount })
     this.emit('updateBadge')
-    this.memStore.updateState({ messages: msgList })
   }
-
 
 }
