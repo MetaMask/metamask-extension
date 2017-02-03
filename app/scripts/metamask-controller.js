@@ -85,7 +85,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // notices
     this.noticeController = new NoticeController({
-      configManager: this.configManager,
+      initState: initState.NoticeController,
     })
     this.noticeController.updateNoticesList()
     // to be uncommented when retrieving notices from a remote server.
@@ -189,7 +189,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.messageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
-      this.noticeController.getState(),
+      this.noticeController.memStore.getState(),
       // config manager
       this.configManager.getConfig(),
       {
