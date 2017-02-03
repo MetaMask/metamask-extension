@@ -76,13 +76,13 @@ class EthereumStore extends ObservableStore {
     })
   }
 
-  _updateAccounts (cb) {
+  _updateAccounts (cb = noop) {
     const accounts = this.getState().accounts
     const addresses = Object.keys(accounts)
     async.each(addresses, this._updateAccount.bind(this), cb)
   }
 
-  _updateAccount (address, cb) {
+  _updateAccount (address, cb = noop) {
     const accounts = this.getState().accounts
     this._getAccount(address, (err, result) => {
       if (err) return cb(err)
@@ -95,13 +95,13 @@ class EthereumStore extends ObservableStore {
     })
   }
 
-  _updateTransactions (block, cb) {
+  _updateTransactions (block, cb = noop) {
     const transactions = this.getState().transactions
     const txHashes = Object.keys(transactions)
     async.each(txHashes, this._updateTransaction.bind(this, block), cb)
   }
 
-  _updateTransaction (block, txHash, cb) {
+  _updateTransaction (block, txHash, cb = noop) {
     // would use the block here to determine how many confirmations the tx has
     const transactions = this.getState().transactions
     this._query.getTransaction(txHash, (err, result) => {
@@ -114,7 +114,7 @@ class EthereumStore extends ObservableStore {
     })
   }
 
-  _getAccount (address, cb) {
+  _getAccount (address, cb = noop) {
     const query = this._query
     async.parallel({
       balance: query.getBalance.bind(query, address),
