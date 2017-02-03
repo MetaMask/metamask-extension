@@ -14,7 +14,6 @@ describe('Transaction Manager', function() {
       networkStore: new ObservableStore({ network: 'unit test' }),
       txHistoryLimit: 10,
       blockTracker: new EventEmitter(),
-      getSelectedAddress: function(){ return '0xabcd' },
     })
   })
 

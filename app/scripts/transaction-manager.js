@@ -17,9 +17,8 @@ module.exports = class TransactionManager extends EventEmitter {
     }, opts.initState))
     this.memStore = new ObservableStore({})
     this.networkStore = opts.networkStore || new ObservableStore({})
-
+    this.preferencesStore = opts.preferencesStore || new ObservableStore({})
     this.txHistoryLimit = opts.txHistoryLimit
-    this.getSelectedAddress = opts.getSelectedAddress
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
@@ -27,10 +26,11 @@ module.exports = class TransactionManager extends EventEmitter {
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
-    // memstore is computed from diskStore
+    // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore() )
     this.networkStore.subscribe(() => this._updateMemstore() )
+    this.preferencesStore.subscribe(() => this._updateMemstore() )
   }
 
   getState () {
@@ -39,6 +39,10 @@ module.exports = class TransactionManager extends EventEmitter {
 
   getNetwork () {
     return this.networkStore.getState().network
+  }
+
+  getSelectedAddress () {
+    return this.preferencesStore.getState().selectedAddress
   }
 
   // Returns the tx list

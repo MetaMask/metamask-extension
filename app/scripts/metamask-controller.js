@@ -72,8 +72,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txManager = new TxManager({
       initState: initState.TransactionManager,
       networkStore: this.networkStore,
+      preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
-      getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
       getNetwork: this.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
