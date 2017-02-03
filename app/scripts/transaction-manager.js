@@ -12,12 +12,11 @@ module.exports = class TransactionManager extends EventEmitter {
   constructor (opts) {
     super()
     this.store = new ObservableStore(extend({
-      txList: [],
+      transactions: [],
       gasMultiplier: 1,
     }, opts.initState))
     this.memStore = new ObservableStore({})
-    // this.networkStore = opts.networkStore || new ObservableStore({})
-    this.getNetwork = opts.getNetwork
+    this.networkStore = opts.networkStore || new ObservableStore({})
 
     this.txHistoryLimit = opts.txHistoryLimit
     this.getSelectedAddress = opts.getSelectedAddress
@@ -31,17 +30,21 @@ module.exports = class TransactionManager extends EventEmitter {
     // memstore is computed from diskStore
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore() )
-    // this.networkStore.subscribe(() => this._updateMemstore() )
+    this.networkStore.subscribe(() => this._updateMemstore() )
   }
 
   getState () {
     return this.memStore.getState()
   }
 
+  getNetwork () {
+    return this.networkStore.getState().network
+  }
+
   // Returns the tx list
   getTxList () {
     let network = this.getNetwork()
-    let fullTxList = this.store.getState().txList
+    let fullTxList = this.store.getState().transactions
     return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
   }
 
@@ -365,8 +368,8 @@ module.exports = class TransactionManager extends EventEmitter {
 
   // Saves the new/updated txList.
   // Function is intended only for internal use
-  _saveTxList (txList) {
-    this.store.updateState({ txList })
+  _saveTxList (transactions) {
+    this.store.updateState({ transactions })
   }
 
   _updateMemstore () {

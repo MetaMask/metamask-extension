@@ -1,6 +1,7 @@
 const assert = require('assert')
 const extend = require('xtend')
 const EventEmitter = require('events')
+const ObservableStore = require('obs-store')
 const STORAGE_KEY = 'metamask-persistance-key'
 const TransactionManager = require('../../app/scripts/transaction-manager')
 const noop = () => true
@@ -9,11 +10,10 @@ describe('Transaction Manager', function() {
   let txManager
 
   beforeEach(function() {
-    txManager = new TransactionManager ({
-      provider: "testnet",
+    txManager = new TransactionManager({
+      networkStore: new ObservableStore({ network: 'unit test' }),
       txHistoryLimit: 10,
       blockTracker: new EventEmitter(),
-      getNetwork: function(){ return 'unit test' },
       getSelectedAddress: function(){ return '0xabcd' },
     })
   })
@@ -47,15 +47,6 @@ describe('Transaction Manager', function() {
     })
     it('should also return transactions from local storage if any', function() {
 
-    })
-  })
-
-  describe('#_saveTxList', function() {
-    it('saves the submitted data to the tx list', function() {
-      var target = [{ foo: 'bar', metamaskNetworkId: 'unit test', txParams: {} }]
-      txManager._saveTxList(target)
-      var result = txManager.getTxList()
-      assert.equal(result[0].foo, 'bar')
     })
   })
 

@@ -29,11 +29,13 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
     this.opts = opts
-    this.state = { network: 'loading' }
     let initState = opts.initState || {}
 
     // observable state store
     this.store = new ObservableStore(initState)
+
+    // network store
+    this.networkStore = new ObservableStore({ network: 'loading' })
 
     // config manager
     this.configManager = new ConfigManager({
@@ -49,7 +51,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider(opts)
     this.provider.on('block', this.logBlock.bind(this))
-    this.provider.on('error', this.getNetwork.bind(this))
+    this.provider.on('error', this.verifyNetwork.bind(this))
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
@@ -59,7 +61,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
       ethStore: this.ethStore,
-      getNetwork: this.getStateNetwork.bind(this),
+      getNetwork: this.getNetworkState.bind(this),
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
@@ -68,10 +70,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // tx mgmt
     this.txManager = new TxManager({
-      initState: initState.TxManager,
+      initState: initState.TransactionManager,
+      networkStore: this.networkStore,
       txHistoryLimit: 40,
       getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
-      getNetwork: this.getStateNetwork.bind(this),
+      getNetwork: this.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
@@ -85,7 +88,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // to be uncommented when retrieving notices from a remote server.
     // this.noticeController.startPolling()
 
-    this.getNetwork()
+    this.lookupNetwork()
     this.messageManager = new MessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
@@ -111,6 +114,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // manual mem state subscriptions
     this.ethStore.on('update', this.sendUpdate.bind(this))
+    this.networkStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
     this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
@@ -176,7 +180,7 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         isInitialized,
       },
-      this.state,
+      this.networkStore.getState(),
       this.ethStore.getState(),
       this.txManager.memStore.getState(),
       this.messageManager.memStore.getState(),
@@ -571,16 +575,20 @@ module.exports = class MetamaskController extends EventEmitter {
   buyEth (address, amount) {
     if (!amount) amount = '5'
 
-    var network = this.state.network
-    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+    const network = this.getNetworkState()
+    let url
 
-    if (network === '3') {
-      url = 'https://faucet.metamask.io/'
+    switch (network) {
+      case '1':
+        url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+        break
+
+      case '3':
+        url = 'https://faucet.metamask.io/'
+        break
     }
 
-    extension.tabs.create({
-      url,
-    })
+    if (url) extension.tabs.create({ url })
   }
 
   createShapeShiftTx (depositAddress, depositType) {
@@ -602,21 +610,19 @@ module.exports = class MetamaskController extends EventEmitter {
 
   verifyNetwork () {
     // Check network when restoring connectivity:
-    if (this.state.network === 'loading') {
-      this.getNetwork()
-    }
+    if (this.isNetworkLoading()) this.lookupNetwork()
   }
 
   setRpcTarget (rpcTarget) {
     this.configManager.setRpcTarget(rpcTarget)
     extension.runtime.reload()
-    this.getNetwork()
+    this.lookupNetwork()
   }
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
     extension.runtime.reload()
-    this.getNetwork()
+    this.lookupNetwork()
   }
 
   useEtherscanProvider () {
@@ -624,26 +630,32 @@ module.exports = class MetamaskController extends EventEmitter {
     extension.runtime.reload()
   }
 
-  getStateNetwork () {
-    return this.state.network
+  getNetworkState () {
+    return this.networkStore.getState().network
   }
 
-  getNetwork (err) {
+  setNetworkState (network) {
+    return this.networkStore.updateState({ network })
+  }
+
+  isNetworkLoading () {
+    return this.getNetworkState() === 'loading'
+  }
+
+  lookupNetwork (err) {
     if (err) {
-      this.state.network = 'loading'
-      this.sendUpdate()
+      this.setNetworkState('loading')
     }
 
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) {
-        this.state.network = 'loading'
-        return this.sendUpdate()
+        this.setNetworkState('loading')
+        return
       }
       if (global.METAMASK_DEBUG) {
         console.log('web3.getNetwork returned ' + network)
       }
-      this.state.network = network
-      this.sendUpdate()
+      this.setNetworkState(network)
     })
   }
 
