@@ -29,6 +29,7 @@ class KeyringController extends EventEmitter {
     this.keyringTypes = keyringTypes
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({
+      isUnlocked: false,
       keyringTypes: this.keyringTypes.map(krt => krt.type),
       keyrings: [],
       identities: {},
@@ -74,7 +75,7 @@ class KeyringController extends EventEmitter {
     const memState = this.memStore.getState()
     const result = {
       // computed
-      isUnlocked: (!!this.password),
+      isUnlocked: memState.isUnlocked,
       // memStore
       keyringTypes: memState.keyringTypes,
       identities: memState.identities,
@@ -144,7 +145,10 @@ class KeyringController extends EventEmitter {
   //
   // This method deallocates all secrets, and effectively locks metamask.
   setLocked () {
+    // set locked
     this.password = null
+    this.memStore.updateState({ isUnlocked: false })
+    // remove keyrings
     this.keyrings = []
     this._updateMemStoreKeyrings()
     return this.fullUpdate()
@@ -382,6 +386,7 @@ class KeyringController extends EventEmitter {
   persistAllKeyrings (password = this.password) {
     if (typeof password === 'string') {
       this.password = password
+      this.memStore.updateState({ isUnlocked: true })
     }
     return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([keyring.type, keyring.serialize()])
@@ -418,6 +423,7 @@ class KeyringController extends EventEmitter {
     return this.encryptor.decrypt(password, encryptedVault)
     .then((vault) => {
       this.password = password
+      this.memStore.updateState({ isUnlocked: true })
       vault.forEach(this.restoreKeyring.bind(this))
       return this.keyrings
     })
