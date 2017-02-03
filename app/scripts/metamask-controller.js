@@ -177,7 +177,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.ethStore.getState(),
       this.txManager.getState(),
       this.messageManager.getState(),
-      this.keyringController.getState(),
+      this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
       this.noticeController.getState(),
       // config manager

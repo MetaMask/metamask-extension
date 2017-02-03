@@ -53,35 +53,7 @@ class KeyringController extends EventEmitter {
   // Not all methods end with this, that might be a nice refactor.
   fullUpdate () {
     this.emit('update')
-    return Promise.resolve(this.getState())
-  }
-
-  // Get State
-  // returns @object state
-  //
-  // This method returns a hash representing the current state
-  // that the keyringController manages.
-  //
-  // It is extended in the MetamaskController along with the EthStore
-  // state, and its own state, to create the metamask state branch
-  // that is passed to the UI.
-  //
-  // This is currently a rare example of a synchronously resolving method
-  // in this class, but will need to be Promisified when we move our
-  // persistence to an async model.
-  getState () {
-
-    // old wallet
-    const memState = this.memStore.getState()
-    const result = {
-      // computed
-      isUnlocked: memState.isUnlocked,
-      // memStore
-      keyringTypes: memState.keyringTypes,
-      identities: memState.identities,
-      keyrings: memState.keyrings,
-    }
-    return result
+    return Promise.resolve(this.memStore.getState())
   }
 
   // Create New Vault And Keychain
