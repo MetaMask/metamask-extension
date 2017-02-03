@@ -68,11 +68,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // tx mgmt
     this.txManager = new TxManager({
-      txList: this.configManager.getTxList(),
+      initState: initState.TxManager,
       txHistoryLimit: 40,
-      setTxList: this.configManager.setTxList.bind(this.configManager),
       getSelectedAddress: this.preferencesController.getSelectedAddress.bind(this.preferencesController),
-      getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
       getNetwork: this.getStateNetwork.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
@@ -107,11 +105,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.store.subscribe((state) => {
       this.store.updateState({ PreferencesController: state })
     })
+    this.txManager.store.subscribe((state) => {
+      this.store.updateState({ TransactionManager: state })
+    })
 
     // manual mem state subscriptions
     this.ethStore.on('update', this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.txManager.on('update', this.sendUpdate.bind(this))
+    this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
   }
 
@@ -177,7 +178,7 @@ module.exports = class MetamaskController extends EventEmitter {
       },
       this.state,
       this.ethStore.getState(),
-      this.txManager.getState(),
+      this.txManager.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
@@ -245,11 +246,13 @@ module.exports = class MetamaskController extends EventEmitter {
       saveAccountLabel:          nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
 
-      // signing methods
+      // txManager
       approveTransaction:    txManager.approveTransaction.bind(txManager),
       cancelTransaction:     txManager.cancelTransaction.bind(txManager),
-      signMessage: this.signMessage.bind(this),
-      cancelMessage: messageManager.rejectMsg.bind(messageManager),
+
+      // messageManager
+      signMessage:           this.signMessage.bind(this),
+      cancelMessage:         messageManager.rejectMsg.bind(messageManager),
 
       // notices
       checkNotices:   noticeController.updateNoticesList.bind(noticeController),
@@ -586,7 +589,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setGasMultiplier (gasMultiplier, cb) {
     try {
-      this.configManager.setGasMultiplier(gasMultiplier)
+      this.txManager.setGasMultiplier(gasMultiplier)
       cb()
     } catch (err) {
       cb(err)

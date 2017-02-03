@@ -2,6 +2,7 @@ const EventEmitter = require('events')
 const async = require('async')
 const extend = require('xtend')
 const Semaphore = require('semaphore')
+const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const BN = require('ethereumjs-util').BN
 const TxProviderUtil = require('./lib/tx-utils')
@@ -10,33 +11,46 @@ const createId = require('./lib/random-id')
 module.exports = class TransactionManager extends EventEmitter {
   constructor (opts) {
     super()
-    this.txList = opts.txList || []
-    this._setTxList = opts.setTxList
+    this.store = new ObservableStore(extend({
+      txList: [],
+      gasMultiplier: 1,
+    }, opts.initState))
+    this.memStore = new ObservableStore({})
+    // this.networkStore = opts.networkStore || new ObservableStore({})
+    this.getNetwork = opts.getNetwork
+
     this.txHistoryLimit = opts.txHistoryLimit
     this.getSelectedAddress = opts.getSelectedAddress
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.txProviderUtils = new TxProviderUtil(this.provider)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
-    this.getGasMultiplier = opts.getGasMultiplier
-    this.getNetwork = opts.getNetwork
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
+
+    // memstore is computed from diskStore
+    this._updateMemstore()
+    this.store.subscribe(() => this._updateMemstore() )
+    // this.networkStore.subscribe(() => this._updateMemstore() )
   }
 
   getState () {
-    var selectedAddress = this.getSelectedAddress()
-    return {
-      transactions: this.getTxList(),
-      unapprovedTxs: this.getUnapprovedTxList(),
-      selectedAddressTxList: this.getFilteredTxList({metamaskNetworkId: this.getNetwork(), from: selectedAddress}),
-    }
+    return this.memStore.getState()
   }
 
-//   Returns the tx list
+  // Returns the tx list
   getTxList () {
     let network = this.getNetwork()
-    return this.txList.filter(txMeta => txMeta.metamaskNetworkId === network)
+    let fullTxList = this.store.getState().txList
+    return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
+  }
+
+  getGasMultiplier () {
+    return this.store.getState().gasMultiplier
+  }
+
+  setGasMultiplier (gasMultiplier) {
+    return this.store.updateState({ gasMultiplier })
   }
 
   // Adds a tx to the txlist
@@ -108,7 +122,7 @@ module.exports = class TransactionManager extends EventEmitter {
           id: txId,
           time: time,
           status: 'unapproved',
-          gasMultiplier: this.getGasMultiplier() || 1,
+          gasMultiplier: this.getGasMultiplier(),
           metamaskNetworkId: this.getNetwork(),
           txParams: txParams,
         }
@@ -239,7 +253,7 @@ module.exports = class TransactionManager extends EventEmitter {
 
   getTxsByMetaData (key, value, txList = this.getTxList()) {
     return txList.filter((txMeta) => {
-      if (key in txMeta.txParams) {
+      if (txMeta.txParams[key]) {
         return txMeta.txParams[key] === value
       } else {
         return txMeta[key] === value
@@ -352,8 +366,16 @@ module.exports = class TransactionManager extends EventEmitter {
   // Saves the new/updated txList.
   // Function is intended only for internal use
   _saveTxList (txList) {
-    this.txList = txList
-    this._setTxList(txList)
+    this.store.updateState({ txList })
+  }
+
+  _updateMemstore () {
+    const unapprovedTxs = this.getUnapprovedTxList()
+    const selectedAddressTxList = this.getFilteredTxList({
+      from: this.getSelectedAddress(),
+      metamaskNetworkId: this.getNetwork(),
+    })
+    this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
 }
 
