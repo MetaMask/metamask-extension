@@ -158,6 +158,7 @@ var actions = {
   showNewKeychain: showNewKeychain,
 
   callBackgroundThenUpdate,
+  forceUpdateMetamaskState,
 }
 
 module.exports = actions
@@ -179,13 +180,13 @@ function tryUnlockMetamask (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    background.submitPassword(password, (err, newState) => {
+    background.submitPassword(password, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
         dispatch(actions.transitionForward())
-        dispatch(actions.updateMetamaskState(newState))
+        forceUpdateMetamaskState(dispatch)
       }
     })
   }
@@ -232,16 +233,16 @@ function createNewVaultAndRestore (password, seed) {
 function createNewVaultAndKeychain (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.createNewVaultAndKeychain(password, (err, newState) => {
+    background.createNewVaultAndKeychain(password, (err) => {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-      background.placeSeedWords((err, newState) => {
+      background.placeSeedWords((err) => {
         if (err) {
           return dispatch(actions.displayWarning(err.message))
         }
         dispatch(actions.hideLoadingIndication())
-        dispatch(actions.updateMetamaskState(newState))
+        forceUpdateMetamaskState(dispatch)
       })
     })
   }
@@ -280,13 +281,18 @@ function addNewKeyring (type, opts) {
 function importNewAccount (strategy, args) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
-    background.importAccountWithStrategy(strategy, args, (err, newState) => {
+    background.importAccountWithStrategy(strategy, args, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch({
-        type: actions.SHOW_ACCOUNT_DETAIL,
-        value: newState.selectedAddress,
+      background.getState((err, newState) => {
+        if (err) {
+          return dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch({
+          type: actions.SHOW_ACCOUNT_DETAIL,
+          value: newState.selectedAddress,
+        })
       })
     })
   }
@@ -876,12 +882,21 @@ function shapeShiftRequest (query, options, cb) {
 function callBackgroundThenUpdate (method, ...args) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    method.call(background, ...args, (err, newState) => {
+    method.call(background, ...args, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-      dispatch(actions.updateMetamaskState(newState))
+      forceUpdateMetamaskState(dispatch)
     })
   }
+}
+
+function forceUpdateMetamaskState(dispatch){
+  background.getState((err, newState) => {
+    if (err) {
+      return dispatch(actions.displayWarning(err.message))
+    }
+    dispatch(actions.updateMetamaskState(newState))
+  })
 }
