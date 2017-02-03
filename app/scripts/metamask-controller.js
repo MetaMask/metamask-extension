@@ -55,7 +55,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
-    this.ethStore = new EthStore(this.provider)
+    this.ethStore = new EthStore({
+      provider: this.provider,
+      blockTracker: this.provider,
+    })
 
     // key mgmt
     this.keyringController = new KeyringController({
@@ -113,7 +116,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // manual mem state subscriptions
-    this.ethStore.on('update', this.sendUpdate.bind(this))
+    this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.networkStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
     this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
