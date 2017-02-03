@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
+const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 
 
@@ -23,6 +24,7 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   addUnapprovedMessage (msgParams) {
+    msgParams.data = normalizeMsgData(msgParams.data)
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
     var msgId = createId()
@@ -57,18 +59,20 @@ module.exports = class MessageManager extends EventEmitter{
     this._setMsgStatus(msgId, 'approved')
   }
 
+  setMsgStatusSigned (msgId, rawSig) {
+    const msg = this.getMsg(msgId)
+    msg.rawSig = rawSig
+    this._updateMsg(msg)
+    this._setMsgStatus(msgId, 'signed')
+  }
+
   prepMsgForSigning (msgParams) {
     delete msgParams.metamaskId
     return Promise.resolve(msgParams)
   }
 
   rejectMsg (msgId) {
-    this.brodcastMessage(null, msgId, 'rejected')
     this._setMsgStatus(msgId, 'rejected')
-  }
-
-  brodcastMessage (rawSig, msgId, status) {
-    this.emit(`${msgId}:finished`, {status, rawSig})
   }
 
   //
@@ -76,13 +80,18 @@ module.exports = class MessageManager extends EventEmitter{
   //
 
   _setMsgStatus (msgId, status) {
-    let msg = this.getMsg(msgId)
-    if (msg) msg.status = status
+    const msg = this.getMsg(msgId)
+    if (!msg) throw new Error('MessageManager - Message not found for id: "${msgId}".')
+    msg.status = status
     this._updateMsg(msg)
+    this.emit(`${msgId}:${status}`, msg)
+    if (status === 'rejected' || status === 'signed') {
+      this.emit(`${msgId}:finished`, msg)
+    }
   }
 
   _updateMsg (msg) {
-    let index = this.messages.findIndex((message) => message.id === msg.id)
+    const index = this.messages.findIndex((message) => message.id === msg.id)
     if (index !== -1) {
       this.messages[index] = msg
     }
@@ -96,4 +105,14 @@ module.exports = class MessageManager extends EventEmitter{
     this.emit('updateBadge')
   }
 
+}
+
+function normalizeMsgData(data) {
+  if (data.slice(0, 2) === '0x') {
+    // data is already hex
+    return data
+  } else {
+    // data is unicode, convert to hex
+    return ethUtil.bufferToHex(new Buffer(data, 'utf8'))
+  }
 }
