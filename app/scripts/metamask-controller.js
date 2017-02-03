@@ -56,7 +56,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.currencyController.scheduleConversionInterval()
 
     // rpc provider
-    this.provider = this.initializeProvider(opts)
+    this.provider = this.initializeProvider()
     this.provider.on('block', this.logBlock.bind(this))
     this.provider.on('error', this.verifyNetwork.bind(this))
 
@@ -418,7 +418,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts.showUnconfirmedMessage()
     this.messageManager.once(`${msgId}:finished`, (data) => {
       switch (data.status) {
-        case 'approved':
+        case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
           return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
@@ -430,20 +430,20 @@ module.exports = class MetamaskController extends EventEmitter {
 
   signMessage (msgParams, cb) {
     const msgId = msgParams.metamaskId
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.messageManager.approveMessage(msgParams)
-    .then((cleanMsgParams) => {
-      // signs the message
-      return this.keyringController.signMessage(cleanMsgParams)
-    })
-    .then((rawSig) => {
-      // tells the listener that the message has been signed
-      // and can be returned to the dapp
-      this.messageManager.brodcastMessage(rawSig, msgId, 'approved')
-    }).then(() => {
-      cb()
-    }).catch((err) => cb(err))
+    promiseToCallback(
+      // sets the status op the message to 'approved'
+      // and removes the metamaskId for signing
+      this.messageManager.approveMessage(msgParams)
+      .then((cleanMsgParams) => {
+        // signs the message
+        return this.keyringController.signMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
+        this.messageManager.setMsgStatusSigned(msgId, rawSig)
+      })
+    )(cb)
   }
 
 
