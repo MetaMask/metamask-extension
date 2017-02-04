@@ -37,7 +37,8 @@ class ShapeshiftController {
     const { shapeShiftTxList } = this.store.getState()
     const now = new Date().getTime()
     const old = shapeShiftTxList.find((tx) => {
-      return tx.time + TIMEOUT_LIMIT < now
+      return tx.time + TIMEOUT_LIMIT < now &&
+        tx.response && tx.response.status === 'no_deposits'
     })
     if (old) {
       old.forEach(tx => this.removeShapeShiftTx(tx))
