@@ -14,6 +14,7 @@ const KeyringController = require('./keyring-controller')
 const PreferencesController = require('./lib/controllers/preferences')
 const CurrencyController = require('./lib/controllers/currency')
 const NoticeController = require('./notice-controller')
+const ShapeShiftController = require('./lib/controllers/shapeshift')
 const MessageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
 const ConfigManager = require('./lib/config-manager')
@@ -98,6 +99,10 @@ module.exports = class MetamaskController extends EventEmitter {
     // to be uncommented when retrieving notices from a remote server.
     // this.noticeController.startPolling()
 
+    this.shapeshiftController = new ShapeShiftController({
+      initState: initState.ShapeShiftController,
+    })
+
     this.lookupNetwork()
     this.messageManager = new MessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
@@ -125,6 +130,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.noticeController.store.subscribe((state) => {
       this.store.updateState({ NoticeController: state })
     })
+    this.shapeshiftController.store.subscribe((state) => {
+      this.store.updateState({ ShapeShiftController: state })
+    })
 
     // manual mem state subscriptions
     this.networkStore.subscribe(this.sendUpdate.bind(this))
@@ -135,6 +143,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
     this.currencyController.store.subscribe(this.sendUpdate.bind(this))
     this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
   }
 
   //
@@ -207,8 +216,8 @@ module.exports = class MetamaskController extends EventEmitter {
       this.noticeController.memStore.getState(),
       // config manager
       this.configManager.getConfig(),
+      this.shapeshiftController.store.getState(),
       {
-        shapeShiftTxList: this.configManager.getShapeShiftTxList(),
         lostAccounts: this.configManager.getLostAccounts(),
         isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
         seedWords: this.configManager.getSeedWords(),
@@ -327,7 +336,7 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  sendUpdate () {  
+  sendUpdate () {
     this.emit('update', this.getState())
   }
 
@@ -597,7 +606,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   createShapeShiftTx (depositAddress, depositType) {
-    this.configManager.createShapeShiftTx(depositAddress, depositType)
+    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
   }
 
   setGasMultiplier (gasMultiplier, cb) {
