@@ -39,7 +39,9 @@ class ShapeshiftController {
     const old = shapeShiftTxList.find((tx) => {
       return tx.time + TIMEOUT_LIMIT < now
     })
-    old.forEach(tx => this.removeShapeShiftTx(tx))
+    if (old) {
+      old.forEach(tx => this.removeShapeShiftTx(tx))
+    }
   }
 
   pollForUpdates () {
