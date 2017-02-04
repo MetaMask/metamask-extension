@@ -9,8 +9,9 @@ class ShapeshiftController {
   constructor (opts = {}) {
     const initState = extend({
       shapeShiftTxList: [],
-    }, opts)
+    }, opts.initState)
     this.store = new ObservableStore(initState)
+    this.pollForUpdates()
   }
 
   //
@@ -19,19 +20,12 @@ class ShapeshiftController {
 
   getShapeShiftTxList () {
     const shapeShiftTxList = this.store.getState().shapeShiftTxList
-
-    shapeShiftTxList.forEach((tx) => {
-      if (tx.response.status === 'no_deposits') {
-        this.updateTx(tx)
-      }
-    })
-    console.dir({shapeShiftTxList})
     return shapeShiftTxList
   }
 
   getPendingTxs () {
     const txs = this.getShapeShiftTxList()
-    const pending = txs.filter(tx => tx.response.status !== 'complete')
+    const pending = txs.filter(tx => tx.response && tx.response.status !== 'complete')
     return pending
   }
 
@@ -47,7 +41,7 @@ class ShapeshiftController {
     }))
     .then((results) => {
       results.forEach(tx => this.saveTx(tx))
-      setTimeout(this.pollForUpdates.bind(this), POLLING_INTERVAL)
+      this.timeout = setTimeout(this.pollForUpdates.bind(this), POLLING_INTERVAL)
     })
   }
 
@@ -55,7 +49,9 @@ class ShapeshiftController {
     const url = `https://shapeshift.io/txStat/${tx.depositAddress}`
     return fetch(url)
     .then((response) => {
-      tx.response = response.json()
+      return response.json()
+    }).then((json) => {
+      tx.response = json
       if (tx.response.status === 'complete') {
         tx.time = new Date().getTime()
       }
@@ -89,7 +85,6 @@ class ShapeshiftController {
     } else {
       shapeShiftTxList.push(shapeShiftTx)
     }
-    console.dir({ shapeShiftTxList })
 
     this.store.updateState({ shapeShiftTxList })
     this.pollForUpdates()
