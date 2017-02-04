@@ -1,5 +1,5 @@
 /* The migrator has two methods the user should be concerned with:
- * 
+ *
  * getData(), which returns the app-consumable data object
  * saveData(), which persists the app-consumable data object.
  */
@@ -20,4 +20,5 @@ module.exports = [
   require('./007'),
   require('./008'),
   require('./009'),
+  require('./010'),
 ]
