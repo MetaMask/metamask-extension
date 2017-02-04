@@ -4,6 +4,9 @@ const extend = require('xtend')
 // every three seconds when an incomplete tx is waiting
 const POLLING_INTERVAL = 3000
 
+// drop txs that haven't been paid to in 11 mins
+const TIMEOUT_LIMIT = 660000
+
 class ShapeshiftController {
 
   constructor (opts = {}) {
@@ -24,9 +27,19 @@ class ShapeshiftController {
   }
 
   getPendingTxs () {
+    this.removeOldTxs()
     const txs = this.getShapeShiftTxList()
     const pending = txs.filter(tx => tx.response && tx.response.status !== 'complete')
     return pending
+  }
+
+  removeOldTxs() {
+    const { shapeShiftTxList } = this.store.getState()
+    const now = new Date().getTime()
+    const old = shapeShiftTxList.find((tx) => {
+      return tx.time + TIMEOUT_LIMIT < now
+    })
+    old.forEach(tx => this.removeShapeShiftTx(tx))
   }
 
   pollForUpdates () {
@@ -66,6 +79,15 @@ class ShapeshiftController {
       shapeShiftTxList[index] = tx
       this.store.updateState({ shapeShiftTxList })
     }
+  }
+
+  removeShapeShiftTx (tx) {
+    const { shapeShiftTxList } = this.store.getState()
+    const index = shapeShiftTxList.indexOf(index)
+    if (index !== -1) {
+      shapeShiftTxList.splice(index, 1)
+    }
+    this.updateState({ shapeShiftTxList })
   }
 
   createShapeShiftTx (depositAddress, depositType) {
