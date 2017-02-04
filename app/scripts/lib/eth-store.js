@@ -92,6 +92,7 @@ class EthereumStore extends ObservableStore {
       // only populate if the entry is still present
       if (accounts[address]) {
         accounts[address] = result
+        this.updateState({ accounts })
       }
       cb(null, result)
     })
@@ -111,6 +112,7 @@ class EthereumStore extends ObservableStore {
       // only populate if the entry is still present
       if (transactions[txHash]) {
         transactions[txHash] = result
+        this.updateState({ transactions })
       }
       cb(null, result)
     })
