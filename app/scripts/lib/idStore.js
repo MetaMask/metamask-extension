@@ -96,7 +96,6 @@ IdentityStore.prototype.getState = function () {
     seedWords: seedWords,
     isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
     selectedAddress: configManager.getSelectedAccount(),
-    shapeShiftTxList: configManager.getShapeShiftTxList(),
     gasMultiplier: configManager.getGasMultiplier(),
   }))
 }

@@ -843,6 +843,7 @@ function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+      dispatch(actions.hideLoadingIndication())
       if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
