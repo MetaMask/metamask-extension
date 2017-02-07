@@ -382,7 +382,6 @@ function sendTx (txData) {
     if (global.METAMASK_DEBUG) console.log(`background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
       if (err) {
-        alert(err.message)
         dispatch(actions.txError(err))
         return console.error(err.message)
       }
