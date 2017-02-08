@@ -2,7 +2,11 @@
 
 ## Current Master
 
-## 3.2.0 2017-1-24
+## 3.2.1 2017-2-8
+
+- Fixed some build errors that were causing a variety of bugs.
+
+## 3.2.0 2017-2-8
 
 - Add ability to import accounts in JSON file format (used by Mist, Geth, MyEtherWallet, and more!)
 - Fix unapproved messages not being included in extension badge.
