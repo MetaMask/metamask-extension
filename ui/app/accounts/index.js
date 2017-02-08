@@ -10,16 +10,16 @@ const AccountListItem = require('./account-list-item')
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
 function mapStateToProps (state) {
-  const pendingTxs = valuesFor(state.metamask.unconfTxs)
+  const pendingTxs = valuesFor(state.metamask.unapprovedTxs)
   .filter(tx => tx.txParams.metamaskNetworkId === state.metamask.network)
-  const pendingMsgs = valuesFor(state.metamask.unconfMsgs)
+  const pendingMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const pending = pendingTxs.concat(pendingMsgs)
 
   return {
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
-    unconfTxs: state.metamask.unconfTxs,
-    selectedAccount: state.metamask.selectedAccount,
+    unapprovedTxs: state.metamask.unapprovedTxs,
+    selectedAddress: state.metamask.selectedAddress,
     scrollToBottom: state.appState.scrollToBottom,
     pending,
     keyrings: state.metamask.keyrings,
@@ -35,7 +35,7 @@ AccountsScreen.prototype.render = function () {
   const props = this.props
   const { keyrings } = props
   const identityList = valuesFor(props.identities)
-  const unconfTxList = valuesFor(props.unconfTxs)
+  const unapprovedTxList = valuesFor(props.unapprovedTxs)
 
   return (
 
@@ -80,7 +80,7 @@ AccountsScreen.prototype.render = function () {
             return h(AccountListItem, {
               key: `acct-panel-${identity.address}`,
               identity,
-              selectedAccount: this.props.selectedAccount,
+              selectedAddress: this.props.selectedAddress,
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,
@@ -107,7 +107,7 @@ AccountsScreen.prototype.render = function () {
           h('hr.horizontal-line'),
         ]),
 
-      unconfTxList.length ? (
+      unapprovedTxList.length ? (
 
         h('.unconftx-link.flex-row.flex-center', {
           onClick: this.navigateToConfTx.bind(this),
@@ -137,13 +137,6 @@ AccountsScreen.prototype.componentDidUpdate = function () {
 AccountsScreen.prototype.navigateToConfTx = function () {
   event.stopPropagation()
   this.props.dispatch(actions.showConfTxPage())
-}
-
-AccountsScreen.prototype.onSelect = function (address, event) {
-  event.stopPropagation()
-  // if already selected, deselect
-  if (this.props.selectedAccount === address) address = null
-  this.props.dispatch(actions.setSelectedAccount(address))
 }
 
 AccountsScreen.prototype.onShowDetail = function (address, event) {

@@ -2,7 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const type = 'Simple Key Pair'
 const actions = require('../../actions')
 
 module.exports = connect(mapStateToProps)(PrivateKeyImportView)
@@ -64,6 +63,6 @@ PrivateKeyImportView.prototype.createKeyringOnEnter = function (event) {
 PrivateKeyImportView.prototype.createNewKeychain = function () {
   const input = document.getElementById('private-key-box')
   const privateKey = input.value
-  this.props.dispatch(actions.addNewKeyring(type, [ privateKey ]))
+  this.props.dispatch(actions.importNewAccount('Private Key', [ privateKey ]))
 }
 

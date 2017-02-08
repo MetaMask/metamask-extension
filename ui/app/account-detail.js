@@ -24,12 +24,12 @@ function mapStateToProps (state) {
     metamask: state.metamask,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-    address: state.metamask.selectedAccount,
+    address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
     network: state.metamask.network,
-    unconfMsgs: valuesFor(state.metamask.unconfMsgs),
+    unapprovedMsgs: valuesFor(state.metamask.unapprovedMsgs),
     shapeShiftTxList: state.metamask.shapeShiftTxList,
-    transactions: state.metamask.selectedAccountTxList || [],
+    transactions: state.metamask.selectedAddressTxList || [],
   }
 }
 
@@ -41,6 +41,7 @@ function AccountDetailScreen () {
 AccountDetailScreen.prototype.render = function () {
   var props = this.props
   var selected = props.address || Object.keys(props.accounts)[0]
+  var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
   const { network } = props
@@ -116,22 +117,20 @@ AccountDetailScreen.prototype.render = function () {
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },
-              }, ethUtil.toChecksumAddress(selected)),
+              }, checksumAddress),
 
               // copy and export
 
               h('.flex-row', {
                 style: {
                   justifyContent: 'flex-end',
-                  position: 'relative',
-                  bottom: '15px',
                 },
               }, [
 
                 h(AccountInfoLink, { selected, network }),
 
                 h(CopyButton, {
-                  value: ethUtil.toChecksumAddress(selected),
+                  value: checksumAddress,
                 }),
 
                 h(Tooltip, {
@@ -247,11 +246,11 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
-  const {transactions, unconfMsgs, address, network, shapeShiftTxList } = this.props
+  const {transactions, unapprovedMsgs, address, network, shapeShiftTxList } = this.props
   return h(TransactionList, {
     transactions: transactions.sort((a, b) => b.time - a.time),
     network,
-    unconfMsgs,
+    unapprovedMsgs,
     address,
     shapeShiftTxList,
     viewPendingTx: (txId) => {

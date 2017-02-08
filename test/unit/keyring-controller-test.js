@@ -1,6 +1,6 @@
-var assert = require('assert')
-var KeyringController = require('../../app/scripts/keyring-controller')
-var configManagerGen = require('../lib/mock-config-manager')
+const assert = require('assert')
+const KeyringController = require('../../app/scripts/keyring-controller')
+const configManagerGen = require('../lib/mock-config-manager')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const async = require('async')
@@ -41,6 +41,9 @@ describe('KeyringController', function() {
       state = newState
       done()
     })
+    .catch((err) => {
+      done(err)
+    })
   })
 
   afterEach(function() {
@@ -52,17 +55,16 @@ describe('KeyringController', function() {
     this.timeout(10000)
 
     it('should set a vault on the configManager', function(done) {
-      keyringController.configManager.setVault(null)
-      assert(!keyringController.configManager.getVault(), 'no previous vault')
+      keyringController.store.updateState({ vault: null })
+      assert(!keyringController.store.getState().vault, 'no previous vault')
       keyringController.createNewVaultAndKeychain(password)
       .then(() => {
-        const vault = keyringController.configManager.getVault()
+        const vault = keyringController.store.getState().vault
         assert(vault, 'vault created')
         done()
       })
       .catch((reason) => {
-        assert.ifError(reason)
-        done()
+        done(reason)
       })
     })
   })
@@ -93,8 +95,7 @@ describe('KeyringController', function() {
         done()
       })
       .catch((reason) => {
-        assert.ifError(reason)
-        done()
+        done(reason)
       })
     })
   })
@@ -103,12 +104,9 @@ describe('KeyringController', function() {
     it('should add the address to the identities hash', function() {
       const fakeAddress = '0x12345678'
       keyringController.createNickname(fakeAddress)
-      const identities = keyringController.identities
+      const identities = keyringController.memStore.getState().identities
       const identity = identities[fakeAddress]
       assert.equal(identity.address, fakeAddress)
-
-      const nick = keyringController.configManager.nicknameForWallet(fakeAddress)
-      assert.equal(typeof nick, 'string')
     })
   })
 
@@ -116,37 +114,22 @@ describe('KeyringController', function() {
     it ('sets the nickname', function(done) {
       const account = addresses[0]
       var nick = 'Test nickname'
-      keyringController.identities[ethUtil.addHexPrefix(account)] = {}
+      const identities = keyringController.memStore.getState().identities
+      identities[ethUtil.addHexPrefix(account)] = {}
+      keyringController.memStore.updateState({ identities })
       keyringController.saveAccountLabel(account, nick)
       .then((label) => {
-        assert.equal(label, nick)
-        const persisted = keyringController.configManager.nicknameForWallet(account)
-        assert.equal(persisted, nick)
-        done()
+        try {
+          assert.equal(label, nick)
+          const persisted = keyringController.store.getState().walletNicknames[account]
+          assert.equal(persisted, nick)
+          done()
+        } catch (err) {
+          done()
+        }
       })
       .catch((reason) => {
-        assert.ifError(reason)
-        done()
-      })
-    })
-
-    this.timeout(10000)
-    it('retrieves the persisted nickname', function(done) {
-      const account = addresses[0]
-      var nick = 'Test nickname'
-      keyringController.configManager.setNicknameForWallet(account, nick)
-      keyringController.createNewVaultAndRestore(password, seedWords)
-      .then((state) => {
-
-        const identity = keyringController.identities['0x' + account]
-        assert.equal(identity.name, nick)
-
-        assert(accounts)
-        done()
-      })
-      .catch((reason) => {
-        assert.ifError(reason)
-        done()
+        done(reason)
       })
     })
   })

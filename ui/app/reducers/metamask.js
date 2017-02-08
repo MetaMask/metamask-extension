@@ -12,7 +12,7 @@ function reduceMetamask (state, action) {
     isUnlocked: false,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
-    unconfTxs: {},
+    unapprovedTxs: {},
     currentFiat: 'USD',
     conversionRate: 0,
     conversionDate: 'N/A',
@@ -50,7 +50,7 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
-        selectedAccount: action.value,
+        selectedAddress: action.value,
       })
 
     case actions.LOCK_METAMASK:
@@ -76,17 +76,17 @@ function reduceMetamask (state, action) {
     case actions.COMPLETED_TX:
       var stringId = String(action.id)
       newState = extend(metamaskState, {
-        unconfTxs: {},
-        unconfMsgs: {},
+        unapprovedTxs: {},
+        unapprovedMsgs: {},
       })
-      for (const id in metamaskState.unconfTxs) {
+      for (const id in metamaskState.unapprovedTxs) {
         if (id !== stringId) {
-          newState.unconfTxs[id] = metamaskState.unconfTxs[id]
+          newState.unapprovedTxs[id] = metamaskState.unapprovedTxs[id]
         }
       }
-      for (const id in metamaskState.unconfMsgs) {
+      for (const id in metamaskState.unapprovedMsgs) {
         if (id !== stringId) {
-          newState.unconfMsgs[id] = metamaskState.unconfMsgs[id]
+          newState.unapprovedMsgs[id] = metamaskState.unapprovedMsgs[id]
         }
       }
       return newState
@@ -101,7 +101,7 @@ function reduceMetamask (state, action) {
       newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
-        selectedAccount: action.value,
+        selectedAddress: action.value,
       })
       delete newState.seedWords
       return newState
@@ -110,7 +110,7 @@ function reduceMetamask (state, action) {
       newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
-        selectedAccount: action.value,
+        selectedAddress: action.value,
       })
       delete newState.seedWords
       return newState

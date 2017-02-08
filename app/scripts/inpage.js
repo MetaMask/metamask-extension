@@ -50,9 +50,9 @@ reloadStream.once('data', triggerReload)
 // })
 // endOfStream(pingStream, triggerReload)
 
-// set web3 defaultAcount
+// set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAccount
+  web3.eth.defaultAccount = state.selectedAddress
 })
 
 //

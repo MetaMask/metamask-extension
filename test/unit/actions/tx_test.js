@@ -31,7 +31,7 @@ describe('tx confirmation screen', function() {
           },
         },
         metamask: {
-          unconfTxs: {
+          unapprovedTxs: {
             '1457634084250832': {
               id: 1457634084250832,
               status: "unconfirmed",
@@ -119,7 +119,7 @@ describe('tx confirmation screen', function() {
             },
           },
           metamask: {
-            unconfTxs: {
+            unapprovedTxs: {
               '1457634084250832': {
                 id: 1457634084250832,
                 status: "unconfirmed",
@@ -162,7 +162,7 @@ describe('tx confirmation screen', function() {
 });
 
 function getUnconfirmedTxCount(state) {
-  var txs = state.metamask.unconfTxs
+  var txs = state.metamask.unapprovedTxs
   var count = Object.keys(txs).length
   return count
 }

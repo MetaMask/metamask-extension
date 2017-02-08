@@ -1,7 +1,9 @@
-var assert = require('assert')
-var MetaMaskController = require('../../app/scripts/metamask-controller')
-var sinon = require('sinon')
-var extend = require('xtend')
+const assert = require('assert')
+const sinon = require('sinon')
+const clone = require('clone')
+const MetaMaskController = require('../../app/scripts/metamask-controller')
+const firstTimeState = require('../../app/scripts/first-time-state')
+
 const STORAGE_KEY = 'metamask-config'
 
 describe('MetaMaskController', function() {
@@ -10,14 +12,13 @@ describe('MetaMaskController', function() {
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,
     showUnapprovedTx: noop,
-    setData,
-    loadData,
+    // initial state
+    initState: clone(firstTimeState),
   })
 
   beforeEach(function() {
     // sinon allows stubbing methods that are easily verified
     this.sinon = sinon.sandbox.create()
-    window.localStorage = {} // Hacking localStorage support into JSDom
   })
 
   afterEach(function() {
@@ -26,54 +27,3 @@ describe('MetaMaskController', function() {
   })
 
 })
-
-
-function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
-
-  var data = extend({
-    meta: {
-      version: 0,
-    },
-    data: {
-      config: {
-        provider: {
-          type: 'testnet',
-        },
-      },
-    },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
-  }
-
-  try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
-
-  return result
-}
-
-function setData (data) {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
-}

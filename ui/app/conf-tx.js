@@ -19,9 +19,9 @@ function mapStateToProps (state) {
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-    selectedAccount: state.metamask.selectedAccount,
-    unconfTxs: state.metamask.unconfTxs,
-    unconfMsgs: state.metamask.unconfMsgs,
+    selectedAddress: state.metamask.selectedAddress,
+    unapprovedTxs: state.metamask.unapprovedTxs,
+    unapprovedMsgs: state.metamask.unapprovedMsgs,
     index: state.appState.currentView.context,
     warning: state.appState.warning,
     network: state.metamask.network,
@@ -39,10 +39,10 @@ ConfirmTxScreen.prototype.render = function () {
 
   var network = state.network
   var provider = state.provider
-  var unconfTxs = state.unconfTxs
-  var unconfMsgs = state.unconfMsgs
+  var unapprovedTxs = state.unapprovedTxs
+  var unapprovedMsgs = state.unapprovedMsgs
 
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   var index = state.index !== undefined && unconfTxList[index] ? state.index : 0
   var txData = unconfTxList[index] || {}
   var txParams = txData.params || {}
@@ -99,12 +99,12 @@ ConfirmTxScreen.prototype.render = function () {
           // Properties
           txData: txData,
           key: txData.id,
-          selectedAccount: state.selectedAccount,
+          selectedAddress: state.selectedAddress,
           accounts: state.accounts,
           identities: state.identities,
           insufficientBalance: this.checkBalanceAgainstTx(txData),
           // Actions
-          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAccount),
+          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
@@ -131,10 +131,10 @@ function currentTxView (opts) {
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   if (!txData.txParams) return false
   var state = this.props
-  var address = txData.txParams.from || state.selectedAccount
+  var address = txData.txParams.from || state.selectedAddress
   var account = state.accounts[address]
   var balance = account ? account.balance : '0x0'
-  var maxCost = new BN(txData.maxCost)
+  var maxCost = new BN(txData.maxCost, 16)
 
   var balanceBn = new BN(ethUtil.stripHexPrefix(balance), 16)
   return maxCost.gt(balanceBn)

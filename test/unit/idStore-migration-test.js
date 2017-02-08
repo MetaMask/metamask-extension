@@ -1,14 +1,16 @@
 const async = require('async')
 const assert = require('assert')
+const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const ConfigManager = require('../../app/scripts/lib/config-manager')
+const firstTimeState = require('../../app/scripts/first-time-state')
 const delegateCallCode = require('../lib/example-code.json').delegateCallCode
+const clone = require('clone')
 
 // The old way:
 const IdentityStore = require('../../app/scripts/lib/idStore')
 const STORAGE_KEY = 'metamask-config'
-const extend = require('xtend')
 
 // The new ways:
 var KeyringController = require('../../app/scripts/keyring-controller')
@@ -41,12 +43,8 @@ describe('IdentityStore to KeyringController migration', function() {
   // and THEN create a new one, before we can run tests on it.
   beforeEach(function(done) {
     this.sinon = sinon.sandbox.create()
-    window.localStorage = {} // Hacking localStorage support into JSDom
-    configManager = new ConfigManager({
-      loadData,
-      setData: (d) => { window.localStorage = d }
-    })
-
+    let store = new ObservableStore(clone(firstTimeState))
+    configManager = new ConfigManager({ store })
 
     idStore = new IdentityStore({
       configManager: configManager,
@@ -82,65 +80,4 @@ describe('IdentityStore to KeyringController migration', function() {
     })
   })
 
-  describe('entering a password', function() {
-    it('should identify an old wallet as an initialized keyring', function(done) {
-      keyringController.configManager.setWallet('something')
-      keyringController.getState()
-      .then((state) => {
-        assert(state.isInitialized, 'old vault counted as initialized.')
-        assert(!state.lostAccounts, 'no lost accounts')
-        done()
-      })
-    })
-  })
 })
-
-function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
-
-  var data = extend({
-    meta: {
-      version: 0,
-    },
-    data: {
-      config: {
-        provider: {
-          type: 'testnet',
-        },
-      },
-    },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function setData (data) {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
-  }
-
-  try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
-
-  return result
-}

@@ -7,10 +7,10 @@ module.exports = reduceApp
 
 function reduceApp (state, action) {
   // clone and defaults
-  const selectedAccount = state.metamask.selectedAccount
+  const selectedAddress = state.metamask.selectedAddress
   const pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
-  if (selectedAccount) {
+  if (selectedAddress) {
     name = 'accountDetail'
   }
   if (pendingTxs) {
@@ -20,7 +20,7 @@ function reduceApp (state, action) {
   var defaultView = {
     name,
     detailView: null,
-    context: selectedAccount,
+    context: selectedAddress,
   }
 
   // confirm seed words
@@ -307,11 +307,11 @@ function reduceApp (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      var unconfTxs = state.metamask.unconfTxs
-      var unconfMsgs = state.metamask.unconfMsgs
+      var unapprovedTxs = state.metamask.unapprovedTxs
+      var unapprovedMsgs = state.metamask.unapprovedMsgs
       var network = state.metamask.network
 
-      var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
     .filter(tx => tx !== tx.id)
 
       if (unconfTxList && unconfTxList.length > 0) {
@@ -331,7 +331,7 @@ function reduceApp (state, action) {
           warning: null,
           currentView: {
             name: 'accountDetail',
-            context: state.metamask.selectedAccount,
+            context: state.metamask.selectedAddress,
           },
           accountDetail: {
             subview: 'transactions',
@@ -386,6 +386,7 @@ function reduceApp (state, action) {
     case actions.SHOW_LOADING:
       return extend(appState, {
         isLoading: true,
+        loadingMessage: action.value,
       })
 
     case actions.HIDE_LOADING:
@@ -571,18 +572,18 @@ function reduceApp (state, action) {
 }
 
 function hasPendingTxs (state) {
-  var unconfTxs = state.metamask.unconfTxs
-  var unconfMsgs = state.metamask.unconfMsgs
+  var unapprovedTxs = state.metamask.unapprovedTxs
+  var unapprovedMsgs = state.metamask.unapprovedMsgs
   var network = state.metamask.network
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   return unconfTxList.length > 0
 }
 
 function indexForPending (state, txId) {
-  var unconfTxs = state.metamask.unconfTxs
-  var unconfMsgs = state.metamask.unconfMsgs
+  var unapprovedTxs = state.metamask.unapprovedTxs
+  var unapprovedMsgs = state.metamask.unapprovedMsgs
   var network = state.metamask.network
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   let idx
   unconfTxList.forEach((tx, i) => {
     if (tx.id === txId) {

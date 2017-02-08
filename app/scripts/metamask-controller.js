@@ -1,188 +1,157 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
+const promiseToCallback = require('promise-to-callback')
+const pipe = require('pump')
+const Dnode = require('dnode')
+const ObservableStore = require('obs-store')
+const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
+const EthQuery = require('eth-query')
+const streamIntoProvider = require('web3-stream-provider/handler')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
+const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
+const PreferencesController = require('./lib/controllers/preferences')
+const CurrencyController = require('./lib/controllers/currency')
 const NoticeController = require('./notice-controller')
-const messageManager = require('./lib/message-manager')
+const ShapeShiftController = require('./lib/controllers/shapeshift')
+const MessageManager = require('./lib/message-manager')
 const TxManager = require('./transaction-manager')
-const HostStore = require('./lib/remote-store.js').HostStore
-const Web3 = require('web3')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
+const accountImporter = require('./account-import-strategies')
+
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-    this.state = { network: 'loading' }
     this.opts = opts
-    this.configManager = new ConfigManager(opts)
+    let initState = opts.initState || {}
+
+    // observable state store
+    this.store = new ObservableStore(initState)
+
+    // network store
+    this.networkStore = new ObservableStore({ network: 'loading' })
+
+    // config manager
+    this.configManager = new ConfigManager({
+      store: this.store,
+    })
+
+    // preferences controller
+    this.preferencesController = new PreferencesController({
+      initState: initState.PreferencesController,
+    })
+
+    // currency controller
+    this.currencyController = new CurrencyController({
+      initState: initState.CurrencyController,
+    })
+    this.currencyController.updateConversionRate()
+    this.currencyController.scheduleConversionInterval()
+
+    // rpc provider
+    this.provider = this.initializeProvider()
+    this.provider.on('block', this.logBlock.bind(this))
+    this.provider.on('error', this.verifyNetwork.bind(this))
+
+    // eth data query tools
+    this.ethQuery = new EthQuery(this.provider)
+    this.ethStore = new EthStore({
+      provider: this.provider,
+      blockTracker: this.provider,
+    })
+
+    // key mgmt
     this.keyringController = new KeyringController({
-      configManager: this.configManager,
-      getNetwork: this.getStateNetwork.bind(this),
+      initState: initState.KeyringController,
+      ethStore: this.ethStore,
+      getNetwork: this.getNetworkState.bind(this),
     })
-    // notices
-    this.noticeController = new NoticeController({
-      configManager: this.configManager,
+    this.keyringController.on('newAccount', (address) => {
+      this.preferencesController.setSelectedAddress(address)
+      autoFaucet(address)
     })
-    this.noticeController.updateNoticesList()
-    // to be uncommented when retrieving notices from a remote server.
-    // this.noticeController.startPolling()
-    this.provider = this.initializeProvider(opts)
-    this.ethStore = new EthStore(this.provider)
-    this.keyringController.setStore(this.ethStore)
-    this.getNetwork()
-    this.messageManager = messageManager
+
+    // tx mgmt
     this.txManager = new TxManager({
-      txList: this.configManager.getTxList(),
+      initState: initState.TransactionManager,
+      networkStore: this.networkStore,
+      preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
-      setTxList: this.configManager.setTxList.bind(this.configManager),
-      getSelectedAccount: this.configManager.getSelectedAccount.bind(this.configManager),
-      getGasMultiplier: this.configManager.getGasMultiplier.bind(this.configManager),
-      getNetwork: this.getStateNetwork.bind(this),
+      getNetwork: this.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
     })
+
+    // notices
+    this.noticeController = new NoticeController({
+      initState: initState.NoticeController,
+    })
+    this.noticeController.updateNoticesList()
+    // to be uncommented when retrieving notices from a remote server.
+    // this.noticeController.startPolling()
+
+    this.shapeshiftController = new ShapeShiftController({
+      initState: initState.ShapeShiftController,
+    })
+
+    this.lookupNetwork()
+    this.messageManager = new MessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
-    var currentFiat = this.configManager.getCurrentFiat() || 'USD'
-    this.configManager.setCurrentFiat(currentFiat)
-    this.configManager.updateConversionRate()
-
     this.checkTOSChange()
-
-    this.scheduleConversionInterval()
 
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
       configManager: this.configManager,
     })
 
-    this.ethStore.on('update', this.sendUpdate.bind(this))
-    this.keyringController.on('update', this.sendUpdate.bind(this))
-    this.txManager.on('update', this.sendUpdate.bind(this))
-  }
-
-  getState () {
-    return this.keyringController.getState()
-    .then((keyringControllerState) => {
-      return extend(
-        this.state,
-        this.ethStore.getState(),
-        this.configManager.getConfig(),
-        this.txManager.getState(),
-        keyringControllerState,
-        this.noticeController.getState(), {
-          lostAccounts: this.configManager.getLostAccounts(),
-        }
-      )
+    // manual disk state subscriptions
+    this.txManager.store.subscribe((state) => {
+      this.store.updateState({ TransactionManager: state })
     })
-  }
-
-  getApi () {
-    const keyringController = this.keyringController
-    const txManager = this.txManager
-    const noticeController = this.noticeController
-
-    return {
-      getState: nodeify(this.getState.bind(this)),
-      setRpcTarget: this.setRpcTarget.bind(this),
-      setProviderType: this.setProviderType.bind(this),
-      useEtherscanProvider: this.useEtherscanProvider.bind(this),
-      agreeToDisclaimer: this.agreeToDisclaimer.bind(this),
-      resetDisclaimer: this.resetDisclaimer.bind(this),
-      setCurrentFiat: this.setCurrentFiat.bind(this),
-      setTOSHash: this.setTOSHash.bind(this),
-      checkTOSChange: this.checkTOSChange.bind(this),
-      setGasMultiplier: this.setGasMultiplier.bind(this),
-      markAccountsFound: this.markAccountsFound.bind(this),
-
-      // forward directly to keyringController
-      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
-      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
-      placeSeedWords: nodeify(keyringController.placeSeedWords).bind(keyringController),
-      clearSeedWordCache: nodeify(keyringController.clearSeedWordCache).bind(keyringController),
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
-      submitPassword: (password, cb) => {
-        this.migrateOldVaultIfAny(password)
-        .then(keyringController.submitPassword.bind(keyringController, password))
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
-      },
-      addNewKeyring: (type, opts, cb) => {
-        keyringController.addNewKeyring(type, opts)
-        .then(() => keyringController.fullUpdate())
-        .then((newState) => { cb(null, newState) })
-        .catch((reason) => { cb(reason) })
-      },
-      addNewAccount: nodeify(keyringController.addNewAccount).bind(keyringController),
-      setSelectedAccount: nodeify(keyringController.setSelectedAccount).bind(keyringController),
-      saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
-      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
-
-      // signing methods
-      approveTransaction: txManager.approveTransaction.bind(txManager),
-      cancelTransaction: txManager.cancelTransaction.bind(txManager),
-      signMessage: keyringController.signMessage.bind(keyringController),
-      cancelMessage: keyringController.cancelMessage.bind(keyringController),
-
-      // coinbase
-      buyEth: this.buyEth.bind(this),
-      // shapeshift
-      createShapeShiftTx: this.createShapeShiftTx.bind(this),
-      // notices
-      checkNotices: noticeController.updateNoticesList.bind(noticeController),
-      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
-    }
-  }
-
-  setupProviderConnection (stream, originDomain) {
-    stream.on('data', this.onRpcRequest.bind(this, stream, originDomain))
-  }
-
-  onRpcRequest (stream, originDomain, request) {
-    // handle rpc request
-    this.provider.sendAsync(request, function onPayloadHandled (err, response) {
-      logger(err, request, response)
-      if (response) {
-        try {
-          stream.write(response)
-        } catch (err) {
-          logger(err)
-        }
-      }
+    this.keyringController.store.subscribe((state) => {
+      this.store.updateState({ KeyringController: state })
+    })
+    this.preferencesController.store.subscribe((state) => {
+      this.store.updateState({ PreferencesController: state })
+    })
+    this.currencyController.store.subscribe((state) => {
+      this.store.updateState({ CurrencyController: state })
+    })
+    this.noticeController.store.subscribe((state) => {
+      this.store.updateState({ NoticeController: state })
+    })
+    this.shapeshiftController.store.subscribe((state) => {
+      this.store.updateState({ ShapeShiftController: state })
     })
 
-    function logger (err, request, response) {
-      if (err) return console.error(err)
-      if (!request.isMetamaskInternal) {
-        if (global.METAMASK_DEBUG) {
-          console.log(`RPC (${originDomain}):`, request, '->', response)
-        }
-        if (response.error) {
-          console.error('Error in RPC response:\n', response.error)
-        }
-      }
-    }
+    // manual mem state subscriptions
+    this.networkStore.subscribe(this.sendUpdate.bind(this))
+    this.ethStore.subscribe(this.sendUpdate.bind(this))
+    this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
+    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
+    this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
   }
 
-  sendUpdate () {
-    this.getState()
-    .then((state) => {
-      this.emit('update', state)
-    })
-  }
+  //
+  // Constructor helpers
+  //
 
-  initializeProvider (opts) {
-    const keyringController = this.keyringController
-
-    var providerOpts = {
+  initializeProvider () {
+    let provider = MetaMaskProvider({
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
@@ -190,59 +159,247 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        var selectedAccount = this.configManager.getSelectedAccount()
-        var result = selectedAccount ? [selectedAccount] : []
+        let selectedAddress = this.preferencesController.getSelectedAddress()
+        let result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
       },
       // tx signing
       processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
       // msg signing
-      approveMessage: this.newUnsignedMessage.bind(this),
-      signMessage: (...args) => {
-        keyringController.signMessage(...args)
-        this.sendUpdate()
-      },
-    }
-
-    var provider = MetaMaskProvider(providerOpts)
-    var web3 = new Web3(provider)
-    this.web3 = web3
-    keyringController.web3 = web3
-    provider.on('block', this.processBlock.bind(this))
-    provider.on('error', this.getNetwork.bind(this))
-
+      processMessage: this.newUnsignedMessage.bind(this),
+    })
     return provider
   }
 
   initPublicConfigStore () {
     // get init state
-    var initPublicState = configToPublic(this.configManager.getConfig())
-    var publicConfigStore = new HostStore(initPublicState)
+    const publicConfigStore = new ObservableStore()
 
-    // subscribe to changes
-    this.configManager.subscribe(function (state) {
-      storeSetFromObj(publicConfigStore, configToPublic(state))
-    })
+    // sync publicConfigStore with transform
+    pipe(
+      this.store,
+      storeTransform(selectPublicState),
+      publicConfigStore
+    )
 
-    this.keyringController.on('newAccount', (account) => {
-      autoFaucet(account)
-    })
-
-    // config substate
-    function configToPublic (state) {
-      return {
-        selectedAccount: state.selectedAccount,
-      }
-    }
-    // dump obj into store
-    function storeSetFromObj (store, obj) {
-      Object.keys(obj).forEach(function (key) {
-        store.set(key, obj[key])
-      })
+    function selectPublicState(state) {
+      const result = { selectedAddress: undefined }
+      try {
+        result.selectedAddress = state.PreferencesController.selectedAddress
+      } catch (_) {}
+      return result
     }
 
     return publicConfigStore
   }
+
+  //
+  // State Management
+  //
+
+  getState () {
+
+    const wallet = this.configManager.getWallet()
+    const vault = this.keyringController.store.getState().vault
+    const isInitialized = (!!wallet || !!vault)
+    return extend(
+      {
+        isInitialized,
+      },
+      this.networkStore.getState(),
+      this.ethStore.getState(),
+      this.txManager.memStore.getState(),
+      this.messageManager.memStore.getState(),
+      this.keyringController.memStore.getState(),
+      this.preferencesController.store.getState(),
+      this.currencyController.store.getState(),
+      this.noticeController.memStore.getState(),
+      // config manager
+      this.configManager.getConfig(),
+      this.shapeshiftController.store.getState(),
+      {
+        lostAccounts: this.configManager.getLostAccounts(),
+        isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
+        seedWords: this.configManager.getSeedWords(),
+      }
+    )
+  }
+
+  //
+  // Remote Features
+  //
+
+  getApi () {
+    const keyringController = this.keyringController
+    const preferencesController = this.preferencesController
+    const txManager = this.txManager
+    const messageManager = this.messageManager
+    const noticeController = this.noticeController
+
+    return {
+      // etc
+      getState:              (cb) => cb(null, this.getState()),
+      setRpcTarget:          this.setRpcTarget.bind(this),
+      setProviderType:       this.setProviderType.bind(this),
+      useEtherscanProvider:  this.useEtherscanProvider.bind(this),
+      agreeToDisclaimer:     this.agreeToDisclaimer.bind(this),
+      resetDisclaimer:       this.resetDisclaimer.bind(this),
+      setCurrentCurrency:    this.setCurrentCurrency.bind(this),
+      setTOSHash:            this.setTOSHash.bind(this),
+      checkTOSChange:        this.checkTOSChange.bind(this),
+      setGasMultiplier:      this.setGasMultiplier.bind(this),
+      markAccountsFound:     this.markAccountsFound.bind(this),
+      // coinbase
+      buyEth: this.buyEth.bind(this),
+      // shapeshift
+      createShapeShiftTx: this.createShapeShiftTx.bind(this),
+
+      // primary HD keyring management
+      addNewAccount:              this.addNewAccount.bind(this),
+      placeSeedWords:             this.placeSeedWords.bind(this),
+      clearSeedWordCache:         this.clearSeedWordCache.bind(this),
+      importAccountWithStrategy:  this.importAccountWithStrategy.bind(this),
+
+      // vault management
+      submitPassword: this.submitPassword.bind(this),
+
+      // PreferencesController
+      setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
+
+      // KeyringController
+      setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
+      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
+      createNewVaultAndRestore:  nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
+      addNewKeyring:             nodeify(keyringController.addNewKeyring).bind(keyringController),
+      saveAccountLabel:          nodeify(keyringController.saveAccountLabel).bind(keyringController),
+      exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
+
+      // txManager
+      approveTransaction:    txManager.approveTransaction.bind(txManager),
+      cancelTransaction:     txManager.cancelTransaction.bind(txManager),
+
+      // messageManager
+      signMessage:           this.signMessage.bind(this),
+      cancelMessage:         messageManager.rejectMsg.bind(messageManager),
+
+      // notices
+      checkNotices:   noticeController.updateNoticesList.bind(noticeController),
+      markNoticeRead: noticeController.markNoticeRead.bind(noticeController),
+    }
+  }
+
+  setupUntrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+    this.setupPublicConfig(mx.createStream('publicConfig'))
+  }
+
+  setupTrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    var mx = setupMultiplex(connectionStream)
+    // connect features
+    this.setupControllerConnection(mx.createStream('controller'))
+    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  setupControllerConnection (outStream) {
+    const api = this.getApi()
+    const dnode = Dnode(api)
+    outStream.pipe(dnode).pipe(outStream)
+    dnode.on('remote', (remote) => {
+      // push updates to popup
+      const sendUpdate = remote.sendUpdate.bind(remote)
+      this.on('update', sendUpdate)
+    })
+  }
+
+  setupProviderConnection (outStream, originDomain) {
+    streamIntoProvider(outStream, this.provider, logger)
+    function logger (err, request, response) {
+      if (err) return console.error(err)
+      if (response.error) {
+        console.error('Error in RPC response:\n', response.error)
+      }
+      if (request.isMetamaskInternal) return
+      if (global.METAMASK_DEBUG) {
+        console.log(`RPC (${originDomain}):`, request, '->', response)
+      }
+    }
+  }
+
+  setupPublicConfig (outStream) {
+    pipe(
+      this.publicConfigStore,
+      outStream
+    )
+  }
+
+  sendUpdate () {
+    this.emit('update', this.getState())
+  }
+
+  //
+  // Vault Management
+  //
+
+  submitPassword (password, cb) {
+    this.migrateOldVaultIfAny(password)
+    .then(this.keyringController.submitPassword.bind(this.keyringController, password))
+    .then((newState) => { cb(null, newState) })
+    .catch((reason) => { cb(reason) })
+  }
+
+  //
+  // Opinionated Keyring Management
+  //
+
+  addNewAccount (cb) {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    promiseToCallback(this.keyringController.addNewAccount(primaryKeyring))(cb)
+  }
+
+  // Adds the current vault's seed words to the UI's state tree.
+  //
+  // Used when creating a first vault, to allow confirmation.
+  // Also used when revealing the seed words in the confirmation view.
+  placeSeedWords (cb) {
+    const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
+    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    primaryKeyring.serialize()
+    .then((serialized) => {
+      const seedWords = serialized.mnemonic
+      this.configManager.setSeedWords(seedWords)
+      cb()
+    })
+  }
+
+  // ClearSeedWordCache
+  //
+  // Removes the primary account's seed words from the UI's state tree,
+  // ensuring they are only ever available in the background process.
+  clearSeedWordCache (cb) {
+    this.configManager.setSeedWords(null)
+    cb(null, this.preferencesController.getSelectedAddress())
+  }
+
+  importAccountWithStrategy (strategy, args, cb) {
+    accountImporter.importAccount(strategy, args)
+    .then((privateKey) => {
+      return this.keyringController.addNewKeyring('Simple Key Pair', [ privateKey ])
+    })
+    .then(keyring => keyring.getAccounts())
+    .then((accounts) => this.preferencesController.setSelectedAddress(accounts[0]))
+    .then(() => { cb(null, this.keyringController.fullUpdate()) })
+    .catch((reason) => { cb(reason) })
+  }
+
+
+  //
+  // Identity Management
+  //
 
   newUnapprovedTransaction (txParams, cb) {
     const self = this
@@ -265,177 +422,39 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   newUnsignedMessage (msgParams, cb) {
-    var state = this.keyringController.getState()
-    if (!state.isUnlocked) {
-      this.keyringController.addUnconfirmedMessage(msgParams, cb)
-      this.opts.unlockAccountMessage()
-    } else {
-      this.addUnconfirmedMessage(msgParams, cb)
-      this.sendUpdate()
-    }
-  }
-
-  addUnconfirmedMessage (msgParams, cb) {
-    const keyringController = this.keyringController
-    const msgId = keyringController.addUnconfirmedMessage(msgParams, cb)
-    this.opts.showUnconfirmedMessage(msgParams, msgId)
-  }
-
-  setupPublicConfig (stream) {
-    var storeStream = this.publicConfigStore.createStream()
-    stream.pipe(storeStream).pipe(stream)
-  }
-
-  // Log blocks
-  processBlock (block) {
-    if (global.METAMASK_DEBUG) {
-      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    }
-    this.verifyNetwork()
-  }
-
-  verifyNetwork () {
-    // Check network when restoring connectivity:
-    if (this.state.network === 'loading') {
-      this.getNetwork()
-    }
-  }
-
-  // config
-  //
-
-  setTOSHash (hash) {
-    try {
-      this.configManager.setTOSHash(hash)
-    } catch (err) {
-      console.error('Error in setting terms of service hash.')
-    }
-  }
-
-  checkTOSChange () {
-    try {
-      const storedHash = this.configManager.getTOSHash() || 0
-      if (storedHash !== global.TOS_HASH) {
-        this.resetDisclaimer()
-        this.setTOSHash(global.TOS_HASH)
+    let msgId = this.messageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.messageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
       }
-    } catch (err) {
-      console.error('Error in checking TOS change.')
-    }
-  }
-
-  // disclaimer
-
-  agreeToDisclaimer (cb) {
-    try {
-      this.configManager.setConfirmedDisclaimer(true)
-      cb()
-    } catch (err) {
-      cb(err)
-    }
-  }
-
-  resetDisclaimer () {
-    try {
-      this.configManager.setConfirmedDisclaimer(false)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  setCurrentFiat (fiat, cb) {
-    try {
-      this.configManager.setCurrentFiat(fiat)
-      this.configManager.updateConversionRate()
-      this.scheduleConversionInterval()
-      const data = {
-        conversionRate: this.configManager.getConversionRate(),
-        currentFiat: this.configManager.getCurrentFiat(),
-        conversionDate: this.configManager.getConversionDate(),
-      }
-      cb(data)
-    } catch (err) {
-      cb(null, err)
-    }
-  }
-
-  scheduleConversionInterval () {
-    if (this.conversionInterval) {
-      clearInterval(this.conversionInterval)
-    }
-    this.conversionInterval = setInterval(() => {
-      this.configManager.updateConversionRate()
-    }, 300000)
-  }
-
-  // called from popup
-  setRpcTarget (rpcTarget) {
-    this.configManager.setRpcTarget(rpcTarget)
-    extension.runtime.reload()
-    this.getNetwork()
-  }
-
-  setProviderType (type) {
-    this.configManager.setProviderType(type)
-    extension.runtime.reload()
-    this.getNetwork()
-  }
-
-  useEtherscanProvider () {
-    this.configManager.useEtherscanProvider()
-    extension.runtime.reload()
-  }
-
-  buyEth (address, amount) {
-    if (!amount) amount = '5'
-
-    var network = this.state.network
-    var url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
-
-    if (network === '3') {
-      url = 'https://faucet.metamask.io/'
-    }
-
-    extension.tabs.create({
-      url,
     })
   }
 
-  createShapeShiftTx (depositAddress, depositType) {
-    this.configManager.createShapeShiftTx(depositAddress, depositType)
+  signMessage (msgParams, cb) {
+    const msgId = msgParams.metamaskId
+    promiseToCallback(
+      // sets the status op the message to 'approved'
+      // and removes the metamaskId for signing
+      this.messageManager.approveMessage(msgParams)
+      .then((cleanMsgParams) => {
+        // signs the message
+        return this.keyringController.signMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
+        this.messageManager.setMsgStatusSigned(msgId, rawSig)
+      })
+    )(cb)
   }
 
-  getNetwork (err) {
-    if (err) {
-      this.state.network = 'loading'
-      this.sendUpdate()
-    }
-
-    this.web3.version.getNetwork((err, network) => {
-      if (err) {
-        this.state.network = 'loading'
-        return this.sendUpdate()
-      }
-      if (global.METAMASK_DEBUG) {
-        console.log('web3.getNetwork returned ' + network)
-      }
-      this.state.network = network
-      this.sendUpdate()
-    })
-  }
-
-  setGasMultiplier (gasMultiplier, cb) {
-    try {
-      this.configManager.setGasMultiplier(gasMultiplier)
-      cb()
-    } catch (err) {
-      cb(err)
-    }
-  }
-
-  getStateNetwork () {
-    return this.state.network
-  }
 
   markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
@@ -498,4 +517,160 @@ module.exports = class MetamaskController extends EventEmitter {
       data: privKeys,
     })
   }
+
+  //
+  // disclaimer
+  //
+
+  agreeToDisclaimer (cb) {
+    try {
+      this.configManager.setConfirmedDisclaimer(true)
+      cb()
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  resetDisclaimer () {
+    try {
+      this.configManager.setConfirmedDisclaimer(false)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  setTOSHash (hash) {
+    try {
+      this.configManager.setTOSHash(hash)
+    } catch (err) {
+      console.error('Error in setting terms of service hash.')
+    }
+  }
+
+  checkTOSChange () {
+    try {
+      const storedHash = this.configManager.getTOSHash() || 0
+      if (storedHash !== global.TOS_HASH) {
+        this.resetDisclaimer()
+        this.setTOSHash(global.TOS_HASH)
+      }
+    } catch (err) {
+      console.error('Error in checking TOS change.')
+    }
+  }
+
+  //
+  // config
+  //
+
+  // Log blocks
+  logBlock (block) {
+    if (global.METAMASK_DEBUG) {
+      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    }
+    this.verifyNetwork()
+  }
+
+  setCurrentCurrency (currencyCode, cb) {
+    try {
+      this.currencyController.setCurrentCurrency(currencyCode)
+      this.currencyController.updateConversionRate()
+      const data = {
+        conversionRate: this.currencyController.getConversionRate(),
+        currentFiat: this.currencyController.getCurrentCurrency(),
+        conversionDate: this.currencyController.getConversionDate(),
+      }
+      cb(null, data)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  buyEth (address, amount) {
+    if (!amount) amount = '5'
+
+    const network = this.getNetworkState()
+    let url
+
+    switch (network) {
+      case '1':
+        url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
+        break
+
+      case '3':
+        url = 'https://faucet.metamask.io/'
+        break
+    }
+
+    if (url) extension.tabs.create({ url })
+  }
+
+  createShapeShiftTx (depositAddress, depositType) {
+    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
+  }
+
+  setGasMultiplier (gasMultiplier, cb) {
+    try {
+      this.txManager.setGasMultiplier(gasMultiplier)
+      cb()
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  //
+  // network
+  //
+
+  verifyNetwork () {
+    // Check network when restoring connectivity:
+    if (this.isNetworkLoading()) this.lookupNetwork()
+  }
+
+  setRpcTarget (rpcTarget) {
+    this.configManager.setRpcTarget(rpcTarget)
+    extension.runtime.reload()
+    this.lookupNetwork()
+  }
+
+  setProviderType (type) {
+    this.configManager.setProviderType(type)
+    extension.runtime.reload()
+    this.lookupNetwork()
+  }
+
+  useEtherscanProvider () {
+    this.configManager.useEtherscanProvider()
+    extension.runtime.reload()
+  }
+
+  getNetworkState () {
+    return this.networkStore.getState().network
+  }
+
+  setNetworkState (network) {
+    return this.networkStore.updateState({ network })
+  }
+
+  isNetworkLoading () {
+    return this.getNetworkState() === 'loading'
+  }
+
+  lookupNetwork (err) {
+    if (err) {
+      this.setNetworkState('loading')
+    }
+
+    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
+      if (err) {
+        this.setNetworkState('loading')
+        return
+      }
+      if (global.METAMASK_DEBUG) {
+        console.log('web3.getNetwork returned ' + network)
+      }
+      this.setNetworkState(network)
+    })
+  }
+
 }

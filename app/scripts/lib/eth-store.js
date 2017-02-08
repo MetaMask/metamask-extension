@@ -7,140 +7,126 @@
  * on each new block.
  */
 
-const EventEmitter = require('events').EventEmitter
-const inherits = require('util').inherits
 const async = require('async')
-const clone = require('clone')
 const EthQuery = require('eth-query')
+const ObservableStore = require('obs-store')
+function noop() {}
+
+
+class EthereumStore extends ObservableStore {
+
+  constructor (opts = {}) {
+    super({
+      accounts: {},
+      transactions: {},
+    })
+    this._provider = opts.provider
+    this._query = new EthQuery(this._provider)
+    this._blockTracker = opts.blockTracker
+    // subscribe to latest block
+    this._blockTracker.on('block', this._updateForBlock.bind(this))
+    // blockTracker.currentBlock may be null
+    this._currentBlockNumber = this._blockTracker.currentBlock
+  }
+
+  //
+  // public
+  //
+
+  addAccount (address) {
+    const accounts = this.getState().accounts
+    accounts[address] = {}
+    this.updateState({ accounts })
+    if (!this._currentBlockNumber) return
+    this._updateAccount(address)
+  }
+
+  removeAccount (address) {
+    const accounts = this.getState().accounts
+    delete accounts[address]
+    this.updateState({ accounts })
+  }
+
+  addTransaction (txHash) {
+    const transactions = this.getState().transactions
+    transactions[txHash] = {}
+    this.updateState({ transactions })
+    if (!this._currentBlockNumber) return
+    this._updateTransaction(this._currentBlockNumber, txHash, noop)
+  }
+
+  removeTransaction (txHash) {
+    const transactions = this.getState().transactions
+    delete transactions[txHash]
+    this.updateState({ transactions })
+  }
+
+
+  //
+  // private
+  //
+
+  _updateForBlock (block) {
+    const blockNumber = '0x' + block.number.toString('hex')
+    this._currentBlockNumber = blockNumber
+    async.parallel([
+      this._updateAccounts.bind(this),
+      this._updateTransactions.bind(this, blockNumber),
+    ], (err) => {
+      if (err) return console.error(err)
+      this.emit('block', this.getState())
+    })
+  }
+
+  _updateAccounts (cb = noop) {
+    const accounts = this.getState().accounts
+    const addresses = Object.keys(accounts)
+    async.each(addresses, this._updateAccount.bind(this), cb)
+  }
+
+  _updateAccount (address, cb = noop) {
+    const accounts = this.getState().accounts
+    this._getAccount(address, (err, result) => {
+      if (err) return cb(err)
+      result.address = address
+      // only populate if the entry is still present
+      if (accounts[address]) {
+        accounts[address] = result
+        this.updateState({ accounts })
+      }
+      cb(null, result)
+    })
+  }
+
+  _updateTransactions (block, cb = noop) {
+    const transactions = this.getState().transactions
+    const txHashes = Object.keys(transactions)
+    async.each(txHashes, this._updateTransaction.bind(this, block), cb)
+  }
+
+  _updateTransaction (block, txHash, cb = noop) {
+    // would use the block here to determine how many confirmations the tx has
+    const transactions = this.getState().transactions
+    this._query.getTransaction(txHash, (err, result) => {
+      if (err) return cb(err)
+      // only populate if the entry is still present
+      if (transactions[txHash]) {
+        transactions[txHash] = result
+        this.updateState({ transactions })
+      }
+      cb(null, result)
+    })
+  }
+
+  _getAccount (address, cb = noop) {
+    const query = this._query
+    async.parallel({
+      balance: query.getBalance.bind(query, address),
+      nonce: query.getTransactionCount.bind(query, address),
+      code: query.getCode.bind(query, address),
+    }, cb)
+  }
+
+}
 
 module.exports = EthereumStore
-
-
-inherits(EthereumStore, EventEmitter)
-function EthereumStore(engine) {
-  const self = this
-  EventEmitter.call(self)
-  self._currentState = {
-    accounts: {},
-    transactions: {},
-  }
-  self._query = new EthQuery(engine)
-
-  engine.on('block', self._updateForBlock.bind(self))
-}
-
-//
-// public
-//
-
-EthereumStore.prototype.getState = function () {
-  const self = this
-  return clone(self._currentState)
-}
-
-EthereumStore.prototype.addAccount = function (address) {
-  const self = this
-  self._currentState.accounts[address] = {}
-  self._didUpdate()
-  if (!self.currentBlockNumber) return
-  self._updateAccount(address, () => {
-    self._didUpdate()
-  })
-}
-
-EthereumStore.prototype.removeAccount = function (address) {
-  const self = this
-  delete self._currentState.accounts[address]
-  self._didUpdate()
-}
-
-EthereumStore.prototype.addTransaction = function (txHash) {
-  const self = this
-  self._currentState.transactions[txHash] = {}
-  self._didUpdate()
-  if (!self.currentBlockNumber) return
-  self._updateTransaction(self.currentBlockNumber, txHash, noop)
-}
-
-EthereumStore.prototype.removeTransaction = function (address) {
-  const self = this
-  delete self._currentState.transactions[address]
-  self._didUpdate()
-}
-
-
-//
-// private
-//
-
-EthereumStore.prototype._didUpdate = function () {
-  const self = this
-  var state = self.getState()
-  self.emit('update', state)
-}
-
-EthereumStore.prototype._updateForBlock = function (block) {
-  const self = this
-  var blockNumber = '0x' + block.number.toString('hex')
-  self.currentBlockNumber = blockNumber
-  async.parallel([
-    self._updateAccounts.bind(self),
-    self._updateTransactions.bind(self, blockNumber),
-  ], function (err) {
-    if (err) return console.error(err)
-    self.emit('block', self.getState())
-    self._didUpdate()
-  })
-}
-
-EthereumStore.prototype._updateAccounts = function (cb) {
-  var accountsState = this._currentState.accounts
-  var addresses = Object.keys(accountsState)
-  async.each(addresses, this._updateAccount.bind(this), cb)
-}
-
-EthereumStore.prototype._updateAccount = function (address, cb) {
-  var accountsState = this._currentState.accounts
-  this.getAccount(address, function (err, result) {
-    if (err) return cb(err)
-    result.address = address
-    // only populate if the entry is still present
-    if (accountsState[address]) {
-      accountsState[address] = result
-    }
-    cb(null, result)
-  })
-}
-
-EthereumStore.prototype.getAccount = function (address, cb) {
-  const query = this._query
-  async.parallel({
-    balance: query.getBalance.bind(query, address),
-    nonce: query.getTransactionCount.bind(query, address),
-    code: query.getCode.bind(query, address),
-  }, cb)
-}
-
-EthereumStore.prototype._updateTransactions = function (block, cb) {
-  const self = this
-  var transactionsState = self._currentState.transactions
-  var txHashes = Object.keys(transactionsState)
-  async.each(txHashes, self._updateTransaction.bind(self, block), cb)
-}
-
-EthereumStore.prototype._updateTransaction = function (block, txHash, cb) {
-  const self = this
-  // would use the block here to determine how many confirmations the tx has
-  var transactionsState = self._currentState.transactions
-  self._query.getTransaction(txHash, function (err, result) {
-    if (err) return cb(err)
-    // only populate if the entry is still present
-    if (transactionsState[txHash]) {
-      transactionsState[txHash] = result
-      self._didUpdate()
-    }
-    cb(null, result)
-  })
-}
-
-function noop() {}

@@ -16,7 +16,7 @@ PendingMsgDetails.prototype.render = function () {
   var msgData = state.txData
 
   var msgParams = msgData.msgParams || {}
-  var address = msgParams.from || state.selectedAccount
+  var address = msgParams.from || state.selectedAddress
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
