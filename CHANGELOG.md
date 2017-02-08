@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- net_version has been made synchronous.
+
 ## 3.2.0 2017-1-24
 
 - Add ability to import accounts in JSON file format (used by Mist, Geth, MyEtherWallet, and more!)
