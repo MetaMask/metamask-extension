@@ -176,7 +176,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // sync publicConfigStore with transform
     pipe(
       this.store,
-      storeTransform(selectPublicState),
+      storeTransform(selectPublicState.bind(this)),
       publicConfigStore
     )
 
@@ -184,6 +184,7 @@ module.exports = class MetamaskController extends EventEmitter {
       const result = { selectedAddress: undefined }
       try {
         result.selectedAddress = state.PreferencesController.selectedAddress
+        result.networkVersion = this.getNetworkState()
       } catch (_) {}
       return result
     }
