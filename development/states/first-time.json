@@ -8,6 +8,7 @@
     "currentFiat": "USD",
     "conversionRate": 11.47635827,
     "conversionDate": 1477606503,
+    "noActiveNotices": true,
     "network": null,
     "accounts": {},
     "transactions": [],

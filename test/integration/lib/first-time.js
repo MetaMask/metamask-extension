@@ -2,7 +2,7 @@ const PASSWORD = 'password123'
 
 QUnit.module('first time usage')
 
-QUnit.test('agree to terms', function (assert) {
+QUnit.test('render init screen', function (assert) {
   var done = assert.async()
   let app
 
@@ -10,22 +10,6 @@ QUnit.test('agree to terms', function (assert) {
     app = $('iframe').contents().find('#app-content .mock-app-root')
 
     // Scroll through terms
-    var termsHeader = app.find('h3.terms-header')[0]
-    assert.equal(termsHeader.textContent, 'MetaMask Terms & Conditions', 'Showing TOS')
-    let termsPage = app.find('.markdown')[0]
-    assert.ok(termsPage, 'on terms page')
-    termsPage.scrollTop = termsPage.scrollHeight
-
-    return wait()
-  }).then(function() {
-
-    // Agree to terms
-    var button = app.find('button')[0]
-    button.click()    
-
-    return wait()
-  }).then(function() {
-
     var title = app.find('h1').text()
     assert.equal(title, 'MetaMask', 'title screen')
 
@@ -34,7 +18,7 @@ QUnit.test('agree to terms', function (assert) {
     var confBox = app.find('#password-box-confirm')[0]
     pwBox.value = PASSWORD
     confBox.value = PASSWORD
-    
+
     return wait()
   }).then(function() {
 
