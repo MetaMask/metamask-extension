@@ -14,37 +14,6 @@ describe('config-manager', function() {
     configManager = configManagerGen()
   })
 
-  describe('confirmation', function() {
-
-    describe('#getConfirmedDisclaimer', function() {
-      it('should return undefined if no previous key exists', function() {
-        var result = configManager.getConfirmedDisclaimer()
-        assert.ok(!result)
-      })
-    })
-
-    describe('#setConfirmedDisclaimer', function() {
-      it('should make getConfirmedDisclaimer return true once set', function() {
-        assert.equal(configManager.getConfirmedDisclaimer(), undefined)
-        configManager.setConfirmedDisclaimer(true)
-        var result = configManager.getConfirmedDisclaimer()
-        assert.equal(result, true)
-      })
-
-      it('should be able to set undefined', function() {
-        configManager.setConfirmedDisclaimer(undefined)
-        var result = configManager.getConfirmedDisclaimer()
-        assert.equal(result, undefined)
-      })
-
-      it('should persist to local storage', function() {
-        configManager.setConfirmedDisclaimer(true)
-        var data = configManager.getData()
-        assert.equal(data.isDisclaimerConfirmed, true)
-      })
-    })
-  })
-
   describe('#setConfig', function() {
 
     it('should set the config key', function () {
@@ -68,7 +37,6 @@ describe('config-manager', function() {
           rpcTarget: 'foobar'
         },
       }
-      configManager.setConfirmedDisclaimer(true)
       configManager.setConfig(testConfig)
 
       var testWallet = {
@@ -79,7 +47,6 @@ describe('config-manager', function() {
       var result = configManager.getData()
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
-      assert.equal(configManager.getConfirmedDisclaimer(), true)
 
       testConfig.provider.type = 'something else!'
       configManager.setConfig(testConfig)
@@ -88,7 +55,6 @@ describe('config-manager', function() {
       assert.equal(result.wallet.name, testWallet.name, 'wallet name is set')
       assert.equal(result.config.provider.rpcTarget, testConfig.provider.rpcTarget)
       assert.equal(result.config.provider.type, testConfig.provider.type)
-      assert.equal(configManager.getConfirmedDisclaimer(), true)
     })
   })
 

@@ -35,12 +35,12 @@ module.exports = class NoticeController extends EventEmitter {
     return Promise.resolve(true)
   }
 
-  markNoticeRead (notice, cb) {
+  markNoticeRead (noticeToMark, cb) {
     cb = cb || function (err) { if (err) throw err }
     try {
       var notices = this.getNoticesList()
-      var id = notice.id
-      notices[id].read = true
+      var index = notices.findIndex((currentNotice) => currentNotice.id === noticeToMark.id)
+      notices[index].read = true
       this.setNoticesList(notices)
       const latestNotice = this.getLatestUnreadNotice()
       cb(null, latestNotice)

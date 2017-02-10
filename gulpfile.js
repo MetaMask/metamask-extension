@@ -18,13 +18,7 @@ var path = require('path')
 var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
-var disclaimer = fs.readFileSync(path.join(__dirname, 'USER_AGREEMENT.md')).toString()
-var crypto = require('crypto')
-var hash = crypto.createHash('sha256')
 var mkdirp = require('mkdirp')
-
-hash.update(disclaimer)
-var tosHash = hash.digest('hex')
 
 var disableLiveReload = gutil.env.disableLiveReload
 var debug = gutil.env.debug
@@ -307,7 +301,6 @@ function bundleTask(opts) {
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
-      .pipe(replace('GULP_TOS_HASH', tosHash))
       .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
       // buffer file contents (?)
       .pipe(buffer())

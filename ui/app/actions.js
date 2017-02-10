@@ -22,8 +22,6 @@ var actions = {
   clearNotices: clearNotices,
   markAccountsFound,
   // intialize screen
-  AGREE_TO_DISCLAIMER: 'AGREE_TO_DISCLAIMER',
-  agreeToDisclaimer: agreeToDisclaimer,
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
@@ -447,23 +445,6 @@ function showInitializeMenu () {
 function showImportPage () {
   return {
     type: actions.SHOW_IMPORT_PAGE,
-  }
-}
-
-function agreeToDisclaimer () {
-  return (dispatch) => {
-    dispatch(this.showLoadingIndication())
-    if (global.METAMASK_DEBUG) console.log(`background.agreeToDisclaimer`)
-    background.agreeToDisclaimer((err) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-
-      dispatch(this.hideLoadingIndication())
-      dispatch({
-        type: this.AGREE_TO_DISCLAIMER,
-      })
-    })
   }
 }
 

@@ -10,7 +10,6 @@
     "transactions": [],
     "network": "2",
     "seedWords": null,
-    "isDisclaimerConfirmed": false,
     "unconfMsgs": {},
     "messages": [],
     "provider": {
