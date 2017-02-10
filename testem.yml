@@ -1,9 +1,11 @@
 launch_in_dev:
   - Chrome
   - Firefox
+  - Opera
 launch_in_ci:
   - Chrome
   - Firefox
+  - Opera
 framework:
   - qunit
 before_tests: "npm run buildCiUnits"
