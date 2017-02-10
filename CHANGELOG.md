@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- net_version has been made synchronous.
 
 ## 3.2.1 2017-2-8
 
