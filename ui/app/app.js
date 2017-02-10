@@ -350,7 +350,7 @@ App.prototype.renderPrimary = function () {
   var props = this.props
 
   // notices
-  if (!props.noActiveNotices && !METAMASK_DEBUG) {
+  if (!props.noActiveNotices && !global.METAMASK_DEBUG) {
     return h(NoticeScreen, {
       notice: props.lastUnreadNotice,
       key: 'NoticeScreen',
