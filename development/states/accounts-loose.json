@@ -78,7 +78,6 @@
       "type": "testnet"
     },
     "selectedAddress": "0x87658c15aefe7448008a28513a11b6b130ef4cd0",
-    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

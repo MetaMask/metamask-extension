@@ -94,7 +94,6 @@ IdentityStore.prototype.getState = function () {
     isInitialized: !!configManager.getWallet() && !seedWords,
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
-    isDisclaimerConfirmed: configManager.getConfirmedDisclaimer(),
     selectedAddress: configManager.getSelectedAccount(),
     gasMultiplier: configManager.getGasMultiplier(),
   }))
@@ -343,4 +342,3 @@ IdentityStore.prototype._autoFaucet = function () {
 }
 
 // util
-

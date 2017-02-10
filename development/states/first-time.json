@@ -11,7 +11,6 @@
     "network": null,
     "accounts": {},
     "transactions": [],
-    "isDisclaimerConfirmed": false,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

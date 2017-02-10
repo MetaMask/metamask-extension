@@ -48,7 +48,6 @@
     "transactions": [],
     "network": "2",
     "seedWords": null,
-    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

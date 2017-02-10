@@ -228,28 +228,6 @@ ConfigManager.prototype._emitUpdates = function (state) {
   })
 }
 
-ConfigManager.prototype.setConfirmedDisclaimer = function (confirmed) {
-  var data = this.getData()
-  data.isDisclaimerConfirmed = confirmed
-  this.setData(data)
-}
-
-ConfigManager.prototype.getConfirmedDisclaimer = function () {
-  var data = this.getData()
-  return data.isDisclaimerConfirmed
-}
-
-ConfigManager.prototype.setTOSHash = function (hash) {
-  var data = this.getData()
-  data.TOSHash = hash
-  this.setData(data)
-}
-
-ConfigManager.prototype.getTOSHash = function () {
-  var data = this.getData()
-  return data.TOSHash
-}
-
 ConfigManager.prototype.getGasMultiplier = function () {
   var data = this.getData()
   return data.gasMultiplier
