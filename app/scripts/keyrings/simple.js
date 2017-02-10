@@ -58,7 +58,18 @@ class SimpleKeyring extends EventEmitter {
   }
 
   // For eth_sign, we need to sign transactions:
-  signMessage (withAccount, msgHex) {
+  signMessage (withAccount, data) {
+    const wallet = this._getWalletForAccount(withAccount)
+    const message = ethUtil.stripHexPrefix(data)
+    var privKey = wallet.getPrivateKey()
+    var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
+    var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
+    return Promise.resolve(rawMsgSig)
+  }
+
+  // For eth_sign, we need to sign transactions:
+
+  newGethSignMessage (withAccount, msgHex) {
     const wallet = this._getWalletForAccount(withAccount)
     const privKey = wallet.getPrivateKey()
     const msgBuffer = ethUtil.toBuffer(msgHex)

@@ -4,6 +4,7 @@
 
 ## 3.2.1 2017-2-8
 
+- Revert back to old style message signing.
 - Fixed some build errors that were causing a variety of bugs.
 
 ## 3.2.0 2017-2-8

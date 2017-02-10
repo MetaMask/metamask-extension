@@ -16,7 +16,7 @@ describe('IdManagement', function() {
   })
 
   describe('#signMsg', function () {
-    it.skip('passes the dennis test', function() {
+    it('passes the dennis test', function() {
       const address = '0x9858e7d8b79fc3e6d989636721584498926da38a'
       const message = '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0'
       const privateKey = '0x7dd98753d7b4394095de7d176c58128e2ed6ee600abe97c9f6d9fd65015d9b18'
