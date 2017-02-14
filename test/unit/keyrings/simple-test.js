@@ -71,40 +71,38 @@ describe('simple-keyring', function() {
     it('reliably can decode messages it signs', function (done) {
 
       const message = 'hello there!'
-      let address, msgHashHex
+      const msgHashHex = web3.sha3(message)
+      let address
+      let addresses = []
 
       keyring.deserialize([ privateKey ])
       .then(() => {
+        keyring.addAccounts(9)
+      })
+      .then(() => {
         return keyring.getAccounts()
       })
-      .then((addresses) => {
-        address = addresses[0]
-        msgHashHex = web3.sha3(message)
-        return keyring.signMessage(address, msgHashHex)
+      .then((addrs) => {
+        addresses = addrs
+        return Promise.all(addresses.map((address) => {
+          return keyring.signMessage(address, msgHashHex)
+        }))
       })
-      .then((sgn) => {
-        var r = ethUtil.toBuffer(sgn.slice(0,66))
-        var s = ethUtil.toBuffer('0x' + sgn.slice(66,130))
-        var v = ethUtil.bufferToInt(ethUtil.toBuffer('0x' + sgn.slice(130,132)))
-        var m = ethUtil.toBuffer(msgHashHex)
-        console.dir({ r, s, v, m })
-        var pub = ethUtil.ecrecover(m, v, r, s)
-        var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
+      .then((signatures) => {
 
-        /*
-        var sgn = ethUtil.stripHexPrefix(signature)
-        var r = ethUtil.toBuffer(sgn.slice(0,64))
-        var s = ethUtil.toBuffer(sgn.slice(64,128))
-        var v = parseInt(sgn.slice(128,130)) + 27
-        var msgHashBuffer = ethUtil.toBuffer(msgHashHex)
-        var pub = ethUtil.ecrecover(msgHashBuffer, v, r, s)
-        var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
-        */
-        assert.equal(adr, address, 'recovers address from signature correctly')
+        signatures.forEach((sgn, index) => {
+          const address = addresses[index]
+
+          var r = ethUtil.toBuffer(sgn.slice(0,66))
+          var s = ethUtil.toBuffer('0x' + sgn.slice(66,130))
+          var v = ethUtil.bufferToInt(ethUtil.toBuffer('0x' + sgn.slice(130,132)))
+          var m = ethUtil.toBuffer(msgHashHex)
+          var pub = ethUtil.ecrecover(m, v, r, s)
+          var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
+
+          assert.equal(adr, address, 'recovers address from signature correctly')
+        })
         done()
-      })
-      .catch((reason) => {
-        console.dir(reason)
       })
     })
   })
