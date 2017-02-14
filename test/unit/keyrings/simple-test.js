@@ -1,5 +1,7 @@
 const assert = require('assert')
 const extend = require('xtend')
+const Web3 = require('web3')
+const web3 = new Web3()
 const ethUtil = require('ethereumjs-util')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
 const TYPE_STR = 'Simple Key Pair'
@@ -62,6 +64,37 @@ describe('simple-keyring', function() {
       })
       .then((result) => {
         assert.equal(result, expectedResult)
+        done()
+      })
+    })
+
+    it('reliably can decode messages it signs', function (done) {
+
+      const message = 'hello there!'
+      let address, msgHex
+
+      keyring.addAccounts(10)
+      .then((addresses) => {
+        address = addresses[0]
+        msgHex = web3.sha3(message)
+        return keyring.signMessage(address, msgHex)
+      })
+      .then((signature) => {
+        var sgn = signature
+        var r = ethUtil.toBuffer(sgn.slice(0,66))
+        var s = ethUtil.toBuffer('0x' + sgn.slice(66,130))
+        var v = parseInt(sgn.slice(130,132)) + 27
+        var msgBuffer = ethUtil.toBuffer(msgHex)
+        var msgHash = ethUtil.hashPersonalMessage(msgBuffer)
+        var pub = ethUtil.ecrecover(msgHash, v, r, s)
+        var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
+        assert.equal(adr, address)
+        done()
+      })
+      .catch((reason) => {
+        console.log('failed for reason:')
+        console.dir(reason)
+        assert.equal(true, false, reason)
         done()
       })
     })
