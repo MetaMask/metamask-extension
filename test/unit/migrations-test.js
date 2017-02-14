@@ -6,6 +6,7 @@ const wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
 const migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
 const migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
 const migration4 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '004'))
+const migration11 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '011'))
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
 const newTestRpc = 'https://testrpc.metamask.io/'
@@ -27,8 +28,11 @@ describe('wallet1 is migrated successfully', function() {
     }).then((thirdResult) => {
       assert.equal(thirdResult.data.config.provider.rpcTarget, null)
       assert.equal(thirdResult.data.config.provider.type, 'testnet')
+      return migration11.migrate(thirdResult)
+    }).then((eleventhResult) => {
+      assert.equal(eleventhResult.data.isDisclaimerConfirmed, null)
+      assert.equal(eleventhResult.data.TOSHash, null)
     })
-    
+
   })
 })
-

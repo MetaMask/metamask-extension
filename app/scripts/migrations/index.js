@@ -21,4 +21,5 @@ module.exports = [
   require('./008'),
   require('./009'),
   require('./010'),
+  require('./011'),
 ]
