@@ -71,31 +71,40 @@ describe('simple-keyring', function() {
     it('reliably can decode messages it signs', function (done) {
 
       const message = 'hello there!'
-      let address, msgHex
+      let address, msgHashHex
 
-      keyring.addAccounts(10)
+      keyring.deserialize([ privateKey ])
+      .then(() => {
+        return keyring.getAccounts()
+      })
       .then((addresses) => {
         address = addresses[0]
-        msgHex = web3.sha3(message)
-        return keyring.signMessage(address, msgHex)
+        msgHashHex = web3.sha3(message)
+        return keyring.signMessage(address, msgHashHex)
       })
-      .then((signature) => {
-        var sgn = signature
+      .then((sgn) => {
         var r = ethUtil.toBuffer(sgn.slice(0,66))
         var s = ethUtil.toBuffer('0x' + sgn.slice(66,130))
-        var v = parseInt(sgn.slice(130,132)) + 27
-        var msgBuffer = ethUtil.toBuffer(msgHex)
-        var msgHash = ethUtil.hashPersonalMessage(msgBuffer)
-        var pub = ethUtil.ecrecover(msgHash, v, r, s)
+        var v = ethUtil.bufferToInt(ethUtil.toBuffer('0x' + sgn.slice(130,132)))
+        var m = ethUtil.toBuffer(msgHashHex)
+        console.dir({ r, s, v, m })
+        var pub = ethUtil.ecrecover(m, v, r, s)
         var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
-        assert.equal(adr, address)
+
+        /*
+        var sgn = ethUtil.stripHexPrefix(signature)
+        var r = ethUtil.toBuffer(sgn.slice(0,64))
+        var s = ethUtil.toBuffer(sgn.slice(64,128))
+        var v = parseInt(sgn.slice(128,130)) + 27
+        var msgHashBuffer = ethUtil.toBuffer(msgHashHex)
+        var pub = ethUtil.ecrecover(msgHashBuffer, v, r, s)
+        var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
+        */
+        assert.equal(adr, address, 'recovers address from signature correctly')
         done()
       })
       .catch((reason) => {
-        console.log('failed for reason:')
         console.dir(reason)
-        assert.equal(true, false, reason)
-        done()
       })
     })
   })
