@@ -1,5 +1,7 @@
 const assert = require('assert')
 const extend = require('xtend')
+const Web3 = require('web3')
+const web3 = new Web3()
 const ethUtil = require('ethereumjs-util')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
 const TYPE_STR = 'Simple Key Pair'
@@ -62,6 +64,44 @@ describe('simple-keyring', function() {
       })
       .then((result) => {
         assert.equal(result, expectedResult)
+        done()
+      })
+    })
+
+    it('reliably can decode messages it signs', function (done) {
+
+      const message = 'hello there!'
+      const msgHashHex = web3.sha3(message)
+      let address
+      let addresses = []
+
+      keyring.deserialize([ privateKey ])
+      .then(() => {
+        keyring.addAccounts(9)
+      })
+      .then(() => {
+        return keyring.getAccounts()
+      })
+      .then((addrs) => {
+        addresses = addrs
+        return Promise.all(addresses.map((address) => {
+          return keyring.signMessage(address, msgHashHex)
+        }))
+      })
+      .then((signatures) => {
+
+        signatures.forEach((sgn, index) => {
+          const address = addresses[index]
+
+          var r = ethUtil.toBuffer(sgn.slice(0,66))
+          var s = ethUtil.toBuffer('0x' + sgn.slice(66,130))
+          var v = ethUtil.bufferToInt(ethUtil.toBuffer('0x' + sgn.slice(130,132)))
+          var m = ethUtil.toBuffer(msgHashHex)
+          var pub = ethUtil.ecrecover(m, v, r, s)
+          var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
+
+          assert.equal(adr, address, 'recovers address from signature correctly')
+        })
         done()
       })
     })
