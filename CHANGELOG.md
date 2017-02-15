@@ -11,6 +11,12 @@
 
 - Revert eth.sign behavior to the previous one with a big warning.  We will be gradually implementing the new behavior over the coming time. https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
 
+- Improve test coverage of eth.sign behavior, including a code example of verifying a signature.
+
+## 3.2.2 2017-2-8
+
+- Revert eth.sign behavior to the previous one with a big warning.  We will be gradually implementing the new behavior over the coming time. https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
+
 ## 3.2.1 2017-2-8
 
 - Revert back to old style message signing.
