@@ -262,7 +262,7 @@ App.prototype.renderNetworkDropdown = function () {
 
     this.renderCustomOption(props.provider),
 
-    h(DropMenuItem, {
+    props.isUnlocked && h(DropMenuItem, {
       label: 'Custom RPC',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => this.props.dispatch(actions.showConfigPage()),
