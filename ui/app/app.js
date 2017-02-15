@@ -5,7 +5,6 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
-const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
 // unlock
@@ -44,7 +43,6 @@ function mapStateToProps (state) {
     // state from plugin
     isLoading: state.appState.isLoading,
     loadingMessage: state.appState.loadingMessage,
-    isDisclaimerConfirmed: state.metamask.isDisclaimerConfirmed,
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
@@ -351,8 +349,19 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   var props = this.props
 
-  if (!props.isDisclaimerConfirmed) {
-    return h(DisclaimerScreen, {key: 'disclaimerScreen'})
+  // notices
+  if (!props.noActiveNotices && !global.METAMASK_DEBUG) {
+    return h(NoticeScreen, {
+      notice: props.lastUnreadNotice,
+      key: 'NoticeScreen',
+      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+    })
+  } else if (props.lostAccounts && props.lostAccounts.length > 0) {
+    return h(NoticeScreen, {
+      notice: generateLostAccountsNotice(props.lostAccounts),
+      key: 'LostAccountsNotice',
+      onConfirm: () => props.dispatch(actions.markAccountsFound()),
+    })
   }
 
   if (props.seedWords) {
@@ -382,21 +391,6 @@ App.prototype.renderPrimary = function () {
       default:
         return h(UnlockScreen, {key: 'locked'})
     }
-  }
-
-  // notices
-  if (!props.noActiveNotices) {
-    return h(NoticeScreen, {
-      notice: props.lastUnreadNotice,
-      key: 'NoticeScreen',
-      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
-    })
-  } else if (props.lostAccounts && props.lostAccounts.length > 0) {
-    return h(NoticeScreen, {
-      notice: generateLostAccountsNotice(props.lostAccounts),
-      key: 'LostAccountsNotice',
-      onConfirm: () => props.dispatch(actions.markAccountsFound()),
-    })
   }
 
   // show current view

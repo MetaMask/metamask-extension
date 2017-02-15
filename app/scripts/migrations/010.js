@@ -7,11 +7,13 @@ This migration breaks out the CurrencyController substate
 */
 
 const merge = require('deep-extend')
+const clone = require('clone')
 
 module.exports = {
   version,
 
-  migrate: function (versionedData) {
+  migrate: function (originalVersionedData) {
+    let versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

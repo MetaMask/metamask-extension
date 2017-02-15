@@ -7,11 +7,14 @@ This migration moves state from the flat state trie into KeyringController subst
 */
 
 const extend = require('xtend')
+const clone = require('clone')
+
 
 module.exports = {
-  version,  
+  version,
 
-  migrate: function (versionedData) {
+  migrate: function (originalVersionedData) {
+    let versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data

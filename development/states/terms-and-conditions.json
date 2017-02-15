@@ -14,7 +14,6 @@
     "provider": {
       "type": "testnet"
     },
-    "isDisclaimerConfirmed": false,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

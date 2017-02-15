@@ -90,7 +90,6 @@
     },
     "transactions": [],
     "network": "2",
-    "isDisclaimerConfirmed": true,
     "unconfMsgs": {},
     "messages": [],
     "shapeShiftTxList": [],

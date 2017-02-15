@@ -117,6 +117,7 @@
     "brfs": "^1.4.3",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
+    "clone": "^1.0.2",
     "deep-freeze-strict": "^1.1.1",
     "del": "^2.2.0",
     "fs-promise": "^1.0.0",

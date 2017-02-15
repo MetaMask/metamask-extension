@@ -1,12 +1,11 @@
-const version = 7
+const version = 11
 
 /*
 
-This migration breaks out the TransactionManager substate
+This migration breaks out the CurrencyController substate
 
 */
 
-const extend = require('xtend')
 const clone = require('clone')
 
 module.exports = {
@@ -27,14 +26,8 @@ module.exports = {
 }
 
 function transformState (state) {
-  const newState = extend(state, {
-    TransactionManager: {
-      transactions: state.transactions || [],
-      gasMultiplier: state.gasMultiplier || 1,
-    },
-  })
-  delete newState.transactions
-  delete newState.gasMultiplier
-
+  const newState = state
+  delete newState.TOSHash
+  delete newState.isDisclaimerConfirmed
   return newState
 }

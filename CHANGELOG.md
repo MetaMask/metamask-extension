@@ -1,6 +1,8 @@
 # Changelog
 
 ## Current Master
+- net_version has been made synchronous.
+- Test suite for migrations expanded.
 
 - Improve test coverage of eth.sign behavior, including a code example of verifying a signature.
 

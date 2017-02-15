@@ -84,6 +84,11 @@ MetamaskInpageProvider.prototype.send = function (payload) {
       result = true
       break
 
+    case 'net_version':
+      let networkVersion = self.publicConfigStore.getState().networkVersion
+      result = networkVersion
+      break
+
     // throw not-supported Error
     default:
       var link = 'https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#dizzy-all-async---think-of-metamask-as-a-light-client'

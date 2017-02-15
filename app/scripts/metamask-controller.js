@@ -107,8 +107,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.messageManager = new MessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
-    this.checkTOSChange()
-
     // TEMPORARY UNTIL FULL DEPRECATION:
     this.idStoreMigrator = new IdStoreMigrator({
       configManager: this.configManager,
@@ -178,7 +176,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // sync publicConfigStore with transform
     pipe(
       this.store,
-      storeTransform(selectPublicState),
+      storeTransform(selectPublicState.bind(this)),
       publicConfigStore
     )
 
@@ -186,6 +184,7 @@ module.exports = class MetamaskController extends EventEmitter {
       const result = { selectedAddress: undefined }
       try {
         result.selectedAddress = state.PreferencesController.selectedAddress
+        result.networkVersion = this.getNetworkState()
       } catch (_) {}
       return result
     }
@@ -219,7 +218,6 @@ module.exports = class MetamaskController extends EventEmitter {
       this.shapeshiftController.store.getState(),
       {
         lostAccounts: this.configManager.getLostAccounts(),
-        isDisclaimerConfirmed: this.configManager.getConfirmedDisclaimer(),
         seedWords: this.configManager.getSeedWords(),
       }
     )
@@ -242,11 +240,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setRpcTarget:          this.setRpcTarget.bind(this),
       setProviderType:       this.setProviderType.bind(this),
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
-      agreeToDisclaimer:     this.agreeToDisclaimer.bind(this),
-      resetDisclaimer:       this.resetDisclaimer.bind(this),
       setCurrentCurrency:    this.setCurrentCurrency.bind(this),
-      setTOSHash:            this.setTOSHash.bind(this),
-      checkTOSChange:        this.checkTOSChange.bind(this),
       setGasMultiplier:      this.setGasMultiplier.bind(this),
       markAccountsFound:     this.markAccountsFound.bind(this),
       // coinbase
@@ -516,47 +510,6 @@ module.exports = class MetamaskController extends EventEmitter {
       type: 'Simple Key Pair',
       data: privKeys,
     })
-  }
-
-  //
-  // disclaimer
-  //
-
-  agreeToDisclaimer (cb) {
-    try {
-      this.configManager.setConfirmedDisclaimer(true)
-      cb()
-    } catch (err) {
-      cb(err)
-    }
-  }
-
-  resetDisclaimer () {
-    try {
-      this.configManager.setConfirmedDisclaimer(false)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  setTOSHash (hash) {
-    try {
-      this.configManager.setTOSHash(hash)
-    } catch (err) {
-      console.error('Error in setting terms of service hash.')
-    }
-  }
-
-  checkTOSChange () {
-    try {
-      const storedHash = this.configManager.getTOSHash() || 0
-      if (storedHash !== global.TOS_HASH) {
-        this.resetDisclaimer()
-        this.setTOSHash(global.TOS_HASH)
-      }
-    } catch (err) {
-      console.error('Error in checking TOS change.')
-    }
   }
 
   //
