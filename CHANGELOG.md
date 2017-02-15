@@ -3,6 +3,7 @@
 ## Current Master
 - net_version has been made synchronous.
 - Test suite for migrations expanded.
+- Network now changeable from lock screen.
 
 ## 3.2.1 2017-2-8
 
