@@ -74,7 +74,18 @@ class HdKeyring extends EventEmitter {
   }
 
   // For eth_sign, we need to sign transactions:
-  signMessage (withAccount, msgHex) {
+  // hd
+  signMessage (withAccount, data) {
+    const wallet = this._getWalletForAccount(withAccount)
+    const message = ethUtil.stripHexPrefix(data)
+    var privKey = wallet.getPrivateKey()
+    var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
+    var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
+    return Promise.resolve(rawMsgSig)
+  }
+
+  // For eth_sign, we need to sign transactions:
+  newGethSignMessage (withAccount, msgHex) {
     const wallet = this._getWalletForAccount(withAccount)
     const privKey = wallet.getPrivateKey()
     const msgBuffer = ethUtil.toBuffer(msgHex)
@@ -101,9 +112,11 @@ class HdKeyring extends EventEmitter {
 
 
   _getWalletForAccount (account) {
+    const targetAddress = sigUtil.normalize(account)
     return this.wallets.find((w) => {
       const address = w.getAddress().toString('hex')
-      return ((address === account) || (sigUtil.normalize(address) === account))
+      return ((address === targetAddress) ||
+              (sigUtil.normalize(address) === targetAddress))
     })
   }
 }

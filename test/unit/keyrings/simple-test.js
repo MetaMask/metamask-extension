@@ -1,5 +1,7 @@
 const assert = require('assert')
 const extend = require('xtend')
+const Web3 = require('web3')
+const web3 = new Web3()
 const ethUtil = require('ethereumjs-util')
 const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
 const TYPE_STR = 'Simple Key Pair'
@@ -55,13 +57,51 @@ describe('simple-keyring', function() {
     const privateKey = '0x7dd98753d7b4394095de7d176c58128e2ed6ee600abe97c9f6d9fd65015d9b18'
     const expectedResult = '0x28fcb6768e5110144a55b2e6ce9d1ea5a58103033632d272d2b5cf506906f7941a00b539383fd872109633d8c71c404e13dba87bc84166ee31b0e36061a69e161c'
 
-    it.skip('passes the dennis test', function(done) {
+    it('passes the dennis test', function(done) {
       keyring.deserialize([ privateKey ])
       .then(() => {
         return keyring.signMessage(address, message)
       })
       .then((result) => {
         assert.equal(result, expectedResult)
+        done()
+      })
+    })
+
+    it('reliably can decode messages it signs', function (done) {
+
+      const message = 'hello there!'
+      const msgHashHex = web3.sha3(message)
+      let address
+      let addresses = []
+
+      keyring.deserialize([ privateKey ])
+      .then(() => {
+        keyring.addAccounts(9)
+      })
+      .then(() => {
+        return keyring.getAccounts()
+      })
+      .then((addrs) => {
+        addresses = addrs
+        return Promise.all(addresses.map((address) => {
+          return keyring.signMessage(address, msgHashHex)
+        }))
+      })
+      .then((signatures) => {
+
+        signatures.forEach((sgn, index) => {
+          const address = addresses[index]
+
+          var r = ethUtil.toBuffer(sgn.slice(0,66))
+          var s = ethUtil.toBuffer('0x' + sgn.slice(66,130))
+          var v = ethUtil.bufferToInt(ethUtil.toBuffer('0x' + sgn.slice(130,132)))
+          var m = ethUtil.toBuffer(msgHashHex)
+          var pub = ethUtil.ecrecover(m, v, r, s)
+          var adr = '0x' + ethUtil.pubToAddress(pub).toString('hex')
+
+          assert.equal(adr, address, 'recovers address from signature correctly')
+        })
         done()
       })
     })
