@@ -2,6 +2,7 @@
 
 ## Current Master
 - net_version has been made synchronous.
+- Test suite for migrations expanded.
 
 ## 3.2.1 2017-2-8
 

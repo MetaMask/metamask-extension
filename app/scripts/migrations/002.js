@@ -1,9 +1,13 @@
 const version = 2
 
+const clone = require('clone')
+
+
 module.exports = {
   version,
 
-  migrate: function (versionedData) {
+  migrate: function (originalVersionedData) {
+    let versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       if (versionedData.data.config.provider.type === 'etherscan') {
