@@ -424,6 +424,7 @@ class KeyringController extends EventEmitter {
     })
     .then(() => {
       this.keyrings.push(keyring)
+      this._updateMemStoreKeyrings()
       return keyring
     })
   }
