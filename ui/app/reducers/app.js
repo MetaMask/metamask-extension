@@ -1,15 +1,16 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
+const notification = require('../../../app/scripts/lib/notifications')
 
 module.exports = reduceApp
 
 function reduceApp (state, action) {
   // clone and defaults
-  const selectedAccount = state.metamask.selectedAccount
+  const selectedAddress = state.metamask.selectedAddress
   const pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
-  if (selectedAccount) {
+  if (selectedAddress) {
     name = 'accountDetail'
   }
   if (pendingTxs) {
@@ -19,7 +20,7 @@ function reduceApp (state, action) {
   var defaultView = {
     name,
     detailView: null,
-    context: selectedAccount,
+    context: selectedAddress,
   }
 
   // confirm seed words
@@ -28,17 +29,13 @@ function reduceApp (state, action) {
     name: 'createVaultComplete',
     seedWords,
   }
-  var ethStoreWarning = {
-    name: 'EthStoreWarning',
-  }
 
   var appState = extend({
     menuOpen: false,
-    currentView: seedWords ? seedConfView : !state.metamask.isEthConfirmed ? ethStoreWarning : defaultView,
+    currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
     },
-    currentDomain: 'example.com',
     transForward: true, // Used to render transition direction
     isLoading: false,   // Used to display loading indicator
     warning: null,      // Used to display error text
@@ -46,7 +43,19 @@ function reduceApp (state, action) {
 
   switch (action.type) {
 
-  // intialize
+    // transition methods
+
+    case actions.TRANSITION_FORWARD:
+      return extend(appState, {
+        transForward: true,
+      })
+
+    case actions.TRANSITION_BACKWARD:
+      return extend(appState, {
+        transForward: false,
+      })
+
+    // intialize
 
     case actions.SHOW_CREATE_VAULT:
       return extend(appState, {
@@ -63,6 +72,16 @@ function reduceApp (state, action) {
           name: 'restoreVault',
         },
         transForward: true,
+        forgottenPassword: true,
+      })
+
+    case actions.FORGOT_PASSWORD:
+      return extend(appState, {
+        currentView: {
+          name: 'restoreVault',
+        },
+        transForward: false,
+        forgottenPassword: true,
       })
 
     case actions.SHOW_INIT_MENU:
@@ -78,6 +97,14 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: action.value,
+      })
+
+    case actions.SHOW_IMPORT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'import-menu',
+        },
+        transForward: true,
       })
 
     case actions.SHOW_INFO_PAGE:
@@ -109,6 +136,15 @@ function reduceApp (state, action) {
         isLoading: false,
       })
 
+    case actions.NEW_ACCOUNT_SCREEN:
+      return extend(appState, {
+        currentView: {
+          name: 'new-account',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+      })
+
     case actions.SHOW_SEND_PAGE:
       return extend(appState, {
         currentView: {
@@ -119,10 +155,20 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_NEW_KEYCHAIN:
+      return extend(appState, {
+        currentView: {
+          name: 'newKeychain',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+      })
+
   // unlock
 
     case actions.UNLOCK_METAMASK:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         detailView: {},
         transForward: true,
         isLoading: false,
@@ -136,6 +182,25 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.BACK_TO_INIT_MENU:
+      return extend(appState, {
+        warning: null,
+        transForward: false,
+        forgottenPassword: true,
+        currentView: {
+          name: 'InitMenu',
+        },
+      })
+
+    case actions.BACK_TO_UNLOCK_VIEW:
+      return extend(appState, {
+        warning: null,
+        transForward: true,
+        forgottenPassword: false,
+        currentView: {
+          name: 'UnlockScreen',
+        },
+      })
   // reveal seed words
 
     case actions.REVEAL_SEED_CONFIRMATION:
@@ -170,6 +235,7 @@ function reduceApp (state, action) {
 
     case actions.SHOW_ACCOUNT_DETAIL:
       return extend(appState, {
+        forgottenPassword: appState.forgottenPassword ? !appState.forgottenPassword : null,
         currentView: {
           name: 'accountDetail',
           context: action.value,
@@ -206,6 +272,13 @@ function reduceApp (state, action) {
         isLoading: false,
         warning: null,
         scrollToBottom: false,
+        forgottenPassword: false,
+      })
+
+    case actions.SHOW_NOTICE:
+      return extend(appState, {
+        transForward: true,
+        isLoading: false,
       })
 
     case actions.REVEAL_ACCOUNT:
@@ -219,7 +292,7 @@ function reduceApp (state, action) {
           name: 'confTx',
           context: 0,
         },
-        transForward: true,
+        transForward: action.transForward,
         warning: null,
       })
 
@@ -234,10 +307,11 @@ function reduceApp (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      var unconfTxs = state.metamask.unconfTxs
-      var unconfMsgs = state.metamask.unconfMsgs
+      var unapprovedTxs = state.metamask.unapprovedTxs
+      var unapprovedMsgs = state.metamask.unapprovedMsgs
+      var network = state.metamask.network
 
-      var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
     .filter(tx => tx !== tx.id)
 
       if (unconfTxList && unconfTxList.length > 0) {
@@ -250,6 +324,8 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
+        notification.closePopup()
+
         return extend(appState, {
           transForward: false,
           warning: null,
@@ -304,12 +380,13 @@ function reduceApp (state, action) {
 
     case actions.UNLOCK_FAILED:
       return extend(appState, {
-        warning: 'Incorrect password. Try again.',
+        warning: action.value || 'Incorrect password. Try again.',
       })
 
     case actions.SHOW_LOADING:
       return extend(appState, {
         isLoading: true,
+        loadingMessage: action.value,
       })
 
     case actions.HIDE_LOADING:
@@ -383,11 +460,11 @@ function reduceApp (state, action) {
         transForward: true,
         currentView: {
           name: 'buyEth',
-          context: appState.currentView.context,
+          context: appState.currentView.name,
         },
         buyView: {
           subview: 'buyForm',
-          amount: '5.00',
+          amount: '15.00',
           buyAddress: action.value,
           formView: {
             coinbase: true,
@@ -470,9 +547,9 @@ function reduceApp (state, action) {
       return extend(appState, {
         qrRequested: true,
         transForward: true,
+
         Qr: {
           message: action.value.message,
-          image: action.value.qr,
           data: action.value.data,
         },
       })
@@ -486,7 +563,6 @@ function reduceApp (state, action) {
         transForward: true,
         Qr: {
           message: action.value.message,
-          image: action.value.qr,
           data: action.value.data,
         },
       })
@@ -496,16 +572,18 @@ function reduceApp (state, action) {
 }
 
 function hasPendingTxs (state) {
-  var unconfTxs = state.metamask.unconfTxs
-  var unconfMsgs = state.metamask.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var unapprovedTxs = state.metamask.unapprovedTxs
+  var unapprovedMsgs = state.metamask.unapprovedMsgs
+  var network = state.metamask.network
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   return unconfTxList.length > 0
 }
 
 function indexForPending (state, txId) {
-  var unconfTxs = state.metamask.unconfTxs
-  var unconfMsgs = state.metamask.unconfMsgs
-  var unconfTxList = txHelper(unconfTxs, unconfMsgs)
+  var unapprovedTxs = state.metamask.unapprovedTxs
+  var unapprovedMsgs = state.metamask.unapprovedMsgs
+  var network = state.metamask.network
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
   let idx
   unconfTxList.forEach((tx, i) => {
     if (tx.id === txId) {
@@ -514,5 +592,3 @@ function indexForPending (state, txId) {
   })
   return idx
 }
-
-

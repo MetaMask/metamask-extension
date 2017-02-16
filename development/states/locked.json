@@ -1,84 +1,42 @@
 {
   "metamask": {
     "isInitialized": true,
-    "isUnlocked": true,
+    "isUnlocked": false,
     "currentDomain": "example.com",
     "rpcTarget": "https://rawtestrpc.metamask.io/",
-    "identities": {
-      "0x5f11b68b7d41633e74c6b18d8b8d147da52aedd6": {
-        "name": "Wallet 1",
-        "address": "0x5f11b68b7d41633e74c6b18d8b8d147da52aedd6",
-        "mayBeFauceting": false
-      },
-      "0x843963b837841dad3b0f5969ff271108776616df": {
-        "name": "Wallet 2",
-        "address": "0x843963b837841dad3b0f5969ff271108776616df",
-        "mayBeFauceting": false
-      },
-      "0x2cb215323857bec1c91e5db10fe87379a5cf129a": {
-        "name": "Wallet 3",
-        "address": "0x2cb215323857bec1c91e5db10fe87379a5cf129a",
-        "mayBeFauceting": false
-      },
-      "0xc5091450b7548b0dce3a76b8d325929c39e648d1": {
-        "name": "Wallet 4",
-        "address": "0xc5091450b7548b0dce3a76b8d325929c39e648d1",
-        "mayBeFauceting": false
-      }
-    },
+    "identities": {},
     "unconfTxs": {},
-    "accounts": {
-      "0x5f11b68b7d41633e74c6b18d8b8d147da52aedd6": {
-        "balance": "0x0",
-        "nonce": "0x0",
-        "code": "0x",
-        "address": "0x5f11b68b7d41633e74c6b18d8b8d147da52aedd6"
-      },
-      "0x843963b837841dad3b0f5969ff271108776616df": {
-        "balance": "0x0",
-        "nonce": "0x0",
-        "code": "0x",
-        "address": "0x843963b837841dad3b0f5969ff271108776616df"
-      },
-      "0x2cb215323857bec1c91e5db10fe87379a5cf129a": {
-        "balance": "0x0",
-        "nonce": "0x0",
-        "code": "0x",
-        "address": "0x2cb215323857bec1c91e5db10fe87379a5cf129a"
-      },
-      "0xc5091450b7548b0dce3a76b8d325929c39e648d1": {
-        "balance": "0x0",
-        "nonce": "0x0",
-        "code": "0x",
-        "address": "0xc5091450b7548b0dce3a76b8d325929c39e648d1"
-      }
-    },
+    "currentFiat": "USD",
+    "conversionRate": 11.4379398,
+    "conversionDate": 1473358355,
+    "accounts": {},
     "transactions": [],
-    "selectedAddress": "0x843963b837841dad3b0f5969ff271108776616df",
-    "network": "2",
-    "isConfirmed": true,
+    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825",
+    "network": "1473186153102",
+    "seedWords": null,
     "unconfMsgs": {},
     "messages": [],
+    "shapeShiftTxList": [],
     "provider": {
-      "type": "testnet"
+      "type": "rpc",
+      "rpcTarget": "http://localhost:8545"
     },
-    "selectedAccount": "0x843963b837841dad3b0f5969ff271108776616df"
+    "selectedAddress": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
   },
   "appState": {
     "menuOpen": false,
     "currentView": {
-      "name": "accountDetail"
+      "name": "accountDetail",
+      "detailView": null,
+      "context": "0xfdea65c8e26263f6d9a1b5de9555d2931a33b825"
     },
     "accountDetail": {
-      "subview": "transactions",
-      "accountExport": "none",
-      "privateKey": ""
+      "subview": "transactions"
     },
-    "currentDomain": "testfaucet.metamask.io",
-    "transForward": false,
+    "currentDomain": "127.0.0.1:9966",
+    "transForward": true,
     "isLoading": false,
-    "warning": null,
-    "scrollToBottom": false
+    "warning": null
   },
   "identities": {}
 }

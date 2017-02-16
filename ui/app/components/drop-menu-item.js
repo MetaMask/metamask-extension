@@ -32,17 +32,17 @@ DropMenuItem.prototype.render = function () {
 }
 
 DropMenuItem.prototype.activeNetworkRender = function () {
-  let activeNetwork = this.props.activeNetworkRender
-  let { provider } = this.props
-  let providerType = provider ? provider.type : null
+  const activeNetwork = this.props.activeNetworkRender
+  const { provider } = this.props
+  const providerType = provider ? provider.type : null
   if (activeNetwork === undefined) return
 
   switch (this.props.label) {
     case 'Main Ethereum Network':
       if (providerType === 'mainnet') return h('.check', '✓')
       break
-    case 'Morden Test Network':
-      if (activeNetwork === '2') return h('.check', '✓')
+    case 'Ropsten Test Network':
+      if (provider.type === 'testnet') return h('.check', '✓')
       break
     case 'Localhost 8545':
       if (activeNetwork === 'http://localhost:8545') return h('.check', '✓')

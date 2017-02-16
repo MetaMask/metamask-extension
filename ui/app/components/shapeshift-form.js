@@ -1,4 +1,4 @@
-const Component = require('react').Component
+const PersistentForm = require('../../lib/persistent-form')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
@@ -8,20 +8,21 @@ const Qr = require('./qr-code')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(ShapeshiftForm)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
-    selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
     isSubLoading: state.appState.isSubLoading,
     qrRequested: state.appState.qrRequested,
   }
 }
 
-inherits(ShapeshiftForm, Component)
+inherits(ShapeshiftForm, PersistentForm)
 
 function ShapeshiftForm () {
-  Component.call(this)
+  PersistentForm.call(this)
+  this.persistentFormParentId = 'shapeshift-buy-form'
 }
+
 ShapeshiftForm.prototype.render = function () {
   return h(ReactCSSTransitionGroup, {
     className: 'css-transition-group',
@@ -31,7 +32,6 @@ ShapeshiftForm.prototype.render = function () {
   }, [
     this.props.qrRequested ? h(Qr, {key: 'qr'}) : this.renderMain(),
   ])
-
 }
 
 ShapeshiftForm.prototype.renderMain = function () {
@@ -66,6 +66,9 @@ ShapeshiftForm.prototype.renderMain = function () {
         h('input#fromCoin.buy-inputs.ex-coins', {
           type: 'text',
           list: 'coinList',
+          dataset: {
+            persistentFormId: 'input-coin',
+          },
           style: {
             boxSizing: 'border-box',
           },
@@ -122,7 +125,6 @@ ShapeshiftForm.prototype.renderMain = function () {
     this.props.isSubLoading ? this.renderLoading() : null,
     h('.flex-column', {
       style: {
-        width: '235px',
         alignItems: 'flex-start',
       },
     }, [
@@ -159,6 +161,9 @@ ShapeshiftForm.prototype.renderMain = function () {
       h('input#fromCoinAddress.buy-inputs', {
         type: 'text',
         placeholder: `Your ${coin} Refund Address`,
+        dataset: {
+          persistentFormId: 'refund-address',
+        },
         style: {
           boxSizing: 'border-box',
           width: '278px',
@@ -236,7 +241,7 @@ ShapeshiftForm.prototype.updateCoin = function (event) {
 
   if (!coinOptions[coin.toUpperCase()] || coin.toUpperCase() === 'ETH') {
     var message = 'Not a valid coin'
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   } else {
     return props.dispatch(actions.pairUpdate(coin))
   }
@@ -261,17 +266,17 @@ ShapeshiftForm.prototype.renderInfo = function () {
 
   return h('span', {
     style: {
-      marginTop: '15px',
+      marginTop: '10px',
       marginBottom: '15px',
     },
   }, [
     h('h3.flex-row.text-transform-uppercase', {
       style: {
-        color: '#AEAEAE',
+        color: '#868686',
         paddingTop: '4px',
         justifyContent: 'space-around',
         textAlign: 'center',
-        fontSize: '14px',
+        fontSize: '17px',
       },
     }, `Market Info for ${marketinfo.pair.replace('_', ' to ').toUpperCase()}:`),
     h('.marketinfo', ['Status : ', `${coinOptions[coin].status}`]),

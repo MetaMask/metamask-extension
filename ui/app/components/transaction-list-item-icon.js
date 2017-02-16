@@ -13,13 +13,34 @@ function TransactionIcon () {
 
 TransactionIcon.prototype.render = function () {
   const { transaction, txParams, isMsg } = this.props
+  switch (transaction.status) {
+    case 'unapproved':
+      return h( !isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg', {
+        style: {
+          width: '24px',
+        },
+      })
 
-  if (transaction.status === 'rejected') {
-    return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {
-      style: {
-        width: '24px',
-      },
-    })
+    case 'rejected':
+      return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {
+        style: {
+          width: '24px',
+        },
+      })
+
+    case 'failed':
+      return h('i.fa.fa-exclamation-triangle.fa-lg.error', {
+        style: {
+          width: '24px',
+        },
+      })
+
+    case 'submitted':
+      return h('i.fa.fa-ellipsis-h', {
+        style: {
+          fontSize: '27px',
+        },
+      })
   }
 
   if (isMsg) {

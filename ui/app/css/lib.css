@@ -23,6 +23,14 @@
   flex-direction: column;
 }
 
+.space-between {
+  justify-content: space-between;
+}
+
+.space-around {
+  justify-content: space-around;
+}
+
 .flex-column-bottom {
   display: flex;
   flex-direction: column-reverse;
@@ -196,6 +204,23 @@ hr.horizontal-line {
   align-items: center;
   justify-content: center;
   padding: 4px;
+  z-index: 1;
+}
+
+.keyring-label {
+  z-index: 1;
+  font-size: 11px;
+  background: rgba(255,0,0,0.8);
+  bottom: -47px;
+  color: white;
+  border-radius: 10px;
+  height: 20px;
+  min-width: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 }
 
 .ether-balance {
@@ -213,7 +238,7 @@ hr.horizontal-line {
   background: rgb(0, 163, 68);
   border-radius: 20px;
 }
-.morden-icon {
+.testnet-icon {
   background: #2465E1;
 }
 

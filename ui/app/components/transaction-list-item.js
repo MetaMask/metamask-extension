@@ -8,6 +8,7 @@ const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const extension = require('../../../app/scripts/lib/extension')
+const Tooltip = require('./tooltip')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -27,12 +28,11 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 2
+  isLinkable = numericNet === 1 || numericNet === 3
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
-  var isPending = transaction.status === 'unconfirmed'
-
+  var isPending = transaction.status === 'unapproved'
   let txParams
   if (isTx) {
     txParams = transaction.txParams
@@ -41,14 +41,13 @@ TransactionListItem.prototype.render = function () {
   }
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
-
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)
         }
-
+        event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
         var url = explorerLink(transaction.hash, parseInt(network))
         extension.tabs.create({ url })
@@ -58,10 +57,17 @@ TransactionListItem.prototype.render = function () {
       },
     }, [
 
-      // large identicon
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        transaction.status === 'unconfirmed' ? h('i.fa.fa-ellipsis-h', {style: { fontSize: '27px' }})
-         : h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        h('.pop-hover', {
+          onClick: (event) => {
+            event.stopPropagation()
+            if (!isTx || isPending) return
+            var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
+            extension.tabs.create({ url })
+          },
+        }, [
+          h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        ]),
       ]),
 
       h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
@@ -77,6 +83,7 @@ TransactionListItem.prototype.render = function () {
         value: txParams.value,
         width: '55px',
         shorten: true,
+        showFiat: false,
         style: {fontSize: '15px'},
       }) : h('.flex-column'),
     ])
@@ -127,7 +134,14 @@ function failIfFailed (transaction) {
   if (transaction.status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }
-  if (transaction.status === 'failed') {
-    return h('span.error', ' (Failed)')
+  if (transaction.err) {
+
+    return h(Tooltip, {
+      title: transaction.err.message,
+      position: 'bottom',
+    }, [
+      h('span.error', ' (Failed)'),
+    ])
   }
+
 }

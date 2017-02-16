@@ -31,7 +31,7 @@ describe('SHOW_ACCOUNT_DETAIL', function() {
   it('updates metamask state', function() {
     var initialState = {
       metamask: {
-        selectedAccount: 'foo'
+        selectedAddress: 'foo'
       }
     }
     freeze(initialState)
@@ -43,7 +43,6 @@ describe('SHOW_ACCOUNT_DETAIL', function() {
     freeze(action)
 
     var resultingState = reducers(initialState, action)
-    assert.equal(resultingState.metamask.selectedAccount, action.value)
     assert.equal(resultingState.metamask.selectedAddress, action.value)
   })
 })

@@ -1,5 +1,5 @@
 const inherits = require('util').inherits
-const Component = require('react').Component
+const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
@@ -7,14 +7,16 @@ const actions = require('./actions')
 const util = require('./util')
 const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
-const EtherBalance = require('./components/eth-balance')
+const isHex = require('./util').isHex
+const EthBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
-
+const RangeSlider = require('./components/range-slider')
+const Tooltip = require('./components/tooltip')
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   var result = {
-    address: state.metamask.selectedAccount,
+    address: state.metamask.selectedAddress,
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,
@@ -29,12 +31,14 @@ function mapStateToProps (state) {
   return result
 }
 
-inherits(SendTransactionScreen, Component)
+inherits(SendTransactionScreen, PersistentForm)
 function SendTransactionScreen () {
-  Component.call(this)
+  PersistentForm.call(this)
 }
 
 SendTransactionScreen.prototype.render = function () {
+  this.persistentFormParentId = 'send-tx-form'
+
   var state = this.props
   var address = state.address
   var account = state.account
@@ -48,7 +52,7 @@ SendTransactionScreen.prototype.render = function () {
       // Sender Profile
       //
 
-      h('.account-data-subsection.flex-column.flex-grow', {
+      h('.account-data-subsection.flex-row.flex-grow', {
         style: {
           margin: '0 20px',
         },
@@ -57,10 +61,9 @@ SendTransactionScreen.prototype.render = function () {
         // header - identicon + nav
         h('.flex-row.flex-space-between', {
           style: {
-            marginTop: 28,
+            marginTop: '15px',
           },
         }, [
-
           // back button
           h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
             onClick: this.back.bind(this),
@@ -75,43 +78,53 @@ SendTransactionScreen.prototype.render = function () {
           ]),
 
           // invisible place holder
-          h('i.fa.fa-users.fa-lg.invisible'),
-
-        ]),
-
-        // account label
-        h('h2.font-medium.color-forest.flex-center', {
-          style: {
-            paddingTop: 8,
-            marginBottom: 8,
-          },
-        }, identity && identity.name),
-
-        // address and getter actions
-        h('.flex-row.flex-center', {
-          style: {
-            marginBottom: 8,
-          },
-        }, [
-
-          h('div', {
+          h('i.fa.fa-users.fa-lg.invisible', {
             style: {
-              lineHeight: '16px',
+              marginTop: '28px',
             },
-          }, addressSummary(address)),
-
-        ]),
-
-        // balance
-        h('.flex-row.flex-center', [
-
-          // h('div', formatBalance(account && account.balance)),
-          h(EtherBalance, {
-            value: account && account.balance,
           }),
 
         ]),
 
+        // account label
+
+        h('.flex-column', {
+          style: {
+            marginTop: '10px',
+            alignItems: 'flex-start',
+          },
+        }, [
+          h('h2.font-medium.color-forest.flex-center', {
+            style: {
+              paddingTop: '8px',
+              marginBottom: '8px',
+            },
+          }, identity && identity.name),
+
+          // address and getter actions
+          h('.flex-row.flex-center', {
+            style: {
+              marginBottom: '8px',
+            },
+          }, [
+
+            h('div', {
+              style: {
+                lineHeight: '16px',
+              },
+            }, addressSummary(address)),
+
+          ]),
+
+          // balance
+          h('.flex-row.flex-center', [
+
+            h(EthBalance, {
+              value: account && account.balance,
+            }),
+
+          ]),
+        ]),
       ]),
 
       //
@@ -122,8 +135,8 @@ SendTransactionScreen.prototype.render = function () {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
-          marginTop: 32,
-          marginBottom: 16,
+          marginTop: '15px',
+          marginBottom: '16px',
         },
       }, [
         'Send Transaction',
@@ -137,6 +150,9 @@ SendTransactionScreen.prototype.render = function () {
         h('input.large-input', {
           name: 'address',
           placeholder: 'Recipient Address',
+          dataset: {
+            persistentFormId: 'recipient-address',
+          },
         }),
       ]),
 
@@ -148,7 +164,10 @@ SendTransactionScreen.prototype.render = function () {
           placeholder: 'Amount',
           type: 'number',
           style: {
-            marginRight: 6,
+            marginRight: '6px',
+          },
+          dataset: {
+            persistentFormId: 'tx-amount',
           },
         }),
 
@@ -164,20 +183,19 @@ SendTransactionScreen.prototype.render = function () {
       //
       // Optional Fields
       //
-
       h('h3.flex-center.text-transform-uppercase', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
-          marginTop: 16,
-          marginBottom: 16,
+          marginTop: '16px',
+          marginBottom: '16px',
         },
       }, [
-        'Transactional Data (optional)',
+        'Transaction Data (optional)',
       ]),
 
       // 'data' field
-      h('section.flex-row.flex-center', [
+      h('section.flex-column.flex-center', [
         h('input.large-input', {
           name: 'txData',
           placeholder: '0x01234',
@@ -185,11 +203,79 @@ SendTransactionScreen.prototype.render = function () {
             width: '100%',
             resize: 'none',
           },
+          dataset: {
+            persistentFormId: 'tx-data',
+          },
         }),
       ]),
+      // custom gasPrice field
+      h('h3.flex-center.text-transform-uppercase', {
+        style: {
+          background: '#EBEBEB',
+          color: '#AEAEAE',
+          marginBottom: '5px',
+        },
+      }, [
+        'Transaction Fee (optional)',
+        h(Tooltip, {
+          title: `
+            This is used to set the transaction's gas price.
+            Setting it to 100% will use the full recommended value.          `,
+        }, [
+          h('i.fa.fa-question-circle', {
+            style: {
+              marginLeft: '5px',
+            },
+          }),
+        ]),
+      ]),
 
+      h('section.flex-column.flex-center', [
+        h('.flex-row', [
+          h(RangeSlider, {
+            name: 'gasInput',
+            options: {
+              mirrorInput: true,
+              defaultValue: 100,
+              min: 80,
+              max: 220,
+            },
+            style: {
+              container: {
+                marginBottom: '16px',
+              },
+              range: {
+                width: '68vw',
+              },
+              input: {
+                width: '5em',
+                marginLeft: '5px',
+              },
+            },
+          }),
+
+          h('div', {
+            style: {
+              fontSize: '12px',
+              paddingTop: '8px',
+              paddingLeft: '5px',
+            },
+          }, '%'),
+        ]),
+        h('.flex-row', {
+          style: {
+            justifyContent: 'space-between',
+            width: '243px',
+            position: 'relative',
+            fontSize: '12px',
+            right: '42px',
+            bottom: '30px',
+          },
+        }, [
+          h('span', 'Cheaper'), h('span', 'Faster'),
+        ]),
+      ]),
     ])
-
   )
 }
 
@@ -203,11 +289,12 @@ SendTransactionScreen.prototype.back = function () {
   this.props.dispatch(actions.backToAccountDetail(address))
 }
 
-SendTransactionScreen.prototype.onSubmit = function () {
+SendTransactionScreen.prototype.onSubmit = function (gasPrice) {
   const recipient = document.querySelector('input[name="address"]').value
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
+  const gasMultiplier = document.querySelector('input[name="gasInput"]').value
   const balance = this.props.balance
   let message
 
@@ -226,12 +313,17 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
+  if (!isHex(ethUtil.stripHexPrefix(txData)) && txData) {
+    message = 'Transaction data must be hex string.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
   this.props.dispatch(actions.hideWarning())
-  this.props.dispatch(actions.showLoadingIndication())
 
   var txParams = {
     from: this.props.address,
     value: '0x' + value.toString(16),
+    gasMultiplier: gasMultiplier * 0.01,
   }
 
   if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)

@@ -1,22 +1,28 @@
-module.exports = {
-  version: 4,
+const version = 4
 
-  migrate: function (data) {
+const clone = require('clone')
+
+module.exports = {
+  version,
+
+  migrate: function (versionedData) {
+    let safeVersionedData = clone(versionedData)
+    safeVersionedData.meta.version = version
     try {
-      if (data.config.provider.type !== 'rpc') return data
-      switch (data.config.provider.rpcTarget) {
+      if (safeVersionedData.data.config.provider.type !== 'rpc') return Promise.resolve(safeVersionedData)
+      switch (safeVersionedData.data.config.provider.rpcTarget) {
         case 'https://testrpc.metamask.io/':
-          data.config.provider = {
+          safeVersionedData.data.config.provider = {
             type: 'testnet',
           }
           break
         case 'https://rpc.metamask.io/':
-          data.config.provider = {
+          safeVersionedData.data.config.provider = {
             type: 'mainnet',
           }
           break
       }
     } catch (_) {}
-    return data
+    return Promise.resolve(safeVersionedData)
   },
 }

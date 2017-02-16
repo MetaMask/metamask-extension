@@ -1,11 +1,203 @@
 # Changelog
 
 ## Current Master
+- net_version has been made synchronous.
+- Test suite for migrations expanded.
+
+- Improve test coverage of eth.sign behavior, including a code example of verifying a signature.
+
+## 3.2.2 2017-2-8
+
+- Revert eth.sign behavior to the previous one with a big warning.  We will be gradually implementing the new behavior over the coming time. https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
+
+## 3.2.1 2017-2-8
+
+- Revert back to old style message signing.
+- Fixed some build errors that were causing a variety of bugs.
+
+## 3.2.0 2017-2-8
+
+- Add ability to import accounts in JSON file format (used by Mist, Geth, MyEtherWallet, and more!)
+- Fix unapproved messages not being included in extension badge.
+- Fix rendering bug where the Confirm transaction view would lets you approve transactions when the account has insufficient balance.
+
+## 3.1.2 2017-1-24
+
+- Fix "New Account" default keychain
+
+## 3.1.1 2017-1-20
+
+- Fix HD wallet seed export
+
+## 3.1.0 2017-1-18
+
+- Add ability to import accounts by private key.
+- Fixed bug that returned the wrong transaction hashes on private networks that had not implemented EIP 155 replay protection (like TestRPC).
+
+## 3.0.1 2017-1-17
+
+- Fixed bug that prevented eth.sign from working.
+- Fix the displaying of transactions that have been submitted to the network in Transaction History
+
+## 3.0.0 2017-1-16
+
+- Fix seed word account generation (https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd#.t4i1qmmsz).
+- Fix Bug where you see a empty transaction flash by on the confirm transaction view.
+- Create visible difference in transaction history between a approved but not yet included in a block transaction and a transaction who has been confirmed.
+- Fix memory leak in RPC Cache
+- Override RPC commands eth_syncing and web3_clientVersion
+- Remove certain non-essential permissions from certain builds.
+- Add a check for when a tx is included in a block.
+- Fix bug where browser-solidity would sometimes warn of a contract creation error when there was none.
+- Minor modifications to network display.
+- Network now displays properly for pending transactions.
+- Implement replay attack protections allowed by EIP 155.
+- Fix bug where sometimes loading account data would fail by querying a future block.
+
+## 2.14.1 2016-12-20
+
+- Update Coinbase info. and increase the buy amount to $15
+- Fixed ropsten transaction links
+- Temporarily disable extension reload detection causing infinite reload bug.
+- Implemented basic checking for valid RPC URIs.
+
+## 2.14.0 2016-12-16
+
+- Removed Morden testnet provider from provider menu.
+- Add support for notices.
+- Fix broken reload detection.
+- Fix transaction forever cached-as-pending bug.
+
+## 2.13.11 2016-11-23
+
+- Add support for synchronous RPC method "eth_uninstallFilter".
+- Forgotten password prompts now send users directly to seed word restoration.
+
+## 2.13.10 2016-11-22
+
+- Improve gas calculation logic.
+- Default to Dapp-specified gas limits for transactions.
+- Ropsten networks now properly point to the faucet when attempting to buy ether.
+- Ropsten transactions now link to etherscan correctly.
+
+## 2.13.9 2016-11-21
+
+- Add support for the new, default Ropsten Test Network.
+- Fix bug that would cause MetaMask to occasionally lose its StreamProvider connection and drop requests.
+- Fix bug that would cause the Custom RPC menu item to not appear when Localhost 8545 was selected.
+- Point ropsten faucet button to actual faucet.
+- Phase out ethereumjs-util from our encryptor module.
+
+## 2.13.8 2016-11-16
+
+- Show a warning when a transaction fails during simulation.
+- Fix bug where 20% of gas estimate was not being added properly.
+- Render error messages in confirmation screen more gracefully.
+
+## 2.13.7 2016-11-8
+
+- Fix bug where gas estimate would sometimes be very high.
+- Increased our gas estimate from 100k gas to 20% of estimate.
+- Fix github link on info page to point at current repository.
+
+## 2.13.6 2016-10-26
+
+- Add a check for improper Transaction data.
+- Inject up to date version of web3.js
+- Now nicknaming new accounts "Account #" instead of "Wallet #" for clarity.
+- Fix bug where custom provider selection could show duplicate items.
+- Fix bug where connecting to a local morden node would make two providers appear selected.
+- Fix bug that was sometimes preventing transactions from being sent.
+
+## 2.13.5 2016-10-18
+
+- Increase default max gas to `100000` over the RPC's `estimateGas` response.
+- Fix bug where slow-loading dapps would sometimes trigger infinite reload loops.
+
+## 2.13.4 2016-10-17
+
+- Add custom transaction fee field to send form.
+- Fix bug where web3 was being injected into XML files.
+- Fix bug where changing network would not reload current Dapps.
+
+## 2.13.3 2016-10-4
+
+- Fix bug where log queries were filtered out.
+- Decreased vault confirmation button font size to help some Linux users who could not see it.
+- Made popup a little taller because it would sometimes cut off buttons.
+- Fix bug where long account lists would get scrunched instead of scrolling.
+- Add legal information to relevant pages.
+- Rename UI elements to be more consistent with one another.
+- Updated Terms of Service and Usage.
+- Prompt users to re-agree to the Terms of Service when they are updated.
+
+## 2.13.2 2016-10-4
+
+- Fix bug where chosen FIAT exchange rate does no persist when switching networks
+- Fix additional parameters that made MetaMask sometimes receive errors from Parity.
+- Fix bug where invalid transactions would still open the MetaMask popup.
+- Removed hex prefix from private key export, to increase compatibility with Geth, MyEtherWallet, and Jaxx.
+
+## 2.13.1 2016-09-23
+
+- Fix a bug with estimating gas on Parity
+- Show loading indication when selecting ShapeShift as purchasing method.
+
+## 2.13.0 2016-09-18
+
+- Add Parity compatibility, fixing Geth dependency issues.
+- Add a link to the transaction in history that goes to https://metamask.github.io/eth-tx-viz
+too help visualize transactions and to where they are going.
+- Show "Buy Ether" button and warning on tx confirmation when sender balance is insufficient
+
+## 2.12.1 2016-09-14
+
+- Fixed bug where if you send a transaction from within MetaMask extension the
+popup notification opens up.
+- Fixed bug where some tx errors would block subsequent txs until the plugin was refreshed.
+
+## 2.12.0 2016-09-14
+
+- Add a QR button to the Account detail screen
+- Fixed bug where opening MetaMask could close a non-metamask popup.
+- Fixed memory leak that caused occasional crashes.
+
+## 2.11.1 2016-09-12
+
+- Fix bug that prevented caches from being cleared in Opera.
+
+## 2.11.0 2016-09-12
+
+- Fix bug where pending transactions from Test net (or other networks) show up In Main net.
+- Add fiat conversion values to more views.
+- On fresh install, open a new tab with the MetaMask Introduction video. Does not open on update.
+- Block negative values from transactions.
+- Fixed a memory leak.
+- MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
+- Now showing loading indication during vault unlocking, to clarify behavior for users who are experience slow unlocks.
+- Now only initially creates one wallet when restoring a vault, to reduce some users' confusion.
+
+## 2.10.2 2016-09-02
+
+- Fix bug where notification popup would not display.
+
+## 2.10.1 2016-09-02
+
+- Fix bug where provider menu did not allow switching to custom network from a custom network.
+- Sending a transaction from within MetaMask no longer triggers a popup.
+- The ability to build without livereload features (such as for production) can be enabled with the gulp --disableLiveReload flag.
+- Fix Ethereum JSON RPC Filters bug.
+
+## 2.10.0 2016-08-29
+
+- Changed transaction approval from notifications system to popup system.
+- Add a back button to locked screen to allow restoring vault from seed words when password is forgotten.
+- Forms now retain their values even when closing the popup and reopening it.
+- Fixed a spelling error in provider menu.
 
 ## 2.9.2 2016-08-24
 
 - Fixed shortcut bug from preventing installation.
-
 
 ## 2.9.1 2016-08-24
 
@@ -27,7 +219,7 @@
 ## 2.8.0 2016-08-15
 
 - Integrate ShapeShift
-- Add a for for Coinbase to specify amount to buy
+- Add a form for Coinbase to specify amount to buy
 - Fix various typos.
 - Make dapp-metamask connection more reliable
 - Remove Ethereum Classic from provider menu.

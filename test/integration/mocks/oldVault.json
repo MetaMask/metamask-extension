@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "version": 4
+  },
+  "data": {
+    "fiatCurrency": "USD",
+    "conversionRate": 9.47316629,
+    "conversionDate": 1479510994,
+    "wallet": "{\"encSeed\":{\"encStr\":\"a5tjKtDGlHkua+6Ta5s3wMFWPmsBqaPdMKGmqeI2z1kMbNs3V03HBaCptU7NtMra1DjHKbSNsUToxFUrmrvWBmUejamN16+l1CviwqASsv7kKzpot00/dfyyJgtZwwFP5Je+TAB1V231nRbPidOfeE1cDec5V8KTF8epl6qzsbA25pjeW76Dfw==\",\"nonce\":\"RzID6bAhWfGTSR74xdIh3RaT1+1sLk6F\"},\"ksData\":{\"m/44'/60'/0'/0\":{\"info\":{\"curve\":\"secp256k1\",\"purpose\":\"sign\"},\"encHdPathPriv\":{\"encStr\":\"6nlYAopRbmGcqerRZO08XwgeYaCJg9XRhh4oiYiVVdQtyNPdxvOI9TcE/mqvBiatMwBwA+TmsqTV6eZZe/VDZKYIGajKulQbScd0xQ71JhYfqqmzSG6EH2Pnzwa+aSAsfARgN1JJSaff2+p6wV6Zg5BUDtl72OGEIEfXhcUGwg==\",\"nonce\":\"Ee1KiDqtx7NvYToQUFvjEhKNinNQcXlK\"},\"hdIndex\":1,\"encPrivKeys\":{\"4dd5d356c5a016a220bcd69e82e5af680a430d00\":{\"key\":\"htGRGAH10lGF4M+fvioznmYVIUSWAzwp/yWSIo85psgZZwmCdJY72oyGanYsrFO8\",\"nonce\":\"PkP8XeZ+ok215rzEorvJu9nYTWzkOVr0\"}},\"addresses\":[\"4dd5d356c5a016a220bcd69e82e5af680a430d00\"]}},\"encHdRootPriv\":{\"encStr\":\"TAZAo71a+4IlAaoA66f0w4ts2f+V7ArTSUHRIrMltfAPXz7GfJBmKXNtHPORUYAjRiKqWK6FZnhKLf7Vcng2LG7VnDQwC4xPxzSRZzSEilnoY3V+zRY0HD7Wb/pndb4FliA/buZQmjohO4vezeX0hl70rJlPJEZTyYoWgxbxFA==\",\"nonce\":\"FlJOaLyBEHMaH5fEnYjdHc6nn18+WkRj\"},\"salt\":\"CmuCcWpbqpKUUv+1aE2ZwvQl7EIQ731uFibSq++vwtY=\",\"version\":2}",
+    "config": {
+      "provider": {
+        "type": "testnet"
+      },
+      "selectedAddress": "0x4dd5d356c5a016a220bcd69e82e5af680a430d00"
+    },
+    "showSeedWords": false,
+    "isEthConfirmed": true
+  }
+}

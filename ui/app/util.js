@@ -35,6 +35,7 @@ module.exports = {
   normalizeNumberToWei: normalizeNumberToWei,
   valueTable: valueTable,
   bnTable: bnTable,
+  isHex: isHex,
 }
 
 function valuesFor (obj) {
@@ -208,4 +209,8 @@ function readableDate (ms) {
   var dateStr = `${month}/${day}/${year}`
   var time = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`
   return `${dateStr} ${time}`
+}
+
+function isHex (str) {
+  return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
 }

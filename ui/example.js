@@ -29,7 +29,7 @@ var identities = {
   },
 }
 
-var unconfTxs = {}
+var unapprovedTxs = {}
 addUnconfTx({
   from: '0x222462427bcc9133bb46e88bcbe39cd7ef0e7222',
   to: '0x1113462427bcc9133bb46e88bcbe39cd7ef0e111',
@@ -45,7 +45,7 @@ addUnconfTx({
 function addUnconfTx (txParams) {
   var time = (new Date()).getTime()
   var id = createRandomId()
-  unconfTxs[id] = {
+  unapprovedTxs[id] = {
     id: id,
     txParams: txParams,
     time: time,
@@ -53,14 +53,14 @@ function addUnconfTx (txParams) {
 }
 
 var isUnlocked = false
-var selectedAddress = null
+var selectedAccount = null
 
 function getState () {
   return {
     isUnlocked: isUnlocked,
     identities: isUnlocked ? identities : {},
-    unconfTxs: isUnlocked ? unconfTxs : {},
-    selectedAddress: selectedAddress,
+    unapprovedTxs: isUnlocked ? unapprovedTxs : {},
+    selectedAccount: selectedAccount,
   }
 }
 
@@ -85,8 +85,8 @@ accountManager.submitPassword = function (password, cb) {
   }
 }
 
-accountManager.setSelectedAddress = function (address, cb) {
-  selectedAddress = address
+accountManager.setSelectedAccount = function (address, cb) {
+  selectedAccount = address
   cb(null, getState())
   this._didUpdate()
 }

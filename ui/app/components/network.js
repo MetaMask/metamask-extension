@@ -22,7 +22,6 @@ Network.prototype.render = function () {
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
-
     return h('img.network-indicator', {
       title: 'Attempting to connect to blockchain.',
       onClick: (event) => this.props.onClick(event),
@@ -32,23 +31,22 @@ Network.prototype.render = function () {
       },
       src: 'images/loading.svg',
     })
-
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
-  } else if (parseInt(networkNumber) === 2) {
-    hoverText = 'Morden Test Network'
-    iconName = 'morden-test-network'
+  } else if (providerName === 'testnet') {
+    hoverText = 'Ropsten Test Network'
+    iconName = 'ropsten-test-network'
+  } else if (parseInt(networkNumber) === 3) {
+    hoverText = 'Ropsten Test Network'
+    iconName = 'ropsten-test-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
   }
+
   return (
-    h('#network_component.flex-center.pointer', {
-      style: {
-        marginRight: '-27px',
-        marginLeft: '-3px',
-      },
+    h('#network_component.pointer', {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [
@@ -61,21 +59,20 @@ Network.prototype.render = function () {
                 style: {
                   color: '#039396',
                 }},
-              'Etherum Main Net'),
+              'Ethereum Main Net'),
             ])
-          case 'morden-test-network':
+          case 'ropsten-test-network':
             return h('.network-indicator', [
               h('.menu-icon.red-dot'),
               h('.network-name', {
                 style: {
                   color: '#ff6666',
                 }},
-              'Morden Test Net'),
+              'Ropsten Test Net'),
             ])
           default:
             return h('.network-indicator', [
               h('i.fa.fa-question-circle.fa-lg', {
-                ariaHidden: true,
                 style: {
                   margin: '10px',
                   color: 'rgb(125, 128, 130)',

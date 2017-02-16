@@ -36,24 +36,40 @@ button {
   font-family: 'Montserrat Bold';
   outline: none;
   cursor: pointer;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-   /*margin: 10px;*/
   padding: 8px 12px;
   border: none;
-  background: #F7861C;
   color: white;
   transform-origin: center center;
   transition: transform 50ms ease-in;
+  /* default orange */
+  background: rgba(247, 134, 28, 1);
+  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+}
+
+button.btn-green {
+  background: rgba(106, 195, 96, 1);
+  box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
+}
+
+button.btn-red {
+  background: rgba(254, 35, 17, 1);
+  box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  background: rgba(197, 197, 197, 1);
+  box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
 }
 
 button.spaced {
   margin: 2px;
 }
 
-button:hover {
+button:not([disabled]):hover {
   transform: scale(1.1);
 }
-button:active {
+button:not([disabled]):active {
   transform: scale(0.95);
 }
 
@@ -149,9 +165,6 @@ textarea.twelve-word-phrase {
 }
 
 .network-name {
-  position: absolute;
-  top: 8px;
-  left: 60px;
   width: 5.2em;
   line-height: 9px;
   text-rendering: geometricPrecision;
@@ -395,6 +408,16 @@ input.large-input {
 .name-label{
 
 }
+
+.unapproved-tx-icon {
+  height: 24px;
+  background: #4dffff;
+  border: solid;
+  border-color: #AEAEAE;
+  border-width: 0.5px;
+  border-radius: 13px;
+}
+
 .edit-text {
   height: 100%;
   visibility: hidden;
@@ -539,8 +562,8 @@ input.large-input {
 .marketinfo{
   font-family: 'Montserrat light';
   color: #AEAEAE;
-  font-size: 12px;
-  line-height: 14px;
+  font-size: 15px;
+  line-height: 17px;
 }
 
 #fromCoin::-webkit-calendar-picker-indicator {
@@ -583,12 +606,18 @@ input.large-input {
   margin-left: 5px;
 }
 
+.qr-header {
+    font-size: 25px;
+    margin-top: 40px;
+}
+
 .qr-message {
   font-size: 12px;
   color: #F7861C;
 }
 
 div.message-container > div:first-child {
+  margin-top: 18px;
   font-size: 15px;
   color: #4D4D4D;
 }

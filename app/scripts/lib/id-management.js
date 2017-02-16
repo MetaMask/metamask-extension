@@ -1,4 +1,13 @@
+/* ID Management
+ *
+ * This module exists to hold the decrypted credentials for the current session.
+ * It therefore exposes sign methods, because it is able to perform these
+ * with noa dditional authentication, because its very instantiation
+ * means the vault is unlocked.
+ */
+
 const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
 
 module.exports = IdManagement
@@ -16,9 +25,15 @@ function IdManagement (opts) {
   }
 
   this.signTx = function (txParams) {
+    //  calculate gas with custom gas multiplier
+    var gasMultiplier = this.configManager.getGasMultiplier() || 1
+    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
+    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
     // normalize values
+
     txParams.to = ethUtil.addHexPrefix(txParams.to)
-    txParams.from = ethUtil.addHexPrefix(txParams.from)
+    txParams.from = ethUtil.addHexPrefix(txParams.from.toLowerCase())
     txParams.value = ethUtil.addHexPrefix(txParams.value)
     txParams.data = ethUtil.addHexPrefix(txParams.data)
     txParams.gasLimit = ethUtil.addHexPrefix(txParams.gasLimit || txParams.gas)
@@ -43,7 +58,7 @@ function IdManagement (opts) {
 
   this.signMsg = function (address, message) {
     // sign message
-    var privKeyHex = this.exportPrivateKey(address)
+    var privKeyHex = this.exportPrivateKey(address.toLowerCase())
     var privKey = ethUtil.toBuffer(privKeyHex)
     var msgSig = ethUtil.ecsign(new Buffer(message.replace('0x', ''), 'hex'), privKey)
     var rawMsgSig = ethUtil.bufferToHex(concatSig(msgSig.v, msgSig.r, msgSig.s))

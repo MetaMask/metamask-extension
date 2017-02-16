@@ -5,11 +5,8 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
-const DisclaimerScreen = require('./first-time/disclaimer')
 const InitializeMenuScreen = require('./first-time/init-menu')
-const CreateVaultScreen = require('./first-time/create-vault')
-const CreateVaultCompleteScreen = require('./first-time/create-vault-complete')
-const RestoreVaultScreen = require('./first-time/restore-vault')
+const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
@@ -17,19 +14,25 @@ const AccountsScreen = require('./accounts')
 const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
+// notice
+const NoticeScreen = require('./components/notice')
+const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
-const RevealSeedConfirmation = require('./recover-seed/confirmation')
+const Import = require('./accounts/import')
 const InfoScreen = require('./info')
-const LoadingIndicator = require('./loading')
+const LoadingIndicator = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
 const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
-const EthStoreWarning = require('./eth-store-warning')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
+const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
+const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
+const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+
 module.exports = connect(mapStateToProps)(App)
 
 inherits(App, Component)
@@ -38,25 +41,29 @@ function App () { Component.call(this) }
 function mapStateToProps (state) {
   return {
     // state from plugin
-    isConfirmed: state.metamask.isConfirmed,
-    isEthConfirmed: state.metamask.isEthConfirmed,
+    isLoading: state.appState.isLoading,
+    loadingMessage: state.appState.loadingMessage,
+    noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
     seedWords: state.metamask.seedWords,
-    unconfTxs: state.metamask.unconfTxs,
-    unconfMsgs: state.metamask.unconfMsgs,
+    unapprovedTxs: state.metamask.unapprovedTxs,
+    unapprovedMsgs: state.metamask.unapprovedMsgs,
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    forgottenPassword: state.appState.forgottenPassword,
+    lastUnreadNotice: state.metamask.lastUnreadNotice,
+    lostAccounts: state.metamask.lostAccounts,
   }
 }
 
 App.prototype.render = function () {
   var props = this.props
-  var transForward = props.transForward
+  const { isLoading, loadingMessage, transForward } = props
 
   return (
 
@@ -68,7 +75,7 @@ App.prototype.render = function () {
       },
     }, [
 
-      h(LoadingIndicator),
+      h(LoadingIndicator, { isLoading, loadingMessage }),
 
       // app bar
       this.renderAppBar(),
@@ -96,6 +103,10 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderAppBar = function () {
+  if (window.METAMASK_UI_TYPE === 'notification') {
+    return null
+  }
+
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
@@ -130,15 +141,21 @@ App.prototype.renderAppBar = function () {
             src: '/images/icon-128.png',
           }),
 
-          h(NetworkIndicator, {
-            network: this.props.network,
-            provider: this.props.provider,
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+          h('#network-spacer.flex-center', {
+            style: {
+              marginRight: '-72px',
             },
-          }),
+          }, [
+            h(NetworkIndicator, {
+              network: this.props.network,
+              provider: this.props.provider,
+              onClick: (event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+              },
+            }),
+          ]),
         ]),
 
         // metamask name
@@ -227,22 +244,31 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Morden Test Network',
+      label: 'Ropsten Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('testnet')),
       icon: h('.menu-icon.red-dot'),
       activeNetworkRender: props.network,
+      provider: props.provider,
     }),
 
     h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
-      icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
       activeNetworkRender: props.provider.rpcTarget,
     }),
 
-    this.renderCustomOption(props.provider.rpcTarget),
+    this.renderCustomOption(props.provider),
+
+    h(DropMenuItem, {
+      label: 'Custom RPC',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+      action: () => this.props.dispatch(actions.showConfigPage()),
+      icon: h('i.fa.fa-question-circle.fa-lg'),
+    }),
+
   ])
 }
 
@@ -275,65 +301,100 @@ App.prototype.renderDropdown = function () {
       label: 'Settings',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-gear.fa-lg'),
+    }),
+
+    h(DropMenuItem, {
+      label: 'Import Account',
+      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
+      action: () => this.props.dispatch(actions.showImportPage()),
+      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
     }),
 
     h(DropMenuItem, {
       label: 'Lock',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-lock.fa-lg'),
     }),
 
     h(DropMenuItem, {
-      label: 'Help',
+      label: 'Info',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg', { ariaHidden: true }),
+      icon: h('i.fa.fa-question.fa-lg'),
     }),
   ])
+}
+
+App.prototype.renderBackButton = function (style, justArrow = false) {
+  var props = this.props
+  return (
+    h('.flex-row', {
+      key: 'leftArrow',
+      style: style,
+      onClick: () => props.dispatch(actions.goBackToInitView()),
+    }, [
+      h('i.fa.fa-arrow-left.cursor-pointer'),
+      justArrow ? null : h('div.cursor-pointer', {
+        style: {
+          marginLeft: '3px',
+        },
+        onClick: () => props.dispatch(actions.goBackToInitView()),
+      }, 'BACK'),
+    ])
+  )
 }
 
 App.prototype.renderPrimary = function () {
   var props = this.props
 
-  if (!props.isConfirmed) {
-    return h(DisclaimerScreen, {key: 'disclaimerScreen'})
+  // notices
+  if (!props.noActiveNotices && !global.METAMASK_DEBUG) {
+    return h(NoticeScreen, {
+      notice: props.lastUnreadNotice,
+      key: 'NoticeScreen',
+      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+    })
+  } else if (props.lostAccounts && props.lostAccounts.length > 0) {
+    return h(NoticeScreen, {
+      notice: generateLostAccountsNotice(props.lostAccounts),
+      key: 'LostAccountsNotice',
+      onConfirm: () => props.dispatch(actions.markAccountsFound()),
+    })
   }
 
   if (props.seedWords) {
-    return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show initialize screen
-  if (!props.isInitialized) {
+  if (!props.isInitialized || props.forgottenPassword) {
     // show current view
     switch (props.currentView.name) {
 
-      case 'createVault':
-        return h(CreateVaultScreen, {key: 'createVault'})
-
       case 'restoreVault':
-        return h(RestoreVaultScreen, {key: 'restoreVault'})
-
-      case 'createVaultComplete':
-        return h(CreateVaultCompleteScreen, {key: 'createVaultComplete'})
+        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
       default:
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-
     }
   }
 
   // show unlock screen
   if (!props.isUnlocked) {
-    return h(UnlockScreen, {key: 'locked'})
+    switch (props.currentView.name) {
+
+      case 'restoreVault':
+        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+
+      default:
+        return h(UnlockScreen, {key: 'locked'})
+    }
   }
 
   // show current view
   switch (props.currentView.name) {
-    case 'EthStoreWarning':
-      return h(EthStoreWarning, {key: 'ethWarning'})
 
     case 'accounts':
       return h(AccountsScreen, {key: 'accounts'})
@@ -344,11 +405,17 @@ App.prototype.renderPrimary = function () {
     case 'sendTransaction':
       return h(SendTransactionScreen, {key: 'send-transaction'})
 
+    case 'newKeychain':
+      return h(NewKeyChainScreen, {key: 'new-keychain'})
+
     case 'confTx':
       return h(ConfirmTxScreen, {key: 'confirm-tx'})
 
     case 'config':
       return h(ConfigScreen, {key: 'config'})
+
+    case 'import-menu':
+      return h(Import, {key: 'import-menu'})
 
     case 'reveal-seed-conf':
       return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
@@ -356,10 +423,9 @@ App.prototype.renderPrimary = function () {
     case 'info':
       return h(InfoScreen, {key: 'info'})
 
-    case 'createVault':
-      return h(CreateVaultScreen, {key: 'createVault'})
     case 'buyEth':
       return h(BuyView, {key: 'buyEthView'})
+
     case 'qr':
       return h('div', {
         style: {
@@ -379,7 +445,6 @@ App.prototype.renderPrimary = function () {
         h('div', {
           style: {
             position: 'absolute',
-            bottom: '115px',
             left: '44px',
             width: '285px',
           },
@@ -405,28 +470,20 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (rpcTarget) {
+App.prototype.renderCustomOption = function (provider) {
+  const { rpcTarget, type } = provider
+  if (type !== 'rpc') return null
+
   switch (rpcTarget) {
-    case undefined:
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
-      })
+
     case 'http://localhost:8545':
-      return h(DropMenuItem, {
-        label: 'Custom RPC',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => this.props.dispatch(actions.showConfigPage()),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
-      })
+      return null
 
     default:
       return h(DropMenuItem, {
         label: `${rpcTarget}`,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        icon: h('i.fa.fa-question-circle.fa-lg', { ariaHidden: true }),
+        icon: h('i.fa.fa-question-circle.fa-lg'),
         activeNetworkRender: 'custom',
       })
   }

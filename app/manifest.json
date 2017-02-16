@@ -1,15 +1,16 @@
 {
   "name": "MetaMask",
   "short_name": "Metamask",
-  "version": "2.9.2",
+  "version": "3.2.2",
   "manifest_version": 2,
+  "author": "https://metamask.io",
   "description": "Ethereum Browser Extension",
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
-        "chromeos": "Search+M",
+        "chromeos": "Alt+Shift+M",
         "linux": "Alt+Shift+M"
       }
     }
@@ -28,7 +29,8 @@
     "scripts": [
       "scripts/chromereload.js",
       "scripts/background.js"
-    ]
+    ],
+    "persistent": true
   },
   "browser_action": {
     "default_icon": {
@@ -53,9 +55,8 @@
     }
   ],
   "permissions": [
-    "notifications",
     "storage",
-    "tabs",
+    "clipboardWrite",
     "http://localhost:8545/"
   ],
   "web_accessible_resources": [

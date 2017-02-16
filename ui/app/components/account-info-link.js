@@ -14,7 +14,7 @@ function AccountInfoLink () {
 
 AccountInfoLink.prototype.render = function () {
   const { selected, network } = this.props
-  const title = 'View account on etherscan'
+  const title = 'View account on Etherscan'
   const url = genAccountLink(selected, network)
 
   if (!url) {

@@ -10,18 +10,19 @@ const AccountListItem = require('./account-list-item')
 module.exports = connect(mapStateToProps)(AccountsScreen)
 
 function mapStateToProps (state) {
-  const pendingTxs = valuesFor(state.metamask.unconfTxs)
-  const pendingMsgs = valuesFor(state.metamask.unconfMsgs)
+  const pendingTxs = valuesFor(state.metamask.unapprovedTxs)
+  .filter(tx => tx.txParams.metamaskNetworkId === state.metamask.network)
+  const pendingMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const pending = pendingTxs.concat(pendingMsgs)
 
   return {
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
-    unconfTxs: state.metamask.unconfTxs,
+    unapprovedTxs: state.metamask.unapprovedTxs,
     selectedAddress: state.metamask.selectedAddress,
-    currentDomain: state.appState.currentDomain,
     scrollToBottom: state.appState.scrollToBottom,
     pending,
+    keyrings: state.metamask.keyrings,
   }
 }
 
@@ -31,14 +32,11 @@ function AccountsScreen () {
 }
 
 AccountsScreen.prototype.render = function () {
-  var state = this.props
-  var identityList = valuesFor(state.identities)
-  var unconfTxList = valuesFor(state.unconfTxs)
-  var actions = {
-    onSelect: this.onSelect.bind(this),
-    onShowDetail: this.onShowDetail.bind(this),
-    goHome: this.goHome.bind(this),
-  }
+  const props = this.props
+  const { keyrings } = props
+  const identityList = valuesFor(props.identities)
+  const unapprovedTxList = valuesFor(props.unapprovedTxs)
+
   return (
 
     h('.accounts-section.flex-grow', [
@@ -46,7 +44,7 @@ AccountsScreen.prototype.render = function () {
       // subtitle and nav
       h('.section-title.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: actions.goHome,
+          onClick: this.goHome.bind(this),
         }),
         h('h2.page-subtitle', 'Select Account'),
       ]),
@@ -54,7 +52,7 @@ AccountsScreen.prototype.render = function () {
       h('hr.horizontal-line'),
 
       // identity selection
-      h('section.identity-section.flex-column', {
+      h('section.identity-section', {
         style: {
           height: '418px',
           overflowY: 'auto',
@@ -73,6 +71,12 @@ AccountsScreen.prototype.render = function () {
               }
             })
 
+            const simpleAddress = identity.address.substring(2).toLowerCase()
+            const keyring = keyrings.find((kr) => {
+              return kr.accounts.includes(simpleAddress) ||
+                kr.accounts.includes(identity.address)
+            })
+
             return h(AccountListItem, {
               key: `acct-panel-${identity.address}`,
               identity,
@@ -80,18 +84,18 @@ AccountsScreen.prototype.render = function () {
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,
+              keyring,
             })
           }),
 
-          h('hr.horizontal-line', {key: 'horizontal-line1'}),
+          h('hr.horizontal-line'),
           h('div.footer.hover-white.pointer', {
             key: 'reveal-account-bar',
             onClick: () => {
-              this.onRevealAccount()
+              this.addNewAccount()
             },
             style: {
               display: 'flex',
-              flex: '1 0 auto',
               height: '40px',
               paddint: '10px',
               justifyContent: 'center',
@@ -100,9 +104,10 @@ AccountsScreen.prototype.render = function () {
           }, [
             h('i.fa.fa-plus.fa-lg', {key: ''}),
           ]),
+          h('hr.horizontal-line'),
         ]),
 
-      unconfTxList.length ? (
+      unapprovedTxList.length ? (
 
         h('.unconftx-link.flex-row.flex-center', {
           onClick: this.navigateToConfTx.bind(this),
@@ -134,21 +139,21 @@ AccountsScreen.prototype.navigateToConfTx = function () {
   this.props.dispatch(actions.showConfTxPage())
 }
 
-AccountsScreen.prototype.onSelect = function (address, event) {
-  event.stopPropagation()
-  // if already selected, deselect
-  if (this.props.selectedAddress === address) address = null
-  this.props.dispatch(actions.setSelectedAddress(address))
-}
-
 AccountsScreen.prototype.onShowDetail = function (address, event) {
   event.stopPropagation()
   this.props.dispatch(actions.showAccountDetail(address))
 }
 
-AccountsScreen.prototype.onRevealAccount = function () {
-  this.props.dispatch(actions.revealAccount())
+AccountsScreen.prototype.addNewAccount = function () {
+  this.props.dispatch(actions.addNewAccount(0))
 }
+
+/* An optional view proposed in this design:
+ * https://consensys.quip.com/zZVrAysM5znY
+AccountsScreen.prototype.addNewAccount = function () {
+  this.props.dispatch(actions.navigateToNewAccountScreen())
+}
+*/
 
 AccountsScreen.prototype.goHome = function () {
   this.props.dispatch(actions.goHome())

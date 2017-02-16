@@ -1,11 +1,12 @@
 const LocalMessageDuplexStream = require('post-message-stream')
+const PongStream = require('ping-pong-stream/pong')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
 const extension = require('./lib/extension')
 
 const fs = require('fs')
 const path = require('path')
-const inpageText = fs.readFileSync(path.join(__dirname + '/inpage.js')).toString()
+const inpageText = fs.readFileSync(path.join(__dirname, 'inpage.js')).toString()
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -19,9 +20,8 @@ if (shouldInjectWeb3()) {
   setupStreams()
 }
 
-function setupInjection(){
+function setupInjection () {
   try {
-
     // inject in-page script
     var scriptTag = document.createElement('script')
     scriptTag.src = extension.extension.getURL('scripts/inpage.js')
@@ -30,41 +30,53 @@ function setupInjection(){
     var container = document.head || document.documentElement
     // append as first child
     container.insertBefore(scriptTag, container.children[0])
-
   } catch (e) {
     console.error('Metamask injection failed.', e)
   }
 }
 
-function setupStreams(){
-
+function setupStreams () {
   // setup communication to page and plugin
   var pageStream = new LocalMessageDuplexStream({
     name: 'contentscript',
     target: 'inpage',
   })
-  pageStream.on('error', console.error.bind(console))
+  pageStream.on('error', console.error)
   var pluginPort = extension.runtime.connect({name: 'contentscript'})
   var pluginStream = new PortStream(pluginPort)
-  pluginStream.on('error', console.error.bind(console))
+  pluginStream.on('error', console.error)
 
   // forward communication plugin->inpage
   pageStream.pipe(pluginStream).pipe(pageStream)
 
-  // connect contentscript->inpage reload stream
+  // setup local multistream channels
   var mx = ObjectMultiplex()
-  mx.on('error', console.error.bind(console))
-  mx.pipe(pageStream)
-  var reloadStream = mx.createStream('reload')
-  reloadStream.on('error', console.error.bind(console))
+  mx.on('error', console.error)
+  mx.pipe(pageStream).pipe(mx)
 
-  // if we lose connection with the plugin, trigger tab refresh
-  pluginStream.on('close', function () {
-    reloadStream.write({ method: 'reset' })
-  })
+  // connect ping stream
+  var pongStream = new PongStream({ objectMode: true })
+  pongStream.pipe(mx.createStream('pingpong')).pipe(pongStream)
+
+  // ignore unused channels (handled by background)
+  mx.ignoreStream('provider')
+  mx.ignoreStream('publicConfig')
+  mx.ignoreStream('reload')
 }
 
-function shouldInjectWeb3(){
-  var shouldInject = (window.location.href.indexOf('.pdf') === -1)
-  return shouldInject
+function shouldInjectWeb3 () {
+  return isAllowedSuffix(window.location.href)
+}
+
+function isAllowedSuffix (testCase) {
+  var prohibitedTypes = ['xml', 'pdf']
+  var currentUrl = window.location.href
+  var currentRegex
+  for (let i = 0; i < prohibitedTypes.length; i++) {
+    currentRegex = new RegExp(`\.${prohibitedTypes[i]}$`)
+    if (currentRegex.test(currentUrl)) {
+      return false
+    }
+  }
+  return true
 }

@@ -1,15 +1,20 @@
-var oldTestRpc = 'https://rawtestrpc.metamask.io/'
-var newTestRpc = 'https://testrpc.metamask.io/'
+const version = 3
+const oldTestRpc = 'https://rawtestrpc.metamask.io/'
+const newTestRpc = 'https://testrpc.metamask.io/'
+
+const clone = require('clone')
 
 module.exports = {
-  version: 3,
+  version,
 
-  migrate: function (data) {
+  migrate: function (originalVersionedData) {
+    let versionedData = clone(originalVersionedData)
+    versionedData.meta.version = version
     try {
-      if (data.config.provider.rpcTarget === oldTestRpc) {
-        data.config.provider.rpcTarget = newTestRpc
+      if (versionedData.data.config.provider.rpcTarget === oldTestRpc) {
+        versionedData.data.config.provider.rpcTarget = newTestRpc
       }
     } catch (e) {}
-    return data
+    return Promise.resolve(versionedData)
   },
 }

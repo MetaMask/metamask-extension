@@ -1,32 +1,50 @@
 var actions = {
+  _setBackgroundConnection: _setBackgroundConnection,
+
   GO_HOME: 'GO_HOME',
   goHome: goHome,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
-
+  // transition state
+  TRANSITION_FORWARD: 'TRANSITION_FORWARD',
+  TRANSITION_BACKWARD: 'TRANSITION_BACKWARD',
+  transitionForward,
+  transitionBackward,
   // remote state
   UPDATE_METAMASK_STATE: 'UPDATE_METAMASK_STATE',
   updateMetamaskState: updateMetamaskState,
+  // notices
+  MARK_NOTICE_READ: 'MARK_NOTICE_READ',
+  markNoticeRead: markNoticeRead,
+  SHOW_NOTICE: 'SHOW_NOTICE',
+  showNotice: showNotice,
+  CLEAR_NOTICES: 'CLEAR_NOTICES',
+  clearNotices: clearNotices,
+  markAccountsFound,
   // intialize screen
-  AGREE_TO_DISCLAIMER: 'AGREE_TO_DISCLAIMER',
-  agreeToDisclaimer: agreeToDisclaimer,
   CREATE_NEW_VAULT_IN_PROGRESS: 'CREATE_NEW_VAULT_IN_PROGRESS',
   SHOW_CREATE_VAULT: 'SHOW_CREATE_VAULT',
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+  forgotPassword: forgotPassword,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
-  RECOVER_FROM_SEED: 'RECOVER_FROM_SEED',
-  CLEAR_SEED_WORD_CACHE: 'CLEAR_SEED_WORD_CACHE',
-  clearSeedWordCache: clearSeedWordCache,
-  recoverFromSeed: recoverFromSeed,
+  SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
-  createNewVault: createNewVault,
+  showImportPage,
+  createNewVaultAndKeychain: createNewVaultAndKeychain,
+  createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
+  addNewKeyring,
+  importNewAccount,
+  addNewAccount,
+  NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
+  navigateToNewAccountScreen,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // seed recovery actions
@@ -43,7 +61,6 @@ var actions = {
   unlockInProgress: unlockInProgress,
   // error handling
   displayWarning: displayWarning,
-  showWarning: showWarning, // alias
   DISPLAY_WARNING: 'DISPLAY_WARNING',
   HIDE_WARNING: 'HIDE_WARNING',
   hideWarning: hideWarning,
@@ -53,8 +70,6 @@ var actions = {
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
-  REVEAL_ACCOUNT: 'REVEAL_ACCOUNT',
-  revealAccount: revealAccount,
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   setCurrentFiat: setCurrentFiat,
   // account detail screen
@@ -68,16 +83,11 @@ var actions = {
   showPrivateKey: showPrivateKey,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
-  AGREE_TO_ETH_WARNING: 'AGREE_TO_ETH_WARNING',
-  agreeToEthWarning: agreeToEthWarning,
-  SHOW_ETH_WARNING: 'SHOW_ETH_WARNING',
-  showEthWarning: showEthWarning,
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
-  setSelectedAddress: setSelectedAddress,
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   sendTx: sendTx,
@@ -90,12 +100,12 @@ var actions = {
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
+  confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
   BACK_TO_ACCOUNT_DETAIL: 'BACK_TO_ACCOUNT_DETAIL',
   backToAccountDetail: backToAccountDetail,
   showAccountsPage: showAccountsPage,
   showConfTxPage: showConfTxPage,
-  confirmSeedWords: confirmSeedWords,
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
@@ -105,8 +115,6 @@ var actions = {
   showConfigPage: showConfigPage,
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
-  // hacky - need a way to get a reference to account manager
-  _setAccountManager: _setAccountManager,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -134,16 +142,28 @@ var actions = {
   hideSubLoadingIndication: hideSubLoadingIndication,
 // QR STUFF:
   SHOW_QR: 'SHOW_QR',
-  getQr: getQr,
+  showQrView: showQrView,
   reshowQrCode: reshowQrCode,
   SHOW_QR_VIEW: 'SHOW_QR_VIEW',
+// FORGOT PASSWORD:
+  BACK_TO_INIT_MENU: 'BACK_TO_INIT_MENU',
+  goBackToInitView: goBackToInitView,
+  RECOVERY_IN_PROGRESS: 'RECOVERY_IN_PROGRESS',
+  BACK_TO_UNLOCK_VIEW: 'BACK_TO_UNLOCK_VIEW',
+  backToUnlockView: backToUnlockView,
+  // SHOWING KEYCHAIN
+  SHOW_NEW_KEYCHAIN: 'SHOW_NEW_KEYCHAIN',
+  showNewKeychain: showNewKeychain,
+
+  callBackgroundThenUpdate,
+  forceUpdateMetamaskState,
 }
 
 module.exports = actions
 
-var _accountManager = null
-function _setAccountManager (accountManager) {
-  _accountManager = accountManager
+var background = null
+function _setBackgroundConnection (backgroundConnection) {
+  background = backgroundConnection
 }
 
 function goHome () {
@@ -156,25 +176,77 @@ function goHome () {
 
 function tryUnlockMetamask (password) {
   return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
-    _accountManager.submitPassword(password, (err, selectedAccount) => {
+    if (global.METAMASK_DEBUG) console.log(`background.submitPassword`)
+    background.submitPassword(password, (err) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
-        dispatch(actions.unlockFailed())
+        dispatch(actions.unlockFailed(err.message))
       } else {
-        dispatch(actions.unlockMetamask(selectedAccount))
+        dispatch(actions.transitionForward())
+        forceUpdateMetamaskState(dispatch)
       }
     })
   }
 }
 
-function createNewVault (password, entropy) {
+function transitionForward () {
+  return {
+    type: this.TRANSITION_FORWARD,
+  }
+}
+
+function transitionBackward () {
+  return {
+    type: this.TRANSITION_BACKWARD,
+  }
+}
+
+function confirmSeedWords () {
   return (dispatch) => {
-    dispatch(actions.createNewVaultInProgress())
-    _accountManager.createNewVault(password, entropy, (err, result) => {
+    dispatch(actions.showLoadingIndication())
+    if (global.METAMASK_DEBUG) console.log(`background.clearSeedWordCache`)
+    background.clearSeedWordCache((err, account) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
-      dispatch(actions.showNewVaultSeed(result))
+
+      console.log('Seed word cache cleared. ' + account)
+      dispatch(actions.showAccountDetail(account))
+    })
+  }
+}
+
+function createNewVaultAndRestore (password, seed) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    if (global.METAMASK_DEBUG) console.log(`background.createNewVaultAndRestore`)
+    background.createNewVaultAndRestore(password, seed, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.showAccountsPage())
+    })
+  }
+}
+
+function createNewVaultAndKeychain (password) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    if (global.METAMASK_DEBUG) console.log(`background.createNewVaultAndKeychain`)
+    background.createNewVaultAndKeychain(password, (err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      if (global.METAMASK_DEBUG) console.log(`background.placeSeedWords`)
+      background.placeSeedWords((err) => {
+        if (err) {
+          return dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.hideLoadingIndication())
+        forceUpdateMetamaskState(dispatch)
+      })
     })
   }
 }
@@ -188,29 +260,61 @@ function revealSeedConfirmation () {
 function requestRevealSeed (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _accountManager.tryPassword(password, (err, seed) => {
-      dispatch(actions.hideLoadingIndication())
+    if (global.METAMASK_DEBUG) console.log(`background.submitPassword`)
+    background.submitPassword(password, (err) => {
       if (err) return dispatch(actions.displayWarning(err.message))
-      _accountManager.recoverSeed((err, seed) => {
+      if (global.METAMASK_DEBUG) console.log(`background.placeSeedWords`)
+      background.placeSeedWords((err) => {
         if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.showNewVaultSeed(seed))
+        dispatch(actions.hideLoadingIndication())
       })
     })
   }
 }
 
-function recoverFromSeed (password, seed) {
+function addNewKeyring (type, opts) {
   return (dispatch) => {
-    // dispatch(actions.createNewVaultInProgress())
     dispatch(actions.showLoadingIndication())
-    _accountManager.recoverFromSeed(password, seed, (err, metamaskState) => {
+    if (global.METAMASK_DEBUG) console.log(`background.addNewKeyring`)
+    background.addNewKeyring(type, opts, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-
-      var account = Object.keys(metamaskState.identities)[0]
-      dispatch(actions.unlockMetamask(account))
+      dispatch(actions.showAccountsPage())
     })
   }
+}
+
+function importNewAccount (strategy, args) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
+    if (global.METAMASK_DEBUG) console.log(`background.importAccountWithStrategy`)
+    background.importAccountWithStrategy(strategy, args, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      if (global.METAMASK_DEBUG) console.log(`background.getState`)
+      background.getState((err, newState) => {
+        if (err) {
+          return dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch({
+          type: actions.SHOW_ACCOUNT_DETAIL,
+          value: newState.selectedAddress,
+        })
+      })
+    })
+  }
+}
+
+function navigateToNewAccountScreen() {
+  return {
+    type: this.NEW_ACCOUNT_SCREEN,
+  }
+}
+
+function addNewAccount () {
+  if (global.METAMASK_DEBUG) console.log(`background.addNewAccount`)
+  return callBackgroundThenUpdate(background.addNewAccount)
 }
 
 function showInfoPage () {
@@ -219,30 +323,16 @@ function showInfoPage () {
   }
 }
 
-function setSelectedAddress (address) {
-  return (dispatch) => {
-    _accountManager.setSelectedAddress(address)
-  }
-}
-
-function revealAccount () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    _accountManager.revealAccount((err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch({
-        type: actions.REVEAL_ACCOUNT,
-      })
-    })
-  }
-}
-
-function setCurrentFiat (fiat) {
+function setCurrentFiat (currencyCode) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    _accountManager.setCurrentFiat(fiat, (data, err) => {
+    if (global.METAMASK_DEBUG) console.log(`background.setCurrentFiat`)
+    background.setCurrentCurrency(currencyCode, (err, data) => {
       dispatch(this.hideLoadingIndication())
+      if (err) {
+        console.error(err.stack)
+        return dispatch(actions.displayWarning(err.message))
+      }
       dispatch({
         type: this.SET_CURRENT_FIAT,
         value: {
@@ -259,7 +349,8 @@ function signMsg (msgData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
 
-    _accountManager.signMessage(msgData, (err) => {
+    if (global.METAMASK_DEBUG) console.log(`background.signMessage`)
+    background.signMessage(msgData, (err) => {
       dispatch(actions.hideLoadingIndication())
 
       if (err) return dispatch(actions.displayWarning(err.message))
@@ -270,23 +361,25 @@ function signMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-
-    web3.eth.sendTransaction(txData, (err, data) => {
-      dispatch(actions.hideLoadingIndication())
-
+    if (global.METAMASK_DEBUG) console.log(`background.setGasMultiplier`)
+    background.setGasMultiplier(txData.gasMultiplier, (err) => {
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
-      dispatch(actions.goHome())
+      web3.eth.sendTransaction(txData, (err, data) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) return dispatch(actions.displayWarning(err.message))
+        dispatch(actions.hideWarning())
+        dispatch(actions.goHome())
+      })
+      dispatch(this.showConfTxPage())
     })
   }
 }
 
 function sendTx (txData) {
   return (dispatch) => {
-    _accountManager.approveTransaction(txData.id, (err) => {
+    if (global.METAMASK_DEBUG) console.log(`background.approveTransaction`)
+    background.approveTransaction(txData.id, (err) => {
       if (err) {
-        alert(err.message)
         dispatch(actions.txError(err))
         return console.error(err.message)
       }
@@ -310,12 +403,14 @@ function txError (err) {
 }
 
 function cancelMsg (msgData) {
-  _accountManager.cancelMessage(msgData.id)
+  if (global.METAMASK_DEBUG) console.log(`background.cancelMessage`)
+  background.cancelMessage(msgData.id)
   return actions.completedTx(msgData.id)
 }
 
 function cancelTx (txData) {
-  _accountManager.cancelTransaction(txData.id)
+  if (global.METAMASK_DEBUG) console.log(`background.cancelTransaction`)
+  background.cancelTransaction(txData.id)
   return actions.completedTx(txData.id)
 }
 
@@ -335,25 +430,21 @@ function showRestoreVault () {
   }
 }
 
+function forgotPassword () {
+  return {
+    type: actions.FORGOT_PASSWORD,
+  }
+}
+
 function showInitializeMenu () {
   return {
     type: actions.SHOW_INIT_MENU,
   }
 }
 
-function agreeToDisclaimer () {
-  return (dispatch) => {
-    dispatch(this.showLoadingIndication())
-    _accountManager.agreeToDisclaimer((err) => {
-      if (err) {
-        return dispatch(actions.showWarning(err.message))
-      }
-
-      dispatch(this.hideLoadingIndication())
-      dispatch({
-        type: this.AGREE_TO_DISCLAIMER,
-      })
-    })
+function showImportPage () {
+  return {
+    type: actions.SHOW_IMPORT_PAGE,
   }
 }
 
@@ -370,6 +461,18 @@ function showNewVaultSeed (seed) {
   }
 }
 
+function backToUnlockView () {
+  return {
+    type: actions.BACK_TO_UNLOCK_VIEW,
+  }
+}
+
+function showNewKeychain () {
+  return {
+    type: actions.SHOW_NEW_KEYCHAIN,
+  }
+}
+
 //
 // unlock screen
 //
@@ -380,9 +483,10 @@ function unlockInProgress () {
   }
 }
 
-function unlockFailed () {
+function unlockFailed (message) {
   return {
     type: actions.UNLOCK_FAILED,
+    value: message,
   }
 }
 
@@ -401,29 +505,19 @@ function updateMetamaskState (newState) {
 }
 
 function lockMetamask () {
-  return (dispatch) => {
-    _accountManager.setLocked((err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.showWarning(err.message))
-      }
-
-      dispatch({
-        type: actions.LOCK_METAMASK,
-      })
-    })
-  }
+  if (global.METAMASK_DEBUG) console.log(`background.setLocked`)
+  return callBackgroundThenUpdate(background.setLocked)
 }
 
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _accountManager.setSelectedAddress(address, (err, address) => {
+    if (global.METAMASK_DEBUG) console.log(`background.setSelectedAddress`)
+    background.setSelectedAddress(address, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
-
       dispatch({
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
@@ -438,27 +532,6 @@ function backToAccountDetail (address) {
     value: address,
   }
 }
-function clearSeedWordCache (account) {
-  return {
-    type: actions.CLEAR_SEED_WORD_CACHE,
-    value: account,
-  }
-}
-
-function confirmSeedWords () {
-  return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
-    _accountManager.clearSeedWordCache((err, account) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.showWarning(err.message))
-      }
-
-      console.log('Seed word cache cleared. ' + account)
-      dispatch(actions.showAccountDetail(account))
-    })
-  }
-}
 
 function showAccountsPage () {
   return {
@@ -466,9 +539,10 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage () {
+function showConfTxPage (transForward = true) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
+    transForward: transForward,
   }
 }
 
@@ -498,12 +572,62 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
+function goBackToInitView () {
+  return {
+    type: actions.BACK_TO_INIT_MENU,
+  }
+}
+
+//
+// notice
+//
+
+function markNoticeRead (notice) {
+  return (dispatch) => {
+    dispatch(this.showLoadingIndication())
+    if (global.METAMASK_DEBUG) console.log(`background.markNoticeRead`)
+    background.markNoticeRead(notice, (err, notice) => {
+      dispatch(this.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err))
+      }
+      if (notice) {
+        return dispatch(actions.showNotice(notice))
+      } else {
+        dispatch(this.clearNotices())
+        return {
+          type: actions.SHOW_ACCOUNTS_PAGE,
+        }
+      }
+    })
+  }
+}
+
+function showNotice (notice) {
+  return {
+    type: actions.SHOW_NOTICE,
+    value: notice,
+  }
+}
+
+function clearNotices () {
+  return {
+    type: actions.CLEAR_NOTICES,
+  }
+}
+
+function markAccountsFound() {
+  if (global.METAMASK_DEBUG) console.log(`background.markAccountsFound`)
+  return callBackgroundThenUpdate(background.markAccountsFound)
+}
+
 //
 // config
 //
 
 function setRpcTarget (newRpc) {
-  _accountManager.setRpcTarget(newRpc)
+  if (global.METAMASK_DEBUG) console.log(`background.setRpcTarget`)
+  background.setRpcTarget(newRpc)
   return {
     type: actions.SET_RPC_TARGET,
     value: newRpc,
@@ -511,7 +635,8 @@ function setRpcTarget (newRpc) {
 }
 
 function setProviderType (type) {
-  _accountManager.setProviderType(type)
+  if (global.METAMASK_DEBUG) console.log(`background.setProviderType`)
+  background.setProviderType(type)
   return {
     type: actions.SET_PROVIDER_TYPE,
     value: type,
@@ -519,15 +644,17 @@ function setProviderType (type) {
 }
 
 function useEtherscanProvider () {
-  _accountManager.useEtherscanProvider()
+  if (global.METAMASK_DEBUG) console.log(`background.useEtherscanProvider`)
+  background.useEtherscanProvider()
   return {
     type: actions.USE_ETHERSCAN_PROVIDER,
   }
 }
 
-function showLoadingIndication () {
+function showLoadingIndication (message) {
   return {
     type: actions.SHOW_LOADING,
+    value: message,
   }
 }
 
@@ -547,10 +674,6 @@ function hideSubLoadingIndication () {
   return {
     type: actions.HIDE_SUB_LOADING_INDICATION,
   }
-}
-
-function showWarning (text) {
-  return this.displayWarning(text)
 }
 
 function displayWarning (text) {
@@ -578,7 +701,8 @@ function exportAccount (address) {
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
 
-    _accountManager.exportAccount(address, function (err, result) {
+    if (global.METAMASK_DEBUG) console.log(`background.exportAccount`)
+    background.exportAccount(address, function (err, result) {
       dispatch(self.hideLoadingIndication())
 
       if (err) {
@@ -601,10 +725,11 @@ function showPrivateKey (key) {
 function saveAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    _accountManager.saveAccountLabel(account, label, (err) => {
+    if (global.METAMASK_DEBUG) console.log(`background.saveAccountLabel`)
+    background.saveAccountLabel(account, label, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
-        return dispatch(actions.showWarning(err.message))
+        return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
         type: actions.SAVE_ACCOUNT_LABEL,
@@ -620,28 +745,10 @@ function showSendPage () {
   }
 }
 
-function agreeToEthWarning () {
-  return (dispatch) => {
-    _accountManager.agreeToEthWarning((err) => {
-      if (err) {
-        return dispatch(actions.showEthWarning(err.message))
-      }
-      dispatch({
-        type: actions.AGREE_TO_ETH_WARNING,
-      })
-    })
-  }
-}
-
-function showEthWarning () {
-  return {
-    type: actions.SHOW_ETH_WARNING,
-  }
-}
-
 function buyEth (address, amount) {
   return (dispatch) => {
-    _accountManager.buyEth(address, amount)
+    if (global.METAMASK_DEBUG) console.log(`background.buyEth`)
+    background.buyEth(address, amount)
     dispatch({
       type: actions.BUY_ETH,
     })
@@ -699,7 +806,7 @@ function shapeShiftSubview (network) {
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
       shapeShiftRequest('getcoins', {}, (response) => {
         dispatch(actions.hideSubLoadingIndication())
-        if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+        if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
         dispatch({
           type: actions.SHAPESHIFT_SUBVIEW,
           value: {
@@ -716,36 +823,31 @@ function coinShiftRquest (data, marketData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
-      if (response.error) return dispatch(actions.showWarning(response.error))
+      dispatch(actions.hideLoadingIndication())
+      if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
         Deposit your ${response.depositType} to the address bellow:`
-      _accountManager.createShapeShiftTx(response.deposit, response.depositType)
-      dispatch(actions.getQr(response.deposit, '125x125', [message].concat(marketData)))
+      if (global.METAMASK_DEBUG) console.log(`background.createShapeShiftTx`)
+      background.createShapeShiftTx(response.deposit, response.depositType)
+      dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
     })
   }
 }
 
-function getQr (data, size, message) {
-  return (dispatch) => {
-    qrRequest(data, size, (response) => {
-      dispatch(actions.hideLoadingIndication())
-      if (response.error) return dispatch(actions.showWarning(response.error))
-      dispatch({
-        type: actions.SHOW_QR,
-        value: {
-          qr: response,
-          message: message,
-          data: data,
-        },
-      })
-    })
+function showQrView (data, message) {
+  return {
+    type: actions.SHOW_QR_VIEW,
+    value: {
+      message: message,
+      data: data,
+    },
   }
 }
 function reshowQrCode (data, coin) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
-      if (mktResponse.error) return dispatch(actions.showWarning(mktResponse.error))
+      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [
         `Deposit your ${coin} to the address bellow:`,
@@ -753,17 +855,8 @@ function reshowQrCode (data, coin) {
         `Deposit Minimum:${mktResponse.minimum}`,
       ]
 
-      qrRequest(data, '125x125', (response) => {
-        dispatch(actions.hideLoadingIndication())
-        dispatch({
-          type: actions.SHOW_QR_VIEW,
-          value: {
-            qr: response,
-            message: message,
-            data: data,
-          },
-        })
-      })
+      dispatch(actions.hideLoadingIndication())
+      return dispatch(actions.showQrView(data, message))
     })
   }
 }
@@ -792,14 +885,33 @@ function shapeShiftRequest (query, options, cb) {
   }
 }
 
-function qrRequest (data, size, cb) {
-  var requestListner = function (request) {
-    cb ? cb(this.responseText) : null
-    return this.responseText
+// Call Background Then Update
+//
+// A function generator for a common pattern wherein:
+// We show loading indication.
+// We call a background method.
+// We hide loading indication.
+// If it errored, we show a warning.
+// If it didn't, we update the state.
+function callBackgroundThenUpdate (method, ...args) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    method.call(background, ...args, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      forceUpdateMetamaskState(dispatch)
+    })
   }
+}
 
-  var qrReq = new XMLHttpRequest()
-  qrReq.addEventListener('load', requestListner)
-  qrReq.open('GET', `https://api.qrserver.com/v1/create-qr-code/?size=${size}&format=svg&data=${data}`, true)
-  qrReq.send()
+function forceUpdateMetamaskState(dispatch){
+  if (global.METAMASK_DEBUG) console.log(`background.getState`)
+  background.getState((err, newState) => {
+    if (err) {
+      return dispatch(actions.displayWarning(err.message))
+    }
+    dispatch(actions.updateMetamaskState(newState))
+  })
 }

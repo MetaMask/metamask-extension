@@ -10,14 +10,14 @@ function reduceMetamask (state, action) {
   var metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
-    isEthConfirmed: false,
-    currentDomain: 'example.com',
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
-    unconfTxs: {},
+    unapprovedTxs: {},
     currentFiat: 'USD',
     conversionRate: 0,
     conversionDate: 'N/A',
+    noActiveNotices: true,
+    lastUnreadNotice: undefined,
   }, state.metamask)
 
   switch (action.type) {
@@ -27,24 +27,25 @@ function reduceMetamask (state, action) {
       delete newState.seedWords
       return newState
 
+    case actions.SHOW_NOTICE:
+      return extend(metamaskState, {
+        noActiveNotices: false,
+        lastUnreadNotice: action.value,
+      })
+
+    case actions.CLEAR_NOTICES:
+      return extend(metamaskState, {
+        noActiveNotices: true,
+      })
+
     case actions.UPDATE_METAMASK_STATE:
       return extend(metamaskState, action.value)
-
-    case actions.AGREE_TO_DISCLAIMER:
-      return extend(metamaskState, {
-        isConfirmed: true,
-      })
-
-    case actions.AGREE_TO_ETH_WARNING:
-      return extend(metamaskState, {
-        isEthConfirmed: !metamaskState.isEthConfirmed,
-      })
 
     case actions.UNLOCK_METAMASK:
       return extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
-        selectedAccount: action.value,
+        selectedAddress: action.value,
       })
 
     case actions.LOCK_METAMASK:
@@ -70,17 +71,17 @@ function reduceMetamask (state, action) {
     case actions.COMPLETED_TX:
       var stringId = String(action.id)
       newState = extend(metamaskState, {
-        unconfTxs: {},
-        unconfMsgs: {},
+        unapprovedTxs: {},
+        unapprovedMsgs: {},
       })
-      for (const id in metamaskState.unconfTxs) {
+      for (const id in metamaskState.unapprovedTxs) {
         if (id !== stringId) {
-          newState.unconfTxs[id] = metamaskState.unconfTxs[id]
+          newState.unapprovedTxs[id] = metamaskState.unapprovedTxs[id]
         }
       }
-      for (const id in metamaskState.unconfMsgs) {
+      for (const id in metamaskState.unapprovedMsgs) {
         if (id !== stringId) {
-          newState.unconfMsgs[id] = metamaskState.unconfMsgs[id]
+          newState.unapprovedMsgs[id] = metamaskState.unapprovedMsgs[id]
         }
       }
       return newState
@@ -95,7 +96,7 @@ function reduceMetamask (state, action) {
       newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
-        selectedAccount: action.value,
+        selectedAddress: action.value,
       })
       delete newState.seedWords
       return newState
@@ -104,7 +105,6 @@ function reduceMetamask (state, action) {
       newState = extend(metamaskState, {
         isUnlocked: true,
         isInitialized: true,
-        selectedAccount: action.value,
         selectedAddress: action.value,
       })
       delete newState.seedWords

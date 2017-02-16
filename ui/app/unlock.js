@@ -26,47 +26,59 @@ UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
+    h('.flex-column', [
+      h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
-    h('.unlock-screen.flex-column.flex-center.flex-grow', [
+        h(Mascot, {
+          animationEventEmitter: this.animationEventEmitter,
+        }),
 
-      h(Mascot, {
-        animationEventEmitter: this.animationEventEmitter,
-      }),
+        h('h1', {
+          style: {
+            fontSize: '1.4em',
+            textTransform: 'uppercase',
+            color: '#7F8082',
+          },
+        }, 'MetaMask'),
 
-      h('h1', {
-        style: {
-          fontSize: '1.4em',
-          textTransform: 'uppercase',
-          color: '#7F8082',
-        },
-      }, 'MetaMask'),
+        h('input.large-input', {
+          type: 'password',
+          id: 'password-box',
+          placeholder: 'enter password',
+          style: {
 
-      h('input.large-input', {
-        type: 'password',
-        id: 'password-box',
-        placeholder: 'enter password',
-        style: {
+          },
+          onKeyPress: this.onKeyPress.bind(this),
+          onInput: this.inputChanged.bind(this),
+        }),
 
-        },
-        onKeyPress: this.onKeyPress.bind(this),
-        onInput: this.inputChanged.bind(this),
-      }),
+        h('.error', {
+          style: {
+            display: warning ? 'block' : 'none',
+            padding: '0 20px',
+            textAlign: 'center',
+          },
+        }, warning),
 
-      h('.error', {
-        style: {
-          display: warning ? 'block' : 'none',
-        },
-      }, warning),
+        h('button.primary.cursor-pointer', {
+          onClick: this.onSubmit.bind(this),
+          style: {
+            margin: 10,
+          },
+        }, 'Unlock'),
+      ]),
 
-      h('button.primary.cursor-pointer', {
-        onClick: this.onSubmit.bind(this),
-        style: {
-          margin: 10,
-        },
-      }, 'Unlock'),
-
+      h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: () => this.props.dispatch(actions.forgotPassword()),
+          style: {
+            fontSize: '0.8em',
+            color: 'rgb(247, 134, 28)',
+            textDecoration: 'underline',
+          },
+        }, 'I forgot my password.'),
+      ]),
     ])
-
   )
 }
 
@@ -103,8 +115,4 @@ UnlockScreen.prototype.inputChanged = function (event) {
     x: boundingRect.left + coordinates.left - element.scrollLeft,
     y: boundingRect.top + coordinates.top - element.scrollTop,
   })
-}
-
-UnlockScreen.prototype.emitAnim = function (name, a, b, c) {
-  this.animationEventEmitter.emit(name, a, b, c)
 }

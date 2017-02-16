@@ -2,6 +2,8 @@
 cleanContextForImports()
 require('web3/dist/web3.min.js')
 const LocalMessageDuplexStream = require('post-message-stream')
+// const PingStream = require('ping-pong-stream/ping')
+// const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
@@ -29,15 +31,26 @@ web3.setProvider = function () {
   console.log('MetaMask - overrode web3.setProvider')
 }
 console.log('MetaMask - injected web3')
+// export global web3, with usage-detection reload fn
+var triggerReload = setupDappAutoReload(web3)
 
-//
-// export global web3 with auto dapp reload
-//
-
+// listen for reset requests from metamask
 var reloadStream = inpageProvider.multiStream.createStream('reload')
-setupDappAutoReload(web3, reloadStream)
+reloadStream.once('data', triggerReload)
 
-// set web3 defaultAcount
+// setup ping timeout autoreload
+// LocalMessageDuplexStream does not self-close, so reload if pingStream fails
+// var pingChannel = inpageProvider.multiStream.createStream('pingpong')
+// var pingStream = new PingStream({ objectMode: true })
+// wait for first successful reponse
+
+// disable pingStream until https://github.com/MetaMask/metamask-plugin/issues/746 is resolved more gracefully
+// metamaskStream.once('data', function(){
+//   pingStream.pipe(pingChannel).pipe(pingStream)
+// })
+// endOfStream(pingStream, triggerReload)
+
+// set web3 defaultAccount
 inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })

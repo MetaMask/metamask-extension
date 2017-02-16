@@ -1,192 +1,147 @@
 const urlUtil = require('url')
-const extend = require('xtend')
-const Dnode = require('dnode')
-const eos = require('end-of-stream')
+const endOfStream = require('end-of-stream')
+const asyncQ = require('async-q')
+const pipe = require('pump')
+const LocalStorageStore = require('obs-store/lib/localStorage')
+const storeTransform = require('obs-store/lib/transform')
+const Migrator = require('./lib/migrator/')
+const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
-const createUnlockRequestNotification = require('./lib/notifications.js').createUnlockRequestNotification
-const createTxNotification = require('./lib/notifications.js').createTxNotification
-const createMsgNotification = require('./lib/notifications.js').createMsgNotification
-const messageManager = require('./lib/message-manager')
-const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const notification = require('./lib/notifications.js')
 const MetamaskController = require('./metamask-controller')
 const extension = require('./lib/extension')
+const firstTimeState = require('./first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 
+let popupIsOpen = false
 
-const controller = new MetamaskController({
-  // User confirmation callbacks:
-  showUnconfirmedMessage,
-  unlockAccountMessage,
-  showUnconfirmedTx,
-  // Persistence Methods:
-  setData,
-  loadData,
+// state persistence
+const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
+
+// initialization flow
+asyncQ.waterfall([
+  () => loadStateFromPersistence(),
+  (initState) => setupController(initState),
+])
+.then(() => console.log('MetaMask initialization complete.'))
+.catch((err) => { console.error(err) })
+
+//
+// State and Persistence
+//
+
+function loadStateFromPersistence() {
+  // migrations
+  let migrator = new Migrator({ migrations })
+  let initialState = migrator.generateInitialState(firstTimeState)
+  return asyncQ.waterfall([
+    // read from disk
+    () => Promise.resolve(diskStore.getState() || initialState),
+    // migrate data
+    (versionedData) => migrator.migrateData(versionedData),
+    // write to disk
+    (versionedData) => {
+      diskStore.putState(versionedData)
+      return Promise.resolve(versionedData)
+    },
+    // resolve to just data
+    (versionedData) => Promise.resolve(versionedData.data),
+  ])
+}
+
+function setupController (initState) {
+
+  //
+  // MetaMask Controller
+  //
+
+  const controller = new MetamaskController({
+    // User confirmation callbacks:
+    showUnconfirmedMessage: triggerUi,
+    unlockAccountMessage: triggerUi,
+    showUnapprovedTx: triggerUi,
+    // initial state
+    initState,
+  })
+  global.metamaskController = controller
+
+  // setup state persistence
+  pipe(
+    controller.store,
+    storeTransform(versionifyData),
+    diskStore
+  )
+
+  function versionifyData(state) {
+    let versionedData = diskStore.getState()
+    versionedData.data = state
+    return versionedData
+  }
+
+  //
+  // connect to other contexts
+  //
+
+  extension.runtime.onConnect.addListener(connectRemote)
+  function connectRemote (remotePort) {
+    var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
+    var portStream = new PortStream(remotePort)
+    if (isMetaMaskInternalProcess) {
+      // communication with popup
+      popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
+      controller.setupTrustedCommunication(portStream, 'MetaMask', remotePort.name)
+      // record popup as closed
+      if (remotePort.name === 'popup') {
+        endOfStream(portStream, () => {
+          popupIsOpen = false
+        })
+      }
+    } else {
+      // communication with page
+      var originDomain = urlUtil.parse(remotePort.sender.url).hostname
+      controller.setupUntrustedCommunication(portStream, originDomain)
+    }
+  }
+
+  //
+  // User Interface setup
+  //
+
+  updateBadge()
+  controller.txManager.on('updateBadge', updateBadge)
+  controller.messageManager.on('updateBadge', updateBadge)
+
+  // plugin badge text
+  function updateBadge () {
+    var label = ''
+    var unapprovedTxCount = controller.txManager.unapprovedTxCount
+    var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
+    var count = unapprovedTxCount + unapprovedMsgCount
+    if (count) {
+      label = String(count)
+    }
+    extension.browserAction.setBadgeText({ text: label })
+    extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
+  }
+
+  return Promise.resolve()
+
+}
+
+//
+// Etc...
+//
+
+// popup trigger
+function triggerUi () {
+  if (!popupIsOpen) notification.show()
+}
+
+// On first install, open a window to MetaMask website to how-it-works.
+extension.runtime.onInstalled.addListener(function (details) {
+  if ((details.reason === 'install') && (!METAMASK_DEBUG)) {
+    extension.tabs.create({url: 'https://metamask.io/#how-it-works'})
+  }
 })
-const idStore = controller.idStore
-
-function unlockAccountMessage () {
-  createUnlockRequestNotification({
-    title: 'Account Unlock Request',
-  })
-}
-
-function showUnconfirmedMessage (msgParams, msgId) {
-  var controllerState = controller.getState()
-
-  createMsgNotification({
-    imageifyIdenticons: false,
-    txData: {
-      msgParams: msgParams,
-      time: (new Date()).getTime(),
-    },
-    identities: controllerState.identities,
-    accounts: controllerState.accounts,
-    onConfirm: idStore.approveMessage.bind(idStore, msgId, noop),
-    onCancel: idStore.cancelMessage.bind(idStore, msgId),
-  })
-}
-
-function showUnconfirmedTx (txParams, txData, onTxDoneCb) {
-  var controllerState = controller.getState()
-
-  createTxNotification({
-    imageifyIdenticons: false,
-    txData: {
-      txParams: txParams,
-      time: (new Date()).getTime(),
-    },
-    identities: controllerState.identities,
-    accounts: controllerState.accounts,
-    onConfirm: idStore.approveTransaction.bind(idStore, txData.id, noop),
-    onCancel: idStore.cancelTransaction.bind(idStore, txData.id),
-  })
-}
-
-//
-// connect to other contexts
-//
-
-extension.runtime.onConnect.addListener(connectRemote)
-function connectRemote (remotePort) {
-  var isMetaMaskInternalProcess = (remotePort.name === 'popup')
-  var portStream = new PortStream(remotePort)
-  if (isMetaMaskInternalProcess) {
-    // communication with popup
-    setupTrustedCommunication(portStream, 'MetaMask')
-  } else {
-    // communication with page
-    var originDomain = urlUtil.parse(remotePort.sender.url).hostname
-    setupUntrustedCommunication(portStream, originDomain)
-  }
-}
-
-function setupUntrustedCommunication (connectionStream, originDomain) {
-  // setup multiplexing
-  var mx = setupMultiplex(connectionStream)
-  // connect features
-  controller.setupProviderConnection(mx.createStream('provider'), originDomain)
-  controller.setupPublicConfig(mx.createStream('publicConfig'))
-}
-
-function setupTrustedCommunication (connectionStream, originDomain) {
-  // setup multiplexing
-  var mx = setupMultiplex(connectionStream)
-  // connect features
-  setupControllerConnection(mx.createStream('controller'))
-  controller.setupProviderConnection(mx.createStream('provider'), originDomain)
-}
-
-//
-// remote features
-//
-
-function setupControllerConnection (stream) {
-  controller.stream = stream
-  var api = controller.getApi()
-  var dnode = Dnode(api)
-  stream.pipe(dnode).pipe(stream)
-  dnode.on('remote', (remote) => {
-    // push updates to popup
-    controller.ethStore.on('update', controller.sendUpdate.bind(controller))
-    controller.remote = remote
-    idStore.on('update', controller.sendUpdate.bind(controller))
-
-    // teardown on disconnect
-    eos(stream, () => {
-      controller.ethStore.removeListener('update', controller.sendUpdate.bind(controller))
-    })
-  })
-}
-
-//
-// plugin badge text
-//
-
-idStore.on('update', updateBadge)
-
-function updateBadge (state) {
-  var label = ''
-  var unconfTxs = controller.configManager.unconfirmedTxs()
-  var unconfTxLen = Object.keys(unconfTxs).length
-  var unconfMsgs = messageManager.unconfirmedMsgs()
-  var unconfMsgLen = Object.keys(unconfMsgs).length
-  var count = unconfTxLen + unconfMsgLen
-  if (count) {
-    label = String(count)
-  }
-  extension.browserAction.setBadgeText({ text: label })
-  extension.browserAction.setBadgeBackgroundColor({ color: '#506F8B' })
-}
-
-function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
-
-  var data = extend({
-    meta: {
-      version: 0,
-    },
-    data: {
-      config: {
-        provider: {
-          type: 'testnet',
-        },
-      },
-    },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
-  }
-
-  try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
-
-  return result
-}
-
-function setData (data) {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
-}
-
-function noop () {}

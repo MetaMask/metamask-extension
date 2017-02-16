@@ -15,25 +15,27 @@
 const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
+const pipe = require('mississippi').pipe
 const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
 const states = require('./development/states')
 const Selector = require('./development/selector')
 const MetamaskController = require('./app/scripts/metamask-controller')
+const firstTimeState = require('./app/scripts/first-time-state')
 const extension = require('./development/mockExtension')
+const noop = function () {}
 
+
+//
 // Query String
+//
+
 const qs = require('qs')
 let queryString = qs.parse(window.location.href.split('#')[1])
-let selectedView = queryString.view || 'terms'
+let selectedView = queryString.view || 'first time'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
-
-// CSS
-const MetaMaskUiCss = require('./ui/css')
-const injectCss = require('inject-css')
-
 
 function updateQueryParams(newView) {
   queryString.view = newView
@@ -41,73 +43,32 @@ function updateQueryParams(newView) {
   window.location.href = window.location.href.split('#')[0] + `#${params}`
 }
 
-const noop = function () {}
+//
+// CSS
+//
+
+const MetaMaskUiCss = require('./ui/css')
+const injectCss = require('inject-css')
+
+//
+// MetaMask Controller
+//
+
 const controller = new MetamaskController({
   // User confirmation callbacks:
   showUnconfirmedMessage: noop,
   unlockAccountMessage: noop,
-  showUnconfirmedTx: noop,
-  // Persistence Methods:
-  setData,
-  loadData,
+  showUnapprovedTx: noop,
+  // initial state
+  initState: firstTimeState,
 })
+global.metamaskController = controller
 
-// Stub out localStorage for non-browser environments
-if (!window.localStorage) {
-  window.localStorage = {}
-}
-const STORAGE_KEY = 'metamask-config'
-function loadData () {
-  var oldData = getOldStyleData()
-  var newData
-  try {
-    newData = JSON.parse(window.localStorage[STORAGE_KEY])
-  } catch (e) {}
+//
+// User Interface
+//
 
-  var data = extend({
-    meta: {
-      version: 0,
-    },
-    data: {
-      config: {
-        provider: {
-          type: 'testnet',
-        },
-      },
-    },
-  }, oldData || null, newData || null)
-  return data
-}
-
-function setData (data) {
-  window.localStorage[STORAGE_KEY] = JSON.stringify(data)
-}
-
-function getOldStyleData () {
-  var config, wallet, seedWords
-
-  var result = {
-    meta: { version: 0 },
-    data: {},
-  }
-
-  try {
-    config = JSON.parse(window.localStorage['config'])
-    result.data.config = config
-  } catch (e) {}
-  try {
-    wallet = JSON.parse(window.localStorage['lightwallet'])
-    result.data.wallet = wallet
-  } catch (e) {}
-  try {
-    seedWords = window.localStorage['seedWords']
-    result.data.seedWords = seedWords
-  } catch (e) {}
-
-  return result
-}
-
-actions._setAccountManager(controller.getApi())
+actions._setBackgroundConnection(controller.getApi())
 actions.update = function(stateName) {
   selectedView = stateName
   updateQueryParams(stateName)

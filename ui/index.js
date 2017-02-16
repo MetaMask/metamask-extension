@@ -3,12 +3,12 @@ const h = require('react-hyperscript')
 const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
-
+const txHelper = require('./lib/tx-helper')
 module.exports = launchApp
 
 function launchApp (opts) {
   var accountManager = opts.accountManager
-  actions._setAccountManager(accountManager)
+  actions._setBackgroundConnection(accountManager)
 
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {
@@ -25,16 +25,15 @@ function startApp (metamaskState, accountManager, opts) {
     metamask: metamaskState,
 
     // appState represents the current tab's popup state
-    appState: {
-      currentDomain: opts.currentDomain,
-    },
+    appState: {},
 
     // Which blockchain we are using:
     networkVersion: opts.networkVersion,
   })
 
   // if unconfirmed txs, start on txConf page
-  if (Object.keys(metamaskState.unconfTxs || {}).length) {
+  var unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.network)
+  if (unapprovedTxsAll.length > 0) {
     store.dispatch(actions.showConfTxPage())
   }
 

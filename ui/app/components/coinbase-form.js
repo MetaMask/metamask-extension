@@ -7,16 +7,15 @@ const actions = require('../actions')
 const isValidAddress = require('../util').isValidAddress
 module.exports = connect(mapStateToProps)(CoinbaseForm)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
-    selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
   }
 }
 
 inherits(CoinbaseForm, Component)
 
-function CoinbaseForm() {
+function CoinbaseForm () {
   Component.call(this)
 }
 
@@ -72,7 +71,7 @@ CoinbaseForm.prototype.render = function () {
         lineHeight: '13px',
       },
     },
-      `there is a USD$ 5 a day max and a USD$ 50
+      `there is a USD$ 15 a day max and a USD$ 50
           dollar limit per the life time of an account without a
           coinbase account. A fee of 3.75% will be aplied to debit/credit cards.`),
 
@@ -116,15 +115,14 @@ CoinbaseForm.prototype.toCoinbase = function () {
     props.dispatch(actions.buyEth(address, props.buyView.amount))
   } else if (!isValidAmountforCoinBase(amount).valid) {
     message = isValidAmountforCoinBase(amount).message
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   } else {
     message = 'Receiving address is invalid.'
-    return props.dispatch(actions.showWarning(message))
+    return props.dispatch(actions.displayWarning(message))
   }
 }
 
 CoinbaseForm.prototype.renderLoading = function () {
-
   return h('img', {
     style: {
       width: '27px',
@@ -134,18 +132,17 @@ CoinbaseForm.prototype.renderLoading = function () {
   })
 }
 
-function isValidAmountforCoinBase(amount) {
+function isValidAmountforCoinBase (amount) {
   amount = parseFloat(amount)
-
   if (amount) {
-    if (amount <= 5 && amount > 0) {
+    if (amount <= 15 && amount > 0) {
       return {
         valid: true,
       }
-    } else if (amount > 5) {
+    } else if (amount > 15) {
       return {
         valid: false,
-        message: 'The amount can not be greater then $5',
+        message: 'The amount can not be greater then $15',
       }
     } else {
       return {

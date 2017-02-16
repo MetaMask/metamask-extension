@@ -10,7 +10,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
 
 const Identicon = require('./components/identicon')
-const AccountEtherBalance = require('./components/account-eth-balance')
+const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
@@ -24,14 +24,12 @@ function mapStateToProps (state) {
     metamask: state.metamask,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-    address: state.metamask.selectedAccount,
+    address: state.metamask.selectedAddress,
     accountDetail: state.appState.accountDetail,
-    transactions: state.metamask.transactions,
     network: state.metamask.network,
-    unconfTxs: valuesFor(state.metamask.unconfTxs),
-    unconfMsgs: valuesFor(state.metamask.unconfMsgs),
-    isEthWarningConfirmed: state.metamask.isEthConfirmed,
+    unapprovedMsgs: valuesFor(state.metamask.unapprovedMsgs),
     shapeShiftTxList: state.metamask.shapeShiftTxList,
+    transactions: state.metamask.selectedAddressTxList || [],
   }
 }
 
@@ -43,6 +41,7 @@ function AccountDetailScreen () {
 AccountDetailScreen.prototype.render = function () {
   var props = this.props
   var selected = props.address || Object.keys(props.accounts)[0]
+  var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
   const { network } = props
@@ -118,23 +117,37 @@ AccountDetailScreen.prototype.render = function () {
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },
-              }, ethUtil.toChecksumAddress(selected)),
+              }, checksumAddress),
 
               // copy and export
 
               h('.flex-row', {
                 style: {
                   justifyContent: 'flex-end',
-                  position: 'relative',
-                  bottom: '15px',
                 },
               }, [
 
                 h(AccountInfoLink, { selected, network }),
 
                 h(CopyButton, {
-                  value: ethUtil.toChecksumAddress(selected),
+                  value: checksumAddress,
                 }),
+
+                h(Tooltip, {
+                  title: 'QR Code',
+                }, [
+                  h('i.fa.fa-qrcode.pointer.pop-hover', {
+                    onClick: () => props.dispatch(actions.showQrView(selected, identity ? identity.name : '')),
+                    style: {
+                      fontSize: '18px',
+                      position: 'relative',
+                      color: 'rgb(247, 134, 28)',
+                      top: '5px',
+                      marginLeft: '3px',
+                      marginRight: '3px',
+                    },
+                  }),
+                ]),
 
                 h(Tooltip, {
                   title: 'Export Private Key',
@@ -168,7 +181,7 @@ AccountDetailScreen.prototype.render = function () {
           },
         }, [
 
-          h(AccountEtherBalance, {
+          h(EthBalance, {
             value: account && account.balance,
             style: {
               lineHeight: '7px',
@@ -233,21 +246,11 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
-  const { transactions, unconfTxs, unconfMsgs, address, network, shapeShiftTxList } = this.props
-
-  var txsToRender = transactions
-  // only transactions that are from the current address
-  .filter(tx => tx.txParams.from === address)
-  // only transactions that are on the current network
-  .filter(tx => tx.txParams.metamaskNetworkId === network)
-  // sort by recency
-  .sort((a, b) => b.time - a.time)
-
+  const {transactions, unapprovedMsgs, address, network, shapeShiftTxList } = this.props
   return h(TransactionList, {
-    txsToRender,
+    transactions: transactions.sort((a, b) => b.time - a.time),
     network,
-    unconfTxs,
-    unconfMsgs,
+    unapprovedMsgs,
     address,
     shapeShiftTxList,
     viewPendingTx: (txId) => {
@@ -263,10 +266,11 @@ AccountDetailScreen.prototype.requestAccountExport = function () {
 
 AccountDetailScreen.prototype.buyButtonDeligator = function () {
   var props = this.props
+  var selected = props.address || Object.keys(props.accounts)[0]
 
   if (this.props.accountDetail.subview === 'buyForm') {
     props.dispatch(actions.backToAccountDetail(props.address))
   } else {
-    props.dispatch(actions.buyEthView())
+    props.dispatch(actions.buyEthView(selected))
   }
 }

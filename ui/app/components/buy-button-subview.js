@@ -6,16 +6,19 @@ const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
 const extension = require('../../../app/scripts/lib/extension')
+const Loading = require('./loading')
+const TabBar = require('./tab-bar')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
 function mapStateToProps (state) {
   return {
-    selectedAccount: state.selectedAccount,
     warning: state.appState.warning,
     buyView: state.appState.buyView,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    context: state.appState.currentView.context,
+    isSubLoading: state.appState.isSubLoading,
   }
 }
 
@@ -26,7 +29,7 @@ function BuyButtonSubview () {
 
 BuyButtonSubview.prototype.render = function () {
   const props = this.props
-  const currentForm = props.buyView.formView
+  const isLoading = props.isSubLoading
 
   return (
     h('.buy-eth-section', [
@@ -38,7 +41,7 @@ BuyButtonSubview.prototype.render = function () {
         },
       }, [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-          onClick: () => props.dispatch(actions.backToAccountDetail(props.selectedAccount)),
+          onClick: this.backButtonContext.bind(this),
           style: {
             position: 'absolute',
             left: '10px',
@@ -46,43 +49,56 @@ BuyButtonSubview.prototype.render = function () {
         }),
         h('h2.page-subtitle', 'Buy Eth'),
       ]),
-      h('h3.flex-row.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          paddingTop: '4px',
-          justifyContent: 'space-around',
-        },
-      }, [
-        h(currentForm.coinbase ? '.activeForm' : '.inactiveForm.pointer', {
-          onClick: () => props.dispatch(actions.coinBaseSubview()),
-        }, 'Coinbase'),
-        h('a', {
-          onClick: (event) => this.navigateTo('https://github.com/MetaMask/faq/blob/master/COINBASE.md'),
-        }, [
-          h('i.fa.fa-question-circle', {
-            style: {
-              position: 'relative',
-              right: '33px',
-            },
-          }),
-        ]),
-        h(currentForm.shapeshift ? '.activeForm' : '.inactiveForm.pointer', {
-          onClick: () => props.dispatch(actions.shapeShiftSubview(props.provider.type)),
-        }, 'Shapeshift'),
 
-        h('a', {
-          href: 'https://github.com/MetaMask/faq/blob/master/COINBASE.md',
-          onClick: (event) => this.navigateTo('https://info.shapeshift.io/about'),
-        }, [
-          h('i.fa.fa-question-circle', {
-            style: {
-              position: 'relative',
-              right: '28px',
-            },
-          }),
-        ]),
-      ]),
+      h(Loading, { isLoading }),
+
+      h(TabBar, {
+        tabs: [
+          {
+            content: [
+              'Coinbase',
+              h('a', {
+                onClick: (event) => this.navigateTo('https://github.com/MetaMask/faq/blob/master/COINBASE.md'),
+              }, [
+                h('i.fa.fa-question-circle', {
+                  style: {
+                    margin: '0px 5px',
+                  },
+                }),
+              ]),
+            ],
+            key: 'coinbase',
+          },
+          {
+            content: [
+              'Shapeshift',
+              h('a', {
+                href: 'https://github.com/MetaMask/faq/blob/master/COINBASE.md',
+                onClick: (event) => this.navigateTo('https://info.shapeshift.io/about'),
+              }, [
+                h('i.fa.fa-question-circle', {
+                  style: {
+                    margin: '0px 5px',
+                  },
+                }),
+              ]),
+            ],
+            key: 'shapeshift',
+          },
+        ],
+        defaultTab: 'coinbase',
+        tabSelected: (key) => {
+          switch (key) {
+            case 'coinbase':
+              props.dispatch(actions.coinBaseSubview())
+              break
+            case 'shapeshift':
+              props.dispatch(actions.shapeShiftSubview(props.provider.type))
+              break
+          }
+        },
+      }),
+
       this.formVersionSubview(),
     ])
   )
@@ -106,9 +122,9 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
         style: {
           width: '225px',
         },
-      }, 'In order to access this feature please switch too the Main Network'),
-      h('h3.text-transform-uppercase', 'or:'),
-      this.props.network === '2' ? h('button.text-transform-uppercase', {
+      }, 'In order to access this feature, please switch to the Main Network'),
+      (this.props.network === '3') ? h('h3.text-transform-uppercase', 'or:') : null,
+      (this.props.network === '3') ? h('button.text-transform-uppercase', {
         onClick: () => this.props.dispatch(actions.buyEth()),
         style: {
           marginTop: '15px',
@@ -120,4 +136,12 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
 
 BuyButtonSubview.prototype.navigateTo = function (url) {
   extension.tabs.create({ url })
+}
+
+BuyButtonSubview.prototype.backButtonContext = function () {
+  if (this.props.context === 'confTx') {
+    this.props.dispatch(actions.showConfTxPage(false))
+  } else {
+    this.props.dispatch(actions.goHome())
+  }
 }

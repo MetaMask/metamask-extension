@@ -14,9 +14,8 @@ function Mascot () {
     pxNotRatio: true,
     width: 200,
     height: 200,
-    staticImage: './images/icon-512.png',
   })
-  if (!this.logo.webGLSupport) return
+
   this.refollowMouse = debounce(this.logo.setFollowMouse.bind(this.logo, true), 1000)
   this.unfollowMouse = this.logo.setFollowMouse.bind(this.logo, false)
 }
@@ -27,32 +26,25 @@ Mascot.prototype.render = function () {
   // and we dont get that until render
   this.handleAnimationEvents()
 
-  return (
-
-    h('#metamask-mascot-container')
-
-  )
+  return h('#metamask-mascot-container', {
+    style: { zIndex: 2 },
+  })
 }
 
 Mascot.prototype.componentDidMount = function () {
   var targetDivId = 'metamask-mascot-container'
   var container = document.getElementById(targetDivId)
-  if (!this.logo.webGLSupport) {
-    var staticLogo = this.logo.staticLogo
-    staticLogo.style.marginBottom = '40px'
-    container.appendChild(staticLogo)
-  } else {
-    container.appendChild(this.logo.canvas)
-  }
+  container.appendChild(this.logo.container)
 }
 
 Mascot.prototype.componentWillUnmount = function () {
-  if (!this.logo.webGLSupport) return
-  this.logo.canvas.remove()
+  this.animations = this.props.animationEventEmitter
+  this.animations.removeAllListeners()
+  this.logo.container.remove()
+  this.logo.stopAnimation()
 }
 
 Mascot.prototype.handleAnimationEvents = function () {
-  if (!this.logo.webGLSupport) return
   // only setup listeners once
   if (this.animations) return
   this.animations = this.props.animationEventEmitter
@@ -61,7 +53,6 @@ Mascot.prototype.handleAnimationEvents = function () {
 }
 
 Mascot.prototype.lookAt = function (target) {
-  if (!this.logo.webGLSupport) return
   this.unfollowMouse()
   this.logo.lookAt(target)
   this.refollowMouse()
