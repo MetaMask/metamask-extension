@@ -122,9 +122,9 @@ App.prototype.renderAppBar = function () {
           background: props.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
-          zIndex: 2,
+          zIndex: 10,
         },
-      }, props.isUnlocked && [
+      }, [
 
         h('div', {
           style: {
@@ -159,14 +159,14 @@ App.prototype.renderAppBar = function () {
         ]),
 
         // metamask name
-        h('h1', {
+        props.isUnlocked && h('h1', {
           style: {
             position: 'relative',
             left: '9px',
           },
         }, 'MetaMask'),
 
-        h('div', {
+        props.isUnlocked && h('div', {
           style: {
             display: 'flex',
             flexDirection: 'row',
@@ -175,7 +175,7 @@ App.prototype.renderAppBar = function () {
         }, [
 
           // small accounts nav
-          h(Tooltip, { title: 'Switch Accounts' }, [
+          props.isUnlocked && h(Tooltip, { title: 'Switch Accounts' }, [
             h('img.cursor-pointer.color-orange', {
               src: 'images/switch_acc.svg',
               style: {
@@ -190,7 +190,7 @@ App.prototype.renderAppBar = function () {
           ]),
 
           // hamburger
-          h(SandwichExpando, {
+          props.isUnlocked && h(SandwichExpando, {
             width: 16,
             barHeight: 2,
             padding: 0,
@@ -262,7 +262,7 @@ App.prototype.renderNetworkDropdown = function () {
 
     this.renderCustomOption(props.provider),
 
-    h(DropMenuItem, {
+    props.isUnlocked && h(DropMenuItem, {
       label: 'Custom RPC',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => this.props.dispatch(actions.showConfigPage()),
