@@ -27,7 +27,7 @@ Mascot.prototype.render = function () {
   this.handleAnimationEvents()
 
   return h('#metamask-mascot-container', {
-    style: { zIndex: 2 },
+    style: { zIndex: 0 },
   })
 }
 
