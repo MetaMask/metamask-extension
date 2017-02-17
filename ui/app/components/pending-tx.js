@@ -2,6 +2,8 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-tx-details')
+const BN = require('ethereumjs-util').BN
+const ethUtil = require('ethereumjs-util')
 
 module.exports = PendingTx
 
@@ -11,8 +13,12 @@ function PendingTx () {
 }
 
 PendingTx.prototype.render = function () {
-  var state = this.props
-  var txData = state.txData
+  var props = this.props
+  var state = this.state || {}
+  var txData = props.txData
+  var txParams = txData.txParams
+  var gasValue = state.gas || txParams.gas
+  var decimalGas = decimalize(gasValue)
 
   return (
 
@@ -21,7 +27,7 @@ PendingTx.prototype.render = function () {
     }, [
 
       // tx info
-      h(PendingTxDetails, state),
+      h(PendingTxDetails, props),
 
       h('style', `
         .conf-buttons button {
@@ -39,7 +45,7 @@ PendingTx.prototype.render = function () {
         }, 'Transaction Error. Exception thrown in contract code.')
       : null,
 
-      state.insufficientBalance ?
+      props.insufficientBalance ?
         h('span.error', {
           style: {
             marginLeft: 50,
@@ -57,21 +63,39 @@ PendingTx.prototype.render = function () {
         },
       }, [
 
-        state.insufficientBalance ?
+        props.insufficientBalance ?
           h('button.btn-green', {
-            onClick: state.buyEth,
+            onClick: props.buyEth,
           }, 'Buy Ether')
         : null,
 
         h('button.confirm', {
-          disabled: state.insufficientBalance,
-          onClick: state.sendTransaction,
+          disabled: props.insufficientBalance,
+          onClick: props.sendTransaction,
         }, 'Accept'),
 
         h('button.cancel.btn-red', {
-          onClick: state.cancelTransaction,
+          onClick: props.cancelTransaction,
         }, 'Reject'),
       ]),
+      h('input', {
+          value: decimalGas,
+          onChange: (event) => {
+            const hexString = hexify(event.target.value)
+            this.setState({ gas: hexString })
+          }
+      }),
     ])
   )
+}
+
+function decimalize (input) {
+  const strippedInput = ethUtil.stripHexPrefix(input)
+  const inputBN = new BN(strippedInput, 'hex')
+  return inputBN.toString(10)
+}
+
+function hexify (decimalString) {
+  const hexBN = new BN(decimalString, 10)
+  return '0x' + hexBN.toString('hex')
 }
