@@ -2,8 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-tx-details')
-const BN = require('ethereumjs-util').BN
-const ethUtil = require('ethereumjs-util')
+const HexInput = require('./hex-as-decimal-input')
 
 module.exports = PendingTx
 
@@ -13,12 +12,13 @@ function PendingTx () {
 }
 
 PendingTx.prototype.render = function () {
-  var props = this.props
-  var state = this.state || {}
-  var txData = props.txData
-  var txParams = txData.txParams
-  var gasValue = state.gas || txParams.gas
-  var decimalGas = decimalize(gasValue)
+  const props = this.props
+  const state = this.state || {}
+  const txData = props.txData
+  const txParams = txData.txParams
+
+  const gas = state.gas || txParams.gas
+  const gasPrice = state.gasPrice || txParams.gasPrice
 
   return (
 
@@ -78,24 +78,22 @@ PendingTx.prototype.render = function () {
           onClick: props.cancelTransaction,
         }, 'Reject'),
       ]),
-      h('input', {
-          value: decimalGas,
-          onChange: (event) => {
-            const hexString = hexify(event.target.value)
-            this.setState({ gas: hexString })
-          }
+
+      h(HexInput, {
+        value: gas,
+        onChange: (newHex) => {
+          this.setState({ gas: newHex })
+        },
       }),
+
+      h(HexInput, {
+        value: gasPrice,
+        onChange: (newHex) => {
+          this.setState({ gasPrice: newHex })
+        },
+      }),
+
     ])
   )
 }
 
-function decimalize (input) {
-  const strippedInput = ethUtil.stripHexPrefix(input)
-  const inputBN = new BN(strippedInput, 'hex')
-  return inputBN.toString(10)
-}
-
-function hexify (decimalString) {
-  const hexBN = new BN(decimalString, 10)
-  return '0x' + hexBN.toString('hex')
-}

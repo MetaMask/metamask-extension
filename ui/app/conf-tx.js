@@ -36,7 +36,6 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   var props = this.props
-  var state = this.state || {}
 
   var network = props.network
   var provider = props.provider
