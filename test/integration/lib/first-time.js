@@ -10,10 +10,14 @@ QUnit.test('render init screen', function (assert) {
     app = $('iframe').contents().find('#app-content .mock-app-root')
 
     const recurseNotices = function () {
-      var button = app.find('button')
+      let button = app.find('button')
       if (button.html() === 'Continue') {
-        button.click()
+        let termsPage = app.find('.markdown')[0]
+        termsPage.scrollTop = termsPage.scrollHeight
         return wait().then(() => {
+          button.click()
+          return wait()
+        }).then(() => {
           return recurseNotices()
         })
       } else {
