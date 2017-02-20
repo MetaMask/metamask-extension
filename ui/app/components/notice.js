@@ -18,7 +18,7 @@ Notice.prototype.render = function () {
 
   return (
     h('.flex-column.flex-center.flex-grow', [
-      h('h3.flex-center.text-transform-uppercacse.terms-header', {
+      h('h3.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
@@ -31,7 +31,7 @@ Notice.prototype.render = function () {
         title,
       ]),
 
-      h('h5.flex-center.text-transform-uppercacse.terms-header', {
+      h('h5.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
