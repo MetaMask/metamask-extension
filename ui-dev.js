@@ -25,6 +25,7 @@ const Selector = require('./development/selector')
 // logger
 const log = require('loglevel')
 window.log = log
+log.setLevel('info')
 
 // Query String
 const qs = require('qs')

@@ -8,6 +8,7 @@ module.exports = launchApp
 
 const log = require('loglevel')
 window.log = log
+log.setLevel('warn')
 
 function launchApp (opts) {
   var accountManager = opts.accountManager
