@@ -351,12 +351,14 @@ App.prototype.renderPrimary = function () {
 
   // notices
   if (!props.noActiveNotices) {
+    log.debug('rendering notice screen for unread notices.')
     return h(NoticeScreen, {
       notice: props.lastUnreadNotice,
       key: 'NoticeScreen',
       onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
     })
   } else if (props.lostAccounts && props.lostAccounts.length > 0) {
+    log.debug('rendering notice screen for lost accounts view.')
     return h(NoticeScreen, {
       notice: generateLostAccountsNotice(props.lostAccounts),
       key: 'LostAccountsNotice',
@@ -365,18 +367,22 @@ App.prototype.renderPrimary = function () {
   }
 
   if (props.seedWords) {
+    log.debug('rendering seed words')
     return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
     // show current view
+    log.debug('rendering an initialize screen')
     switch (props.currentView.name) {
 
       case 'restoreVault':
+        log.debug('rendering restore vault screen')
         return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
       default:
+        log.debug('rendering menu screen')
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
     }
   }
@@ -386,9 +392,11 @@ App.prototype.renderPrimary = function () {
     switch (props.currentView.name) {
 
       case 'restoreVault':
+        log.debug('rendering restore vault screen')
         return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
       default:
+        log.debug('rendering locked screen')
         return h(UnlockScreen, {key: 'locked'})
     }
   }
@@ -397,36 +405,47 @@ App.prototype.renderPrimary = function () {
   switch (props.currentView.name) {
 
     case 'accounts':
+      log.debug('rendering accounts screen')
       return h(AccountsScreen, {key: 'accounts'})
 
     case 'accountDetail':
+      log.debug('rendering account detail screen')
       return h(AccountDetailScreen, {key: 'account-detail'})
 
     case 'sendTransaction':
+      log.debug('rendering send tx screen')
       return h(SendTransactionScreen, {key: 'send-transaction'})
 
     case 'newKeychain':
+      log.debug('rendering new keychain screen')
       return h(NewKeyChainScreen, {key: 'new-keychain'})
 
     case 'confTx':
+      log.debug('rendering confirm tx screen')
       return h(ConfirmTxScreen, {key: 'confirm-tx'})
 
     case 'config':
+      log.debug('rendering config screen')
       return h(ConfigScreen, {key: 'config'})
 
     case 'import-menu':
+      log.debug('rendering import screen')
       return h(Import, {key: 'import-menu'})
 
     case 'reveal-seed-conf':
+      log.debug('rendering reveal seed confirmation screen')
       return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
 
     case 'info':
+      log.debug('rendering info screen')
       return h(InfoScreen, {key: 'info'})
 
     case 'buyEth':
+      log.debug('rendering buy ether screen')
       return h(BuyView, {key: 'buyEthView'})
 
     case 'qr':
+      log.debug('rendering show qr screen')
       return h('div', {
         style: {
           position: 'absolute',
@@ -454,6 +473,7 @@ App.prototype.renderPrimary = function () {
       ])
 
     default:
+      log.debug('rendering default, account detail screen')
       return h(AccountDetailScreen, {key: 'account-detail'})
   }
 }

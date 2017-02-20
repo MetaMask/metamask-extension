@@ -25,6 +25,7 @@
 
   "globals": {
     "document": false,
+    "log": true,
     "navigator": false,
     "web3": true,
     "window": false

@@ -6,6 +6,10 @@ const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
 module.exports = launchApp
 
+const log = require('loglevel')
+window.log = log
+log.setLevel('warn')
+
 function launchApp (opts) {
   var accountManager = opts.accountManager
   actions._setBackgroundConnection(accountManager)
