@@ -9,6 +9,19 @@ QUnit.test('render init screen', function (assert) {
   wait().then(function() {
     app = $('iframe').contents().find('#app-content .mock-app-root')
 
+    const recurseNotices = function () {
+      var button = app.find('button')
+      if (button.html() === 'Continue') {
+        button.click()
+        return wait().then(() => {
+          return recurseNotices()
+        })
+      } else {
+        return wait()
+      }
+    }
+    return recurseNotices()
+  }).then(function() {
     // Scroll through terms
     var title = app.find('h1').text()
     assert.equal(title, 'MetaMask', 'title screen')
