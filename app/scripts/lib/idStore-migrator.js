@@ -1,5 +1,5 @@
 const IdentityStore = require('./idStore')
-const HdKeyring = require('../keyrings/hd')
+const HdKeyring = require('eth-hd-keyring')
 const sigUtil = require('eth-sig-util')
 const normalize = sigUtil.normalize
 const denodeify = require('denodeify')
