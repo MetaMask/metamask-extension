@@ -28,7 +28,7 @@ const noop = function () {}
 
 const log = require('loglevel')
 window.log = log
-log.setLevel('info')
+log.setLevel('debug')
 
 //
 // Query String
