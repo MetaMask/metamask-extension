@@ -151,7 +151,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   initializeProvider () {
-    const keyringController = this.keyringController
 
     let provider = MetaMaskProvider({
       static: {
@@ -173,7 +172,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // new style msg signing
       approvePersonalMessage: this.approvePersonalMessage.bind(this),
       signPersonalMessage:    nodeify(this.signPersonalMessage).bind(this),
-      personalRecoverSigner:  nodeify(keyringController.recoverPersonalMessage).bind(keyringController),
+      personalRecoverSigner:  nodeify(this.recoverPersonalMessage).bind(this),
     })
     return provider
   }
@@ -491,6 +490,11 @@ module.exports = class MetamaskController extends EventEmitter {
       this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
       return rawSig
     })
+  }
+
+  recoverPersonalMessage (msgParams) {
+    const keyringController = this.keyringController
+    return keyringController.recoverPersonalMessage(msgParams)
   }
 
   markAccountsFound (cb) {
