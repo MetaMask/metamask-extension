@@ -15,10 +15,12 @@ function Notice () {
 Notice.prototype.render = function () {
   const { notice, onConfirm } = this.props
   const { title, date, body } = notice
+  const state = this.state || { disclaimerDisabled: true }
+  const disabled = state.disclaimerDisabled
 
   return (
     h('.flex-column.flex-center.flex-grow', [
-      h('h3.flex-center.text-transform-uppercacse.terms-header', {
+      h('h3.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
@@ -31,7 +33,7 @@ Notice.prototype.render = function () {
         title,
       ]),
 
-      h('h5.flex-center.text-transform-uppercacse.terms-header', {
+      h('h5.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
           color: '#AEAEAE',
@@ -74,6 +76,12 @@ Notice.prototype.render = function () {
       `),
 
       h('div.markdown', {
+        onScroll: (e) => {
+          var object = e.currentTarget
+          if (object.offsetHeight + object.scrollTop + 100 >= object.scrollHeight) {
+            this.setState({disclaimerDisabled: false})
+          }
+        },
         style: {
           background: 'rgb(235, 235, 235)',
           height: '310px',
@@ -90,6 +98,7 @@ Notice.prototype.render = function () {
       ]),
 
       h('button', {
+        disabled,
         onClick: onConfirm,
         style: {
           marginTop: '18px',
