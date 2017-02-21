@@ -24,7 +24,6 @@ const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const accountImporter = require('./account-import-strategies')
-const sigUtil = require('eth-sig-util')
 
 const version = require('../manifest.json').version
 
@@ -152,6 +151,8 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   initializeProvider () {
+    const keyringController = this.keyringController
+
     let provider = MetaMaskProvider({
       static: {
         eth_syncing: false,
@@ -171,8 +172,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // new style msg signing
       approvePersonalMessage: this.approvePersonalMessage.bind(this),
-      signPersonalMessage:    this.signPersonalMessage.bind(this),
-      personalRecoverSigner:  this.personalRecoverSigner.bind(this),
+      signPersonalMessage:    nodeify(this.signPersonalMessage).bind(this),
+      personalRecoverSigner:  nodeify(keyringController.recoverPersonalMessage).bind(keyringController),
     })
     return provider
   }
@@ -459,7 +460,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // Prefixed Style Message Signing Methods:
-  approvePersonalMessage (cb) {
+  approvePersonalMessage (msgParams, cb) {
     let msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
@@ -490,11 +491,6 @@ module.exports = class MetamaskController extends EventEmitter {
       this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
       return rawSig
     })
-  }
-
-  personalRecoverSigner (msgParams) {
-    const recovered = sigUtil.recoverPersonalSignature(msgParams)
-    return Promise.resolve(recovered)
   }
 
   markAccountsFound (cb) {
