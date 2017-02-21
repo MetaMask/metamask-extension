@@ -1,5 +1,5 @@
 const ObservableStore = require('obs-store')
-const normalizeAddress = require('../sig-util').normalize
+const normalizeAddress = require('eth-sig-util').normalize
 
 class PreferencesController {
 

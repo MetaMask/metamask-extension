@@ -5,10 +5,10 @@ const EventEmitter = require('events').EventEmitter
 const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
-const normalizeAddress = require('./lib/sig-util').normalize
+const normalizeAddress = require('eth-sig-util').normalize
 // Keyrings:
-const SimpleKeyring = require('./keyrings/simple')
-const HdKeyring = require('./keyrings/hd')
+const SimpleKeyring = require('eth-simple-keyring')
+const HdKeyring = require('eth-hd-keyring')
 const keyringTypes = [
   SimpleKeyring,
   HdKeyring,
@@ -259,6 +259,35 @@ class KeyringController extends EventEmitter {
     return this.getKeyringForAccount(address)
     .then((keyring) => {
       return keyring.signMessage(address, msgParams.data)
+    })
+  }
+
+  // Sign Personal Message
+  // @object msgParams
+  //
+  // returns Promise(@buffer rawSig)
+  //
+  // Attempts to sign the provided @object msgParams.
+  // Prefixes the hash before signing as per the new geth behavior.
+  signPersonalMessage (msgParams) {
+    const address = normalizeAddress(msgParams.from)
+    return this.getKeyringForAccount(address)
+    .then((keyring) => {
+      return keyring.signPersonalMessage(address, msgParams.data)
+    })
+  }
+
+  // Recover Personal Message
+  // @object msgParams
+  //
+  // returns Promise(@buffer signer)
+  //
+  // recovers a signature of the prefixed-style personalMessage signature.
+  recoverPersonalMessage (msgParams) {
+    const address = normalizeAddress(msgParams.from)
+    return this.getKeyringForAccount(address)
+    .then((keyring) => {
+      return keyring.recoverPersonalMessage(address, msgParams.data)
     })
   }
 

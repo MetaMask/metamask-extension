@@ -2,7 +2,7 @@ const async = require('async')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
-const normalize = require('./sig-util').normalize
+const normalize = require('eth-sig-util').normalize
 const BN = ethUtil.BN
 
 /*

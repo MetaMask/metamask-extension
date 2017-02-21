@@ -16,6 +16,7 @@ const CurrencyController = require('./lib/controllers/currency')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./lib/controllers/shapeshift')
 const MessageManager = require('./lib/message-manager')
+const PersonalMessageManager = require('./lib/personal-message-manager')
 const TxManager = require('./transaction-manager')
 const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
@@ -23,6 +24,7 @@ const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const IdStoreMigrator = require('./lib/idStore-migrator')
 const accountImporter = require('./account-import-strategies')
+const sigUtil = require('eth-sig-util')
 
 const version = require('../manifest.json').version
 
@@ -105,6 +107,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.lookupNetwork()
     this.messageManager = new MessageManager()
+    this.personalMessageManager = new PersonalMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
     // TEMPORARY UNTIL FULL DEPRECATION:
@@ -163,8 +166,13 @@ module.exports = class MetamaskController extends EventEmitter {
       },
       // tx signing
       processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
-      // msg signing
+      // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
+
+      // new style msg signing
+      approvePersonalMessage: this.approvePersonalMessage.bind(this),
+      signPersonalMessage:    this.signPersonalMessage.bind(this),
+      personalRecoverSigner:  this.personalRecoverSigner.bind(this),
     })
     return provider
   }
@@ -209,6 +217,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.ethStore.getState(),
       this.txManager.memStore.getState(),
       this.messageManager.memStore.getState(),
+      this.personalMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
       this.currencyController.store.getState(),
@@ -449,6 +458,44 @@ module.exports = class MetamaskController extends EventEmitter {
     )(cb)
   }
 
+  // Prefixed Style Message Signing Methods:
+  approvePersonalMessage (cb) {
+    let msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  signPersonalMessage (msgParams) {
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.personalMessageManager.approveMessage(msgParams)
+    .then((cleanMsgParams) => {
+      // signs the message
+      return this.keyringController.signPersonalMessage(cleanMsgParams)
+    })
+    .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
+      return rawSig
+    })
+  }
+
+  personalRecoverSigner (msgParams) {
+    const recovered = sigUtil.recoverPersonalSignature(msgParams)
+    return Promise.resolve(recovered)
+  }
 
   markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
