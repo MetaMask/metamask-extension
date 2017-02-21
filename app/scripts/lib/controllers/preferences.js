@@ -24,7 +24,7 @@ class PreferencesController {
     return this.store.getState().selectedAddress
   }
 
-  addToFrequentRPCList (_url) {
+  addToFrequentRpcList (_url) {
     return new Promise((resolve, reject) => {
       let rpcList = this.getFrequentRPCList()
       let index = rpcList.findIndex((element) => { element === _url })
@@ -40,7 +40,7 @@ class PreferencesController {
     })
   }
 
-  getFrequentRPCList () {
+  getFrequentRpcList () {
     return this.store.getState().frequentRPCList
   }
 
