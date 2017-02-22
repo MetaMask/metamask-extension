@@ -1,10 +1,11 @@
 const ObservableStore = require('obs-store')
 const normalizeAddress = require('../sig-util').normalize
+const extend = require('xtend')
 
 class PreferencesController {
 
   constructor (opts = {}) {
-    const initState = opts.initState || { frequentRPCList: [] }
+    const initState = extend({ frequentRpcList: [] }, opts.initState)
     this.store = new ObservableStore(initState)
   }
 
@@ -25,23 +26,23 @@ class PreferencesController {
   }
 
   addToFrequentRpcList (_url) {
-    return new Promise((resolve, reject) => {
-      let rpcList = this.getFrequentRPCList()
-      let index = rpcList.findIndex((element) => { element === _url })
-      if (index) {
-        rpcList.splice(index, 1)
-      }
-      if (rpcList.length >= 3) {
-        rpcList.shift()
-      }
+    let rpcList = this.getFrequentRpcList()
+    let index = rpcList.findIndex((element) => { return element === _url })
+    if (index !== -1) {
+      rpcList.splice(index, 1)
+    }
+    if (_url !== 'http://localhost:8545') {
       rpcList.push(_url)
-      this.store.updateState({ frequentRPCList: rpcList })
-      resolve()
-    })
+    }
+    if (rpcList.length > 2) {
+      rpcList.shift()
+    }
+    this.store.updateState({ frequentRpcList: rpcList })
+    return Promise.resolve()
   }
 
   getFrequentRpcList () {
-    return this.store.getState().frequentRPCList
+    return this.store.getState().frequentRpcList
   }
 
   //
