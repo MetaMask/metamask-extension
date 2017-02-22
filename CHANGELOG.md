@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add two most recently used custom RPCs to network dropdown menu.
+
 ## 3.3.0 2017-2-20
 
 - Add personal_sign and personal_ecRecover support.
