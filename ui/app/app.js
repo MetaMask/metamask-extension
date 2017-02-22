@@ -58,7 +58,7 @@ function mapStateToProps (state) {
     forgottenPassword: state.appState.forgottenPassword,
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
-    frequentRpcList: state.metamask.frequentRpcList
+    frequentRpcList: state.metamask.frequentRpcList,
   }
 }
 
