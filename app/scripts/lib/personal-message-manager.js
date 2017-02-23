@@ -33,6 +33,7 @@ module.exports = class MessageManager extends EventEmitter{
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
+      type: 'personal_sign',
     }
     this.addMsg(msgData)
 

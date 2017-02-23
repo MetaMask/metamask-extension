@@ -118,18 +118,25 @@ ConfirmTxScreen.prototype.render = function () {
 }
 
 function currentTxView (opts) {
-  const { txData } = opts
-  const { txParams, msgParams } = txData
-
   log.info('rendering current tx view')
+  const { txData } = opts
+  const { txParams, msgParams, type } = txData
+
   if (txParams) {
-    // This is a pending transaction
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
+
   } else if (msgParams) {
-    // This is a pending message to sign
     log.debug('msgParams detected, rendering pending msg')
-    return h(PendingMsg, opts)
+
+    if (type === 'eth_sign') {
+      log.debug('rendering eth_sign message')
+      return h(PendingMsg, opts)
+
+    } else if (type === 'personal_sign') {
+      log.debug('rendering personal_sign message')
+      return h(PendingPersonalMsg, opts)
+    }
   }
 }
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
