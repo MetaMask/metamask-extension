@@ -20,6 +20,8 @@ PendingMsgDetails.prototype.render = function () {
   var identity = state.identities[address] || { address: address }
   var account = state.accounts[address] || { address: address }
 
+  var { data } = msgParams
+
   return (
     h('div', {
       key: msgData.id,
@@ -37,11 +39,20 @@ PendingMsgDetails.prototype.render = function () {
       }),
 
       // message data
-      h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
-        h('.flex-row.flex-space-between', [
-          h('label.font-small', 'MESSAGE'),
-          h('span.font-small', msgParams.data),
-        ]),
+      h('div', [
+        h('label.font-small', { style: { display: 'block' } }, 'MESSAGE'),
+        h('textarea.font-small', {
+          readOnly: true,
+          style: {
+            width: '315px',
+            maxHeight: '210px',
+            resize: 'none',
+            border: 'none',
+            background: 'white',
+            padding: '3px',
+          },
+          defaultValue: data,
+        }),
       ]),
 
     ])
