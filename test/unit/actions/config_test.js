@@ -11,6 +11,7 @@ describe ('config view actions', function() {
   var initialState = {
     metamask: {
       rpcTarget: 'foo',
+      frequentRpcList: []
     },
     appState: {
       currentView: {
@@ -30,15 +31,36 @@ describe ('config view actions', function() {
   describe('SET_RPC_TARGET', function() {
 
     it('sets the state.metamask.rpcTarget property of the state to the action.value', function() {
+      const value = {
+        rpcTarget: 'foo',
+        frequentRpcList: ['foo']
+      }
       const action = {
         type: actions.SET_RPC_TARGET,
-        value: 'bar',
+        value,
       }
 
       var result = reducers(initialState, action)
       assert.equal(result.metamask.provider.type, 'rpc')
-      assert.equal(result.metamask.provider.rpcTarget, action.value)
+      assert.equal(result.metamask.provider.rpcTarget, value.rpcTarget)
+      assert.equal(result.metamask.frequentRpcList[0], value.frequentRpcList[0])
+    })
+
+    it('should handle multiple requests to change the rpc gracefully', function() {
+      const value = {
+        rpcTarget: 'foo',
+        frequentRpcList: ['foo']
+      }
+
+      const action = {
+        type: actions.SET_RPC_TARGET,
+        value,
+      }
+
+      var result = reducers(initialState, action)
+      var secondResult = reducers(result, action)
+      assert.equal(secondResult.metamask.frequentRpcList.length, 1)
     })
   })
-})
 
+})

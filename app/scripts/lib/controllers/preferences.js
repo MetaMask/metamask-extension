@@ -25,6 +25,14 @@ class PreferencesController {
     return this.store.getState().selectedAddress
   }
 
+  updateFrequentRpcList (_url) {
+    return this.addToFrequentRpcList(_url)
+      .then((rpcList) => {
+        this.store.updateState({ frequentRpcList: rpcList })
+        return rpcList
+      })
+  }
+
   addToFrequentRpcList (_url) {
     let rpcList = this.getFrequentRpcList()
     let index = rpcList.findIndex((element) => { return element === _url })
@@ -37,8 +45,7 @@ class PreferencesController {
     if (rpcList.length > 2) {
       rpcList.shift()
     }
-    this.store.updateState({ frequentRpcList: rpcList })
-    return Promise.resolve()
+    return Promise.resolve(rpcList)
   }
 
   getFrequentRpcList () {
@@ -48,6 +55,8 @@ class PreferencesController {
   //
   // PRIVATE METHODS
   //
+
+
 
 }
 

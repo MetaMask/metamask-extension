@@ -259,7 +259,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // PreferencesController
       setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
-      addToFrequentRpcList:      nodeify(preferencesController.addToFrequentRpcList).bind(preferencesController),
+      updateFrequentRpcList:      nodeify(preferencesController.updateFrequentRpcList).bind(preferencesController),
 
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),

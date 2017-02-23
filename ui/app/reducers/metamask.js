@@ -55,9 +55,10 @@ function reduceMetamask (state, action) {
 
     case actions.SET_RPC_TARGET:
       return extend(metamaskState, {
+        frequentRpcList: action.value.frequentRpcList,
         provider: {
           type: 'rpc',
-          rpcTarget: action.value,
+          rpcTarget: action.value.rpcTarget,
         },
       })
 

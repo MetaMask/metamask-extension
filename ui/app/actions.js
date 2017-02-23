@@ -626,13 +626,19 @@ function markAccountsFound() {
 //
 
 function setRpcTarget (newRpc) {
-  if (global.METAMASK_DEBUG) console.log(`background.setRpcTarget`)
-  background.addToFrequentRpcList(newRpc, () => {
+  return (dispatch) => {
+    if (global.METAMASK_DEBUG) console.log(`background.setRpcTarget`)
     background.setRpcTarget(newRpc)
-  })
-  return {
-    type: actions.SET_RPC_TARGET,
-    value: newRpc,
+    background.updateFrequentRpcList(newRpc, (frequentRpcList) => {
+      const value = {
+        rpcTarget: newRpc,
+        frequentRpcList,
+      }
+      dispatch({
+        type: actions.SET_RPC_TARGET,
+        value,
+      })
+    })
   }
 }
 
