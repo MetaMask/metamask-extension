@@ -10,6 +10,7 @@ module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, network)
   log.debug(`tx helper found ${msgValues.length} unsigned messages`)
   let allValues = txValues.concat(msgValues)
   const personalValues = valuesFor(personalMsgs)
+  log.debug(`tx helper found ${personalValues.length} unsigned personal messages`)
   allValues = allValues.concat(personalValues)
 
   return allValues.sort(tx => tx.time)

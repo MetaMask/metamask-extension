@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const PendingTxDetails = require('./pending-msg-details')
+const PendingTxDetails = require('./pending-personal-msg-details')
 
 module.exports = PendingMsg
 
@@ -37,7 +37,7 @@ PendingMsg.prototype.render = function () {
           onClick: state.cancelMessage,
         }, 'Cancel'),
         h('button', {
-          onClick: state.signMessage,
+          onClick: state.signPersonalMessage,
         }, 'Sign'),
       ]),
     ])

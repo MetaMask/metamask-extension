@@ -170,8 +170,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processMessage: this.newUnsignedMessage.bind(this),
 
       // new style msg signing
-      approvePersonalMessage: this.approvePersonalMessage.bind(this),
-      signPersonalMessage:    nodeify(this.signPersonalMessage).bind(this),
+      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       personalRecoverSigner:  nodeify(this.recoverPersonalMessage).bind(this),
     })
     return provider
@@ -283,11 +282,11 @@ module.exports = class MetamaskController extends EventEmitter {
       cancelTransaction:     txManager.cancelTransaction.bind(txManager),
 
       // messageManager
-      signMessage:           this.signMessage.bind(this),
+      signMessage:           nodeify(this.signMessage).bind(this),
       cancelMessage:         messageManager.rejectMsg.bind(messageManager),
 
       // personalMessageManager
-      signPersonalMessage:   this.signPersonalMessage.bind(this),
+      signPersonalMessage:   nodeify(this.signPersonalMessage).bind(this),
       cancelPersonalMessage: personalMessageManager.rejectMsg.bind(personalMessageManager),
 
       // notices
@@ -445,22 +444,39 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  newUnsignedPersonalMessage (msgParams, cb) {
+    let msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
   signMessage (msgParams, cb) {
+    log.info('MetaMaskController - signMessage')
     const msgId = msgParams.metamaskId
-    promiseToCallback(
-      // sets the status op the message to 'approved'
-      // and removes the metamaskId for signing
-      this.messageManager.approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signMessage(cleanMsgParams)
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      })
-    )(cb)
+
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.messageManager.approveMessage(msgParams)
+    .then((cleanMsgParams) => {
+      // signs the message
+      return this.keyringController.signMessage(cleanMsgParams)
+    })
+    .then((rawSig) => {
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.messageManager.setMsgStatusSigned(msgId, rawSig)
+      return this.getState()
+    })
   }
 
   // Prefixed Style Message Signing Methods:
@@ -481,6 +497,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   signPersonalMessage (msgParams) {
+    log.info('MetaMaskController - signPersonalMessage')
     const msgId = msgParams.metamaskId
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
@@ -493,7 +510,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
       this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
-      return rawSig
+      return this.getState()
     })
   }
 

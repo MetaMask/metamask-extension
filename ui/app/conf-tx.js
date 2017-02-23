@@ -109,6 +109,7 @@ ConfirmTxScreen.prototype.render = function () {
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
+          signPersonalMessage: this.signPersonalMessage.bind(this, txData),
           cancelMessage: this.cancelMessage.bind(this, txData),
         }),
 
@@ -167,13 +168,24 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
+  log.info('conf-tx.js: signing message')
   var params = msgData.msgParams
+  var type = msgData.type
   params.metamaskId = msgData.id
   event.stopPropagation()
   this.props.dispatch(actions.signMsg(params))
 }
 
+ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
+  log.info('conf-tx.js: signing personal message')
+  var params = msgData.msgParams
+  params.metamaskId = msgData.id
+  event.stopPropagation()
+  this.props.dispatch(actions.signPersonalMsg(params))
+}
+
 ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
+  log.info('canceling message')
   event.stopPropagation()
   this.props.dispatch(actions.cancelMsg(msgData))
 }
@@ -185,7 +197,7 @@ ConfirmTxScreen.prototype.goHome = function (event) {
 
 function warningIfExists (warning) {
   if (warning &&
-      // Do not display user rejections on this screen:
+     // Do not display user rejections on this screen:
      warning.indexOf('User denied transaction signature') === -1) {
     return h('.error', {
       style: {
