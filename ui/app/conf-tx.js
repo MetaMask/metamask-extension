@@ -12,6 +12,7 @@ const BN = ethUtil.BN
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
+const PendingPersonalMsg = require('./components/pending-personal-msg')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -22,6 +23,7 @@ function mapStateToProps (state) {
     selectedAddress: state.metamask.selectedAddress,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
+    unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
     index: state.appState.currentView.context,
     warning: state.appState.warning,
     network: state.metamask.network,
@@ -35,15 +37,12 @@ function ConfirmTxScreen () {
 }
 
 ConfirmTxScreen.prototype.render = function () {
-  var state = this.props
+  const props = this.props
+  const { network, provider, unapprovedTxs,
+    unapprovedMsgs, unapprovedPersonalMsgs } = props
 
-  var network = state.network
-  var provider = state.provider
-  var unapprovedTxs = state.unapprovedTxs
-  var unapprovedMsgs = state.unapprovedMsgs
-
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
-  var index = state.index !== undefined && unconfTxList[index] ? state.index : 0
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+  var index = props.index !== undefined && unconfTxList[index] ? props.index : 0
   var txData = unconfTxList[index] || {}
   var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
@@ -75,20 +74,20 @@ ConfirmTxScreen.prototype.render = function () {
       }, [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           style: {
-            display: state.index === 0 ? 'none' : 'inline-block',
+            display: props.index === 0 ? 'none' : 'inline-block',
           },
-          onClick: () => state.dispatch(actions.previousTx()),
+          onClick: () => props.dispatch(actions.previousTx()),
         }),
-        ` ${state.index + 1} of ${unconfTxList.length} `,
+        ` ${props.index + 1} of ${unconfTxList.length} `,
         h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
           style: {
-            display: state.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
+            display: props.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
           },
-          onClick: () => state.dispatch(actions.nextTx()),
+          onClick: () => props.dispatch(actions.nextTx()),
         }),
       ]),
 
-      warningIfExists(state.warning),
+      warningIfExists(props.warning),
 
       h(ReactCSSTransitionGroup, {
         className: 'css-transition-group',
@@ -101,12 +100,12 @@ ConfirmTxScreen.prototype.render = function () {
           // Properties
           txData: txData,
           key: txData.id,
-          selectedAddress: state.selectedAddress,
-          accounts: state.accounts,
-          identities: state.identities,
+          selectedAddress: props.selectedAddress,
+          accounts: props.accounts,
+          identities: props.identities,
           insufficientBalance: this.checkBalanceAgainstTx(txData),
           // Actions
-          buyEth: this.buyEth.bind(this, txParams.from || state.selectedAddress),
+          buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
@@ -135,9 +134,9 @@ function currentTxView (opts) {
 }
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   if (!txData.txParams) return false
-  var state = this.props
-  var address = txData.txParams.from || state.selectedAddress
-  var account = state.accounts[address]
+  var props = this.props
+  var address = txData.txParams.from || props.selectedAddress
+  var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
   var maxCost = new BN(txData.maxCost, 16)
 

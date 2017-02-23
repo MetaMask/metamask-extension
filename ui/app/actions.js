@@ -90,6 +90,8 @@ var actions = {
   PREVIOUS_TX: 'PREV_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
+  signPersonalMsg,
+  cancelPersonalMsg,
   sendTx: sendTx,
   signTx: signTx,
   cancelTx: cancelTx,
@@ -359,6 +361,20 @@ function signMsg (msgData) {
   }
 }
 
+function signPersonalMsg (msgData) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+
+    if (global.METAMASK_DEBUG) console.log(`background.signMessage`)
+    background.signPersonalMessage(msgData, (err) => {
+      dispatch(actions.hideLoadingIndication())
+
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.completedTx(msgData.metamaskId))
+    })
+  }
+}
+
 function signTx (txData) {
   return (dispatch) => {
     if (global.METAMASK_DEBUG) console.log(`background.setGasMultiplier`)
@@ -405,6 +421,12 @@ function txError (err) {
 function cancelMsg (msgData) {
   if (global.METAMASK_DEBUG) console.log(`background.cancelMessage`)
   background.cancelMessage(msgData.id)
+  return actions.completedTx(msgData.id)
+}
+
+function cancelPersonalMsg (msgData) {
+  if (global.METAMASK_DEBUG) console.log(`background.cancelMessage`)
+  background.cancelPersonalMessage(msgData.id)
   return actions.completedTx(msgData.id)
 }
 

@@ -241,6 +241,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const preferencesController = this.preferencesController
     const txManager = this.txManager
     const messageManager = this.messageManager
+    const personalMessageManager = this.personalMessageManager
     const noticeController = this.noticeController
 
     return {
@@ -284,6 +285,10 @@ module.exports = class MetamaskController extends EventEmitter {
       // messageManager
       signMessage:           this.signMessage.bind(this),
       cancelMessage:         messageManager.rejectMsg.bind(messageManager),
+
+      // personalMessageManager
+      signPersonalMessage:   this.signPersonalMessage.bind(this),
+      cancelPersonalMessage: personalMessageManager.rejectMsg.bind(personalMessageManager),
 
       // notices
       checkNotices:   noticeController.updateNoticesList.bind(noticeController),
