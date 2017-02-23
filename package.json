@@ -67,6 +67,7 @@
     "iframe-stream": "^1.0.2",
     "inject-css": "^0.1.1",
     "jazzicon": "^1.2.0",
+    "loglevel": "^1.4.1",
     "menu-droppo": "^1.1.0",
     "metamask-logo": "^2.1.2",
     "mississippi": "^1.2.0",
@@ -105,7 +106,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "0.18.2",
-    "web3-provider-engine": "^8.5.0",
+    "web3-provider-engine": "^9.1.0",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
   },

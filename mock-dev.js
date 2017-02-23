@@ -26,6 +26,9 @@ const firstTimeState = require('./app/scripts/first-time-state')
 const extension = require('./development/mockExtension')
 const noop = function () {}
 
+const log = require('loglevel')
+window.log = log
+log.setLevel('debug')
 
 //
 // Query String

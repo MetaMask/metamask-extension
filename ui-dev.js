@@ -22,6 +22,11 @@ const configureStore = require('./development/uiStore')
 const states = require('./development/states')
 const Selector = require('./development/selector')
 
+// logger
+const log = require('loglevel')
+window.log = log
+log.setDefaultLevel(1)
+
 // Query String
 const qs = require('qs')
 let queryString = qs.parse(window.location.href.split('#')[1])

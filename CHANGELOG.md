@@ -1,10 +1,13 @@
 # Changelog
 
 ## Current Master
+
+## 3.3.0 2017-2-20
+
+- Add personal_sign and personal_ecRecover support.
 - net_version has been made synchronous.
 - Test suite for migrations expanded.
 - Network now changeable from lock screen.
-
 - Improve test coverage of eth.sign behavior, including a code example of verifying a signature.
 
 ## 3.2.2 2017-2-8
