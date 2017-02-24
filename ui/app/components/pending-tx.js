@@ -18,7 +18,7 @@ PendingTx.prototype.render = function () {
   const txParams = txData.txParams
 
   const gas = state.gas || txParams.gas
-  const gasPrice = state.gasPrice || txParams.gasPrice
+  const gasPrice = state.gasPrice || txData.gasPrice
 
   return (
 
@@ -96,4 +96,3 @@ PendingTx.prototype.render = function () {
     ])
   )
 }
-

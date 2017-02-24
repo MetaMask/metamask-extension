@@ -157,6 +157,7 @@ module.exports = class TransactionManager extends EventEmitter {
     txMeta.txFee = txFee
     txMeta.txValue = txValue
     txMeta.maxCost = maxCost
+    txMeta.gasPrice = gasPrice
     this.updateTx(txMeta)
   }
 
