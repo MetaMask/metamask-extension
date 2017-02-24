@@ -1,7 +1,7 @@
 const ObservableStore = require('obs-store')
 const ConfigManager = require('../../../app/scripts/lib/config-manager')
 const IdStoreMigrator = require('../../../app/scripts/lib/idStore-migrator')
-const SimpleKeyring = require('eth-keyring-simple')
+const SimpleKeyring = require('eth-simple-keyring')
 const normalize = require('eth-sig-util').normalize
 
 const oldStyleVault = require('../mocks/oldVault.json').data
