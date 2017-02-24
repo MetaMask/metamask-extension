@@ -139,6 +139,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
     this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
     this.currencyController.store.subscribe(this.sendUpdate.bind(this))
@@ -239,8 +240,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
     const txManager = this.txManager
-    const messageManager = this.messageManager
-    const personalMessageManager = this.personalMessageManager
     const noticeController = this.noticeController
 
     return {
@@ -283,11 +282,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // messageManager
       signMessage:           nodeify(this.signMessage).bind(this),
-      cancelMessage:         messageManager.rejectMsg.bind(messageManager),
+      cancelMessage:         this.cancelMessage.bind(this),
 
       // personalMessageManager
       signPersonalMessage:   nodeify(this.signPersonalMessage).bind(this),
-      cancelPersonalMessage: personalMessageManager.rejectMsg.bind(personalMessageManager),
+      cancelPersonalMessage:         this.cancelPersonalMessage.bind(this),
 
       // notices
       checkNotices:   noticeController.updateNoticesList.bind(noticeController),
@@ -437,7 +436,7 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
         default:
           return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
       }
@@ -445,6 +444,10 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   newUnsignedPersonalMessage (msgParams, cb) {
+    if (!msgParams.from) {
+      return cb(new Error('MetaMask Message Signature: from field is required.'))
+    }
+
     let msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
@@ -453,7 +456,7 @@ module.exports = class MetamaskController extends EventEmitter {
         case 'signed':
           return cb(null, data.rawSig)
         case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied transaction signature.'))
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
         default:
           return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
       }
@@ -477,6 +480,14 @@ module.exports = class MetamaskController extends EventEmitter {
       this.messageManager.setMsgStatusSigned(msgId, rawSig)
       return this.getState()
     })
+  }
+
+  cancelMessage(msgId, cb) {
+    const messageManager = this.messageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
   }
 
   // Prefixed Style Message Signing Methods:
@@ -512,6 +523,14 @@ module.exports = class MetamaskController extends EventEmitter {
       this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
       return this.getState()
     })
+  }
+
+  cancelPersonalMessage(msgId, cb) {
+    const messageManager = this.personalMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
   }
 
   recoverPersonalMessage (msgParams) {

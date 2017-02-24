@@ -9,12 +9,13 @@ function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
-  const pendingTxs = hasPendingTxs(state)
+  let pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
   if (selectedAddress) {
     name = 'accountDetail'
   }
   if (pendingTxs) {
+    log.debug('pending txs detected, defaulting to conf-tx view.')
     name = 'confTx'
   }
 
@@ -310,15 +311,16 @@ function reduceApp (state, action) {
       })
 
     case actions.COMPLETED_TX:
-      log.debug('reducing COMPLETED_TX')
+      log.debug('reducing COMPLETED_TX for tx ' + action.value)
       var { unapprovedTxs, unapprovedMsgs,
         unapprovedPersonalMsgs, network } = state.metamask
 
       var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
-      .filter(tx => tx !== tx.id)
-      log.debug(`actions - COMPLETED_TX with ${unconfTxList.length} txs`)
+      .filter(tx => tx.id !== action.value )
 
-      if (unconfTxList && unconfTxList.length > 0) {
+      pendingTxs = unconfTxList.length > 0
+
+      if (pendingTxs) {
         log.debug('reducer detected txs - rendering confTx view')
         return extend(appState, {
           transForward: false,
@@ -583,8 +585,7 @@ function hasPendingTxs (state) {
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
   var has = unconfTxList.length > 0
-  log.debug('checking if state has pending txs, concluded ' + has)
-  return unconfTxList.length > 0
+  return has
 }
 
 function indexForPending (state, txId) {

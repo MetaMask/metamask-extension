@@ -34,7 +34,7 @@ PendingMsg.prototype.render = function () {
       // sign + cancel
       h('.flex-row.flex-space-around', [
         h('button', {
-          onClick: state.cancelMessage,
+          onClick: state.cancelPersonalMessage,
         }, 'Cancel'),
         h('button', {
           onClick: state.signPersonalMessage,

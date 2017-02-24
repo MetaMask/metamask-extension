@@ -418,7 +418,7 @@ function sendTx (txData) {
 function completedTx (id) {
   return {
     type: actions.COMPLETED_TX,
-    id,
+    value: id,
   }
 }
 
@@ -436,9 +436,9 @@ function cancelMsg (msgData) {
 }
 
 function cancelPersonalMsg (msgData) {
-  log.debug(`background.cancelMessage`)
-  background.cancelPersonalMessage(msgData.id)
-  return actions.completedTx(msgData.id)
+  const id = msgData.id
+  background.cancelPersonalMessage(id)
+  return actions.completedTx(id)
 }
 
 function cancelTx (txData) {

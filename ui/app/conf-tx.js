@@ -111,6 +111,7 @@ ConfirmTxScreen.prototype.render = function () {
           signMessage: this.signMessage.bind(this, txData),
           signPersonalMessage: this.signPersonalMessage.bind(this, txData),
           cancelMessage: this.cancelMessage.bind(this, txData),
+          cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
         }),
 
       ]),
@@ -170,7 +171,6 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   log.info('conf-tx.js: signing message')
   var params = msgData.msgParams
-  var type = msgData.type
   params.metamaskId = msgData.id
   event.stopPropagation()
   this.props.dispatch(actions.signMsg(params))
@@ -188,6 +188,12 @@ ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
   log.info('canceling message')
   event.stopPropagation()
   this.props.dispatch(actions.cancelMsg(msgData))
+}
+
+ConfirmTxScreen.prototype.cancelPersonalMessage = function (msgData, event) {
+  log.info('canceling personal message')
+  event.stopPropagation()
+  this.props.dispatch(actions.cancelPersonalMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.goHome = function (event) {
