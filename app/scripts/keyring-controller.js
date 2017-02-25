@@ -278,17 +278,6 @@ class KeyringController extends EventEmitter {
     })
   }
 
-  // Recover Personal Message
-  // @object msgParams
-  //
-  // returns Promise(@buffer signer)
-  //
-  // recovers a signature of the prefixed-style personalMessage signature.
-  recoverPersonalMessage (msgParams) {
-    const address = sigUtil.recoverPersonalSignature(msgParams)
-    return Promise.resolve(address)
-  }
-
   // PRIVATE METHODS
   //
   // THESE METHODS ARE ONLY USED INTERNALLY TO THE KEYRING-CONTROLLER

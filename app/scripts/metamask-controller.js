@@ -172,7 +172,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // new style msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-      personalRecoverSigner:  nodeify(this.recoverPersonalMessage).bind(this),
     })
     return provider
   }
@@ -531,12 +530,6 @@ module.exports = class MetamaskController extends EventEmitter {
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
     }
-  }
-
-  recoverPersonalMessage (msgParams) {
-    log.debug(`MetaMaskController - recoverPersonalMessage: ${JSON.stringify(msgParams)}`)
-    const keyringController = this.keyringController
-    return keyringController.recoverPersonalMessage(msgParams)
   }
 
   markAccountsFound (cb) {
