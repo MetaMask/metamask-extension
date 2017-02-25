@@ -5,7 +5,8 @@ const EventEmitter = require('events').EventEmitter
 const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
-const normalizeAddress = require('eth-sig-util').normalize
+const sigUtil = require('eth-sig-util')
+const normalizeAddress = sigUtil.normalize
 // Keyrings:
 const SimpleKeyring = require('eth-simple-keyring')
 const HdKeyring = require('eth-hd-keyring')
@@ -284,11 +285,8 @@ class KeyringController extends EventEmitter {
   //
   // recovers a signature of the prefixed-style personalMessage signature.
   recoverPersonalMessage (msgParams) {
-    const address = normalizeAddress(msgParams.from)
-    return this.getKeyringForAccount(address)
-    .then((keyring) => {
-      return keyring.recoverPersonalMessage(address, msgParams.data)
-    })
+    const address = sigUtil.recoverPersonalSignature(msgParams)
+    return Promise.resolve(address)
   }
 
   // PRIVATE METHODS
@@ -500,6 +498,7 @@ class KeyringController extends EventEmitter {
   // the specified `address` if one exists.
   getKeyringForAccount (address) {
     const hexed = normalizeAddress(address)
+    log.debug(`KeyringController - getKeyringForAccount: ${hexed}`)
 
     return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([

@@ -534,6 +534,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   recoverPersonalMessage (msgParams) {
+    log.debug(`MetaMaskController - recoverPersonalMessage: ${JSON.stringify(msgParams)}`)
     const keyringController = this.keyringController
     return keyringController.recoverPersonalMessage(msgParams)
   }
