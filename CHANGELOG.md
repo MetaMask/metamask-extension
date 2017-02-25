@@ -2,7 +2,8 @@
 
 ## Current Master
 
-- Add personal_sign and personal_ecRecover support.
+- Add personal_sign method support.
+- Add personal_Recover method support.
 
 ## 3.3.0 2017-2-20
 
