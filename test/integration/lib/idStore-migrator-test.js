@@ -1,8 +1,8 @@
 const ObservableStore = require('obs-store')
 const ConfigManager = require('../../../app/scripts/lib/config-manager')
 const IdStoreMigrator = require('../../../app/scripts/lib/idStore-migrator')
-const SimpleKeyring = require('../../../app/scripts/keyrings/simple')
-const normalize = require('../../../app/scripts/lib/sig-util').normalize
+const SimpleKeyring = require('eth-simple-keyring')
+const normalize = require('eth-sig-util').normalize
 
 const oldStyleVault = require('../mocks/oldVault.json').data
 const badStyleVault = require('../mocks/badVault.json').data
@@ -15,7 +15,7 @@ const SEED = 'fringe damage bounce extend tunnel afraid alert sound all soldier 
 QUnit.module('Old Style Vaults', {
   beforeEach: function () {
     let managers = managersFromInitState(oldStyleVault)
-    
+
     this.configManager = managers.configManager
     this.migrator = managers.migrator
   }
@@ -41,7 +41,7 @@ QUnit.test('migrator:migratedVaultForPassword', function (assert) {
 QUnit.module('Old Style Vaults with bad HD seed', {
   beforeEach: function () {
     let managers = managersFromInitState(badStyleVault)
-    
+
     this.configManager = managers.configManager
     this.migrator = managers.migrator
   }
