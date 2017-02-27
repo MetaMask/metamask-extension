@@ -52,7 +52,7 @@ describe('tx confirmation screen', function() {
           clearSeedWordCache(cb) { cb() },
         })
 
-        let action = actions.cancelTx({id: firstTxId})
+        let action = actions.cancelTx({value: firstTxId})
         result = reducers(initialState, action)
         done()
       })
@@ -121,7 +121,7 @@ describe('tx confirmation screen', function() {
           metamask: {
             unapprovedTxs: {
               '1457634084250832': {
-                id: 1457634084250832,
+                id: firstTxId,
                 status: "unconfirmed",
                 time: 1457634084250,
               },
@@ -135,8 +135,9 @@ describe('tx confirmation screen', function() {
         }
         freeze(initialState)
 
+        // Mocking a background connection:
         actions._setBackgroundConnection({
-          approveTransaction(txId, cb) { cb() },
+          approveTransaction(firstTxId, cb) { cb() },
         })
 
         let action = actions.sendTx({id: firstTxId})(function(action) {
@@ -151,11 +152,6 @@ describe('tx confirmation screen', function() {
 
       it('should transition to the first tx', function() {
         assert.equal(result.appState.currentView.context, 0)
-      })
-
-      it('should only have one unconfirmed tx remaining', function() {
-        var count = getUnconfirmedTxCount(result)
-        assert.equal(count, 1)
       })
     })
   })

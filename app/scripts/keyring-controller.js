@@ -5,10 +5,11 @@ const EventEmitter = require('events').EventEmitter
 const ObservableStore = require('obs-store')
 const filter = require('promise-filter')
 const encryptor = require('browser-passworder')
-const normalizeAddress = require('./lib/sig-util').normalize
+const sigUtil = require('eth-sig-util')
+const normalizeAddress = sigUtil.normalize
 // Keyrings:
-const SimpleKeyring = require('./keyrings/simple')
-const HdKeyring = require('./keyrings/hd')
+const SimpleKeyring = require('eth-simple-keyring')
+const HdKeyring = require('eth-hd-keyring')
 const keyringTypes = [
   SimpleKeyring,
   HdKeyring,
@@ -262,6 +263,21 @@ class KeyringController extends EventEmitter {
     })
   }
 
+  // Sign Personal Message
+  // @object msgParams
+  //
+  // returns Promise(@buffer rawSig)
+  //
+  // Attempts to sign the provided @object msgParams.
+  // Prefixes the hash before signing as per the new geth behavior.
+  signPersonalMessage (msgParams) {
+    const address = normalizeAddress(msgParams.from)
+    return this.getKeyringForAccount(address)
+    .then((keyring) => {
+      return keyring.signPersonalMessage(address, msgParams.data)
+    })
+  }
+
   // PRIVATE METHODS
   //
   // THESE METHODS ARE ONLY USED INTERNALLY TO THE KEYRING-CONTROLLER
@@ -471,6 +487,7 @@ class KeyringController extends EventEmitter {
   // the specified `address` if one exists.
   getKeyringForAccount (address) {
     const hexed = normalizeAddress(address)
+    log.debug(`KeyringController - getKeyringForAccount: ${hexed}`)
 
     return Promise.all(this.keyrings.map((keyring) => {
       return Promise.all([
