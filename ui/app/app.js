@@ -65,6 +65,7 @@ function mapStateToProps (state) {
 App.prototype.render = function () {
   var props = this.props
   const { isLoading, loadingMessage, transForward } = props
+  log.debug('Main ui render function')
 
   return (
 
@@ -352,6 +353,7 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 }
 
 App.prototype.renderPrimary = function () {
+  log.debug('rendering primary')
   var props = this.props
 
   // notices

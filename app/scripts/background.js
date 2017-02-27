@@ -15,6 +15,10 @@ const firstTimeState = require('./first-time-state')
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 
+const log = require('loglevel')
+window.log = log
+log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
+
 let popupIsOpen = false
 
 // state persistence

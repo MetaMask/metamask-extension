@@ -2,11 +2,12 @@
 
 ## Current Master
 
+
 - Add two most recently used custom RPCs to network dropdown menu.
+- Add personal_sign method support.
 
 ## 3.3.0 2017-2-20
 
-- Add personal_sign and personal_ecRecover support.
 - net_version has been made synchronous.
 - Test suite for migrations expanded.
 - Network now changeable from lock screen.

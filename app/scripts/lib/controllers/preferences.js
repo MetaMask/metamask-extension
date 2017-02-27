@@ -1,6 +1,7 @@
 const ObservableStore = require('obs-store')
-const normalizeAddress = require('../sig-util').normalize
+const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
+
 
 class PreferencesController {
 
