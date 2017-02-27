@@ -410,11 +410,10 @@ input.large-input {
 }
 
 .unapproved-tx-icon {
-  height: 24px;
-  background: #4dffff;
-  border: solid;
+  height: 16px;
+  width: 16px;
+  background: rgb(47, 174, 244);
   border-color: #AEAEAE;
-  border-width: 0.5px;
   border-radius: 13px;
 }
 

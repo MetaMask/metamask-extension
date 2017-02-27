@@ -6,9 +6,10 @@ const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
 module.exports = launchApp
 
+let debugMode = window.METAMASK_DEBUG
 const log = require('loglevel')
 window.log = log
-log.setLevel('warn')
+log.setLevel(debugMode ? 'debug' : 'warn')
 
 function launchApp (opts) {
   var accountManager = opts.accountManager

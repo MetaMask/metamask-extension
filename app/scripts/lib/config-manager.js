@@ -1,6 +1,6 @@
 const MetamaskConfig = require('../config.js')
 const ethUtil = require('ethereumjs-util')
-const normalize = require('./sig-util').normalize
+const normalize = require('eth-sig-util').normalize
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet

@@ -12,6 +12,7 @@ const BN = ethUtil.BN
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
+const PendingPersonalMsg = require('./components/pending-personal-msg')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -22,6 +23,7 @@ function mapStateToProps (state) {
     selectedAddress: state.metamask.selectedAddress,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
+    unapprovedPersonalMsgs: state.metamask.unapprovedPersonalMsgs,
     index: state.appState.currentView.context,
     warning: state.appState.warning,
     network: state.metamask.network,
@@ -35,14 +37,11 @@ function ConfirmTxScreen () {
 }
 
 ConfirmTxScreen.prototype.render = function () {
-  var props = this.props
+  const props = this.props
+  const { network, provider, unapprovedTxs,
+    unapprovedMsgs, unapprovedPersonalMsgs } = props
 
-  var network = props.network
-  var provider = props.provider
-  var unapprovedTxs = props.unapprovedTxs
-  var unapprovedMsgs = props.unapprovedMsgs
-
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
   var index = props.index !== undefined && unconfTxList[index] ? props.index : 0
   var txData = unconfTxList[index] || {}
   var txParams = txData.params || {}
@@ -110,7 +109,9 @@ ConfirmTxScreen.prototype.render = function () {
           sendTransaction: this.sendTransaction.bind(this, txData),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
+          signPersonalMessage: this.signPersonalMessage.bind(this, txData),
           cancelMessage: this.cancelMessage.bind(this, txData),
+          cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
         }),
 
       ]),
@@ -119,18 +120,25 @@ ConfirmTxScreen.prototype.render = function () {
 }
 
 function currentTxView (opts) {
-  const { txData } = opts
-  const { txParams, msgParams } = txData
-
   log.info('rendering current tx view')
+  const { txData } = opts
+  const { txParams, msgParams, type } = txData
+
   if (txParams) {
-    // This is a pending transaction
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
+
   } else if (msgParams) {
-    // This is a pending message to sign
     log.debug('msgParams detected, rendering pending msg')
-    return h(PendingMsg, opts)
+
+    if (type === 'eth_sign') {
+      log.debug('rendering eth_sign message')
+      return h(PendingMsg, opts)
+
+    } else if (type === 'personal_sign') {
+      log.debug('rendering personal_sign message')
+      return h(PendingPersonalMsg, opts)
+    }
   }
 }
 
@@ -162,15 +170,31 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
+  log.info('conf-tx.js: signing message')
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   event.stopPropagation()
   this.props.dispatch(actions.signMsg(params))
 }
 
+ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
+  log.info('conf-tx.js: signing personal message')
+  var params = msgData.msgParams
+  params.metamaskId = msgData.id
+  event.stopPropagation()
+  this.props.dispatch(actions.signPersonalMsg(params))
+}
+
 ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
+  log.info('canceling message')
   event.stopPropagation()
   this.props.dispatch(actions.cancelMsg(msgData))
+}
+
+ConfirmTxScreen.prototype.cancelPersonalMessage = function (msgData, event) {
+  log.info('canceling personal message')
+  event.stopPropagation()
+  this.props.dispatch(actions.cancelPersonalMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.goHome = function (event) {
@@ -180,7 +204,7 @@ ConfirmTxScreen.prototype.goHome = function (event) {
 
 function warningIfExists (warning) {
   if (warning &&
-      // Do not display user rejections on this screen:
+     // Do not display user rejections on this screen:
      warning.indexOf('User denied transaction signature') === -1) {
     return h('.error', {
       style: {

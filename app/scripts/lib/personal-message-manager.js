@@ -4,17 +4,17 @@ const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 
 
-module.exports = class MessageManager extends EventEmitter{
+module.exports = class PersonalMessageManager extends EventEmitter{
   constructor (opts) {
     super()
     this.memStore = new ObservableStore({
-      unapprovedMsgs: {},
-      unapprovedMsgCount: 0,
+      unapprovedPersonalMsgs: {},
+      unapprovedPersonalMsgCount: 0,
     })
     this.messages = []
   }
 
-  get unapprovedMsgCount () {
+  get unapprovedPersonalMsgCount () {
     return Object.keys(this.getUnapprovedMsgs()).length
   }
 
@@ -33,7 +33,7 @@ module.exports = class MessageManager extends EventEmitter{
       msgParams: msgParams,
       time: time,
       status: 'unapproved',
-      type: 'eth_sign',
+      type: 'personal_sign',
     }
     this.addMsg(msgData)
 
@@ -82,7 +82,7 @@ module.exports = class MessageManager extends EventEmitter{
 
   _setMsgStatus (msgId, status) {
     const msg = this.getMsg(msgId)
-    if (!msg) throw new Error('MessageManager - Message not found for id: "${msgId}".')
+    if (!msg) throw new Error('PersonalMessageManager - Message not found for id: "${msgId}".')
     msg.status = status
     this._updateMsg(msg)
     this.emit(`${msgId}:${status}`, msg)
@@ -100,9 +100,9 @@ module.exports = class MessageManager extends EventEmitter{
   }
 
   _saveMsgList () {
-    const unapprovedMsgs = this.getUnapprovedMsgs()
-    const unapprovedMsgCount = Object.keys(unapprovedMsgs).length
-    this.memStore.updateState({ unapprovedMsgs, unapprovedMsgCount })
+    const unapprovedPersonalMsgs = this.getUnapprovedMsgs()
+    const unapprovedPersonalMsgCount = Object.keys(unapprovedPersonalMsgs).length
+    this.memStore.updateState({ unapprovedPersonalMsgs, unapprovedPersonalMsgCount })
     this.emit('updateBadge')
   }
 
