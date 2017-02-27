@@ -44,13 +44,14 @@
         "estimatedGas": "0x5209",
         "txFee": "17e0186e60800",
         "txValue": "de0b6b3a7640000",
-        "maxCost": "de234b52e4a0800"
+        "maxCost": "de234b52e4a0800",
+        "gasPrice": "4a817c800"
       }
     },
     "currentFiat": "USD",
     "conversionRate": 12.7200827,
     "conversionDate": 1487363041,
-    "noActiveNotices": false,
+    "noActiveNotices": true,
     "lastUnreadNotice": {
       "read": true,
       "date": "Thu Feb 09 2017",
