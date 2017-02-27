@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-tx-details')
-const HexInput = require('./hex-as-decimal-input')
 
 module.exports = PendingTx
 
@@ -78,21 +77,6 @@ PendingTx.prototype.render = function () {
           onClick: props.cancelTransaction,
         }, 'Reject'),
       ]),
-
-      h(HexInput, {
-        value: gas,
-        onChange: (newHex) => {
-          this.setState({ gas: newHex })
-        },
-      }),
-
-      h(HexInput, {
-        value: gasPrice,
-        onChange: (newHex) => {
-          this.setState({ gasPrice: newHex })
-        },
-      }),
-
     ])
   )
 }

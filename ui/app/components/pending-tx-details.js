@@ -7,6 +7,8 @@ const EthBalance = require('./eth-balance')
 const util = require('../util')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
+const HexInput = require('./hex-as-decimal-input')
+
 
 module.exports = PendingTxDetails
 
@@ -20,12 +22,16 @@ const PTXP = PendingTxDetails.prototype
 PTXP.render = function () {
   var props = this.props
   var txData = props.txData
+  var state = this.state || {}
 
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
   var identity = props.identities[address] || { address: address }
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
+
+  const gas = state.gas || txParams.gas
+  const gasPrice = state.gasPrice || txData.gasPrice
 
   var txFee = txData.txFee || ''
   var maxCost = txData.maxCost || ''
@@ -129,7 +135,36 @@ PTXP.render = function () {
             }),
           ]),
         ]),
+        h('.cell.row', {
 
+        }, [
+          h('.cell.label', 'Total Gas'),
+          h('.cell.value', {
+
+          }, [
+            h(HexInput, {
+              value: gas,
+              onChange: (newHex) => {
+                this.setState({ gas: newHex })
+              },
+            }),
+          ])
+        ]),
+        h('.cell.row', {
+
+        }, [
+          h('.cell.label', 'Gas Price'),
+          h('.cell.value', {
+
+          }, [
+            h(HexInput, {
+              value: gasPrice,
+              onChange: (newHex) => {
+                this.setState({ gas: newHex })
+              },
+            }),
+          ])
+        ]),
         h('.cell.row', {
           style: {
             background: '#f7f7f7',

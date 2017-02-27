@@ -27,6 +27,10 @@ HexAsDecimalInput.prototype.render = function () {
 
   return (
     h('input', {
+      style: {
+        display: 'block',
+        textAlign: 'right',
+      },
       value: decimalValue,
       onChange: (event) => {
         const hexString = hexify(event.target.value)
@@ -46,4 +50,3 @@ function decimalize (input) {
   const inputBN = new BN(strippedInput, 'hex')
   return inputBN.toString(10)
 }
-
