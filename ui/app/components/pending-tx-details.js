@@ -308,6 +308,7 @@ PTXP.gatherParams = function () {
   const resultTxMeta = extend(txData, {
     txParams: resultTx,
   })
+  log.debug(`UI has computed tx params ${JSON.stringify(resultTx)}`)
   return resultTxMeta
 }
 
