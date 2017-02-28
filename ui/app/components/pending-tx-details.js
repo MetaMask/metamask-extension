@@ -168,6 +168,8 @@ PTXP.render = function () {
           ]),
         ]) : null,
 
+
+
         // Max Transaction Fee (calculated)
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
