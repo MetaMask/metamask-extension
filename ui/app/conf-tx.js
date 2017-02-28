@@ -105,7 +105,7 @@ ConfirmTxScreen.prototype.render = function () {
           identities: props.identities,
           insufficientBalance: this.checkBalanceAgainstTx(txData),
           // State actions
-          onTxChange: this.updateTxCache.bind(this),
+          onTxChange: this.onTxChange.bind(this),
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
