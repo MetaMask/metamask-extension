@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add personal_sign method support.
+- Add ability to customize gas and gasPrice on the transaction approval screen.
 
 ## 3.3.0 2017-2-20
 
