@@ -35,6 +35,8 @@ PTXP.render = function () {
 
   const gas = state.gas || txParams.gas
   const gasPrice = state.gasPrice || txData.gasPrice
+  const gasDefault = gas
+  const gasPriceDefault = gasPrice
 
   var txFee = state.txFee || txData.txFee || ''
   var maxCost = state.maxCost || txData.maxCost || ''
@@ -130,7 +132,11 @@ PTXP.render = function () {
               },
               onChange: (newHex) => {
                 log.info(`Gas limit changed to ${newHex}`)
-                this.setState({ gas: newHex })
+                if (newHex === '0x0') {
+                  this.setState({gas: gasDefault})
+                } else {
+                  this.setState({ gas: newHex })
+                }
               },
             }),
           ]),
@@ -150,7 +156,11 @@ PTXP.render = function () {
               },
               onChange: (newHex) => {
                 log.info(`Gas price changed to: ${newHex}`)
-                this.setState({ gasPrice: newHex })
+                if (newHex === '0x0') {
+                  this.setState({gasPrice: gasPriceDefault})
+                } else {
+                  this.setState({ gasPrice: newHex })
+                }
               },
             }),
           ]),
