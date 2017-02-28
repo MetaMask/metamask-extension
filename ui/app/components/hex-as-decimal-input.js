@@ -55,6 +55,7 @@ HexAsDecimalInput.prototype.render = function () {
           color: ' #AEAEAE',
           fontSize: '12px',
           marginLeft: '5px',
+          width: '20px',
         },
       }, suffix),
     ])
