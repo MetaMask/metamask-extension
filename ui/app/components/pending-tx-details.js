@@ -253,6 +253,13 @@ PTXP.componentDidUpdate = function (prevProps, prevState) {
       state.gasPrice !== prevState.gasPrice)) {
     log.debug(`recalculating gas since prev state change: ${JSON.stringify({ prevState, state })}`)
     this.calculateGas()
+
+  // Otherwise this was a recalculation,
+  // so we should inform the parent:
+  } else {
+    if (this.props.onTxChange) {
+      this.props.onTxChange(this.gatherParams)
+    }
   }
 }
 

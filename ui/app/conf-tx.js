@@ -104,6 +104,8 @@ ConfirmTxScreen.prototype.render = function () {
           accounts: props.accounts,
           identities: props.identities,
           insufficientBalance: this.checkBalanceAgainstTx(txData),
+          // State actions
+          onTxChange: this.updateTxCache.bind(this),
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
@@ -159,9 +161,19 @@ ConfirmTxScreen.prototype.buyEth = function (address, event) {
   this.props.dispatch(actions.buyEthView(address))
 }
 
+// Allows the detail view to update the gas calculations,
+// for manual gas controls.
+ConfirmTxScreen.prototype.onTxChange = function (txData) {
+  this.setState({ txData })
+}
+
+// Must default to any local state txData,
+// to allow manual override of gas calculations.
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   event.stopPropagation()
-  this.props.dispatch(actions.sendTx(txData))
+  const state = this.state || {}
+  const txMeta = state.txData
+  this.props.dispatch(actions.sendTx(txMeta || txData))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
