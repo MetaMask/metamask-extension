@@ -116,8 +116,8 @@ PTXP.render = function () {
             selected: advanced,
             onChange: () => {
               this.setState({advanced: !advanced})
-            }
-          })
+            },
+          }),
         ]),
 
         // Ether Value

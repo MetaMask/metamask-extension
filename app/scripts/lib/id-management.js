@@ -7,7 +7,6 @@
  */
 
 const ethUtil = require('ethereumjs-util')
-const BN = ethUtil.BN
 const Transaction = require('ethereumjs-tx')
 
 module.exports = IdManagement

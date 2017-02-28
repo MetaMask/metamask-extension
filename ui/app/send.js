@@ -10,8 +10,6 @@ const addressSummary = require('./util').addressSummary
 const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const ethUtil = require('ethereumjs-util')
-const RangeSlider = require('./components/range-slider')
-const Tooltip = require('./components/tooltip')
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
