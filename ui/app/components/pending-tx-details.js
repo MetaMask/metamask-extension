@@ -1,10 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const debounce = require('debounce')
 const extend = require('xtend')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 
-const TxUtils = require('../../../app/scripts/lib/tx-utils')
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
 const util = require('../util')
@@ -242,11 +242,6 @@ PTXP.miniAccountPanelForRecipient = function () {
   }
 }
 
-PTXP.componentDidMount = function () {
-  this.txUtils = new TxUtils(web3.currentProvider)
-  this.recalculateGas = debounce(this.calculateGas.bind(this), 300)
-}
-
 PTXP.componentDidUpdate = function (prevProps, prevState) {
   const state = this.state || {}
   log.debug(`pending-tx-details componentDidUpdate`)
@@ -255,10 +250,9 @@ PTXP.componentDidUpdate = function (prevProps, prevState) {
   // Only if gas or gasPrice changed:
   if (prevState &&
       (state.gas !== prevState.gas ||
-      state.gasPrice !== prevState.gasPrice) &&
-      this.recalculateGas) {
+      state.gasPrice !== prevState.gasPrice)) {
     log.debug(`recalculating gas since prev state change: ${JSON.stringify({ prevState, state })}`)
-    this.recalculateGas()
+    this.calculateGas()
   }
 }
 
@@ -285,17 +279,25 @@ PTXP.gatherParams = function () {
 PTXP.calculateGas = function () {
   const txMeta = this.gatherParams()
   log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
-  this.txUtils.analyzeGasUsage(txMeta, (err, result) => {
-    if (err) {
-      return this.setState({ error: err })
-    }
-    const { txFee, maxCost } = result || txMeta
-    if (txFee === txMeta.txFee && maxCost === txMeta.maxCost) {
-      log.warn(`Recalculating gas resulted in no change.`)
-    }
-    log.debug(`pending-tx-details calculated tx fee: ${txFee} and max cost: ${maxCost}`)
-    this.setState({ txFee, maxCost })
+
+  var txParams = txMeta.txParams
+  var gasMultiplier = txMeta.gasMultiplier
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  gasPrice = gasPrice.mul(new BN(gasMultiplier * 100), 10).div(new BN(100, 10))
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
+
+  this.setState({
+    txFee: '0x' + txFee.toString('hex'),
+    maxCost: '0x' + maxCost.toString('hex'),
   })
+}
+
+function bnFromHex (hex) {
+  var bn = new BN(ethUtil.stripHexPrefix(hex), 16)
+  return bn
 }
 
 function forwardCarrat () {

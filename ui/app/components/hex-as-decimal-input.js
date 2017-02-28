@@ -43,6 +43,7 @@ HexAsDecimalInput.prototype.render = function () {
           display: 'block',
           textAlign: 'right',
           backgroundColor: 'transparent',
+          border: '1px solid #bdbdbd',
         }, style),
         value: decimalValue,
         onChange: (event) => {
