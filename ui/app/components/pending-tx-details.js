@@ -40,6 +40,7 @@ PTXP.render = function () {
   var maxCost = state.maxCost || txData.maxCost || ''
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
+  var advanced = state.advanced || false
 
   log.debug(`rendering gas: ${gas}, gasPrice: ${gasPrice}, txFee: ${txFee}, maxCost: ${maxCost}`)
 
@@ -108,6 +109,17 @@ PTXP.render = function () {
 
       h('.table-box', [
 
+        h('.row', [
+          h('.cell.label', 'Advanced Options'),
+          h('input', {
+            type: 'checkbox',
+            selected: advanced,
+            onChange: () => {
+              this.setState({advanced: !advanced})
+            }
+          })
+        ]),
+
         // Ether Value
         // Currently not customizable, but easily modified
         // in the way that gas and gasLimit currently are.
@@ -117,7 +129,7 @@ PTXP.render = function () {
         ]),
 
         // Gas Limit (customizable)
-        h('.cell.row', [
+        advanced ? h('.cell.row', [
           h('.cell.label', 'Gas Limit'),
           h('.cell.value', {
           }, [
@@ -134,10 +146,10 @@ PTXP.render = function () {
               },
             }),
           ]),
-        ]),
+        ]) : null,
 
         // Gas Price (customizable)
-        h('.cell.row', [
+        advanced ? h('.cell.row', [
           h('.cell.label', 'Gas Price'),
           h('.cell.value', {
           }, [
@@ -154,7 +166,7 @@ PTXP.render = function () {
               },
             }),
           ]),
-        ]),
+        ]) : null,
 
         // Max Transaction Fee (calculated)
         h('.cell.row', [
