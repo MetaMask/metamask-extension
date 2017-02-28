@@ -399,7 +399,7 @@ function signTx (txData) {
 }
 
 function sendTx (txData) {
-  log.info('actions: sendTx')
+  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
   return (dispatch) => {
     log.debug(`actions calling background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
@@ -413,7 +413,7 @@ function sendTx (txData) {
 }
 
 function updateAndApproveTx (txData) {
-  log.info('actions: updateAndApproveTx')
+  log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
