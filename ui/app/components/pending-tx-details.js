@@ -138,12 +138,17 @@ PTXP.render = function () {
         h('.cell.row', {
 
         }, [
-          h('.cell.label', 'Total Gas'),
+          h('.cell.label', 'Gas Limit'),
           h('.cell.value', {
 
           }, [
             h(HexInput, {
               value: gas,
+              suffix: 'UNITS',
+              style: {
+                position: 'relative',
+                top: '5px',
+              },
               onChange: (newHex) => {
                 this.setState({ gas: newHex })
               },
@@ -159,8 +164,13 @@ PTXP.render = function () {
           }, [
             h(HexInput, {
               value: gasPrice,
+              suffix: 'WEI',
+              style: {
+                position: 'relative',
+                top: '5px',
+              },
               onChange: (newHex) => {
-                this.setState({ gas: newHex })
+                this.setState({ gasPrice: newHex })
               },
             }),
           ])

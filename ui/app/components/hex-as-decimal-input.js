@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
+const extend = require('xtend')
 
 module.exports = HexAsDecimalInput
 
@@ -23,20 +24,40 @@ function HexAsDecimalInput () {
 HexAsDecimalInput.prototype.render = function () {
   const props = this.props
   const { value, onChange } = props
-  const decimalValue = decimalize(value)
+  const toEth = props.toEth
+  const suffix = props.suffix
+  const decimalValue = decimalize(value, toEth)
+  const style = props.style
 
   return (
-    h('input', {
+    h('.flex-row', {
       style: {
-        display: 'block',
-        textAlign: 'right',
+        alignItems: 'flex-end',
+        lineHeight: '13px',
+        fontFamily: 'Montserrat Light',
+        textRendering: 'geometricPrecision',
       },
-      value: decimalValue,
-      onChange: (event) => {
-        const hexString = hexify(event.target.value)
-        onChange(hexString)
-      },
-    })
+    }, [
+      h('input.ether-balance.ether-balance-amount', {
+        style: extend({
+          display: 'block',
+          textAlign: 'right',
+          backgroundColor: 'transparent',
+        }, style),
+        value: decimalValue,
+        onChange: (event) => {
+          const hexString = hexify(event.target.value)
+          onChange(hexString)
+        },
+      }),
+      h('div', {
+        style: {
+          color: ' #AEAEAE',
+          fontSize: '12px',
+          marginLeft: '5px',
+        },
+      }, suffix),
+    ])
   )
 }
 
@@ -45,7 +66,7 @@ function hexify (decimalString) {
   return '0x' + hexBN.toString('hex')
 }
 
-function decimalize (input) {
+function decimalize (input, toEth) {
   const strippedInput = ethUtil.stripHexPrefix(input)
   const inputBN = new BN(strippedInput, 'hex')
   return inputBN.toString(10)
