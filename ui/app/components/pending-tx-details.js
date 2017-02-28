@@ -40,7 +40,6 @@ PTXP.render = function () {
   var maxCost = state.maxCost || txData.maxCost || ''
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
-  var advanced = state.advanced || false
 
   log.debug(`rendering gas: ${gas}, gasPrice: ${gasPrice}, txFee: ${txFee}, maxCost: ${maxCost}`)
 
@@ -156,8 +155,6 @@ PTXP.render = function () {
             }),
           ]),
         ]),
-
-
 
         // Max Transaction Fee (calculated)
         h('.cell.row', [
