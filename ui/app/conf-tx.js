@@ -13,6 +13,7 @@ const BN = ethUtil.BN
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
 const PendingPersonalMsg = require('./components/pending-personal-msg')
+const Loading = require('./components/loading')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -48,7 +49,7 @@ ConfirmTxScreen.prototype.render = function () {
   var isNotification = isPopupOrNotification() === 'notification'
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
-  if (unconfTxList.length === 0) return null
+  if (unconfTxList.length === 0) return h(Loading)
 
   return (
 
