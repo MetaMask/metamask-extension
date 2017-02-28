@@ -295,11 +295,6 @@ PTXP.calculateGas = function () {
   })
 }
 
-function bnFromHex (hex) {
-  var bn = new BN(ethUtil.stripHexPrefix(hex), 16)
-  return bn
-}
-
 function forwardCarrat () {
   return (
 
