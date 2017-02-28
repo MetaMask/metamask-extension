@@ -94,6 +94,7 @@ var actions = {
   cancelPersonalMsg,
   sendTx: sendTx,
   signTx: signTx,
+  updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
   txError: txError,
@@ -406,6 +407,20 @@ function sendTx (txData) {
   return (dispatch) => {
     log.debug(`actions calling background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
+      if (err) {
+        dispatch(actions.txError(err))
+        return console.error(err.message)
+      }
+      dispatch(actions.completedTx(txData.id))
+    })
+  }
+}
+
+function updateAndApproveTx (txData) {
+  log.info('actions: updateAndApproveTx')
+  return (dispatch) => {
+    log.debug(`actions calling background.updateAndApproveTx`)
+    background.updateAndApproveTransaction(txData, (err) => {
       if (err) {
         dispatch(actions.txError(err))
         return console.error(err.message)
