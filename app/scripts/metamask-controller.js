@@ -248,7 +248,6 @@ module.exports = class MetamaskController extends EventEmitter {
       setProviderType:       this.setProviderType.bind(this),
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
       setCurrentCurrency:    this.setCurrentCurrency.bind(this),
-      setGasMultiplier:      this.setGasMultiplier.bind(this),
       markAccountsFound:     this.markAccountsFound.bind(this),
       // coinbase
       buyEth: this.buyEth.bind(this),
@@ -649,15 +648,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
   createShapeShiftTx (depositAddress, depositType) {
     this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
-  }
-
-  setGasMultiplier (gasMultiplier, cb) {
-    try {
-      this.txManager.setGasMultiplier(gasMultiplier)
-      cb()
-    } catch (err) {
-      cb(err)
-    }
   }
 
   //

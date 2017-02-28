@@ -248,12 +248,10 @@ PTXP.miniAccountPanelForRecipient = function () {
 }
 
 PTXP.componentDidUpdate = function (prevProps, previousState) {
+  log.debug(`pending-tx-details componentDidUpdate`)
   const state = this.state || {}
   const prevState = previousState || {}
   const { gas, gasPrice } = state
-
-  log.debug(`pending-tx-details componentDidUpdate`)
-  console.log(arguments)
 
   // Only if gas or gasPrice changed:
   if (!prevState ||
@@ -269,10 +267,8 @@ PTXP.calculateGas = function () {
   log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
 
   var txParams = txMeta.txParams
-  var gasMultiplier = txMeta.gasMultiplier
   var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
   var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  gasPrice = gasPrice.mul(new BN(gasMultiplier * 100), 10).div(new BN(100, 10))
   var txFee = gasCost.mul(gasPrice)
   var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
   var maxCost = txValue.add(txFee)

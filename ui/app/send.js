@@ -208,73 +208,6 @@ SendTransactionScreen.prototype.render = function () {
           },
         }),
       ]),
-      // custom gasPrice field
-      h('h3.flex-center.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginBottom: '5px',
-        },
-      }, [
-        'Transaction Fee (optional)',
-        h(Tooltip, {
-          title: `
-            This is used to set the transaction's gas price.
-            Setting it to 100% will use the full recommended value.          `,
-        }, [
-          h('i.fa.fa-question-circle', {
-            style: {
-              marginLeft: '5px',
-            },
-          }),
-        ]),
-      ]),
-
-      h('section.flex-column.flex-center', [
-        h('.flex-row', [
-          h(RangeSlider, {
-            name: 'gasInput',
-            options: {
-              mirrorInput: true,
-              defaultValue: 100,
-              min: 80,
-              max: 220,
-            },
-            style: {
-              container: {
-                marginBottom: '16px',
-              },
-              range: {
-                width: '68vw',
-              },
-              input: {
-                width: '5em',
-                marginLeft: '5px',
-              },
-            },
-          }),
-
-          h('div', {
-            style: {
-              fontSize: '12px',
-              paddingTop: '8px',
-              paddingLeft: '5px',
-            },
-          }, '%'),
-        ]),
-        h('.flex-row', {
-          style: {
-            justifyContent: 'space-between',
-            width: '243px',
-            position: 'relative',
-            fontSize: '12px',
-            right: '42px',
-            bottom: '30px',
-          },
-        }, [
-          h('span', 'Cheaper'), h('span', 'Faster'),
-        ]),
-      ]),
     ])
   )
 }
@@ -289,12 +222,11 @@ SendTransactionScreen.prototype.back = function () {
   this.props.dispatch(actions.backToAccountDetail(address))
 }
 
-SendTransactionScreen.prototype.onSubmit = function (gasPrice) {
+SendTransactionScreen.prototype.onSubmit = function () {
   const recipient = document.querySelector('input[name="address"]').value
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
-  const gasMultiplier = document.querySelector('input[name="gasInput"]').value
   const balance = this.props.balance
   let message
 
@@ -323,7 +255,6 @@ SendTransactionScreen.prototype.onSubmit = function (gasPrice) {
   var txParams = {
     from: this.props.address,
     value: '0x' + value.toString(16),
-    gasMultiplier: gasMultiplier * 0.01,
   }
 
   if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)

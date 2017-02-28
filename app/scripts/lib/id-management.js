@@ -25,13 +25,9 @@ function IdManagement (opts) {
   }
 
   this.signTx = function (txParams) {
-    //  calculate gas with custom gas multiplier
-    var gasMultiplier = this.configManager.getGasMultiplier() || 1
-    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
-    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
-    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
-    // normalize values
 
+    // normalize values
+    txParams.gasPrice = ethUtil.intToHex(txParams.gasPrice)
     txParams.to = ethUtil.addHexPrefix(txParams.to)
     txParams.from = ethUtil.addHexPrefix(txParams.from.toLowerCase())
     txParams.value = ethUtil.addHexPrefix(txParams.value)
