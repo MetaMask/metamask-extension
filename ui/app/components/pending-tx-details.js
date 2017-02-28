@@ -1,7 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const debounce = require('debounce')
+const extend = require('xtend')
 
+const TxUtils = require('../../../app/scripts/lib/tx-utils')
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
 const util = require('../util')
@@ -21,8 +24,8 @@ const PTXP = PendingTxDetails.prototype
 
 PTXP.render = function () {
   var props = this.props
-  var txData = props.txData
   var state = this.state || {}
+  var txData = state.txMeta || props.txData
 
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
@@ -33,10 +36,12 @@ PTXP.render = function () {
   const gas = state.gas || txParams.gas
   const gasPrice = state.gasPrice || txData.gasPrice
 
-  var txFee = txData.txFee || ''
-  var maxCost = txData.maxCost || ''
+  var txFee = state.txFee || txData.txFee || ''
+  var maxCost = state.maxCost || txData.maxCost || ''
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
+
+  log.debug(`rendering gas: ${gas}, gasPrice: ${gasPrice}, txFee: ${txFee}, maxCost: ${maxCost}`)
 
   return (
     h('div', [
@@ -150,17 +155,17 @@ PTXP.render = function () {
                 top: '5px',
               },
               onChange: (newHex) => {
+                log.info(`Gas limit changed to ${newHex}`)
                 this.setState({ gas: newHex })
               },
             }),
-          ])
+          ]),
         ]),
         h('.cell.row', {
 
         }, [
           h('.cell.label', 'Gas Price'),
           h('.cell.value', {
-
           }, [
             h(HexInput, {
               value: gasPrice,
@@ -170,10 +175,11 @@ PTXP.render = function () {
                 top: '5px',
               },
               onChange: (newHex) => {
+                log.info(`Gas price changed to: ${newHex}`)
                 this.setState({ gasPrice: newHex })
               },
             }),
-          ])
+          ]),
         ]),
         h('.cell.row', {
           style: {
@@ -234,6 +240,62 @@ PTXP.miniAccountPanelForRecipient = function () {
 
     ])
   }
+}
+
+PTXP.componentDidMount = function () {
+  this.txUtils = new TxUtils(web3.currentProvider)
+  this.recalculateGas = debounce(this.calculateGas.bind(this), 300)
+}
+
+PTXP.componentDidUpdate = function (prevProps, prevState) {
+  const state = this.state || {}
+  log.debug(`pending-tx-details componentDidUpdate`)
+  console.log(arguments)
+
+  // Only if gas or gasPrice changed:
+  if (prevState &&
+      (state.gas !== prevState.gas ||
+      state.gasPrice !== prevState.gasPrice) &&
+      this.recalculateGas) {
+    log.debug(`recalculating gas since prev state change: ${JSON.stringify({ prevState, state })}`)
+    this.recalculateGas()
+  }
+}
+
+PTXP.gatherParams = function () {
+  log.debug(`pending-tx-details#gatherParams`)
+  const props = this.props
+  const state = this.state || {}
+  const txData = state.txData || props.txData
+  const txParams = txData.txParams
+
+  const gas = state.gas || txParams.gas
+  const gasPrice = state.gasPrice || txParams.gasPrice
+  const resultTx = extend(txParams, {
+    gas,
+    gasPrice,
+  })
+  const resultTxMeta = extend(txData, {
+    txParams: resultTx,
+  })
+  log.debug(`gathered params: ${JSON.stringify(resultTxMeta)}`)
+  return resultTxMeta
+}
+
+PTXP.calculateGas = function () {
+  const txMeta = this.gatherParams()
+  log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
+  this.txUtils.analyzeGasUsage(txMeta, (err, result) => {
+    if (err) {
+      return this.setState({ error: err })
+    }
+    const { txFee, maxCost } = result || txMeta
+    if (txFee === txMeta.txFee && maxCost === txMeta.maxCost) {
+      log.warn(`Recalculating gas resulted in no change.`)
+    }
+    log.debug(`pending-tx-details calculated tx fee: ${txFee} and max cost: ${maxCost}`)
+    this.setState({ txFee, maxCost })
+  })
 }
 
 function forwardCarrat () {
