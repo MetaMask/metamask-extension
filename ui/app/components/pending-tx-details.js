@@ -108,11 +108,55 @@ PTXP.render = function () {
 
       h('.table-box', [
 
+        // Ether Value
+        // Currently not customizable, but easily modified
+        // in the way that gas and gasLimit currently are.
         h('.row', [
           h('.cell.label', 'Amount'),
           h(EthBalance, { value: txParams.value }),
         ]),
 
+        // Gas Limit (customizable)
+        h('.cell.row', [
+          h('.cell.label', 'Gas Limit'),
+          h('.cell.value', {
+          }, [
+            h(HexInput, {
+              value: gas,
+              suffix: 'UNITS',
+              style: {
+                position: 'relative',
+                top: '5px',
+              },
+              onChange: (newHex) => {
+                log.info(`Gas limit changed to ${newHex}`)
+                this.setState({ gas: newHex })
+              },
+            }),
+          ]),
+        ]),
+
+        // Gas Price (customizable)
+        h('.cell.row', [
+          h('.cell.label', 'Gas Price'),
+          h('.cell.value', {
+          }, [
+            h(HexInput, {
+              value: gasPrice,
+              suffix: 'WEI',
+              style: {
+                position: 'relative',
+                top: '5px',
+              },
+              onChange: (newHex) => {
+                log.info(`Gas price changed to: ${newHex}`)
+                this.setState({ gasPrice: newHex })
+              },
+            }),
+          ]),
+        ]),
+
+        // Max Transaction Fee (calculated)
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
           h(EthBalance, { value: txFee.toString(16) }),
@@ -140,47 +184,8 @@ PTXP.render = function () {
             }),
           ]),
         ]),
-        h('.cell.row', {
 
-        }, [
-          h('.cell.label', 'Gas Limit'),
-          h('.cell.value', {
-
-          }, [
-            h(HexInput, {
-              value: gas,
-              suffix: 'UNITS',
-              style: {
-                position: 'relative',
-                top: '5px',
-              },
-              onChange: (newHex) => {
-                log.info(`Gas limit changed to ${newHex}`)
-                this.setState({ gas: newHex })
-              },
-            }),
-          ]),
-        ]),
-        h('.cell.row', {
-
-        }, [
-          h('.cell.label', 'Gas Price'),
-          h('.cell.value', {
-          }, [
-            h(HexInput, {
-              value: gasPrice,
-              suffix: 'WEI',
-              style: {
-                position: 'relative',
-                top: '5px',
-              },
-              onChange: (newHex) => {
-                log.info(`Gas price changed to: ${newHex}`)
-                this.setState({ gasPrice: newHex })
-              },
-            }),
-          ]),
-        ]),
+        // Data size row:
         h('.cell.row', {
           style: {
             background: '#f7f7f7',
