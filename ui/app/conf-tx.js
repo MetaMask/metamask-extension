@@ -175,7 +175,7 @@ ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   event.stopPropagation()
   const state = this.state || {}
   const txMeta = state.txData
-  this.props.dispatch(actions.sendTx(txMeta || txData))
+  this.props.dispatch(actions.updateAndApproveTx(txMeta || txData))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {

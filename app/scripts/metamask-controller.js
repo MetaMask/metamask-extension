@@ -463,6 +463,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   updateAndApproveTx(txMeta, cb) {
+    log.debug(`MetaMaskController - updateAndApproveTx: ${JSON.stringify(txMeta)}`)
     const txManager = this.txManager
     txManager.updateTx(txMeta)
     txManager.approveTransaction(txMeta.id, cb)
