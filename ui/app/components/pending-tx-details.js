@@ -247,27 +247,55 @@ PTXP.miniAccountPanelForRecipient = function () {
   }
 }
 
-PTXP.componentDidUpdate = function (prevProps, prevState) {
+PTXP.componentDidUpdate = function (prevProps, previousState) {
   const state = this.state || {}
+  const prevState = previousState || {}
+  const { gas, gasPrice } = state
+
   log.debug(`pending-tx-details componentDidUpdate`)
   console.log(arguments)
 
   // Only if gas or gasPrice changed:
-  if (prevState &&
-      (state.gas !== prevState.gas ||
-      state.gasPrice !== prevState.gasPrice)) {
+  if (!prevState ||
+      (gas !== prevState.gas ||
+      gasPrice !== prevState.gasPrice)) {
     log.debug(`recalculating gas since prev state change: ${JSON.stringify({ prevState, state })}`)
     this.calculateGas()
-
-  // Otherwise this was a recalculation,
-  // so we should inform the parent:
-  } else {
-    if (this.props.onTxChange) {
-      this.props.onTxChange(this.gatherParams)
-    }
   }
 }
 
+PTXP.calculateGas = function () {
+  const txMeta = this.gatherParams()
+  log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
+
+  var txParams = txMeta.txParams
+  var gasMultiplier = txMeta.gasMultiplier
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  gasPrice = gasPrice.mul(new BN(gasMultiplier * 100), 10).div(new BN(100, 10))
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
+
+  const txFeeHex = '0x' + txFee.toString('hex')
+  const maxCostHex = '0x' + maxCost.toString('hex')
+  const gasPriceHex = '0x' + gasPrice.toString('hex')
+
+  txMeta.txFee = txFeeHex
+  txMeta.maxCost = maxCostHex
+  txMeta.txParams.gasPrice = gasPriceHex
+
+  this.setState({
+    txFee: '0x' + txFee.toString('hex'),
+    maxCost: '0x' + maxCost.toString('hex'),
+  })
+
+  if (this.props.onTxChange) {
+    this.props.onTxChange(txMeta)
+  }
+}
+
+// After a customizable state value has been updated,
 PTXP.gatherParams = function () {
   log.debug(`pending-tx-details#gatherParams`)
   const props = this.props
@@ -284,27 +312,7 @@ PTXP.gatherParams = function () {
   const resultTxMeta = extend(txData, {
     txParams: resultTx,
   })
-  log.debug(`gathered params: ${JSON.stringify(resultTxMeta)}`)
   return resultTxMeta
-}
-
-PTXP.calculateGas = function () {
-  const txMeta = this.gatherParams()
-  log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
-
-  var txParams = txMeta.txParams
-  var gasMultiplier = txMeta.gasMultiplier
-  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-  gasPrice = gasPrice.mul(new BN(gasMultiplier * 100), 10).div(new BN(100, 10))
-  var txFee = gasCost.mul(gasPrice)
-  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-  var maxCost = txValue.add(txFee)
-
-  this.setState({
-    txFee: '0x' + txFee.toString('hex'),
-    maxCost: '0x' + maxCost.toString('hex'),
-  })
 }
 
 function forwardCarrat () {

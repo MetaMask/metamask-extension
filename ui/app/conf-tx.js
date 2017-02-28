@@ -164,6 +164,7 @@ ConfirmTxScreen.prototype.buyEth = function (address, event) {
 // Allows the detail view to update the gas calculations,
 // for manual gas controls.
 ConfirmTxScreen.prototype.onTxChange = function (txData) {
+  log.debug(`conf-tx onTxChange triggered with ${JSON.stringify(txData)}`)
   this.setState({ txData })
 }
 
