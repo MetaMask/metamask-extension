@@ -291,7 +291,7 @@ function reduceApp (state, action) {
     case actions.SHOW_CONF_TX_PAGE:
       return extend(appState, {
         currentView: {
-          name: pendingTxs ? 'confTx' : 'account-detail',
+          name: 'confTx',
           context: 0,
         },
         transForward: action.transForward,

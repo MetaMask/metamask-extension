@@ -106,6 +106,7 @@ module.exports = class txProviderUtils {
     txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
     txParams.nonce = normalize(txParams.nonce)
     // build ethTx
+    log.info(`Prepared tx for signing: ${JSON.stringify(txParams)}`)
     const ethTx = new Transaction(txParams)
     return ethTx
   }
