@@ -276,8 +276,9 @@ module.exports = class MetamaskController extends EventEmitter {
       exportAccount:             nodeify(keyringController.exportAccount).bind(keyringController),
 
       // txManager
-      approveTransaction:    txManager.approveTransaction.bind(txManager),
-      cancelTransaction:     txManager.cancelTransaction.bind(txManager),
+      approveTransaction:          txManager.approveTransaction.bind(txManager),
+      cancelTransaction:           txManager.cancelTransaction.bind(txManager),
+      updateAndApproveTransaction: this.updateAndApproveTx.bind(this),
 
       // messageManager
       signMessage:           nodeify(this.signMessage).bind(this),
@@ -460,6 +461,12 @@ module.exports = class MetamaskController extends EventEmitter {
           return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
       }
     })
+  }
+
+  updateAndApproveTx(txMeta, cb) {
+    const txManager = this.txManager
+    txManager.updateTx(txMeta)
+    txManager.approveTransaction(txMeta.id, cb)
   }
 
   signMessage (msgParams, cb) {
