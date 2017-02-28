@@ -12,12 +12,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const state = this.state || {}
   const txData = props.txData
-  const txParams = txData.txParams
-
-  const gas = state.gas || txParams.gas
-  const gasPrice = state.gasPrice || txData.gasPrice
 
   return (
 

@@ -26,7 +26,6 @@ PTXP.render = function () {
   var props = this.props
   var state = this.state || {}
   var txData = state.txMeta || props.txData
-  var state = this.state || {}
 
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
@@ -155,7 +154,7 @@ PTXP.render = function () {
                 this.setState({ gas: newHex })
               },
             }),
-          ])
+          ]),
         ]),
         h('.cell.row', {
 
@@ -170,7 +169,7 @@ PTXP.render = function () {
                 this.setState({ gasPrice: newHex })
               },
             }),
-          ])
+          ]),
         ]),
         h('.cell.row', {
           style: {
@@ -275,11 +274,11 @@ PTXP.gatherParams = function () {
 
 PTXP.calculateGas = function () {
   const txMeta = this.gatherParams()
-  log.debug(`pending-tx-details calculating gas for ${ JSON.stringify(txMeta) }`)
-  const txUtils = this.txUtils
+  log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
   this.txUtils.analyzeGasUsage(txMeta, (err, result) => {
-    console.log('ANALYZED')
-    console.dir(arguments)
+    if (err) {
+      return this.setState({ error: err })
+    }
     const { txFee, maxCost } = result || txMeta
     if (txFee === txMeta.txFee && maxCost === txMeta.maxCost) {
       log.warn(`Recalculating gas resulted in no change.`)
