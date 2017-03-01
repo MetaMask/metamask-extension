@@ -501,6 +501,12 @@ App.prototype.renderCustomOption = function (provider) {
   const { rpcTarget, type } = provider
   if (type !== 'rpc') return null
 
+  // Concatenate long URLs
+  let label = rpcTarget
+  if (rpcTarget.length > 31) {
+    label = label.substr(0, 34) + '...'
+  }
+
   switch (rpcTarget) {
 
     case 'http://localhost:8545':
@@ -508,7 +514,8 @@ App.prototype.renderCustomOption = function (provider) {
 
     default:
       return h(DropMenuItem, {
-        label: `${rpcTarget}`,
+        label,
+        key: rpcTarget,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         icon: h('i.fa.fa-question-circle.fa-lg'),
         activeNetworkRender: 'custom',
@@ -526,6 +533,7 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
     } else {
       return h(DropMenuItem, {
         label: rpc,
+        key: rpc,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         action: () => props.dispatch(actions.setRpcTarget(rpc)),
         icon: h('i.fa.fa-question-circle.fa-lg'),

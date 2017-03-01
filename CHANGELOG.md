@@ -2,6 +2,7 @@
 
 ## Current Master
 
+
 - Add two most recently used custom RPCs to network dropdown menu.
 - Add personal_sign method support.
 - Add ability to customize gas and gasPrice on the transaction approval screen.

@@ -671,7 +671,7 @@ function markAccountsFound() {
 
 function setRpcTarget (newRpc) {
   return (dispatch) => {
-    if (global.METAMASK_DEBUG) console.log(`background.setRpcTarget`)
+    log.debug(`background.setRpcTarget`)
     background.setRpcTarget(newRpc)
     background.updateFrequentRpcList(newRpc, (frequentRpcList) => {
       const value = {
