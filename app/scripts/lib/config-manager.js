@@ -228,18 +228,6 @@ ConfigManager.prototype._emitUpdates = function (state) {
   })
 }
 
-ConfigManager.prototype.getGasMultiplier = function () {
-  var data = this.getData()
-  return data.gasMultiplier
-}
-
-ConfigManager.prototype.setGasMultiplier = function (gasMultiplier) {
-  var data = this.getData()
-
-  data.gasMultiplier = gasMultiplier
-  this.setData(data)
-}
-
 ConfigManager.prototype.setLostAccounts = function (lostAccounts) {
   var data = this.getData()
   data.lostAccounts = lostAccounts

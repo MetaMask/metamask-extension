@@ -94,6 +94,7 @@ var actions = {
   cancelPersonalMsg,
   sendTx: sendTx,
   signTx: signTx,
+  updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
   txError: txError,
@@ -387,25 +388,35 @@ function signPersonalMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    log.debug(`background.setGasMultiplier`)
-    background.setGasMultiplier(txData.gasMultiplier, (err) => {
+    web3.eth.sendTransaction(txData, (err, data) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      web3.eth.sendTransaction(txData, (err, data) => {
-        dispatch(actions.hideLoadingIndication())
-        if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.hideWarning())
-        dispatch(actions.goHome())
-      })
-      dispatch(this.showConfTxPage())
+      dispatch(actions.hideWarning())
+      dispatch(actions.goHome())
     })
+    dispatch(this.showConfTxPage())
   }
 }
 
 function sendTx (txData) {
-  log.info('actions: sendTx')
+  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
   return (dispatch) => {
     log.debug(`actions calling background.approveTransaction`)
     background.approveTransaction(txData.id, (err) => {
+      if (err) {
+        dispatch(actions.txError(err))
+        return console.error(err.message)
+      }
+      dispatch(actions.completedTx(txData.id))
+    })
+  }
+}
+
+function updateAndApproveTx (txData) {
+  log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
+  return (dispatch) => {
+    log.debug(`actions calling background.updateAndApproveTx`)
+    background.updateAndApproveTransaction(txData, (err) => {
       if (err) {
         dispatch(actions.txError(err))
         return console.error(err.message)

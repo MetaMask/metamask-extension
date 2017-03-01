@@ -1,12 +1,16 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const extend = require('xtend')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
 const util = require('../util')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
+const HexInput = require('./hex-as-decimal-input')
 
 module.exports = PendingTxDetails
 
@@ -19,7 +23,8 @@ const PTXP = PendingTxDetails.prototype
 
 PTXP.render = function () {
   var props = this.props
-  var txData = props.txData
+  var state = this.state || {}
+  var txData = state.txMeta || props.txData
 
   var txParams = txData.txParams || {}
   var address = txParams.from || props.selectedAddress
@@ -27,10 +32,17 @@ PTXP.render = function () {
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
 
-  var txFee = txData.txFee || ''
-  var maxCost = txData.maxCost || ''
+  const gas = state.gas || txParams.gas
+  const gasPrice = state.gasPrice || txData.gasPrice
+  const gasDefault = txParams.gas
+  const gasPriceDefault = txData.gasPrice
+
+  var txFee = state.txFee || txData.txFee || ''
+  var maxCost = state.maxCost || txData.maxCost || ''
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
+
+  log.debug(`rendering gas: ${gas}, gasPrice: ${gasPrice}, txFee: ${txFee}, maxCost: ${maxCost}`)
 
   return (
     h('div', [
@@ -97,11 +109,63 @@ PTXP.render = function () {
 
       h('.table-box', [
 
+        // Ether Value
+        // Currently not customizable, but easily modified
+        // in the way that gas and gasLimit currently are.
         h('.row', [
           h('.cell.label', 'Amount'),
           h(EthBalance, { value: txParams.value }),
         ]),
 
+        // Gas Limit (customizable)
+        h('.cell.row', [
+          h('.cell.label', 'Gas Limit'),
+          h('.cell.value', {
+          }, [
+            h(HexInput, {
+              value: gas,
+              suffix: 'UNITS',
+              style: {
+                position: 'relative',
+                top: '5px',
+              },
+              onChange: (newHex) => {
+                log.info(`Gas limit changed to ${newHex}`)
+                if (newHex === '0x0') {
+                  this.setState({gas: gasDefault})
+                } else {
+                  this.setState({ gas: newHex })
+                }
+              },
+            }),
+          ]),
+        ]),
+
+        // Gas Price (customizable)
+        h('.cell.row', [
+          h('.cell.label', 'Gas Price'),
+          h('.cell.value', {
+          }, [
+            h(HexInput, {
+              value: gasPrice,
+              suffix: 'WEI',
+              style: {
+                position: 'relative',
+                top: '5px',
+              },
+              onChange: (newHex) => {
+                log.info(`Gas price changed to: ${newHex}`)
+                if (newHex === '0x0') {
+                  this.setState({gasPrice: gasPriceDefault})
+                } else {
+                  this.setState({ gasPrice: newHex })
+                }
+              },
+            }),
+          ]),
+        ]),
+
+        // Max Transaction Fee (calculated)
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
           h(EthBalance, { value: txFee.toString(16) }),
@@ -130,6 +194,7 @@ PTXP.render = function () {
           ]),
         ]),
 
+        // Data size row:
         h('.cell.row', {
           style: {
             background: '#f7f7f7',
@@ -189,6 +254,80 @@ PTXP.miniAccountPanelForRecipient = function () {
 
     ])
   }
+}
+
+PTXP.componentDidUpdate = function (prevProps, previousState) {
+  log.debug(`pending-tx-details componentDidUpdate`)
+  const state = this.state || {}
+  const prevState = previousState || {}
+  const { gas, gasPrice } = state
+
+  // Only if gas or gasPrice changed:
+  if (!prevState ||
+      (gas !== prevState.gas ||
+      gasPrice !== prevState.gasPrice)) {
+    log.debug(`recalculating gas since prev state change: ${JSON.stringify({ prevState, state })}`)
+    this.calculateGas()
+  }
+}
+
+PTXP.calculateGas = function () {
+  const txMeta = this.gatherParams()
+  log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
+
+  var txParams = txMeta.txParams
+  var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  var txFee = gasCost.mul(gasPrice)
+  var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
+  var maxCost = txValue.add(txFee)
+
+  const txFeeHex = '0x' + txFee.toString('hex')
+  const maxCostHex = '0x' + maxCost.toString('hex')
+  const gasPriceHex = '0x' + gasPrice.toString('hex')
+
+  txMeta.txFee = txFeeHex
+  txMeta.maxCost = maxCostHex
+  txMeta.txParams.gasPrice = gasPriceHex
+
+  this.setState({
+    txFee: '0x' + txFee.toString('hex'),
+    maxCost: '0x' + maxCost.toString('hex'),
+  })
+
+  if (this.props.onTxChange) {
+    this.props.onTxChange(txMeta)
+  }
+}
+
+PTXP.resetGasFields = function () {
+  log.debug(`pending-tx-details#resetGasFields`)
+  const txData = this.props.txData
+  this.setState({
+    gas: txData.txParams.gas,
+    gasPrice: txData.gasPrice,
+  })
+}
+
+// After a customizable state value has been updated,
+PTXP.gatherParams = function () {
+  log.debug(`pending-tx-details#gatherParams`)
+  const props = this.props
+  const state = this.state || {}
+  const txData = state.txData || props.txData
+  const txParams = txData.txParams
+
+  const gas = state.gas || txParams.gas
+  const gasPrice = state.gasPrice || txParams.gasPrice
+  const resultTx = extend(txParams, {
+    gas,
+    gasPrice,
+  })
+  const resultTxMeta = extend(txData, {
+    txParams: resultTx,
+  })
+  log.debug(`UI has computed tx params ${JSON.stringify(resultTx)}`)
+  return resultTxMeta
 }
 
 function forwardCarrat () {

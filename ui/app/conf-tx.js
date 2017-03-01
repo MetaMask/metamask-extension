@@ -13,6 +13,7 @@ const BN = ethUtil.BN
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
 const PendingPersonalMsg = require('./components/pending-personal-msg')
+const Loading = require('./components/loading')
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -48,7 +49,7 @@ ConfirmTxScreen.prototype.render = function () {
   var isNotification = isPopupOrNotification() === 'notification'
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
-  if (unconfTxList.length === 0) return null
+  if (unconfTxList.length === 0) return h(Loading)
 
   return (
 
@@ -104,6 +105,8 @@ ConfirmTxScreen.prototype.render = function () {
           accounts: props.accounts,
           identities: props.identities,
           insufficientBalance: this.checkBalanceAgainstTx(txData),
+          // State actions
+          onTxChange: this.onTxChange.bind(this),
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
           sendTransaction: this.sendTransaction.bind(this, txData),
@@ -141,6 +144,7 @@ function currentTxView (opts) {
     }
   }
 }
+
 ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
   if (!txData.txParams) return false
   var props = this.props
@@ -158,9 +162,20 @@ ConfirmTxScreen.prototype.buyEth = function (address, event) {
   this.props.dispatch(actions.buyEthView(address))
 }
 
+// Allows the detail view to update the gas calculations,
+// for manual gas controls.
+ConfirmTxScreen.prototype.onTxChange = function (txData) {
+  log.debug(`conf-tx onTxChange triggered with ${JSON.stringify(txData)}`)
+  this.setState({ txData })
+}
+
+// Must default to any local state txData,
+// to allow manual override of gas calculations.
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   event.stopPropagation()
-  this.props.dispatch(actions.sendTx(txData))
+  const state = this.state || {}
+  const txMeta = state.txData
+  this.props.dispatch(actions.updateAndApproveTx(txMeta || txData))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
