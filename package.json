@@ -57,6 +57,7 @@
     "eth-query": "^1.0.3",
     "eth-sig-util": "^1.1.1",
     "eth-simple-keyring": "^1.1.0",
+    "ethereum-ens": "^0.5.0",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",
     "ethereumjs-wallet": "^0.6.0",
