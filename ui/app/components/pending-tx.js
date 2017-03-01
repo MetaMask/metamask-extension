@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-tx-details')
+const extend = require('xtend')
 
 module.exports = PendingTx
 
@@ -12,6 +13,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
+  const newProps = extend(props, {ref: 'details'})
   const txData = props.txData
 
   return (
@@ -21,7 +23,7 @@ PendingTx.prototype.render = function () {
     }, [
 
       // tx info
-      h(PendingTxDetails, props),
+      h(PendingTxDetails, newProps),
 
       h('style', `
         .conf-buttons button {
@@ -71,6 +73,12 @@ PendingTx.prototype.render = function () {
         h('button.cancel.btn-red', {
           onClick: props.cancelTransaction,
         }, 'Reject'),
+
+        h('button', {
+          onClick: () => {
+            this.refs.details.resetGasFields()
+          },
+        }, 'Reset'),
       ]),
     ])
   )

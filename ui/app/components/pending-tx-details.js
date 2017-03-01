@@ -12,7 +12,6 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
-
 module.exports = PendingTxDetails
 
 inherits(PendingTxDetails, Component)
@@ -35,8 +34,8 @@ PTXP.render = function () {
 
   const gas = state.gas || txParams.gas
   const gasPrice = state.gasPrice || txData.gasPrice
-  const gasDefault = gas
-  const gasPriceDefault = gasPrice
+  const gasDefault = txParams.gas
+  const gasPriceDefault = txData.gasPrice
 
   var txFee = state.txFee || txData.txFee || ''
   var maxCost = state.maxCost || txData.maxCost || ''
@@ -299,6 +298,15 @@ PTXP.calculateGas = function () {
   if (this.props.onTxChange) {
     this.props.onTxChange(txMeta)
   }
+}
+
+PTXP.resetGasFields = function () {
+  log.debug(`pending-tx-details#resetGasFields`)
+  const txData = this.props.txData
+  this.setState({
+    gas: txData.txParams.gas,
+    gasPrice: txData.gasPrice,
+  })
 }
 
 // After a customizable state value has been updated,
