@@ -32,10 +32,8 @@ PTXP.render = function () {
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
 
-  const gas = state.gas || txParams.gas
-  const gasPrice = state.gasPrice || txData.gasPrice
-  const gasDefault = txParams.gas
-  const gasPriceDefault = txData.gasPrice
+  const gas = (state.gas === undefined) ? txParams.gas : state.gas
+  const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
 
   var txFee = state.txFee || txData.txFee || ''
   var maxCost = state.maxCost || txData.maxCost || ''
@@ -131,11 +129,7 @@ PTXP.render = function () {
               },
               onChange: (newHex) => {
                 log.info(`Gas limit changed to ${newHex}`)
-                if (newHex === '0x0') {
-                  this.setState({gas: gasDefault})
-                } else {
-                  this.setState({ gas: newHex })
-                }
+                this.setState({ gas: newHex })
               },
             }),
           ]),
@@ -155,11 +149,7 @@ PTXP.render = function () {
               },
               onChange: (newHex) => {
                 log.info(`Gas price changed to: ${newHex}`)
-                if (newHex === '0x0') {
-                  this.setState({gasPrice: gasPriceDefault})
-                } else {
-                  this.setState({ gasPrice: newHex })
-                }
+                this.setState({ gasPrice: newHex })
               },
             }),
           ]),

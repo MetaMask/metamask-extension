@@ -39,16 +39,17 @@ HexAsDecimalInput.prototype.render = function () {
       },
     }, [
       h('input.ether-balance.ether-balance-amount', {
+        type: 'number',
         style: extend({
           display: 'block',
           textAlign: 'right',
           backgroundColor: 'transparent',
           border: '1px solid #bdbdbd',
-          type: 'number',
+
         }, style),
         value: decimalValue,
         onChange: (event) => {
-          const hexString = hexify(event.target.value)
+          const hexString = (event.target.value === '') ? '' : hexify(event.target.value)
           onChange(hexString)
         },
       }),
@@ -71,7 +72,11 @@ function hexify (decimalString) {
 }
 
 function decimalize (input, toEth) {
-  const strippedInput = ethUtil.stripHexPrefix(input)
-  const inputBN = new BN(strippedInput, 'hex')
-  return inputBN.toString(10)
+  if (input === '') {
+    return ''
+  } else {
+    const strippedInput = ethUtil.stripHexPrefix(input)
+    const inputBN = new BN(strippedInput, 'hex')
+    return inputBN.toString(10)
+  }
 }

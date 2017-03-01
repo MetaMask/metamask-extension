@@ -60,12 +60,18 @@ PendingTx.prototype.render = function () {
       }, [
 
         props.insufficientBalance ?
-          h('button.btn-green', {
+          h('button', {
             onClick: props.buyEth,
           }, 'Buy Ether')
         : null,
 
-        h('button.confirm', {
+        h('button', {
+          onClick: () => {
+            this.refs.details.resetGasFields()
+          },
+        }, 'Reset'),
+
+        h('button.confirm.btn-green', {
           disabled: props.insufficientBalance,
           onClick: props.sendTransaction,
         }, 'Accept'),
@@ -73,12 +79,6 @@ PendingTx.prototype.render = function () {
         h('button.cancel.btn-red', {
           onClick: props.cancelTransaction,
         }, 'Reject'),
-
-        h('button', {
-          onClick: () => {
-            this.refs.details.resetGasFields()
-          },
-        }, 'Reset'),
       ]),
     ])
   )
