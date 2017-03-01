@@ -6,14 +6,16 @@ const notification = require('../../../app/scripts/lib/notifications')
 module.exports = reduceApp
 
 function reduceApp (state, action) {
+  log.debug('App Reducer got ' + action.type)
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
-  const pendingTxs = hasPendingTxs(state)
+  let pendingTxs = hasPendingTxs(state)
   let name = 'accounts'
   if (selectedAddress) {
     name = 'accountDetail'
   }
   if (pendingTxs) {
+    log.debug('pending txs detected, defaulting to conf-tx view.')
     name = 'confTx'
   }
 
@@ -294,27 +296,32 @@ function reduceApp (state, action) {
         },
         transForward: action.transForward,
         warning: null,
+        isLoading: false,
       })
 
     case actions.SHOW_CONF_MSG_PAGE:
       return extend(appState, {
         currentView: {
-          name: 'confTx',
+          name: pendingTxs ? 'confTx' : 'account-detail',
           context: 0,
         },
         transForward: true,
         warning: null,
+        isLoading: false,
       })
 
     case actions.COMPLETED_TX:
-      var unapprovedTxs = state.metamask.unapprovedTxs
-      var unapprovedMsgs = state.metamask.unapprovedMsgs
-      var network = state.metamask.network
+      log.debug('reducing COMPLETED_TX for tx ' + action.value)
+      var { unapprovedTxs, unapprovedMsgs,
+        unapprovedPersonalMsgs, network } = state.metamask
 
-      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
-    .filter(tx => tx !== tx.id)
+      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+      .filter(tx => tx.id !== action.value )
 
-      if (unconfTxList && unconfTxList.length > 0) {
+      pendingTxs = unconfTxList.length > 0
+
+      if (pendingTxs) {
+        log.debug('reducer detected txs - rendering confTx view')
         return extend(appState, {
           transForward: false,
           currentView: {
@@ -324,6 +331,7 @@ function reduceApp (state, action) {
           warning: null,
         })
       } else {
+        log.debug('attempting to close popup')
         notification.closePopup()
 
         return extend(appState, {
@@ -572,11 +580,12 @@ function reduceApp (state, action) {
 }
 
 function hasPendingTxs (state) {
-  var unapprovedTxs = state.metamask.unapprovedTxs
-  var unapprovedMsgs = state.metamask.unapprovedMsgs
-  var network = state.metamask.network
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
-  return unconfTxList.length > 0
+  var { unapprovedTxs, unapprovedMsgs,
+    unapprovedPersonalMsgs, network } = state.metamask
+
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+  var has = unconfTxList.length > 0
+  return has
 }
 
 function indexForPending (state, txId) {

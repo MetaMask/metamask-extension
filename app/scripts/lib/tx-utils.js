@@ -2,7 +2,7 @@ const async = require('async')
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
-const normalize = require('./sig-util').normalize
+const normalize = require('eth-sig-util').normalize
 const BN = ethUtil.BN
 
 /*
@@ -92,11 +92,10 @@ module.exports = class txProviderUtils {
   }
 
   // builds ethTx from txParams object
-  buildEthTxFromParams (txParams, gasMultiplier = 1) {
+  buildEthTxFromParams (txParams) {
     // apply gas multiplyer
     let gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
     // multiply and divide by 100 so as to add percision to integer mul
-    gasPrice = gasPrice.mul(new BN(gasMultiplier * 100, 10)).div(new BN(100, 10))
     txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
     // normalize values
     txParams.to = normalize(txParams.to)
@@ -106,6 +105,7 @@ module.exports = class txProviderUtils {
     txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
     txParams.nonce = normalize(txParams.nonce)
     // build ethTx
+    log.info(`Prepared tx for signing: ${JSON.stringify(txParams)}`)
     const ethTx = new Transaction(txParams)
     return ethTx
   }

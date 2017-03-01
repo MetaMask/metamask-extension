@@ -95,7 +95,6 @@ IdentityStore.prototype.getState = function () {
     isUnlocked: this._isUnlocked(),
     seedWords: seedWords,
     selectedAddress: configManager.getSelectedAccount(),
-    gasMultiplier: configManager.getGasMultiplier(),
   }))
 }
 

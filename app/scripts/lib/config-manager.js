@@ -1,6 +1,6 @@
 const MetamaskConfig = require('../config.js')
 const ethUtil = require('ethereumjs-util')
-const normalize = require('./sig-util').normalize
+const normalize = require('eth-sig-util').normalize
 
 const TESTNET_RPC = MetamaskConfig.network.testnet
 const MAINNET_RPC = MetamaskConfig.network.mainnet
@@ -226,18 +226,6 @@ ConfigManager.prototype._emitUpdates = function (state) {
   this._subs.forEach(function (handler) {
     handler(state)
   })
-}
-
-ConfigManager.prototype.getGasMultiplier = function () {
-  var data = this.getData()
-  return data.gasMultiplier
-}
-
-ConfigManager.prototype.setGasMultiplier = function (gasMultiplier) {
-  var data = this.getData()
-
-  data.gasMultiplier = gasMultiplier
-  this.setData(data)
 }
 
 ConfigManager.prototype.setLostAccounts = function (lostAccounts) {
