@@ -306,7 +306,6 @@ PTXP.gatherParams = function () {
   const state = this.state || {}
   const txData = state.txData || props.txData
   const txParams = txData.txParams
-
   const gas = state.gas || txParams.gas
   const gasPrice = state.gasPrice || txParams.gasPrice
   const resultTx = extend(txParams, {
@@ -318,6 +317,16 @@ PTXP.gatherParams = function () {
   })
   log.debug(`UI has computed tx params ${JSON.stringify(resultTx)}`)
   return resultTxMeta
+}
+
+PTXP.verifyGasParams = function () {
+  // We call this in case the gas has not been modified at all
+  if (!this.state) { return true }
+  return this._notZeroOrEmptyString(this.state.gas) && this._notZeroOrEmptyString(this.state.gasPrice)
+}
+
+PTXP._notZeroOrEmptyString = function (obj) {
+  return obj !== '' && obj !== '0x0'
 }
 
 function forwardCarrat () {
