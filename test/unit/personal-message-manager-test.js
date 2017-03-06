@@ -90,20 +90,20 @@ describe('Personal Message Manager', function() {
   describe('#normalizeMsgData', function() {
     it('converts text to a utf8 buffer', function() {
       var input = 'hello'
-      var output = messageManager.normalizeMsgdata(input)
-      assert.equal(output, '68656c6c6f', 'predictably hex encoded')
+      var output = messageManager.normalizeMsgData(input)
+      assert.equal(output, '0x68656c6c6f', 'predictably hex encoded')
     })
 
     it('tolerates a hex prefix', function() {
       var input = '0x12'
-      var output = messageManager.normalizeMsgdata(input)
-      assert.equal(output, '12', 'prefix stripped')
+      var output = messageManager.normalizeMsgData(input)
+      assert.equal(output, '12', 'un modified')
     })
 
     it('tolerates normal hex', function() {
       var input = '12'
-      var output = messageManager.normalizeMsgdata(input)
-      assert.equal(output, '12', 'not modified')
+      var output = messageManager.normalizeMsgData(input)
+      assert.equal(output, '12', 'adds prefix')
     })
   })
 
