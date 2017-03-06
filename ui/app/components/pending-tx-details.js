@@ -32,10 +32,8 @@ PTXP.render = function () {
   var account = props.accounts[address]
   var balance = account ? account.balance : '0x0'
 
-  const gas = state.gas || txParams.gas
-  const gasPrice = state.gasPrice || txData.gasPrice
-  const gasDefault = txParams.gas
-  const gasPriceDefault = txData.gasPrice
+  const gas = (state.gas === undefined) ? txParams.gas : state.gas
+  const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
 
   var txFee = state.txFee || txData.txFee || ''
   var maxCost = state.maxCost || txData.maxCost || ''
@@ -131,11 +129,7 @@ PTXP.render = function () {
               },
               onChange: (newHex) => {
                 log.info(`Gas limit changed to ${newHex}`)
-                if (newHex === '0x0') {
-                  this.setState({gas: gasDefault})
-                } else {
-                  this.setState({ gas: newHex })
-                }
+                this.setState({ gas: newHex })
               },
             }),
           ]),
@@ -155,11 +149,7 @@ PTXP.render = function () {
               },
               onChange: (newHex) => {
                 log.info(`Gas price changed to: ${newHex}`)
-                if (newHex === '0x0') {
-                  this.setState({gasPrice: gasPriceDefault})
-                } else {
-                  this.setState({ gasPrice: newHex })
-                }
+                this.setState({ gasPrice: newHex })
               },
             }),
           ]),
@@ -316,7 +306,6 @@ PTXP.gatherParams = function () {
   const state = this.state || {}
   const txData = state.txData || props.txData
   const txParams = txData.txParams
-
   const gas = state.gas || txParams.gas
   const gasPrice = state.gasPrice || txParams.gasPrice
   const resultTx = extend(txParams, {
@@ -328,6 +317,16 @@ PTXP.gatherParams = function () {
   })
   log.debug(`UI has computed tx params ${JSON.stringify(resultTx)}`)
   return resultTxMeta
+}
+
+PTXP.verifyGasParams = function () {
+  // We call this in case the gas has not been modified at all
+  if (!this.state) { return true }
+  return this._notZeroOrEmptyString(this.state.gas) && this._notZeroOrEmptyString(this.state.gasPrice)
+}
+
+PTXP._notZeroOrEmptyString = function (obj) {
+  return obj !== '' && obj !== '0x0'
 }
 
 function forwardCarrat () {
