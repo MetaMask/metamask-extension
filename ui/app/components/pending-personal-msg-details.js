@@ -22,7 +22,6 @@ PendingMsgDetails.prototype.render = function () {
   var account = state.accounts[address] || { address: address }
 
   var { data } = msgParams
-  console.dir({ msgParams })
 
   return (
     h('div', {
