@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
+const BinaryRenderer = require('./binary-renderer')
 
 module.exports = PendingMsgDetails
 
@@ -21,6 +22,7 @@ PendingMsgDetails.prototype.render = function () {
   var account = state.accounts[address] || { address: address }
 
   var { data } = msgParams
+  console.dir({ msgParams })
 
   return (
     h('div', {
@@ -41,18 +43,7 @@ PendingMsgDetails.prototype.render = function () {
       // message data
       h('div', [
         h('label.font-small', { style: { display: 'block' } }, 'MESSAGE'),
-        h('textarea.font-small', {
-          readOnly: true,
-          style: {
-            width: '315px',
-            maxHeight: '210px',
-            resize: 'none',
-            border: 'none',
-            background: 'white',
-            padding: '3px',
-          },
-          defaultValue: data,
-        }),
+        h(BinaryRenderer, { value: data }),
       ]),
 
     ])
