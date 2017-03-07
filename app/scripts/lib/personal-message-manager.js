@@ -118,7 +118,7 @@ module.exports = class PersonalMessageManager extends EventEmitter{
       log.debug(`Message was not hex encoded, interpreting as utf8.`)
     }
 
-    return hexEncode(data)
+    return this.hexEncode(data)
   }
 
   hexEncode(text){
@@ -127,7 +127,7 @@ module.exports = class PersonalMessageManager extends EventEmitter{
     var result = ''
     for (i = 0; i < text.length; i++) {
       hex = text.charCodeAt(i).toString(16)
-      result += ('000'+hex).slice(-4)
+      result += ('000' + hex).slice(-4)
     }
     return '0x' + result
   }
