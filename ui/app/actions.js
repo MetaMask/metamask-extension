@@ -112,11 +112,13 @@ var actions = {
   // config screen
   SHOW_CONFIG_PAGE: 'SHOW_CONFIG_PAGE',
   SET_RPC_TARGET: 'SET_RPC_TARGET',
+  SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   USE_ETHERSCAN_PROVIDER: 'USE_ETHERSCAN_PROVIDER',
   useEtherscanProvider: useEtherscanProvider,
   showConfigPage: showConfigPage,
   setRpcTarget: setRpcTarget,
+  setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
@@ -669,18 +671,34 @@ function markAccountsFound() {
 // config
 //
 
+// default rpc target refers to localhost:8545 in this instance.
+function setDefaultRpcTarget (rpcList) {
+  log.debug(`background.setDefaultRpcTarget`)
+  background.setRpcTarget('http://localhost:8545')
+  return (dispatch) => {
+    dispatch({
+      type: actions.SET_RPC_TARGET,
+      value: 'http://localhost:8545',
+    })
+    dispatch({
+      type: actions.SET_RPC_LIST,
+      value: rpcList,
+    })
+  }
+}
+
 function setRpcTarget (newRpc) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget`)
     background.setRpcTarget(newRpc)
-    background.updateFrequentRpcList(newRpc, (frequentRpcList) => {
-      const value = {
-        rpcTarget: newRpc,
-        frequentRpcList,
-      }
+    background.updateFrequentRpcList(newRpc, (rpcList) => {
       dispatch({
         type: actions.SET_RPC_TARGET,
-        value,
+        value: newRpc,
+      })
+      dispatch({
+        type: actions.SET_RPC_LIST,
+        value: rpcList,
       })
     })
   }

@@ -258,9 +258,7 @@ App.prototype.renderNetworkDropdown = function () {
     h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => {
-        props.dispatch(actions.setRpcTarget('http://localhost:8545'))
-      },
+      action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
       icon: h('i.fa.fa-question-circle.fa-lg'),
       activeNetworkRender: props.provider.rpcTarget,
     }),
