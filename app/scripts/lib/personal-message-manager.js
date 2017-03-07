@@ -112,7 +112,7 @@ module.exports = class PersonalMessageManager extends EventEmitter{
     try {
       const stripped = ethUtil.stripHexPrefix(data)
       if (stripped.match(hexRe)) {
-        return stripped
+        return ethUtil.addHexPrefix(stripped)
       }
     } catch (e) {
       log.debug(`Message was not hex encoded, interpreting as utf8.`)

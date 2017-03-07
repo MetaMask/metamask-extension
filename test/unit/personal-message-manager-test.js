@@ -97,13 +97,13 @@ describe('Personal Message Manager', function() {
     it('tolerates a hex prefix', function() {
       var input = '0x12'
       var output = messageManager.normalizeMsgData(input)
-      assert.equal(output, '12', 'un modified')
+      assert.equal(output, '0x12', 'un modified')
     })
 
     it('tolerates normal hex', function() {
       var input = '12'
       var output = messageManager.normalizeMsgData(input)
-      assert.equal(output, '12', 'adds prefix')
+      assert.equal(output, '0x12', 'adds prefix')
     })
   })
 
