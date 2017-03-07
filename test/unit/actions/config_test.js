@@ -31,35 +31,39 @@ describe ('config view actions', function() {
   describe('SET_RPC_TARGET', function() {
 
     it('sets the state.metamask.rpcTarget property of the state to the action.value', function() {
-      const value = {
-        rpcTarget: 'foo',
-        frequentRpcList: ['foo']
-      }
       const action = {
         type: actions.SET_RPC_TARGET,
-        value,
+        value: 'foo',
+      }
+
+      const secondAction = {
+        type: actions.SET_RPC_LIST,
+        value: ['foo'],
       }
 
       var result = reducers(initialState, action)
+      result = reducers(result, secondAction)
       assert.equal(result.metamask.provider.type, 'rpc')
-      assert.equal(result.metamask.provider.rpcTarget, value.rpcTarget)
-      assert.equal(result.metamask.frequentRpcList[0], value.frequentRpcList[0])
+      assert.equal(result.metamask.provider.rpcTarget, 'foo')
+      assert.equal(result.metamask.frequentRpcList[0], 'foo')
     })
 
     it('should handle multiple requests to change the rpc gracefully', function() {
-      const value = {
-        rpcTarget: 'foo',
-        frequentRpcList: ['foo']
-      }
-
       const action = {
         type: actions.SET_RPC_TARGET,
-        value,
+        value: 'foo',
+      }
+
+      const secondAction = {
+        type: actions.SET_RPC_LIST,
+        value: ['foo'],
       }
 
       var result = reducers(initialState, action)
-      var secondResult = reducers(result, action)
-      assert.equal(secondResult.metamask.frequentRpcList.length, 1)
+      var secondResult = reducers(result, secondAction)
+      var thirdResult = reducers(secondResult, action)
+      var fourthResult = reducers(thirdResult, secondAction)
+      assert.equal(fourthResult.metamask.frequentRpcList.length, 1)
     })
   })
 
