@@ -88,7 +88,7 @@ describe('Personal Message Manager', function() {
   })
 
   describe('#normalizeMsgData', function() {
-    it('converts text to a utf8 buffer', function() {
+    it('converts text to a utf8 hex string', function() {
       var input = 'hello'
       var output = messageManager.normalizeMsgData(input)
       assert.equal(output, '0x68656c6c6f', 'predictably hex encoded')
