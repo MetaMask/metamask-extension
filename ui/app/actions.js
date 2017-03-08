@@ -680,31 +680,19 @@ function setDefaultRpcTarget (rpcList) {
         console.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks.'))
       }
-      dispatch(self.setRpc(result))
     })
   }
-
 }
 
 function setRpcTarget (newRpc) {
-    log.debug(`background.setRpcTarget`)
-    return (dispatch) => {
-      background.setCustomRpc(newRpc, (err, result) => {
-        if (err) {
-          console.err(err)
-          return dispatch(self.displayWarning('Had a problem changing networks!'))
-        }
-        dispatch(self.setRpc(result))
-      })
-    }
-
-
-}
-
-function setRpc (newRpc) {
-  return {
-    type: actions.SET_RPC_TARGET,
-    value: 'http://localhost:8545',
+  log.debug(`background.setRpcTarget`)
+  return (dispatch) => {
+    background.setCustomRpc(newRpc, (err, result) => {
+      if (err) {
+        console.err(err)
+        return dispatch(self.displayWarning('Had a problem changing networks!'))
+      }
+    })
   }
 }
 
