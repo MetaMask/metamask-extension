@@ -50,7 +50,7 @@ function setupControllerConnection (connectionStream, cb) {
 
 function setupApp (err, accountManager) {
   if (err) {
-    alert(err.stack)
+    log.error(err.stack)
     throw err
   }
 
