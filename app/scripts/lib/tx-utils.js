@@ -71,7 +71,7 @@ module.exports = class txProviderUtils {
   addGasBuffer (gas, blockGasLimitHex) {
     const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
     const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-    const bufferedGas = bnGas.mul(1.5)
+    const bufferedGas = bnGas.muln(1.5)
 
     if (bnGas.gt(blockGasLimitBn)) return gas
     if (bufferedGas.lt(blockGasLimitBn)) return ethUtil.addHexPrefix(bufferedGas.toString(16))
