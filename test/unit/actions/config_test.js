@@ -37,25 +37,8 @@ describe ('config view actions', function() {
       }
 
       var result = reducers(initialState, action)
-      result = reducers(result, secondAction)
       assert.equal(result.metamask.provider.type, 'rpc')
       assert.equal(result.metamask.provider.rpcTarget, 'foo')
-    })
-
-    it('should handle multiple requests to change the rpc gracefully', function() {
-      const action = {
-        type: actions.SET_RPC_TARGET,
-        value: 'foo',
-      }
-
-      const secondAction = {
-        type: actions.SET_RPC_LIST,
-        value: ['foo'],
-      }
-
-      var result = reducers(initialState, action)
-      var secondResult = reducers(result, action)
-      assert.equal(secondResult.metamask.frequentRpcList.length, 1)
     })
   })
 
