@@ -5,7 +5,7 @@ const assert = require('assert')
 const extend = require('xtend')
 const rp = require('request-promise')
 const nock = require('nock')
-const CurrencyController = require('../../app/scripts/lib/controllers/currency')
+const CurrencyController = require('../../app/scripts/controllers/currency')
 
 describe('config-manager', function() {
   var currencyController

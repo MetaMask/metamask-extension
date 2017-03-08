@@ -11,10 +11,10 @@ const streamIntoProvider = require('web3-stream-provider/handler')
 const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
-const PreferencesController = require('./lib/controllers/preferences')
-const CurrencyController = require('./lib/controllers/currency')
+const PreferencesController = require('./controllers/preferences')
+const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
-const ShapeShiftController = require('./lib/controllers/shapeshift')
+const ShapeShiftController = require('./controllers/shapeshift')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TxManager = require('./transaction-manager')
@@ -244,7 +244,6 @@ module.exports = class MetamaskController extends EventEmitter {
     return {
       // etc
       getState:              (cb) => cb(null, this.getState()),
-      setRpcTarget:          this.setRpcTarget.bind(this),
       setProviderType:       this.setProviderType.bind(this),
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
       setCurrentCurrency:    this.setCurrentCurrency.bind(this),
@@ -265,6 +264,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // PreferencesController
       setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
+      setDefaultRpc:             nodeify(this.setDefaultRpc).bind(this),
+      setCustomRpc:              nodeify(this.setCustomRpc).bind(this),
 
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
@@ -661,10 +662,21 @@ module.exports = class MetamaskController extends EventEmitter {
     if (this.isNetworkLoading()) this.lookupNetwork()
   }
 
-  setRpcTarget (rpcTarget) {
-    this.configManager.setRpcTarget(rpcTarget)
+  setDefaultRpc () {
+    this.configManager.setRpcTarget('http://localhost:8545')
     extension.runtime.reload()
     this.lookupNetwork()
+    return Promise.resolve('http://localhost:8545')
+  }
+
+  setCustomRpc (rpcTarget, rpcList) {
+    this.configManager.setRpcTarget(rpcTarget)
+    return this.preferencesController.updateFrequentRpcList(rpcTarget)
+      .then(() => {
+        extension.runtime.reload()
+        this.lookupNetwork()
+        return Promise.resolve(rpcTarget)
+      })
   }
 
   setProviderType (type) {

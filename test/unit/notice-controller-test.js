@@ -4,7 +4,7 @@ const rp = require('request-promise')
 const nock = require('nock')
 const configManagerGen = require('../lib/mock-config-manager')
 const NoticeController = require('../../app/scripts/notice-controller')
-const STORAGE_KEY = 'metamask-persistance-key'
+const STORAGE_KEY = 'metamask-persistence-key'
 
 describe('notice-controller', function() {
   var noticeController
