@@ -18,6 +18,7 @@ function reduceMetamask (state, action) {
     conversionDate: 'N/A',
     noActiveNotices: true,
     lastUnreadNotice: undefined,
+    frequentRpcList: [],
   }, state.metamask)
 
   switch (action.type) {
@@ -51,6 +52,11 @@ function reduceMetamask (state, action) {
     case actions.LOCK_METAMASK:
       return extend(metamaskState, {
         isUnlocked: false,
+      })
+
+    case actions.SET_RPC_LIST:
+      return extend(metamaskState, {
+        frequentRpcList: action.value,
       })
 
     case actions.SET_RPC_TARGET:

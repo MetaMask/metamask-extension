@@ -58,6 +58,7 @@ function mapStateToProps (state) {
     forgottenPassword: state.appState.forgottenPassword,
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
+    frequentRpcList: state.metamask.frequentRpcList || [],
   }
 }
 
@@ -211,6 +212,7 @@ App.prototype.renderAppBar = function () {
 
 App.prototype.renderNetworkDropdown = function () {
   const props = this.props
+  const rpcList = props.frequentRpcList
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
 
@@ -256,12 +258,13 @@ App.prototype.renderNetworkDropdown = function () {
     h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setRpcTarget('http://localhost:8545')),
+      action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
       icon: h('i.fa.fa-question-circle.fa-lg'),
       activeNetworkRender: props.provider.rpcTarget,
     }),
 
     this.renderCustomOption(props.provider),
+    this.renderCommonRpc(rpcList, props.provider),
 
     props.isUnlocked && h(DropMenuItem, {
       label: 'Custom RPC',
@@ -496,6 +499,12 @@ App.prototype.renderCustomOption = function (provider) {
   const { rpcTarget, type } = provider
   if (type !== 'rpc') return null
 
+  // Concatenate long URLs
+  let label = rpcTarget
+  if (rpcTarget.length > 31) {
+    label = label.substr(0, 34) + '...'
+  }
+
   switch (rpcTarget) {
 
     case 'http://localhost:8545':
@@ -503,10 +512,32 @@ App.prototype.renderCustomOption = function (provider) {
 
     default:
       return h(DropMenuItem, {
-        label: `${rpcTarget}`,
+        label,
+        key: rpcTarget,
         closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         icon: h('i.fa.fa-question-circle.fa-lg'),
         activeNetworkRender: 'custom',
       })
   }
+}
+
+App.prototype.renderCommonRpc = function (rpcList, provider) {
+  const { rpcTarget } = provider
+  const props = this.props
+
+  return rpcList.map((rpc) => {
+    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
+      return null
+    } else {
+      return h(DropMenuItem, {
+        label: rpc,
+        key: rpc,
+        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+        action: () => props.dispatch(actions.setRpcTarget(rpc)),
+        icon: h('i.fa.fa-question-circle.fa-lg'),
+        activeNetworkRender: rpc,
+      })
+    }
+  })
+
 }

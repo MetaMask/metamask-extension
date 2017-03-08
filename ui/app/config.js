@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const currencies = require('./conversion.json').rows
 const validUrl = require('valid-url')
+
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
 function mapStateToProps (state) {
