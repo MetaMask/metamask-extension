@@ -677,7 +677,7 @@ function setDefaultRpcTarget (rpcList) {
   return (dispatch) => {
     background.setDefaultRpc((err, result) => {
       if (err) {
-        console.error(err)
+        log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks.'))
       }
     })
@@ -689,7 +689,7 @@ function setRpcTarget (newRpc) {
   return (dispatch) => {
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {
-        console.err(err)
+        log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
     })
@@ -768,7 +768,7 @@ function exportAccount (address) {
       dispatch(self.hideLoadingIndication())
 
       if (err) {
-        console.error(err)
+        log.error(err)
         return dispatch(self.displayWarning('Had a problem exporting the account.'))
       }
 
