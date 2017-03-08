@@ -188,7 +188,7 @@ class KeyringController extends EventEmitter {
       switch (type) {
         case 'Simple Key Pair':
           let isNotIncluded = !accounts.find((key) => key === newAccount[0] || key === ethUtil.stripHexPrefix(newAccount[0]))
-          return (isNotIncluded) ? Promise.resolve(newAccount) : Promise.reject(new Error('The account your are trying to import is a duplicate'))
+          return (isNotIncluded) ? Promise.resolve(newAccount) : Promise.reject(new Error('The account you\'re are trying to import is a duplicate'))
         default:
           return Promise.resolve(newAccount)
       }
