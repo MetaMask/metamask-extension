@@ -55,7 +55,7 @@ module.exports = class txProviderUtils {
     // try adding an additional gas buffer to our estimation for safety
     const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
     const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const estimationWithBuffer = new BN(this.addGasBuffer(estimatedGasBn), 16)
+    const estimationWithBuffer = new BN(this.addGasBuffer(estimatedGasBn, blockGasLimitHex), 16)
     // added gas buffer is too high
     if (estimationWithBuffer.gt(blockGasLimitBn)) {
       txParams.gas = txData.estimatedGas
@@ -68,11 +68,14 @@ module.exports = class txProviderUtils {
     return
   }
 
-  addGasBuffer (gas) {
-    const gasBuffer = new BN('100000', 10)
+  addGasBuffer (gas, blockGasLimitHex) {
+    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
     const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-    const correct = bnGas.add(gasBuffer)
-    return ethUtil.addHexPrefix(correct.toString(16))
+    const bufferedGas = bnGas.mul(1.5)
+
+    if (bnGas.gt(blockGasLimitBn)) return gas
+    if (bufferedGas.lt(blockGasLimitBn)) return ethUtil.addHexPrefix(bufferedGas.toString(16))
+    return ethUtil.addHexPrefix(blockGasLimitBn.toString(16))
   }
 
   fillInTxParams (txParams, cb) {
