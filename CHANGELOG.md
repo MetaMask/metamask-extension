@@ -6,6 +6,7 @@
 - Add two most recently used custom RPCs to network dropdown menu.
 - Add personal_sign method support.
 - Add ability to customize gas and gasPrice on the transaction approval screen.
+- Increase default gas buffer to 1.5x estimated gas value.
 
 ## 3.3.0 2017-2-20
 
