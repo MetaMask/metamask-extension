@@ -53,29 +53,23 @@ module.exports = class txProviderUtils {
     }
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
-    const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
-    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const estimationWithBuffer = new BN(this.addGasBuffer(estimatedGasBn, blockGasLimitHex), 16)
-    // added gas buffer is too high
-    if (estimationWithBuffer.gt(blockGasLimitBn)) {
-      txParams.gas = txData.estimatedGas
-    // added gas buffer is safe
-    } else {
-      const gasWithBufferHex = ethUtil.intToHex(estimationWithBuffer)
-      txParams.gas = gasWithBufferHex
-    }
+    const recommendedGasHex = this.addGasBuffer(txData.estimatedGas, blockGasLimitHex)
+    txParams.gas = recommendedGasHex
     cb()
     return
   }
 
-  addGasBuffer (gas, blockGasLimitHex) {
-    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
-    const bufferedGas = bnGas.muln(1.5)
-
-    if (bnGas.gt(blockGasLimitBn)) return gas
-    if (bufferedGas.lt(blockGasLimitBn)) return ethUtil.addHexPrefix(bufferedGas.toString(16))
-    return ethUtil.addHexPrefix(blockGasLimitBn.toString(16))
+  addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
+    const initialGasLimitBn = hexToBn(initialGasLimitHex)
+    const blockGasLimitBn = hexToBn(blockGasLimitHex)
+    const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
+    
+    // if initialGasLimit is above blockGasLimit, dont modify it
+    if (initialGasLimitBn.gt(blockGasLimitBn)) return bnToHex(initialGasLimitBn)
+    // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
+    if (bufferedGasLimitBn.lt(blockGasLimitBn)) return bnToHex(bufferedGasLimitBn)
+    // otherwise use blockGasLimit
+    return bnToHex(blockGasLimitBn)
   }
 
   fillInTxParams (txParams, cb) {
@@ -97,7 +91,7 @@ module.exports = class txProviderUtils {
   // builds ethTx from txParams object
   buildEthTxFromParams (txParams) {
     // apply gas multiplyer
-    let gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+    let gasPrice = hexToBn(txParams.gasPrice)
     // multiply and divide by 100 so as to add percision to integer mul
     txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
     // normalize values
@@ -132,4 +126,12 @@ module.exports = class txProviderUtils {
 
 function isUndef(value) {
   return value === undefined
+}
+
+function bnToHex(inputBn) {
+  return ethUtil.addHexPrefix(inputBn.toString(16))
+}
+
+function hexToBn(inputHex) {
+  return new BN(ethUtil.stripHexPrefix(inputHex), 16)
 }
