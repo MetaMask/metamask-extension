@@ -13,25 +13,15 @@ describe('txUtils', function() {
   })
 
   describe('addGasBuffer', function() {
-    describe('adds a flat value', function() {
-      it('over an empty value', function() {
-        const input = '0x0'
-        const output = txUtils.addGasBuffer(input)
-        assert.notEqual(output, input, 'changed the value')
-
-        const inputBn = new BN(input, 'hex')
-        const outputBn = new BN(output, 'hex')
-        assert(outputBn.gt(inputBn), 'returns a greater value')
-      })
-
-      it('over an value', function() {
+    describe('multiplies by 1.5', function() {
+      it('over a value', function() {
         const input = '0x123fad'
-        const output = txUtils.addGasBuffer(input)
-        assert.notEqual(output, input, 'changed the value')
+        const output = txUtils.addGasBuffer(input, '0x3d4c52') //0x3d4c52 is 4mil for dummy gas limit
 
         const inputBn = new BN(input, 'hex')
         const outputBn = new BN(output, 'hex')
-        assert(outputBn.gt(inputBn), 'returns a greater value')
+        const expectedBn = inputBn.mul(1.5)
+        assert(outputBn.eq(expectedBn), 'returns 1.5 the input value')
       })
     })
   })
