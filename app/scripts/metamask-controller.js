@@ -414,14 +414,14 @@ module.exports = class MetamaskController extends EventEmitter {
       self.sendUpdate()
       self.opts.showUnapprovedTx(txMeta)
       // listen for tx completion (success, fail)
-      self.txManager.once(`${txMeta.id}:finished`, (status) => {
-        switch (status) {
+      self.txManager.once(`${txMeta.id}:finished`, (completedTx) => {
+        switch (completedTx.status) {
           case 'submitted':
-            return cb(null, txMeta.hash)
+            return cb(null, completedTx.hash)
           case 'rejected':
             return cb(new Error('MetaMask Tx Signature: User denied transaction signature.'))
           default:
-            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(txMeta.txParams)}`))
+            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
         }
       })
     })

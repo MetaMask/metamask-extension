@@ -56,7 +56,7 @@
     "eth-lightwallet": "^2.3.3",
     "eth-query": "^1.0.3",
     "eth-sig-util": "^1.1.1",
-    "eth-simple-keyring": "^1.1.0",
+    "eth-simple-keyring": "^1.1.1",
     "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",
     "ethereumjs-wallet": "^0.6.0",
@@ -109,7 +109,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "0.18.2",
-    "web3-provider-engine": "^9.1.0",
+    "web3-provider-engine": "^9.2.1",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
   },
