@@ -53,25 +53,23 @@ module.exports = class txProviderUtils {
     }
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
-    const estimatedGasBn = new BN(ethUtil.stripHexPrefix(txData.estimatedGas), 16)
-    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const finalRecommendedGasBn = new BN(this.addGasBuffer(estimatedGasBn, blockGasLimitHex), 16)
-    txParams.gas = ethUtil.intToHex(finalRecommendedGasBn)
+    const recommendedGasHex = this.addGasBuffer(txData.estimatedGas, blockGasLimitHex)
+    txParams.gas = recommendedGasHex
     cb()
     return
   }
 
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
-    const blockGasLimitBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 16)
-    const initialGasLimitBn = new BN(ethUtil.stripHexPrefix(initialGasLimitHex), 16)
+    const initialGasLimitBn = hexToBn(initialGasLimitHex)
+    const blockGasLimitBn = hexToBn(blockGasLimitHex)
     const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
     
     // if initialGasLimit is above blockGasLimit, dont modify it
-    if (initialGasLimitBn.gt(blockGasLimitBn)) return initialGasLimitHex
+    if (initialGasLimitBn.gt(blockGasLimitBn)) return bnToHex(initialGasLimitBn)
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-    if (bufferedGasLimitBn.lt(blockGasLimitBn)) return ethUtil.addHexPrefix(bufferedGasLimitBn.toString(16))
+    if (bufferedGasLimitBn.lt(blockGasLimitBn)) return bnToHex(bufferedGasLimitBn)
     // otherwise use blockGasLimit
-    return ethUtil.addHexPrefix(blockGasLimitBn.toString(16))
+    return bnToHex(blockGasLimitBn)
   }
 
   fillInTxParams (txParams, cb) {
@@ -128,4 +126,12 @@ module.exports = class txProviderUtils {
 
 function isUndef(value) {
   return value === undefined
+}
+
+function bnToHex(inputBn) {
+  return ethUtil.addHexPrefix(inputBn.toString(16))
+}
+
+function hexToBn(inputHex) {
+  return new BN(ethUtil.stripHexPrefix(inputHex), 16)
 }
