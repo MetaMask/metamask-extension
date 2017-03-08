@@ -256,3 +256,9 @@ hr.horizontal-line {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.critical-error {
+  text-align: center;
+  margin-top: 20px;
+  color: red;
+}
