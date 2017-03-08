@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Allow sending to ENS names in send form on Ropsten.
+
 ## 3.4.0 2017-3-8
 
 - Add two most recently used custom RPCs to network dropdown menu.
