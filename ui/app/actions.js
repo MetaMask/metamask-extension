@@ -674,21 +674,37 @@ function markAccountsFound() {
 // default rpc target refers to localhost:8545 in this instance.
 function setDefaultRpcTarget (rpcList) {
   log.debug(`background.setDefaultRpcTarget`)
-  background.setDefaultRpc()
-  return {
-    type: actions.SET_RPC_TARGET,
-    value: 'http://localhost:8545',
+  return (dispatch) => {
+    background.setDefaultRpc((err, result) => {
+      if (err) {
+        console.error(err)
+        return dispatch(self.displayWarning('Had a problem changing networks.'))
+      }
+      dispatch(self.setRpc(result))
+    })
   }
+
 }
 
 function setRpcTarget (newRpc) {
-  return (dispatch) => {
     log.debug(`background.setRpcTarget`)
-    background.setCustomRpc(newRpc)
-    return {
-      type: actions.SET_RPC_TARGET,
-      value: newRpc,
+    return (dispatch) => {
+      background.setCustomRpc(newRpc, (err, result) => {
+        if (err) {
+          console.err(err)
+          return dispatch(self.displayWarning('Had a problem changing networks!'))
+        }
+        dispatch(self.setRpc(result))
+      })
     }
+
+
+}
+
+function setRpc (newRpc) {
+  return {
+    type: actions.SET_RPC_TARGET,
+    value: 'http://localhost:8545',
   }
 }
 
