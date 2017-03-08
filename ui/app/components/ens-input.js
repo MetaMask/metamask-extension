@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const extend = require('xtend')
 const debounce = require('debounce')
+const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
 const ensRE = /.+\.eth$/
 
@@ -27,7 +28,6 @@ EnsInput.prototype.render = function () {
 
       const recipient = document.querySelector('input[name="address"]').value
       if (recipient.match(ensRE) === null) {
-        console.dir(recipient)
         return this.setState({
           loadingEns: false,
           ensResolution: null,
@@ -76,20 +76,15 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    console.log('ens called back with ' + address)
-
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
-        hoverText: address,
+        hoverText: address + '\nClick to Copy',
       })
     }
   })
   .catch((reason) => {
-    console.log('ens threw error: ' + reason.message)
-    console.trace(reason)
-    debugger
     return this.setState({
       loadingEns: false,
       ensFailure: true,
@@ -103,7 +98,6 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const { ensResolution } = state
   if (ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    console.log('Firing on change to parent')
     this.props.onChange(ensResolution)
   }
 }
@@ -139,8 +133,13 @@ EnsInput.prototype.ensIconContents = function (recipient) {
   }
 
   if (ensResolution) {
-    return h('i.fa.fa-check-circle.fa-lg', {
+    return h('i.fa.fa-check-circle.fa-lg.cursor-pointer', {
       style: { color: 'green' },
+      onClick: (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        copyToClipboard(ensResolution)
+      },
     })
   }
 }
