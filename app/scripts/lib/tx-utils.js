@@ -91,7 +91,7 @@ module.exports = class txProviderUtils {
   // builds ethTx from txParams object
   buildEthTxFromParams (txParams) {
     // apply gas multiplyer
-    let gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice), 16)
+    let gasPrice = hexToBn(txParams.gasPrice)
     // multiply and divide by 100 so as to add percision to integer mul
     txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
     // normalize values

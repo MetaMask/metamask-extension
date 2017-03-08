@@ -19,8 +19,8 @@ describe('txUtils', function() {
       // dummy gas limit: 0x3d4c52 (4 mil)
       const blockGasLimitHex = '0x3d4c52'
       const output = txUtils.addGasBuffer(inputHex, blockGasLimitHex)
-      const inputBn = new BN(ethUtil.stripHexPrefix(inputHex), 'hex')
-      const outputBn = new BN(ethUtil.stripHexPrefix(output), 'hex')
+      const inputBn = hexToBn(inputHex)
+      const outputBn = hexToBn(output)
       const expectedBn = inputBn.muln(1.5)
       assert(outputBn.eq(expectedBn), 'returns 1.5 the input value')
     })
@@ -31,9 +31,9 @@ describe('txUtils', function() {
       // dummy gas limit: 0x0f4240 (1 mil)
       const blockGasLimitHex = '0x0f4240'
       const output = txUtils.addGasBuffer(inputHex, blockGasLimitHex)
-      const inputBn = new BN(ethUtil.stripHexPrefix(inputHex), 'hex')
-      const outputBn = new BN(ethUtil.stripHexPrefix(output), 'hex')
-      const expectedBn = new BN(ethUtil.stripHexPrefix(inputHex), 'hex')
+      const inputBn = hexToBn(inputHex)
+      const outputBn = hexToBn(output)
+      const expectedBn = hexToBn(inputHex)
       assert(outputBn.eq(expectedBn), 'returns the original estimatedGas value')
     })
 
@@ -43,10 +43,16 @@ describe('txUtils', function() {
       // dummy gas limit: 0x1e8480 (2 mil)
       const blockGasLimitHex = '0x1e8480'
       const output = txUtils.addGasBuffer(inputHex, blockGasLimitHex)
-      const inputBn = new BN(ethUtil.stripHexPrefix(inputHex), 'hex')
-      const outputBn = new BN(ethUtil.stripHexPrefix(output), 'hex')
-      const expectedBn = new BN(ethUtil.stripHexPrefix(blockGasLimitHex), 'hex')
+      const inputBn = hexToBn(inputHex)
+      const outputBn = hexToBn(output)
+      const expectedBn = hexToBn(blockGasLimitHex)
       assert(outputBn.eq(expectedBn), 'returns the block gas limit value')
     })
   })
 })
+
+// util
+
+function hexToBn(inputHex) {
+  return new BN(ethUtil.stripHexPrefix(inputHex), 16)
+}
