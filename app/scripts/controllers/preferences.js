@@ -29,7 +29,7 @@ class PreferencesController {
     return this.addToFrequentRpcList(_url)
       .then((rpcList) => {
         this.store.updateState({ frequentRpcList: rpcList })
-        return rpcList
+        return Promise.resolve()
       })
   }
 

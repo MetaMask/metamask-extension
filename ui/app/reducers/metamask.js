@@ -18,6 +18,7 @@ function reduceMetamask (state, action) {
     conversionDate: 'N/A',
     noActiveNotices: true,
     lastUnreadNotice: undefined,
+    frequentRpcList: [],
   }, state.metamask)
 
   switch (action.type) {

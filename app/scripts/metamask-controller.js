@@ -244,7 +244,8 @@ module.exports = class MetamaskController extends EventEmitter {
     return {
       // etc
       getState:              (cb) => cb(null, this.getState()),
-      setRpcTarget:          this.setRpcTarget.bind(this),
+      setDefaultRpc:         this.setDefaultRpc.bind(this),
+      setCustomRpc:          this.setCustomRpc.bind(this),
       setProviderType:       this.setProviderType.bind(this),
       useEtherscanProvider:  this.useEtherscanProvider.bind(this),
       setCurrentCurrency:    this.setCurrentCurrency.bind(this),
@@ -265,7 +266,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // PreferencesController
       setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
-      updateFrequentRpcList:      nodeify(preferencesController.updateFrequentRpcList).bind(preferencesController),
 
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
@@ -662,10 +662,19 @@ module.exports = class MetamaskController extends EventEmitter {
     if (this.isNetworkLoading()) this.lookupNetwork()
   }
 
-  setRpcTarget (rpcTarget) {
-    this.configManager.setRpcTarget(rpcTarget)
+  setDefaultRpc () {
+    this.configManager.setRpcTarget('http://localhost:8545')
     extension.runtime.reload()
     this.lookupNetwork()
+  }
+
+  setCustomRpc (rpcTarget, rpcList) {
+    this.configManager.setRpcTarget(rpcTarget)
+    return this.preferencesController.updateFrequentRpcList(rpcTarget)
+      .then(() => {
+        extension.runtime.reload()
+        this.lookupNetwork()
+      })
   }
 
   setProviderType (type) {

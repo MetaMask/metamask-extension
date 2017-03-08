@@ -674,33 +674,21 @@ function markAccountsFound() {
 // default rpc target refers to localhost:8545 in this instance.
 function setDefaultRpcTarget (rpcList) {
   log.debug(`background.setDefaultRpcTarget`)
-  background.setRpcTarget('http://localhost:8545')
-  return (dispatch) => {
-    dispatch({
-      type: actions.SET_RPC_TARGET,
-      value: 'http://localhost:8545',
-    })
-    dispatch({
-      type: actions.SET_RPC_LIST,
-      value: rpcList,
-    })
+  background.setDefaultRpc()
+  return {
+    type: actions.SET_RPC_TARGET,
+    value: 'http://localhost:8545',
   }
 }
 
 function setRpcTarget (newRpc) {
   return (dispatch) => {
     log.debug(`background.setRpcTarget`)
-    background.setRpcTarget(newRpc)
-    background.updateFrequentRpcList(newRpc, (rpcList) => {
-      dispatch({
-        type: actions.SET_RPC_TARGET,
-        value: newRpc,
-      })
-      dispatch({
-        type: actions.SET_RPC_LIST,
-        value: rpcList,
-      })
-    })
+    background.setCustomRpc(newRpc)
+    return {
+      type: actions.SET_RPC_TARGET,
+      value: newRpc,
+    }
   }
 }
 
