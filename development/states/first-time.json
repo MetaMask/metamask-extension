@@ -4,6 +4,7 @@
     "isUnlocked": false,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {},
+    "frequentRpcList": [],
     "unapprovedTxs": {},
     "currentFiat": "USD",
     "conversionRate": 12.7527416,

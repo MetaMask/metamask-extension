@@ -1,10 +1,18 @@
 const Component = require('react').Component
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-tx-details')
 const extend = require('xtend')
+const actions = require('../actions')
 
-module.exports = PendingTx
+module.exports = connect(mapStateToProps)(PendingTx)
+
+function mapStateToProps (state) {
+  return {
+
+  }
+}
 
 inherits(PendingTx, Component)
 function PendingTx () {
@@ -60,25 +68,31 @@ PendingTx.prototype.render = function () {
       }, [
 
         props.insufficientBalance ?
-          h('button.btn-green', {
+          h('button', {
             onClick: props.buyEth,
           }, 'Buy Ether')
         : null,
-
-        h('button.confirm', {
-          disabled: props.insufficientBalance,
-          onClick: props.sendTransaction,
-        }, 'Accept'),
-
-        h('button.cancel.btn-red', {
-          onClick: props.cancelTransaction,
-        }, 'Reject'),
 
         h('button', {
           onClick: () => {
             this.refs.details.resetGasFields()
           },
         }, 'Reset'),
+
+        h('button.confirm.btn-green', {
+          disabled: props.insufficientBalance,
+          onClick: (txData, event) => {
+            if (this.refs.details.verifyGasParams()) {
+              props.sendTransaction(txData, event)
+            } else {
+              this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+            }
+          },
+        }, 'Accept'),
+
+        h('button.cancel.btn-red', {
+          onClick: props.cancelTransaction,
+        }, 'Reject'),
       ]),
     ])
   )

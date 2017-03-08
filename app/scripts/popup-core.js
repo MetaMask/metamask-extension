@@ -49,12 +49,14 @@ function setupControllerConnection (connectionStream, cb) {
 }
 
 function setupApp (err, accountManager) {
+  var container = document.getElementById('app-content')
   if (err) {
-    alert(err.stack)
+    container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
+    container.style.height = '80px'
+    log.error(err.stack)
     throw err
   }
 
-  var container = document.getElementById('app-content')
 
   MetaMaskUi({
     container: container,

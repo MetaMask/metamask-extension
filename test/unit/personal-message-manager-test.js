@@ -4,7 +4,7 @@ const EventEmitter = require('events')
 
 const PersonalMessageManager = require('../../app/scripts/lib/personal-message-manager')
 
-describe('Transaction Manager', function() {
+describe('Personal Message Manager', function() {
   let messageManager
 
   beforeEach(function() {
@@ -86,4 +86,25 @@ describe('Transaction Manager', function() {
       assert.equal(messageManager.getMsg('2').status, 'approved')
     })
   })
+
+  describe('#normalizeMsgData', function() {
+    it('converts text to a utf8 hex string', function() {
+      var input = 'hello'
+      var output = messageManager.normalizeMsgData(input)
+      assert.equal(output, '0x68656c6c6f', 'predictably hex encoded')
+    })
+
+    it('tolerates a hex prefix', function() {
+      var input = '0x12'
+      var output = messageManager.normalizeMsgData(input)
+      assert.equal(output, '0x12', 'un modified')
+    })
+
+    it('tolerates normal hex', function() {
+      var input = '12'
+      var output = messageManager.normalizeMsgData(input)
+      assert.equal(output, '0x12', 'adds prefix')
+    })
+  })
+
 })

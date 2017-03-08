@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const extend = require('xtend')
 const debounce = require('debounce')
-const ENS = require('ethereum-ens')
+const ENS = require('ethjs-ens')
 const ensRE = /.+\.eth$/
 
 const networkResolvers = {
@@ -30,6 +30,8 @@ EnsInput.prototype.render = function () {
         console.dir(recipient)
         return this.setState({
           loadingEns: false,
+          ensResolution: null,
+          ensFailure: null,
         })
       }
 
@@ -53,12 +55,16 @@ EnsInput.prototype.componentDidMount = function () {
   let resolverAddress = networkResolvers[network]
 
   if (resolverAddress) {
-    this.ens = new ENS(web3, resolverAddress)
+    const provider = web3.currentProvider
+    this.ens = new ENS({ provider, network })
     this.checkName = debounce(this.lookupEnsName.bind(this), 200)
   }
 }
 
 EnsInput.prototype.lookupEnsName = function () {
+  const recipient = document.querySelector('input[name="address"]').value
+  const { ensResolution } = this.state
+
   if (!this.ens) {
     return this.setState({
       loadingEns: false,
@@ -67,17 +73,23 @@ EnsInput.prototype.lookupEnsName = function () {
     })
   }
 
-  const recipient = document.querySelector('input[name="address"]').value
   log.info(`ENS attempting to resolve name: ${recipient}`)
-  this.ens.resolver(recipient).addr()
+  this.ens.lookup(recipient.trim())
   .then((address) => {
-    this.setState({
-      loadingEns: false,
-      ensResolution: address,
-      hoverText: address,
-    })
+    console.log('ens called back with ' + address)
+
+    if (address !== ensResolution) {
+      this.setState({
+        loadingEns: false,
+        ensResolution: address,
+        hoverText: address,
+      })
+    }
   })
   .catch((reason) => {
+    console.log('ens threw error: ' + reason.message)
+    console.trace(reason)
+    debugger
     return this.setState({
       loadingEns: false,
       ensFailure: true,
@@ -86,10 +98,12 @@ EnsInput.prototype.lookupEnsName = function () {
   })
 }
 
-EnsInput.prototype.componentDidUpdate = function () {
+EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const state = this.state || {}
   const { ensResolution } = state
-  if (ensResolution && this.props.onChange) {
+  if (ensResolution && this.props.onChange &&
+      ensResolution !== prevState.ensResolution) {
+    console.log('Firing on change to parent')
     this.props.onChange(ensResolution)
   }
 }
@@ -115,6 +129,7 @@ EnsInput.prototype.ensIconContents = function (recipient) {
       style: {
         width: '30px',
         height: '30px',
+        transform: 'translateY(-6px)',
       },
     })
   }

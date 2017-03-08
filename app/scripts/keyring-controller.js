@@ -164,8 +164,11 @@ class KeyringController extends EventEmitter {
       return keyring.getAccounts()
     })
     .then((accounts) => {
+      return this.checkForDuplicate(type, accounts)
+    })
+    .then((checkedAccounts) => {
       this.keyrings.push(keyring)
-      return this.setupAccounts(accounts)
+      return this.setupAccounts(checkedAccounts)
     })
     .then(() => this.persistAllKeyrings())
     .then(() => this.fullUpdate())
@@ -174,6 +177,24 @@ class KeyringController extends EventEmitter {
       return keyring
     })
   }
+
+  // For now just checks for simple key pairs
+  // but in the future
+  // should possibly add HD and other types
+  //
+  checkForDuplicate (type, newAccount) {
+    return this.getAccounts()
+    .then((accounts) => {
+      switch (type) {
+        case 'Simple Key Pair':
+          let isNotIncluded = !accounts.find((key) => key === newAccount[0] || key === ethUtil.stripHexPrefix(newAccount[0]))
+          return (isNotIncluded) ? Promise.resolve(newAccount) : Promise.reject(new Error('The account you\'re are trying to import is a duplicate'))
+        default:
+          return Promise.resolve(newAccount)
+      }
+    })
+  }
+
 
   // Add New Account
   // @number keyRingNum
