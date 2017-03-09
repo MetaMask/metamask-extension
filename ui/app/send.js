@@ -9,6 +9,7 @@ const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
 const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
+const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -18,6 +19,7 @@ function mapStateToProps (state) {
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
     warning: state.appState.warning,
+    network: state.metamask.network,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -41,6 +43,7 @@ SendTransactionScreen.prototype.render = function () {
   var address = state.address
   var account = state.account
   var identity = state.identity
+  var network = state.network
 
   return (
 
@@ -145,12 +148,11 @@ SendTransactionScreen.prototype.render = function () {
 
       // 'to' field
       h('section.flex-row.flex-center', [
-        h('input.large-input', {
+        h(EnsInput, {
           name: 'address',
           placeholder: 'Recipient Address',
-          dataset: {
-            persistentFormId: 'recipient-address',
-          },
+          onChange: this.recipientDidChange.bind(this),
+          network,
         }),
       ]),
 
@@ -220,8 +222,13 @@ SendTransactionScreen.prototype.back = function () {
   this.props.dispatch(actions.backToAccountDetail(address))
 }
 
+SendTransactionScreen.prototype.recipientDidChange = function (recipient) {
+  this.setState({ recipient })
+}
+
 SendTransactionScreen.prototype.onSubmit = function () {
-  const recipient = document.querySelector('input[name="address"]').value
+  const state = this.state || {}
+  const recipient = state.recipient || document.querySelector('input[name="address"]').value
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
