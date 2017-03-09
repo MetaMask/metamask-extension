@@ -21,6 +21,7 @@ function EnsInput () {
 EnsInput.prototype.render = function () {
   const props = this.props
   const opts = extend(props, {
+    list: 'addresses',
     onChange: () => {
       const network = this.props.network
       let resolverAddress = networkResolvers[network]
@@ -46,6 +47,15 @@ EnsInput.prototype.render = function () {
     style: { width: '100%' },
   }, [
     h('input.large-input', opts),
+    h('datalist',
+      {
+        id: 'addresses',
+      },
+      [
+        Object.keys(props.identities).map((key) => {
+          return h('option', props.identities[key].address)
+        }),
+      ]),
     this.ensIcon(),
   ])
 }

@@ -44,6 +44,7 @@ SendTransactionScreen.prototype.render = function () {
   var account = state.account
   var identity = state.identity
   var network = state.network
+  var identities = state.identities
 
   return (
 
@@ -153,6 +154,7 @@ SendTransactionScreen.prototype.render = function () {
           placeholder: 'Recipient Address',
           onChange: this.recipientDidChange.bind(this),
           network,
+          identities,
         }),
       ]),
 
