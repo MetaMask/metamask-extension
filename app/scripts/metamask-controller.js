@@ -15,6 +15,7 @@ const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
+const AddressBookController = require('./controllers/address-book')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TxManager = require('./transaction-manager')
@@ -48,6 +49,11 @@ module.exports = class MetamaskController extends EventEmitter {
     // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
+    })
+
+    // address book controller
+    this.addressBookController = new AddressBookController({
+      initState: initState.AddressBookController,
     })
 
     // currency controller
@@ -124,6 +130,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.preferencesController.store.subscribe((state) => {
       this.store.updateState({ PreferencesController: state })
     })
+    this.addressBookController.store.subscribe((state) => {
+      this.store.updateState({ AddressBookController: state })
+    })
     this.currencyController.store.subscribe((state) => {
       this.store.updateState({ CurrencyController: state })
     })
@@ -142,6 +151,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
     this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
+    this.addressBookController.store.subscribe(this.sendUpdate.bind(this))
     this.currencyController.store.subscribe(this.sendUpdate.bind(this))
     this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
     this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
@@ -219,6 +229,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.personalMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.preferencesController.store.getState(),
+      this.addressBookController.store.getState(),
       this.currencyController.store.getState(),
       this.noticeController.memStore.getState(),
       // config manager
