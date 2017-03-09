@@ -14,8 +14,8 @@ class AddressBookController {
   // PUBLIC METHODS
   //
 
-  setAddressList (address, name) {
-    return this.addToAddressList(address, name)
+  setAddressBook (address, name) {
+    return this.addToAddressBook(address, name)
     .then((addressBook) => {
       this.store.updateState({
         addressBook,
@@ -24,9 +24,9 @@ class AddressBookController {
     })
   }
 
-  addToAddressList (address, name) {
-    let addressBook = this.getAddressList()
-    let index = addressBook.findIndex((element) => { return element.address === address })
+  addToAddressBook (address, name) {
+    let addressBook = this.getAddressBook()
+    let index = addressBook.findIndex((element) => { return element.address === address || element.name === name })
     if (index !== -1) {
       addressBook.splice(index, 1)
     }
@@ -37,7 +37,7 @@ class AddressBookController {
     return Promise.resolve(addressBook)
   }
 
-  getAddressList () {
+  getAddressBook () {
     return this.store.getState().addressBook
   }
 
