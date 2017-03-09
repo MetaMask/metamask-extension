@@ -5,7 +5,9 @@ const extend = require('xtend')
 class PreferencesController {
 
   constructor (opts = {}) {
-    const initState = extend({ frequentRpcList: [] }, opts.initState)
+    const initState = extend({
+      frequentRpcList: [],
+    }, opts.initState)
     this.store = new ObservableStore(initState)
   }
 

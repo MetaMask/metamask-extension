@@ -53,7 +53,11 @@ EnsInput.prototype.render = function () {
       },
       [
         Object.keys(props.identities).map((key) => {
-          return h('option', props.identities[key].address)
+          let identity = props.identities[key]
+          return h('option', {
+            value: identity.address,
+            label: identity.name,
+          })
         }),
       ]),
     this.ensIcon(),
