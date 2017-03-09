@@ -59,6 +59,12 @@ EnsInput.prototype.render = function () {
             label: identity.name,
           })
         }),
+        props.addressBook.map((identity) => {
+          return h('option', {
+            value: identity.address,
+            label: identity.name,
+          })
+        }),
       ]),
     this.ensIcon(),
   ])
@@ -94,11 +100,13 @@ EnsInput.prototype.lookupEnsName = function () {
       this.setState({
         loadingEns: false,
         ensResolution: address,
+        nickname: recipient.trim(),
         hoverText: address + '\nClick to Copy',
       })
     }
   })
   .catch((reason) => {
+    log.error(reason)
     return this.setState({
       loadingEns: false,
       ensFailure: true,
@@ -109,10 +117,11 @@ EnsInput.prototype.lookupEnsName = function () {
 
 EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const state = this.state || {}
-  const { ensResolution } = state
+  const ensResolution = state.ensResolution
+  const nickname = state.nickname || ' '
   if (ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange(ensResolution)
+    this.props.onChange(ensResolution, nickname)
   }
 }
 

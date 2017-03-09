@@ -75,6 +75,8 @@ var actions = {
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
+  ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
+  addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
@@ -691,6 +693,18 @@ function setRpcTarget (newRpc) {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
+      }
+    })
+  }
+}
+
+function addToAddressBook (recipient, nickname) {
+  log.debug(`background.addToAddressBook`)
+  return (dispatch) => {
+    background.setAddressBook(recipient, nickname, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Address book failed to update'))
       }
     })
   }

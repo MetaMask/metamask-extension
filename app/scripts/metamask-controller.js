@@ -251,6 +251,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const preferencesController = this.preferencesController
     const txManager = this.txManager
     const noticeController = this.noticeController
+    const addressBookController = this.addressBookController
 
     return {
       // etc
@@ -277,6 +278,9 @@ module.exports = class MetamaskController extends EventEmitter {
       setSelectedAddress:        nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
       setDefaultRpc:             nodeify(this.setDefaultRpc).bind(this),
       setCustomRpc:              nodeify(this.setCustomRpc).bind(this),
+
+      // AddressController
+      setAddressBook:           nodeify(addressBookController.setAddressBook).bind(addressBookController),
 
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
