@@ -7,11 +7,12 @@ class AddressBookController {
   // Controller in charge of managing the address book functionality from the
   // recipients field on the send screen. Manages a history of all saved
   // addresses and all currently owned addresses.
-  constructor (opts = {}) {
+  constructor (opts = {}, keyringController) {
     const initState = extend({
       addressBook: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
+    this.keyringController = keyringController
   }
 
   //
@@ -39,9 +40,16 @@ class AddressBookController {
   // upper limit to the number of addresses.
   _addToAddressBook (address, name) {
     let addressBook = this._getAddressBook()
-    let index = addressBook.findIndex((element) => { return element.address.toLowerCase() === address.toLowerCase() || element.name === name })
-    if (index !== -1) {
-      addressBook.splice(index, 1)
+    let identities = this._getIdentities()
+
+    let addressBookIndex = addressBook.findIndex((element) => { return element.address.toLowerCase() === address.toLowerCase() || element.name === name })
+    let identitiesIndex = Object.keys(identities).findIndex((element) => { return element.toLowerCase() === address.toLowerCase() })
+    // trigger this condition if we own this address--no need to overwrite.
+    if (identitiesIndex !== -1) {
+      return Promise.resolve(addressBook)
+    // trigger this condition if we've seen this address before--may need to update nickname.
+    } else if (addressBookIndex !== -1) {
+      addressBook.splice(addressBookIndex, 1)
     }
     addressBook.push({
       address: address,
@@ -54,6 +62,12 @@ class AddressBookController {
   // should not require that this method be called from the UI directly.
   _getAddressBook () {
     return this.store.getState().addressBook
+  }
+
+  // Retrieves identities from the keyring controller in order to avoid
+  // duplication
+  _getIdentities () {
+    return this.keyringController.memStore.getState().identities
   }
 
 }

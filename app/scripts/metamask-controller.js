@@ -51,11 +51,6 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.PreferencesController,
     })
 
-    // address book controller
-    this.addressBookController = new AddressBookController({
-      initState: initState.AddressBookController,
-    })
-
     // currency controller
     this.currencyController = new CurrencyController({
       initState: initState.CurrencyController,
@@ -85,6 +80,11 @@ module.exports = class MetamaskController extends EventEmitter {
       this.preferencesController.setSelectedAddress(address)
       autoFaucet(address)
     })
+
+    // address book controller
+    this.addressBookController = new AddressBookController({
+      initState: initState.AddressBookController,
+    }, this.keyringController)
 
     // tx mgmt
     this.txManager = new TxManager({
