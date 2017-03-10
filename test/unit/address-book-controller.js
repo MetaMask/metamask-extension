@@ -2,11 +2,27 @@ const assert = require('assert')
 const extend = require('xtend')
 const AddressBookController = require('../../app/scripts/controllers/address-book')
 
+const mockKeyringController = {
+  memStore: {
+    getState: function () {
+      return {
+        identities: {
+          '0x0aaa' : {
+            address: '0x0aaa',
+            name: 'owned',
+          }
+        }
+      }
+    }
+  }
+}
+
+
 describe('address-book-controller', function() {
   var addressBookController
 
   beforeEach(function() {
-    addressBookController = new AddressBookController()
+    addressBookController = new AddressBookController({}, mockKeyringController)
   })
 
   describe('addres book management', function () {
@@ -29,6 +45,11 @@ describe('address-book-controller', function() {
         addressBookController.setAddressBook('0x01234', 'test')
         var addressBook = addressBookController._getAddressBook()
         assert.equal(addressBook.length, 1, 'incorrect address book length.')
+      })
+      it('should not add any identities that are under user control', function () {
+        addressBookController.setAddressBook('0x0aaa', ' ')
+        var addressBook = addressBookController._getAddressBook()
+        assert.equal(addressBook.length, 0, 'incorrect address book length.')
       })
     })
   })
