@@ -39,12 +39,12 @@ class AddressBookController {
   // upper limit to the number of addresses.
   _addToAddressBook (address, name) {
     let addressBook = this._getAddressBook()
-    let index = addressBook.findIndex((element) => { return element.address === address || element.name === name })
+    let index = addressBook.findIndex((element) => { return element.address.toLowerCase() === address.toLowerCase() || element.name === name })
     if (index !== -1) {
       addressBook.splice(index, 1)
     }
     addressBook.push({
-      address,
+      address: address,
       name,
     })
     return Promise.resolve(addressBook)
