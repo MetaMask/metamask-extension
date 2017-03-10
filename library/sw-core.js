@@ -11,7 +11,6 @@ const PortStream = require('../app/scripts/lib/port-stream.js')
 
 const DbController = require('./controllers/index-db-controller')
 
-// // all this will go in service worker
 const MetamaskController = require('../app/scripts/metamask-controller')
 // const extension = require('../app/scripts/lib/extension')
 // const LocalStorageStore = require('obs-store/lib/localStorage')
@@ -53,7 +52,7 @@ let diskStore
 const dbController = new DbController({
   key: STORAGE_KEY,
   global: self,
-  version: 6,
+  version: 2,
   initialState: {
     dataStore: {
       meta: 2,
@@ -95,6 +94,9 @@ function loadStateFromPersistence() {
     return Promise.resolve(data.data)
   })
   .catch((err) => console.error(err))
+  /*
+    need to get migrations working
+  */
 
   // return asyncQ.waterfall([
   //   // read from disk
@@ -143,10 +145,11 @@ function setupController (initState, client) {
   //
   // connect to other contexts
   //
+  /*
+  need to write a service worker stream for this
+  */
   var connectionStream //= new ParentStream()
   SWGlobal.onmessage = (message) => {
-
-    debugger
     connectRemote(connectionStream, message.origin)
   }
 
@@ -192,12 +195,3 @@ function setupController (initState, client) {
 function triggerUi () {
   if (!popupIsOpen) notification.show()
 }
-
-// function getParentHref(){
-//   try {
-//     var parentLocation = window.parent.location
-//     return parentLocation.hostname + ':' + parentLocation.port
-//   } catch (err) {
-//     return 'unknown'
-//   }
-// }

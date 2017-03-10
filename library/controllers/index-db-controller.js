@@ -72,11 +72,7 @@ module.exports = class IndexDbController extends EventEmitter {
   }
 
   migrate () {
-    // this.migrations
-
     // Place holder for future migrations eg:
-    this.db.deleteObjectStore('meta')
-    this.db.deleteObjectStore('data')
     this.db.createObjectStore('dataStore')
   }
 
