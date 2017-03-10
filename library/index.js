@@ -26,7 +26,7 @@ var shouldPop = false
 window.addEventListener('click', function(){
   if (!shouldPop) return
   shouldPop = false
-  window.open('http://127.0.0.1:9001/popup/popup.html', '', 'width=360 height=500')
+  window.open('http://localhost:9001/popup/popup.html', '', 'width=360 height=500')
   console.log('opening window...')
 })
 

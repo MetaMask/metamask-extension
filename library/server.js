@@ -7,6 +7,7 @@ const zeroBundle = createBundle('./index.js')
 const controllerBundle = createBundle('./controller.js')
 const popupBundle = createBundle('./popup.js')
 const appBundle = createBundle('./example/index.js')
+const swBuild = createBundle('./sw-core.js')
 
 //
 // Iframe Server
@@ -23,6 +24,11 @@ iframeServer.use('/popup', express.static('../dist/chrome'))
 // serve controller bundle
 iframeServer.get('/controller.js', function(req, res){
   res.send(controllerBundle.latest)
+})
+iframeServer.get('/sw-build.js', function(req, res){
+  console.log('/sw-build.js')
+  res.setHeader('Content-Type', 'application/javascript')
+  res.send(swBuild.latest)
 })
 
 // serve background controller

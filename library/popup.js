@@ -11,7 +11,7 @@ var name = 'popup'
 window.METAMASK_UI_TYPE = name
 
 var iframeStream = setupIframe({
-  zeroClientProvider: 'http://127.0.0.1:9001',
+  zeroClientProvider: 'http://localhost:9001',
   sandboxAttributes: ['allow-scripts', 'allow-popups', 'allow-same-origin'],
   container: document.body,
 })
