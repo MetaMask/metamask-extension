@@ -23,6 +23,13 @@ describe('address-book-controller', function() {
         assert.equal(addressBook[0].address, '0x01234', 'incorrect addresss')
         assert.equal(addressBook[0].name, 'test', 'incorrect nickname')
       })
+
+      it('should reject duplicates.', function () {
+        addressBookController.setAddressBook('0x01234', 'test')
+        addressBookController.setAddressBook('0x01234', 'test')
+        var addressBook = addressBookController._getAddressBook()
+        assert.equal(addressBook.length, 1, 'incorrect address book length.')
+      })
     })
   })
 })
