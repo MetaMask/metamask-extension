@@ -698,6 +698,7 @@ function setRpcTarget (newRpc) {
   }
 }
 
+// Calls the addressBookController to add a new address. 
 function addToAddressBook (recipient, nickname) {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
