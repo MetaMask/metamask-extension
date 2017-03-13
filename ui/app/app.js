@@ -400,6 +400,10 @@ App.prototype.renderPrimary = function () {
         log.debug('rendering restore vault screen')
         return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
+      case 'config':
+        log.debug('rendering config screen from unlock screen.')
+        return h(ConfigScreen, {key: 'config'})
+
       default:
         log.debug('rendering locked screen')
         return h(UnlockScreen, {key: 'locked'})
