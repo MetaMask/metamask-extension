@@ -3,6 +3,7 @@
 ## Current Master
 
 - Allow sending to ENS names in send form on Ropsten.
+- Can now change network to custom RPC URL from lock screen.
 
 ## 3.4.0 2017-3-8
 
