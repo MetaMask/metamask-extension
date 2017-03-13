@@ -50,7 +50,11 @@ class AddressBookController {
     // trigger this condition if we've seen this address before--may need to update nickname.
     } else if (addressBookIndex !== -1) {
       addressBook.splice(addressBookIndex, 1)
+    } else if (addressBook.length > 15) {
+      addressBook.shift()
     }
+
+
     addressBook.push({
       address: address,
       name,
