@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- The default network on installation is now MainNet
 - Allow sending to ENS names in send form on Ropsten.
 - Can now change network to custom RPC URL from lock screen.
 
