@@ -48,10 +48,7 @@ EnsInput.prototype.render = function () {
   }, [
     h('input.large-input', opts),
     // The address book functionality.
-    h('datalist',
-      {
-        id: 'addresses',
-      },
+    h('datalist#addresses',
       [
         // Corresponds to the addresses owned.
         Object.keys(props.identities).map((key) => {
