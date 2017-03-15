@@ -41,7 +41,7 @@
       }
     },
     "unconfTxs": {},
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 11.84461814,
     "conversionDate": 1476226414,
     "accounts": {

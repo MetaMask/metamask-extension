@@ -48,7 +48,7 @@
         "gasPrice": "4a817c800"
       }
     },
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 12.7200827,
     "conversionDate": 1487363041,
     "noActiveNotices": true,
