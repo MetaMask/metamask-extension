@@ -6,7 +6,7 @@
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {},
     "unconfTxs": {},
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 0,
     "conversionDate": "N/A",
     "accounts": {},
