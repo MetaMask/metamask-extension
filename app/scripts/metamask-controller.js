@@ -621,7 +621,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.currencyController.updateConversionRate()
       const data = {
         conversionRate: this.currencyController.getConversionRate(),
-        currentFiat: this.currencyController.getCurrentCurrency(),
+        currentCurrency: this.currencyController.getCurrentCurrency(),
         conversionDate: this.currencyController.getConversionDate(),
       }
       cb(null, data)
