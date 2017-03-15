@@ -10,7 +10,7 @@
       }
     },
     "unconfTxs": {},
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 10.10788584,
     "conversionDate": 1484694362,
     "noActiveNotices": true,

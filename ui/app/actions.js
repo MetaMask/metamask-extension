@@ -71,7 +71,7 @@ var actions = {
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
-  setCurrentFiat: setCurrentFiat,
+  setCurrentCurrency: setCurrentCurrency,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
@@ -330,10 +330,10 @@ function showInfoPage () {
   }
 }
 
-function setCurrentFiat (currencyCode) {
+function setCurrentCurrency (currencyCode) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    log.debug(`background.setCurrentFiat`)
+    log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
@@ -343,7 +343,7 @@ function setCurrentFiat (currencyCode) {
       dispatch({
         type: this.SET_CURRENT_FIAT,
         value: {
-          currentFiat: data.currentFiat,
+          currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
           conversionDate: data.conversionDate,
         },

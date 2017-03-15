@@ -2,7 +2,7 @@ const version = 10
 
 /*
 
-This migration breaks out the CurrencyController substate
+This migration breaks out the ShapeShiftController substate
 
 */
 

@@ -2,7 +2,7 @@ const version = 11
 
 /*
 
-This migration breaks out the CurrencyController substate
+This migration removes the discaimer state from our app, which was integrated into our notices.
 
 */
 
