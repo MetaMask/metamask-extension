@@ -9,7 +9,7 @@ module.exports = connect(mapStateToProps)(FiatValue)
 function mapStateToProps (state) {
   return {
     conversionRate: state.metamask.conversionRate,
-    currentFiat: state.metamask.currentFiat,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -34,7 +34,7 @@ FiatValue.prototype.render = function () {
     fiatTooltipNumber = 'Unknown'
   }
 
-  var fiatSuffix = props.currentFiat
+  var fiatSuffix = props.currentCurrency
 
   return fiatDisplay(fiatDisplayNumber, fiatSuffix)
 }

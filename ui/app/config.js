@@ -125,19 +125,19 @@ function rpcValidation (newRpc, state) {
 }
 
 function currentConversionInformation (metamaskState, state) {
-  var currentFiat = metamaskState.currentFiat
+  var currentCurrency = metamaskState.currentCurrency
   var conversionDate = metamaskState.conversionDate
   return h('div', [
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, 'Current Conversion'),
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px', fontSize: '13px'}}, `Updated ${Date(conversionDate)}`),
-    h('select#currentFiat', {
+    h('select#currentCurrency', {
       onChange (event) {
         event.preventDefault()
-        var element = document.getElementById('currentFiat')
-        var newFiat = element.value
-        state.dispatch(actions.setCurrentFiat(newFiat))
+        var element = document.getElementById('currentCurrency')
+        var newCurrency = element.value
+        state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
-      defaultValue: currentFiat,
+      defaultValue: currentCurrency,
     }, currencies.map((currency) => {
       return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)
     })
