@@ -266,7 +266,7 @@ App.prototype.renderNetworkDropdown = function () {
     this.renderCustomOption(props.provider),
     this.renderCommonRpc(rpcList, props.provider),
 
-    props.isUnlocked && h(DropMenuItem, {
+    h(DropMenuItem, {
       label: 'Custom RPC',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => this.props.dispatch(actions.showConfigPage()),
@@ -399,6 +399,10 @@ App.prototype.renderPrimary = function () {
       case 'restoreVault':
         log.debug('rendering restore vault screen')
         return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+
+      case 'config':
+        log.debug('rendering config screen from unlock screen.')
+        return h(ConfigScreen, {key: 'config'})
 
       default:
         log.debug('rendering locked screen')
