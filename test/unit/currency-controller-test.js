@@ -7,7 +7,7 @@ const rp = require('request-promise')
 const nock = require('nock')
 const CurrencyController = require('../../app/scripts/controllers/currency')
 
-describe('config-manager', function() {
+describe('currency-controller', function() {
   var currencyController
 
   beforeEach(function() {

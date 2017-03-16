@@ -20,6 +20,7 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     warning: state.appState.warning,
     network: state.metamask.network,
+    addressBook: state.metamask.addressBook,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -44,6 +45,8 @@ SendTransactionScreen.prototype.render = function () {
   var account = state.account
   var identity = state.identity
   var network = state.network
+  var identities = state.identities
+  var addressBook = state.addressBook
 
   return (
 
@@ -153,6 +156,8 @@ SendTransactionScreen.prototype.render = function () {
           placeholder: 'Recipient Address',
           onChange: this.recipientDidChange.bind(this),
           network,
+          identities,
+          addressBook,
         }),
       ]),
 
@@ -222,13 +227,17 @@ SendTransactionScreen.prototype.back = function () {
   this.props.dispatch(actions.backToAccountDetail(address))
 }
 
-SendTransactionScreen.prototype.recipientDidChange = function (recipient) {
-  this.setState({ recipient })
+SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickname) {
+  this.setState({
+    recipient: recipient,
+    nickname: nickname,
+  })
 }
 
 SendTransactionScreen.prototype.onSubmit = function () {
   const state = this.state || {}
   const recipient = state.recipient || document.querySelector('input[name="address"]').value
+  const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
@@ -256,6 +265,8 @@ SendTransactionScreen.prototype.onSubmit = function () {
   }
 
   this.props.dispatch(actions.hideWarning())
+
+  this.props.dispatch(actions.addToAddressBook(recipient, nickname))
 
   var txParams = {
     from: this.props.address,
