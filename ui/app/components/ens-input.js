@@ -21,6 +21,7 @@ function EnsInput () {
 EnsInput.prototype.render = function () {
   const props = this.props
   const opts = extend(props, {
+    list: 'addresses',
     onChange: () => {
       const network = this.props.network
       let resolverAddress = networkResolvers[network]
@@ -46,6 +47,25 @@ EnsInput.prototype.render = function () {
     style: { width: '100%' },
   }, [
     h('input.large-input', opts),
+    // The address book functionality.
+    h('datalist#addresses',
+      [
+        // Corresponds to the addresses owned.
+        Object.keys(props.identities).map((key) => {
+          let identity = props.identities[key]
+          return h('option', {
+            value: identity.address,
+            label: identity.name,
+          })
+        }),
+        // Corresponds to previously sent-to addresses.
+        props.addressBook.map((identity) => {
+          return h('option', {
+            value: identity.address,
+            label: identity.name,
+          })
+        }),
+      ]),
     this.ensIcon(),
   ])
 }
@@ -80,11 +100,13 @@ EnsInput.prototype.lookupEnsName = function () {
       this.setState({
         loadingEns: false,
         ensResolution: address,
+        nickname: recipient.trim(),
         hoverText: address + '\nClick to Copy',
       })
     }
   })
   .catch((reason) => {
+    log.error(reason)
     return this.setState({
       loadingEns: false,
       ensFailure: true,
@@ -95,10 +117,13 @@ EnsInput.prototype.lookupEnsName = function () {
 
 EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   const state = this.state || {}
-  const { ensResolution } = state
+  const ensResolution = state.ensResolution
+  // If an address is sent without a nickname, meaning not from ENS or from
+  // the user's own accounts, a default of a one-space string is used.
+  const nickname = state.nickname || ' '
   if (ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
-    this.props.onChange(ensResolution)
+    this.props.onChange(ensResolution, nickname)
   }
 }
 
