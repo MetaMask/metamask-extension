@@ -23,7 +23,6 @@ const ConfigManager = require('./lib/config-manager')
 const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
-const IdStoreMigrator = require('./lib/idStore-migrator')
 const accountImporter = require('./account-import-strategies')
 
 const version = require('../manifest.json').version
@@ -114,11 +113,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
-
-    // TEMPORARY UNTIL FULL DEPRECATION:
-    this.idStoreMigrator = new IdStoreMigrator({
-      configManager: this.configManager,
-    })
 
     // manual disk state subscriptions
     this.txManager.store.subscribe((state) => {
@@ -366,8 +360,7 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   submitPassword (password, cb) {
-    this.migrateOldVaultIfAny(password)
-    .then(this.keyringController.submitPassword.bind(this.keyringController, password))
+    return this.keyringController.submitPassword(password)
     .then((newState) => { cb(null, newState) })
     .catch((reason) => { cb(reason) })
   }
@@ -560,35 +553,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setLostAccounts([])
     this.sendUpdate()
     cb(null, this.getState())
-  }
-
-  // Migrate Old Vault If Any
-  // @string password
-  //
-  // returns Promise()
-  //
-  // Temporary step used when logging in.
-  // Checks if old style (pre-3.0.0) Metamask Vault exists.
-  // If so, persists that vault in the new vault format
-  // with the provided password, so the other unlock steps
-  // may be completed without interruption.
-  migrateOldVaultIfAny (password) {
-
-    if (!this.checkIfShouldMigrate()) {
-      return Promise.resolve(password)
-    }
-
-    const keyringController = this.keyringController
-
-    return this.idStoreMigrator.migratedVaultForPassword(password)
-    .then(this.restoreOldVaultAccounts.bind(this))
-    .then(this.restoreOldLostAccounts.bind(this))
-    .then(keyringController.persistAllKeyrings.bind(keyringController, password))
-    .then(() => password)
-  }
-
-  checkIfShouldMigrate() {
-    return !!this.configManager.getWallet() && !this.configManager.getVault()
   }
 
   restoreOldVaultAccounts(migratorOutput) {
