@@ -698,7 +698,7 @@ function setRpcTarget (newRpc) {
   }
 }
 
-// Calls the addressBookController to add a new address. 
+// Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname) {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
@@ -772,22 +772,30 @@ function requestExportAccount () {
   }
 }
 
-function exportAccount (address) {
+function exportAccount (password, address) {
   var self = this
 
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
 
-    log.debug(`background.exportAccount`)
-    background.exportAccount(address, function (err, result) {
-      dispatch(self.hideLoadingIndication())
-
+    log.debug(`background.submitPassword`)
+    background.submitPassword(password, function (err) {
       if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Had a problem exporting the account.'))
+        log.error('Error in submiting password.')
+        dispatch(self.hideLoadingIndication())
+        return dispatch(self.displayWarning('Incorrect Password.'))
       }
+      log.debug(`background.exportAccount`)
+      background.exportAccount(address, function (err, result) {
+        dispatch(self.hideLoadingIndication())
 
-      dispatch(self.showPrivateKey(result))
+        if (err) {
+          log.error(err)
+          return dispatch(self.displayWarning('Had a problem exporting the account.'))
+        }
+
+        dispatch(self.showPrivateKey(result))
+      })
     })
   }
 }
