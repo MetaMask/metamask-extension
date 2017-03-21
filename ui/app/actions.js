@@ -215,7 +215,7 @@ function confirmSeedWords () {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.clearSeedWordCache`)
     background.clearSeedWordCache((err, account) => {
-      dispatch(actions.hideLoadingIndication())
+      // dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
@@ -231,7 +231,7 @@ function createNewVaultAndRestore (password, seed) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
     background.createNewVaultAndRestore(password, seed, (err) => {
-      dispatch(actions.hideLoadingIndication())
+      // dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.showAccountsPage())
     })
@@ -270,13 +270,11 @@ function requestRevealSeed (password) {
     log.debug(`background.submitPassword`)
     background.submitPassword(password, (err) => {
       if (err) {
-        dispatch(actions.hideLoadingIndication())
         return dispatch(actions.displayWarning(err.message))
       }
       log.debug(`background.placeSeedWords`)
       background.placeSeedWords((err) => {
         if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.hideLoadingIndication())
       })
     })
   }
@@ -299,7 +297,6 @@ function importNewAccount (strategy, args) {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     log.debug(`background.importAccountWithStrategy`)
     background.importAccountWithStrategy(strategy, args, (err) => {
-      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       log.debug(`background.getState`)
       background.getState((err, newState) => {
