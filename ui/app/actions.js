@@ -215,7 +215,7 @@ function confirmSeedWords () {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.clearSeedWordCache`)
     background.clearSeedWordCache((err, account) => {
-      // dispatch(actions.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
@@ -231,7 +231,7 @@ function createNewVaultAndRestore (password, seed) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
     background.createNewVaultAndRestore(password, seed, (err) => {
-      // dispatch(actions.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.showAccountsPage())
     })
