@@ -5,9 +5,9 @@ module.exports = class IndexDbController extends EventEmitter {
     super()
     this.migrations = opts.migrations
     this.key = opts.key
-    this.dbObject = opts.global.indexedDB
-    this.IDBTransaction = opts.global.IDBTransaction || opts.global.webkitIDBTransaction || opts.global.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
-    this.IDBKeyRange = opts.global.IDBKeyRange || opts.global.webkitIDBKeyRange || opts.global.msIDBKeyRange;
+    this.dbObject = global.indexedDB
+    this.IDBTransaction = global.IDBTransaction || global.webkitIDBTransaction || global.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+    this.IDBKeyRange = global.IDBKeyRange || global.webkitIDBKeyRange || global.msIDBKeyRange;
     this.version = opts.version
     this.logging = opts.logging
     this.initialState = opts.initialState
@@ -72,8 +72,7 @@ module.exports = class IndexDbController extends EventEmitter {
   }
 
   migrate () {
-    // Place holder for future migrations eg:
-    this.db.createObjectStore('dataStore')
+    this.db.createObjectStore(this.name)
   }
 
   _add (key, objStore, cb = logger) {

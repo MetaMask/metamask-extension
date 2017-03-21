@@ -4,7 +4,9 @@ const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const asyncQ = require('async-q')
 const pipe = require('pump')
-// const ParentStream = require('iframe-stream').ParentStream
+
+const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
+const connectionListener = new SwGlobalListener(self)
 const setupMultiplex = require('../app/scripts/lib/stream-utils.js').setupMultiplex
 const PortStream = require('../app/scripts/lib/port-stream.js')
 // const notification = require('../app/scripts/lib/notifications.js')
@@ -148,12 +150,11 @@ function setupController (initState, client) {
   /*
   need to write a service worker stream for this
   */
-  var connectionStream //= new ParentStream()
-  SWGlobal.onmessage = (message) => {
-    connectRemote(connectionStream, message.origin)
-  }
-
-  connectRemote(connectionStream, client.origin)
+  // var connectionStream = new ParentStream()
+  connectionListener.on('remote', (portStream, messageEvent) => {
+    debugger
+    connectRemote(connectionStream, messageEvent.origin)
+  })
 
   function connectRemote (connectionStream, originDomain) {
     var isMetaMaskInternalProcess = (originDomain === 'http://localhost:9001')
