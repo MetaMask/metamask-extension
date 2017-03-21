@@ -269,7 +269,10 @@ function requestRevealSeed (password) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
     background.submitPassword(password, (err) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) {
+        dispatch(actions.hideLoadingIndication())
+        return dispatch(actions.displayWarning(err.message))
+      }
       log.debug(`background.placeSeedWords`)
       background.placeSeedWords((err) => {
         if (err) return dispatch(actions.displayWarning(err.message))
@@ -698,7 +701,7 @@ function setRpcTarget (newRpc) {
   }
 }
 
-// Calls the addressBookController to add a new address. 
+// Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname) {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
