@@ -269,11 +269,12 @@ function requestRevealSeed (password) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
     background.submitPassword(password, (err) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
       log.debug(`background.placeSeedWords`)
       background.placeSeedWords((err) => {
         if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.hideLoadingIndication())
       })
     })
   }
@@ -296,10 +297,10 @@ function importNewAccount (strategy, args) {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     log.debug(`background.importAccountWithStrategy`)
     background.importAccountWithStrategy(strategy, args, (err) => {
-      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       log.debug(`background.getState`)
       background.getState((err, newState) => {
+        dispatch(actions.hideLoadingIndication())
         if (err) {
           return dispatch(actions.displayWarning(err.message))
         }
