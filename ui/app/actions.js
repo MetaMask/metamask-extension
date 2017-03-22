@@ -300,6 +300,7 @@ function importNewAccount (strategy, args) {
       if (err) return dispatch(actions.displayWarning(err.message))
       log.debug(`background.getState`)
       background.getState((err, newState) => {
+        dispatch(actions.hideLoadingIndication())
         if (err) {
           return dispatch(actions.displayWarning(err.message))
         }
