@@ -12,6 +12,10 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
+const DEFAULT_GAS_PRICE = '0x4a817c800'
+const DEFAULT_GAS_PRICE_BN = new BN(DEFAULT_GAS_PRICE.substr(2), 16)
+const FOUR_BN = new BN('4', 10)
+
 module.exports = PendingTxDetails
 
 inherits(PendingTxDetails, Component)
@@ -78,7 +82,6 @@ PTXP.render = function () {
               labelColor: '#F7861C',
             }),
           ]),
-
         ]),
 
         forwardCarrat(),
@@ -122,6 +125,7 @@ PTXP.render = function () {
           }, [
             h(HexInput, {
               value: gas,
+              min: 21000, // The hard lower limit for gas.
               suffix: 'UNITS',
               style: {
                 position: 'relative',
@@ -143,6 +147,7 @@ PTXP.render = function () {
             h(HexInput, {
               value: gasPrice,
               suffix: 'WEI',
+              min: DEFAULT_GAS_PRICE_BN.div(FOUR_BN).toString(10),
               style: {
                 position: 'relative',
                 top: '5px',
@@ -176,7 +181,8 @@ PTXP.render = function () {
             },
           }, [
             h(EthBalance, {
-              value: maxCost.toString(16),
+              value: '0x' + txFee.add(new BN(txParams.value, 16)).toString(16),
+              maxCost.toString(16),
               inline: true,
               labelColor: 'black',
               fontSize: '16px',
@@ -267,7 +273,7 @@ PTXP.calculateGas = function () {
 
   var txParams = txMeta.txParams
   var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
+  var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || DEFAULT_GAS_PRICE), 16)
   var txFee = gasCost.mul(gasPrice)
   var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
   var maxCost = txValue.add(txFee)
@@ -280,10 +286,12 @@ PTXP.calculateGas = function () {
   txMeta.maxCost = maxCostHex
   txMeta.txParams.gasPrice = gasPriceHex
 
-  this.setState({
+  const newState = {
     txFee: '0x' + txFee.toString('hex'),
     maxCost: '0x' + maxCost.toString('hex'),
-  })
+  }
+  log.info(`tx form updating local state with ${JSON.stringify(newState)}`)
+  this.setState(newState)
 
   if (this.props.onTxChange) {
     this.props.onTxChange(txMeta)

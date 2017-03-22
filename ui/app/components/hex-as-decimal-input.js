@@ -23,7 +23,7 @@ function HexAsDecimalInput () {
 
 HexAsDecimalInput.prototype.render = function () {
   const props = this.props
-  const { value, onChange } = props
+  const { value, onChange, min } = props
   const toEth = props.toEth
   const suffix = props.suffix
   const decimalValue = decimalize(value, toEth)
@@ -38,8 +38,9 @@ HexAsDecimalInput.prototype.render = function () {
         textRendering: 'geometricPrecision',
       },
     }, [
-      h('input.ether-balance.ether-balance-amount', {
+      h('input.hex-input', {
         type: 'number',
+        min,
         style: extend({
           display: 'block',
           textAlign: 'right',
