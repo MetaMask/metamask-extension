@@ -172,7 +172,10 @@ module.exports = class TransactionManager extends EventEmitter {
       ], (err) => {
         self.nonceLock.leave()
         if (err) {
-          this.setTxStatusFailed(txId)
+          this.setTxStatusFailed(txId, {
+            errCode: err.errCode || err,
+            message: err.message || 'Transaction failed during approval',
+          })
           return cb(err)
         }
         cb()
@@ -291,7 +294,10 @@ module.exports = class TransactionManager extends EventEmitter {
     this._setTxStatus(txId, 'confirmed')
   }
 
-  setTxStatusFailed (txId) {
+  setTxStatusFailed (txId, reason) {
+    let txMeta = this.getTx(txId)
+    txMeta.err = reason
+    this.updateTx(txMeta)
     this._setTxStatus(txId, 'failed')
   }
 
@@ -312,12 +318,11 @@ module.exports = class TransactionManager extends EventEmitter {
       var txHash = txMeta.hash
       var txId = txMeta.id
       if (!txHash) {
-        txMeta.err = {
+        let errReason = {
           errCode: 'No hash was provided',
           message: 'We had an error while submitting this transaction, please try again.',
         }
-        this.updateTx(txMeta)
-        return this.setTxStatusFailed(txId)
+        return this.setTxStatusFailed(txId, errReason)
       }
       this.txProviderUtils.query.getTransactionByHash(txHash, (err, txParams) => {
         if (err || !txParams) {
