@@ -426,6 +426,7 @@ function reduceApp (state, action) {
     case actions.DISPLAY_WARNING:
       return extend(appState, {
         warning: action.value,
+        isLoading: false,
       })
 
     case actions.HIDE_WARNING:
