@@ -19,6 +19,8 @@ class EthereumStore extends ObservableStore {
     super({
       accounts: {},
       transactions: {},
+      currentBlockNumber: '0',
+      currentBlockHash: '',
     })
     this._provider = opts.provider
     this._query = new EthQuery(this._provider)
@@ -69,6 +71,8 @@ class EthereumStore extends ObservableStore {
   _updateForBlock (block) {
     const blockNumber = '0x' + block.number.toString('hex')
     this._currentBlockNumber = blockNumber
+    this.updateState({ currentBlockNumber: parseInt(blockNumber) })
+    this.updateState({ currentBlockHash: `0x${block.hash.toString('hex')}`})
     async.parallel([
       this._updateAccounts.bind(this),
       this._updateTransactions.bind(this, blockNumber),
