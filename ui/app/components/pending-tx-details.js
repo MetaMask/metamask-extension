@@ -12,15 +12,17 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
-const DEFAULT_GAS_PRICE = '0x4a817c800'
-const DEFAULT_GAS_PRICE_BN = new BN(DEFAULT_GAS_PRICE.substr(2), 16)
-const FOUR_BN = new BN('4', 10)
+const DEFAULT_GAS_PRICE_BN = new BN(20000000000, '10')
+const DEFAULT_GAS_PRICE = DEFAULT_GAS_PRICE_BN.toString(16)
+
+const MIN_GAS_PRICE_BN = new BN(20000000)
 
 module.exports = PendingTxDetails
 
 inherits(PendingTxDetails, Component)
 function PendingTxDetails () {
   Component.call(this)
+  this.state = { valid: true }
 }
 
 const PTXP = PendingTxDetails.prototype
@@ -40,6 +42,7 @@ PTXP.render = function () {
   const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
 
   var txFee = state.txFee || txData.txFee || ''
+  var txFeeBn = new BN(txFee, 16)
   var maxCost = state.maxCost || txData.maxCost || ''
   var dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   var imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
@@ -124,6 +127,7 @@ PTXP.render = function () {
           h('.cell.value', {
           }, [
             h(HexInput, {
+              name: 'Gas Limit',
               value: gas,
               min: 21000, // The hard lower limit for gas.
               suffix: 'UNITS',
@@ -145,9 +149,10 @@ PTXP.render = function () {
           h('.cell.value', {
           }, [
             h(HexInput, {
+              name: 'Gas Price',
               value: gasPrice,
               suffix: 'WEI',
-              min: DEFAULT_GAS_PRICE_BN.div(FOUR_BN).toString(10),
+              min: MIN_GAS_PRICE_BN.toString(10),
               style: {
                 position: 'relative',
                 top: '5px',
@@ -163,7 +168,7 @@ PTXP.render = function () {
         // Max Transaction Fee (calculated)
         h('.cell.row', [
           h('.cell.label', 'Max Transaction Fee'),
-          h(EthBalance, { value: txFee.toString(16) }),
+          h(EthBalance, { value: txFeeBn.toString(16) }),
         ]),
 
         h('.cell.row', {
@@ -181,8 +186,7 @@ PTXP.render = function () {
             },
           }, [
             h(EthBalance, {
-              value: '0x' + txFee.add(new BN(txParams.value, 16)).toString(16),
-              maxCost.toString(16),
+              value: maxCost.toString(16),
               inline: true,
               labelColor: 'black',
               fontSize: '16px',
@@ -267,6 +271,10 @@ PTXP.componentDidUpdate = function (prevProps, previousState) {
   }
 }
 
+PTXP.isValid = function () {
+  return this.state.valid
+}
+
 PTXP.calculateGas = function () {
   const txMeta = this.gatherParams()
   log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
@@ -274,6 +282,10 @@ PTXP.calculateGas = function () {
   var txParams = txMeta.txParams
   var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
   var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || DEFAULT_GAS_PRICE), 16)
+
+  const valid = !gasPrice.lt(MIN_GAS_PRICE_BN)
+  this.props.validChanged(valid)
+
   var txFee = gasCost.mul(gasPrice)
   var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
   var maxCost = txValue.add(txFee)

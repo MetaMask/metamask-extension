@@ -9,6 +9,7 @@ module.exports = HexAsDecimalInput
 
 inherits(HexAsDecimalInput, Component)
 function HexAsDecimalInput () {
+  this.state = { invalid: null }
   Component.call(this)
 }
 
@@ -23,48 +24,99 @@ function HexAsDecimalInput () {
 
 HexAsDecimalInput.prototype.render = function () {
   const props = this.props
-  const { value, onChange, min } = props
+  const state = this.state
+
+  const { value, onChange, min, max } = props
+
   const toEth = props.toEth
   const suffix = props.suffix
   const decimalValue = decimalize(value, toEth)
   const style = props.style
 
   return (
-    h('.flex-row', {
-      style: {
-        alignItems: 'flex-end',
-        lineHeight: '13px',
-        fontFamily: 'Montserrat Light',
-        textRendering: 'geometricPrecision',
-      },
-    }, [
-      h('input.hex-input', {
-        type: 'number',
-        min,
-        style: extend({
-          display: 'block',
-          textAlign: 'right',
-          backgroundColor: 'transparent',
-          border: '1px solid #bdbdbd',
-
-        }, style),
-        value: decimalValue,
-        onChange: (event) => {
-          const hexString = (event.target.value === '') ? '' : hexify(event.target.value)
-          onChange(hexString)
-        },
-      }),
-      h('div', {
+    h('.flex-column', [
+      h('.flex-row', {
         style: {
-          color: ' #AEAEAE',
-          fontSize: '12px',
-          marginLeft: '5px',
-          marginRight: '6px',
-          width: '20px',
+          alignItems: 'flex-end',
+          lineHeight: '13px',
+          fontFamily: 'Montserrat Light',
+          textRendering: 'geometricPrecision',
         },
-      }, suffix),
+      }, [
+        h('input.hex-input', {
+          type: 'number',
+          required: true,
+          min: min,
+          max: max,
+          style: extend({
+            display: 'block',
+            textAlign: 'right',
+            backgroundColor: 'transparent',
+            border: '1px solid #bdbdbd',
+
+          }, style),
+          value: parseInt(decimalValue),
+          onChange: (event) => {
+            const target = event.target
+            const valid = target.checkValidity()
+            if (valid) {
+              this.setState({ invalid: null })
+            }
+            const hexString = (event.target.value === '') ? '' : hexify(event.target.value)
+            onChange(hexString)
+          },
+          onInvalid: (event) => {
+            const msg = this.constructWarning()
+            if (msg === state.invalid) {
+              return
+            }
+            this.setState({ invalid: msg })
+            event.preventDefault()
+          },
+        }),
+        h('div', {
+          style: {
+            color: ' #AEAEAE',
+            fontSize: '12px',
+            marginLeft: '5px',
+            marginRight: '6px',
+            width: '20px',
+          },
+        }, suffix),
+      ]),
+
+      state.invalid ? h('span.error', {
+        style: {
+          position: 'absolute',
+          right: '0px',
+          textAlign: 'right',
+          transform: 'translateY(26px)',
+          padding: '3px',
+          background: 'rgba(255,255,255,0.85)',
+          zIndex: '1',
+          textTransform: 'capitalize',
+          border: '2px solid #E20202',
+        },
+      }, state.invalid) : null,
     ])
   )
+}
+
+HexAsDecimalInput.prototype.constructWarning = function () {
+  const { name, min, max } = this.props
+  let message = name ? name + ' ' : ''
+
+  if (min && max) {
+    message += `must be greater than or equal to  ${min} and less than or equal to ${max}.`
+  } else if (min) {
+    message += `must be greater than or equal to ${min}.`
+  } else if (max) {
+    message += `must be less than or equal to ${max}.`
+  } else {
+    message += 'Invalid input.'
+  }
+
+  return message
 }
 
 function hexify (decimalString) {

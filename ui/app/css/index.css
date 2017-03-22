@@ -32,7 +32,7 @@ input:focus, textarea:focus {
   height: 500px;
 }
 
-button {
+button, input[type="submit"] {
   font-family: 'Montserrat Bold';
   outline: none;
   cursor: pointer;
@@ -46,17 +46,17 @@ button {
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
 }
 
-button.btn-green {
+.btn-green, input[type="submit"].btn-green {
   background: rgba(106, 195, 96, 1);
   box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
 }
 
-button.btn-red {
+.btn-red {
   background: rgba(254, 35, 17, 1);
   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
 }
 
-button[disabled] {
+button[disabled], input[type="submit"][disabled] {
   cursor: not-allowed;
   background: rgba(197, 197, 197, 1);
   box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
@@ -66,10 +66,10 @@ button.spaced {
   margin: 2px;
 }
 
-button:not([disabled]):hover {
+button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
   transform: scale(1.1);
 }
-button:not([disabled]):active {
+button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
   transform: scale(0.95);
 }
 

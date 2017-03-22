@@ -158,7 +158,7 @@ ConfirmTxScreen.prototype.checkBalanceAgainstTx = function (txData) {
 }
 
 ConfirmTxScreen.prototype.buyEth = function (address, event) {
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.buyEthView(address))
 }
 
@@ -172,14 +172,14 @@ ConfirmTxScreen.prototype.onTxChange = function (txData) {
 // Must default to any local state txData,
 // to allow manual override of gas calculations.
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
-  event.stopPropagation()
+  this.stopPropagation(event)
   const state = this.state || {}
   const txMeta = state.txData
   this.props.dispatch(actions.updateAndApproveTx(txMeta || txData))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.cancelTx(txData))
 }
 
@@ -187,32 +187,38 @@ ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   log.info('conf-tx.js: signing message')
   var params = msgData.msgParams
   params.metamaskId = msgData.id
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.signMsg(params))
+}
+
+ConfirmTxScreen.prototype.stopPropagation = function (event) {
+  if (event.stopPropagation) {
+    event.stopPropagation()
+  }
 }
 
 ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   log.info('conf-tx.js: signing personal message')
   var params = msgData.msgParams
   params.metamaskId = msgData.id
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.signPersonalMsg(params))
 }
 
 ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
   log.info('canceling message')
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.cancelMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.cancelPersonalMessage = function (msgData, event) {
   log.info('canceling personal message')
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.cancelPersonalMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.goHome = function (event) {
-  event.stopPropagation()
+  this.stopPropagation(event)
   this.props.dispatch(actions.goHome())
 }
 
