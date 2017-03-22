@@ -6,6 +6,7 @@
 - Added an address book functionality that remembers the last 15 unique addresses sent to.
 - Can now change network to custom RPC URL from lock screen.
 - Removed support for old, lightwallet based vault. Users who have not opened app in over a month will need to recover with their seed phrase. This will allow Firefox support sooner.
+- Polish the private key UI.
 
 ## 3.4.0 2017-3-8
 
