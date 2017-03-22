@@ -90,6 +90,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: defaultView,
         transForward: false,
+        warning: null,
       })
 
     case actions.SHOW_CONFIG_PAGE:
@@ -99,6 +100,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: action.value,
+        warning: null,
       })
 
     case actions.SHOW_IMPORT_PAGE:
@@ -107,6 +109,7 @@ function reduceApp (state, action) {
           name: 'import-menu',
         },
         transForward: true,
+        warning: null,
       })
 
     case actions.SHOW_INFO_PAGE:
@@ -116,6 +119,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: true,
+        warning: null,
       })
 
     case actions.CREATE_NEW_VAULT_IN_PROGRESS:
@@ -126,6 +130,7 @@ function reduceApp (state, action) {
         },
         transForward: true,
         isLoading: true,
+        warning: null,
       })
 
     case actions.SHOW_NEW_VAULT_SEED:
@@ -136,6 +141,7 @@ function reduceApp (state, action) {
         },
         transForward: true,
         isLoading: false,
+        warning: null,
       })
 
     case actions.NEW_ACCOUNT_SCREEN:
@@ -145,6 +151,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: true,
+        warning: null,
       })
 
     case actions.SHOW_SEND_PAGE:
@@ -164,6 +171,7 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: true,
+        warning: null,
       })
 
   // unlock
@@ -248,6 +256,7 @@ function reduceApp (state, action) {
           privateKey: '',
         },
         transForward: false,
+        warning: null,
       })
 
     case actions.BACK_TO_ACCOUNT_DETAIL:
@@ -262,6 +271,7 @@ function reduceApp (state, action) {
           privateKey: '',
         },
         transForward: false,
+        warning: null,
       })
 
     case actions.SHOW_ACCOUNTS_PAGE:
@@ -281,11 +291,13 @@ function reduceApp (state, action) {
       return extend(appState, {
         transForward: true,
         isLoading: false,
+        warning: null,
       })
 
     case actions.REVEAL_ACCOUNT:
       return extend(appState, {
         scrollToBottom: true,
+        warning: null,
       })
 
     case actions.SHOW_CONF_TX_PAGE:
@@ -461,11 +473,13 @@ function reduceApp (state, action) {
           accountExport: 'completed',
           privateKey: action.value,
         },
+        warning: null,
       })
 
     case actions.BUY_ETH_VIEW:
       return extend(appState, {
         transForward: true,
+        warning: null,
         currentView: {
           name: 'buyEth',
           context: appState.currentView.name,
@@ -553,6 +567,7 @@ function reduceApp (state, action) {
 
     case actions.SHOW_QR:
       return extend(appState, {
+        warning: null,
         qrRequested: true,
         transForward: true,
 
@@ -564,6 +579,7 @@ function reduceApp (state, action) {
 
     case actions.SHOW_QR_VIEW:
       return extend(appState, {
+        warning: null,
         currentView: {
           name: 'qr',
           context: appState.currentView.context,
