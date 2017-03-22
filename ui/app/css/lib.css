@@ -188,7 +188,7 @@ hr.horizontal-line {
 
 .hollow-diamond {
   transform: rotate(45deg);
-  border: 1px solid #038789;
+  border: 3px solid #690496;
 }
 
 .pending-dot {
