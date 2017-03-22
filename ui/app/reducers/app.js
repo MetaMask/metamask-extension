@@ -84,6 +84,7 @@ function reduceApp (state, action) {
         },
         transForward: false,
         forgottenPassword: true,
+        warning: null,
       })
 
     case actions.SHOW_INIT_MENU:
