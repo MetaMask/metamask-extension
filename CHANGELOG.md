@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add better error messages for when a transaction fails on approval
 - Allow sending to ENS names in send form on Ropsten.
 - Added an address book functionality that remembers the last 15 unique addresses sent to.
 - Can now change network to custom RPC URL from lock screen.
