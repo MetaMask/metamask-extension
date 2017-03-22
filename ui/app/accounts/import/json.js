@@ -60,7 +60,7 @@ JsonImportSubview.prototype.render = function () {
         },
       }, 'Import'),
 
-      error ? h('span.warning', error) : null,
+      error ? h('span.error', error) : null,
     ])
   )
 }
@@ -95,4 +95,3 @@ JsonImportSubview.prototype.createNewKeychain = function () {
 
   this.props.dispatch(actions.importNewAccount('JSON File', [ fileContents, password ]))
 }
-

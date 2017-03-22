@@ -48,7 +48,7 @@ PrivateKeyImportView.prototype.render = function () {
         },
       }, 'Import'),
 
-      error ? h('span.warning', error) : null,
+      error ? h('span.error', error) : null,
     ])
   )
 }
@@ -65,4 +65,3 @@ PrivateKeyImportView.prototype.createNewKeychain = function () {
   const privateKey = input.value
   this.props.dispatch(actions.importNewAccount('Private Key', [ privateKey ]))
 }
-
