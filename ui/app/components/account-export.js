@@ -52,6 +52,7 @@ ExportAccountView.prototype.render = function () {
           }, [
             h('p.error', warning),
             h('input#exportAccount.sizing-input', {
+              type: 'password',
               placeholder: 'confirm password',
               onKeyPress: this.onExportKeyPress.bind(this),
               style: {

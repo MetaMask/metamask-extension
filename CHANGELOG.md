@@ -12,6 +12,7 @@
 - Enforce minimum values for gas price and gas limit.
 - Fix bug where total gas was sometimes not live-updated.
 - Fix bug where editing gas value could have some abrupt behaviors (#1233)
+- Add Kovan as an option on our network list.
 
 ## 3.4.0 2017-3-8
 
