@@ -87,7 +87,7 @@ function loadStateFromPersistence() {
   const initialState = migrator.generateInitialState(firstTimeState)
   dbController.initialState = initialState
   return dbController.open()
-  .then((stuff) => {
+  .then((openRequest) => {
     return dbController.get('dataStore')
   })
   .then((data) => {
@@ -141,14 +141,14 @@ function setupController (initState, client) {
   //   storeTransform(versionifyData),
   //   diskStore
   // )
-  controller.store.subscribe((store) => {
-    dbController.put('dataStore', store)
-    // .then((event) => {debugger})
-    // .catch((err) => {debugger})
+  controller.store.subscribe((state) => {
+    dbController.put(versionifyData(controller.store))
+    .catch((err) => {console.error(err)})
   })
   function versionifyData(state) {
-    let versionedData = diskStore.getState()
-    versionedData.data = state
+    // let versionedData = diskStore.getState()
+    // versionedData.data = state
+    let versionedData = {data: state}
     return versionedData
   }
 

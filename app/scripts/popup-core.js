@@ -11,7 +11,6 @@ module.exports = initializePopup
 
 function initializePopup (connectionStream) {
   // setup app
-  debugger
   connectToAccountManager(connectionStream, setupApp)
 }
 

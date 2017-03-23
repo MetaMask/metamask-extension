@@ -58,21 +58,17 @@ module.exports = class IndexDbController extends EventEmitter {
   })
   }
 
-  put (key, store) {
-    return this.requestObjectStore(key, 'readwrite')
+  put (state) {
+    return this.requestObjectStore('dataStore', 'readwrite')
     .then((dataObject)=> {
-      const putRequest = dataObject.put(store)
+      const putRequest = dataObject.put(state, 'dataStore')
       putRequest.onsuccess = (event) => Promise.resolve(event.currentTarget.result)
       putRequest.onerror = (event) => Promise.reject(event)
     })
   }
 
-  update (key, value) {
-
-  }
-
   migrate () {
-    this.db.createObjectStore(this.name)
+    this.db.createObjectStore('dataStore')
   }
 
   _add (key, objStore, cb = logger) {
