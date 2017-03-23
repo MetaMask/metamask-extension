@@ -63,7 +63,7 @@ module.exports = class txProviderUtils {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
     const blockGasLimitBn = hexToBn(blockGasLimitHex)
     const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
-    
+
     // if initialGasLimit is above blockGasLimit, dont modify it
     if (initialGasLimitBn.gt(blockGasLimitBn)) return bnToHex(initialGasLimitBn)
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
@@ -99,7 +99,7 @@ module.exports = class txProviderUtils {
     txParams.from = normalize(txParams.from)
     txParams.value = normalize(txParams.value)
     txParams.data = normalize(txParams.data)
-    txParams.gasLimit = normalize(txParams.gasLimit || txParams.gas)
+    txParams.gas = normalize(txParams.gas || txParams.gasLimit)
     txParams.nonce = normalize(txParams.nonce)
     // build ethTx
     log.info(`Prepared tx for signing: ${JSON.stringify(txParams)}`)
