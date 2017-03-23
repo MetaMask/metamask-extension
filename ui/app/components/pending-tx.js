@@ -72,7 +72,7 @@ PendingTx.prototype.render = function () {
           const valid = form.checkValidity()
           this.setState({ valid })
 
-          if (valid && this.refs.details.verifyGasParams()) {
+          if (valid && this.verifyGasParams()) {
             props.sendTransaction(txData, event)
           } else {
             this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
@@ -287,7 +287,7 @@ PendingTx.prototype.render = function () {
 
           h('button', {
             onClick: () => {
-              this.refs.details.resetGasFields()
+              this.resetGasFields()
             },
           }, 'Reset'),
 
