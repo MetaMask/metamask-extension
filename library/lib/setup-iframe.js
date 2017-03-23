@@ -5,6 +5,7 @@ module.exports = setupIframe
 
 
 function setupIframe(opts) {
+  debugger
   opts = opts || {}
   var frame = Iframe({
     src: opts.zeroClientProvider || 'https://zero.metamask.io/',

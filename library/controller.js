@@ -1,19 +1,13 @@
-const SWcontroller = require('./sw-controller')
-console.log('outside:open')
-const background = new SWcontroller({
-  fileName: 'sw-build.js',
-  registerOpts: {
-    scope: './',
-  }
-})
+// const SWcontroller = require('./sw-controller')
+// const SwStream = require('sw-stream/lib/sw-stream.js')
+// const startPopup = require('../app/scripts/popup-core')
 
-background.startWorker()
-.then(registerdWorker => {
-  return background.sendMessage('connect')
-})
-.then((port) => {
-  debugger
-})
-.catch(err => {
-  console.error(`SW Controller: ${err}`)
-})
+// console.log('outside:open')
+// const background = new SWcontroller({
+//   fileName: 'sw-build.js',
+// })
+// background.on('ready', (readSw) => {
+//   startPopup(SwStream(background.controller))
+// })
+// background.startWorker()
+console.log('hello from controller')

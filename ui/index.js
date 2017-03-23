@@ -14,7 +14,7 @@ log.setLevel(debugMode ? 'debug' : 'warn')
 function launchApp (opts) {
   var accountManager = opts.accountManager
   actions._setBackgroundConnection(accountManager)
-
+  debugger
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {
     if (err) throw err

@@ -25,6 +25,10 @@ const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 let popupIsOpen = false
 
+const log = require('loglevel')
+global.log = log
+log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
+
 self.addEventListener('install', function(event) {
   event.waitUntil(self.skipWaiting())
 })
@@ -132,12 +136,16 @@ function setupController (initState, client) {
   global.metamaskController = controller
 
   // setup state persistence
-  pipe(
-    controller.store,
-    storeTransform(versionifyData),
-    diskStore
-  )
-
+  // pipe(
+  //   controller.store,
+  //   storeTransform(versionifyData),
+  //   diskStore
+  // )
+  controller.store.subscribe((store) => {
+    dbController.put('dataStore', store)
+    // .then((event) => {debugger})
+    // .catch((err) => {debugger})
+  })
   function versionifyData(state) {
     let versionedData = diskStore.getState()
     versionedData.data = state
@@ -150,10 +158,8 @@ function setupController (initState, client) {
   /*
   need to write a service worker stream for this
   */
-  // var connectionStream = new ParentStream()
   connectionListener.on('remote', (portStream, messageEvent) => {
-    debugger
-    connectRemote(connectionStream, messageEvent.origin)
+    connectRemote(portStream, messageEvent.origin)
   })
 
   function connectRemote (connectionStream, originDomain) {

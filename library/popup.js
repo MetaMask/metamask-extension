@@ -1,7 +1,10 @@
 const injectCss = require('inject-css')
 const MetaMaskUiCss = require('../ui/css')
-const startPopup = require('../app/scripts/popup-core')
 const setupIframe = require('./lib/setup-iframe.js')
+const MetamaskInpageProvider = require('../app/scripts/lib/inpage-provider.js')
+const SWcontroller = require('./sw-controller')
+const SwStream = require('sw-stream/lib/sw-stream.js')
+const startPopup = require('../app/scripts/popup-core')
 
 
 var css = MetaMaskUiCss()
@@ -15,5 +18,14 @@ var iframeStream = setupIframe({
   sandboxAttributes: ['allow-scripts', 'allow-popups', 'allow-same-origin'],
   container: document.body,
 })
-
-startPopup(iframeStream)
+console.log('outside:open')
+const background = new SWcontroller({
+  fileName: '/popup/sw-build.js',
+})
+background.on('ready', (readSw) => {
+  // var inpageProvider = new MetamaskInpageProvider(SwStream(background.controller))
+  // startPopup(inpageProvider)
+  startPopup(SwStream(background.controller))
+})
+background.startWorker()
+console.log('hello from /library/popup.js')

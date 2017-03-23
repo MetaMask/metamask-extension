@@ -25,7 +25,7 @@ iframeServer.use('/popup', express.static('../dist/chrome'))
 iframeServer.get('/controller.js', function(req, res){
   res.send(controllerBundle.latest)
 })
-iframeServer.get('/sw-build.js', function(req, res){
+iframeServer.get('/popup/sw-build.js', function(req, res){
   console.log('/sw-build.js')
   res.setHeader('Content-Type', 'application/javascript')
   res.send(swBuild.latest)
