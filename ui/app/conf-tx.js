@@ -180,6 +180,7 @@ ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   this.stopPropagation(event)
+  event.preventDefault()
   this.props.dispatch(actions.cancelTx(txData))
 }
 

@@ -286,8 +286,9 @@ PendingTx.prototype.render = function () {
           : null,
 
           h('button', {
-            onClick: () => {
+            onClick: (event) => {
               this.resetGasFields()
+              event.preventDefault()
             },
           }, 'Reset'),
 
