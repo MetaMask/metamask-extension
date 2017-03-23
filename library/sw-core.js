@@ -141,8 +141,8 @@ function setupController (initState, client) {
   //   storeTransform(versionifyData),
   //   diskStore
   // )
-  controller.store.subscribe((store) => {
-    dbController.put('dataStore', store)
+  controller.store.subscribe((state) => {
+    dbController.put('dataStore', state)
     // .then((event) => {debugger})
     // .catch((err) => {debugger})
   })
