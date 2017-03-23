@@ -99,7 +99,10 @@ Notice.prototype.render = function () {
 
       h('button', {
         disabled,
-        onClick: onConfirm,
+        onClick: () => {
+          this.setState({disclaimerDisabled: true})
+          onConfirm()
+        },
         style: {
           marginTop: '18px',
         },
