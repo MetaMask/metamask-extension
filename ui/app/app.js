@@ -256,6 +256,15 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
+      label: 'Kovan Test Network',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
+      action: () => props.dispatch(actions.setProviderType('kovan')),
+      icon: h('.menu-icon.hollow-diamond'),
+      activeNetworkRender: props.network,
+      provider: props.provider,
+    }),
+
+    h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),

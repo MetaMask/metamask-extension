@@ -161,6 +161,11 @@ function currentProviderDisplay (metamaskState) {
       value = 'Ropsten Test Network'
       break
 
+    case 'kovan':
+      title = 'Current Network'
+      value = 'Kovan Test Network'
+      break
+
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget
