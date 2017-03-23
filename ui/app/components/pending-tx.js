@@ -53,8 +53,7 @@ PendingTx.prototype.render = function () {
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
-  console.log('miniaccountpanelforrecipient?')
-  console.dir(this.miniAccountPanelForRecipient)
+  this.inputs = []
 
   return (
 
@@ -167,6 +166,7 @@ PendingTx.prototype.render = function () {
                     log.info(`Gas limit changed to ${newHex}`)
                     this.setState({ gas: newHex })
                   },
+                  ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
               ]),
             ]),
@@ -189,6 +189,7 @@ PendingTx.prototype.render = function () {
                     log.info(`Gas price changed to: ${newHex}`)
                     this.setState({ gasPrice: newHex })
                   },
+                  ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
               ]),
             ]),
@@ -351,7 +352,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 }
 
 PendingTx.prototype.componentDidUpdate = function (prevProps, previousState) {
-  log.debug(`pending-tx-details componentDidUpdate`)
+  log.debug(`pending-tx componentDidUpdate`)
   const state = this.state || {}
   const prevState = previousState || {}
   const { gas, gasPrice } = state
@@ -375,22 +376,22 @@ PendingTx.prototype.calculateGas = function () {
   const txData = props.txData
 
   const txMeta = this.gatherParams()
-  log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
+  log.debug(`pending-tx calculating gas for ${JSON.stringify(txMeta)}`)
 
   const txParams = txMeta.txParams
-  const gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
+  const gasLimit = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
+  const gasPriceHex = state.gasPrice || txData.gasPrice
+  const gasPrice = new BN(ethUtil.stripHexPrefix(gasPriceHex), 16)
 
   const valid = !gasPrice.lt(MIN_GAS_PRICE_BN)
   this.validChanged(valid)
 
-  const txFee = gasCost.mul(gasPrice)
+  const txFee = gasLimit.mul(gasPrice)
   const txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
   const maxCost = txValue.add(txFee)
 
   const txFeeHex = '0x' + txFee.toString('hex')
   const maxCostHex = '0x' + maxCost.toString('hex')
-  const gasPriceHex = '0x' + gasPrice.toString('hex')
 
   txMeta.txFee = txFeeHex
   txMeta.maxCost = maxCostHex
@@ -409,8 +410,15 @@ PendingTx.prototype.calculateGas = function () {
 }
 
 PendingTx.prototype.resetGasFields = function () {
-  log.debug(`pending-tx-details#resetGasFields`)
+  log.debug(`pending-tx resetGasFields`)
   const txData = this.props.txData
+
+  this.inputs.forEach((hexInput) => {
+    if (hexInput) {
+      hexInput.setValid()
+    }
+  })
+
   this.setState({
     gas: txData.txParams.gas,
     gasPrice: txData.gasPrice,
@@ -420,7 +428,7 @@ PendingTx.prototype.resetGasFields = function () {
 
 // After a customizable state value has been updated,
 PendingTx.prototype.gatherParams = function () {
-  log.debug(`pending-tx-details#gatherParams`)
+  log.debug(`pending-tx gatherParams`)
   const props = this.props
   const state = this.state || {}
   const txData = state.txData || props.txData

@@ -56,12 +56,11 @@ HexAsDecimalInput.prototype.render = function () {
 
           }, style),
           value: parseInt(decimalValue),
+          onBlur: (event) => {
+            this.updateValidity(event)
+          },
           onChange: (event) => {
-            const target = event.target
-            const valid = target.checkValidity()
-            if (valid) {
-              this.setState({ invalid: null })
-            }
+            this.updateValidity(event)
             const hexString = (event.target.value === '') ? '' : hexify(event.target.value)
             onChange(hexString)
           },
@@ -101,6 +100,26 @@ HexAsDecimalInput.prototype.render = function () {
       }, state.invalid) : null,
     ])
   )
+}
+
+HexAsDecimalInput.prototype.setValid = function (message) {
+  this.setState({ invalid: null })
+}
+
+HexAsDecimalInput.prototype.updateValidity = function (event) {
+  const target = event.target
+  const value = this.props.value
+  const newValue = target.value
+
+  if (value === newValue) {
+    return
+  }
+
+  const valid = target.checkValidity()
+  console.log('change triggered checking validity and found ' + valid)
+  if (valid) {
+    this.setState({ invalid: null })
+  }
 }
 
 HexAsDecimalInput.prototype.constructWarning = function () {
