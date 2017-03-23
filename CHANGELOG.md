@@ -10,6 +10,7 @@
 - Fixed bug where spinner wouldn't disappear on incorrect password submission on seed word reveal.
 - Polish the private key UI.
 - Add Kovan as an option on our network list.
+- Fixed bug where transactions on other networks would disappear when submitting a transaction on another network.
 
 ## 3.4.0 2017-3-8
 
