@@ -142,7 +142,7 @@ function setupController (initState, client) {
   //   diskStore
   // )
   controller.store.subscribe((state) => {
-    dbController.put(versionifyData(controller.store))
+    dbController.put(versionifyData(state))
     .catch((err) => {console.error(err)})
   })
   function versionifyData(state) {
