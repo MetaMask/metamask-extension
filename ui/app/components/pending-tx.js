@@ -15,9 +15,6 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
-const DEFAULT_GAS_PRICE_BN = new BN(20000000000, '10')
-const DEFAULT_GAS_PRICE = DEFAULT_GAS_PRICE_BN.toString(16)
-
 const MIN_GAS_PRICE_BN = new BN(20000000)
 
 
@@ -373,12 +370,16 @@ PendingTx.prototype.isValid = function () {
 }
 
 PendingTx.prototype.calculateGas = function () {
+  const state = this.state
+  const props = this.props
+  const txData = props.txData
+
   const txMeta = this.gatherParams()
   log.debug(`pending-tx-details calculating gas for ${JSON.stringify(txMeta)}`)
 
   const txParams = txMeta.txParams
   const gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  const gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || DEFAULT_GAS_PRICE), 16)
+  const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
 
   const valid = !gasPrice.lt(MIN_GAS_PRICE_BN)
   this.validChanged(valid)
