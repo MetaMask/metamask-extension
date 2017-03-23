@@ -1,6 +1,6 @@
 {
   "metamask": {
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 11.06608791,
     "conversionDate": 1470421024,
     "isInitialized": true,

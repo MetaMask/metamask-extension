@@ -30,7 +30,7 @@
       }
     },
     "unconfTxs": {},
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 0,
     "conversionDate": "N/A",
     "noActiveNotices": true,

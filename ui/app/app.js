@@ -256,6 +256,15 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
+      label: 'Kovan Test Network',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
+      action: () => props.dispatch(actions.setProviderType('kovan')),
+      icon: h('.menu-icon.hollow-diamond'),
+      activeNetworkRender: props.network,
+      provider: props.provider,
+    }),
+
+    h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
@@ -266,7 +275,7 @@ App.prototype.renderNetworkDropdown = function () {
     this.renderCustomOption(props.provider),
     this.renderCommonRpc(rpcList, props.provider),
 
-    props.isUnlocked && h(DropMenuItem, {
+    h(DropMenuItem, {
       label: 'Custom RPC',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => this.props.dispatch(actions.showConfigPage()),
@@ -399,6 +408,10 @@ App.prototype.renderPrimary = function () {
       case 'restoreVault':
         log.debug('rendering restore vault screen')
         return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+
+      case 'config':
+        log.debug('rendering config screen from unlock screen.')
+        return h(ConfigScreen, {key: 'config'})
 
       default:
         log.debug('rendering locked screen')

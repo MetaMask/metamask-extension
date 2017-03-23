@@ -4,12 +4,19 @@ const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
+const connect = require('react-redux').connect
 
-module.exports = ExportAccountView
+module.exports = connect(mapStateToProps)(ExportAccountView)
 
 inherits(ExportAccountView, Component)
 function ExportAccountView () {
   Component.call(this)
+}
+
+function mapStateToProps (state) {
+  return {
+    warning: state.appState.warning,
+  }
 }
 
 ExportAccountView.prototype.render = function () {
@@ -28,35 +35,58 @@ ExportAccountView.prototype.render = function () {
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    var warning = `Exporting your private key is very dangerous,
-      and you should only do it if you know what you're doing.`
-    var confirmation = `If you're absolutely sure, type "I understand" below and
-                        submit.`
+    var warning = `Export private keys at your own risk.`
     return (
-
       h('div', {
-        key: 'exporting',
         style: {
-          margin: '0 20px',
+          display: 'inline-block',
+          textAlign: 'center',
         },
-      }, [
-        h('p.error', warning),
-        h('p', confirmation),
-        h('input#exportAccount.sizing-input', {
-          onKeyPress: this.onExportKeyPress.bind(this),
-          style: {
-            position: 'relative',
-            top: '1.5px',
+      },
+        [
+          h('div', {
+            key: 'exporting',
+            style: {
+              margin: '0 20px',
+            },
+          }, [
+            h('p.error', warning),
+            h('input#exportAccount.sizing-input', {
+              type: 'password',
+              placeholder: 'confirm password',
+              onKeyPress: this.onExportKeyPress.bind(this),
+              style: {
+                position: 'relative',
+                top: '1.5px',
+                marginBottom: '7px',
+              },
+            }),
+          ]),
+          h('div', {
+            key: 'buttons',
+            style: {
+              margin: '0 20px',
+            },
           },
-        }),
-        h('button', {
-          onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
-        }, 'Submit'),
-        h('button', {
-          onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-        }, 'Cancel'),
-      ])
-
+            [
+              h('button', {
+                onClick: () => this.onExportKeyPress({ key: 'Enter', preventDefault: () => {} }),
+                style: {
+                  marginRight: '10px',
+                },
+              }, 'Submit'),
+              h('button', {
+                onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
+              }, 'Cancel'),
+            ]),
+          (this.props.warning) && (
+          h('span.error', {
+            style: {
+              margin: '20px',
+            },
+          }, this.props.warning.split('-'))
+        ),
+        ])
     )
   }
 
@@ -89,15 +119,6 @@ ExportAccountView.prototype.onExportKeyPress = function (event) {
   if (event.key !== 'Enter') return
   event.preventDefault()
 
-  var input = document.getElementById('exportAccount')
-  if (input.value === 'I understand') {
-    this.props.dispatch(actions.exportAccount(this.props.address))
-  } else {
-    input.value = ''
-    input.placeholder = 'Please retype "I understand" exactly.'
-  }
-}
-
-ExportAccountView.prototype.exportAccount = function (address) {
-  this.props.dispatch(actions.exportAccount(address))
+  var input = document.getElementById('exportAccount').value
+  this.props.dispatch(actions.exportAccount(input, this.props.address))
 }

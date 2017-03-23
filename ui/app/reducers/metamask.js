@@ -13,12 +13,10 @@ function reduceMetamask (state, action) {
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
-    currentFiat: 'USD',
-    conversionRate: 0,
-    conversionDate: 'N/A',
     noActiveNotices: true,
     lastUnreadNotice: undefined,
     frequentRpcList: [],
+    addressBook: [],
   }, state.metamask)
 
   switch (action.type) {
@@ -126,7 +124,7 @@ function reduceMetamask (state, action) {
 
     case actions.SET_CURRENT_FIAT:
       return extend(metamaskState, {
-        currentFiat: action.value.currentFiat,
+        currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
       })

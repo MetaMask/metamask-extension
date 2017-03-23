@@ -41,7 +41,7 @@
         "simulationFails": true
       }
     },
-    "currentFiat": "USD",
+    "currentCurrency": "USD",
     "conversionRate": 7.69158136,
     "conversionDate": 1482279663,
     "noActiveNotices": true,

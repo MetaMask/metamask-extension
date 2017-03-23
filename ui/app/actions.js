@@ -71,10 +71,12 @@ var actions = {
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
-  setCurrentFiat: setCurrentFiat,
+  setCurrentCurrency: setCurrentCurrency,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
+  ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
+  addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
   requestExportAccount: requestExportAccount,
   EXPORT_ACCOUNT: 'EXPORT_ACCOUNT',
@@ -267,11 +269,12 @@ function requestRevealSeed (password) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
     background.submitPassword(password, (err) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
       log.debug(`background.placeSeedWords`)
       background.placeSeedWords((err) => {
         if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.hideLoadingIndication())
       })
     })
   }
@@ -294,10 +297,10 @@ function importNewAccount (strategy, args) {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     log.debug(`background.importAccountWithStrategy`)
     background.importAccountWithStrategy(strategy, args, (err) => {
-      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       log.debug(`background.getState`)
       background.getState((err, newState) => {
+        dispatch(actions.hideLoadingIndication())
         if (err) {
           return dispatch(actions.displayWarning(err.message))
         }
@@ -328,10 +331,10 @@ function showInfoPage () {
   }
 }
 
-function setCurrentFiat (currencyCode) {
+function setCurrentCurrency (currencyCode) {
   return (dispatch) => {
     dispatch(this.showLoadingIndication())
-    log.debug(`background.setCurrentFiat`)
+    log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
@@ -341,7 +344,7 @@ function setCurrentFiat (currencyCode) {
       dispatch({
         type: this.SET_CURRENT_FIAT,
         value: {
-          currentFiat: data.currentFiat,
+          currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
           conversionDate: data.conversionDate,
         },
@@ -696,6 +699,19 @@ function setRpcTarget (newRpc) {
   }
 }
 
+// Calls the addressBookController to add a new address.
+function addToAddressBook (recipient, nickname) {
+  log.debug(`background.addToAddressBook`)
+  return (dispatch) => {
+    background.setAddressBook(recipient, nickname, (err, result) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Address book failed to update'))
+      }
+    })
+  }
+}
+
 function setProviderType (type) {
   log.debug(`background.setProviderType`)
   background.setProviderType(type)
@@ -757,22 +773,30 @@ function requestExportAccount () {
   }
 }
 
-function exportAccount (address) {
+function exportAccount (password, address) {
   var self = this
 
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
 
-    log.debug(`background.exportAccount`)
-    background.exportAccount(address, function (err, result) {
-      dispatch(self.hideLoadingIndication())
-
+    log.debug(`background.submitPassword`)
+    background.submitPassword(password, function (err) {
       if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Had a problem exporting the account.'))
+        log.error('Error in submiting password.')
+        dispatch(self.hideLoadingIndication())
+        return dispatch(self.displayWarning('Incorrect Password.'))
       }
+      log.debug(`background.exportAccount`)
+      background.exportAccount(address, function (err, result) {
+        dispatch(self.hideLoadingIndication())
 
-      dispatch(self.showPrivateKey(result))
+        if (err) {
+          log.error(err)
+          return dispatch(self.displayWarning('Had a problem exporting the account.'))
+        }
+
+        dispatch(self.showPrivateKey(result))
+      })
     })
   }
 }
