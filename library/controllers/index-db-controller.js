@@ -67,28 +67,17 @@ module.exports = class IndexDbController extends EventEmitter {
     })
   }
 
-  put (key, state) {
-    return this.requestObjectStore(key, 'readwrite')
+  put (state) {
+    return this.requestObjectStore('dataStore', 'readwrite')
     .then((dataObject)=> {
-      return new Promise((resolve, reject) => {
-        try {
-          const serialized = JSON.stringify(state)
-          const putRequest = dataObject.put(serialized)
-          putRequest.onsuccess = (event) => resolve(event.currentTarget.result)
-          putRequest.onerror = (event) => reject(event)
-        } catch (err) {
-          reject(err)
-        }
-      })
+      const putRequest = dataObject.put(state, 'dataStore')
+      putRequest.onsuccess = (event) => Promise.resolve(event.currentTarget.result)
+      putRequest.onerror = (event) => Promise.reject(event)
     })
   }
 
-  update (key, value) {
-
-  }
-
   migrate () {
-    this.db.createObjectStore(this.name)
+    this.db.createObjectStore('dataStore')
   }
 
   _add (key, objStore, cb = logger) {
