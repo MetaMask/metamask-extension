@@ -72,6 +72,7 @@ HexAsDecimalInput.prototype.render = function () {
             }
             this.setState({ invalid: msg })
             event.preventDefault()
+            return false
           },
         }),
         h('div', {
