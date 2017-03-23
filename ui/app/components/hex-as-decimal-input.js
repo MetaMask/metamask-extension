@@ -116,7 +116,6 @@ HexAsDecimalInput.prototype.updateValidity = function (event) {
   }
 
   const valid = target.checkValidity()
-  console.log('change triggered checking validity and found ' + valid)
   if (valid) {
     this.setState({ invalid: null })
   }

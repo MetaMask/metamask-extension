@@ -44,11 +44,13 @@ PendingTx.prototype.render = function () {
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
+
   const gas = (state.gas === undefined) ? txParams.gas : state.gas
   const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
+  const gasBn = new BN(gas, 16)
+  const gasPriceBn = new BN(gasPrice, 16)
 
-  const txFee = state.txFee || txData.txFee || ''
-  const txFeeBn = new BN(txFee, 16)
+  const txFeeBn = gasBn.mul(gasPriceBn)
   const maxCost = state.maxCost || txData.maxCost || ''
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
@@ -380,7 +382,7 @@ PendingTx.prototype.calculateGas = function () {
 
   const txParams = txMeta.txParams
   const gasLimit = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  const gasPriceHex = state.gasPrice || txData.gasPrice
+  const gasPriceHex = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
   const gasPrice = new BN(ethUtil.stripHexPrefix(gasPriceHex), 16)
 
   const valid = !gasPrice.lt(MIN_GAS_PRICE_BN)
