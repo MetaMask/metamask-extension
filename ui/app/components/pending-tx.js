@@ -414,6 +414,7 @@ PendingTx.prototype.resetGasFields = function () {
   this.setState({
     gas: txData.txParams.gas,
     gasPrice: txData.gasPrice,
+    valid: true,
   })
 }
 
