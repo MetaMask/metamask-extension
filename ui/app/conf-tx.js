@@ -43,8 +43,8 @@ ConfirmTxScreen.prototype.render = function () {
     unapprovedMsgs, unapprovedPersonalMsgs } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
-  var index = props.index !== undefined && unconfTxList[index] ? props.index : 0
-  var txData = unconfTxList[index] || {}
+
+  var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
 
