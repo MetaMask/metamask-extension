@@ -59,12 +59,6 @@ const dbController = new DbController({
   key: STORAGE_KEY,
   global: self,
   version: 2,
-  initialState: {
-    dataStore: {
-      meta: 2,
-      data: firstTimeState,
-    },
-  },
 })
 asyncQ.waterfall([
   () => loadStateFromPersistence(),
@@ -87,36 +81,12 @@ function loadStateFromPersistence() {
   const initialState = migrator.generateInitialState(firstTimeState)
   dbController.initialState = initialState
   return dbController.open()
-  .then((openRequest) => {
-    return dbController.get('dataStore')
+  .then((versionedData) => migrator.migrateData(versionedData))
+  .then((versionedData) => {
+    dbController.put(versionedData)
+    return Promise.resolve(versionedData)
   })
-  .then((data) => {
-    if (!data) {
-      return dbController._add('dataStore', initialState)
-      .then(() => dbController.get('dataStore'))
-      .then((versionedData) => Promise.resolve(versionedData.data))
-    }
-
-    return Promise.resolve(data.data)
-  })
-  .catch((err) => console.error(err))
-  /*
-    need to get migrations working
-  */
-
-  // return asyncQ.waterfall([
-  //   // read from disk
-  //   () => Promise.resolve(diskStore || initialState),
-  //   // migrate data
-  //   (versionedData) => migrator.migrateData(versionedData),
-  //   // write to disk
-  //   (versionedData) => {
-  //     diskStore.put(versionedData)
-  //     return Promise.resolve(versionedData)
-  //   },
-  //   // resolve to just data
-  //   (versionedData) => Promise.resolve(versionedData.data),
-  // ])
+  .then((versionedData) => Promise.resolve(versionedData.data))
 }
 
 function setupController (initState, client) {
@@ -142,14 +112,20 @@ function setupController (initState, client) {
   //   diskStore
   // )
   controller.store.subscribe((state) => {
-    dbController.put(versionifyData(state))
+    versionifyData(state)
+    .then((versionedData) => dbController.put(versionedData))
     .catch((err) => {console.error(err)})
   })
   function versionifyData(state) {
-    // let versionedData = diskStore.getState()
+    // let versionedData
     // versionedData.data = state
-    let versionedData = {data: state}
-    return versionedData
+    return dbController.get()
+    .then((rawData) => {
+      return Promise.resolve({
+        data: state,
+        meta: rawData.meta,
+      })}
+    )
   }
 
   //

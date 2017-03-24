@@ -23,19 +23,24 @@ module.exports = class IndexDbController extends EventEmitter {
       }
       dbOpenRequest.onsuccess = (event) => {
         this.db = dbOpenRequest.result
-        if (!this.db.objectStoreNames.length) {
-          Object.keys(this.initialState).forEach((key) => {
-            this._add(key, this.initialState[key])
-          })
-        }
         this.emit('success')
         resolve(this.db)
       }
       dbOpenRequest.onupgradeneeded = (event) => {
-        // if (this.migrators)
         this.db = event.target.result
-        this.migrate()
+        this.db.createObjectStore('dataStore')
       }
+    })
+    .then((openRequest) => {
+      return this.get('dataStore')
+    })
+    .then((data) => {
+      if (!data) {
+        return this._add('dataStore', this.initialState)
+          .then(() => this.get('dataStore'))
+          .then((versionedData) => Promise.resolve(versionedData.data))
+      }
+      return Promise.resolve(data)
     })
   }
 
@@ -47,7 +52,7 @@ module.exports = class IndexDbController extends EventEmitter {
     })
   }
 
-  get (key) {
+  get (key = 'dataStore') {
     return this.requestObjectStore(key)
     .then((dataObject)=> {
         return new Promise((resolve, reject) => {
@@ -65,10 +70,6 @@ module.exports = class IndexDbController extends EventEmitter {
       putRequest.onsuccess = (event) => Promise.resolve(event.currentTarget.result)
       putRequest.onerror = (event) => Promise.reject(event)
     })
-  }
-
-  migrate () {
-    this.db.createObjectStore('dataStore')
   }
 
   _add (key, objStore, cb = logger) {
