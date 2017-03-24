@@ -16,7 +16,7 @@ const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
 const MIN_GAS_PRICE_BN = new BN(20000000)
-
+const MIN_GAS_LIMIT_BN = new BN(21000)
 
 module.exports = connect(mapStateToProps)(PendingTx)
 
@@ -164,7 +164,7 @@ PendingTx.prototype.render = function () {
                 h(HexInput, {
                   name: 'Gas Limit',
                   value: gas,
-                  min: 21000, // The hard lower limit for gas.
+                  min: MIN_GAS_LIMIT_BN.toString(10), // The hard lower limit for gas.
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
@@ -298,6 +298,7 @@ PendingTx.prototype.render = function () {
             },
           }, 'Reset'),
 
+          // Accept Button
           h('input.confirm.btn-green', {
             type: 'submit',
             value: 'ACCEPT',
@@ -374,10 +375,6 @@ PendingTx.prototype.componentDidUpdate = function (prevProps, previousState) {
   }
 }
 
-PendingTx.prototype.isValid = function () {
-  return this.state.valid
-}
-
 PendingTx.prototype.calculateGas = function () {
   const state = this.state
   const props = this.props
@@ -388,10 +385,10 @@ PendingTx.prototype.calculateGas = function () {
 
   const txParams = txMeta.txParams
   const gasLimit = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  const gasPriceHex = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
+  const gasPriceHex = state.gasPrice || txData.gasPrice
   const gasPrice = new BN(ethUtil.stripHexPrefix(gasPriceHex), 16)
 
-  const valid = !gasPrice.lt(MIN_GAS_PRICE_BN)
+  const valid = !gasPrice.lt(MIN_GAS_PRICE_BN) && !gasLimit.lt(MIN_GAS_LIMIT_BN)
   this.validChanged(valid)
 
   const txFee = gasLimit.mul(gasPrice)
