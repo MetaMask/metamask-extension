@@ -47,27 +47,39 @@ module.exports = class TransactionManager extends EventEmitter {
   // Returns the tx list
   getTxList () {
     let network = this.getNetwork()
-    let fullTxList = this.store.getState().transactions
+    let fullTxList = this.getFullTxList()
     return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
+  }
+
+  // Returns the number of txs for the current network.
+  getTxCount () {
+    return this.getTxList().length
+  }
+
+  // Returns the full tx list across all networks
+  getFullTxList () {
+    return this.store.getState().transactions
   }
 
   // Adds a tx to the txlist
   addTx (txMeta) {
-    var txList = this.getTxList()
-    var txHistoryLimit = this.txHistoryLimit
+    let txCount = this.getTxCount()
+    let network = this.getNetwork()
+    let fullTxList = this.getFullTxList()
+    let txHistoryLimit = this.txHistoryLimit
 
-    // checks if the length of th tx history is
+    // checks if the length of the tx history is
     // longer then desired persistence limit
     // and then if it is removes only confirmed
     // or rejected tx's.
     // not tx's that are pending or unapproved
-    if (txList.length > txHistoryLimit - 1) {
-      var index = txList.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
-      txList.splice(index, 1)
+    if (txCount > txHistoryLimit - 1) {
+      var index = fullTxList.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected') && network === txMeta.metamaskNetworkId))
+      fullTxList.splice(index, 1)
     }
-    txList.push(txMeta)
+    fullTxList.push(txMeta)
 
-    this._saveTxList(txList)
+    this._saveTxList(fullTxList)
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
@@ -89,7 +101,7 @@ module.exports = class TransactionManager extends EventEmitter {
   //
   updateTx (txMeta) {
     var txId = txMeta.id
-    var txList = this.getTxList()
+    var txList = this.getFullTxList()
     var index = txList.findIndex(txData => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
