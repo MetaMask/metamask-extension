@@ -41,6 +41,7 @@ module.exports = class NoticeController extends EventEmitter {
       var notices = this.getNoticesList()
       var index = notices.findIndex((currentNotice) => currentNotice.id === noticeToMark.id)
       notices[index].read = true
+      notices[index].body = ''
       this.setNoticesList(notices)
       const latestNotice = this.getLatestUnreadNotice()
       cb(null, latestNotice)

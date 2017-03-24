@@ -15,6 +15,8 @@ const migration8 = require(path.join('..', '..', 'app', 'scripts', 'migrations',
 const migration9 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '009'))
 const migration10 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '010'))
 const migration11 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '011'))
+const migration12 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '012'))
+
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
 const newTestRpc = 'https://testrpc.metamask.io/'
@@ -91,6 +93,11 @@ describe('wallet1 is migrated successfully', () => {
     }).then((eleventhResult) => {
       assert.equal(eleventhResult.data.isDisclaimerConfirmed, null, 'isDisclaimerConfirmed should not exist')
       assert.equal(eleventhResult.data.TOSHash, null, 'TOSHash should not exist')
+
+      return migration12.migrate(eleventhResult)
+    }).then((twelfthResult) => {
+      assert.equal(twelfthResult.data.NoticeController.noticesList[0].body, '', 'notices that have been read should have an empty body.')
+      assert.equal(twelfthResult.data.NoticeController.noticesList[1].body, 'nonempty', 'notices that have not been read should not have an empty body.')
     })
 
   })
