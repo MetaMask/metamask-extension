@@ -397,7 +397,6 @@ function signTx (txData) {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
-      dispatch(actions.goHome())
     })
     dispatch(this.showConfTxPage())
   }
