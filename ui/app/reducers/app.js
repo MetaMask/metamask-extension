@@ -592,8 +592,9 @@ function hasPendingTxs (state) {
 function indexForPending (state, txId) {
   var unapprovedTxs = state.metamask.unapprovedTxs
   var unapprovedMsgs = state.metamask.unapprovedMsgs
+  var unapprovedPersonalMsgs = state.metamask.unapprovedPersonalMsgs
   var network = state.metamask.network
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
+  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
   let idx
   unconfTxList.forEach((tx, i) => {
     if (tx.id === txId) {

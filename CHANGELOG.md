@@ -9,6 +9,9 @@
 - Removed support for old, lightwallet based vault. Users who have not opened app in over a month will need to recover with their seed phrase. This will allow Firefox support sooner.
 - Fixed bug where spinner wouldn't disappear on incorrect password submission on seed word reveal.
 - Polish the private key UI.
+- Enforce minimum values for gas price and gas limit.
+- Fix bug where total gas was sometimes not live-updated.
+- Fix bug where editing gas value could have some abrupt behaviors (#1233)
 - Add Kovan as an option on our network list.
 - Fixed bug where transactions on other networks would disappear when submitting a transaction on another network.
 
