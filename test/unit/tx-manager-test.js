@@ -59,6 +59,17 @@ describe('Transaction Manager', function() {
       assert.equal(result[0].id, 1)
     })
 
+    it('does not override txs from other networks', function() {
+      var tx = { id: 1, status: 'confirmed', metamaskNetworkId: 'unit test', txParams: {} }
+      var tx2 = { id: 2, status: 'confirmed', metamaskNetworkId: 'another net', txParams: {} }
+      txManager.addTx(tx, noop)
+      txManager.addTx(tx2, noop)
+      var result = txManager.getFullTxList()
+      var result2 = txManager.getTxList()
+      assert.equal(result.length, 2, 'txs were deleted')
+      assert.equal(result.length, 1, 'incorrect number of txs on network.')
+    })
+
     it('cuts off early txs beyond a limit', function() {
       const limit = txManager.txHistoryLimit
       for (let i = 0; i < limit + 1; i++) {
