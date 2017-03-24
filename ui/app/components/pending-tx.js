@@ -59,8 +59,6 @@ PendingTx.prototype.render = function () {
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
-  log.info(`rendering pending-tx form with gas limit ${gas.toString()}, gasPrice ${gasPrice.toString()}, `)
-
   this.inputs = []
 
   return (
