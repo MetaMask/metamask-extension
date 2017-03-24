@@ -21,39 +21,45 @@ const MIN_GAS_PRICE_BN = new BN(20000000)
 module.exports = connect(mapStateToProps)(PendingTx)
 
 function mapStateToProps (state) {
-  return {
-
-  }
+  return {}
 }
 
 inherits(PendingTx, Component)
 function PendingTx () {
   Component.call(this)
-  this.state = { valid: true }
+  this.state = {
+    valid: true,
+    gas: null,
+    gasPrice: null,
+    txData: null,
+  }
 }
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const txData = props.txData
-
   const state = this.state
 
+  const txData = state.txData || props.txData
   const txParams = txData.txParams || {}
+
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
-
-  const gas = (state.gas === undefined) ? txParams.gas : state.gas
-  const gasPrice = (state.gasPrice === undefined) ? txData.gasPrice : state.gasPrice
+  const gas = state.gas || txParams.gas
+  const gasPrice = state.gasPrice || txData.gasPrice
   const gasBn = new BN(gas, 16)
   const gasPriceBn = new BN(gasPrice, 16)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
-  const maxCost = state.maxCost || txData.maxCost || ''
+  const valueBn = new BN(ethUtil.stripHexPrefix(txParams.value), 16)
+  const maxCost = txFeeBn.add(valueBn)
+
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
+
+  log.info(`rendering pending-tx form with gas limit ${gas.toString()}, gasPrice ${gasPrice.toString()}, `)
 
   this.inputs = []
 
