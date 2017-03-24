@@ -67,7 +67,7 @@ describe('Transaction Manager', function() {
       var result = txManager.getFullTxList()
       var result2 = txManager.getTxList()
       assert.equal(result.length, 2, 'txs were deleted')
-      assert.equal(result.length, 1, 'incorrect number of txs on network.')
+      assert.equal(result2.length, 1, 'incorrect number of txs on network.')
     })
 
     it('cuts off early txs beyond a limit', function() {
