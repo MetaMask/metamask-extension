@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.5.0 2017-3-27
+
 - Add better error messages for when a transaction fails on approval
 - Allow sending to ENS names in send form on Ropsten.
 - Added an address book functionality that remembers the last 15 unique addresses sent to.
