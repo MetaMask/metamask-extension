@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add link to Kovan Test Faucet instructions on buy view.
+
 ## 3.5.0 2017-3-27
 
 - Add better error messages for when a transaction fails on approval
