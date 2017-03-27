@@ -9,7 +9,7 @@ module.exports = function (address, network) {
       link = `http://morden.etherscan.io/address/${address}`
       break
     case 3: // ropsten test net
-      link = `http://testnet.etherscan.io/address/${address}`
+      link = `http://ropsten.etherscan.io/address/${address}`
       break
     case 42: // kovan test net
       link = `http://kovan.etherscan.io/address/${address}`

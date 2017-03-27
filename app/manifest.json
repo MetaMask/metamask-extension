@@ -1,7 +1,7 @@
 {
   "name": "MetaMask",
   "short_name": "Metamask",
-  "version": "3.4.0",
+  "version": "3.5.1",
   "manifest_version": 2,
   "author": "https://metamask.io",
   "description": "Ethereum Browser Extension",
