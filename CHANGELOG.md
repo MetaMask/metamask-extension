@@ -2,7 +2,6 @@
 
 ## Current Master
 
-- Remove seedWords from UI state dump.
 - Inject web3 into loaded iFrames.
 
 ## 3.5.1 2017-3-27
