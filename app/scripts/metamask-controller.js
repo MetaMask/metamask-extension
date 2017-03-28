@@ -623,6 +623,10 @@ module.exports = class MetamaskController extends EventEmitter {
       case '3':
         url = 'https://faucet.metamask.io/'
         break
+
+      case '42':
+        url = 'https://github.com/kovan-testnet/faucet'
+        break
     }
 
     if (url) extension.tabs.create({ url })
