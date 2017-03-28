@@ -4,6 +4,7 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const EthQuery = require('eth-query')
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
 
@@ -19,6 +20,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
+    this.query = new EthQuery(this.provider)
     this.txProviderUtils = new TxProviderUtil(this.provider)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.signEthTx = opts.signTransaction
@@ -329,7 +331,7 @@ module.exports = class TransactionManager extends EventEmitter {
         }
         return this.setTxStatusFailed(txId, errReason)
       }
-      this.txProviderUtils.query.getTransactionByHash(txHash, (err, txParams) => {
+      this.query.getTransactionByHash(txHash, (err, txParams) => {
         if (err || !txParams) {
           if (!txParams) return
           txMeta.err = {
