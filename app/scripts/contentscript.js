@@ -65,14 +65,27 @@ function setupStreams () {
 }
 
 function shouldInjectWeb3 () {
-  return isAllowedSuffix(window.location.href)
+  return doctypeCheck() || suffixCheck()
 }
 
-function isAllowedSuffix (testCase) {
+function doctypeCheck () {
   const doctype = window.document.doctype
   if (doctype) {
     return doctype.name === 'html'
   } else {
     return false
   }
+}
+
+function suffixCheck() {
+  var prohibitedTypes = ['xml', 'pdf']
+  var currentUrl = window.location.href
+  var currentRegex
+  for (let i = 0; i < prohibitedTypes.length; i++) {
+    currentRegex = new RegExp(`\.${prohibitedTypes[i]}$`)
+    if (currentRegex.test(currentUrl)) {
+      return false
+    }
+  }
+  return true
 }
