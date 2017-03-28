@@ -421,6 +421,7 @@ function updateAndApproveTx (txData) {
   return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
         return console.error(err.message)
