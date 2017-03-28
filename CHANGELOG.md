@@ -2,6 +2,9 @@
 
 ## Current Master
 
+## 3.5.2 2017-3-28
+
+- Fix bug where gas estimate totals were sometimes wrong.
 - Add link to Kovan Test Faucet instructions on buy view.
 - Inject web3 into loaded iFrames.
 
