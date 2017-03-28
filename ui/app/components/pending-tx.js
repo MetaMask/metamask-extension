@@ -2,11 +2,11 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const extend = require('xtend')
 const actions = require('../actions')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
+const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
@@ -29,42 +29,43 @@ function PendingTx () {
   Component.call(this)
   this.state = {
     valid: true,
-    gas: null,
-    gasPrice: null,
     txData: null,
   }
 }
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const state = this.state
 
-  const txData = state.txData || props.txData
-  const txParams = txData.txParams || {}
+  const txMeta = this.gatherTxMeta()
+  const txParams = txMeta.txParams || {}
 
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
-  const gas = state.gas || txParams.gas
-  const gasPrice = state.gasPrice || txData.gasPrice
-  const gasBn = new BN(gas, 16)
-  const gasPriceBn = new BN(gasPrice, 16)
+  const gas = txParams.gas
+  const gasPrice = txParams.gasPrice
+
+  const gasBn = hexToBn(gas)
+  const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
-  const valueBn = new BN(ethUtil.stripHexPrefix(txParams.value), 16)
+  const valueBn = hexToBn(txParams.value)
   const maxCost = txFeeBn.add(valueBn)
 
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
   const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
+
+  const balanceBn = hexToBn(balance)
+  const insufficientBalance = balanceBn.lt(maxCost)
 
   this.inputs = []
 
   return (
 
     h('div', {
-      key: txData.id,
+      key: txMeta.id,
     }, [
 
       h('form#pending-tx-form', {
@@ -73,9 +74,8 @@ PendingTx.prototype.render = function () {
           const form = document.querySelector('form#pending-tx-form')
           const valid = form.checkValidity()
           this.setState({ valid })
-
           if (valid && this.verifyGasParams()) {
-            props.sendTransaction(txData, event)
+            props.sendTransaction(txMeta, event)
           } else {
             this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
           }
@@ -162,7 +162,8 @@ PendingTx.prototype.render = function () {
                 h(HexInput, {
                   name: 'Gas Limit',
                   value: gas,
-                  min: MIN_GAS_LIMIT_BN.toString(10), // The hard lower limit for gas.
+                  // The hard lower limit for gas.
+                  min: MIN_GAS_LIMIT_BN.toString(10),
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
@@ -170,7 +171,9 @@ PendingTx.prototype.render = function () {
                   },
                   onChange: (newHex) => {
                     log.info(`Gas limit changed to ${newHex}`)
-                    this.setState({ gas: newHex })
+                    const txMeta = this.gatherTxMeta()
+                    txMeta.txParams.gas = newHex
+                    this.setState({ txData: txMeta })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
@@ -193,7 +196,9 @@ PendingTx.prototype.render = function () {
                   },
                   onChange: (newHex) => {
                     log.info(`Gas price changed to: ${newHex}`)
-                    this.setState({ gasPrice: newHex })
+                    const txMeta = this.gatherTxMeta()
+                    txMeta.txParams.gasPrice = newHex
+                    this.setState({ txData: txMeta })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
@@ -255,7 +260,7 @@ PendingTx.prototype.render = function () {
           }
         `),
 
-        txData.simulationFails ?
+        txMeta.simulationFails ?
           h('.error', {
             style: {
               marginLeft: 50,
@@ -264,7 +269,7 @@ PendingTx.prototype.render = function () {
           }, 'Transaction Error. Exception thrown in contract code.')
         : null,
 
-        props.insufficientBalance ?
+        insufficientBalance ?
           h('span.error', {
             style: {
               marginLeft: 50,
@@ -283,7 +288,7 @@ PendingTx.prototype.render = function () {
         }, [
 
 
-          props.insufficientBalance ?
+          insufficientBalance ?
             h('button', {
               onClick: props.buyEth,
             }, 'Buy Ether')
@@ -301,7 +306,7 @@ PendingTx.prototype.render = function () {
             type: 'submit',
             value: 'ACCEPT',
             style: { marginLeft: '10px' },
-            disabled: props.insufficientBalance || !this.state.valid,
+            disabled: insufficientBalance || !this.state.valid,
           }),
 
           h('button.cancel.btn-red', {
@@ -311,10 +316,6 @@ PendingTx.prototype.render = function () {
       ]),
     ])
   )
-}
-
-PendingTx.prototype.validChanged = function (newValid) {
-  this.setState({ valid: newValid })
 }
 
 PendingTx.prototype.miniAccountPanelForRecipient = function () {
@@ -358,63 +359,8 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
   }
 }
 
-PendingTx.prototype.componentDidUpdate = function (prevProps, previousState) {
-  log.debug(`pending-tx componentDidUpdate`)
-  const state = this.state || {}
-  const prevState = previousState || {}
-  const { gas, gasPrice } = state
-
-  // Only if gas or gasPrice changed:
-  if (!prevState ||
-      (gas !== prevState.gas ||
-      gasPrice !== prevState.gasPrice)) {
-    log.debug(`recalculating gas since prev state change: ${JSON.stringify({ prevState, state })}`)
-    this.calculateGas()
-  }
-}
-
-PendingTx.prototype.calculateGas = function () {
-  const state = this.state
-  const props = this.props
-  const txData = props.txData
-
-  const txMeta = this.gatherParams()
-  log.debug(`pending-tx calculating gas for ${JSON.stringify(txMeta)}`)
-
-  const txParams = txMeta.txParams
-  const gasLimit = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-  const gasPriceHex = state.gasPrice || txData.gasPrice
-  const gasPrice = new BN(ethUtil.stripHexPrefix(gasPriceHex), 16)
-
-  const valid = !gasPrice.lt(MIN_GAS_PRICE_BN) && !gasLimit.lt(MIN_GAS_LIMIT_BN)
-  this.validChanged(valid)
-
-  const txFee = gasLimit.mul(gasPrice)
-  const txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-  const maxCost = txValue.add(txFee)
-
-  const txFeeHex = '0x' + txFee.toString('hex')
-  const maxCostHex = '0x' + maxCost.toString('hex')
-
-  txMeta.txFee = txFeeHex
-  txMeta.maxCost = maxCostHex
-  txMeta.txParams.gasPrice = gasPriceHex
-
-  const newState = {
-    txFee: '0x' + txFee.toString('hex'),
-    maxCost: '0x' + maxCost.toString('hex'),
-  }
-  log.info(`tx form updating local state with ${JSON.stringify(newState)}`)
-  this.setState(newState)
-
-  if (this.props.onTxChange) {
-    this.props.onTxChange(txMeta)
-  }
-}
-
 PendingTx.prototype.resetGasFields = function () {
   log.debug(`pending-tx resetGasFields`)
-  const txData = this.props.txData
 
   this.inputs.forEach((hexInput) => {
     if (hexInput) {
@@ -423,36 +369,29 @@ PendingTx.prototype.resetGasFields = function () {
   })
 
   this.setState({
-    gas: txData.txParams.gas,
-    gasPrice: txData.gasPrice,
+    txData: null,
     valid: true,
   })
 }
 
 // After a customizable state value has been updated,
-PendingTx.prototype.gatherParams = function () {
-  log.debug(`pending-tx gatherParams`)
+PendingTx.prototype.gatherTxMeta = function () {
+  log.debug(`pending-tx gatherTxMeta`)
   const props = this.props
-  const state = this.state || {}
+  const state = this.state
   const txData = state.txData || props.txData
-  const txParams = txData.txParams
-  const gas = state.gas || txParams.gas
-  const gasPrice = state.gasPrice || txParams.gasPrice
-  const resultTx = extend(txParams, {
-    gas,
-    gasPrice,
-  })
-  const resultTxMeta = extend(txData, {
-    txParams: resultTx,
-  })
-  log.debug(`UI has computed tx params ${JSON.stringify(resultTx)}`)
-  return resultTxMeta
+
+  log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
+  return txData
 }
 
 PendingTx.prototype.verifyGasParams = function () {
   // We call this in case the gas has not been modified at all
   if (!this.state) { return true }
-  return this._notZeroOrEmptyString(this.state.gas) && this._notZeroOrEmptyString(this.state.gasPrice)
+  return (
+    this._notZeroOrEmptyString(this.state.gas) &&
+    this._notZeroOrEmptyString(this.state.gasPrice)
+  )
 }
 
 PendingTx.prototype._notZeroOrEmptyString = function (obj) {

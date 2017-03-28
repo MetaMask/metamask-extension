@@ -11,7 +11,7 @@ module.exports = connect(mapStateToProps)(AccountsScreen)
 
 function mapStateToProps (state) {
   const pendingTxs = valuesFor(state.metamask.unapprovedTxs)
-  .filter(tx => tx.txParams.metamaskNetworkId === state.metamask.network)
+  .filter(txMeta => txMeta.metamaskNetworkId === state.metamask.network)
   const pendingMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const pending = pendingTxs.concat(pendingMsgs)
 

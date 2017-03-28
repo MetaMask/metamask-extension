@@ -12,48 +12,49 @@ and used to do things like calculate gas of a tx.
 */
 
 module.exports = class txProviderUtils {
+
   constructor (provider) {
     this.provider = provider
     this.query = new EthQuery(provider)
   }
 
-  analyzeGasUsage (txData, cb) {
+  analyzeGasUsage (txMeta, cb) {
     var self = this
     this.query.getBlockByNumber('latest', true, (err, block) => {
       if (err) return cb(err)
       async.waterfall([
-        self.estimateTxGas.bind(self, txData, block.gasLimit),
-        self.setTxGas.bind(self, txData, block.gasLimit),
+        self.estimateTxGas.bind(self, txMeta, block.gasLimit),
+        self.setTxGas.bind(self, txMeta, block.gasLimit),
       ], cb)
     })
   }
 
-  estimateTxGas (txData, blockGasLimitHex, cb) {
-    const txParams = txData.txParams
+  estimateTxGas (txMeta, blockGasLimitHex, cb) {
+    const txParams = txMeta.txParams
     // check if gasLimit is already specified
-    txData.gasLimitSpecified = Boolean(txParams.gas)
+    txMeta.gasLimitSpecified = Boolean(txParams.gas)
     // if not, fallback to block gasLimit
-    if (!txData.gasLimitSpecified) {
+    if (!txMeta.gasLimitSpecified) {
       txParams.gas = blockGasLimitHex
     }
     // run tx, see if it will OOG
     this.query.estimateGas(txParams, cb)
   }
 
-  setTxGas (txData, blockGasLimitHex, estimatedGasHex, cb) {
-    txData.estimatedGas = estimatedGasHex
-    const txParams = txData.txParams
+  setTxGas (txMeta, blockGasLimitHex, estimatedGasHex, cb) {
+    txMeta.estimatedGas = estimatedGasHex
+    const txParams = txMeta.txParams
 
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
-    if (txData.gasLimitSpecified) {
-      txData.estimatedGas = txParams.gas
+    if (txMeta.gasLimitSpecified) {
+      txMeta.estimatedGas = txParams.gas
       cb()
       return
     }
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
-    const recommendedGasHex = this.addGasBuffer(txData.estimatedGas, blockGasLimitHex)
+    const recommendedGasHex = this.addGasBuffer(txMeta.estimatedGas, blockGasLimitHex)
     txParams.gas = recommendedGasHex
     cb()
     return
@@ -90,16 +91,13 @@ module.exports = class txProviderUtils {
 
   // builds ethTx from txParams object
   buildEthTxFromParams (txParams) {
-    // apply gas multiplyer
-    let gasPrice = hexToBn(txParams.gasPrice)
-    // multiply and divide by 100 so as to add percision to integer mul
-    txParams.gasPrice = ethUtil.intToHex(gasPrice.toNumber())
     // normalize values
     txParams.to = normalize(txParams.to)
     txParams.from = normalize(txParams.from)
     txParams.value = normalize(txParams.value)
     txParams.data = normalize(txParams.data)
     txParams.gas = normalize(txParams.gas || txParams.gasLimit)
+    txParams.gasPrice = normalize(txParams.gasPrice)
     txParams.nonce = normalize(txParams.nonce)
     // build ethTx
     log.info(`Prepared tx for signing: ${JSON.stringify(txParams)}`)
