@@ -79,8 +79,9 @@ module.exports = class TransactionManager extends EventEmitter {
       fullTxList.splice(index, 1)
     }
     fullTxList.push(txMeta)
-
     this._saveTxList(fullTxList)
+    this.emit('update')
+
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
