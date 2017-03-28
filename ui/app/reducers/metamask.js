@@ -94,6 +94,7 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         isUnlocked: true,
         isInitialized: false,
+        seedWords: action.value,
       })
 
     case actions.CLEAR_SEED_WORD_CACHE:

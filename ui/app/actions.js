@@ -273,8 +273,10 @@ function requestRevealSeed (password) {
         return dispatch(actions.displayWarning(err.message))
       }
       log.debug(`background.placeSeedWords`)
-      background.placeSeedWords((err) => {
+      background.placeSeedWords((err, result) => {
         if (err) return dispatch(actions.displayWarning(err.message))
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.showNewVaultSeed(result))
       })
     })
   }
