@@ -4,7 +4,6 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const BN = require('ethereumjs-util').BN
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
 
@@ -121,44 +120,38 @@ module.exports = class TransactionManager extends EventEmitter {
     async.waterfall([
       // validate
       (cb) => this.txProviderUtils.validateTxParams(txParams, cb),
-      // prepare txMeta
+      // construct txMeta
       (cb) => {
-        // create txMeta obj with parameters and meta data
-        let time = (new Date()).getTime()
-        let txId = createId()
-        txParams.metamaskId = txId
-        txParams.metamaskNetworkId = this.getNetwork()
         txMeta = {
-          id: txId,
-          time: time,
+          id: createId(),
+          time: (new Date()).getTime(),
           status: 'unapproved',
           metamaskNetworkId: this.getNetwork(),
           txParams: txParams,
         }
-        // calculate metadata for tx
-        this.txProviderUtils.analyzeGasUsage(txMeta, cb)
+        cb()
       },
+      // add default tx params
+      (cb) => this.addTxDefaults(txMeta, cb),
       // save txMeta
       (cb) => {
         this.addTx(txMeta)
-        this.setMaxTxCostAndFee(txMeta)
         cb(null, txMeta)
       },
     ], done)
   }
 
-  setMaxTxCostAndFee (txMeta) {
-    var txParams = txMeta.txParams
-    var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-    var txFee = gasCost.mul(gasPrice)
-    var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-    var maxCost = txValue.add(txFee)
-    txMeta.txFee = txFee
-    txMeta.txValue = txValue
-    txMeta.maxCost = maxCost
-    txMeta.gasPrice = gasPrice
-    this.updateTx(txMeta)
+  addTxDefaults (txMeta, cb) {
+    const txParams = txMeta.txParams
+    // ensure value
+    txParams.value = txParams.value || '0x0'
+    this.query.gasPrice((err, gasPrice) => {
+      if (err) return cb(err)
+      // set gasPrice
+      txParams.gasPrice = gasPrice
+      // set gasLimit
+      this.txProviderUtils.analyzeGasUsage(txMeta, cb)
+    })
   }
 
   getUnapprovedTxList () {
