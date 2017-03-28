@@ -4,7 +4,7 @@ module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, network)
   log.debug('tx-helper called with params:')
   log.debug({ unapprovedTxs, unapprovedMsgs, personalMsgs, network })
 
-  const txValues = network ? valuesFor(unapprovedTxs).filter(tx => tx.txParams.metamaskNetworkId === network) : valuesFor(unapprovedTxs)
+  const txValues = network ? valuesFor(unapprovedTxs).filter(tx => tx.metamaskNetworkId === network) : valuesFor(unapprovedTxs)
   log.debug(`tx helper found ${txValues.length} unapproved txs`)
   const msgValues = valuesFor(unapprovedMsgs)
   log.debug(`tx helper found ${msgValues.length} unsigned messages`)
