@@ -386,7 +386,7 @@ module.exports = class MetamaskController extends EventEmitter {
     .then((serialized) => {
       const seedWords = serialized.mnemonic
       this.configManager.setSeedWords(seedWords)
-      cb()
+      cb(null, seedWords)
     })
   }
 
