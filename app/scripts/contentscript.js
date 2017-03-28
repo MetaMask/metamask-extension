@@ -73,6 +73,6 @@ function isAllowedSuffix (testCase) {
   if (doctype) {
     return doctype.name === 'html'
   } else {
-    return false
+    return true
   }
 }

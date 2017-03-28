@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Inject web3 into loaded iFrames.
+
 ## 3.5.1 2017-3-27
 
 - Fix edge case where users were unable to enable the notice button if notices were short enough to not require a scrollbar.
