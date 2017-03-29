@@ -121,15 +121,22 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
       h('h3.text-transform-uppercase', {
         style: {
           width: '225px',
+          marginBottom: '15px',
         },
       }, 'In order to access this feature, please switch to the Main Network'),
-      (this.props.network === '3') ? h('h3.text-transform-uppercase', 'or:') : null,
+      ((this.props.network === '3') || (this.props.network === '42')) ? h('h3.text-transform-uppercase', 'or go to the') : null,
       (this.props.network === '3') ? h('button.text-transform-uppercase', {
         onClick: () => this.props.dispatch(actions.buyEth()),
         style: {
           marginTop: '15px',
         },
-      }, 'Go To Test Faucet') : null,
+      }, 'Ropsten Test Faucet') : null,
+      (this.props.network === '42') ? h('button.text-transform-uppercase', {
+        onClick: () => this.props.dispatch(actions.buyEth()),
+        style: {
+          marginTop: '15px',
+        },
+      }, 'Kovan Test Faucet') : null,
     ])
   }
 }

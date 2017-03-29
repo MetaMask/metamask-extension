@@ -6,7 +6,7 @@ module.exports = function (hash, network) {
       prefix = ''
       break
     case 3: // ropsten test net
-      prefix = 'testnet.'
+      prefix = 'ropsten.'
       break
     case 42: // kovan test net
       prefix = 'kovan.'

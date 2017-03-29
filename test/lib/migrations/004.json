@@ -48,6 +48,13 @@
             "title":"Ending Morden Support",
             "body":"Due to [recent events](https://blog.ethereum.org/2016/11/20/from-morden-to-ropsten/), MetaMask is now deprecating support for the Morden Test Network.\n\nUsers will still be able to access Morden through a locally hosted node, but we will no longer be providing hosted access to this network through [Infura](http://infura.io/).\n\nPlease use the new Ropsten Network as your new default test network.\n\nYou can fund your Ropsten account using the buy button on your account page.\n\nBest wishes!\nThe MetaMask Team\n\n",
             "id":0
+         },
+         {
+           "read":false,
+           "date":"Sat Dec 17 2016",
+           "title":"Keeping It Real",
+           "body":"nonempty",
+           "id":1
          }
       ],
       "conversionRate":12.66441492,

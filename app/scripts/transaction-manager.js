@@ -4,7 +4,7 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const BN = require('ethereumjs-util').BN
+const EthQuery = require('eth-query')
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
 
@@ -20,6 +20,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
+    this.query = new EthQuery(this.provider)
     this.txProviderUtils = new TxProviderUtil(this.provider)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.signEthTx = opts.signTransaction
@@ -47,27 +48,40 @@ module.exports = class TransactionManager extends EventEmitter {
   // Returns the tx list
   getTxList () {
     let network = this.getNetwork()
-    let fullTxList = this.store.getState().transactions
+    let fullTxList = this.getFullTxList()
     return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
+  }
+
+  // Returns the number of txs for the current network.
+  getTxCount () {
+    return this.getTxList().length
+  }
+
+  // Returns the full tx list across all networks
+  getFullTxList () {
+    return this.store.getState().transactions
   }
 
   // Adds a tx to the txlist
   addTx (txMeta) {
-    var txList = this.getTxList()
-    var txHistoryLimit = this.txHistoryLimit
+    let txCount = this.getTxCount()
+    let network = this.getNetwork()
+    let fullTxList = this.getFullTxList()
+    let txHistoryLimit = this.txHistoryLimit
 
-    // checks if the length of th tx history is
+    // checks if the length of the tx history is
     // longer then desired persistence limit
     // and then if it is removes only confirmed
     // or rejected tx's.
     // not tx's that are pending or unapproved
-    if (txList.length > txHistoryLimit - 1) {
-      var index = txList.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
-      txList.splice(index, 1)
+    if (txCount > txHistoryLimit - 1) {
+      var index = fullTxList.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected') && network === txMeta.metamaskNetworkId))
+      fullTxList.splice(index, 1)
     }
-    txList.push(txMeta)
+    fullTxList.push(txMeta)
+    this._saveTxList(fullTxList)
+    this.emit('update')
 
-    this._saveTxList(txList)
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)
     })
@@ -89,7 +103,7 @@ module.exports = class TransactionManager extends EventEmitter {
   //
   updateTx (txMeta) {
     var txId = txMeta.id
-    var txList = this.getTxList()
+    var txList = this.getFullTxList()
     var index = txList.findIndex(txData => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
@@ -109,44 +123,38 @@ module.exports = class TransactionManager extends EventEmitter {
     async.waterfall([
       // validate
       (cb) => this.txProviderUtils.validateTxParams(txParams, cb),
-      // prepare txMeta
+      // construct txMeta
       (cb) => {
-        // create txMeta obj with parameters and meta data
-        let time = (new Date()).getTime()
-        let txId = createId()
-        txParams.metamaskId = txId
-        txParams.metamaskNetworkId = this.getNetwork()
         txMeta = {
-          id: txId,
-          time: time,
+          id: createId(),
+          time: (new Date()).getTime(),
           status: 'unapproved',
           metamaskNetworkId: this.getNetwork(),
           txParams: txParams,
         }
-        // calculate metadata for tx
-        this.txProviderUtils.analyzeGasUsage(txMeta, cb)
+        cb()
       },
+      // add default tx params
+      (cb) => this.addTxDefaults(txMeta, cb),
       // save txMeta
       (cb) => {
         this.addTx(txMeta)
-        this.setMaxTxCostAndFee(txMeta)
         cb(null, txMeta)
       },
     ], done)
   }
 
-  setMaxTxCostAndFee (txMeta) {
-    var txParams = txMeta.txParams
-    var gasCost = new BN(ethUtil.stripHexPrefix(txParams.gas || txMeta.estimatedGas), 16)
-    var gasPrice = new BN(ethUtil.stripHexPrefix(txParams.gasPrice || '0x4a817c800'), 16)
-    var txFee = gasCost.mul(gasPrice)
-    var txValue = new BN(ethUtil.stripHexPrefix(txParams.value || '0x0'), 16)
-    var maxCost = txValue.add(txFee)
-    txMeta.txFee = txFee
-    txMeta.txValue = txValue
-    txMeta.maxCost = maxCost
-    txMeta.gasPrice = gasPrice
-    this.updateTx(txMeta)
+  addTxDefaults (txMeta, cb) {
+    const txParams = txMeta.txParams
+    // ensure value
+    txParams.value = txParams.value || '0x0'
+    this.query.gasPrice((err, gasPrice) => {
+      if (err) return cb(err)
+      // set gasPrice
+      txParams.gasPrice = gasPrice
+      // set gasLimit
+      this.txProviderUtils.analyzeGasUsage(txMeta, cb)
+    })
   }
 
   getUnapprovedTxList () {
@@ -324,7 +332,7 @@ module.exports = class TransactionManager extends EventEmitter {
         }
         return this.setTxStatusFailed(txId, errReason)
       }
-      this.txProviderUtils.query.getTransactionByHash(txHash, (err, txParams) => {
+      this.query.getTransactionByHash(txHash, (err, txParams) => {
         if (err || !txParams) {
           if (!txParams) return
           txMeta.err = {

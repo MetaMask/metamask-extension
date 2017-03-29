@@ -273,8 +273,10 @@ function requestRevealSeed (password) {
         return dispatch(actions.displayWarning(err.message))
       }
       log.debug(`background.placeSeedWords`)
-      background.placeSeedWords((err) => {
+      background.placeSeedWords((err, result) => {
         if (err) return dispatch(actions.displayWarning(err.message))
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.showNewVaultSeed(result))
       })
     })
   }
@@ -397,7 +399,6 @@ function signTx (txData) {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
-      dispatch(actions.goHome())
     })
     dispatch(this.showConfTxPage())
   }
@@ -422,6 +423,7 @@ function updateAndApproveTx (txData) {
   return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
         return console.error(err.message)

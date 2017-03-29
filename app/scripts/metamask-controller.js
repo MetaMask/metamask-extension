@@ -385,7 +385,7 @@ module.exports = class MetamaskController extends EventEmitter {
     .then((serialized) => {
       const seedWords = serialized.mnemonic
       this.configManager.setSeedWords(seedWords)
-      cb()
+      cb(null, seedWords)
     })
   }
 
@@ -621,6 +621,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
       case '3':
         url = 'https://faucet.metamask.io/'
+        break
+
+      case '42':
+        url = 'https://github.com/kovan-testnet/faucet'
         break
     }
 

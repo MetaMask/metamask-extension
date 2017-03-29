@@ -2,6 +2,18 @@
 
 ## Current Master
 
+## 3.5.2 2017-3-28
+
+- Fix bug where gas estimate totals were sometimes wrong.
+- Add link to Kovan Test Faucet instructions on buy view.
+- Inject web3 into loaded iFrames.
+
+## 3.5.1 2017-3-27
+
+- Fix edge case where users were unable to enable the notice button if notices were short enough to not require a scrollbar.
+
+## 3.5.0 2017-3-27
+
 - Add better error messages for when a transaction fails on approval
 - Allow sending to ENS names in send form on Ropsten.
 - Added an address book functionality that remembers the last 15 unique addresses sent to.
@@ -9,7 +21,11 @@
 - Removed support for old, lightwallet based vault. Users who have not opened app in over a month will need to recover with their seed phrase. This will allow Firefox support sooner.
 - Fixed bug where spinner wouldn't disappear on incorrect password submission on seed word reveal.
 - Polish the private key UI.
+- Enforce minimum values for gas price and gas limit.
+- Fix bug where total gas was sometimes not live-updated.
+- Fix bug where editing gas value could have some abrupt behaviors (#1233)
 - Add Kovan as an option on our network list.
+- Fixed bug where transactions on other networks would disappear when submitting a transaction on another network.
 
 ## 3.4.0 2017-3-8
 
