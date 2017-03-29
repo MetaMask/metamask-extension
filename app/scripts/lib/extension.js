@@ -11,4 +11,7 @@
  */
 
 const Extension = require('./extension-instance')
-module.exports = new Extension()
+const instance = new Extension()
+window.METAMASK_EXTENSION = instance
+module.exports = instance
+
