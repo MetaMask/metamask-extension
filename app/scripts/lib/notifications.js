@@ -22,9 +22,11 @@ function show () {
       extension.windows.create({
         url: 'notification.html',
         type: 'popup',
-        focused: true,
         width,
         height,
+      })
+      .catch((reason) => {
+        log.error("failed to create poupup", reason)
       })
     }
   })
