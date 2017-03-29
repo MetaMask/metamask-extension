@@ -6,9 +6,9 @@ const background = new SWcontroller({
   fileName: '/popup/sw-build.js',
 })
 
+const pageStream = new ParentStream()
 background.on('ready', (_) => {
   // var inpageProvider = new MetamaskInpageProvider(SwStream(background.controller))
-  let pageStream = new ParentStream()
   let swStream = SwStream(background.controller)
   pageStream.pipe(swStream).pipe(pageStream)
   console.log('********************WOOP*********************')
