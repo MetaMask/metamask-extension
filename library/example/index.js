@@ -1,4 +1,5 @@
 window.addEventListener('load', web3Detect)
+window.addEventListener('message', console.warn)
 
 function web3Detect() {
   if (global.web3) {
@@ -12,18 +13,18 @@ function web3Detect() {
 function startApp(){
   console.log('app started')
 
-  var primaryAccount = null
+  var primaryAccount
   console.log('getting main account...')
-  web3.eth.getAccounts(function(err, addresses){
-    if (err) throw err
+  web3.eth.getAccounts((err, addresses) => {
+    if (err) console.error(err)
     console.log('set address', addresses[0])
-    debugger
     primaryAccount = addresses[0]
   })
 
   document.querySelector('.action-button-1').addEventListener('click', function(){
     console.log('saw click')
     console.log('sending tx')
+    primaryAccount
     web3.eth.sendTransaction({
       from: primaryAccount,
       to: primaryAccount,

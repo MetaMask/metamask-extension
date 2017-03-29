@@ -13,11 +13,6 @@ injectCss(css)
 var name = 'popup'
 window.METAMASK_UI_TYPE = name
 
-var iframeStream = setupIframe({
-  zeroClientProvider: 'http://localhost:9001',
-  sandboxAttributes: ['allow-scripts', 'allow-popups', 'allow-same-origin'],
-  container: document.body,
-})
 console.log('outside:open')
 
 const background = new SWcontroller({

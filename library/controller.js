@@ -6,17 +6,17 @@ const background = new SWcontroller({
   fileName: '/popup/sw-build.js',
 })
 
-background.on('ready', (readSw) => {
+background.on('ready', (_) => {
   // var inpageProvider = new MetamaskInpageProvider(SwStream(background.controller))
   let pageStream = new ParentStream()
   let swStream = SwStream(background.controller)
   pageStream.pipe(swStream).pipe(pageStream)
+  console.log('********************WOOP*********************')
 })
 
 background.on('error', console.error)
 background.startWorker()
 
-console.log('hello from controller')
 /*
 const urlUtil = require('url')
 const extend = require('xtend')
@@ -167,14 +167,6 @@ function initializeZeroClient() {
     window.localStorage[STORAGE_KEY] = JSON.stringify(data)
   }
 
-  function getParentHref(){
-    try {
-      var parentLocation = window.parent.location
-      return parentLocation.hostname + ':' + parentLocation.port
-    } catch (err) {
-      return 'unknown'
-    }
-  }
 
 }
 

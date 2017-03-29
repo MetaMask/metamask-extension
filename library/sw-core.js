@@ -116,6 +116,7 @@ function setupController (initState, client) {
   need to write a service worker stream for this
   */
   connectionListener.on('remote', (portStream, messageEvent) => {
+    console.log('REMOTE CONECTION FOUND***********')
     connectRemote(portStream, messageEvent.origin)
   })
 

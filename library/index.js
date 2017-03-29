@@ -5,13 +5,12 @@ const setupProvider = require('./lib/setup-provider.js')
 // setup web3
 //
 var provider = setupProvider()
-hijackProvider(provider)
+// hijackProvider(provider)
 var web3 = new Web3(provider)
 web3.setProvider = function(){
   console.log('MetaMask - overrode web3.setProvider')
 }
-console.log('metamask lib hijacked provider')
-
+//
 //
 // export web3
 //
