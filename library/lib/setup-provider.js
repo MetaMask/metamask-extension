@@ -22,4 +22,3 @@ function getProvider(){
   return inpageProvider
 
 }
-

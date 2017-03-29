@@ -1,4 +1,3 @@
-
 window.addEventListener('load', web3Detect)
 
 function web3Detect() {
@@ -18,6 +17,7 @@ function startApp(){
   web3.eth.getAccounts(function(err, addresses){
     if (err) throw err
     console.log('set address', addresses[0])
+    debugger
     primaryAccount = addresses[0]
   })
 

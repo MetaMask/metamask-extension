@@ -19,6 +19,7 @@ var iframeStream = setupIframe({
   container: document.body,
 })
 console.log('outside:open')
+
 const background = new SWcontroller({
   fileName: '/popup/sw-build.js',
 })
@@ -27,5 +28,6 @@ background.on('ready', (readSw) => {
   // startPopup(inpageProvider)
   startPopup(SwStream(background.controller))
 })
+background.on('message', (messageEvent) => {debugger})
 background.startWorker()
 console.log('hello from /library/popup.js')

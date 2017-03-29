@@ -1,7 +1,4 @@
 global.window = global
-const SWGlobal = self
-const urlUtil = require('url')
-const endOfStream = require('end-of-stream')
 const asyncQ = require('async-q')
 const pipe = require('pump')
 
@@ -14,7 +11,7 @@ const PortStream = require('../app/scripts/lib/port-stream.js')
 const DbController = require('./controllers/index-db-controller')
 
 const MetamaskController = require('../app/scripts/metamask-controller')
-// const extension = require('../app/scripts/lib/extension')
+const extension = {} //require('../app/scripts/lib/extension')
 // const LocalStorageStore = require('obs-store/lib/localStorage')
 const storeTransform = require('obs-store/lib/transform')
 const Migrator = require('../app/scripts/lib/migrator/')
@@ -35,20 +32,6 @@ self.addEventListener('install', function(event) {
 self.addEventListener('activate', function(event) {
   event.waitUntil(self.clients.claim())
 })
-
-self.onsync = function (syncEvent) {
-// What is done when a sync even is fired
-  console.log('inside:sync')
-  var focused
-  self.clients.matchAll()
-  .then(clients => {
-    clients.forEach(function(client) {
-
-    })
-  })
-}
-
-
 
 console.log('inside:open')
 
@@ -117,8 +100,6 @@ function setupController (initState, client) {
     .catch((err) => {console.error(err)})
   })
   function versionifyData(state) {
-    // let versionedData
-    // versionedData.data = state
     return dbController.get()
     .then((rawData) => {
       return Promise.resolve({
@@ -143,6 +124,7 @@ function setupController (initState, client) {
     if (isMetaMaskInternalProcess) {
       // communication with popup
       controller.setupTrustedCommunication(connectionStream, 'MetaMask')
+      popupIsOpen = true
     } else {
       // communication with page
       setupUntrustedCommunication(connectionStream, originDomain)
@@ -175,6 +157,7 @@ function setupController (initState, client) {
 // // //
 
 // // // popup trigger
+
+/*send a message to the client that has focus and tell it to open a window*/
 function triggerUi () {
-  if (!popupIsOpen) notification.show()
 }
