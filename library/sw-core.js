@@ -117,11 +117,11 @@ function setupController (initState, client) {
   */
   connectionListener.on('remote', (portStream, messageEvent) => {
     console.log('REMOTE CONECTION FOUND***********')
-    connectRemote(portStream, messageEvent.origin)
+    connectRemote(portStream, messageEvent.data.context)
   })
 
-  function connectRemote (connectionStream, originDomain) {
-    var isMetaMaskInternalProcess = (originDomain === 'http://localhost:9001')
+  function connectRemote (connectionStream, context) {
+    var isMetaMaskInternalProcess = (context !== 'dapp')
     if (isMetaMaskInternalProcess) {
       // communication with popup
       controller.setupTrustedCommunication(connectionStream, 'MetaMask')

@@ -21,7 +21,10 @@ const background = new SWcontroller({
 background.on('ready', (readSw) => {
   // var inpageProvider = new MetamaskInpageProvider(SwStream(background.controller))
   // startPopup(inpageProvider)
-  startPopup(SwStream(background.controller))
+  swStream = SwStream({
+    serviceWorker: background.controller,
+    })
+  startPopup()
 })
 background.on('message', (messageEvent) => {debugger})
 background.startWorker()

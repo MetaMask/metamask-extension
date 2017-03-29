@@ -9,7 +9,10 @@ const background = new SWcontroller({
 const pageStream = new ParentStream()
 background.on('ready', (_) => {
   // var inpageProvider = new MetamaskInpageProvider(SwStream(background.controller))
-  let swStream = SwStream(background.controller)
+  let swStream = SwStream({
+    serviceWorker: background.controller,
+    context: 'dapp',
+  })
   pageStream.pipe(swStream).pipe(pageStream)
   console.log('********************WOOP*********************')
 })
