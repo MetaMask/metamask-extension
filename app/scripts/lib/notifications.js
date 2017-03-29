@@ -26,7 +26,7 @@ function show () {
         height,
       })
       .catch((reason) => {
-        log.error("failed to create poupup", reason)
+        log.error('failed to create poupup', reason)
       })
     }
   })
