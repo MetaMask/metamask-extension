@@ -45,12 +45,17 @@ CreateVaultCompleteScreen.prototype.render = function () {
         'Vault Created',
       ]),
 
-      h('span.error', { // Error for the right red
+      h('div', {
         style: {
-          padding: '12px 20px 0px 20px',
+          width: '360px',
+          height: '78px',
+          fontSize: '1em',
+          marginTop: '10px',
           textAlign: 'center',
         },
-      }, 'These 12 words can restore all of your MetaMask accounts for this vault.\nSave them somewhere safe and secret.'),
+      }, [
+        h('span.error', 'These 12 words can restore all of your MetaMask accounts for this vault.\nSave them somewhere safe and secret.'),
+      ]),
 
       h('textarea.twelve-word-phrase', {
         readOnly: true,
