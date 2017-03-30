@@ -12,6 +12,23 @@ describe('txUtils', function() {
     txUtils = new TxUtils()
   })
 
+  describe('chain Id', function() {
+    it('prepares a transaction with the provided chainId', function() {
+      const txParams = {
+        to: '0x70ad465e0bab6504002ad58c744ed89c7da38524',
+        from: '0x69ad465e0bab6504002ad58c744ed89c7da38525',
+        value: '0x0',
+        gas: '0x7b0c',
+        gasPrice: '0x199c82cc00',
+        data: '0x',
+        nonce: '0x3',
+        chainId: 42,
+      }
+      const ethTx = txUtils.buildEthTxFromParams(txParams)
+      assert.equal(ethTx.getChainId(), 42, 'chainId is set from tx params')
+    })
+  })
+
   describe('addGasBuffer', function() {
     it('multiplies by 1.5, when within block gas limit', function() {
       // naive estimatedGas: 0x16e360 (1.5 mil)
