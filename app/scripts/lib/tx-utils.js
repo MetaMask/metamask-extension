@@ -63,14 +63,15 @@ module.exports = class txProviderUtils {
   addGasBuffer (initialGasLimitHex, blockGasLimitHex) {
     const initialGasLimitBn = hexToBn(initialGasLimitHex)
     const blockGasLimitBn = hexToBn(blockGasLimitHex)
+    const upperGasLimitBn = blockGasLimitBn.muln(0.9)
     const bufferedGasLimitBn = initialGasLimitBn.muln(1.5)
 
     // if initialGasLimit is above blockGasLimit, dont modify it
-    if (initialGasLimitBn.gt(blockGasLimitBn)) return bnToHex(initialGasLimitBn)
+    if (initialGasLimitBn.gt(upperGasLimitBn)) return bnToHex(initialGasLimitBn)
     // if bufferedGasLimit is below blockGasLimit, use bufferedGasLimit
-    if (bufferedGasLimitBn.lt(blockGasLimitBn)) return bnToHex(bufferedGasLimitBn)
+    if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
     // otherwise use blockGasLimit
-    return bnToHex(blockGasLimitBn)
+    return bnToHex(upperGasLimitBn)
   }
 
   fillInTxParams (txParams, cb) {
