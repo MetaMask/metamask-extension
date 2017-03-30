@@ -363,12 +363,10 @@ function signMsg (msgData) {
     log.debug(`actions calling background.signMessage`)
     background.signMessage(msgData, (err, newState) => {
       log.debug('signMessage called back')
-      dispatch(actions.updateMetamaskState(newState))
       dispatch(actions.hideLoadingIndication())
-
+      dispatch(actions.updateMetamaskState(newState))
       if (err) log.error(err)
-      if (err) return dispatch(actions.displayWarning(err.message))
-
+      if (err) dispatch(actions.displayWarning(err.message))
       dispatch(actions.completedTx(msgData.metamaskId))
     })
   }
@@ -386,7 +384,7 @@ function signPersonalMsg (msgData) {
       dispatch(actions.hideLoadingIndication())
 
       if (err) log.error(err)
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) dispatch(actions.displayWarning(err.message))
 
       dispatch(actions.completedTx(msgData.metamaskId))
     })
@@ -397,8 +395,11 @@ function signTx (txData) {
   return (dispatch) => {
     web3.eth.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
+      if (err) {
+        dispatch(actions.displayWarning(err.message))
+      } else {
+        dispatch(actions.hideWarning())
+      }
     })
     dispatch(this.showConfTxPage())
   }
@@ -411,7 +412,7 @@ function sendTx (txData) {
     background.approveTransaction(txData.id, (err) => {
       if (err) {
         dispatch(actions.txError(err))
-        return console.error(err.message)
+        console.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
     })
@@ -426,7 +427,7 @@ function updateAndApproveTx (txData) {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
-        return console.error(err.message)
+        console.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
     })

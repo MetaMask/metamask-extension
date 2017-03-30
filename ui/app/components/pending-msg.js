@@ -32,10 +32,8 @@ PendingMsg.prototype.render = function () {
         style: {
           margin: '10px',
         },
-      }, `Signing this message can have
-        dangerous side effects. Only sign messages from
-        sites you fully trust with your entire account.
-        This will be fixed in a future version.`),
+      }, `Only sign messages from
+        sites you fully trust with your entire account.`),
 
       // message details
       h(PendingTxDetails, state),
@@ -53,4 +51,3 @@ PendingMsg.prototype.render = function () {
 
   )
 }
-
