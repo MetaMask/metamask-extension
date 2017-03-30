@@ -287,6 +287,9 @@ module.exports = class MetamaskController extends EventEmitter {
       // AddressController
       setAddressBook:           nodeify(addressBookController.setAddressBook).bind(addressBookController),
 
+      // DisplayController
+      finishFirstTime:          this.finishFirstTime.bind(this),
+
       // KeyringController
       setLocked:                 nodeify(keyringController.setLocked).bind(keyringController),
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
@@ -406,9 +409,15 @@ module.exports = class MetamaskController extends EventEmitter {
   // Removes the primary account's seed words from the UI's state tree,
   // ensuring they are only ever available in the background process.
   clearSeedWordCache (cb) {
-    this.displayController.finishFirstTime()
     this.configManager.setSeedWords(null)
-    cb(null, this.preferencesController.getSelectedAddress())
+    cb(null, this.preferencesController.getSelectedAddress(), this.displayController.store.getState().firstTime)
+  }
+
+  finishFirstTime (cb) {
+    this.displayController.finishFirstTime()
+    .then(() => {
+      cb(null)
+    })
   }
 
   importAccountWithStrategy (strategy, args, cb) {
