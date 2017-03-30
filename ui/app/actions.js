@@ -252,7 +252,6 @@ function createNewVaultAndKeychain (password) {
           return dispatch(actions.displayWarning(err.message))
         }
         dispatch(actions.hideLoadingIndication())
-        forceUpdateMetamaskState(dispatch)
       })
     })
   }

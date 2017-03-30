@@ -59,6 +59,7 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    firstTime: state.metamask.firstTime,
   }
 }
 
@@ -399,6 +400,12 @@ App.prototype.renderPrimary = function () {
         log.debug('rendering menu screen')
         return h(InitializeMenuScreen, {key: 'menuScreenInit'})
     }
+  }
+
+  // Fallback to create cleaner first-time transition
+  if (props.firstTime) {
+    log.debug('rendering seed words')
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show unlock screen
