@@ -19,13 +19,11 @@ const background = new SWcontroller({
   fileName: '/popup/sw-build.js',
 })
 background.on('ready', (readSw) => {
-  // var inpageProvider = new MetamaskInpageProvider(SwStream(background.controller))
-  // startPopup(inpageProvider)
   let swStream = SwStream({
     serviceWorker: background.controller,
-    })
-  startPopup()
+  })
+  startPopup(swStream)
 })
-background.on('message', (messageEvent) => {debugger})
+
 background.startWorker()
 console.log('hello from /library/popup.js')

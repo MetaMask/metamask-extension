@@ -24,7 +24,6 @@ class PreferencesController {
   }
 
   getSelectedAddress (_address) {
-    console.log('PREFERNCES: getSelectedAddress was called')
     return this.store.getState().selectedAddress
   }
 

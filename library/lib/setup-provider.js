@@ -5,7 +5,6 @@ module.exports = getProvider
 
 
 function getProvider(){
-
   if (global.web3) {
     console.log('MetaMask ZeroClient - using environmental web3 provider')
     return global.web3.currentProvider
@@ -18,7 +17,6 @@ function getProvider(){
   })
 
   var inpageProvider = new MetamaskInpageProvider(iframeStream)
-  console.log('ABOUT TO RETURN INPAGE')
   return inpageProvider
 
 }

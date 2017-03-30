@@ -6,13 +6,12 @@ const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
 const connectionListener = new SwGlobalListener(self)
 const setupMultiplex = require('../app/scripts/lib/stream-utils.js').setupMultiplex
 const PortStream = require('../app/scripts/lib/port-stream.js')
-// const notification = require('../app/scripts/lib/notifications.js')
 
 const DbController = require('./controllers/index-db-controller')
 
 const MetamaskController = require('../app/scripts/metamask-controller')
 const extension = {} //require('../app/scripts/lib/extension')
-// const LocalStorageStore = require('obs-store/lib/localStorage')
+
 const storeTransform = require('obs-store/lib/transform')
 const Migrator = require('../app/scripts/lib/migrator/')
 const migrations = require('../app/scripts/migrations/')
@@ -80,9 +79,9 @@ function setupController (initState, client) {
 
   const controller = new MetamaskController({
     // User confirmation callbacks:
-    showUnconfirmedMessage: triggerUi,
-    unlockAccountMessage: triggerUi,
-    showUnapprovedTx: triggerUi,
+    showUnconfirmedMessage: noop,
+    unlockAccountMessage: noop,
+    showUnapprovedTx: noop,
     // initial state
     initState,
   })
@@ -128,7 +127,7 @@ function setupController (initState, client) {
       popupIsOpen = true
     } else {
       // communication with page
-      setupUntrustedCommunication(connectionStream, originDomain)
+      setupUntrustedCommunication(connectionStream, context)
     }
   }
 
@@ -152,13 +151,4 @@ function setupController (initState, client) {
   return Promise.resolve()
 
 }
-
-// // //
-// // // Etc...
-// // //
-
-// // // popup trigger
-
-/*send a message to the client that has focus and tell it to open a window*/
-function triggerUi () {
-}
+function noop () {}
