@@ -57,7 +57,8 @@
   "permissions": [
     "storage",
     "clipboardWrite",
-    "http://localhost:8545/"
+    "http://localhost:8545/",
+    "https://www.cryptonator.com/"
   ],
   "web_accessible_resources": [
     "scripts/inpage.js"
