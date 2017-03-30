@@ -26,27 +26,29 @@ function enableFailureOnUnhandledPromiseRejection() {
   // overwrite node's promise with the stricter Bluebird promise
   global.Promise = require('bluebird')
 
+  // modified from https://github.com/mochajs/mocha/issues/1926#issuecomment-180842722
+  
   // rethrow unhandledRejections
   if (typeof process !== 'undefined') {
     process.on('unhandledRejection', function (reason) {
-      throw reason;
-    });
+      throw reason
+    })
   } else if (typeof window !== 'undefined') {
     // 2016-02-01: No browsers support this natively, however bluebird, when.js,
     // and probably other libraries do.
     if (typeof window.addEventListener === 'function') {
       window.addEventListener('unhandledrejection', function (evt) {
-        throw evt.detail.reason;
-      });
+        throw evt.detail.reason
+      })
     } else {
-      var oldOHR = window.onunhandledrejection;
+      var oldOHR = window.onunhandledrejection
       window.onunhandledrejection = function (evt) {
-        if (typeof oldOHR === 'function') oldOHR.apply(this, arguments);
-        throw evt.detail.reason;
-      };
+        if (typeof oldOHR === 'function') oldOHR.apply(this, arguments)
+        throw evt.detail.reason
+      }
     }
   } else if (typeof console !== 'undefined' &&
       typeof (console.error || console.log) === 'function') {
-    (console.error || console.log)('Unhandled rejections will be ignored!');
+    (console.error || console.log)('Unhandled rejections will be ignored!')
   }
 }
