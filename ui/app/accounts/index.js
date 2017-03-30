@@ -97,7 +97,7 @@ AccountsScreen.prototype.render = function () {
             style: {
               display: 'flex',
               height: '40px',
-              paddint: '10px',
+              padding: '10px',
               justifyContent: 'center',
               alignItems: 'center',
             },
