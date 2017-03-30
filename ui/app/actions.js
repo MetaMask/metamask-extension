@@ -214,14 +214,14 @@ function confirmSeedWords () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.clearSeedWordCache`)
-    background.clearSeedWordCache((err, account, firstTime) => {
+    background.clearSeedWordCache((err, account) => {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
 
       console.log('Seed word cache cleared. ' + account)
-      dispatch(actions.showAccountDetail(account, firstTime))
+      dispatch(actions.showAccountDetail(account))
     })
   }
 }
@@ -559,7 +559,7 @@ function lockMetamask () {
   return callBackgroundThenUpdate(background.setLocked)
 }
 
-function showAccountDetail (address, firstTime) {
+function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.setSelectedAddress`)
@@ -572,7 +572,6 @@ function showAccountDetail (address, firstTime) {
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
-      if (firstTime) { background.finishFirstTime() }
     })
   }
 }
