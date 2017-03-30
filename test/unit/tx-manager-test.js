@@ -1,5 +1,4 @@
-// const assert = require('assert')
-const assert = require('chai').assert
+const assert = require('assert')
 const extend = require('xtend')
 const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
@@ -22,7 +21,6 @@ describe('Transaction Manager', function() {
       blockTracker: new EventEmitter(),
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
-        const result = ethTx.serialize()
         resolve()
       })
     })
@@ -229,21 +227,15 @@ describe('Transaction Manager', function() {
     })
   })
 
-
   describe('#sign replay-protected tx', function() {
     it('prepares a tx with the chainId set', function() {
       txManager.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       txManager.signTransaction('1', (err, rawTx) => {
         if (err) return assert.fail('it should not fail')
         const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
-        console.log('------------------------------------------')
-        console.log('ethTx.getChainId(), currentNetworkId')
-        console.log(ethTx.getChainId(), currentNetworkId)
         assert.equal(ethTx.getChainId(), currentNetworkId)
       })
     })
   })
-
-
 
 })
