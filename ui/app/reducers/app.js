@@ -1,7 +1,9 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
-const notification = require('../../../app/scripts/lib/notification-manager')
+const NotificationManager = require('../../../app/scripts/lib/notification-manager')
+
+const notificationManager = new NotificationManager()
 
 module.exports = reduceApp
 
@@ -332,7 +334,7 @@ function reduceApp (state, action) {
         })
       } else {
         log.debug('attempting to close popup')
-        notification.closePopup()
+        notificationManager.closePopup()
 
         return extend(appState, {
           transForward: false,
