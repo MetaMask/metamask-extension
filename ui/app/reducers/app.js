@@ -34,6 +34,7 @@ function reduceApp (state, action) {
     seedWords,
   }
 
+  // default state
   var appState = extend({
     menuOpen: false,
     currentView: seedWords ? seedConfView : defaultView,

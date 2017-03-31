@@ -5,23 +5,37 @@ const PortStream = require('./lib/port-stream.js')
 const isPopupOrNotification = require('./lib/is-popup-or-notification')
 const extension = require('extensionizer')
 const NotificationManager = require('./lib/notification-manager')
-
 const notificationManager = new NotificationManager()
 
-var css = MetaMaskUiCss()
+// inject css
+const css = MetaMaskUiCss()
 injectCss(css)
 
-var name = isPopupOrNotification()
-closePopupIfOpen(name)
-window.METAMASK_UI_TYPE = name
+// identify window type (popup, notification)
+const windowType = isPopupOrNotification()
+global.METAMASK_UI_TYPE = windowType
+closePopupIfOpen(windowType)
 
-var pluginPort = extension.runtime.connect({ name })
-var portStream = new PortStream(pluginPort)
+// setup stream to background
+const extensionPort = extension.runtime.connect({ windowType })
+const connectionStream = new PortStream(extensionPort)
 
-startPopup(portStream)
+// start ui
+const container = document.getElementById('app-content')
+startPopup({ container, connectionStream }, (err, store) => {
+  if (err) return displayCriticalError(err)
+})
 
-function closePopupIfOpen (name) {
-  if (name !== 'notification') {
+
+function closePopupIfOpen (windowType) {
+  if (windowType !== 'notification') {
     notificationManager.closePopup()
   }
+}
+
+function displayCriticalError(err) {
+  container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
+  container.style.height = '80px'
+  log.error(err.stack)
+  throw err
 }
