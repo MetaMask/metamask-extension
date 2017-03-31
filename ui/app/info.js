@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const extension = require('../../app/scripts/lib/extension')
+const extension = require('extensionizer')
 
 module.exports = connect(mapStateToProps)(InfoScreen)
 

@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Tooltip = require('./tooltip')
 const genAccountLink = require('../../lib/account-link')
-const extension = require('../../../app/scripts/lib/extension')
+const extension = require('extensionizer')
 
 module.exports = AccountInfoLink
 

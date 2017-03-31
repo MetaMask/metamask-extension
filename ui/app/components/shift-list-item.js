@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))
 const explorerLink = require('../../lib/explorer-link')
-const extension = require('../../../app/scripts/lib/extension')
+const extension = require('extensionizer')
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 

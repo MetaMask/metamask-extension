@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
-const extension = require('../../../app/scripts/lib/extension')
+const extension = require('extensionizer')
 const Loading = require('./loading')
 const TabBar = require('./tab-bar')
 
