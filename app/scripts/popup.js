@@ -17,13 +17,17 @@ global.METAMASK_UI_TYPE = windowType
 closePopupIfOpen(windowType)
 
 // setup stream to background
-const extensionPort = extension.runtime.connect({ windowType })
+const extensionPort = extension.runtime.connect({ name: windowType })
 const connectionStream = new PortStream(extensionPort)
 
 // start ui
 const container = document.getElementById('app-content')
 startPopup({ container, connectionStream }, (err, store) => {
   if (err) return displayCriticalError(err)
+  store.subscribe(() => {
+    const state = store.getState()
+    if (state.appState.shouldClose) notificationManager.closePopup()
+  })
 })
 
 

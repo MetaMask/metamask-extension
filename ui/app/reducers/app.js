@@ -1,11 +1,9 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
-const NotificationManager = require('../../../app/scripts/lib/notification-manager')
-
-const notificationManager = new NotificationManager()
 
 module.exports = reduceApp
+
 
 function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
@@ -36,6 +34,7 @@ function reduceApp (state, action) {
 
   // default state
   var appState = extend({
+    shouldClose: false,
     menuOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -331,9 +330,9 @@ function reduceApp (state, action) {
         })
       } else {
         log.debug('attempting to close popup')
-        notificationManager.closePopup()
-
         return extend(appState, {
+          // indicate notification should close
+          shouldClose: true,
           transForward: false,
           warning: null,
           currentView: {
