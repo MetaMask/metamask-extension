@@ -3,8 +3,10 @@ const MetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('./lib/port-stream.js')
 const isPopupOrNotification = require('./lib/is-popup-or-notification')
-const extension = require('./lib/extension')
-const notification = require('./lib/notifications')
+const extension = require('extensionizer')
+const NotificationManager = require('./lib/notification-manager')
+
+const notificationManager = new NotificationManager()
 
 var css = MetaMaskUiCss()
 injectCss(css)
@@ -20,6 +22,6 @@ startPopup(portStream)
 
 function closePopupIfOpen (name) {
   if (name !== 'notification') {
-    notification.closePopup()
+    notificationManager.closePopup()
   }
 }

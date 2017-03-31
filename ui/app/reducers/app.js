@@ -1,7 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
-const notification = require('../../../app/scripts/lib/notifications')
+const notification = require('../../../app/scripts/lib/notification-manager')
 
 module.exports = reduceApp
 

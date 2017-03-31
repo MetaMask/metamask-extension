@@ -4,12 +4,13 @@ const asyncQ = require('async-q')
 const pipe = require('pump')
 const LocalStorageStore = require('obs-store/lib/localStorage')
 const storeTransform = require('obs-store/lib/transform')
+const ExtensionPlatform = require('./platforms/extension')
 const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
-const notification = require('./lib/notifications.js')
+const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const extension = require('./lib/extension')
+const extension = require('extensionizer')
 const firstTimeState = require('./first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
@@ -18,6 +19,10 @@ const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 const log = require('loglevel')
 window.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
+
+const platform = new ExtensionPlatform()
+const notificationManager = new NotificationManager()
+global.METAMASK_NOTIFIER = notificationManager
 
 let popupIsOpen = false
 
@@ -68,6 +73,8 @@ function setupController (initState) {
     showUnapprovedTx: triggerUi,
     // initial state
     initState,
+    // platform specific api
+    platform,
   })
   global.metamaskController = controller
 
@@ -140,7 +147,7 @@ function setupController (initState) {
 
 // popup trigger
 function triggerUi () {
-  if (!popupIsOpen) notification.show()
+  if (!popupIsOpen) notificationManager.show()
 }
 
 // On first install, open a window to MetaMask website to how-it-works.
