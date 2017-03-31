@@ -11,12 +11,12 @@ function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
-  let pendingTxs = hasPendingTxs(state)
+  const hasUnconfActions = checkUnconfActions(state)
   let name = 'accounts'
   if (selectedAddress) {
     name = 'accountDetail'
   }
-  if (pendingTxs) {
+  if (hasUnconfActions) {
     log.debug('pending txs detected, defaulting to conf-tx view.')
     name = 'confTx'
   }
@@ -304,7 +304,7 @@ function reduceApp (state, action) {
     case actions.SHOW_CONF_MSG_PAGE:
       return extend(appState, {
         currentView: {
-          name: pendingTxs ? 'confTx' : 'account-detail',
+          name: hasUnconfActions ? 'confTx' : 'account-detail',
           context: 0,
         },
         transForward: true,
@@ -314,15 +314,11 @@ function reduceApp (state, action) {
 
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
-      var { unapprovedTxs, unapprovedMsgs,
-        unapprovedPersonalMsgs, network } = state.metamask
-
-      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+      const otherUnconfActions = getUnconfActionList(state)
       .filter(tx => tx.id !== action.value )
+      const hasOtherUnconfActions = otherUnconfActions.length > 0
 
-      pendingTxs = unconfTxList.length > 0
-
-      if (pendingTxs) {
+      if (hasOtherUnconfActions) {
         log.debug('reducer detected txs - rendering confTx view')
         return extend(appState, {
           transForward: false,
@@ -582,26 +578,23 @@ function reduceApp (state, action) {
   }
 }
 
-function hasPendingTxs (state) {
-  var { unapprovedTxs, unapprovedMsgs,
+function checkUnconfActions (state) {
+  const unconfActionList = getUnconfActionList(state)
+  const hasUnconfActions = unconfActionList.length > 0
+  return hasUnconfActions
+}
+
+function getUnconfActionList (state) {
+  const { unapprovedTxs, unapprovedMsgs,
     unapprovedPersonalMsgs, network } = state.metamask
 
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
-  var has = unconfTxList.length > 0
-  return has
+  const unconfActionList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+  return unconfActionList
 }
 
 function indexForPending (state, txId) {
-  var unapprovedTxs = state.metamask.unapprovedTxs
-  var unapprovedMsgs = state.metamask.unapprovedMsgs
-  var unapprovedPersonalMsgs = state.metamask.unapprovedPersonalMsgs
-  var network = state.metamask.network
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
-  let idx
-  unconfTxList.forEach((tx, i) => {
-    if (tx.id === txId) {
-      idx = i
-    }
-  })
-  return idx
+  const unconfTxList = getUnconfActionList(state)
+  const match = unconfTxList.find((tx) => tx.id === txId)
+  const index = unconfTxList.indexOf(match)
+  return index
 }
