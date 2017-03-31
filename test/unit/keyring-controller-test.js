@@ -135,7 +135,7 @@ describe('KeyringController', function() {
   })
 
   describe('#getAccounts', function() {
-    it('returns the result of getAccounts for each keyring', function() {
+    it('returns the result of getAccounts for each keyring', function(done) {
       keyringController.keyrings = [
         { getAccounts() { return Promise.resolve([1,2,3]) } },
         { getAccounts() { return Promise.resolve([4,5,6]) } },
