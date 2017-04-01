@@ -14,6 +14,10 @@ class ExtensionPlatform {
     extension.tabs.create({ url })
   }
 
+  getVersion () {
+    return extension.runtime.getManifest().version
+  }
+
 }
 
 module.exports = ExtensionPlatform
