@@ -9,8 +9,8 @@ class NotificationManager {
   // Public
   //
 
-  show () {
-    this.getPopup((err, popup) => {
+  showPopup () {
+    this._getPopup((err, popup) => {
       if (err) throw err
 
       if (popup) {
@@ -31,15 +31,8 @@ class NotificationManager {
     })
   }
 
-  getPopup (cb) {
-    this._getWindows((err, windows) => {
-      if (err) throw err
-      cb(null, this._getPopupIn(windows))
-    })
-  }
-
   closePopup () {
-    this.getPopup((err, popup) => {
+    this._getPopup((err, popup) => {
       if (err) throw err
       if (!popup) return
       extension.windows.remove(popup.id, console.error)
@@ -49,6 +42,13 @@ class NotificationManager {
   //
   // Private
   //
+
+  _getPopup (cb) {
+    this._getWindows((err, windows) => {
+      if (err) throw err
+      cb(null, this._getPopupIn(windows))
+    })
+  }
 
   _getWindows (cb) {
     // Ignore in test environment

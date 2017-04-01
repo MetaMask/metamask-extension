@@ -147,7 +147,7 @@ function setupController (initState) {
 
 // popup trigger
 function triggerUi () {
-  if (!popupIsOpen) notificationManager.show()
+  if (!popupIsOpen) notificationManager.showPopup()
 }
 
 // On first install, open a window to MetaMask website to how-it-works.
