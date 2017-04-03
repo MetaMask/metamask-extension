@@ -1,7 +1,8 @@
 const EventEmitter = require('events').EventEmitter
+const async = require('async')
 const Dnode = require('dnode')
 const Web3 = require('web3')
-const MetaMaskUi = require('../../ui')
+const launchMetamaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 
@@ -9,9 +10,13 @@ const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 module.exports = initializePopup
 
 
-function initializePopup (connectionStream) {
+function initializePopup ({ container, connectionStream }, cb) {
   // setup app
-  connectToAccountManager(connectionStream, setupApp)
+  async.waterfall([
+    (cb) => connectToAccountManager(connectionStream, cb),
+    (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
+  ], cb)
+
 }
 
 function connectToAccountManager (connectionStream, cb) {
@@ -45,21 +50,5 @@ function setupControllerConnection (connectionStream, cb) {
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)
     cb(null, accountManager)
-  })
-}
-
-function setupApp (err, accountManager) {
-  var container = document.getElementById('app-content')
-  if (err) {
-    container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
-    container.style.height = '80px'
-    log.error(err.stack)
-    throw err
-  }
-
-
-  MetaMaskUi({
-    container: container,
-    accountManager: accountManager,
   })
 }

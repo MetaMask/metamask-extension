@@ -4,26 +4,27 @@ const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
-module.exports = launchApp
+global.log = require('loglevel')
 
-let debugMode = window.METAMASK_DEBUG
-const log = require('loglevel')
-window.log = log
-log.setLevel(debugMode ? 'debug' : 'warn')
+module.exports = launchMetamaskUi
 
-function launchApp (opts) {
+
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
+
+function launchMetamaskUi (opts, cb) {
   var accountManager = opts.accountManager
   actions._setBackgroundConnection(accountManager)
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {
-    if (err) throw err
-    startApp(metamaskState, accountManager, opts)
+    if (err) return cb(err)
+    const store = startApp(metamaskState, accountManager, opts)
+    cb(null, store)
   })
 }
 
 function startApp (metamaskState, accountManager, opts) {
   // parse opts
-  var store = configureStore({
+  const store = configureStore({
 
     // metamaskState represents the cross-tab state
     metamask: metamaskState,
@@ -36,7 +37,7 @@ function startApp (metamaskState, accountManager, opts) {
   })
 
   // if unconfirmed txs, start on txConf page
-  var unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.network)
+  const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.network)
   if (unapprovedTxsAll.length > 0) {
     store.dispatch(actions.showConfTxPage())
   }
@@ -52,4 +53,6 @@ function startApp (metamaskState, accountManager, opts) {
       store: store,
     }
   ), opts.container)
+
+  return store
 }

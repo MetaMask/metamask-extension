@@ -5,7 +5,6 @@ const connect = require('react-redux').connect
 const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
-const extension = require('../../../app/scripts/lib/extension')
 const Loading = require('./loading')
 const TabBar = require('./tab-bar')
 
@@ -142,7 +141,7 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
 }
 
 BuyButtonSubview.prototype.navigateTo = function (url) {
-  extension.tabs.create({ url })
+  global.platform.openWindow({ url })
 }
 
 BuyButtonSubview.prototype.backButtonContext = function () {

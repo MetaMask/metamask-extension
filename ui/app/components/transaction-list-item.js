@@ -7,7 +7,7 @@ const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
-const extension = require('../../../app/scripts/lib/extension')
+const extension = require('extensionizer')
 const Tooltip = require('./tooltip')
 
 const TransactionIcon = require('./transaction-list-item-icon')
