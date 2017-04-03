@@ -14,3 +14,7 @@ node server.js
 ### Todos
 
   - [ ] Figure out user flows and UI redesign
+  - [ ] Figure out FireFox
+    Standing problems:
+    - [ ] IndexDb
+
