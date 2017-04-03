@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Popup new transactions in Firefox.
+
 ## 3.5.2 2017-3-28
 
 - Fix bug where gas estimate totals were sometimes wrong.
