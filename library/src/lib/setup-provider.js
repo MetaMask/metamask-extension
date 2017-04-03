@@ -1,5 +1,5 @@
 const setupIframe = require('./setup-iframe.js')
-const MetamaskInpageProvider = require('../../app/scripts/lib/inpage-provider.js')
+const MetamaskInpageProvider = require('../../../app/scripts/lib/inpage-provider.js')
 
 module.exports = getProvider
 

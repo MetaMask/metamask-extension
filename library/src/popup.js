@@ -1,10 +1,10 @@
 const injectCss = require('inject-css')
-const MetaMaskUiCss = require('../ui/css')
+const MetaMaskUiCss = require('../../ui/css')
 const setupIframe = require('./lib/setup-iframe.js')
-const MetamaskInpageProvider = require('../app/scripts/lib/inpage-provider.js')
-const SWcontroller = require('./sw-controller')
+const MetamaskInpageProvider = require('../../app/scripts/lib/inpage-provider.js')
+const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
 const SwStream = require('sw-stream/lib/sw-stream.js')
-const startPopup = require('../app/scripts/popup-core')
+const startPopup = require('../../app/scripts/popup-core')
 
 
 var css = MetaMaskUiCss()

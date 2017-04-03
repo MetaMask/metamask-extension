@@ -3,11 +3,12 @@ const browserify = require('browserify')
 const watchify = require('watchify')
 const babelify = require('babelify')
 
-const zeroBundle = createBundle('./index.js')
-const controllerBundle = createBundle('./controller.js')
-const popupBundle = createBundle('./popup.js')
+const zeroBundle = createBundle('./src/mascara.js')
+const controllerBundle = createBundle('./src/dapp-connection.js')
+const popupBundle = createBundle('./src/popup.js')
+const swBuild = createBundle('./src/background.js')
+
 const appBundle = createBundle('./example/index.js')
-const swBuild = createBundle('./sw-core.js')
 
 //
 // Iframe Server

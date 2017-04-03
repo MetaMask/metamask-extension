@@ -4,18 +4,18 @@ const pipe = require('pump')
 
 const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
 const connectionListener = new SwGlobalListener(self)
-const setupMultiplex = require('../app/scripts/lib/stream-utils.js').setupMultiplex
-const PortStream = require('../app/scripts/lib/port-stream.js')
+const setupMultiplex = require('../../app/scripts/lib/stream-utils.js').setupMultiplex
+const PortStream = require('../../app/scripts/lib/port-stream.js')
 
-const DbController = require('./controllers/index-db-controller')
+const DbController = require('./lib/index-db-controller')
 
-const MetamaskController = require('../app/scripts/metamask-controller')
-const extension = {} //require('../app/scripts/lib/extension')
+const MetamaskController = require('../../app/scripts/metamask-controller')
+const extension = {} //require('../../app/scripts/lib/extension')
 
 const storeTransform = require('obs-store/lib/transform')
-const Migrator = require('../app/scripts/lib/migrator/')
-const migrations = require('../app/scripts/migrations/')
-const firstTimeState = require('../app/scripts/first-time-state')
+const Migrator = require('../../app/scripts/lib/migrator/')
+const migrations = require('../../app/scripts/migrations/')
+const firstTimeState = require('../../app/scripts/first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
