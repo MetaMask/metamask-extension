@@ -120,7 +120,7 @@ function setupController (initState, client) {
   })
 
   function connectRemote (connectionStream, context) {
-    var isMetaMaskInternalProcess = (context !== 'dapp')
+    var isMetaMaskInternalProcess = (context === 'popup')
     if (isMetaMaskInternalProcess) {
       // communication with popup
       controller.setupTrustedCommunication(connectionStream, 'MetaMask')
