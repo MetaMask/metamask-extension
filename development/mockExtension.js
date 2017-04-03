@@ -4,7 +4,7 @@
  * and stubbing out all the extension methods with appropriate mocks.
  */
 
-const extension = require('../app/scripts/lib/extension')
+const extension = require('extensionizer')
 const noop = function () {}
 
 const apis = [

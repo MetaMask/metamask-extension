@@ -3,7 +3,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const extension = require('../../app/scripts/lib/extension')
 
 module.exports = connect(mapStateToProps)(InfoScreen)
 
@@ -17,13 +16,8 @@ function InfoScreen () {
 }
 
 InfoScreen.prototype.render = function () {
-  var state = this.props
-  var manifest
-  try {
-    manifest = extension.runtime.getManifest()
-  } catch (e) {
-    manifest = { version: '2.0.0' }
-  }
+  const state = this.props
+  const version = global.platform.getVersion()
 
   return (
     h('.flex-column.flex-grow', [
@@ -53,7 +47,7 @@ InfoScreen.prototype.render = function () {
               style: {
                 marginBottom: '10px',
               },
-            }, `Version: ${manifest.version}`),
+            }, `Version: ${version}`),
           ]),
 
           h('div', {
@@ -110,10 +104,12 @@ InfoScreen.prototype.render = function () {
                   onClick (event) { this.navigateTo(event.target.href) },
                 }, [
                   h('img.icon-size', {
-                    src: manifest.icons['128'],
+                    src: 'images/icon-128.png',
                     style: {
-                      filter: 'grayscale(100%)', /* IE6-9 */
-                      WebkitFilter: 'grayscale(100%)', /* Microsoft Edge and Firefox 35+ */
+                      // IE6-9
+                      filter: 'grayscale(100%)',
+                      // Microsoft Edge and Firefox 35+
+                      WebkitFilter: 'grayscale(100%)',
                     },
                   }),
                   h('div.info', 'Visit our web site'),
@@ -139,7 +135,7 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   target: '_blank',
                   style: { width: '85vw' },
-                  onClick () { extension.tabs.create({url: 'mailto:help@metamask.io?subject=Feedback'}) },
+                  onClick () { this.navigateTo('mailto:help@metamask.io?subject=Feedback') },
                 }, 'Email us!'),
               ]),
 
@@ -158,5 +154,5 @@ InfoScreen.prototype.render = function () {
 }
 
 InfoScreen.prototype.navigateTo = function (url) {
-  extension.tabs.create({ url })
+  global.platform.openWindow({ url })
 }

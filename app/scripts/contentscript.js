@@ -2,7 +2,7 @@ const LocalMessageDuplexStream = require('post-message-stream')
 const PongStream = require('ping-pong-stream/pong')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
-const extension = require('./lib/extension')
+const extension = require('extensionizer')
 
 const fs = require('fs')
 const path = require('path')
