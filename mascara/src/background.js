@@ -80,12 +80,6 @@ function setupController (initState, client) {
   })
   global.metamaskController = controller
 
-  // setup state persistence
-  // pipe(
-  //   controller.store,
-  //   storeTransform(versionifyData),
-  //   diskStore
-  // )
   controller.store.subscribe((state) => {
     versionifyData(state)
     .then((versionedData) => dbController.put(versionedData))
@@ -104,9 +98,7 @@ function setupController (initState, client) {
   //
   // connect to other contexts
   //
-  /*
-  need to write a service worker stream for this
-  */
+
   connectionListener.on('remote', (portStream, messageEvent) => {
     console.log('REMOTE CONECTION FOUND***********')
     connectRemote(portStream, messageEvent.data.context)
