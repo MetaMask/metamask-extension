@@ -79,6 +79,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
+    })
+    this.keyringController.on('newVault', (address) => {
       autoFaucet(address)
     })
 
