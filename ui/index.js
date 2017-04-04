@@ -14,7 +14,6 @@ log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 function launchMetamaskUi (opts, cb) {
   var accountManager = opts.accountManager
   actions._setBackgroundConnection(accountManager)
-
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {
     if (err) return cb(err)
