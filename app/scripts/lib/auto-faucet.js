@@ -4,9 +4,15 @@ const env = process.env.METAMASK_ENV
 
 module.exports = function (address) {
   if (METAMASK_DEBUG || env === 'test') return // Don't faucet in development or test
-  var http = new XMLHttpRequest()
-  var data = address
-  http.open('POST', uri, true)
-  http.setRequestHeader('Content-type', 'application/rawdata')
-  http.send(data)
+  let data = address
+  let headers = new Headers()
+  headers.append('Content-type', 'application/rawdata')
+  fetch(uri, {
+    method: 'POST',
+    headers,
+    body: data,
+  })
+  .catch((err) => {
+    console.error(err)
+  })
 }
