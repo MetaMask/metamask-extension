@@ -21,7 +21,6 @@ const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TxManager = require('./transaction-manager')
 const ConfigManager = require('./lib/config-manager')
-const extension = require('./lib/extension')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -34,6 +33,9 @@ module.exports = class MetamaskController extends EventEmitter {
     super()
     this.opts = opts
     let initState = opts.initState || {}
+
+    // platform-specific api
+    this.platform = opts.platform
 
     // observable state store
     this.store = new ObservableStore(initState)
@@ -78,6 +80,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
+    })
+    this.keyringController.on('newVault', (address) => {
       autoFaucet(address)
     })
 
@@ -218,7 +222,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   getState () {
-
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
@@ -652,7 +655,7 @@ module.exports = class MetamaskController extends EventEmitter {
         break
     }
 
-    if (url) extension.tabs.create({ url })
+    if (url) this.platform.openWindow({ url })
   }
 
   createShapeShiftTx (depositAddress, depositType) {
@@ -670,7 +673,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setDefaultRpc () {
     this.configManager.setRpcTarget('http://localhost:8545')
-    extension.runtime.reload()
+    this.platform.reload()
     this.lookupNetwork()
     return Promise.resolve('http://localhost:8545')
   }
@@ -679,7 +682,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setRpcTarget(rpcTarget)
     return this.preferencesController.updateFrequentRpcList(rpcTarget)
       .then(() => {
-        extension.runtime.reload()
+        this.platform.reload()
         this.lookupNetwork()
         return Promise.resolve(rpcTarget)
       })
@@ -687,13 +690,13 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setProviderType (type) {
     this.configManager.setProviderType(type)
-    extension.runtime.reload()
+    this.platform.reload()
     this.lookupNetwork()
   }
 
   useEtherscanProvider () {
     this.configManager.useEtherscanProvider()
-    extension.runtime.reload()
+    this.platform.reload()
   }
 
   getNetworkState () {

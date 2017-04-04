@@ -205,11 +205,23 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
+  getChainId() {
+    const networkState = this.networkStore.getState()
+    const getChainId = parseInt(networkState.network)
+    if (Number.isNaN(getChainId)) {
+      return 0
+    } else {
+      return getChainId
+    }
+  }
+
   signTransaction (txId, cb) {
-    let txMeta = this.getTx(txId)
-    let txParams = txMeta.txParams
-    let fromAddress = txParams.from
-    let ethTx = this.txProviderUtils.buildEthTxFromParams(txParams)
+    const txMeta = this.getTx(txId)
+    const txParams = txMeta.txParams
+    const fromAddress = txParams.from
+    // add network/chain id
+    txParams.chainId = this.getChainId()
+    const ethTx = this.txProviderUtils.buildEthTxFromParams(txParams)
     this.signEthTx(ethTx, fromAddress).then(() => {
       this.setTxStatusSigned(txMeta.id)
       cb(null, ethUtil.bufferToHex(ethTx.serialize()))

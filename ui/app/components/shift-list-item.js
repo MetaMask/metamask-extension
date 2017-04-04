@@ -4,7 +4,6 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))
 const explorerLink = require('../../lib/explorer-link')
-const extension = require('../../../app/scripts/lib/extension')
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 
@@ -172,9 +171,7 @@ ShiftListItem.prototype.renderInfo = function () {
           width: '200px',
           overflow: 'hidden',
         },
-        onClick: () => extension.tabs.create({
-          url,
-        }),
+        onClick: () => global.platform.openWindow({ url }),
       }, [
         h('div', {
           style: {

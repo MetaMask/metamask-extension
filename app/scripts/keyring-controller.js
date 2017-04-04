@@ -324,6 +324,7 @@ class KeyringController extends EventEmitter {
       if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalizeAddress(firstAccount)
       this.emit('newAccount', hexAccount)
+      this.emit('newVault', hexAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this))

@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Tooltip = require('./tooltip')
 const genAccountLink = require('../../lib/account-link')
-const extension = require('../../../app/scripts/lib/extension')
 
 module.exports = AccountInfoLink
 
@@ -35,7 +34,7 @@ AccountInfoLink.prototype.render = function () {
         style: {
           margin: '5px',
         },
-        onClick () { extension.tabs.create({ url }) },
+        onClick () { global.platform.openWindow({ url }) },
       }),
     ]),
   ])
