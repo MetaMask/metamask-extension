@@ -1,5 +1,4 @@
 global.window = global
-const asyncQ = require('async-q')
 const pipe = require('pump')
 
 const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
@@ -39,18 +38,12 @@ console.log('inside:open')
 let diskStore
 const dbController = new DbController({
   key: STORAGE_KEY,
-  global: self,
   version: 2,
 })
-asyncQ.waterfall([
-  () => loadStateFromPersistence(),
-  (initState) => setupController(initState),
-])
+loadStateFromPersistence()
+.then((initState) => setupController(initState))
 .then(() => console.log('MetaMask initialization complete.'))
-.catch((err) => {
-  console.log('WHILE SETTING UP:')
-  console.error(err)
-})
+.catch((err) => console.error('WHILE SETTING UP:', err))
 
 // initialization flow
 

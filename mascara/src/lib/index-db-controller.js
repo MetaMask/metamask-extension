@@ -38,7 +38,7 @@ module.exports = class IndexDbController extends EventEmitter {
       if (!data) {
         return this._add('dataStore', this.initialState)
           .then(() => this.get('dataStore'))
-          .then((versionedData) => Promise.resolve(versionedData.data))
+          .then((versionedData) => Promise.resolve(versionedData))
       }
       return Promise.resolve(data)
     })
