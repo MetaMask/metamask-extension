@@ -167,7 +167,6 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
-        console.log('METAMASK CONTROLLER: getAccounts was called')
         let selectedAddress = this.preferencesController.getSelectedAddress()
         let result = selectedAddress ? [selectedAddress] : []
         cb(null, result)
