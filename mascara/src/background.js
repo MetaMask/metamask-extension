@@ -8,6 +8,7 @@ const PortStream = require('../../app/scripts/lib/port-stream.js')
 
 const DbController = require('./lib/index-db-controller')
 
+const SwPlatform = require('../../app/scripts/platforms/sw')
 const MetamaskController = require('../../app/scripts/metamask-controller')
 const extension = {} //require('../../app/scripts/lib/extension')
 
@@ -17,7 +18,8 @@ const migrations = require('../../app/scripts/migrations/')
 const firstTimeState = require('../../app/scripts/first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
-const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+// const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+const METAMASK_DEBUG = true
 let popupIsOpen = false
 
 const log = require('loglevel')
@@ -70,7 +72,11 @@ function setupController (initState, client) {
   // MetaMask Controller
   //
 
+  const platform = new SwPlatform()
+
   const controller = new MetamaskController({
+    // platform specific implementation
+    platform,
     // User confirmation callbacks:
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,

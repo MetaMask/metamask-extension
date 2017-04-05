@@ -1,3 +1,5 @@
+const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
@@ -833,10 +835,10 @@ function showSendPage () {
   }
 }
 
-function buyEth (address, amount) {
+function buyEth (opts) {
   return (dispatch) => {
-    log.debug(`background.buyEth`)
-    background.buyEth(address, amount)
+    const url = getBuyEthUrl(opts)
+    global.platform.openWindow({ url })
     dispatch({
       type: actions.BUY_ETH,
     })

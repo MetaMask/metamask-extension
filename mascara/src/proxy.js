@@ -4,7 +4,7 @@ const SwStream = require('sw-stream/lib/sw-stream.js')
 const SetupUntrustedComunication = ('./lib/setup-untrusted-connection.js')
 
 const background = new SWcontroller({
-  fileName: '/popup/sw-build.js',
+  fileName: '/background.js',
 })
 
 const pageStream = new ParentStream()
