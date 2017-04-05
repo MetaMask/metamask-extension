@@ -104,7 +104,8 @@ BuyButtonSubview.prototype.render = function () {
 }
 
 BuyButtonSubview.prototype.formVersionSubview = function () {
-  if (this.props.network === '1') {
+  const network = this.props.network
+  if (network === '1') {
     if (this.props.buyView.formView.coinbase) {
       return h(CoinbaseForm, this.props)
     } else if (this.props.buyView.formView.shapeshift) {
@@ -123,15 +124,15 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
           marginBottom: '15px',
         },
       }, 'In order to access this feature, please switch to the Main Network'),
-      ((this.props.network === '3') || (this.props.network === '42')) ? h('h3.text-transform-uppercase', 'or go to the') : null,
-      (this.props.network === '3') ? h('button.text-transform-uppercase', {
-        onClick: () => this.props.dispatch(actions.buyEth()),
+      ((network === '3') || (network === '42')) ? h('h3.text-transform-uppercase', 'or go to the') : null,
+      (network === '3') ? h('button.text-transform-uppercase', {
+        onClick: () => this.props.dispatch(actions.buyEth({ network })),
         style: {
           marginTop: '15px',
         },
       }, 'Ropsten Test Faucet') : null,
-      (this.props.network === '42') ? h('button.text-transform-uppercase', {
-        onClick: () => this.props.dispatch(actions.buyEth()),
+      (network === '42') ? h('button.text-transform-uppercase', {
+        onClick: () => this.props.dispatch(actions.buyEth({ network })),
         style: {
           marginTop: '15px',
         },

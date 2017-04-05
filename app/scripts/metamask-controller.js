@@ -24,6 +24,7 @@ const ConfigManager = require('./lib/config-manager')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
+const getBuyEthUrl = require('./lib/buy-eth-url')
 
 const version = require('../manifest.json').version
 
@@ -637,24 +638,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
   buyEth (address, amount) {
     if (!amount) amount = '5'
-
     const network = this.getNetworkState()
-    let url
-
-    switch (network) {
-      case '1':
-        url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
-        break
-
-      case '3':
-        url = 'https://faucet.metamask.io/'
-        break
-
-      case '42':
-        url = 'https://github.com/kovan-testnet/faucet'
-        break
-    }
-
+    const url = getBuyEthUrl({ network, address, amount })
     if (url) this.platform.openWindow({ url })
   }
 

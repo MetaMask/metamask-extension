@@ -4,7 +4,12 @@ const SwStream = require('sw-stream/lib/sw-stream.js')
 const MetaMaskUiCss = require('../../ui/css')
 const setupIframe = require('./lib/setup-iframe.js')
 const MetamaskInpageProvider = require('../../app/scripts/lib/inpage-provider.js')
+const MetamascaraPlatform = require('../../app/scripts/platforms/window')
 const startPopup = require('../../app/scripts/popup-core')
+
+// create platform global
+global.platform = new MetamascaraPlatform()
+
 
 var css = MetaMaskUiCss()
 injectCss(css)
@@ -14,7 +19,7 @@ var name = 'popup'
 window.METAMASK_UI_TYPE = name
 
 const background = new SWcontroller({
-  fileName: '/popup/sw-build.js',
+  fileName: '/background.js',
 })
 
 // Setup listener for when the service worker is read
@@ -33,4 +38,4 @@ background.on('ready', (readSw) => {
 })
 
 background.startWorker()
-console.log('hello from /library/popup.js')
+console.log('hello from MetaMascara ui!')

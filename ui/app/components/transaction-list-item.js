@@ -7,7 +7,6 @@ const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
-const extension = require('extensionizer')
 const Tooltip = require('./tooltip')
 
 const TransactionIcon = require('./transaction-list-item-icon')
@@ -50,7 +49,7 @@ TransactionListItem.prototype.render = function () {
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
         var url = explorerLink(transaction.hash, parseInt(network))
-        extension.tabs.create({ url })
+        global.platform.openWindow({ url })
       },
       style: {
         padding: '20px 0',
@@ -63,7 +62,7 @@ TransactionListItem.prototype.render = function () {
             event.stopPropagation()
             if (!isTx || isPending) return
             var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
-            extension.tabs.create({ url })
+            global.platform.openWindow({ url })
           },
         }, [
           h(TransactionIcon, { txParams, transaction, isTx, isMsg }),

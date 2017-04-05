@@ -112,7 +112,7 @@ CoinbaseForm.prototype.toCoinbase = function () {
   var message
 
   if (isValidAddress(address) && isValidAmountforCoinBase(amount).valid) {
-    props.dispatch(actions.buyEth(address, props.buyView.amount))
+    props.dispatch(actions.buyEth({ network: '1', address, amount: props.buyView.amount }))
   } else if (!isValidAmountforCoinBase(amount).valid) {
     message = isValidAmountforCoinBase(amount).message
     return props.dispatch(actions.displayWarning(message))
