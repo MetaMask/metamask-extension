@@ -3,6 +3,7 @@
 ## Current Master
 
 - Popup new transactions in Firefox.
+- Fix transition issue from account detail screen.
 
 ## 3.5.2 2017-3-28
 
