@@ -19,7 +19,7 @@ var name = 'popup'
 window.METAMASK_UI_TYPE = name
 
 const background = new SWcontroller({
-  fileName: '/popup/sw-build.js',
+  fileName: '/background.js',
 })
 
 // Setup listener for when the service worker is read
@@ -38,4 +38,4 @@ background.on('ready', (readSw) => {
 })
 
 background.startWorker()
-console.log('hello from /library/popup.js')
+console.log('hello from MetaMascara ui!')

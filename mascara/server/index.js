@@ -10,7 +10,7 @@ function createMetamascaraServer(){
   // start bundlers
   const metamascaraBundle = createBundle('./src/mascara.js')
   const proxyBundle = createBundle('./src/proxy.js')
-  const uiBundle = createBundle('./src/popup.js')
+  const uiBundle = createBundle('./src/ui.js')
   const backgroundBuild = createBundle('./src/background.js')
 
   // serve bundles
