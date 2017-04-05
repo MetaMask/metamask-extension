@@ -3,9 +3,11 @@ const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 const env = process.env.METAMASK_ENV
 
 module.exports = function (address) {
-  if (METAMASK_DEBUG || env === 'test') return // Don't faucet in development or test
-  let data = address
-  let headers = new Headers()
+  // Don't faucet in development or test
+  if (METAMASK_DEBUG || env === 'test') return
+  global.log.info('auto-fauceting:', address)
+  const data = address
+  const headers = new Headers()
   headers.append('Content-type', 'application/rawdata')
   fetch(uri, {
     method: 'POST',

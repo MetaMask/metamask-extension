@@ -4,7 +4,12 @@ const SwStream = require('sw-stream/lib/sw-stream.js')
 const MetaMaskUiCss = require('../../ui/css')
 const setupIframe = require('./lib/setup-iframe.js')
 const MetamaskInpageProvider = require('../../app/scripts/lib/inpage-provider.js')
+const MetamascaraPlatform = require('../../app/scripts/platforms/window')
 const startPopup = require('../../app/scripts/popup-core')
+
+// create platform global
+global.platform = new MetamascaraPlatform()
+
 
 var css = MetaMaskUiCss()
 injectCss(css)
