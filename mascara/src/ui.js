@@ -23,7 +23,7 @@ let intervalDelay =  Math.floor(Math.random() * (30000 - 1000)) + 1000
 const background = new SWcontroller({
   fileName: '/background.js',
   letBeIdle: false,
-  // intervalDelay,
+  intervalDelay,
   wakeUpInterval: 30000
 })
 // Setup listener for when the service worker is read
