@@ -44,7 +44,7 @@
     "bluebird": "^3.5.0",
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
-    "client-sw-ready-event": "^1.0.2",
+    "client-sw-ready-event": "^2.2.1",
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
     "debounce": "^1.0.0",

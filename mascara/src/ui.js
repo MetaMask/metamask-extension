@@ -18,10 +18,13 @@ const container = document.getElementById('app-content')
 var name = 'popup'
 window.METAMASK_UI_TYPE = name
 
+let intervalDelay =  Math.floor(Math.random() * (60000 - 1000)) + 1000
+
 const background = new SWcontroller({
   fileName: '/background.js',
+  letBeIdel: false,
+  intervalDelay,
 })
-
 // Setup listener for when the service worker is read
 background.on('ready', (readSw) => {
   let connectionStream = SwStream({
