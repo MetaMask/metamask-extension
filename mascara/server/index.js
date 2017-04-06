@@ -8,10 +8,10 @@ module.exports = createMetamascaraServer
 function createMetamascaraServer(){
 
   // start bundlers
-  const metamascaraBundle = createBundle('./src/mascara.js')
-  const proxyBundle = createBundle('./src/proxy.js')
-  const uiBundle = createBundle('./src/ui.js')
-  const backgroundBuild = createBundle('./src/background.js')
+  const metamascaraBundle = createBundle(__dirname + '/../src/mascara.js')
+  const proxyBundle = createBundle(__dirname + '/../src/proxy.js')
+  const uiBundle = createBundle(__dirname + '/../src/ui.js')
+  const backgroundBuild = createBundle(__dirname + '/../src/background.js')
 
   // serve bundles
   const server = express()
