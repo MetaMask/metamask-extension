@@ -60,7 +60,7 @@ AccountDetailScreen.prototype.render = function () {
         // header - identicon + nav
         h('div', {
           style: {
-            marginTop: '20px',
+            paddingTop: '20px',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
