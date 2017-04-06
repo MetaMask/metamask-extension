@@ -7,7 +7,7 @@ let intervalDelay =  Math.floor(Math.random() * (30000 - 1000)) + 1000
 const background = new SWcontroller({
   fileName: '/background.js',
   letBeIdle: false,
-  wakeUpInterval: 30000
+  wakeUpInterval: 30000,
   intervalDelay,
 })
 
