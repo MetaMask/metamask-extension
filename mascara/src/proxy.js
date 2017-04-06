@@ -9,12 +9,7 @@ const background = new SWcontroller({
   letBeIdle: false,
   intervalDelay,
 })
-window.onfocus = () => {
-  background.sendMessage('wakeUp')
-  .catch((err) => {
-    console.error('problem with wake up', err)
-  })
-}
+
 const pageStream = new ParentStream()
 background.on('ready', (_) => {
   let swStream = SwStream({
