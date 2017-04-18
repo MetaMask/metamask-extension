@@ -469,8 +469,10 @@ function reduceApp (state, action) {
           name: 'buyEth',
           context: appState.currentView.name,
         },
+        identity: state.metamask.identities[action.value],
+        buyAddress: action.value,
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           amount: '15.00',
           buyAddress: action.value,
           formView: {
@@ -483,7 +485,7 @@ function reduceApp (state, action) {
     case actions.UPDATE_BUY_ADDRESS:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: appState.subview,
           formView: {
             coinbase: appState.buyView.formView.coinbase,
             shapeshift: appState.buyView.formView.shapeshift,
@@ -496,7 +498,7 @@ function reduceApp (state, action) {
     case actions.UPDATE_COINBASE_AMOUNT:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           formView: {
             coinbase: true,
             shapeshift: false,
@@ -509,7 +511,7 @@ function reduceApp (state, action) {
     case actions.COINBASE_SUBVIEW:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           formView: {
             coinbase: true,
             shapeshift: false,
@@ -522,7 +524,7 @@ function reduceApp (state, action) {
     case actions.SHAPESHIFT_SUBVIEW:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'ShapeShift',
           formView: {
             coinbase: false,
             shapeshift: true,
@@ -537,7 +539,7 @@ function reduceApp (state, action) {
     case actions.PAIR_UPDATE:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'ShapeShift',
           formView: {
             coinbase: false,
             shapeshift: true,

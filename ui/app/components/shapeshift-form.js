@@ -43,14 +43,18 @@ ShapeshiftForm.prototype.renderMain = function () {
     style: {
       // marginTop: '10px',
       padding: '25px',
+      paddingTop: '5px',
       width: '100%',
+      minHeight: '215px',
       alignItems: 'center',
+      overflowY: 'auto',
     },
   }, [
     h('.flex-row', {
       style: {
         justifyContent: 'center',
         alignItems: 'baseline',
+        height: '42px',
       },
     }, [
       h('img', {
@@ -82,7 +86,6 @@ ShapeshiftForm.prototype.renderMain = function () {
           style: {
             fontSize: '12px',
             color: '#F7861C',
-            position: 'relative',
             bottom: '48px',
             left: '106px',
           },
@@ -92,7 +95,6 @@ ShapeshiftForm.prototype.renderMain = function () {
       h('.icon-control', [
         h('i.fa.fa-refresh.fa-4.orange', {
           style: {
-            position: 'relative',
             bottom: '5px',
             left: '5px',
             color: '#F7861C',
@@ -121,8 +123,6 @@ ShapeshiftForm.prototype.renderMain = function () {
         },
       }),
     ]),
-
-    this.props.isSubLoading ? this.renderLoading() : null,
     h('.flex-column', {
       style: {
         alignItems: 'flex-start',
@@ -138,17 +138,6 @@ ShapeshiftForm.prototype.renderMain = function () {
         this.props.warning) : this.renderInfo(),
     ]),
 
-    h('.flex-row', {
-      style: {
-        padding: '10px',
-        paddingBottom: '2px',
-        width: '100%',
-      },
-    }, [
-      h('div', 'Receiving address:'),
-      h('.ellip-address', this.props.buyView.buyAddress),
-    ]),
-
     h(this.activeToggle('.input-container'), {
       style: {
         padding: '10px',
@@ -156,6 +145,7 @@ ShapeshiftForm.prototype.renderMain = function () {
         width: '100%',
       },
     }, [
+
       h('div', `${coin} Address:`),
 
       h('input#fromCoinAddress.buy-inputs', {
@@ -190,6 +180,8 @@ ShapeshiftForm.prototype.renderMain = function () {
           onClick: this.shift.bind(this),
           style: {
             marginTop: '10px',
+            position: 'relative',
+            bottom: '33px',
           },
         },
         'Submit'),
@@ -266,8 +258,6 @@ ShapeshiftForm.prototype.renderInfo = function () {
 
   return h('span', {
     style: {
-      marginTop: '10px',
-      marginBottom: '15px',
     },
   }, [
     h('h3.flex-row.text-transform-uppercase', {

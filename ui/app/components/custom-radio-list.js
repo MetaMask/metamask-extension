@@ -11,12 +11,11 @@ function RadioList () {
 
 RadioList.prototype.render = function () {
   const props = this.props
-  let activeClass = '.custom-radio-selected'
-  let inactiveClass = '.custom-radio-inactive'
-  let {
+  const activeClass = '.custom-radio-selected'
+  const inactiveClass = '.custom-radio-inactive'
+  const {
     lables,
     defaultFocus,
-    onClick,
   } = props
 
 
@@ -24,37 +23,37 @@ RadioList.prototype.render = function () {
     h('.flex-row', {
       style: {
         fontSize: '12px',
-      }
+      },
     }, [
-        h('.flex-column.custom-radios', {
-          style: {
-            marginRight: '5px',
-          }
+      h('.flex-column.custom-radios', {
+        style: {
+          marginRight: '5px',
         },
-          lables.map((lable, i) => {
-            let isSelcted = (this.state !== null )
-            isSelcted = isSelcted ? (this.state.selected === lable) : (this.props.defaultFocus === lable)
-            return h(isSelcted ? activeClass : inactiveClass, {
-              title: lable,
-              onClick: (event) => {
-                this.setState({selected: event.target.title})
-                props.onClick(event)
-              }
-            })
-          }),
-        ),
-        h('.text', {},
-          lables.map((lable) => {
+      },
+        lables.map((lable, i) => {
+          let isSelcted = (this.state !== null)
+          isSelcted = isSelcted ? (this.state.selected === lable) : (defaultFocus === lable)
+          return h(isSelcted ? activeClass : inactiveClass, {
+            title: lable,
+            onClick: (event) => {
+              this.setState({selected: event.target.title})
+              props.onClick(event)
+            },
+          })
+        })
+      ),
+      h('.text', {},
+        lables.map((lable) => {
           if (props.subtext) {
             return h('.flex-row', {}, [
               h('.radio-titles', lable),
-              h('.radio-titles-subtext', `- ${props.subtext[lable]}`)
+              h('.radio-titles-subtext', `- ${props.subtext[lable]}`),
             ])
           } else {
             return h('.radio-titles', lable)
           }
         })
-      )
+      ),
     ])
   )
 }

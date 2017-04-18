@@ -489,6 +489,47 @@ input.large-input {
 }
 
 /* buy eth warning screen */
+.custom-radios {
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+.custom-radio-selected {
+  width: 17px;
+  height: 17px;
+  border: solid;
+  border-style: double;
+  border-radius: 15px;
+  border-width: 5px;
+  background: rgba(247, 134, 28, 1);
+  border-color: #F7F7F7;
+}
+
+.custom-radio-inactive {
+  width: 14px;
+  height: 14px;
+  border: solid;
+  border-width: 1px;
+  border-radius: 24px;
+  border-color: #AEAEAE;
+}
+
+.radio-titles {
+  color: rgba(247, 134, 28, 1);
+}
+
+.radio-titles-subtext {
+
+}
+
+.selected-exchange {
+
+}
+
+.buy-radio {
+
+}
 
 .eth-warning{
   transition: opacity 400ms ease-in, transform 400ms ease-in;
