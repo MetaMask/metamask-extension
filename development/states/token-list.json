@@ -1,0 +1,93 @@
+{
+  "metamask": {
+    "isInitialized": true,
+    "isUnlocked": true,
+    "rpcTarget": "https://rawtestrpc.metamask.io/",
+    "identities": {
+      "0x55e2780588aa5000f464f700d2676fd0a22ee160": {
+        "address": "0x55e2780588aa5000f464f700d2676fd0a22ee160",
+        "name": "Account 1"
+      },
+      "0x1c3d6d41dcb245c11a449ec46c9cf9eb7dada4af": {
+        "address": "0x1c3d6d41dcb245c11a449ec46c9cf9eb7dada4af",
+        "name": "Account 2"
+      },
+      "0xe34b1ac3074121418152c7a68b4ae6cb7803d725": {
+        "address": "0xe34b1ac3074121418152c7a68b4ae6cb7803d725",
+        "name": "Account 3"
+      }
+    },
+    "unapprovedTxs": {},
+    "noActiveNotices": true,
+    "frequentRpcList": [],
+    "addressBook": [],
+    "network": "1",
+    "accounts": {
+      "0x55e2780588aa5000f464f700d2676fd0a22ee160": {
+        "balance": "0x4622f471c28b8a53",
+        "nonce": "0x17",
+        "code": "0x",
+        "address": "0x55e2780588aa5000f464f700d2676fd0a22ee160"
+      },
+      "0x1c3d6d41dcb245c11a449ec46c9cf9eb7dada4af": {
+        "balance": "0x0",
+        "nonce": "0x0",
+        "code": "0x",
+        "address": "0x1c3d6d41dcb245c11a449ec46c9cf9eb7dada4af"
+      },
+      "0xe34b1ac3074121418152c7a68b4ae6cb7803d725": {
+        "balance": "0x0",
+        "nonce": "0x0",
+        "code": "0x",
+        "address": "0xe34b1ac3074121418152c7a68b4ae6cb7803d725"
+      }
+    },
+    "transactions": {},
+    "currentBlockNumber": 3575443,
+    "currentBlockHash": "0xf03bdb8ad844336723473865a5368fa618de837d8290ad380fadbc9fa2bf87f6",
+    "selectedAddressTxList": [],
+    "unapprovedMsgs": {},
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgs": {},
+    "unapprovedPersonalMsgCount": 0,
+    "keyringTypes": [
+      "Simple Key Pair",
+      "HD Key Tree"
+    ],
+    "keyrings": [
+      {
+        "type": "HD Key Tree",
+        "accounts": [
+          "55e2780588aa5000f464f700d2676fd0a22ee160",
+          "1c3d6d41dcb245c11a449ec46c9cf9eb7dada4af",
+          "e34b1ac3074121418152c7a68b4ae6cb7803d725"
+        ]
+      }
+    ],
+    "selectedAddress": "0x55e2780588aa5000f464f700d2676fd0a22ee160",
+    "currentCurrency": "USD",
+    "conversionRate": 51.12009214,
+    "conversionDate": 1492788481,
+    "provider": {
+      "type": "mainnet"
+    },
+    "shapeShiftTxList": [],
+    "lostAccounts": []
+  },
+  "appState": {
+    "shouldClose": false,
+    "menuOpen": false,
+    "currentView": {
+      "name": "accountDetail",
+      "detailView": "tokens",
+      "context": "0x55e2780588aa5000f464f700d2676fd0a22ee160"
+    },
+    "accountDetail": {
+      "subview": "transactions"
+    },
+    "transForward": true,
+    "isLoading": false,
+    "warning": null
+  },
+  "identities": {}
+}
