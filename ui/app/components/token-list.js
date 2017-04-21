@@ -24,11 +24,26 @@ function TokenList () {
 TokenList.prototype.render = function () {
   const tokens = this.state.tokens
 
+  const tokenViews = tokens.map((tokenData) => {
+    console.log('rendering token with', tokenData)
+    return h(TokenCell, tokenData)
+  })
+
   return (
-    h('ol', tokens.map((tokenData) => {
-      console.log('rendering token with', tokenData)
-      return h(TokenCell, tokenData)
-    }))
+    h('ol', [h('style', `
+
+    li.token-cell {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px;
+    }
+
+    li.token-cell > h3 {
+      margin-left: 12px;
+    }
+
+    `)].concat(tokenViews))
   )
 }
 

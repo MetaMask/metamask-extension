@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const Identicon = require('./identicon')
 
 module.exports = TokenCell
 
@@ -15,8 +16,14 @@ TokenCell.prototype.render = function () {
   log.info({ address, symbol, string })
 
   return (
-    h('li', [
-      h('span', `${symbol}: ${string}`),
+    h('li.token-cell', [
+
+      h(Identicon, {
+        diameter: 50,
+        address,
+      }),
+
+      h('h3', `${string || 0} ${symbol}`),
     ])
   )
 }

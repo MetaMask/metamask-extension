@@ -249,6 +249,12 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.tabSections = function () {
+  var subview
+  try {
+    subview = this.props.accountDetail.subview
+  } catch (e) {
+    subview = null
+  }
 
   return h('section.tabSection', [
 
@@ -257,7 +263,7 @@ AccountDetailScreen.prototype.tabSections = function () {
         { content: 'History', key: 'history' },
         { content: 'Tokens', key: 'tokens' },
       ],
-      defaultTab: 'history',
+      defaultTab: subview || 'history',
       tabSelected: (key) => {
         this.setState({ tabSelection: key })
       },
@@ -268,8 +274,16 @@ AccountDetailScreen.prototype.tabSections = function () {
 }
 
 AccountDetailScreen.prototype.tabSwitchView = function () {
-  const tabSelection = this.state.tabSelection || 'history'
   const userAddress = this.props.address
+  var subview
+  try {
+    subview = this.props.accountDetail.subview
+    return h(TokenList, { userAddress })
+  } catch (e) {
+    subview = null
+  }
+
+  const tabSelection = this.state.tabSelection || 'history'
 
   switch (tabSelection) {
     case 'tokens':
