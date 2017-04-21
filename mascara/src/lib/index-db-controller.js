@@ -1,4 +1,3 @@
-// module.exports =
 const EventEmitter = require('events')
 module.exports = class IndexDbController extends EventEmitter {
 
@@ -13,7 +12,7 @@ module.exports = class IndexDbController extends EventEmitter {
   }
 
   // Opens the database connection and returns a promise
-  open (version = this.version) {
+  open () {
     return this.get('dataStore')
     .then((data) => {
       if (!data) {
@@ -42,10 +41,10 @@ module.exports = class IndexDbController extends EventEmitter {
       const self = this
       const dbOpenRequest = global.indexedDB.open(this.key, this.version)
 
-      dbOpenRequest.onupgradeneeded = (event) => {
+      dbOpenRequest.addEventListener('upgradeneeded', (event) => {
         this.db = event.target.result
         this.db.createObjectStore('dataStore')
-      }
+      })
 
       dbOpenRequest.onsuccess = (event) => {
         this.db = dbOpenRequest.result
@@ -53,20 +52,20 @@ module.exports = class IndexDbController extends EventEmitter {
         const dbTransaction = this.db.transaction('dataStore', 'readwrite')
         const request = dbTransaction.objectStore('dataStore')
         const objRequest = request[call](...args)
-        objRequest.onsuccess = (event) => {
+        objRequest.addEventListener('success', (event) => {
           return resolve(objRequest.result)
-        }
-        objRequest.onerror = (err) => {
-          return reject(err.message)
-        }
-        dbTransaction.oncomplete = (event) => {
+        })
+        objRequest.addEventListener('error', (err) => {
+          return reject(`IndexDBController - ${call} failed to excute on indexedDB`)
+        })
+        dbTransaction.addEventListener('complete', (event) => {
           this.emit('complete')
-        }
+        })
       }
 
-      dbOpenRequest.onerror = (event) => {
-        return reject(event)
-      }
+      dbOpenRequest.addEventListener('error', (event) => {
+        return reject({message: `IndexDBController - open:@${call} failed to excute on indexedDB`, errorEvent: event})
+      })
     })
   }
 }
