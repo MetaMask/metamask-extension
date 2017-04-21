@@ -24,7 +24,7 @@ const background = new SWcontroller({
   fileName: '/background.js',
   letBeIdle: false,
   intervalDelay,
-  wakeUpInterval: 30000
+  wakeUpInterval: 20000
 })
 // Setup listener for when the service worker is read
 background.on('ready', (readSw) => {
