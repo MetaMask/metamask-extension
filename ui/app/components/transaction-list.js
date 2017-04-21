@@ -36,17 +36,6 @@ TransactionList.prototype.render = function () {
         }
       `),
 
-      h('h3.flex-center.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          paddingTop: '4px',
-          paddingBottom: '4px',
-        },
-      }, [
-        'History',
-      ]),
-
       h('.tx-list', {
         style: {
           overflowY: 'auto',

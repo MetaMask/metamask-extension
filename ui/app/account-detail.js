@@ -17,6 +17,8 @@ const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
 const BuyButtonSubview = require('./components/buy-button-subview')
+const TabBar = require('./components/tab-bar')
+const TokenList = require('./components/token-list')
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
@@ -35,6 +37,7 @@ function mapStateToProps (state) {
 
 inherits(AccountDetailScreen, Component)
 function AccountDetailScreen () {
+  this.state = {}
   Component.call(this)
 }
 
@@ -234,18 +237,50 @@ AccountDetailScreen.prototype.subview = function () {
 
   switch (subview) {
     case 'transactions':
-      return this.transactionList()
+      return this.tabSections()
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
     case 'buyForm':
       return h(BuyButtonSubview, extend({key: 'buyForm'}, this.props))
     default:
+      return this.tabSections()
+  }
+}
+
+AccountDetailScreen.prototype.tabSections = function () {
+
+  return h('section.tabSection', [
+
+    h(TabBar, {
+      tabs: [
+        { content: 'History', key: 'history' },
+        { content: 'Tokens', key: 'tokens' },
+      ],
+      defaultTab: 'history',
+      tabSelected: (key) => {
+        this.setState({ tabSelection: key })
+      },
+    }),
+
+    this.tabSwitchView(),
+  ])
+}
+
+AccountDetailScreen.prototype.tabSwitchView = function () {
+  const tabSelection = this.state.tabSelection || 'history'
+  const userAddress = this.props.address
+
+  switch (tabSelection) {
+    case 'tokens':
+      return h(TokenList, { userAddress })
+    default:
       return this.transactionList()
   }
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
+
   const {transactions, unapprovedMsgs, address, network, shapeShiftTxList } = this.props
   return h(TransactionList, {
     transactions: transactions.sort((a, b) => b.time - a.time),

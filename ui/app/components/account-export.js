@@ -20,8 +20,6 @@ function mapStateToProps (state) {
 }
 
 ExportAccountView.prototype.render = function () {
-  console.log('EXPORT VIEW')
-  console.dir(this.props)
   var state = this.props
   var accountDetail = state.accountDetail
 

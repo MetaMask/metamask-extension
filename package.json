@@ -59,6 +59,7 @@
     "eth-query": "^1.0.3",
     "eth-sig-util": "^1.1.1",
     "eth-simple-keyring": "^1.1.1",
+    "eth-token-tracker": "^1.0.4",
     "ethereumjs-tx": "^1.2.5",
     "ethereumjs-util": "ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",
     "ethereumjs-wallet": "^0.6.0",
@@ -118,7 +119,12 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "babel-core": "^6.24.1",
     "babel-eslint": "^6.0.5",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.7.2",
     "babelify": "^7.2.0",
     "beefy": "^2.1.5",
