@@ -262,15 +262,3 @@ AccountDetailScreen.prototype.transactionList = function () {
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
 }
-
-
-AccountDetailScreen.prototype.buyButtonDeligator = function () {
-  var props = this.props
-  var selected = props.address || Object.keys(props.accounts)[0]
-
-  if (this.props.accountDetail.subview === 'buyForm') {
-    props.dispatch(actions.backToAccountDetail(props.address))
-  } else {
-    props.dispatch(actions.buyEthView(selected))
-  }
-}
