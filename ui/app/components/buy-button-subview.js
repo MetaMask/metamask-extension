@@ -104,7 +104,7 @@ BuyButtonSubview.prototype.render = function () {
       }, [
         h(RadioList, {
           defaultFocus: props.buyView.subview,
-          lables: [
+          labels: [
             'Coinbase',
             'ShapeShift',
           ],

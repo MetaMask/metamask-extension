@@ -14,7 +14,7 @@ RadioList.prototype.render = function () {
   const activeClass = '.custom-radio-selected'
   const inactiveClass = '.custom-radio-inactive'
   const {
-    lables,
+    labels,
     defaultFocus,
   } = props
 
@@ -30,7 +30,7 @@ RadioList.prototype.render = function () {
           marginRight: '5px',
         },
       },
-        lables.map((lable, i) => {
+        labels.map((lable, i) => {
           let isSelcted = (this.state !== null)
           isSelcted = isSelcted ? (this.state.selected === lable) : (defaultFocus === lable)
           return h(isSelcted ? activeClass : inactiveClass, {
@@ -43,7 +43,7 @@ RadioList.prototype.render = function () {
         })
       ),
       h('.text', {},
-        lables.map((lable) => {
+        labels.map((lable) => {
           if (props.subtext) {
             return h('.flex-row', {}, [
               h('.radio-titles', lable),
