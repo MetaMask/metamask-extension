@@ -134,8 +134,6 @@ var actions = {
   buyEth: buyEth,
   buyEthView: buyEthView,
   BUY_ETH_VIEW: 'BUY_ETH_VIEW',
-  UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
-  updateCoinBaseAmount: updateCoinBaseAmount,
   COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
@@ -847,13 +845,6 @@ function buyEthView (address) {
   return {
     type: actions.BUY_ETH_VIEW,
     value: address,
-  }
-}
-
-function updateCoinBaseAmount (value) {
-  return {
-    type: actions.UPDATE_COINBASE_AMOUNT,
-    value,
   }
 }
 
