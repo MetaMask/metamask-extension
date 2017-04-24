@@ -289,7 +289,7 @@ PendingTx.prototype.render = function () {
 
 
           insufficientBalance ?
-            h('button', {
+            h('button.btn-green', {
               onClick: props.buyEth,
             }, 'Buy Ether')
           : null,
