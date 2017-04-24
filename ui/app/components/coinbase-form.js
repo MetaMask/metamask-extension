@@ -23,7 +23,7 @@ CoinbaseForm.prototype.render = function () {
 
   return h('.flex-column', {
     style: {
-      // margin: '10px',
+      marginTop: '35px',
       padding: '25px',
       width: '100%',
     },
@@ -35,11 +35,11 @@ CoinbaseForm.prototype.render = function () {
         marginTop: '0px',
       },
     }, [
-      h('button', {
+      h('button.btn-green', {
         onClick: this.toCoinbase.bind(this),
       }, 'Continue to Coinbase'),
 
-      h('button', {
+      h('button.btn-red', {
         onClick: () => props.dispatch(actions.backTobuyView(props.accounts.address)),
       }, 'Cancel'),
     ]),

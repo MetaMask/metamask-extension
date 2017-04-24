@@ -70,6 +70,7 @@ ShapeshiftForm.prototype.renderMain = function () {
         h('input#fromCoin.buy-inputs.ex-coins', {
           type: 'text',
           list: 'coinList',
+          autoFocus: true,
           dataset: {
             persistentFormId: 'input-coin',
           },
@@ -86,6 +87,7 @@ ShapeshiftForm.prototype.renderMain = function () {
           style: {
             fontSize: '12px',
             color: '#F7861C',
+            position: 'relative',
             bottom: '48px',
             left: '106px',
           },
@@ -156,8 +158,8 @@ ShapeshiftForm.prototype.renderMain = function () {
         },
         style: {
           boxSizing: 'border-box',
-          width: '278px',
-          height: '20px',
+          width: '227px',
+          height: '30px',
           padding: ' 5px ',
         },
       }),
@@ -167,7 +169,7 @@ ShapeshiftForm.prototype.renderMain = function () {
           fontSize: '12px',
           color: '#F7861C',
           position: 'relative',
-          bottom: '5px',
+          bottom: '10px',
           right: '11px',
         },
       }),
@@ -181,7 +183,7 @@ ShapeshiftForm.prototype.renderMain = function () {
           style: {
             marginTop: '10px',
             position: 'relative',
-            bottom: '33px',
+            bottom: '40px',
           },
         },
         'Submit'),
