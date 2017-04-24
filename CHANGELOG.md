@@ -2,8 +2,12 @@
 
 ## Current Master
 
+## 3.5.3 2017-4-24
+
 - Popup new transactions in Firefox.
 - Fix transition issue from account detail screen.
+- Revise buy screen for more modularity.
+- Fixed some other small bugs.
 
 ## 3.5.2 2017-3-28
 
