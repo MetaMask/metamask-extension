@@ -141,7 +141,7 @@ function currentTxView (opts) {
 }
 
 ConfirmTxScreen.prototype.buyEth = function (address, event) {
-  this.stopPropagation(event)
+  event.preventDefault()
   this.props.dispatch(actions.buyEthView(address))
 }
 
