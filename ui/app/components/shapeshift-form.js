@@ -276,10 +276,6 @@ ShapeshiftForm.prototype.renderInfo = function () {
   ])
 }
 
-ShapeshiftForm.prototype.handleAddress = function (event) {
-  this.props.dispatch(actions.updateBuyAddress(event.target.value))
-}
-
 ShapeshiftForm.prototype.activeToggle = function (elementType) {
   if (!this.props.buyView.formView.response || this.props.warning) return elementType
   return `${elementType}.inactive`

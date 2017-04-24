@@ -45,12 +45,7 @@ CoinbaseForm.prototype.render = function () {
     ]),
   ])
 }
-CoinbaseForm.prototype.handleAmount = function (event) {
-  this.props.dispatch(actions.updateCoinBaseAmount(event.target.value))
-}
-CoinbaseForm.prototype.handleAddress = function (event) {
-  this.props.dispatch(actions.updateBuyAddress(event.target.value))
-}
+
 CoinbaseForm.prototype.toCoinbase = function () {
   const props = this.props
   const address = props.buyView.buyAddress
