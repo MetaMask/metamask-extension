@@ -10,9 +10,33 @@ module.exports = function (jazzicon) {
 function IconFactory (jazzicon) {
   this.jazzicon = jazzicon
   this.cache = {}
+
+  this.presets = {
+    '1':{ // Main network:
+      '0x48c80f1f4d53d5951e5d5438b54cba84f29f32a5': 'https://etherscan.io/token/images/augur.png',
+      '0xc66ea802717bfb9833400264dd12c2bceaa34a6d': 'https://etherscan.io/token/images/mkr-etherscan-35.png',
+      '0xa74476443119a942de498590fe1f2454d7d4ac0d': 'https://etherscan.io/token/images/golem.png',
+      '0xaec2e87e0a235266d9c5adc9deb4b2e29b54d009': 'https://etherscan.io/token/images/sngls.png',
+
+    }
+  }
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter, imageify) {
+IconFactory.prototype.iconForAddress = function (address, diameter, imageify, network) {
+
+  try {
+    const presetUri = this.presets[network][address.toLowerCase()]
+    if (presetUri) {
+      var img = document.createElement('img')
+      img.src = presetUri
+      img.style.width = `${diameter}px`
+      img.style.height = `${diameter}px`
+      img.style.borderRadius = `${diameter/2}px`
+      return img
+    }
+  } catch (e) {}
+
+
   if (imageify) {
     return this.generateIdenticonImg(address, diameter)
   } else {

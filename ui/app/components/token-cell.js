@@ -12,7 +12,7 @@ function TokenCell () {
 
 TokenCell.prototype.render = function () {
   const props = this.props
-  const { address, symbol, string } = props
+  const { address, symbol, string, network } = props
   log.info({ address, symbol, string })
 
   return (
@@ -21,9 +21,11 @@ TokenCell.prototype.render = function () {
       h(Identicon, {
         diameter: 50,
         address,
+        network,
       }),
 
       h('h3', `${string || 0} ${symbol}`),
     ])
   )
 }
+

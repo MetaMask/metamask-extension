@@ -23,9 +23,10 @@ function TokenList () {
 
 TokenList.prototype.render = function () {
   const tokens = this.state.tokens
+  const network = this.props.network
 
   const tokenViews = tokens.map((tokenData) => {
-    console.log('rendering token with', tokenData)
+    tokenData.network = network
     return h(TokenCell, tokenData)
   })
 
@@ -41,6 +42,11 @@ TokenList.prototype.render = function () {
 
     li.token-cell > h3 {
       margin-left: 12px;
+    }
+
+    li.token-cell:hover {
+      background: white;
+      cursor: pointer;
     }
 
     `)].concat(tokenViews))
