@@ -87,7 +87,7 @@ Network.prototype.render = function () {
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.hollow-diamond'),
+              h('.menu-icon.golden-square'),
               h('.network-name', {
                 style: {
                   color: '#550077',

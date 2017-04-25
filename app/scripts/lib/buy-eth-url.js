@@ -11,6 +11,10 @@ function getBuyEthUrl({ network, amount, address }){
       url = 'https://faucet.metamask.io/'
       break
 
+    case '4':
+      url = 'https://www.rinkeby.io/'
+      break
+
     case '42':
       url = 'https://github.com/kovan-testnet/faucet'
       break

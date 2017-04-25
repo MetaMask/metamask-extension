@@ -191,6 +191,10 @@ hr.horizontal-line {
   border: 3px solid #690496;
 }
 
+.golden-square {
+  background: #EBB33F;
+}
+
 .pending-dot {
   background: red;
   left: 14px;
