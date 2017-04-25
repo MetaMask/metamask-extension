@@ -46,7 +46,7 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = 'Rinkeby Test Network'
     iconName = 'rinkeby-test-network'
-  }else {
+  } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
   }

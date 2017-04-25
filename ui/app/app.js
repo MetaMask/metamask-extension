@@ -264,7 +264,7 @@ App.prototype.renderNetworkDropdown = function () {
       provider: props.provider,
     }),
 
-     h(DropMenuItem, {
+    h(DropMenuItem, {
       label: 'Rinkeby Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
       action: () => props.dispatch(actions.setProviderType('rinkeby')),
