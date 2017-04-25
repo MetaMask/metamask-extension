@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fix occasional nonce tracking issue.
+- Fix bug where some events would not be emitted by web3.
+
 ## 3.5.3 2017-4-24
 
 - Popup new transactions in Firefox.
