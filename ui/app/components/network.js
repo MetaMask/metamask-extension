@@ -43,7 +43,10 @@ Network.prototype.render = function () {
   } else if (providerName === 'kovan') {
     hoverText = 'Kovan Test Network'
     iconName = 'kovan-test-network'
-  } else {
+  } else if (providerName === 'rinkeby') {
+    hoverText = 'Rinkeby Test Network'
+    iconName = 'unknown-private-network'
+  }else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
   }
