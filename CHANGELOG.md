@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.5.4 2017-4-25
+
 - Fix occasional nonce tracking issue.
 - Fix bug where some events would not be emitted by web3.
 - Fix bug where an error would be thrown when composing signatures for networks with large ID values.
