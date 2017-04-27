@@ -1,20 +1,12 @@
 start the dual servers (dapp + mascara)
 ```
-node server.js
+npm run mascara
 ```
 
 ## First time use:
 
-- navigate to: http://localhost:9001/popup/popup.html
+- navigate to: http://localhost:9001
 - Create an Account
-- go back to http://localhost:9002/
+- go back to http://localhost:9002
 - open devTools
 - click Sync Tx
-
-### Todos
-
-  - [ ] Figure out user flows and UI redesign
-  - [ ] Figure out FireFox
-    Standing problems:
-    - [ ] IndexDb
-
