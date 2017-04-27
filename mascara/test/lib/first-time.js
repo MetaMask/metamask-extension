@@ -6,8 +6,8 @@ QUnit.test('render init screen', function (assert) {
   var done = assert.async()
   let app
 
-  wait().then(function() {
-    app = $('#app-content')
+  wait(1000).then(function() {
+    app = $('#app-content').contents()
     const recurseNotices = function () {
       let button = app.find('button')
       if (button.html() === 'Continue') {

@@ -1,5 +1,5 @@
 const EventEmitter = require('events')
-const IDB = require('../../../mascara/src/lib/index-db-controller')
+const IDB = require('idb-global')
 const KEY = 'metamask-test-config'
 module.exports = class Helper extends EventEmitter {
   constructor () {

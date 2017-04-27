@@ -16,3 +16,6 @@ development/bundle.js
 builds.zip
 test/integration/bundle.js
 development/states.js
+test/background.js
+test/bundle.js
+test/test-bundle.js

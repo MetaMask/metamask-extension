@@ -22,6 +22,7 @@ const STORAGE_KEY = 'metamask-config'
 // const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 const METAMASK_DEBUG = true
 let popupIsOpen = false
+let connectedClientCount = 0
 
 const log = require('loglevel')
 global.log = log
@@ -32,6 +33,11 @@ self.addEventListener('install', function(event) {
 })
 self.addEventListener('activate', function(event) {
   event.waitUntil(self.clients.claim())
+  self.clients.matchAll()
+  .then((clients) => {
+    if (connectedClientCount < clients.length) sendMessageToAllClients('reconnect')
+  })
+
 })
 
 console.log('inside:open')
@@ -108,6 +114,7 @@ function setupController (initState, client) {
 
   connectionListener.on('remote', (portStream, messageEvent) => {
     console.log('REMOTE CONECTION FOUND***********')
+    connectedClientCount += 1
     connectRemote(portStream, messageEvent.data.context)
   })
 
@@ -142,5 +149,13 @@ function setupController (initState, client) {
   //
   return Promise.resolve()
 
+}
+
+function sendMessageToAllClients (message) {
+  self.clients.matchAll().then(function(clients) {
+    clients.forEach(function(client) {
+      client.postMessage(message)
+    })
+  })
 }
 function noop () {}

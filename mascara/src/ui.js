@@ -27,7 +27,7 @@ const background = new SWcontroller({
   wakeUpInterval: 20000
 })
 // Setup listener for when the service worker is read
-background.on('ready', (readSw) => {
+const connectApp = function (readSw) {
   let connectionStream = SwStream({
     serviceWorker: background.controller,
     context: name,
@@ -37,8 +37,24 @@ background.on('ready', (readSw) => {
     store.subscribe(() => {
       const state = store.getState()
       if (state.appState.shouldClose) window.close()
+      console.log('IN the things?')
     })
   })
+}
+
+background.on('ready', (sw) => {
+  background.removeListener('updatefound', connectApp)
+  connectApp(sw)
 })
-background.startWorker()
+background.on('updatefound', () => background.serviceWorkerApi.ready
+  .then((sw) =>{
+    background.removeListener('ready', connectApp)
+    connectApp(sw.active)
+  })
+)
+background.on('message', (messageEvent) => {
+  console.log(messageEvent)
+})
+window.addEventListener('load', () => background.startWorker())
+// background.startWorker()
 console.log('hello from MetaMascara ui!')
