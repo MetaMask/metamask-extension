@@ -43,6 +43,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'kovan') {
     hoverText = 'Kovan Test Network'
     iconName = 'kovan-test-network'
+  } else if (providerName === 'rinkeby') {
+    hoverText = 'Rinkeby Test Network'
+    iconName = 'rinkeby-test-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
@@ -81,6 +84,15 @@ Network.prototype.render = function () {
                   color: '#690496',
                 }},
               'Kovan Test Net'),
+            ])
+          case 'rinkeby-test-network':
+            return h('.network-indicator', [
+              h('.menu-icon.golden-square'),
+              h('.network-name', {
+                style: {
+                  color: '#550077',
+                }},
+              'Rinkeby Test Net'),
             ])
           default:
             return h('.network-indicator', [

@@ -315,7 +315,7 @@ function reduceApp (state, action) {
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
       const otherUnconfActions = getUnconfActionList(state)
-      .filter(tx => tx.id !== action.value )
+      .filter(tx => tx.id !== action.value)
       const hasOtherUnconfActions = otherUnconfActions.length > 0
 
       if (hasOtherUnconfActions) {

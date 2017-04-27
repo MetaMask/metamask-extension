@@ -28,9 +28,9 @@ module.exports = class TransactionManager extends EventEmitter {
 
     // memstore is computed from a few different stores
     this._updateMemstore()
-    this.store.subscribe(() => this._updateMemstore() )
-    this.networkStore.subscribe(() => this._updateMemstore() )
-    this.preferencesStore.subscribe(() => this._updateMemstore() )
+    this.store.subscribe(() => this._updateMemstore())
+    this.networkStore.subscribe(() => this._updateMemstore())
+    this.preferencesStore.subscribe(() => this._updateMemstore())
   }
 
   getState () {
@@ -47,8 +47,8 @@ module.exports = class TransactionManager extends EventEmitter {
 
   // Returns the tx list
   getTxList () {
-    let network = this.getNetwork()
-    let fullTxList = this.getFullTxList()
+    const network = this.getNetwork()
+    const fullTxList = this.getFullTxList()
     return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
   }
 
@@ -64,10 +64,10 @@ module.exports = class TransactionManager extends EventEmitter {
 
   // Adds a tx to the txlist
   addTx (txMeta) {
-    let txCount = this.getTxCount()
-    let network = this.getNetwork()
-    let fullTxList = this.getFullTxList()
-    let txHistoryLimit = this.txHistoryLimit
+    const txCount = this.getTxCount()
+    const network = this.getNetwork()
+    const fullTxList = this.getFullTxList()
+    const txHistoryLimit = this.txHistoryLimit
 
     // checks if the length of the tx history is
     // longer then desired persistence limit
@@ -197,7 +197,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   fillInTxParams (txId, cb) {
-    let txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId)
     this.txProviderUtils.fillInTxParams(txMeta.txParams, (err) => {
       if (err) return cb(err)
       this.updateTx(txMeta)
@@ -205,7 +205,7 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
-  getChainId() {
+  getChainId () {
     const networkState = this.networkStore.getState()
     const getChainId = parseInt(networkState.network)
     if (Number.isNaN(getChainId)) {
@@ -242,7 +242,7 @@ module.exports = class TransactionManager extends EventEmitter {
   // receives a txHash records the tx as signed
   setTxHash (txId, txHash) {
     // Add the tx hash to the persisted meta-tx object
-    let txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId)
     txMeta.hash = txHash
     this.updateTx(txMeta)
   }
@@ -315,7 +315,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   setTxStatusFailed (txId, reason) {
-    let txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId)
     txMeta.err = reason
     this.updateTx(txMeta)
     this._setTxStatus(txId, 'failed')
@@ -338,7 +338,7 @@ module.exports = class TransactionManager extends EventEmitter {
       var txHash = txMeta.hash
       var txId = txMeta.id
       if (!txHash) {
-        let errReason = {
+        const errReason = {
           errCode: 'No hash was provided',
           message: 'We had an error while submitting this transaction, please try again.',
         }

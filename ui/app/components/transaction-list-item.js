@@ -27,7 +27,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 42
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -134,7 +134,6 @@ function failIfFailed (transaction) {
     return h('span.error', ' (Rejected)')
   }
   if (transaction.err) {
-
     return h(Tooltip, {
       title: transaction.err.message,
       position: 'bottom',
@@ -142,5 +141,4 @@ function failIfFailed (transaction) {
       h('span.error', ' (Failed)'),
     ])
   }
-
 }
