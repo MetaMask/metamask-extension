@@ -314,7 +314,7 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function navigateToNewAccountScreen() {
+function navigateToNewAccountScreen () {
   return {
     type: this.NEW_ACCOUNT_SCREEN,
   }
@@ -665,7 +665,7 @@ function clearNotices () {
   }
 }
 
-function markAccountsFound() {
+function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
 }
@@ -978,7 +978,7 @@ function callBackgroundThenUpdate (method, ...args) {
   }
 }
 
-function forceUpdateMetamaskState(dispatch){
+function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
   background.getState((err, newState) => {
     if (err) {

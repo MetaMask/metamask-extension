@@ -15,7 +15,7 @@ TransactionIcon.prototype.render = function () {
   const { transaction, txParams, isMsg } = this.props
   switch (transaction.status) {
     case 'unapproved':
-      return h( !isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg')
+      return h(!isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg')
 
     case 'rejected':
       return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {

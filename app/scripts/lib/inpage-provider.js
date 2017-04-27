@@ -85,7 +85,7 @@ MetamaskInpageProvider.prototype.send = function (payload) {
       break
 
     case 'net_version':
-      let networkVersion = self.publicConfigStore.getState().networkVersion
+      const networkVersion = self.publicConfigStore.getState().networkVersion
       result = networkVersion
       break
 
@@ -125,7 +125,7 @@ function eachJsonMessage (payload, transformFn) {
   }
 }
 
-function logStreamDisconnectWarning(remoteLabel, err){
+function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskInpageProvider - lost connection to ${remoteLabel}`
   if (err) warningMsg += '\n' + err.stack
   console.warn(warningMsg)
