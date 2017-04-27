@@ -77,7 +77,7 @@ function doctypeCheck () {
   }
 }
 
-function suffixCheck() {
+function suffixCheck () {
   var prohibitedTypes = ['xml', 'pdf']
   var currentUrl = window.location.href
   var currentRegex

@@ -73,7 +73,7 @@ AccountImportSubview.prototype.render = function () {
   )
 }
 
-AccountImportSubview.prototype.renderImportView = function() {
+AccountImportSubview.prototype.renderImportView = function () {
   const props = this.props
   const state = this.state || {}
   const { type } = state

@@ -10,7 +10,7 @@
 const async = require('async')
 const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
-function noop() {}
+function noop () {}
 
 
 class EthereumStore extends ObservableStore {

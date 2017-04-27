@@ -134,7 +134,6 @@ function failIfFailed (transaction) {
     return h('span.error', ' (Rejected)')
   }
   if (transaction.err) {
-
     return h(Tooltip, {
       title: transaction.err.message,
       position: 'bottom',
@@ -142,5 +141,4 @@ function failIfFailed (transaction) {
       h('span.error', ' (Failed)'),
     ])
   }
-
 }

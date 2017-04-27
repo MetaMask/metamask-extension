@@ -41,10 +41,10 @@ asyncQ.waterfall([
 // State and Persistence
 //
 
-function loadStateFromPersistence() {
+function loadStateFromPersistence () {
   // migrations
-  let migrator = new Migrator({ migrations })
-  let initialState = migrator.generateInitialState(firstTimeState)
+  const migrator = new Migrator({ migrations })
+  const initialState = migrator.generateInitialState(firstTimeState)
   return asyncQ.waterfall([
     // read from disk
     () => Promise.resolve(diskStore.getState() || initialState),
@@ -61,7 +61,6 @@ function loadStateFromPersistence() {
 }
 
 function setupController (initState) {
-
   //
   // MetaMask Controller
   //
@@ -85,8 +84,8 @@ function setupController (initState) {
     diskStore
   )
 
-  function versionifyData(state) {
-    let versionedData = diskStore.getState()
+  function versionifyData (state) {
+    const versionedData = diskStore.getState()
     versionedData.data = state
     return versionedData
   }
@@ -138,7 +137,6 @@ function setupController (initState) {
   }
 
   return Promise.resolve()
-
 }
 
 //

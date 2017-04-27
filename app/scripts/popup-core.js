@@ -16,7 +16,6 @@ function initializePopup ({ container, connectionStream }, cb) {
     (cb) => connectToAccountManager(connectionStream, cb),
     (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
   ], cb)
-
 }
 
 function connectToAccountManager (connectionStream, cb) {

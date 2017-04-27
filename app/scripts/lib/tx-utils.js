@@ -75,14 +75,14 @@ module.exports = class txProviderUtils {
   }
 
   fillInTxParams (txParams, cb) {
-    let fromAddress = txParams.from
-    let reqs = {}
+    const fromAddress = txParams.from
+    const reqs = {}
 
     if (isUndef(txParams.gas)) reqs.gas = (cb) => this.query.estimateGas(txParams, cb)
     if (isUndef(txParams.gasPrice)) reqs.gasPrice = (cb) => this.query.gasPrice(cb)
     if (isUndef(txParams.nonce)) reqs.nonce = (cb) => this.query.getTransactionCount(fromAddress, 'pending', cb)
 
-    async.parallel(reqs, function(err, result) {
+    async.parallel(reqs, function (err, result) {
       if (err) return cb(err)
       // write results to txParams obj
       Object.assign(txParams, result)
@@ -123,14 +123,14 @@ module.exports = class txProviderUtils {
 
 // util
 
-function isUndef(value) {
+function isUndef (value) {
   return value === undefined
 }
 
-function bnToHex(inputBn) {
+function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
 }
 
-function hexToBn(inputHex) {
+function hexToBn (inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
 }

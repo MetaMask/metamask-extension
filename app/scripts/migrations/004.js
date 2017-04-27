@@ -6,7 +6,7 @@ module.exports = {
   version,
 
   migrate: function (versionedData) {
-    let safeVersionedData = clone(versionedData)
+    const safeVersionedData = clone(versionedData)
     safeVersionedData.meta.version = version
     try {
       if (safeVersionedData.data.config.provider.type !== 'rpc') return Promise.resolve(safeVersionedData)
