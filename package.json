@@ -22,7 +22,11 @@
     "announce": "node development/announcer.js",
     "generateNotice": "node notices/notice-generator.js",
     "deleteNotice": "node notices/notice-delete.js",
-    "mascara": "node ./mascara/example/server"
+    "mascara": "node ./mascara/example/server",
+    "buildMascaraCi": "browserify mascara/test/window-load.js -o mascara/test/bundle.js",
+    "buildMascaraSWCi": "browserify mascara/src/background.js -o mascara/test/background.js",
+    "mascaraCi": "npm run buildMascaraCi && npm run buildMascaraSWCi && node mascara/test/index.js",
+    "testMascara": "cd mascara/test && npm run mascaraCi && testem ci -P 3"
   },
   "browserify": {
     "transform": [

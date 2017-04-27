@@ -1,4 +1,5 @@
 global.window = global
+const self = global
 const pipe = require('pump')
 
 const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
