@@ -51,9 +51,11 @@ class CurrencyController {
       this.setConversionRate(Number(parsedResponse.ticker.price))
       this.setConversionDate(Number(parsedResponse.timestamp))
     }).catch((err) => {
-      console.warn('MetaMask - Failed to query currency conversion.')
-      this.setConversionRate(0)
-      this.setConversionDate('N/A')
+      if (err) {
+        console.warn('MetaMask - Failed to query currency conversion.')
+        this.setConversionRate(0)
+        this.setConversionDate('N/A')
+      }
     })
   }
 

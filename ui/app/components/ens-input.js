@@ -24,7 +24,7 @@ EnsInput.prototype.render = function () {
     list: 'addresses',
     onChange: () => {
       const network = this.props.network
-      let resolverAddress = networkResolvers[network]
+      const resolverAddress = networkResolvers[network]
       if (!resolverAddress) return
 
       const recipient = document.querySelector('input[name="address"]').value
@@ -52,7 +52,7 @@ EnsInput.prototype.render = function () {
       [
         // Corresponds to the addresses owned.
         Object.keys(props.identities).map((key) => {
-          let identity = props.identities[key]
+          const identity = props.identities[key]
           return h('option', {
             value: identity.address,
             label: identity.name,
@@ -72,7 +72,7 @@ EnsInput.prototype.render = function () {
 
 EnsInput.prototype.componentDidMount = function () {
   const network = this.props.network
-  let resolverAddress = networkResolvers[network]
+  const resolverAddress = networkResolvers[network]
 
   if (resolverAddress) {
     const provider = web3.currentProvider

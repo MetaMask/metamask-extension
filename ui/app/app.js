@@ -552,5 +552,4 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
       })
     }
   })
-
 }

@@ -125,14 +125,12 @@ function currentTxView (opts) {
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
-
   } else if (msgParams) {
     log.debug('msgParams detected, rendering pending msg')
 
     if (type === 'eth_sign') {
       log.debug('rendering eth_sign message')
       return h(PendingMsg, opts)
-
     } else if (type === 'personal_sign') {
       log.debug('rendering personal_sign message')
       return h(PendingPersonalMsg, opts)

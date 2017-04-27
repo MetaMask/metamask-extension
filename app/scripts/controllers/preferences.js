@@ -36,8 +36,8 @@ class PreferencesController {
   }
 
   addToFrequentRpcList (_url) {
-    let rpcList = this.getFrequentRpcList()
-    let index = rpcList.findIndex((element) => { return element === _url })
+    const rpcList = this.getFrequentRpcList()
+    const index = rpcList.findIndex((element) => { return element === _url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
@@ -53,13 +53,9 @@ class PreferencesController {
   getFrequentRpcList () {
     return this.store.getState().frequentRpcList
   }
-
   //
   // PRIVATE METHODS
   //
-
-
-
 }
 
 module.exports = PreferencesController

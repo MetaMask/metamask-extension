@@ -12,7 +12,7 @@ module.exports = {
   version,
 
   migrate: function (originalVersionedData) {
-    let versionedData = clone(originalVersionedData)
+    const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
     try {
       const state = versionedData.data
