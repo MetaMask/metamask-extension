@@ -21,7 +21,12 @@
     "testem": "npm run buildMock && testem",
     "announce": "node development/announcer.js",
     "generateNotice": "node notices/notice-generator.js",
-    "deleteNotice": "node notices/notice-delete.js"
+    "deleteNotice": "node notices/notice-delete.js",
+    "mascara": "node ./mascara/example/server",
+    "buildMascaraCi": "browserify mascara/test/window-load.js -o mascara/test/bundle.js",
+    "buildMascaraSWCi": "browserify mascara/src/background.js -o mascara/test/background.js",
+    "mascaraCi": "npm run buildMascaraCi && npm run buildMascaraSWCi && node mascara/test/index.js",
+    "testMascara": "cd mascara/test && npm run mascaraCi && testem ci -P 3"
   },
   "browserify": {
     "transform": [
@@ -44,7 +49,7 @@
     "bluebird": "^3.5.0",
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
-    "client-sw-ready-event": "^3.0.1",
+    "client-sw-ready-event": "^3.0.3",
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
     "debounce": "^1.0.0",
@@ -68,6 +73,7 @@
     "extensionizer": "^1.0.0",
     "gulp-eslint": "^2.0.0",
     "hat": "0.0.3",
+    "idb-global": "^1.0.0",
     "identicon.js": "^1.2.1",
     "iframe": "^1.0.0",
     "iframe-stream": "^1.0.2",
