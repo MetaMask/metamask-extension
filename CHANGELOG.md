@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where error was reported in debugger console when Chrome opened a new window.
+
 ## 3.6.0 2017-4-25
 
 - Add Rinkeby Test Network to our network list.
