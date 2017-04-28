@@ -24,9 +24,6 @@ class NotificationManager {
           width,
           height,
         })
-        .catch((reason) => {
-          log.error('failed to create poupup', reason)
-        })
       }
     })
   }
