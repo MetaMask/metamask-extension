@@ -46,15 +46,8 @@ background.on('ready', (sw) => {
   background.removeListener('updatefound', connectApp)
   connectApp(sw)
 })
-background.on('updatefound', () => background.serviceWorkerApi.ready
-  .then((sw) =>{
-    background.removeListener('ready', connectApp)
-    connectApp(sw.active)
-  })
-)
-background.on('message', (messageEvent) => {
-  console.log(messageEvent)
-})
-window.addEventListener('load', () => background.startWorker())
+background.on('updatefound', () => window.location.reload())
+
+background.startWorker()
 // background.startWorker()
 console.log('hello from MetaMascara ui!')

@@ -10,3 +10,15 @@ npm run mascara
 - go back to http://localhost:9002
 - open devTools
 - click Sync Tx
+
+## Tests:
+
+```
+npm run testMascara
+```
+
+Test will run in browser, you will have to have these browsers installed:
+
+- Chrome
+- Firefox
+- Opera

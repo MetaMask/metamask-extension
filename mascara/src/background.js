@@ -7,7 +7,7 @@ const connectionListener = new SwGlobalListener(self)
 const setupMultiplex = require('../../app/scripts/lib/stream-utils.js').setupMultiplex
 const PortStream = require('../../app/scripts/lib/port-stream.js')
 
-const DbController = require('./lib/index-db-controller')
+const DbController = require('idb-global')
 
 const SwPlatform = require('../../app/scripts/platforms/sw')
 const MetamaskController = require('../../app/scripts/metamask-controller')
@@ -47,7 +47,6 @@ console.log('inside:open')
 let diskStore
 const dbController = new DbController({
   key: STORAGE_KEY,
-  version: 2,
 })
 loadStateFromPersistence()
 .then((initState) => setupController(initState))

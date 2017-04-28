@@ -20,6 +20,7 @@ background.on('ready', (_) => {
   pageStream.pipe(swStream).pipe(pageStream)
 
 })
+background.on('updatefound', () => window.location.reload())
 
 background.on('error', console.error)
 background.startWorker()
