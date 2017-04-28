@@ -37,7 +37,6 @@ const connectApp = function (readSw) {
     store.subscribe(() => {
       const state = store.getState()
       if (state.appState.shouldClose) window.close()
-      console.log('IN the things?')
     })
   })
 }
