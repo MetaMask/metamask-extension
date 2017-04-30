@@ -341,9 +341,7 @@ module.exports = class MetamaskController extends EventEmitter {
         console.error('Error in RPC response:\n', response.error)
       }
       if (request.isMetamaskInternal) return
-      if (global.METAMASK_DEBUG) {
-        console.log(`RPC (${originDomain}):`, request, '->', response)
-      }
+      log.info(`RPC (${originDomain}):`, request, '->', response)
     }
   }
 
@@ -591,9 +589,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   // Log blocks
   logBlock (block) {
-    if (global.METAMASK_DEBUG) {
-      console.log(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    }
+    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
     this.verifyNetwork()
   }
 
@@ -682,9 +678,7 @@ module.exports = class MetamaskController extends EventEmitter {
         this.setNetworkState('loading')
         return
       }
-      if (global.METAMASK_DEBUG) {
-        console.log('web3.getNetwork returned ' + network)
-      }
+      log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network)
     })
   }
