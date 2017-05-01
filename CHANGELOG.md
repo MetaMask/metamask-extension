@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Made fox less nosy.
+
 ## 3.6.1 2017-4-25
 
 - Fix bug where error was reported in debugger console when Chrome opened a new window.
