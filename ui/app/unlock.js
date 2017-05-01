@@ -112,7 +112,7 @@ UnlockScreen.prototype.inputChanged = function (event) {
   var viewRect = element.getBoundingClientRect()
   var carat = getCaretCoordinates(element, element.selectionEnd)
   var x = viewRect.right - carat.left + element.scrollLeft
-  var y = 300
+  var y = 100
   var pointAt = { x, y }
   this.animationEventEmitter.emit('point', pointAt)
 }
