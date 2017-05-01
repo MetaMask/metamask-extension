@@ -109,10 +109,10 @@ UnlockScreen.prototype.submitPassword = function (event) {
 UnlockScreen.prototype.inputChanged = function (event) {
   // tell mascot to look at page action
   var element = event.target
-  var boundingRect = element.getBoundingClientRect()
-  var coordinates = getCaretCoordinates(element, element.selectionEnd)
-  this.animationEventEmitter.emit('point', {
-    x: boundingRect.left + coordinates.left - element.scrollLeft,
-    y: boundingRect.top + coordinates.top - element.scrollTop,
-  })
+  var viewRect = element.getBoundingClientRect()
+  var carat = getCaretCoordinates(element, element.selectionEnd)
+  var x = viewRect.right - carat.left + element.scrollLeft
+  var y = 300
+  var pointAt = { x, y }
+  this.animationEventEmitter.emit('point', pointAt)
 }
