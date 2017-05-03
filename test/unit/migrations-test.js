@@ -16,6 +16,8 @@ const migration9 = require(path.join('..', '..', 'app', 'scripts', 'migrations',
 const migration10 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '010'))
 const migration11 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '011'))
 const migration12 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '012'))
+const migration13 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '013'))
+
 
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
@@ -98,6 +100,10 @@ describe('wallet1 is migrated successfully', () => {
     }).then((twelfthResult) => {
       assert.equal(twelfthResult.data.NoticeController.noticesList[0].body, '', 'notices that have been read should have an empty body.')
       assert.equal(twelfthResult.data.NoticeController.noticesList[1].body, 'nonempty', 'notices that have not been read should not have an empty body.')
+
+      return migration13.migrate(twelfthResult)
+    }).then((thirteenthResult) => {
+      assert.equal(thirteenthResult.data.PreferencesController.lastAddress, thirteenthResult.data.PreferencesController.selectedAddress, 'lastAddress should be saved.')
     })
 
   })
