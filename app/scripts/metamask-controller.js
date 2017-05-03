@@ -424,6 +424,7 @@ module.exports = class MetamaskController extends EventEmitter {
   setLocked (cb) {
     this.keyringController.setLocked()
       .then((err, result) => {
+        if (err) { cb(err) }
         return this.preferencesController.clearSelectedAddress()
       }).then((err, result) => {
         cb(err, result)
