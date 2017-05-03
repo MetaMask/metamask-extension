@@ -155,7 +155,7 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
 
     case 'kovan':
       return KOVAN_RPC
-    
+
     case 'rinkeby':
       return RINKEBY_RPC
 
