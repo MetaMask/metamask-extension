@@ -1,7 +1,4 @@
 const assert = require('assert')
-// const extend = require('xtend')
-// const EventEmitter = require('events')
-
 const MessageManger = require('../../app/scripts/lib/message-manager')
 
 describe('Transaction Manager', function () {

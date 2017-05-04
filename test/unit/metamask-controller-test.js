@@ -4,8 +4,6 @@ const clone = require('clone')
 const MetaMaskController = require('../../app/scripts/metamask-controller')
 const firstTimeState = require('../../app/scripts/first-time-state')
 
-// const STORAGE_KEY = 'metamask-config'
-
 describe('MetaMaskController', function () {
   const noop = () => {}
   const metamaskController = new MetaMaskController({
