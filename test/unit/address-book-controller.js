@@ -1,5 +1,4 @@
 const assert = require('assert')
-// const extend = require('xtend')
 const AddressBookController = require('../../app/scripts/controllers/address-book')
 
 const mockKeyringController = {

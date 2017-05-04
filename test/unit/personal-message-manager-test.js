@@ -1,6 +1,4 @@
 const assert = require('assert')
-// const extend = require('xtend')
-// const EventEmitter = require('events')
 
 const PersonalMessageManager = require('../../app/scripts/lib/personal-message-manager')
 

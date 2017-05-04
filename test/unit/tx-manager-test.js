@@ -1,10 +1,8 @@
 const assert = require('assert')
-// const extend = require('xtend')
 const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
-// const STORAGE_KEY = 'metamask-persistance-key'
 const TransactionManager = require('../../app/scripts/transaction-manager')
 const noop = () => true
 const currentNetworkId = 42
