@@ -4,11 +4,11 @@ const clone = require('clone')
 const MetaMaskController = require('../../app/scripts/metamask-controller')
 const firstTimeState = require('../../app/scripts/first-time-state')
 
-const STORAGE_KEY = 'metamask-config'
+// const STORAGE_KEY = 'metamask-config'
 
-describe('MetaMaskController', function() {
+describe('MetaMaskController', function () {
   const noop = () => {}
-  let controller = new MetaMaskController({
+  const metamaskController = new MetaMaskController({
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,
     showUnapprovedTx: noop,
@@ -16,14 +16,18 @@ describe('MetaMaskController', function() {
     initState: clone(firstTimeState),
   })
 
-  beforeEach(function() {
+  beforeEach(function () {
     // sinon allows stubbing methods that are easily verified
     this.sinon = sinon.sandbox.create()
   })
 
-  afterEach(function() {
+  afterEach(function () {
     // sinon requires cleanup otherwise it will overwrite context
     this.sinon.restore()
   })
 
+  describe('Metamask Controller', function () {
+    assert(metamaskController)
+  })
 })
+

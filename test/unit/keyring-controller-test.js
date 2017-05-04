@@ -3,21 +3,20 @@ const KeyringController = require('../../app/scripts/keyring-controller')
 const configManagerGen = require('../lib/mock-config-manager')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const async = require('async')
+// const async = require('async')
 const mockEncryptor = require('../lib/mock-encryptor')
-const MockSimpleKeychain = require('../lib/mock-simple-keychain')
+// const MockSimpleKeychain = require('../lib/mock-simple-keychain')
 const sinon = require('sinon')
 
-describe('KeyringController', function() {
+describe('KeyringController', function () {
+  let keyringController
+  const password = 'password123'
+  const seedWords = 'puzzle seed penalty soldier say clay field arctic metal hen cage runway'
+  const addresses = ['eF35cA8EbB9669A35c31b5F6f249A9941a812AC1'.toLowerCase()]
+  const accounts = []
+  // let originalKeystore
 
-  let keyringController, state
-  let password = 'password123'
-  let seedWords = 'puzzle seed penalty soldier say clay field arctic metal hen cage runway'
-  let addresses = ['eF35cA8EbB9669A35c31b5F6f249A9941a812AC1'.toLowerCase()]
-  let accounts = []
-  let originalKeystore
-
-  beforeEach(function(done) {
+  beforeEach(function (done) {
     this.sinon = sinon.sandbox.create()
     window.localStorage = {} // Hacking localStorage support into JSDom
 
@@ -25,10 +24,10 @@ describe('KeyringController', function() {
       configManager: configManagerGen(),
       txManager: {
         getTxList: () => [],
-        getUnapprovedTxList: () => []
+        getUnapprovedTxList: () => [],
       },
       ethStore: {
-        addAccount(acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
+        addAccount (acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
       },
     })
 
@@ -38,7 +37,7 @@ describe('KeyringController', function() {
 
     keyringController.createNewVaultAndKeychain(password)
     .then(function (newState) {
-      state = newState
+      newState
       done()
     })
     .catch((err) => {
@@ -46,7 +45,7 @@ describe('KeyringController', function() {
     })
   })
 
-  afterEach(function() {
+  afterEach(function () {
     // Cleanup mocks
     this.sinon.restore()
   })
@@ -54,7 +53,7 @@ describe('KeyringController', function() {
   describe('#createNewVaultAndKeychain', function () {
     this.timeout(10000)
 
-    it('should set a vault on the configManager', function(done) {
+    it('should set a vault on the configManager', function (done) {
       keyringController.store.updateState({ vault: null })
       assert(!keyringController.store.getState().vault, 'no previous vault')
       keyringController.createNewVaultAndKeychain(password)
@@ -69,15 +68,14 @@ describe('KeyringController', function() {
     })
   })
 
-  describe('#restoreKeyring', function() {
-
-    it(`should pass a keyring's serialized data back to the correct type.`, function(done) {
+  describe('#restoreKeyring', function () {
+    it(`should pass a keyring's serialized data back to the correct type.`, function (done) {
       const mockSerialized = {
         type: 'HD Key Tree',
         data: {
           mnemonic: seedWords,
           numberOfAccounts: 1,
-        }
+        },
       }
       const mock = this.sinon.mock(keyringController)
 
@@ -100,8 +98,8 @@ describe('KeyringController', function() {
     })
   })
 
-  describe('#createNickname', function() {
-    it('should add the address to the identities hash', function() {
+  describe('#createNickname', function () {
+    it('should add the address to the identities hash', function () {
       const fakeAddress = '0x12345678'
       keyringController.createNickname(fakeAddress)
       const identities = keyringController.memStore.getState().identities
@@ -110,8 +108,8 @@ describe('KeyringController', function() {
     })
   })
 
-  describe('#saveAccountLabel', function() {
-    it ('sets the nickname', function(done) {
+  describe('#saveAccountLabel', function () {
+    it('sets the nickname', function (done) {
       const account = addresses[0]
       var nick = 'Test nickname'
       const identities = keyringController.memStore.getState().identities
@@ -134,31 +132,30 @@ describe('KeyringController', function() {
     })
   })
 
-  describe('#getAccounts', function() {
-    it('returns the result of getAccounts for each keyring', function(done) {
+  describe('#getAccounts', function () {
+    it('returns the result of getAccounts for each keyring', function (done) {
       keyringController.keyrings = [
-        { getAccounts() { return Promise.resolve([1,2,3]) } },
-        { getAccounts() { return Promise.resolve([4,5,6]) } },
+        { getAccounts () { return Promise.resolve([1, 2, 3]) } },
+        { getAccounts () { return Promise.resolve([4, 5, 6]) } },
       ]
 
       keyringController.getAccounts()
       .then((result) => {
-        assert.deepEqual(result, [1,2,3,4,5,6])
+        assert.deepEqual(result, [1, 2, 3, 4, 5, 6])
         done()
       })
     })
   })
 
-  describe('#addGasBuffer', function() {
-    it('adds 100k gas buffer to estimates', function() {
-
+  describe('#addGasBuffer', function () {
+    it('adds 100k gas buffer to estimates', function () {
       const gas = '0x04ee59' // Actual estimated gas example
       const tooBigOutput = '0x80674f9' // Actual bad output
       const bnGas = new BN(ethUtil.stripHexPrefix(gas), 16)
       const correctBuffer = new BN('100000', 10)
       const correct = bnGas.add(correctBuffer)
 
-      const tooBig = new BN(tooBigOutput, 16)
+      // const tooBig = new BN(tooBigOutput, 16)
       const result = keyringController.addGasBuffer(gas)
       const bnResult = new BN(ethUtil.stripHexPrefix(result), 16)
 

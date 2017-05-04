@@ -1,5 +1,5 @@
 const assert = require('assert')
-const extend = require('xtend')
+// const extend = require('xtend')
 const AddressBookController = require('../../app/scripts/controllers/address-book')
 
 const mockKeyringController = {
@@ -7,21 +7,20 @@ const mockKeyringController = {
     getState: function () {
       return {
         identities: {
-          '0x0aaa' : {
+          '0x0aaa': {
             address: '0x0aaa',
             name: 'owned',
-          }
-        }
+          },
+        },
       }
-    }
-  }
+    },
+  },
 }
 
-
-describe('address-book-controller', function() {
+describe('address-book-controller', function () {
   var addressBookController
 
-  beforeEach(function() {
+  beforeEach(function () {
     addressBookController = new AddressBookController({}, mockKeyringController)
   })
 
