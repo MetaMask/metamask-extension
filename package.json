@@ -135,6 +135,8 @@
     "deep-freeze-strict": "^1.1.1",
     "del": "^2.2.0",
     "envify": "^4.0.0",
+    "eslint-plugin-chai": "0.0.1",
+    "eslint-plugin-mocha": "^4.9.0",
     "fs-promise": "^1.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-if": "^2.0.1",
