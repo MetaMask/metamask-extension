@@ -4,7 +4,6 @@ const promiseToCallback = require('promise-to-callback')
 const pipe = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
-const storeTransform = require('obs-store/lib/transform')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
 const streamIntoProvider = require('web3-stream-provider/handler')
@@ -169,8 +168,13 @@ module.exports = class MetamaskController extends EventEmitter {
       rpcUrl: this.configManager.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
+        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+        const result = []
         const selectedAddress = this.preferencesController.getSelectedAddress()
-        const result = selectedAddress ? [selectedAddress] : []
+        // only show address if account is unlocked
+        if (isUnlocked && selectedAddress) {
+          result.push(selectedAddress)
+        }
         cb(null, result)
       },
       // tx signing
@@ -186,21 +190,19 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    const publicConfigStore = new ObservableStore()
+    const publicConfigStore = new ObservableStore(this.store.getState())
 
-    // sync publicConfigStore with transform
-    pipe(
-      this.store,
-      storeTransform(selectPublicState.bind(this)),
-      publicConfigStore
-    )
+    // memStore -> transform -> publicConfigStore
+    this.on('update', (memState) => {
+      const publicState = selectPublicState(memState)
+      publicConfigStore.putState(publicState)
+    })
 
-    function selectPublicState (state) {
-      const result = { selectedAddress: undefined }
-      try {
-        result.selectedAddress = state.PreferencesController.selectedAddress
-        result.networkVersion = this.getNetworkState()
-      } catch (_) {}
+    function selectPublicState (memState) {
+      const result = {
+        selectedAddress: memState.isUnlocked ? memState.selectedAddress : undefined,
+        networkVersion: memState.network,
+      }
       return result
     }
 
