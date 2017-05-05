@@ -3,7 +3,7 @@ const path = require('path')
 
 const wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
 const vault4 = require(path.join('..', 'lib', 'migrations', '004.json'))
-let vault5, vault6, vault7, vault8, vault9, vault10, vault11
+let vault5, vault6, vault7, vault8, vault9 // vault10, vault11
 
 const migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
 const migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
@@ -23,7 +23,6 @@ const newTestRpc = 'https://testrpc.metamask.io/'
 
 describe('wallet1 is migrated successfully', () => {
   it('should convert providers', () => {
-
     wallet1.data.config.provider = { type: 'etherscan', rpcTarget: null }
 
     return migration2.migrate(wallet1)
@@ -99,6 +98,5 @@ describe('wallet1 is migrated successfully', () => {
       assert.equal(twelfthResult.data.NoticeController.noticesList[0].body, '', 'notices that have been read should have an empty body.')
       assert.equal(twelfthResult.data.NoticeController.noticesList[1].body, 'nonempty', 'notices that have not been read should not have an empty body.')
     })
-
   })
 })

@@ -20,14 +20,12 @@ window.localStorage = {}
 if (!window.crypto) window.crypto = {}
 if (!window.crypto.getRandomValues) window.crypto.getRandomValues = require('polyfill-crypto.getrandomvalues')
 
-
-
-function enableFailureOnUnhandledPromiseRejection() {
+function enableFailureOnUnhandledPromiseRejection () {
   // overwrite node's promise with the stricter Bluebird promise
   global.Promise = require('bluebird')
 
   // modified from https://github.com/mochajs/mocha/issues/1926#issuecomment-180842722
-  
+
   // rethrow unhandledRejections
   if (typeof process !== 'undefined') {
     process.on('unhandledRejection', function (reason) {
