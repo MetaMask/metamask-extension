@@ -190,7 +190,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   initPublicConfigStore () {
     // get init state
-    const publicConfigStore = new ObservableStore(this.store.getState())
+    const publicConfigStore = new ObservableStore()
 
     // memStore -> transform -> publicConfigStore
     this.on('update', (memState) => {
