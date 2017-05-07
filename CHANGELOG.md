@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Input gas price in Gwei.
+- Enforce Safe Gas Minimum recommended by EthGasStation.
+
 ## 3.6.1 2017-4-30
 
 - Made fox less nosy.
