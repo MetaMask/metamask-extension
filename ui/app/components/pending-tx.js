@@ -15,7 +15,9 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
-const MIN_GAS_PRICE_BN = new BN(20000000)
+const MIN_GAS_PRICE_GWEI_BN = new BN(2)
+const GWEI_FACTOR = new BN(Math.pow(10, 9))
+const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 const MIN_GAS_LIMIT_BN = new BN(21000)
 
 module.exports = connect(mapStateToProps)(PendingTx)
@@ -39,16 +41,20 @@ PendingTx.prototype.render = function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
+  // Account Details
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
+  // Gas
   const gas = txParams.gas
-  const gasPrice = txParams.gasPrice
-
   const gasBn = hexToBn(gas)
+
+  // Gas Price
+  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
+  const gasPriceGweiBn = gasPriceBn.div(new BN(Math.pow(10, 9)))
 
   const txFeeBn = gasBn.mul(gasPriceBn)
   const valueBn = hexToBn(txParams.value)
@@ -187,17 +193,18 @@ PendingTx.prototype.render = function () {
               }, [
                 h(HexInput, {
                   name: 'Gas Price',
-                  value: gasPrice,
-                  suffix: 'WEI',
-                  min: MIN_GAS_PRICE_BN.toString(10),
+                  value: gasPriceGweiBn.toString(16),
+                  suffix: 'GWEI',
+                  min: MIN_GAS_PRICE_GWEI_BN.toString(10),
                   style: {
                     position: 'relative',
                     top: '5px',
                   },
                   onChange: (newHex) => {
                     log.info(`Gas price changed to: ${newHex}`)
+                    const inWei = hexToBn(newHex).mul(GWEI_FACTOR)
                     const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gasPrice = newHex
+                    txMeta.txParams.gasPrice = inWei.toString(16)
                     this.setState({ txData: txMeta })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
