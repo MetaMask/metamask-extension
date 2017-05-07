@@ -5,8 +5,6 @@
 ## 3.6.1 2017-4-30
 
 - Made fox less nosy.
-
-
 - Fix bug where error was reported in debugger console when Chrome opened a new window.
 - Fix bug where block-tracker could stop polling for new blocks.
 
