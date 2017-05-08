@@ -182,7 +182,7 @@ gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
 // disc bundle analyzer tasks
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`disc:${jsFile}`,   bundleTask({ label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`disc:${jsFile}`,   discTask({ label: jsFile, filename: `${jsFile}.js` }))
 })
 
 gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
