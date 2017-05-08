@@ -16,7 +16,7 @@ const nameForAddress = require('../../lib/contract-namer')
 const HexInput = require('./hex-as-decimal-input')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(2)
-const GWEI_FACTOR = new BN(Math.pow(10, 9))
+const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 const MIN_GAS_LIMIT_BN = new BN(21000)
 
@@ -54,7 +54,7 @@ PendingTx.prototype.render = function () {
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
-  const gasPriceGweiBn = gasPriceBn.div(new BN(Math.pow(10, 9)))
+  const gasPriceGweiBn = gasPriceBn.div(GWEI_FACTOR)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
   const valueBn = hexToBn(txParams.value)
