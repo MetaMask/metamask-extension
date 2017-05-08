@@ -7,6 +7,7 @@ class PreferencesController {
   constructor (opts = {}) {
     const initState = extend({
       frequentRpcList: [],
+      lastAddress: '',
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -19,6 +20,18 @@ class PreferencesController {
     return new Promise((resolve, reject) => {
       const address = normalizeAddress(_address)
       this.store.updateState({ selectedAddress: address })
+      this.store.updateState({ lastAddress: address })
+      resolve()
+    })
+  }
+
+  restoreLastAddress () {
+    return this.setSelectedAddress(this.store.getState().lastAddress)
+  }
+
+  clearSelectedAddress () {
+    return new Promise((resolve, reject) => {
+      this.store.updateState({ selectedAddress: '' })
       resolve()
     })
   }

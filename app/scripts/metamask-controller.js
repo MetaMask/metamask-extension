@@ -275,6 +275,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
+      restoreLastAddress: nodeify(preferencesController.restoreLastAddress).bind(preferencesController),
       setDefaultRpc: nodeify(this.setDefaultRpc).bind(this),
       setCustomRpc: nodeify(this.setCustomRpc).bind(this),
 
@@ -282,7 +283,7 @@ module.exports = class MetamaskController extends EventEmitter {
       setAddressBook: nodeify(addressBookController.setAddressBook).bind(addressBookController),
 
       // KeyringController
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
+      setLocked: this.setLocked.bind(this),
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
@@ -364,7 +365,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
   submitPassword (password, cb) {
     return this.keyringController.submitPassword(password)
-    .then((newState) => { cb(null, newState) })
+    .then(() => {
+      return this.preferencesController.restoreLastAddress()
+    }).then(() => {
+      cb(null)
+    })
     .catch((reason) => { cb(reason) })
   }
 
@@ -417,6 +422,16 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
+
+  setLocked (cb) {
+    this.keyringController.setLocked()
+      .then((err, result) => {
+        if (err) { cb(err) }
+        return this.preferencesController.clearSelectedAddress()
+      }).then((err, result) => {
+        cb(err, result)
+      })
+  }
 
   newUnapprovedTransaction (txParams, cb) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
