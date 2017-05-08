@@ -75,7 +75,7 @@ EnsInput.prototype.componentDidMount = function () {
   const resolverAddress = networkResolvers[network]
 
   if (resolverAddress) {
-    const provider = web3.currentProvider
+    const provider = global.ethereumProvider
     this.ens = new ENS({ provider, network })
     this.checkName = debounce(this.lookupEnsName.bind(this), 200)
   }

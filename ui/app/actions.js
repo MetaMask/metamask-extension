@@ -393,7 +393,7 @@ function signPersonalMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    web3.eth.sendTransaction(txData, (err, data) => {
+    global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())

@@ -61,7 +61,7 @@
     "ensnare": "^1.0.0",
     "eth-bin-to-ops": "^1.0.1",
     "eth-hd-keyring": "^1.1.1",
-    "eth-query": "^1.0.3",
+    "eth-query": "^2.1.1",
     "eth-sig-util": "^1.1.1",
     "eth-simple-keyring": "^1.1.1",
     "ethereumjs-tx": "^1.3.0",
