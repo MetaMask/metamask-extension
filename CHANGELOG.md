@@ -5,6 +5,7 @@
 - Input gas price in Gwei.
 - Enforce Safe Gas Minimum recommended by EthGasStation.
 - Fix bug where block-tracker could stop polling for new blocks.
+- Reduce UI size by removing internal web3.
 
 ## 3.6.1 2017-4-30
 
