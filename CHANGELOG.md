@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.6.2 2017-5-8
+
 - Input gas price in Gwei.
 - Enforce Safe Gas Minimum recommended by EthGasStation.
 - Fix bug where block-tracker could stop polling for new blocks.
