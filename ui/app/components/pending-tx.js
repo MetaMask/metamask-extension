@@ -76,6 +76,7 @@ PendingTx.prototype.render = function () {
 
       h('form#pending-tx-form', {
         onSubmit: (event) => {
+          const txMeta = this.gatherTxMeta()
           event.preventDefault()
           const form = document.querySelector('form#pending-tx-form')
           const valid = form.checkValidity()
@@ -418,4 +419,3 @@ function forwardCarrat () {
 
   )
 }
-
