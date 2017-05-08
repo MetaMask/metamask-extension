@@ -63,6 +63,7 @@ EnsInput.prototype.render = function () {
           return h('option', {
             value: identity.address,
             label: identity.name,
+            key: identity.address,
           })
         }),
       ]),

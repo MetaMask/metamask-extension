@@ -2,13 +2,16 @@
 
 ## Current Master
 
+- Input gas price in Gwei.
+- Enforce Safe Gas Minimum recommended by EthGasStation.
+- Fix bug where block-tracker could stop polling for new blocks.
+- Reduce UI size by removing internal web3.
+- Fix bug where gas parameters would not properly update on adjustment.
+
 ## 3.6.1 2017-4-30
 
 - Made fox less nosy.
-
-
 - Fix bug where error was reported in debugger console when Chrome opened a new window.
-- Fix bug where block-tracker could stop polling for new blocks.
 
 ## 3.6.0 2017-4-26
 
