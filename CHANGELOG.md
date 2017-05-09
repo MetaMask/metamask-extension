@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 3.6.3 2017-5-8
+
+- Fix bug that could stop newer versions of Geth from working with MetaMask.
+
 ## 3.6.2 2017-5-8
 
 - Input gas price in Gwei.
