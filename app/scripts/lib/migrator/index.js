@@ -14,9 +14,15 @@ class Migrator {
   migrateData (versionedData = this.generateInitialState()) {
     const remaining = this.migrations.filter(migrationIsPending)
     if (remaining.length === 0) return versionedData
+
+    const migrations = remaining.map((migration, i) => {
+      if (i === 0) return this.runMigration.bind(this, migration, versionedData)
+      return this.runMigration.bind(this, migration)
+    })
+
     return (
-      asyncQ.eachSeries(remaining, (migration) => this.runMigration(versionedData, migration))
-      .then((migratedData) => migratedData.pop())
+      asyncQ.waterfall(migrations)
+      .then((migratedData) => Promise.resolve(migratedData))
     )
 
     // migration is "pending" if hit has a higher
@@ -26,10 +32,10 @@ class Migrator {
     }
   }
 
-  runMigration (versionedData, migration) {
+  runMigration (migration, versionedData) {
     return migration.migrate(versionedData)
       .then((migratedData) => {
-        if (!migratedData.data) return Promise.reject(new Error('Migrator - Migration returned empty data'))
+        if (!migratedData.data) return Promise.reject(new Error('Migrator - migration returned empty data'))
         if (migration.version !== undefined && migratedData.meta.version !== migration.version) return Promise.reject(new Error('Migrator - Migration did not update version number correctly'))
 
         return Promise.resolve(migratedData)
