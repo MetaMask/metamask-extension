@@ -1,7 +1,7 @@
 var assert = require('assert')
 var PendingTx = require('../../../ui/app/components/pending-tx')
 
-describe('PendingTx', function () {
+describe.only('PendingTx', function () {
   let pendingTxComponent
 
   const identities = {
@@ -44,17 +44,21 @@ describe('PendingTx', function () {
 
     const noop = () => {}
 
-    pendingTxComponent.componentDidMount = () => {
+    setTimeout(() => {
+      console.log('component mounted')
 
       const newGasPrice = '0x451456'
       pendingTxComponent.gasPriceChanged(newGasPrice)
 
       setTimeout(() => {
+        console.log('hitting submit')
         pendingTxComponent.onSubmit({ preventDefault: noop })
       }, 20)
-    }
+    }, 200)
 
+    console.log('calling render')
     pendingTxComponent.props = props
+    pendingTxComponent.checkValidity = () => { return true }
     pendingTxComponent.render()
   })
 
