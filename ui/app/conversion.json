@@ -1,1 +1,207 @@
-{"rows":[{"code":"REP","name":"Augur","statuses":["primary"]},{"code":"BCN","name":"Bytecoin","statuses":["primary"]},{"code":"BTC","name":"Bitcoin","statuses":["primary","secondary"]},{"code":"BTS","name":"BitShares","statuses":["primary","secondary"]},{"code":"BLK","name":"Blackcoin","statuses":["primary"]},{"code":"GBP","name":"British Pound Sterling","statuses":["secondary"]},{"code":"CAD","name":"Canadian Dollar","statuses":["secondary"]},{"code":"CNY","name":"Chinese Yuan","statuses":["secondary"]},{"code":"DSH","name":"Dashcoin","statuses":["primary"]},{"code":"DOGE","name":"Dogecoin","statuses":["primary","secondary"]},{"code":"ETC","name":"Ethereum Classic","statuses":["primary"]},{"code":"EUR","name":"Euro","statuses":["primary","secondary"]},{"code":"GNO","name":"GNO","statuses":["primary"]},{"code":"GNT","name":"GNT","statuses":["primary"]},{"code":"JPY","name":"Japanese Yen","statuses":["secondary"]},{"code":"LTC","name":"Litecoin","statuses":["primary","secondary"]},{"code":"MAID","name":"MaidSafeCoin","statuses":["primary"]},{"code":"XEM","name":"NEM","statuses":["primary"]},{"code":"XLM","name":"Stellar","statuses":["primary"]},{"code":"XMR","name":"Monero","statuses":["primary","secondary"]},{"code":"XRP","name":"Ripple","statuses":["primary"]},{"code":"RUR","name":"Ruble","statuses":["secondary"]},{"code":"STEEM","name":"Steem","statuses":["primary"]},{"code":"STRAT","name":"STRAT","statuses":["primary"]},{"code":"UAH","name":"Ukrainian Hryvnia","statuses":["secondary"]},{"code":"USD","name":"US Dollar","statuses":["primary","secondary"]},{"code":"WAVES","name":"WAVES","statuses":["primary"]},{"code":"ZEC","name":"Zcash","statuses":["primary"]}]}
+{
+  "rows": [
+    {
+      "code": "REP",
+      "name": "Augur",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "BCN",
+      "name": "Bytecoin",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "BTC",
+      "name": "Bitcoin",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "BTS",
+      "name": "BitShares",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "BLK",
+      "name": "Blackcoin",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "GBP",
+      "name": "British Pound Sterling",
+      "statuses": [
+        "secondary"
+      ]
+    },
+    {
+      "code": "CAD",
+      "name": "Canadian Dollar",
+      "statuses": [
+        "secondary"
+      ]
+    },
+    {
+      "code": "CNY",
+      "name": "Chinese Yuan",
+      "statuses": [
+        "secondary"
+      ]
+    },
+    {
+      "code": "DSH",
+      "name": "Dashcoin",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "DOGE",
+      "name": "Dogecoin",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "ETC",
+      "name": "Ethereum Classic",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "EUR",
+      "name": "Euro",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "GNO",
+      "name": "GNO",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "GNT",
+      "name": "GNT",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "JPY",
+      "name": "Japanese Yen",
+      "statuses": [
+        "secondary"
+      ]
+    },
+    {
+      "code": "LTC",
+      "name": "Litecoin",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "MAID",
+      "name": "MaidSafeCoin",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "XEM",
+      "name": "NEM",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "XLM",
+      "name": "Stellar",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "XMR",
+      "name": "Monero",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "XRP",
+      "name": "Ripple",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "RUR",
+      "name": "Ruble",
+      "statuses": [
+        "secondary"
+      ]
+    },
+    {
+      "code": "STEEM",
+      "name": "Steem",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "STRAT",
+      "name": "STRAT",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "UAH",
+      "name": "Ukrainian Hryvnia",
+      "statuses": [
+        "secondary"
+      ]
+    },
+    {
+      "code": "USD",
+      "name": "US Dollar",
+      "statuses": [
+        "primary",
+        "secondary"
+      ]
+    },
+    {
+      "code": "WAVES",
+      "name": "WAVES",
+      "statuses": [
+        "primary"
+      ]
+    },
+    {
+      "code": "ZEC",
+      "name": "Zcash",
+      "statuses": [
+        "primary"
+      ]
+    }
+  ]
+}
