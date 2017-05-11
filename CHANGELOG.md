@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Trim currency list.
+
 ## 3.6.4 2017-5-8
 
 - Fix main-net ENS resolution.
