@@ -30,12 +30,15 @@ describe.only('PendingTx', function () {
 
   it('should use updated values when edited.', function (done) {
 
+    const newGasPrice = '0x451456'
+
     const props = {
       identities,
       accounts: identities,
       txData,
       sendTransaction: (txMeta, event) => {
         assert.notEqual(txMeta.txParams.gasPrice, gasPrice, 'gas price should change')
+        assert.equal(txMeta.txParams.gasPrice, newGasPrice, 'gas price assigned.')
         done()
       },
     }
@@ -47,7 +50,6 @@ describe.only('PendingTx', function () {
     setTimeout(() => {
       console.log('component mounted')
 
-      const newGasPrice = '0x451456'
       pendingTxComponent.gasPriceChanged(newGasPrice)
 
       setTimeout(() => {
