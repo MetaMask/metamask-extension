@@ -1,5 +1,13 @@
 var assert = require('assert')
+const h = require('react-hyperscript')
 var PendingTx = require('../../../ui/app/components/pending-tx')
+const createReactFactory = require('create-react-factory').createReactFactory
+const React = require('react')
+console.dir(createReactFactory)
+const shallow = require('enzyme').shallow
+const Factory = createReactFactory(PendingTx)
+const ReactTestUtils = require('react-addons-test-utils')
+const renderer = ReactTestUtils.createRenderer();
 
 describe.only('PendingTx', function () {
   let pendingTxComponent
@@ -43,14 +51,21 @@ describe.only('PendingTx', function () {
       },
     }
 
-    pendingTxComponent = new PendingTx(props)
+    const pendingTxComponent = h(PendingTx, props)
+    renderer.render(pendingTxComponent)
+    console.dir(pendingTxComponent)
 
     const noop = () => {}
 
     setTimeout(() => {
-      console.log('component mounted')
+      console.log('timeout finished')
 
-      pendingTxComponent.gasPriceChanged(newGasPrice)
+      // Get the gas price input
+      // Set it to the newGasPrice value
+      // Wait for the value to change
+      // Get the submit button
+      // Click the submit button
+      // Get the output of the submit event.
 
       setTimeout(() => {
         console.log('hitting submit')
@@ -59,9 +74,7 @@ describe.only('PendingTx', function () {
     }, 200)
 
     console.log('calling render')
-    pendingTxComponent.props = props
-    pendingTxComponent.checkValidity = () => { return true }
-    pendingTxComponent.render()
   })
 
 })
+
