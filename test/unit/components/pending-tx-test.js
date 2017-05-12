@@ -7,7 +7,6 @@ console.dir(createReactFactory)
 const shallow = require('enzyme').shallow
 const Factory = createReactFactory(PendingTx)
 const ReactTestUtils = require('react-addons-test-utils')
-const renderer = ReactTestUtils.createRenderer();
 
 describe.only('PendingTx', function () {
   let pendingTxComponent
@@ -38,6 +37,7 @@ describe.only('PendingTx', function () {
 
   it('should use updated values when edited.', function (done) {
 
+    const renderer = ReactTestUtils.createRenderer();
     const newGasPrice = '0x451456'
 
     const props = {
@@ -53,7 +53,9 @@ describe.only('PendingTx', function () {
 
     const pendingTxComponent = h(PendingTx, props)
     renderer.render(pendingTxComponent)
-    console.dir(pendingTxComponent)
+    const result = renderer.getRenderOutput()
+    assert.equal(result.type, 'div', 'should create a div')
+    console.dir(result)
 
     const noop = () => {}
 
@@ -67,10 +69,6 @@ describe.only('PendingTx', function () {
       // Click the submit button
       // Get the output of the submit event.
 
-      setTimeout(() => {
-        console.log('hitting submit')
-        pendingTxComponent.onSubmit({ preventDefault: noop })
-      }, 20)
     }, 200)
 
     console.log('calling render')
