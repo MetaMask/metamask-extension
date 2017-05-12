@@ -21,6 +21,7 @@ function mapStateToProps (state) {
     warning: state.appState.warning,
     network: state.metamask.network,
     addressBook: state.metamask.addressBook,
+    conversionRate: state.metamask.conversionRate,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -40,13 +41,14 @@ function SendTransactionScreen () {
 SendTransactionScreen.prototype.render = function () {
   this.persistentFormParentId = 'send-tx-form'
 
-  var state = this.props
-  var address = state.address
-  var account = state.account
-  var identity = state.identity
-  var network = state.network
-  var identities = state.identities
-  var addressBook = state.addressBook
+  var props = this.props
+  var address = props.address
+  var account = props.account
+  var identity = props.identity
+  var network = props.network
+  var identities = props.identities
+  var addressBook = props.addressBook
+  var conversionRate = props.conversionRate
 
   return (
 
@@ -125,6 +127,7 @@ SendTransactionScreen.prototype.render = function () {
 
             h(EthBalance, {
               value: account && account.balance,
+              conversionRate,
             }),
 
           ]),
@@ -147,7 +150,7 @@ SendTransactionScreen.prototype.render = function () {
       ]),
 
       // error message
-      state.error && h('span.error.flex-center', state.error),
+      props.error && h('span.error.flex-center', props.error),
 
       // 'to' field
       h('section.flex-row.flex-center', [

@@ -31,6 +31,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
+  const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -102,6 +103,7 @@ PendingTx.prototype.render = function () {
               }, [
                 h(EthBalance, {
                   value: balance,
+                  conversionRate,
                   inline: true,
                   labelColor: '#F7861C',
                 }),
