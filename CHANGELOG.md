@@ -2,6 +2,12 @@
 
 ## Current Master
 
+- Trim currency list.
+
+## 3.6.4 2017-5-8
+
+- Fix main-net ENS resolution.
+
 ## 3.6.3 2017-5-8
 
 - Fix bug that could stop newer versions of Geth from working with MetaMask.
