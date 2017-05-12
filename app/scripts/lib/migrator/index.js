@@ -1,45 +1,33 @@
-const asyncQ = require('async-q')
-
 class Migrator {
 
   constructor (opts = {}) {
     const migrations = opts.migrations || []
+    // sort migrations by version
     this.migrations = migrations.sort((a, b) => a.version - b.version)
+    // grab migration with highest version
     const lastMigration = this.migrations.slice(-1)[0]
     // use specified defaultVersion or highest migration version
     this.defaultVersion = opts.defaultVersion || (lastMigration && lastMigration.version) || 0
   }
 
   // run all pending migrations on meta in place
-  migrateData (versionedData = this.generateInitialState()) {
-    const remaining = this.migrations.filter(migrationIsPending)
-    if (remaining.length === 0) return versionedData
+  async migrateData (versionedData = this.generateInitialState()) {
+    const pendingMigrations = this.migrations.filter(migrationIsPending)
 
-    const migrations = remaining.map((migration, i) => {
-      if (i === 0) return this.runMigration.bind(this, migration, versionedData)
-      return this.runMigration.bind(this, migration)
-    })
+    for (let index in pendingMigrations) {
+      let migration = pendingMigrations[index]
+      versionedData = await migration.migrate(versionedData)
+      if (!versionedData.data) throw new Error('Migrator - migration returned empty data')
+      if (versionedData.version !== undefined && migratedData.meta.version !== migration.version) throw new Error('Migrator - Migration did not update version number correctly')
+    }
 
-    return (
-      asyncQ.waterfall(migrations)
-      .then((migratedData) => Promise.resolve(migratedData))
-    )
+    return versionedData
 
-    // migration is "pending" if hit has a higher
+    // migration is "pending" if it has a higher
     // version number than currentVersion
     function migrationIsPending (migration) {
       return migration.version > versionedData.meta.version
     }
-  }
-
-  runMigration (migration, versionedData) {
-    return migration.migrate(versionedData)
-      .then((migratedData) => {
-        if (!migratedData.data) return Promise.reject(new Error('Migrator - migration returned empty data'))
-        if (migration.version !== undefined && migratedData.meta.version !== migration.version) return Promise.reject(new Error('Migrator - Migration did not update version number correctly'))
-
-        return Promise.resolve(migratedData)
-      })
   }
 
   generateInitialState (initState) {
