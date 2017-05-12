@@ -12,7 +12,7 @@ class Migrator {
 
   // run all pending migrations on meta in place
   migrateData (versionedData = this.generateInitialState()) {
-    const remaining = this.migrations.filter(migrationIsPending)
+    const remaining = this.migrations.filter((migration) => migration.version > versionedData.meta.version)
     if (remaining.length === 0) return versionedData
 
     const migrations = remaining.map((migration, i) => {
@@ -20,16 +20,7 @@ class Migrator {
       return this.runMigration.bind(this, migration)
     })
 
-    return (
-      asyncQ.waterfall(migrations)
-      .then((migratedData) => Promise.resolve(migratedData))
-    )
-
-    // migration is "pending" if hit has a higher
-    // version number than currentVersion
-    function migrationIsPending (migration) {
-      return migration.version > versionedData.meta.version
-    }
+    return asyncQ.waterfall(migrations)
   }
 
   runMigration (migration, versionedData) {
