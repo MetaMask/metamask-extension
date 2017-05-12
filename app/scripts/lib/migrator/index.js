@@ -18,7 +18,7 @@ class Migrator {
       let migration = pendingMigrations[index]
       versionedData = await migration.migrate(versionedData)
       if (!versionedData.data) throw new Error('Migrator - migration returned empty data')
-      if (versionedData.version !== undefined && migratedData.meta.version !== migration.version) throw new Error('Migrator - Migration did not update version number correctly')
+      if (versionedData.version !== undefined && versionedData.meta.version !== migration.version) throw new Error('Migrator - Migration did not update version number correctly')
     }
 
     return versionedData
