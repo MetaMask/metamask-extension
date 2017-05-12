@@ -1,4 +1,5 @@
-var assert = require('assert')
+const assert = require('assert')
+const additions = require('react-testutils-additions')
 const h = require('react-hyperscript')
 var PendingTx = require('../../../ui/app/components/pending-tx')
 const createReactFactory = require('create-react-factory').createReactFactory
@@ -52,10 +53,28 @@ describe.only('PendingTx', function () {
     }
 
     const pendingTxComponent = h(PendingTx, props)
+    var component = additions.renderIntoDocument(pendingTxComponent);
     renderer.render(pendingTxComponent)
     const result = renderer.getRenderOutput()
+    const form = result.props.children
+    console.log('FORM children')
+    console.dir(form.props.children)
+    const children = form.props.children[form.props.children.length - 1]
     assert.equal(result.type, 'div', 'should create a div')
-    console.dir(result)
+    console.dir(children)
+
+    console.log('finding input')
+
+    try{
+
+      const input = additions.find(component, '.cell.row input[type="number"]')
+      console.log('input')
+      console.dir(input)
+
+    } catch (e) {
+      console.log("WHAAAA")
+      console.error(e)
+    }
 
     const noop = () => {}
 
@@ -68,6 +87,7 @@ describe.only('PendingTx', function () {
       // Get the submit button
       // Click the submit button
       // Get the output of the submit event.
+      // Assert that the value was updated.
 
     }, 200)
 

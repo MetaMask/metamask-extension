@@ -165,6 +165,7 @@
     "qunit": "^0.9.1",
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.5.4",
+    "react-testutils-additions": "^15.2.0",
     "sinon": "^1.17.3",
     "tape": "^4.5.1",
     "testem": "^1.10.3",
