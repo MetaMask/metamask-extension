@@ -12,29 +12,25 @@ class Migrator {
 
   // run all pending migrations on meta in place
   migrateData (versionedData = this.generateInitialState()) {
-    const remaining = this.migrations.filter(migrationIsPending)
+    const remaining = this.migrations.filter((migration) => migration.version > versionedData.meta.version)
+    if (remaining.length === 0) return versionedData
 
-    return (
-      asyncQ.eachSeries(remaining, (migration) => this.runMigration(versionedData, migration))
-      .then(() => versionedData)
-    )
+    const migrations = remaining.map((migration, i) => {
+      if (i === 0) return this.runMigration.bind(this, migration, versionedData)
+      return this.runMigration.bind(this, migration)
+    })
 
-    // migration is "pending" if hit has a higher
-    // version number than currentVersion
-    function migrationIsPending (migration) {
-      return migration.version > versionedData.meta.version
-    }
+    return asyncQ.waterfall(migrations)
   }
 
-  runMigration (versionedData, migration) {
-    return (
-      migration.migrate(versionedData)
-      .then((versionedData) => {
-        if (!versionedData.data) return Promise.reject(new Error('Migrator - Migration returned empty data'))
-        if (migration.version !== undefined && versionedData.meta.version !== migration.version) return Promise.reject(new Error('Migrator - Migration did not update version number correctly'))
-        return Promise.resolve(versionedData)
+  runMigration (migration, versionedData) {
+    return migration.migrate(versionedData)
+      .then((migratedData) => {
+        if (!migratedData.data) return Promise.reject(new Error('Migrator - migration returned empty data'))
+        if (migration.version !== undefined && migratedData.meta.version !== migration.version) return Promise.reject(new Error('Migrator - Migration did not update version number correctly'))
+
+        return Promise.resolve(migratedData)
       })
-    )
   }
 
   generateInitialState (initState) {
