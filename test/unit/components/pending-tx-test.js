@@ -1,11 +1,10 @@
 const assert = require('assert')
 const additions = require('react-testutils-additions')
 const h = require('react-hyperscript')
-var PendingTx = require('../../../ui/app/components/pending-tx')
+const PendingTx = require('../../../ui/app/components/pending-tx')
 const createReactFactory = require('create-react-factory').createReactFactory
 const React = require('react')
-console.dir(createReactFactory)
-const shallow = require('enzyme').shallow
+const shallow = require('react-test-renderer/shallow')
 const Factory = createReactFactory(PendingTx)
 const ReactTestUtils = require('react-addons-test-utils')
 
@@ -53,23 +52,27 @@ describe.only('PendingTx', function () {
     }
 
     const pendingTxComponent = h(PendingTx, props)
-    var component = additions.renderIntoDocument(pendingTxComponent);
+    const component = additions.renderIntoDocument(pendingTxComponent);
     renderer.render(pendingTxComponent)
     const result = renderer.getRenderOutput()
     const form = result.props.children
-    console.log('FORM children')
-    console.dir(form.props.children)
     const children = form.props.children[form.props.children.length - 1]
     assert.equal(result.type, 'div', 'should create a div')
-    console.dir(children)
-
-    console.log('finding input')
 
     try{
 
-      const input = additions.find(component, '.cell.row input[type="number"]')
-      console.log('input')
-      console.dir(input)
+      const input = additions.find(component, '.cell.row input[type="number"]')[1]
+      ReactTestUtils.Simulate.change(input, {
+        target: {
+          value: 2,
+          checkValidity() { return true },
+        }
+      })
+
+      let form = additions.find(component, 'form')[0]
+      form.checkValidity = () => true
+      form.getFormEl = () => { return { checkValidity() { return true } } }
+      ReactTestUtils.Simulate.submit(form, { preventDefault() {}, target: { checkValidity() {return true} } })
 
     } catch (e) {
       console.log("WHAAAA")
@@ -79,7 +82,6 @@ describe.only('PendingTx', function () {
     const noop = () => {}
 
     setTimeout(() => {
-      console.log('timeout finished')
 
       // Get the gas price input
       // Set it to the newGasPrice value
@@ -91,7 +93,6 @@ describe.only('PendingTx', function () {
 
     }, 200)
 
-    console.log('calling render')
   })
 
 })

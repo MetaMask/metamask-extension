@@ -380,9 +380,20 @@ PendingTx.prototype.onSubmit = function (event) {
 }
 
 PendingTx.prototype.checkValidity = function() {
-  const form = document.querySelector('form#pending-tx-form')
+  const form = this.getFormEl()
+  console.log("check validity got form el:")
+  console.dir(form)
   const valid = form.checkValidity()
   return valid
+}
+
+PendingTx.prototype.getFormEl = function() {
+  const form = document.querySelector('form#pending-tx-form')
+  // Stub out form for unit tests:
+  if (!form) {
+    return { checkValidity() { return true } }
+  }
+  return form
 }
 
 // After a customizable state value has been updated,
