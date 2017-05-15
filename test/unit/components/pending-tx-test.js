@@ -7,6 +7,7 @@ const React = require('react')
 const shallow = require('react-test-renderer/shallow')
 const Factory = createReactFactory(PendingTx)
 const ReactTestUtils = require('react-addons-test-utils')
+const ethUtil = require('ethereumjs-util')
 
 describe.only('PendingTx', function () {
   let pendingTxComponent
@@ -38,15 +39,16 @@ describe.only('PendingTx', function () {
   it('should use updated values when edited.', function (done) {
 
     const renderer = ReactTestUtils.createRenderer();
-    const newGasPrice = '0x451456'
+    const newGasPrice = '0x77359400'
 
     const props = {
       identities,
       accounts: identities,
       txData,
       sendTransaction: (txMeta, event) => {
-        assert.notEqual(txMeta.txParams.gasPrice, gasPrice, 'gas price should change')
-        assert.equal(txMeta.txParams.gasPrice, newGasPrice, 'gas price assigned.')
+        const result = ethUtil.addHexPrefix(txMeta.txParams.gasPrice)
+        assert.notEqual(result, gasPrice, 'gas price should change')
+        assert.equal(result, newGasPrice, 'gas price assigned.')
         done()
       },
     }

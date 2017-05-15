@@ -381,8 +381,6 @@ PendingTx.prototype.onSubmit = function (event) {
 
 PendingTx.prototype.checkValidity = function() {
   const form = this.getFormEl()
-  console.log("check validity got form el:")
-  console.dir(form)
   const valid = form.checkValidity()
   return valid
 }
