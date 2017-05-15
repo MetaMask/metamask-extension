@@ -379,17 +379,17 @@ PendingTx.prototype.onSubmit = function (event) {
   }
 }
 
-PendingTx.prototype.checkValidity = function() {
+PendingTx.prototype.checkValidity = function () {
   const form = this.getFormEl()
   const valid = form.checkValidity()
   return valid
 }
 
-PendingTx.prototype.getFormEl = function() {
+PendingTx.prototype.getFormEl = function () {
   const form = document.querySelector('form#pending-tx-form')
   // Stub out form for unit tests:
   if (!form) {
-    return { checkValidity() { return true } }
+    return { checkValidity () { return true } }
   }
   return form
 }
