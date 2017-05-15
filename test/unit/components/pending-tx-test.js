@@ -46,6 +46,8 @@ describe.only('PendingTx', function () {
       accounts: identities,
       txData,
       sendTransaction: (txMeta, event) => {
+
+        // Assert changes:
         const result = ethUtil.addHexPrefix(txMeta.txParams.gasPrice)
         assert.notEqual(result, gasPrice, 'gas price should change')
         assert.equal(result, newGasPrice, 'gas price assigned.')
@@ -80,20 +82,6 @@ describe.only('PendingTx', function () {
       console.log("WHAAAA")
       console.error(e)
     }
-
-    const noop = () => {}
-
-    setTimeout(() => {
-
-      // Get the gas price input
-      // Set it to the newGasPrice value
-      // Wait for the value to change
-      // Get the submit button
-      // Click the submit button
-      // Get the output of the submit event.
-      // Assert that the value was updated.
-
-    }, 200)
 
   })
 
