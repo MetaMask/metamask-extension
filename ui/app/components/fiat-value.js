@@ -1,17 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
 const formatBalance = require('../util').formatBalance
 
-module.exports = connect(mapStateToProps)(FiatValue)
-
-function mapStateToProps (state) {
-  return {
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
-  }
-}
+module.exports = FiatValue
 
 inherits(FiatValue, Component)
 function FiatValue () {
@@ -20,23 +12,23 @@ function FiatValue () {
 
 FiatValue.prototype.render = function () {
   const props = this.props
+  const { conversionRate, currentCurrency } = props
+
   const value = formatBalance(props.value, 6)
 
   if (value === 'None') return value
   var fiatDisplayNumber, fiatTooltipNumber
   var splitBalance = value.split(' ')
 
-  if (props.conversionRate !== 0) {
-    fiatTooltipNumber = Number(splitBalance[0]) * props.conversionRate
+  if (conversionRate !== 0) {
+    fiatTooltipNumber = Number(splitBalance[0]) * conversionRate
     fiatDisplayNumber = fiatTooltipNumber.toFixed(2)
   } else {
     fiatDisplayNumber = 'N/A'
     fiatTooltipNumber = 'Unknown'
   }
 
-  var fiatSuffix = props.currentCurrency
-
-  return fiatDisplay(fiatDisplayNumber, fiatSuffix)
+  return fiatDisplay(fiatDisplayNumber, currentCurrency)
 }
 
 function fiatDisplay (fiatDisplayNumber, fiatSuffix) {

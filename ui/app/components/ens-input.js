@@ -168,6 +168,7 @@ EnsInput.prototype.ensIconContents = function (recipient) {
   }
 }
 
-function getNetworkEnsSupport(network) {
+function getNetworkEnsSupport (network) {
   return Boolean(networkMap[network])
 }
+

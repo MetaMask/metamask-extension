@@ -42,7 +42,7 @@ DropMenuItem.prototype.activeNetworkRender = function () {
       if (providerType === 'mainnet') return h('.check', '✓')
       break
     case 'Ropsten Test Network':
-      if (providerType === 'testnet') return h('.check', '✓')
+      if (providerType === 'ropsten') return h('.check', '✓')
       break
     case 'Kovan Test Network':
       if (providerType === 'kovan') return h('.check', '✓')

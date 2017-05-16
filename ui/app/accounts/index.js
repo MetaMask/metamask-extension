@@ -23,6 +23,8 @@ function mapStateToProps (state) {
     scrollToBottom: state.appState.scrollToBottom,
     pending,
     keyrings: state.metamask.keyrings,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -33,7 +35,7 @@ function AccountsScreen () {
 
 AccountsScreen.prototype.render = function () {
   const props = this.props
-  const { keyrings } = props
+  const { keyrings, conversionRate, currentCurrency } = props
   const identityList = valuesFor(props.identities)
   const unapprovedTxList = valuesFor(props.unapprovedTxs)
 
@@ -81,6 +83,8 @@ AccountsScreen.prototype.render = function () {
               key: `acct-panel-${identity.address}`,
               identity,
               selectedAddress: this.props.selectedAddress,
+              conversionRate,
+              currentCurrency,
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,

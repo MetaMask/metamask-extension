@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const EtherBalance = require('./eth-balance')
+const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
@@ -19,7 +19,7 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.render = function () {
-  const { transaction, network } = this.props
+  const { transaction, network, conversionRate, currentCurrency } = this.props
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }
@@ -78,8 +78,10 @@ TransactionListItem.prototype.render = function () {
       // Places a copy button if tx is successful, else places a placeholder empty div.
       transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
 
-      isTx ? h(EtherBalance, {
+      isTx ? h(EthBalance, {
         value: txParams.value,
+        conversionRate,
+        currentCurrency,
         width: '55px',
         shorten: true,
         showFiat: false,
