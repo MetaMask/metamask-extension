@@ -3,6 +3,7 @@
 ## Current Master
 
 - Trim currency list.
+- Fix event filter bug introduced by newer versions of Geth.
 
 ## 3.6.4 2017-5-8
 
