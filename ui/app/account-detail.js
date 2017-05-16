@@ -30,6 +30,7 @@ function mapStateToProps (state) {
     shapeShiftTxList: state.metamask.shapeShiftTxList,
     transactions: state.metamask.selectedAddressTxList || [],
     conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -44,7 +45,7 @@ AccountDetailScreen.prototype.render = function () {
   var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
-  const { network, conversionRate } = props
+  const { network, conversionRate, currentCurrency } = props
 
   return (
 
@@ -184,6 +185,7 @@ AccountDetailScreen.prototype.render = function () {
           h(EthBalance, {
             value: account && account.balance,
             conversionRate,
+            currentCurrency,
             style: {
               lineHeight: '7px',
               marginTop: '10px',

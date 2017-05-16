@@ -37,7 +37,7 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
   var props = this.props
-  const { conversionRate, shorten, incoming } = props
+  const { conversionRate, shorten, incoming, currentCurrency } = props
   if (value === 'None') return value
   if (value === '...') return value
   var balanceObj = generateBalanceObject(value, shorten ? 1 : 3)
@@ -83,7 +83,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
         }, label),
       ]),
 
-      showFiat ? h(FiatValue, { value, conversionRate }) : null,
+      showFiat ? h(FiatValue, { value: props.value, conversionRate, currentCurrency }) : null,
     ]))
   )
 }

@@ -8,7 +8,7 @@ const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 
 const CopyButton = require('./copyButton')
-const EtherBalance = require('./eth-balance')
+const EthBalance = require('./eth-balance')
 const Tooltip = require('./tooltip')
 
 
@@ -17,6 +17,7 @@ module.exports = connect(mapStateToProps)(ShiftListItem)
 function mapStateToProps (state) {
   return {
     conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -66,7 +67,7 @@ function formatDate (date) {
 
 ShiftListItem.prototype.renderUtilComponents = function () {
   var props = this.props
-  const { conversionRate } = props
+  const { conversionRate, currentCurrency } = props
 
   switch (props.response.status) {
     case 'no_deposits':
@@ -97,9 +98,10 @@ ShiftListItem.prototype.renderUtilComponents = function () {
         h(CopyButton, {
           value: this.props.response.transaction,
         }),
-        h(EtherBalance, {
+        h(EthBalance, {
           value: `${props.response.outgoingCoin}`,
           conversionRate,
+          currentCurrency,
           width: '55px',
           shorten: true,
           needsParse: false,
