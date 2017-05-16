@@ -41,14 +41,16 @@ function SendTransactionScreen () {
 SendTransactionScreen.prototype.render = function () {
   this.persistentFormParentId = 'send-tx-form'
 
-  var props = this.props
-  var address = props.address
-  var account = props.account
-  var identity = props.identity
-  var network = props.network
-  var identities = props.identities
-  var addressBook = props.addressBook
-  var conversionRate = props.conversionRate
+  const props = this.props
+  const {
+    address,
+    account,
+    identity,
+    network,
+    identities,
+    addressBook,
+    conversionRate
+  } = props
 
   return (
 
