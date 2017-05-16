@@ -9,7 +9,7 @@ const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
-describe('Transaction Manager', function () {
+describe('Transaction Controller', function () {
   let txController
 
   beforeEach(function () {
@@ -170,6 +170,25 @@ describe('Transaction Manager', function () {
       var result = txController.getTx('1')
       assert.equal(result.hash, 'foo')
     })
+
+    it('updates gas price', function () {
+      const originalGasPrice = '0x01'
+      const desiredGasPriced = '0x02'
+
+      const txMeta = {
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gasPrice: originalGasPrice,
+        },
+      }
+
+      txController.addTx(txMeta)
+      txMeta.txParams.gasPrice = desiredGasPriced
+      var result = txController.getTx('1')
+      assert.equal(result.txParams.gasPrice, desiredGasPriced, 'gas price updated')
+    })
   })
 
   describe('#getUnapprovedTxList', function () {
@@ -234,4 +253,5 @@ describe('Transaction Manager', function () {
       })
     })
   })
+
 })
