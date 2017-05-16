@@ -9,7 +9,7 @@ const Factory = createReactFactory(PendingTx)
 const ReactTestUtils = require('react-addons-test-utils')
 const ethUtil = require('ethereumjs-util')
 
-describe.only('PendingTx', function () {
+describe('PendingTx', function () {
   let pendingTxComponent
 
   const identities = {
