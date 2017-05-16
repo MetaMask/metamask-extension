@@ -15,7 +15,8 @@ function AccountListItem () {
 }
 
 AccountListItem.prototype.render = function () {
-  const { identity, selectedAddress, accounts, onShowDetail, conversionRate } = this.props
+  const { identity, selectedAddress, accounts, onShowDetail,
+    conversionRate, currentCurrency } = this.props
 
   const checksumAddress = identity && identity.address && ethUtil.toChecksumAddress(identity.address)
   const isSelected = selectedAddress === identity.address
@@ -52,6 +53,7 @@ AccountListItem.prototype.render = function () {
         }, checksumAddress),
         h(EthBalance, {
           value: account && account.balance,
+          currentCurrency,
           conversionRate,
           style: {
             lineHeight: '7px',

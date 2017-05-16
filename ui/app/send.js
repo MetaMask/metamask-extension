@@ -22,6 +22,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     addressBook: state.metamask.addressBook,
     conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -50,6 +51,7 @@ SendTransactionScreen.prototype.render = function () {
     identities,
     addressBook,
     conversionRate,
+    currentCurrency,
   } = props
 
   return (
@@ -130,6 +132,7 @@ SendTransactionScreen.prototype.render = function () {
             h(EthBalance, {
               value: account && account.balance,
               conversionRate,
+              currentCurrency,
             }),
 
           ]),
