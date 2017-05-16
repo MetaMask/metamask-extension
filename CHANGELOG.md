@@ -3,6 +3,8 @@
 ## Current Master
 
 - Trim currency list.
+- Enable decimals in our gas prices.
+- Fix reset button.
 
 ## 3.6.4 2017-5-8
 
