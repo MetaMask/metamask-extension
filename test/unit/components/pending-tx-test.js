@@ -54,7 +54,6 @@ describe('PendingTx', function () {
     const component = additions.renderIntoDocument(pendingTxComponent)
     renderer.render(pendingTxComponent)
     const result = renderer.getRenderOutput()
-    const form = result.props.children
     assert.equal(result.type, 'div', 'should create a div')
 
     try {
@@ -63,10 +62,10 @@ describe('PendingTx', function () {
         target: {
           value: 2,
           checkValidity() { return true },
-        }
+        },
       })
 
-      let form = additions.find(component, 'form')[0]
+      const form = additions.find(component, 'form')[0]
       form.checkValidity = () => true
       form.getFormEl = () => { return { checkValidity() { return true } } }
       ReactTestUtils.Simulate.submit(form, { preventDefault() {}, target: { checkValidity() {
