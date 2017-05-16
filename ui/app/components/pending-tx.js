@@ -13,7 +13,7 @@ const EthBalance = require('./eth-balance')
 const util = require('../util')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
-const HexInput = require('./hex-as-decimal-input')
+const BNInput = require('./bn-as-decimal-input')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(2)
 const GWEI_FACTOR = new BN(1e9)
@@ -54,7 +54,6 @@ PendingTx.prototype.render = function () {
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
-  const gasPriceGweiBn = gasPriceBn.div(GWEI_FACTOR)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
   const valueBn = hexToBn(txParams.value)
@@ -166,9 +165,10 @@ PendingTx.prototype.render = function () {
               h('.cell.label', 'Gas Limit'),
               h('.cell.value', {
               }, [
-                h(HexInput, {
+                h(BNInput, {
                   name: 'Gas Limit',
-                  value: gas,
+                  value: gasBn,
+                  precision: 0,
                   // The hard lower limit for gas.
                   min: MIN_GAS_LIMIT_BN.toString(10),
                   suffix: 'UNITS',
@@ -176,10 +176,10 @@ PendingTx.prototype.render = function () {
                     position: 'relative',
                     top: '5px',
                   },
-                  onChange: (newHex) => {
-                    log.info(`Gas limit changed to ${newHex}`)
+                  onChange: (newBN) => {
+                    log.info(`Gas limit changed to ${newBN.toString(10)}`)
                     const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gas = newHex
+                    txMeta.txParams.gas = '0x' + newBN.toString('hex')
                     this.setState({ txData: txMeta })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
@@ -192,20 +192,20 @@ PendingTx.prototype.render = function () {
               h('.cell.label', 'Gas Price'),
               h('.cell.value', {
               }, [
-                h(HexInput, {
+                h(BNInput, {
                   name: 'Gas Price',
-                  value: gasPriceGweiBn.toString(16),
+                  value: gasPriceBn,
+                  precision: 9,
                   suffix: 'GWEI',
                   min: MIN_GAS_PRICE_GWEI_BN.toString(10),
                   style: {
                     position: 'relative',
                     top: '5px',
                   },
-                  onChange: (newHex) => {
-                    log.info(`Gas price changed to: ${newHex}`)
-                    const inWei = hexToBn(newHex).mul(GWEI_FACTOR)
+                  onChange: (newBN) => {
+                    log.info(`Gas price changed to: ${newBN.toString(10)}`)
                     const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gasPrice = inWei.toString(16)
+                    txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
                     this.setState({ txData: txMeta })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
@@ -368,6 +368,7 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 }
 
 PendingTx.prototype.resetGasFields = function () {
+
   log.debug(`pending-tx resetGasFields`)
 
   this.inputs.forEach((hexInput) => {
