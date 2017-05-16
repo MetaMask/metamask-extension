@@ -49,7 +49,7 @@ SendTransactionScreen.prototype.render = function () {
     network,
     identities,
     addressBook,
-    conversionRate
+    conversionRate,
   } = props
 
   return (
