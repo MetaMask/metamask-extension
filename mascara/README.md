@@ -29,5 +29,5 @@ Test will run in browser, you will have to have these browsers installed:
 Will build and deploy mascara via docker
 
 ```
-docker-compose build && docker-compose stop && docker-compose up && docker-compose -t 200 -f
+docker-compose build && docker-compose stop && docker-compose up -d && docker-compose logs --tail 200 -f
 ```
