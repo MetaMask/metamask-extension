@@ -58,7 +58,7 @@ describe('PendingTx', function () {
     assert.equal(result.type, 'div', 'should create a div')
 
     try {
-      const input = additions.find(component, '.cell.row input[type='number']')[1]
+      const input = additions.find(component, '.cell.row input[type="number"]')[1]
       ReactTestUtils.Simulate.change(input, {
         target: {
           value: 2,
