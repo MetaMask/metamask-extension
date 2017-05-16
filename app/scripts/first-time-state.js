@@ -5,7 +5,7 @@
 module.exports = {
   config: {
     provider: {
-      type: 'testnet',
+      type: 'rinkeby',
     },
   },
 }
