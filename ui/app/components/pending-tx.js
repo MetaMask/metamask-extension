@@ -180,7 +180,7 @@ PendingTx.prototype.render = function () {
                     log.info(`Gas limit changed to ${newBN.toString(10)}`)
                     const txMeta = this.gatherTxMeta()
                     txMeta.txParams.gas = '0x' + newBN.toString('hex')
-                    this.setState({ txData: txMeta })
+                    this.setState({ txData: cloneObj(txMeta) })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
@@ -206,7 +206,7 @@ PendingTx.prototype.render = function () {
                     log.info(`Gas price changed to: ${newBN.toString(10)}`)
                     const txMeta = this.gatherTxMeta()
                     txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
-                    this.setState({ txData: txMeta })
+                    this.setState({ txData: cloneObj(txMeta) })
                   },
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
@@ -388,7 +388,7 @@ PendingTx.prototype.gatherTxMeta = function () {
   log.debug(`pending-tx gatherTxMeta`)
   const props = this.props
   const state = this.state
-  const txData = state.txData || props.txData
+  const txData = cloneObj(state.txData) || cloneObj(props.txData)
 
   log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData
@@ -409,7 +409,6 @@ PendingTx.prototype._notZeroOrEmptyString = function (obj) {
 
 function forwardCarrat () {
   return (
-
     h('img', {
       src: 'images/forward-carrat.svg',
       style: {
@@ -417,6 +416,9 @@ function forwardCarrat () {
         height: '37px',
       },
     })
-
   )
+}
+
+function cloneObj (obj) {
+  return JSON.parse(JSON.stringify(obj))
 }

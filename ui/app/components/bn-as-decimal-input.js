@@ -16,10 +16,10 @@ function BnAsDecimalInput () {
 /* Bn as Decimal Input
  *
  * A component for allowing easy, decimal editing
- * of a passed in hex string value.
+ * of a passed in bn string value.
  *
  * On change, calls back its `onChange` function parameter
- * and passes it an updated hex string.
+ * and passes it an updated bn string.
  */
 
 BnAsDecimalInput.prototype.render = function () {
@@ -30,8 +30,8 @@ BnAsDecimalInput.prototype.render = function () {
 
   const suffix = props.suffix
   const style = props.style
-  const newValue = value.toNumber(10) / scale
   const scale = Math.pow(10, precision)
+  const newValue = value.toNumber(10) / scale
 
   return (
     h('.flex-column', [
