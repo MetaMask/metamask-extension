@@ -19,7 +19,7 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.render = function () {
-  const { transaction, network } = this.props
+  const { transaction, network, conversionRate } = this.props
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }
@@ -80,6 +80,7 @@ TransactionListItem.prototype.render = function () {
 
       isTx ? h(EtherBalance, {
         value: txParams.value,
+        conversionRate,
         width: '55px',
         shorten: true,
         showFiat: false,

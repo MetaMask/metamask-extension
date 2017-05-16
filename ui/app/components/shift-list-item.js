@@ -15,7 +15,9 @@ const Tooltip = require('./tooltip')
 module.exports = connect(mapStateToProps)(ShiftListItem)
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    conversionRate: state.metamask.conversionRate,
+  }
 }
 
 inherits(ShiftListItem, Component)
@@ -64,6 +66,7 @@ function formatDate (date) {
 
 ShiftListItem.prototype.renderUtilComponents = function () {
   var props = this.props
+  const { conversionRate } = props
 
   switch (props.response.status) {
     case 'no_deposits':
@@ -96,6 +99,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
         }),
         h(EtherBalance, {
           value: `${props.response.outgoingCoin}`,
+          conversionRate,
           width: '55px',
           shorten: true,
           needsParse: false,

@@ -1,5 +1,4 @@
 const Component = require('react').Component
-const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
@@ -20,12 +19,7 @@ const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 const MIN_GAS_LIMIT_BN = new BN(21000)
 
-module.exports = connect(mapStateToProps)(PendingTx)
-
-function mapStateToProps (state) {
-  return {}
-}
-
+module.exports = PendingTx
 inherits(PendingTx, Component)
 function PendingTx () {
   Component.call(this)
@@ -37,7 +31,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-
+  const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -61,7 +55,6 @@ PendingTx.prototype.render = function () {
   const maxCost = txFeeBn.add(valueBn)
 
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
-  const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
@@ -75,18 +68,8 @@ PendingTx.prototype.render = function () {
     }, [
 
       h('form#pending-tx-form', {
-        onSubmit: (event) => {
-          const txMeta = this.gatherTxMeta()
-          event.preventDefault()
-          const form = document.querySelector('form#pending-tx-form')
-          const valid = form.checkValidity()
-          this.setState({ valid })
-          if (valid && this.verifyGasParams()) {
-            props.sendTransaction(txMeta, event)
-          } else {
-            this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
-          }
-        },
+        onSubmit: this.onSubmit.bind(this),
+
       }, [
 
         // tx info
@@ -100,7 +83,6 @@ PendingTx.prototype.render = function () {
 
             h(MiniAccountPanel, {
               imageSeed: address,
-              imageifyIdenticons: imageify,
               picOrder: 'right',
             }, [
               h('span.font-small', {
@@ -121,6 +103,7 @@ PendingTx.prototype.render = function () {
               }, [
                 h(EthBalance, {
                   value: balance,
+                  conversionRate,
                   inline: true,
                   labelColor: '#F7861C',
                 }),
@@ -176,12 +159,8 @@ PendingTx.prototype.render = function () {
                     position: 'relative',
                     top: '5px',
                   },
-                  onChange: (newHex) => {
-                    log.info(`Gas limit changed to ${newHex}`)
-                    const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gas = newHex
-                    this.setState({ txData: txMeta })
-                  },
+                  onChange: this.gasLimitChanged.bind(this),
+
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
               ]),
@@ -201,13 +180,7 @@ PendingTx.prototype.render = function () {
                     position: 'relative',
                     top: '5px',
                   },
-                  onChange: (newHex) => {
-                    log.info(`Gas price changed to: ${newHex}`)
-                    const inWei = hexToBn(newHex).mul(GWEI_FACTOR)
-                    const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gasPrice = inWei.toString(16)
-                    this.setState({ txData: txMeta })
-                  },
+                  onChange: this.gasPriceChanged.bind(this),
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
               ]),
@@ -331,13 +304,11 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
   const txData = props.txData
   const txParams = txData.txParams || {}
   const isContractDeploy = !('to' in txParams)
-  const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
     return h(MiniAccountPanel, {
       imageSeed: txParams.to,
-      imageifyIdenticons: imageify,
       picOrder: 'left',
     }, [
       h('span.font-small', {
@@ -353,7 +324,6 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
     ])
   } else {
     return h(MiniAccountPanel, {
-      imageifyIdenticons: imageify,
       picOrder: 'left',
     }, [
 
@@ -365,6 +335,21 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
     ])
   }
+}
+
+PendingTx.prototype.gasPriceChanged = function (newHex) {
+  log.info(`Gas price changed to: ${newHex}`)
+  const inWei = hexToBn(newHex).mul(GWEI_FACTOR)
+  const txMeta = this.gatherTxMeta()
+  txMeta.txParams.gasPrice = inWei.toString(16)
+  this.setState({ txData: txMeta })
+}
+
+PendingTx.prototype.gasLimitChanged = function (newHex) {
+  log.info(`Gas limit changed to ${newHex}`)
+  const txMeta = this.gatherTxMeta()
+  txMeta.txParams.gas = newHex
+  this.setState({ txData: txMeta })
 }
 
 PendingTx.prototype.resetGasFields = function () {
@@ -380,6 +365,33 @@ PendingTx.prototype.resetGasFields = function () {
     txData: null,
     valid: true,
   })
+}
+
+PendingTx.prototype.onSubmit = function (event) {
+  event.preventDefault()
+  const txMeta = this.gatherTxMeta()
+  const valid = this.checkValidity()
+  this.setState({ valid })
+  if (valid && this.verifyGasParams()) {
+    this.props.sendTransaction(txMeta, event)
+  } else {
+    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+  }
+}
+
+PendingTx.prototype.checkValidity = function () {
+  const form = this.getFormEl()
+  const valid = form.checkValidity()
+  return valid
+}
+
+PendingTx.prototype.getFormEl = function () {
+  const form = document.querySelector('form#pending-tx-form')
+  // Stub out form for unit tests:
+  if (!form) {
+    return { checkValidity () { return true } }
+  }
+  return form
 }
 
 // After a customizable state value has been updated,

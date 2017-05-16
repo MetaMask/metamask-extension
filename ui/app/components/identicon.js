@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const isNode = require('detect-node')
 const findDOMNode = require('react-dom').findDOMNode
 const jazzicon = require('jazzicon')
 const iconFactoryGen = require('../../lib/icon-factory')
@@ -40,8 +41,10 @@ IdenticonComponent.prototype.componentDidMount = function () {
 
   var container = findDOMNode(this)
   var diameter = props.diameter || this.defaultDiameter
-  var img = iconFactory.iconForAddress(address, diameter, false)
-  container.appendChild(img)
+  if (!isNode) {
+    var img = iconFactory.iconForAddress(address, diameter, false)
+    container.appendChild(img)
+  }
 }
 
 IdenticonComponent.prototype.componentDidUpdate = function () {
@@ -58,6 +61,8 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
   }
 
   var diameter = props.diameter || this.defaultDiameter
-  var img = iconFactory.iconForAddress(address, diameter, false)
-  container.appendChild(img)
+  if (!isNode) {
+    var img = iconFactory.iconForAddress(address, diameter, false)
+    container.appendChild(img)
+  }
 }

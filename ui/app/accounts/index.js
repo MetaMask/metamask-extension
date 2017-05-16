@@ -23,6 +23,7 @@ function mapStateToProps (state) {
     scrollToBottom: state.appState.scrollToBottom,
     pending,
     keyrings: state.metamask.keyrings,
+    conversionRate: state.metamask.conversionRate,
   }
 }
 
@@ -33,7 +34,7 @@ function AccountsScreen () {
 
 AccountsScreen.prototype.render = function () {
   const props = this.props
-  const { keyrings } = props
+  const { keyrings, conversionRate } = props
   const identityList = valuesFor(props.identities)
   const unapprovedTxList = valuesFor(props.unapprovedTxs)
 
@@ -81,6 +82,7 @@ AccountsScreen.prototype.render = function () {
               key: `acct-panel-${identity.address}`,
               identity,
               selectedAddress: this.props.selectedAddress,
+              conversionRate,
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,
