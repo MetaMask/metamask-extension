@@ -3,6 +3,7 @@ const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
+const clone = require('clone')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const noop = () => true
 const currentNetworkId = 42
@@ -184,8 +185,11 @@ describe('Transaction Controller', function () {
         },
       }
 
+      const updatedMeta = clone(txMeta)
+
       txController.addTx(txMeta)
-      txMeta.txParams.gasPrice = desiredGasPriced
+      updatedMeta.txParams.gasPrice = desiredGasPriced
+      txController.updateTx(updatedMeta)
       var result = txController.getTx('1')
       assert.equal(result.txParams.gasPrice, desiredGasPriced, 'gas price updated')
     })
