@@ -9,11 +9,9 @@ const BN = ethUtil.BN
 var BnInput = require('../../../ui/app/components/bn-as-decimal-input')
 
 describe('BnInput', function () {
-  let bnInput
-
   it('can tolerate a gas decimal number at a high precision', function (done) {
 
-    const renderer = ReactTestUtils.createRenderer();
+    const renderer = ReactTestUtils.createRenderer()
 
     let valueStr = '20'
     while (valueStr.length < 20) {
@@ -35,9 +33,9 @@ describe('BnInput', function () {
       value,
       precision,
       onChange: (newBn) => {
-        assert.equal(newBn.toString(), targetValue.toString(), 'should tolerate increase')
+        assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
         done()
-      }
+      },
     }
 
     const inputComponent = h(BnInput, props)
@@ -46,7 +44,7 @@ describe('BnInput', function () {
     const input = additions.find(component, 'input.hex-input')[0]
     ReactTestUtils.Simulate.change(input, { preventDefault() {}, target: {
       value: inputStr,
-      checkValidity() {return true} },
+      checkValidity() { return true } },
     })
   })
 })
