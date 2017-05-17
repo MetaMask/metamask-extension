@@ -8,11 +8,8 @@ const BN = ethUtil.BN
 
 var BnInput = require('../../../ui/app/components/bn-as-decimal-input')
 
-describe.only('BnInput', function () {
+describe('BnInput', function () {
   let bnInput
-  const message = 'Hello, world!'
-  const buffer = new Buffer(message, 'utf8')
-  const hex = buffer.toString('hex')
 
   it('can tolerate a gas decimal number at a high precision', function (done) {
 
