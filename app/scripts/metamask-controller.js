@@ -15,6 +15,7 @@ const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
+const DisplayController = require('./controllers/display')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
@@ -89,6 +90,11 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.AddressBookController,
     }, this.keyringController)
 
+    // display controller
+    this.displayController = new DisplayController({
+      initState: initState.DisplayController,
+    })
+
     // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
@@ -140,6 +146,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.shapeshiftController.store.subscribe((state) => {
       this.store.updateState({ ShapeShiftController: state })
     })
+    this.displayController.store.subscribe((state) => {
+      this.store.updateState({ DisplayController: state })
+    })
 
     // manual mem state subscriptions
     this.networkStore.subscribe(this.sendUpdate.bind(this))
@@ -153,6 +162,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.currencyController.store.subscribe(this.sendUpdate.bind(this))
     this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
     this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
+    this.displayController.store.subscribe(this.sendUpdate.bind(this))
   }
 
   //
@@ -231,6 +241,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.addressBookController.store.getState(),
       this.currencyController.store.getState(),
       this.noticeController.memStore.getState(),
+      this.displayController.store.getState(),
       // config manager
       this.configManager.getConfig(),
       this.shapeshiftController.store.getState(),
@@ -280,6 +291,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook).bind(addressBookController),
+
+      // DisplayController
+      finishFirstTime:          this.finishFirstTime.bind(this),
 
       // KeyringController
       setLocked: nodeify(keyringController.setLocked).bind(keyringController),
@@ -399,7 +413,17 @@ module.exports = class MetamaskController extends EventEmitter {
   // ensuring they are only ever available in the background process.
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
-    cb(null, this.preferencesController.getSelectedAddress())
+    this.displayController.finishFirstTime()
+    .then(() => {
+      cb(null, this.preferencesController.getSelectedAddress())
+    })
+  }
+
+  finishFirstTime (cb) {
+    this.displayController.finishFirstTime()
+      .then(() => {
+        cb(null)
+      })
   }
 
   importAccountWithStrategy (strategy, args, cb) {
@@ -412,7 +436,6 @@ module.exports = class MetamaskController extends EventEmitter {
     .then(() => { cb(null, this.keyringController.fullUpdate()) })
     .catch((reason) => { cb(reason) })
   }
-
 
   //
   // Identity Management

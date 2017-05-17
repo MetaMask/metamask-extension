@@ -231,7 +231,9 @@ function createNewVaultAndRestore (password, seed) {
     background.createNewVaultAndRestore(password, seed, (err) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.showAccountsPage())
+      background.finishFirstTime(() => {
+        dispatch(actions.showAccountsPage())
+      })
     })
   }
 }
@@ -250,7 +252,6 @@ function createNewVaultAndKeychain (password) {
           return dispatch(actions.displayWarning(err.message))
         }
         dispatch(actions.hideLoadingIndication())
-        forceUpdateMetamaskState(dispatch)
       })
     })
   }

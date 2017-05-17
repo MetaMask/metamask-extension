@@ -9,6 +9,7 @@
     "currentCurrency": "USD",
     "conversionRate": 12.7527416,
     "conversionDate": 1487624341,
+    "firstTime": true,
     "noActiveNotices": false,
     "lastUnreadNotice": {
       "read": false,
