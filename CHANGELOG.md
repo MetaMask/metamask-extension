@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix bug where edited gas parameters would not take effect.
 - Trim currency list.
 - Enable decimals in our gas prices.
 - Fix reset button.

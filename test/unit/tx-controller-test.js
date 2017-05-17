@@ -3,13 +3,15 @@ const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
+const clone = require('clone')
+const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
-describe('Transaction Manager', function () {
+describe('Transaction Controller', function () {
   let txController
 
   beforeEach(function () {
@@ -170,6 +172,28 @@ describe('Transaction Manager', function () {
       var result = txController.getTx('1')
       assert.equal(result.hash, 'foo')
     })
+
+    it('updates gas price', function () {
+      const originalGasPrice = '0x01'
+      const desiredGasPrice = '0x02'
+
+      const txMeta = {
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gasPrice: originalGasPrice,
+        },
+      }
+
+      const updatedMeta = clone(txMeta)
+
+      txController.addTx(txMeta)
+      updatedMeta.txParams.gasPrice = desiredGasPrice
+      txController.updateTx(updatedMeta)
+      var result = txController.getTx('1')
+      assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
+    })
   })
 
   describe('#getUnapprovedTxList', function () {
@@ -224,6 +248,66 @@ describe('Transaction Manager', function () {
     })
   })
 
+  describe('#approveTransaction', function () {
+    let txMeta, originalValue
+
+    beforeEach(function () {
+      originalValue = '0x01'
+      txMeta = {
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          nonce: originalValue,
+          gas: originalValue,
+          gasPrice: originalValue,
+        },
+      }
+    })
+
+
+    it('does not overwrite set values', function (done) {
+      const wrongValue = '0x05'
+
+      txController.addTx(txMeta)
+
+      const estimateStub = sinon.stub(txController.txProviderUtils.query, 'estimateGas')
+      .callsArgWith(1, null, wrongValue)
+
+      const priceStub = sinon.stub(txController.txProviderUtils.query, 'gasPrice')
+      .callsArgWith(0, null, wrongValue)
+
+      const nonceStub = sinon.stub(txController.txProviderUtils.query, 'getTransactionCount')
+      .callsArgWith(2, null, wrongValue)
+
+      const signStub = sinon.stub(txController, 'signTransaction')
+      .callsArgWith(1, null, noop)
+
+      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
+      .callsArgWith(1, null, originalValue)
+
+      txController.approveTransaction(txMeta.id, (err) => {
+        assert.ifError(err, 'should not error')
+
+        const result = txController.getTx(txMeta.id)
+        const params = result.txParams
+
+        assert.equal(params.gas, originalValue, 'gas unmodified')
+        assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
+        assert.equal(params.nonce, originalValue, 'nonce unmodified')
+        assert.equal(result.hash, originalValue, 'hash was set')
+
+        estimateStub.restore()
+        priceStub.restore()
+        signStub.restore()
+        nonceStub.restore()
+        pubStub.restore()
+
+        done()
+      })
+    })
+  })
+
   describe('#sign replay-protected tx', function () {
     it('prepares a tx with the chainId set', function () {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
@@ -234,4 +318,5 @@ describe('Transaction Manager', function () {
       })
     })
   })
+
 })
