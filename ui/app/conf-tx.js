@@ -108,7 +108,7 @@ ConfirmTxScreen.prototype.render = function () {
           currentCurrency,
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
-          sendTransaction: this.sendTransaction.bind(this, txData),
+          sendTransaction: this.sendTransaction.bind(this),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
           signPersonalMessage: this.signPersonalMessage.bind(this, txData),
