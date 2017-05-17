@@ -5,6 +5,7 @@
 - Fix bug where edited gas parameters would not take effect.
 - Trim currency list.
 - Fix event filter bug introduced by newer versions of Geth.
+- Fix bug where decimals in gas inputs could result in strange values.
 
 ## 3.6.4 2017-5-8
 
