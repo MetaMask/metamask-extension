@@ -14,24 +14,20 @@ describe.only('BnInput', function () {
   const buffer = new Buffer(message, 'utf8')
   const hex = buffer.toString('hex')
 
-  it('can tolerate a large number at a high precision', function (done) {
+  it('can tolerate a gas decimal number at a high precision', function (done) {
 
     const renderer = ReactTestUtils.createRenderer();
 
-    let valueStr = '1'
-    while (valueStr.length < 18 + 7) {
+    let valueStr = '20'
+    while (valueStr.length < 20) {
       valueStr += '0'
     }
     const value = new BN(valueStr, 10)
 
-    let inputStr = '11'
-    while (inputStr.length < 7) {
-      inputStr += '0'
-    }
-    inputStr += '.01'
+    let inputStr = '2.3'
 
-    let targetStr = inputStr.split('.').join()
-    while (targetStr.length < 18 + 7) {
+    let targetStr = '23'
+    while (targetStr.length < 19) {
       targetStr += '0'
     }
     const target = new BN(targetStr, 10)
