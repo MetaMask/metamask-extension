@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
+const clone = require('clone')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -347,14 +348,14 @@ PendingTx.prototype.gasPriceChanged = function (newBN) {
   log.info(`Gas price changed to: ${newBN.toString(10)}`)
   const txMeta = this.gatherTxMeta()
   txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
-  this.setState({ txData: cloneObj(txMeta) })
+  this.setState({ txData: clone(txMeta) })
 }
 
 PendingTx.prototype.gasLimitChanged = function (newBN) {
   log.info(`Gas limit changed to ${newBN.toString(10)}`)
   const txMeta = this.gatherTxMeta()
   txMeta.txParams.gas = '0x' + newBN.toString('hex')
-  this.setState({ txData: cloneObj(txMeta) })
+  this.setState({ txData: clone(txMeta) })
 }
 
 PendingTx.prototype.resetGasFields = function () {
@@ -405,7 +406,7 @@ PendingTx.prototype.gatherTxMeta = function () {
   log.debug(`pending-tx gatherTxMeta`)
   const props = this.props
   const state = this.state
-  const txData = cloneObj(state.txData) || cloneObj(props.txData)
+  const txData = clone(state.txData) || clone(props.txData)
 
   log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData
@@ -434,8 +435,4 @@ function forwardCarrat () {
       },
     })
   )
-}
-
-function cloneObj (obj) {
-  return JSON.parse(JSON.stringify(obj))
 }

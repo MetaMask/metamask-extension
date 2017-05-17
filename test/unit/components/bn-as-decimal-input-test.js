@@ -14,7 +14,7 @@ describe('BnInput', function () {
     const renderer = ReactTestUtils.createRenderer()
 
     let valueStr = '20'
-    while (valueStr.length < 20) {
+    while (valueStr.length < 15) {
       valueStr += '0'
     }
     const value = new BN(valueStr, 10)
@@ -22,7 +22,7 @@ describe('BnInput', function () {
     let inputStr = '2.3'
 
     let targetStr = '23'
-    while (targetStr.length < 19) {
+    while (targetStr.length < 14) {
       targetStr += '0'
     }
     const target = new BN(targetStr, 10)
