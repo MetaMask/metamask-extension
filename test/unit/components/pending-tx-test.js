@@ -2,16 +2,10 @@ const assert = require('assert')
 const additions = require('react-testutils-additions')
 const h = require('react-hyperscript')
 const PendingTx = require('../../../ui/app/components/pending-tx')
-const createReactFactory = require('create-react-factory').createReactFactory
-const React = require('react')
-const shallow = require('react-test-renderer/shallow')
-const Factory = createReactFactory(PendingTx)
 const ReactTestUtils = require('react-addons-test-utils')
 const ethUtil = require('ethereumjs-util')
 
 describe('PendingTx', function () {
-  let pendingTxComponent
-
   const identities = {
     '0xfdea65c8e26263f6d9a1b5de9555d2931a33b826': {
       name: 'Main Account 1',
@@ -38,7 +32,7 @@ describe('PendingTx', function () {
 
   it('should use updated values when edited.', function (done) {
 
-    const renderer = ReactTestUtils.createRenderer();
+    const renderer = ReactTestUtils.createRenderer()
     const newGasPrice = '0x77359400'
 
     const props = {
@@ -56,34 +50,31 @@ describe('PendingTx', function () {
     }
 
     const pendingTxComponent = h(PendingTx, props)
-    const component = additions.renderIntoDocument(pendingTxComponent);
+    const component = additions.renderIntoDocument(pendingTxComponent)
     renderer.render(pendingTxComponent)
     const result = renderer.getRenderOutput()
-    const form = result.props.children
-    const children = form.props.children[form.props.children.length - 1]
     assert.equal(result.type, 'div', 'should create a div')
 
-    try{
-
+    try {
       const input = additions.find(component, '.cell.row input[type="number"]')[1]
       ReactTestUtils.Simulate.change(input, {
         target: {
           value: 2,
           checkValidity() { return true },
-        }
+        },
       })
 
-      let form = additions.find(component, 'form')[0]
+      const form = additions.find(component, 'form')[0]
       form.checkValidity = () => true
       form.getFormEl = () => { return { checkValidity() { return true } } }
-      ReactTestUtils.Simulate.submit(form, { preventDefault() {}, target: { checkValidity() {return true} } })
+      ReactTestUtils.Simulate.submit(form, { preventDefault() {}, target: { checkValidity() {
+        return true
+      } } })
 
     } catch (e) {
-      console.log("WHAAAA")
+      console.log('WHAAAA')
       console.error(e)
     }
-
   })
-
 })
 
