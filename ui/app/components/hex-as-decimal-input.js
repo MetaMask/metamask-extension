@@ -139,7 +139,7 @@ HexAsDecimalInput.prototype.constructWarning = function () {
 }
 
 function hexify (decimalString) {
-  const hexBN = new BN(decimalString, 10)
+  const hexBN = new BN(decimalString.split('.')[0], 10)
   return '0x' + hexBN.toString('hex')
 }
 
