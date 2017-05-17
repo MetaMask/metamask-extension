@@ -4,6 +4,7 @@ const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
 const clone = require('clone')
+const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const noop = () => true
 const currentNetworkId = 42
@@ -174,7 +175,7 @@ describe('Transaction Controller', function () {
 
     it('updates gas price', function () {
       const originalGasPrice = '0x01'
-      const desiredGasPriced = '0x02'
+      const desiredGasPrice = '0x02'
 
       const txMeta = {
         id: '1',
@@ -188,10 +189,10 @@ describe('Transaction Controller', function () {
       const updatedMeta = clone(txMeta)
 
       txController.addTx(txMeta)
-      updatedMeta.txParams.gasPrice = desiredGasPriced
+      updatedMeta.txParams.gasPrice = desiredGasPrice
       txController.updateTx(updatedMeta)
       var result = txController.getTx('1')
-      assert.equal(result.txParams.gasPrice, desiredGasPriced, 'gas price updated')
+      assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
     })
   })
 
@@ -244,6 +245,66 @@ describe('Transaction Controller', function () {
       assert.equal(txController.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
       filterParams = { to: '0xaa' }
       assert.equal(txController.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
+    })
+  })
+
+  describe('#approveTransaction', function () {
+    let txMeta, originalValue
+
+    beforeEach(function () {
+      originalValue = '0x01'
+      txMeta = {
+        id: '1',
+        status: 'unapproved',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          nonce: originalValue,
+          gas: originalValue,
+          gasPrice: originalValue,
+        },
+      }
+    })
+
+
+    it('does not overwrite set values', function (done) {
+      const wrongValue = '0x05'
+
+      txController.addTx(txMeta)
+
+      const estimateStub = sinon.stub(txController.txProviderUtils.query, 'estimateGas')
+      .callsArgWith(1, null, wrongValue)
+
+      const priceStub = sinon.stub(txController.txProviderUtils.query, 'gasPrice')
+      .callsArgWith(0, null, wrongValue)
+
+      const nonceStub = sinon.stub(txController.txProviderUtils.query, 'getTransactionCount')
+      .callsArgWith(2, null, wrongValue)
+
+      const signStub = sinon.stub(txController, 'signTransaction')
+      .callsArgWith(1, null, noop)
+
+      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
+      .callsArgWith(1, null, originalValue)
+
+      txController.approveTransaction(txMeta.id, (err) => {
+        assert.ifError(err, 'should not error')
+
+        const result = txController.getTx(txMeta.id)
+        const params = result.txParams
+
+        assert.equal(params.gas, originalValue, 'gas unmodified')
+        assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
+        assert.equal(params.nonce, originalValue, 'nonce unmodified')
+        assert.equal(result.hash, originalValue, 'hash was set')
+
+        estimateStub.restore()
+        priceStub.restore()
+        signStub.restore()
+        nonceStub.restore()
+        pubStub.restore()
+
+        done()
+      })
     })
   })
 
