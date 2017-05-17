@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.6.5 2017-5-17
+
 - Fix bug where edited gas parameters would not take effect.
 - Trim currency list.
 - Fix event filter bug introduced by newer versions of Geth.
