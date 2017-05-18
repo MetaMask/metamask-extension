@@ -1,13 +1,5 @@
-const MetamaskConfig = require('../config.js')
 const ethUtil = require('ethereumjs-util')
 const normalize = require('eth-sig-util').normalize
-
-const TESTNET_RPC = MetamaskConfig.network.testnet
-const MAINNET_RPC = MetamaskConfig.network.mainnet
-const MORDEN_RPC = MetamaskConfig.network.morden
-const KOVAN_RPC = MetamaskConfig.network.kovan
-const RINKEBY_RPC = MetamaskConfig.network.rinkeby
-
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -33,36 +25,6 @@ ConfigManager.prototype.setConfig = function (config) {
 ConfigManager.prototype.getConfig = function () {
   var data = this.getData()
   return data.config
-}
-
-ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'rpc',
-    rpcTarget: rpcUrl,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.setProviderType = function (type) {
-  var config = this.getConfig()
-  config.provider = {
-    type: type,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.useEtherscanProvider = function () {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'etherscan',
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.getProvider = function () {
-  var config = this.getConfig()
-  return config.provider
 }
 
 ConfigManager.prototype.setData = function (data) {
@@ -138,35 +100,6 @@ ConfigManager.prototype.getSeedWords = function () {
   var data = this.getData()
   return data.seedWords
 }
-
-ConfigManager.prototype.getCurrentRpcAddress = function () {
-  var provider = this.getProvider()
-  if (!provider) return null
-  switch (provider.type) {
-
-    case 'mainnet':
-      return MAINNET_RPC
-
-    case 'testnet':
-      return TESTNET_RPC
-
-    case 'morden':
-      return MORDEN_RPC
-
-    case 'kovan':
-      return KOVAN_RPC
-
-    case 'rinkeby':
-      return RINKEBY_RPC
-
-    default:
-      return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
-  }
-}
-
-//
-// Tx
-//
 
 ConfigManager.prototype.getTxList = function () {
   var data = this.getData()

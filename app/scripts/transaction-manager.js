@@ -4,7 +4,6 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const EthQuery = require('eth-query')
 const TxProviderUtil = require('./lib/tx-utils')
 const createId = require('./lib/random-id')
 
@@ -18,11 +17,11 @@ module.exports = class TransactionManager extends EventEmitter {
     this.networkStore = opts.networkStore || new ObservableStore({})
     this.preferencesStore = opts.preferencesStore || new ObservableStore({})
     this.txHistoryLimit = opts.txHistoryLimit
-    this.provider = opts.provider
-    this.blockTracker = opts.blockTracker
-    this.query = new EthQuery(this.provider)
-    this.txProviderUtils = new TxProviderUtil(this.provider)
-    this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
+    this.setupProviderAndEthQuery({
+      provider: opts.provider,
+      blockTracker: opts.blockTracker,
+      ethQuery: opts.ethQuery,
+    })
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
@@ -39,6 +38,20 @@ module.exports = class TransactionManager extends EventEmitter {
 
   getNetwork () {
     return this.networkStore.getState().network
+  }
+
+  setupProviderAndEthQuery ({provider, blockTracker, ethQuery}) {
+    if (this.provider) {
+      delete this.provider
+      delete this.blockTracker
+      delete this.query
+      delete this.txProviderUtils
+    }
+    this.provider = provider
+    this.query = ethQuery
+    this.txProviderUtils = new TxProviderUtil(ethQuery)
+    blockTracker ? this.blockTracker = blockTracker : this.blockTracker = provider
+    this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
   }
 
   getSelectedAddress () {
