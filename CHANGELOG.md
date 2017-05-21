@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add Transaction Number (nonce) to transaction list.
+- Label the pending tx icon with a tooltip.
 
 ## 3.6.5 2017-5-17
 
