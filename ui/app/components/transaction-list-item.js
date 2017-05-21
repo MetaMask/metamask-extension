@@ -75,8 +75,7 @@ TransactionListItem.prototype.render = function () {
       h(Tooltip, {
         title: 'Transaction Number',
         position: 'bottom',
-      },
-      [
+      }, [
         h('span', {
           style: {
             display: 'flex',
@@ -88,7 +87,6 @@ TransactionListItem.prototype.render = function () {
           },
         }, nonce),
       ]),
-
 
       h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
         domainField(txParams),

@@ -36,13 +36,12 @@ TransactionIcon.prototype.render = function () {
       return h(Tooltip, {
         title: 'Pending',
         position: 'bottom',
-      },
-      [
+      }, [
         h('i.fa.fa-ellipsis-h', {
           style: {
             fontSize: '27px',
           },
-        })
+        }),
       ])
   }
 
