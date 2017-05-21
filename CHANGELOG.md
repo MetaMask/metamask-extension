@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add Transaction Number (nonce) to transaction list.
+
 ## 3.6.5 2017-5-17
 
 - Fix bug where edited gas parameters would not take effect.

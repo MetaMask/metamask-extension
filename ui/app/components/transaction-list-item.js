@@ -8,6 +8,7 @@ const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const Tooltip = require('./tooltip')
+const BN = require('ethereumjs-util').BN
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -39,6 +40,8 @@ TransactionListItem.prototype.render = function () {
     txParams = transaction.msgParams
   }
 
+  const nonce = (new BN(txParams.nonce.substr(2))).toString(10)
+
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
@@ -68,6 +71,24 @@ TransactionListItem.prototype.render = function () {
           h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
         ]),
       ]),
+
+      h(Tooltip, {
+        title: 'Transaction Number',
+        position: 'bottom',
+      },
+      [
+        h('span', {
+          style: {
+            display: 'flex',
+            cursor: 'normal',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
+          },
+        }, nonce),
+      ]),
+
 
       h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
         domainField(txParams),
