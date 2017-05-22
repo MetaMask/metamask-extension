@@ -8,7 +8,7 @@ const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const Tooltip = require('./tooltip')
-const BN = require('ethereumjs-util').BN
+const numberToBN = require('number-to-bn')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -40,7 +40,7 @@ TransactionListItem.prototype.render = function () {
     txParams = transaction.msgParams
   }
 
-  const nonce = txParams.nonce ? (new BN(txParams.nonce.substr(2))).toString(10) : ''
+  const nonce = txParams.nonce ? numberToBN(txParams.nonce).toString(10) : ''
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   return (
