@@ -58,9 +58,7 @@ function MetamaskInpageProvider (connectionStream) {
       return message
     })
     // forward to asyncProvider
-    console.log('sending async to engine', request)
     engine.sendAsync(request, function (err, res) {
-      console.log('send async returned !!', err, res)
       if (err) return cb(err)
       // transform messages to original ids
       eachJsonMessage(res, (message) => {
