@@ -40,7 +40,7 @@ TransactionListItem.prototype.render = function () {
     txParams = transaction.msgParams
   }
 
-  const nonce = (new BN(txParams.nonce.substr(2))).toString(10)
+  const nonce = txParams.nonce ? (new BN(txParams.nonce.substr(2))).toString(10) : ''
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   return (
