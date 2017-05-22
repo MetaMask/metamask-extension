@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const Tooltip = require('./tooltip')
 
 const Identicon = require('./identicon')
 
@@ -32,11 +33,16 @@ TransactionIcon.prototype.render = function () {
       })
 
     case 'submitted':
-      return h('i.fa.fa-ellipsis-h', {
-        style: {
-          fontSize: '27px',
-        },
-      })
+      return h(Tooltip, {
+        title: 'Pending',
+        position: 'bottom',
+      }, [
+        h('i.fa.fa-ellipsis-h', {
+          style: {
+            fontSize: '27px',
+          },
+        }),
+      ])
   }
 
   if (isMsg) {
