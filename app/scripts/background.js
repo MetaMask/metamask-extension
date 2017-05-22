@@ -1,6 +1,5 @@
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
-const asyncQ = require('async-q')
 const pipe = require('pump')
 const LocalStorageStore = require('obs-store/lib/localStorage')
 const storeTransform = require('obs-store/lib/transform')
@@ -30,34 +29,29 @@ let popupIsOpen = false
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 
 // initialization flow
-asyncQ.waterfall([
-  () => loadStateFromPersistence(),
-  (initState) => setupController(initState),
-])
-.then(() => console.log('MetaMask initialization complete.'))
-.catch((err) => { console.error(err) })
+initialize().catch(console.error)
+
+async function initialize() {
+  const initState = await loadStateFromPersistence()
+  await setupController(initState)
+  console.log('MetaMask initialization complete.')
+}
 
 //
 // State and Persistence
 //
 
-function loadStateFromPersistence () {
+async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
-  const initialState = migrator.generateInitialState(firstTimeState)
-  return asyncQ.waterfall([
-    // read from disk
-    () => Promise.resolve(diskStore.getState() || initialState),
-    // migrate data
-    (versionedData) => migrator.migrateData(versionedData),
-    // write to disk
-    (versionedData) => {
-      diskStore.putState(versionedData)
-      return Promise.resolve(versionedData)
-    },
-    // resolve to just data
-    (versionedData) => Promise.resolve(versionedData.data),
-  ])
+  // read from disk
+  let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
+  // migrate data
+  versionedData = await migrator.migrateData(versionedData)
+  // write to disk
+  diskStore.putState(versionedData)
+  // return just the data
+  return versionedData.data
 }
 
 function setupController (initState) {
@@ -120,13 +114,13 @@ function setupController (initState) {
   //
 
   updateBadge()
-  controller.txManager.on('updateBadge', updateBadge)
+  controller.txController.on('updateBadge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
 
   // plugin badge text
   function updateBadge () {
     var label = ''
-    var unapprovedTxCount = controller.txManager.unapprovedTxCount
+    var unapprovedTxCount = controller.txController.unapprovedTxCount
     var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     var count = unapprovedTxCount + unapprovedMsgCount
     if (count) {

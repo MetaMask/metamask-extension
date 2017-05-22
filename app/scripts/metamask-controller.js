@@ -17,7 +17,7 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
-const TxManager = require('./transaction-manager')
+const TransactionController = require('./controllers/transactions')
 const ConfigManager = require('./lib/config-manager')
 const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
@@ -89,8 +89,8 @@ module.exports = class MetamaskController extends EventEmitter {
     }, this.keyringController)
 
     // tx mgmt
-    this.txManager = new TxManager({
-      initState: initState.TransactionManager,
+    this.txController = new TransactionController({
+      initState: initState.TransactionController || initState.TransactionManager,
       networkStore: this.networkController.networkStore,
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
@@ -144,8 +144,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.publicConfigStore = this.initPublicConfigStore()
 
     // manual disk state subscriptions
-    this.txManager.store.subscribe((state) => {
-      this.store.updateState({ TransactionManager: state })
+    this.txController.store.subscribe((state) => {
+      this.store.updateState({ TransactionController: state })
     })
     this.keyringController.store.subscribe((state) => {
       this.store.updateState({ KeyringController: state })
@@ -172,7 +172,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // manual mem state subscriptions
     this.networkController.subscribe(this.sendUpdate.bind(this))
     this.ethStore.subscribe(this.sendUpdate.bind(this))
-    this.txManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.txController.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
@@ -251,7 +251,7 @@ module.exports = class MetamaskController extends EventEmitter {
       },
       this.networkController.getState(),
       this.ethStore.getState(),
-      this.txManager.memStore.getState(),
+      this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
@@ -276,7 +276,7 @@ module.exports = class MetamaskController extends EventEmitter {
   getApi () {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
-    const txManager = this.txManager
+    const txController = this.txController
     const noticeController = this.noticeController
     const addressBookController = this.addressBookController
 
@@ -317,9 +317,9 @@ module.exports = class MetamaskController extends EventEmitter {
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
 
-      // txManager
-      approveTransaction: txManager.approveTransaction.bind(txManager),
-      cancelTransaction: txManager.cancelTransaction.bind(txManager),
+      // txController
+      approveTransaction: txController.approveTransaction.bind(txController),
+      cancelTransaction: txController.cancelTransaction.bind(txController),
       updateAndApproveTransaction: this.updateAndApproveTx.bind(this),
 
       // messageManager
@@ -449,12 +449,12 @@ module.exports = class MetamaskController extends EventEmitter {
   newUnapprovedTransaction (txParams, cb) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const self = this
-    self.txManager.addUnapprovedTransaction(txParams, (err, txMeta) => {
+    self.txController.addUnapprovedTransaction(txParams, (err, txMeta) => {
       if (err) return cb(err)
       self.sendUpdate()
       self.opts.showUnapprovedTx(txMeta)
       // listen for tx completion (success, fail)
-      self.txManager.once(`${txMeta.id}:finished`, (completedTx) => {
+      self.txController.once(`${txMeta.id}:finished`, (completedTx) => {
         switch (completedTx.status) {
           case 'submitted':
             return cb(null, completedTx.hash)
@@ -505,9 +505,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
   updateAndApproveTx (txMeta, cb) {
     log.debug(`MetaMaskController - updateAndApproveTx: ${JSON.stringify(txMeta)}`)
-    const txManager = this.txManager
-    txManager.updateTx(txMeta)
-    txManager.approveTransaction(txMeta.id, cb)
+    const txController = this.txController
+    txController.updateTx(txMeta)
+    txController.approveTransaction(txMeta.id, cb)
   }
 
   signMessage (msgParams, cb) {

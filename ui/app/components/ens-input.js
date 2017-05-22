@@ -5,11 +5,9 @@ const extend = require('xtend')
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
+const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\.eth$/
 
-const networkResolvers = {
-  '3': '112234455c3a32fd11230c42e7bccd4a84e02010',
-}
 
 module.exports = EnsInput
 
@@ -24,8 +22,8 @@ EnsInput.prototype.render = function () {
     list: 'addresses',
     onChange: () => {
       const network = this.props.network
-      const resolverAddress = networkResolvers[network]
-      if (!resolverAddress) return
+      const networkHasEnsSupport = getNetworkEnsSupport(network)
+      if (!networkHasEnsSupport) return
 
       const recipient = document.querySelector('input[name="address"]').value
       if (recipient.match(ensRE) === null) {
@@ -73,9 +71,9 @@ EnsInput.prototype.render = function () {
 
 EnsInput.prototype.componentDidMount = function () {
   const network = this.props.network
-  const resolverAddress = networkResolvers[network]
+  const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-  if (resolverAddress) {
+  if (networkHasEnsSupport) {
     const provider = global.ethereumProvider
     this.ens = new ENS({ provider, network })
     this.checkName = debounce(this.lookupEnsName.bind(this), 200)
@@ -169,3 +167,8 @@ EnsInput.prototype.ensIconContents = function (recipient) {
     })
   }
 }
+
+function getNetworkEnsSupport (network) {
+  return Boolean(networkMap[network])
+}
+

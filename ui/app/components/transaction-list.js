@@ -13,7 +13,7 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { transactions, network, unapprovedMsgs } = this.props
+  const { transactions, network, unapprovedMsgs, conversionRate } = this.props
 
   var shapeShiftTxList
   if (network === '1') {
@@ -69,6 +69,7 @@ TransactionList.prototype.render = function () {
             }
             return h(TransactionListItem, {
               transaction, i, network, key,
+              conversionRate,
               showTx: (txId) => {
                 this.props.viewPendingTx(txId)
               },

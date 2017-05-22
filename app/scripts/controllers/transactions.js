@@ -4,8 +4,9 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const TxProviderUtil = require('./lib/tx-utils')
-const createId = require('./lib/random-id')
+const EthQuery = require('eth-query')
+const TxProviderUtil = require('../lib/tx-utils')
+const createId = require('../lib/random-id')
 
 module.exports = class TransactionManager extends EventEmitter {
   constructor (opts) {

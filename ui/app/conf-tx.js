@@ -27,6 +27,8 @@ function mapStateToProps (state) {
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -37,8 +39,8 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs,
-    unapprovedMsgs, unapprovedPersonalMsgs } = props
+  const { network, provider, unapprovedTxs, currentCurrency,
+    unapprovedMsgs, unapprovedPersonalMsgs, conversionRate } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
 
@@ -102,9 +104,11 @@ ConfirmTxScreen.prototype.render = function () {
           selectedAddress: props.selectedAddress,
           accounts: props.accounts,
           identities: props.identities,
+          conversionRate,
+          currentCurrency,
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
-          sendTransaction: this.sendTransaction.bind(this, txData),
+          sendTransaction: this.sendTransaction.bind(this),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
           signPersonalMessage: this.signPersonalMessage.bind(this, txData),

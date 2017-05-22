@@ -2,6 +2,17 @@
 
 ## Current Master
 
+## 3.6.5 2017-5-17
+
+- Fix bug where edited gas parameters would not take effect.
+- Trim currency list.
+- Fix event filter bug introduced by newer versions of Geth.
+- Fix bug where decimals in gas inputs could result in strange values.
+
+## 3.6.4 2017-5-8
+
+- Fix main-net ENS resolution.
+
 ## 3.6.3 2017-5-8
 
 - Fix bug that could stop newer versions of Geth from working with MetaMask.
