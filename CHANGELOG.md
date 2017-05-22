@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where website filters would pile up and not deallocate when leaving a site.
+
 ## 3.6.5 2017-5-17
 
 - Fix bug where edited gas parameters would not take effect.
