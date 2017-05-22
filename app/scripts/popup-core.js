@@ -29,9 +29,9 @@ function connectToAccountManager (connectionStream, cb) {
 
 function setupWeb3Connection (connectionStream) {
   var providerStream = new StreamProvider()
-  providerStream.pipe(connectionStream).pipe(providerStream)
+  providerStream.stream.pipe(connectionStream).pipe(providerStream.stream)
   connectionStream.on('error', console.error.bind(console))
-  providerStream.on('error', console.error.bind(console))
+  providerStream.stream.on('error', console.error.bind(console))
   global.ethereumProvider = providerStream
   global.ethQuery = new EthQuery(providerStream)
 }
