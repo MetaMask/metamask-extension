@@ -34,13 +34,13 @@ function MetamaskInpageProvider (connectionStream) {
   const filterSubprovider = new FilterSubprovider()
   engine.addProvider(filterSubprovider)
 
-  const stream = self.stream = new StreamSubprovider()
-  engine.addProvider(stream)
+  const streamSubprovider = new StreamSubprovider()
+  engine.addProvider(streamSubprovider)
 
   pipe(
-    stream,
+    streamSubprovider,
     multiStream.createStream('provider'),
-    stream,
+    streamSubprovider,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
 
