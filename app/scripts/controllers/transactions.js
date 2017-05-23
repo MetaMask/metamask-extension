@@ -7,6 +7,10 @@ const ethUtil = require('ethereumjs-util')
 const EthQuery = require('eth-query')
 const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
+const denodeify = require('denodeify')
+
+const RETRY_LIMIT = 200
+const RESUBMIT_INTERVAL = 10000 // Ten seconds
 
 module.exports = class TransactionManager extends EventEmitter {
   constructor (opts) {
@@ -31,6 +35,8 @@ module.exports = class TransactionManager extends EventEmitter {
     this.store.subscribe(() => this._updateMemstore())
     this.networkStore.subscribe(() => this._updateMemstore())
     this.preferencesStore.subscribe(() => this._updateMemstore())
+
+    this.continuallyResubmitPendingTxs()
   }
 
   getState () {
@@ -230,7 +236,11 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
-  publishTransaction (txId, rawTx, cb) {
+  publishTransaction (txId, rawTx, cb = warn) {
+    const txMeta = this.getTx(txId)
+    txMeta.rawTx = rawTx
+    this.updateTx(txMeta)
+
     this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
       if (err) return cb(err)
       this.setTxHash(txId, txHash)
@@ -353,7 +363,7 @@ module.exports = class TransactionManager extends EventEmitter {
             message: 'There was a problem loading this transaction.',
           }
           this.updateTx(txMeta)
-          return console.error(err)
+          return log.error(err)
         }
         if (txParams.blockNumber) {
           this.setTxStatusConfirmed(txId)
@@ -379,6 +389,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.emit(`${txMeta.id}:${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
+
     }
     this.updateTx(txMeta)
     this.emit('updateBadge')
@@ -397,6 +408,45 @@ module.exports = class TransactionManager extends EventEmitter {
       metamaskNetworkId: this.getNetwork(),
     })
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+  }
+
+  continuallyResubmitPendingTxs () {
+    const pending = this.getTxsByMetaData('status', 'submitted')
+    const resubmit = denodeify(this.resubmitTx.bind(this))
+    Promise.all(pending.map(txMeta => resubmit(txMeta)))
+    .catch((reason) => {
+      log.info('Problem resubmitting tx', reason)
+    })
+    .then(() => {
+      global.setTimeout(() => {
+        this.continuallyResubmitPendingTxs()
+      }, RESUBMIT_INTERVAL)
+    })
+  }
+
+  resubmitTx (txMeta, cb) {
+    // Increment a try counter.
+    if (!('retryCount' in txMeta)) {
+      txMeta.retryCount = 0
+    }
+
+    // Only auto-submit already-signed txs:
+    if (!('rawTx' in txMeta)) {
+      return cb()
+    }
+
+    if (txMeta.retryCount > RETRY_LIMIT) {
+      txMeta.err = {
+        isWarning: true,
+        message: 'Gave up submitting tx.',
+      }
+      this.updateTx(txMeta)
+      return log.error(txMeta.err.message)
+    }
+
+    txMeta.retryCount++
+    const rawTx = txMeta.rawTx
+    this.txProviderUtils.publishTransaction(rawTx, cb)
   }
 }
 
