@@ -107,6 +107,35 @@ ConfigManager.prototype.getSeedWords = function () {
   var data = this.getData()
   return data.seedWords
 }
+ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'rpc',
+    rpcTarget: rpcUrl,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.setProviderType = function (type) {
+  var config = this.getConfig()
+  config.provider = {
+    type: type,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.useEtherscanProvider = function () {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'etherscan',
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.getProvider = function () {
+  var config = this.getConfig()
+  return config.provider
+}
 
 ConfigManager.prototype.getCurrentRpcAddress = function () {
   var provider = this.getProvider()

@@ -65,7 +65,6 @@ module.exports = class MetamaskController extends EventEmitter {
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
     this.ethStore = new EthStore({
-      network: this.networkController.networkStore,
       provider: this.provider,
       blockTracker: this.provider,
     })
@@ -139,7 +138,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.shapeshiftController.store.subscribe((state) => {
       this.store.updateState({ ShapeShiftController: state })
     })
-    this.networkController.providerStore.subscribe((state) => {
+    this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
     })
 

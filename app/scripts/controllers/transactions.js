@@ -21,9 +21,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
-    this.networkStore.subscribe((_) => this.blockTracker.on('block', this.checkForTxInBlock.bind(this)))
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
-
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
@@ -39,7 +37,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   getNetwork () {
-    return this.networkStore.getState().network
+    return this.networkStore.getState()
   }
 
   getSelectedAddress () {

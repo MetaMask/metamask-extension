@@ -3,7 +3,8 @@
 //
 
 module.exports = {
-  config: {
+  config: {},
+  NetworkController: {
     provider: {
       type: 'rinkeby',
     },
