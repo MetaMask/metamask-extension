@@ -30,8 +30,8 @@ BnAsDecimalInput.prototype.render = function () {
 
   const suffix = props.suffix
   const style = props.style
-  const scale = Math.pow(10, precision)
-  const newValue = value.toNumber(10) / scale
+  const valueString = value.toString(10)
+  const newValue = downsize(valueString, precision, precision)
 
   return (
     h('.flex-column', [
@@ -63,7 +63,9 @@ BnAsDecimalInput.prototype.render = function () {
           onChange: (event) => {
             this.updateValidity(event)
             const value = (event.target.value === '') ? '' : event.target.value
-            const scaledNumber = Math.floor(scale * value)
+
+
+            const scaledNumber = upsize(value, precision, precision)
             const precisionBN = new BN(scaledNumber, 10)
             onChange(precisionBN)
           },
@@ -140,4 +142,25 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   }
 
   return message
+}
+
+
+function downsize (number, scale, precision) {
+  if (scale === 0) {
+    return Number(number)
+  } else {
+    var decimals = (scale === precision) ? -1 : scale - precision
+    return Number(number.slice(0, -scale) + '.' + number.slice(-scale, decimals))
+  }
+}
+
+function upsize (number, scale, precision) {
+  var string = number.toString()
+  var stringArray = string.split('.')
+  var decimalLength = stringArray[1] ? stringArray[1].length : 0
+  var newString = ((scale === 0) || (decimalLength === 0)) ? stringArray[0] : stringArray[0] + stringArray[1].slice(0, precision)
+  for (var i = decimalLength; i < scale; i++) {
+    newString += '0'
+  }
+  return newString
 }
