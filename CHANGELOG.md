@@ -5,6 +5,7 @@
 - Add Transaction Number (nonce) to transaction list.
 - Label the pending tx icon with a tooltip.
 - Fix bug where website filters would pile up and not deallocate when leaving a site.
+- Continually resubmit pending txs for a period of time to ensure successful broadcast.
 
 ## 3.6.5 2017-5-17
 
