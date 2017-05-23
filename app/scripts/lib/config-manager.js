@@ -1,14 +1,13 @@
 const ethUtil = require('ethereumjs-util')
 const normalize = require('eth-sig-util').normalize
+const MetamaskConfig = require('../config.js')
 
-<<<<<<< HEAD
-=======
+
 const MAINNET_RPC = MetamaskConfig.network.mainnet
 const ROPSTEN_RPC = MetamaskConfig.network.ropsten
 const KOVAN_RPC = MetamaskConfig.network.kovan
 const RINKEBY_RPC = MetamaskConfig.network.rinkeby
 
->>>>>>> master
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
  *

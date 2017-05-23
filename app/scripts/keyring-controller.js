@@ -41,12 +41,6 @@ class KeyringController extends EventEmitter {
     this.getNetwork = opts.getNetwork
   }
 
-  setEthStore (ethStore) {
-    delete this.ethStore
-    this.ethStore = ethStore
-    return this.setupAccounts()
-  }
-
   // Full Update
   // returns Promise( @object state )
   //

@@ -40,6 +40,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     // network store
+
     this.networkController = new NetworkController(initState.NetworkController)
     // config manager
     this.configManager = new ConfigManager({
@@ -60,12 +61,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
-    this.provider.on('block', this.logBlock.bind(this))
-    this.provider.on('error', this.networkController.verifyNetwork.bind(this.networkController))
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
     this.ethStore = new EthStore({
+      network: this.networkController.networkStore,
       provider: this.provider,
       blockTracker: this.provider,
     })
@@ -111,32 +111,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.shapeshiftController = new ShapeShiftController({
       initState: initState.ShapeShiftController,
     })
-    this.networkController.on('networkSwitch', (providerUtil, claimed) => {
-      delete this.provider
-      delete this.ethQuery
-      delete this.ethStore
-      console.log('order:@? 1')
-      this.provider = providerUtil.provider
-      this.provider.on('block', this.logBlock.bind(this))
-      this.provider.on('error', this.networkController.verifyNetwork.bind(this.networkController))
-
-      this.ethQuery = providerUtil.ethQuery
-      this.ethStore = new EthStore({
-        provider: this.provider,
-        blockTracker: this.provider,
-      })
-      this.provider.once('block', claimed)
-    })
-    this.networkController.on('networkSwitch', (_, claimed) => {
-      console.log('order:@? 2')
-      this.txManager.setupProviderAndEthQuery({
-        provider: this.provider,
-        blockTracker: this.provider,
-        ethQuery: this.ethQuery,
-      })
-      this.keyringController.setEthStore(this.ethStore)
-      .then(claimed)
-    })
 
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
@@ -170,7 +144,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // manual mem state subscriptions
-    this.networkController.subscribe(this.sendUpdate.bind(this))
+    this.networkController.store.subscribe(this.sendUpdate.bind(this))
     this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.txController.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
@@ -188,7 +162,7 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   initializeProvider () {
-    this.networkController.initializeProvider({
+    return this.networkController.initializeProvider({
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
@@ -213,7 +187,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // new style msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
     })
-    return this.networkController.provider
   }
 
   initPublicConfigStore () {
@@ -249,7 +222,7 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         isInitialized,
       },
-      this.networkController.getState(),
+      this.networkController.store.getState(),
       this.ethStore.getState(),
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
@@ -284,7 +257,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setProviderType: this.networkController.setProviderType.bind(this.networkController),
-      useEtherscanProvider: this.networkController.useEtherscanProvider.bind(this.networkController),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       // coinbase
@@ -618,10 +590,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   // Log blocks
-  logBlock (block) {
-    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    this.networkController.verifyNetwork()
-  }
 
   setCurrentCurrency (currencyCode, cb) {
     try {

@@ -3,21 +3,29 @@ const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
-const MetamaskConfig = require('../config.js')
-
-const TESTNET_RPC = MetamaskConfig.network.testnet
-const MAINNET_RPC = MetamaskConfig.network.mainnet
-const MORDEN_RPC = MetamaskConfig.network.morden
-const KOVAN_RPC = MetamaskConfig.network.kovan
-const RINKEBY_RPC = MetamaskConfig.network.rinkeby
+const RPC_ADDRESS_LIST = require('../config.js').network
 
 module.exports = class NetworkController extends EventEmitter {
   constructor (providerOpts) {
     super()
     this.networkStore = new ObservableStore({ network: 'loading' })
-    providerOpts.provider.rpcTarget = this.getRpcAddressForType(providerOpts.provider.type)
+    providerOpts.provider.rpcTarget = this.getRpcAddressForType(providerOpts.provider.type, providerOpts.provider)
     this.providerStore = new ObservableStore(providerOpts)
-    this._claimed = 0
+    this.store = new ObservableStore(extend(this.networkStore.getState(), this.providerStore.getState()))
+
+    this._providerListners = {}
+
+    this.networkStore.subscribe((state) => this.store.updateState(state))
+    this.providerStore.subscribe((state) => this.store.updateState(state))
+    this.on('networkSwitch', this.lookupNetwork)
+  }
+
+  get provider () {
+    return this._proxy
+  }
+
+  set provider (provider) {
+    this._provider = provider
   }
 
   getState () {
@@ -29,28 +37,35 @@ module.exports = class NetworkController extends EventEmitter {
 
   initializeProvider (opts) {
     this.providerConfig = opts
-    this.provider = MetaMaskProvider(opts)
+    this._provider = MetaMaskProvider(opts)
+    this._proxy = new Proxy(this._provider, {
+      get: (obj, name) => {
+        if (name === 'on') return this._on.bind(this)
+        return this._provider[name]
+      },
+      set: (obj, name, value) => {
+        this._provider[name] = value
+      },
+    })
+    this.provider.on('block', this._logBlock.bind(this))
+    this.provider.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this.provider)
     this.lookupNetwork()
-    return Promise.resolve(this.provider)
-  }
-  switchNetwork (providerConfig) {
-    delete this.provider
-    delete this.ethQuery
-    const newConfig = extend(this.providerConfig, providerConfig)
-    this.providerConfig = newConfig
-    this.provider = MetaMaskProvider(newConfig)
-    this.ethQuery = new EthQuery(this.provider)
-    this.emit('networkSwitch', {
-      provider: this.provider,
-      ethQuery: this.ethQuery,
-    }, this.claim.bind(this))
+    return this.provider
   }
 
-  subscribe (cb) {
-    this.networkStore.subscribe(cb)
-    this.providerStore.subscribe(cb)
+  switchNetwork (providerConfig) {
+    const newConfig = extend(this.providerConfig, providerConfig)
+    this.providerConfig = newConfig
+
+    this.provider = MetaMaskProvider(newConfig)
+    // apply the listners created by other controllers
+    Object.keys(this._providerListners).forEach((key) => {
+      this._providerListners[key].forEach((handler) => this._provider.addListener(key, handler))
+    })
+    this.emit('networkSwitch', this.provider)
   }
+
 
   verifyNetwork () {
   // Check network when restoring connectivity:
@@ -74,7 +89,6 @@ module.exports = class NetworkController extends EventEmitter {
 
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
-
       log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network)
     })
@@ -102,51 +116,27 @@ module.exports = class NetworkController extends EventEmitter {
     this.switchNetwork({
       rpcUrl: rpcTarget,
     })
-    this.once('claimed', () => {
-      this.providerStore.updateState({provider: {type, rpcTarget}})
-      console.log('CLAIMED')
-      this.lookupNetwork()
-    })
-
-  }
-
-  useEtherscanProvider () {
-    this.setProviderType('etherscan')
+    this.providerStore.updateState({provider: {type, rpcTarget}})
   }
 
   getProvider () {
     return this.providerStore.getState().provider
   }
 
-  getRpcAddressForType (type) {
-    const provider = this.getProvider()
-    switch (type) {
-
-      case 'mainnet':
-        return MAINNET_RPC
-
-      case 'testnet':
-        return TESTNET_RPC
-
-      case 'morden':
-        return MORDEN_RPC
-
-      case 'kovan':
-        return KOVAN_RPC
-
-      case 'rinkeby':
-        return RINKEBY_RPC
-
-      default:
-        return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
-    }
+  getRpcAddressForType (type, provider = this.getProvider()) {
+    console.log(`#getRpcAddressForType: ${type}`)
+    if (type in RPC_ADDRESS_LIST) return RPC_ADDRESS_LIST[type]
+    return provider && provider.rpcTarget ? provider.rpcTarget : RPC_ADDRESS_LIST['rinkeby']
   }
 
-  claim () {
-    this._claimed += 1
-    if (this._claimed === this.listenerCount('networkSwitch')) {
-      this.emit('claimed')
-      this._claimed = 0
-    }
+  _logBlock (block) {
+    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
+    this.verifyNetwork()
+  }
+
+  _on (event, handler) {
+    if (!this._providerListners[event]) this._providerListners[event] = []
+    this._providerListners[event].push(handler)
+    this._provider.on(event, handler)
   }
 }
