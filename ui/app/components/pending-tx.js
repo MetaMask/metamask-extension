@@ -156,6 +156,7 @@ PendingTx.prototype.render = function () {
                   name: 'Gas Limit',
                   value: gasBn,
                   precision: 0,
+                  scale: 0,
                   // The hard lower limit for gas.
                   min: MIN_GAS_LIMIT_BN.toString(10),
                   suffix: 'UNITS',
@@ -179,6 +180,7 @@ PendingTx.prototype.render = function () {
                   name: 'Gas Price',
                   value: gasPriceBn,
                   precision: 9,
+                  scale: 9,
                   suffix: 'GWEI',
                   min: MIN_GAS_PRICE_GWEI_BN.toString(10),
                   style: {

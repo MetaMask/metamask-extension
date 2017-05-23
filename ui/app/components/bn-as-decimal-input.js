@@ -26,12 +26,12 @@ BnAsDecimalInput.prototype.render = function () {
   const props = this.props
   const state = this.state
 
-  const { value, precision, onChange, min, max } = props
+  const { value, scale, precision, onChange, min, max } = props
 
   const suffix = props.suffix
   const style = props.style
   const valueString = value.toString(10)
-  const newValue = downsize(valueString, precision, precision)
+  const newValue = downsize(valueString, scale, precision)
 
   return (
     h('.flex-column', [
@@ -65,7 +65,7 @@ BnAsDecimalInput.prototype.render = function () {
             const value = (event.target.value === '') ? '' : event.target.value
 
 
-            const scaledNumber = upsize(value, precision, precision)
+            const scaledNumber = upsize(value, scale, precision)
             const precisionBN = new BN(scaledNumber, 10)
             onChange(precisionBN)
           },

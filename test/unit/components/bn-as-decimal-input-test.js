@@ -10,7 +10,6 @@ var BnInput = require('../../../ui/app/components/bn-as-decimal-input')
 
 describe('BnInput', function () {
   it('can tolerate a gas decimal number at a high precision', function (done) {
-
     const renderer = ReactTestUtils.createRenderer()
 
     let valueStr = '20'
@@ -27,10 +26,12 @@ describe('BnInput', function () {
     }
     const target = new BN(targetStr, 10)
 
-    const precision = 1e18 // ether precision
+    const precision = 13 // ether precision
+    const scale = 13
 
     const props = {
       value,
+      scale,
       precision,
       onChange: (newBn) => {
         assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
