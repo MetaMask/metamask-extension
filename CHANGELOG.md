@@ -2,11 +2,19 @@
 
 ## Current Master
 
+- Add Transaction Number (nonce) to transaction list.
+- Label the pending tx icon with a tooltip.
+- Fix bug where website filters would pile up and not deallocate when leaving a site.
+- ENS names will no longer resolve to their owner if no resolver is set. Resolvers must be explicitly set and configured.
+
+## 3.6.5 2017-5-17
+
 - Fix bug where edited gas parameters would not take effect.
 - Trim currency list.
 - Enable decimals in our gas prices.
 - Fix reset button.
 - Fix event filter bug introduced by newer versions of Geth.
+- Fix bug where decimals in gas inputs could result in strange values.
 
 ## 3.6.4 2017-5-8
 
