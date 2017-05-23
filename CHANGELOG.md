@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.7.0 2017-5-23
+
 - Add Transaction Number (nonce) to transaction list.
 - Label the pending tx icon with a tooltip.
 - Fix bug where website filters would pile up and not deallocate when leaving a site.
