@@ -12,7 +12,7 @@ const denodeify = require('denodeify')
 const RETRY_LIMIT = 200
 const RESUBMIT_INTERVAL = 10000 // Ten seconds
 
-module.exports = class TransactionManager extends EventEmitter {
+module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
     this.store = new ObservableStore(extend({
@@ -448,7 +448,8 @@ module.exports = class TransactionManager extends EventEmitter {
     const rawTx = txMeta.rawTx
     this.txProviderUtils.publishTransaction(rawTx, cb)
   }
+
 }
 
 
-const warn = () => console.warn('warn was used no cb provided')
+const warn = () => log.warn('warn was used no cb provided')
