@@ -171,6 +171,10 @@ function currentProviderDisplay (metamaskState) {
       value = 'Rinkeby Test Network'
       break
 
+    case 'classic':
+      title = 'Current Network'
+      value = 'Ethereum Classic Network'
+
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget

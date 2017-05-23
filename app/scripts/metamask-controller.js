@@ -663,7 +663,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setNetworkState (network) {
-    return this.networkStore.updateState({ network })
+    var provider = this.configManager.getProvider();
+    if (!provider || provider.type !== 'classic') {
+      return this.networkStore.updateState({ network })
+    } else {
+      return this.networkStore.updateState({ network: network,
+                                             chain: 0x3d });
+    }
   }
 
   isNetworkLoading () {
