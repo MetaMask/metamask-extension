@@ -2,6 +2,7 @@ const assert = require('assert')
 const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
+const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
 const clone = require('clone')
 const sinon = require('sinon')
@@ -16,9 +17,10 @@ describe('Transaction Controller', function () {
 
   beforeEach(function () {
     txController = new TransactionController({
-      networkStore: new ObservableStore({ network: currentNetworkId }),
+      networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: new EventEmitter(),
+      ethQuery: new EthQuery(new EventEmitter()),
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()

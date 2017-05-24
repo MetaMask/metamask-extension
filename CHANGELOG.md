@@ -2,9 +2,15 @@
 
 ## Current Master
 
+- Now when switching networks the extension does not restart
+
+## 3.7.0 2017-5-23
+
 - Add Transaction Number (nonce) to transaction list.
 - Label the pending tx icon with a tooltip.
 - Fix bug where website filters would pile up and not deallocate when leaving a site.
+- Continually resubmit pending txs for a period of time to ensure successful broadcast.
+- ENS names will no longer resolve to their owner if no resolver is set. Resolvers must be explicitly set and configured.
 
 ## 3.6.5 2017-5-17
 

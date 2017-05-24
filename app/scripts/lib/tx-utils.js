@@ -1,5 +1,4 @@
 const async = require('async')
-const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const normalize = require('eth-sig-util').normalize
@@ -7,15 +6,14 @@ const BN = ethUtil.BN
 
 /*
 tx-utils are utility methods for Transaction manager
-its passed a provider and that is passed to ethquery
+its passed ethquery
 and used to do things like calculate gas of a tx.
 */
 
 module.exports = class txProviderUtils {
 
-  constructor (provider) {
-    this.provider = provider
-    this.query = new EthQuery(provider)
+  constructor (ethQuery) {
+    this.query = ethQuery
   }
 
   analyzeGasUsage (txMeta, cb) {
