@@ -21,10 +21,19 @@ module.exports = class txProviderUtils {
     this.query.getBlockByNumber('latest', true, (err, block) => {
       if (err) return cb(err)
       async.waterfall([
+        self.setBlockGasLimit.bind(self, txMeta, block.gasLimit),
         self.estimateTxGas.bind(self, txMeta, block.gasLimit),
         self.setTxGas.bind(self, txMeta, block.gasLimit),
       ], cb)
     })
+  }
+
+  setBlockGasLimit (txMeta, blockGasLimitHex, cb) {
+    const blockGasLimitBN = hexToBn(blockGasLimitHex)
+    const saferGasLimitBN = blockGasLimitBN.muln(0.95)
+    txMeta.blockGasLimit = bnToHex(saferGasLimitBN)
+    cb()
+    return
   }
 
   estimateTxGas (txMeta, blockGasLimitHex, cb) {
@@ -33,7 +42,9 @@ module.exports = class txProviderUtils {
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
     // if not, fallback to block gasLimit
     if (!txMeta.gasLimitSpecified) {
-      txParams.gas = blockGasLimitHex
+      const blockGasLimitBN = hexToBn(blockGasLimitHex)
+      const saferGasLimitBN = blockGasLimitBN.muln(0.95)
+      txParams.gas = bnToHex(saferGasLimitBN)
     }
     // run tx, see if it will OOG
     this.query.estimateGas(txParams, cb)
