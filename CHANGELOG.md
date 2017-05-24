@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Now when switching networks the extension does not restart
+
 ## 3.7.0 2017-5-23
 
 - Add Transaction Number (nonce) to transaction list.

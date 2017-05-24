@@ -1,6 +1,7 @@
-const MetamaskConfig = require('../config.js')
 const ethUtil = require('ethereumjs-util')
 const normalize = require('eth-sig-util').normalize
+const MetamaskConfig = require('../config.js')
+
 
 const MAINNET_RPC = MetamaskConfig.network.mainnet
 const ROPSTEN_RPC = MetamaskConfig.network.ropsten
@@ -31,36 +32,6 @@ ConfigManager.prototype.setConfig = function (config) {
 ConfigManager.prototype.getConfig = function () {
   var data = this.getData()
   return data.config
-}
-
-ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'rpc',
-    rpcTarget: rpcUrl,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.setProviderType = function (type) {
-  var config = this.getConfig()
-  config.provider = {
-    type: type,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.useEtherscanProvider = function () {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'etherscan',
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.getProvider = function () {
-  var config = this.getConfig()
-  return config.provider
 }
 
 ConfigManager.prototype.setData = function (data) {
@@ -135,6 +106,35 @@ ConfigManager.prototype.setSeedWords = function (words) {
 ConfigManager.prototype.getSeedWords = function () {
   var data = this.getData()
   return data.seedWords
+}
+ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'rpc',
+    rpcTarget: rpcUrl,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.setProviderType = function (type) {
+  var config = this.getConfig()
+  config.provider = {
+    type: type,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.useEtherscanProvider = function () {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'etherscan',
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.getProvider = function () {
+  var config = this.getConfig()
+  return config.provider
 }
 
 ConfigManager.prototype.getCurrentRpcAddress = function () {

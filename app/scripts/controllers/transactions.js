@@ -4,7 +4,6 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const EthQuery = require('eth-query')
 const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
 const denodeify = require('denodeify')
@@ -24,8 +23,8 @@ module.exports = class TransactionController extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
-    this.query = new EthQuery(this.provider)
-    this.txProviderUtils = new TxProviderUtil(this.provider)
+    this.query = opts.ethQuery
+    this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
@@ -44,7 +43,7 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   getNetwork () {
-    return this.networkStore.getState().network
+    return this.networkStore.getState()
   }
 
   getSelectedAddress () {
