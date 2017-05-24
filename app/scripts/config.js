@@ -15,6 +15,6 @@ module.exports = {
     classic: CLASSIC_RPC_URL,
   },
   networkIdOverwrites: {
-    classic: 0x3d,
+    classic: '61',
   },
 }
