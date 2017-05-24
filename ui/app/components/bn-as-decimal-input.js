@@ -47,8 +47,8 @@ BnAsDecimalInput.prototype.render = function () {
           type: 'number',
           step: 'any',
           required: true,
-          min: min,
-          max: max,
+          min,
+          max,
           style: extend({
             display: 'block',
             textAlign: 'right',
