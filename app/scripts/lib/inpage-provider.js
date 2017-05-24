@@ -44,8 +44,9 @@ function MetamaskInpageProvider (connectionStream) {
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
 
-  // start polling
+  // start and stop polling to unblock first block lock
   engine.start()
+  engine.once('latest', () => engine.stop())
 
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
