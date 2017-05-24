@@ -31,7 +31,7 @@ BnAsDecimalInput.prototype.render = function () {
   const suffix = props.suffix
   const style = props.style
   const valueString = value.toString(10)
-  const newValue = downsize(valueString, scale, precision)
+  const newValue = this.downsize(valueString, scale, precision)
 
   return (
     h('.flex-column', [
@@ -65,7 +65,7 @@ BnAsDecimalInput.prototype.render = function () {
             const value = (event.target.value === '') ? '' : event.target.value
 
 
-            const scaledNumber = upsize(value, scale, precision)
+            const scaledNumber = this.upsize(value, scale, precision)
             const precisionBN = new BN(scaledNumber, 10)
             onChange(precisionBN)
           },
@@ -145,20 +145,28 @@ BnAsDecimalInput.prototype.constructWarning = function () {
 }
 
 
-function downsize (number, scale, precision) {
+BnAsDecimalInput.prototype.downsize = function (number, scale, precision) {
+  // if there is no scaling, simply return the number
   if (scale === 0) {
     return Number(number)
   } else {
+    // if the scale is the same as the precision, account for this edge case.
     var decimals = (scale === precision) ? -1 : scale - precision
     return Number(number.slice(0, -scale) + '.' + number.slice(-scale, decimals))
   }
 }
 
-function upsize (number, scale, precision) {
-  var string = number.toString()
-  var stringArray = string.split('.')
+BnAsDecimalInput.prototype.upsize = function (number, scale, precision) {
+  var stringArray = number.toString().split('.')
   var decimalLength = stringArray[1] ? stringArray[1].length : 0
-  var newString = ((scale === 0) || (decimalLength === 0)) ? stringArray[0] : stringArray[0] + stringArray[1].slice(0, precision)
+  var newString = stringArray[0]
+
+  // If there is scaling and decimal parts exist, integrate them in.
+  if ((scale !== 0) && (decimalLength !== 0)) {
+    newString += stringArray[1].slice(0, precision)
+  }
+
+  // Add 0s to account for the upscaling.
   for (var i = decimalLength; i < scale; i++) {
     newString += '0'
   }
