@@ -13,7 +13,7 @@ describe('BnInput', function () {
     const renderer = ReactTestUtils.createRenderer()
 
     let valueStr = '20'
-    while (valueStr.length < 15) {
+    while (valueStr.length < 20) {
       valueStr += '0'
     }
     const value = new BN(valueStr, 10)
@@ -21,13 +21,13 @@ describe('BnInput', function () {
     let inputStr = '2.3'
 
     let targetStr = '23'
-    while (targetStr.length < 14) {
+    while (targetStr.length < 19) {
       targetStr += '0'
     }
     const target = new BN(targetStr, 10)
 
-    const precision = 13 // ether precision
-    const scale = 13
+    const precision = 18 // ether precision
+    const scale = 18
 
     const props = {
       value,
