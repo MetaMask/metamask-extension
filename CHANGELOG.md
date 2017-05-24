@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Now when switching networks the extension does not restart
+
 ## 3.6.5 2017-5-17
 
 - Fix bug where edited gas parameters would not take effect.
