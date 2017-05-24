@@ -7,9 +7,9 @@ const ObservableStore = require('obs-store')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
 const streamIntoProvider = require('web3-stream-provider/handler')
-const MetaMaskProvider = require('web3-provider-engine/zero.js')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
+const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
@@ -40,8 +40,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     // network store
-    this.networkStore = new ObservableStore({ network: 'loading' })
 
+    this.networkController = new NetworkController(initState.NetworkController)
     // config manager
     this.configManager = new ConfigManager({
       store: this.store,
@@ -61,8 +61,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
-    this.provider.on('block', this.logBlock.bind(this))
-    this.provider.on('error', this.verifyNetwork.bind(this))
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
@@ -75,7 +73,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
       ethStore: this.ethStore,
-      getNetwork: this.getNetworkState.bind(this),
+      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
@@ -92,13 +90,14 @@ module.exports = class MetamaskController extends EventEmitter {
     // tx mgmt
     this.txController = new TransactionController({
       initState: initState.TransactionController || initState.TransactionManager,
-      networkStore: this.networkStore,
+      networkStore: this.networkController.networkStore,
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 40,
-      getNetwork: this.getNetworkState.bind(this),
+      getNetwork: this.networkController.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
+      ethQuery: this.ethQuery,
     })
 
     // notices
@@ -113,7 +112,7 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.ShapeShiftController,
     })
 
-    this.lookupNetwork()
+    this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
@@ -140,9 +139,12 @@ module.exports = class MetamaskController extends EventEmitter {
     this.shapeshiftController.store.subscribe((state) => {
       this.store.updateState({ ShapeShiftController: state })
     })
+    this.networkController.store.subscribe((state) => {
+      this.store.updateState({ NetworkController: state })
+    })
 
     // manual mem state subscriptions
-    this.networkStore.subscribe(this.sendUpdate.bind(this))
+    this.networkController.store.subscribe(this.sendUpdate.bind(this))
     this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.txController.memStore.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
@@ -160,12 +162,12 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   initializeProvider () {
-    const provider = MetaMaskProvider({
+    return this.networkController.initializeProvider({
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
-      rpcUrl: this.configManager.getCurrentRpcAddress(),
+      rpcUrl: this.networkController.getCurrentRpcAddress(),
       // account mgmt
       getAccounts: (cb) => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
@@ -185,7 +187,6 @@ module.exports = class MetamaskController extends EventEmitter {
       // new style msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
     })
-    return provider
   }
 
   initPublicConfigStore () {
@@ -221,7 +222,7 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         isInitialized,
       },
-      this.networkStore.getState(),
+      this.networkController.store.getState(),
       this.ethStore.getState(),
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
@@ -255,8 +256,7 @@ module.exports = class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: (cb) => cb(null, this.getState()),
-      setProviderType: this.setProviderType.bind(this),
-      useEtherscanProvider: this.useEtherscanProvider.bind(this),
+      setProviderType: this.networkController.setProviderType.bind(this.networkController),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       // coinbase
@@ -590,10 +590,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   // Log blocks
-  logBlock (block) {
-    log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
-    this.verifyNetwork()
-  }
 
   setCurrentCurrency (currencyCode, cb) {
     try {
@@ -612,7 +608,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   buyEth (address, amount) {
     if (!amount) amount = '5'
-    const network = this.getNetworkState()
+    const network = this.networkController.getNetworkState()
     const url = getBuyEthUrl({ network, address, amount })
     if (url) this.platform.openWindow({ url })
   }
@@ -620,69 +616,21 @@ module.exports = class MetamaskController extends EventEmitter {
   createShapeShiftTx (depositAddress, depositType) {
     this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
   }
-
-  //
-  // network
-  //
-
-  verifyNetwork () {
-    // Check network when restoring connectivity:
-    if (this.isNetworkLoading()) this.lookupNetwork()
-  }
+// network
 
   setDefaultRpc () {
-    this.configManager.setRpcTarget('http://localhost:8545')
-    this.platform.reload()
-    this.lookupNetwork()
+    this.networkController.setRpcTarget('http://localhost:8545')
     return Promise.resolve('http://localhost:8545')
   }
 
   setCustomRpc (rpcTarget, rpcList) {
-    this.configManager.setRpcTarget(rpcTarget)
+    this.networkController.setRpcTarget(rpcTarget)
+
     return this.preferencesController.updateFrequentRpcList(rpcTarget)
-      .then(() => {
-        this.platform.reload()
-        this.lookupNetwork()
-        return Promise.resolve(rpcTarget)
-      })
-  }
-
-  setProviderType (type) {
-    this.configManager.setProviderType(type)
-    this.platform.reload()
-    this.lookupNetwork()
-  }
-
-  useEtherscanProvider () {
-    this.configManager.useEtherscanProvider()
-    this.platform.reload()
-  }
-
-  getNetworkState () {
-    return this.networkStore.getState().network
-  }
-
-  setNetworkState (network) {
-    return this.networkStore.updateState({ network })
-  }
-
-  isNetworkLoading () {
-    return this.getNetworkState() === 'loading'
-  }
-
-  lookupNetwork (err) {
-    if (err) {
-      this.setNetworkState('loading')
-    }
-
-    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) {
-        this.setNetworkState('loading')
-        return
-      }
-      log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
+    .then(() => {
+      return Promise.resolve(rpcTarget)
     })
   }
+
 
 }

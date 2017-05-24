@@ -1,5 +1,7 @@
 const pipe = require('pump')
-const StreamProvider = require('web3-stream-provider')
+const ProviderEngine = require('web3-provider-engine')
+const FilterSubprovider = require('web3-provider-engine/subproviders/filters')
+const StreamSubprovider = require('web3-provider-engine/subproviders/stream')
 const LocalStorageStore = require('obs-store')
 const ObjectMultiplex = require('./obj-multiplex')
 const createRandomId = require('./random-id')
@@ -27,13 +29,23 @@ function MetamaskInpageProvider (connectionStream) {
   )
 
   // connect to async provider
-  const asyncProvider = self.asyncProvider = new StreamProvider()
+  const engine = new ProviderEngine()
+
+  const filterSubprovider = new FilterSubprovider()
+  engine.addProvider(filterSubprovider)
+
+  const streamSubprovider = new StreamSubprovider()
+  engine.addProvider(streamSubprovider)
+
   pipe(
-    asyncProvider,
+    streamSubprovider,
     multiStream.createStream('provider'),
-    asyncProvider,
+    streamSubprovider,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
+
+  // start polling
+  engine.start()
 
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
@@ -46,7 +58,7 @@ function MetamaskInpageProvider (connectionStream) {
       return message
     })
     // forward to asyncProvider
-    asyncProvider.sendAsync(request, function (err, res) {
+    engine.sendAsync(request, function (err, res) {
       if (err) return cb(err)
       // transform messages to original ids
       eachJsonMessage(res, (message) => {
