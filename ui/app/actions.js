@@ -871,8 +871,7 @@ function pairUpdate (coin) {
 }
 
 function shapeShiftSubview (network) {
-  var pair
-  network === 'classic' ? pair = 'btc_etc' : pair = 'btc_eth'
+  var pair = 'btc_eth'
 
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())

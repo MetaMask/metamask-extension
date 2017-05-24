@@ -7,6 +7,7 @@ const ROPSTEN_RPC = MetamaskConfig.network.ropsten
 const KOVAN_RPC = MetamaskConfig.network.kovan
 const RINKEBY_RPC = MetamaskConfig.network.rinkeby
 const CLASSIC_RPC = MetamaskConfig.network.classic
+const CLASSIC_OVERWRITE = MetamaskConfig.networkIdOverwrites.classic
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -160,6 +161,18 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
 
     default:
       return provider && provider.rpcTarget ? provider.rpcTarget : RINKEBY_RPC
+  }
+}
+
+ConfigManager.prototype.getNetworkIdOverwrite = function () {
+  var provider = this.getProvider()
+  if (!provider) return null
+  switch (provider.type) {
+    case 'classic':
+      return CLASSIC_OVERWRITE
+
+    default:
+      return null
   }
 }
 

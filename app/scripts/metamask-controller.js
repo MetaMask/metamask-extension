@@ -663,13 +663,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setNetworkState (network) {
-    var provider = this.configManager.getProvider();
-    if (!provider || provider.type !== 'classic') {
-      return this.networkStore.updateState({ network })
-    } else {
-      return this.networkStore.updateState({ network: network,
-                                             chain: 0x3d });
-    }
+    return this.networkStore.updateState({ network })
   }
 
   isNetworkLoading () {
@@ -687,7 +681,12 @@ module.exports = class MetamaskController extends EventEmitter {
         return
       }
       log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
+      const overwrite = this.configManager.getNetworkIdOverwrite()
+      if (overwrite) {
+        this.setNetworkState(overwrite)
+      } else {
+        this.setNetworkState(network)
+      }
     })
   }
 
