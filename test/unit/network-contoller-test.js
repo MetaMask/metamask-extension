@@ -1,4 +1,3 @@
-const EventEmitter = require('events')
 const assert = require('assert')
 const NetworkController = require('../../app/scripts/controllers/network')
 
@@ -12,7 +11,7 @@ describe('# Network Controller', function () {
       },
     })
     // stub out provider
-    networkController._provider = new Proxy(new EventEmitter(), {
+    networkController._provider = new Proxy({}, {
       get: (obj, name) => {
         return () => {}
       },
