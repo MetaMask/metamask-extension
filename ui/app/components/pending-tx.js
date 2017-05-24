@@ -47,6 +47,7 @@ PendingTx.prototype.render = function () {
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
+  const safeGasLimit = parseInt(txMeta.blockGasLimit)
 
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
@@ -159,6 +160,7 @@ PendingTx.prototype.render = function () {
                   scale: 0,
                   // The hard lower limit for gas.
                   min: MIN_GAS_LIMIT_BN.toString(10),
+                  max: safeGasLimit,
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
