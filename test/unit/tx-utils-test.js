@@ -9,7 +9,11 @@ describe('txUtils', function () {
   let txUtils
 
   before(function () {
-    txUtils = new TxUtils()
+    txUtils = new TxUtils(new Proxy({}, {
+      get: (obj, name) => {
+        return () => {}
+      },
+    }))
   })
 
   describe('chain Id', function () {
