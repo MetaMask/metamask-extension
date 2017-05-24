@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
+const clone = require('clone')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -12,7 +13,7 @@ const EthBalance = require('./eth-balance')
 const util = require('../util')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
-const HexInput = require('./hex-as-decimal-input')
+const BNInput = require('./bn-as-decimal-input')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(2)
 const GWEI_FACTOR = new BN(1e9)
@@ -50,7 +51,6 @@ PendingTx.prototype.render = function () {
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
-  const gasPriceGweiBn = gasPriceBn.div(GWEI_FACTOR)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
   const valueBn = hexToBn(txParams.value)
@@ -152,9 +152,11 @@ PendingTx.prototype.render = function () {
               h('.cell.label', 'Gas Limit'),
               h('.cell.value', {
               }, [
-                h(HexInput, {
+                h(BNInput, {
                   name: 'Gas Limit',
-                  value: gas,
+                  value: gasBn,
+                  precision: 0,
+                  scale: 0,
                   // The hard lower limit for gas.
                   min: MIN_GAS_LIMIT_BN.toString(10),
                   suffix: 'UNITS',
@@ -174,9 +176,11 @@ PendingTx.prototype.render = function () {
               h('.cell.label', 'Gas Price'),
               h('.cell.value', {
               }, [
-                h(HexInput, {
+                h(BNInput, {
                   name: 'Gas Price',
-                  value: gasPriceGweiBn.toString(16),
+                  value: gasPriceBn,
+                  precision: 9,
+                  scale: 9,
                   suffix: 'GWEI',
                   min: MIN_GAS_PRICE_GWEI_BN.toString(10),
                   style: {
@@ -342,19 +346,24 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
   }
 }
 
-PendingTx.prototype.gasPriceChanged = function (newHex) {
-  log.info(`Gas price changed to: ${newHex}`)
-  const inWei = hexToBn(newHex).mul(GWEI_FACTOR)
+PendingTx.prototype.gasPriceChanged = function (newBN, valid) {
+  log.info(`Gas price changed to: ${newBN.toString(10)}`)
   const txMeta = this.gatherTxMeta()
-  txMeta.txParams.gasPrice = inWei.toString(16)
-  this.setState({ txData: txMeta })
+  txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
+  this.setState({
+    txData: clone(txMeta),
+    valid,
+  })
 }
 
-PendingTx.prototype.gasLimitChanged = function (newHex) {
-  log.info(`Gas limit changed to ${newHex}`)
+PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
+  log.info(`Gas limit changed to ${newBN.toString(10)}`)
   const txMeta = this.gatherTxMeta()
-  txMeta.txParams.gas = newHex
-  this.setState({ txData: txMeta })
+  txMeta.txParams.gas = '0x' + newBN.toString('hex')
+  this.setState({
+    txData: clone(txMeta),
+    valid,
+  })
 }
 
 PendingTx.prototype.resetGasFields = function () {
@@ -404,7 +413,7 @@ PendingTx.prototype.gatherTxMeta = function () {
   log.debug(`pending-tx gatherTxMeta`)
   const props = this.props
   const state = this.state
-  const txData = state.txData || props.txData
+  const txData = clone(state.txData) || clone(props.txData)
 
   log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData
@@ -425,7 +434,6 @@ PendingTx.prototype._notZeroOrEmptyString = function (obj) {
 
 function forwardCarrat () {
   return (
-
     h('img', {
       src: 'images/forward-carrat.svg',
       style: {
@@ -433,6 +441,5 @@ function forwardCarrat () {
         height: '37px',
       },
     })
-
   )
 }

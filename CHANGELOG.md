@@ -3,6 +3,8 @@
 ## Current Master
 
 - Now when switching networks the extension does not restart
+- Cleanup decimal bugs in our gas inputs.
+- Fix bug where submit button was enabled for invalid gas inputs.
 
 ## 3.7.0 2017-5-23
 
@@ -16,6 +18,8 @@
 
 - Fix bug where edited gas parameters would not take effect.
 - Trim currency list.
+- Enable decimals in our gas prices.
+- Fix reset button.
 - Fix event filter bug introduced by newer versions of Geth.
 - Fix bug where decimals in gas inputs could result in strange values.
 
