@@ -97,6 +97,7 @@ module.exports = class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.provider,
+      ethQuery: this.ethQuery,
     })
 
     // notices
