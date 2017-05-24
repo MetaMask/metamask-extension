@@ -53,6 +53,7 @@ module.exports = class NetworkController extends EventEmitter {
     this.providerInit = newInit
 
     this._provider.removeAllListeners()
+    this._provider.stop()
     this.provider = MetaMaskProvider(newInit)
     // apply the listners created by other controllers
     Object.keys(this._providerListeners).forEach((key) => {

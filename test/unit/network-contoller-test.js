@@ -12,7 +12,11 @@ describe('# Network Controller', function () {
       },
     })
     // stub out provider
-    networkController._provider = new EventEmitter()
+    networkController._provider = new Proxy(new EventEmitter(), {
+      get: (obj, name) => {
+        return () => {}
+      },
+    })
     networkController.providerInit = {
       getAccounts: () => {},
     }
