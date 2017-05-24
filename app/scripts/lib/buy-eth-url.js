@@ -18,6 +18,11 @@ function getBuyEthUrl ({ network, amount, address }) {
     case '42':
       url = 'https://github.com/kovan-testnet/faucet'
       break
+
+    case '61':
+      url = 'https://poloniex.com/exchange#btc_etc'
+      break
+
   }
   return url
 }
