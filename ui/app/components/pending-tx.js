@@ -367,7 +367,6 @@ PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
 }
 
 PendingTx.prototype.resetGasFields = function () {
-
   log.debug(`pending-tx resetGasFields`)
 
   this.inputs.forEach((hexInput) => {
