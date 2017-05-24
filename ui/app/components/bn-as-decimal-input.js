@@ -67,7 +67,7 @@ BnAsDecimalInput.prototype.render = function () {
 
             const scaledNumber = this.upsize(value, scale, precision)
             const precisionBN = new BN(scaledNumber, 10)
-            onChange(precisionBN)
+            onChange(precisionBN, event.target.checkValidity())
           },
           onInvalid: (event) => {
             const msg = this.constructWarning()

@@ -346,18 +346,24 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
   }
 }
 
-PendingTx.prototype.gasPriceChanged = function (newBN) {
+PendingTx.prototype.gasPriceChanged = function (newBN, valid) {
   log.info(`Gas price changed to: ${newBN.toString(10)}`)
   const txMeta = this.gatherTxMeta()
   txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
-  this.setState({ txData: clone(txMeta) })
+  this.setState({
+    txData: clone(txMeta),
+    valid,
+  })
 }
 
-PendingTx.prototype.gasLimitChanged = function (newBN) {
+PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
   log.info(`Gas limit changed to ${newBN.toString(10)}`)
   const txMeta = this.gatherTxMeta()
   txMeta.txParams.gas = '0x' + newBN.toString('hex')
-  this.setState({ txData: clone(txMeta) })
+  this.setState({
+    txData: clone(txMeta),
+    valid,
+  })
 }
 
 PendingTx.prototype.resetGasFields = function () {

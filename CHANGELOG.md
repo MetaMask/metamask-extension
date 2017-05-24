@@ -4,6 +4,7 @@
 
 - Now when switching networks the extension does not restart
 - Cleanup decimal bugs in our gas inputs.
+- Fix bug where submit button was enabled for invalid gas inputs.
 
 ## 3.7.0 2017-5-23
 
