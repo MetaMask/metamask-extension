@@ -6,6 +6,7 @@
 - Cleanup decimal bugs in our gas inputs.
 - Fix bug where submit button was enabled for invalid gas inputs.
 - Now enforce 95% of block's gasLimit to protect users.
+- Removing provider-engine from the inpage provider. This fixes some error handling inconsistencies introduced in 3.7.0.
 
 ## 3.7.0 2017-5-23
 
