@@ -1,30 +1,33 @@
-const once = require('once')
-const ensnare = require('ensnare')
-
 module.exports = setupDappAutoReload
 
-function setupDappAutoReload (web3) {
+function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
-  var pageIsUsingWeb3 = false
-  var resetWasRequested = false
-  global.web3 = ensnare(web3, once(function () {
-    // if web3 usage happened after a reset request, trigger reset late
-    if (resetWasRequested) return triggerReset()
-    // mark web3 as used
-    pageIsUsingWeb3 = true
-    // reset web3 reference
-    global.web3 = web3
-  }))
+  global.web3 = new Proxy(web3, {
+    get: (_web3, name) => {
+      // get the time of use
+      if (name !== '_used') _web3._used = Date.now()
+      return _web3[name]
+    },
+    set: (_web3, name, value) => {
+      _web3[name] = value
+    },
+  })
+  var networkVersion
 
-  return handleResetRequest
+  observable.subscribe(function (state) {
+    // get the initial network
+    const curentNetVersion = state.networkVersion
+    if (!networkVersion) networkVersion = curentNetVersion
 
-  function handleResetRequest () {
-    resetWasRequested = true
-    // ignore if web3 was not used
-    if (!pageIsUsingWeb3) return
-    // reload after short timeout
-    setTimeout(triggerReset, 500)
-  }
+    if (curentNetVersion !== networkVersion && web3._used) {
+      const timeSenseUse = Date.now() - web3._used
+      // if web3 was recently used then delay the reloading of the page
+      timeSenseUse > 500 ? triggerReset() : setTimeout(triggerReset, 500)
+      // prevent reentry into if statement if state updates again before
+      // reload
+      networkVersion = curentNetVersion
+    }
+  })
 }
 
 // reload the page
