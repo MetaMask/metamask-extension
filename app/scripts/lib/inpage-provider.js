@@ -1,7 +1,5 @@
 const pipe = require('pump')
-const ProviderEngine = require('web3-provider-engine')
-const FilterSubprovider = require('web3-provider-engine/subproviders/filters')
-const StreamSubprovider = require('web3-provider-engine/subproviders/stream')
+const StreamProvider = require('web3-stream-provider')
 const LocalStorageStore = require('obs-store')
 const ObjectMultiplex = require('./obj-multiplex')
 const createRandomId = require('./random-id')
@@ -29,24 +27,14 @@ function MetamaskInpageProvider (connectionStream) {
   )
 
   // connect to async provider
-  const engine = new ProviderEngine()
-
-  const filterSubprovider = new FilterSubprovider()
-  engine.addProvider(filterSubprovider)
-
-  const streamSubprovider = new StreamSubprovider()
-  engine.addProvider(streamSubprovider)
-
+  const asyncProvider = self.asyncProvider = new StreamProvider()
   pipe(
-    streamSubprovider,
+    asyncProvider,
     multiStream.createStream('provider'),
-    streamSubprovider,
+    asyncProvider,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
-
   // start and stop polling to unblock first block lock
-  engine.start()
-  engine.once('latest', () => engine.stop())
 
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
@@ -59,7 +47,7 @@ function MetamaskInpageProvider (connectionStream) {
       return message
     })
     // forward to asyncProvider
-    engine.sendAsync(request, function (err, res) {
+    asyncProvider.sendAsync(request, function (err, res) {
       if (err) return cb(err)
       // transform messages to original ids
       eachJsonMessage(res, (message) => {
