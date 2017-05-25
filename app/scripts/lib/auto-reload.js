@@ -20,9 +20,9 @@ function setupDappAutoReload (web3, observable) {
     if (!networkVersion) networkVersion = curentNetVersion
 
     if (curentNetVersion !== networkVersion && web3._used) {
-      const timeSenseUse = Date.now() - web3._used
+      const timeSinceUse = Date.now() - web3._used
       // if web3 was recently used then delay the reloading of the page
-      timeSenseUse > 500 ? triggerReset() : setTimeout(triggerReset, 500)
+      timeSinceUse > 500 ? triggerReset() : setTimeout(triggerReset, 500)
       // prevent reentry into if statement if state updates again before
       // reload
       networkVersion = curentNetVersion
