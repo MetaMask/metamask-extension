@@ -43,7 +43,7 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 // util
 
 function iconExistsFor (address) {
-  return (address in contractMap) && isValidAddress(address) && ('logo' in contractMap[address])
+  return (contractMap.address) && isValidAddress(address) && (contractMap[address].logo)
 }
 
 function imageElFor (address) {
