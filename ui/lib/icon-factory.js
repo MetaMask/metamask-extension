@@ -1,7 +1,7 @@
 var iconFactory
 const isValidAddress = require('ethereumjs-util').isValidAddress
 const toChecksumAddress = require('ethereumjs-util').toChecksumAddress
-const iconMap = require('ethereum-contract-icons')
+const contractMap = require('eth-contract-metadata')
 
 module.exports = function (jazzicon) {
   if (!iconFactory) {
@@ -43,11 +43,12 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 // util
 
 function iconExistsFor (address) {
-  return (address in iconMap) && isValidAddress(address)
+  return (contractMap.address) && isValidAddress(address) && (contractMap[address].logo)
 }
 
 function imageElFor (address) {
-  const fileName = iconMap[address]
+  const contract = contractMap[address]
+  const fileName = contract.logo
   const path = `images/contract/${fileName}`
   const img = document.createElement('img')
   img.src = path

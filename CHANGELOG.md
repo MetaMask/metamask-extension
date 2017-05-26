@@ -9,6 +9,7 @@
 - Now enforce 95% of block's gasLimit to protect users.
 - Removing provider-engine from the inpage provider. This fixes some error handling inconsistencies introduced in 3.7.0.
 - Some contracts will now display logos instead of jazzicons.
+- Some contracts will now have names displayed in the confirmation view.
 
 ## 3.7.0 2017-5-23
 
