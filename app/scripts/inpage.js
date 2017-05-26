@@ -1,6 +1,6 @@
 /*global Web3*/
 cleanContextForImports()
-require('web3')
+require('web3/dist/web3.min.js')
 const LocalMessageDuplexStream = require('post-message-stream')
 // const PingStream = require('ping-pong-stream/ping')
 // const endOfStream = require('end-of-stream')
@@ -30,7 +30,7 @@ var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
   console.log('MetaMask - overrode web3.setProvider')
 }
-console.log('MetaMask - injected modified web3')
+console.log('MetaMask - injected web3')
 // export global web3, with usage-detection
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
