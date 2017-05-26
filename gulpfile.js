@@ -52,6 +52,15 @@ gulp.task('copy:images', copyTask({
     './dist/opera/images',
   ],
 }))
+gulp.task('copy:contractImages', copyTask({
+  source: './node_modules/ethereum-contract-icons/images/',
+  destinations: [
+    './dist/firefox/images/contract',
+    './dist/chrome/images/contract',
+    './dist/edge/images/contract',
+    './dist/opera/images/contract',
+  ],
+}))
 gulp.task('copy:fonts', copyTask({
   source: './app/fonts/',
   destinations: [
@@ -127,6 +136,7 @@ const staticFiles = [
 ]
 
 var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
+copyStrings.push('copy:contractImages')
 
 if (!disableLiveReload) {
   copyStrings.push('copy:reload')

@@ -1,4 +1,7 @@
 var iconFactory
+const isValidAddress = require('ethereumjs-util').isValidAddress
+const toChecksumAddress = require('ethereumjs-util').toChecksumAddress
+const iconMap = require('ethereum-contract-icons')
 
 module.exports = function (jazzicon) {
   if (!iconFactory) {
@@ -12,22 +15,12 @@ function IconFactory (jazzicon) {
   this.cache = {}
 }
 
-IconFactory.prototype.iconForAddress = function (address, diameter, imageify) {
-  if (imageify) {
-    return this.generateIdenticonImg(address, diameter)
-  } else {
-    return this.generateIdenticonSvg(address, diameter)
+IconFactory.prototype.iconForAddress = function (address, diameter) {
+  const addr = toChecksumAddress(address)
+  if (iconExistsFor(addr)) {
+    return imageElFor(addr)
   }
-}
-
-// returns img dom element
-IconFactory.prototype.generateIdenticonImg = function (address, diameter) {
-  var identicon = this.generateIdenticonSvg(address, diameter)
-  var identiconSrc = identicon.innerHTML
-  var dataUri = toDataUri(identiconSrc)
-  var img = document.createElement('img')
-  img.src = dataUri
-  return img
+  return this.generateIdenticonSvg(address, diameter)
 }
 
 // returns svg dom element
@@ -49,12 +42,22 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 
 // util
 
+function iconExistsFor (address) {
+  return (address in iconMap) && isValidAddress(address)
+}
+
+function imageElFor (address) {
+  const fileName = iconMap[address]
+  const path = `images/contract/${fileName}`
+  const img = document.createElement('img')
+  img.src = path
+  img.style.width = '100%'
+  return img
+}
+
 function jsNumberForAddress (address) {
   var addr = address.slice(2, 10)
   var seed = parseInt(addr, 16)
   return seed
 }
 
-function toDataUri (identiconSrc) {
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(identiconSrc)
-}
