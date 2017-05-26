@@ -39,6 +39,8 @@ function MetamaskInpageProvider (connectionStream) {
   self.idMap = {}
   // handle sendAsync requests via asyncProvider
   self.sendAsync = function (payload, cb) {
+    console.trace('sending async ' + payload.method)
+    console.dir(payload)
     // rewrite request ids
     var request = eachJsonMessage(payload, (message) => {
       var newId = createRandomId()
