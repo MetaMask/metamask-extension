@@ -11,7 +11,7 @@ const ethUtil = require('ethereumjs-util')
 
 module.exports = function (addr, identities = {}) {
   const checksummed = ethUtil.toChecksumAddress(addr)
-  if (checksummed in contractMap && 'name' in contractMap[checksummed]) {
+  if (contractMap.checksummed && contractMap[checksummed].name) {
     return contractMap[checksummed].name
   }
 
