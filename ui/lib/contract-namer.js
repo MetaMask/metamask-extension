@@ -5,7 +5,6 @@
  * otherwise returns null.
  */
 
-// Nickname keys must be stored in lower case.
 const contractMap = require('eth-contract-metadata')
 const ethUtil = require('ethereumjs-util')
 
