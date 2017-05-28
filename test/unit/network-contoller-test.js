@@ -27,7 +27,7 @@ describe('# Network Controller', function () {
     })
   })
   describe('network', function () {
-    describe('#provider', function() {
+    describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkController.providerInit)
         const provider = networkController.provider
@@ -37,7 +37,7 @@ describe('# Network Controller', function () {
     })
     describe('#getNetworkState', function () {
       it('should return loading when new', function () {
-        let networkState = networkController.getNetworkState()
+        const networkState = networkController.getNetworkState()
         assert.equal(networkState, 'loading', 'network is loading')
       })
     })
@@ -45,14 +45,14 @@ describe('# Network Controller', function () {
     describe('#setNetworkState', function () {
       it('should update the network', function () {
         networkController.setNetworkState(1)
-        let networkState = networkController.getNetworkState()
+        const networkState = networkController.getNetworkState()
         assert.equal(networkState, 1, 'network is 1')
       })
     })
 
     describe('#getRpcAddressForType', function () {
       it('should return the right rpc address', function () {
-        let rpcTarget = networkController.getRpcAddressForType('mainnet')
+        const rpcTarget = networkController.getRpcAddressForType('mainnet')
         assert.equal(rpcTarget, 'https://mainnet.infura.io/metamask', 'returns the right rpcAddress')
       })
     })

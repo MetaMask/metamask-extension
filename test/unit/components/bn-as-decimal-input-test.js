@@ -18,7 +18,7 @@ describe('BnInput', function () {
     }
     const value = new BN(valueStr, 10)
 
-    let inputStr = '2.3'
+    const inputStr = '2.3'
 
     let targetStr = '23'
     while (targetStr.length < 19) {
@@ -43,9 +43,9 @@ describe('BnInput', function () {
     const component = additions.renderIntoDocument(inputComponent)
     renderer.render(inputComponent)
     const input = additions.find(component, 'input.hex-input')[0]
-    ReactTestUtils.Simulate.change(input, { preventDefault() {}, target: {
+    ReactTestUtils.Simulate.change(input, { preventDefault () {}, target: {
       value: inputStr,
-      checkValidity() { return true } },
+      checkValidity () { return true } },
     })
   })
 })

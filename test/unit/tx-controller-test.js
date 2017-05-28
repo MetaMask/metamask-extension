@@ -320,5 +320,4 @@ describe('Transaction Controller', function () {
       })
     })
   })
-
 })

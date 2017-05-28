@@ -14,8 +14,8 @@ class Migrator {
   async migrateData (versionedData = this.generateInitialState()) {
     const pendingMigrations = this.migrations.filter(migrationIsPending)
 
-    for (let index in pendingMigrations) {
-      let migration = pendingMigrations[index]
+    for (const index in pendingMigrations) {
+      const migration = pendingMigrations[index]
       versionedData = await migration.migrate(versionedData)
       if (!versionedData.data) throw new Error('Migrator - migration returned empty data')
       if (versionedData.version !== undefined && versionedData.meta.version !== migration.version) throw new Error('Migrator - Migration did not update version number correctly')
