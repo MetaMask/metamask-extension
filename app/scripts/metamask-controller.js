@@ -1,9 +1,10 @@
 const EventEmitter = require('events')
-const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
 const pipe = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const ComposedStore = require('obs-store/lib/composed')
+const MergedStore = require('obs-store/lib/merged')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
 const streamIntoProvider = require('web3-stream-provider/handler')
@@ -117,44 +118,41 @@ module.exports = class MetamaskController extends EventEmitter {
     this.personalMessageManager = new PersonalMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
-    // manual disk state subscriptions
-    this.txController.store.subscribe((state) => {
-      this.store.updateState({ TransactionController: state })
-    })
-    this.keyringController.store.subscribe((state) => {
-      this.store.updateState({ KeyringController: state })
-    })
-    this.preferencesController.store.subscribe((state) => {
-      this.store.updateState({ PreferencesController: state })
-    })
-    this.addressBookController.store.subscribe((state) => {
-      this.store.updateState({ AddressBookController: state })
-    })
-    this.currencyController.store.subscribe((state) => {
-      this.store.updateState({ CurrencyController: state })
-    })
-    this.noticeController.store.subscribe((state) => {
-      this.store.updateState({ NoticeController: state })
-    })
-    this.shapeshiftController.store.subscribe((state) => {
-      this.store.updateState({ ShapeShiftController: state })
-    })
-    this.networkController.store.subscribe((state) => {
-      this.store.updateState({ NetworkController: state })
+    // composed disk state
+    this.store = new ComposedStore({
+      TransactionController: this.txController.store,
+      KeyringController: this.keyringController.store,
+      PreferencesController: this.preferencesController.store,
+      AddressBookController: this.addressBookController.store,
+      CurrencyController: this.currencyController.store,
+      NoticeController: this.noticeController.store,
+      ShapeShiftController: this.shapeshiftController.store,
+      NetworkController: this.networkController.store,
     })
 
-    // manual mem state subscriptions
-    this.networkController.store.subscribe(this.sendUpdate.bind(this))
-    this.ethStore.subscribe(this.sendUpdate.bind(this))
-    this.txController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
-    this.addressBookController.store.subscribe(this.sendUpdate.bind(this))
-    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
-    this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
+    // merged mem state
+    this.memStore = new MergedStore([
+      // {
+      //   isInitialized,
+      // },
+      this.networkController.store,
+      this.ethStore,
+      this.txController.memStore,
+      this.messageManager.memStore,
+      this.personalMessageManager.memStore,
+      this.keyringController.memStore,
+      this.preferencesController.store,
+      this.addressBookController.store,
+      this.currencyController.store,
+      // this.configManager.getConfig(),
+      this.noticeController.memStore,
+      this.shapeshiftController.store,
+      // {
+      //   lostAccounts: this.configManager.getLostAccounts(),
+      //   seedWords: this.configManager.getSeedWords(),
+      // }
+    ])
+
   }
 
   //
@@ -211,38 +209,6 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   //
-  // State Management
-  //
-
-  getState () {
-    const wallet = this.configManager.getWallet()
-    const vault = this.keyringController.store.getState().vault
-    const isInitialized = (!!wallet || !!vault)
-    return extend(
-      {
-        isInitialized,
-      },
-      this.networkController.store.getState(),
-      this.ethStore.getState(),
-      this.txController.memStore.getState(),
-      this.messageManager.memStore.getState(),
-      this.personalMessageManager.memStore.getState(),
-      this.keyringController.memStore.getState(),
-      this.preferencesController.store.getState(),
-      this.addressBookController.store.getState(),
-      this.currencyController.store.getState(),
-      this.noticeController.memStore.getState(),
-      // config manager
-      this.configManager.getConfig(),
-      this.shapeshiftController.store.getState(),
-      {
-        lostAccounts: this.configManager.getLostAccounts(),
-        seedWords: this.configManager.getSeedWords(),
-      }
-    )
-  }
-
-  //
   // Remote Features
   //
 
@@ -255,7 +221,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     return {
       // etc
-      getState: (cb) => cb(null, this.getState()),
+      getState: (cb) => cb(null, this.memStore.getState()),
       setProviderType: this.networkController.setProviderType.bind(this.networkController),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
@@ -330,8 +296,7 @@ module.exports = class MetamaskController extends EventEmitter {
     outStream.pipe(dnode).pipe(outStream)
     dnode.on('remote', (remote) => {
       // push updates to popup
-      const sendUpdate = remote.sendUpdate.bind(remote)
-      this.on('update', sendUpdate)
+      this.memStore.subscribe((value) => remote.sendUpdate(value))
     })
   }
 
@@ -352,10 +317,6 @@ module.exports = class MetamaskController extends EventEmitter {
       this.publicConfigStore,
       outStream
     )
-  }
-
-  sendUpdate () {
-    this.emit('update', this.getState())
   }
 
   //
@@ -423,7 +384,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const self = this
     self.txController.addUnapprovedTransaction(txParams, (err, txMeta) => {
       if (err) return cb(err)
-      self.sendUpdate()
       self.opts.showUnapprovedTx(txMeta)
       // listen for tx completion (success, fail)
       self.txController.once(`${txMeta.id}:finished`, (completedTx) => {
@@ -441,7 +401,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     this.messageManager.once(`${msgId}:finished`, (data) => {
       switch (data.status) {
@@ -461,7 +420,6 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     this.personalMessageManager.once(`${msgId}:finished`, (data) => {
       switch (data.status) {
@@ -497,7 +455,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
       this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
+      return this.memStore.getState()
     })
   }
 
@@ -505,14 +463,13 @@ module.exports = class MetamaskController extends EventEmitter {
     const messageManager = this.messageManager
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
+      cb(null, this.memStore.getState())
     }
   }
 
   // Prefixed Style Message Signing Methods:
   approvePersonalMessage (msgParams, cb) {
     const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     this.personalMessageManager.once(`${msgId}:finished`, (data) => {
       switch (data.status) {
@@ -540,7 +497,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
       this.personalMessageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
+      return this.memStore.getState()
     })
   }
 
@@ -548,14 +505,13 @@ module.exports = class MetamaskController extends EventEmitter {
     const messageManager = this.personalMessageManager
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
+      cb(null, this.memStore.getState())
     }
   }
 
   markAccountsFound (cb) {
     this.configManager.setLostAccounts([])
-    this.sendUpdate()
-    cb(null, this.getState())
+    cb(null, this.memStore.getState())
   }
 
   restoreOldVaultAccounts (migratorOutput) {
