@@ -69,6 +69,8 @@ function setupController (initState) {
     // platform specific api
     platform,
   })
+
+  controller.on('locked', platform.reload.bind(platform))
   global.metamaskController = controller
 
   // setup state persistence

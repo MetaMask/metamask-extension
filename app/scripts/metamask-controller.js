@@ -283,7 +283,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
-      // setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
@@ -311,9 +310,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setLocked () {
     this.keyringController.setLocked()
-      .then((data) => {
-        this.platform.reload()
-      })
+    .then((data) => this.emit('locked'))
   }
 
   setupUntrustedCommunication (connectionStream, originDomain) {
