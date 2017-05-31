@@ -282,12 +282,15 @@ module.exports = class MetamaskController extends EventEmitter {
       setAddressBook: nodeify(addressBookController.setAddressBook).bind(addressBookController),
 
       // KeyringController
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
       createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
       addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
+      setLocked: nodeify(() => {
+        this.platform.reload()
+        return keyringController.setLocked()
+      }),
 
       // txController
       approveTransaction: txController.approveTransaction.bind(txController),
