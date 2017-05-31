@@ -64,6 +64,30 @@ QUnit.test('render init screen', function (assert) {
     sandwich.click()
 
     return wait()
+  }).then(function() {
+
+    var sandwich = app.find('.menu-droppo')[0]
+    var children = sandwich.children
+    var lock = children[children.length - 2]
+    assert.ok(lock, 'Lock menu item found')
+    lock.click()
+
+    return wait(1000)
+  }).then(function() {
+
+    var pwBox = app.find('#password-box')[0]
+    pwBox.value = PASSWORD
+
+    var createButton = app.find('button.primary')[0]
+    createButton.click()
+
+    return wait(1000)
+  }).then(function() {
+
+    var detail = app.find('.account-detail-section')[0]
+    assert.ok(detail, 'Account detail section loaded again.')
+
+    return wait()
   }).then(function (){
 
     var qrButton = app.find('.fa.fa-qrcode')[0]
