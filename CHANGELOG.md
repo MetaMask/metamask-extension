@@ -2,12 +2,16 @@
 
 ## Current Master
 
+## 3.7.2 2017-5-31
+
 - Now when switching networks sites that use web3 will reload
 - Now when switching networks the extension does not restart
 - Cleanup decimal bugs in our gas inputs.
 - Fix bug where submit button was enabled for invalid gas inputs.
 - Now enforce 95% of block's gasLimit to protect users.
 - Removing provider-engine from the inpage provider. This fixes some error handling inconsistencies introduced in 3.7.0.
+- Added "inflight cache", which prevents identical requests from clogging up the network, dramatically improving ENS performance.
+- Fixed bug where filter subscriptions would sometimes fail to unsubscribe.
 - Some contracts will now display logos instead of jazzicons.
 - Some contracts will now have names displayed in the confirmation view.
 
