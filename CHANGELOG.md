@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 3.7.3 2017-6-1
+
+- Rebuilt to fix cache clearing bug.
+
 ## 3.7.2 2017-5-31
 
 - Now when switching networks sites that use web3 will reload
