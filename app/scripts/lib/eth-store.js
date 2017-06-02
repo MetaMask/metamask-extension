@@ -21,6 +21,7 @@ class EthereumStore extends ObservableStore {
       transactions: {},
       currentBlockNumber: '0',
       currentBlockHash: '',
+      currentBlockGasLimit: '',
     })
     this._provider = opts.provider
     this._query = new EthQuery(this._provider)
@@ -73,6 +74,7 @@ class EthereumStore extends ObservableStore {
     this._currentBlockNumber = blockNumber
     this.updateState({ currentBlockNumber: parseInt(blockNumber) })
     this.updateState({ currentBlockHash: `0x${block.hash.toString('hex')}`})
+    this.updateState({ currentBlockGasLimit: `0x${block.gasLimit.toString('hex')}` })
     async.parallel([
       this._updateAccounts.bind(this),
       this._updateTransactions.bind(this, blockNumber),

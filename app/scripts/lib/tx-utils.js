@@ -21,19 +21,10 @@ module.exports = class txProviderUtils {
     this.query.getBlockByNumber('latest', true, (err, block) => {
       if (err) return cb(err)
       async.waterfall([
-        self.setBlockGasLimit.bind(self, txMeta, block.gasLimit),
         self.estimateTxGas.bind(self, txMeta, block.gasLimit),
         self.setTxGas.bind(self, txMeta, block.gasLimit),
       ], cb)
     })
-  }
-
-  setBlockGasLimit (txMeta, blockGasLimitHex, cb) {
-    const blockGasLimitBN = hexToBn(blockGasLimitHex)
-    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
-    txMeta.blockGasLimit = bnToHex(saferGasLimitBN)
-    cb()
-    return
   }
 
   estimateTxGas (txMeta, blockGasLimitHex, cb) {
