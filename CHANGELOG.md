@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 3.7.4 2017-6-2
+
+- Fix bug with inflight cache that caused some block lookups to return bad values (affected OasisDex).
+- Fixed bug with gas limit calculation that would sometimes create unsubmittable gas limits.
+
 ## 3.7.3 2017-6-1
 
 - Rebuilt to fix cache clearing bug.
