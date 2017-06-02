@@ -30,7 +30,7 @@ module.exports = class txProviderUtils {
 
   setBlockGasLimit (txMeta, blockGasLimitHex, cb) {
     const blockGasLimitBN = hexToBn(blockGasLimitHex)
-    const saferGasLimitBN = blockGasLimitBN.muln(0.95)
+    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
     txMeta.blockGasLimit = bnToHex(saferGasLimitBN)
     cb()
     return
@@ -43,7 +43,7 @@ module.exports = class txProviderUtils {
     // if not, fallback to block gasLimit
     if (!txMeta.gasLimitSpecified) {
       const blockGasLimitBN = hexToBn(blockGasLimitHex)
-      const saferGasLimitBN = blockGasLimitBN.muln(0.95)
+      const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
       txParams.gas = bnToHex(saferGasLimitBN)
     }
     // run tx, see if it will OOG
@@ -142,4 +142,10 @@ function bnToHex (inputBn) {
 
 function hexToBn (inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
+}
+
+function BnMultiplyByFraction (targetBN, numerator, denominator) {
+  const numBN = new BN(numerator)
+  const denomBN = new BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
 }
