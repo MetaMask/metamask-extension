@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Update gasLimit params with every new block seen.
+
 ## 3.7.4 2017-6-2
 
 - Fix bug with inflight cache that caused some block lookups to return bad values (affected OasisDex).
