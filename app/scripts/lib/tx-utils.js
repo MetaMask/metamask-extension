@@ -21,10 +21,19 @@ module.exports = class txProviderUtils {
     this.query.getBlockByNumber('latest', true, (err, block) => {
       if (err) return cb(err)
       async.waterfall([
+        self.setBlockGasLimit.bind(self, txMeta, block.gasLimit),
         self.estimateTxGas.bind(self, txMeta, block.gasLimit),
         self.setTxGas.bind(self, txMeta, block.gasLimit),
       ], cb)
     })
+  }
+
+  setBlockGasLimit (txMeta, blockGasLimitHex, cb) {
+    const blockGasLimitBN = hexToBn(blockGasLimitHex)
+    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+    txMeta.blockGasLimit = bnToHex(saferGasLimitBN)
+    cb()
+    return
   }
 
   estimateTxGas (txMeta, blockGasLimitHex, cb) {
@@ -33,7 +42,9 @@ module.exports = class txProviderUtils {
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
     // if not, fallback to block gasLimit
     if (!txMeta.gasLimitSpecified) {
-      txParams.gas = blockGasLimitHex
+      const blockGasLimitBN = hexToBn(blockGasLimitHex)
+      const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+      txParams.gas = bnToHex(saferGasLimitBN)
     }
     // run tx, see if it will OOG
     this.query.estimateGas(txParams, cb)
@@ -131,4 +142,10 @@ function bnToHex (inputBn) {
 
 function hexToBn (inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
+}
+
+function BnMultiplyByFraction (targetBN, numerator, denominator) {
+  const numBN = new BN(numerator)
+  const denomBN = new BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
 }

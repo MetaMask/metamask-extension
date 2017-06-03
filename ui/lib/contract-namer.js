@@ -5,14 +5,18 @@
  * otherwise returns null.
  */
 
-// Nickname keys must be stored in lower case.
-const nicknames = {}
+const contractMap = require('eth-contract-metadata')
+const ethUtil = require('ethereumjs-util')
 
 module.exports = function (addr, identities = {}) {
+  const checksummed = ethUtil.toChecksumAddress(addr)
+  if (contractMap[checksummed] && contractMap[checksummed].name) {
+    return contractMap[checksummed].name
+  }
+
   const address = addr.toLowerCase()
   const ids = hashFromIdentities(identities)
-
-  return addrFromHash(address, ids) || addrFromHash(address, nicknames)
+  return addrFromHash(address, ids)
 }
 
 function hashFromIdentities (identities) {

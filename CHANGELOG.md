@@ -2,7 +2,27 @@
 
 ## Current Master
 
+## 3.7.4 2017-6-2
+
+- Fix bug with inflight cache that caused some block lookups to return bad values (affected OasisDex).
+- Fixed bug with gas limit calculation that would sometimes create unsubmittable gas limits.
+
+## 3.7.3 2017-6-1
+
+- Rebuilt to fix cache clearing bug.
+
+## 3.7.2 2017-5-31
+
+- Now when switching networks sites that use web3 will reload
 - Now when switching networks the extension does not restart
+- Cleanup decimal bugs in our gas inputs.
+- Fix bug where submit button was enabled for invalid gas inputs.
+- Now enforce 95% of block's gasLimit to protect users.
+- Removing provider-engine from the inpage provider. This fixes some error handling inconsistencies introduced in 3.7.0.
+- Added "inflight cache", which prevents identical requests from clogging up the network, dramatically improving ENS performance.
+- Fixed bug where filter subscriptions would sometimes fail to unsubscribe.
+- Some contracts will now display logos instead of jazzicons.
+- Some contracts will now have names displayed in the confirmation view.
 
 ## 3.7.0 2017-5-23
 
@@ -16,6 +36,8 @@
 
 - Fix bug where edited gas parameters would not take effect.
 - Trim currency list.
+- Enable decimals in our gas prices.
+- Fix reset button.
 - Fix event filter bug introduced by newer versions of Geth.
 - Fix bug where decimals in gas inputs could result in strange values.
 

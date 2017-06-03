@@ -61,7 +61,6 @@ function setupStreams () {
   // ignore unused channels (handled by background)
   mx.ignoreStream('provider')
   mx.ignoreStream('publicConfig')
-  mx.ignoreStream('reload')
 }
 
 function shouldInjectWeb3 () {
