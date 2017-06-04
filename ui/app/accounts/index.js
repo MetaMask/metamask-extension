@@ -51,14 +51,13 @@ AccountsScreen.prototype.render = function () {
         h('h2.page-subtitle', 'Select Account'),
       ]),
 
-      h('hr.horizontal-line'),
-
       // identity selection
       h('section.identity-section', {
         style: {
           height: '418px',
           overflowY: 'auto',
           overflowX: 'hidden',
+          background: '#F7F7F7',
         },
       },
         [
