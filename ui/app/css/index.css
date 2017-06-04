@@ -479,6 +479,18 @@ input.large-input {
   font-size: 12px;
 }
 
+.send-screen {
+
+}
+
+.send-screen .wallet-balance-value {
+  color: #ABA9AA;
+}
+
+.send-screen .wallet-balance-unit {
+  color: #AEAEAE;
+}
+
 /* Ether Balance Widget */
 
 .ether-balance-label {
