@@ -53,70 +53,77 @@ ConfirmTxScreen.prototype.render = function () {
 
   return (
 
-    h('.flex-column.flex-grow', [
+    h('.conf-tx-section', {
+      style: {
+        height: '100%',
+        background: '#F4F4F4',
+      }
+    }, [
+    
+      h('.flex-column.flex-grow', [
+        // subtitle and nav
+        h('.section-title.flex-row.flex-center', [
+          !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+            onClick: this.goHome.bind(this),
+          }) : null,
+          h('h2.page-subtitle', 'Confirm Transaction'),
+          isNotification ? h(NetworkIndicator, {
+            network: network,
+            provider: provider,
+          }) : null,
+        ]),
 
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.goHome.bind(this),
-        }) : null,
-        h('h2.page-subtitle', 'Confirm Transaction'),
-        isNotification ? h(NetworkIndicator, {
-          network: network,
-          provider: provider,
-        }) : null,
-      ]),
-
-      h('h3', {
-        style: {
-          alignSelf: 'center',
-          display: unconfTxList.length > 1 ? 'block' : 'none',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        h('h3', {
           style: {
-            display: props.index === 0 ? 'none' : 'inline-block',
+            alignSelf: 'center',
+            display: unconfTxList.length > 1 ? 'block' : 'none',
           },
-          onClick: () => props.dispatch(actions.previousTx()),
-        }),
-        ` ${props.index + 1} of ${unconfTxList.length} `,
-        h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.nextTx()),
-        }),
-      ]),
+        }, [
+          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+            style: {
+              display: props.index === 0 ? 'none' : 'inline-block',
+            },
+            onClick: () => props.dispatch(actions.previousTx()),
+          }),
+          ` ${props.index + 1} of ${unconfTxList.length} `,
+          h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
+            style: {
+              display: props.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
+            },
+            onClick: () => props.dispatch(actions.nextTx()),
+          }),
+        ]),
 
-      warningIfExists(props.warning),
+        warningIfExists(props.warning),
 
-      h(ReactCSSTransitionGroup, {
-        className: 'css-transition-group',
-        transitionName: 'main',
-        transitionEnterTimeout: 300,
-        transitionLeaveTimeout: 300,
-      }, [
+        h(ReactCSSTransitionGroup, {
+          className: 'css-transition-group',
+          transitionName: 'main',
+          transitionEnterTimeout: 300,
+          transitionLeaveTimeout: 300,
+        }, [
 
-        currentTxView({
-          // Properties
-          txData: txData,
-          key: txData.id,
-          selectedAddress: props.selectedAddress,
-          accounts: props.accounts,
-          identities: props.identities,
-          conversionRate,
-          currentCurrency,
-          // Actions
-          buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
-          sendTransaction: this.sendTransaction.bind(this),
-          cancelTransaction: this.cancelTransaction.bind(this, txData),
-          signMessage: this.signMessage.bind(this, txData),
-          signPersonalMessage: this.signPersonalMessage.bind(this, txData),
-          cancelMessage: this.cancelMessage.bind(this, txData),
-          cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
-        }),
+          currentTxView({
+            // Properties
+            txData: txData,
+            key: txData.id,
+            selectedAddress: props.selectedAddress,
+            accounts: props.accounts,
+            identities: props.identities,
+            conversionRate,
+            currentCurrency,
+            // Actions
+            buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
+            sendTransaction: this.sendTransaction.bind(this),
+            cancelTransaction: this.cancelTransaction.bind(this, txData),
+            signMessage: this.signMessage.bind(this, txData),
+            signPersonalMessage: this.signPersonalMessage.bind(this, txData),
+            cancelMessage: this.cancelMessage.bind(this, txData),
+            cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
+          }),
 
-      ]),
+        ]),
+      ])
     ])
   )
 }
