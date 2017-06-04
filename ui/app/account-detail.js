@@ -93,7 +93,7 @@ AccountDetailScreen.prototype.render = function () {
 
               // What is shown when not editing + edit text:
               h('label.editing-label', [h('.edit-text', 'edit')]),
-              h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
+              h('h2.font-medium.color-white', {name: 'edit'}, identity && identity.name),
             ]),
             h('.flex-row', {
               style: {
@@ -105,7 +105,7 @@ AccountDetailScreen.prototype.render = function () {
 
               // address
 
-              h('div', {
+              h('.color-white', {
                 style: {
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -116,7 +116,6 @@ AccountDetailScreen.prototype.render = function () {
                   textRendering: 'geometricPrecision',
                   marginTop: '10px',
                   marginBottom: '15px',
-                  color: '#AEAEAE',
                 },
               }, checksumAddress),
 
@@ -137,12 +136,11 @@ AccountDetailScreen.prototype.render = function () {
                 h(Tooltip, {
                   title: 'QR Code',
                 }, [
-                  h('i.fa.fa-qrcode.pointer.pop-hover', {
+                  h('i.fa.fa-qrcode.pointer.pop-hover.color-white', {
                     onClick: () => props.dispatch(actions.showQrView(selected, identity ? identity.name : '')),
                     style: {
                       fontSize: '18px',
                       position: 'relative',
-                      color: 'rgb(247, 134, 28)',
                       top: '5px',
                       marginLeft: '3px',
                       marginRight: '3px',
@@ -159,7 +157,7 @@ AccountDetailScreen.prototype.render = function () {
                       alignItems: 'center',
                     },
                   }, [
-                    h('img.cursor-pointer.color-orange', {
+                    h('img.cursor-pointer', {
                       src: 'images/key-32.png',
                       onClick: () => this.requestAccountExport(selected),
                       style: {
@@ -171,7 +169,7 @@ AccountDetailScreen.prototype.render = function () {
               ]),
             ]),
 
-            // account ballence
+            // account balance
 
           ]),
         ]),
@@ -192,21 +190,25 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
-          h('button', {
+          h('button.border-only', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
               position: 'absolute',
               left: '219px',
+              borderColor: 'white',
+              boxShadow: 'none',
             },
           }, 'BUY'),
 
-          h('button', {
+          h('button.border-only', {
             onClick: () => props.dispatch(actions.showSendPage()),
             style: {
               marginBottom: '20px',
               marginRight: '8px',
+              borderColor: 'white',
+              boxShadow: 'none',
             },
           }, 'SEND'),
 
@@ -220,7 +222,11 @@ AccountDetailScreen.prototype.render = function () {
         transitionEnterTimeout: 300,
         transitionLeaveTimeout: 300,
       }, [
-        this.subview(),
+        h('div', {
+          style: {
+            background: '#F7F7F7',
+          },
+        }, this.subview()),
       ]),
 
     ])

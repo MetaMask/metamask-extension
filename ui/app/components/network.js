@@ -63,7 +63,7 @@ Network.prototype.render = function () {
               h('.menu-icon.diamond'),
               h('.network-name', {
                 style: {
-                  color: '#039396',
+                  color: 'white',
                 }},
               'Ethereum Main Net'),
             ])
@@ -72,7 +72,7 @@ Network.prototype.render = function () {
               h('.menu-icon.red-dot'),
               h('.network-name', {
                 style: {
-                  color: '#ff6666',
+                  color: 'white',
                 }},
               'Ropsten Test Net'),
             ])
@@ -81,7 +81,7 @@ Network.prototype.render = function () {
               h('.menu-icon.hollow-diamond'),
               h('.network-name', {
                 style: {
-                  color: '#690496',
+                  color: 'white',
                 }},
               'Kovan Test Net'),
             ])
@@ -90,7 +90,7 @@ Network.prototype.render = function () {
               h('.menu-icon.golden-square'),
               h('.network-name', {
                 style: {
-                  color: '#e7a218',
+                  color: 'white',
                 }},
               'Rinkeby Test Net'),
             ])
@@ -99,13 +99,13 @@ Network.prototype.render = function () {
               h('i.fa.fa-question-circle.fa-lg', {
                 style: {
                   margin: '10px',
-                  color: 'rgb(125, 128, 130)',
+                  color: 'white',
                 },
               }),
 
               h('.network-name', {
                 style: {
-                  color: '#AEAEAE',
+                  color: 'white',
                 }},
               'Private Network'),
             ])

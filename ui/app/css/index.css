@@ -112,6 +112,15 @@ button.btn-thin {
   font-size: 13px;
 }
 
+.app-root {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#308dff+0,60d6f7+65,60d6f7+65,d7f7f6+100 */
+  background: #308dff; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #308dff 0%, #60d6f7 65%, #60d6f7 65%, #d7f7f6 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, #308dff 0%,#60d6f7 65%,#60d6f7 65%,#d7f7f6 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg, #308dff 0%,#60d6f7 65%,#60d6f7 65%,#d7f7f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#308dff', endColorstr='#d7f7f6',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */}
+}
+
 .app-header {
   padding: 6px 8px;
 }
@@ -119,7 +128,7 @@ button.btn-thin {
 .app-header h1 {
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
-  color: #AEAEAE;
+  color: white;
 }
 
 h2.page-subtitle {
@@ -461,10 +470,6 @@ input.large-input {
 }
 
 /* Ether Balance Widget */
-
-.ether-balance-amount {
-  color: #F7861C;
-}
 
 .ether-balance-label {
   color: #ABA9AA;

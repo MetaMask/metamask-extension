@@ -22,7 +22,7 @@ EthBalanceComponent.prototype.render = function () {
 
   return (
 
-    h('.ether-balance.ether-balance-amount', {
+    h('.ether-balance.color-white', {
       style,
     }, [
       h('div', {
@@ -76,7 +76,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
         }, incoming ? `+${balance}` : balance),
         h('div', {
           style: {
-            color: ' #AEAEAE',
+            color: 'white',
             fontSize: '12px',
             marginLeft: '5px',
           },

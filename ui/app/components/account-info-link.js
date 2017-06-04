@@ -30,7 +30,7 @@ AccountInfoLink.prototype.render = function () {
     h(Tooltip, {
       title,
     }, [
-      h('i.fa.fa-info-circle.cursor-pointer.color-orange', {
+      h('i.fa.fa-info-circle.cursor-pointer.color-white', {
         style: {
           margin: '5px',
         },

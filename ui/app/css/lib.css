@@ -4,11 +4,20 @@
   color: #F7861C;
 }
 
+.color-white {
+  color: white;
+}
+
 .color-forest {
   color: #0A5448;
 }
 
 /* lib */
+
+.border-only {
+  background: none;
+  border: solid 1px;
+}
 
 .full-width {
   width: 100%;

@@ -69,7 +69,7 @@ App.prototype.render = function () {
 
   return (
 
-    h('.flex-column.flex-grow.full-height', {
+    h('.app-root.flex-column.flex-grow.full-height', {
       style: {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
@@ -121,7 +121,6 @@ App.prototype.renderAppBar = function () {
         style: {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
-          background: props.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
           zIndex: 10,
@@ -135,14 +134,6 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
-          // mini logo
-          h('img', {
-            height: 24,
-            width: 24,
-            src: '/images/icon-128.png',
-          }),
-
           h('#network-spacer.flex-center', {
             style: {
               marginRight: '-72px',
@@ -197,7 +188,7 @@ App.prototype.renderAppBar = function () {
             barHeight: 2,
             padding: 0,
             isOpen: state.isMainMenuOpen,
-            color: 'rgb(247,146,30)',
+            color: 'white',
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
