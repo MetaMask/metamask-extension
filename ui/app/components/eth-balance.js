@@ -22,7 +22,7 @@ EthBalanceComponent.prototype.render = function () {
 
   return (
 
-    h('.ether-balance.color-white', {
+    h('.ether-balance', {
       style,
     }, [
       h('div', {
@@ -68,15 +68,14 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
           textRendering: 'geometricPrecision',
         },
       }, [
-        h('div', {
+        h('.wallet-balance-value', {
           style: {
             width: '100%',
             textAlign: 'right',
           },
         }, incoming ? `+${balance}` : balance),
-        h('div', {
+        h('.wallet-balance-unit', {
           style: {
-            color: 'white',
             fontSize: '12px',
             marginLeft: '5px',
           },

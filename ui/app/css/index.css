@@ -411,25 +411,23 @@ input.large-input {
 
 /* account detail screen */
 
-.account-detail-section {
-
-}
-.name-label{
-
+.account-data-subsection .wallet-balance-value {
+  color: white;
 }
 
-.unapproved-tx-icon {
-  height: 16px;
-  width: 16px;
-  background: rgb(47, 174, 244);
-  border-color: #AEAEAE;
-  border-radius: 13px;
+.account-data-subsection .wallet-balance-unit {
+  color: white;
+}
+
+.account-data-subsection .copy-button {
+  color: white;
 }
 
 .edit-text {
   height: 100%;
   visibility: hidden;
 }
+
 .editing-label {
   display: flex;
   justify-content: flex-start;
@@ -439,9 +437,21 @@ input.large-input {
   text-rendering: geometricPrecision;
   color: #F7861C;
 }
+
 .name-label:hover .edit-text {
   visibility: visible;
 }
+
+/* tx history */
+
+.unapproved-tx-icon {
+  height: 16px;
+  width: 16px;
+  background: rgb(47, 174, 244);
+  border-color: #AEAEAE;
+  border-radius: 13px;
+}
+
 /* tx confirm */
 
 .unconftx-section input[type=password] {
