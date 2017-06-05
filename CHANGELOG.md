@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix currency API URL from cryptonator.
+
 ## 3.7.6 2017-6-5
 
 - Fix bug that prevented publishing contracts.
