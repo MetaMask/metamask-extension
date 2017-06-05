@@ -10,7 +10,6 @@ const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
-const util = require('../util')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
