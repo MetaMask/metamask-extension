@@ -262,7 +262,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
-  if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData) || (recipient === '0x0000000000000000000000000000000000000000')) {
+  if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData) {
     message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
   }

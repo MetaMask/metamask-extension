@@ -7,7 +7,7 @@ const clone = require('clone')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
-
+const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
 const EthBalance = require('./eth-balance')
 const util = require('../util')
@@ -45,7 +45,7 @@ PendingTx.prototype.render = function () {
   const balance = account ? account.balance : '0x0'
 
   // recipient check
-  const isValidAddress = !(txParams.to === '0x0000000000000000000000000000000000000000')
+  const isValidAddress = util.isValidAddress(txParams.to)
 
   // Gas
   const gas = txParams.gas
