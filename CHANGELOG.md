@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.7.6 2017-6-5
+
 - Fix bug that prevented publishing contracts.
 
 ## 3.7.5 2017-6-5
