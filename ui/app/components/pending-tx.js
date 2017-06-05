@@ -9,8 +9,7 @@ const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 
 const MiniAccountPanel = require('./mini-account-panel')
-const Tooltip = require('./tooltip')
-const copyToClipboard = require('copy-to-clipboard')
+const Copyable = require('./copyable')
 const EthBalance = require('./eth-balance')
 const util = require('../util')
 const addressSummary = util.addressSummary
@@ -96,18 +95,11 @@ PendingTx.prototype.render = function () {
                 },
               }, identity.name),
 
-              h(Tooltip, {
-                title: 'Copy address',
-                position: 'bottom',
+              h(Copyable, {
+                value: ethUtil.toChecksumAddress(address),
               }, [
                 h('span.font-small', {
-                  onClick: (event) => {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    copyToClipboard(ethUtil.toChecksumAddress(address))
-                  },
                   style: {
-                    cursor: 'pointer',
                     fontFamily: 'Montserrat Light, Montserrat, sans-serif',
                   },
                 }, addressSummary(address, 6, 4, false)),
@@ -343,18 +335,11 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
         },
       }, nameForAddress(txParams.to, props.identities)),
 
-      h(Tooltip, {
-        title: 'Copy address',
-        position: 'bottom',
+      h(Copyable, {
+        value: ethUtil.toChecksumAddress(txParams.to),
       }, [
         h('span.font-small', {
-          onClick: (event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            copyToClipboard(ethUtil.toChecksumAddress(txParams.to))
-          },
           style: {
-            cursor: 'pointer',
             fontFamily: 'Montserrat Light, Montserrat, sans-serif',
           },
         }, addressSummary(txParams.to, 6, 4, false)),
