@@ -24,9 +24,6 @@ Copyable.prototype.render = function () {
   return h(Tooltip, {
     title: copied ? 'Copied!' : 'Copy',
     position: 'bottom',
-    style: {
-      cursor: 'pointer',
-    },
   }, h('span', {
     style: {
       cursor: 'pointer',
