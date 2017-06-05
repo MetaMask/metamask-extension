@@ -9,6 +9,7 @@ const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 
 const MiniAccountPanel = require('./mini-account-panel')
+const Copyable = require('./copyable')
 const EthBalance = require('./eth-balance')
 const util = require('../util')
 const addressSummary = util.addressSummary
@@ -93,11 +94,16 @@ PendingTx.prototype.render = function () {
                   fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
                 },
               }, identity.name),
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-                },
-              }, addressSummary(address, 6, 4, false)),
+
+              h(Copyable, {
+                value: ethUtil.toChecksumAddress(address),
+              }, [
+                h('span.font-small', {
+                  style: {
+                    fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+                  },
+                }, addressSummary(address, 6, 4, false)),
+              ]),
 
               h('span.font-small', {
                 style: {
@@ -322,16 +328,23 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
       imageSeed: txParams.to,
       picOrder: 'left',
     }, [
+
       h('span.font-small', {
         style: {
           fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
         },
       }, nameForAddress(txParams.to, props.identities)),
-      h('span.font-small', {
-        style: {
-          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-        },
-      }, addressSummary(txParams.to, 6, 4, false)),
+
+      h(Copyable, {
+        value: ethUtil.toChecksumAddress(txParams.to),
+      }, [
+        h('span.font-small', {
+          style: {
+            fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+          },
+        }, addressSummary(txParams.to, 6, 4, false)),
+      ]),
+
     ])
   } else {
     return h(MiniAccountPanel, {
