@@ -109,6 +109,7 @@ EnsInput.prototype.lookupEnsName = function () {
     log.error(reason)
     return this.setState({
       loadingEns: false,
+      ensResolution: '0x0000000000000000000000000000000000000000',
       ensFailure: true,
       hoverText: reason.message,
     })
