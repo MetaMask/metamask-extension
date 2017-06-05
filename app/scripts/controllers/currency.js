@@ -45,7 +45,7 @@ class CurrencyController {
 
   updateConversionRate () {
     const currentCurrency = this.getCurrentCurrency()
-    return fetch(`https://www.cryptonator.com/api/ticker/eth-${currentCurrency}`)
+    return fetch(`https://api.cryptonator.com/api/ticker/eth-${currentCurrency}`)
     .then(response => response.json())
     .then((parsedResponse) => {
       this.setConversionRate(Number(parsedResponse.ticker.price))
