@@ -35,6 +35,8 @@ AccountImportSubview.prototype.render = function () {
   return (
     h('div', {
       style: {
+        height: '100%',
+        background: '#E4E4E4',
       },
     }, [
       h('div', {
