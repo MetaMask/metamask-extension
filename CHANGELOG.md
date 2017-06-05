@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug that prevented publishing contracts.
+
 ## 3.7.5 2017-6-5
 
 - Prevent users from sending to the `0x0` address.
