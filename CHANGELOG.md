@@ -3,6 +3,15 @@
 ## Current Master
 
 - Fix currency API URL from cryptonator.
+## 3.7.6 2017-6-5
+
+- Fix bug that prevented publishing contracts.
+
+## 3.7.5 2017-6-5
+
+- Prevent users from sending to the `0x0` address.
+- Provide useful errors when entering bad characters in ENS name.
+- Add ability to copy addresses from transaction confirmation view.
 
 ## 3.7.4 2017-6-2
 
