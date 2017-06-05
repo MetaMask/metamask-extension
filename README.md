@@ -193,3 +193,8 @@ You will need:
 + An RPC Endpoint url
 + An explorer link
 + CSS for the display icon
+
+## Other Guides
+
+- [Publishing Guide](./docs/publishing.md)
+
