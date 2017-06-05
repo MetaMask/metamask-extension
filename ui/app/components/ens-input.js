@@ -95,6 +95,7 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
+    if (address === '0x0000000000000000000000000000000000000000') throw new Error('No address has been set for this name.')
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,

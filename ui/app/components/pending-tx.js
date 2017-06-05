@@ -44,6 +44,9 @@ PendingTx.prototype.render = function () {
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
+  // recipient check
+  const isValidAddress = !(txParams.to === '0x0000000000000000000000000000000000000000')
+
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
@@ -261,6 +264,15 @@ PendingTx.prototype.render = function () {
           }, 'Transaction Error. Exception thrown in contract code.')
         : null,
 
+        !isValidAddress ?
+          h('.error', {
+            style: {
+              marginLeft: 50,
+              fontSize: '0.9em',
+            },
+          }, 'Recipient address is invalid sending this transaction will result in a loss of ETH.')
+        : null,
+
         insufficientBalance ?
           h('span.error', {
             style: {
@@ -298,7 +310,7 @@ PendingTx.prototype.render = function () {
             type: 'submit',
             value: 'ACCEPT',
             style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid,
+            disabled: insufficientBalance || !this.state.valid || !isValidAddress,
           }),
 
           h('button.cancel.btn-red', {
