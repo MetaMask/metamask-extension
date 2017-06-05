@@ -21,6 +21,7 @@ EnsInput.prototype.render = function () {
   const opts = extend(props, {
     list: 'addresses',
     onChange: () => {
+      this.setState({ ensResolution: '0x0000000000000000000000000000000000000000' })
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
       if (!networkHasEnsSupport) return
@@ -102,6 +103,7 @@ EnsInput.prototype.lookupEnsName = function () {
         ensResolution: address,
         nickname: recipient.trim(),
         hoverText: address + '\nClick to Copy',
+        ensFailure: false,
       })
     }
   })
