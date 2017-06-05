@@ -7,11 +7,10 @@ const clone = require('clone')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
-
+const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
 const Copyable = require('./copyable')
 const EthBalance = require('./eth-balance')
-const util = require('../util')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
@@ -44,6 +43,9 @@ PendingTx.prototype.render = function () {
   const identity = props.identities[address] || { address: address }
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
+
+  // recipient check
+  const isValidAddress = util.isValidAddress(txParams.to)
 
   // Gas
   const gas = txParams.gas
@@ -267,6 +269,15 @@ PendingTx.prototype.render = function () {
           }, 'Transaction Error. Exception thrown in contract code.')
         : null,
 
+        !isValidAddress ?
+          h('.error', {
+            style: {
+              marginLeft: 50,
+              fontSize: '0.9em',
+            },
+          }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+        : null,
+
         insufficientBalance ?
           h('span.error', {
             style: {
@@ -304,7 +315,7 @@ PendingTx.prototype.render = function () {
             type: 'submit',
             value: 'ACCEPT',
             style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid,
+            disabled: insufficientBalance || !this.state.valid || !isValidAddress,
           }),
 
           h('button.cancel.btn-red', {
