@@ -46,6 +46,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = 'Rinkeby Test Network'
     iconName = 'rinkeby-test-network'
+  } else if (providerName === 'expanse') {
+    hoverText = 'Expanse Network'
+    iconName = 'expanse-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
@@ -93,6 +96,15 @@ Network.prototype.render = function () {
                   color: '#e7a218',
                 }},
               'Rinkeby Test Net'),
+            ])
+          case 'expanse-network':
+            return h('.network-indicator', [
+              h('.menu-icon.hollow-diamond'),
+              h('.network-name', {
+                style: {
+                  color: '#FFA47B',
+                }},
+              'Expanse Net'),
             ])
           default:
             return h('.network-indicator', [

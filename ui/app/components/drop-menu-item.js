@@ -50,6 +50,9 @@ DropMenuItem.prototype.activeNetworkRender = function () {
     case 'Rinkeby Test Network':
       if (providerType === 'rinkeby') return h('.check', '✓')
       break
+    case 'Expanse Network':
+      if (providerType === 'expanse') return h('.check', '✓')
+      break
     case 'Localhost 8545':
       if (activeNetwork === 'http://localhost:8545') return h('.check', '✓')
       break
