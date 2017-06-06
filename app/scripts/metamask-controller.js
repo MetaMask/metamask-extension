@@ -497,7 +497,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // tells the listener that the message has been signed
       // and can be returned to the dapp
       this.messageManager.setMsgStatusSigned(msgId, rawSig)
-      return this.getState()
+      return cb(null, this.getState())
     })
   }
 
