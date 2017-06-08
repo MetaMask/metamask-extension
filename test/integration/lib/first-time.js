@@ -11,7 +11,7 @@ QUnit.test('render init screen', function (assert) {
 
     const recurseNotices = function () {
       let button = app.find('button')
-      if (button.html() === 'Continue') {
+      if (button.html() === 'Agree') {
         let termsPage = app.find('.markdown')[0]
         termsPage.scrollTop = termsPage.scrollHeight
         return wait().then(() => {
