@@ -52,7 +52,7 @@ InfoScreen.prototype.render = function () {
 
           h('div', {
             style: {
-              marginBottom: '10px',
+              marginBottom: '5px',
             }},
             [
               h('div', [
@@ -87,7 +87,7 @@ InfoScreen.prototype.render = function () {
 
           h('hr', {
             style: {
-              margin: '20px 0 ',
+              margin: '10px 0 ',
               width: '7em',
             },
           }),
@@ -97,6 +97,13 @@ InfoScreen.prototype.render = function () {
               paddingLeft: '30px',
             }},
             [
+              h('div.fa.fa-github', [
+                h('a.info', {
+                  href: 'https://github.com/MetaMask/faq',
+                  target: '_blank',
+                  onClick (event) { this.navigateTo(event.target.href) },
+                }, 'Need Help? Read our FAQ!'),
+              ]),
               h('div', [
                 h('a', {
                   href: 'https://metamask.io/',
@@ -137,14 +144,6 @@ InfoScreen.prototype.render = function () {
                   style: { width: '85vw' },
                   onClick () { this.navigateTo('mailto:help@metamask.io?subject=Feedback') },
                 }, 'Email us!'),
-              ]),
-
-              h('div.fa.fa-github', [
-                h('a.info', {
-                  href: 'https://github.com/MetaMask/metamask-plugin/issues',
-                  target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
-                }, 'Start a thread on GitHub'),
               ]),
             ]),
         ]),
