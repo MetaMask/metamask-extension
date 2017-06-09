@@ -37,6 +37,7 @@ BuyButtonSubview.prototype.render = function () {
     h('.buy-eth-section.flex-column', {
       style: {
         alignItems: 'center',
+        background: '#F7F7F7',
       },
     }, [
              // back button

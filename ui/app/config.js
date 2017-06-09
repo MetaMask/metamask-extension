@@ -26,87 +26,95 @@ ConfigScreen.prototype.render = function () {
   var warning = state.warning
 
   return (
-    h('.flex-column.flex-grow', [
+    h('.config-section', {
+      style: {
+        height: '100%',
+        background: '#F4F4F4',
+      }
+    }, [
 
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
-            state.dispatch(actions.goHome())
-          },
-        }),
-        h('h2.page-subtitle', 'Settings'),
-      ]),
+      h('.flex-column.flex-grow', [
 
-      h('.error', {
-        style: {
-          display: warning ? 'block' : 'none',
-          padding: '0 20px',
-          textAlign: 'center',
-        },
-      }, warning),
+        // subtitle and nav
+        h('.section-title.flex-row.flex-center', [
+          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+            onClick: (event) => {
+              state.dispatch(actions.goHome())
+            },
+          }),
+          h('h2.page-subtitle', 'Settings'),
+        ]),
 
-      // conf view
-      h('.flex-column.flex-justify-center.flex-grow.select-none', [
-        h('.flex-space-around', {
+        h('.error', {
           style: {
-            padding: '20px',
+            display: warning ? 'block' : 'none',
+            padding: '0 20px',
+            textAlign: 'center',
           },
-        }, [
+        }, warning),
 
-          currentProviderDisplay(metamaskState),
-
-          h('div', { style: {display: 'flex'} }, [
-            h('input#new_rpc', {
-              placeholder: 'New RPC URL',
-              style: {
-                width: 'inherit',
-                flex: '1 0 auto',
-                height: '30px',
-                margin: '8px',
-              },
-              onKeyPress (event) {
-                if (event.key === 'Enter') {
-                  var element = event.target
-                  var newRpc = element.value
-                  rpcValidation(newRpc, state)
-                }
-              },
-            }),
-            h('button', {
-              style: {
-                alignSelf: 'center',
-              },
-              onClick (event) {
-                event.preventDefault()
-                var element = document.querySelector('input#new_rpc')
-                var newRpc = element.value
-                rpcValidation(newRpc, state)
-              },
-            }, 'Save'),
-          ]),
-          h('hr.horizontal-line'),
-          currentConversionInformation(metamaskState, state),
-          h('hr.horizontal-line'),
-
-          h('div', {
+        // conf view
+        h('.flex-column.flex-justify-center.flex-grow.select-none', [
+          h('.flex-space-around', {
             style: {
-              marginTop: '20px',
+              padding: '20px',
             },
           }, [
-            h('button', {
-              style: {
-                alignSelf: 'center',
-              },
-              onClick (event) {
-                event.preventDefault()
-                state.dispatch(actions.revealSeedConfirmation())
-              },
-            }, 'Reveal Seed Words'),
-          ]),
 
+            currentProviderDisplay(metamaskState),
+
+            h('div', { style: {display: 'flex'} }, [
+              h('input#new_rpc', {
+                placeholder: 'New RPC URL',
+                style: {
+                  width: 'inherit',
+                  flex: '1 0 auto',
+                  height: '30px',
+                  margin: '8px',
+                },
+                onKeyPress (event) {
+                  if (event.key === 'Enter') {
+                    var element = event.target
+                    var newRpc = element.value
+                    rpcValidation(newRpc, state)
+                  }
+                },
+              }),
+              h('button', {
+                style: {
+                  alignSelf: 'center',
+                },
+                onClick (event) {
+                  event.preventDefault()
+                  var element = document.querySelector('input#new_rpc')
+                  var newRpc = element.value
+                  rpcValidation(newRpc, state)
+                },
+              }, 'Save'),
+            ]),
+            h('hr.horizontal-line'),
+            currentConversionInformation(metamaskState, state),
+            h('hr.horizontal-line'),
+
+            h('div', {
+              style: {
+                marginTop: '20px',
+              },
+            }, [
+              h('button', {
+                style: {
+                  alignSelf: 'center',
+                },
+                onClick (event) {
+                  event.preventDefault()
+                  state.dispatch(actions.revealSeedConfirmation())
+                },
+              }, 'Reveal Seed Words'),
+            ]),
+
+          ]),
         ]),
-      ]),
+      ])
     ])
   )
 }

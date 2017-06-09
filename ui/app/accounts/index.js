@@ -44,14 +44,12 @@ AccountsScreen.prototype.render = function () {
     h('.accounts-section.flex-grow', [
 
       // subtitle and nav
-      h('.section-title.flex-center', [
+      h('.section-title.flex-center.color-white', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: this.goHome.bind(this),
         }),
         h('h2.page-subtitle', 'Select Account'),
       ]),
-
-      h('hr.horizontal-line'),
 
       // identity selection
       h('section.identity-section', {
@@ -59,6 +57,7 @@ AccountsScreen.prototype.render = function () {
           height: '418px',
           overflowY: 'auto',
           overflowX: 'hidden',
+          background: '#F7F7F7',
         },
       },
         [

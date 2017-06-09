@@ -112,6 +112,15 @@ button.btn-thin {
   font-size: 13px;
 }
 
+.app-root {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#308dff+0,60d6f7+65,60d6f7+65,d7f7f6+100 */
+  background: #308dff; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #308dff 0%, #60d6f7 65%, #60d6f7 65%, #d7f7f6 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, #308dff 0%,#60d6f7 65%,#60d6f7 65%,#d7f7f6 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg, #308dff 0%,#60d6f7 65%,#60d6f7 65%,#d7f7f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#308dff', endColorstr='#d7f7f6',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */}
+}
+
 .app-header {
   padding: 6px 8px;
 }
@@ -119,13 +128,12 @@ button.btn-thin {
 .app-header h1 {
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
-  color: #AEAEAE;
+  color: white;
 }
 
 h2.page-subtitle {
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
-  color: #AEAEAE;
   font-size: 1em;
   margin: 12px;
 }
@@ -402,25 +410,23 @@ input.large-input {
 
 /* account detail screen */
 
-.account-detail-section {
-
-}
-.name-label{
-
+.account-data-subsection .wallet-balance-value {
+  color: white;
 }
 
-.unapproved-tx-icon {
-  height: 16px;
-  width: 16px;
-  background: rgb(47, 174, 244);
-  border-color: #AEAEAE;
-  border-radius: 13px;
+.account-data-subsection .wallet-balance-unit {
+  color: white;
+}
+
+.account-data-subsection .copy-button {
+  color: white;
 }
 
 .edit-text {
   height: 100%;
   visibility: hidden;
 }
+
 .editing-label {
   display: flex;
   justify-content: flex-start;
@@ -430,9 +436,21 @@ input.large-input {
   text-rendering: geometricPrecision;
   color: #F7861C;
 }
+
 .name-label:hover .edit-text {
   visibility: visible;
 }
+
+/* tx history */
+
+.unapproved-tx-icon {
+  height: 16px;
+  width: 16px;
+  background: rgb(47, 174, 244);
+  border-color: #AEAEAE;
+  border-radius: 13px;
+}
+
 /* tx confirm */
 
 .unconftx-section input[type=password] {
@@ -460,11 +478,19 @@ input.large-input {
   font-size: 12px;
 }
 
-/* Ether Balance Widget */
+.send-screen {
 
-.ether-balance-amount {
-  color: #F7861C;
 }
+
+.send-screen .wallet-balance-value {
+  color: #ABA9AA;
+}
+
+.send-screen .wallet-balance-unit {
+  color: #AEAEAE;
+}
+
+/* Ether Balance Widget */
 
 .ether-balance-label {
   color: #ABA9AA;
