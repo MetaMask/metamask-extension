@@ -107,7 +107,7 @@ Notice.prototype.render = function () {
         style: {
           marginTop: '18px',
         },
-      }, 'Agree'),
+      }, 'Accept'),
     ])
   )
 }
