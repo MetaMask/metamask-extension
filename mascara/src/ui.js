@@ -40,7 +40,6 @@ const connectApp = function (readSw) {
     })
   })
 }
-
 background.on('ready', (sw) => {
   background.removeListener('updatefound', connectApp)
   connectApp(sw)
@@ -48,5 +47,10 @@ background.on('ready', (sw) => {
 background.on('updatefound', () => window.location.reload())
 
 background.startWorker()
-// background.startWorker()
+.then(() => {
+  setTimeout(() => {
+    const appContent = document.getElementById(`app-content`)
+    if (!appContent.children.length) window.location.reload()
+  }, 2000)
+})
 console.log('hello from MetaMascara ui!')
