@@ -25,8 +25,7 @@ QrCodeView.prototype.render = function () {
   var props = this.props
   var Qr = props.Qr
   var qrImage = qrCode(4, 'M')
-
-  qrImage.addData(Qr.data)
+  qrImage.addData(`ethereum:${Qr.data}`)
   qrImage.make()
 
   return h('.main-container.flex-column', {
