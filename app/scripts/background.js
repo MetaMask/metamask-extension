@@ -1,15 +1,15 @@
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
-const asyncQ = require('async-q')
 const pipe = require('pump')
 const LocalStorageStore = require('obs-store/lib/localStorage')
 const storeTransform = require('obs-store/lib/transform')
+const ExtensionPlatform = require('./platforms/extension')
 const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
-const notification = require('./lib/notifications.js')
+const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const extension = require('./lib/extension')
+const extension = require('extensionizer')
 const firstTimeState = require('./first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
@@ -19,44 +19,42 @@ const log = require('loglevel')
 window.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 
+const platform = new ExtensionPlatform()
+const notificationManager = new NotificationManager()
+global.METAMASK_NOTIFIER = notificationManager
+
 let popupIsOpen = false
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 
 // initialization flow
-asyncQ.waterfall([
-  () => loadStateFromPersistence(),
-  (initState) => setupController(initState),
-])
-.then(() => console.log('MetaMask initialization complete.'))
-.catch((err) => { console.error(err) })
+initialize().catch(console.error)
+
+async function initialize() {
+  const initState = await loadStateFromPersistence()
+  await setupController(initState)
+  console.log('MetaMask initialization complete.')
+}
 
 //
 // State and Persistence
 //
 
-function loadStateFromPersistence() {
+async function loadStateFromPersistence () {
   // migrations
-  let migrator = new Migrator({ migrations })
-  let initialState = migrator.generateInitialState(firstTimeState)
-  return asyncQ.waterfall([
-    // read from disk
-    () => Promise.resolve(diskStore.getState() || initialState),
-    // migrate data
-    (versionedData) => migrator.migrateData(versionedData),
-    // write to disk
-    (versionedData) => {
-      diskStore.putState(versionedData)
-      return Promise.resolve(versionedData)
-    },
-    // resolve to just data
-    (versionedData) => Promise.resolve(versionedData.data),
-  ])
+  const migrator = new Migrator({ migrations })
+  // read from disk
+  let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
+  // migrate data
+  versionedData = await migrator.migrateData(versionedData)
+  // write to disk
+  diskStore.putState(versionedData)
+  // return just the data
+  return versionedData.data
 }
 
 function setupController (initState) {
-
   //
   // MetaMask Controller
   //
@@ -68,6 +66,8 @@ function setupController (initState) {
     showUnapprovedTx: triggerUi,
     // initial state
     initState,
+    // platform specific api
+    platform,
   })
   global.metamaskController = controller
 
@@ -78,8 +78,8 @@ function setupController (initState) {
     diskStore
   )
 
-  function versionifyData(state) {
-    let versionedData = diskStore.getState()
+  function versionifyData (state) {
+    const versionedData = diskStore.getState()
     versionedData.data = state
     return versionedData
   }
@@ -114,13 +114,13 @@ function setupController (initState) {
   //
 
   updateBadge()
-  controller.txManager.on('updateBadge', updateBadge)
+  controller.txController.on('updateBadge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
 
   // plugin badge text
   function updateBadge () {
     var label = ''
-    var unapprovedTxCount = controller.txManager.unapprovedTxCount
+    var unapprovedTxCount = controller.txController.unapprovedTxCount
     var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     var count = unapprovedTxCount + unapprovedMsgCount
     if (count) {
@@ -131,7 +131,6 @@ function setupController (initState) {
   }
 
   return Promise.resolve()
-
 }
 
 //
@@ -140,7 +139,7 @@ function setupController (initState) {
 
 // popup trigger
 function triggerUi () {
-  if (!popupIsOpen) notification.show()
+  if (!popupIsOpen) notificationManager.showPopup()
 }
 
 // On first install, open a window to MetaMask website to how-it-works.

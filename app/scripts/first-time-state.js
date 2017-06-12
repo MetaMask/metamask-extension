@@ -6,9 +6,11 @@ const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 // The default state of MetaMask
 //
 module.exports = {
-  config: {
+  config: {},
+  NetworkController: {
     provider: {
-      type: (METAMASK_DEBUG || env === 'test') ? 'testnet' : 'mainnet',
+      type: (METAMASK_DEBUG || env === 'test') ? 'rinkeby' : 'mainnet',
+      type: 'rinkeby',
     },
   },
 }

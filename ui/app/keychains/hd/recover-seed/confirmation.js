@@ -18,11 +18,8 @@ function mapStateToProps (state) {
   }
 }
 
-RevealSeedConfirmation.prototype.confirmationPhrase = 'I understand'
-
 RevealSeedConfirmation.prototype.render = function () {
   const props = this.props
-  const state = this.state
 
   return (
 
@@ -64,31 +61,13 @@ RevealSeedConfirmation.prototype.render = function () {
           },
         }),
 
-        h(`h4${state && state.confirmationWrong ? '.error' : ''}`, {
-          style: {
-            marginTop: '12px',
-          },
-        }, `Enter the phrase "${this.confirmationPhrase}" to proceed.`),
-
-        // confirm confirmation
-        h('input.large-input.letter-spacey', {
-          type: 'text',
-          id: 'confirm-box',
-          placeholder: this.confirmationPhrase,
-          onKeyPress: this.checkConfirmation.bind(this),
-          style: {
-            width: 260,
-            marginTop: 16,
-          },
-        }),
-
         h('.flex-row.flex-space-between', {
           style: {
             marginTop: 30,
             width: '50%',
           },
         }, [
-// cancel
+          // cancel
           h('button.primary', {
             onClick: this.goHome.bind(this),
           }, 'CANCEL'),
@@ -134,15 +113,6 @@ RevealSeedConfirmation.prototype.checkConfirmation = function (event) {
 }
 
 RevealSeedConfirmation.prototype.revealSeedWords = function () {
-  this.setState({ confirmationWrong: false })
-
-  const confirmBox = document.getElementById('confirm-box')
-  const confirmation = confirmBox.value
-  if (confirmation !== this.confirmationPhrase) {
-    confirmBox.value = ''
-    return this.setState({ confirmationWrong: true })
-  }
-
   var password = document.getElementById('password-box').value
   this.props.dispatch(actions.requestRevealSeed(password))
 }

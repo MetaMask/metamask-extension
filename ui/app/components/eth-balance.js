@@ -16,20 +16,19 @@ function EthBalanceComponent () {
 EthBalanceComponent.prototype.render = function () {
   var props = this.props
   let { value } = props
-  var style = props.style
+  const { style, width } = props
   var needsParse = this.props.needsParse !== undefined ? this.props.needsParse : true
   value = value ? formatBalance(value, 6, needsParse) : '...'
-  var width = props.width
 
   return (
 
     h('.ether-balance.ether-balance-amount', {
-      style: style,
+      style,
     }, [
       h('div', {
         style: {
           display: 'inline',
-          width: width,
+          width,
         },
       }, this.renderBalance(value)),
     ])
@@ -38,16 +37,17 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
   var props = this.props
+  const { conversionRate, shorten, incoming, currentCurrency } = props
   if (value === 'None') return value
   if (value === '...') return value
-  var balanceObj = generateBalanceObject(value, props.shorten ? 1 : 3)
+  var balanceObj = generateBalanceObject(value, shorten ? 1 : 3)
   var balance
   var splitBalance = value.split(' ')
   var ethNumber = splitBalance[0]
   var ethSuffix = splitBalance[1]
   const showFiat = 'showFiat' in props ? props.showFiat : true
 
-  if (props.shorten) {
+  if (shorten) {
     balance = balanceObj.shortBalance
   } else {
     balance = balanceObj.balance
@@ -73,7 +73,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
             width: '100%',
             textAlign: 'right',
           },
-        }, this.props.incoming ? `+${balance}` : balance),
+        }, incoming ? `+${balance}` : balance),
         h('div', {
           style: {
             color: ' #AEAEAE',
@@ -83,7 +83,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
         }, label),
       ]),
 
-      showFiat ? h(FiatValue, { value: props.value }) : null,
+      showFiat ? h(FiatValue, { value: props.value, conversionRate, currentCurrency }) : null,
     ]))
   )
 }

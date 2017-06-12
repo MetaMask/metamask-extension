@@ -39,11 +39,11 @@ class AddressBookController {
   // pushed object is an object of two fields. Current behavior does not set an
   // upper limit to the number of addresses.
   _addToAddressBook (address, name) {
-    let addressBook = this._getAddressBook()
-    let identities = this._getIdentities()
+    const addressBook = this._getAddressBook()
+    const identities = this._getIdentities()
 
-    let addressBookIndex = addressBook.findIndex((element) => { return element.address.toLowerCase() === address.toLowerCase() || element.name === name })
-    let identitiesIndex = Object.keys(identities).findIndex((element) => { return element.toLowerCase() === address.toLowerCase() })
+    const addressBookIndex = addressBook.findIndex((element) => { return element.address.toLowerCase() === address.toLowerCase() || element.name === name })
+    const identitiesIndex = Object.keys(identities).findIndex((element) => { return element.toLowerCase() === address.toLowerCase() })
     // trigger this condition if we own this address--no need to overwrite.
     if (identitiesIndex !== -1) {
       return Promise.resolve(addressBook)

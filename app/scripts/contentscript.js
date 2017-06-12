@@ -2,7 +2,7 @@ const LocalMessageDuplexStream = require('post-message-stream')
 const PongStream = require('ping-pong-stream/pong')
 const PortStream = require('./lib/port-stream.js')
 const ObjectMultiplex = require('./lib/obj-multiplex')
-const extension = require('./lib/extension')
+const extension = require('extensionizer')
 
 const fs = require('fs')
 const path = require('path')
@@ -61,14 +61,22 @@ function setupStreams () {
   // ignore unused channels (handled by background)
   mx.ignoreStream('provider')
   mx.ignoreStream('publicConfig')
-  mx.ignoreStream('reload')
 }
 
 function shouldInjectWeb3 () {
-  return isAllowedSuffix(window.location.href)
+  return doctypeCheck() || suffixCheck()
 }
 
-function isAllowedSuffix (testCase) {
+function doctypeCheck () {
+  const doctype = window.document.doctype
+  if (doctype) {
+    return doctype.name === 'html'
+  } else {
+    return false
+  }
+}
+
+function suffixCheck () {
   var prohibitedTypes = ['xml', 'pdf']
   var currentUrl = window.location.href
   var currentRegex

@@ -187,7 +187,7 @@ class KeyringController extends EventEmitter {
     .then((accounts) => {
       switch (type) {
         case 'Simple Key Pair':
-          let isNotIncluded = !accounts.find((key) => key === newAccount[0] || key === ethUtil.stripHexPrefix(newAccount[0]))
+          const isNotIncluded = !accounts.find((key) => key === newAccount[0] || key === ethUtil.stripHexPrefix(newAccount[0]))
           return (isNotIncluded) ? Promise.resolve(newAccount) : Promise.reject(new Error('The account you\'re are trying to import is a duplicate'))
         default:
           return Promise.resolve(newAccount)
@@ -324,6 +324,7 @@ class KeyringController extends EventEmitter {
       if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalizeAddress(firstAccount)
       this.emit('newAccount', hexAccount)
+      this.emit('newVault', hexAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this))
@@ -581,7 +582,7 @@ class KeyringController extends EventEmitter {
     })
   }
 
-  _updateMemStoreKeyrings() {
+  _updateMemStoreKeyrings () {
     Promise.all(this.keyrings.map(this.displayForKeyring))
     .then((keyrings) => {
       this.memStore.updateState({ keyrings })

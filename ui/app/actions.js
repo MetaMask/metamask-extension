@@ -1,3 +1,5 @@
+const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
@@ -132,10 +134,6 @@ var actions = {
   buyEth: buyEth,
   buyEthView: buyEthView,
   BUY_ETH_VIEW: 'BUY_ETH_VIEW',
-  UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
-  updateCoinBaseAmount: updateCoinBaseAmount,
-  UPDATE_BUY_ADDRESS: 'UPDATE_BUY_ADDRESS',
-  updateBuyAddress: updateBuyAddress,
   COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
@@ -269,11 +267,14 @@ function requestRevealSeed (password) {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
     background.submitPassword(password, (err) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
       log.debug(`background.placeSeedWords`)
-      background.placeSeedWords((err) => {
+      background.placeSeedWords((err, result) => {
         if (err) return dispatch(actions.displayWarning(err.message))
         dispatch(actions.hideLoadingIndication())
+        dispatch(actions.showNewVaultSeed(result))
       })
     })
   }
@@ -296,10 +297,10 @@ function importNewAccount (strategy, args) {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     log.debug(`background.importAccountWithStrategy`)
     background.importAccountWithStrategy(strategy, args, (err) => {
-      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       log.debug(`background.getState`)
       background.getState((err, newState) => {
+        dispatch(actions.hideLoadingIndication())
         if (err) {
           return dispatch(actions.displayWarning(err.message))
         }
@@ -313,7 +314,7 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function navigateToNewAccountScreen() {
+function navigateToNewAccountScreen () {
   return {
     type: this.NEW_ACCOUNT_SCREEN,
   }
@@ -392,11 +393,10 @@ function signPersonalMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    web3.eth.sendTransaction(txData, (err, data) => {
+    global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
-      dispatch(actions.goHome())
     })
     dispatch(this.showConfTxPage())
   }
@@ -421,6 +421,7 @@ function updateAndApproveTx (txData) {
   return (dispatch) => {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
         return console.error(err.message)
@@ -664,7 +665,7 @@ function clearNotices () {
   }
 }
 
-function markAccountsFound() {
+function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
 }
@@ -698,7 +699,7 @@ function setRpcTarget (newRpc) {
   }
 }
 
-// Calls the addressBookController to add a new address. 
+// Calls the addressBookController to add a new address.
 function addToAddressBook (recipient, nickname) {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
@@ -772,22 +773,30 @@ function requestExportAccount () {
   }
 }
 
-function exportAccount (address) {
+function exportAccount (password, address) {
   var self = this
 
   return function (dispatch) {
     dispatch(self.showLoadingIndication())
 
-    log.debug(`background.exportAccount`)
-    background.exportAccount(address, function (err, result) {
-      dispatch(self.hideLoadingIndication())
-
+    log.debug(`background.submitPassword`)
+    background.submitPassword(password, function (err) {
       if (err) {
-        log.error(err)
-        return dispatch(self.displayWarning('Had a problem exporting the account.'))
+        log.error('Error in submiting password.')
+        dispatch(self.hideLoadingIndication())
+        return dispatch(self.displayWarning('Incorrect Password.'))
       }
+      log.debug(`background.exportAccount`)
+      background.exportAccount(address, function (err, result) {
+        dispatch(self.hideLoadingIndication())
 
-      dispatch(self.showPrivateKey(result))
+        if (err) {
+          log.error(err)
+          return dispatch(self.displayWarning('Had a problem exporting the account.'))
+        }
+
+        dispatch(self.showPrivateKey(result))
+      })
     })
   }
 }
@@ -822,10 +831,10 @@ function showSendPage () {
   }
 }
 
-function buyEth (address, amount) {
+function buyEth (opts) {
   return (dispatch) => {
-    log.debug(`background.buyEth`)
-    background.buyEth(address, amount)
+    const url = getBuyEthUrl(opts)
+    global.platform.openWindow({ url })
     dispatch({
       type: actions.BUY_ETH,
     })
@@ -836,20 +845,6 @@ function buyEthView (address) {
   return {
     type: actions.BUY_ETH_VIEW,
     value: address,
-  }
-}
-
-function updateCoinBaseAmount (value) {
-  return {
-    type: actions.UPDATE_COINBASE_AMOUNT,
-    value,
-  }
-}
-
-function updateBuyAddress (value) {
-  return {
-    type: actions.UPDATE_BUY_ADDRESS,
-    value,
   }
 }
 
@@ -983,7 +978,7 @@ function callBackgroundThenUpdate (method, ...args) {
   }
 }
 
-function forceUpdateMetamaskState(dispatch){
+function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
   background.getState((err, newState) => {
     if (err) {

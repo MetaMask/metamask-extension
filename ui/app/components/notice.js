@@ -92,6 +92,7 @@ Notice.prototype.render = function () {
         },
       }, [
         h(ReactMarkdown, {
+          className: 'notice-box',
           source: body,
           skipHtml: true,
         }),
@@ -99,11 +100,14 @@ Notice.prototype.render = function () {
 
       h('button', {
         disabled,
-        onClick: onConfirm,
+        onClick: () => {
+          this.setState({disclaimerDisabled: true})
+          onConfirm()
+        },
         style: {
           marginTop: '18px',
         },
-      }, 'Continue'),
+      }, 'Accept'),
     ])
   )
 }
@@ -111,6 +115,9 @@ Notice.prototype.render = function () {
 Notice.prototype.componentDidMount = function () {
   var node = findDOMNode(this)
   linker.setupListener(node)
+  if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
+    this.setState({disclaimerDisabled: false})
+  }
 }
 
 Notice.prototype.componentWillUnmount = function () {

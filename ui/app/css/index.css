@@ -32,7 +32,7 @@ input:focus, textarea:focus {
   height: 500px;
 }
 
-button {
+button, input[type="submit"] {
   font-family: 'Montserrat Bold';
   outline: none;
   cursor: pointer;
@@ -46,17 +46,17 @@ button {
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
 }
 
-button.btn-green {
+.btn-green, input[type="submit"].btn-green {
   background: rgba(106, 195, 96, 1);
   box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
 }
 
-button.btn-red {
+.btn-red {
   background: rgba(254, 35, 17, 1);
   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
 }
 
-button[disabled] {
+button[disabled], input[type="submit"][disabled] {
   cursor: not-allowed;
   background: rgba(197, 197, 197, 1);
   box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
@@ -66,10 +66,10 @@ button.spaced {
   margin: 2px;
 }
 
-button:not([disabled]):hover {
+button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
   transform: scale(1.1);
 }
-button:not([disabled]):active {
+button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
   transform: scale(0.95);
 }
 
@@ -148,7 +148,6 @@ h2.page-subtitle {
 }
 
 textarea.twelve-word-phrase {
-  margin-top: 20px;
   padding: 12px;
   width: 300px;
   height: 140px;
@@ -266,8 +265,9 @@ app sections
 }
 
 .sizing-input{
-  font-size: 1em;
+  font-size: 14px;
   height: 30px;
+  padding-left: 5px;
 }
 .editable-label{
   display: flex;
@@ -489,6 +489,47 @@ input.large-input {
 }
 
 /* buy eth warning screen */
+.custom-radios {
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+.custom-radio-selected {
+  width: 17px;
+  height: 17px;
+  border: solid;
+  border-style: double;
+  border-radius: 15px;
+  border-width: 5px;
+  background: rgba(247, 134, 28, 1);
+  border-color: #F7F7F7;
+}
+
+.custom-radio-inactive {
+  width: 14px;
+  height: 14px;
+  border: solid;
+  border-width: 1px;
+  border-radius: 24px;
+  border-color: #AEAEAE;
+}
+
+.radio-titles {
+  color: rgba(247, 134, 28, 1);
+}
+
+.radio-titles-subtext {
+
+}
+
+.selected-exchange {
+
+}
+
+.buy-radio {
+
+}
 
 .eth-warning{
   transition: opacity 400ms ease-in, transform 400ms ease-in;

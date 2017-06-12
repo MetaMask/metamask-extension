@@ -1,20 +1,20 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const txHelper = require('../../lib/tx-helper')
-const notification = require('../../../app/scripts/lib/notifications')
 
 module.exports = reduceApp
+
 
 function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
   // clone and defaults
   const selectedAddress = state.metamask.selectedAddress
-  let pendingTxs = hasPendingTxs(state)
+  const hasUnconfActions = checkUnconfActions(state)
   let name = 'accounts'
   if (selectedAddress) {
     name = 'accountDetail'
   }
-  if (pendingTxs) {
+  if (hasUnconfActions) {
     log.debug('pending txs detected, defaulting to conf-tx view.')
     name = 'confTx'
   }
@@ -32,7 +32,9 @@ function reduceApp (state, action) {
     seedWords,
   }
 
+  // default state
   var appState = extend({
+    shouldClose: false,
     menuOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -302,7 +304,7 @@ function reduceApp (state, action) {
     case actions.SHOW_CONF_MSG_PAGE:
       return extend(appState, {
         currentView: {
-          name: pendingTxs ? 'confTx' : 'account-detail',
+          name: hasUnconfActions ? 'confTx' : 'account-detail',
           context: 0,
         },
         transForward: true,
@@ -312,15 +314,11 @@ function reduceApp (state, action) {
 
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
-      var { unapprovedTxs, unapprovedMsgs,
-        unapprovedPersonalMsgs, network } = state.metamask
+      const otherUnconfActions = getUnconfActionList(state)
+      .filter(tx => tx.id !== action.value)
+      const hasOtherUnconfActions = otherUnconfActions.length > 0
 
-      var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
-      .filter(tx => tx.id !== action.value )
-
-      pendingTxs = unconfTxList.length > 0
-
-      if (pendingTxs) {
+      if (hasOtherUnconfActions) {
         log.debug('reducer detected txs - rendering confTx view')
         return extend(appState, {
           transForward: false,
@@ -332,9 +330,9 @@ function reduceApp (state, action) {
         })
       } else {
         log.debug('attempting to close popup')
-        notification.closePopup()
-
         return extend(appState, {
+          // indicate notification should close
+          shouldClose: true,
           transForward: false,
           warning: null,
           currentView: {
@@ -426,6 +424,7 @@ function reduceApp (state, action) {
     case actions.DISPLAY_WARNING:
       return extend(appState, {
         warning: action.value,
+        isLoading: false,
       })
 
     case actions.HIDE_WARNING:
@@ -470,8 +469,9 @@ function reduceApp (state, action) {
           name: 'buyEth',
           context: appState.currentView.name,
         },
+        identity: state.metamask.identities[action.value],
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           amount: '15.00',
           buyAddress: action.value,
           formView: {
@@ -481,36 +481,10 @@ function reduceApp (state, action) {
         },
       })
 
-    case actions.UPDATE_BUY_ADDRESS:
-      return extend(appState, {
-        buyView: {
-          subview: 'buyForm',
-          formView: {
-            coinbase: appState.buyView.formView.coinbase,
-            shapeshift: appState.buyView.formView.shapeshift,
-          },
-          buyAddress: action.value,
-          amount: appState.buyView.amount,
-        },
-      })
-
-    case actions.UPDATE_COINBASE_AMOUNT:
-      return extend(appState, {
-        buyView: {
-          subview: 'buyForm',
-          formView: {
-            coinbase: true,
-            shapeshift: false,
-          },
-          buyAddress: appState.buyView.buyAddress,
-          amount: action.value,
-        },
-      })
-
     case actions.COINBASE_SUBVIEW:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           formView: {
             coinbase: true,
             shapeshift: false,
@@ -523,7 +497,7 @@ function reduceApp (state, action) {
     case actions.SHAPESHIFT_SUBVIEW:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'ShapeShift',
           formView: {
             coinbase: false,
             shapeshift: true,
@@ -538,7 +512,7 @@ function reduceApp (state, action) {
     case actions.PAIR_UPDATE:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'ShapeShift',
           formView: {
             coinbase: false,
             shapeshift: true,
@@ -579,25 +553,23 @@ function reduceApp (state, action) {
   }
 }
 
-function hasPendingTxs (state) {
-  var { unapprovedTxs, unapprovedMsgs,
+function checkUnconfActions (state) {
+  const unconfActionList = getUnconfActionList(state)
+  const hasUnconfActions = unconfActionList.length > 0
+  return hasUnconfActions
+}
+
+function getUnconfActionList (state) {
+  const { unapprovedTxs, unapprovedMsgs,
     unapprovedPersonalMsgs, network } = state.metamask
 
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
-  var has = unconfTxList.length > 0
-  return has
+  const unconfActionList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+  return unconfActionList
 }
 
 function indexForPending (state, txId) {
-  var unapprovedTxs = state.metamask.unapprovedTxs
-  var unapprovedMsgs = state.metamask.unapprovedMsgs
-  var network = state.metamask.network
-  var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, network)
-  let idx
-  unconfTxList.forEach((tx, i) => {
-    if (tx.id === txId) {
-      idx = i
-    }
-  })
-  return idx
+  const unconfTxList = getUnconfActionList(state)
+  const match = unconfTxList.find((tx) => tx.id === txId)
+  const index = unconfTxList.indexOf(match)
+  return index
 }

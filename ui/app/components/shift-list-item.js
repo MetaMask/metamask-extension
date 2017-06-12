@@ -4,19 +4,21 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))
 const explorerLink = require('../../lib/explorer-link')
-const extension = require('../../../app/scripts/lib/extension')
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 
 const CopyButton = require('./copyButton')
-const EtherBalance = require('./eth-balance')
+const EthBalance = require('./eth-balance')
 const Tooltip = require('./tooltip')
 
 
 module.exports = connect(mapStateToProps)(ShiftListItem)
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
+  }
 }
 
 inherits(ShiftListItem, Component)
@@ -65,6 +67,7 @@ function formatDate (date) {
 
 ShiftListItem.prototype.renderUtilComponents = function () {
   var props = this.props
+  const { conversionRate, currentCurrency } = props
 
   switch (props.response.status) {
     case 'no_deposits':
@@ -95,8 +98,10 @@ ShiftListItem.prototype.renderUtilComponents = function () {
         h(CopyButton, {
           value: this.props.response.transaction,
         }),
-        h(EtherBalance, {
+        h(EthBalance, {
           value: `${props.response.outgoingCoin}`,
+          conversionRate,
+          currentCurrency,
           width: '55px',
           shorten: true,
           needsParse: false,
@@ -172,9 +177,7 @@ ShiftListItem.prototype.renderInfo = function () {
           width: '200px',
           overflow: 'hidden',
         },
-        onClick: () => extension.tabs.create({
-          url,
-        }),
+        onClick: () => global.platform.openWindow({ url }),
       }, [
         h('div', {
           style: {

@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const Tooltip = require('./tooltip')
 
 const Identicon = require('./identicon')
 
@@ -15,7 +16,7 @@ TransactionIcon.prototype.render = function () {
   const { transaction, txParams, isMsg } = this.props
   switch (transaction.status) {
     case 'unapproved':
-      return h( !isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg')
+      return h(!isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg')
 
     case 'rejected':
       return h('i.fa.fa-exclamation-triangle.fa-lg.warning', {
@@ -32,11 +33,16 @@ TransactionIcon.prototype.render = function () {
       })
 
     case 'submitted':
-      return h('i.fa.fa-ellipsis-h', {
-        style: {
-          fontSize: '27px',
-        },
-      })
+      return h(Tooltip, {
+        title: 'Pending',
+        position: 'bottom',
+      }, [
+        h('i.fa.fa-ellipsis-h', {
+          style: {
+            fontSize: '27px',
+          },
+        }),
+      ])
   }
 
   if (isMsg) {

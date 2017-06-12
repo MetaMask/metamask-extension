@@ -11,7 +11,7 @@ module.exports = connect(mapStateToProps)(AccountsScreen)
 
 function mapStateToProps (state) {
   const pendingTxs = valuesFor(state.metamask.unapprovedTxs)
-  .filter(tx => tx.txParams.metamaskNetworkId === state.metamask.network)
+  .filter(txMeta => txMeta.metamaskNetworkId === state.metamask.network)
   const pendingMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const pending = pendingTxs.concat(pendingMsgs)
 
@@ -23,6 +23,8 @@ function mapStateToProps (state) {
     scrollToBottom: state.appState.scrollToBottom,
     pending,
     keyrings: state.metamask.keyrings,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -33,7 +35,7 @@ function AccountsScreen () {
 
 AccountsScreen.prototype.render = function () {
   const props = this.props
-  const { keyrings } = props
+  const { keyrings, conversionRate, currentCurrency } = props
   const identityList = valuesFor(props.identities)
   const unapprovedTxList = valuesFor(props.unapprovedTxs)
 
@@ -81,6 +83,8 @@ AccountsScreen.prototype.render = function () {
               key: `acct-panel-${identity.address}`,
               identity,
               selectedAddress: this.props.selectedAddress,
+              conversionRate,
+              currentCurrency,
               accounts: this.props.accounts,
               onShowDetail: this.onShowDetail.bind(this),
               pending,
@@ -97,7 +101,7 @@ AccountsScreen.prototype.render = function () {
             style: {
               display: 'flex',
               height: '40px',
-              paddint: '10px',
+              padding: '10px',
               justifyContent: 'center',
               alignItems: 'center',
             },
