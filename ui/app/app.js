@@ -341,7 +341,7 @@ App.prototype.renderDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Info',
+      label: 'Info/Help',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
       icon: h('i.fa.fa-question.fa-lg'),
