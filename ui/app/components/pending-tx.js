@@ -32,7 +32,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency } = props
+  const { currentCurrency, blockGasLimit } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -50,7 +50,8 @@ PendingTx.prototype.render = function () {
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
-  const safeGasLimit = parseInt(txMeta.blockGasLimit)
+  const gasLimit = new BN(parseInt(blockGasLimit))
+  const safeGasLimit = this.bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
 
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
@@ -456,6 +457,12 @@ PendingTx.prototype.verifyGasParams = function () {
 
 PendingTx.prototype._notZeroOrEmptyString = function (obj) {
   return obj !== '' && obj !== '0x0'
+}
+
+PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
+  const numBN = new BN(numerator)
+  const denomBN = new BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
 }
 
 function forwardCarrat () {
