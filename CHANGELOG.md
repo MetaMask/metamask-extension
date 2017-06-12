@@ -3,6 +3,11 @@
 ## Current Master
 
 - Fix currency API URL from cryptonator.
+- Update gasLimit params with every new block seen.
+
+## 3.7.7 2017-6-8
+
+- Fix bug where metamask would show old data after computer being asleep or disconnected from the internet.
 
 ## 3.7.6 2017-6-5
 
