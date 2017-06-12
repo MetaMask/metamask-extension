@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.7.8 2017-6-12
+
 - Add a `ethereum:` prefix to the QR code address
 - The default network on installation is now MainNet
 - Fix currency API URL from cryptonator.
