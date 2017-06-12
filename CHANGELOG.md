@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- The default network on installation is now MainNet
 - Fix currency API URL from cryptonator.
 - Update gasLimit params with every new block seen.
 
