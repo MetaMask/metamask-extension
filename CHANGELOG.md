@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add a `ethereum:` prefix to the QR code address
+- The default network on installation is now MainNet
 - Fix currency API URL from cryptonator.
 - Update gasLimit params with every new block seen.
 

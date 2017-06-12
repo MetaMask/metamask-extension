@@ -28,7 +28,7 @@ const migrations = [
     },
   },
 ]
-const versionedData = {meta: {version: 0}, data:{hello:'world'}}
+const versionedData = {meta: {version: 0}, data: {hello: 'world'}}
 describe('Migrator', () => {
   const migrator = new Migrator({ migrations })
   it('migratedData version should be version 3', (done) => {
