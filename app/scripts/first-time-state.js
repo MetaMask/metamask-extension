@@ -10,7 +10,6 @@ module.exports = {
   NetworkController: {
     provider: {
       type: (METAMASK_DEBUG || env === 'test') ? 'rinkeby' : 'mainnet',
-      type: 'rinkeby',
     },
   },
 }
