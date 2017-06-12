@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix currency API URL from cryptonator.
 - Update gasLimit params with every new block seen.
 
 ## 3.7.7 2017-6-8
