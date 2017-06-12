@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const qrCode = require('qrcode-npm').qrcode
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
+const isHexPrefixed = require('ethereumjs-util').isHexPrefixed
 const CopyButton = require('./copyButton')
 
 module.exports = connect(mapStateToProps)(QrCodeView)
@@ -22,13 +23,12 @@ function QrCodeView () {
 }
 
 QrCodeView.prototype.render = function () {
-  var props = this.props
-  var Qr = props.Qr
-  var qrImage = qrCode(4, 'M')
-
-  qrImage.addData(Qr.data)
+  const props = this.props
+  const Qr = props.Qr
+  const address = `${isHexPrefixed(Qr.data) ? 'ethereum:' : ''}${Qr.data}`
+  const qrImage = qrCode(4, 'M')
+  qrImage.addData(address)
   qrImage.make()
-
   return h('.main-container.flex-column', {
     key: 'qr',
     style: {
