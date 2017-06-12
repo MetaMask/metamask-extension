@@ -10,7 +10,7 @@ QUnit.test('render init screen', function (assert) {
     app = $('#app-content').contents()
     const recurseNotices = function () {
       let button = app.find('button')
-      if (button.html() === 'Continue') {
+      if (button.html() === 'Accept') {
         let termsPage = app.find('.markdown')[0]
         termsPage.scrollTop = termsPage.scrollHeight
         return wait().then(() => {
