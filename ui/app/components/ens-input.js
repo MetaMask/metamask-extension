@@ -21,6 +21,7 @@ EnsInput.prototype.render = function () {
   const opts = extend(props, {
     list: 'addresses',
     onChange: () => {
+      this.setState({ ensResolution: '0x0000000000000000000000000000000000000000' })
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
       if (!networkHasEnsSupport) return
@@ -95,12 +96,14 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
+    if (address === '0x0000000000000000000000000000000000000000') throw new Error('No address has been set for this name.')
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
         nickname: recipient.trim(),
         hoverText: address + '\nClick to Copy',
+        ensFailure: false,
       })
     }
   })
@@ -108,6 +111,7 @@ EnsInput.prototype.lookupEnsName = function () {
     log.error(reason)
     return this.setState({
       loadingEns: false,
+      ensResolution: '0x0000000000000000000000000000000000000000',
       ensFailure: true,
       hoverText: reason.message,
     })

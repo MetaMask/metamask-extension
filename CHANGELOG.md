@@ -4,6 +4,20 @@
 
 - Update gasLimit params with every new block seen.
 
+## 3.7.7 2017-6-8
+
+- Fix bug where metamask would show old data after computer being asleep or disconnected from the internet.
+
+## 3.7.6 2017-6-5
+
+- Fix bug that prevented publishing contracts.
+
+## 3.7.5 2017-6-5
+
+- Prevent users from sending to the `0x0` address.
+- Provide useful errors when entering bad characters in ENS name.
+- Add ability to copy addresses from transaction confirmation view.
+
 ## 3.7.4 2017-6-2
 
 - Fix bug with inflight cache that caused some block lookups to return bad values (affected OasisDex).
