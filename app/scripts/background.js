@@ -31,7 +31,7 @@ const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 // initialization flow
 initialize().catch(console.error)
 
-async function initialize() {
+async function initialize () {
   const initState = await loadStateFromPersistence()
   await setupController(initState)
   console.log('MetaMask initialization complete.')

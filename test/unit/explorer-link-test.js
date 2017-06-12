@@ -11,5 +11,4 @@ describe('explorer-link', function () {
     var result = linkGen('hash', '42')
     assert.notEqual(result.indexOf('kovan'), -1, 'kovan injected')
   })
-
 })

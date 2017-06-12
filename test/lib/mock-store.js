@@ -2,7 +2,7 @@ const createStore = require('redux').createStore
 const applyMiddleware = require('redux').applyMiddleware
 const thunkMiddleware = require('redux-thunk')
 const createLogger = require('redux-logger')
-const rootReducer = function() {}
+const rootReducer = function () {}
 
 module.exports = configureStore
 
