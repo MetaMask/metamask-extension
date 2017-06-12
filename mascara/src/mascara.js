@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 const setupProvider = require('./lib/setup-provider.js')
-
+const setupDappAutoReload = require('../../app/scripts/lib/auto-reload.js')
 const MASCARA_ORIGIN = process.env.MASCARA_ORIGIN || 'http://localhost:9001'
 console.log('MASCARA_ORIGIN:', MASCARA_ORIGIN)
 
@@ -14,8 +14,7 @@ const provider = setupProvider({
 instrumentForUserInteractionTriggers(provider)
 
 const web3 = new Web3(provider)
-global.web3 = web3
-
+setupDappAutoReload(web3, provider.publicConfigStore)
 //
 // ui stuff
 //

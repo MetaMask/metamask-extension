@@ -33,11 +33,6 @@ self.addEventListener('install', function(event) {
 })
 self.addEventListener('activate', function(event) {
   event.waitUntil(self.clients.claim())
-  self.clients.matchAll()
-  .then((clients) => {
-    if (connectedClientCount < clients.length) sendMessageToAllClients('reconnect')
-  })
-
 })
 
 console.log('inside:open')
