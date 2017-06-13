@@ -25,7 +25,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
-    this.blockTracker.on('block', this.continuallyResubmitPendingTxs.bind(this))
+    this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
@@ -407,7 +407,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
 
-  continuallyResubmitPendingTxs () {
+  resubmitPendingTxs () {
     const pending = this.getTxsByMetaData('status', 'submitted')
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
