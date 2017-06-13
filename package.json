@@ -9,6 +9,8 @@
     "disc": "gulp disc --debug",
     "dist": "npm install && gulp dist --disableLiveReload",
     "test": "npm run lint && npm run test-unit && npm run test-integration",
+    "test-thomas": "METAMASK_ENV=test mocha --compilers js:babel-core/register -r ./test2/setup-app test2/app --recursive || true",
+    "test-e2e": "METAMASK_ENV=test mocha -r ./test2/setup-app test2/e2e --recursive || true",
     "test-unit": "METAMASK_ENV=test mocha --require test/helper.js --recursive \"test/unit/**/*.js\"",
     "test-integration": "npm run buildMock && npm run buildCiUnits && testem ci -P 2",
     "lint": "gulp lint",
