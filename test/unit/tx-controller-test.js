@@ -311,12 +311,13 @@ describe('Transaction Controller', function () {
   })
 
   describe('#sign replay-protected tx', function () {
-    it('prepares a tx with the chainId set', function () {
+    it('prepares a tx with the chainId set', function (done) {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       txController.signTransaction('1', (err, rawTx) => {
         if (err) return assert.fail('it should not fail')
         const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
         assert.equal(ethTx.getChainId(), currentNetworkId)
+        done()
       })
     })
   })
