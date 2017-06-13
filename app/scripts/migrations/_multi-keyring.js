@@ -15,15 +15,15 @@ const KeyringController = require('../../app/scripts/lib/keyring-controller')
 const password = 'obviously not correct'
 
 module.exports = {
-  version,  
+  version,
 
   migrate: function (versionedData) {
     versionedData.meta.version = version
 
-    let store = new ObservableStore(versionedData.data)
-    let configManager = new ConfigManager({ store })
-    let idStoreMigrator = new IdentityStoreMigrator({ configManager })
-    let keyringController = new KeyringController({
+    const store = new ObservableStore(versionedData.data)
+    const configManager = new ConfigManager({ store })
+    const idStoreMigrator = new IdentityStoreMigrator({ configManager })
+    const keyringController = new KeyringController({
       configManager: configManager,
     })
 
@@ -46,6 +46,5 @@ module.exports = {
         return Promise.resolve(versionedData)
       })
     })
-
   },
 }

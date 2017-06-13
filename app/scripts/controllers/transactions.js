@@ -4,11 +4,14 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const EthQuery = require('eth-query')
-const TxProviderUtil = require('./lib/tx-utils')
-const createId = require('./lib/random-id')
+const TxProviderUtil = require('../lib/tx-utils')
+const createId = require('../lib/random-id')
+const denodeify = require('denodeify')
 
-module.exports = class TransactionManager extends EventEmitter {
+const RETRY_LIMIT = 200
+const RESUBMIT_INTERVAL = 10000 // Ten seconds
+
+module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
     this.store = new ObservableStore(extend({
@@ -20,17 +23,19 @@ module.exports = class TransactionManager extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
-    this.query = new EthQuery(this.provider)
-    this.txProviderUtils = new TxProviderUtil(this.provider)
+    this.query = opts.ethQuery
+    this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
     // memstore is computed from a few different stores
     this._updateMemstore()
-    this.store.subscribe(() => this._updateMemstore() )
-    this.networkStore.subscribe(() => this._updateMemstore() )
-    this.preferencesStore.subscribe(() => this._updateMemstore() )
+    this.store.subscribe(() => this._updateMemstore())
+    this.networkStore.subscribe(() => this._updateMemstore())
+    this.preferencesStore.subscribe(() => this._updateMemstore())
+
+    this.continuallyResubmitPendingTxs()
   }
 
   getState () {
@@ -38,7 +43,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   getNetwork () {
-    return this.networkStore.getState().network
+    return this.networkStore.getState()
   }
 
   getSelectedAddress () {
@@ -47,8 +52,8 @@ module.exports = class TransactionManager extends EventEmitter {
 
   // Returns the tx list
   getTxList () {
-    let network = this.getNetwork()
-    let fullTxList = this.getFullTxList()
+    const network = this.getNetwork()
+    const fullTxList = this.getFullTxList()
     return fullTxList.filter(txMeta => txMeta.metamaskNetworkId === network)
   }
 
@@ -64,10 +69,10 @@ module.exports = class TransactionManager extends EventEmitter {
 
   // Adds a tx to the txlist
   addTx (txMeta) {
-    let txCount = this.getTxCount()
-    let network = this.getNetwork()
-    let fullTxList = this.getFullTxList()
-    let txHistoryLimit = this.txHistoryLimit
+    const txCount = this.getTxCount()
+    const network = this.getNetwork()
+    const fullTxList = this.getFullTxList()
+    const txHistoryLimit = this.txHistoryLimit
 
     // checks if the length of the tx history is
     // longer then desired persistence limit
@@ -197,7 +202,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   fillInTxParams (txId, cb) {
-    let txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId)
     this.txProviderUtils.fillInTxParams(txMeta.txParams, (err) => {
       if (err) return cb(err)
       this.updateTx(txMeta)
@@ -205,7 +210,7 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
-  getChainId() {
+  getChainId () {
     const networkState = this.networkStore.getState()
     const getChainId = parseInt(networkState.network)
     if (Number.isNaN(getChainId)) {
@@ -230,7 +235,11 @@ module.exports = class TransactionManager extends EventEmitter {
     })
   }
 
-  publishTransaction (txId, rawTx, cb) {
+  publishTransaction (txId, rawTx, cb = warn) {
+    const txMeta = this.getTx(txId)
+    txMeta.rawTx = rawTx
+    this.updateTx(txMeta)
+
     this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
       if (err) return cb(err)
       this.setTxHash(txId, txHash)
@@ -242,7 +251,7 @@ module.exports = class TransactionManager extends EventEmitter {
   // receives a txHash records the tx as signed
   setTxHash (txId, txHash) {
     // Add the tx hash to the persisted meta-tx object
-    let txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId)
     txMeta.hash = txHash
     this.updateTx(txMeta)
   }
@@ -315,7 +324,7 @@ module.exports = class TransactionManager extends EventEmitter {
   }
 
   setTxStatusFailed (txId, reason) {
-    let txMeta = this.getTx(txId)
+    const txMeta = this.getTx(txId)
     txMeta.err = reason
     this.updateTx(txMeta)
     this._setTxStatus(txId, 'failed')
@@ -338,7 +347,7 @@ module.exports = class TransactionManager extends EventEmitter {
       var txHash = txMeta.hash
       var txId = txMeta.id
       if (!txHash) {
-        let errReason = {
+        const errReason = {
           errCode: 'No hash was provided',
           message: 'We had an error while submitting this transaction, please try again.',
         }
@@ -353,7 +362,7 @@ module.exports = class TransactionManager extends EventEmitter {
             message: 'There was a problem loading this transaction.',
           }
           this.updateTx(txMeta)
-          return console.error(err)
+          return log.error(err)
         }
         if (txParams.blockNumber) {
           this.setTxStatusConfirmed(txId)
@@ -380,6 +389,7 @@ module.exports = class TransactionManager extends EventEmitter {
     this.emit(`${txMeta.id}:${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
+
     }
     this.updateTx(txMeta)
     this.emit('updateBadge')
@@ -399,7 +409,47 @@ module.exports = class TransactionManager extends EventEmitter {
     })
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
+
+  continuallyResubmitPendingTxs () {
+    const pending = this.getTxsByMetaData('status', 'submitted')
+    const resubmit = denodeify(this.resubmitTx.bind(this))
+    Promise.all(pending.map(txMeta => resubmit(txMeta)))
+    .catch((reason) => {
+      log.info('Problem resubmitting tx', reason)
+    })
+    .then(() => {
+      global.setTimeout(() => {
+        this.continuallyResubmitPendingTxs()
+      }, RESUBMIT_INTERVAL)
+    })
+  }
+
+  resubmitTx (txMeta, cb) {
+    // Increment a try counter.
+    if (!('retryCount' in txMeta)) {
+      txMeta.retryCount = 0
+    }
+
+    // Only auto-submit already-signed txs:
+    if (!('rawTx' in txMeta)) {
+      return cb()
+    }
+
+    if (txMeta.retryCount > RETRY_LIMIT) {
+      txMeta.err = {
+        isWarning: true,
+        message: 'Gave up submitting tx.',
+      }
+      this.updateTx(txMeta)
+      return log.error(txMeta.err.message)
+    }
+
+    txMeta.retryCount++
+    const rawTx = txMeta.rawTx
+    this.txProviderUtils.publishTransaction(rawTx, cb)
+  }
+
 }
 
 
-const warn = () => console.warn('warn was used no cb provided')
+const warn = () => log.warn('warn was used no cb provided')

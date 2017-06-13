@@ -1,29 +1,26 @@
 const Component = require('react').Component
-const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
+const clone = require('clone')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
-
-const MiniAccountPanel = require('./mini-account-panel')
-const EthBalance = require('./eth-balance')
 const util = require('../util')
+const MiniAccountPanel = require('./mini-account-panel')
+const Copyable = require('./copyable')
+const EthBalance = require('./eth-balance')
 const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
-const HexInput = require('./hex-as-decimal-input')
+const BNInput = require('./bn-as-decimal-input')
 
-const MIN_GAS_PRICE_BN = new BN(20000000)
+const MIN_GAS_PRICE_GWEI_BN = new BN(2)
+const GWEI_FACTOR = new BN(1e9)
+const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 const MIN_GAS_LIMIT_BN = new BN(21000)
 
-module.exports = connect(mapStateToProps)(PendingTx)
-
-function mapStateToProps (state) {
-  return {}
-}
-
+module.exports = PendingTx
 inherits(PendingTx, Component)
 function PendingTx () {
   Component.call(this)
@@ -35,19 +32,29 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
+  const { currentCurrency, blockGasLimit } = props
 
+  const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
+  // Account Details
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
-  const gas = txParams.gas
-  const gasPrice = txParams.gasPrice
+  // recipient check
+  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
 
+  // Gas
+  const gas = txParams.gas
   const gasBn = hexToBn(gas)
+  const gasLimit = new BN(parseInt(blockGasLimit))
+  const safeGasLimit = this.bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
+
+  // Gas Price
+  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
@@ -55,7 +62,6 @@ PendingTx.prototype.render = function () {
   const maxCost = txFeeBn.add(valueBn)
 
   const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
-  const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
@@ -69,17 +75,8 @@ PendingTx.prototype.render = function () {
     }, [
 
       h('form#pending-tx-form', {
-        onSubmit: (event) => {
-          event.preventDefault()
-          const form = document.querySelector('form#pending-tx-form')
-          const valid = form.checkValidity()
-          this.setState({ valid })
-          if (valid && this.verifyGasParams()) {
-            props.sendTransaction(txMeta, event)
-          } else {
-            this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
-          }
-        },
+        onSubmit: this.onSubmit.bind(this),
+
       }, [
 
         // tx info
@@ -93,7 +90,6 @@ PendingTx.prototype.render = function () {
 
             h(MiniAccountPanel, {
               imageSeed: address,
-              imageifyIdenticons: imageify,
               picOrder: 'right',
             }, [
               h('span.font-small', {
@@ -101,11 +97,16 @@ PendingTx.prototype.render = function () {
                   fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
                 },
               }, identity.name),
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-                },
-              }, addressSummary(address, 6, 4, false)),
+
+              h(Copyable, {
+                value: ethUtil.toChecksumAddress(address),
+              }, [
+                h('span.font-small', {
+                  style: {
+                    fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+                  },
+                }, addressSummary(address, 6, 4, false)),
+              ]),
 
               h('span.font-small', {
                 style: {
@@ -114,6 +115,8 @@ PendingTx.prototype.render = function () {
               }, [
                 h(EthBalance, {
                   value: balance,
+                  conversionRate,
+                  currentCurrency,
                   inline: true,
                   labelColor: '#F7861C',
                 }),
@@ -151,7 +154,7 @@ PendingTx.prototype.render = function () {
             // in the way that gas and gasLimit currently are.
             h('.row', [
               h('.cell.label', 'Amount'),
-              h(EthBalance, { value: txParams.value }),
+              h(EthBalance, { value: txParams.value, currentCurrency, conversionRate }),
             ]),
 
             // Gas Limit (customizable)
@@ -159,22 +162,21 @@ PendingTx.prototype.render = function () {
               h('.cell.label', 'Gas Limit'),
               h('.cell.value', {
               }, [
-                h(HexInput, {
+                h(BNInput, {
                   name: 'Gas Limit',
-                  value: gas,
+                  value: gasBn,
+                  precision: 0,
+                  scale: 0,
                   // The hard lower limit for gas.
                   min: MIN_GAS_LIMIT_BN.toString(10),
+                  max: safeGasLimit,
                   suffix: 'UNITS',
                   style: {
                     position: 'relative',
                     top: '5px',
                   },
-                  onChange: (newHex) => {
-                    log.info(`Gas limit changed to ${newHex}`)
-                    const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gas = newHex
-                    this.setState({ txData: txMeta })
-                  },
+                  onChange: this.gasLimitChanged.bind(this),
+
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
               ]),
@@ -185,21 +187,18 @@ PendingTx.prototype.render = function () {
               h('.cell.label', 'Gas Price'),
               h('.cell.value', {
               }, [
-                h(HexInput, {
+                h(BNInput, {
                   name: 'Gas Price',
-                  value: gasPrice,
-                  suffix: 'WEI',
-                  min: MIN_GAS_PRICE_BN.toString(10),
+                  value: gasPriceBn,
+                  precision: 9,
+                  scale: 9,
+                  suffix: 'GWEI',
+                  min: MIN_GAS_PRICE_GWEI_BN.toString(10),
                   style: {
                     position: 'relative',
                     top: '5px',
                   },
-                  onChange: (newHex) => {
-                    log.info(`Gas price changed to: ${newHex}`)
-                    const txMeta = this.gatherTxMeta()
-                    txMeta.txParams.gasPrice = newHex
-                    this.setState({ txData: txMeta })
-                  },
+                  onChange: this.gasPriceChanged.bind(this),
                   ref: (hexInput) => { this.inputs.push(hexInput) },
                 }),
               ]),
@@ -208,7 +207,7 @@ PendingTx.prototype.render = function () {
             // Max Transaction Fee (calculated)
             h('.cell.row', [
               h('.cell.label', 'Max Transaction Fee'),
-              h(EthBalance, { value: txFeeBn.toString(16) }),
+              h(EthBalance, { value: txFeeBn.toString(16), currentCurrency, conversionRate }),
             ]),
 
             h('.cell.row', {
@@ -227,6 +226,8 @@ PendingTx.prototype.render = function () {
               }, [
                 h(EthBalance, {
                   value: maxCost.toString(16),
+                  currentCurrency,
+                  conversionRate,
                   inline: true,
                   labelColor: 'black',
                   fontSize: '16px',
@@ -269,6 +270,15 @@ PendingTx.prototype.render = function () {
           }, 'Transaction Error. Exception thrown in contract code.')
         : null,
 
+        !isValidAddress ?
+          h('.error', {
+            style: {
+              marginLeft: 50,
+              fontSize: '0.9em',
+            },
+          }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+        : null,
+
         insufficientBalance ?
           h('span.error', {
             style: {
@@ -289,7 +299,7 @@ PendingTx.prototype.render = function () {
 
 
           insufficientBalance ?
-            h('button', {
+            h('button.btn-green', {
               onClick: props.buyEth,
             }, 'Buy Ether')
           : null,
@@ -306,7 +316,7 @@ PendingTx.prototype.render = function () {
             type: 'submit',
             value: 'ACCEPT',
             style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid,
+            disabled: insufficientBalance || !this.state.valid || !isValidAddress,
           }),
 
           h('button.cancel.btn-red', {
@@ -323,29 +333,33 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
   const txData = props.txData
   const txParams = txData.txParams || {}
   const isContractDeploy = !('to' in txParams)
-  const imageify = props.imageifyIdenticons === undefined ? true : props.imageifyIdenticons
 
   // If it's not a contract deploy, send to the account
   if (!isContractDeploy) {
     return h(MiniAccountPanel, {
       imageSeed: txParams.to,
-      imageifyIdenticons: imageify,
       picOrder: 'left',
     }, [
+
       h('span.font-small', {
         style: {
           fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
         },
       }, nameForAddress(txParams.to, props.identities)),
-      h('span.font-small', {
-        style: {
-          fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-        },
-      }, addressSummary(txParams.to, 6, 4, false)),
+
+      h(Copyable, {
+        value: ethUtil.toChecksumAddress(txParams.to),
+      }, [
+        h('span.font-small', {
+          style: {
+            fontFamily: 'Montserrat Light, Montserrat, sans-serif',
+          },
+        }, addressSummary(txParams.to, 6, 4, false)),
+      ]),
+
     ])
   } else {
     return h(MiniAccountPanel, {
-      imageifyIdenticons: imageify,
       picOrder: 'left',
     }, [
 
@@ -357,6 +371,26 @@ PendingTx.prototype.miniAccountPanelForRecipient = function () {
 
     ])
   }
+}
+
+PendingTx.prototype.gasPriceChanged = function (newBN, valid) {
+  log.info(`Gas price changed to: ${newBN.toString(10)}`)
+  const txMeta = this.gatherTxMeta()
+  txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
+  this.setState({
+    txData: clone(txMeta),
+    valid,
+  })
+}
+
+PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
+  log.info(`Gas limit changed to ${newBN.toString(10)}`)
+  const txMeta = this.gatherTxMeta()
+  txMeta.txParams.gas = '0x' + newBN.toString('hex')
+  this.setState({
+    txData: clone(txMeta),
+    valid,
+  })
 }
 
 PendingTx.prototype.resetGasFields = function () {
@@ -374,12 +408,39 @@ PendingTx.prototype.resetGasFields = function () {
   })
 }
 
+PendingTx.prototype.onSubmit = function (event) {
+  event.preventDefault()
+  const txMeta = this.gatherTxMeta()
+  const valid = this.checkValidity()
+  this.setState({ valid })
+  if (valid && this.verifyGasParams()) {
+    this.props.sendTransaction(txMeta, event)
+  } else {
+    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+  }
+}
+
+PendingTx.prototype.checkValidity = function () {
+  const form = this.getFormEl()
+  const valid = form.checkValidity()
+  return valid
+}
+
+PendingTx.prototype.getFormEl = function () {
+  const form = document.querySelector('form#pending-tx-form')
+  // Stub out form for unit tests:
+  if (!form) {
+    return { checkValidity () { return true } }
+  }
+  return form
+}
+
 // After a customizable state value has been updated,
 PendingTx.prototype.gatherTxMeta = function () {
   log.debug(`pending-tx gatherTxMeta`)
   const props = this.props
   const state = this.state
-  const txData = state.txData || props.txData
+  const txData = clone(state.txData) || clone(props.txData)
 
   log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData
@@ -398,9 +459,14 @@ PendingTx.prototype._notZeroOrEmptyString = function (obj) {
   return obj !== '' && obj !== '0x0'
 }
 
+PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
+  const numBN = new BN(numerator)
+  const denomBN = new BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
+}
+
 function forwardCarrat () {
   return (
-
     h('img', {
       src: 'images/forward-carrat.svg',
       style: {
@@ -408,7 +474,5 @@ function forwardCarrat () {
         height: '37px',
       },
     })
-
   )
 }
-

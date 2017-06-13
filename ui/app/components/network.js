@@ -34,7 +34,7 @@ Network.prototype.render = function () {
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
-  } else if (providerName === 'testnet') {
+  } else if (providerName === 'ropsten') {
     hoverText = 'Ropsten Test Network'
     iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 3) {
@@ -43,6 +43,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'kovan') {
     hoverText = 'Kovan Test Network'
     iconName = 'kovan-test-network'
+  } else if (providerName === 'rinkeby') {
+    hoverText = 'Rinkeby Test Network'
+    iconName = 'rinkeby-test-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
@@ -81,6 +84,15 @@ Network.prototype.render = function () {
                   color: '#690496',
                 }},
               'Kovan Test Net'),
+            ])
+          case 'rinkeby-test-network':
+            return h('.network-indicator', [
+              h('.menu-icon.golden-square'),
+              h('.network-name', {
+                style: {
+                  color: '#e7a218',
+                }},
+              'Rinkeby Test Net'),
             ])
           default:
             return h('.network-indicator', [

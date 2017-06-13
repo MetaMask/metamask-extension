@@ -1,5 +1,4 @@
 const async = require('async')
-const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const normalize = require('eth-sig-util').normalize
@@ -7,15 +6,14 @@ const BN = ethUtil.BN
 
 /*
 tx-utils are utility methods for Transaction manager
-its passed a provider and that is passed to ethquery
+its passed ethquery
 and used to do things like calculate gas of a tx.
 */
 
 module.exports = class txProviderUtils {
 
-  constructor (provider) {
-    this.provider = provider
-    this.query = new EthQuery(provider)
+  constructor (ethQuery) {
+    this.query = ethQuery
   }
 
   analyzeGasUsage (txMeta, cb) {
@@ -35,7 +33,9 @@ module.exports = class txProviderUtils {
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
     // if not, fallback to block gasLimit
     if (!txMeta.gasLimitSpecified) {
-      txParams.gas = blockGasLimitHex
+      const blockGasLimitBN = hexToBn(blockGasLimitHex)
+      const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+      txParams.gas = bnToHex(saferGasLimitBN)
     }
     // run tx, see if it will OOG
     this.query.estimateGas(txParams, cb)
@@ -75,14 +75,14 @@ module.exports = class txProviderUtils {
   }
 
   fillInTxParams (txParams, cb) {
-    let fromAddress = txParams.from
-    let reqs = {}
+    const fromAddress = txParams.from
+    const reqs = {}
 
     if (isUndef(txParams.gas)) reqs.gas = (cb) => this.query.estimateGas(txParams, cb)
     if (isUndef(txParams.gasPrice)) reqs.gasPrice = (cb) => this.query.gasPrice(cb)
     if (isUndef(txParams.nonce)) reqs.nonce = (cb) => this.query.getTransactionCount(fromAddress, 'pending', cb)
 
-    async.parallel(reqs, function(err, result) {
+    async.parallel(reqs, function (err, result) {
       if (err) return cb(err)
       // write results to txParams obj
       Object.assign(txParams, result)
@@ -123,14 +123,20 @@ module.exports = class txProviderUtils {
 
 // util
 
-function isUndef(value) {
+function isUndef (value) {
   return value === undefined
 }
 
-function bnToHex(inputBn) {
+function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
 }
 
-function hexToBn(inputHex) {
+function hexToBn (inputHex) {
   return new BN(ethUtil.stripHexPrefix(inputHex), 16)
+}
+
+function BnMultiplyByFraction (targetBN, numerator, denominator) {
+  const numBN = new BN(numerator)
+  const denomBN = new BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
 }

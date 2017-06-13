@@ -249,7 +249,7 @@ App.prototype.renderNetworkDropdown = function () {
     h(DropMenuItem, {
       label: 'Ropsten Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('testnet')),
+      action: () => props.dispatch(actions.setProviderType('ropsten')),
       icon: h('.menu-icon.red-dot'),
       activeNetworkRender: props.network,
       provider: props.provider,
@@ -260,6 +260,15 @@ App.prototype.renderNetworkDropdown = function () {
       closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
       action: () => props.dispatch(actions.setProviderType('kovan')),
       icon: h('.menu-icon.hollow-diamond'),
+      activeNetworkRender: props.network,
+      provider: props.provider,
+    }),
+
+    h(DropMenuItem, {
+      label: 'Rinkeby Test Network',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
+      action: () => props.dispatch(actions.setProviderType('rinkeby')),
+      icon: h('.menu-icon.golden-square'),
       activeNetworkRender: props.network,
       provider: props.provider,
     }),
@@ -332,7 +341,7 @@ App.prototype.renderDropdown = function () {
     }),
 
     h(DropMenuItem, {
-      label: 'Info',
+      label: 'Info/Help',
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       action: () => this.props.dispatch(actions.showInfoPage()),
       icon: h('i.fa.fa-question.fa-lg'),
@@ -552,5 +561,4 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
       })
     }
   })
-
 }

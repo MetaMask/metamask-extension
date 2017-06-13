@@ -315,7 +315,7 @@ function reduceApp (state, action) {
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
       const otherUnconfActions = getUnconfActionList(state)
-      .filter(tx => tx.id !== action.value )
+      .filter(tx => tx.id !== action.value)
       const hasOtherUnconfActions = otherUnconfActions.length > 0
 
       if (hasOtherUnconfActions) {
@@ -469,8 +469,9 @@ function reduceApp (state, action) {
           name: 'buyEth',
           context: appState.currentView.name,
         },
+        identity: state.metamask.identities[action.value],
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           amount: '15.00',
           buyAddress: action.value,
           formView: {
@@ -480,36 +481,10 @@ function reduceApp (state, action) {
         },
       })
 
-    case actions.UPDATE_BUY_ADDRESS:
-      return extend(appState, {
-        buyView: {
-          subview: 'buyForm',
-          formView: {
-            coinbase: appState.buyView.formView.coinbase,
-            shapeshift: appState.buyView.formView.shapeshift,
-          },
-          buyAddress: action.value,
-          amount: appState.buyView.amount,
-        },
-      })
-
-    case actions.UPDATE_COINBASE_AMOUNT:
-      return extend(appState, {
-        buyView: {
-          subview: 'buyForm',
-          formView: {
-            coinbase: true,
-            shapeshift: false,
-          },
-          buyAddress: appState.buyView.buyAddress,
-          amount: action.value,
-        },
-      })
-
     case actions.COINBASE_SUBVIEW:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'Coinbase',
           formView: {
             coinbase: true,
             shapeshift: false,
@@ -522,7 +497,7 @@ function reduceApp (state, action) {
     case actions.SHAPESHIFT_SUBVIEW:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'ShapeShift',
           formView: {
             coinbase: false,
             shapeshift: true,
@@ -537,7 +512,7 @@ function reduceApp (state, action) {
     case actions.PAIR_UPDATE:
       return extend(appState, {
         buyView: {
-          subview: 'buyForm',
+          subview: 'ShapeShift',
           formView: {
             coinbase: false,
             shapeshift: true,

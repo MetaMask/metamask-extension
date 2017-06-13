@@ -156,7 +156,7 @@ function currentProviderDisplay (metamaskState) {
       value = 'Main Ethereum Network'
       break
 
-    case 'testnet':
+    case 'ropsten':
       title = 'Current Network'
       value = 'Ropsten Test Network'
       break
@@ -164,6 +164,11 @@ function currentProviderDisplay (metamaskState) {
     case 'kovan':
       title = 'Current Network'
       value = 'Kovan Test Network'
+      break
+
+    case 'rinkeby':
+      title = 'Current Network'
+      value = 'Rinkeby Test Network'
       break
 
     default:

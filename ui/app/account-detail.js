@@ -16,9 +16,9 @@ const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
-const BuyButtonSubview = require('./components/buy-button-subview')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
+
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
@@ -32,6 +32,8 @@ function mapStateToProps (state) {
     unapprovedMsgs: valuesFor(state.metamask.unapprovedMsgs),
     shapeShiftTxList: state.metamask.shapeShiftTxList,
     transactions: state.metamask.selectedAddressTxList || [],
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
@@ -47,7 +49,7 @@ AccountDetailScreen.prototype.render = function () {
   var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
-  const { network } = props
+  const { network, conversionRate, currentCurrency } = props
 
   return (
 
@@ -186,6 +188,8 @@ AccountDetailScreen.prototype.render = function () {
 
           h(EthBalance, {
             value: account && account.balance,
+            conversionRate,
+            currentCurrency,
             style: {
               lineHeight: '7px',
               marginTop: '10px',
@@ -241,8 +245,6 @@ AccountDetailScreen.prototype.subview = function () {
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
-    case 'buyForm':
-      return h(BuyButtonSubview, extend({key: 'buyForm'}, this.props))
     default:
       return this.tabSections()
   }
@@ -275,14 +277,6 @@ AccountDetailScreen.prototype.tabSections = function () {
 
 AccountDetailScreen.prototype.tabSwitchView = function () {
   const userAddress = this.props.address
-  var subview
-  try {
-    subview = this.props.accountDetail.subview
-    return h(TokenList, { userAddress })
-  } catch (e) {
-    subview = null
-  }
-
   const tabSelection = this.state.tabSelection || 'history'
 
   switch (tabSelection) {
@@ -294,12 +288,14 @@ AccountDetailScreen.prototype.tabSwitchView = function () {
 }
 
 AccountDetailScreen.prototype.transactionList = function () {
+  const {transactions, unapprovedMsgs, address,
+    network, shapeShiftTxList, conversionRate } = this.props
 
-  const {transactions, unapprovedMsgs, address, network, shapeShiftTxList } = this.props
   return h(TransactionList, {
     transactions: transactions.sort((a, b) => b.time - a.time),
     network,
     unapprovedMsgs,
+    conversionRate,
     address,
     shapeShiftTxList,
     viewPendingTx: (txId) => {
@@ -310,16 +306,4 @@ AccountDetailScreen.prototype.transactionList = function () {
 
 AccountDetailScreen.prototype.requestAccountExport = function () {
   this.props.dispatch(actions.requestExportAccount())
-}
-
-
-AccountDetailScreen.prototype.buyButtonDeligator = function () {
-  var props = this.props
-  var selected = props.address || Object.keys(props.accounts)[0]
-
-  if (this.props.accountDetail.subview === 'buyForm') {
-    props.dispatch(actions.backToAccountDetail(props.address))
-  } else {
-    props.dispatch(actions.buyEthView(selected))
-  }
 }

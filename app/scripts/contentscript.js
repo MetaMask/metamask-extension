@@ -61,7 +61,6 @@ function setupStreams () {
   // ignore unused channels (handled by background)
   mx.ignoreStream('provider')
   mx.ignoreStream('publicConfig')
-  mx.ignoreStream('reload')
 }
 
 function shouldInjectWeb3 () {
@@ -77,7 +76,7 @@ function doctypeCheck () {
   }
 }
 
-function suffixCheck() {
+function suffixCheck () {
   var prohibitedTypes = ['xml', 'pdf']
   var currentUrl = window.location.href
   var currentRegex

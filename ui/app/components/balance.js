@@ -1,7 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const formatBalance = require('../util').formatBalance const generateBalanceObject = require('../util').generateBalanceObject
+const formatBalance = require('../util').formatBalance
+const generateBalanceObject = require('../util').generateBalanceObject
 const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
 

@@ -134,10 +134,6 @@ var actions = {
   buyEth: buyEth,
   buyEthView: buyEthView,
   BUY_ETH_VIEW: 'BUY_ETH_VIEW',
-  UPDATE_COINBASE_AMOUNT: 'UPDATE_COIBASE_AMOUNT',
-  updateCoinBaseAmount: updateCoinBaseAmount,
-  UPDATE_BUY_ADDRESS: 'UPDATE_BUY_ADDRESS',
-  updateBuyAddress: updateBuyAddress,
   COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
@@ -318,7 +314,7 @@ function importNewAccount (strategy, args) {
   }
 }
 
-function navigateToNewAccountScreen() {
+function navigateToNewAccountScreen () {
   return {
     type: this.NEW_ACCOUNT_SCREEN,
   }
@@ -397,7 +393,7 @@ function signPersonalMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
-    web3.eth.sendTransaction(txData, (err, data) => {
+    global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
@@ -669,7 +665,7 @@ function clearNotices () {
   }
 }
 
-function markAccountsFound() {
+function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
 }
@@ -852,20 +848,6 @@ function buyEthView (address) {
   }
 }
 
-function updateCoinBaseAmount (value) {
-  return {
-    type: actions.UPDATE_COINBASE_AMOUNT,
-    value,
-  }
-}
-
-function updateBuyAddress (value) {
-  return {
-    type: actions.UPDATE_BUY_ADDRESS,
-    value,
-  }
-}
-
 function coinBaseSubview () {
   return {
     type: actions.COINBASE_SUBVIEW,
@@ -996,7 +978,7 @@ function callBackgroundThenUpdate (method, ...args) {
   }
 }
 
-function forceUpdateMetamaskState(dispatch){
+function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
   background.getState((err, newState) => {
     if (err) {

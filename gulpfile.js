@@ -52,6 +52,15 @@ gulp.task('copy:images', copyTask({
     './dist/opera/images',
   ],
 }))
+gulp.task('copy:contractImages', copyTask({
+  source: './node_modules/ethereum-contract-icons/images/',
+  destinations: [
+    './dist/firefox/images/contract',
+    './dist/chrome/images/contract',
+    './dist/edge/images/contract',
+    './dist/opera/images/contract',
+  ],
+}))
 gulp.task('copy:fonts', copyTask({
   source: './app/fonts/',
   destinations: [
@@ -127,6 +136,7 @@ const staticFiles = [
 ]
 
 var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
+copyStrings.push('copy:contractImages')
 
 if (!disableLiveReload) {
   copyStrings.push('copy:reload')
@@ -182,7 +192,7 @@ gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
 // disc bundle analyzer tasks
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`disc:${jsFile}`,   bundleTask({ label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`disc:${jsFile}`,   discTask({ label: jsFile, filename: `${jsFile}.js` }))
 })
 
 gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
@@ -296,8 +306,6 @@ function bundleTask(opts) {
     return (
 
       bundler.bundle()
-      // log errors if they happen
-      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle

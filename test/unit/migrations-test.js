@@ -3,7 +3,7 @@ const path = require('path')
 
 const wallet1 = require(path.join('..', 'lib', 'migrations', '001.json'))
 const vault4 = require(path.join('..', 'lib', 'migrations', '004.json'))
-let vault5, vault6, vault7, vault8, vault9, vault10, vault11
+let vault5, vault6, vault7, vault8, vault9 // vault10, vault11
 
 const migration2 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '002'))
 const migration3 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '003'))
@@ -16,6 +16,7 @@ const migration9 = require(path.join('..', '..', 'app', 'scripts', 'migrations',
 const migration10 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '010'))
 const migration11 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '011'))
 const migration12 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '012'))
+const migration13 = require(path.join('..', '..', 'app', 'scripts', 'migrations', '013'))
 
 
 const oldTestRpc = 'https://rawtestrpc.metamask.io/'
@@ -23,7 +24,6 @@ const newTestRpc = 'https://testrpc.metamask.io/'
 
 describe('wallet1 is migrated successfully', () => {
   it('should convert providers', () => {
-
     wallet1.data.config.provider = { type: 'etherscan', rpcTarget: null }
 
     return migration2.migrate(wallet1)
@@ -98,7 +98,11 @@ describe('wallet1 is migrated successfully', () => {
     }).then((twelfthResult) => {
       assert.equal(twelfthResult.data.NoticeController.noticesList[0].body, '', 'notices that have been read should have an empty body.')
       assert.equal(twelfthResult.data.NoticeController.noticesList[1].body, 'nonempty', 'notices that have not been read should not have an empty body.')
-    })
 
+      assert.equal(twelfthResult.data.config.provider.type, 'testnet', 'network is originally testnet.')
+      return migration13.migrate(twelfthResult)
+    }).then((thirteenthResult) => {
+      assert.equal(thirteenthResult.data.config.provider.type, 'ropsten', 'network has been changed to ropsten.')
+    })
   })
 })

@@ -5,11 +5,9 @@ const extend = require('xtend')
 const debounce = require('debounce')
 const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
+const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\.eth$/
 
-const networkResolvers = {
-  '3': '112234455c3a32fd11230c42e7bccd4a84e02010',
-}
 
 module.exports = EnsInput
 
@@ -23,9 +21,10 @@ EnsInput.prototype.render = function () {
   const opts = extend(props, {
     list: 'addresses',
     onChange: () => {
+      this.setState({ ensResolution: '0x0000000000000000000000000000000000000000' })
       const network = this.props.network
-      let resolverAddress = networkResolvers[network]
-      if (!resolverAddress) return
+      const networkHasEnsSupport = getNetworkEnsSupport(network)
+      if (!networkHasEnsSupport) return
 
       const recipient = document.querySelector('input[name="address"]').value
       if (recipient.match(ensRE) === null) {
@@ -52,7 +51,7 @@ EnsInput.prototype.render = function () {
       [
         // Corresponds to the addresses owned.
         Object.keys(props.identities).map((key) => {
-          let identity = props.identities[key]
+          const identity = props.identities[key]
           return h('option', {
             value: identity.address,
             label: identity.name,
@@ -63,6 +62,7 @@ EnsInput.prototype.render = function () {
           return h('option', {
             value: identity.address,
             label: identity.name,
+            key: identity.address,
           })
         }),
       ]),
@@ -72,10 +72,10 @@ EnsInput.prototype.render = function () {
 
 EnsInput.prototype.componentDidMount = function () {
   const network = this.props.network
-  let resolverAddress = networkResolvers[network]
+  const networkHasEnsSupport = getNetworkEnsSupport(network)
 
-  if (resolverAddress) {
-    const provider = web3.currentProvider
+  if (networkHasEnsSupport) {
+    const provider = global.ethereumProvider
     this.ens = new ENS({ provider, network })
     this.checkName = debounce(this.lookupEnsName.bind(this), 200)
   }
@@ -96,12 +96,14 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
+    if (address === '0x0000000000000000000000000000000000000000') throw new Error('No address has been set for this name.')
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
         nickname: recipient.trim(),
         hoverText: address + '\nClick to Copy',
+        ensFailure: false,
       })
     }
   })
@@ -109,6 +111,7 @@ EnsInput.prototype.lookupEnsName = function () {
     log.error(reason)
     return this.setState({
       loadingEns: false,
+      ensResolution: '0x0000000000000000000000000000000000000000',
       ensFailure: true,
       hoverText: reason.message,
     })
@@ -168,3 +171,8 @@ EnsInput.prototype.ensIconContents = function (recipient) {
     })
   }
 }
+
+function getNetworkEnsSupport (network) {
+  return Boolean(networkMap[network])
+}
+

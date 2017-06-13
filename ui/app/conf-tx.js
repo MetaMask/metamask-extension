@@ -27,6 +27,9 @@ function mapStateToProps (state) {
     warning: state.appState.warning,
     network: state.metamask.network,
     provider: state.metamask.provider,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
+    blockGasLimit: state.metamask.currentBlockGasLimit,
   }
 }
 
@@ -37,14 +40,15 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs,
-    unapprovedMsgs, unapprovedPersonalMsgs } = props
+  const { network, provider, unapprovedTxs, currentCurrency,
+    unapprovedMsgs, unapprovedPersonalMsgs, conversionRate, blockGasLimit } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
 
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
+
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
@@ -102,9 +106,12 @@ ConfirmTxScreen.prototype.render = function () {
           selectedAddress: props.selectedAddress,
           accounts: props.accounts,
           identities: props.identities,
+          conversionRate,
+          currentCurrency,
+          blockGasLimit,
           // Actions
           buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
-          sendTransaction: this.sendTransaction.bind(this, txData),
+          sendTransaction: this.sendTransaction.bind(this),
           cancelTransaction: this.cancelTransaction.bind(this, txData),
           signMessage: this.signMessage.bind(this, txData),
           signPersonalMessage: this.signPersonalMessage.bind(this, txData),
@@ -125,14 +132,12 @@ function currentTxView (opts) {
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
-
   } else if (msgParams) {
     log.debug('msgParams detected, rendering pending msg')
 
     if (type === 'eth_sign') {
       log.debug('rendering eth_sign message')
       return h(PendingMsg, opts)
-
     } else if (type === 'personal_sign') {
       log.debug('rendering personal_sign message')
       return h(PendingPersonalMsg, opts)
@@ -141,7 +146,7 @@ function currentTxView (opts) {
 }
 
 ConfirmTxScreen.prototype.buyEth = function (address, event) {
-  this.stopPropagation(event)
+  event.preventDefault()
   this.props.dispatch(actions.buyEthView(address))
 }
 

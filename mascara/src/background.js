@@ -1,4 +1,5 @@
 global.window = global
+const self = global
 const pipe = require('pump')
 
 const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
@@ -6,7 +7,7 @@ const connectionListener = new SwGlobalListener(self)
 const setupMultiplex = require('../../app/scripts/lib/stream-utils.js').setupMultiplex
 const PortStream = require('../../app/scripts/lib/port-stream.js')
 
-const DbController = require('./lib/index-db-controller')
+const DbController = require('idb-global')
 
 const SwPlatform = require('../../app/scripts/platforms/sw')
 const MetamaskController = require('../../app/scripts/metamask-controller')
@@ -21,6 +22,7 @@ const STORAGE_KEY = 'metamask-config'
 // const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 const METAMASK_DEBUG = true
 let popupIsOpen = false
+let connectedClientCount = 0
 
 const log = require('loglevel')
 global.log = log
@@ -40,7 +42,6 @@ console.log('inside:open')
 let diskStore
 const dbController = new DbController({
   key: STORAGE_KEY,
-  version: 2,
 })
 loadStateFromPersistence()
 .then((initState) => setupController(initState))
@@ -107,6 +108,7 @@ function setupController (initState, client) {
 
   connectionListener.on('remote', (portStream, messageEvent) => {
     console.log('REMOTE CONECTION FOUND***********')
+    connectedClientCount += 1
     connectRemote(portStream, messageEvent.data.context)
   })
 
@@ -141,5 +143,13 @@ function setupController (initState, client) {
   //
   return Promise.resolve()
 
+}
+
+function sendMessageToAllClients (message) {
+  self.clients.matchAll().then(function(clients) {
+    clients.forEach(function(client) {
+      client.postMessage(message)
+    })
+  })
 }
 function noop () {}

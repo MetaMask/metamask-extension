@@ -2,12 +2,13 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
-const EtherBalance = require('./eth-balance')
+const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
 const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const Tooltip = require('./tooltip')
+const numberToBN = require('number-to-bn')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -19,7 +20,7 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.render = function () {
-  const { transaction, network } = this.props
+  const { transaction, network, conversionRate, currentCurrency } = this.props
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }
@@ -27,7 +28,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 42
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -38,6 +39,8 @@ TransactionListItem.prototype.render = function () {
   } else if (isMsg) {
     txParams = transaction.msgParams
   }
+
+  const nonce = txParams.nonce ? numberToBN(txParams.nonce).toString(10) : ''
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   return (
@@ -69,6 +72,22 @@ TransactionListItem.prototype.render = function () {
         ]),
       ]),
 
+      h(Tooltip, {
+        title: 'Transaction Number',
+        position: 'bottom',
+      }, [
+        h('span', {
+          style: {
+            display: 'flex',
+            cursor: 'normal',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
+          },
+        }, nonce),
+      ]),
+
       h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
         domainField(txParams),
         h('div', date),
@@ -78,8 +97,10 @@ TransactionListItem.prototype.render = function () {
       // Places a copy button if tx is successful, else places a placeholder empty div.
       transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
 
-      isTx ? h(EtherBalance, {
+      isTx ? h(EthBalance, {
         value: txParams.value,
+        conversionRate,
+        currentCurrency,
         width: '55px',
         shorten: true,
         showFiat: false,
@@ -134,7 +155,6 @@ function failIfFailed (transaction) {
     return h('span.error', ' (Rejected)')
   }
   if (transaction.err) {
-
     return h(Tooltip, {
       title: transaction.err.message,
       position: 'bottom',
@@ -142,5 +162,4 @@ function failIfFailed (transaction) {
       h('span.error', ' (Failed)'),
     ])
   }
-
 }
