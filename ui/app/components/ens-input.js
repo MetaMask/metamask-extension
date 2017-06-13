@@ -7,6 +7,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\.eth$/
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 
 module.exports = EnsInput
@@ -72,7 +73,7 @@ EnsInput.prototype.render = function () {
 EnsInput.prototype.componentDidMount = function () {
   const network = this.props.network
   const networkHasEnsSupport = getNetworkEnsSupport(network)
-  this.setState({ ensResolution: '0x0000000000000000000000000000000000000000' })
+  this.setState({ ensResolution: ZERO_ADDRESS })
 
   if (networkHasEnsSupport) {
     const provider = global.ethereumProvider
@@ -88,7 +89,7 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    if (address === '0x0000000000000000000000000000000000000000') throw new Error('No address has been set for this name.')
+    if (address === ZERO_ADDRESS) throw new Error('No address has been set for this name.')
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
@@ -103,7 +104,7 @@ EnsInput.prototype.lookupEnsName = function () {
     log.error(reason)
     return this.setState({
       loadingEns: false,
-      ensResolution: '0x0000000000000000000000000000000000000000',
+      ensResolution: ZERO_ADDRESS,
       ensFailure: true,
       hoverText: reason.message,
     })
@@ -135,7 +136,7 @@ EnsInput.prototype.ensIcon = function (recipient) {
 }
 
 EnsInput.prototype.ensIconContents = function (recipient) {
-  const { loadingEns, ensFailure, ensResolution } = this.state || { ensResolution: '0x0000000000000000000000000000000000000000'}
+  const { loadingEns, ensFailure, ensResolution } = this.state || { ensResolution: ZERO_ADDRESS}
 
   if (loadingEns) {
     return h('img', {
@@ -152,7 +153,7 @@ EnsInput.prototype.ensIconContents = function (recipient) {
     return h('i.fa.fa-warning.fa-lg.warning')
   }
 
-  if (ensResolution && (ensResolution !== '0x0000000000000000000000000000000000000000')) {
+  if (ensResolution && (ensResolution !== ZERO_ADDRESS)) {
     return h('i.fa.fa-check-circle.fa-lg.cursor-pointer', {
       style: { color: 'green' },
       onClick: (event) => {
