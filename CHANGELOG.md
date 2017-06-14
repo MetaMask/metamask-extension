@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add a warning to JSON file import.
+
 ## 3.7.8 2017-6-12
 
 - Add a `ethereum:` prefix to the QR code address
