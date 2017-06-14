@@ -256,7 +256,7 @@ AccountDetailScreen.prototype.tabSections = function () {
 
     h(TabBar, {
       tabs: [
-        { content: 'History', key: 'history' },
+        { content: 'Sent', key: 'history' },
         { content: 'Tokens', key: 'tokens' },
       ],
       defaultTab: tabSelection || 'history',
