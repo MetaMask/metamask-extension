@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add list of popular tokens held to the account detail view.
+
 ## 3.7.8 2017-6-12
 
 - Add a `ethereum:` prefix to the QR code address
