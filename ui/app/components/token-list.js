@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
 const contracts = require('eth-contract-metadata')
-const Loading = require('./loading')
 
 const tokens = []
 for (const address in contracts) {
@@ -29,7 +28,16 @@ TokenList.prototype.render = function () {
 
   const { userAddress } = this.props
 
-  if (isLoading) return h(Loading, { isLoading })
+  if (isLoading) {
+    return h('div', {
+      style: {
+        display: 'flex',
+        height: '250px',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    }, 'Loading')
+  }
 
   const network = this.props.network
 
