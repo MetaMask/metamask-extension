@@ -25,7 +25,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
-    this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
+    this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
@@ -339,7 +339,7 @@ module.exports = class TransactionController extends EventEmitter {
   //  checks if a signed tx is in a block and
   // if included sets the tx status as 'confirmed'
   checkForTxInBlock () {
-    var signedTxList = this.getFilteredTxList({status: 'submitted'})
+    var signedTxList = this.getFilteredTxList({ status: 'submitted' })
     if (!signedTxList.length) return
     signedTxList.forEach((txMeta) => {
       var txHash = txMeta.hash
@@ -430,12 +430,8 @@ module.exports = class TransactionController extends EventEmitter {
     }
 
     if (txMeta.retryCount > RETRY_LIMIT) {
-      txMeta.err = {
-        isWarning: true,
-        message: 'Gave up submitting tx.',
-      }
-      this.updateTx(txMeta)
-      return log.error(txMeta.err.message)
+      const message = 'Gave up submitting tx ' + txMeta.hash
+      return log.warning(message)
     }
 
     txMeta.retryCount++
