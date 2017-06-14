@@ -3,35 +3,49 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
+const contracts = require('eth-contract-metadata')
+const Loading = require('./loading')
+
+const tokens = []
+for (let address in contracts) {
+  const contract = contracts[address]
+  if (contract.erc20) {
+    contract.address = address
+    tokens.push(contract)
+  }
+}
 
 module.exports = TokenList
 
 inherits(TokenList, Component)
 function TokenList () {
-
-  // Hard coded for development for now:
-  const tokens = [
-    { address: '0x48c80F1f4D53D5951e5D5438B54Cba84f29F32a5', symbol: 'REP', balance: 'aa'},
-    { address: '0xc66ea802717bfb9833400264dd12c2bceaa34a6d', symbol: 'MKR', balance: '1000', decimals: 18},
-    { address: '0xa74476443119A942dE498590Fe1f2454d7D4aC0d', symbol: 'GOL', balance: 'ff'},
-    { address: '0xaec2e87e0a235266d9c5adc9deb4b2e29b54d009', symbol: 'SNGLS', balance: '0' },
-  ]
-
-  this.state = { tokens }
+  this.state = { tokens, isLoading: true }
   Component.call(this)
 }
 
 TokenList.prototype.render = function () {
-  const tokens = this.state.tokens
+  const state = this.state
+  const { tokens, isLoading } = state
+
+  const { userAddress } = this.props
+
+  if (isLoading) return h(Loading, { isLoading })
+
   const network = this.props.network
 
   const tokenViews = tokens.map((tokenData) => {
     tokenData.network = network
+    tokenData.userAddress = userAddress
     return h(TokenCell, tokenData)
   })
 
   return (
-    h('ol', [h('style', `
+    h('ol', {
+      style: {
+        height: '302px',
+        overflowY: 'auto',
+      },
+    }, [h('style', `
 
     li.token-cell {
       display: flex;
@@ -54,19 +68,26 @@ TokenList.prototype.render = function () {
 }
 
 TokenList.prototype.componentDidMount = function () {
+  if (!global.ethereumProvider) return
   const { userAddress } = this.props
 
   this.tracker = new TokenTracker({
     userAddress,
-    provider: web3.currentProvider,
+    provider: global.ethereumProvider,
     tokens: this.state.tokens,
+    pollingInterval: 8000,
   })
 
   this.setState({ tokens: this.tracker.serialize() })
-  this.tracker.on('update', (tokenData) => this.setState({ tokens: tokenData }))
+  this.tracker.on('update', (tokenData) => {
+    const heldTokens = tokenData.filter(token => token.balance !== '0' && token.string !== '0.000')
+    this.setState({ tokens: heldTokens, isLoading: false })
+  })
   this.tracker.updateBalances()
 }
 
 TokenList.prototype.componentWillUnmount = function () {
+  if (!this.tracker) return
   this.tracker.stop()
 }
+

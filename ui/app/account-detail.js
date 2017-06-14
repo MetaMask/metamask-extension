@@ -39,7 +39,7 @@ function mapStateToProps (state) {
 
 inherits(AccountDetailScreen, Component)
 function AccountDetailScreen () {
-  this.state = {}
+  this.state = { tabSelection: 'history' }
   Component.call(this)
 }
 
@@ -251,13 +251,7 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.tabSections = function () {
-  var subview
-  try {
-    subview = this.props.accountDetail.subview
-  } catch (e) {
-    subview = null
-  }
-
+  const tabSelection = this.state.tabSelection
   return h('section.tabSection', [
 
     h(TabBar, {
@@ -265,7 +259,7 @@ AccountDetailScreen.prototype.tabSections = function () {
         { content: 'History', key: 'history' },
         { content: 'Tokens', key: 'tokens' },
       ],
-      defaultTab: subview || 'history',
+      defaultTab: tabSelection || 'history',
       tabSelected: (key) => {
         this.setState({ tabSelection: key })
       },
@@ -276,12 +270,13 @@ AccountDetailScreen.prototype.tabSections = function () {
 }
 
 AccountDetailScreen.prototype.tabSwitchView = function () {
-  const userAddress = this.props.address
+  const props = this.props
+  const { address, network } = props
   const tabSelection = this.state.tabSelection || 'history'
 
   switch (tabSelection) {
     case 'tokens':
-      return h(TokenList, { userAddress })
+      return h(TokenList, { userAddress: address, network })
     default:
       return this.transactionList()
   }

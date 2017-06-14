@@ -23,7 +23,9 @@ IdenticonComponent.prototype.render = function () {
     h('div', {
       key: 'identicon-' + this.props.address,
       style: {
-        display: 'inline-block',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         height: diameter,
         width: diameter,
         borderRadius: diameter / 2,
@@ -40,8 +42,8 @@ IdenticonComponent.prototype.componentDidMount = function () {
   if (!address) return
 
   var container = findDOMNode(this)
-  var diameter = props.diameter || this.defaultDiameter
 
+  var diameter = props.diameter || this.defaultDiameter
   if (!isNode) {
     var img = iconFactory.iconForAddress(address, diameter)
     container.appendChild(img)

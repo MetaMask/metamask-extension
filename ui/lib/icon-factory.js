@@ -44,7 +44,7 @@ IconFactory.prototype.generateNewIdenticon = function (address, diameter) {
 // util
 
 function iconExistsFor (address) {
-  return (contractMap.address) && isValidAddress(address) && (contractMap[address].logo)
+  return contractMap[address] && isValidAddress(address) && contractMap[address].logo
 }
 
 function imageElFor (address) {
@@ -53,7 +53,7 @@ function imageElFor (address) {
   const path = `images/contract/${fileName}`
   const img = document.createElement('img')
   img.src = path
-  img.style.width = '100%'
+  img.style.width = '75%'
   return img
 }
 
