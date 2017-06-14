@@ -389,7 +389,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
-
     }
     this.updateTx(txMeta)
     this.emit('updateBadge')

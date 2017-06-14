@@ -7,7 +7,7 @@ const contracts = require('eth-contract-metadata')
 const Loading = require('./loading')
 
 const tokens = []
-for (let address in contracts) {
+for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
     contract.address = address
@@ -19,7 +19,7 @@ module.exports = TokenList
 
 inherits(TokenList, Component)
 function TokenList () {
-  this.state = { tokens, isLoading: true }
+  this.state = { tokens, isLoading: true, network: null }
   Component.call(this)
 }
 
@@ -68,17 +68,23 @@ TokenList.prototype.render = function () {
 }
 
 TokenList.prototype.componentDidMount = function () {
+  this.createFreshTokenTracker()
+}
+
+TokenList.prototype.createFreshTokenTracker = function () {
+  if (this.tracker) {
+    this.tracker.stop()
+  }
+
   if (!global.ethereumProvider) return
   const { userAddress } = this.props
-
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: this.state.tokens,
+    tokens: tokens,
     pollingInterval: 8000,
   })
 
-  this.setState({ tokens: this.tracker.serialize() })
   this.tracker.on('update', (tokenData) => {
     this.updateBalances(tokenData)
   })
@@ -90,6 +96,17 @@ TokenList.prototype.componentDidMount = function () {
     log.error(`Problem updating balances`, reason)
     this.setState({ isLoading: false })
   })
+}
+
+TokenList.prototype.componentWillUpdate = function (nextProps) {
+  if (nextProps.network === 'loading') return
+  const oldNet = this.props.network
+  const newNet = nextProps.network
+
+  if (oldNet && newNet && newNet !== oldNet) {
+    this.setState({ isLoading: true })
+    this.createFreshTokenTracker()
+  }
 }
 
 TokenList.prototype.updateBalances = function (tokenData) {
