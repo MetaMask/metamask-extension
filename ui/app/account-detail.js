@@ -34,12 +34,12 @@ function mapStateToProps (state) {
     transactions: state.metamask.selectedAddressTxList || [],
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    currentAccountTab: state.metamask.currentAccountTab,
   }
 }
 
 inherits(AccountDetailScreen, Component)
 function AccountDetailScreen () {
-  this.state = { tabSelection: 'history' }
   Component.call(this)
 }
 
@@ -251,7 +251,8 @@ AccountDetailScreen.prototype.subview = function () {
 }
 
 AccountDetailScreen.prototype.tabSections = function () {
-  const tabSelection = this.state.tabSelection
+  const { currentAccountTab } = this.props
+
   return h('section.tabSection', [
 
     h(TabBar, {
@@ -259,9 +260,9 @@ AccountDetailScreen.prototype.tabSections = function () {
         { content: 'Sent', key: 'history' },
         { content: 'Tokens', key: 'tokens' },
       ],
-      defaultTab: tabSelection || 'history',
+      defaultTab: currentAccountTab || 'history',
       tabSelected: (key) => {
-        this.setState({ tabSelection: key })
+        this.props.dispatch(actions.setCurrentAccountTab(key))
       },
     }),
 
@@ -272,9 +273,9 @@ AccountDetailScreen.prototype.tabSections = function () {
 AccountDetailScreen.prototype.tabSwitchView = function () {
   const props = this.props
   const { address, network } = props
-  const tabSelection = this.state.tabSelection || 'history'
+  const { currentAccountTab } = this.props
 
-  switch (tabSelection) {
+  switch (currentAccountTab) {
     case 'tokens':
       return h(TokenList, { userAddress: address, network })
     default:

@@ -74,6 +74,7 @@ var actions = {
   SHOW_CONF_MSG_PAGE: 'SHOW_CONF_MSG_PAGE',
   SET_CURRENT_FIAT: 'SET_CURRENT_FIAT',
   setCurrentCurrency: setCurrentCurrency,
+  setCurrentAccountTab,
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
@@ -218,7 +219,7 @@ function confirmSeedWords () {
         return dispatch(actions.displayWarning(err.message))
       }
 
-      console.log('Seed word cache cleared. ' + account)
+      log.info('Seed word cache cleared. ' + account)
       dispatch(actions.showAccountDetail(account))
     })
   }
@@ -338,7 +339,7 @@ function setCurrentCurrency (currencyCode) {
     background.setCurrentCurrency(currencyCode, (err, data) => {
       dispatch(this.hideLoadingIndication())
       if (err) {
-        console.error(err.stack)
+        log.error(err.stack)
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
@@ -409,7 +410,7 @@ function sendTx (txData) {
     background.approveTransaction(txData.id, (err) => {
       if (err) {
         dispatch(actions.txError(err))
-        return console.error(err.message)
+        return log.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
     })
@@ -424,7 +425,7 @@ function updateAndApproveTx (txData) {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
-        return console.error(err.message)
+        return log.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
     })
@@ -556,6 +557,11 @@ function updateMetamaskState (newState) {
 function lockMetamask () {
   log.debug(`background.setLocked`)
   return callBackgroundThenUpdate(background.setLocked)
+}
+
+function setCurrentAccountTab (newTabName) {
+  log.debug(`background.setCurrentAccountTab: ${newTabName}`)
+  return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
 }
 
 function showAccountDetail (address) {
@@ -965,6 +971,17 @@ function shapeShiftRequest (query, options, cb) {
 // We hide loading indication.
 // If it errored, we show a warning.
 // If it didn't, we update the state.
+function callBackgroundThenUpdateNoSpinner (method, ...args) {
+  return (dispatch) => {
+    method.call(background, ...args, (err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
 function callBackgroundThenUpdate (method, ...args) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())

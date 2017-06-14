@@ -80,10 +80,21 @@ TokenList.prototype.componentDidMount = function () {
 
   this.setState({ tokens: this.tracker.serialize() })
   this.tracker.on('update', (tokenData) => {
-    const heldTokens = tokenData.filter(token => token.balance !== '0' && token.string !== '0.000')
-    this.setState({ tokens: heldTokens, isLoading: false })
+    this.updateBalances(tokenData)
   })
   this.tracker.updateBalances()
+  .then(() => {
+    this.updateBalances(this.tracker.serialize())
+  })
+  .catch((reason) => {
+    log.error(`Problem updating balances`, reason)
+    this.setState({ isLoading: false })
+  })
+}
+
+TokenList.prototype.updateBalances = function (tokenData) {
+  const heldTokens = tokenData.filter(token => token.balance !== '0' && token.string !== '0.000')
+  this.setState({ tokens: heldTokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
