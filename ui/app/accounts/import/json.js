@@ -5,6 +5,8 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const FileInput = require('react-simple-file-input').default
 
+const HELP_LINK = 'https://github.com/MetaMask/faq/blob/master/README.md#q-i-cant-use-the-import-feature-for-uploading-a-json-file-the-window-keeps-closing-when-i-try-to-select-a-file'
+
 module.exports = connect(mapStateToProps)(JsonImportSubview)
 
 function mapStateToProps (state) {
@@ -32,6 +34,7 @@ JsonImportSubview.prototype.render = function () {
     }, [
 
       h('p', 'Used by a variety of different clients'),
+      h('a.warning', { href: HELP_LINK, target: '_blank' }, 'File import not working? Click here!'),
 
       h(FileInput, {
         readAs: 'text',
