@@ -66,6 +66,8 @@ App.prototype.render = function () {
   var props = this.props
   const { isLoading, loadingMessage, transForward, network } = props
   const isLoadingNetwork = network === 'loading'
+  const loadMessage = loadingMessage || isLoadingNetwork ?
+    'Searching for Network' : null
 
   log.debug('Main ui render function')
 
@@ -86,7 +88,7 @@ App.prototype.render = function () {
 
       h(Loading, {
         isLoading: isLoading || isLoadingNetwork,
-        loadingMessage: loadingMessage || 'Searching for Network',
+        loadingMessage: loadMessage,
       }),
 
       // panel content
