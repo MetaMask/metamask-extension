@@ -40,32 +40,59 @@ TokenList.prototype.render = function () {
     return h(TokenCell, tokenData)
   })
 
-  return (
+  return h('div', [
     h('ol', {
       style: {
-        height: '302px',
+        height: '260px',
         overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
       },
-    }, [h('style', `
+    }, [
+      h('style', `
 
-    li.token-cell {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 10px;
-    }
+        li.token-cell {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 10px;
+        }
 
-    li.token-cell > h3 {
-      margin-left: 12px;
-    }
+        li.token-cell > h3 {
+          margin-left: 12px;
+        }
 
-    li.token-cell:hover {
-      background: white;
-      cursor: pointer;
-    }
+        li.token-cell:hover {
+          background: white;
+          cursor: pointer;
+        }
 
-    `)].concat(tokenViews.length ? tokenViews : this.message('No Tokens Found.')))
-  )
+      `),
+      ...tokenViews,
+      tokenViews.length ? null : this.message('No Tokens Found.'),
+    ]),
+    this.addTokenButtonElement(),
+  ])
+}
+
+TokenList.prototype.addTokenButtonElement = function () {
+  return h('div', [
+    h('div.footer.hover-white.pointer', {
+      key: 'reveal-account-bar',
+      onClick: () => {
+        this.props.addToken()
+      },
+      style: {
+        display: 'flex',
+        height: '40px',
+        padding: '10px',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    }, [
+      h('i.fa.fa-plus.fa-lg'),
+    ]),
+  ])
 }
 
 TokenList.prototype.message = function (body) {

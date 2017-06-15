@@ -121,7 +121,9 @@ var actions = {
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
   USE_ETHERSCAN_PROVIDER: 'USE_ETHERSCAN_PROVIDER',
   useEtherscanProvider: useEtherscanProvider,
-  showConfigPage: showConfigPage,
+  showConfigPage,
+  SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
+  showAddTokenPage,
   setRpcTarget: setRpcTarget,
   setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
@@ -623,6 +625,13 @@ function previousTx () {
 function showConfigPage (transitionForward = true) {
   return {
     type: actions.SHOW_CONFIG_PAGE,
+    value: transitionForward,
+  }
+}
+
+function showAddTokenPage (transitionForward = true) {
+  return {
+    type: actions.SHOW_ADD_TOKEN_PAGE,
     value: transitionForward,
   }
 }

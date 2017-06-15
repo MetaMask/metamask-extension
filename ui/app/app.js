@@ -19,6 +19,7 @@ const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 // other views
 const ConfigScreen = require('./config')
+const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
@@ -457,6 +458,10 @@ App.prototype.renderPrimary = function () {
     case 'confTx':
       log.debug('rendering confirm tx screen')
       return h(ConfirmTxScreen, {key: 'confirm-tx'})
+
+    case 'add-token':
+      log.debug('rendering add-token screen from unlock screen.')
+      return h(AddTokenScreen, {key: 'add-token'})
 
     case 'config':
       log.debug('rendering config screen')

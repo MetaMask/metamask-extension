@@ -277,7 +277,11 @@ AccountDetailScreen.prototype.tabSwitchView = function () {
 
   switch (currentAccountTab) {
     case 'tokens':
-      return h(TokenList, { userAddress: address, network })
+      return h(TokenList, {
+        userAddress: address,
+        network,
+        addToken: () => this.props.dispatch(actions.showAddTokenPage()),
+      })
     default:
       return this.transactionList()
   }
