@@ -26,6 +26,8 @@ module.exports = class TransactionController extends EventEmitter {
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
     this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
+    // provider-engine only exploses the 'block' event, not 'latest' for 'sync'
+    this.provider._blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
@@ -359,6 +361,17 @@ module.exports = class TransactionController extends EventEmitter {
     })
   }
 
+  queryPendingTxs ({oldBlock, newBlock}) {
+    // check pending transactions on start
+    if (!oldBlock) {
+      this._checkPendingTxs()
+      return
+    }
+    // if we synced by more than one block, check for missed pending transactions
+    const diff = Number.parseInt(newBlock.number) - Number.parseInt(oldBlock.number)
+    if (diff > 1) this._checkPendingTxs()
+  }
+
   // PRIVATE METHODS
 
   //  Should find the tx in the tx list and
@@ -431,6 +444,39 @@ module.exports = class TransactionController extends EventEmitter {
     txMeta.retryCount++
     const rawTx = txMeta.rawTx
     this.txProviderUtils.publishTransaction(rawTx, cb)
+  }
+
+  // checks the network for signed txs and
+  // if confirmed sets the tx status as 'confirmed'
+  _checkPendingTxs () {
+    var signedTxList = this.getFilteredTxList({status: 'submitted'})
+    if (!signedTxList.length) return
+    signedTxList.forEach((txMeta) => {
+      var txHash = txMeta.hash
+      var txId = txMeta.id
+      if (!txHash) {
+        const errReason = {
+          errCode: 'No hash was provided',
+          message: 'We had an error while submitting this transaction, please try again.',
+        }
+        return this.setTxStatusFailed(txId, errReason)
+      }
+      this.query.getTransactionByHash(txHash, (err, txParams) => {
+        if (err || !txParams) {
+          if (!txParams) return
+          txMeta.err = {
+            isWarning: true,
+            errorCode: err,
+            message: 'There was a problem loading this transaction.',
+          }
+          this.updateTx(txMeta)
+          return log.error(err)
+        }
+        if (txParams.blockNumber) {
+          this.setTxStatusConfirmed(txId)
+        }
+      })
+    })
   }
 
 }
