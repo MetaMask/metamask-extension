@@ -80,7 +80,6 @@ AddTokenScreen.prototype.render = function () {
               event.preventDefault()
               var tokenSymbolEl = document.querySelector('input#token_symbol')
               var tokenSymbol = tokenSymbolEl.value
-              console.log(tokenSymbol)
             },
           }, 'Add'),
         ]),
