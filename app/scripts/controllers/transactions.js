@@ -429,10 +429,7 @@ module.exports = class TransactionController extends EventEmitter {
       return cb()
     }
 
-    if (txMeta.retryCount > RETRY_LIMIT) {
-      const message = 'Gave up submitting tx ' + txMeta.hash
-      return log.warning(message)
-    }
+    if (txMeta.retryCount > RETRY_LIMIT) return
 
     txMeta.retryCount++
     const rawTx = txMeta.rawTx
