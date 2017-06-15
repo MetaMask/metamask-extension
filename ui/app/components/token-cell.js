@@ -13,7 +13,6 @@ function TokenCell () {
 TokenCell.prototype.render = function () {
   const props = this.props
   const { address, symbol, string, network, userAddress } = props
-  log.info({ address, symbol, string, network })
 
   return (
     h('li.token-cell', {
