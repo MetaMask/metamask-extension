@@ -1,5 +1,4 @@
 const assert = require('assert')
-const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const EthQuery = require('eth-query')
@@ -19,13 +18,15 @@ describe('Transaction Controller', function () {
     txController = new TransactionController({
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
-      blockTracker: new EventEmitter(),
-      ethQuery: new EthQuery(new EventEmitter()),
+      blockTracker: { getCurrentBlock: noop, on: noop },
+      provider: { sendAsync: noop },
+      ethQuery: new EthQuery({ sendAsync: noop }),
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()
       }),
     })
+    txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
 
   describe('#validateTxParams', function () {

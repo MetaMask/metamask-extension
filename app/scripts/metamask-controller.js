@@ -290,7 +290,7 @@ module.exports = class MetamaskController extends EventEmitter {
       exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
 
       // txController
-      approveTransaction: txController.approveTransaction.bind(txController),
+      approveTransaction: nodeify(txController.approveTransaction).bind(txController),
       cancelTransaction: txController.cancelTransaction.bind(txController),
       updateAndApproveTransaction: this.updateAndApproveTx.bind(this),
 

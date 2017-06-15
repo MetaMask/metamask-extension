@@ -4,9 +4,10 @@ const extend = require('xtend')
 const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const denodeify = require('denodeify')
 const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
-const denodeify = require('denodeify')
+const NonceTracker = require('../lib/nonce-tracker')
 
 const RETRY_LIMIT = 200
 
@@ -22,6 +23,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
+    this.nonceTracker = new NonceTracker({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+      getPendingTransactions: (address) => this.getFilteredTxList({ from: address, status: 'submitted' }),
+    })
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
@@ -169,43 +175,63 @@ module.exports = class TransactionController extends EventEmitter {
     }, {})
   }
 
-  approveTransaction (txId, cb = warn) {
-    const self = this
-    // approve
-    self.setTxStatusApproved(txId)
-    // only allow one tx at a time for atomic nonce usage
-    self.nonceLock.take(() => {
-      // begin signature process
-      async.waterfall([
-        (cb) => self.fillInTxParams(txId, cb),
-        (cb) => self.signTransaction(txId, cb),
-        (rawTx, cb) => self.publishTransaction(txId, rawTx, cb),
-      ], (err) => {
-        self.nonceLock.leave()
-        if (err) {
-          this.setTxStatusFailed(txId, {
-            errCode: err.errCode || err,
-            message: err.message || 'Transaction failed during approval',
-          })
-          return cb(err)
-        }
-        cb()
+  // approveTransaction (txId, cb = warn) {
+  //   promiseToCallback((async () => {
+  //     // approve
+  //     self.setTxStatusApproved(txId)
+  //     // get next nonce
+  //     const txMeta = this.getTx(txId)
+  //     const fromAddress = txMeta.txParams.from
+  //     const { nextNonce, releaseLock } = await this.nonceTracker.getNonceLock(fromAddress)
+  //     txMeta.txParams.nonce = nonce
+  //     this.updateTx(txMeta)
+  //     // sign transaction
+  //     const rawTx = await denodeify(self.signTransaction.bind(self))(txId)
+  //     await denodeify(self.publishTransaction.bind(self))(txId, rawTx)
+  //   })())((err) => {
+  //     if (err) {
+  //       this.setTxStatusFailed(txId, {
+  //         errCode: err.errCode || err,
+  //         message: err.message || 'Transaction failed during approval',
+  //       })
+  //     }
+  //     // must set transaction to submitted/failed before releasing lock
+  //     releaseLock()
+  //     cb(err)
+  //   })
+  // }
+
+  async approveTransaction (txId) {
+    let nonceLock
+    try {
+      // approve
+      this.setTxStatusApproved(txId)
+      // get next nonce
+      const txMeta = this.getTx(txId)
+      const fromAddress = txMeta.txParams.from
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+      txMeta.txParams.nonce = nonceLock.nextNonce
+      this.updateTx(txMeta)
+      // sign transaction
+      const rawTx = await denodeify(this.signTransaction.bind(this))(txId)
+      await denodeify(this.publishTransaction.bind(this))(txId, rawTx)
+      // must set transaction to submitted/failed before releasing lock
+      nonceLock.releaseLock()
+    } catch (err) {
+      this.setTxStatusFailed(txId, {
+        errCode: err.errCode || err,
+        message: err.message || 'Transaction failed during approval',
       })
-    })
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) nonceLock.releaseLock()
+      // continue with error chain
+      throw err
+    }
   }
 
   cancelTransaction (txId, cb = warn) {
     this.setTxStatusRejected(txId)
     cb()
-  }
-
-  fillInTxParams (txId, cb) {
-    const txMeta = this.getTx(txId)
-    this.txProviderUtils.fillInTxParams(txMeta.txParams, (err) => {
-      if (err) return cb(err)
-      this.updateTx(txMeta)
-      cb()
-    })
   }
 
   getChainId () {
