@@ -29,14 +29,7 @@ TokenList.prototype.render = function () {
   const { userAddress } = this.props
 
   if (isLoading) {
-    return h('div', {
-      style: {
-        display: 'flex',
-        height: '250px',
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
-    }, 'Loading')
+    return this.message('Loading')
   }
 
   const network = this.props.network
@@ -71,8 +64,19 @@ TokenList.prototype.render = function () {
       cursor: pointer;
     }
 
-    `)].concat(tokenViews))
+    `)].concat(tokenViews.length ? tokenViews : this.message('No Tokens Found.')))
   )
+}
+
+TokenList.prototype.message = function (body) {
+  return h('div', {
+    style: {
+      display: 'flex',
+      height: '250px',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  }, body)
 }
 
 TokenList.prototype.componentDidMount = function () {
