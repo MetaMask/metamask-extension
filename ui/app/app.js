@@ -21,7 +21,7 @@ const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 const ConfigScreen = require('./config')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
-const LoadingIndicator = require('./components/loading')
+const Loading = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
@@ -64,7 +64,9 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward } = props
+  const { isLoading, loadingMessage, transForward, network } = props
+  const isLoadingNetwork = network === 'loading'
+
   log.debug('Main ui render function')
 
   return (
@@ -77,12 +79,15 @@ App.prototype.render = function () {
       },
     }, [
 
-      h(LoadingIndicator, { isLoading, loadingMessage }),
-
       // app bar
       this.renderAppBar(),
       this.renderNetworkDropdown(),
       this.renderDropdown(),
+
+      h(Loading, {
+        isLoading: isLoading || isLoadingNetwork,
+        loadingMessage: loadingMessage || 'Searching for Network',
+      }),
 
       // panel content
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
@@ -124,7 +129,7 @@ App.prototype.renderAppBar = function () {
           background: props.isUnlocked ? 'white' : 'none',
           height: '36px',
           position: 'relative',
-          zIndex: 10,
+          zIndex: 12,
         },
       }, [
 
@@ -221,7 +226,7 @@ App.prototype.renderNetworkDropdown = function () {
     onClickOutside: (event) => {
       this.setState({ isNetworkMenuOpen: !isOpen })
     },
-    zIndex: 1,
+    zIndex: 11,
     style: {
       position: 'absolute',
       left: 0,
@@ -300,7 +305,7 @@ App.prototype.renderDropdown = function () {
 
   return h(MenuDroppo, {
     isOpen: isOpen,
-    zIndex: 1,
+    zIndex: 11,
     onClickOutside: (event) => {
       this.setState({ isMainMenuOpen: !isOpen })
     },
