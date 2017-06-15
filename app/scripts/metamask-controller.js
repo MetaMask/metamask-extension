@@ -98,6 +98,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.provider,
       ethQuery: this.ethQuery,
+      ethStore: this.ethStore,
     })
 
     // notices
