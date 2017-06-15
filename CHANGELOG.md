@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add list of popular tokens held to the account detail view.
+- Add a warning to JSON file import.
 
 ## 3.7.8 2017-6-12
 
@@ -10,6 +11,7 @@
 - The default network on installation is now MainNet
 - Fix currency API URL from cryptonator.
 - Update gasLimit params with every new block seen.
+- Fix ENS resolver symbol UI.
 
 ## 3.7.7 2017-6-8
 
