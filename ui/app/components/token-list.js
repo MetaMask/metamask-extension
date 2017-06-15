@@ -4,13 +4,14 @@ const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
 const contracts = require('eth-contract-metadata')
+const normalizeAddress = require('eth-sig-util').normalize
 
-const tokens = []
+const defaultTokens = []
 for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
     contract.address = address
-    tokens.push(contract)
+    defaultTokens.push(contract)
   }
 }
 
@@ -18,21 +19,22 @@ module.exports = TokenList
 
 inherits(TokenList, Component)
 function TokenList () {
-  this.state = { tokens, isLoading: true, network: null }
+  this.state = {
+    tokens: null,
+    isLoading: true,
+    network: null,
+  }
   Component.call(this)
 }
 
 TokenList.prototype.render = function () {
   const state = this.state
-  const { tokens, isLoading } = state
-
-  const { userAddress } = this.props
+  const { isLoading, tokens } = state
+  const { userAddress, network } = this.props
 
   if (isLoading) {
     return this.message('Loading')
   }
-
-  const network = this.props.network
 
   const tokenViews = tokens.map((tokenData) => {
     tokenData.network = network
@@ -120,7 +122,7 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: tokens,
+    tokens: uniqueMergeTokens(defaultTokens, this.props.tokens),
     pollingInterval: 8000,
   })
 
@@ -149,12 +151,30 @@ TokenList.prototype.componentWillUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokenData) {
-  const heldTokens = tokenData.filter(token => token.balance !== '0' && token.string !== '0.000')
+  const desired = this.props.tokens.map(token => token.address)
+  const heldTokens = tokenData.filter(token => {
+    const held = token.balance !== '0' && token.string !== '0.000'
+    const preferred = desired.includes(normalizeAddress(token.address))
+    return held || preferred
+  })
   this.setState({ tokens: heldTokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+}
+
+function uniqueMergeTokens (tokensA, tokensB) {
+  const uniqueAddresses = []
+  const result = []
+  tokensA.concat(tokensB).forEach((token) => {
+    const normal = normalizeAddress(token.address)
+    if (!uniqueAddresses.includes(normal)) {
+      uniqueAddresses.push(normal)
+      result.push(token)
+    }
+  })
+  return result
 }
 

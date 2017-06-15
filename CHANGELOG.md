@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add list of popular tokens held to the account detail view.
+- Add ability to add Tokens to token list.
 - Add a warning to JSON file import.
 
 ## 3.7.8 2017-6-12

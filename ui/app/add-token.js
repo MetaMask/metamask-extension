@@ -30,10 +30,8 @@ function AddTokenScreen () {
 }
 
 AddTokenScreen.prototype.render = function () {
-  const props = this.props
-
   const state = this.state
-  const { warning, address, symbol, decimals } = state
+  const { warning, symbol, decimals } = state
 
   return (
     h('.flex-column.flex-grow', [
@@ -138,12 +136,12 @@ AddTokenScreen.prototype.render = function () {
             style: {
               alignSelf: 'center',
             },
-            onClick (event) {
+            onClick: (event) => {
               const valid = this.validateInputs()
               if (!valid) return
 
-              const { address, symbol, decimals } = state
-              this.props.dispatch(addToken(address.trim(), symbol.trim(), decimals))
+              const { address, symbol, decimals } = this.state
+              this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
             },
           }, 'Add'),
         ]),

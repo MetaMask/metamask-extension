@@ -124,6 +124,7 @@ var actions = {
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
+  addToken,
   setRpcTarget: setRpcTarget,
   setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
@@ -633,6 +634,19 @@ function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
     value: transitionForward,
+  }
+}
+
+function addToken (address, symbol, decimals) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    background.addToken(address, symbol, decimals, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch(actions.goHome())
+    })
   }
 }
 
