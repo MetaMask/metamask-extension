@@ -9,7 +9,6 @@ const createId = require('../lib/random-id')
 const denodeify = require('denodeify')
 
 const RETRY_LIMIT = 200
-const RESUBMIT_INTERVAL = 10000 // Ten seconds
 
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
@@ -26,6 +25,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
+    this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
@@ -34,8 +34,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.store.subscribe(() => this._updateMemstore())
     this.networkStore.subscribe(() => this._updateMemstore())
     this.preferencesStore.subscribe(() => this._updateMemstore())
-
-    this.continuallyResubmitPendingTxs()
   }
 
   getState () {
@@ -212,7 +210,7 @@ module.exports = class TransactionController extends EventEmitter {
 
   getChainId () {
     const networkState = this.networkStore.getState()
-    const getChainId = parseInt(networkState.network)
+    const getChainId = parseInt(networkState)
     if (Number.isNaN(getChainId)) {
       return 0
     } else {
@@ -409,17 +407,14 @@ module.exports = class TransactionController extends EventEmitter {
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
   }
 
-  continuallyResubmitPendingTxs () {
+  resubmitPendingTxs () {
     const pending = this.getTxsByMetaData('status', 'submitted')
+    // only try resubmitting if their are transactions to resubmit
+    if (!pending.length) return
     const resubmit = denodeify(this.resubmitTx.bind(this))
     Promise.all(pending.map(txMeta => resubmit(txMeta)))
     .catch((reason) => {
       log.info('Problem resubmitting tx', reason)
-    })
-    .then(() => {
-      global.setTimeout(() => {
-        this.continuallyResubmitPendingTxs()
-      }, RESUBMIT_INTERVAL)
     })
   }
 
