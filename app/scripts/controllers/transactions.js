@@ -25,11 +25,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
-    this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
+    this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
     this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
-
+    this.ethStore = opts.ethStore
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore())
@@ -413,33 +413,31 @@ module.exports = class TransactionController extends EventEmitter {
     const pending = this.getTxsByMetaData('status', 'submitted')
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
-    const resubmit = denodeify(this.resubmitTx.bind(this))
+    const resubmit = denodeify(this._resubmitTx.bind(this))
     Promise.all(pending.map(txMeta => resubmit(txMeta)))
     .catch((reason) => {
       log.info('Problem resubmitting tx', reason)
     })
   }
 
-  resubmitTx (txMeta, cb) {
-    // Increment a try counter.
-    if (!('retryCount' in txMeta)) {
-      txMeta.retryCount = 0
-    }
+  _resubmitTx (txMeta, cb) {
+    const address = txMeta.txParams.from
+    const balance = this.ethStore.getState().accounts[address].balance
+    const nonce = Number.parseInt(this.ethStore.getState().accounts[address].nonce)
+    const txNonce = Number.parseInt(txMeta.txParams.nonce)
+    const gtBalance = Number.parseInt(txMeta.txParams.value) > Number.parseInt(balance)
+    if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
+    // if the value of the transaction is greater then the balance
+    // or the nonce of the transaction is lower then the accounts nonce
+    // dont resubmit the tx
+    if (gtBalance || txNonce < nonce) return cb()
     // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) {
-      return cb()
-    }
+    if (!('rawTx' in txMeta)) return cb()
 
-    if (txMeta.retryCount > RETRY_LIMIT) {
-      txMeta.err = {
-        isWarning: true,
-        message: 'Gave up submitting tx.',
-      }
-      this.updateTx(txMeta)
-      return log.error(txMeta.err.message)
-    }
+    if (txMeta.retryCount > RETRY_LIMIT) return
 
+    // Increment a try counter.
     txMeta.retryCount++
     const rawTx = txMeta.rawTx
     this.txProviderUtils.publishTransaction(rawTx, cb)
