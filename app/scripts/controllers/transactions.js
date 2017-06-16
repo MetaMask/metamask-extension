@@ -24,10 +24,9 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
-    this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
+    this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
     this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
-    // provider-engine only exploses the 'block' event, not 'latest' for 'sync'
-    this.provider._blockTracker.on('sync', this.queryPendingTxs.bind(this))
+    this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
 
