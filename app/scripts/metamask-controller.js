@@ -23,6 +23,7 @@ const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const debounce = require('debounce')
 
 const version = require('../manifest.json').version
 
@@ -30,6 +31,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
+
+    this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
+
     this.opts = opts
     const initState = opts.initState || {}
 
@@ -355,7 +359,7 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  sendUpdate () {
+  privateSendUpdate () {
     this.emit('update', this.getState())
   }
 
