@@ -123,7 +123,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "0.18.2",
-    "web3-provider-engine": "^13.0.1",
+    "web3-provider-engine": "^13.0.3",
     "web3-stream-provider": "^2.0.6",
     "xtend": "^4.0.1"
   },
