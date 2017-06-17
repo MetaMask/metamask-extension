@@ -14,6 +14,7 @@ describe('nodeify', function () {
     var nodified = nodeify(obj.promiseFunc).bind(obj)
     nodified('baz', function (err, res) {
       assert.equal(res, 'barbaz')
+      if (err) done(err)
       done()
     })
   })

@@ -22,8 +22,8 @@ describe('Transaction Controller', function () {
       provider: { _blockTracker: new EventEmitter()},
       blockTracker: new EventEmitter(),
       ethQuery: new EthQuery(new EventEmitter()),
-      signTransaction: (ethTx) => new Promise((resolve) => {
-        ethTx.sign(privKey)
+      signTransaction: (ethTx) => new Promise(async (resolve) => {
+        await ethTx.sign(privKey)
         resolve()
       }),
     })
@@ -285,6 +285,8 @@ describe('Transaction Controller', function () {
 
       const signStub = sinon.stub(txController, 'signTransaction')
       .callsArgWith(1, null, noop)
+      
+      console.log(signStub)
 
       const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
       .callsArgWith(1, null, originalValue)
