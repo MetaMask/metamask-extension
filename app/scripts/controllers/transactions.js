@@ -30,11 +30,12 @@ module.exports = class TransactionController extends EventEmitter {
     })
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
-    this.blockTracker.on('block', this.checkForTxInBlock.bind(this))
-    this.blockTracker.on('block', this.resubmitPendingTxs.bind(this))
+    this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
+    this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
+    this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
-
+    this.ethStore = opts.ethStore
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore())
@@ -364,12 +365,13 @@ module.exports = class TransactionController extends EventEmitter {
 
   //  checks if a signed tx is in a block and
   // if included sets the tx status as 'confirmed'
-  checkForTxInBlock () {
+  checkForTxInBlock (block) {
     var signedTxList = this.getFilteredTxList({status: 'submitted'})
     if (!signedTxList.length) return
     signedTxList.forEach((txMeta) => {
       var txHash = txMeta.hash
       var txId = txMeta.id
+
       if (!txHash) {
         const errReason = {
           errCode: 'No hash was provided',
@@ -377,22 +379,22 @@ module.exports = class TransactionController extends EventEmitter {
         }
         return this.setTxStatusFailed(txId, errReason)
       }
-      this.query.getTransactionByHash(txHash, (err, txParams) => {
-        if (err || !txParams) {
-          if (!txParams) return
-          txMeta.err = {
-            isWarning: true,
-            errorCode: err,
-            message: 'There was a problem loading this transaction.',
-          }
-          this.updateTx(txMeta)
-          return log.error(err)
-        }
-        if (txParams.blockNumber) {
-          this.setTxStatusConfirmed(txId)
-        }
+
+      block.transactions.forEach((tx) => {
+        if (tx.hash === txHash) this.setTxStatusConfirmed(txId)
       })
     })
+  }
+
+  queryPendingTxs ({oldBlock, newBlock}) {
+    // check pending transactions on start
+    if (!oldBlock) {
+      this._checkPendingTxs()
+      return
+    }
+    // if we synced by more than one block, check for missed pending transactions
+    const diff = Number.parseInt(newBlock.number) - Number.parseInt(oldBlock.number)
+    if (diff > 1) this._checkPendingTxs()
   }
 
   // PRIVATE METHODS
@@ -437,36 +439,67 @@ module.exports = class TransactionController extends EventEmitter {
     const pending = this.getTxsByMetaData('status', 'submitted')
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
-    const resubmit = denodeify(this.resubmitTx.bind(this))
+    const resubmit = denodeify(this._resubmitTx.bind(this))
     Promise.all(pending.map(txMeta => resubmit(txMeta)))
     .catch((reason) => {
       log.info('Problem resubmitting tx', reason)
     })
   }
 
-  resubmitTx (txMeta, cb) {
-    // Increment a try counter.
-    if (!('retryCount' in txMeta)) {
-      txMeta.retryCount = 0
-    }
+  _resubmitTx (txMeta, cb) {
+    const address = txMeta.txParams.from
+    const balance = this.ethStore.getState().accounts[address].balance
+    const nonce = Number.parseInt(this.ethStore.getState().accounts[address].nonce)
+    const txNonce = Number.parseInt(txMeta.txParams.nonce)
+    const gtBalance = Number.parseInt(txMeta.txParams.value) > Number.parseInt(balance)
+    if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
+    // if the value of the transaction is greater then the balance
+    // or the nonce of the transaction is lower then the accounts nonce
+    // dont resubmit the tx
+    if (gtBalance || txNonce < nonce) return cb()
     // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) {
-      return cb()
-    }
+    if (!('rawTx' in txMeta)) return cb()
 
-    if (txMeta.retryCount > RETRY_LIMIT) {
-      txMeta.err = {
-        isWarning: true,
-        message: 'Gave up submitting tx.',
-      }
-      this.updateTx(txMeta)
-      return log.error(txMeta.err.message)
-    }
+    if (txMeta.retryCount > RETRY_LIMIT) return
 
+    // Increment a try counter.
     txMeta.retryCount++
     const rawTx = txMeta.rawTx
     this.txProviderUtils.publishTransaction(rawTx, cb)
+  }
+
+  // checks the network for signed txs and
+  // if confirmed sets the tx status as 'confirmed'
+  _checkPendingTxs () {
+    var signedTxList = this.getFilteredTxList({status: 'submitted'})
+    if (!signedTxList.length) return
+    signedTxList.forEach((txMeta) => {
+      var txHash = txMeta.hash
+      var txId = txMeta.id
+      if (!txHash) {
+        const errReason = {
+          errCode: 'No hash was provided',
+          message: 'We had an error while submitting this transaction, please try again.',
+        }
+        return this.setTxStatusFailed(txId, errReason)
+      }
+      this.query.getTransactionByHash(txHash, (err, txParams) => {
+        if (err || !txParams) {
+          if (!txParams) return
+          txMeta.err = {
+            isWarning: true,
+            errorCode: err,
+            message: 'There was a problem loading this transaction.',
+          }
+          this.updateTx(txMeta)
+          return log.error(err)
+        }
+        if (txParams.blockNumber) {
+          this.setTxStatusConfirmed(txId)
+        }
+      })
+    })
   }
 
 }
