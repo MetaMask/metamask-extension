@@ -281,15 +281,12 @@ describe('Transaction Controller', function () {
       const priceStub = sinon.stub(txController.txProviderUtils.query, 'gasPrice')
       .callsArgWithAsync(0, null, wrongValue)
 
-      const nonceStub = sinon.stub(txController.txProviderUtils.query, 'getTransactionCount')
-      .callsArgWithAsync(2, null, wrongValue)
 
       const signStub = sinon.stub(txController, 'signTransaction')
       .callsArgWithAsync(1, null, noop)
 
       const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
       .callsArgWithAsync(1, null, originalValue)
-      console.log('HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
       txController.approveTransaction(txMeta.id).then((err) => {
         assert.ifError(err, 'should not error')
@@ -299,13 +296,11 @@ describe('Transaction Controller', function () {
 
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
-        assert.equal(params.nonce, originalValue, 'nonce unmodified')
         assert.equal(result.hash, originalValue, 'hash was set')
 
         estimateStub.restore()
         priceStub.restore()
         signStub.restore()
-        nonceStub.restore()
         pubStub.restore()
         done()
       })
