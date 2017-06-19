@@ -1,38 +1,3 @@
-  // before(function () {
-  //   wallet1.data.config.provider = { type: 'etherscan', rpcTarget: null }
-  // })
-  // it('should convert providers', async () => {
-
-  //   const secondResult = await migration2.migrate(wallet1)
-  //   const secondData = secondResult.data
-  //   assert.equal(secondData.config.provider.type, 'rpc', 'provider should be rpc')
-  //   assert.equal(secondData.config.provider.rpcTarget, 'https://rpc.metamask.io/', 'main provider should be our rpc')
-  //   secondResult.data.config.provider.rpcTarget = oldTestRpc
-  // })
-    
-  // it('should be set to the test rpc', async () => {
-  //   const thirdResult = await migration3.migrate(secondResult)
-  //   assert.equal(thirdResult.data.config.provider.rpcTarget, newTestRpc, 'config.provider.rpcTarget should be set to the proper testrpc url.')
-  // })
-
-  // it('should delete the old rpc', async () => {
-  //   const fourthResult = await migration4.migrate(thirdResult)
-  //   const fourthData = fourthResult.data
-  //   assert.equal(fourthData.config.provider.rpcTarget, null, 'old rpcTarget should not exist.')
-  //   assert.equal(fourthData.config.provider.type, 'testnet', 'config.provider should be set to testnet.')
-  // })
-
-  // it('should have migrated to keyring controller', async () => {
-  //   const fifthResult = await migration5.migrate(vault4)
-  //   const fifthData = fifthResult.Data
-  //   assert.equal(fifthData.vault, null, 'old vault should not exist')
-  //   assert.equal(fifthData.walletNicknames, null, 'old walletNicknames should not exist')
-  //   assert.equal(fifthData.config.selectedAccount, null, 'old config.selectedAccount should not exist')
-  //   assert.equal(fifthData.KeyringController.vault, vault4.data.vault, 'KeyringController.vault should exist')
-  //   assert.equal(fifthData.KeyringController.selectedAccount, vault4.data.config.selectedAccount, 'KeyringController.selectedAccount should have moved')
-  //   assert.equal(fifthData.KeyringController.walletNicknames['0x0beb674745816b125fbc07285d39fd373e64895c'], vault4.data.walletNicknames['0x0beb674745816b125fbc07285d39fd373e64895c'], 'KeyringController.walletNicknames should have moved')
-  // })
-
 const assert = require('assert')
 const path = require('path')
 
