@@ -4,6 +4,7 @@
 
 - Add list of popular tokens held to the account detail view.
 - Add a warning to JSON file import.
+- Fix bug where slowly mined txs would sometimes be incorrectly marked as failed.
 
 ## 3.7.8 2017-6-12
 
