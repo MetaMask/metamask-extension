@@ -14,7 +14,7 @@ describe('KeyringController', function () {
   const accounts = []
   // let originalKeystore
 
-  beforeEach(function (done) {
+  beforeEach(async function () {
     this.sinon = sinon.sandbox.create()
     window.localStorage = {} // Hacking localStorage support into JSDom
 
@@ -33,14 +33,7 @@ describe('KeyringController', function () {
     // Browser crypto is tested in the integration test suite.
     keyringController.encryptor = mockEncryptor
 
-    keyringController.createNewVaultAndKeychain(password)
-    .then(function (newState) {
-      newState
-      done()
-    })
-    .catch((err) => {
-      done(err)
-    })
+    await keyringController.createNewVaultAndKeychain(password)
   })
 
   afterEach(function () {
@@ -51,23 +44,17 @@ describe('KeyringController', function () {
   describe('#createNewVaultAndKeychain', function () {
     this.timeout(10000)
 
-    it('should set a vault on the configManager', function (done) {
+    it('should set a vault on the configManager', async function () {
       keyringController.store.updateState({ vault: null })
       assert(!keyringController.store.getState().vault, 'no previous vault')
-      keyringController.createNewVaultAndKeychain(password)
-      .then(() => {
-        const vault = keyringController.store.getState().vault
-        assert(vault, 'vault created')
-        done()
-      })
-      .catch((reason) => {
-        done(reason)
-      })
+      await keyringController.createNewVaultAndKeychain(password)
+      const vault = keyringController.store.getState().vault
+      assert(vault, 'vault creation')
     })
   })
 
   describe('#restoreKeyring', function () {
-    it(`should pass a keyring's serialized data back to the correct type.`, function (done) {
+    it(`should pass a keyring's serialized data back to the correct type.`, async function () {
       const mockSerialized = {
         type: 'HD Key Tree',
         data: {
@@ -79,20 +66,12 @@ describe('KeyringController', function () {
 
       mock.expects('getBalanceAndNickname')
       .exactly(1)
+      const keyring = await keyringController.restoreKeyring(mockSerialized)
+      assert.equal(keyring.wallets.length, 1, 'one wallet restored')
 
-      keyringController.restoreKeyring(mockSerialized)
-      .then((keyring) => {
-        assert.equal(keyring.wallets.length, 1, 'one wallet restored')
-        return keyring.getAccounts()
-      })
-      .then((accounts) => {
-        assert.equal(accounts[0], addresses[0])
-        mock.verify()
-        done()
-      })
-      .catch((reason) => {
-        done(reason)
-      })
+      const accounts = await keyring.getAccounts()
+      mock.verify()
+      assert.equal(accounts[0], addresses[0])
     })
   })
 
@@ -107,41 +86,30 @@ describe('KeyringController', function () {
   })
 
   describe('#saveAccountLabel', function () {
-    it('sets the nickname', function (done) {
+    it('sets the nickname', async function () {
       const account = addresses[0]
       var nick = 'Test nickname'
       const identities = keyringController.memStore.getState().identities
       identities[ethUtil.addHexPrefix(account)] = {}
       keyringController.memStore.updateState({ identities })
-      keyringController.saveAccountLabel(account, nick)
-      .then((label) => {
-        try {
-          assert.equal(label, nick)
-          const persisted = keyringController.store.getState().walletNicknames[account]
-          assert.equal(persisted, nick)
-          done()
-        } catch (err) {
-          done()
-        }
-      })
-      .catch((reason) => {
-        done(reason)
-      })
+
+      const label = await keyringController.saveAccountLabel(account, nick)
+      assert.equal(label, nick)
+
+      const persisted = keyringController.store.getState().walletNicknames[ethUtil.addHexPrefix(account)]
+      assert.equal(persisted, nick)
     })
   })
 
   describe('#getAccounts', function () {
-    it('returns the result of getAccounts for each keyring', function (done) {
+    it('returns the result of getAccounts for each keyring', async function () {
       keyringController.keyrings = [
-        { getAccounts () { return Promise.resolve([1, 2, 3]) } },
-        { getAccounts () { return Promise.resolve([4, 5, 6]) } },
+        { async getAccounts () { return await Promise.resolve([1, 2, 3]) } },
+        { async getAccounts () { return await Promise.resolve([4, 5, 6]) } },
       ]
 
-      keyringController.getAccounts()
-      .then((result) => {
-        assert.deepEqual(result, [1, 2, 3, 4, 5, 6])
-        done()
-      })
+      const result = await keyringController.getAccounts()
+      assert.deepEqual(result, [1, 2, 3, 4, 5, 6])
     })
   })
 

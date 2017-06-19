@@ -30,22 +30,22 @@ describe('address-book-controller', function () {
       })
     })
     describe('#setAddressBook', function () {
-      it('should properly set a new address.', function () {
-        addressBookController.setAddressBook('0x01234', 'test')
+      it('should properly set a new address.', async function () {
+        await addressBookController.setAddressBook('0x01234', 'test')
         var addressBook = addressBookController._getAddressBook()
         assert.equal(addressBook.length, 1, 'incorrect address book length.')
         assert.equal(addressBook[0].address, '0x01234', 'incorrect addresss')
         assert.equal(addressBook[0].name, 'test', 'incorrect nickname')
       })
 
-      it('should reject duplicates.', function () {
-        addressBookController.setAddressBook('0x01234', 'test')
-        addressBookController.setAddressBook('0x01234', 'test')
+      it('should reject duplicates.', async function () {
+        await addressBookController.setAddressBook('0x01234', 'test')
+        await addressBookController.setAddressBook('0x01234', 'test')
         var addressBook = addressBookController._getAddressBook()
         assert.equal(addressBook.length, 1, 'incorrect address book length.')
       })
-      it('should not add any identities that are under user control', function () {
-        addressBookController.setAddressBook('0x0aaa', ' ')
+      it('should not add any identities that are under user control', async function () {
+        await addressBookController.setAddressBook('0x0aaa', ' ')
         var addressBook = addressBookController._getAddressBook()
         assert.equal(addressBook.length, 0, 'incorrect address book length.')
       })

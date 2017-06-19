@@ -31,11 +31,8 @@ const migrations = [
 const versionedData = {meta: {version: 0}, data: {hello: 'world'}}
 describe('Migrator', () => {
   const migrator = new Migrator({ migrations })
-  it('migratedData version should be version 3', (done) => {
-    migrator.migrateData(versionedData)
-    .then((migratedData) => {
-      assert.equal(migratedData.meta.version, migrations[2].version)
-      done()
-    }).catch(done)
+  it('migratedData version should be version 3', async () => {
+    const migratedData = await migrator.migrateData(versionedData)
+    assert.equal(migratedData.meta.version, migrations[2].version)
   })
 })

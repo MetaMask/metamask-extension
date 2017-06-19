@@ -42,19 +42,17 @@ describe('notice-controller', function () {
     })
 
     describe('#updateNoticeslist', function () {
-      it('should integrate the latest changes from the source', function (done) {
+      it('should integrate the latest changes from the source', async function () {
         var testList = [{
           id: 55,
           read: false,
           title: 'Futuristic Notice',
         }]
         noticeController.setNoticesList(testList)
-        noticeController.updateNoticesList().then(() => {
-          var newList = noticeController.getNoticesList()
-          assert.ok(newList[0].id === 55)
-          assert.ok(newList[1])
-          done()
-        })
+        await noticeController.updateNoticesList()
+        var newList = noticeController.getNoticesList()
+        assert.equal(newList[0].id, 55)
+        assert.ok(newList[1])
       })
       it('should not overwrite any existing fields', function (done) {
         var testList = [{
