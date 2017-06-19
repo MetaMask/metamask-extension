@@ -285,8 +285,6 @@ describe('Transaction Controller', function () {
 
       const signStub = sinon.stub(txController, 'signTransaction')
       .callsArgWith(1, null, noop)
-      
-      console.log(signStub)
 
       const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
       .callsArgWith(1, null, originalValue)
