@@ -280,6 +280,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
+      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab).bind(preferencesController),
       setDefaultRpc: nodeify(this.setDefaultRpc).bind(this),
       setCustomRpc: nodeify(this.setCustomRpc).bind(this),
 

@@ -382,13 +382,13 @@ module.exports = class TransactionController extends EventEmitter {
   //    - `'signed'` the tx is signed
   //    - `'submitted'` the tx is sent to a server
   //    - `'confirmed'` the tx has been included in a block.
+  //    - `'failed'` the tx failed for some reason, included on tx data.
   _setTxStatus (txId, status) {
     var txMeta = this.getTx(txId)
     txMeta.status = status
     this.emit(`${txMeta.id}:${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
-
     }
     this.updateTx(txMeta)
     this.emit('updateBadge')
