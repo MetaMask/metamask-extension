@@ -40,7 +40,7 @@ TokenCell.prototype.render = function () {
 
 TokenCell.prototype.send = function (address, event) {
   event.preventDefault()
-  event.stopPropagation
+  event.stopPropagation()
   const url = tokenFactoryFor(address)
   if (url) {
     navigateTo(url)
