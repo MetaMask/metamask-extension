@@ -116,13 +116,15 @@ function setupController (initState) {
   updateBadge()
   controller.txController.on('updateBadge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
+  controller.personalMessageManager.on('updateBadge', updateBadge)
 
   // plugin badge text
   function updateBadge () {
     var label = ''
     var unapprovedTxCount = controller.txController.unapprovedTxCount
     var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    var count = unapprovedTxCount + unapprovedMsgCount
+    var unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
+    var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs
     if (count) {
       label = String(count)
     }
