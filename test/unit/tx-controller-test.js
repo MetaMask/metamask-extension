@@ -19,6 +19,7 @@ describe('Transaction Controller', function () {
     txController = new TransactionController({
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
+      provider: { _blockTracker: new EventEmitter()},
       blockTracker: new EventEmitter(),
       ethQuery: new EthQuery(new EventEmitter()),
       signTransaction: (ethTx) => new Promise((resolve) => {
