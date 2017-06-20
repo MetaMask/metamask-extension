@@ -2,12 +2,16 @@
 
 ## Current Master
 
+- Add a warning to JSON file import.
+- Fix bug where slowly mined txs would sometimes be incorrectly marked as failed.
+
 ## 3.7.8 2017-6-12
 
 - Add a `ethereum:` prefix to the QR code address
 - The default network on installation is now MainNet
 - Fix currency API URL from cryptonator.
 - Update gasLimit params with every new block seen.
+- Fix ENS resolver symbol UI.
 
 ## 3.7.7 2017-6-8
 

@@ -7,6 +7,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\.eth$/
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 
 module.exports = EnsInput
@@ -21,7 +22,6 @@ EnsInput.prototype.render = function () {
   const opts = extend(props, {
     list: 'addresses',
     onChange: () => {
-      this.setState({ ensResolution: '0x0000000000000000000000000000000000000000' })
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
       if (!networkHasEnsSupport) return
@@ -73,6 +73,7 @@ EnsInput.prototype.render = function () {
 EnsInput.prototype.componentDidMount = function () {
   const network = this.props.network
   const networkHasEnsSupport = getNetworkEnsSupport(network)
+  this.setState({ ensResolution: ZERO_ADDRESS })
 
   if (networkHasEnsSupport) {
     const provider = global.ethereumProvider
@@ -85,18 +86,10 @@ EnsInput.prototype.lookupEnsName = function () {
   const recipient = document.querySelector('input[name="address"]').value
   const { ensResolution } = this.state
 
-  if (!this.ens) {
-    return this.setState({
-      loadingEns: false,
-      ensFailure: true,
-      hoverText: 'ENS is not supported on your current network.',
-    })
-  }
-
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    if (address === '0x0000000000000000000000000000000000000000') throw new Error('No address has been set for this name.')
+    if (address === ZERO_ADDRESS) throw new Error('No address has been set for this name.')
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
@@ -111,7 +104,7 @@ EnsInput.prototype.lookupEnsName = function () {
     log.error(reason)
     return this.setState({
       loadingEns: false,
-      ensResolution: '0x0000000000000000000000000000000000000000',
+      ensResolution: ZERO_ADDRESS,
       ensFailure: true,
       hoverText: reason.message,
     })
@@ -124,7 +117,7 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
   // If an address is sent without a nickname, meaning not from ENS or from
   // the user's own accounts, a default of a one-space string is used.
   const nickname = state.nickname || ' '
-  if (ensResolution && this.props.onChange &&
+  if (prevState && ensResolution && this.props.onChange &&
       ensResolution !== prevState.ensResolution) {
     this.props.onChange(ensResolution, nickname)
   }
@@ -143,7 +136,7 @@ EnsInput.prototype.ensIcon = function (recipient) {
 }
 
 EnsInput.prototype.ensIconContents = function (recipient) {
-  const { loadingEns, ensFailure, ensResolution } = this.state || {}
+  const { loadingEns, ensFailure, ensResolution } = this.state || { ensResolution: ZERO_ADDRESS}
 
   if (loadingEns) {
     return h('img', {
@@ -160,7 +153,7 @@ EnsInput.prototype.ensIconContents = function (recipient) {
     return h('i.fa.fa-warning.fa-lg.warning')
   }
 
-  if (ensResolution) {
+  if (ensResolution && (ensResolution !== ZERO_ADDRESS)) {
     return h('i.fa.fa-check-circle.fa-lg.cursor-pointer', {
       style: { color: 'green' },
       onClick: (event) => {
@@ -175,4 +168,3 @@ EnsInput.prototype.ensIconContents = function (recipient) {
 function getNetworkEnsSupport (network) {
   return Boolean(networkMap[network])
 }
-
