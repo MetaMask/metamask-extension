@@ -23,7 +23,9 @@ describe('Metamask popup page', function () {
     await driver.get(`chrome-extension://${extensionId}/popup.html`)
   })
 
-  after(async () => driver.quit())
+  after(async () => { 
+    await driver.quit()
+  })
 
   describe('#onboarding', () => {
     it('should match title', async () => {
