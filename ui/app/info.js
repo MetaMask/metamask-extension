@@ -101,14 +101,12 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   href: 'https://github.com/MetaMask/faq',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
                 }, 'Need Help? Read our FAQ!'),
               ]),
               h('div', [
                 h('a', {
                   href: 'https://metamask.io/',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
                 }, [
                   h('img.icon-size', {
                     src: 'images/icon-128.png',
@@ -126,7 +124,6 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   href: 'http://slack.metamask.io',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
                 }, 'Join the conversation on Slack'),
               ]),
 
@@ -134,7 +131,6 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   href: 'https://twitter.com/metamask_io',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
                 }, 'Follow us on Twitter'),
               ]),
 
@@ -142,7 +138,7 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   target: '_blank',
                   style: { width: '85vw' },
-                  onClick () { this.navigateTo('mailto:help@metamask.io?subject=Feedback') },
+                  href: 'mailto:help@metamask.io?subject=Feedback',
                 }, 'Email us!'),
               ]),
             ]),
