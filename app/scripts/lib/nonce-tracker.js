@@ -2,7 +2,7 @@ const EthQuery = require('eth-query')
 
 class NonceTracker {
 
-  constructor({ blockTracker, provider, getPendingTransactions }) {
+  constructor ({ blockTracker, provider, getPendingTransactions }) {
     this.blockTracker = blockTracker
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
@@ -11,7 +11,7 @@ class NonceTracker {
 
   // releaseLock must be called
   // releaseLock must be called after adding signed tx to pending transactions (or discarding)
-  async getNonceLock(address) {
+  async getNonceLock (address) {
     // await lock free
     await this.lockMap[address]
     // take lock
@@ -21,12 +21,12 @@ class NonceTracker {
     const blockNumber = currentBlock.number
     const pendingTransactions = this.getPendingTransactions(address)
     const baseCount = await this._getTxCount(address, blockNumber)
-    const nextNonce = parseInt(baseCount) + pendingTransactions.length + 1
+    const nextNonce = parseInt(baseCount) + pendingTransactions.length
     // return next nonce and release cb
     return { nextNonce: nextNonce.toString(16), releaseLock }
   }
 
-  async _getCurrentBlock() {
+  async _getCurrentBlock () {
     const currentBlock = this.blockTracker.getCurrentBlock()
     if (currentBlock) return currentBlock
     return await Promise((reject, resolve) => {
@@ -34,15 +34,13 @@ class NonceTracker {
     })
   }
 
-  _takeLock(lockId) {
+  _takeLock (lockId) {
     let releaseLock = null
     // create and store lock
     const lock = new Promise((resolve, reject) => { releaseLock = resolve })
     this.lockMap[lockId] = lock
     // setup lock teardown
-    lock.then(() => {
-      delete this.lockMap[lockId]
-    })
+    lock.then(() => delete this.lockMap[lockId])
     return releaseLock
   }
 

@@ -25,7 +25,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
-      blockTracker: this.blockTracker,
+      blockTracker: this.provider._blockTracker,
       getPendingTransactions: (address) => this.getFilteredTxList({ from: address, status: 'submitted' }),
     })
     this.query = opts.ethQuery
@@ -176,33 +176,7 @@ module.exports = class TransactionController extends EventEmitter {
     }, {})
   }
 
-  // approveTransaction (txId, cb = warn) {
-  //   promiseToCallback((async () => {
-  //     // approve
-  //     self.setTxStatusApproved(txId)
-  //     // get next nonce
-  //     const txMeta = this.getTx(txId)
-  //     const fromAddress = txMeta.txParams.from
-  //     const { nextNonce, releaseLock } = await this.nonceTracker.getNonceLock(fromAddress)
-  //     txMeta.txParams.nonce = nonce
-  //     this.updateTx(txMeta)
-  //     // sign transaction
-  //     const rawTx = await denodeify(self.signTransaction.bind(self))(txId)
-  //     await denodeify(self.publishTransaction.bind(self))(txId, rawTx)
-  //   })())((err) => {
-  //     if (err) {
-  //       this.setTxStatusFailed(txId, {
-  //         errCode: err.errCode || err,
-  //         message: err.message || 'Transaction failed during approval',
-  //       })
-  //     }
-  //     // must set transaction to submitted/failed before releasing lock
-  //     releaseLock()
-  //     cb(err)
-  //   })
-  // }
-
-  async approveTransaction (txId) {
+  async approveTransaction (txId, cb = warn) {
     let nonceLock
     try {
       // approve
@@ -215,9 +189,10 @@ module.exports = class TransactionController extends EventEmitter {
       this.updateTx(txMeta)
       // sign transaction
       const rawTx = await denodeify(this.signTransaction.bind(this))(txId)
-      await denodeify(this.publishTransaction.bind(this))(txId, rawTx)
+      await this.publishTransaction(txId, rawTx)
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
+      cb()
     } catch (err) {
       this.setTxStatusFailed(txId, {
         errCode: err.errCode || err,
@@ -226,7 +201,7 @@ module.exports = class TransactionController extends EventEmitter {
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) nonceLock.releaseLock()
       // continue with error chain
-      throw err
+      cb(err)
     }
   }
 
@@ -260,16 +235,17 @@ module.exports = class TransactionController extends EventEmitter {
     })
   }
 
-  publishTransaction (txId, rawTx, cb = warn) {
+  publishTransaction (txId, rawTx) {
     const txMeta = this.getTx(txId)
     txMeta.rawTx = rawTx
     this.updateTx(txMeta)
-
-    this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
-      if (err) return cb(err)
-      this.setTxHash(txId, txHash)
-      this.setTxStatusSubmitted(txId)
-      cb()
+    return new Promise((resolve, reject) => {
+      this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
+        if (err) reject(err)
+        this.setTxHash(txId, txHash)
+        this.setTxStatusSubmitted(txId)
+        resolve()
+      })
     })
   }
 
@@ -414,7 +390,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
-
     }
     this.updateTx(txMeta)
     this.emit('updateBadge')
