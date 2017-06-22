@@ -29,7 +29,7 @@ class InfuraController {
       })
   }
 
-  scheduleInfuraNetworkCheck() {
+  scheduleInfuraNetworkCheck () {
     if (this.conversionInterval) {
       clearInterval(this.conversionInterval)
     }
