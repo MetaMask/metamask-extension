@@ -1,4 +1,4 @@
-const EthQuery = require('ethjs-query')
+const EthQuery = require('eth-query')
 
 class NonceTracker {
 
@@ -20,10 +20,10 @@ class NonceTracker {
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.number
     const pendingTransactions = this.getPendingTransactions(address)
-    const baseCount = await this.ethQuery.getTransactionCount(address, blockNumber)
-    const nextNonce = baseCount + pendingTransactions
+    const baseCount = await this._getTxCount(address, blockNumber)
+    const nextNonce = parseInt(baseCount) + pendingTransactions.length + 1
     // return next nonce and release cb
-    return { nextNonce, releaseLock }
+    return { nextNonce: nextNonce.toString(16), releaseLock }
   }
 
   async _getCurrentBlock() {
@@ -37,11 +37,21 @@ class NonceTracker {
   _takeLock(lockId) {
     let releaseLock = null
     // create and store lock
-    const lock = new Promise((reject, resolve) => { releaseLock = resolve })
+    const lock = new Promise((resolve, reject) => { releaseLock = resolve })
     this.lockMap[lockId] = lock
     // setup lock teardown
-    lock.then(() => delete this.lockMap[lockId])
+    lock.then(() => {
+      delete this.lockMap[lockId]
+    })
     return releaseLock
+  }
+
+  _getTxCount (address, blockNumber) {
+    return new Promise((resolve, reject) => {
+      this.ethQuery.getTransactionCount(address, blockNumber, (err, result) => {
+        err ? reject(err) : resolve(result)
+      })
+    })
   }
 
 }
