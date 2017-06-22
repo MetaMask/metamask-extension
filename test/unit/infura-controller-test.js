@@ -1,5 +1,5 @@
 // polyfill fetch
-global.fetch = global.fetch || function () {return Promise.resolve({
+global.fetch = function () {return Promise.resolve({
     json: () => { return Promise.resolve({"mainnet": "ok", "ropsten": "degraded", "kovan": "down", "rinkeby": "ok"}) },
   })
 }
@@ -20,7 +20,6 @@ describe('infura-controller', function () {
         infuraController.checkInfuraNetworkStatus()
           .then(() => {
             const networkStatus = infuraController.store.getState().infuraNetworkStatus
-            const networkStatus2 = infuraController.store.getState()
             assert.equal(Object.keys(networkStatus).length, 4)
             assert.equal(networkStatus.mainnet, 'ok')
             assert.equal(networkStatus.ropsten, 'degraded')
