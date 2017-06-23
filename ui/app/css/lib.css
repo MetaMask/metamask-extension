@@ -234,10 +234,28 @@ hr.horizontal-line {
 
 .menu-icon {
   display: inline-block;
-  height: 9px;
-  min-width: 9px;
+  height: 10px;
+  min-width: 10px;
   margin: 13px;
+  border-radius: 10px;
 }
+
+.ok {
+  background: green;
+}
+
+.degraded {
+  background: yellow;
+}
+
+.down {
+  background: red;
+}
+
+.undefined {
+  background: gray;
+}
+
 .ether-icon {
   background: rgb(0, 163, 68);
   border-radius: 20px;
