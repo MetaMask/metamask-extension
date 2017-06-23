@@ -8,7 +8,12 @@ class InfuraController {
 
   constructor (opts = {}) {
     const initState = extend({
-      infuraNetworkStatus: {},
+      infuraNetworkStatus: {
+        mainnet: 'undefined',
+        ropsten: 'undefined',
+        kovan: 'undefined',
+        rinkeby: 'undefined',
+      },
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
