@@ -68,6 +68,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.infuraController = new InfuraController({
       initState: initState.InfuraController,
     })
+    this.infuraController.checkInfuraNetworkStatus()
     this.infuraController.scheduleInfuraNetworkCheck()
 
 
