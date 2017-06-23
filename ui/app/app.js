@@ -121,6 +121,9 @@ App.prototype.renderAppBar = function () {
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
 
+  const infuraStatuses = this.props.infuraStatuses || {}
+  const infuraStatus = infuraStatuses[this.props.provider.type]
+
   return (
 
     h('div', [
@@ -159,7 +162,7 @@ App.prototype.renderAppBar = function () {
             h(NetworkIndicator, {
               network: this.props.network,
               provider: this.props.provider,
-              status: this.props.infuraStatuses[this.props.provider.type],
+              status: infuraStatus,
               onClick: (event) => {
                 event.preventDefault()
                 event.stopPropagation()
