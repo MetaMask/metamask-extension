@@ -56,11 +56,11 @@ Network.prototype.render = function () {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [
-      (function () {
+      (() => {
         switch (iconName) {
           case 'ethereum-network':
             return h('.network-indicator', [
-              h('.menu-icon.diamond'),
+              this.chooseInfuraColor(this.props.status),
               h('.network-name', {
                 style: {
                   color: '#039396',
@@ -69,7 +69,7 @@ Network.prototype.render = function () {
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.red-dot'),
+              this.chooseInfuraColor(this.props.status),
               h('.network-name', {
                 style: {
                   color: '#ff6666',
@@ -78,7 +78,7 @@ Network.prototype.render = function () {
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.hollow-diamond'),
+              this.chooseInfuraColor(this.props.status),
               h('.network-name', {
                 style: {
                   color: '#690496',
@@ -87,7 +87,7 @@ Network.prototype.render = function () {
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.golden-square'),
+              this.chooseInfuraColor(this.props.status),
               h('.network-name', {
                 style: {
                   color: '#e7a218',
@@ -113,4 +113,17 @@ Network.prototype.render = function () {
       })(),
     ])
   )
+}
+
+Network.prototype.chooseInfuraColor = function (status) {
+  switch (status) {
+    case 'ok':
+      return h('.menu-icon.ok')
+    case 'degraded':
+      return h('.menu-icon.degraded')
+    case 'down':
+      return h('.menu-icon.down')
+    default:
+      return h('.menu-icon.undefined')
+  }
 }

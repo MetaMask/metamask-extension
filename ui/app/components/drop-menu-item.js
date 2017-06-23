@@ -19,7 +19,7 @@ DropMenuItem.prototype.render = function () {
       listStyle: 'none',
       padding: '6px 16px 6px 5px',
       fontFamily: 'Montserrat Regular',
-      color: 'rgb(125, 128, 130)',
+      color: this.props.textColor,
       cursor: 'pointer',
       display: 'flex',
       justifyContent: 'flex-start',
