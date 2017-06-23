@@ -14,8 +14,8 @@
     "frequentRpcList": [],
     "addressBook": [],
     "provider": {
-      "type": "rinkeby",
-      "rpcTarget": "https://rinkeby.infura.io/metamask"
+      "type": "kovan",
+      "rpcTarget": "https://kovan.infura.io/metamask"
     },
     "network": "4",
     "accounts": {
