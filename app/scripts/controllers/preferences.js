@@ -7,6 +7,7 @@ class PreferencesController {
   constructor (opts = {}) {
     const initState = extend({
       frequentRpcList: [],
+      currentAccountTab: 'history',
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -33,6 +34,13 @@ class PreferencesController {
         this.store.updateState({ frequentRpcList: rpcList })
         return Promise.resolve()
       })
+  }
+
+  setCurrentAccountTab (currentAccountTab) {
+    return new Promise((resolve, reject) => {
+      this.store.updateState({ currentAccountTab })
+      resolve()
+    })
   }
 
   addToFrequentRpcList (_url) {

@@ -16,6 +16,9 @@ const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
+const TabBar = require('./components/tab-bar')
+const TokenList = require('./components/token-list')
+
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
 function mapStateToProps (state) {
@@ -31,6 +34,7 @@ function mapStateToProps (state) {
     transactions: state.metamask.selectedAddressTxList || [],
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    currentAccountTab: state.metamask.currentAccountTab,
   }
 }
 
@@ -237,10 +241,43 @@ AccountDetailScreen.prototype.subview = function () {
 
   switch (subview) {
     case 'transactions':
-      return this.transactionList()
+      return this.tabSections()
     case 'export':
       var state = extend({key: 'export'}, this.props)
       return h(ExportAccountView, state)
+    default:
+      return this.tabSections()
+  }
+}
+
+AccountDetailScreen.prototype.tabSections = function () {
+  const { currentAccountTab } = this.props
+
+  return h('section.tabSection', [
+
+    h(TabBar, {
+      tabs: [
+        { content: 'Sent', key: 'history' },
+        { content: 'Tokens', key: 'tokens' },
+      ],
+      defaultTab: currentAccountTab || 'history',
+      tabSelected: (key) => {
+        this.props.dispatch(actions.setCurrentAccountTab(key))
+      },
+    }),
+
+    this.tabSwitchView(),
+  ])
+}
+
+AccountDetailScreen.prototype.tabSwitchView = function () {
+  const props = this.props
+  const { address, network } = props
+  const { currentAccountTab } = this.props
+
+  switch (currentAccountTab) {
+    case 'tokens':
+      return h(TokenList, { userAddress: address, network })
     default:
       return this.transactionList()
   }
@@ -249,6 +286,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.transactionList = function () {
   const {transactions, unapprovedMsgs, address,
     network, shapeShiftTxList, conversionRate } = this.props
+
   return h(TransactionList, {
     transactions: transactions.sort((a, b) => b.time - a.time),
     network,
