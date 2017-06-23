@@ -29,11 +29,16 @@ function TokenList () {
 
 TokenList.prototype.render = function () {
   const state = this.state
-  const { isLoading, tokens } = state
+  const { tokens, isLoading, error } = state
   const { userAddress, network } = this.props
 
   if (isLoading) {
     return this.message('Loading')
+  }
+
+  if (error) {
+    log.error(error)
+    return this.message('There was a problem loading your token balances.')
   }
 
   const tokenViews = tokens.map((tokenData) => {
@@ -114,7 +119,10 @@ TokenList.prototype.componentDidMount = function () {
 
 TokenList.prototype.createFreshTokenTracker = function () {
   if (this.tracker) {
+    // Clean up old trackers when refreshing:
     this.tracker.stop()
+    this.tracker.removeListener('update', this.balanceUpdater)
+    this.tracker.removeListener('error', this.showError)
   }
 
   if (!global.ethereumProvider) return
@@ -126,9 +134,15 @@ TokenList.prototype.createFreshTokenTracker = function () {
     pollingInterval: 8000,
   })
 
-  this.tracker.on('update', (tokenData) => {
-    this.updateBalances(tokenData)
-  })
+
+  // Set up listener instances for cleaning up
+  this.balanceUpdater = this.updateBalances.bind(this)
+  this.showError = (error) => {
+    this.setState({ error, isLoading: false })
+  }
+  this.tracker.on('update', this.balanceUpdater)
+  this.tracker.on('error', this.showError)
+
   this.tracker.updateBalances()
   .then(() => {
     this.updateBalances(this.tracker.serialize())
