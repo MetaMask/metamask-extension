@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add list of popular tokens held to the account detail view.
 - Add a warning to JSON file import.
 - Fix bug where slowly mined txs would sometimes be incorrectly marked as failed.
 - Fix bug where badge count did not reflect personal_sign pending messages.

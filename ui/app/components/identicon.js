@@ -23,7 +23,9 @@ IdenticonComponent.prototype.render = function () {
     h('div', {
       key: 'identicon-' + this.props.address,
       style: {
-        display: 'inline-block',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         height: diameter,
         width: diameter,
         borderRadius: diameter / 2,
@@ -35,21 +37,22 @@ IdenticonComponent.prototype.render = function () {
 
 IdenticonComponent.prototype.componentDidMount = function () {
   var props = this.props
-  var address = props.address
+  const { address } = props
 
   if (!address) return
 
   var container = findDOMNode(this)
+
   var diameter = props.diameter || this.defaultDiameter
   if (!isNode) {
-    var img = iconFactory.iconForAddress(address, diameter, false)
+    var img = iconFactory.iconForAddress(address, diameter)
     container.appendChild(img)
   }
 }
 
 IdenticonComponent.prototype.componentDidUpdate = function () {
   var props = this.props
-  var address = props.address
+  const { address } = props
 
   if (!address) return
 
@@ -62,7 +65,8 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
 
   var diameter = props.diameter || this.defaultDiameter
   if (!isNode) {
-    var img = iconFactory.iconForAddress(address, diameter, false)
+    var img = iconFactory.iconForAddress(address, diameter)
     container.appendChild(img)
   }
 }
+
