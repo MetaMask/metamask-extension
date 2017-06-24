@@ -20,7 +20,7 @@ module.exports = TokenList
 inherits(TokenList, Component)
 function TokenList () {
   this.state = {
-    tokens: null,
+    tokens: [],
     isLoading: true,
     network: null,
   }
@@ -164,12 +164,9 @@ TokenList.prototype.componentWillUpdate = function (nextProps) {
   }
 }
 
-TokenList.prototype.updateBalances = function (tokenData) {
-  const desired = this.props.tokens.map(token => token.address)
-  const heldTokens = tokenData.filter(token => {
-    const held = token.balance !== '0' && token.string !== '0.000'
-    const preferred = desired.includes(normalizeAddress(token.address))
-    return held || preferred
+TokenList.prototype.updateBalances = function (tokens) {
+  const heldTokens = tokens.filter(token => {
+    return token.balance !== '0' && token.string !== '0.000'
   })
   this.setState({ tokens: heldTokens, isLoading: false })
 }
