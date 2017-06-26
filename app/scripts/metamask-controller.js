@@ -15,6 +15,7 @@ const CurrencyController = require('./controllers/currency')
 const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
+const InfuraController = require('./controllers/infura')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
@@ -44,8 +45,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.store = new ObservableStore(initState)
 
     // network store
-
     this.networkController = new NetworkController(initState.NetworkController)
+
     // config manager
     this.configManager = new ConfigManager({
       store: this.store,
@@ -62,6 +63,13 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.currencyController.updateConversionRate()
     this.currencyController.scheduleConversionInterval()
+
+    // infura controller
+    this.infuraController = new InfuraController({
+      initState: initState.InfuraController,
+    })
+    this.infuraController.scheduleInfuraNetworkCheck()
+
 
     // rpc provider
     this.provider = this.initializeProvider()
@@ -147,6 +155,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
     })
+    this.infuraController.store.subscribe((state) => {
+      this.store.updateState({ InfuraController: state })
+    })
 
     // manual mem state subscriptions
     this.networkController.store.subscribe(this.sendUpdate.bind(this))
@@ -160,6 +171,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.currencyController.store.subscribe(this.sendUpdate.bind(this))
     this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
     this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
+    this.infuraController.store.subscribe(this.sendUpdate.bind(this))
   }
 
   //
@@ -237,6 +249,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.addressBookController.store.getState(),
       this.currencyController.store.getState(),
       this.noticeController.memStore.getState(),
+      this.infuraController.store.getState(),
       // config manager
       this.configManager.getConfig(),
       this.shapeshiftController.store.getState(),
