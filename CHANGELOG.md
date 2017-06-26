@@ -8,6 +8,7 @@
 - Fix bug where badge count did not reflect personal_sign pending messages.
 - Seed word confirmation wording is now scarier.
 - Fix error for invalid seed words.
+- Prevent users from submitting two duplicate transactions by disabling submit.
 
 ## 3.7.8 2017-6-12
 
