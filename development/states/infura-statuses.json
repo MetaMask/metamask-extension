@@ -1,0 +1,80 @@
+{
+  "metamask": {
+    "isInitialized": true,
+    "isUnlocked": true,
+    "rpcTarget": "https://rawtestrpc.metamask.io/",
+    "identities": {
+      "0xa7fa9746d325dd8701ad64212326e5ec2a131448": {
+        "address": "0xa7fa9746d325dd8701ad64212326e5ec2a131448",
+        "name": "Account 1"
+      }
+    },
+    "unapprovedTxs": {},
+    "noActiveNotices": true,
+    "frequentRpcList": [],
+    "addressBook": [],
+    "provider": {
+      "type": "kovan",
+      "rpcTarget": "https://kovan.infura.io/metamask"
+    },
+    "network": "4",
+    "accounts": {
+      "0xa7fa9746d325dd8701ad64212326e5ec2a131448": {
+        "code": "0x",
+        "balance": "0x0",
+        "nonce": "0x0",
+        "address": "0xa7fa9746d325dd8701ad64212326e5ec2a131448"
+      }
+    },
+    "transactions": {},
+    "currentBlockNumber": 415078,
+    "currentBlockHash": "0x98f23337d6bc3b2bcdc5e67366caed81725d827c49f23fed6e2623569eb86ae6",
+    "currentBlockGasLimit": "0x47d5b8",
+    "selectedAddressTxList": [],
+    "unapprovedMsgs": {},
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgs": {},
+    "unapprovedPersonalMsgCount": 0,
+    "keyringTypes": [
+      "Simple Key Pair",
+      "HD Key Tree"
+    ],
+    "keyrings": [
+      {
+        "type": "HD Key Tree",
+        "accounts": [
+          "a7fa9746d325dd8701ad64212326e5ec2a131448"
+        ]
+      }
+    ],
+    "currentAccountTab": "history",
+    "selectedAddress": "0xa7fa9746d325dd8701ad64212326e5ec2a131448",
+    "currentCurrency": "USD",
+    "conversionRate": 323.69833611,
+    "conversionDate": 1498237382,
+    "infuraNetworkStatus": {
+      "mainnet": "ok",
+      "ropsten": "degraded",
+      "kovan": "down",
+      "rinkeby": "whatwhat"
+    },
+    "shapeShiftTxList": [],
+    "lostAccounts": []
+  },
+  "appState": {
+    "shouldClose": false,
+    "menuOpen": false,
+    "currentView": {
+      "name": "accountDetail",
+      "detailView": null,
+      "context": "0xa7fa9746d325dd8701ad64212326e5ec2a131448"
+    },
+    "accountDetail": {
+      "subview": "transactions"
+    },
+    "transForward": true,
+    "isLoading": false,
+    "warning": null
+  },
+  "identities": {}
+}

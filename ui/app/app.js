@@ -59,6 +59,7 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    infuraStatuses: state.metamask.infuraNetworkStatus,
   }
 }
 
@@ -120,6 +121,9 @@ App.prototype.renderAppBar = function () {
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
 
+  const infuraStatuses = this.props.infuraStatuses || {}
+  const infuraStatus = infuraStatuses[this.props.provider.type]
+
   return (
 
     h('div', [
@@ -158,6 +162,7 @@ App.prototype.renderAppBar = function () {
             h(NetworkIndicator, {
               network: this.props.network,
               provider: this.props.provider,
+              status: infuraStatus,
               onClick: (event) => {
                 event.preventDefault()
                 event.stopPropagation()
@@ -222,6 +227,14 @@ App.prototype.renderNetworkDropdown = function () {
   const rpcList = props.frequentRpcList
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
+  const infuraStatuses = props.infuraStatuses || {}
+
+  const infuraIcons = {
+    mainnet: this.chooseInfuraColor(infuraStatuses.mainnet),
+    ropsten: this.chooseInfuraColor(infuraStatuses.ropsten),
+    kovan: this.chooseInfuraColor(infuraStatuses.kovan),
+    rinkeby: this.chooseInfuraColor(infuraStatuses.rinkeby),
+  }
 
   return h(MenuDroppo, {
     isOpen,
@@ -248,36 +261,40 @@ App.prototype.renderNetworkDropdown = function () {
       label: 'Main Ethereum Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('mainnet')),
-      icon: h('.menu-icon.diamond'),
+      icon: infuraIcons.mainnet,
       activeNetworkRender: props.network,
       provider: props.provider,
+      textColor: '#039396',
     }),
 
     h(DropMenuItem, {
       label: 'Ropsten Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setProviderType('ropsten')),
-      icon: h('.menu-icon.red-dot'),
+      icon: infuraIcons.ropsten,
       activeNetworkRender: props.network,
       provider: props.provider,
+      textColor: '#ff6666',
     }),
 
     h(DropMenuItem, {
       label: 'Kovan Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
       action: () => props.dispatch(actions.setProviderType('kovan')),
-      icon: h('.menu-icon.hollow-diamond'),
+      icon: infuraIcons.kovan,
       activeNetworkRender: props.network,
       provider: props.provider,
+      textColor: '#690496',
     }),
 
     h(DropMenuItem, {
       label: 'Rinkeby Test Network',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
       action: () => props.dispatch(actions.setProviderType('rinkeby')),
-      icon: h('.menu-icon.golden-square'),
+      icon: infuraIcons.rinkeby,
       activeNetworkRender: props.network,
       provider: props.provider,
+      textColor: '#e7a218',
     }),
 
     h(DropMenuItem, {
@@ -568,4 +585,17 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
       })
     }
   })
+}
+
+App.prototype.chooseInfuraColor = function (status) {
+  switch (status) {
+    case 'ok':
+      return h('.menu-icon.ok')
+    case 'degraded':
+      return h('.menu-icon.degraded')
+    case 'down':
+      return h('.menu-icon.down')
+    default:
+      return h('.menu-icon.undefined')
+  }
 }
