@@ -410,6 +410,8 @@ PendingTx.prototype.resetGasFields = function () {
 
 PendingTx.prototype.onSubmit = function (event) {
   event.preventDefault()
+  const acceptButton = document.querySelector('input.confirm')
+  acceptButton.disabled = true
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
   this.setState({ valid })
@@ -417,6 +419,7 @@ PendingTx.prototype.onSubmit = function (event) {
     this.props.sendTransaction(txMeta, event)
   } else {
     this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+    acceptButton.disabled = false
   }
 }
 
