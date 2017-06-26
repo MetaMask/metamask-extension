@@ -87,7 +87,7 @@ class KeyringController extends EventEmitter {
     }
 
     if (!bip39.validateMnemonic(seed)) {
-      return Promise.reject('Seed phrase is invalid.')
+      return Promise.reject(new Error('Seed phrase is invalid.'))
     }
 
     this.clearKeyrings()
