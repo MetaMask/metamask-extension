@@ -20,7 +20,7 @@ function mapStateToProps (state) {
 
 CreateVaultCompleteScreen.prototype.render = function () {
   var state = this.props
-  var seed = state.seed || state.cachedSeed
+  var seed = state.seed || state.cachedSeed || ''
 
   return (
 
