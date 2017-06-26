@@ -20,7 +20,7 @@ var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
 
-var disableLiveReload = gutil.env.disableLiveReload
+var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
 
 // browser reload
@@ -121,7 +121,7 @@ gulp.task('manifest:production', function() {
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
   ],{base: './dist/'})
-  .pipe(gulpif(disableLiveReload,jsoneditor(function(json) {
+  .pipe(gulpif(!debug,jsoneditor(function(json) {
     json.background.scripts = ["scripts/background.js"]
     return json
   })))
@@ -138,7 +138,7 @@ const staticFiles = [
 var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
 copyStrings.push('copy:contractImages')
 
-if (!disableLiveReload) {
+if (debug) {
   copyStrings.push('copy:reload')
 }
 
@@ -234,7 +234,7 @@ function copyTask(opts){
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(gulpif(!disableLiveReload,livereload()))
+    stream.pipe(gulpif(debug,livereload()))
 
     return stream
   }
@@ -314,16 +314,16 @@ function bundleTask(opts) {
       .pipe(buffer())
       // sourcemaps
       // loads map from browserify file
-      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(gulpif(debug, sourcemaps.init({loadMaps: true})))
       // writes .map file
-      .pipe(sourcemaps.write('./'))
+      .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
       .pipe(gulp.dest('./dist/opera/scripts'))
       // finally, trigger live reload
-      .pipe(gulpif(!disableLiveReload, livereload()))
+      .pipe(gulpif(debug, livereload()))
 
     )
   }
