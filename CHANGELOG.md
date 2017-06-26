@@ -7,6 +7,7 @@
 - Fix bug where slowly mined txs would sometimes be incorrectly marked as failed.
 - Fix bug where badge count did not reflect personal_sign pending messages.
 - Seed word confirmation wording is now scarier.
+- Fix error for invalid seed words.
 
 ## 3.7.8 2017-6-12
 
