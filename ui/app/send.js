@@ -189,7 +189,7 @@ SendTransactionScreen.prototype.render = function () {
           style: {
             textTransform: 'uppercase',
           },
-        }, 'Send'),
+        }, 'Next'),
 
       ]),
 
