@@ -645,7 +645,9 @@ function addToken (address, symbol, decimals) {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-      dispatch(actions.goHome())
+      setTimeout(() => {
+        dispatch(actions.goHome())
+      }, 250)
     })
   }
 }
