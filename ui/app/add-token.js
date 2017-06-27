@@ -142,13 +142,7 @@ AddTokenScreen.prototype.render = function () {
               if (!valid) return
 
               const { address, symbol, decimals } = this.state
-              this.checkIfToken(address.trim())
-              .then(() => {
-                this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
-              })
-              .catch((reason) => {
-                this.setState({ warning: 'Not a valid token address.' })
-              })
+              this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
             },
           }, 'Add'),
         ]),
@@ -206,12 +200,6 @@ AddTokenScreen.prototype.validateInputs = function () {
   }
 
   return isValid
-}
-
-AddTokenScreen.prototype.checkIfToken = async function (address) {
-  const contract = this.TokenContract.at(address)
-  const result = await contract.balance(address)
-  return result[0].toString()
 }
 
 AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address) {
