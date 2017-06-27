@@ -26,7 +26,14 @@ module.exports = class TransactionController extends EventEmitter {
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.provider._blockTracker,
-      getPendingTransactions: (address) => this.getFilteredTxList({ from: address, status: 'submitted', err: undefined }),
+      getPendingTransactions: (address) => {
+        return this.getFilteredTxList({
+          from: address,
+          status: 'submitted',
+          err: undefined,
+          ignore: undefined,
+        })
+      },
     })
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
