@@ -26,7 +26,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.provider._blockTracker,
-      getPendingTransactions: (address) => this.getFilteredTxList({ from: address, status: 'submitted' }),
+      getPendingTransactions: (address) => this.getFilteredTxList({ from: address, status: 'submitted', err: undefined }),
     })
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
@@ -263,9 +263,18 @@ module.exports = class TransactionController extends EventEmitter {
     to: '0x0..',
     from: '0x0..',
     status: 'signed',
+    err: undefined,
   }
   and returns a list of tx with all
   options matching
+
+  ****************HINT****************
+  | `err: undefined` is like looking |
+  | for a tx with no err             |
+  | so you can also search txs that  |
+  | dont have something as well by   |
+  | setting the value as undefined   |
+  ************************************
 
   this is for things like filtering a the tx list
   for only tx's from 1 account
