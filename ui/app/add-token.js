@@ -31,6 +31,7 @@ function AddTokenScreen () {
 
 AddTokenScreen.prototype.render = function () {
   const state = this.state
+  const props = this.props
   const { warning, symbol, decimals } = state
 
   return (
@@ -40,7 +41,7 @@ AddTokenScreen.prototype.render = function () {
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
-            state.dispatch(actions.goHome())
+            props.dispatch(actions.goHome())
           },
         }),
         h('h2.page-subtitle', 'Add Token'),
