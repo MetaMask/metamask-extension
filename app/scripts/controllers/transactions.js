@@ -8,8 +8,6 @@ const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
 const denodeify = require('denodeify')
 
-const RETRY_LIMIT = 200
-
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
@@ -434,8 +432,6 @@ module.exports = class TransactionController extends EventEmitter {
     if (gtBalance || txNonce < nonce) return cb()
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) return cb()
-
-    if (txMeta.retryCount > RETRY_LIMIT) return
 
     // Increment a try counter.
     txMeta.retryCount++
