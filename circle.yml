@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 7.6.0
+    version: 8.0.0
 dependencies:
   pre:
     - "npm i -g testem"

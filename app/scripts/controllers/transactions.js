@@ -384,6 +384,7 @@ module.exports = class TransactionController extends EventEmitter {
   //    - `'signed'` the tx is signed
   //    - `'submitted'` the tx is sent to a server
   //    - `'confirmed'` the tx has been included in a block.
+  //    - `'failed'` the tx failed for some reason, included on tx data.
   _setTxStatus (txId, status) {
     var txMeta = this.getTx(txId)
     txMeta.status = status

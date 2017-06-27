@@ -26,17 +26,20 @@ LoadingIndicator.prototype.render = function () {
         style: {
           zIndex: 10,
           position: 'absolute',
+          flexDirection: 'column',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           height: '100%',
           width: '100%',
-          background: 'rgba(255, 255, 255, 0.5)',
+          background: 'rgba(255, 255, 255, 0.8)',
         },
       }, [
         h('img', {
           src: 'images/loading.svg',
         }),
+
+        h('br'),
 
         showMessageIfAny(loadingMessage),
       ]) : null,

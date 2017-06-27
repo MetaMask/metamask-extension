@@ -9,13 +9,15 @@ var b = browserify()
 // Remove old bundle
 try {
   fs.unlinkSync(bundlePath)
-} catch (e) {}
 
-var writeStream = fs.createWriteStream(bundlePath)
+  var writeStream = fs.createWriteStream(bundlePath)
 
-tests.forEach(function (fileName) {
-  b.add(path.join(__dirname, 'lib', fileName))
-})
+  tests.forEach(function (fileName) {
+    b.add(path.join(__dirname, 'lib', fileName))
+  })
 
-b.bundle().pipe(writeStream)
+  b.bundle().pipe(writeStream)
+} catch (e) {
+  console.error('Integration build failure', e)
+}
 

@@ -33,3 +33,4 @@ TabBar.prototype.render = function () {
     }))
   )
 }
+

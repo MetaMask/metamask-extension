@@ -27,6 +27,7 @@ function PendingTx () {
   this.state = {
     valid: true,
     txData: null,
+    submitting: false,
   }
 }
 
@@ -316,7 +317,7 @@ PendingTx.prototype.render = function () {
             type: 'submit',
             value: 'ACCEPT',
             style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid || !isValidAddress,
+            disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
           }),
 
           h('button.cancel.btn-red', {
@@ -412,11 +413,12 @@ PendingTx.prototype.onSubmit = function (event) {
   event.preventDefault()
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
-  this.setState({ valid })
+  this.setState({ valid, submitting: true })
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
     this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+    this.setState({ submitting: false })
   }
 }
 
