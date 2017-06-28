@@ -6,6 +6,7 @@
 - Add list of popular tokens held to the account detail view.
 - Add ability to add Tokens to token list.
 - Add a warning to JSON file import.
+- Add "send" link to token list, which goes to TokenFactory.
 - Fix bug where slowly mined txs would sometimes be incorrectly marked as failed.
 - Fix bug where badge count did not reflect personal_sign pending messages.
 - Seed word confirmation wording is now scarier.
