@@ -651,5 +651,4 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-
 }

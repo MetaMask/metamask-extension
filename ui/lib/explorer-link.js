@@ -14,6 +14,8 @@ module.exports = function (hash, network) {
     case 42: // kovan test net
       prefix = 'kovan.'
       break
+    case 61: // classic net
+      return `https://gastracker.io/tx/${hash}`
     default:
       prefix = ''
   }

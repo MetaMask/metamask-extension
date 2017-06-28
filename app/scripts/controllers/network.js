@@ -5,11 +5,13 @@ const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
 const RPC_ADDRESS_LIST = require('../config.js').network
+const OVERWRITE_LIST = require('../config.js').networkIdOverwrites
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 
 module.exports = class NetworkController extends EventEmitter {
   constructor (config) {
     super()
+    this.overwriteNetworkId = this.getNetworkIdOverwrite(config.provider.type)
     this.networkStore = new ObservableStore('loading')
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
     this.providerStore = new ObservableStore(config.provider)
@@ -84,7 +86,11 @@ module.exports = class NetworkController extends EventEmitter {
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
       log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
+      if (this.overwriteNetworkId) {
+        this.setNetworkState(this.overwriteNetworkId)
+      } else {
+        this.setNetworkState(network)
+      }
     })
   }
 
@@ -114,6 +120,10 @@ module.exports = class NetworkController extends EventEmitter {
   getRpcAddressForType (type, provider = this.getProviderConfig()) {
     if (RPC_ADDRESS_LIST[type]) return RPC_ADDRESS_LIST[type]
     return provider && provider.rpcTarget ? provider.rpcTarget : DEFAULT_RPC
+  }
+
+  getNetworkIdOverwrite (type) {
+    return OVERWRITE_LIST[type]
   }
 
   _logBlock (block) {
