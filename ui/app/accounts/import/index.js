@@ -2,6 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const actions = require('../../actions')
 import Select from 'react-select'
 
 // Subviews
@@ -37,6 +38,14 @@ AccountImportSubview.prototype.render = function () {
       style: {
       },
     }, [
+      h('.section-title.flex-row.flex-center', [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+          onClick: (event) => {
+            props.dispatch(actions.goHome())
+          },
+        }),
+        h('h2.page-subtitle', 'Import Accounts'),
+      ]),
       h('div', {
         style: {
           padding: '10px',
