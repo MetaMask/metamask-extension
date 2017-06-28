@@ -89,6 +89,18 @@ ConfigScreen.prototype.render = function () {
           currentConversionInformation(metamaskState, state),
           h('hr.horizontal-line'),
 
+          h('button', {
+            style: {
+              alignSelf: 'center',
+            },
+            onClick (event) {
+              event.preventDefault()
+              state.dispatch(actions.resetNonceAndIgnorePending())
+            },
+          }, 'Reset Nonce'),
+
+          h('hr.horizontal-line'),
+
           h('div', {
             style: {
               marginTop: '20px',

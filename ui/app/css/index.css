@@ -46,6 +46,10 @@ button, input[type="submit"] {
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
 }
 
+.ghost-gray {
+  color: 'rgb(174, 174, 174)';
+}
+
 .btn-green, input[type="submit"].btn-green {
   background: rgba(106, 195, 96, 1);
   box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);

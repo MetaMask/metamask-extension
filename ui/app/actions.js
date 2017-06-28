@@ -125,6 +125,7 @@ var actions = {
   setRpcTarget: setRpcTarget,
   setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
+  resetNonceAndIgnorePending,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -700,6 +701,17 @@ function setRpcTarget (newRpc) {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
+      }
+    })
+  }
+}
+
+function resetNonceAndIgnorePending () {
+  return (dispatch) => {
+    background.ignorePendingTxs((err) => {
+      if (err) {
+        log.error(err)
+        return dispatch(self.displayWarning('Had a problem reseting the nonce!'))
       }
     })
   }

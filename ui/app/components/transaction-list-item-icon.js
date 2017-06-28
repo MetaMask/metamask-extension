@@ -14,6 +14,7 @@ function TransactionIcon () {
 
 TransactionIcon.prototype.render = function () {
   const { transaction, txParams, isMsg } = this.props
+  const isIgnored = (transaction.ignore && transaction.status === 'submitted')
   switch (transaction.status) {
     case 'unapproved':
       return h(!isMsg ? '.unapproved-tx-icon' : 'i.fa.fa-certificate.fa-lg')
@@ -33,16 +34,25 @@ TransactionIcon.prototype.render = function () {
       })
 
     case 'submitted':
-      return h(Tooltip, {
-        title: 'Pending',
-        position: 'bottom',
-      }, [
-        h('i.fa.fa-ellipsis-h', {
+      if (!isIgnored) {
+        return h(Tooltip, {
+          title: 'Pending',
+          position: 'bottom',
+        }, [
+          h('i.fa.fa-ellipsis-h', {
+            style: {
+              fontSize: '27px',
+            },
+          }),
+        ])
+      } else {
+        return h('i.fa.fa-circle-o', {
           style: {
+            color: 'rgb(174, 174, 174)',
             fontSize: '27px',
           },
-        }),
-      ])
+        })
+      }
   }
 
   if (isMsg) {

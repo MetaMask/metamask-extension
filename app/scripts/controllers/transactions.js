@@ -16,6 +16,7 @@ module.exports = class TransactionController extends EventEmitter {
     super()
     this.store = new ObservableStore(extend({
       transactions: [],
+      nonceDuplicates: {},
     }, opts.initState))
     this.memStore = new ObservableStore({})
     this.networkStore = opts.networkStore || new ObservableStore({})
@@ -48,6 +49,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.store.subscribe(() => this._updateMemstore())
     this.networkStore.subscribe(() => this._updateMemstore())
     this.preferencesStore.subscribe(() => this._updateMemstore())
+    this._updateNonceDuplicates()
   }
 
   getState () {
@@ -335,6 +337,13 @@ module.exports = class TransactionController extends EventEmitter {
     this._setTxStatus(txId, 'submitted')
   }
 
+  // sets the tx status to 'ignore'
+  // so the tx will be ignored by block checking and nonceTracker
+  ignoreTx (txMeta) {
+    txMeta.ignore = true
+    this.updateTx(txMeta)
+  }
+
   // should update the status of the tx to 'confirmed'.
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
@@ -353,6 +362,16 @@ module.exports = class TransactionController extends EventEmitter {
     var txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta)
+  }
+
+  ignorePendingTxs (address = this.getSelectedAddress()) {
+    const pendingTxs = this.getFilteredTxList({
+      from: address,
+      status: 'submitted',
+    })
+
+    pendingTxs.forEach((txMeta) => this.ignoreTx(txMeta))
+    return Promise.resolve()
   }
 
   //  checks if a signed tx is in a block and
@@ -375,6 +394,7 @@ module.exports = class TransactionController extends EventEmitter {
       block.transactions.forEach((tx) => {
         if (tx.hash === txHash) this.setTxStatusConfirmed(txId)
       })
+      this._updateNonceDuplicates()
     })
   }
 
@@ -399,6 +419,7 @@ module.exports = class TransactionController extends EventEmitter {
   //    - `'approved'` the user has approved the tx
   //    - `'signed'` the tx is signed
   //    - `'submitted'` the tx is sent to a server
+  //    - `'ignore'` the tx will be ignored by block checking and nonceTracker
   //    - `'confirmed'` the tx has been included in a block.
   //    - `'failed'` the tx failed for some reason, included on tx data.
   _setTxStatus (txId, status) {
@@ -428,7 +449,7 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   resubmitPendingTxs () {
-    const pending = this.getTxsByMetaData('status', 'submitted')
+    const pending = this.getFilteredTxList({ status: 'submitted', ignore: undefined })
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
     const resubmit = denodeify(this._resubmitTx.bind(this))
@@ -489,11 +510,42 @@ module.exports = class TransactionController extends EventEmitter {
         }
         if (txParams.blockNumber) {
           this.setTxStatusConfirmed(txId)
+          this._updateNonceDuplicates()
         }
       })
     })
   }
 
+  _updateNonceDuplicates () {
+    const ignoredTxList = this.getFilteredTxList({status: 'submitted', ignore: true})
+    var duplicateFilterList
+    if (!ignoredTxList.length) return false
+    const nonceDuplicates = this._getNonceDuplicates()
+    ignoredTxList.forEach((txMeta) => {
+      const from = txMeta.txParams.from
+      const nonce = txMeta.txParams.nonce
+      if (!nonceDuplicates[from]) nonceDuplicates[from] = {}
+      duplicateFilterList = this.getFilteredTxList({
+        from,
+        nonce,
+      })
+      if (duplicateFilterList.length > 1) {
+        nonceDuplicates[from][nonce] = duplicateFilterList
+        const isOneConfirmed = nonceDuplicates[from][nonce].find((txMeta) => txMeta.status === 'confirmed')
+        if (isOneConfirmed) {
+          nonceDuplicates[from][nonce].forEach((txMeta) => {
+            if (txMeta.status === 'submitted') this.setTxStatusRejected(txMeta.id)
+          })
+        }
+      }
+    })
+    this.store.updateState({_nonceDuplicates: nonceDuplicates})
+    return true
+  }
+
+  _getNonceDuplicates () {
+    return this.store.getState().nonceDuplicates
+  }
 }
 
 
