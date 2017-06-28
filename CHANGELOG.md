@@ -10,6 +10,7 @@
 - Seed word confirmation wording is now scarier.
 - Fix error for invalid seed words.
 - Prevent users from submitting two duplicate transactions by disabling submit.
+- Allow Dapps to specify gas price as hex string.
 
 ## 3.7.8 2017-6-12
 
