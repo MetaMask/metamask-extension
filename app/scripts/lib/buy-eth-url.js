@@ -7,6 +7,10 @@ function getBuyEthUrl ({ network, amount, address }) {
       url = `https://buy.coinbase.com/?code=9ec56d01-7e81-5017-930c-513daa27bb6a&amount=${amount}&address=${address}&crypto_currency=ETH`
       break
 
+    case '2':
+      url = `https://poloniex.com/exchange#btc_exp`
+      break
+
     case '3':
       url = 'https://faucet.metamask.io/'
       break

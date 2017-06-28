@@ -11,6 +11,8 @@ module.exports = function (hash, network) {
     case 4: // rinkeby test net
       prefix = 'rinkeby.'
       break
+    case 5:
+      return `http://www.gander.tech/tx/${hash}`
     case 42: // kovan test net
       prefix = 'kovan.'
       break

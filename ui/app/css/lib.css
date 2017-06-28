@@ -191,6 +191,11 @@ hr.horizontal-line {
   border: 3px solid #690496;
 }
 
+.hollow-diamond-orange {
+  transform: rotate(45deg);
+  border: 3px solid #FFA47B;
+}
+
 .golden-square {
   background: #EBB33F;
 }

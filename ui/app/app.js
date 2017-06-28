@@ -281,6 +281,15 @@ App.prototype.renderNetworkDropdown = function () {
     }),
 
     h(DropMenuItem, {
+      label: 'Expanse Network',
+      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
+      action: () => props.dispatch(actions.setProviderType('expanse')),
+      icon: h('.menu-icon.hollow-diamond-orange'),
+      activeNetworkRender: props.network,
+      provider: props.provider,
+    }),
+
+    h(DropMenuItem, {
       label: 'Localhost 8545',
       closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
       action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),

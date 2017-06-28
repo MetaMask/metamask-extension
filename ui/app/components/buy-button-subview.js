@@ -152,7 +152,7 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
           marginBottom: '15px',
         },
       }, 'In order to access this feature, please switch to the Main Network'),
-      ((network === '3') || (network === '4') || (network === '42')) ? h('h3.text-transform-uppercase', 'or go to the') : null,
+      ((network === '3') || (network === '4') || (network === '5') || (network === '42')) ? h('h3.text-transform-uppercase', 'or go to the') : null,
       (network === '3') ? h('button.text-transform-uppercase', {
         onClick: () => this.props.dispatch(actions.buyEth({ network })),
         style: {
@@ -165,6 +165,12 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
           marginTop: '15px',
         },
       }, 'Rinkeby Test Faucet') : null,
+      (network === '5') ? h('button.text-transform-uppercase', {
+        onClick: () => this.props.dispatch(actions.buyEth({ network })),
+        style: {
+          marginTop: '15px',
+        },
+      }, 'Expanse Poloniex') : null,
       (network === '42') ? h('button.text-transform-uppercase', {
         onClick: () => this.props.dispatch(actions.buyEth({ network })),
         style: {

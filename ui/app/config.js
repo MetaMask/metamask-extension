@@ -171,6 +171,11 @@ function currentProviderDisplay (metamaskState) {
       value = 'Rinkeby Test Network'
       break
 
+    case 'expanse':
+      title = 'Current Network'
+      value = 'Expanse Network'
+      break
+
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget
