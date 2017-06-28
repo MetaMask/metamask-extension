@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
+const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 
 module.exports = TokenCell
 
@@ -41,6 +42,7 @@ function navigateTo (url) {
 }
 
 function urlFor (tokenAddress, address, network) {
-  return `https://etherscan.io/token/${tokenAddress}?a=${address}`
+  const prefix = prefixForNetwork(network)
+  return `https://${prefix}etherscan.io/token/${tokenAddress}?a=${address}`
 }
 
