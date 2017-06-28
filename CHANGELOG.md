@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.8.0 2017-6-28
+
 - No longer stop rebroadcasting transactions
 - Add list of popular tokens held to the account detail view.
 - Add ability to add Tokens to token list.
