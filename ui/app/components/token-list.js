@@ -109,6 +109,7 @@ TokenList.prototype.message = function (body) {
       height: '250px',
       alignItems: 'center',
       justifyContent: 'center',
+      padding: '30px',
     },
   }, body)
 }
