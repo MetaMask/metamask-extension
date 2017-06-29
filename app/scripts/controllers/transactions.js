@@ -1,7 +1,6 @@
 const EventEmitter = require('events')
 const async = require('async')
 const extend = require('xtend')
-const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const denodeify = require('denodeify')
@@ -42,7 +41,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
     this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
-    this.nonceLock = Semaphore(1)
     this.ethStore = opts.ethStore
     // memstore is computed from a few different stores
     this._updateMemstore()
@@ -193,14 +191,16 @@ module.exports = class TransactionController extends EventEmitter {
       // get next nonce
       const txMeta = this.getTx(txId)
       const fromAddress = txMeta.txParams.from
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
-      txMeta.txParams.nonce = nonceLock.nextNonce
-      this.updateTx(txMeta)
+      if (!txMeta.txParams.nonce) {
+        nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+        txMeta.txParams.nonce = nonceLock.nextNonce
+        this.updateTx(txMeta)
+      }
       // sign transaction
       const rawTx = await denodeify(this.signTransaction.bind(this))(txId)
       await this.publishTransaction(txId, rawTx)
       // must set transaction to submitted/failed before releasing lock
-      nonceLock.releaseLock()
+      if (nonceLock) nonceLock.releaseLock()
       cb()
     } catch (err) {
       this.setTxStatusFailed(txId, {
@@ -254,6 +254,18 @@ module.exports = class TransactionController extends EventEmitter {
         this.setTxHash(txId, txHash)
         this.setTxStatusSubmitted(txId)
         resolve()
+      })
+    })
+  }
+
+  resendTransactionAsDuplicate (txMeta) {
+    return new Promise((resolve, reject) => {
+      this.query.sendTransaction(txMeta.txParams, (err, hash) => {
+        const newTx = this.getFilteredTxList({hash})[0]
+        if (err) reject(err)
+        txMeta.ignore = true
+        this.updateTx(txMeta)
+        resolve(newTx)
       })
     })
   }
@@ -377,6 +389,7 @@ module.exports = class TransactionController extends EventEmitter {
   //  checks if a signed tx is in a block and
   // if included sets the tx status as 'confirmed'
   checkForTxInBlock (block) {
+    this._updateNonceDuplicates()
     var signedTxList = this.getFilteredTxList({status: 'submitted'})
     if (!signedTxList.length) return
     signedTxList.forEach((txMeta) => {
@@ -485,6 +498,7 @@ module.exports = class TransactionController extends EventEmitter {
   // checks the network for signed txs and
   // if confirmed sets the tx status as 'confirmed'
   _checkPendingTxs () {
+    this._updateNonceDuplicates()
     var signedTxList = this.getFilteredTxList({status: 'submitted'})
     if (!signedTxList.length) return
     signedTxList.forEach((txMeta) => {
@@ -518,10 +532,11 @@ module.exports = class TransactionController extends EventEmitter {
 
   _updateNonceDuplicates () {
     const ignoredTxList = this.getFilteredTxList({status: 'submitted', ignore: true})
+    const submittedTxList = this.getFilteredTxList({status: 'submitted', ignore: undefined})
     var duplicateFilterList
-    if (!ignoredTxList.length) return false
+    if (!ignoredTxList.length && !submittedTxList.length) return false
     const nonceDuplicates = this._getNonceDuplicates()
-    ignoredTxList.forEach((txMeta) => {
+    ignoredTxList.concat(submittedTxList).forEach((txMeta) => {
       const from = txMeta.txParams.from
       const nonce = txMeta.txParams.nonce
       if (!nonceDuplicates[from]) nonceDuplicates[from] = {}

@@ -88,6 +88,9 @@ var actions = {
   showPrivateKey: showPrivateKey,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
+  RETRY_TX: 'RETRY_TX',
+  resendTx: resendTx,
+
   // tx conf screen
   COMPLETED_TX: 'COMPLETED_TX',
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
@@ -415,6 +418,18 @@ function sendTx (txData) {
       }
       dispatch(actions.completedTx(txData.id))
     })
+  }
+}
+
+function resendTx (txMeta) {
+  return (dispatch) => {
+    background.resendTransactionAsDuplicate(txMeta, (err, duplicateTx) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.hideWarning())
+      dispatch(actions.completedTx(duplicateTx.id))
+    })
+    dispatch(this.showConfTxPage())
   }
 }
 

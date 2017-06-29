@@ -8,6 +8,7 @@ const explorerLink = require('../../lib/explorer-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))
 const Tooltip = require('./tooltip')
+const RetryTxButton = require('./retry-tx-button')
 const numberToBN = require('number-to-bn')
 
 const TransactionIcon = require('./transaction-list-item-icon')
@@ -97,7 +98,7 @@ TransactionListItem.prototype.render = function () {
       ]),
 
       // Places a copy button if tx is successful, else places a placeholder empty div.
-      transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
+      this.renderCopyOrRetryButton(),
 
       isTx ? h(EthBalance, {
         value: txParams.value,
@@ -110,6 +111,12 @@ TransactionListItem.prototype.render = function () {
       }) : h('.flex-column'),
     ])
   )
+}
+
+TransactionListItem.prototype.renderCopyOrRetryButton = function () {
+  const transaction = this.props.transaction
+  if (transaction.status === 'submitted' && !transaction.ignore) return h(RetryTxButton, {transaction})
+  return transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }})
 }
 
 function domainField (txParams) {
