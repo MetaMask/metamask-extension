@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fix precision bug in token balances.
+- Cache token symbol and precisions to reduce network load.
+
 ## 3.8.0 2017-6-28
 
 - No longer stop rebroadcasting transactions
