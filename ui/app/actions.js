@@ -424,12 +424,9 @@ function sendTx (txData) {
 function resendTx (txMeta) {
   return (dispatch) => {
     background.resendTransactionAsDuplicate(txMeta, (err, duplicateTx) => {
-      dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
-      dispatch(actions.completedTx(duplicateTx.id))
+      dispatch(this.showConfTxPage())
     })
-    dispatch(this.showConfTxPage())
   }
 }
 

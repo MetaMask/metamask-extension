@@ -260,12 +260,15 @@ module.exports = class TransactionController extends EventEmitter {
 
   resendTransactionAsDuplicate (txMeta) {
     return new Promise((resolve, reject) => {
-      this.query.sendTransaction(txMeta.txParams, (err, hash) => {
-        const newTx = this.getFilteredTxList({hash})[0]
-        if (err) reject(err)
+      this.addUnapprovedTransaction(txMeta.txParams, (err, newTxMeta) => {
+        if (err) {
+          delete txMeta.ignore
+          this.updateTx(txMeta)
+          reject(err)
+        }
         txMeta.ignore = true
         this.updateTx(txMeta)
-        resolve(newTx)
+        resolve(newTxMeta)
       })
     })
   }

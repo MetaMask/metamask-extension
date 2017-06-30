@@ -441,6 +441,7 @@ module.exports = class MetamaskController extends EventEmitter {
   newUnapprovedTransaction (txParams, cb) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const self = this
+    delete txParams.nonce
     self.txController.addUnapprovedTransaction(txParams, (err, txMeta) => {
       if (err) return cb(err)
       self.sendUpdate()
