@@ -31,9 +31,11 @@ TokenCell.prototype.render = function () {
 
       h('span', { style: { flex: '1 0 auto' } }),
 
+      /*
       h('button', {
         onClick: this.send.bind(this, address),
       }, 'SEND'),
+      */
 
     ])
   )

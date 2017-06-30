@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Remove SEND token button until a better token sending form can be built, due to some precision issues.
 - Fix precision bug in token balances.
 - Cache token symbol and precisions to reduce network load.
 - Transpile some newer JavaScript, restores compatibility with some older browsers.
