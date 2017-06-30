@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.8.1 2017-6-30
+
 - Temporarily disabled loading popular tokens by default to improve performance.
 - Remove SEND token button until a better token sending form can be built, due to some precision issues.
 - Fix precision bug in token balances.
