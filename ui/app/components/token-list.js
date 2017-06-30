@@ -3,10 +3,11 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
-const contracts = require('eth-contract-metadata')
 const normalizeAddress = require('eth-sig-util').normalize
 
 const defaultTokens = []
+/*
+const contracts = require('eth-contract-metadata')
 for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
@@ -14,6 +15,7 @@ for (const address in contracts) {
     defaultTokens.push(contract)
   }
 }
+*/
 
 module.exports = TokenList
 

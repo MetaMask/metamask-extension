@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Temporarily disabled loading popular tokens by default to improve performance.
+
 ## 3.8.0 2017-6-28
 
 - No longer stop rebroadcasting transactions
