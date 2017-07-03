@@ -22,15 +22,24 @@ Network.prototype.render = function () {
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
-    return h('img.network-indicator', {
-      title: 'Attempting to connect to blockchain.',
-      onClick: (event) => this.props.onClick(event),
+    return h('span', {
       style: {
-        width: '27px',
-        marginRight: '-27px',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
       },
-      src: 'images/loading.svg',
-    })
+      onClick: (event) => this.props.onClick(event),
+    }, [
+      h('img', {
+        title: 'Attempting to connect to blockchain.',
+        style: {
+          width: '27px',
+        },
+        src: 'images/loading.svg',
+      }),
+      h('i.fa.fa-sort-desc'),
+    ])
+
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
