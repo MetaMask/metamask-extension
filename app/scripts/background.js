@@ -90,7 +90,8 @@ function setupController (initState) {
 
   extension.runtime.onConnect.addListener(connectRemote)
   function connectRemote (remotePort) {
-    var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
+    const name = remotePort.name
+    var isMetaMaskInternalProcess = name === 'popup' || name === 'notification' || name === 'ui'
     var portStream = new PortStream(remotePort)
     if (isMetaMaskInternalProcess) {
       // communication with popup
