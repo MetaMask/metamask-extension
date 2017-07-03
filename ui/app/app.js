@@ -68,7 +68,7 @@ App.prototype.render = function () {
   const { isLoading, loadingMessage, transForward, network } = props
   const isLoadingNetwork = network === 'loading'
   const loadMessage = loadingMessage || isLoadingNetwork ?
-    'Searching for Network' : null
+    `Connecting to ${this.getNetworkName()}` : null
 
   log.debug('Main ui render function')
 
@@ -547,6 +547,27 @@ App.prototype.renderCustomOption = function (provider) {
         activeNetworkRender: 'custom',
       })
   }
+}
+
+App.prototype.getNetworkName = function () {
+  const { provider } = this.props
+  const providerName = provider.type
+
+  let name
+
+  if (providerName === 'mainnet') {
+    name = 'Main Ethereum Network'
+  } else if (providerName === 'ropsten') {
+    name = 'Ropsten Test Network'
+  } else if (providerName === 'kovan') {
+    name = 'Kovan Test Network'
+  } else if (providerName === 'rinkeby') {
+    name = 'Rinkeby Test Network'
+  } else {
+    name = 'Unknown Private Network'
+  }
+
+  return name
 }
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
