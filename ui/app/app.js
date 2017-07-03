@@ -66,7 +66,7 @@ function mapStateToProps (state) {
 App.prototype.render = function () {
   var props = this.props
   const { isLoading, loadingMessage, transForward, network } = props
-  const isLoadingNetwork = network === 'loading'
+  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     'Searching for Network' : null
 

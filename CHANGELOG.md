@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- No longer show network loading indication on config screen, to allow selecting custom RPCs.
+
 ## 3.8.1 2017-6-30
 
 - Temporarily disabled loading popular tokens by default to improve performance.
