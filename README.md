@@ -57,6 +57,7 @@ To write tests that will be run in the browser using QUnit, add your test files 
 - [Publishing Guide](./docs/publishing.md)
 - [How to develop an in-browser mocked UI](./docs/ui-mock-mode.md)
 - [How to live reload on local dependency changes](./docs/developing-on-deps.md)
+- [How to Edit our New Responsive UI](./docs/responsive-ui-dev.md)
 - [How to add new networks to the Provider Menu](./docs/adding-new-networks.md)
 - [How to manage notices that appear when the app starts up](./docs/notices.md)
 - [How to generate a visualization of this repository's development](./docs/development-visualization.md)
