@@ -1,4 +1,4 @@
-const startPopup = require('./popup-core')
+const startPopup = require('./responsive-core')
 const PortStream = require('./lib/port-stream.js')
 const ExtensionPlatform = require('./platforms/extension')
 const extension = require('extensionizer')
