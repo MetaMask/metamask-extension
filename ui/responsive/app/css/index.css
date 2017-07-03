@@ -1,0 +1,667 @@
+/*
+faint orange (textfield shades) #FAF6F0
+light orange (button shades): #F5C26D
+dark orange (text): #F5A623
+borders/font/any gray: #4A4A4A
+*/
+
+/*
+application specific styles
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Montserrat Regular', Arial;
+  color: #4D4D4D;
+  font-weight: 300;
+  line-height: 1.4em;
+  background: #F7F7F7;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+}
+
+#app-content {
+  overflow-x: hidden;
+  min-width: 357px;
+  width: 360px;
+  height: 500px;
+}
+
+button, input[type="submit"] {
+  font-family: 'Montserrat Bold';
+  outline: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: none;
+  color: white;
+  transform-origin: center center;
+  transition: transform 50ms ease-in;
+  /* default orange */
+  background: rgba(247, 134, 28, 1);
+  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+}
+
+.btn-green, input[type="submit"].btn-green {
+  background: rgba(106, 195, 96, 1);
+  box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
+}
+
+.btn-red {
+  background: rgba(254, 35, 17, 1);
+  box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
+}
+
+button[disabled], input[type="submit"][disabled] {
+  cursor: not-allowed;
+  background: rgba(197, 197, 197, 1);
+  box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
+}
+
+button.spaced {
+  margin: 2px;
+}
+
+button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
+  transform: scale(1.1);
+}
+button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
+  transform: scale(0.95);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover{
+  color: #df6b0e;
+}
+
+/*
+app
+*/
+
+.active {
+  color: #909090;
+}
+
+button.primary {
+  padding: 8px 12px;
+  background: #F7861C;
+  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  color: white;
+  font-size: 1.1em;
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+}
+
+button.btn-thin {
+  border: 1px solid;
+  border-color: #4D4D4D;
+  color: #4D4D4D;
+  background: rgb(255, 174, 41);
+  border-radius: 4px;
+  min-width: 200px;
+  margin: 12px 0;
+  padding: 6px;
+  font-size: 13px;
+}
+
+.app-header {
+  padding: 6px 8px;
+}
+
+.app-header h1 {
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  color: #AEAEAE;
+}
+
+h2.page-subtitle {
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  color: #AEAEAE;
+  font-size: 1em;
+  margin: 12px;
+}
+
+.app-primary {
+
+}
+
+.app-footer {
+  padding-bottom: 10px;
+  align-items: center;
+}
+
+.identicon {
+  height: 46px;
+  width: 46px;
+  background-size: cover;
+  border-radius: 100%;
+  border: 3px solid gray;
+}
+
+textarea.twelve-word-phrase {
+  padding: 12px;
+  width: 300px;
+  height: 140px;
+  font-size: 16px;
+  background: white;
+  resize: none;
+}
+
+.network-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.6em;
+
+}
+
+.network-name {
+  width: 5.2em;
+  line-height: 9px;
+  text-rendering: geometricPrecision;
+}
+
+.check {
+  margin-left: 7px;
+  color: #F7861C;
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: flex-end;
+}
+/*
+app sections
+*/
+
+/* initialize */
+
+.initialize-screen hr {
+  width: 60px;
+  margin: 12px;
+  border-color: #F7861C;
+  border-style: solid;
+}
+
+.initialize-screen label {
+  margin-top: 20px;
+}
+
+.initialize-screen button.create-vault {
+  margin-top: 40px;
+}
+
+.initialize-screen .warning {
+  font-size: 14px;
+  margin: 0 16px;
+}
+
+/* unlock */
+.error {
+  color: #E20202;
+}
+
+.warning {
+  color: #FFAE00;
+}
+
+.lock {
+  width: 50px;
+  height: 50px;
+}
+
+.lock.locked {
+  transform: scale(1.5);
+  opacity: 0.0;
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}
+.lock.unlocked {
+  transform: scale(1);
+  opacity: 1;
+  transition: opacity 500ms ease-out, transform 500ms ease-out, background 200ms ease-in;
+}
+
+.lock.locked .lock-top {
+  transform: scaleX(1) translateX(0);
+  transition: transform 250ms ease-in;
+}
+.lock.unlocked .lock-top {
+  transform: scaleX(-1) translateX(-12px);
+  transition: transform 250ms ease-in;
+}
+.lock.unlocked:hover {
+  border-radius: 4px;
+  background: #e5e5e5;
+  border: 1px solid #b1b1b1;
+}
+.lock.unlocked:active {
+  background: #c3c3c3;
+}
+
+.section-title .fa-arrow-left {
+  margin: -2px 8px 0px -8px;
+}
+
+.unlock-screen #metamask-mascot-container {
+  margin-top: 24px;
+}
+
+.unlock-screen h1 {
+  margin-top: -28px;
+  margin-bottom: 42px;
+}
+
+.unlock-screen input[type=password] {
+  width: 260px;
+  /*height: 36px;
+  margin-bottom: 24px;
+  padding: 8px;*/
+}
+
+.sizing-input{
+  font-size: 14px;
+  height: 30px;
+  padding-left: 5px;
+}
+.editable-label{
+  display: flex;
+}
+/* Webkit */
+.unlock-screen input::-webkit-input-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+/* Firefox 18- */
+.unlock-screen input:-moz-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+/* Firefox 19+ */
+.unlock-screen input::-moz-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+/* IE */
+.unlock-screen input:-ms-input-placeholder {
+  text-align: center;
+  font-size: 1.2em;
+}
+
+input.large-input, textarea.large-input {
+  /*margin-bottom: 24px;*/
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}
+
+.letter-spacey {
+  letter-spacing: 0.1em;
+}
+
+
+
+/* accounts */
+
+.accounts-section {
+  margin: 0 0px;
+}
+
+.accounts-section .horizontal-line {
+  margin: 0px 18px;
+}
+
+.accounts-list-option {
+  height: 120px;
+}
+
+.accounts-list-option .identicon-wrapper {
+  width: 100px;
+}
+
+.unconftx-link {
+  margin-top: 24px;
+  cursor: pointer;
+}
+
+.unconftx-link .fa-arrow-right {
+  margin: 0px -8px 0px 8px;
+}
+
+/* identity panel */
+
+.identity-panel {
+  font-weight: 500;
+}
+
+.identity-panel .identicon-wrapper {
+  margin: 4px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.identity-panel .identicon-wrapper span {
+  margin: 0 auto;
+}
+
+.identity-panel .identity-data {
+  margin: 8px 8px 8px 18px;
+}
+
+.identity-panel i {
+  margin-top: 32px;
+  margin-right: 6px;
+  color: #B9B9B9;
+}
+
+.identity-panel .arrow-right {
+  padding-left: 18px;
+  width: 42px;
+  min-width: 18px;
+  height: 100%;
+}
+
+.identity-copy.flex-column {
+  flex: 0.25 0 auto;
+  justify-content: center;
+}
+
+/* accounts screen */
+
+.identity-section {
+
+}
+
+.identity-section .identity-panel {
+  background: #E9E9E9;
+  border-bottom: 1px solid #B1B1B1;
+  cursor: pointer;
+}
+
+.identity-section .identity-panel.selected {
+  background: white;
+  color: #F3C83E;
+}
+
+.identity-section .identity-panel.selected .identicon {
+  border-color: orange;
+}
+
+.identity-section .accounts-list-option:hover,
+.identity-section .accounts-list-option.selected {
+  background:white;
+}
+
+/* account detail screen */
+
+.account-detail-section {
+
+}
+.name-label{
+
+}
+
+.unapproved-tx-icon {
+  height: 16px;
+  width: 16px;
+  background: rgb(47, 174, 244);
+  border-color: #AEAEAE;
+  border-radius: 13px;
+}
+
+.edit-text {
+  height: 100%;
+  visibility: hidden;
+}
+.editing-label {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 50px;
+  margin-bottom: 2px;
+  font-size: 11px;
+  text-rendering: geometricPrecision;
+  color: #F7861C;
+}
+.name-label:hover .edit-text {
+  visibility: visible;
+}
+/* tx confirm */
+
+.unconftx-section input[type=password] {
+  height: 22px;
+  padding: 2px;
+  margin: 12px;
+  margin-bottom: 24px;
+  border-radius: 4px;
+  border: 2px solid #F3C83E;
+  background: #FAF6F0;
+}
+
+/* Send Screen */
+
+.send-screen {
+
+}
+
+.send-screen section {
+  margin: 8px 16px;
+}
+
+.send-screen input {
+  width: 100%;
+  font-size: 12px;
+}
+
+/* Ether Balance Widget */
+
+.ether-balance-amount {
+  color: #F7861C;
+}
+
+.ether-balance-label {
+  color: #ABA9AA;
+}
+
+/* Info screen */
+.info-gray{
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  color: #AEAEAE;
+}
+
+.icon-size{
+  width: 20px;
+}
+
+.info{
+  font-family: 'Montserrat Regular', Arial;
+  padding-bottom: 10px;
+  display: inline-block;
+  padding-left: 5px;
+}
+
+/* buy eth warning screen */
+.custom-radios {
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+.custom-radio-selected {
+  width: 17px;
+  height: 17px;
+  border: solid;
+  border-style: double;
+  border-radius: 15px;
+  border-width: 5px;
+  background: rgba(247, 134, 28, 1);
+  border-color: #F7F7F7;
+}
+
+.custom-radio-inactive {
+  width: 14px;
+  height: 14px;
+  border: solid;
+  border-width: 1px;
+  border-radius: 24px;
+  border-color: #AEAEAE;
+}
+
+.radio-titles {
+  color: rgba(247, 134, 28, 1);
+}
+
+.radio-titles-subtext {
+
+}
+
+.selected-exchange {
+
+}
+
+.buy-radio {
+
+}
+
+.eth-warning{
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}
+
+.buy-subview{
+  transition: opacity 400ms ease-in, transform 400ms ease-in;
+}
+
+.input-container:hover .edit-text{
+  visibility: visible;
+}
+
+.buy-inputs{
+  font-family: 'Montserrat Light';
+  font-size: 13px;
+  height: 20px;
+  background: transparent;
+  box-sizing: border-box;
+  border: solid;
+  border-color: transparent;
+  border-width: 0.5px;
+  border-radius: 2px;
+
+}
+.input-container:hover .buy-inputs{
+  box-sizing: inherit;
+  border: solid;
+  border-color: #F7861C;
+  border-width: 0.5px;
+  border-radius: 2px;
+}
+
+.buy-inputs:focus{
+  border: solid;
+  border-color: #F7861C;
+  border-width: 0.5px;
+  border-radius: 2px;
+}
+
+.activeForm {
+  background: #F7F7F7;
+  border: none;
+  border-radius: 8px 8px 0px 0px;
+  width: 50%;
+  text-align: center;
+  padding-bottom: 4px;
+
+}
+
+.inactiveForm {
+  border: none;
+  border-radius: 8px 8px 0px 0px;
+  width: 50%;
+  text-align: center;
+  padding-bottom: 4px;
+}
+
+.ex-coins {
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 33px;
+  width: 118px;
+  height: 42px;
+  padding: 1px;
+  color: #4D4D4D;
+}
+
+.marketinfo{
+  font-family: 'Montserrat light';
+  color: #AEAEAE;
+  font-size: 15px;
+  line-height: 17px;
+}
+
+#fromCoin::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+#coinList {
+  width: 400px;
+  height: 500px;
+  overflow: scroll;
+}
+
+.icon-control .fa-refresh{
+  visibility: hidden;
+}
+
+.icon-control:hover .fa-refresh{
+  visibility: visible;
+}
+
+.icon-control:hover .fa-chevron-right{
+  visibility: hidden;
+}
+
+.inactive {
+    color: #AEAEAE;
+}
+
+.inactive button{
+    background: #AEAEAE;
+    color: white;
+}
+
+.ellip-address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 5em;
+  font-size: 14px;
+  font-family: "Montserrat Light";
+  margin-left: 5px;
+}
+
+.qr-header {
+    font-size: 25px;
+    margin-top: 40px;
+}
+
+.qr-message {
+  font-size: 12px;
+  color: #F7861C;
+}
+
+div.message-container > div:first-child {
+  margin-top: 18px;
+  font-size: 15px;
+  color: #4D4D4D;
+}
+
+.pop-hover:hover {
+    transform: scale(1.1);
+}

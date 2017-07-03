@@ -174,6 +174,7 @@ const jsFiles = [
   'contentscript',
   'background',
   'popup',
+  'responsive'
 ]
 
 // bundle tasks

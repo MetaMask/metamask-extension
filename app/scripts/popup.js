@@ -1,5 +1,5 @@
 const injectCss = require('inject-css')
-const MetaMaskUiCss = require('../../ui/css')
+const MetaMaskUiCss = require('../../ui/classic/css')
 const startPopup = require('./popup-core')
 const PortStream = require('./lib/port-stream.js')
 const isPopupOrNotification = require('./lib/is-popup-or-notification')

@@ -1,9 +1,9 @@
+const injectCss = require('inject-css')
 const startPopup = require('./responsive-core')
+const MetaMaskUiCss = require('../../ui/responsive/css')
 const PortStream = require('./lib/port-stream.js')
 const ExtensionPlatform = require('./platforms/extension')
 const extension = require('extensionizer')
-const NotificationManager = require('./lib/notification-manager')
-const notificationManager = new NotificationManager()
 
 // create platform global
 global.platform = new ExtensionPlatform()
@@ -20,9 +20,6 @@ const connectionStream = new PortStream(extensionPort)
 const container = document.getElementById('app-content')
 startPopup({ container, connectionStream }, (err, store) => {
   if (err) return displayCriticalError(err)
-  store.subscribe(() => {
-    const state = store.getState()
-  })
 })
 
 function displayCriticalError (err) {
