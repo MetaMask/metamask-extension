@@ -68,7 +68,7 @@ App.prototype.render = function () {
   const { isLoading, loadingMessage, transForward, network } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
-    'Searching for Network' : null
+    `Connecting to ${this.getNetworkName()}` : null
 
   log.debug('Main ui render function')
 
@@ -136,7 +136,7 @@ App.prototype.renderAppBar = function () {
         },
       }, [
 
-        h('div', {
+        h('div.left-menu-section', {
           style: {
             display: 'flex',
             flexDirection: 'row',
@@ -151,21 +151,15 @@ App.prototype.renderAppBar = function () {
             src: '/images/icon-128.png',
           }),
 
-          h('#network-spacer.flex-center', {
-            style: {
-              marginRight: '-72px',
+          h(NetworkIndicator, {
+            network: this.props.network,
+            provider: this.props.provider,
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
-          }, [
-            h(NetworkIndicator, {
-              network: this.props.network,
-              provider: this.props.provider,
-              onClick: (event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
-              },
-            }),
-          ]),
+          }),
         ]),
 
         // metamask name
@@ -553,6 +547,27 @@ App.prototype.renderCustomOption = function (provider) {
         activeNetworkRender: 'custom',
       })
   }
+}
+
+App.prototype.getNetworkName = function () {
+  const { provider } = this.props
+  const providerName = provider.type
+
+  let name
+
+  if (providerName === 'mainnet') {
+    name = 'Main Ethereum Network'
+  } else if (providerName === 'ropsten') {
+    name = 'Ropsten Test Network'
+  } else if (providerName === 'kovan') {
+    name = 'Kovan Test Network'
+  } else if (providerName === 'rinkeby') {
+    name = 'Rinkeby Test Network'
+  } else {
+    name = 'Unknown Private Network'
+  }
+
+  return name
 }
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
