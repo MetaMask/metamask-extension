@@ -136,7 +136,7 @@ App.prototype.renderAppBar = function () {
         },
       }, [
 
-        h('div', {
+        h('div.left-menu-section', {
           style: {
             display: 'flex',
             flexDirection: 'row',
@@ -151,21 +151,15 @@ App.prototype.renderAppBar = function () {
             src: '/images/icon-128.png',
           }),
 
-          h('#network-spacer.flex-center', {
-            style: {
-              marginRight: '-72px',
+          h(NetworkIndicator, {
+            network: this.props.network,
+            provider: this.props.provider,
+            onClick: (event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
-          }, [
-            h(NetworkIndicator, {
-              network: this.props.network,
-              provider: this.props.provider,
-              onClick: (event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
-              },
-            }),
-          ]),
+          }),
         ]),
 
         // metamask name
