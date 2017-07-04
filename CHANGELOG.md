@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.8.2 2017-7-3
+
 - No longer show network loading indication on config screen, to allow selecting custom RPCs.
 - Visually indicate that network spinner is a menu.
 - Indicate what network is being searched for when disconnected.
