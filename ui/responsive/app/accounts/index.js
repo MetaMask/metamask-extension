@@ -56,7 +56,6 @@ AccountsScreen.prototype.render = function () {
       // identity selection
       h('section.identity-section', {
         style: {
-          height: '418px',
           overflowY: 'auto',
           overflowX: 'hidden',
         },

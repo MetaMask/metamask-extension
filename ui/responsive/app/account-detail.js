@@ -60,6 +60,7 @@ AccountDetailScreen.prototype.render = function () {
       h('.account-data-subsection', {
         style: {
           margin: '0 20px',
+          maxWidth: '320px',
         },
       }, [
 

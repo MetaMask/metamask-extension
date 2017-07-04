@@ -19,6 +19,14 @@ html, body {
   font-weight: 300;
   line-height: 1.4em;
   background: #F7F7F7;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.css-transition-group {
+  flex: 1;
 }
 
 input:focus, textarea:focus {
@@ -28,8 +36,6 @@ input:focus, textarea:focus {
 #app-content {
   overflow-x: hidden;
   min-width: 357px;
-  width: 360px;
-  height: 500px;
 }
 
 button, input[type="submit"] {
@@ -403,7 +409,8 @@ input.large-input {
 /* account detail screen */
 
 .account-detail-section {
-
+  display: flex;
+  flex-wrap: wrap;
 }
 .name-label{
 

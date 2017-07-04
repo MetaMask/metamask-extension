@@ -93,12 +93,7 @@ App.prototype.render = function () {
       }),
 
       // panel content
-      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
-        style: {
-          height: '380px',
-          width: '360px',
-        },
-      }, [
+      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), [
         h(ReactCSSTransitionGroup, {
           className: 'css-transition-group',
           transitionName: 'main',
