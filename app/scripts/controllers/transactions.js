@@ -1,7 +1,6 @@
 const EventEmitter = require('events')
 const async = require('async')
 const extend = require('xtend')
-const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const denodeify = require('denodeify')
@@ -41,7 +40,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
     this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
-    this.nonceLock = Semaphore(1)
     this.ethStore = opts.ethStore
     // memstore is computed from a few different stores
     this._updateMemstore()
