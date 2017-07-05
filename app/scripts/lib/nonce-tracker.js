@@ -12,14 +12,16 @@ class NonceTracker {
   // releaseLock must be called
   // releaseLock must be called after adding signed tx to pending transactions (or discarding)
   async getNonceLock (address) {
-    const pendingTransactions = this.getPendingTransactions(address)
     // await lock free
-    if (pendingTransactions.length) await this.lockMap[address]
-    else if (this.lockMap[address]) await this.lockMap[address]()
+    await this.lockMap[address]
     // take lock
     const releaseLock = this._takeLock(address)
     // calculate next nonce
-    const baseCount = await this._getTxCount(address)
+    // we need to make sure our base count
+    // and pending count are from the same block
+    const currentBlock = await this._getCurrentBlock()
+    const pendingTransactions = this.getPendingTransactions(address)
+    const baseCount = await this._getTxCount(address, currentBlock)
     const nextNonce = parseInt(baseCount) + pendingTransactions.length
     // return next nonce and release cb
     return { nextNonce: nextNonce.toString(16), releaseLock }
@@ -43,8 +45,7 @@ class NonceTracker {
     return releaseLock
   }
 
-  async _getTxCount (address) {
-    const currentBlock = await this._getCurrentBlock()
+  async _getTxCount (address, currentBlock) {
     const blockNumber = currentBlock.number
     return new Promise((resolve, reject) => {
       this.ethQuery.getTransactionCount(address, blockNumber, (err, result) => {
