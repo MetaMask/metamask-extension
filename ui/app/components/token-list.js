@@ -6,7 +6,6 @@ const TokenCell = require('./token-cell.js')
 const normalizeAddress = require('eth-sig-util').normalize
 
 const defaultTokens = []
-/*
 const contracts = require('eth-contract-metadata')
 for (const address in contracts) {
   const contract = contracts[address]
@@ -15,7 +14,6 @@ for (const address in contracts) {
     defaultTokens.push(contract)
   }
 }
-*/
 
 module.exports = TokenList
 
