@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Re-enable default token list.
+- Add origin header to dapp-bound requests to allow providers to throttle sites.
+
 ## 3.8.2 2017-7-3
 
 - No longer show network loading indication on config screen, to allow selecting custom RPCs.
