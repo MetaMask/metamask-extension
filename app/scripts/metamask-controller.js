@@ -184,7 +184,9 @@ module.exports = class MetamaskController extends EventEmitter {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
+      // rpc data source
       rpcUrl: this.networkController.getCurrentRpcAddress(),
+      originHttpHeaderKey: 'X-Metamask-Origin',
       // account mgmt
       getAccounts: (cb) => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
@@ -356,8 +358,13 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupProviderConnection (outStream, originDomain) {
-    streamIntoProvider(outStream, this.provider, logger)
-    function logger (err, request, response) {
+    streamIntoProvider(outStream, this.provider, onRequest, onResponse)
+    // append dapp origin domain to request
+    function onRequest (request) {
+      request.origin = originDomain
+    }
+    // log rpc activity
+    function onResponse (err, request, response) {
       if (err) return console.error(err)
       if (response.error) {
         console.error('Error in RPC response:\n', response.error)
