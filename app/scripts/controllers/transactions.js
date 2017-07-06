@@ -428,10 +428,22 @@ module.exports = class TransactionController extends EventEmitter {
     const gtBalance = Number.parseInt(txMeta.txParams.value) > Number.parseInt(balance)
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
-    // if the value of the transaction is greater then the balance
-    // or the nonce of the transaction is lower then the accounts nonce
-    // dont resubmit the tx
-    if (gtBalance || txNonce < nonce) return cb()
+    // if the value of the transaction is greater then the balance, fail.
+    if (gtBalance) {
+      const message = 'Insufficient balance.'
+      this.setTxStatusFailed(txMeta.id, message)
+      cb()
+      return log.error(message)
+    }
+
+    // if the nonce of the transaction is lower then the accounts nonce, fail.
+    if (txNonce < nonce) {
+      const message = 'Invalid nonce.'
+      this.setTxStatusFailed(txMeta.id, message)
+      cb()
+      return log.error(message)
+    }
+
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) return cb()
 

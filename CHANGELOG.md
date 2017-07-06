@@ -4,6 +4,7 @@
 
 - Re-enable default token list.
 - Add origin header to dapp-bound requests to allow providers to throttle sites.
+- Fix bug that could sometimes resubmit a transaction that had been stalled due to low balance after balance was restored.
 
 ## 3.8.2 2017-7-3
 
