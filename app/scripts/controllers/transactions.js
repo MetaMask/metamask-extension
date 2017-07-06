@@ -430,24 +430,18 @@ module.exports = class TransactionController extends EventEmitter {
 
     // if the value of the transaction is greater then the balance, fail.
     if (gtBalance) {
-      txMeta.err = {
-        isWarning: true,
-        message: 'Insufficient balance.',
-      }
-      this.updateTx(txMeta)
+      const message = 'Insufficient balance.'
+      this.setTxStatusFailed(txMeta.id, message)
       cb()
-      return log.error(txMeta.err.message)
+      return log.error(message)
     }
 
     // if the nonce of the transaction is lower then the accounts nonce, fail.
     if (txNonce < nonce) {
-      txMeta.err = {
-        isWarning: true,
-        message: 'Invalid nonce.',
-      }
-      this.updateTx(txMeta)
+      const message = 'Invalid nonce.'
+      this.setTxStatusFailed(txMeta.id, message)
       cb()
-      return log.error(txMeta.err.message)
+      return log.error(message)
     }
 
     // Only auto-submit already-signed txs:
