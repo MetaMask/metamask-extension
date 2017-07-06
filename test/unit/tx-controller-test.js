@@ -327,7 +327,7 @@ describe('Transaction Controller', function () {
     const from = '0xda0da0'
     const txMeta = {
       id: 1,
-      status: 'submitted'
+      status: 'submitted',
       txParams: {
         from,
         nonce: '0x1'
