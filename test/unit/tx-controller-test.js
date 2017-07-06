@@ -322,4 +322,41 @@ describe('Transaction Controller', function () {
       })
     })
   })
+
+  describe('#_resubmitTx with a too-low balance', function () {
+    const from = '0xda0da0'
+    const txMeta = {
+      id: 1,
+      status: 'submitted'
+      txParams: {
+        from,
+        nonce: '0x1'
+      },
+    }
+
+    const lowBalance = '0x0'
+    const fakeStoreState = {}
+    fakeStoreState[from] = {
+      balance: lowBalance,
+      nonce: '0x0',
+    }
+
+    // Stubbing out current account state:
+    const getStateStub = sinon.stub(txController.ethStore, 'getState')
+    .returns(fakeStoreState)
+
+    // Adding the fake tx:
+    txController.addTx(txMeta, noop)
+
+    it('should fail the transaction', function (done) {
+      txController._resubmitTx(txMeta, function (err) {
+        assert.ifError('should not throw an error')
+        const updatedMeta = txController.getTx(txMeta.id)
+        assert.notEqual(updatedMeta.status, txMeta.status, 'status changed.')
+        assert.notEqual(updatedMeta.status, 'failed', 'tx set to failed.')
+      })
+    })
+  })
+
 })
+
