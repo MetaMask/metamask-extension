@@ -86,7 +86,7 @@ AddTokenScreen.prototype.render = function () {
           h('div', [
             h('span', {
               style: { fontWeight: 'bold', paddingRight: '10px'},
-            }, 'Token Sybmol'),
+            }, 'Token Symbol'),
           ]),
 
           h('div', { style: {display: 'flex'} }, [
