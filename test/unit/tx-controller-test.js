@@ -342,6 +342,7 @@ describe('Transaction Controller', function () {
     }
 
     // Stubbing out current account state:
+    txController.ethStore = { getState: noop }
     const getStateStub = sinon.stub(txController.ethStore, 'getState')
     .returns(fakeStoreState)
 
@@ -354,9 +355,9 @@ describe('Transaction Controller', function () {
         const updatedMeta = txController.getTx(txMeta.id)
         assert.notEqual(updatedMeta.status, txMeta.status, 'status changed.')
         assert.notEqual(updatedMeta.status, 'failed', 'tx set to failed.')
+        done()
       })
     })
   })
-
 })
 
