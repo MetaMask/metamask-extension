@@ -241,23 +241,24 @@ module.exports = class TransactionController extends EventEmitter {
 
     this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
       if (err) {
-        const errorMessage = err.message.toLowerCase()
         /*
-        Dont marked as failed if the error is because
-        it's a "known" transaction
+        Dont marked as failed if the error is a "known" transaction warning
         "there is already a transaction with the same sender-nonce
         but higher/same gas price"
         */
-
-        // geth
-        if (errorMessage !== 'replacement transaction underpriced' 
-        // geth
-        && !errorMessage.startsWith('known transaction')
-        // parity
-        && errorMessage !== 'gas price too low to replace'
-        ) {
-          this.setTxStatusFailed(txId)
-        }
+        const errorMessage = err.message.toLowerCase()
+        const isKnownTx = (
+          // geth
+          errorMessage === 'replacement transaction underpriced' 
+          || errorMessage.startsWith('known transaction')
+          // parity
+          || errorMessage === 'gas price too low to replace'
+        )
+        // ignore resubmit warnings, return early
+        if (isKnownTx) return cb()
+        
+        // encountered unknown error, set status to failed 
+        this.setTxStatusFailed(txId, err.message)
         return cb(err)
       }
       this.setTxHash(txId, txHash)
