@@ -270,7 +270,7 @@ describe('Transaction Controller', function () {
     })
 
 
-    it('does not overwrite set values', function (done) {
+    it('does not overwrite set values', function () {
       this.timeout(15000)
       const wrongValue = '0x05'
 
@@ -289,9 +289,7 @@ describe('Transaction Controller', function () {
       const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
       .callsArgWithAsync(1, null, originalValue)
 
-      txController.approveTransaction(txMeta.id).then((err) => {
-        assert.ifError(err, 'should not error')
-
+      return txController.approveTransaction(txMeta.id).then(() => {
         const result = txController.getTx(txMeta.id)
         const params = result.txParams
 
@@ -303,7 +301,6 @@ describe('Transaction Controller', function () {
         priceStub.restore()
         signStub.restore()
         pubStub.restore()
-        done()
       })
     })
   })
