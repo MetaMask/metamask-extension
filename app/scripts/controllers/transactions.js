@@ -240,7 +240,16 @@ module.exports = class TransactionController extends EventEmitter {
     this.updateTx(txMeta)
 
     this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
-      if (err) return cb(err)
+      if (err) {
+        const errorMessage =  err.message.toLowerCase()
+        if (errorMessage !== 'replacement transaction underpriced'
+        && errorMessage !== 'gas price too low to replace'
+        && !errorMessage.startsWith('known transaction')
+        ) {
+          this.setTxStatusFailed(txId)
+        }
+        return cb(err)
+      }
       this.setTxHash(txId, txHash)
       this.setTxStatusSubmitted(txId)
       cb()
