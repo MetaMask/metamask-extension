@@ -23,7 +23,10 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
-    this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
+    // this is a little messy but until ethstore has been either
+    // removed or redone this is to guard against the race condition
+    // where ethStore hasent been populated by the results yet
+    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this)))
     this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.nonceLock = Semaphore(1)
@@ -414,10 +417,24 @@ module.exports = class TransactionController extends EventEmitter {
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
     const resubmit = denodeify(this._resubmitTx.bind(this))
-    Promise.all(pending.map(txMeta => resubmit(txMeta)))
+    pending.forEach((txMeta) => resubmit(txMeta)
     .catch((reason) => {
-      log.info('Problem resubmitting tx', reason)
-    })
+      /*
+      Dont marked as failed if the error is a "known" transaction warning
+      "there is already a transaction with the same sender-nonce
+      but higher/same gas price"
+      */
+      const errorMessage = reason.message.toLowerCase()
+      const isKnownTx = (
+        // geth
+        errorMessage === 'replacement transaction underpriced'
+        || errorMessage.startsWith('known transaction')
+        // parity
+        || errorMessage === 'gas price too low to replace'
+      )
+      // ignore resubmit warnings, return early
+      if (!isKnownTx) this.setTxStatusFailed(txMeta.id, reason.message)
+    }))
   }
 
   _resubmitTx (txMeta, cb) {
