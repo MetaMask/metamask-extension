@@ -6,7 +6,7 @@ const ReactTestUtils = require('react-addons-test-utils')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 
-var BnInput = require('../../../ui/app/components/bn-as-decimal-input')
+var BnInput = require('../../../ui/classic/app/components/bn-as-decimal-input')
 
 describe('BnInput', function () {
   it('can tolerate a gas decimal number at a high precision', function (done) {
