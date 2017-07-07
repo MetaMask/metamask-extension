@@ -1,5 +1,5 @@
 var assert = require('assert')
-var linkGen = require('../../ui/lib/account-link')
+var linkGen = require('../../ui/classic/lib/account-link')
 
 describe('account-link', function () {
   it('adds ropsten prefix to ropsten test network', function () {

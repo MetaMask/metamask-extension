@@ -4,8 +4,8 @@ var freeze = require('deep-freeze-strict')
 var path = require('path')
 var sinon = require('sinon')
 
-var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'reducers.js'))
+var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'classic', 'app', 'actions.js'))
+var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'classic', 'app', 'reducers.js'))
 
 describe('tx confirmation screen', function () {
   beforeEach(function () {

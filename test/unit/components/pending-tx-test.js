@@ -1,7 +1,7 @@
 const assert = require('assert')
 const additions = require('react-testutils-additions')
 const h = require('react-hyperscript')
-const PendingTx = require('../../../ui/app/components/pending-tx')
+const PendingTx = require('../../../ui/classic/app/components/pending-tx')
 const ReactTestUtils = require('react-addons-test-utils')
 const ethUtil = require('ethereumjs-util')
 
