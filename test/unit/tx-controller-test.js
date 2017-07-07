@@ -18,7 +18,7 @@ describe('Transaction Controller', function () {
     txController = new TransactionController({
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
-      blockTracker: { getCurrentBlock: noop, on: noop },
+      blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
       provider: { sendAsync: noop },
       ethQuery: new EthQuery({ sendAsync: noop }),
       ethStore: { getState: noop },
