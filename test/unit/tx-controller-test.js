@@ -21,6 +21,7 @@ describe('Transaction Controller', function () {
       blockTracker: { getCurrentBlock: noop, on: noop },
       provider: { sendAsync: noop },
       ethQuery: new EthQuery({ sendAsync: noop }),
+      ethStore: { getState: noop },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()
@@ -318,4 +319,43 @@ describe('Transaction Controller', function () {
       })
     })
   })
+
+  describe('#_resubmitTx with a too-low balance', function () {
+    it('should fail the transaction', function (done) {
+      const from = '0xda0da0'
+      const txMeta = {
+        id: 1,
+        status: 'submitted',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          from,
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+      }
+
+      const lowBalance = '0x0'
+      const fakeStoreState = { accounts: {} }
+      fakeStoreState.accounts[from] = {
+        balance: lowBalance,
+        nonce: '0x0',
+      }
+
+      // Stubbing out current account state:
+      const getStateStub = sinon.stub(txController.ethStore, 'getState')
+      .returns(fakeStoreState)
+
+      // Adding the fake tx:
+      txController.addTx(clone(txMeta))
+
+      txController._resubmitTx(txMeta, function (err) {
+        assert.ifError(err, 'should not throw an error')
+        const updatedMeta = txController.getTx(txMeta.id)
+        assert.notEqual(updatedMeta.status, txMeta.status, 'status changed.')
+        assert.equal(updatedMeta.status, 'failed', 'tx set to failed.')
+        done()
+      })
+    })
+  })
 })
+
