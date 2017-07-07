@@ -249,9 +249,13 @@ module.exports = class TransactionController extends EventEmitter {
         but higher/same gas price"
         */
 
-        if (errorMessage !== 'replacement transaction underpriced' // geth
-        && errorMessage !== 'gas price too low to replace' // parity
-        && !errorMessage.startsWith('known transaction')) { // geth
+        // geth
+        if (errorMessage !== 'replacement transaction underpriced' 
+        // geth
+        && !errorMessage.startsWith('known transaction')
+        // parity
+        && errorMessage !== 'gas price too low to replace'
+        ) {
           this.setTxStatusFailed(txId)
         }
         return cb(err)
