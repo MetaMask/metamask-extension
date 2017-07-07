@@ -39,7 +39,6 @@ Network.prototype.render = function () {
       }),
       h('i.fa.fa-sort-desc'),
     ])
-
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
