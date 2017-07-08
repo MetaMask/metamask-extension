@@ -453,7 +453,7 @@ module.exports = class TransactionController extends EventEmitter {
     // if the value of the transaction is greater then the balance, fail.
     if (gtBalance) {
       const message = 'Insufficient balance.'
-      this.setTxStatusFailed(txMeta.id, message)
+      this.setTxStatusFailed(txMeta.id, { message })
       cb()
       return log.error(message)
     }
@@ -461,7 +461,7 @@ module.exports = class TransactionController extends EventEmitter {
     // if the nonce of the transaction is lower then the accounts nonce, fail.
     if (txNonce < nonce) {
       const message = 'Invalid nonce.'
-      this.setTxStatusFailed(txMeta.id, message)
+      this.setTxStatusFailed(txMeta.id, { message })
       cb()
       return log.error(message)
     }
