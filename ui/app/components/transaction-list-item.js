@@ -43,6 +43,7 @@ TransactionListItem.prototype.render = function () {
   const nonce = txParams.nonce ? numberToBN(txParams.nonce).toString(10) : ''
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
+  const isIgnored = (transaction.ignore && transaction.status === 'submitted')
   return (
     h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
       onClick: (event) => {
@@ -56,6 +57,7 @@ TransactionListItem.prototype.render = function () {
       },
       style: {
         padding: '20px 0',
+        color: isIgnored ? 'rgb(174, 174, 174)' : null,
       },
     }, [
 
@@ -114,7 +116,6 @@ function domainField (txParams) {
   return h('div', {
     style: {
       fontSize: 'x-small',
-      color: '#ABA9AA',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       width: '100%',
