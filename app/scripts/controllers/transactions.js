@@ -30,7 +30,6 @@ module.exports = class TransactionController extends EventEmitter {
           from: address,
           status: 'submitted',
           err: undefined,
-          ignore: undefined,
         })
       },
     })
