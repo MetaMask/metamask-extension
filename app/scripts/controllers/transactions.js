@@ -417,46 +417,42 @@ module.exports = class TransactionController extends EventEmitter {
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
     const resubmit = denodeify(this._resubmitTx.bind(this))
-    pending.forEach((txMeta) => resubmit(txMeta)
-    .catch((reason) => {
+    pending.forEach((txMeta) => resubmit(txMeta).catch((err) => {
       /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
       but higher/same gas price"
       */
-      const errorMessage = reason.message.toLowerCase()
+      const errorMessage = err.message.toLowerCase()
       const isKnownTx = (
         // geth
-        errorMessage === 'replacement transaction underpriced'
-        || errorMessage.startsWith('known transaction')
+        errorMessage.includes('replacement transaction underpriced')
+        || errorMessage.includes('known transaction')
         // parity
-        || errorMessage === 'gas price too low to replace'
+        || errorMessage.includes('gas price too low to replace')
+        || errorMessage.includes('transaction with the same hash was already imported')
+        // other
+        || errorMessage.includes('gateway timeout')
       )
       // ignore resubmit warnings, return early
-      if (!isKnownTx) this.setTxStatusFailed(txMeta.id, reason.message)
+      if (isKnownTx) return
+      // encountered real error - transition to error state
+      this.setTxStatusFailed(txMeta.id, {
+        errCode: err.errCode || err,
+        message: err.message,
+      })
     }))
   }
 
   _resubmitTx (txMeta, cb) {
     const address = txMeta.txParams.from
     const balance = this.ethStore.getState().accounts[address].balance
-    const nonce = Number.parseInt(this.ethStore.getState().accounts[address].nonce)
-    const txNonce = Number.parseInt(txMeta.txParams.nonce)
-    const gtBalance = Number.parseInt(txMeta.txParams.value) > Number.parseInt(balance)
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
     // if the value of the transaction is greater then the balance, fail.
-    if (gtBalance) {
+    if (!this.txProviderUtils.sufficientBalance(txMeta.txParams, balance)) {
       const message = 'Insufficient balance.'
-      this.setTxStatusFailed(txMeta.id, message)
-      cb()
-      return log.error(message)
-    }
-
-    // if the nonce of the transaction is lower then the accounts nonce, fail.
-    if (txNonce < nonce) {
-      const message = 'Invalid nonce.'
-      this.setTxStatusFailed(txMeta.id, message)
+      this.setTxStatusFailed(txMeta.id, { message })
       cb()
       return log.error(message)
     }

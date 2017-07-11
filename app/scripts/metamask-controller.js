@@ -367,7 +367,7 @@ module.exports = class MetamaskController extends EventEmitter {
     function onResponse (err, request, response) {
       if (err) return console.error(err)
       if (response.error) {
-        console.error('Error in RPC response:\n', response.error)
+        console.error('Error in RPC response:\n', response)
       }
       if (request.isMetamaskInternal) return
       log.info(`RPC (${originDomain}):`, request, '->', response)
