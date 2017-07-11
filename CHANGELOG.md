@@ -2,6 +2,13 @@
 
 ## Current Master
 
+- No longer validate nonce client-side in retry loop.
+- Fix bug where insufficient balance error was sometimes shown on successful transactions.
+
+## 3.8.4 2017-7-7
+
+- Improve transaction resubmit logic to fail more eagerly when a user would expect it to.
+
 ## 3.8.3 2017-7-6
 
 - Re-enable default token list.
