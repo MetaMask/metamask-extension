@@ -315,7 +315,7 @@ PendingTx.prototype.render = function () {
           // Accept Button
           h('input.confirm.btn-green', {
             type: 'submit',
-            value: 'ACCEPT',
+            value: 'SUBMIT',
             style: { marginLeft: '10px' },
             disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
           }),

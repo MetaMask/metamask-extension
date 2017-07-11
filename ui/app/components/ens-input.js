@@ -41,7 +41,6 @@ EnsInput.prototype.render = function () {
       this.checkName()
     },
   })
-
   return h('div', {
     style: { width: '100%' },
   }, [
@@ -55,6 +54,7 @@ EnsInput.prototype.render = function () {
           return h('option', {
             value: identity.address,
             label: identity.name,
+            key: identity.address,
           })
         }),
         // Corresponds to previously sent-to addresses.

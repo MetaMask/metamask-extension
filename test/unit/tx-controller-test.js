@@ -18,9 +18,10 @@ describe('Transaction Controller', function () {
     txController = new TransactionController({
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
-      blockTracker: { getCurrentBlock: noop, on: noop },
+      blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
       provider: { sendAsync: noop },
       ethQuery: new EthQuery({ sendAsync: noop }),
+      ethStore: { getState: noop },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()
@@ -269,7 +270,7 @@ describe('Transaction Controller', function () {
     })
 
 
-    it('does not overwrite set values', function (done) {
+    it('does not overwrite set values', function () {
       this.timeout(15000)
       const wrongValue = '0x05'
 
@@ -288,9 +289,7 @@ describe('Transaction Controller', function () {
       const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
       .callsArgWithAsync(1, null, originalValue)
 
-      txController.approveTransaction(txMeta.id).then((err) => {
-        assert.ifError(err, 'should not error')
-
+      return txController.approveTransaction(txMeta.id).then(() => {
         const result = txController.getTx(txMeta.id)
         const params = result.txParams
 
@@ -302,7 +301,6 @@ describe('Transaction Controller', function () {
         priceStub.restore()
         signStub.restore()
         pubStub.restore()
-        done()
       })
     })
   })
@@ -318,4 +316,43 @@ describe('Transaction Controller', function () {
       })
     })
   })
+
+  describe('#_resubmitTx with a too-low balance', function () {
+    it('should fail the transaction', function (done) {
+      const from = '0xda0da0'
+      const txMeta = {
+        id: 1,
+        status: 'submitted',
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          from,
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+      }
+
+      const lowBalance = '0x0'
+      const fakeStoreState = { accounts: {} }
+      fakeStoreState.accounts[from] = {
+        balance: lowBalance,
+        nonce: '0x0',
+      }
+
+      // Stubbing out current account state:
+      const getStateStub = sinon.stub(txController.ethStore, 'getState')
+      .returns(fakeStoreState)
+
+      // Adding the fake tx:
+      txController.addTx(clone(txMeta))
+
+      txController._resubmitTx(txMeta, function (err) {
+        assert.ifError(err, 'should not throw an error')
+        const updatedMeta = txController.getTx(txMeta.id)
+        assert.notEqual(updatedMeta.status, txMeta.status, 'status changed.')
+        assert.equal(updatedMeta.status, 'failed', 'tx set to failed.')
+        done()
+      })
+    })
+  })
 })
+

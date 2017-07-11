@@ -189,7 +189,7 @@ SendTransactionScreen.prototype.render = function () {
           style: {
             textTransform: 'uppercase',
           },
-        }, 'Send'),
+        }, 'Next'),
 
       ]),
 
@@ -244,7 +244,7 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
 
 SendTransactionScreen.prototype.onSubmit = function () {
   const state = this.state || {}
-  const recipient = state.recipient || document.querySelector('input[name="address"]').value
+  const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)

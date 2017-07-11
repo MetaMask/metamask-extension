@@ -8,8 +8,6 @@ const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
 
-const RETRY_LIMIT = 200
-
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
@@ -36,7 +34,10 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
-    this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this))
+    // this is a little messy but until ethstore has been either
+    // removed or redone this is to guard against the race condition
+    // where ethStore hasent been populated by the results yet
+    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this)))
     this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
     this.ethStore = opts.ethStore
@@ -162,13 +163,15 @@ module.exports = class TransactionController extends EventEmitter {
     const txParams = txMeta.txParams
     // ensure value
     txParams.value = txParams.value || '0x0'
-    this.query.gasPrice((err, gasPrice) => {
-      if (err) return cb(err)
-      // set gasPrice
-      txParams.gasPrice = gasPrice
-      // set gasLimit
-      this.txProviderUtils.analyzeGasUsage(txMeta, cb)
-    })
+    if (!txParams.gasPrice) {
+      this.query.gasPrice((err, gasPrice) => {
+        if (err) return cb(err)
+        // set gasPrice
+        txParams.gasPrice = gasPrice
+      })
+    }
+    // set gasLimit
+    this.txProviderUtils.analyzeGasUsage(txMeta, cb)
   }
 
   getUnapprovedTxList () {
@@ -429,10 +432,24 @@ module.exports = class TransactionController extends EventEmitter {
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
     const resubmit = denodeify(this._resubmitTx.bind(this))
-    Promise.all(pending.map(txMeta => resubmit(txMeta)))
+    pending.forEach((txMeta) => resubmit(txMeta)
     .catch((reason) => {
-      log.info('Problem resubmitting tx', reason)
-    })
+      /*
+      Dont marked as failed if the error is a "known" transaction warning
+      "there is already a transaction with the same sender-nonce
+      but higher/same gas price"
+      */
+      const errorMessage = reason.message.toLowerCase()
+      const isKnownTx = (
+        // geth
+        errorMessage === 'replacement transaction underpriced'
+        || errorMessage.startsWith('known transaction')
+        // parity
+        || errorMessage === 'gas price too low to replace'
+      )
+      // ignore resubmit warnings, return early
+      if (!isKnownTx) this.setTxStatusFailed(txMeta.id, reason.message)
+    }))
   }
 
   _resubmitTx (txMeta, cb) {
@@ -443,14 +460,24 @@ module.exports = class TransactionController extends EventEmitter {
     const gtBalance = Number.parseInt(txMeta.txParams.value) > Number.parseInt(balance)
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
-    // if the value of the transaction is greater then the balance
-    // or the nonce of the transaction is lower then the accounts nonce
-    // dont resubmit the tx
-    if (gtBalance || txNonce < nonce) return cb()
+    // if the value of the transaction is greater then the balance, fail.
+    if (gtBalance) {
+      const message = 'Insufficient balance.'
+      this.setTxStatusFailed(txMeta.id, message)
+      cb()
+      return log.error(message)
+    }
+
+    // if the nonce of the transaction is lower then the accounts nonce, fail.
+    if (txNonce < nonce) {
+      const message = 'Invalid nonce.'
+      this.setTxStatusFailed(txMeta.id, message)
+      cb()
+      return log.error(message)
+    }
+
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) return cb()
-
-    if (txMeta.retryCount > RETRY_LIMIT) return
 
     // Increment a try counter.
     txMeta.retryCount++

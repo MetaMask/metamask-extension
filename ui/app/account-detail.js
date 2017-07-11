@@ -35,6 +35,7 @@ function mapStateToProps (state) {
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     currentAccountTab: state.metamask.currentAccountTab,
+    tokens: state.metamask.tokens,
   }
 }
 
@@ -273,11 +274,16 @@ AccountDetailScreen.prototype.tabSections = function () {
 AccountDetailScreen.prototype.tabSwitchView = function () {
   const props = this.props
   const { address, network } = props
-  const { currentAccountTab } = this.props
+  const { currentAccountTab, tokens } = this.props
 
   switch (currentAccountTab) {
     case 'tokens':
-      return h(TokenList, { userAddress: address, network })
+      return h(TokenList, {
+        userAddress: address,
+        network,
+        tokens,
+        addToken: () => this.props.dispatch(actions.showAddTokenPage()),
+      })
     default:
       return this.transactionList()
   }

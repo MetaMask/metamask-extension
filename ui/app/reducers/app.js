@@ -103,7 +103,17 @@ function reduceApp (state, action) {
         transForward: action.value,
       })
 
+    case actions.SHOW_ADD_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'add-token',
+          context: appState.currentView.context,
+        },
+        transForward: action.value,
+      })
+
     case actions.SHOW_IMPORT_PAGE:
+
       return extend(appState, {
         currentView: {
           name: 'import-menu',

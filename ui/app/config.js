@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const currencies = require('./conversion.json').rows
 const validUrl = require('valid-url')
+const copyToClipboard = require('copy-to-clipboard')
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -85,8 +86,35 @@ ConfigScreen.prototype.render = function () {
               },
             }, 'Save'),
           ]),
+
           h('hr.horizontal-line'),
+
           currentConversionInformation(metamaskState, state),
+
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, `State logs contain your public account addresses and sent transactions.`),
+            h('br'),
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                copyToClipboard(window.logState())
+              },
+            }, 'Copy State Logs'),
+          ]),
+
           h('hr.horizontal-line'),
 
           h('div', {

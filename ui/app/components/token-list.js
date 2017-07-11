@@ -3,14 +3,15 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
-const contracts = require('eth-contract-metadata')
+const normalizeAddress = require('eth-sig-util').normalize
 
-const tokens = []
+const defaultTokens = []
+const contracts = require('eth-contract-metadata')
 for (const address in contracts) {
   const contract = contracts[address]
   if (contract.erc20) {
     contract.address = address
-    tokens.push(contract)
+    defaultTokens.push(contract)
   }
 }
 
@@ -18,15 +19,18 @@ module.exports = TokenList
 
 inherits(TokenList, Component)
 function TokenList () {
-  this.state = { tokens, isLoading: true, network: null }
+  this.state = {
+    tokens: [],
+    isLoading: true,
+    network: null,
+  }
   Component.call(this)
 }
 
 TokenList.prototype.render = function () {
   const state = this.state
   const { tokens, isLoading, error } = state
-
-  const { userAddress } = this.props
+  const { userAddress, network } = this.props
 
   if (isLoading) {
     return this.message('Loading')
@@ -37,40 +41,65 @@ TokenList.prototype.render = function () {
     return this.message('There was a problem loading your token balances.')
   }
 
-  const network = this.props.network
-
   const tokenViews = tokens.map((tokenData) => {
     tokenData.network = network
     tokenData.userAddress = userAddress
     return h(TokenCell, tokenData)
   })
 
-  return (
+  return h('div', [
     h('ol', {
       style: {
-        height: '302px',
+        height: '260px',
         overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
       },
-    }, [h('style', `
+    }, [
+      h('style', `
 
-    li.token-cell {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 10px;
-    }
+        li.token-cell {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 10px;
+        }
 
-    li.token-cell > h3 {
-      margin-left: 12px;
-    }
+        li.token-cell > h3 {
+          margin-left: 12px;
+        }
 
-    li.token-cell:hover {
-      background: white;
-      cursor: pointer;
-    }
+        li.token-cell:hover {
+          background: white;
+          cursor: pointer;
+        }
 
-    `)].concat(tokenViews.length ? tokenViews : this.message('No Tokens Found.')))
-  )
+      `),
+      ...tokenViews,
+      tokenViews.length ? null : this.message('No Tokens Found.'),
+    ]),
+    this.addTokenButtonElement(),
+  ])
+}
+
+TokenList.prototype.addTokenButtonElement = function () {
+  return h('div', [
+    h('div.footer.hover-white.pointer', {
+      key: 'reveal-account-bar',
+      onClick: () => {
+        this.props.addToken()
+      },
+      style: {
+        display: 'flex',
+        height: '40px',
+        padding: '10px',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    }, [
+      h('i.fa.fa-plus.fa-lg'),
+    ]),
+  ])
 }
 
 TokenList.prototype.message = function (body) {
@@ -80,6 +109,7 @@ TokenList.prototype.message = function (body) {
       height: '250px',
       alignItems: 'center',
       justifyContent: 'center',
+      padding: '30px',
     },
   }, body)
 }
@@ -101,7 +131,7 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: tokens,
+    tokens: uniqueMergeTokens(defaultTokens, this.props.tokens),
     pollingInterval: 8000,
   })
 
@@ -135,13 +165,28 @@ TokenList.prototype.componentWillUpdate = function (nextProps) {
   }
 }
 
-TokenList.prototype.updateBalances = function (tokenData) {
-  const heldTokens = tokenData.filter(token => token.balance !== '0' && token.string !== '0.000')
+TokenList.prototype.updateBalances = function (tokens) {
+  const heldTokens = tokens.filter(token => {
+    return token.balance !== '0' && token.string !== '0.000'
+  })
   this.setState({ tokens: heldTokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
+}
+
+function uniqueMergeTokens (tokensA, tokensB) {
+  const uniqueAddresses = []
+  const result = []
+  tokensA.concat(tokensB).forEach((token) => {
+    const normal = normalizeAddress(token.address)
+    if (!uniqueAddresses.includes(normal)) {
+      uniqueAddresses.push(normal)
+      result.push(token)
+    }
+  })
+  return result
 }
 
