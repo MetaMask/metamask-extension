@@ -118,6 +118,15 @@ module.exports = class txProviderUtils {
     }
   }
 
+  sufficientBalance (tx, hexBalance) {
+    const balance = hexToBn(hexBalance)
+    const value = hexToBn(tx.value)
+    const gasLimit = hexToBn(tx.gas)
+    const gasPrice = hexToBn(tx.gasPrice)
+
+    const maxCost = value.add(gasLimit.mul(gasPrice))
+    return balance.gte(maxCost)
+  }
 
 }
 

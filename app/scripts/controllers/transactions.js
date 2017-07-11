@@ -445,13 +445,10 @@ module.exports = class TransactionController extends EventEmitter {
   _resubmitTx (txMeta, cb) {
     const address = txMeta.txParams.from
     const balance = this.ethStore.getState().accounts[address].balance
-    const nonce = Number.parseInt(this.ethStore.getState().accounts[address].nonce)
-    const txNonce = Number.parseInt(txMeta.txParams.nonce)
-    const gtBalance = Number.parseInt(txMeta.txParams.value) > Number.parseInt(balance)
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
     // if the value of the transaction is greater then the balance, fail.
-    if (gtBalance) {
+    if (!this.txProviderUtils.sufficientBalance(txMeta.txParams, balance)) {
       const message = 'Insufficient balance.'
       this.setTxStatusFailed(txMeta.id, { message })
       cb()
