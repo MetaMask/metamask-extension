@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- No longer validate nonce client-side in retry loop.
+
 ## 3.8.4 2017-7-7
 
 - Improve transaction resubmit logic to fail more eagerly when a user would expect it to.

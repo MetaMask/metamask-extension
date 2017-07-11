@@ -458,14 +458,6 @@ module.exports = class TransactionController extends EventEmitter {
       return log.error(message)
     }
 
-    // if the nonce of the transaction is lower then the accounts nonce, fail.
-    if (txNonce < nonce) {
-      const message = 'Invalid nonce.'
-      this.setTxStatusFailed(txMeta.id, { message })
-      cb()
-      return log.error(message)
-    }
-
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) return cb()
 
