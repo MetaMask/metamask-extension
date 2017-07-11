@@ -427,10 +427,12 @@ module.exports = class TransactionController extends EventEmitter {
       const isKnownTx = (
         // geth
         errorMessage === 'replacement transaction underpriced'
-        || errorMessage.startsWith('known transaction')
+        || errorMessage.includes('known transaction')
         // parity
         || errorMessage === 'gas price too low to replace'
         || errorMessage === 'transaction with the same hash was already imported.'
+        // other
+        || errorMessage.includes('gateway timeout')
       )
       // ignore resubmit warnings, return early
       if (isKnownTx) return
