@@ -3,6 +3,10 @@
 ## Current Master
 
 - Now detects and blocks known phishing sites.
+
+## 3.8.6 2017-7-11
+
+- Make transaction resubmission more resilient.
 - No longer validate nonce client-side in retry loop.
 - Fix bug where insufficient balance error was sometimes shown on successful transactions.
 
