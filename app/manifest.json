@@ -56,8 +56,7 @@
     {
       "run_at": "document_end",
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["scripts/blacklister.js"],
-      "css": ["css/blacklister.css"]
+      "js": ["scripts/blacklister.js"]
     }
   ],
   "permissions": [
