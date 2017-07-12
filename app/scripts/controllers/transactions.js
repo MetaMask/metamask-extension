@@ -183,7 +183,7 @@ module.exports = class TransactionController extends EventEmitter {
     }, {})
   }
 
-  async approveTransaction (txId, cb = warn) {
+  async approveTransaction (txId) {
     let nonceLock
     try {
       // approve
@@ -199,7 +199,6 @@ module.exports = class TransactionController extends EventEmitter {
       await this.publishTransaction(txId, rawTx)
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
-      cb()
     } catch (err) {
       this.setTxStatusFailed(txId, {
         errCode: err.errCode || err,
@@ -208,13 +207,18 @@ module.exports = class TransactionController extends EventEmitter {
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) nonceLock.releaseLock()
       // continue with error chain
-      cb(err)
+      throw err
     }
   }
 
   cancelTransaction (txId, cb = warn) {
     this.setTxStatusRejected(txId)
     cb()
+  }
+
+  async updateAndApproveTransaction (txMeta) {
+    this.updateTx(txMeta)
+    await this.approveTransaction(txMeta.id)
   }
 
   getChainId () {
