@@ -68,7 +68,7 @@
     "eth-sig-util": "^1.1.1",
     "eth-simple-keyring": "^1.1.1",
     "eth-token-tracker": "^1.1.2",
-    "etheraddresslookup": "github:407H/EtherAddressLookup",
+    "etheraddresslookup": "github:409H/EtherAddressLookup",
     "ethereumjs-tx": "^1.3.0",
     "ethereumjs-util": "ethereumjs/ethereumjs-util#ac5d0908536b447083ea422b435da27f26615de9",
     "ethereumjs-wallet": "^0.6.0",
