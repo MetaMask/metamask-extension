@@ -11,7 +11,7 @@ describe('nodeify', function () {
   }
 
   it('should retain original context', function (done) {
-    var nodified = nodeify(obj.promiseFunc).bind(obj)
+    var nodified = nodeify(obj.promiseFunc, obj)
     nodified('baz', function (err, res) {
       assert.equal(res, 'barbaz')
       done()

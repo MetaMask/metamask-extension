@@ -1,4 +1,4 @@
-const promiseToCallback = require('promise-to-callback');
+const promiseToCallback = require('promise-to-callback')
 
 module.exports = function(fn, context) {
   return function(){
