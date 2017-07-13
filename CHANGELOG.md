@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Now redirects from known malicious sites faster.
+
 ## 3.9.0 2017-7-12
 
 - Now detects and blocks known phishing sites.
