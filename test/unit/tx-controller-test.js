@@ -1,5 +1,4 @@
 const assert = require('assert')
-const EventEmitter = require('events')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const EthQuery = require('eth-query')
@@ -19,15 +18,16 @@ describe('Transaction Controller', function () {
     txController = new TransactionController({
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
+      blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
+      provider: { sendAsync: noop },
+      ethQuery: new EthQuery({ sendAsync: noop }),
       ethStore: { getState: noop },
-      provider: { _blockTracker: new EventEmitter()},
-      blockTracker: new EventEmitter(),
-      ethQuery: new EthQuery(new EventEmitter()),
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()
       }),
     })
+    txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
   })
 
   describe('#validateTxParams', function () {
@@ -271,56 +271,47 @@ describe('Transaction Controller', function () {
 
 
     it('does not overwrite set values', function (done) {
+      this.timeout(15000)
       const wrongValue = '0x05'
 
       txController.addTx(txMeta)
 
       const estimateStub = sinon.stub(txController.txProviderUtils.query, 'estimateGas')
-      .callsArgWith(1, null, wrongValue)
+      .callsArgWithAsync(1, null, wrongValue)
 
       const priceStub = sinon.stub(txController.txProviderUtils.query, 'gasPrice')
-      .callsArgWith(0, null, wrongValue)
+      .callsArgWithAsync(0, null, wrongValue)
 
-      const nonceStub = sinon.stub(txController.txProviderUtils.query, 'getTransactionCount')
-      .callsArgWith(2, null, wrongValue)
 
-      const signStub = sinon.stub(txController, 'signTransaction')
-      .callsArgWith(1, null, noop)
+      const signStub = sinon.stub(txController, 'signTransaction', () => Promise.resolve())
 
-      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
-      .callsArgWith(1, null, originalValue)
+      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction', () => Promise.resolve(originalValue))
 
-      txController.approveTransaction(txMeta.id, (err) => {
-        assert.ifError(err, 'should not error')
-
+      txController.approveTransaction(txMeta.id).then(() => {
         const result = txController.getTx(txMeta.id)
         const params = result.txParams
 
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
-        assert.equal(params.nonce, originalValue, 'nonce unmodified')
-        assert.equal(result.hash, originalValue, 'hash was set')
+        assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
 
         estimateStub.restore()
         priceStub.restore()
         signStub.restore()
-        nonceStub.restore()
         pubStub.restore()
-
         done()
-      })
+      }).catch(done)
     })
   })
 
   describe('#sign replay-protected tx', function () {
     it('prepares a tx with the chainId set', function (done) {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.signTransaction('1', (err, rawTx) => {
-        if (err) return done('it should not fail')
+      txController.signTransaction('1').then((rawTx) => {
         const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
         assert.equal(ethTx.getChainId(), currentNetworkId)
         done()
-      })
+      }).catch(done)
     })
   })
 

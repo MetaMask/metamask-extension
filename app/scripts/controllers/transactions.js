@@ -1,12 +1,11 @@
 const EventEmitter = require('events')
 const async = require('async')
 const extend = require('xtend')
-const Semaphore = require('semaphore')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
-const denodeify = require('denodeify')
+const NonceTracker = require('../lib/nonce-tracker')
 
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
@@ -20,6 +19,17 @@ module.exports = class TransactionController extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
+    this.nonceTracker = new NonceTracker({
+      provider: this.provider,
+      blockTracker: this.provider._blockTracker,
+      getPendingTransactions: (address) => {
+        return this.getFilteredTxList({
+          from: address,
+          status: 'submitted',
+          err: undefined,
+        })
+      },
+    })
     this.query = opts.ethQuery
     this.txProviderUtils = new TxProviderUtil(this.query)
     this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
@@ -29,7 +39,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this)))
     this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
     this.signEthTx = opts.signTransaction
-    this.nonceLock = Semaphore(1)
     this.ethStore = opts.ethStore
     // memstore is computed from a few different stores
     this._updateMemstore()
@@ -173,29 +182,32 @@ module.exports = class TransactionController extends EventEmitter {
     }, {})
   }
 
-  approveTransaction (txId, cb = warn) {
-    const self = this
-    // approve
-    self.setTxStatusApproved(txId)
-    // only allow one tx at a time for atomic nonce usage
-    self.nonceLock.take(() => {
-      // begin signature process
-      async.waterfall([
-        (cb) => self.fillInTxParams(txId, cb),
-        (cb) => self.signTransaction(txId, cb),
-        (rawTx, cb) => self.publishTransaction(txId, rawTx, cb),
-      ], (err) => {
-        self.nonceLock.leave()
-        if (err) {
-          this.setTxStatusFailed(txId, {
-            errCode: err.errCode || err,
-            message: err.message || 'Transaction failed during approval',
-          })
-          return cb(err)
-        }
-        cb()
+  async approveTransaction (txId) {
+    let nonceLock
+    try {
+      // approve
+      this.setTxStatusApproved(txId)
+      // get next nonce
+      const txMeta = this.getTx(txId)
+      const fromAddress = txMeta.txParams.from
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+      txMeta.txParams.nonce = nonceLock.nextNonce
+      this.updateTx(txMeta)
+      // sign transaction
+      const rawTx = await this.signTransaction(txId)
+      await this.publishTransaction(txId, rawTx)
+      // must set transaction to submitted/failed before releasing lock
+      nonceLock.releaseLock()
+    } catch (err) {
+      this.setTxStatusFailed(txId, {
+        errCode: err.errCode || err,
+        message: err.message || 'Transaction failed during approval',
       })
-    })
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) nonceLock.releaseLock()
+      // continue with error chain
+      throw err
+    }
   }
 
   cancelTransaction (txId, cb = warn) {
@@ -203,13 +215,9 @@ module.exports = class TransactionController extends EventEmitter {
     cb()
   }
 
-  fillInTxParams (txId, cb) {
-    const txMeta = this.getTx(txId)
-    this.txProviderUtils.fillInTxParams(txMeta.txParams, (err) => {
-      if (err) return cb(err)
-      this.updateTx(txMeta)
-      cb()
-    })
+  async updateAndApproveTransaction (txMeta) {
+    this.updateTx(txMeta)
+    await this.approveTransaction(txMeta.id)
   }
 
   getChainId () {
@@ -222,31 +230,27 @@ module.exports = class TransactionController extends EventEmitter {
     }
   }
 
-  signTransaction (txId, cb) {
+  async signTransaction (txId) {
     const txMeta = this.getTx(txId)
     const txParams = txMeta.txParams
     const fromAddress = txParams.from
     // add network/chain id
     txParams.chainId = this.getChainId()
     const ethTx = this.txProviderUtils.buildEthTxFromParams(txParams)
-    this.signEthTx(ethTx, fromAddress).then(() => {
+    const rawTx = await this.signEthTx(ethTx, fromAddress).then(() => {
       this.setTxStatusSigned(txMeta.id)
-      cb(null, ethUtil.bufferToHex(ethTx.serialize()))
-    }).catch((err) => {
-      cb(err)
+      return ethUtil.bufferToHex(ethTx.serialize())
     })
+    return rawTx
   }
 
-  publishTransaction (txId, rawTx, cb = warn) {
+  async publishTransaction (txId, rawTx) {
     const txMeta = this.getTx(txId)
     txMeta.rawTx = rawTx
     this.updateTx(txMeta)
-
-    this.txProviderUtils.publishTransaction(rawTx, (err, txHash) => {
-      if (err) return cb(err)
+    await this.txProviderUtils.publishTransaction(rawTx).then((txHash) => {
       this.setTxHash(txId, txHash)
       this.setTxStatusSubmitted(txId)
-      cb()
     })
   }
 
@@ -264,9 +268,18 @@ module.exports = class TransactionController extends EventEmitter {
     to: '0x0..',
     from: '0x0..',
     status: 'signed',
+    err: undefined,
   }
   and returns a list of tx with all
   options matching
+
+  ****************HINT****************
+  | `err: undefined` is like looking |
+  | for a tx with no err             |
+  | so you can also search txs that  |
+  | dont have something as well by   |
+  | setting the value as undefined   |
+  ************************************
 
   this is for things like filtering a the tx list
   for only tx's from 1 account
@@ -416,8 +429,7 @@ module.exports = class TransactionController extends EventEmitter {
     const pending = this.getTxsByMetaData('status', 'submitted')
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
-    const resubmit = denodeify(this._resubmitTx.bind(this))
-    pending.forEach((txMeta) => resubmit(txMeta).catch((err) => {
+    pending.forEach((txMeta) => this._resubmitTx(txMeta).catch((err) => {
       /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
@@ -445,7 +457,7 @@ module.exports = class TransactionController extends EventEmitter {
     }))
   }
 
-  _resubmitTx (txMeta, cb) {
+  async _resubmitTx (txMeta, cb) {
     const address = txMeta.txParams.from
     const balance = this.ethStore.getState().accounts[address].balance
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
@@ -464,7 +476,7 @@ module.exports = class TransactionController extends EventEmitter {
     // Increment a try counter.
     txMeta.retryCount++
     const rawTx = txMeta.rawTx
-    this.txProviderUtils.publishTransaction(rawTx, cb)
+    return await this.txProviderUtils.publishTransaction(rawTx, cb)
   }
 
   // checks the network for signed txs and
