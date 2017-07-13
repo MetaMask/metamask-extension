@@ -106,8 +106,13 @@ module.exports = class txProviderUtils {
     return ethTx
   }
 
-  publishTransaction (rawTx, cb) {
-    this.query.sendRawTransaction(rawTx, cb)
+  publishTransaction (rawTx) {
+    return new Promise((resolve, reject) => {
+      this.query.sendRawTransaction(rawTx, (err, ress) => {
+        if (err) reject(err)
+        else resolve(ress)
+      })
+    })
   }
 
   validateTxParams (txParams, cb) {

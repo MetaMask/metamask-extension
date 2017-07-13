@@ -270,7 +270,7 @@ describe('Transaction Controller', function () {
     })
 
 
-    it('does not overwrite set values', function () {
+    it('does not overwrite set values', function (done) {
       this.timeout(15000)
       const wrongValue = '0x05'
 
@@ -283,37 +283,35 @@ describe('Transaction Controller', function () {
       .callsArgWithAsync(0, null, wrongValue)
 
 
-      const signStub = sinon.stub(txController, 'signTransaction')
-      .callsArgWithAsync(1, null, noop)
+      const signStub = sinon.stub(txController, 'signTransaction', () => Promise.resolve())
 
-      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction')
-      .callsArgWithAsync(1, null, originalValue)
+      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction', () => Promise.resolve(originalValue))
 
-      return txController.approveTransaction(txMeta.id).then(() => {
+      txController.approveTransaction(txMeta.id).then(() => {
         const result = txController.getTx(txMeta.id)
         const params = result.txParams
 
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
-        assert.equal(result.hash, originalValue, 'hash was set')
+        assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
 
         estimateStub.restore()
         priceStub.restore()
         signStub.restore()
         pubStub.restore()
-      })
+        done()
+      }).catch(done)
     })
   })
 
   describe('#sign replay-protected tx', function () {
     it('prepares a tx with the chainId set', function (done) {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.signTransaction('1', (err, rawTx) => {
-        if (err) return done('it should not fail')
+      txController.signTransaction('1').then((rawTx) => {
         const ethTx = new EthTx(ethUtil.toBuffer(rawTx))
         assert.equal(ethTx.getChainId(), currentNetworkId)
         done()
-      })
+      }).catch(done)
     })
   })
 
