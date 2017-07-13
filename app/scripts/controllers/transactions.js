@@ -433,6 +433,7 @@ module.exports = class TransactionController extends EventEmitter {
         || errorMessage.includes('transaction with the same hash was already imported')
         // other
         || errorMessage.includes('gateway timeout')
+        || errorMessage.includes('nonce too low')
       )
       // ignore resubmit warnings, return early
       if (isKnownTx) return
