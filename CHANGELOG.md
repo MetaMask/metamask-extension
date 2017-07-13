@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.9.0 2017-7-12
+
 - Now detects and blocks known phishing sites.
 
 ## 3.8.6 2017-7-11

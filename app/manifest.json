@@ -1,7 +1,7 @@
 {
   "name": "MetaMask",
   "short_name": "Metamask",
-  "version": "3.8.6",
+  "version": "3.9.0",
   "manifest_version": 2,
   "author": "https://metamask.io",
   "description": "Ethereum Browser Extension",
@@ -56,8 +56,7 @@
     {
       "run_at": "document_end",
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["scripts/blacklister.js"],
-      "css": ["css/blacklister.css"]
+      "js": ["scripts/blacklister.js"]
     }
   ],
   "permissions": [
