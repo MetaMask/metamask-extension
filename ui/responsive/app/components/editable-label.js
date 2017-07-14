@@ -30,12 +30,15 @@ EditableLabel.prototype.render = function () {
   } else {
     return h('div.name-label', {
       onClick: (event) => {
-        this.setState({ isEditingLabel: true })
+        if (event.target.getAttribute('name') === 'edit') {
+          this.setState({ isEditingLabel: true })
+        }
       },
     }, this.props.children)
   }
 }
-
+// class = edit-text
+// name = edit
 EditableLabel.prototype.saveIfEnter = function (event) {
   if (event.key === 'Enter') {
     this.saveText()

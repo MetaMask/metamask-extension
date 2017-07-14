@@ -18,6 +18,8 @@ const EditableLabel = require('./components/editable-label')
 const Tooltip = require('./components/tooltip')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
+const AccountOptionsMenus = require('./components/account-options-menus').AccountOptionsMenus;
+console.log("AOM",AccountOptionsMenus);
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -51,6 +53,8 @@ AccountDetailScreen.prototype.render = function () {
   var identity = props.identities[selected]
   var account = props.accounts[selected]
   const { network, conversionRate, currentCurrency } = props
+  console.log("identity:", identity);
+  console.log("result:", identity && identity.name);
 
   return (
 
@@ -99,7 +103,10 @@ AccountDetailScreen.prototype.render = function () {
 
               // What is shown when not editing + edit text:
               h('label.editing-label', [h('.edit-text', 'edit')]),
-              h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
+              h('h2.font-medium.color-forest', {name: 'edit'}, [
+                identity && identity.name,
+                h(AccountOptionsMenus, { style: { marginLeft: '35%' }}, []),
+              ]),
             ]),
             h('.flex-row', {
               style: {

@@ -26,6 +26,7 @@ const Loading = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
 const MenuDroppo = require('menu-droppo')
 const DropMenuItem = require('./components/drop-menu-item')
+import { Dropdown, DropdownMenuItem } from './components/dropdown';
 const NetworkIndicator = require('./components/network')
 const Tooltip = require('./components/tooltip')
 const BuyView = require('./components/buy-button-subview')
@@ -295,7 +296,7 @@ App.prototype.renderDropdown = function () {
   const state = this.state || {}
   const isOpen = state.isMainMenuOpen
 
-  return h(MenuDroppo, {
+  return h(Dropdown, {
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
@@ -306,43 +307,27 @@ App.prototype.renderDropdown = function () {
       right: 0,
       top: '36px',
     },
-    innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-    },
+    innerStyle: {},
   }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
-
-    h(DropMenuItem, {
-      label: 'Settings',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg'),
-    }),
+      onClick: () => this.props.dispatch(actions.showConfigPage()),
+    }, 'Settings'),
 
-    h(DropMenuItem, {
-      label: 'Import Account',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showImportPage()),
-      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
-    }),
+      onClick: () => this.props.dispatch(actions.showImportPage()),
+    }, 'Import Account'),
 
-    h(DropMenuItem, {
-      label: 'Lock',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg'),
-    }),
+      onClick: () => this.props.dispatch(actions.lockMetamask()),
+    }, 'Lock'),
 
-    h(DropMenuItem, {
-      label: 'Info/Help',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg'),
-    }),
+      onClick: () => this.props.dispatch(actions.showInfoPage()),
+    }, 'Info/Help'),
   ])
 }
 
