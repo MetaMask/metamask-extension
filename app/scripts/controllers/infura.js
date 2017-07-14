@@ -26,6 +26,7 @@ class InfuraController {
         this.store.updateState({
           infuraNetworkStatus: parsedResponse,
         })
+        return parsedResponse
       })
   }
 
