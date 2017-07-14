@@ -1,57 +1,61 @@
 const assert = require('assert')
+const sinon = require('sinon')
 const InfuraController = require('../../app/scripts/controllers/infura')
 
 describe('infura-controller', function () {
-  let infuraController
-  let response
+  let infuraController, sandbox, networkStatus
+  const response = {'mainnet': 'degraded', 'ropsten': 'ok', 'kovan': 'ok', 'rinkeby': 'down'}
 
   before(async function () {
     infuraController = new InfuraController()
-    response = await infuraController.checkInfuraNetworkStatus()
+    sandbox = sinon.sandbox.create()
+    sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
+    networkStatus = await infuraController.checkInfuraNetworkStatus()
+  })
+
+  after(function () {
+    sandbox.restore()
   })
 
   describe('Network status queries', function () {
-    it('should return object/json', function () {
-      assert.equal(typeof response, 'object')
-    })
 
     describe('Mainnet', function () {
       it('should have Mainnet', function () {
-        assert.equal(Object.keys(response)[0], 'mainnet')
+        assert.equal(Object.keys(networkStatus)[0], 'mainnet')
       })
 
       it('should have a value for Mainnet status', function () {
-        assert(response.mainnet, 'Mainnet status')
+        assert.equal(networkStatus.mainnet, 'degraded')
       })
     })
 
     describe('Ropsten', function () {
       it('should have Ropsten', function () {
-        assert.equal(Object.keys(response)[1], 'ropsten')
+        assert.equal(Object.keys(networkStatus)[1], 'ropsten')
       })
 
       it('should have a value for Ropsten status', function () {
-        assert(response.ropsten, 'Ropsten status')
+        assert.equal(networkStatus.ropsten, 'ok')
       })
     })
 
     describe('Kovan', function () {
       it('should have Kovan', function () {
-        assert.equal(Object.keys(response)[2], 'kovan')
+        assert.equal(Object.keys(networkStatus)[2], 'kovan')
       })
 
       it('should have a value for Kovan status', function () {
-        assert(response.kovan, 'Kovan status')
+        assert.equal(networkStatus.kovan, 'ok')
       })
     })
 
     describe('Rinkeby', function () {
       it('should have Rinkeby', function () {
-        assert.equal(Object.keys(response)[3], 'rinkeby')
+        assert.equal(Object.keys(networkStatus)[3], 'rinkeby')
       })
 
       it('should have a value for Rinkeby status', function () {
-        assert(response.rinkeby, 'Rinkeby status')
+        assert.equal(networkStatus.rinkeby, 'down')
       })
     })
   })
