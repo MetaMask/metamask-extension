@@ -2,7 +2,7 @@ const assert = require('assert')
 const InfuraController = require('../../app/scripts/controllers/infura')
 
 describe('infura-controller', function () {
-  var infuraController
+  let infuraController
   let response
 
   before(async function () {
