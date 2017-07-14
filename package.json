@@ -176,7 +176,7 @@
     "react-addons-test-utils": "^15.5.1",
     "react-test-renderer": "^15.5.4",
     "react-testutils-additions": "^15.2.0",
-    "sinon": "^1.17.3",
+    "sinon": "^2.3.8",
     "tape": "^4.5.1",
     "testem": "^1.10.3",
     "uglifyify": "^3.0.1",
