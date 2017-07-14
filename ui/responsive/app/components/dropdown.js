@@ -21,7 +21,16 @@ class Dropdown extends Component {
           boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
         },
       },
-      children,
+      [
+        h(
+          'style',
+          `
+          li.dropdown-menu-item:hover { color:rgb(225, 225, 225); }
+          li.dropdown-menu-item { color: rgb(185, 185, 185); }
+          `
+        ),
+        ...children,
+      ],
     );
   }
 }
@@ -38,7 +47,7 @@ class DropdownMenuItem extends Component {
     const { onClick, closeMenu, children } = this.props;
 
     return h(
-      'li',
+      'li.dropdown-menu-item',
       {
         onClick,
         closeMenu,
@@ -48,7 +57,6 @@ class DropdownMenuItem extends Component {
           fontSize: '12px',
           fontStyle: 'normal',
           fontFamily: 'Montserrat Regular',
-          color: 'rgb(185, 185, 185)',
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'flex-start',
