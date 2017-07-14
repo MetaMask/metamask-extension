@@ -48,17 +48,17 @@ class AccountOptionsMenus extends Component {
           'i.fa.fa-ellipsis-h',
           {
             style: { 'marginLeft': '10px'},
-            onClick: () => { this.setState({ switchingMenuActive: !this.state.switchingMenuActive }) }
+            onClick: (event) => {
+              event.stopPropagation();
+              this.setState({ overflowMenuActive: !this.state.overflowMenuActive })
+            }
           },
           [
             h(
               Dropdown,
               {
                 isOpen: this.state.overflowMenuActive,
-                onClickOutside: (event) => {
-                  event.stopPropagation();
-                  this.setState({ overflowMenuActive: false})
-                }
+                onClickOutside: () => { this.setState({ overflowMenuActive: false})}
               },
               [
                 h(DropdownMenuItem, {
