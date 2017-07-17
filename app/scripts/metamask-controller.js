@@ -20,7 +20,6 @@ const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
 const ConfigManager = require('./lib/config-manager')
-const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -89,9 +88,6 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
-    })
-    this.keyringController.on('newVault', (address) => {
-      autoFaucet(address)
     })
 
     // address book controller
