@@ -28,3 +28,4 @@ notes.txt
 
 coverage/
 .coveralls.yml
+.nyc_output
