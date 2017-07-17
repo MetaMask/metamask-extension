@@ -3,6 +3,7 @@
 ## Current Master
 
 - Now redirects from known malicious sites faster.
+- Added a link to our new support page to the help screen.
 
 ## 3.9.0 2017-7-12
 
