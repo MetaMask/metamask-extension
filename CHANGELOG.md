@@ -4,6 +4,7 @@
 
 - Now redirects from known malicious sites faster.
 - Added a link to our new support page to the help screen.
+- Fixed bug where a new transaction would be shown over the current transaction, creating a possible timing attack against user confirmation.
 
 ## 3.9.0 2017-7-12
 
