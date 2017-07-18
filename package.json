@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "async": "^1.5.2",
+    "await-semaphore": "^0.1.1",
     "babel-runtime": "^6.23.0",
     "bip39": "^2.2.0",
     "bluebird": "^3.5.0",

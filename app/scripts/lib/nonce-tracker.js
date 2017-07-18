@@ -1,5 +1,6 @@
 const EthQuery = require('eth-query')
 const assert = require('assert')
+const Mutex = require('await-semaphore').Mutex
 
 class NonceTracker {
 
@@ -13,10 +14,8 @@ class NonceTracker {
   // releaseLock must be called
   // releaseLock must be called after adding signed tx to pending transactions (or discarding)
   async getNonceLock (address) {
-    // await lock free
-    await this.lockMap[address]
-    // take lock
-    const releaseLock = this._takeLock(address)
+    // await lock free, then take lock
+    const releaseLock = await this._takeMutex(address)
     // calculate next nonce
     // we need to make sure our base count
     // and pending count are from the same block
@@ -41,13 +40,18 @@ class NonceTracker {
     })
   }
 
-  _takeLock (lockId) {
-    let releaseLock = null
-    // create and store lock
-    const lock = new Promise((resolve, reject) => { releaseLock = resolve })
-    this.lockMap[lockId] = lock
-    // setup lock teardown
-    lock.then(() => delete this.lockMap[lockId])
+  _lookupMutex (lockId) {
+    let mutex = this.lockMap[lockId]
+    if (!mutex) {
+      mutex = new Mutex()
+      this.lockMap[lockId] = mutex
+    }
+    return mutex
+  }
+
+  async _takeMutex (lockId) {
+    const mutex = this._lookupMutex(lockId)
+    const releaseLock = await mutex.acquire()
     return releaseLock
   }
 
