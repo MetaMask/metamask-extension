@@ -1,4 +1,5 @@
 const EthQuery = require('eth-query')
+const assert = require('assert')
 
 class NonceTracker {
 
@@ -21,10 +22,15 @@ class NonceTracker {
     // and pending count are from the same block
     const currentBlock = await this._getCurrentBlock()
     const pendingTransactions = this.getPendingTransactions(address)
-    const baseCount = await this._getTxCount(address, currentBlock)
-    const nextNonce = parseInt(baseCount) + pendingTransactions.length
+    const pendingCount = pendingTransactions.length
+    assert(Number.isInteger(pendingCount), 'nonce-tracker - pendingCount is an integer')
+    const baseCountHex = await this._getTxCount(address, currentBlock)
+    const baseCount = parseInt(baseCountHex, 16)
+    assert(Number.isInteger(baseCount), 'nonce-tracker - baseCount is an integer')
+    const nextNonce = baseCount + pendingCount
+    assert(Number.isInteger(nextNonce), 'nonce-tracker - nextNonce is an integer')
     // return next nonce and release cb
-    return { nextNonce: nextNonce.toString(16), releaseLock }
+    return { nextNonce: '0x' + nextNonce.toString(16), releaseLock }
   }
 
   async _getCurrentBlock () {
