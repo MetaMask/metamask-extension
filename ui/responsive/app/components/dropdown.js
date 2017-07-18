@@ -1,11 +1,13 @@
-const Component = require('react').Component;
-const PropTypes = require('react').PropTypes;
-const h = require('react-hyperscript');
-const MenuDroppo = require('menu-droppo');
+const Component = require('react').Component
+const PropTypes = require('react').PropTypes
+const h = require('react-hyperscript')
+const MenuDroppo = require('menu-droppo')
+
+const noop = () => {}
 
 class Dropdown extends Component {
-  render() {
-    const { isOpen, onClickOutside, style, children } = this.props;
+  render () {
+    const { isOpen, onClickOutside, style, children } = this.props
 
     return h(
       MenuDroppo,
@@ -30,27 +32,34 @@ class Dropdown extends Component {
           `
         ),
         ...children,
-      ],
-    );
+      ]
+    )
   }
 }
 
+Dropdown.defaultProps = {
+  isOpen: false,
+  onClick: noop,
+}
+
 Dropdown.propTypes = {
-  isOpen: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
-  style: PropTypes.object.isRequired,  
+  style: PropTypes.object.isRequired,
 }
 
 class DropdownMenuItem extends Component {
-  render() {
-    const { onClick, closeMenu, children } = this.props;
+  render () {
+    const { onClick, closeMenu, children } = this.props
 
     return h(
       'li.dropdown-menu-item',
       {
-        onClick,
-        closeMenu,
+        onClick: () => {
+          onClick()
+          closeMenu()
+        },
         style: {
           listStyle: 'none',
           padding: '8px 0px 8px 0px',
@@ -60,10 +69,11 @@ class DropdownMenuItem extends Component {
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'flex-start',
+          alignItems: 'center',
         },
       },
       children
-    );
+    )
   }
 }
 
@@ -71,9 +81,9 @@ DropdownMenuItem.propTypes = {
   closeMenu: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
-};
+}
 
 module.exports = {
   Dropdown,
   DropdownMenuItem,
-};
+}
