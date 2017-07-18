@@ -210,6 +210,7 @@ App.prototype.renderNetworkDropdown = function () {
     },
     innerStyle: {},
   }, [
+
     h(
       DropdownMenuItem,
       {
@@ -233,7 +234,8 @@ App.prototype.renderNetworkDropdown = function () {
         h('.menu-icon.red-dot'),
         'Ropsten Test Network',
         providerType === 'ropsten' ? h('.check', '✓') : null,
-      ]),
+      ]
+    ),
 
     h(
       DropdownMenuItem,
@@ -289,6 +291,7 @@ App.prototype.renderNetworkDropdown = function () {
         activeNetwork === 'custom' ? h('.check', '✓') : null,
       ]
     ),
+
   ])
 }
 

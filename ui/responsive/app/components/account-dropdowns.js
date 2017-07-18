@@ -14,12 +14,12 @@ class AccountDropdowns extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      overflowMenuActive: false,
-      switchingMenuActive: false,
+      accountSelectorActive: false,
+      optionsMenuActive: false,
     }
   }
 
-  getAccounts () {
+  renderAccounts () {
     const { identities, selected } = this.props
 
     return Object.keys(identities).map((key) => {
@@ -49,9 +49,122 @@ class AccountDropdowns extends Component {
     })
   }
 
+  renderAccountSelector () {
+    const { actions } = this.props
+    const { accountSelectorActive } = this.state
+
+    return h(
+      Dropdown,
+      {
+        style: {
+          marginLeft: '-125px',
+          minWidth: '180px',
+        },
+        isOpen: accountSelectorActive,
+        onClickOutside: () => { this.setState({ accountSelectorActive: false }) },
+      },
+      [
+        ...this.renderAccounts(),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => actions.addNewAccount(),
+          },
+          [
+            h(
+              Identicon,
+              {
+                diameter: 16,
+              },
+            ),
+            h('span', { style: { marginLeft: '10px' } }, 'Create Account'),
+          ],
+        ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => actions.showImportPage(),
+          },
+          [
+            h(
+              Identicon,
+              {
+                diameter: 16,
+              },
+            ),
+            h('span', { style: { marginLeft: '10px' } }, 'Import Account'),
+          ]
+        ),
+      ]
+    )
+  }
+
+  renderAccountOptions () {
+    const { actions } = this.props
+    const { optionsMenuActive } = this.state
+
+    return h(
+      Dropdown,
+      {
+        style: {
+          marginLeft: '-162px',
+          minWidth: '180px',
+        },
+        isOpen: optionsMenuActive,
+        onClickOutside: () => { this.setState({ optionsMenuActive: false }) },
+      },
+      [
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => actions.showConfigPage(),
+          },
+          'Account Settings',
+        ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => {
+              const { selected, network } = this.props
+              const url = genAccountLink(selected, network)
+              global.platform.openWindow({ url })
+            },
+          },
+          'View account on Etherscan',
+        ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => {
+              const { selected } = this.props
+              const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
+              copyToClipboard(checkSumAddress)
+            },
+          },
+          'Copy Address to clipboard',
+        ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => {
+              actions.requestAccountExport()
+            },
+          },
+          'Export Private Key',
+        ),
+      ]
+    )
+  }
+
   render () {
-    const { style, actions } = this.props
-    const { switchingMenuActive, overflowMenuActive } = this.state
+    const { style } = this.props
+    const { optionsMenuActive, accountSelectorActive } = this.state
 
     return h(
       'span',
@@ -66,68 +179,12 @@ class AccountDropdowns extends Component {
             onClick: (event) => {
               event.stopPropagation()
               this.setState({
-                switchingMenuActive: !switchingMenuActive,
-                overflowMenuActive: false,
+                accountSelectorActive: !accountSelectorActive,
+                optionsMenuActive: false,
               })
             },
           },
-          [
-            h(
-              Dropdown,
-              {
-                style: {
-                  marginLeft: '-140px',
-                  minWidth: '180px',
-                },
-                isOpen: switchingMenuActive,
-                onClickOutside: () => { this.setState({ switchingMenuActive: false}) },
-              },
-              [
-                h(
-                  DropdownMenuItem,
-                  {
-                    closeMenu: () => {},
-                    onClick: () => actions.showConfigPage(),
-                  },
-                  'Account Settings',
-                ),
-                h(
-                  DropdownMenuItem,
-                  {
-                    closeMenu: () => {},
-                    onClick: () => {
-                      const { selected, network } = this.props
-                      const url = genAccountLink(selected, network)
-                      global.platform.openWindow({ url })
-                    },
-                  },
-                  'View account on Etherscan',
-                ),
-                h(
-                  DropdownMenuItem,
-                  {
-                    closeMenu: () => {},
-                    onClick: () => {
-                      const { selected } = this.props
-                      const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
-                      copyToClipboard(checkSumAddress)
-                    },
-                  },
-                  'Copy Address to clipboard',
-                ),
-                h(
-                  DropdownMenuItem,
-                  {
-                    closeMenu: () => {},
-                    onClick: () => {
-                      actions.requestAccountExport()
-                    },
-                  },
-                  'Export Private Key',
-                ),
-              ]
-            ),
-          ],
+          this.renderAccountSelector(),
         ),
         h(
           'i.fa.fa-ellipsis-h',
@@ -136,59 +193,12 @@ class AccountDropdowns extends Component {
             onClick: (event) => {
               event.stopPropagation()
               this.setState({
-                overflowMenuActive: !overflowMenuActive,
-                switchingMenuActive: false,
+                accountSelectorActive: false,
+                optionsMenuActive: !optionsMenuActive,
               })
             },
           },
-          [
-            h(
-              Dropdown,
-              {
-                style: {
-                  marginLeft: '-155px',
-                  minWidth: '180px',
-                },
-                isOpen: overflowMenuActive,
-                onClickOutside: () => { this.setState({ overflowMenuActive: false}) },
-              },
-              [
-                ...this.getAccounts(),
-                h(
-                  DropdownMenuItem,
-                  {
-                    closeMenu: () => {},
-                    onClick: () => actions.addNewAccount(),
-                  },
-                  [
-                    h(
-                      Identicon,
-                      {
-                        diameter: 16,
-                      },
-                    ),
-                    h('span', { style: { marginLeft: '10px' } }, 'Create Account'),
-                  ],
-                ),
-                h(
-                  DropdownMenuItem,
-                  {
-                    closeMenu: () => {},
-                    onClick: () => actions.showImportPage(),
-                  },
-                  [
-                    h(
-                      Identicon,
-                      {
-                        diameter: 16,
-                      },
-                    ),
-                    h('span', { style: { marginLeft: '10px' } }, 'Import Account'),
-                  ]
-                ),
-              ]
-            ),
-          ]
+          this.renderAccountOptions()
         ),
       ]
     )
