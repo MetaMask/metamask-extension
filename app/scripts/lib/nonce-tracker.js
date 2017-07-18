@@ -30,7 +30,7 @@ class NonceTracker {
     const nextNonce = baseCount + pendingCount
     assert(Number.isInteger(nextNonce), 'nonce-tracker - nextNonce is an integer')
     // return next nonce and release cb
-    return { nextNonce: '0x' + nextNonce.toString(16), releaseLock }
+    return { nextNonce, releaseLock }
   }
 
   async _getCurrentBlock () {
