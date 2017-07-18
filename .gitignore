@@ -25,3 +25,7 @@ test/bundle.js
 test/test-bundle.js
 
 notes.txt
+
+coverage/
+.coveralls.yml
+.nyc_output
