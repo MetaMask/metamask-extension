@@ -11,9 +11,18 @@ class NonceTracker {
     this.lockMap = {}
   }
 
+  async getGlobalLock () {
+    const globalMutex = this._lookupMutex('global')
+    // await global mutex free
+    const releaseLock = await globalMutex.acquire()
+    return { releaseLock }
+  }
+
   // releaseLock must be called
   // releaseLock must be called after adding signed tx to pending transactions (or discarding)
   async getNonceLock (address) {
+    // await global mutex free
+    await this._globalMutexFree()
     // await lock free, then take lock
     const releaseLock = await this._takeMutex(address)
     // calculate next nonce
@@ -40,13 +49,19 @@ class NonceTracker {
     })
   }
 
-  _lookupMutex (lockId) {
-    let mutex = this.lockMap[lockId]
-    if (!mutex) {
-      mutex = new Mutex()
-      this.lockMap[lockId] = mutex
-    }
-    return mutex
+  async _getTxCount (address, currentBlock) {
+    const blockNumber = currentBlock.number
+    return new Promise((resolve, reject) => {
+      this.ethQuery.getTransactionCount(address, blockNumber, (err, result) => {
+        err ? reject(err) : resolve(result)
+      })
+    })
+  }
+
+  async _globalMutexFree () {
+    const globalMutex = this._lookupMutex('global')
+    const release = await globalMutex.acquire()
+    release()
   }
 
   async _takeMutex (lockId) {
@@ -55,13 +70,13 @@ class NonceTracker {
     return releaseLock
   }
 
-  async _getTxCount (address, currentBlock) {
-    const blockNumber = currentBlock.number
-    return new Promise((resolve, reject) => {
-      this.ethQuery.getTransactionCount(address, blockNumber, (err, result) => {
-        err ? reject(err) : resolve(result)
-      })
-    })
+  _lookupMutex (lockId) {
+    let mutex = this.lockMap[lockId]
+    if (!mutex) {
+      mutex = new Mutex()
+      this.lockMap[lockId] = mutex
+    }
+    return mutex
   }
 
 }

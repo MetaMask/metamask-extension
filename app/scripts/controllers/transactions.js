@@ -484,12 +484,15 @@ module.exports = class TransactionController extends EventEmitter {
   // if confirmed sets the tx status as 'confirmed'
   async _checkPendingTxs () {
     const signedTxList = this.getFilteredTxList({status: 'submitted'})
+    // in order to keep the nonceTracker accurate we block it while updating pending transactions
+    const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
     try {
       await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
     } catch (err) {
       console.error('TransactionController - Error updating pending transactions')
       console.error(err)
     }
+    nonceGlobalLock.releaseLock()
   }
 
   async _checkPendingTx (txMeta) {
