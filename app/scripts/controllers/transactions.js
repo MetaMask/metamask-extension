@@ -3,6 +3,7 @@ const async = require('async')
 const extend = require('xtend')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const pify = require('pify')
 const TxProviderUtil = require('../lib/tx-utils')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
@@ -481,35 +482,48 @@ module.exports = class TransactionController extends EventEmitter {
 
   // checks the network for signed txs and
   // if confirmed sets the tx status as 'confirmed'
-  _checkPendingTxs () {
-    var signedTxList = this.getFilteredTxList({status: 'submitted'})
-    if (!signedTxList.length) return
-    signedTxList.forEach((txMeta) => {
-      var txHash = txMeta.hash
-      var txId = txMeta.id
-      if (!txHash) {
-        const errReason = {
-          errCode: 'No hash was provided',
-          message: 'We had an error while submitting this transaction, please try again.',
-        }
-        return this.setTxStatusFailed(txId, errReason)
+  async _checkPendingTxs () {
+    const signedTxList = this.getFilteredTxList({status: 'submitted'})
+    try {
+      await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
+    } catch (err) {
+      console.error('TransactionController - Error updating pending transactions')
+      console.error(err)
+    }
+  }
+
+  async _checkPendingTx (txMeta) {
+    const txHash = txMeta.hash
+    const txId = txMeta.id
+    // extra check in case there was an uncaught error during the
+    // signature and submission process
+    if (!txHash) {
+      const errReason = {
+        errCode: 'No hash was provided',
+        message: 'We had an error while submitting this transaction, please try again.',
       }
-      this.query.getTransactionByHash(txHash, (err, txParams) => {
-        if (err || !txParams) {
-          if (!txParams) return
-          txMeta.err = {
-            isWarning: true,
-            errorCode: err,
-            message: 'There was a problem loading this transaction.',
-          }
-          this.updateTx(txMeta)
-          return log.error(err)
+      this.setTxStatusFailed(txId, errReason)
+      return
+    }
+    // get latest transaction status
+    let txParams
+    try {
+      txParams = await pify((cb) => this.query.getTransactionByHash(txHash, cb))()
+      if (!txParams) return
+      if (txParams.blockNumber) {
+        this.setTxStatusConfirmed(txId)
+      }
+    } catch (err) {
+      if (err || !txParams) {
+        txMeta.err = {
+          isWarning: true,
+          errorCode: err,
+          message: 'There was a problem loading this transaction.',
         }
-        if (txParams.blockNumber) {
-          this.setTxStatusConfirmed(txId)
-        }
-      })
-    })
+        this.updateTx(txMeta)
+        log.error(err)
+      }
+    }
   }
 
 }
