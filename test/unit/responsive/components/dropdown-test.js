@@ -9,14 +9,18 @@ const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'res
 const DropdownMenuItem = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'responsive', 'app', 'components', 'dropdown.js')).DropdownMenuItem;
 
 describe('Dropdown components', function () {
-  it('can render two items', function () {
-    const renderer = ReactTestUtils.createRenderer()
+  let onClickOutside;
+  let closeMenu;
+  let onClick;
 
-    const onClickOutside = sinon.spy();
-    const closeMenu = sinon.spy();
-    const onClick = sinon.spy();
+  let dropdownComponentProps;
+  const renderer = ReactTestUtils.createRenderer()
+  beforeEach(function () {
+    onClickOutside = sinon.spy();
+    closeMenu = sinon.spy();
+    onClick = sinon.spy();
 
-    const dropdownComponent = h(Dropdown, {
+    dropdownComponentProps = {
       isOpen: true,
       zIndex: 11,
       onClickOutside,
@@ -26,26 +30,86 @@ describe('Dropdown components', function () {
         top: '36px',
       },
       innerStyle: {},
-    }, [ // DROP MENU ITEMS
-      h('style', `
-        .drop-menu-item:hover { background:rgb(235, 235, 235); }
-        .drop-menu-item i { margin: 11px; }
-      `),
+    }
+  });
 
-      h(DropdownMenuItem, {
-        closeMenu,
-        onClick,
-      }, 'Item 1'),
-
-      h(DropdownMenuItem, {
-        closeMenu,
-        onClick,
-      }, 'Item 2'),
-    ])
+  it('can render two items', function () {
+    const dropdownComponent = h(
+      Dropdown,
+      dropdownComponentProps,
+      [
+        h('style', `
+          .drop-menu-item:hover { background:rgb(235, 235, 235); }
+          .drop-menu-item i { margin: 11px; }
+        `),
+        h(DropdownMenuItem, {
+          closeMenu,
+          onClick,
+        }, 'Item 1'),
+        h(DropdownMenuItem, {
+          closeMenu,
+          onClick,
+        }, 'Item 2'),
+      ]
+    )
 
     const component = additions.renderIntoDocument(dropdownComponent);
     renderer.render(dropdownComponent);
     const items = additions.find(component, 'li');
     assert.equal(items.length, 2);
+  });
+
+  it('closes when item clicked', function() {
+    const dropdownComponent = h(
+      Dropdown,
+      dropdownComponentProps,
+      [
+        h('style', `
+          .drop-menu-item:hover { background:rgb(235, 235, 235); }
+          .drop-menu-item i { margin: 11px; }
+        `),
+        h(DropdownMenuItem, {
+          closeMenu,
+          onClick,
+        }, 'Item 1'),
+        h(DropdownMenuItem, {
+          closeMenu,
+          onClick,
+        }, 'Item 2'),
+      ]
+    )
+    const component = additions.renderIntoDocument(dropdownComponent);
+    renderer.render(dropdownComponent);
+    const items = additions.find(component, 'li');
+    const node = items[0];
+    ReactTestUtils.Simulate.click(node);
+    assert.equal(closeMenu.calledOnce, true);
+  });
+
+  it('invokes click handler when item clicked', function() {
+    const dropdownComponent = h(
+      Dropdown,
+      dropdownComponentProps,
+      [
+        h('style', `
+          .drop-menu-item:hover { background:rgb(235, 235, 235); }
+          .drop-menu-item i { margin: 11px; }
+        `),
+        h(DropdownMenuItem, {
+          closeMenu,
+          onClick,
+        }, 'Item 1'),
+        h(DropdownMenuItem, {
+          closeMenu,
+          onClick,
+        }, 'Item 2'),
+      ]
+    )
+    const component = additions.renderIntoDocument(dropdownComponent);
+    renderer.render(dropdownComponent);
+    const items = additions.find(component, 'li');
+    const node = items[0];
+    ReactTestUtils.Simulate.click(node);
+    assert.equal(onClick.calledOnce, true);
   });
 });
