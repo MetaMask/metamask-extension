@@ -30,15 +30,17 @@ EditableLabel.prototype.render = function () {
   } else {
     return h('div.name-label', {
       onClick: (event) => {
-        if (event.target.getAttribute('name') === 'edit') {
+        const nameAttribute = event.target.getAttribute('name')
+        // checks for class to handle smaller CTA above the account name
+        const classAttribute = event.target.getAttribute('class')
+        if (nameAttribute === 'edit' || classAttribute === 'edit-text') {
           this.setState({ isEditingLabel: true })
         }
       },
     }, this.props.children)
   }
 }
-// class = edit-text
-// name = edit
+
 EditableLabel.prototype.saveIfEnter = function (event) {
   if (event.key === 'Enter') {
     this.saveText()

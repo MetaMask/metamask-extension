@@ -200,7 +200,7 @@ AccountDropdowns.propTypes = {
   selected: PropTypes.string,
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
       showConfigPage: () => dispatch(actions.showConfigPage()),

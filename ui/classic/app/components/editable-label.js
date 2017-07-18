@@ -13,7 +13,6 @@ function EditableLabel () {
 EditableLabel.prototype.render = function () {
   const props = this.props
   const state = this.state
-  console.log("editing:", state.isEditingLabel);
 
   if (state && state.isEditingLabel) {
     return h('div.editable-label', [
@@ -31,8 +30,6 @@ EditableLabel.prototype.render = function () {
   } else {
     return h('div.name-label', {
       onClick: (event) => {
-        debugger;
-        console.log("event", event.target);
         this.setState({ isEditingLabel: true })
       },
     }, this.props.children)
