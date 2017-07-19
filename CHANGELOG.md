@@ -7,6 +7,7 @@
 - Added a link to our new support page to the help screen.
 - Fixed bug where a new transaction would be shown over the current transaction, creating a possible timing attack against user confirmation.
 - Fixed bug in nonce tracker where an incorrect nonce would be calculated.
+- Lowered minimum gas price to 1 Gwei.
 
 ## 3.9.0 2017-7-12
 
