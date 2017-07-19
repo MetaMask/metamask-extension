@@ -67,7 +67,7 @@
     "eth-contract-metadata": "^1.1.4",
     "eth-hd-keyring": "^1.1.1",
     "eth-query": "^2.1.2",
-    "eth-sig-util": "^1.1.1",
+    "eth-sig-util": "^1.2.2",
     "eth-simple-keyring": "^1.1.1",
     "eth-token-tracker": "^1.1.2",
     "etheraddresslookup": "github:409H/EtherAddressLookup",

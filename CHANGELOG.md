@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.9.1 2017-7-19
+
 - No longer automatically request 1 ropsten ether for the first account in a new vault.
 - Now redirects from known malicious sites faster.
 - Added a link to our new support page to the help screen.
