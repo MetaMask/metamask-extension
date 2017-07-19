@@ -1,5 +1,7 @@
 # MetaMask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/MetaMask/metamask-extension.svg)](https://greenkeeper.io/)
+
 ## Developing Compatible Dapps
 
 If you're a web dapp developer, we've got two types of guides for you:
