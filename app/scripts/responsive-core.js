@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const Dnode = require('dnode')
 const EthQuery = require('eth-query')
-const launchMetamaskUi = require('../../ui/responsive')
+const launchMetamaskUi = require('../../responsive-ui')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 

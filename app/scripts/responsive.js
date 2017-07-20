@@ -1,6 +1,6 @@
 const injectCss = require('inject-css')
 const startPopup = require('./responsive-core')
-const MetaMaskUiCss = require('../../ui/responsive/css')
+const MetaMaskUiCss = require('../../responsive-ui/css')
 const PortStream = require('./lib/port-stream.js')
 const ExtensionPlatform = require('./platforms/extension')
 const extension = require('extensionizer')

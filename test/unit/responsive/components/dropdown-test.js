@@ -5,8 +5,8 @@ const h = require('react-hyperscript');
 const ReactTestUtils = require('react-addons-test-utils');
 const sinon = require('sinon');
 const path = require('path');
-const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'responsive', 'app', 'components', 'dropdown.js')).Dropdown;
-const DropdownMenuItem = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'responsive', 'app', 'components', 'dropdown.js')).DropdownMenuItem;
+const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'responsive-ui', 'app', 'components', 'dropdown.js')).Dropdown;
+const DropdownMenuItem = require(path.join(__dirname, '..', '..', '..', '..', 'responsive-ui', 'app', 'components', 'dropdown.js')).DropdownMenuItem;
 
 describe('Dropdown components', function () {
   let onClickOutside;
