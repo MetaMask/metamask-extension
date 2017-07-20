@@ -6,7 +6,7 @@ const clone = require('clone')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
+const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
 const Copyable = require('./copyable')
@@ -15,7 +15,7 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
 
-const MIN_GAS_PRICE_GWEI_BN = new BN(2)
+const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 const MIN_GAS_LIMIT_BN = new BN(21000)

@@ -20,7 +20,6 @@ const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
 const ConfigManager = require('./lib/config-manager')
-const autoFaucet = require('./lib/auto-faucet')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
@@ -89,9 +88,6 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
-    })
-    this.keyringController.on('newVault', (address) => {
-      autoFaucet(address)
     })
 
     // address book controller
@@ -294,34 +290,33 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: this.submitPassword.bind(this),
 
       // PreferencesController
-      setSelectedAddress: nodeify(preferencesController.setSelectedAddress).bind(preferencesController),
-      addToken: nodeify(preferencesController.addToken).bind(preferencesController),
-      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab).bind(preferencesController),
-      setDefaultRpc: nodeify(this.setDefaultRpc).bind(this),
-      setCustomRpc: nodeify(this.setCustomRpc).bind(this),
+      setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
+      addToken: nodeify(preferencesController.addToken, preferencesController),
+      setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setDefaultRpc: nodeify(this.setDefaultRpc, this),
+      setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // AddressController
-      setAddressBook: nodeify(addressBookController.setAddressBook).bind(addressBookController),
+      setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
 
       // KeyringController
-      setLocked: nodeify(keyringController.setLocked).bind(keyringController),
-      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain).bind(keyringController),
-      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore).bind(keyringController),
-      addNewKeyring: nodeify(keyringController.addNewKeyring).bind(keyringController),
-      saveAccountLabel: nodeify(keyringController.saveAccountLabel).bind(keyringController),
-      exportAccount: nodeify(keyringController.exportAccount).bind(keyringController),
+      setLocked: nodeify(keyringController.setLocked, keyringController),
+      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain, keyringController),
+      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore, keyringController),
+      addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
+      saveAccountLabel: nodeify(keyringController.saveAccountLabel, keyringController),
+      exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
-      approveTransaction: txController.approveTransaction.bind(txController),
       cancelTransaction: txController.cancelTransaction.bind(txController),
-      updateAndApproveTransaction: this.updateAndApproveTx.bind(this),
+      updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
 
       // messageManager
-      signMessage: nodeify(this.signMessage).bind(this),
+      signMessage: nodeify(this.signMessage, this),
       cancelMessage: this.cancelMessage.bind(this),
 
       // personalMessageManager
-      signPersonalMessage: nodeify(this.signPersonalMessage).bind(this),
+      signPersonalMessage: nodeify(this.signPersonalMessage, this),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
 
       // notices
@@ -367,7 +362,7 @@ module.exports = class MetamaskController extends EventEmitter {
     function onResponse (err, request, response) {
       if (err) return console.error(err)
       if (response.error) {
-        console.error('Error in RPC response:\n', response.error)
+        console.error('Error in RPC response:\n', response)
       }
       if (request.isMetamaskInternal) return
       log.info(`RPC (${originDomain}):`, request, '->', response)
@@ -500,13 +495,6 @@ module.exports = class MetamaskController extends EventEmitter {
           return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
       }
     })
-  }
-
-  updateAndApproveTx (txMeta, cb) {
-    log.debug(`MetaMaskController - updateAndApproveTx: ${JSON.stringify(txMeta)}`)
-    const txController = this.txController
-    txController.updateTx(txMeta)
-    txController.approveTransaction(txMeta.id, cb)
   }
 
   signMessage (msgParams, cb) {

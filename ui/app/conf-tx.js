@@ -6,7 +6,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const NetworkIndicator = require('./components/network')
 const txHelper = require('../lib/tx-helper')
-const isPopupOrNotification = require('../../../app/scripts/lib/is-popup-or-notification')
+const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
