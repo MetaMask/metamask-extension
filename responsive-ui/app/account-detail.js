@@ -186,12 +186,6 @@ AccountDetailScreen.prototype.render = function () {
 
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
-            style: {
-              marginBottom: '20px',
-              marginRight: '8px',
-              position: 'absolute',
-              left: '219px',
-            },
           }, 'BUY'),
 
           h('button', {
