@@ -1,5 +1,6 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
+const async = require('async')
 const promiseToCallback = require('promise-to-callback')
 const pipe = require('pump')
 const Dnode = require('dnode')
@@ -78,6 +79,16 @@ module.exports = class MetamaskController extends EventEmitter {
     this.ethStore = new EthStore({
       provider: this.provider,
       blockTracker: this.provider,
+    })
+
+    this.provider.on('block', (block) => {
+      const self = this
+      // console.log(block)
+      async.map(block.transactions, this.ethQuery.getTransactionByHash.bind(this.ethQuery), (err, transactions) => {
+        if (err) throw err
+        console.log(transactions)
+        transactions.forEach((tx) => self.inspectConfirmedTransaction(tx))
+      })
     })
 
     // key mgmt
@@ -256,6 +267,22 @@ module.exports = class MetamaskController extends EventEmitter {
         seedWords: this.configManager.getSeedWords(),
       }
     )
+  }
+
+  //
+  // notifications
+  //
+
+  inspectConfirmedTransaction (tx) {
+    this.keyringController.getAccounts().then((addresses) => {
+      addresses = addresses.map((addr) => '0x' + addr.toLowerCase())
+      console.log('addresses:', addresses)
+      let toAddress = (tx.to || '').toLowerCase()
+      if (addresses.indexOf(toAddress) !== -1) {
+        console.log('incomming tx!')
+        console.log(tx)
+      }
+    })
   }
 
   //
