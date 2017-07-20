@@ -2,8 +2,38 @@
 
 ## Current Master
 
+## 3.9.1 2017-7-19
+
+- No longer automatically request 1 ropsten ether for the first account in a new vault.
+- Now redirects from known malicious sites faster.
+- Added a link to our new support page to the help screen.
+- Fixed bug where a new transaction would be shown over the current transaction, creating a possible timing attack against user confirmation.
+- Fixed bug in nonce tracker where an incorrect nonce would be calculated.
+- Lowered minimum gas price to 1 Gwei.
+
+## 3.9.0 2017-7-12
+
+- Now detects and blocks known phishing sites.
+
+## 3.8.6 2017-7-11
+
+- Make transaction resubmission more resilient.
+- No longer validate nonce client-side in retry loop.
+- Fix bug where insufficient balance error was sometimes shown on successful transactions.
+
+## 3.8.5 2017-7-7
+
+- Fix transaction resubmit logic to fail slightly less eagerly.
+
+## 3.8.4 2017-7-7
+
+- Improve transaction resubmit logic to fail more eagerly when a user would expect it to.
+
+## 3.8.3 2017-7-6
+
 - Re-enable default token list.
 - Add origin header to dapp-bound requests to allow providers to throttle sites.
+- Fix bug that could sometimes resubmit a transaction that had been stalled due to low balance after balance was restored.
 
 ## 3.8.2 2017-7-3
 

@@ -106,8 +106,13 @@ module.exports = class txProviderUtils {
     return ethTx
   }
 
-  publishTransaction (rawTx, cb) {
-    this.query.sendRawTransaction(rawTx, cb)
+  publishTransaction (rawTx) {
+    return new Promise((resolve, reject) => {
+      this.query.sendRawTransaction(rawTx, (err, ress) => {
+        if (err) reject(err)
+        else resolve(ress)
+      })
+    })
   }
 
   validateTxParams (txParams, cb) {
@@ -118,6 +123,15 @@ module.exports = class txProviderUtils {
     }
   }
 
+  sufficientBalance (txParams, hexBalance) {
+    const balance = hexToBn(hexBalance)
+    const value = hexToBn(txParams.value)
+    const gasLimit = hexToBn(txParams.gas)
+    const gasPrice = hexToBn(txParams.gasPrice)
+
+    const maxCost = value.add(gasLimit.mul(gasPrice))
+    return balance.gte(maxCost)
+  }
 
 }
 
