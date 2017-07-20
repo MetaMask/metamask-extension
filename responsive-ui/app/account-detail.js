@@ -51,7 +51,12 @@ AccountDetailScreen.prototype.render = function () {
 
   return (
 
-    h('.account-detail-section', [
+    h('.account-detail-section', {
+      style: {
+        height: '100%',
+        maxWidth: '850px',
+      },
+    }, [
 
       // identicon, label, balance, etc
       h('.account-data-subsection', {
@@ -236,7 +241,9 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.tabSections = function () {
   const { currentAccountTab } = this.props
 
-  return h('section.tabSection', [
+  return h('section.tabSection', {
+    style: { height: '100%' },
+  }, [
 
     h(TabBar, {
       tabs: [

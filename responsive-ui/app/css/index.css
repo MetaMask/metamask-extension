@@ -27,6 +27,7 @@ html, body {
 
 .css-transition-group {
   flex: 1;
+  height: 100%;
 }
 
 input:focus, textarea:focus {
@@ -36,6 +37,7 @@ input:focus, textarea:focus {
 #app-content {
   overflow-x: hidden;
   min-width: 357px;
+  height: 100%;
 }
 
 button, input[type="submit"] {

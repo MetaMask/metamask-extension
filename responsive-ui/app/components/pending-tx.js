@@ -6,7 +6,7 @@ const clone = require('clone')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
+const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
 const MiniAccountPanel = require('./mini-account-panel')
 const Copyable = require('./copyable')

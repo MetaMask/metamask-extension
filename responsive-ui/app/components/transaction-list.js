@@ -24,7 +24,11 @@ TransactionList.prototype.render = function () {
 
   return (
 
-    h('section.transaction-list', [
+    h('section.transaction-list', {
+      style: {
+        height: '100%',
+      },
+    }, [
 
       h('style', `
         .transaction-list .transaction-list-item:not(:last-of-type) {
@@ -39,7 +43,7 @@ TransactionList.prototype.render = function () {
       h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '300px',
+          height: '100%',
           padding: '0 20px',
           textAlign: 'center',
         },

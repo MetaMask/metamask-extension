@@ -77,6 +77,8 @@ App.prototype.render = function () {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
         position: 'relative',
+        height: '100%',
+        alignItems: 'center',
       },
     }, [
 
@@ -91,7 +93,12 @@ App.prototype.render = function () {
       }),
 
       // panel content
-      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), [
+      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
+        style: {
+          height: '100%',
+          maxWidth: '850px',
+        },
+      }, [
         h(ReactCSSTransitionGroup, {
           className: 'css-transition-group',
           transitionName: 'main',
@@ -116,7 +123,11 @@ App.prototype.renderAppBar = function () {
 
   return (
 
-    h('div', [
+    h('div', {
+      style: {
+        width: '100%'
+      },
+    }, [
 
       h('.app-header.flex-row.flex-space-between', {
         style: {

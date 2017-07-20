@@ -1,4 +1,4 @@
-const getBuyEthUrl = require('../../../app/scripts/lib/buy-eth-url')
+const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
