@@ -4,7 +4,13 @@
 
 If you're a web dapp developer, we've got two types of guides for you:
 
-- If you've never built a Dapp before, we've got a gentle introduction on [Developing Dapps with Truffle and MetaMask](https://blog.metamask.io/developing-for-metamask-with-truffle/).
+### New Dapp Developers
+
+- We recommend this [Learning Solidity](https://karl.tech/learning-solidity-part-1-deploy-a-contract/) tutorial series by Karl Floersch.
+- We wrote a (slightly outdated now) gentle introduction on [Developing Dapps with Truffle and MetaMask](https://medium.com/metamask/developing-ethereum-dapps-with-truffle-and-metamask-aa8ad7e363ba).
+
+### Current Dapp Developers
+
 - If you have a Dapp, and you want to ensure compatibility, [here is our guide on building MetaMask-compatible Dapps](https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md)
 
 ## Building locally
