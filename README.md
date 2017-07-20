@@ -1,5 +1,9 @@
 # MetaMask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension)
 
+## Support
+
+If you're a user seeking support, [here is our support site](http://metamask.consensyssupport.happyfox.com).
+
 ## Developing Compatible Dapps
 
 If you're a web dapp developer, we've got two types of guides for you:
