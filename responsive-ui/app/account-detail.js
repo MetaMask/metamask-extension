@@ -62,7 +62,7 @@ AccountDetailScreen.prototype.render = function () {
       h('.account-data-subsection', {
         style: {
           margin: '0 20px',
-          maxWidth: '320px',
+          flex: '1 0 auto',
         },
       }, [
 
@@ -87,6 +87,7 @@ AccountDetailScreen.prototype.render = function () {
             style: {
               lineHeight: '10px',
               marginLeft: '15px',
+              width: '100%',
             },
           }, [
             h(EditableLabel, {
@@ -184,8 +185,11 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
+          h('.flex-grow'),
+
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
+            style: { marginRight: '10px' },
           }, 'BUY'),
 
           h('button', {
