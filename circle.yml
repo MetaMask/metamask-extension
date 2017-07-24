@@ -5,3 +5,8 @@ dependencies:
   pre:
     - "npm i -g testem"
     - "npm i -g mocha"
+test:
+  override:
+    - "npm run lint"
+    - "npm run test-coverage"
+    - "npm run test-integration"
