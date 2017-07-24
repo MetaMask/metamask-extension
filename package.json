@@ -13,7 +13,7 @@
     "test-unit": "METAMASK_ENV=test mocha --require test/helper.js --recursive \"test/unit/**/*.js\"",
     "single-test": "METAMASK_ENV=test mocha --require test/helper.js",
     "test-integration": "npm run buildMock && npm run buildCiUnits && testem ci -P 2",
-    "test-coverage": "nyc --reporter=lcov --reporter=text npm run test-unit && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage",
+    "test-coverage": "nyc npm run test-unit && nyc report --reporter=text-lcov | coveralls",
     "lint": "gulp lint",
     "buildCiUnits": "node test/integration/index.js",
     "watch": "mocha watch --recursive \"test/unit/**/*.js\"",
