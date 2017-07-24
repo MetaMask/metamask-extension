@@ -22,7 +22,8 @@ var mkdirp = require('mkdirp')
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
-
+const MASCARA_ORIGIN = process.env.MASCARA_ORIGIN || "http://localhost:9001/"
+const MASCARA_PROXY_ORIGIN = MASCARA_ORIGIN ? `"${MASCARA_ORIGIN}proxy/"` : 'http://localhost:9001/proxy/'
 // browser reload
 
 gulp.task('dev:reload', function() {
@@ -123,6 +124,7 @@ gulp.task('manifest:production', function() {
   ],{base: './dist/'})
   .pipe(gulpif(!debug,jsoneditor(function(json) {
     json.background.scripts = ["scripts/background.js"]
+    json["content_scripts"][1]["exclude_matches"] = [`${MASCARA_ORIGIN}*`]
     return json
   })))
   .pipe(gulp.dest('./dist/', { overwrite: true }))
@@ -311,6 +313,7 @@ function bundleTask(opts) {
       .pipe(source(opts.filename))
       // inject variables into bundle
       .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
+      .pipe(replace('\'MASCARA_PROXY_ORIGIN\'', MASCARA_PROXY_ORIGIN))
       // buffer file contents (?)
       .pipe(buffer())
       // sourcemaps

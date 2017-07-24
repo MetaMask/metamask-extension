@@ -11,6 +11,9 @@ console.log('MASCARA_ORIGIN:', MASCARA_ORIGIN)
 const provider = setupProvider({
   mascaraUrl: MASCARA_ORIGIN + '/proxy/',
 })
+
+provider.isMascara = true
+
 instrumentForUserInteractionTriggers(provider)
 
 const web3 = new Web3(provider)
@@ -25,7 +28,6 @@ window.addEventListener('click', maybeTriggerPopup)
 //
 // util
 //
-
 function maybeTriggerPopup(){
   if (!shouldPop) return
   shouldPop = false
