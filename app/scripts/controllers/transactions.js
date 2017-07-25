@@ -469,7 +469,7 @@ module.exports = class TransactionController extends EventEmitter {
     }))
   }
 
-  async _resubmitTx (txMeta, cb) {
+  async _resubmitTx (txMeta) {
     const address = txMeta.txParams.from
     const balance = this.ethStore.getState().accounts[address].balance
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
@@ -481,17 +481,17 @@ module.exports = class TransactionController extends EventEmitter {
         stack: '_resubnitTx: custom tx-controller error',
         message,
       })
-      cb()
-      return log.error(message)
+      log.error(message)
+      return
     }
 
     // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) return cb()
+    if (!('rawTx' in txMeta)) return
 
     // Increment a try counter.
     txMeta.retryCount++
     const rawTx = txMeta.rawTx
-    return await this.txProviderUtils.publishTransaction(rawTx, cb)
+    return await this.txProviderUtils.publishTransaction(rawTx)
   }
 
   // checks the network for signed txs and

@@ -28,9 +28,9 @@ module.exports = class NetworkController extends EventEmitter {
     this._provider = provider
   }
 
-  initializeProvider (opts) {
+  initializeProvider (opts, providerContructor = MetaMaskProvider) {
     this.providerInit = opts
-    this._provider = MetaMaskProvider(opts)
+    this._provider = providerContructor(opts)
     this._proxy = new Proxy(this._provider, {
       get: (obj, name) => {
         if (name === 'on') return this._on.bind(this)
@@ -38,6 +38,7 @@ module.exports = class NetworkController extends EventEmitter {
       },
       set: (obj, name, value) => {
         this._provider[name] = value
+        return value
       },
     })
     this.provider.on('block', this._logBlock.bind(this))
