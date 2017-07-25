@@ -129,6 +129,7 @@ AccountDetailScreen.prototype.render = function () {
                       style: {
                         marginRight: '8px',
                         marginLeft: 'auto',
+                        cursor: 'pointer',
                       },
                       selected,
                       network,
