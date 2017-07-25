@@ -240,7 +240,9 @@ AccountDetailScreen.prototype.tabSections = function () {
   const { currentAccountTab } = this.props
 
   return h('section.tabSection', {
-    style: { height: '100%' },
+    style: {
+      height: '100%',
+    },
   }, [
 
     h(TabBar, {
