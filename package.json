@@ -14,6 +14,7 @@
     "single-test": "METAMASK_ENV=test mocha --require test/helper.js",
     "test-integration": "npm run buildMock && npm run buildCiUnits && testem ci -P 2",
     "test-coverage": "nyc npm run test-unit && nyc report --reporter=text-lcov | coveralls",
+    "ci": "npm run lint && npm run test-coverage && npm run test-integration",
     "lint": "gulp lint",
     "buildCiUnits": "node test/integration/index.js",
     "watch": "mocha watch --recursive \"test/unit/**/*.js\"",

@@ -7,6 +7,4 @@ dependencies:
     - "npm i -g mocha"
 test:
   override:
-    - "npm run lint"
-    - "npm run test-coverage"
-    - "npm run test-integration"
+    - "npm run ci"
