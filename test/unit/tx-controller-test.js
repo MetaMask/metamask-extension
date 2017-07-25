@@ -343,11 +343,15 @@ describe('Transaction Controller', function () {
       // Adding the fake tx:
       txController.addTx(clone(txMeta))
 
-      txController._resubmitTx(txMeta, function (err) {
-        assert.ifError(err, 'should not throw an error')
+      txController._resubmitTx(txMeta)
+      .then(() => {
         const updatedMeta = txController.getTx(txMeta.id)
         assert.notEqual(updatedMeta.status, txMeta.status, 'status changed.')
         assert.equal(updatedMeta.status, 'failed', 'tx set to failed.')
+        done()
+      })
+      .catch((err) => {
+        assert.ifError(err, 'should not throw an error')
         done()
       })
     })

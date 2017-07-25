@@ -3,6 +3,9 @@ const NetworkController = require('../../app/scripts/controllers/network')
 
 describe('# Network Controller', function () {
   let networkController
+  const networkControllerProviderInit = {
+    getAccounts: () => {},
+  }
 
   beforeEach(function () {
     networkController = new NetworkController({
@@ -10,26 +13,13 @@ describe('# Network Controller', function () {
         type: 'rinkeby',
       },
     })
-    // stub out provider
-    networkController._provider = new Proxy({}, {
-      get: (obj, name) => {
-        return () => {}
-      },
-    })
-    networkController.providerInit = {
-      getAccounts: () => {},
-    }
 
-    networkController.ethQuery = new Proxy({}, {
-      get: (obj, name) => {
-        return () => {}
-      },
-    })
+    networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
   })
   describe('network', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
-        networkController.initializeProvider(networkController.providerInit)
+        networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
         const provider = networkController.provider
         networkController._provider = {test: true}
         assert.ok(provider.test)
@@ -75,3 +65,19 @@ describe('# Network Controller', function () {
     })
   })
 })
+
+function dummyProviderConstructor() {
+  return {
+    // provider
+    sendAsync: noop,
+    // block tracker
+    start: noop,
+    stop: noop,
+    on: noop,
+    addListener: noop,
+    once: noop,
+    removeAllListeners: noop,
+  }
+}
+
+function noop() {}
