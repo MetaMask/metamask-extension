@@ -57,6 +57,7 @@
     "clone": "^1.0.2",
     "copy-to-clipboard": "^2.0.0",
     "debounce": "^1.0.0",
+    "deep-clone": "^3.0.2",
     "deep-extend": "^0.4.1",
     "detect-node": "^2.0.3",
     "disc": "^1.3.2",

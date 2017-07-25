@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Include stack traces in txMeta's to better understand the life cycle of transactions
+
 ## 3.9.1 2017-7-19
 
 - No longer automatically request 1 ropsten ether for the first account in a new vault.

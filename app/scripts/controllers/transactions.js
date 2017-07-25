@@ -1,10 +1,12 @@
 const EventEmitter = require('events')
 const async = require('async')
 const extend = require('xtend')
+const clone = require('deep-clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const pify = require('pify')
 const TxProviderUtil = require('../lib/tx-utils')
+const getStack = require('../lib/util').getStack
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
 
@@ -117,9 +119,14 @@ module.exports = class TransactionController extends EventEmitter {
 
   //
   updateTx (txMeta) {
+    const txMetaForHistory = clone(txMeta)
+    txMetaForHistory.stack = getStack()
     var txId = txMeta.id
     var txList = this.getFullTxList()
     var index = txList.findIndex(txData => txData.id === txId)
+    if (!txMeta.history) txMeta.history = []
+    txMeta.history.push(txMetaForHistory)
+
     txList[index] = txMeta
     this._saveTxList(txList)
     this.emit('update')
@@ -134,7 +141,7 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   addUnapprovedTransaction (txParams, done) {
-    let txMeta
+    let txMeta = {}
     async.waterfall([
       // validate
       (cb) => this.txProviderUtils.validateTxParams(txParams, cb),
@@ -146,6 +153,7 @@ module.exports = class TransactionController extends EventEmitter {
           status: 'unapproved',
           metamaskNetworkId: this.getNetwork(),
           txParams: txParams,
+          history: [],
         }
         cb()
       },
@@ -165,6 +173,7 @@ module.exports = class TransactionController extends EventEmitter {
     txParams.value = txParams.value || '0x0'
     if (!txParams.gasPrice) {
       this.query.gasPrice((err, gasPrice) => {
+
         if (err) return cb(err)
         // set gasPrice
         txParams.gasPrice = gasPrice
@@ -201,6 +210,7 @@ module.exports = class TransactionController extends EventEmitter {
       nonceLock.releaseLock()
     } catch (err) {
       this.setTxStatusFailed(txId, {
+        stack: err.stack || err.message,
         errCode: err.errCode || err,
         message: err.message || 'Transaction failed during approval',
       })
@@ -364,11 +374,11 @@ module.exports = class TransactionController extends EventEmitter {
       var txId = txMeta.id
 
       if (!txHash) {
-        const errReason = {
+        return this.setTxStatusFailed(txId, {
+          stack: 'checkForTxInBlock: custom tx-controller error message Line# 368',
           errCode: 'No hash was provided',
           message: 'We had an error while submitting this transaction, please try again.',
-        }
-        return this.setTxStatusFailed(txId, errReason)
+        })
       }
 
       block.transactions.forEach((tx) => {
@@ -452,6 +462,7 @@ module.exports = class TransactionController extends EventEmitter {
       if (isKnownTx) return
       // encountered real error - transition to error state
       this.setTxStatusFailed(txMeta.id, {
+        stack: err.stack || err.message,
         errCode: err.errCode || err,
         message: err.message,
       })
@@ -466,7 +477,10 @@ module.exports = class TransactionController extends EventEmitter {
     // if the value of the transaction is greater then the balance, fail.
     if (!this.txProviderUtils.sufficientBalance(txMeta.txParams, balance)) {
       const message = 'Insufficient balance.'
-      this.setTxStatusFailed(txMeta.id, { message })
+      this.setTxStatusFailed(txMeta.id, {
+        stack: '_resubnitTx: custom tx-controller error line# 472',
+        message,
+      })
       cb()
       return log.error(message)
     }
@@ -501,11 +515,11 @@ module.exports = class TransactionController extends EventEmitter {
     // extra check in case there was an uncaught error during the
     // signature and submission process
     if (!txHash) {
-      const errReason = {
+      this.setTxStatusFailed(txId, {
+        stack: '_checkPendingTxs: custom tx-controller error message Line# 510',
         errCode: 'No hash was provided',
         message: 'We had an error while submitting this transaction, please try again.',
-      }
-      this.setTxStatusFailed(txId, errReason)
+      })
       return
     }
     // get latest transaction status
