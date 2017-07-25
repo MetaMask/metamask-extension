@@ -375,7 +375,7 @@ module.exports = class TransactionController extends EventEmitter {
 
       if (!txHash) {
         return this.setTxStatusFailed(txId, {
-          stack: 'checkForTxInBlock: custom tx-controller error message Line# 368',
+          stack: 'checkForTxInBlock: custom tx-controller error me',
           errCode: 'No hash was provided',
           message: 'We had an error while submitting this transaction, please try again.',
         })
@@ -478,7 +478,7 @@ module.exports = class TransactionController extends EventEmitter {
     if (!this.txProviderUtils.sufficientBalance(txMeta.txParams, balance)) {
       const message = 'Insufficient balance.'
       this.setTxStatusFailed(txMeta.id, {
-        stack: '_resubnitTx: custom tx-controller error line# 472',
+        stack: '_resubnitTx: custom tx-controller ',
         message,
       })
       cb()
@@ -516,7 +516,7 @@ module.exports = class TransactionController extends EventEmitter {
     // signature and submission process
     if (!txHash) {
       this.setTxStatusFailed(txId, {
-        stack: '_checkPendingTxs: custom tx-controller error message Line# 510',
+        stack: '_checkPendingTxs: custom tx-controller error message',
         errCode: 'No hash was provided',
         message: 'We had an error while submitting this transaction, please try again.',
       })
