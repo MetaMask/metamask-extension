@@ -97,17 +97,11 @@ InfoScreen.prototype.render = function () {
               paddingLeft: '30px',
             }},
             [
-              h('div.fa.fa-support', [
-                h('a.info', {
-                  href: 'http://metamask.consensyssupport.happyfox.com',
-                  target: '_blank',
-                }, 'Visit our Support Center'),
-              ]),
               h('div.fa.fa-github', [
                 h('a.info', {
-                  href: 'https://github.com/MetaMask/metamask-extension/issues/new',
+                  href: 'https://github.com/MetaMask/faq',
                   target: '_blank',
-                }, 'Found a bug? Report it!'),
+                }, 'Need Help? Read our FAQ!'),
               ]),
               h('div', [
                 h('a', {

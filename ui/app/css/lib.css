@@ -232,6 +232,10 @@ hr.horizontal-line {
   align-items: center;
 }
 
+.tabSection {
+  min-width: 350px;
+}
+
 .menu-icon {
   display: inline-block;
   height: 9px;

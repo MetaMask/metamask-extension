@@ -10,7 +10,6 @@ const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
-const AccountsScreen = require('./accounts')
 const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
@@ -24,10 +23,9 @@ const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
-const MenuDroppo = require('menu-droppo')
-const DropMenuItem = require('./components/drop-menu-item')
+const Dropdown = require('./components/dropdown').Dropdown
+const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkIndicator = require('./components/network')
-const Tooltip = require('./components/tooltip')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
@@ -79,6 +77,8 @@ App.prototype.render = function () {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
         position: 'relative',
+        height: '100%',
+        alignItems: 'center',
       },
     }, [
 
@@ -95,8 +95,8 @@ App.prototype.render = function () {
       // panel content
       h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          height: '380px',
-          width: '360px',
+          height: '100%',
+          maxWidth: '850px',
         },
       }, [
         h(ReactCSSTransitionGroup, {
@@ -123,14 +123,18 @@ App.prototype.renderAppBar = function () {
 
   return (
 
-    h('div', [
+    h('div', {
+      style: {
+        width: '100%'
+      },
+    }, [
 
       h('.app-header.flex-row.flex-space-between', {
         style: {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: props.isUnlocked ? 'white' : 'none',
-          height: '36px',
+          height: '38px',
           position: 'relative',
           zIndex: 12,
         },
@@ -178,21 +182,6 @@ App.prototype.renderAppBar = function () {
           },
         }, [
 
-          // small accounts nav
-          props.isUnlocked && h(Tooltip, { title: 'Switch Accounts' }, [
-            h('img.cursor-pointer.color-orange', {
-              src: 'images/switch_acc.svg',
-              style: {
-                width: '23.5px',
-                marginRight: '8px',
-              },
-              onClick: (event) => {
-                event.stopPropagation()
-                this.props.dispatch(actions.showAccountsPage())
-              },
-            }),
-          ]),
-
           // hamburger
           props.isUnlocked && h(SandwichExpando, {
             width: 16,
@@ -214,11 +203,12 @@ App.prototype.renderAppBar = function () {
 
 App.prototype.renderNetworkDropdown = function () {
   const props = this.props
+  const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
   const rpcList = props.frequentRpcList
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
 
-  return h(MenuDroppo, {
+  return h(Dropdown, {
     isOpen,
     onClickOutside: (event) => {
       this.setState({ isNetworkMenuOpen: !isOpen })
@@ -226,72 +216,92 @@ App.prototype.renderNetworkDropdown = function () {
     zIndex: 11,
     style: {
       position: 'absolute',
-      left: 0,
+      left: '2px',
       top: '36px',
     },
-    innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-    },
-  }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
+    innerStyle: {},
+  }, [
 
-    h(DropMenuItem, {
-      label: 'Main Ethereum Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('mainnet')),
-      icon: h('.menu-icon.diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+      },
+      [
+        h('.menu-icon.diamond'),
+        'Main Ethereum Network',
+        providerType === 'mainnet' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Ropsten Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('ropsten')),
-      icon: h('.menu-icon.red-dot'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('ropsten')),
+      },
+      [
+        h('.menu-icon.red-dot'),
+        'Ropsten Test Network',
+        providerType === 'ropsten' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Kovan Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
-      action: () => props.dispatch(actions.setProviderType('kovan')),
-      icon: h('.menu-icon.hollow-diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('kovan')),
+      },
+      [
+        h('.menu-icon.hollow-diamond'),
+        'Kovan Test Network',
+        providerType === 'kovan' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Rinkeby Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
-      action: () => props.dispatch(actions.setProviderType('rinkeby')),
-      icon: h('.menu-icon.golden-square'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
+      },
+      [
+        h('.menu-icon.golden-square'),
+        'Rinkeby Test Network',
+        providerType === 'rinkeby' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Localhost 8545',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
-      icon: h('i.fa.fa-question-circle.fa-lg'),
-      activeNetworkRender: props.provider.rpcTarget,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
+      },
+      [
+        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+        'Localhost 8545',
+        activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
+      ]
+    ),
 
     this.renderCustomOption(props.provider),
     this.renderCommonRpc(rpcList, props.provider),
 
-    h(DropMenuItem, {
-      label: 'Custom RPC',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-question-circle.fa-lg'),
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => this.props.dispatch(actions.showConfigPage()),
+      },
+      [
+        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+        'Custom RPC',
+        activeNetwork === 'custom' ? h('.check', '✓') : null,
+      ]
+    ),
 
   ])
 }
@@ -300,7 +310,7 @@ App.prototype.renderDropdown = function () {
   const state = this.state || {}
   const isOpen = state.isMainMenuOpen
 
-  return h(MenuDroppo, {
+  return h(Dropdown, {
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
@@ -308,46 +318,30 @@ App.prototype.renderDropdown = function () {
     },
     style: {
       position: 'absolute',
-      right: 0,
-      top: '36px',
+      right: '2px',
+      top: '38px',
     },
-    innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-    },
-  }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
-
-    h(DropMenuItem, {
-      label: 'Settings',
+    innerStyle: {},
+  }, [
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.showConfigPage()) },
+    }, 'Settings'),
 
-    h(DropMenuItem, {
-      label: 'Import Account',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showImportPage()),
-      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.showImportPage()) },
+    }, 'Import Account'),
 
-    h(DropMenuItem, {
-      label: 'Lock',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.lockMetamask()) },
+    }, 'Lock'),
 
-    h(DropMenuItem, {
-      label: 'Info/Help',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.showInfoPage()) },
+    }, 'Info/Help'),
   ])
 }
 
@@ -432,10 +426,6 @@ App.prototype.renderPrimary = function () {
 
   // show current view
   switch (props.currentView.name) {
-
-    case 'accounts':
-      log.debug('rendering accounts screen')
-      return h(AccountsScreen, {key: 'accounts'})
 
     case 'accountDetail':
       log.debug('rendering account detail screen')
@@ -539,13 +529,18 @@ App.prototype.renderCustomOption = function (provider) {
       return null
 
     default:
-      return h(DropMenuItem, {
-        label,
-        key: rpcTarget,
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-        activeNetworkRender: 'custom',
-      })
+      return h(
+        DropdownMenuItem,
+        {
+          key: rpcTarget,
+          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+        },
+        [
+          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+          label,
+          h('.check', '✓'),
+        ]
+      )
   }
 }
 
@@ -578,14 +573,19 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
-      return h(DropMenuItem, {
-        label: rpc,
-        key: rpc,
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => props.dispatch(actions.setRpcTarget(rpc)),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-        activeNetworkRender: rpc,
-      })
+      return h(
+        DropdownMenuItem,
+        {
+          key: rpc,
+          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+          action: () => props.dispatch(actions.setRpcTarget(rpc)),
+        },
+        [
+          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+          rpc,
+          h('.check', '✓'),
+        ]
+      )
     }
   })
 }
