@@ -11,6 +11,7 @@ const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const extension = require('extensionizer')
 const firstTimeState = require('./first-time-state')
+const isPhish = require('./lib/is-phish')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -153,9 +154,9 @@ function handleNewPageLoad (port, message) {
   if (!pageLoaded || !global.metamaskController) return
 
   const state = global.metamaskController.getState()
-  const { blacklist } = state
+  const updatedBlacklist = state.blacklist
 
-  if (blacklist && blacklist.includes(pageLoaded)) {
+  if (isPhish({ updatedBlacklist, hostname: pageLoaded })) {
     port.postMessage({ 'blacklist': pageLoaded })
   }
 }
