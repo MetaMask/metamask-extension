@@ -75,7 +75,9 @@ TransactionList.prototype.render = function () {
           },
         }, [
           h('p', {
-            marginTop: '50px',
+            style: {
+              marginTop: '50px',
+            },
           }, 'No transaction history.'),
         ]),
       ]),
