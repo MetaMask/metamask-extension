@@ -206,7 +206,9 @@ App.prototype.renderNetworkDropdown = function () {
       left: '2px',
       top: '36px',
     },
-    innerStyle: {},
+    innerStyle: {
+      padding: '2px 16px 2px 0px',
+    },
   }, [
 
     h(

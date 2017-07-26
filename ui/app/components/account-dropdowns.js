@@ -59,6 +59,8 @@ class AccountDropdowns extends Component {
         style: {
           marginLeft: '-125px',
           minWidth: '180px',
+          overflowY: 'auto',
+          maxHeight: '300px',
         },
         isOpen: accountSelectorActive,
         onClickOutside: () => { this.setState({ accountSelectorActive: false }) },
@@ -116,14 +118,6 @@ class AccountDropdowns extends Component {
         onClickOutside: () => { this.setState({ optionsMenuActive: false }) },
       },
       [
-        h(
-          DropdownMenuItem,
-          {
-            closeMenu: () => {},
-            onClick: () => actions.showConfigPage(),
-          },
-          'Account Settings',
-        ),
         h(
           DropdownMenuItem,
           {
