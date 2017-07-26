@@ -2,6 +2,9 @@
 
 ## Current Master
 
+## 3.9.2 2017-7-26
+
+- Fix bugs that could sometimes result in failed transactions after switching networks.
 - Include stack traces in txMeta's to better understand the life cycle of transactions
 
 ## 3.9.1 2017-7-19
