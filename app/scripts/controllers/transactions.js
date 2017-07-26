@@ -119,14 +119,20 @@ module.exports = class TransactionController extends EventEmitter {
 
   //
   updateTx (txMeta) {
+    // create txMeta snapshot for history
     const txMetaForHistory = clone(txMeta)
+    // dont include previous history in this snapshot
+    delete txMetaForHistory.history
+    // add stack to help understand why tx was updated
     txMetaForHistory.stack = getStack()
-    var txId = txMeta.id
-    var txList = this.getFullTxList()
-    var index = txList.findIndex(txData => txData.id === txId)
+    // add snapshot to tx history
     if (!txMeta.history) txMeta.history = []
     txMeta.history.push(txMetaForHistory)
 
+    // update the tx
+    var txId = txMeta.id
+    var txList = this.getFullTxList()
+    var index = txList.findIndex(txData => txData.id === txId)
     txList[index] = txMeta
     this._saveTxList(txList)
     this.emit('update')
