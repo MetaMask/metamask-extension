@@ -6,6 +6,9 @@ const whitelistedDomains = require('etheraddresslookup/whitelists/domains.json')
 const LEVENSHTEIN_TOLERANCE = 4
 const LEVENSHTEIN_CHECKS = ['myetherwallet', 'myetheroll', 'ledgerwallet', 'metamask']
 
+
+// credit to @sogoiii and @409H for their help!
+// Return a boolean on whether or not a phish is detected.
 function isPhish(hostname) {
   var strCurrentTab = hostname
 
@@ -30,6 +33,7 @@ function isPhish(hostname) {
 window.addEventListener('load', function () {
   var hostnameToCheck = window.location.hostname
   if (isPhish(hostnameToCheck)) {
+    // redirect to our phishing warning page.
     window.location.href = 'https://metamask.io/phishing.html'
   }
 })

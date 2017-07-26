@@ -3,7 +3,7 @@
 ## Current Master
 
 - Include stack traces in txMeta's to better understand the life cycle of transactions
-- Enhance blacklister functionality to include levenshtein logic.
+- Enhance blacklister functionality to include levenshtein logic. (credit to @sogoiii and @409H for their help!)
 
 ## 3.9.1 2017-7-19
 
