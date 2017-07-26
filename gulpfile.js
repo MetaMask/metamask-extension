@@ -175,7 +175,6 @@ const jsFiles = [
   'blacklister',
   'background',
   'popup',
-  'responsive'
 ]
 
 // bundle tasks
