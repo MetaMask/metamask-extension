@@ -80,6 +80,7 @@
     "express": "^4.14.0",
     "extension-link-enabler": "^1.0.0",
     "extensionizer": "^1.0.0",
+    "fast-levenshtein": "^2.0.6",
     "gulp-eslint": "^2.0.0",
     "hat": "0.0.3",
     "idb-global": "^1.0.0",
