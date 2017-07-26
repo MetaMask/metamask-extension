@@ -2,12 +2,20 @@ const Component = require('react').Component
 const PropTypes = require('react').PropTypes
 const h = require('react-hyperscript')
 const MenuDroppo = require('menu-droppo')
+const extend = require('xtend')
 
 const noop = () => {}
 
 class Dropdown extends Component {
   render () {
     const { isOpen, onClickOutside, style, innerStyle, children } = this.props
+
+    const innerStyleDefaults = extend({
+      borderRadius: '4px',
+      padding: '8px 16px',
+      background: 'rgba(0, 0, 0, 0.8)',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    }, innerStyle)
 
     return h(
       MenuDroppo,
@@ -16,13 +24,7 @@ class Dropdown extends Component {
         zIndex: 11,
         onClickOutside,
         style,
-        innerStyle: {
-          borderRadius: '4px',
-          padding: '8px 16px',
-          background: 'rgba(0, 0, 0, 0.8)',
-          boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-          ...innerStyle,
-        },
+        innerStyle: innerStyleDefaults,
       },
       [
         h(
