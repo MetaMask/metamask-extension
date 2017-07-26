@@ -200,8 +200,12 @@ module.exports = class TransactionController extends EventEmitter {
       // get next nonce
       const txMeta = this.getTx(txId)
       const fromAddress = txMeta.txParams.from
+      // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+      // add nonce to txParams
       txMeta.txParams.nonce = nonceLock.nextNonce
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails
       this.updateTx(txMeta)
       // sign transaction
       const rawTx = await this.signTransaction(txId)

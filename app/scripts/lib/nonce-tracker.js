@@ -31,14 +31,17 @@ class NonceTracker {
     const currentBlock = await this._getCurrentBlock()
     const pendingTransactions = this.getPendingTransactions(address)
     const pendingCount = pendingTransactions.length
-    assert(Number.isInteger(pendingCount), 'nonce-tracker - pendingCount is an integer')
+    assert(Number.isInteger(pendingCount), `nonce-tracker - pendingCount is not an integer - got: (${typeof pendingCount}) "${pendingCount}"`)
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
-    assert(Number.isInteger(baseCount), 'nonce-tracker - baseCount is an integer')
+    assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nextNonce = baseCount + pendingCount
-    assert(Number.isInteger(nextNonce), 'nonce-tracker - nextNonce is an integer')
-    // return next nonce and release cb
-    return { nextNonce, releaseLock }
+    assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
+    // collect the numbers used to calculate the nonce for debugging
+    const blockNumber = currentBlock.number
+    const nonceDetails = { blockNumber, baseCount, pendingCount }
+    // return nonce and release cb
+    return { nextNonce, nonceDetails, releaseLock }
   }
 
   async _getCurrentBlock () {
