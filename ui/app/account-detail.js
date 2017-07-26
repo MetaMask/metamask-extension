@@ -4,7 +4,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
@@ -51,14 +50,9 @@ AccountDetailScreen.prototype.render = function () {
 
   return (
 
-    h('.account-detail-section', {
-      style: {
-        height: '100%',
-        maxWidth: '850px',
-      },
-    }, [
+    h('.account-detail-section.full-flex-height', [
 
-      // identicon, label, balance, etc
+    // identicon, label, balance, etc
       h('.account-data-subsection', {
         style: {
           margin: '0 20px',
@@ -205,14 +199,7 @@ AccountDetailScreen.prototype.render = function () {
       ]),
 
       // subview (tx history, pk export confirm, buy eth warning)
-      h(ReactCSSTransitionGroup, {
-        className: 'css-transition-group',
-        transitionName: 'main',
-        transitionEnterTimeout: 300,
-        transitionLeaveTimeout: 300,
-      }, [
-        this.subview(),
-      ]),
+      this.subview(),
 
     ])
   )
@@ -240,11 +227,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.tabSections = function () {
   const { currentAccountTab } = this.props
 
-  return h('section.tabSection', {
-    style: {
-      height: '100%',
-    },
-  }, [
+  return h('section.tabSection.full-flex-height.grow-tenx', [
 
     h(TabBar, {
       tabs: [

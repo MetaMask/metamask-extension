@@ -3,7 +3,6 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -67,17 +66,15 @@ App.prototype.render = function () {
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
-
   log.debug('Main ui render function')
 
   return (
 
-    h('.flex-column.flex-grow.full-height', {
+    h('.flex-column.full-height', {
       style: {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
         position: 'relative',
-        height: '100%',
         alignItems: 'center',
       },
     }, [
@@ -93,20 +90,12 @@ App.prototype.render = function () {
       }),
 
       // panel content
-      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
+      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          height: '100%',
           maxWidth: '850px',
         },
       }, [
-        h(ReactCSSTransitionGroup, {
-          className: 'css-transition-group',
-          transitionName: 'main',
-          transitionEnterTimeout: 300,
-          transitionLeaveTimeout: 300,
-        }, [
-          this.renderPrimary(),
-        ]),
+        this.renderPrimary(),
       ]),
     ])
   )
@@ -123,10 +112,8 @@ App.prototype.renderAppBar = function () {
 
   return (
 
-    h('div', {
-      style: {
-        width: '100%',
-      },
+    h('.full-width', {
+      height: '38px',
     }, [
 
       h('.app-header.flex-row.flex-space-between', {
@@ -330,11 +317,6 @@ App.prototype.renderDropdown = function () {
 
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.showImportPage()) },
-    }, 'Import Account'),
-
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => { this.props.dispatch(actions.lockMetamask()) },
     }, 'Lock'),
 
@@ -515,6 +497,8 @@ App.prototype.toggleMetamaskActive = function () {
 
 App.prototype.renderCustomOption = function (provider) {
   const { rpcTarget, type } = provider
+  const props = this.props
+
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
@@ -533,6 +517,7 @@ App.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
+          onClick: () => props.dispatch(actions.setCustomRpc(rpcTarget)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         },
         [

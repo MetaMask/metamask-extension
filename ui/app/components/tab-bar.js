@@ -21,6 +21,7 @@ TabBar.prototype.render = function () {
         background: '#EBEBEB',
         color: '#AEAEAE',
         paddingTop: '4px',
+        minHeight: '30px',
       },
     }, tabs.map((tab) => {
       const { key, content } = tab

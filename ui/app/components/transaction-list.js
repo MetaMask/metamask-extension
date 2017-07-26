@@ -24,9 +24,9 @@ TransactionList.prototype.render = function () {
 
   return (
 
-    h('section.transaction-list', {
+    h('section.transaction-list.full-flex-height', {
       style: {
-        height: '100%',
+        justifyContent: 'center',
       },
     }, [
 
@@ -68,13 +68,15 @@ TransactionList.prototype.render = function () {
               },
             })
           })
-        : h('.flex-center', {
+        : h('.flex-center.full-flex-height', {
           style: {
             flexDirection: 'column',
-            height: '100%',
+            justifyContent: 'center',
           },
         }, [
-          'No transaction history.',
+          h('p', {
+            marginTop: '50px',
+          }, 'No transaction history.'),
         ]),
       ]),
     ])

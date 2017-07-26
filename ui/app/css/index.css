@@ -25,19 +25,48 @@ html, body {
   padding: 0;
 }
 
-.css-transition-group {
-  flex: 1;
-  height: 100%;
+html {
+  min-height: 400px;
+}
+
+.app-root {
+  overflow: hidden;
+  position: relative
+}
+
+.app-primary {
+  display: flex;
 }
 
 input:focus, textarea:focus {
   outline: none;
 }
 
+.full-size {
+  height: 100%;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-flex-height {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
 #app-content {
   overflow-x: hidden;
   min-width: 357px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 button, input[type="submit"] {
@@ -136,10 +165,6 @@ h2.page-subtitle {
   color: #AEAEAE;
   font-size: 1em;
   margin: 12px;
-}
-
-.app-primary {
-
 }
 
 .app-footer {
@@ -413,7 +438,14 @@ input.large-input {
 .account-detail-section {
   display: flex;
   flex-wrap: wrap;
+  overflow-y: auto;
+  flex-direction: inherit;
 }
+
+.grow-tenx {
+  flex-grow: 10;
+}
+
 .name-label{
 
 }
