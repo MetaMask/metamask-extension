@@ -120,14 +120,6 @@ class AccountDropdowns extends Component {
           DropdownMenuItem,
           {
             closeMenu: () => {},
-            onClick: () => actions.showConfigPage(),
-          },
-          'Account Settings',
-        ),
-        h(
-          DropdownMenuItem,
-          {
-            closeMenu: () => {},
             onClick: () => {
               const { selected, network } = this.props
               const url = genAccountLink(selected, network)
