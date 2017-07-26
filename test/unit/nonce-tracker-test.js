@@ -18,11 +18,13 @@ describe('Nonce Tracker', function () {
 
 
     getPendingTransactions = () => pendingTxs
-    provider = { sendAsync: (_, cb) => { cb(undefined, {result: '0x0'}) } }
-    nonceTracker = new NonceTracker({
-      blockTracker: {
+    provider = {
+      sendAsync: (_, cb) => { cb(undefined, {result: '0x0'}) },
+      _blockTracker: {
         getCurrentBlock: () => '0x11b568',
       },
+    }
+    nonceTracker = new NonceTracker({
       provider,
       getPendingTransactions,
     })
