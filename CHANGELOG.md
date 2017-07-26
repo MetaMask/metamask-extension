@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Continuously update blacklist for known phishing sites in background.
+
 ## 3.9.2 2017-7-26
 
 - Fix bugs that could sometimes result in failed transactions after switching networks.

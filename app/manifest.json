@@ -55,8 +55,13 @@
     },
     {
       "run_at": "document_start",
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["scripts/blacklister.js"]
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": ["scripts/blacklister.js"],
+      "all_frames": true
     }
   ],
   "permissions": [
