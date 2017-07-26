@@ -90,6 +90,10 @@ function setupController (initState) {
 
   extension.runtime.onConnect.addListener(connectRemote)
   function connectRemote (remotePort) {
+    if (remotePort.name === 'blacklister') {
+      return setupBlacklist(connectRemote)
+    }
+
     var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
     var portStream = new PortStream(remotePort)
     if (isMetaMaskInternalProcess) {
@@ -133,6 +137,29 @@ function setupController (initState) {
   }
 
   return Promise.resolve()
+}
+
+// Listen for new pages and return if blacklisted:
+function setupBlacklist (port) {
+  console.log('Blacklist connection established')
+  const handler = handleNewPageLoad.bind(port)
+  port.onMessage.addListener(handler)
+  setTimeout(() => {
+    port.onMessage.removeListener(handler)
+  }, 30000)
+}
+
+function handleNewPageLoad (message) {
+  const { pageLoaded } = message
+  console.log('blaclist message received', message.pageLoaded)
+  if (!pageLoaded || !global.metamaskController) return
+
+  const state = global.metamaskController.getState()
+  const { blacklist } = state.metamask
+
+  if (blacklist && blacklist.includes(pageLoaded)) {
+    this.postMessage({ 'blacklist': pageLoaded })
+  }
 }
 
 //

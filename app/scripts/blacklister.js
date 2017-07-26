@@ -1,13 +1,16 @@
-const blacklistedDomains = require('etheraddresslookup/blacklists/domains.json')
+const extension = require('extensionizer')
+console.log('blacklister content script loaded.')
 
-function detectBlacklistedDomain() {
-  var strCurrentTab = window.location.hostname
-  if (blacklistedDomains && blacklistedDomains.includes(strCurrentTab)) {
+const port = extension.runtime.connect({ name: 'blacklister' })
+port.postMessage({ 'pageLoaded': window.location.hostname })
+port.onMessage.addListener(redirectIfBlacklisted)
+
+function redirectIfBlacklisted (response) {
+  const { blacklist } = response
+  console.log('blacklister contentscript received blacklist response')
+  const host = window.location.hostname
+  if (blacklist && blacklist === host) {
     window.location.href = 'https://metamask.io/phishing.html'
   }
 }
-
-window.addEventListener('load', function() {
-  detectBlacklistedDomain()
-})
 
