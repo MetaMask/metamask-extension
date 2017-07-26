@@ -482,7 +482,7 @@ module.exports = class TransactionController extends EventEmitter {
     if (!this.txProviderUtils.sufficientBalance(txMeta.txParams, balance)) {
       const message = 'Insufficient balance.'
       this.setTxStatusFailed(txMeta.id, {
-        stack: '_resubnitTx: custom tx-controller error',
+        stack: '_resubmitTx: custom tx-controller error',
         message,
       })
       log.error(message)
