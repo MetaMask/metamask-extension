@@ -1,27 +1,8 @@
-module.exports = MascaraDetectionUsageSetup
-
-function MascaraDetectionUsageSetup (provider) {
-  const self = this
-
-  const head = document.getElementsByTagName('head')[0]
-  const headContent = head.children
-  const childrenLength = headContent.length
-  // the default is to serve the extensions provider
-  self.mascara = false
-  self.extensionProvider = provider
-  for (let index = 0; index < childrenLength; index++) {
-    const src = headContent[index].getAttribute('src')
-    if (src === 'MASCARA_PROXY_ORIGIN') {
-      try {
-        self.mascaraProvider = global.web3.currentProvider
-      } catch (error) {
-        console.error(error)
-      }
-    }
-  }
-  if (self.mascaraProvider) {
+module.exports = function MascaraDetectionUsageSetup (extensionProvider) {
+  let mascara = false
+  if (global.mascaraProvider) {
     let networkVersion
-    self.mascaraProvider.publicConfigStore.subscribe((state) => {
+    global.mascaraProvider.publicConfigStore.subscribe((state) => {
       if (!global.web3.currentProvider.mascara) return
       global.web3.eth.defaultAccount = state.selectedAddress
       // get the initial network
@@ -38,32 +19,33 @@ function MascaraDetectionUsageSetup (provider) {
 
     })
   }
-  self.proxyProvider = new Proxy(provider, {
-    get: (_, key) => {
-      if (key === 'mascara') return self.mascara
-      if (self.mascara) return self.mascaraProvider[key]
-      return self.extensionProvider[key]
+  const proxyProvider = new Proxy(extensionProvider, {
+    get: (extensionProvider, key) => {
+      if (key === 'mascara') return mascara
+      if (mascara) return global.mascaraProvider[key]
+      return extensionProvider[key]
     },
-    set: (_, key, value) => {
+    set: (extensionProvider, key, value) => {
       if (key === 'mascara') {
-        if (!self.mascaraProvider) throw new Error('No Mascara Detected')
-        self.mascara = value
+        if (!global.mascaraProvider) throw new Error('No Mascara Detected')
+        mascara = value
         return value
       } else {
-        if (self.mascara) {
-          self.mascaraProvider[key] = value
+        if (mascara) {
+          global.mascaraProvider[key] = value
           return value
         } else {
-          self.extensionProvider[key] = value
+          extensionProvider[key] = value
           return value
         }
       }
     },
   })
 
-  return self.proxyProvider
+  return proxyProvider
 }
 
 function triggerReset () {
   global.location.reload()
 }
+

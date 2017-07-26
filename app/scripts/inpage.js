@@ -6,7 +6,7 @@ const LocalMessageDuplexStream = require('post-message-stream')
 // const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
-const MascaraDetectionUsage = require('./lib/mascara-detection-usage.js')
+const mascaraDetectionUsage = require('./lib/mascara-detection-usage.js')
 restoreContextAfterImports()
 
 
@@ -22,7 +22,7 @@ var metamaskStream = new LocalMessageDuplexStream({
 
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
-inpageProvider = new MascaraDetectionUsage(inpageProvider)
+inpageProvider = mascaraDetectionUsage(inpageProvider)
 //
 // setup web3
 //
