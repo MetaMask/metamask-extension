@@ -3,6 +3,7 @@
 ## Current Master
 
 - Continuously update blacklist for known phishing sites in background.
+- Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
 
 ## 3.9.2 2017-7-26
 
