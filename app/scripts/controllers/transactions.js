@@ -24,7 +24,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
-      blockTracker: this.provider._blockTracker,
       getPendingTransactions: (address) => {
         return this.getFilteredTxList({
           from: address,
