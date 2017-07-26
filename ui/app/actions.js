@@ -719,7 +719,7 @@ function setDefaultRpcTarget (rpcList) {
 }
 
 function setRpcTarget (newRpc) {
-  log.debug(`background.setRpcTarget`)
+  log.debug(`background.setRpcTarget: ${newRpc}`)
   return (dispatch) => {
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {

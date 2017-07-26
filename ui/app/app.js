@@ -519,7 +519,7 @@ App.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.dispatch(actions.setCustomRpc(rpcTarget)),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
         },
         [
@@ -553,24 +553,24 @@ App.prototype.getNetworkName = function () {
 }
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
-  const { rpcTarget } = provider
   const props = this.props
+  const rpcTarget = provider.rpcTarget
 
   return rpcList.map((rpc) => {
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
+
       return h(
         DropdownMenuItem,
         {
-          key: rpc,
           closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          action: () => props.dispatch(actions.setRpcTarget(rpc)),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
         },
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
           rpc,
-          h('.check', '✓'),
+          rpcTarget === rpc ? h('.check', '✓') : null,
         ]
       )
     }
