@@ -37,8 +37,11 @@ class NonceTracker {
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nextNonce = baseCount + pendingCount
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
-    // return next nonce and release cb
-    return { nextNonce, releaseLock }
+    // collect the numbers used to calculate the nonce for debugging
+    const blockNumber = currentBlock.number
+    const nonceDetails = { blockNumber, baseCount, pendingCount }
+    // return nonce and release cb
+    return { nextNonce, nonceDetails, releaseLock }
   }
 
   async _getCurrentBlock () {
