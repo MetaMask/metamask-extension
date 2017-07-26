@@ -43,7 +43,6 @@ function rootReducer (state, action) {
 
 window.logState = function () {
   var stateString = JSON.stringify(window.METAMASK_CACHED_LOG_STATE, removeSeedWords, 2)
-  console.log(stateString)
   return stateString
 }
 
