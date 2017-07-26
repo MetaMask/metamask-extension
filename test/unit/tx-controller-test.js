@@ -1,7 +1,6 @@
 const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
-const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
 const clone = require('clone')
 const sinon = require('sinon')
@@ -11,7 +10,7 @@ const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
-describe('Transaction Controller', function () {
+describe.only('Transaction Controller', function () {
   let txController
 
   beforeEach(function () {
@@ -20,7 +19,6 @@ describe('Transaction Controller', function () {
       txHistoryLimit: 10,
       blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
       provider: { sendAsync: noop },
-      ethQuery: new EthQuery({ sendAsync: noop }),
       ethStore: { getState: noop },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
@@ -28,24 +26,59 @@ describe('Transaction Controller', function () {
       }),
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
+    const queryStubResult = {}
+    txController.query = new Proxy({}, {
+      get: (_, key) => {
+        if (key === 'stubResult') {
+          return function (method, ...args) {
+            queryStubResult[method] = args
+          }
+        } else {
+          returnValue = queryStubResult[key]
+          return () => Promise.resolve(...returnValue)
+        }
+      },
+    })
+  })
+
+  describe('#addUnapprovedTransaction', function () {
+    it('should add an unapproved transaction and return a valid txMeta', function (done) {
+      const addTxDefaultsStub = sinon.stub(txController, 'addTxDefaults').callsFake(() => Promise.resolve)
+      txController.addUnapprovedTransaction({})
+      .then((txMeta) => {
+        assert(('id' in txMeta), 'should have a id')
+        assert(('time' in txMeta), 'should have a time stamp')
+        assert(('metamaskNetworkId' in txMeta), 'should have a metamaskNetworkId')
+        assert(('txParams' in txMeta), 'should have a txParams')
+        assert(('history' in txMeta), 'should have a history')
+
+        const memTxMeta = txController.getTx(txMeta.id)
+        assert.deepEqual(txMeta, memTxMeta, `txMeta should be stored in txController after adding it\n  expected: ${txMeta} \n  got: ${memTxMeta}`)
+        addTxDefaultsStub.restore()
+        done()
+      }).catch(done)
+    })
   })
 
   describe('#validateTxParams', function () {
-    it('returns null for positive values', function () {
+    it('does not throw for positive values', function (done) {
       var sample = {
         value: '0x01',
       }
-      txController.txProviderUtils.validateTxParams(sample, (err) => {
-        assert.equal(err, null, 'no error')
+      txController.txProviderUtils.validateTxParams(sample).then(() => {
+        done()
       })
     })
 
-    it('returns error for negative values', function () {
+    it('returns error for negative values', function (done) {
       var sample = {
         value: '-0x01',
       }
-      txController.txProviderUtils.validateTxParams(sample, (err) => {
+      txController.txProviderUtils.validateTxParams(sample)
+      .then(() => done('expected to thrown on negativity values but didn\'t'))
+      .catch((err) => {
         assert.ok(err, 'error')
+        done()
       })
     })
   })
@@ -55,9 +88,6 @@ describe('Transaction Controller', function () {
       var result = txController.getTxList()
       assert.ok(Array.isArray(result))
       assert.equal(result.length, 0)
-    })
-    it('should also return transactions from local storage if any', function () {
-
     })
   })
 
@@ -276,16 +306,15 @@ describe('Transaction Controller', function () {
 
       txController.addTx(txMeta)
 
-      const estimateStub = sinon.stub(txController.txProviderUtils.query, 'estimateGas')
-      .callsArgWithAsync(1, null, wrongValue)
+      txController.query.stubResult('estimateGas', wrongValue)
+      txController.query.stubResult('gasPrice', wrongValue)
 
-      const priceStub = sinon.stub(txController.txProviderUtils.query, 'gasPrice')
-      .callsArgWithAsync(0, null, wrongValue)
+      const signStub = sinon.stub(txController, 'signTransaction').callsFake(() => Promise.resolve())
 
-
-      const signStub = sinon.stub(txController, 'signTransaction', () => Promise.resolve())
-
-      const pubStub = sinon.stub(txController.txProviderUtils, 'publishTransaction', () => Promise.resolve(originalValue))
+      const pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
+        txController.setTxHash('1', originalValue)
+        txController.setTxStatusSubmitted('1')
+      })
 
       txController.approveTransaction(txMeta.id).then(() => {
         const result = txController.getTx(txMeta.id)
@@ -294,9 +323,6 @@ describe('Transaction Controller', function () {
         assert.equal(params.gas, originalValue, 'gas unmodified')
         assert.equal(params.gasPrice, originalValue, 'gas price unmodified')
         assert.equal(result.hash, originalValue, `hash was set \n got: ${result.hash} \n expected: ${originalValue}`)
-
-        estimateStub.restore()
-        priceStub.restore()
         signStub.restore()
         pubStub.restore()
         done()
@@ -352,7 +378,7 @@ describe('Transaction Controller', function () {
       })
       .catch((err) => {
         assert.ifError(err, 'should not throw an error')
-        done()
+        done(err)
       })
     })
   })

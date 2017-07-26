@@ -195,7 +195,7 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
+      processTransaction: nodeify(this.newUnapprovedTransaction, this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
 
@@ -308,7 +308,7 @@ module.exports = class MetamaskController extends EventEmitter {
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
-      cancelTransaction: txController.cancelTransaction.bind(txController),
+      cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
 
       // messageManager
@@ -440,22 +440,21 @@ module.exports = class MetamaskController extends EventEmitter {
   // Identity Management
   //
 
-  newUnapprovedTransaction (txParams, cb) {
+  async newUnapprovedTransaction (txParams) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const self = this
-    self.txController.addUnapprovedTransaction(txParams, (err, txMeta) => {
-      if (err) return cb(err)
-      self.sendUpdate()
-      self.opts.showUnapprovedTx(txMeta)
-      // listen for tx completion (success, fail)
-      self.txController.once(`${txMeta.id}:finished`, (completedTx) => {
+    const txMeta = await this.txController.addUnapprovedTransaction(txParams)
+    this.sendUpdate()
+    this.opts.showUnapprovedTx(txMeta)
+    // listen for tx completion (success, fail)
+    return new Promise ((resolve, reject) => {
+      this.txController.once(`${txMeta.id}:finished`, (completedTx) => {
         switch (completedTx.status) {
           case 'submitted':
-            return cb(null, completedTx.hash)
+            return reoslve(completedTx.hash)
           case 'rejected':
-            return cb(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+            return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
           default:
-            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
+            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
         }
       })
     })
@@ -646,6 +645,4 @@ module.exports = class MetamaskController extends EventEmitter {
       return Promise.resolve(rpcTarget)
     })
   }
-
-
 }

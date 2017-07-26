@@ -10,24 +10,18 @@ its passed ethquery
 and used to do things like calculate gas of a tx.
 */
 
-module.exports = class txProviderUtils {
-
+module.exports = class txProvideUtils {
   constructor (ethQuery) {
     this.query = ethQuery
   }
 
-  analyzeGasUsage (txMeta, cb) {
-    var self = this
-    this.query.getBlockByNumber('latest', true, (err, block) => {
-      if (err) return cb(err)
-      async.waterfall([
-        self.estimateTxGas.bind(self, txMeta, block.gasLimit),
-        self.setTxGas.bind(self, txMeta, block.gasLimit),
-      ], cb)
-    })
+  async analyzeGasUsage (txMeta) {
+    const block = await this.query.getBlockByNumber('latest', true)
+    const estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
+    this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
   }
 
-  estimateTxGas (txMeta, blockGasLimitHex, cb) {
+  async estimateTxGas (txMeta, blockGasLimitHex) {
     const txParams = txMeta.txParams
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
@@ -38,10 +32,10 @@ module.exports = class txProviderUtils {
       txParams.gas = bnToHex(saferGasLimitBN)
     }
     // run tx, see if it will OOG
-    this.query.estimateGas(txParams, cb)
+    return await this.query.estimateGas(txParams)
   }
 
-  setTxGas (txMeta, blockGasLimitHex, estimatedGasHex, cb) {
+  setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
     txMeta.estimatedGas = estimatedGasHex
     const txParams = txMeta.txParams
 
@@ -49,14 +43,12 @@ module.exports = class txProviderUtils {
     // use original specified amount
     if (txMeta.gasLimitSpecified) {
       txMeta.estimatedGas = txParams.gas
-      cb()
       return
     }
     // if gasLimit not originally specified,
     // try adding an additional gas buffer to our estimation for safety
     const recommendedGasHex = this.addGasBuffer(txMeta.estimatedGas, blockGasLimitHex)
     txParams.gas = recommendedGasHex
-    cb()
     return
   }
 
@@ -72,22 +64,6 @@ module.exports = class txProviderUtils {
     if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
-  }
-
-  fillInTxParams (txParams, cb) {
-    const fromAddress = txParams.from
-    const reqs = {}
-
-    if (isUndef(txParams.gas)) reqs.gas = (cb) => this.query.estimateGas(txParams, cb)
-    if (isUndef(txParams.gasPrice)) reqs.gasPrice = (cb) => this.query.gasPrice(cb)
-    if (isUndef(txParams.nonce)) reqs.nonce = (cb) => this.query.getTransactionCount(fromAddress, 'pending', cb)
-
-    async.parallel(reqs, function (err, result) {
-      if (err) return cb(err)
-      // write results to txParams obj
-      Object.assign(txParams, result)
-      cb()
-    })
   }
 
   // builds ethTx from txParams object
@@ -107,20 +83,17 @@ module.exports = class txProviderUtils {
   }
 
   publishTransaction (rawTx) {
-    return new Promise((resolve, reject) => {
-      this.query.sendRawTransaction(rawTx, (err, ress) => {
-        if (err) reject(err)
-        else resolve(ress)
-      })
-    })
+    return this.query.sendRawTransaction(rawTx)
   }
 
-  validateTxParams (txParams, cb) {
-    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
-      cb(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
-    } else {
-      cb()
-    }
+  validateTxParams (txParams) {
+    return new Promise ((resolve, reject) => {
+      if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
+        reject(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
+      } else {
+        resolve()
+      }
+    })
   }
 
   sufficientBalance (txParams, hexBalance) {
