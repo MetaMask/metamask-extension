@@ -56,7 +56,6 @@
     {
       "run_at": "document_start",
       "matches": [
-        "file://*/*",
         "http://*/*",
         "https://*/*"
       ],
