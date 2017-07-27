@@ -267,7 +267,7 @@ App.prototype.renderNetworkDropdown = function () {
       DropdownMenuItem,
       {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
+        onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
       },
       [
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
