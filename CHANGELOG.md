@@ -2,6 +2,12 @@
 
 ## Current Master
 
+## 3.9.2 2017-7-26
+
+- Fix bugs that could sometimes result in failed transactions after switching networks.
+- Include stack traces in txMeta's to better understand the life cycle of transactions
+- Enhance blacklister functionality to include levenshtein logic. (credit to @sogoiii and @409H for their help!)
+
 ## 3.9.1 2017-7-19
 
 - No longer automatically request 1 ropsten ether for the first account in a new vault.
