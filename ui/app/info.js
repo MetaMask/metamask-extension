@@ -20,7 +20,11 @@ InfoScreen.prototype.render = function () {
   const version = global.platform.getVersion()
 
   return (
-    h('.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', {
+      style: {
+        maxWidth: '400px',
+      },
+    }, [
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
@@ -103,6 +107,7 @@ InfoScreen.prototype.render = function () {
                   target: '_blank',
                 }, 'Need Help? Read our FAQ!'),
               ]),
+
               h('div', [
                 h('a', {
                   href: 'https://metamask.io/',
@@ -120,6 +125,7 @@ InfoScreen.prototype.render = function () {
                   h('div.info', 'Visit our web site'),
                 ]),
               ]),
+
               h('div.fa.fa-slack', [
                 h('a.info', {
                   href: 'http://slack.metamask.io',
@@ -127,11 +133,13 @@ InfoScreen.prototype.render = function () {
                 }, 'Join the conversation on Slack'),
               ]),
 
-              h('div.fa.fa-twitter', [
-                h('a.info', {
-                  href: 'https://twitter.com/metamask_io',
-                  target: '_blank',
-                }, 'Follow us on Twitter'),
+              h('div', [
+                h('.fa.fa-twitter', [
+                  h('a.info', {
+                    href: 'https://twitter.com/metamask_io',
+                    target: '_blank',
+                  }, 'Follow us on Twitter'),
+                ])
               ]),
 
               h('div.fa.fa-envelope', [
