@@ -16,6 +16,7 @@ LoadingIndicator.prototype.render = function () {
   return (
     isLoading ? h('.full-flex-height', {
       style: {
+        left: '0px',
         zIndex: 10,
         position: 'absolute',
         flexDirection: 'column',
