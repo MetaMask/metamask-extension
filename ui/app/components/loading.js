@@ -14,7 +14,7 @@ LoadingIndicator.prototype.render = function () {
   const { isLoading, loadingMessage } = this.props
 
   return (
-    isLoading ? h('div', {
+    isLoading ? h('.full-flex-height', {
       style: {
         zIndex: 10,
         position: 'absolute',
