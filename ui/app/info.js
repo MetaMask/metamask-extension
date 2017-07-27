@@ -101,11 +101,11 @@ InfoScreen.prototype.render = function () {
               paddingLeft: '30px',
             }},
             [
-              h('div.fa.fa-github', [
+              h('div.fa.fa-support', [
                 h('a.info', {
-                  href: 'https://github.com/MetaMask/faq',
+                  href: 'http://metamask.consensyssupport.happyfox.com',
                   target: '_blank',
-                }, 'Need Help? Read our FAQ!'),
+                }, 'Visit our Support Center'),
               ]),
 
               h('div', [
@@ -139,7 +139,7 @@ InfoScreen.prototype.render = function () {
                     href: 'https://twitter.com/metamask_io',
                     target: '_blank',
                   }, 'Follow us on Twitter'),
-                ])
+                ]),
               ]),
 
               h('div.fa.fa-envelope', [
