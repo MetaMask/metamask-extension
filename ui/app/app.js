@@ -198,7 +198,17 @@ App.prototype.renderNetworkDropdown = function () {
   return h(Dropdown, {
     isOpen,
     onClickOutside: (event) => {
-      this.setState({ isNetworkMenuOpen: !isOpen })
+      const { classList } = event.target
+      const isNotToggleElement = [
+        classList.contains('menu-icon'),
+        classList.contains('network-name'),
+        classList.contains('network-indicator'),
+      ].filter(bool => bool).length === 0;
+      // classes from three constituent nodes of the toggle element
+
+      if (isNotToggleElement) {
+        this.setState({ isNetworkMenuOpen: false })
+      }
     },
     zIndex: 11,
     style: {
