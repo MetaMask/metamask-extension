@@ -17,6 +17,8 @@ class AccountDropdowns extends Component {
       accountSelectorActive: false,
       optionsMenuActive: false,
     }
+    this.accountSelectorToggleClassName = 'fa-angle-down';
+    this.optionsMenuToggleClassName = 'fa-ellipsis-h';
   }
 
   renderAccounts () {
@@ -63,7 +65,13 @@ class AccountDropdowns extends Component {
           maxHeight: '300px',
         },
         isOpen: accountSelectorActive,
-        onClickOutside: () => { this.setState({ accountSelectorActive: false }) },
+        onClickOutside: (event) => {
+          const { classList } = event.target
+          const isNotToggleElement = !classList.contains(this.accountSelectorToggleClassName)
+          if (accountSelectorActive && isNotToggleElement) {
+            this.setState({ accountSelectorActive: false })
+          }
+        },
       },
       [
         ...this.renderAccounts(),
@@ -115,7 +123,13 @@ class AccountDropdowns extends Component {
           minWidth: '180px',
         },
         isOpen: optionsMenuActive,
-        onClickOutside: () => { this.setState({ optionsMenuActive: false }) },
+        onClickOutside: () => {
+          const { classList } = event.target
+          const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
+          if (optionsMenuActive && isNotToggleElement) {
+            this.setState({ optionsMenuActive: false })
+          }
+        },
       },
       [
         h(
