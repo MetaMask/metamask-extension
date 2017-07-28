@@ -87,7 +87,9 @@ TokenList.prototype.renderTokenStatusBar = function () {
   const { tokens } = this.state
 
   let msg
-  if (tokens.length > 0) {
+  if (tokens.length === 1) {
+    msg = `You own 1 token`
+  } else if (tokens.length === 1) {
     msg = `You own ${tokens.length} tokens`
   } else {
     msg = `No tokens found`
