@@ -308,7 +308,11 @@ App.prototype.renderDropdown = function () {
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
-      this.setState({ isMainMenuOpen: !isOpen })
+      const { classList } = event.target
+      const isNotToggleElement = !classList.contains('sandwich-expando')
+      if (isNotToggleElement) {
+        this.setState({ isMainMenuOpen: false })
+      }
     },
     style: {
       position: 'absolute',
