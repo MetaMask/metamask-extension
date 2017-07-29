@@ -11,6 +11,9 @@ const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
+
+const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
+
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
@@ -58,16 +61,33 @@ SendTransactionScreen.prototype.render = function () {
 
     h('.send-screen.flex-column.flex-grow', [
 
+      h('div', {
+        style: {
+          position: 'fixed',
+          zIndex: 15, // token-icon-z-index
+          marginTop: '-55px',
+          marginLeft: '20%',
+        }
+      }, [
+        h(Identicon, {
+          address: ARAGON,
+          diameter: 76,
+        }),
+      ]),
+
       //
       // Sender Profile
       //
-
       h('.account-data-subsection.flex-row.flex-grow', {
         style: {
           margin: '0 20px',
+          width: '335px',
+          background: 'white', // $white
+          marginTop: '-15px',
+          zIndex: 13, // $send-screen-z-index
+          display: 'flex',
         },
       }, [
-
         // header - identicon + nav
         h('.flex-row.flex-space-between', {
           style: {

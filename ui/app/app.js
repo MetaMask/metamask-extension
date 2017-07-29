@@ -171,6 +171,16 @@ App.prototype.renderAppBar = function () {
 
         ]),
       ]),
+
+      h('.app-header', {
+        style: {
+          visibility: props.isUnlocked ? 'visible' : 'none',
+          background: '#EFEFEF', // $gallery
+          height: '38px',
+          position: 'relative',
+          zIndex: 12,
+        },
+      })
     ])
   )
 }
