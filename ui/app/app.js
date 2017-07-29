@@ -82,7 +82,7 @@ App.prototype.render = function () {
       // app bar
       this.renderAppBar(),
       this.renderNetworkDropdown(),
-      this.renderDropdown(),
+      // this.renderDropdown(),
 
       h(Loading, {
         isLoading: isLoading || isLoadingNetwork,
@@ -120,7 +120,7 @@ App.prototype.renderAppBar = function () {
         style: {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
-          background: props.isUnlocked ? 'white' : 'none',
+          background: '#EFEFEF', // $gallery
           height: '38px',
           position: 'relative',
           zIndex: 12,
@@ -134,7 +134,6 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
-
           // mini logo
           h('img', {
             height: 24,
@@ -142,6 +141,24 @@ App.prototype.renderAppBar = function () {
             src: '/images/icon-128.png',
           }),
 
+          // metamask name
+          h('h1', {
+            style: {
+              position: 'relative',
+              left: '9px',
+            },
+          }, 'MetaMask'),
+
+        ]),
+
+        h('div', {
+          style: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          },
+        }, [
+          // Network Indicator
           h(NetworkIndicator, {
             network: this.props.network,
             provider: this.props.provider,
@@ -151,37 +168,7 @@ App.prototype.renderAppBar = function () {
               this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
           }),
-        ]),
 
-        // metamask name
-        props.isUnlocked && h('h1', {
-          style: {
-            position: 'relative',
-            left: '9px',
-          },
-        }, 'MetaMask'),
-
-        props.isUnlocked && h('div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          },
-        }, [
-
-          // hamburger
-          props.isUnlocked && h(SandwichExpando, {
-            width: 16,
-            barHeight: 2,
-            padding: 0,
-            isOpen: state.isMainMenuOpen,
-            color: 'rgb(247,146,30)',
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              this.setState({ isMainMenuOpen: !state.isMainMenuOpen })
-            },
-          }),
         ]),
       ]),
     ])
@@ -213,8 +200,8 @@ App.prototype.renderNetworkDropdown = function () {
     zIndex: 11,
     style: {
       position: 'absolute',
-      left: '2px',
-      top: '36px',
+      right: '2px',
+      top: '38px',
     },
     innerStyle: {
       padding: '2px 16px 2px 0px',
