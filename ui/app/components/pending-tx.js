@@ -36,6 +36,13 @@ function PendingTx () {
   }
 }
 
+// Next: create separate react components
+// roughly 5 components:
+//   heroIcon
+//   numericDisplay (contains symbol + currency)
+//   divider
+//   contentBox
+//   actionButtons
 const sectionDivider = h('div', {
   style: {
     height:'1px',
@@ -43,7 +50,6 @@ const sectionDivider = h('div', {
   },
 }),
 
-// Next: create separate react components
 const contentDivider = h('div', {
   style: {
     marginLeft: '16px',
