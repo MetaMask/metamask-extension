@@ -320,7 +320,11 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
   const value = util.normalizeEthStringToWei(input)
-  const txData = document.querySelector('input[name="txData"]').value
+  // TODO: check with team on whether txData is removed completely.
+  const txData = false;
+  // Must replace with memo data.
+  // const txData = document.querySelector('input[name="txData"]').value
+
   const balance = this.props.balance
   let message
 
@@ -339,7 +343,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
-  if (!isHex(ethUtil.stripHexPrefix(txData)) && txData) {
+  if (txData && !isHex(ethUtil.stripHexPrefix(txData))) {
     message = 'Transaction data must be hex string.'
     return this.props.dispatch(actions.displayWarning(message))
   }
