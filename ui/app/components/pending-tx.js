@@ -20,6 +20,11 @@ const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 const MIN_GAS_LIMIT_BN = new BN(21000)
 
+
+// Faked, for Icon
+const Identicon = require('./identicon')
+const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
+
 module.exports = PendingTx
 inherits(PendingTx, Component)
 function PendingTx () {
@@ -30,6 +35,24 @@ function PendingTx () {
     submitting: false,
   }
 }
+
+const sectionDivider = h('div', {
+  style: {
+    height:'1px',
+    background:'#E7E7E7',
+  },
+}),
+
+// Next: create separate react components
+const contentDivider = h('div', {
+  style: {
+    marginLeft: '16px',
+    marginRight: '16px',
+    height:'1px',
+    background:'#E7E7E7',
+  },
+})
+
 
 PendingTx.prototype.render = function () {
   const props = this.props
@@ -70,349 +93,187 @@ PendingTx.prototype.render = function () {
   this.inputs = []
 
   return (
-
-    h('div', {
-      key: txMeta.id,
+    h('div.flex-column.flex-grow', {
+      style: {
+        // overflow: 'scroll',
+        minWidth: '355px', // TODO: maxWidth TBD, use home.html
+      },
     }, [
 
-      h('div', {
+      // Main Send token Card
+      h('div.send-screen.flex-column.flex-grow', {
+        style: {
+          marginLeft: '3.5%',
+          marginRight: '3.5%',
+          background: '#FFFFFF', // $background-white
+          boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
+        }
       }, [
-        // tx info
-        h('div', [
-
-          h('.flex-row.flex-center', {
-            style: {
-              maxWidth: '100%',
-            },
-          }, [
-
-            h(MiniAccountPanel, {
-              imageSeed: address,
-              picOrder: 'right',
-            }, [
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
-                },
-              }, identity.name),
-
-              h(Copyable, {
-                value: ethUtil.toChecksumAddress(address),
-              }, [
-                h('span.font-small', {
-                  style: {
-                    fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-                  },
-                }, addressSummary(address, 6, 4, false)),
-              ]),
-
-              h('span.font-small', {
-                style: {
-                  fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-                },
-              }, [
-                h(EthBalance, {
-                  value: balance,
-                  conversionRate,
-                  currentCurrency,
-                  inline: true,
-                  labelColor: '#F7861C',
-                }),
-              ]),
-            ]),
-
-            forwardCarrat(),
-
-            this.miniAccountPanelForRecipient(),
-          ]),
-
-          h('style', `
-            .table-box {
-              margin: 7px 0px 0px 0px;
-              width: 100%;
-            }
-            .table-box .row {
-              margin: 0px;
-              background: rgb(236,236,236);
-              display: flex;
-              justify-content: space-between;
-              font-family: Montserrat Light, sans-serif;
-              font-size: 13px;
-              padding: 5px 25px;
-            }
-            .table-box .row .value {
-              font-family: Montserrat Regular;
-            }
-          `),
-
-          h('.table-box', [
-
-            // Ether Value
-            // Currently not customizable, but easily modified
-            // in the way that gas and gasLimit currently are.
-            h('.row', [
-              h('.cell.label', 'Amount'),
-              h(EthBalance, { value: txParams.value, currentCurrency, conversionRate }),
-            ]),
-
-            // Gas Limit (customizable)
-            h('.cell.row', [
-              h('.cell.label', 'Gas Limit'),
-              h('.cell.value', {
-              }, [
-                h(BNInput, {
-                  name: 'Gas Limit',
-                  value: gasBn,
-                  precision: 0,
-                  scale: 0,
-                  // The hard lower limit for gas.
-                  min: MIN_GAS_LIMIT_BN.toString(10),
-                  max: safeGasLimit,
-                  suffix: 'UNITS',
-                  style: {
-                    position: 'relative',
-                    top: '5px',
-                  },
-                  onChange: this.gasLimitChanged.bind(this),
-
-                  ref: (hexInput) => { this.inputs.push(hexInput) },
-                }),
-              ]),
-            ]),
-
-            // Gas Price (customizable)
-            h('.cell.row', [
-              h('.cell.label', 'Gas Price'),
-              h('.cell.value', {
-              }, [
-                h(BNInput, {
-                  name: 'Gas Price',
-                  value: gasPriceBn,
-                  precision: 9,
-                  scale: 9,
-                  suffix: 'GWEI',
-                  min: MIN_GAS_PRICE_GWEI_BN.toString(10),
-                  style: {
-                    position: 'relative',
-                    top: '5px',
-                  },
-                  onChange: this.gasPriceChanged.bind(this),
-                  ref: (hexInput) => { this.inputs.push(hexInput) },
-                }),
-              ]),
-            ]),
-
-            // Max Transaction Fee (calculated)
-            h('.cell.row', [
-              h('.cell.label', 'Max Transaction Fee'),
-              h(EthBalance, { value: txFeeBn.toString(16), currentCurrency, conversionRate }),
-            ]),
-
-            h('.cell.row', {
-              style: {
-                fontFamily: 'Montserrat Regular',
-                background: 'white',
-                padding: '10px 25px',
-              },
-            }, [
-              h('.cell.label', 'Max Total'),
-              h('.cell.value', {
-                style: {
-                  display: 'flex',
-                  alignItems: 'center',
-                },
-              }, [
-                h(EthBalance, {
-                  value: maxCost.toString(16),
-                  currentCurrency,
-                  conversionRate,
-                  inline: true,
-                  labelColor: 'black',
-                  fontSize: '16px',
-                }),
-              ]),
-            ]),
-
-            // Data size row:
-            h('.cell.row', {
-              style: {
-                background: '#f7f7f7',
-                paddingBottom: '0px',
-              },
-            }, [
-              h('.cell.label'),
-              h('.cell.value', {
-                style: {
-                  fontFamily: 'Montserrat Light',
-                  fontSize: '11px',
-                },
-              }, `Data included: ${dataLength} bytes`),
-            ]),
-          ]), // End of Table
-
+        h('section.flex-center.flex-row', {
+          style: {
+            zIndex: 15, // $token-icon-z-index
+            marginTop: '-35px',
+          }
+        }, [
+          h(Identicon, {
+            address: ARAGON,
+            diameter: 76,
+          }),
         ]),
 
-        h('style', `
-          .conf-buttons button {
-            margin-left: 10px;
-            text-transform: uppercase;
-          }
-        `),
+        //
+        // Required Fields
+        //
 
-        txMeta.simulationFails ?
-          h('.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Transaction Error. Exception thrown in contract code.')
-        : null,
-
-        !isValidAddress ?
-          h('.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
-        : null,
-
-        insufficientBalance ?
-          h('span.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Insufficient balance for transaction')
-        : null,
-
-        // send + cancel
-        h('.flex-row.flex-space-around.conf-buttons', {
+        h('h3.flex-center', {
           style: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            margin: '14px 25px',
+            marginTop: '-18px',
+            fontSize: '16px',
           },
         }, [
+          'Confirm Transaction',
+        ]),
 
+        h('h3.flex-center', {
+          style: {
+            textAlign: 'center',
+            fontSize: '12px',
+          },
+        }, [
+          'You\'re sending to Recipient ...5924',
+        ]),
 
-          insufficientBalance ?
-            h('button.btn-green', {
-              onClick: props.buyEth,
-            }, 'Buy Ether')
-          : null,
+        h('h3.flex-center', {
+          style: {
+            textAlign: 'center',
+            fontSize: '36px',
+            marginTop: '8px',
+          },
+        }, [
+          '0.24',
+        ]),
 
+        h('h3.flex-center', {
+          style: {
+            textAlign: 'center',
+            fontSize: '12px',
+            marginTop: '4px',
+          },
+        }, [
+          'ANT',
+        ]),
 
-          h('form#pending-tx-form', {
-            onSubmit: this.onSubmit.bind(this),
+        // error message
+        props.error && h('span.error.flex-center', props.error),
+
+        sectionDivider,
+
+        h('section.flex-row.flex-center', {
+
+        }, [
+          h('div', {
+            style: {
+              width: '50%',
+            }
           }, [
-            // Reset Button
-            h('button', {
-              onClick: (event) => {
-                this.resetGasFields()
-                event.preventDefault()
-              },
-            }, 'Reset'),
-
-            // Accept Button
-            h('input.confirm.btn-green', {
-              type: 'submit',
-              value: 'SUBMIT',
-              style: { marginLeft: '10px' },
-              disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
-            }),
-
-            // Cancel Button
-            h('button.cancel.btn-red', {
-              onClick: props.cancelTransaction,
-            }, 'Reject'),
+            h('span', {
+              style: {
+                textAlign: 'left',
+                fontSize: '12px',
+              }
+            }, [
+              'From'
+            ])
           ]),
 
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          },[
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '10px',
+                marginBottom: '-10px',
+              },
+            }, 'Aragon Token'),
+
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '8px',
+              },
+            }, 'Your Balance 2.34 ANT')
+          ])
         ]),
-      ]),
-    ])
+
+        contentDivider,
+
+        h('form#pending-tx-form', {
+          onSubmit: this.onSubmit.bind(this),
+        }, [
+          // Reset Button
+          h('button', {
+            onClick: (event) => {
+              this.resetGasFields()
+              event.preventDefault()
+            },
+          }, 'Reset'),
+
+          // Accept Button
+          h('input.confirm.btn-green', {
+            type: 'submit',
+            value: 'SUBMIT',
+            style: { marginLeft: '10px' },
+            disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
+          }),
+
+          // Cancel Button
+          h('button.cancel.btn-red', {
+            onClick: props.cancelTransaction,
+          }, 'Reject'),
+        ]),
+
+      ]) // end of main container
+    ]) // end of minwidth wrapper
   )
 }
 
-PendingTx.prototype.miniAccountPanelForRecipient = function () {
-  const props = this.props
-  const txData = props.txData
-  const txParams = txData.txParams || {}
-  const isContractDeploy = !('to' in txParams)
+// PendingTx.prototype.gasPriceChanged = function (newBN, valid) {
+//   log.info(`Gas price changed to: ${newBN.toString(10)}`)
+//   const txMeta = this.gatherTxMeta()
+//   txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
+//   this.setState({
+//     txData: clone(txMeta),
+//     valid,
+//   })
+// }
 
-  // If it's not a contract deploy, send to the account
-  if (!isContractDeploy) {
-    return h(MiniAccountPanel, {
-      imageSeed: txParams.to,
-      picOrder: 'left',
-    }, [
+// PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
+//   log.info(`Gas limit changed to ${newBN.toString(10)}`)
+//   const txMeta = this.gatherTxMeta()
+//   txMeta.txParams.gas = '0x' + newBN.toString('hex')
+//   this.setState({
+//     txData: clone(txMeta),
+//     valid,
+//   })
+// }
 
-      h('span.font-small', {
-        style: {
-          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
-        },
-      }, nameForAddress(txParams.to, props.identities)),
+// PendingTx.prototype.resetGasFields = function () {
+//   log.debug(`pending-tx resetGasFields`)
 
-      h(Copyable, {
-        value: ethUtil.toChecksumAddress(txParams.to),
-      }, [
-        h('span.font-small', {
-          style: {
-            fontFamily: 'Montserrat Light, Montserrat, sans-serif',
-          },
-        }, addressSummary(txParams.to, 6, 4, false)),
-      ]),
+//   this.inputs.forEach((hexInput) => {
+//     if (hexInput) {
+//       hexInput.setValid()
+//     }
+//   })
 
-    ])
-  } else {
-    return h(MiniAccountPanel, {
-      picOrder: 'left',
-    }, [
-
-      h('span.font-small', {
-        style: {
-          fontFamily: 'Montserrat Bold, Montserrat, sans-serif',
-        },
-      }, 'New Contract'),
-
-    ])
-  }
-}
-
-PendingTx.prototype.gasPriceChanged = function (newBN, valid) {
-  log.info(`Gas price changed to: ${newBN.toString(10)}`)
-  const txMeta = this.gatherTxMeta()
-  txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
-  this.setState({
-    txData: clone(txMeta),
-    valid,
-  })
-}
-
-PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
-  log.info(`Gas limit changed to ${newBN.toString(10)}`)
-  const txMeta = this.gatherTxMeta()
-  txMeta.txParams.gas = '0x' + newBN.toString('hex')
-  this.setState({
-    txData: clone(txMeta),
-    valid,
-  })
-}
-
-PendingTx.prototype.resetGasFields = function () {
-  log.debug(`pending-tx resetGasFields`)
-
-  this.inputs.forEach((hexInput) => {
-    if (hexInput) {
-      hexInput.setValid()
-    }
-  })
-
-  this.setState({
-    txData: null,
-    valid: true,
-  })
-}
+//   this.setState({
+//     txData: null,
+//     valid: true,
+//   })
+// }
 
 PendingTx.prototype.onSubmit = function (event) {
   event.preventDefault()
@@ -470,16 +331,4 @@ PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denomi
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
-}
-
-function forwardCarrat () {
-  return (
-    h('img', {
-      src: 'images/forward-carrat.svg',
-      style: {
-        padding: '5px 6px 0px 10px',
-        height: '37px',
-      },
-    })
-  )
 }
