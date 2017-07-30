@@ -44,6 +44,13 @@ EnsInput.prototype.render = function () {
   return h('div', {
     style: { width: '100%' },
   }, [
+    h('span', {
+      style: {
+        textAlign: 'left',
+      }
+    }, [
+      'To:'
+    ]),
     h('input.large-input', opts),
     // The address book functionality.
     h('datalist#addresses',

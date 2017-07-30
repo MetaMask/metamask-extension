@@ -59,14 +59,17 @@ SendTransactionScreen.prototype.render = function () {
 
   return (
 
-    h('.send-screen.flex-column.flex-grow', [
-
-      h('div', {
+    h('.send-screen.flex-column.flex-grow', {
+      style: {
+        background: '#FFFFFF', // $background-white
+        marginLeft: '3.5%',
+        marginRight: '3.5%',
+      }
+    }, [
+      h('section.flex-center.flex-row', {
         style: {
-          position: 'fixed',
-          zIndex: 15, // token-icon-z-index
-          marginTop: '-55px',
-          marginLeft: '20%',
+          zIndex: 15, // $token-icon-z-index
+          marginTop: '-35px',
         }
       }, [
         h(Identicon, {
@@ -76,102 +79,52 @@ SendTransactionScreen.prototype.render = function () {
       ]),
 
       //
-      // Sender Profile
-      //
-      h('.account-data-subsection.flex-row.flex-grow', {
-        style: {
-          margin: '0 20px',
-          width: '335px',
-          background: 'white', // $white
-          marginTop: '-15px',
-          zIndex: 13, // $send-screen-z-index
-          display: 'flex',
-        },
-      }, [
-        // header - identicon + nav
-        h('.flex-row.flex-space-between', {
-          style: {
-            marginTop: '15px',
-          },
-        }, [
-          // back button
-          h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-            onClick: this.back.bind(this),
-          }),
-
-          // large identicon
-          h('.identicon-wrapper.flex-column.flex-center.select-none', [
-            h(Identicon, {
-              diameter: 62,
-              address: address,
-            }),
-          ]),
-
-          // invisible place holder
-          h('i.fa.fa-users.fa-lg.invisible', {
-            style: {
-              marginTop: '28px',
-            },
-          }),
-
-        ]),
-
-        // account label
-
-        h('.flex-column', {
-          style: {
-            marginTop: '10px',
-            alignItems: 'flex-start',
-          },
-        }, [
-          h('h2.font-medium.color-forest.flex-center', {
-            style: {
-              paddingTop: '8px',
-              marginBottom: '8px',
-            },
-          }, identity && identity.name),
-
-          // address and getter actions
-          h('.flex-row.flex-center', {
-            style: {
-              marginBottom: '8px',
-            },
-          }, [
-
-            h('div', {
-              style: {
-                lineHeight: '16px',
-              },
-            }, addressSummary(address)),
-
-          ]),
-
-          // balance
-          h('.flex-row.flex-center', [
-
-            h(EthBalance, {
-              value: account && account.balance,
-              conversionRate,
-              currentCurrency,
-            }),
-
-          ]),
-        ]),
-      ]),
-
-      //
       // Required Fields
       //
 
-      h('h3.flex-center.text-transform-uppercase', {
+      h('h3.flex-center', {
         style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginTop: '15px',
-          marginBottom: '16px',
+          marginTop: '-15px',
+          fontSize: '20px',
         },
       }, [
-        'Send Transaction',
+        'Send Tokens',
+      ]),
+
+      h('h3.flex-center', {
+        style: {
+          textAlign: 'center',
+          fontSize: '16px',
+        },
+      }, [
+        'Send Tokens to anyone with an Ethereum account',
+      ]),
+
+      h('h3.flex-center', {
+        style: {
+          textAlign: 'center',
+          fontSize: '16px',
+        },
+      }, [
+        'Your Aragon Token Balance is:',
+      ]),
+
+      h('h3.flex-center', {
+        style: {
+          textAlign: 'center',
+          fontSize: '43px',
+        },
+      }, [
+        '2.34',
+      ]),
+
+      h('h3.flex-center', {
+        style: {
+          textAlign: 'center',
+          fontSize: '16px',
+        },
+      }, [
+        'ANT',
       ]),
 
       // error message
@@ -194,7 +147,7 @@ SendTransactionScreen.prototype.render = function () {
 
         h('input.large-input', {
           name: 'amount',
-          placeholder: 'Amount',
+          placeholder: '0',
           type: 'number',
           style: {
             marginRight: '6px',
