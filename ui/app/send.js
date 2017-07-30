@@ -143,7 +143,17 @@ SendTransactionScreen.prototype.render = function () {
       ]),
 
       // 'amount' and send button
-      h('section.flex-row.flex-center', [
+      h('section.flex-column.flex-center', [
+
+        h('div.flex-row.flex-center', {
+          style: {
+            width: '100%',
+            justifyContent: 'space-between',
+          }
+        },[
+          h('span', { style: {} }, ['Amount']),
+          h('span', { style: {} }, ['Token <> USD']),
+        ]),
 
         h('input.large-input', {
           name: 'amount',
@@ -157,43 +167,88 @@ SendTransactionScreen.prototype.render = function () {
           },
         }),
 
-        h('button.primary', {
-          onClick: this.onSubmit.bind(this),
+      ]),
+
+      h('section.flex-column.flex-center', [
+
+        h('div.flex-row.flex-center', {
           style: {
-            textTransform: 'uppercase',
+            width: '100%',
+            justifyContent: 'space-between',
+          }
+        },[
+          h('span', { style: {} }, ['Gas Fee:']),
+          h('span', { style: {} }, ['What\'s this?']),
+        ]),
+
+        h('input.large-input', {
+          name: 'Gas Fee',
+          placeholder: '0',
+          type: 'number',
+          style: {
+            marginRight: '6px',
           },
-        }, 'Next'),
+          // dataset: {
+          //   persistentFormId: 'tx-amount',
+          // },
+        }),
 
       ]),
 
       //
       // Optional Fields
       //
-      h('h3.flex-center.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginTop: '16px',
-          marginBottom: '16px',
-        },
-      }, [
-        'Transaction Data (optional)',
-      ]),
 
-      // 'data' field
       h('section.flex-column.flex-center', [
-        h('input.large-input', {
-          name: 'txData',
-          placeholder: '0x01234',
+
+        h('div.flex-row.flex-center', {
           style: {
             width: '100%',
-            resize: 'none',
-          },
-          dataset: {
-            persistentFormId: 'tx-data',
+            justifyContent: 'flex-start',
+          }
+        },[
+          h('span', { style: {} }, ['Transaction Memo (optional)']),
+          h('span', { style: {} }, ['What\'s this?']),
+        ]),
+
+        h('input.large-input', {
+          name: 'memo',
+          placeholder: '',
+          type: 'string',
+          style: {
+            marginRight: '6px',
           },
         }),
+
       ]),
+
+
+
+      // h('h3.flex-center.text-transform-uppercase', {
+      //   style: {
+      //     background: '#EBEBEB',
+      //     color: '#AEAEAE',
+      //     marginTop: '16px',
+      //     marginBottom: '16px',
+      //   },
+      // }, [
+      //   'Transaction Data (optional)',
+      // ]),
+
+      // // 'data' field
+      // h('section.flex-column.flex-center', [
+      //   h('input.large-input', {
+      //     name: 'txData',
+      //     placeholder: '0x01234',
+      //     style: {
+      //       width: '100%',
+      //       resize: 'none',
+      //     },
+      //     dataset: {
+      //       persistentFormId: 'tx-data',
+      //     },
+      //   }),
+      // ]),
     ])
   )
 }
