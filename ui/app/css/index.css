@@ -85,9 +85,8 @@ input:focus, textarea:focus {
 //   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
 // }
 
-.btn-green, input[type="submit"].btn-green {
-  border-radius: 2px;
-  background-color: #02C9B1;
+.btn-green {
+  background-color: #02C9B1; // TODO: reusable color in colors.css
 }
 
 // .btn-red {

@@ -372,6 +372,7 @@ PendingTx.prototype.render = function () {
             value: 'SUBMIT',
             style: {
               color: '#FFFFFF',
+              borderRadius: '2px';
               fontSize: '12px',
               lineHeight: '20px',
               textAlign: 'center',
