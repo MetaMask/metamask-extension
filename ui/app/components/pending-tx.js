@@ -75,11 +75,8 @@ PendingTx.prototype.render = function () {
       key: txMeta.id,
     }, [
 
-      h('form#pending-tx-form', {
-        onSubmit: this.onSubmit.bind(this),
-
+      h('div', {
       }, [
-
         // tx info
         h('div', [
 
@@ -305,24 +302,32 @@ PendingTx.prototype.render = function () {
             }, 'Buy Ether')
           : null,
 
-          h('button', {
-            onClick: (event) => {
-              this.resetGasFields()
-              event.preventDefault()
-            },
-          }, 'Reset'),
 
-          // Accept Button
-          h('input.confirm.btn-green', {
-            type: 'submit',
-            value: 'SUBMIT',
-            style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
-          }),
+          h('form#pending-tx-form', {
+            onSubmit: this.onSubmit.bind(this),
+          }, [
+            // Reset Button
+            h('button', {
+              onClick: (event) => {
+                this.resetGasFields()
+                event.preventDefault()
+              },
+            }, 'Reset'),
 
-          h('button.cancel.btn-red', {
-            onClick: props.cancelTransaction,
-          }, 'Reject'),
+            // Accept Button
+            h('input.confirm.btn-green', {
+              type: 'submit',
+              value: 'SUBMIT',
+              style: { marginLeft: '10px' },
+              disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
+            }),
+
+            // Cancel Button
+            h('button.cancel.btn-red', {
+              onClick: props.cancelTransaction,
+            }, 'Reject'),
+          ]),
+
         ]),
       ]),
     ])
