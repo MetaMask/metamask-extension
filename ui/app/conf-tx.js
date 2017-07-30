@@ -52,66 +52,25 @@ ConfirmTxScreen.prototype.render = function () {
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
 
-  return (
-
-    h('.flex-column.flex-grow', [
-
-      // subtitle and nav
-      h('.section-title.flex-row.flex-center', [
-        !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: this.goHome.bind(this),
-        }) : null,
-        h('h2.page-subtitle', 'Confirm Transaction'),
-        isNotification ? h(NetworkIndicator, {
-          network: network,
-          provider: provider,
-        }) : null,
-      ]),
-
-      h('h3', {
-        style: {
-          alignSelf: 'center',
-          display: unconfTxList.length > 1 ? 'block' : 'none',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index === 0 ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.previousTx()),
-        }),
-        ` ${props.index + 1} of ${unconfTxList.length} `,
-        h('i.fa.fa-arrow-right.fa-lg.cursor-pointer', {
-          style: {
-            display: props.index + 1 === unconfTxList.length ? 'none' : 'inline-block',
-          },
-          onClick: () => props.dispatch(actions.nextTx()),
-        }),
-      ]),
-
-      warningIfExists(props.warning),
-
-      currentTxView({
-        // Properties
-        txData: txData,
-        key: txData.id,
-        selectedAddress: props.selectedAddress,
-        accounts: props.accounts,
-        identities: props.identities,
-        conversionRate,
-        currentCurrency,
-        blockGasLimit,
-        // Actions
-        buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
-        sendTransaction: this.sendTransaction.bind(this),
-        cancelTransaction: this.cancelTransaction.bind(this, txData),
-        signMessage: this.signMessage.bind(this, txData),
-        signPersonalMessage: this.signPersonalMessage.bind(this, txData),
-        cancelMessage: this.cancelMessage.bind(this, txData),
-        cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
-      }),
-    ])
-  )
+  return currentTxView({
+    // Properties
+    txData: txData,
+    key: txData.id,
+    selectedAddress: props.selectedAddress,
+    accounts: props.accounts,
+    identities: props.identities,
+    conversionRate,
+    currentCurrency,
+    blockGasLimit,
+    // Actions
+    buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
+    sendTransaction: this.sendTransaction.bind(this),
+    cancelTransaction: this.cancelTransaction.bind(this, txData),
+    signMessage: this.signMessage.bind(this, txData),
+    signPersonalMessage: this.signPersonalMessage.bind(this, txData),
+    cancelMessage: this.cancelMessage.bind(this, txData),
+    cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
+  })
 }
 
 function currentTxView (opts) {
