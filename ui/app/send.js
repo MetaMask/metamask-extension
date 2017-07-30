@@ -72,6 +72,7 @@ SendTransactionScreen.prototype.render = function () {
           marginLeft: '3.5%',
           marginRight: '3.5%',
           background: '#FFFFFF', // $background-white
+          boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
         }
       }, [
         h('section.flex-center.flex-row', {
@@ -92,7 +93,7 @@ SendTransactionScreen.prototype.render = function () {
 
         h('h3.flex-center', {
           style: {
-            marginTop: '-15px',
+            marginTop: '-18px',
             fontSize: '16px',
           },
         }, [
@@ -111,6 +112,7 @@ SendTransactionScreen.prototype.render = function () {
         h('h3.flex-center', {
           style: {
             textAlign: 'center',
+            marginTop: '2px',
             fontSize: '12px',
           },
         }, [
@@ -121,6 +123,7 @@ SendTransactionScreen.prototype.render = function () {
           style: {
             textAlign: 'center',
             fontSize: '36px',
+            marginTop: '8px',
           },
         }, [
           '2.34',
@@ -130,6 +133,7 @@ SendTransactionScreen.prototype.render = function () {
           style: {
             textAlign: 'center',
             fontSize: '12px',
+            marginTop: '4px',
           },
         }, [
           'ANT',
@@ -156,7 +160,6 @@ SendTransactionScreen.prototype.render = function () {
 
         // 'amount' and send button
         h('section.flex-column.flex-center', [
-
           h('div.flex-row.flex-center', {
             style: {
               fontSize: '12px',
@@ -184,7 +187,6 @@ SendTransactionScreen.prototype.render = function () {
         ]),
 
         h('section.flex-column.flex-center', [
-
           h('div.flex-row.flex-center', {
             style: {
               fontSize: '12px',
@@ -215,8 +217,11 @@ SendTransactionScreen.prototype.render = function () {
         // Optional Fields
         //
 
-        h('section.flex-column.flex-center', [
-
+        h('section.flex-column.flex-center', {
+          style: {
+            marginBottom: '10px',
+          },
+        }, [
           h('div.flex-row.flex-center', {
             style: {
               fontSize: '12px',
@@ -225,7 +230,6 @@ SendTransactionScreen.prototype.render = function () {
             }
           },[
             h('span', { style: {} }, ['Transaction Memo (optional)']),
-            h('span', { style: { fontSize: '8px' } }, ['What\'s this?']),
           ]),
 
           h('input.large-input', {
@@ -266,20 +270,28 @@ SendTransactionScreen.prototype.render = function () {
       ]),
 
       // Buttons underneath card
+      h('section.flex-column.flex-center', [
 
-      h('button.primary', {
-        onClick: this.onSubmit.bind(this),
-        style: {
-          textTransform: 'uppercase',
-        },
-      }, 'Next'),
+        h('button.light', {
+          onClick: this.onSubmit.bind(this),
+          style: {
+            marginTop: '8px',
+            width: '8em',
+            background: '#FFFFFF'
+          },
+        }, 'Next'),
 
-      h('button.primary', {
-        onClick: this.back.bind(this),
-        style: {
-          textTransform: 'uppercase',
-        },
-      }, 'Cancel'),
+        h('button.light', {
+          onClick: this.back.bind(this),
+          style: {
+            background: '#F7F7F7', // $alabaster
+            border: 'none',
+            opacity: 1,
+            width: '8em',
+          },
+        }, 'Cancel'),
+
+      ]),
     ])
 
   )

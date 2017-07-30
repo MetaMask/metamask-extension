@@ -69,46 +69,48 @@ input:focus, textarea:focus {
   flex-direction: column;
 }
 
-button, input[type="submit"] {
-  font-family: 'Montserrat Bold';
-  outline: none;
-  cursor: pointer;
-  padding: 8px 12px;
-  border: none;
-  color: white;
-  transform-origin: center center;
-  transition: transform 50ms ease-in;
-  /* default orange */
-  background: rgba(247, 134, 28, 1);
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-}
+// TODO: remove/refactor for new design
 
-.btn-green, input[type="submit"].btn-green {
-  background: rgba(106, 195, 96, 1);
-  box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
-}
+// button, input[type="submit"] {
+//   font-family: 'Montserrat Bold';
+//   outline: none;
+//   cursor: pointer;
+//   padding: 8px 12px;
+//   border: none;
+//   color: white;
+//   transform-origin: center center;
+//   transition: transform 50ms ease-in;
+//   /* default orange */
+//   background: rgba(247, 134, 28, 1);
+//   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+// }
 
-.btn-red {
-  background: rgba(254, 35, 17, 1);
-  box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
-}
+// .btn-green, input[type="submit"].btn-green {
+//   background: rgba(106, 195, 96, 1);
+//   box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
+// }
 
-button[disabled], input[type="submit"][disabled] {
-  cursor: not-allowed;
-  background: rgba(197, 197, 197, 1);
-  box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
-}
+// .btn-red {
+//   background: rgba(254, 35, 17, 1);
+//   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
+// }
 
-button.spaced {
-  margin: 2px;
-}
+// button[disabled], input[type="submit"][disabled] {
+//   cursor: not-allowed;
+//   background: rgba(197, 197, 197, 1);
+//   box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
+// }
 
-button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
-  transform: scale(1.1);
-}
-button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
-  transform: scale(0.95);
-}
+// button.spaced {
+//   margin: 2px;
+// }
+
+// button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
+//   transform: scale(1.1);
+// }
+// button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
+//   transform: scale(0.95);
+// }
 
 a {
   text-decoration: none;
@@ -137,6 +139,22 @@ button.primary {
   text-transform: uppercase;
 }
 
+button.light {
+  padding: 8px 12px;
+  // background: #FFFFFF; // $bg-white
+  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  color: #585D67; // TODO: make reusable light button color
+  font-size: 1.1em;
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 2px;
+  border: 1px solid #979797; // #TODO: make reusable light border color
+  opacity: 0.5;
+}
+
+// TODO: cleanup: not used anywhere
 button.btn-thin {
   border: 1px solid;
   border-color: #4D4D4D;
