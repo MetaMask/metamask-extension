@@ -304,6 +304,7 @@ PendingTx.prototype.render = function () {
             marginRight: '10px',
             paddingLeft: '6px',
             paddingRight: '6px',
+            marginBottom: '10px',
           }
         }, [
           h('div', {
@@ -315,6 +316,7 @@ PendingTx.prototype.render = function () {
               style: {
                 textAlign: 'left',
                 fontSize: '12px',
+                marginBottom: '-10px',
               }
             }, [
               'Total Tokens'
@@ -353,46 +355,46 @@ PendingTx.prototype.render = function () {
           ])
         ]),
 
-        sectionDivider,
+      ]), // end of container
 
-        h('form#pending-tx-form', {
-          onSubmit: this.onSubmit.bind(this),
-        }, [
-          // Reset Button
-          // h('button', {
-          //   onClick: (event) => {
-          //     this.resetGasFields()
-          //     event.preventDefault()
-          //   },
-          // }, 'Reset'),
+      h('form#pending-tx-form.flex-column.flex-center', {
+        onSubmit: this.onSubmit.bind(this),
+      }, [
+        // Reset Button
+        // h('button', {
+        //   onClick: (event) => {
+        //     this.resetGasFields()
+        //     event.preventDefault()
+        //   },
+        // }, 'Reset'),
 
-          // Accept Button
-          h('input.confirm.btn-green', {
-            type: 'submit',
-            value: 'SUBMIT',
-            style: {
-              color: '#FFFFFF',
-              borderRadius: '2px';
-              fontSize: '12px',
-              lineHeight: '20px',
-              textAlign: 'center',
-            },
-            disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
-          }),
+        // Accept Button
+        h('input.confirm.btn-green', {
+          type: 'submit',
+          value: 'SUBMIT',
+          style: {
+            marginTop: '8px',
+            width: '8em',
+            color: '#FFFFFF',
+            borderRadius: '2px',
+            fontSize: '12px',
+            lineHeight: '20px',
+            textAlign: 'center',
+          },
+          disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
+        }),
 
-          // Cancel Button
-          h('button.cancel.btn-light', {
-            style: {
-              background: '#F7F7F7', // $alabaster
-              border: 'none',
-              opacity: 1,
-              width: '8em',
-            },
-            onClick: props.cancelTransaction,
-          }, 'Reject'),
-        ]),
-
-      ]) // end of main container
+        // Cancel Button
+        h('button.cancel.btn-light', {
+          style: {
+            background: '#F7F7F7', // $alabaster
+            border: 'none',
+            opacity: 1,
+            width: '8em',
+          },
+          onClick: props.cancelTransaction,
+        }, 'Reject'),
+      ]),
     ]) // end of minwidth wrapper
   )
 }
