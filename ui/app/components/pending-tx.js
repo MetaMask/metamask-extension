@@ -371,7 +371,7 @@ PendingTx.prototype.render = function () {
         // Accept Button
         h('input.confirm.btn-green', {
           type: 'submit',
-          value: 'SUBMIT',
+          value: 'CONFIRM',
           style: {
             marginTop: '8px',
             width: '8em',
@@ -393,7 +393,7 @@ PendingTx.prototype.render = function () {
             width: '8em',
           },
           onClick: props.cancelTransaction,
-        }, 'Reject'),
+        }, 'CANCEL'),
       ]),
     ]) // end of minwidth wrapper
   )
