@@ -25,17 +25,6 @@ const MIN_GAS_LIMIT_BN = new BN(21000)
 const Identicon = require('./identicon')
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
-module.exports = PendingTx
-inherits(PendingTx, Component)
-function PendingTx () {
-  Component.call(this)
-  this.state = {
-    valid: true,
-    txData: null,
-    submitting: false,
-  }
-}
-
 // Next: create separate react components
 // roughly 5 components:
 //   heroIcon
@@ -48,7 +37,7 @@ const sectionDivider = h('div', {
     height:'1px',
     background:'#E7E7E7',
   },
-}),
+})
 
 const contentDivider = h('div', {
   style: {
@@ -59,6 +48,16 @@ const contentDivider = h('div', {
   },
 })
 
+module.exports = PendingTx
+inherits(PendingTx, Component)
+function PendingTx () {
+  Component.call(this)
+  this.state = {
+    valid: true,
+    txData: null,
+    submitting: false,
+  }
+}
 
 PendingTx.prototype.render = function () {
   const props = this.props
@@ -175,7 +174,6 @@ PendingTx.prototype.render = function () {
         sectionDivider,
 
         h('section.flex-row.flex-center', {
-
         }, [
           h('div', {
             style: {
@@ -216,27 +214,179 @@ PendingTx.prototype.render = function () {
 
         contentDivider,
 
+        h('section.flex-row.flex-center', {
+        }, [
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          }, [
+            h('span', {
+              style: {
+                textAlign: 'left',
+                fontSize: '12px',
+              }
+            }, [
+              'To'
+            ])
+          ]),
+
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          },[
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '10px',
+                marginBottom: '-10px',
+              },
+            }, 'Ethereum Address'),
+
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '8px',
+              },
+            }, '...5924')
+          ])
+        ]),
+
+        contentDivider,
+
+        h('section.flex-row.flex-center', {
+        }, [
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          }, [
+            h('span', {
+              style: {
+                textAlign: 'left',
+                fontSize: '12px',
+              }
+            }, [
+              'Gas Fee'
+            ])
+          ]),
+
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          },[
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '10px',
+                marginBottom: '-10px',
+              },
+            }, '$0.04 USD'),
+
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '8px',
+              },
+            }, '0.001575 ETH')
+          ])
+        ]),
+
+        contentDivider,
+
+        h('section.flex-row.flex-center', {
+          style: {
+            backgroundColor: '#F6F6F6', // $wild-sand
+            borderRadius: '8px',
+            marginLeft: '10px',
+            marginRight: '10px',
+            paddingLeft: '6px',
+            paddingRight: '6px',
+          }
+        }, [
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          }, [
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '12px',
+              }
+            }, [
+              'Total Tokens'
+            ]),
+
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '8px',
+              }
+            }, [
+              'Total Gas'
+            ])
+
+          ]),
+
+          h('div', {
+            style: {
+              width: '50%',
+            }
+          },[
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '10px',
+                marginBottom: '-10px',
+              },
+            }, '0.24 ANT (127.00 USD)'),
+
+            h('div', {
+              style: {
+                textAlign: 'left',
+                fontSize: '8px',
+              },
+            }, '0.249 ETH')
+          ])
+        ]),
+
+        sectionDivider,
+
         h('form#pending-tx-form', {
           onSubmit: this.onSubmit.bind(this),
         }, [
           // Reset Button
-          h('button', {
-            onClick: (event) => {
-              this.resetGasFields()
-              event.preventDefault()
-            },
-          }, 'Reset'),
+          // h('button', {
+          //   onClick: (event) => {
+          //     this.resetGasFields()
+          //     event.preventDefault()
+          //   },
+          // }, 'Reset'),
 
           // Accept Button
           h('input.confirm.btn-green', {
             type: 'submit',
             value: 'SUBMIT',
-            style: { marginLeft: '10px' },
+            style: {
+              color: '#FFFFFF',
+              fontSize: '12px',
+              lineHeight: '20px',
+              textAlign: 'center',
+            },
             disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
           }),
 
           // Cancel Button
-          h('button.cancel.btn-red', {
+          h('button.cancel.btn-light', {
+            style: {
+              background: '#F7F7F7', // $alabaster
+              border: 'none',
+              opacity: 1,
+              width: '8em',
+            },
             onClick: props.cancelTransaction,
           }, 'Reject'),
         ]),

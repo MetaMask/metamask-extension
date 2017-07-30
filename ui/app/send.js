@@ -272,7 +272,7 @@ SendTransactionScreen.prototype.render = function () {
       // Buttons underneath card
       h('section.flex-column.flex-center', [
 
-        h('button.light', {
+        h('button.btn-light', {
           onClick: this.onSubmit.bind(this),
           style: {
             marginTop: '8px',
@@ -281,7 +281,7 @@ SendTransactionScreen.prototype.render = function () {
           },
         }, 'Next'),
 
-        h('button.light', {
+        h('button.btn-light', {
           onClick: this.back.bind(this),
           style: {
             background: '#F7F7F7', // $alabaster

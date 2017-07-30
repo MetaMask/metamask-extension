@@ -85,10 +85,10 @@ input:focus, textarea:focus {
 //   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
 // }
 
-// .btn-green, input[type="submit"].btn-green {
-//   background: rgba(106, 195, 96, 1);
-//   box-shadow: 0px 3px 6px rgba(106, 195, 96, 0.36);
-// }
+.btn-green, input[type="submit"].btn-green {
+  border-radius: 2px;
+  background-color: #02C9B1;
+}
 
 // .btn-red {
 //   background: rgba(254, 35, 17, 1);
@@ -139,7 +139,7 @@ button.primary {
   text-transform: uppercase;
 }
 
-button.light {
+.btn-light {
   padding: 8px 12px;
   // background: #FFFFFF; // $bg-white
   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
