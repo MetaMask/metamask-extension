@@ -380,6 +380,7 @@ PendingTx.prototype.render = function () {
             fontSize: '12px',
             lineHeight: '20px',
             textAlign: 'center',
+            borderStyle: 'none',
           },
           disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
         }),
