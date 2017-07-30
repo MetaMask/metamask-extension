@@ -489,12 +489,8 @@ input.large-input {
 
 /* Send Screen */
 
-.send-screen {
-
-}
-
 .send-screen section {
-  margin: 8px 16px;
+  margin: 4px 16px;
 }
 
 .send-screen input {

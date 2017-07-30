@@ -59,197 +59,229 @@ SendTransactionScreen.prototype.render = function () {
 
   return (
 
-    h('.send-screen.flex-column.flex-grow', {
+    h('div.flex-column.flex-grow', {
       style: {
-        background: '#FFFFFF', // $background-white
-        marginLeft: '3.5%',
-        marginRight: '3.5%',
-      }
+        // overflow: 'scroll',
+        minWidth: '355px', // TODO: maxWidth TBD, use home.html
+      },
     }, [
-      h('section.flex-center.flex-row', {
+
+      // Main Send token Card
+      h('div.send-screen.flex-column.flex-grow', {
         style: {
-          zIndex: 15, // $token-icon-z-index
-          marginTop: '-35px',
+          marginLeft: '3.5%',
+          marginRight: '3.5%',
+          background: '#FFFFFF', // $background-white
         }
       }, [
-        h(Identicon, {
-          address: ARAGON,
-          diameter: 76,
-        }),
-      ]),
-
-      //
-      // Required Fields
-      //
-
-      h('h3.flex-center', {
-        style: {
-          marginTop: '-15px',
-          fontSize: '20px',
-        },
-      }, [
-        'Send Tokens',
-      ]),
-
-      h('h3.flex-center', {
-        style: {
-          textAlign: 'center',
-          fontSize: '16px',
-        },
-      }, [
-        'Send Tokens to anyone with an Ethereum account',
-      ]),
-
-      h('h3.flex-center', {
-        style: {
-          textAlign: 'center',
-          fontSize: '16px',
-        },
-      }, [
-        'Your Aragon Token Balance is:',
-      ]),
-
-      h('h3.flex-center', {
-        style: {
-          textAlign: 'center',
-          fontSize: '43px',
-        },
-      }, [
-        '2.34',
-      ]),
-
-      h('h3.flex-center', {
-        style: {
-          textAlign: 'center',
-          fontSize: '16px',
-        },
-      }, [
-        'ANT',
-      ]),
-
-      // error message
-      props.error && h('span.error.flex-center', props.error),
-
-      // 'to' field
-      h('section.flex-row.flex-center', [
-        h(EnsInput, {
-          name: 'address',
-          placeholder: 'Recipient Address',
-          onChange: this.recipientDidChange.bind(this),
-          network,
-          identities,
-          addressBook,
-        }),
-      ]),
-
-      // 'amount' and send button
-      h('section.flex-column.flex-center', [
-
-        h('div.flex-row.flex-center', {
+        h('section.flex-center.flex-row', {
           style: {
-            width: '100%',
-            justifyContent: 'space-between',
+            zIndex: 15, // $token-icon-z-index
+            marginTop: '-35px',
           }
-        },[
-          h('span', { style: {} }, ['Amount']),
-          h('span', { style: {} }, ['Token <> USD']),
+        }, [
+          h(Identicon, {
+            address: ARAGON,
+            diameter: 76,
+          }),
         ]),
 
-        h('input.large-input', {
-          name: 'amount',
-          placeholder: '0',
-          type: 'number',
+        //
+        // Required Fields
+        //
+
+        h('h3.flex-center', {
           style: {
-            marginRight: '6px',
+            marginTop: '-15px',
+            fontSize: '16px',
           },
-          dataset: {
-            persistentFormId: 'tx-amount',
-          },
-        }),
-
-      ]),
-
-      h('section.flex-column.flex-center', [
-
-        h('div.flex-row.flex-center', {
-          style: {
-            width: '100%',
-            justifyContent: 'space-between',
-          }
-        },[
-          h('span', { style: {} }, ['Gas Fee:']),
-          h('span', { style: {} }, ['What\'s this?']),
+        }, [
+          'Send Tokens',
         ]),
 
-        h('input.large-input', {
-          name: 'Gas Fee',
-          placeholder: '0',
-          type: 'number',
+        h('h3.flex-center', {
           style: {
-            marginRight: '6px',
+            textAlign: 'center',
+            fontSize: '12px',
           },
-          // dataset: {
-          //   persistentFormId: 'tx-amount',
-          // },
-        }),
-
-      ]),
-
-      //
-      // Optional Fields
-      //
-
-      h('section.flex-column.flex-center', [
-
-        h('div.flex-row.flex-center', {
-          style: {
-            width: '100%',
-            justifyContent: 'flex-start',
-          }
-        },[
-          h('span', { style: {} }, ['Transaction Memo (optional)']),
-          h('span', { style: {} }, ['What\'s this?']),
+        }, [
+          'Send Tokens to anyone with an Ethereum account',
         ]),
 
-        h('input.large-input', {
-          name: 'memo',
-          placeholder: '',
-          type: 'string',
+        h('h3.flex-center', {
           style: {
-            marginRight: '6px',
+            textAlign: 'center',
+            fontSize: '12px',
           },
-        }),
+        }, [
+          'Your Aragon Token Balance is:',
+        ]),
 
+        h('h3.flex-center', {
+          style: {
+            textAlign: 'center',
+            fontSize: '36px',
+          },
+        }, [
+          '2.34',
+        ]),
+
+        h('h3.flex-center', {
+          style: {
+            textAlign: 'center',
+            fontSize: '12px',
+          },
+        }, [
+          'ANT',
+        ]),
+
+        // error message
+        props.error && h('span.error.flex-center', props.error),
+
+        // 'to' field
+        h('section.flex-row.flex-center', {
+          style: {
+            fontSize: '12px',
+          },
+        }, [
+          h(EnsInput, {
+            name: 'address',
+            placeholder: 'Recipient Address',
+            onChange: this.recipientDidChange.bind(this),
+            network,
+            identities,
+            addressBook,
+          }),
+        ]),
+
+        // 'amount' and send button
+        h('section.flex-column.flex-center', [
+
+          h('div.flex-row.flex-center', {
+            style: {
+              fontSize: '12px',
+              width: '100%',
+              justifyContent: 'space-between',
+            }
+          },[
+            h('span', { style: {} }, ['Amount']),
+            h('span', { style: {} }, ['Token <> USD']),
+          ]),
+
+          h('input.large-input', {
+            name: 'amount',
+            placeholder: '0',
+            type: 'number',
+            style: {
+              marginRight: '6px',
+              fontSize: '12px',
+            },
+            dataset: {
+              persistentFormId: 'tx-amount',
+            },
+          }),
+
+        ]),
+
+        h('section.flex-column.flex-center', [
+
+          h('div.flex-row.flex-center', {
+            style: {
+              fontSize: '12px',
+              width: '100%',
+              justifyContent: 'space-between',
+            }
+          },[
+            h('span', { style: {} }, ['Gas Fee:']),
+            h('span', { style: { fontSize: '8px' } }, ['What\'s this?']),
+          ]),
+
+          h('input.large-input', {
+            name: 'Gas Fee',
+            placeholder: '0',
+            type: 'number',
+            style: {
+              fontSize: '12px',
+              marginRight: '6px',
+            },
+            // dataset: {
+            //   persistentFormId: 'tx-amount',
+            // },
+          }),
+
+        ]),
+
+        //
+        // Optional Fields
+        //
+
+        h('section.flex-column.flex-center', [
+
+          h('div.flex-row.flex-center', {
+            style: {
+              fontSize: '12px',
+              width: '100%',
+              justifyContent: 'flex-start',
+            }
+          },[
+            h('span', { style: {} }, ['Transaction Memo (optional)']),
+            h('span', { style: { fontSize: '8px' } }, ['What\'s this?']),
+          ]),
+
+          h('input.large-input', {
+            name: 'memo',
+            placeholder: '',
+            type: 'string',
+            style: {
+              marginRight: '6px',
+            },
+          }),
+        ]),
+
+        // h('h3.flex-center.text-transform-uppercase', {
+        //   style: {
+        //     background: '#EBEBEB',
+        //     color: '#AEAEAE',
+        //     marginTop: '16px',
+        //     marginBottom: '16px',
+        //   },
+        // }, [
+        //   'Transaction Data (optional)',
+        // ]),
+
+        // // 'data' field
+        // h('section.flex-column.flex-center', [
+        //   h('input.large-input', {
+        //     name: 'txData',
+        //     placeholder: '0x01234',
+        //     style: {
+        //       width: '100%',
+        //       resize: 'none',
+        //     },
+        //     dataset: {
+        //       persistentFormId: 'tx-data',
+        //     },
+        //   }),
+        // ]),
       ]),
 
+      // Buttons underneath card
 
+      h('button.primary', {
+        onClick: this.onSubmit.bind(this),
+        style: {
+          textTransform: 'uppercase',
+        },
+      }, 'Next'),
 
-      // h('h3.flex-center.text-transform-uppercase', {
-      //   style: {
-      //     background: '#EBEBEB',
-      //     color: '#AEAEAE',
-      //     marginTop: '16px',
-      //     marginBottom: '16px',
-      //   },
-      // }, [
-      //   'Transaction Data (optional)',
-      // ]),
-
-      // // 'data' field
-      // h('section.flex-column.flex-center', [
-      //   h('input.large-input', {
-      //     name: 'txData',
-      //     placeholder: '0x01234',
-      //     style: {
-      //       width: '100%',
-      //       resize: 'none',
-      //     },
-      //     dataset: {
-      //       persistentFormId: 'tx-data',
-      //     },
-      //   }),
-      // ]),
+      h('button.primary', {
+        onClick: this.back.bind(this),
+        style: {
+          textTransform: 'uppercase',
+        },
+      }, 'Cancel'),
     ])
+
   )
 }
 
