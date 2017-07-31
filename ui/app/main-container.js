@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const WalletView = require('./components/wallet-view')
 
 module.exports = MainContainer
 
@@ -19,11 +20,10 @@ MainContainer.prototype.render = function () {
       zIndex: 20,
     }
   }, [
-    h('div.wallet-view', {
+    h(WalletView, {
       style: {
         flexGrow: 1,
         height: '82vh',
-        background: 'blue',
       }
     }, [
     ]),
@@ -32,7 +32,7 @@ MainContainer.prototype.render = function () {
       style: {
         flexGrow: 2,
         height: '82vh',
-        background: 'green',
+        background: '#FFFFFF',
       }
     }, [
     ]),
