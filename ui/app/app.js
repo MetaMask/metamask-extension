@@ -121,7 +121,7 @@ App.prototype.renderAppBar = function () {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: '#EFEFEF', // $gallery
-          height: '38px',
+          height: '11%',
           position: 'relative',
           zIndex: 12,
         },
