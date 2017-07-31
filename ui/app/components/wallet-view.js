@@ -35,10 +35,9 @@ WalletView.prototype.render = function () {
 
     h('div.flex-row.flex-center', {
       style: {
-        // marginLeft: '5px',
-        // marginRight: '5px',
-        // marginTop: '10px',
-        // alignItems: 'center',
+        marginLeft: '35px',
+        marginRight: '35px',
+        marginTop: '35px',
       }
     }, [
 
@@ -52,7 +51,7 @@ WalletView.prototype.render = function () {
       h('span', {
         style: {
           fontSize: '1.5em',
-          marginLeft: '5px',
+          marginLeft: '10px', // TODO: switch all units for this component to em
         }
       }, [
         'Account 1'

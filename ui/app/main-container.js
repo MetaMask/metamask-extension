@@ -23,15 +23,15 @@ MainContainer.prototype.render = function () {
   }, [
     h(WalletView, {
       style: {
-        flexGrow: 1,
-        height: '82vh',
+        // width: '33.33%',
+        // height: '82vh',
       }
     }, [
     ]),
 
     h('div.tx-view', {
       style: {
-        flexGrow: 2,
+        width: '66.66%',
         height: '82vh',
         background: '#FFFFFF',
       }
