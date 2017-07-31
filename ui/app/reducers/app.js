@@ -32,11 +32,16 @@ function reduceApp (state, action) {
     seedWords,
   }
 
+  var seedConfirmation = {
+    name: 'seedWordsConfirmation',
+    seedWords,
+  }
+
   // default state
   var appState = extend({
     shouldClose: false,
     menuOpen: false,
-    currentView: seedWords ? seedConfView : defaultView,
+    currentView: seedWords ? seedConfView ? state.metamask.seedWordConfirmation : seedConfirmation : defaultView,
     accountDetail: {
       subview: 'transactions',
     },
@@ -144,6 +149,16 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'createVaultComplete',
+          seedWords: action.value,
+        },
+        transForward: true,
+        isLoading: false,
+      })
+
+    case actions.SEED_WORD_CONFIRMATION:
+      return extend(appState, {
+        currentView: {
+          name: 'seedWordConfirmation',
           seedWords: action.value,
         },
         transForward: true,

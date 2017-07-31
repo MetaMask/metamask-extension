@@ -33,6 +33,7 @@ const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const SeedWordConfirmation = require('./keychains/hd//seed-word-confirmation')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -45,6 +46,7 @@ function mapStateToProps (state) {
     isLoading: state.appState.isLoading,
     loadingMessage: state.appState.loadingMessage,
     noActiveNotices: state.metamask.noActiveNotices,
+    seedWordConfirmation: state.metamask.seedWordConfirmation,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
     currentView: state.appState.currentView,
@@ -394,6 +396,8 @@ App.prototype.renderPrimary = function () {
   if (props.seedWords) {
     log.debug('rendering seed words')
     return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
+  } else if (props.seedWordConfirmation) {
+    h(SeedWordConfirmation, {key: 'SeedWordConfirmation'})
   }
 
   // show initialize screen

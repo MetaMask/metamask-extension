@@ -15,6 +15,7 @@ function reduceMetamask (state, action) {
     unapprovedTxs: {},
     noActiveNotices: true,
     lastUnreadNotice: undefined,
+    confirmedSeed: false,
     frequentRpcList: [],
     addressBook: [],
   }, state.metamask)
@@ -91,6 +92,13 @@ function reduceMetamask (state, action) {
       return newState
 
     case actions.SHOW_NEW_VAULT_SEED:
+      return extend(metamaskState, {
+        isUnlocked: true,
+        isInitialized: false,
+        seedWords: action.value,
+      })
+
+    case actions.SEED_WORD_CONFIRMATION:
       return extend(metamaskState, {
         isUnlocked: true,
         isInitialized: false,
