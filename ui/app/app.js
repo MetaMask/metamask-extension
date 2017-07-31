@@ -9,7 +9,7 @@ const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
-const AccountDetailScreen = require('./account-detail')
+const MainContainer = require('./main-container')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
@@ -90,13 +90,7 @@ App.prototype.render = function () {
       }),
 
       // panel content
-      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
-        style: {
-          maxWidth: '850px',
-        },
-      }, [
-        this.renderPrimary(),
-      ]),
+      this.renderPrimary(),
     ])
   )
 }
@@ -121,7 +115,7 @@ App.prototype.renderAppBar = function () {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: '#EFEFEF', // $gallery
-          height: '11%',
+          height: '11vh',
           position: 'relative',
           zIndex: 12,
         },
@@ -132,6 +126,7 @@ App.prototype.renderAppBar = function () {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginBottom: '1.8em',
           },
         }, [
           // mini logo
@@ -156,6 +151,7 @@ App.prototype.renderAppBar = function () {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginBottom: '1.8em',
           },
         }, [
           // Network Indicator
@@ -419,8 +415,8 @@ App.prototype.renderPrimary = function () {
   switch (props.currentView.name) {
 
     case 'accountDetail':
-      log.debug('rendering account detail screen')
-      return h(AccountDetailScreen, {key: 'account-detail'})
+      log.debug('rendering main container')
+      return h(MainContainer, {key: 'account-detail'})
 
     case 'sendTransaction':
       log.debug('rendering send tx screen')
@@ -488,7 +484,7 @@ App.prototype.renderPrimary = function () {
 
     default:
       log.debug('rendering default, account detail screen')
-      return h(AccountDetailScreen, {key: 'account-detail'})
+      return h(MainContainer, {key: 'account-detail'})
   }
 }
 
