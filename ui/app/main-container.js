@@ -18,6 +18,7 @@ MainContainer.prototype.render = function () {
       marginTop: '6vh',
       width: '98%',
       zIndex: 20,
+      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
     }
   }, [
     h(WalletView, {
