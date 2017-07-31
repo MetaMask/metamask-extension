@@ -29,10 +29,11 @@ WalletView.prototype.render = function () {
     style: {
       flexGrow: 1,
       height: '82vh',
-      background: '#FAFAFA',
+      background: '#FAFAFA', // TODO: add to reusable colors
     }
   }, [
 
+    // TODO: Separate component: wallet account details
     h('div.flex-row.flex-center', {
       style: {
         marginLeft: '35px',
@@ -71,10 +72,53 @@ WalletView.prototype.render = function () {
         },
       ),
 
-    ])
+    ]),
 
-    // wallet display 1
-    // token display 1
+    // TODO: Separate component: wallet contents
+    h('div.flex-column', {
+      style: {
+        marginLeft: '35px',
+        marginTop: '15px',
+        alignItems: 'flex-start',
+      }
+    }, [
+
+      h('span', {
+        style: {
+          fontSize: '1.1em',
+        },
+      }, 'Wallet'),
+
+      h('span', {
+        style: {
+          fontSize: '1.8em',
+          margin: '10px 0px',
+        },
+      }, '1001.124 ETH'),
+
+      h('span', {
+        style: {
+          fontSize: '1.3em',
+        },
+      }, '$300,000.00 USD'),
+
+      h('div', {
+        style: {
+          position: 'absolute',
+          marginLeft: '-35px',
+          height: '6em',
+          width: '4px',
+          background: '#D8D8D8', // TODO: add to resuable colors
+        }
+      }, [
+      ])
+    ]),
+
+    // Buy Buttons
+
+
+
+    // Wallet contents
 
   ])
 }
