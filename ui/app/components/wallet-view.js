@@ -115,7 +115,50 @@ WalletView.prototype.render = function () {
     ]),
 
     // Buy Buttons
+    // for index.css
+    // 
+    // TODO: move into a class
+    // div.wallet-btn {
+    //   border: 1px solid rgb(91, 93, 103);
+    //   border-radius: 2px;
+    //   height: 30px;
+    //   width: 75px;
+    //   font-size: 0.8em;
+    //   text-align: center;
+    //   line-height: 25px;
+    // }
 
+    h('div.flex-row', {
+      style: {
+        marginLeft: '35px',
+        marginTop: '10px',
+      }
+    }, [
+      h('div', {
+        style: {
+          border: '1px solid rgb(91, 93, 103)',
+          borderRadius: '2px',
+          height: '30px',
+          width: '75px',
+          fontSize: '0.8em',
+          textAlign: 'center',
+          lineHeight: '25px',
+        }
+      }, 'BUY'),
+      h('div.wallet-btn', {
+        style: {
+          border: '1px solid rgb(91, 93, 103)',
+          borderRadius: '2px',
+          height: '30px',
+          width: '75px',
+          fontSize: '0.8em',
+          textAlign: 'center',
+          lineHeight: '25px',
+          // spacing...
+          marginLeft: '15px',
+        }
+      }, 'SEND'),
+    ]),
 
 
     // Wallet contents
