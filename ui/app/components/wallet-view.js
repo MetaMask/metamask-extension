@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
+const Content = require('./wallet-content-display')
 
 module.exports = connect(mapStateToProps)(WalletView)
 
@@ -74,7 +75,7 @@ WalletView.prototype.render = function () {
 
     ]),
 
-    // TODO: Separate component: wallet contents
+    // TODO: Separate component: wallet-content-account
     h('div.flex-column', {
       style: {
         marginLeft: '35px',
@@ -160,8 +161,13 @@ WalletView.prototype.render = function () {
       }, 'SEND'),
     ]),
 
-
     // Wallet contents
+    h(Content, {
+      title: "Total Token Balance",
+      amount: "45.439 ETH",
+      fiatValue: "$13,000.00 USD",
+      active: false,
+    })
 
   ])
 }
