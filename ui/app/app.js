@@ -393,13 +393,13 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  if (props.seedWords) {
+  if (props.seedWords && props.currentView.name !== 'seedWordConfirmation') {
     log.debug('rendering seed words')
     return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
-  } else if (props.seedWordConfirmation) {
-    h(SeedWordConfirmation, {key: 'SeedWordConfirmation'})
+  } else if (props.seedWords) {
+    log.debug('rendering seed word confirmation')
+    return h(SeedWordConfirmation, {key: 'SeedWordConfirmation'})
   }
-
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
     // show current view
@@ -419,7 +419,6 @@ App.prototype.renderPrimary = function () {
   // show unlock screen
   if (!props.isUnlocked) {
     switch (props.currentView.name) {
-
       case 'restoreVault':
         log.debug('rendering restore vault screen')
         return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})

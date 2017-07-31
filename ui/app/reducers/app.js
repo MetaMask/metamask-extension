@@ -32,17 +32,12 @@ function reduceApp (state, action) {
     seedWords,
   }
 
-  var seedConfirmation = {
-    name: 'seedWordsConfirmation',
-    seedWords,
-  }
-
   // default state
   var appState = extend({
     shouldClose: false,
     menuOpen: false,
-    currentView: seedWords ? seedConfView ? state.metamask.seedWordConfirmation : seedConfirmation : defaultView,
-    accountDetail: {
+currentView: seedWords ? seedConfView : defaultView,
+accountDetail: {
       subview: 'transactions',
     },
     transForward: true, // Used to render transition direction
