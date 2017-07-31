@@ -67,7 +67,7 @@ WalletView.prototype.render = function () {
             cursor: 'pointer',
           },
           selected,
-          network,
+          network, // TODO: this prop could be in the account dropdown container
           identities: {},
         },
       ),
