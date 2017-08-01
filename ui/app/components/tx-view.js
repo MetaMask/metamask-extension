@@ -64,9 +64,69 @@ TxView.prototype.render = function () {
 
     contentDivider,
 
+    this.renderTransactionListItem(),
+
+    contentDivider,
+
+    this.renderTransactionListItem(),
+
+    contentDivider,
+
   ])
   // column
   // tab row
   // divider
   // item
 }
+
+TxView.prototype.renderTransactionListItem = function () {
+  return h('div.flex-column', {
+    style: {
+      alignItems: 'stretch',
+      margin: '0.6em 1.3em 0.6em 1.3em',
+    }
+  }, [
+
+    h('div', {
+      style: {
+        flexGrow: 1,
+        marginTop: '0.3em',
+      }
+    }, 'Jul 01, 2017'),
+
+    h('div.flex-row', {
+      style: {
+        alignItems: 'stretch',
+      }
+    }, [
+
+      h('div', {
+        style: {
+          flexGrow: 1,
+        }
+      }, 'icon'),
+
+      h('div', {
+        style: {
+          flexGrow: 3,
+        }
+      }, 'Hash'),
+
+      h('div', {
+        style: {
+          flexGrow: 5,
+        }
+      }, 'Status'),
+
+      h('div', {
+        style: {
+          flexGrow: 2,
+        }
+      }, 'Details'),
+
+    ])
+
+  ])
+}
+
+
