@@ -31,7 +31,11 @@ function TxView () {
 TxView.prototype.render = function () {
   return h('div.tx-view.flex-column', {
     style: {
-      width: '66.666%',
+      // width: '66.666%',
+      flexGrow: 2,
+      flexShrink: 0,
+      flexBasis: '230px', // .666*345
+      // flexBasis: '400px',
       height: '82vh',
       background: '#FFFFFF',
     }

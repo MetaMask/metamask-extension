@@ -73,7 +73,9 @@ App.prototype.render = function () {
     h('.flex-column.full-height', {
       style: {
         // Windows was showing a vertical scroll bar:
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        // TODO: check with dev who committed L75, see if this still happens, and whether auto is enough
+        // overflowY: 'auto',
         position: 'relative',
         alignItems: 'center',
       },

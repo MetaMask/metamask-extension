@@ -13,7 +13,7 @@ function MainContainer () {
 
 MainContainer.prototype.render = function () {
 
-  return h('div.flex-row', {
+  return h('div', {
     style: {
       position: 'absolute',
       marginTop: '6vh',
@@ -22,6 +22,9 @@ MainContainer.prototype.render = function () {
       boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
       fontFamily: 'DIN OT',
       display: 'flex',
+      flexWrap: 'wrap',
+      alignItems: 'stretch',
+      overflowY: 'scroll',
     }
   }, [
     h(WalletView, {
