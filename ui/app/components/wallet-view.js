@@ -5,12 +5,19 @@ const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
 const Content = require('./wallet-content-display')
+const actions = require('../actions')
 
-module.exports = connect(mapStateToProps)(WalletView)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
 
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showSendPage: () => {dispatch(actions.showSendPage())},
   }
 }
 
@@ -112,6 +119,10 @@ WalletView.prototype.render = function () {
         }
       }, 'BUY'),
       h('div.wallet-btn', {
+        onClick: () => {
+          console.log("SHOW");
+          this.props.showSendPage();
+        },
         style: {
           border: '1px solid rgb(91, 93, 103)',
           borderRadius: '2px',
