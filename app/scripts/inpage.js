@@ -6,7 +6,7 @@ const LocalMessageDuplexStream = require('post-message-stream')
 // const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
-const mascaraDetectionUsage = require('./lib/mascara-detection-usage.js')
+const setupMascaraProxyProvider = require('./lib/mascara-proxy-provider.js')
 restoreContextAfterImports()
 
 
@@ -22,7 +22,7 @@ var metamaskStream = new LocalMessageDuplexStream({
 
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
-inpageProvider = mascaraDetectionUsage(inpageProvider)
+inpageProvider = setupMascaraProxyProvider(inpageProvider)
 //
 // setup web3
 //
@@ -37,7 +37,7 @@ console.log('MetaMask - injected web3')
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
   // if not using the mascara provider
-  if (!inpageProvider.mascara) web3.eth.defaultAccount = state.selectedAddress
+  if (!inpageProvider.isMascaraActive) web3.eth.defaultAccount = state.selectedAddress
 })
 
 //

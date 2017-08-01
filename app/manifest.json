@@ -47,6 +47,9 @@
         "http://*/*",
         "https://*/*"
       ],
+      "exclude_matches": [
+        "https://zero.metamask.io/*"
+      ],
       "js": [
         "scripts/contentscript.js"
       ],

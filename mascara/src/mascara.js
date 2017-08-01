@@ -11,7 +11,6 @@ console.log('MASCARA_ORIGIN:', MASCARA_ORIGIN)
 const provider = setupProvider({
   mascaraUrl: MASCARA_ORIGIN + '/proxy/',
 })
-provider.isMascara = true
 window.mascaraProvider = provider
 
 instrumentForUserInteractionTriggers(provider)
