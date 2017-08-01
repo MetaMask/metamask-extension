@@ -102,23 +102,20 @@ WalletView.prototype.render = function () {
         style: {
           border: '1px solid rgb(91, 93, 103)',
           borderRadius: '2px',
-          height: '28px',
-          width: '70px',
+          height: '20px',
+          width: '50px',
           fontSize: '0.8em',
           textAlign: 'center',
-          lineHeight: '25px',
-          marginLeft: '.6em',
         }
       }, 'BUY'),
       h('div.wallet-btn', {
         style: {
           border: '1px solid rgb(91, 93, 103)',
           borderRadius: '2px',
-          height: '28px',
-          width: '70px',
+          height: '20px',
+          width: '50px',
           fontSize: '0.8em',
           textAlign: 'center',
-          lineHeight: '25px',
           marginLeft: '.6em',
         }
       }, 'SEND'),
