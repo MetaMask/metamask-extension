@@ -13,7 +13,7 @@ module.exports = connect()(TxView)
 //     network: state.metamask.network,
 //   }
 // }
-// 
+
 const contentDivider = h('div', {
   style: {
     marginLeft: '1.3em',
@@ -38,7 +38,7 @@ TxView.prototype.render = function () {
   }, [
     h('div.flex-row', {
       style: {
-        margin: '1.8em 1.3em',
+        margin: '1.8em 1.3em 0.8em 1.3em',
       }
     }, [
 
@@ -55,14 +55,15 @@ TxView.prototype.render = function () {
 
         h('div', {
           style: {
-            marginLeft: '2em',
+            marginLeft: '1.25em',
           }
         }, 'TOKENS'),
 
       ]),
-    ])
+    ]),
 
-    h('')
+    contentDivider,
+
   ])
   // column
   // tab row
