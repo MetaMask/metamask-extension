@@ -13,6 +13,15 @@ module.exports = connect()(TxView)
 //     network: state.metamask.network,
 //   }
 // }
+// 
+const contentDivider = h('div', {
+  style: {
+    marginLeft: '1.3em',
+    marginRight: '1.3em',
+    height:'1px',
+    background:'#E7E7E7', // TODO: make custom color
+  },
+})
 
 inherits(TxView, Component)
 function TxView () {
@@ -28,23 +37,32 @@ TxView.prototype.render = function () {
     }
   }, [
     h('div.flex-row', {
+      style: {
+        margin: '1.8em 1.3em',
+      }
     }, [
-      // tab
-      h('div.flex-column', {
 
+      // tx-view-tab.js
+      h('div.flex-row', {
       }, [
-        h('div', {}, 'Transactions'),
+
         h('div', {
           style: {
-            height: '0.5em',
-            color: 'black',
-            width: '100%',
+            borderBottom: '0.07em solid black',
+            paddingBottom: '0.015em',
           }
-        })
-      ]),
+        }, 'TRANSACTIONS'),
 
-      // tab2
+        h('div', {
+          style: {
+            marginLeft: '2em',
+          }
+        }, 'TOKENS'),
+
+      ]),
     ])
+
+    h('')
   ])
   // column
   // tab row
