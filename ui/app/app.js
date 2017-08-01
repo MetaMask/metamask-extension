@@ -203,7 +203,7 @@ App.prototype.renderNetworkDropdown = function () {
         classList.contains('menu-icon'),
         classList.contains('network-name'),
         classList.contains('network-indicator'),
-      ].filter(bool => bool).length === 0;
+      ].filter(bool => bool).length === 0
       // classes from three constituent nodes of the toggle element
 
       if (isNotToggleElement) {

@@ -17,8 +17,8 @@ class AccountDropdowns extends Component {
       accountSelectorActive: false,
       optionsMenuActive: false,
     }
-    this.accountSelectorToggleClassName = 'fa-angle-down';
-    this.optionsMenuToggleClassName = 'fa-ellipsis-h';
+    this.accountSelectorToggleClassName = 'fa-angle-down'
+    this.optionsMenuToggleClassName = 'fa-ellipsis-h'
   }
 
   renderAccounts () {
