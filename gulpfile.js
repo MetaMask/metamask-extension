@@ -121,11 +121,13 @@ gulp.task('manifest:production', function() {
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
   ],{base: './dist/'})
-  .pipe(gulpif(!debug, jsoneditor(function(json) {
-    json.background.scripts = ["scripts/background.js"]
-  })))
   .pipe(gulpif(debug, jsoneditor(function(json) {
     json["content_scripts"][0]["exclude_matches"].push(`${MASCARA_ORIGIN}*`)
+    return json
+  })))
+  .pipe(gulpif(!debug, jsoneditor(function(json) {
+    json.background.scripts = ["scripts/background.js"]
+    return json
   })))
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
