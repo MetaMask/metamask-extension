@@ -37,9 +37,7 @@ WalletView.prototype.render = function () {
     // TODO: Separate component: wallet account details
     h('div.flex-row.flex-center', {
       style: {
-        marginLeft: '35px',
-        marginRight: '35px',
-        marginTop: '35px',
+        margin: '1.8em 1.3em',
       }
     }, [
 
@@ -52,8 +50,8 @@ WalletView.prototype.render = function () {
 
       h('span', {
         style: {
-          fontSize: '1.5em',
-          marginLeft: '10px', // TODO: switch all units for this component to em
+          fontSize: '1.2em',
+          marginLeft: '0.6em', // TODO: switch all units for this component to em
         }
       }, [
         'Account 1'
@@ -63,7 +61,6 @@ WalletView.prototype.render = function () {
         AccountDropdowns,
         {
           style: {
-            marginRight: '8px',
             marginLeft: 'auto',
             cursor: 'pointer',
           },
@@ -75,49 +72,15 @@ WalletView.prototype.render = function () {
 
     ]),
 
-    // TODO: Separate component: wallet-content-account
-    h('div.flex-column', {
-      style: {
-        marginLeft: '35px',
-        marginTop: '15px',
-        alignItems: 'flex-start',
-      }
-    }, [
-
-      h('span', {
-        style: {
-          fontSize: '1.1em',
-        },
-      }, 'Wallet'),
-
-      h('span', {
-        style: {
-          fontSize: '1.8em',
-          margin: '10px 0px',
-        },
-      }, '1001.124 ETH'),
-
-      h('span', {
-        style: {
-          fontSize: '1.3em',
-        },
-      }, '$300,000.00 USD'),
-
-      h('div', {
-        style: {
-          position: 'absolute',
-          marginLeft: '-35px',
-          height: '6em',
-          width: '4px',
-          background: '#D8D8D8', // TODO: add to resuable colors
-        }
-      }, [
-      ])
-    ]),
+    h(Content, {
+     title: 'Wallet',
+     amount: '1001.124 ETH',
+     fiatValue: '$300,000.00 USD',
+     active: true,
+    }),
 
     // Buy Buttons
     // for index.css
-    // 
     // TODO: move into a class
     // div.wallet-btn {
     //   border: 1px solid rgb(91, 93, 103);
@@ -131,32 +94,32 @@ WalletView.prototype.render = function () {
 
     h('div.flex-row', {
       style: {
-        marginLeft: '35px',
-        marginTop: '10px',
+        marginLeft: '1.3em',
+        marginTop: '0.8em',
       }
     }, [
       h('div', {
         style: {
           border: '1px solid rgb(91, 93, 103)',
           borderRadius: '2px',
-          height: '30px',
-          width: '75px',
+          height: '28px',
+          width: '70px',
           fontSize: '0.8em',
           textAlign: 'center',
           lineHeight: '25px',
+          marginLeft: '.6em',
         }
       }, 'BUY'),
       h('div.wallet-btn', {
         style: {
           border: '1px solid rgb(91, 93, 103)',
           borderRadius: '2px',
-          height: '30px',
-          width: '75px',
+          height: '28px',
+          width: '70px',
           fontSize: '0.8em',
           textAlign: 'center',
           lineHeight: '25px',
-          // spacing...
-          marginLeft: '15px',
+          marginLeft: '.6em',
         }
       }, 'SEND'),
     ]),
@@ -167,6 +130,9 @@ WalletView.prototype.render = function () {
       amount: "45.439 ETH",
       fiatValue: "$13,000.00 USD",
       active: false,
+      style: {
+        marginTop: '1.3em',
+      }
     })
 
   ])
