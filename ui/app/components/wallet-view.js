@@ -28,7 +28,7 @@ WalletView.prototype.render = function () {
 
   return h('div.wallet-view.flex-column', {
     style: {
-      flexGrow: 1,
+      width: '33.333%',
       height: '82vh',
       background: '#FAFAFA', // TODO: add to reusable colors
     }
