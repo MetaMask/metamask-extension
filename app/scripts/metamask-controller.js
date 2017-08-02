@@ -446,7 +446,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.sendUpdate()
     this.opts.showUnapprovedTx(txMeta)
     // listen for tx completion (success, fail)
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.txController.once(`${txMeta.id}:finished`, (completedTx) => {
         switch (completedTx.status) {
           case 'submitted':

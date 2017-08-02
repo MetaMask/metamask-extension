@@ -1,11 +1,9 @@
 const EventEmitter = require('events')
-const async = require('async')
 const extend = require('xtend')
-const pify = require('pify')
 const clone = require('clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
-const EthQuery = require('ethjs-query');
+const EthQuery = require('ethjs-query')
 const TxProviderUtil = require('../lib/tx-utils')
 const getStack = require('../lib/util').getStack
 const createId = require('../lib/random-id')
@@ -168,7 +166,7 @@ module.exports = class TransactionController extends EventEmitter {
       history: [],
     }
     // add default tx params
-    await this.addTxDefaults(txMeta),
+    await this.addTxDefaults(txMeta)
     // save txMeta
     this.addTx(txMeta)
     return txMeta

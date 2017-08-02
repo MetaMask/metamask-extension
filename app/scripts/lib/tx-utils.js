@@ -1,4 +1,3 @@
-const async = require('async')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const normalize = require('eth-sig-util').normalize
@@ -88,7 +87,7 @@ module.exports = class txProvideUtils {
   }
 
   validateTxParams (txParams) {
-    return new Promise ((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
         reject(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
       } else {
@@ -110,10 +109,6 @@ module.exports = class txProvideUtils {
 }
 
 // util
-
-function isUndef (value) {
-  return value === undefined
-}
 
 function bnToHex (inputBn) {
   return ethUtil.addHexPrefix(inputBn.toString(16))
