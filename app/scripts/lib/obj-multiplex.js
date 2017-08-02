@@ -5,12 +5,16 @@ module.exports = ObjectMultiplex
 function ObjectMultiplex (opts) {
   opts = opts || {}
   // create multiplexer
-  var mx = through.obj(function (chunk, enc, cb) {
-    var name = chunk.name
-    var data = chunk.data
-    var substream = mx.streams[name]
+  const mx = through.obj(function (chunk, enc, cb) {
+    const name = chunk.name
+    const data = chunk.data
+    if (!name) {
+      console.warn(`ObjectMultiplex - Malformed chunk without name "${chunk}"`)
+      return cb()
+    }
+    const substream = mx.streams[name]
     if (!substream) {
-      console.warn(`orphaned data for stream "${name}"`)
+      console.warn(`ObjectMultiplex - orphaned data for stream "${name}"`)
     } else {
       if (substream.push) substream.push(data)
     }
@@ -19,7 +23,7 @@ function ObjectMultiplex (opts) {
   mx.streams = {}
   // create substreams
   mx.createStream = function (name) {
-    var substream = mx.streams[name] = through.obj(function (chunk, enc, cb) {
+    const substream = mx.streams[name] = through.obj(function (chunk, enc, cb) {
       mx.push({
         name: name,
         data: chunk,
