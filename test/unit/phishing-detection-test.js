@@ -1,7 +1,7 @@
 const assert = require('assert')
 const isPhish = require('../../app/scripts/lib/is-phish')
 
-describe('blacklister', function () {
+describe('phishing detection test', function () {
   describe('#isPhish', function () {
     it('should not flag whitelisted values', function () {
       var result = isPhish({ hostname: 'www.metamask.io' })

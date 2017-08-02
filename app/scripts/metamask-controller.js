@@ -23,6 +23,7 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const checkForPhishing = require('./lib/is-phish')
 const debounce = require('debounce')
 
 const version = require('../manifest.json').version
@@ -326,8 +327,15 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupUntrustedCommunication (connectionStream, originDomain) {
+    // Check if new connection is blacklisted
+    if (this.isHostBlacklisted(originDomain)) {
+      console.log('MetaMask - sending phishing warning for', originDomain)
+      this.sendPhishingWarning(connectionStream, originDomain)
+      return
+    }
+
     // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
+    const mx = setupMultiplex(connectionStream)
     // connect features
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
     this.setupPublicConfig(mx.createStream('publicConfig'))
@@ -335,10 +343,24 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
+    const mx = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mx.createStream('controller'))
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  // Check if a domain is on our blacklist
+  isHostBlacklisted (hostname) {
+    if (!hostname) return false
+    const { blacklist } = this.getState().blacklist
+    return checkForPhishing({ blacklist, hostname })
+  }
+
+  sendPhishingWarning (connectionStream, hostname) {
+    const mx = setupMultiplex(connectionStream)
+    const phishingStream = mx.createStream('phishing')
+    // phishingStream.write(true)
+    phishingStream.write({ hostname })
   }
 
   setupControllerConnection (outStream) {

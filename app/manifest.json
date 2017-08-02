@@ -52,15 +52,6 @@
       ],
       "run_at": "document_start",
       "all_frames": true
-    },
-    {
-      "run_at": "document_start",
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": ["scripts/blacklister.js"],
-      "all_frames": true
     }
   ],
   "permissions": [

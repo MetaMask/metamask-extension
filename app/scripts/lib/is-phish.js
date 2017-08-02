@@ -9,15 +9,15 @@ const LEVENSHTEIN_CHECKS = ['myetherwallet', 'myetheroll', 'ledgerwallet', 'meta
 
 // credit to @sogoiii and @409H for their help!
 // Return a boolean on whether or not a phish is detected.
-function isPhish({ hostname, updatedBlacklist = null }) {
+function isPhish({ hostname, blacklist }) {
   var strCurrentTab = hostname
 
   // check if the domain is part of the whitelist.
   if (whitelistedDomains && whitelistedDomains.includes(strCurrentTab)) { return false }
 
   // Allow updating of blacklist:
-  if (updatedBlacklist) {
-    blacklistedDomains = blacklistedDomains.concat(updatedBlacklist)
+  if (blacklist) {
+    blacklistedDomains = blacklistedDomains.concat(blacklist)
   }
 
   // check if the domain is part of the blacklist.
