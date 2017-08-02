@@ -5,12 +5,13 @@ const ObservableStore = require('obs-store')
 const clone = require('clone')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
+const TxProvideUtils = require('../../app/scripts/lib/tx-utils')
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 
-describe.only('Transaction Controller', function () {
+describe('Transaction Controller', function () {
   let txController
 
   beforeEach(function () {
@@ -26,19 +27,19 @@ describe.only('Transaction Controller', function () {
       }),
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
-    const queryStubResult = {}
     txController.query = new Proxy({}, {
-      get: (_, key) => {
+      get: (queryStubResult, key) => {
         if (key === 'stubResult') {
           return function (method, ...args) {
             queryStubResult[method] = args
           }
         } else {
-          returnValue = queryStubResult[key]
-          return () => Promise.resolve(...returnValue)
+          const returnValues = queryStubResult[key]
+          return () => Promise.resolve(...returnValues)
         }
       },
     })
+    txController.txProviderUtils = new TxProvideUtils(txController.query)
   })
 
   describe('#addUnapprovedTransaction', function () {
@@ -57,6 +58,30 @@ describe.only('Transaction Controller', function () {
         addTxDefaultsStub.restore()
         done()
       }).catch(done)
+    })
+  })
+
+  describe('#addTxDefaults', function () {
+    it('should add the tx defaults if their are none', function (done) {
+      let txMeta = {
+        'txParams': {
+          'from':'0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          'to':'0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        },
+      }
+
+      txController.query.stubResult('gasPrice', '0x4a817c800')
+      txController.query.stubResult('getBlockByNumber', { gasLimit: '0x47b784' })
+      txController.query.stubResult('estimateGas', '0x5209')
+
+      txController.addTxDefaults(txMeta)
+      .then((txMetaWithDefaults) => {
+        assert(txMetaWithDefaults.txParams.value, '0x0','should have added 0x0 as the value')
+        assert(txMetaWithDefaults.txParams.gasPrice, 'should have added the gas price')
+        assert(txMetaWithDefaults.txParams.gas, 'should have added the gas field')
+        done()
+      })
+      .catch(done)
     })
   })
 
