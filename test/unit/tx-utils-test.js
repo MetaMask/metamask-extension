@@ -1,5 +1,4 @@
 const assert = require('assert')
-const sinon = require('sinon')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 
