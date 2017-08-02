@@ -8,6 +8,8 @@ var actions = {
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
+  showSidebar: showSidebar,
+  hideSidebar: hideSidebar,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -762,6 +764,19 @@ function useEtherscanProvider () {
     type: actions.USE_ETHERSCAN_PROVIDER,
   }
 }
+
+function showSidebar () {
+  return {
+    type: actions.SIDEBAR_OPEN,
+  }
+}
+
+function hideSidebar () {
+  return {
+    type: actions.SIDEBAR_CLOSE,
+  }
+}
+
 
 function showLoadingIndication (message) {
   return {

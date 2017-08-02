@@ -2,17 +2,29 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const actions = require('../actions')
+// slideout menu
+const SlideoutMenu = require('react-burger-menu').slide
+const WalletView = require('./wallet-view')
+
 // const Identicon = require('./identicon')
 // const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
 // const Content = require('./wallet-content-display')
 
-module.exports = connect()(TxView)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
-// function mapStateToProps (state) {
-//   return {
-//     network: state.metamask.network,
-//   }
-// }
+function mapStateToProps (state) {
+  return {
+    sidebarOpen: state.appState.sidebarOpen,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showSidebar: () => {dispatch(actions.showSidebar())},
+    hideSidebar: () => {dispatch(actions.hideSidebar())},
+  }
+}
 
 const contentDivider = h('div', {
   style: {
@@ -40,9 +52,19 @@ TxView.prototype.render = function () {
       background: '#FFFFFF',
     }
   }, [
+    // slideout - move to separate render func
+    h(SlideoutMenu, {
+      isOpen: this.props.sidebarOpen,
+    }, [
+      h(WalletView, {
+        responsiveDisplayClassname: '.phone-visible'
+      }),
+    ]),
 
     h('div.phone-visible.fa.fa-bars', {
-
+      onClick: () => {
+        this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
+      }
     }, []),
 
     h('div.flex-row', {

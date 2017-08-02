@@ -39,6 +39,7 @@ function App () { Component.call(this) }
 function mapStateToProps (state) {
   return {
     // state from plugin
+    sidebarOpen: state.appState.sidebarOpen,
     isLoading: state.appState.isLoading,
     loadingMessage: state.appState.loadingMessage,
     noActiveNotices: state.metamask.noActiveNotices,

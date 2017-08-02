@@ -1,8 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const WalletView = require('./components/wallet-view')
 const TxView = require('./components/tx-view')
+const WalletView = require('./components/wallet-view')
 const SlideoutMenu = require('react-burger-menu').slide
 
 module.exports = MainContainer
@@ -28,14 +28,6 @@ MainContainer.prototype.render = function () {
       overflowY: 'scroll',
     }
   }, [
-
-    h(SlideoutMenu, {
-      isOpen: true,
-    }, [
-      h(WalletView, {
-        responsiveDisplayClassname: '.phone-visible'
-      }),
-    ]),
 
     h(WalletView, {
       style: {
