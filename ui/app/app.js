@@ -147,6 +147,7 @@ App.prototype.renderSidebar = function() {
     }),
 
     // overlay
+    // TODO: add onClick for overlay to close sidebar
     h('div', {
       style: {
         zIndex: 25,
