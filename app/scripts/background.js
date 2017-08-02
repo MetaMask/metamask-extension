@@ -11,6 +11,7 @@ const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const extension = require('extensionizer')
 const firstTimeState = require('./first-time-state')
+const isPhish = require('./lib/is-phish')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -90,6 +91,10 @@ function setupController (initState) {
 
   extension.runtime.onConnect.addListener(connectRemote)
   function connectRemote (remotePort) {
+    if (remotePort.name === 'blacklister') {
+      return checkBlacklist(remotePort)
+    }
+
     var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
     var portStream = new PortStream(remotePort)
     if (isMetaMaskInternalProcess) {
@@ -133,6 +138,27 @@ function setupController (initState) {
   }
 
   return Promise.resolve()
+}
+
+// Listen for new pages and return if blacklisted:
+function checkBlacklist (port) {
+  const handler = handleNewPageLoad.bind(null, port)
+  port.onMessage.addListener(handler)
+  setTimeout(() => {
+    port.onMessage.removeListener(handler)
+  }, 30000)
+}
+
+function handleNewPageLoad (port, message) {
+  const { pageLoaded } = message
+  if (!pageLoaded || !global.metamaskController) return
+
+  const state = global.metamaskController.getState()
+  const updatedBlacklist = state.blacklist
+
+  if (isPhish({ updatedBlacklist, hostname: pageLoaded })) {
+    port.postMessage({ 'blacklist': pageLoaded })
+  }
 }
 
 //

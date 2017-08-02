@@ -5,3 +5,6 @@ dependencies:
   pre:
     - "npm i -g testem"
     - "npm i -g mocha"
+test:
+  override:
+    - "npm run ci"
