@@ -19,6 +19,7 @@ module.exports = class txProvideUtils {
     const block = await this.query.getBlockByNumber('latest', true)
     const estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
     this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
+    return txMeta
   }
 
   async estimateTxGas (txMeta, blockGasLimitHex) {
@@ -32,7 +33,7 @@ module.exports = class txProvideUtils {
       txParams.gas = bnToHex(saferGasLimitBN)
     }
     // run tx, see if it will OOG
-    return await this.query.estimateGas(txParams)
+    return this.query.estimateGas(txParams)
   }
 
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {

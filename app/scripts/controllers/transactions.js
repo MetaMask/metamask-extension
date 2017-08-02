@@ -172,7 +172,7 @@ module.exports = class TransactionController extends EventEmitter {
     // ensure value
     txParams.value = txParams.value || '0x0'
     if (!txParams.gasPrice) {
-      gassPrice = await this.query.gasPrice()
+      const gasPrice = await this.query.gasPrice()
       txParams.gasPrice = gasPrice
     }
     // set gasLimit
