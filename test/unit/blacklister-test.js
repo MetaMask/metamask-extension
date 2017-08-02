@@ -19,6 +19,18 @@ describe('blacklister', function () {
       var result = isPhish({ hostname: 'example.com' })
       assert.equal(result, false)
     })
+    it('should not flag the ropsten faucet domains', function () {
+      var result = isPhish({ hostname: 'faucet.metamask.io' })
+      assert.equal(result, false)
+    })
+    it('should not flag the mascara domain', function () {
+      var result = isPhish({ hostname: 'zero.metamask.io' })
+      assert.equal(result, false)
+    })
+    it('should not flag the mascara-faucet domain', function () {
+      var result = isPhish({ hostname: 'zero-faucet.metamask.io' })
+      assert.equal(result, false)
+    })
   })
 })
 
