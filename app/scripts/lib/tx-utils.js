@@ -82,8 +82,8 @@ module.exports = class txProvideUtils {
     return ethTx
   }
 
-  publishTransaction (rawTx) {
-    return this.query.sendRawTransaction(rawTx)
+  async publishTransaction (rawTx) {
+    return await this.query.sendRawTransaction(rawTx)
   }
 
   async validateTxParams (txParams) {
