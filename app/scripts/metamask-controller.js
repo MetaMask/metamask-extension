@@ -450,7 +450,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.txController.once(`${txMeta.id}:finished`, (completedTx) => {
         switch (completedTx.status) {
           case 'submitted':
-            return reoslve(completedTx.hash)
+            return resolve(completedTx.hash)
           case 'rejected':
             return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
           default:
