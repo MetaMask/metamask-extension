@@ -2,7 +2,14 @@
 
 ## Current Master
 
+- Continuously update blacklist for known phishing sites in background.
+- Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
+
+## 3.9.2 2017-7-26
+
+- Fix bugs that could sometimes result in failed transactions after switching networks.
 - Include stack traces in txMeta's to better understand the life cycle of transactions
+- Enhance blacklister functionality to include levenshtein logic. (credit to @sogoiii and @409H for their help!)
 
 ## 3.9.1 2017-7-19
 

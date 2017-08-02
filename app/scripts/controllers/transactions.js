@@ -25,7 +25,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker = opts.blockTracker
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
-      blockTracker: this.provider._blockTracker,
       getPendingTransactions: (address) => {
         return this.getFilteredTxList({
           from: address,
@@ -104,8 +103,16 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   updateTx (txMeta) {
+    // create txMeta snapshot for history
     const txMetaForHistory = clone(txMeta)
+    // dont include previous history in this snapshot
+    delete txMetaForHistory.history
+    // add stack to help understand why tx was updated
     txMetaForHistory.stack = getStack()
+    // add snapshot to tx history
+    if (!txMeta.history) txMeta.history = []
+    txMeta.history.push(txMetaForHistory)
+
     const txId = txMeta.id
     const txList = this.getFullTxList()
     const index = txList.findIndex(txData => txData.id === txId)
@@ -192,8 +199,12 @@ module.exports = class TransactionController extends EventEmitter {
       // get next nonce
       const txMeta = this.getTx(txId)
       const fromAddress = txMeta.txParams.from
+      // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
+      // add nonce to txParams
       txMeta.txParams.nonce = nonceLock.nextNonce
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails
       this.updateTx(txMeta)
       // sign transaction
       const rawTx = await this.signTransaction(txId)
