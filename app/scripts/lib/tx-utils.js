@@ -86,14 +86,10 @@ module.exports = class txProvideUtils {
     return this.query.sendRawTransaction(rawTx)
   }
 
-  validateTxParams (txParams) {
-    return new Promise((resolve, reject) => {
-      if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
-        reject(new Error(`Invalid transaction value of ${txParams.value} not a positive number.`))
-      } else {
-        resolve()
-      }
-    })
+  async validateTxParams (txParams) {
+    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
+      throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+    }
   }
 
   sufficientBalance (txParams, hexBalance) {

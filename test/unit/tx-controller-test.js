@@ -42,6 +42,70 @@ describe('Transaction Controller', function () {
     txController.txProviderUtils = new TxProvideUtils(txController.query)
   })
 
+  describe('#newUnapprovedTransaction', function () {
+    let stub, txMeta, txParams
+    beforeEach(function () {
+      txParams = {
+        'from':'0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        'to':'0xc684832530fcbddae4b4230a47e991ddcec2831d',
+      },
+      txMeta = {
+        status: 'unapproved',
+        id: 1,
+        metamaskNetworkId: currentNetworkId,
+        txParams,
+      }
+      txController._saveTxList([txMeta])
+      stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txMeta))
+    })
+
+    afterEach(function () {
+      stub.restore()
+    })
+
+    it('should emit newUnaprovedTx event and pass txMeta as the first argument', function (done) {
+      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+        assert(txMetaFromEmit, 'txMeta is falsey')
+        assert.equal(txMetaFromEmit.id, 1, 'the right txMeta was passed')
+        done()
+      })
+      txController.newUnapprovedTransaction(txParams)
+      .catch(done)
+    })
+
+    it('should resolve when finished and status is submitted and resolve with the hash', function (done) {
+      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+        setTimeout(() => {
+          console.log('HELLLO')
+          txController.setTxHash(txMetaFromEmit.id, '0x0')
+          txController.setTxStatusSubmitted(txMetaFromEmit.id)
+        }, 10)
+      })
+
+      txController.newUnapprovedTransaction(txParams)
+      .then((hash) => {
+        assert(hash, 'newUnapprovedTransaction needs to return the hash')
+        done()
+      })
+      .catch(done)
+    })
+
+    it('should reject when finished and status is rejected', function (done) {
+      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+        setTimeout(() => {
+          console.log('HELLLO')
+          txController.setTxStatusRejected(txMetaFromEmit.id)
+        }, 10)
+      })
+
+      txController.newUnapprovedTransaction(txParams)
+      .catch((err) => {
+        if (err.message === 'MetaMask Tx Signature: User denied transaction signature.') done()
+        else done(err)
+      })
+    })
+  })
+
   describe('#addUnapprovedTransaction', function () {
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
       const addTxDefaultsStub = sinon.stub(txController, 'addTxDefaults').callsFake(() => Promise.resolve)
@@ -92,7 +156,7 @@ describe('Transaction Controller', function () {
       }
       txController.txProviderUtils.validateTxParams(sample).then(() => {
         done()
-      })
+      }).catch(done)
     })
 
     it('returns error for negative values', function (done) {
@@ -408,4 +472,3 @@ describe('Transaction Controller', function () {
     })
   })
 })
-

@@ -108,6 +108,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ethQuery: this.ethQuery,
       ethStore: this.ethStore,
     })
+    this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
 
     // notices
     this.noticeController = new NoticeController({
@@ -195,7 +196,7 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      processTransaction: nodeify(this.newUnapprovedTransaction, this),
+      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
 
@@ -439,26 +440,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
-
-  async newUnapprovedTransaction (txParams) {
-    log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const txMeta = await this.txController.addUnapprovedTransaction(txParams)
-    this.sendUpdate()
-    this.opts.showUnapprovedTx(txMeta)
-    // listen for tx completion (success, fail)
-    return new Promise((resolve, reject) => {
-      this.txController.once(`${txMeta.id}:finished`, (completedTx) => {
-        switch (completedTx.status) {
-          case 'submitted':
-            return resolve(completedTx.hash)
-          case 'rejected':
-            return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
-          default:
-            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
-        }
-      })
-    })
-  }
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)

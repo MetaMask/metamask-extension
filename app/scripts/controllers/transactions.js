@@ -70,11 +70,11 @@ module.exports = class TransactionController extends EventEmitter {
     return this.store.getState().transactions
   }
 
-  get unapprovedTxCount () {
+  getUnapprovedTxCount () {
     return Object.keys(this.getUnapprovedTxList()).length
   }
 
-  get pendingTxCount () {
+  getPendingTxCount () {
     return this.getTxsByMetaData('status', 'signed').length
   }
 
@@ -92,7 +92,7 @@ module.exports = class TransactionController extends EventEmitter {
     return txMeta
   }
   getUnapprovedTxList () {
-    let txList = this.getTxList()
+    const txList = this.getTxList()
     return txList.filter((txMeta) => txMeta.status === 'unapproved')
     .reduce((result, tx) => {
       result[tx.id] = tx
@@ -135,7 +135,7 @@ module.exports = class TransactionController extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      let index = fullTxList.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected') && network === txMeta.metamaskNetworkId))
+      const index = fullTxList.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected') && network === txMeta.metamaskNetworkId))
       fullTxList.splice(index, 1)
     }
     fullTxList.push(txMeta)
@@ -151,6 +151,25 @@ module.exports = class TransactionController extends EventEmitter {
 
     this.emit('updateBadge')
     this.emit(`${txMeta.id}:unapproved`, txMeta)
+  }
+
+  async newUnapprovedTransaction (txParams) {
+    log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
+    const txMeta = await this.addUnapprovedTransaction(txParams)
+    this.emit('newUnaprovedTx', txMeta)
+    // listen for tx completion (success, fail)
+    return new Promise((resolve, reject) => {
+      this.once(`${txMeta.id}:finished`, (completedTx) => {
+        switch (completedTx.status) {
+          case 'submitted':
+            return resolve(completedTx.hash)
+          case 'rejected':
+            return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+          default:
+            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
+        }
+      })
+    })
   }
 
   async addUnapprovedTransaction (txParams) {
@@ -229,10 +248,9 @@ module.exports = class TransactionController extends EventEmitter {
     // add network/chain id
     txParams.chainId = this.getChainId()
     const ethTx = this.txProviderUtils.buildEthTxFromParams(txParams)
-    const rawTx = await this.signEthTx(ethTx, fromAddress).then(() => {
-      this.setTxStatusSigned(txMeta.id)
-      return ethUtil.bufferToHex(ethTx.serialize())
-    })
+    await this.signEthTx(ethTx, fromAddress)
+    this.setTxStatusSigned(txMeta.id)
+    const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
   }
 
@@ -240,15 +258,13 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.rawTx = rawTx
     this.updateTx(txMeta)
-    await this.txProviderUtils.publishTransaction(rawTx).then((txHash) => {
-      this.setTxHash(txId, txHash)
-      this.setTxStatusSubmitted(txId)
-    })
+    const txHash = await this.txProviderUtils.publishTransaction(rawTx)
+    this.setTxHash(txId, txHash)
+    this.setTxStatusSubmitted(txId)
   }
 
-  cancelTransaction (txId) {
+  async cancelTransaction (txId) {
     this.setTxStatusRejected(txId)
-    return Promise.resolve()
   }
 
 
@@ -371,9 +387,9 @@ module.exports = class TransactionController extends EventEmitter {
       const txId = txMeta.id
 
       if (!txHash) {
-        const noTxHash = new Error('We had an error while submitting this transaction, please try again.')
-        noTxHash.name = 'NoTxHashError'
-        this.setTxStatusFailed(noTxHash)
+        const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
+        noTxHashErr.name = 'NoTxHashError'
+        this.setTxStatusFailed(txId, noTxHashErr)
       }
 
 
@@ -427,7 +443,12 @@ module.exports = class TransactionController extends EventEmitter {
     }))
   }
 
-  // PRIVATE METHODS
+
+/* _____________________________________
+|                                      |
+|           PRIVATE METHODS            |
+|______________________________________*/
+
 
   //  Should find the tx in the tx list and
   //  update it.
@@ -511,9 +532,9 @@ module.exports = class TransactionController extends EventEmitter {
     // extra check in case there was an uncaught error during the
     // signature and submission process
     if (!txHash) {
-      const noTxHash = new Error('We had an error while submitting this transaction, please try again.')
-      noTxHash.name = 'NoTxHashError'
-      this.setTxStatusFailed(noTxHash)
+      const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
+      noTxHashErr.name = 'NoTxHashError'
+      this.setTxStatusFailed(txId, noTxHashErr)
     }
     // get latest transaction status
     let txParams
