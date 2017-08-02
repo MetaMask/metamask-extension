@@ -40,6 +40,11 @@ TxView.prototype.render = function () {
       background: '#FFFFFF',
     }
   }, [
+
+    h('div.phone-visible.fa.fa-bars', {
+
+    }, []),
+
     h('div.flex-row', {
       style: {
         margin: '1.8em 1.3em 0.8em 1.3em',

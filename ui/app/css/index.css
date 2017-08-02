@@ -723,22 +723,22 @@ div.message-container > div:first-child {
 
 @media screen and (min-width: 576px) {
   .lap-visible {
-    display: none;
+    display: flex;
   }
 
   .phone-visible {
-    display: flex;
+    display: none;
   }
 
 }
 
 @media screen and (max-width: 575px) {
   .lap-visible {
-    display: flex;
+    display: none;
   }
 
   .phone-visible {
-    display: none;
+    display: flex;
   }
 
 }
