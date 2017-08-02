@@ -22,7 +22,6 @@ var mkdirp = require('mkdirp')
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
-const MASCARA_ORIGIN = process.env.MASCARA_ORIGIN || "http://localhost:9001/"
 // browser reload
 
 gulp.task('dev:reload', function() {
@@ -121,10 +120,6 @@ gulp.task('manifest:production', function() {
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
   ],{base: './dist/'})
-  .pipe(gulpif(debug, jsoneditor(function(json) {
-    json["content_scripts"][0]["exclude_matches"].push(`${MASCARA_ORIGIN}*`)
-    return json
-  })))
   .pipe(gulpif(!debug, jsoneditor(function(json) {
     json.background.scripts = ["scripts/background.js"]
     return json

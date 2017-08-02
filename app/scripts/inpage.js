@@ -9,7 +9,7 @@ const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 const setupMascaraProxyProvider = require('./lib/mascara-proxy-provider.js')
 restoreContextAfterImports()
 
-
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 //
 // setup plugin communication
 //
@@ -26,13 +26,22 @@ inpageProvider = setupMascaraProxyProvider(inpageProvider)
 //
 // setup web3
 //
+
 var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
   console.log('MetaMask - overrode web3.setProvider')
 }
 // export global web3, with usage-detection
-setupDappAutoReload(web3, inpageProvider.publicConfigStore)
-console.log('MetaMask - injected web3')
+const origin = window.location.origin
+const shouldExport = !(
+  origin === 'https://zero.metamask.io' ||
+  (origin === 'http://localhost:9001' && METAMASK_DEBUG)
+)
+
+if (shouldExport) {
+  setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+  console.log('MetaMask - injected web3')
+}
 // set web3 defaultAccount
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
