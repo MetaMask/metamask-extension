@@ -108,7 +108,7 @@ describe('Transaction Controller', function () {
 
   describe('#addUnapprovedTransaction', function () {
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
-      const addTxDefaultsStub = sinon.stub(txController, 'addTxDefaults').callsFake(() => Promise.resolve)
+      const addTxDefaultsStub = sinon.stub(txController, 'addTxDefaults').callsFake(() => Promise.resolve())
       txController.addUnapprovedTransaction({})
       .then((txMeta) => {
         assert(('id' in txMeta), 'should have a id')
