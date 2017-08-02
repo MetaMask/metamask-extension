@@ -33,7 +33,7 @@ WalletView.prototype.render = function () {
   const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684'
   const { network } = this.props
 
-  return h('div.wallet-view.flex-column', {
+  return h('div.wallet-view.flex-column.lap-visible', {
     style: {
       // width: '33.333%',
       flexGrow: 1,

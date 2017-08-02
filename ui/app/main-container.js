@@ -27,10 +27,9 @@ MainContainer.prototype.render = function () {
       overflowY: 'scroll',
     }
   }, [
+
     h(WalletView, {
       style: {
-        // width: '33.33%',
-        // height: '82vh',
       }
     }, [
     ]),

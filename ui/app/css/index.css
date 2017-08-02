@@ -718,5 +718,27 @@ div.message-container > div:first-child {
 }
 
 .pop-hover:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+@media screen and (min-width: 576px) {
+  .lap-visible {
+    display: none;
+  }
+
+  .phone-visible {
+    display: flex;
+  }
+
+}
+
+@media screen and (max-width: 575px) {
+  .lap-visible {
+    display: flex;
+  }
+
+  .phone-visible {
+    display: none;
+  }
+
 }
