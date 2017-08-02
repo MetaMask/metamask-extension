@@ -52,20 +52,13 @@ TxView.prototype.render = function () {
       background: '#FFFFFF',
     }
   }, [
-    // slideout - move to separate render func
-    h(SlideoutMenu, {
-      isOpen: this.props.sidebarOpen,
-    }, [
-      h(WalletView, {
-        responsiveDisplayClassname: '.phone-visible'
-      }),
-    ]),
-
     h('div.phone-visible.fa.fa-bars', {
       onClick: () => {
+        console.log("click received")
         this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
       }
-    }, []),
+    }, [
+    ]),
 
     h('div.flex-row', {
       style: {

@@ -15,6 +15,11 @@ const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
+
+// slideout menu
+const WalletView = require('./components/wallet-view')
+const SlideoutMenu = require('react-burger-menu').slide
+
 // other views
 const ConfigScreen = require('./config')
 const AddTokenScreen = require('./add-token')
@@ -63,7 +68,7 @@ function mapStateToProps (state) {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward, network } = props
+  const { isLoading, loadingMessage, transForward, network, sidebarOpen } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
@@ -82,8 +87,23 @@ App.prototype.render = function () {
       },
     }, [
 
+
       // app bar
       this.renderAppBar(),
+
+      // slideout - move to separate render func
+      this.renderSidebar(),
+      // h('div.phone-visible', {} ,[
+      //   h(SlideoutMenu, {
+      //     isOpen: false,
+      //   }, [
+      //     h(WalletView, {
+      //       responsiveDisplayClassname: '.phone-visible',
+      //     }),
+      //   ]),
+      // ])
+
+      // network dropdown
       this.renderNetworkDropdown(),
       // this.renderDropdown(),
 
@@ -96,6 +116,52 @@ App.prototype.render = function () {
       this.renderPrimary(),
     ])
   )
+}
+
+App.prototype.renderSidebar = function() {
+  if (!this.props.sidebarOpen) {
+    return null;
+  }
+
+  return h('div.phone-visible', {}, [
+    // content
+    h(WalletView, {
+      responsiveDisplayClassname: '.phone-visible',
+      style: {
+        zIndex: 26,
+        position: 'fixed',
+        top: '6%',
+        left: '0px',
+        right: '0px',
+        bottom: '0px',
+        opacity: '1',
+        visibility: 'visible',
+        transition: 'transform 0.3s ease-out',
+        willChange: 'transform',
+        transform: 'translateX(0%)',
+        overflowY: 'auto',
+        boxShadow: 'rgba(0, 0, 0, 0.15) 2px 2px 4px',
+        width: '85%',
+        height: '100%',
+      },
+    }),
+
+    // overlay
+    h('div', {
+      style: {
+        zIndex: 25,
+        position: 'fixed',
+        top: '6%',
+        left: '0px',
+        right: '0px',
+        bottom: '0px',
+        opacity: '1',
+        visibility: 'visible',
+        transition: 'opacity 0.3s ease-out, visibility 0.3s ease-out',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      }
+    }, [])
+  ])
 }
 
 App.prototype.renderAppBar = function () {

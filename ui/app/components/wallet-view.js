@@ -12,15 +12,16 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
+    sidebarOpen: state.appState.sidebarOpen,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     showSendPage: () => {dispatch(actions.showSendPage())},
+    hideSidebar: () => {dispatch(actions.hideSidebar())},
   }
 }
-
 
 inherits(WalletView, Component)
 function WalletView () {
@@ -31,7 +32,7 @@ const noop = () => {}
 
 WalletView.prototype.render = function () {
   const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684'
-  const { network, responsiveDisplayClassname } = this.props
+  const { network, responsiveDisplayClassname, style } = this.props
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {
@@ -41,8 +42,17 @@ WalletView.prototype.render = function () {
       flexBasis: '230px', // .333*345
       height: '82vh',
       background: '#FAFAFA', // TODO: add to reusable colors
+      ...style,
     }
   }, [
+
+    h('div.phone-visible.fa.fa-bars', {
+      onClick: () => {
+        console.log("click received-inwalletview")
+        this.props.hideSidebar()
+      }
+    }, [
+    ]),
 
     // TODO: Separate component: wallet account details
     h('div.flex-row.flex-center', {
