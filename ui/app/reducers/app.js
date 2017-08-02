@@ -36,6 +36,7 @@ function reduceApp (state, action) {
   var appState = extend({
     shouldClose: false,
     menuOpen: false,
+    sidebarOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
@@ -46,6 +47,16 @@ function reduceApp (state, action) {
   }, state.appState)
 
   switch (action.type) {
+    // sidebar methods
+    case actions.SIDEBAR_OPEN:
+      return extend(appState, {
+        sidebarOpen: true,
+      })
+
+    case actions.SIDEBAR_CLOSE:
+      return extend(appState, {
+        sidebarOpen: false,
+      })
 
     // transition methods
 

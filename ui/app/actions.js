@@ -5,6 +5,9 @@ var actions = {
 
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // sidebar state
+  SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
+  SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
   // menu state
   getNetworkStatus: 'getNetworkStatus',
   // transition state

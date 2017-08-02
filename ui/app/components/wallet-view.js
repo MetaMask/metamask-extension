@@ -31,9 +31,9 @@ const noop = () => {}
 
 WalletView.prototype.render = function () {
   const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684'
-  const { network } = this.props
+  const { network, responsiveDisplayClassname } = this.props
 
-  return h('div.wallet-view.flex-column.lap-visible', {
+  return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {
       // width: '33.333%',
       flexGrow: 1,
