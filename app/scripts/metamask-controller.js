@@ -16,6 +16,7 @@ const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
+const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
@@ -23,7 +24,6 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
-const checkForPhishing = require('./lib/is-phish')
 const debounce = require('debounce')
 
 const version = require('../manifest.json').version
@@ -70,6 +70,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
+    this.blacklistController = new BlacklistController({
+      initState: initState.BlacklistController,
+    })
+    this.blacklistController.scheduleUpdates()
 
     // rpc provider
     this.provider = this.initializeProvider()
@@ -151,6 +155,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
+    })
+    this.blacklistController.store.subscribe((state) => {
+      this.store.updateState({ BlacklistController: state })
     })
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
@@ -328,7 +335,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
-    if (this.isHostBlacklisted(originDomain)) {
+    if (this.blacklistController.checkForPhishing(originDomain)) {
       console.log('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
@@ -349,17 +356,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
   }
 
-  // Check if a domain is on our blacklist
-  isHostBlacklisted (hostname) {
-    if (!hostname) return false
-    const { blacklist } = this.getState().blacklist
-    return checkForPhishing({ blacklist, hostname })
-  }
-
   sendPhishingWarning (connectionStream, hostname) {
     const mx = setupMultiplex(connectionStream)
     const phishingStream = mx.createStream('phishing')
-    // phishingStream.write(true)
     phishingStream.write({ hostname })
   }
 
