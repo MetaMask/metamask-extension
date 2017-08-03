@@ -1,4 +1,8 @@
-# MetaMask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension)
+# MetaMask Plugin [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master)
+
+## Support
+
+If you're a user seeking support, [here is our support site](http://metamask.consensyssupport.happyfox.com).
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/MetaMask/metamask-extension.svg)](https://greenkeeper.io/)
 
@@ -6,7 +10,13 @@
 
 If you're a web dapp developer, we've got two types of guides for you:
 
-- If you've never built a Dapp before, we've got a gentle introduction on [Developing Dapps with Truffle and MetaMask](https://blog.metamask.io/developing-for-metamask-with-truffle/).
+### New Dapp Developers
+
+- We recommend this [Learning Solidity](https://karl.tech/learning-solidity-part-1-deploy-a-contract/) tutorial series by Karl Floersch.
+- We wrote a (slightly outdated now) gentle introduction on [Developing Dapps with Truffle and MetaMask](https://medium.com/metamask/developing-ethereum-dapps-with-truffle-and-metamask-aa8ad7e363ba).
+
+### Current Dapp Developers
+
 - If you have a Dapp, and you want to ensure compatibility, [here is our guide on building MetaMask-compatible Dapps](https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md)
 
 ## Building locally

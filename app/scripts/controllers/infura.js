@@ -2,7 +2,7 @@ const ObservableStore = require('obs-store')
 const extend = require('xtend')
 
 // every ten minutes
-const POLLING_INTERVAL = 300000
+const POLLING_INTERVAL = 10 * 60 * 1000
 
 class InfuraController {
 

@@ -4,8 +4,8 @@ const Mutex = require('await-semaphore').Mutex
 
 class NonceTracker {
 
-  constructor ({ blockTracker, provider, getPendingTransactions }) {
-    this.blockTracker = blockTracker
+  constructor ({ provider, getPendingTransactions }) {
+    this.provider = provider
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
     this.lockMap = {}
@@ -31,21 +31,25 @@ class NonceTracker {
     const currentBlock = await this._getCurrentBlock()
     const pendingTransactions = this.getPendingTransactions(address)
     const pendingCount = pendingTransactions.length
-    assert(Number.isInteger(pendingCount), 'nonce-tracker - pendingCount is an integer')
+    assert(Number.isInteger(pendingCount), `nonce-tracker - pendingCount is not an integer - got: (${typeof pendingCount}) "${pendingCount}"`)
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
-    assert(Number.isInteger(baseCount), 'nonce-tracker - baseCount is an integer')
+    assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nextNonce = baseCount + pendingCount
-    assert(Number.isInteger(nextNonce), 'nonce-tracker - nextNonce is an integer')
-    // return next nonce and release cb
-    return { nextNonce, releaseLock }
+    assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
+    // collect the numbers used to calculate the nonce for debugging
+    const blockNumber = currentBlock.number
+    const nonceDetails = { blockNumber, baseCount, baseCountHex, pendingCount }
+    // return nonce and release cb
+    return { nextNonce, nonceDetails, releaseLock }
   }
 
   async _getCurrentBlock () {
-    const currentBlock = this.blockTracker.getCurrentBlock()
+    const blockTracker = this._getBlockTracker()
+    const currentBlock = blockTracker.getCurrentBlock()
     if (currentBlock) return currentBlock
     return await Promise((reject, resolve) => {
-      this.blockTracker.once('latest', resolve)
+      blockTracker.once('latest', resolve)
     })
   }
 
@@ -77,6 +81,12 @@ class NonceTracker {
       this.lockMap[lockId] = mutex
     }
     return mutex
+  }
+
+  // this is a hotfix for the fact that the blockTracker will
+  // change when the network changes
+  _getBlockTracker () {
+    return this.provider._blockTracker
   }
 
 }

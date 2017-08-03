@@ -37,28 +37,33 @@ function setupInjection () {
 
 function setupStreams () {
   // setup communication to page and plugin
-  var pageStream = new LocalMessageDuplexStream({
+  const pageStream = new LocalMessageDuplexStream({
     name: 'contentscript',
     target: 'inpage',
   })
   pageStream.on('error', console.error)
-  var pluginPort = extension.runtime.connect({name: 'contentscript'})
-  var pluginStream = new PortStream(pluginPort)
+  const pluginPort = extension.runtime.connect({ name: 'contentscript' })
+  const pluginStream = new PortStream(pluginPort)
   pluginStream.on('error', console.error)
 
   // forward communication plugin->inpage
   pageStream.pipe(pluginStream).pipe(pageStream)
 
   // setup local multistream channels
-  var mx = ObjectMultiplex()
+  const mx = ObjectMultiplex()
   mx.on('error', console.error)
   mx.pipe(pageStream).pipe(mx)
+  mx.pipe(pluginStream).pipe(mx)
 
   // connect ping stream
-  var pongStream = new PongStream({ objectMode: true })
+  const pongStream = new PongStream({ objectMode: true })
   pongStream.pipe(mx.createStream('pingpong')).pipe(pongStream)
 
-  // ignore unused channels (handled by background)
+  // connect phishing warning stream
+  const phishingStream = mx.createStream('phishing')
+  phishingStream.once('data', redirectToPhishingWarning)
+
+  // ignore unused channels (handled by background, inpage)
   mx.ignoreStream('provider')
   mx.ignoreStream('publicConfig')
 }
@@ -87,4 +92,9 @@ function suffixCheck () {
     }
   }
   return true
+}
+
+function redirectToPhishingWarning () {
+  console.log('MetaMask - redirecting to phishing warning')
+  window.location.href = 'https://metamask.io/phishing.html'
 }

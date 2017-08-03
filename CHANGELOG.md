@@ -2,11 +2,23 @@
 
 ## Current Master
 
+- Continuously update blacklist for known phishing sites in background.
+- Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
+
+## 3.9.2 2017-7-26
+
+- Fix bugs that could sometimes result in failed transactions after switching networks.
+- Include stack traces in txMeta's to better understand the life cycle of transactions
+- Enhance blacklister functionality to include levenshtein logic. (credit to @sogoiii and @409H for their help!)
+
+## 3.9.1 2017-7-19
+
 - No longer automatically request 1 ropsten ether for the first account in a new vault.
 - Now redirects from known malicious sites faster.
 - Added a link to our new support page to the help screen.
 - Fixed bug where a new transaction would be shown over the current transaction, creating a possible timing attack against user confirmation.
 - Fixed bug in nonce tracker where an incorrect nonce would be calculated.
+- Lowered minimum gas price to 1 Gwei.
 
 ## 3.9.0 2017-7-12
 
