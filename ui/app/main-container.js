@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const TxView = require('./components/tx-view')
 const WalletView = require('./components/wallet-view')
 const SlideoutMenu = require('react-burger-menu').slide
+const AccountAndTransactionDetails = require('./account-and-transaction-details')
 
 module.exports = MainContainer
 
@@ -13,6 +14,22 @@ function MainContainer () {
 }
 
 MainContainer.prototype.render = function () {
+
+  // 1. Fixing Mobile View: flush container
+  //   media query for mobile view:
+  //   position: absolute;
+  //   margin-top: 35px;
+  //   width: 100%;
+  // 
+  // 2. Fix responsive sizing - smaller
+  //    https://puu.sh/x0gDA/5ff3b734eb.png
+  // 
+  // 3. summarize:
+  //  switch statement goes inside MainContainer,
+  //  or a method in renderPrimary
+  //    - pass resulting h() to MainContainer
+  //  - error checking in separate func
+  //  - router in separate func
 
   return h('div', {
     style: {
@@ -27,24 +44,6 @@ MainContainer.prototype.render = function () {
       alignItems: 'stretch',
       overflowY: 'scroll',
     }
-  }, [
-
-    h(WalletView, {
-      style: {
-      },
-      responsiveDisplayClassname: '.lap-visible',
-    }, [
-    ]),
-
-    h(TxView, {
-      style: {
-        // flexGrow: 2
-        // width: '66.66%',
-        // height: '82vh',
-        // background: '#FFFFFF',
-      }
-    }, [
-    ]),
-  ])
+  }, [h(AccountAndTransactionDetails, {}, [])])
 }
 
