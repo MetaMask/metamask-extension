@@ -36,11 +36,9 @@ WalletView.prototype.render = function () {
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {
-      // width: '33.333%',
       flexGrow: 1,
       flexShrink: 0,
       flexBasis: '230px', // .333*345
-      height: '82vh',
       background: '#FAFAFA', // TODO: add to reusable colors
       ...style,
     }
