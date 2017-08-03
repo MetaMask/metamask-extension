@@ -722,7 +722,7 @@ div.message-container > div:first-child {
 }
 
 .main-container {
-  width: 100%;
+  position: absolute;
   z-index: 18;
   box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   font-family: DIN OT;
@@ -742,16 +742,22 @@ div.message-container > div:first-child {
   }
 
   .main-container {
-    // position: absolute;
-    // margin-top: 35px;
-    // z-index: 18;
-    // box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
-    // font-family: DIN OT;
-    // display: flex;
-    // flex-wrap: wrap;
-    // align-items: stretch;
-    // overflow-y: scroll;    
-    // width: 100%;
+    margin-top: 35px;
+    width: 85%;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .main-container {
+    margin-top: 35px;
+    width: 80%;
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .main-container {
+    margin-top: 35px;
+    width: 65%;
   }
 }
 
@@ -765,7 +771,8 @@ div.message-container > div:first-child {
   }
 
   .main-container {
-    position: absolute;
     margin-top: 35px;
+    // position: relative;
+    width: 100%;
   }
 }
