@@ -51,7 +51,6 @@ TxView.prototype.render = function () {
   }, [
     h('div.phone-visible.fa.fa-bars', {
       onClick: () => {
-        console.log("click received")
         this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
       }
     }, [

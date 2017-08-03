@@ -46,7 +46,6 @@ WalletView.prototype.render = function () {
 
     h('div.phone-visible.fa.fa-bars', {
       onClick: () => {
-        console.log("click received-inwalletview")
         this.props.hideSidebar()
       }
     }, [
@@ -128,7 +127,6 @@ WalletView.prototype.render = function () {
       }, 'BUY'),
       h('div.wallet-btn', {
         onClick: () => {
-          console.log("SHOW");
           this.props.showSendPage();
         },
         style: {

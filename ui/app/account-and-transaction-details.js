@@ -13,7 +13,6 @@ function AccountAndTransactionDetails () {
 }
 
 AccountAndTransactionDetails.prototype.render = function () {
-  console.log('atdR')
   return h('div', {
     style: {
       display: 'flex',

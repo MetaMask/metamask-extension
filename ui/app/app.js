@@ -458,20 +458,10 @@ App.prototype.renderPrimary = function () {
 
   // show unlock screen
   if (!props.isUnlocked) {
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      case 'config':
-        log.debug('rendering config screen from unlock screen.')
-        return h(ConfigScreen, {key: 'config'})
-
-      default:
-        log.debug('rendering locked screen')
-        return h(UnlockScreen, {key: 'locked'})
-    }
+    return h(MainContainer, {
+      currentViewName: props.currentView.name,
+      isUnlocked: props.isUnlocked,
+    })
   }
 
   // show current view

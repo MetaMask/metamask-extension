@@ -5,6 +5,9 @@ const TxView = require('./components/tx-view')
 const WalletView = require('./components/wallet-view')
 const SlideoutMenu = require('react-burger-menu').slide
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
+const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
+const ConfigScreen = require('./config')
+const UnlockScreen = require('./unlock')
 
 module.exports = MainContainer
 
@@ -22,9 +25,49 @@ MainContainer.prototype.render = function () {
   //  - router in separate func
   //
   //  4. style all buttons as <button>s: accessibility + mobile focus
+  let contents = {
+    component: AccountAndTransactionDetails,
+    key: 'account-detail', 
+    style: {},
+  }
+
+  if (this.props.isUnlocked === false) {
+    switch (this.props.currentViewName) {
+      case 'restoreVault':
+        log.debug('rendering restore vault screen')
+        contents = {
+          component: HDRestoreVaultScreen,
+          key: 'HDRestoreVaultScreen',
+        }
+      case 'config':
+        log.debug('rendering config screen from unlock screen.')
+        contents = {
+          component: ConfigScreen,
+          key: 'config',
+        }
+      default:
+        log.debug('rendering locked screen')
+        contents = {
+          component: UnlockScreen,
+          style: {
+            boxShadow: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // must force 100%, because lock screen is full-width
+            width: '100%',
+          },
+          key: 'locked',
+        }
+    }
+  }
 
   return h('div.main-container', {
-    style: {}
-  }, [h(AccountAndTransactionDetails, {}, [])])
+    style: contents.style,
+  }, [
+    h(contents.component, {
+      key: contents.key,
+    }, [])
+  ])
 }
 

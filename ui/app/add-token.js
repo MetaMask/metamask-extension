@@ -212,7 +212,6 @@ AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address)
 
   const [ symbol, decimals ] = results
   if (symbol && decimals) {
-    console.log('SETTING SYMBOL AND DECIMALS', { symbol, decimals })
     this.setState({ symbol: symbol[0], decimals: decimals[0].toString() })
   }
 }
