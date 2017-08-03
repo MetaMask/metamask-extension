@@ -706,7 +706,7 @@ function markAccountsFound () {
 //
 
 // default rpc target refers to localhost:8545 in this instance.
-function setDefaultRpcTarget (rpcList) {
+function setDefaultRpcTarget () {
   log.debug(`background.setDefaultRpcTarget`)
   return (dispatch) => {
     background.setDefaultRpc((err, result) => {
@@ -719,7 +719,7 @@ function setDefaultRpcTarget (rpcList) {
 }
 
 function setRpcTarget (newRpc) {
-  log.debug(`background.setRpcTarget`)
+  log.debug(`background.setRpcTarget: ${newRpc}`)
   return (dispatch) => {
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {

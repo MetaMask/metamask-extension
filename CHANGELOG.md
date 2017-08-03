@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Replace account scren with an account drop-down menu.
+- Replace confusing buttons with an new account-specific drop-down menu.
 - Continuously update blacklist for known phishing sites in background.
 - Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
 
