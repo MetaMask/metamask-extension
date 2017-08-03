@@ -56,6 +56,44 @@ TxView.prototype.render = function () {
     }, [
     ]),
 
+    h('div.flex-row.flex-wrap', {
+      style: {
+        margin: '1.8em 1.3em 0.8em 1.3em',
+        flex: '1 0 auto',
+      }
+    }, [
+
+      h('div.flex-column.flex-center', {
+        style: {
+          width: '100%',
+        }
+      }, [
+
+        h('div', {}, 'ETH LOGO'),
+
+        h('div', {}, '1001.124 ETH'),
+
+        h('div', {}, '$300,000 USD'),
+
+      ]),
+
+      h('div.flex-row.flex-center', {
+        style: {
+          width: '100%',
+        }
+      }, [
+        h('button.btn-clear', {
+          textAlign: 'center'
+        }, 'BUY'),
+
+        h('button.btn-clear', {
+          textAlign: 'center'
+        }, 'SEND'),
+
+      ]),
+
+    ]),
+
     h('div.flex-row', {
       style: {
         margin: '1.8em 1.3em 0.8em 1.3em',

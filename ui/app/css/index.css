@@ -89,6 +89,25 @@ input:focus, textarea:focus {
   background-color: #02C9B1; // TODO: reusable color in colors.css
 }
 
+button.btn-clear {
+  width: 100px;
+  height: 50px;
+  background: white;
+  border: 1px solid;
+  font-size: .7em;
+}
+
+// No longer used in flat design, remove when modal buttons done
+// div.wallet-btn {
+//   border: 1px solid rgb(91, 93, 103);
+//   border-radius: 2px;
+//   height: 30px;
+//   width: 75px;
+//   font-size: 0.8em;
+//   text-align: center;
+//   line-height: 25px;
+// }
+
 // .btn-red {
 //   background: rgba(254, 35, 17, 1);
 //   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);

@@ -96,51 +96,6 @@ WalletView.prototype.render = function () {
      active: true,
     }),
 
-    // Buy Buttons
-    // for index.css
-    // TODO: move into a class
-    // div.wallet-btn {
-    //   border: 1px solid rgb(91, 93, 103);
-    //   border-radius: 2px;
-    //   height: 30px;
-    //   width: 75px;
-    //   font-size: 0.8em;
-    //   text-align: center;
-    //   line-height: 25px;
-    // }
-
-    h('div.flex-row', {
-      style: {
-        marginLeft: '1.3em',
-        marginTop: '0.8em',
-      }
-    }, [
-      h('div', {
-        style: {
-          border: '1px solid rgb(91, 93, 103)',
-          borderRadius: '2px',
-          height: '20px',
-          width: '50px',
-          fontSize: '0.8em',
-          textAlign: 'center',
-        }
-      }, 'BUY'),
-      h('div.wallet-btn', {
-        onClick: () => {
-          this.props.showSendPage();
-        },
-        style: {
-          border: '1px solid rgb(91, 93, 103)',
-          borderRadius: '2px',
-          height: '20px',
-          width: '50px',
-          fontSize: '0.8em',
-          textAlign: 'center',
-          marginLeft: '.6em',
-        }
-      }, 'SEND'),
-    ]),
-
     // Wallet contents
     h(Content, {
       title: "Total Token Balance",
