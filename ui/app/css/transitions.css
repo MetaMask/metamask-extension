@@ -22,6 +22,11 @@
   transition: transform 300ms ease-in;
 }
 
+.sidebar.from-left {
+  transform: translateX(-320px);
+  transition: transform 300ms ease-in;
+}
+
 /* loader transitions */
 .loader-enter, .loader-leave-active {
   opacity: 0.0;

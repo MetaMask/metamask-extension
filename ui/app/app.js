@@ -35,6 +35,7 @@ const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -119,49 +120,75 @@ App.prototype.render = function () {
 }
 
 App.prototype.renderSidebar = function() {
-  if (!this.props.sidebarOpen) {
-    return null;
-  }
+  // if (!this.props.sidebarOpen) {
+  //   return null;
+  // }
 
-  return h('div.phone-visible', {}, [
-    // content
-    h(WalletView, {
-      responsiveDisplayClassname: '.phone-visible',
-      style: {
-        zIndex: 26,
-        position: 'fixed',
-        top: '6%',
-        left: '0px',
-        right: '0px',
-        bottom: '0px',
-        opacity: '1',
-        visibility: 'visible',
-        transition: 'transform 0.3s ease-out',
-        willChange: 'transform',
-        transform: 'translateX(0%)',
-        overflowY: 'auto',
-        boxShadow: 'rgba(0, 0, 0, 0.15) 2px 2px 4px',
-        width: '85%',
-        height: '100%',
-      },
-    }),
-
-    // overlay
-    // TODO: add onClick for overlay to close sidebar
-    h('div', {
-      style: {
-        zIndex: 25,
-        position: 'fixed',
-        top: '6%',
-        left: '0px',
-        right: '0px',
-        bottom: '0px',
-        opacity: '1',
-        visibility: 'visible',
-        transition: 'opacity 0.3s ease-out, visibility 0.3s ease-out',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  return h('div', {
+  }, [
+    h('style', `
+      .sidebar-enter {
+        transition: transform 500ms ease-in-out;
+        transform: translateX(-100%);
       }
-    }, [])
+      .sidebar-enter.sidebar-enter-active {
+        transition: transform 500ms ease-in-out;
+        transform: translateX(0%);
+      }
+      .sidebar-leave {
+        transition: transform 500ms ease-in-out;
+        transform: translateX(0%);
+      }
+      .sidebar-leave.sidebar-leave-active {
+        transition: transform 500ms ease-in-out;
+        transform: translateX(-100%);
+      }
+    `),
+
+    h(ReactCSSTransitionGroup, {
+      transitionName: 'sidebar',
+      transitionEnterTimeout: 500,
+      transitionLeaveTimeout: 500,
+    }, [
+      // content
+      this.props.sidebarOpen ? h(WalletView, {
+        responsiveDisplayClassname: '.sidebar',
+        style: {
+          zIndex: 26,
+          position: 'fixed',
+          top: '6%',
+          left: '0px',
+          right: '0px',
+          bottom: '0px',
+          opacity: '1',
+          visibility: 'visible',
+          // transition: 'transform 1s ease-in',
+          willChange: 'transform',
+          // transform: 'translateX(300px)',
+          overflowY: 'auto',
+          boxShadow: 'rgba(0, 0, 0, 0.15) 2px 2px 4px',
+          width: '85%',
+          height: '100%',
+        },
+      }) : undefined,
+
+      // overlay
+      // TODO: add onClick for overlay to close sidebar
+      this.props.sidebarOpen ? h('div', {
+        style: {
+          zIndex: 25,
+          position: 'fixed',
+          top: '6%',
+          left: '0px',
+          right: '0px',
+          bottom: '0px',
+          opacity: '1',
+          visibility: 'visible',
+          // transition: 'opacity 0.3s ease-out, visibility 0.3s ease-out',
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        }
+      }, []) : undefined,
+    ])
   ])
 }
 
