@@ -172,23 +172,24 @@ App.prototype.renderSidebar = function() {
         },
       }) : undefined,
 
-      // overlay
-      // TODO: add onClick for overlay to close sidebar
-      this.props.sidebarOpen ? h('div', {
-        style: {
-          zIndex: 25,
-          position: 'fixed',
-          top: '6%',
-          left: '0px',
-          right: '0px',
-          bottom: '0px',
-          opacity: '1',
-          visibility: 'visible',
-          // transition: 'opacity 0.3s ease-out, visibility 0.3s ease-out',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        }
-      }, []) : undefined,
-    ])
+    ]),
+
+    // overlay
+    // TODO: add onClick for overlay to close sidebar
+    this.props.sidebarOpen ? h('div', {
+      style: {
+        zIndex: 25,
+        position: 'fixed',
+        top: '6%',
+        left: '0px',
+        right: '0px',
+        bottom: '0px',
+        opacity: '1',
+        visibility: 'visible',
+        // transition: 'opacity 0.3s ease-out, visibility 0.3s ease-out',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      }
+    }, []) : undefined,
   ])
 }
 
