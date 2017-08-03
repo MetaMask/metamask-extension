@@ -81,7 +81,7 @@ function suffixCheck () {
   var currentUrl = window.location.href
   var currentRegex
   for (let i = 0; i < prohibitedTypes.length; i++) {
-    currentRegex = new RegExp(`\.${prohibitedTypes[i]}$`)
+    currentRegex = new RegExp(`\\.${prohibitedTypes[i]}$`)
     if (currentRegex.test(currentUrl)) {
       return false
     }
