@@ -214,7 +214,8 @@ App.prototype.renderAppBar = function () {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: '#EFEFEF', // $gallery
-          height: '11vh',
+          height: '12vh',
+          maxHeight: '60px',
           position: 'relative',
           zIndex: 12,
         },
