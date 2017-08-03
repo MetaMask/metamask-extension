@@ -54,6 +54,7 @@ MainContainer.prototype.render = function () {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            background: '#F7F7F7',
             // must force 100%, because lock screen is full-width
             width: '100%',
           },
