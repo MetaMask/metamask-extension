@@ -4,10 +4,6 @@
 ## Support
 
 If you're a user seeking support, [here is our support site](http://metamask.consensyssupport.happyfox.com).
-<<<<<<< HEAD
-
-=======
->>>>>>> b1311b48c96d873f571e26cad8e4f5d2f61dec25
 
 ## Developing Compatible Dapps
 
