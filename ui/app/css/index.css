@@ -721,6 +721,17 @@ div.message-container > div:first-child {
   transform: scale(1.1);
 }
 
+.main-container {
+  width: 100%;
+  z-index: 18;
+  box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
+  font-family: DIN OT;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  overflow-y: scroll;
+}
+
 @media screen and (min-width: 576px) {
   .lap-visible {
     display: flex;
@@ -730,6 +741,18 @@ div.message-container > div:first-child {
     display: none;
   }
 
+  .main-container {
+    // position: absolute;
+    // margin-top: 35px;
+    // z-index: 18;
+    // box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
+    // font-family: DIN OT;
+    // display: flex;
+    // flex-wrap: wrap;
+    // align-items: stretch;
+    // overflow-y: scroll;    
+    // width: 100%;
+  }
 }
 
 @media screen and (max-width: 575px) {
@@ -741,4 +764,8 @@ div.message-container > div:first-child {
     display: flex;
   }
 
+  .main-container {
+    position: absolute;
+    margin-top: 35px;
+  }
 }

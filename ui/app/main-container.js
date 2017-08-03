@@ -15,12 +15,6 @@ function MainContainer () {
 
 MainContainer.prototype.render = function () {
 
-  // 1. Fixing Mobile View: flush container
-  //   media query for mobile view:
-  //   position: absolute;
-  //   margin-top: 35px;
-  //   width: 100%;
-  // 
   // 2. Fix responsive sizing - smaller
   //    https://puu.sh/x0gDA/5ff3b734eb.png
   // 
@@ -33,19 +27,8 @@ MainContainer.prototype.render = function () {
   //
   //  4. style all buttons as <button>s: accessibility + mobile focus
 
-  return h('div', {
-    style: {
-      position: 'absolute',
-      marginTop: '35px',
-      width: '98%',
-      zIndex: 20,
-      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      fontFamily: 'DIN OT',
-      display: 'flex',
-      flexWrap: 'wrap',
-      alignItems: 'stretch',
-      overflowY: 'scroll',
-    }
+  return h('div.main-container', {
+    style: {}
   }, [h(AccountAndTransactionDetails, {}, [])])
 }
 
