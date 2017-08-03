@@ -30,6 +30,8 @@ MainContainer.prototype.render = function () {
   //    - pass resulting h() to MainContainer
   //  - error checking in separate func
   //  - router in separate func
+  //
+  //  4. style all buttons as <button>s: accessibility + mobile focus
 
   return h('div', {
     style: {
