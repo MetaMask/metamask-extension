@@ -92,7 +92,7 @@ App.prototype.render = function () {
       // panel content
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          maxWidth: '850px',
+          width: '100%',
         },
       }, [
         this.renderPrimary(),

@@ -19,7 +19,11 @@ Notice.prototype.render = function () {
   const disabled = state.disclaimerDisabled
 
   return (
-    h('.flex-column.flex-center.flex-grow', [
+    h('.flex-column.flex-center.flex-grow', {
+      style: {
+        width: '100%', 
+      },
+    }, [
       h('h3.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
