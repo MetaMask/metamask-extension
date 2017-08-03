@@ -143,39 +143,15 @@ App.prototype.renderSidebar = function() {
       // content
       this.props.sidebarOpen ? h(WalletView, {
         responsiveDisplayClassname: '.sidebar',
-        style: {
-          zIndex: 26,
-          position: 'fixed',
-          top: '6%',
-          left: '0px',
-          right: '0px',
-          bottom: '0px',
-          opacity: '1',
-          visibility: 'visible',
-          willChange: 'transform',
-          overflowY: 'auto',
-          boxShadow: 'rgba(0, 0, 0, 0.15) 2px 2px 4px',
-          width: '85%',
-          height: '100%',
-        },
+        style: {},
       }) : undefined,
 
     ]),
 
     // overlay
     // TODO: add onClick for overlay to close sidebar
-    this.props.sidebarOpen ? h('div', {
-      style: {
-        zIndex: 25,
-        position: 'fixed',
-        top: '6%',
-        left: '0px',
-        right: '0px',
-        bottom: '0px',
-        opacity: '1',
-        visibility: 'visible',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-      }
+    this.props.sidebarOpen ? h('div.sidebar-overlay', {
+      style: {}
     }, []) : undefined,
   ])
 }

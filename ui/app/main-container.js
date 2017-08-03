@@ -14,10 +14,6 @@ function MainContainer () {
 }
 
 MainContainer.prototype.render = function () {
-
-  // 2. Fix responsive sizing - smaller
-  //    https://puu.sh/x0gDA/5ff3b734eb.png
-  // 
   // 3. summarize:
   //  switch statement goes inside MainContainer,
   //  or a method in renderPrimary
