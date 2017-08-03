@@ -89,12 +89,10 @@ input:focus, textarea:focus {
   background-color: #02C9B1; // TODO: reusable color in colors.css
 }
 
+
 button.btn-clear {
-  width: 100px;
-  height: 50px;
   background: white;
   border: 1px solid;
-  font-size: .7em;
 }
 
 // No longer used in flat design, remove when modal buttons done
@@ -795,6 +793,14 @@ div.message-container > div:first-child {
     width: 85%;
     height: 90vh;
   }
+
+  button.btn-clear {
+    width: 75px;
+    height: 32px;
+    font-size: .6em;
+    background: white;
+    border: 1px solid;
+  }
 }
 
 @media screen and (min-width: 769px) {
@@ -827,5 +833,13 @@ div.message-container > div:first-child {
     // position: relative;
     width: 100%;
     height: 100%
+  }
+
+  button.btn-clear {
+    width: 100px;
+    height: 50px;
+    font-size: .7em;
+    background: white;
+    border: 1px solid;
   }
 }

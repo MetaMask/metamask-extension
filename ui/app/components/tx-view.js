@@ -56,41 +56,60 @@ TxView.prototype.render = function () {
     }, [
     ]),
 
-    h('div.flex-row.flex-wrap', {
+    h('div.flex-row', {
       style: {
         margin: '1.8em 1.3em 0.8em 1.3em',
-        flex: '1 0 auto',
+        // flex: '1 0 520px',
       }
     }, [
 
-      h('div.flex-column.flex-center', {
-        style: {
-          width: '100%',
-        }
-      }, [
-
-        h('div', {}, 'ETH LOGO'),
-
-        h('div', {}, '1001.124 ETH'),
-
-        h('div', {}, '$300,000 USD'),
-
-      ]),
-
+      // laptop: flex-row
+      // mobile: flex-column
       h('div.flex-row.flex-center', {
         style: {
-          width: '100%',
         }
       }, [
-        h('button.btn-clear', {
-          textAlign: 'center'
-        }, 'BUY'),
 
-        h('button.btn-clear', {
-          textAlign: 'center'
-        }, 'SEND'),
+        // laptop: 50px 50px
+        // mobile: 100px 100px
+        h('img', {
+          src: '../images/eth_logo.svg',
+          width: '50px',
+          height: '50px',
+          style: {
+            borderRadius: '25px',
+            border: '1px solid',
+          }
+        }),
 
+        // laptop: 5vw?
+        // phone: 50vw?
+        h('div.flex-column.flex-center', {
+          style: {}
+        }, [
+          h('div', {}, '1001.124 ETH'),
+
+          h('div', {}, '$300,000 USD'),
+        ]),
+
+        // laptop: 10vw?
+        // phone: 75vw?
+        h('div.flex-row.flex-center', {
+          style: {
+            width: '100%',
+          }
+        }, [
+          h('button.btn-clear', {
+            textAlign: 'center'
+          }, 'BUY'),
+
+          h('button.btn-clear', {
+            textAlign: 'center'
+          }, 'SEND'),
+
+        ]),
       ]),
+
 
     ]),
 
