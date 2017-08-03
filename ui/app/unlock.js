@@ -46,7 +46,7 @@ UnlockScreen.prototype.render = function () {
           id: 'password-box',
           placeholder: 'enter password',
           style: {
-
+            background: 'white',
           },
           onKeyPress: this.onKeyPress.bind(this),
           onInput: this.inputChanged.bind(this),
