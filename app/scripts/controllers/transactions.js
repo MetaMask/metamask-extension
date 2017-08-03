@@ -5,7 +5,6 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
 const TxProviderUtil = require('../lib/tx-utils')
-const getStack = require('../lib/util').getStack
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
 
@@ -105,8 +104,6 @@ module.exports = class TransactionController extends EventEmitter {
     const txMetaForHistory = clone(txMeta)
     // dont include previous history in this snapshot
     delete txMetaForHistory.history
-    // add stack to help understand why tx was updated
-    txMetaForHistory.stack = getStack()
     // add snapshot to tx history
     if (!txMeta.history) txMeta.history = []
     txMeta.history.push(txMetaForHistory)
