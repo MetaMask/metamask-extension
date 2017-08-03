@@ -128,27 +128,27 @@ App.prototype.renderSidebar = function() {
   }, [
     h('style', `
       .sidebar-enter {
-        transition: transform 500ms ease-in-out;
+        transition: transform 300ms ease-in-out;
         transform: translateX(-100%);
       }
       .sidebar-enter.sidebar-enter-active {
-        transition: transform 500ms ease-in-out;
+        transition: transform 300ms ease-in-out;
         transform: translateX(0%);
       }
       .sidebar-leave {
-        transition: transform 500ms ease-in-out;
+        transition: transform 200ms ease-out;
         transform: translateX(0%);
       }
       .sidebar-leave.sidebar-leave-active {
-        transition: transform 500ms ease-in-out;
+        transition: transform 200ms ease-out;
         transform: translateX(-100%);
       }
     `),
 
     h(ReactCSSTransitionGroup, {
       transitionName: 'sidebar',
-      transitionEnterTimeout: 500,
-      transitionLeaveTimeout: 500,
+      transitionEnterTimeout: 300,
+      transitionLeaveTimeout: 200,
     }, [
       // content
       this.props.sidebarOpen ? h(WalletView, {
@@ -162,9 +162,7 @@ App.prototype.renderSidebar = function() {
           bottom: '0px',
           opacity: '1',
           visibility: 'visible',
-          // transition: 'transform 1s ease-in',
           willChange: 'transform',
-          // transform: 'translateX(300px)',
           overflowY: 'auto',
           boxShadow: 'rgba(0, 0, 0, 0.15) 2px 2px 4px',
           width: '85%',
@@ -186,7 +184,6 @@ App.prototype.renderSidebar = function() {
         bottom: '0px',
         opacity: '1',
         visibility: 'visible',
-        // transition: 'opacity 0.3s ease-out, visibility 0.3s ease-out',
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
       }
     }, []) : undefined,
@@ -202,7 +199,6 @@ App.prototype.renderAppBar = function () {
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
 
-  console.log("___rendering app header;;;")
   return (
 
     h('.full-width', {
