@@ -464,6 +464,10 @@ App.prototype.renderPrimary = function () {
     })
   }
 
+  // Note for @Zanibar - isUnlocked stays true.
+  // console.log("props.isUnlocked", props.isUnlocked)
+  // console.log("props.isUnlocked", props.currentView.name)
+
   // show current view
   switch (props.currentView.name) {
 
