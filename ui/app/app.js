@@ -202,6 +202,7 @@ App.prototype.renderAppBar = function () {
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
 
+  console.log("___rendering app header;;;")
   return (
 
     h('.full-width', {
