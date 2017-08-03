@@ -88,21 +88,11 @@ App.prototype.render = function () {
       },
     }, [
 
-
       // app bar
       this.renderAppBar(),
 
-      // slideout - move to separate render func
+      // sidebar
       this.renderSidebar(),
-      // h('div.phone-visible', {} ,[
-      //   h(SlideoutMenu, {
-      //     isOpen: false,
-      //   }, [
-      //     h(WalletView, {
-      //       responsiveDisplayClassname: '.phone-visible',
-      //     }),
-      //   ]),
-      // ])
 
       // network dropdown
       this.renderNetworkDropdown(),
@@ -113,7 +103,7 @@ App.prototype.render = function () {
         loadingMessage: loadMessage,
       }),
 
-      // panel content
+      // content
       this.renderPrimary(),
     ])
   )
@@ -202,7 +192,7 @@ App.prototype.renderAppBar = function () {
   return (
 
     h('.full-width', {
-      height: '38px',
+      style: {}
     }, [
 
       h('.app-header.flex-row.flex-space-between', {
@@ -210,6 +200,7 @@ App.prototype.renderAppBar = function () {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: '#EFEFEF', // $gallery
+          paddingTop: '1.5vh',
           height: '12vh',
           maxHeight: '60px',
           position: 'relative',

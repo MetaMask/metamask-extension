@@ -17,7 +17,7 @@ MainContainer.prototype.render = function () {
   return h('div', {
     style: {
       position: 'absolute',
-      marginTop: '6vh',
+      marginTop: '35px',
       width: '98%',
       zIndex: 20,
       boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
