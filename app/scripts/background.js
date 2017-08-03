@@ -121,7 +121,7 @@ function setupController (initState) {
   // plugin badge text
   function updateBadge () {
     var label = ''
-    var unapprovedTxCount = controller.txController.unapprovedTxCount
+    var unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     var unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
     var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs
