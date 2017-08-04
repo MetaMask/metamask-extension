@@ -24,7 +24,7 @@ class AccountDropdowns extends Component {
   renderAccounts () {
     const { identities, selected } = this.props
 
-    return Object.keys(identities).map((key) => {
+    return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
       const isSelected = identity.address === selected
 
@@ -36,6 +36,7 @@ class AccountDropdowns extends Component {
             this.props.actions.showAccountDetail(identity.address)
           },
           style: {
+            marginTop: index === 0 ? '10px' : '',
             fontSize: '24px',
           },
         },
@@ -118,7 +119,13 @@ class AccountDropdowns extends Component {
                 diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Import Account'),
+            h('span', {
+              style: {
+                marginLeft: '20px',
+                fontSize: '24px',
+                marginButtom: '20px',
+              },
+            }, 'Import Account'),
           ]
         ),
       ]
