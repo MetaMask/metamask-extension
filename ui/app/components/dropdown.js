@@ -54,7 +54,7 @@ Dropdown.propTypes = {
 
 class DropdownMenuItem extends Component {
   render () {
-    const { onClick, closeMenu, children } = this.props
+    const { onClick, closeMenu, children, style } = this.props
 
     return h(
       'li.dropdown-menu-item',
@@ -66,13 +66,14 @@ class DropdownMenuItem extends Component {
         style: {
           listStyle: 'none',
           padding: '8px 0px 8px 0px',
-          fontSize: '12px',
+          fontSize: '18px',
           fontStyle: 'normal',
           fontFamily: 'Montserrat Regular',
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
+          ...style,
         },
       },
       children

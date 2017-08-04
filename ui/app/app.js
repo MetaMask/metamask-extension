@@ -30,6 +30,7 @@ const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -37,6 +38,13 @@ inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+  const {
+    identities,
+    accounts,
+    address,
+  } = state.metamask
+  const selected = address || Object.keys(accounts)[0]
+
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
@@ -57,6 +65,10 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+
+    // state needed to get account dropdown temporarily rendering from app bar
+    identities,
+    selected,
   }
 }
 
@@ -169,17 +181,27 @@ App.prototype.renderAppBar = function () {
           },
         }, [
 
+          props.isUnlocked && h(AccountDropdowns, {
+            style: {},
+            enableAccountsSelector: true,
+            identities: this.props.identities,
+            selected: this.props.selected,
+            network: this.props.network,
+          }, []),
+
           // hamburger
           props.isUnlocked && h(SandwichExpando, {
+            className: 'sandwich-expando',
             width: 16,
             barHeight: 2,
             padding: 0,
             isOpen: state.isMainMenuOpen,
             color: 'rgb(247,146,30)',
-            onClick: (event) => {
-              event.preventDefault()
+            onClick: () => {
               event.stopPropagation()
-              this.setState({ isMainMenuOpen: !state.isMainMenuOpen })
+              this.setState({
+                isMainMenuOpen: !state.isMainMenuOpen,
+              })
             },
           }),
         ]),
@@ -227,6 +249,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'main',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.diamond'),
@@ -241,6 +266,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'ropsten',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('ropsten')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.red-dot'),
@@ -255,6 +283,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'kovan',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('kovan')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.hollow-diamond'),
@@ -269,6 +300,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'rinkeby',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.golden-square'),
@@ -283,6 +317,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -299,6 +336,9 @@ App.prototype.renderNetworkDropdown = function () {
       {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => this.props.dispatch(actions.showConfigPage()),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -318,9 +358,13 @@ App.prototype.renderDropdown = function () {
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
-      const { classList } = event.target
-      const isNotToggleElement = !classList.contains('sandwich-expando')
-      if (isNotToggleElement) {
+      const classList = event.target.classList
+      const parentClassList = event.target.parentElement.classList
+
+      const isToggleElement = classList.contains('sandwich-expando') ||
+        parentClassList.contains('sandwich-expando')
+
+      if (isOpen && !isToggleElement) {
         this.setState({ isMainMenuOpen: false })
       }
     },
@@ -579,7 +623,6 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
-
       return h(
         DropdownMenuItem,
         {
