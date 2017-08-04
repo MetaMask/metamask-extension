@@ -17,7 +17,7 @@ try {
   })
 
   b.bundle().pipe(writeStream)
-} catch (e) {
-  console.error('Integration build failure', e)
+} catch (err) {
+  throw new Error('Integration tests build failure - ' + err.stack)
 }
 
