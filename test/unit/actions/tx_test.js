@@ -45,11 +45,16 @@ describe('tx confirmation screen', function () {
       before(function (done) {
         actions._setBackgroundConnection({
           approveTransaction (txId, cb) { cb('An error!') },
-          cancelTransaction (txId) { /* noop */ },
+          cancelTransaction (txId, cb) { cb() },
           clearSeedWordCache (cb) { cb() },
         })
+          // var dispatchExpect = sinon.mock()
+          // dispatchExpect.once()
 
-        const action = actions.cancelTx({value: firstTxId})
+        let action
+        actions.cancelTx({value: firstTxId})((dispatchAction) => {
+          action = dispatchAction
+        })
         result = reducers(initialState, action)
         done()
       })
