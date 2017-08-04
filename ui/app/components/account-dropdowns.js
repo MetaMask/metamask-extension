@@ -17,7 +17,7 @@ class AccountDropdowns extends Component {
       accountSelectorActive: false,
       optionsMenuActive: false,
     }
-    this.accountSelectorToggleClassName = 'fa-angle-down'
+    this.accountSelectorToggleClassName = 'accounts-selector'
     this.optionsMenuToggleClassName = 'fa-ellipsis-h'
   }
 
@@ -208,7 +208,7 @@ class AccountDropdowns extends Component {
       [
         enableAccountsSelector && h(
           // 'i.fa.fa-angle-down',
-          'div.cursor-pointer.color-orange',
+          'div.cursor-pointer.color-orange.accounts-selector',
           {
             style: {
               // fontSize: '1.8em',
