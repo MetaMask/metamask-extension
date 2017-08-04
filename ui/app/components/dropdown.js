@@ -63,7 +63,7 @@ class DropdownMenuItem extends Component {
           onClick()
           closeMenu()
         },
-        style: {
+        style: Object.assign({
           listStyle: 'none',
           padding: '8px 0px 8px 0px',
           fontSize: '18px',
@@ -73,8 +73,7 @@ class DropdownMenuItem extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          ...style,
-        },
+        }, style),
       },
       children
     )
