@@ -19,13 +19,13 @@ describe('nodeify', function () {
   })
 
   it('should throw if the last argument is not a function', function (done) {
-    var nodified = nodeify(obj.promiseFunc, obj)
+    const nodified = nodeify(obj.promiseFunc, obj)
     try {
       nodified('baz')
       done(new Error('should have thrown if the last argument is not a function'))
     } catch (err) {
-      if (err.message === 'callback is not a function') done()
-      else done(err)
+      assert.equal(err.message, 'callback is not a function')
+      done()
     }
   })
 })
