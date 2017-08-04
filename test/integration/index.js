@@ -8,7 +8,9 @@ var b = browserify()
 
 // Remove old bundle
 try {
-  fs.unlinkSync(bundlePath)
+  // if (fs.existsSync(bundlePath)) {
+  //   fs.unlinkSync(bundlePath)
+  // }
 
   var writeStream = fs.createWriteStream(bundlePath)
 
