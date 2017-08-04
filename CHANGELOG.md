@@ -2,6 +2,9 @@
 
 ## Current Master
 
+## 3.9.3 2017-8-03
+
+- Add support for EGO uport token
 - Continuously update blacklist for known phishing sites in background.
 - Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
 

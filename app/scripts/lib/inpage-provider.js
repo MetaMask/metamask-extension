@@ -26,6 +26,9 @@ function MetamaskInpageProvider (connectionStream) {
     (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
   )
 
+  // ignore phishing warning message (handled elsewhere)
+  multiStream.ignoreStream('phishing') 
+
   // connect to async provider
   const asyncProvider = self.asyncProvider = new StreamProvider()
   pipe(

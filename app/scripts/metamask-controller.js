@@ -16,6 +16,7 @@ const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
+const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
@@ -69,6 +70,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
+    this.blacklistController = new BlacklistController({
+      initState: initState.BlacklistController,
+    })
+    this.blacklistController.scheduleUpdates()
 
     // rpc provider
     this.provider = this.initializeProvider()
@@ -151,6 +156,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
+    })
+    this.blacklistController.store.subscribe((state) => {
+      this.store.updateState({ BlacklistController: state })
     })
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
@@ -327,8 +335,15 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupUntrustedCommunication (connectionStream, originDomain) {
+    // Check if new connection is blacklisted
+    if (this.blacklistController.checkForPhishing(originDomain)) {
+      console.log('MetaMask - sending phishing warning for', originDomain)
+      this.sendPhishingWarning(connectionStream, originDomain)
+      return
+    }
+
     // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
+    const mx = setupMultiplex(connectionStream)
     // connect features
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
     this.setupPublicConfig(mx.createStream('publicConfig'))
@@ -336,10 +351,16 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
+    const mx = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mx.createStream('controller'))
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  sendPhishingWarning (connectionStream, hostname) {
+    const mx = setupMultiplex(connectionStream)
+    const phishingStream = mx.createStream('phishing')
+    phishingStream.write({ hostname })
   }
 
   setupControllerConnection (outStream) {
