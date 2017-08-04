@@ -276,3 +276,27 @@ i.fa.fa-question-circle.fa-lg.menu-icon {
   color: red;
 }
 
+// Account Subsection + Tab Section Breakpoints Hack:
+//   Resolves issue from @frankiebee in:
+//   https://github.com/MetaMask/metamask-extension/pull/1835
+// Please remove this when integrating new designs
+@media screen and (min-width: 575px) and (max-width: 800px) {
+  .account-data-subsection {
+    flex: 0 0 auto !important; // needs to remove default flex settings
+    width: 40%;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+
+  .tabSection {
+    flex: 0 0 auto !important; // needs to remove default flex settings
+    width: 49%;
+    min-width: 305px; // min-width needs to be low for an early break
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+
+  .name-label {
+    width: 80%; // repositions dropdown after early break
+  }
+}
