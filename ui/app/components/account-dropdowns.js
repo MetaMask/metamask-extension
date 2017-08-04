@@ -193,9 +193,11 @@ class AccountDropdowns extends Component {
       },
       [
         enableAccountsSelector && h(
+          // 'i.fa.fa-angle-down',
           'div.cursor-pointer.color-orange',
           {
             style: {
+              // fontSize: '1.8em',
               background: 'url(images/switch_acc.svg) white center center no-repeat',
               height: '25px',
               width: '25px',
