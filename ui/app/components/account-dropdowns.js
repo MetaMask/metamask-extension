@@ -65,6 +65,7 @@ class AccountDropdowns extends Component {
     return h(
       Dropdown,
       {
+        useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
         style: {
           marginLeft: '-238px',
           marginTop: '38px',

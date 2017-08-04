@@ -218,6 +218,7 @@ App.prototype.renderNetworkDropdown = function () {
   const isOpen = state.isNetworkMenuOpen
 
   return h(Dropdown, {
+    useCssTransition: true,
     isOpen,
     onClickOutside: (event) => {
       const { classList } = event.target
@@ -355,6 +356,7 @@ App.prototype.renderDropdown = function () {
   const isOpen = state.isMainMenuOpen
 
   return h(Dropdown, {
+    useCssTransition: true,
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
