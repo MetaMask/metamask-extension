@@ -5,7 +5,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
 const TxProviderUtil = require('../lib/tx-utils')
-const PendingTransactionUtils = require('../lib/pending-tx-watchers')
+const PendingTransactionWatchers = require('../lib/pending-tx-watchers')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
 
@@ -37,7 +37,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = new EthQuery(this.provider)
     this.txProviderUtils = new TxProviderUtil(this.provider)
 
-    this.pendingTxUtils = new PendingTransactionUtils({
+    this.pendingTxWatcher = new PendingTransactionWatchers({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       getBalance: (address) => this.ethStore.getState().accounts[address].balance,
@@ -50,16 +50,16 @@ module.exports = class TransactionController extends EventEmitter {
       },
     })
 
-    this.pendingTxUtils.on('txWarning', this.updateTx.bind(this))
-    this.pendingTxUtils.on('txFailed', this.setTxStatusFailed.bind(this))
-    this.pendingTxUtils.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
+    this.pendingTxWatcher.on('txWarning', this.updateTx.bind(this))
+    this.pendingTxWatcher.on('txFailed', this.setTxStatusFailed.bind(this))
+    this.pendingTxWatcher.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
 
-    this.blockTracker.on('rawBlock', this.pendingTxUtils.checkForTxInBlock.bind(this))
+    this.blockTracker.on('rawBlock', this.pendingTxWatcher.checkForTxInBlock.bind(this))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
     // where ethStore hasent been populated by the results yet
-    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.pendingTxUtils.resubmitPendingTxs.bind(this)))
-    this.blockTracker.on('sync', this.pendingTxUtils.queryPendingTxs.bind(this))
+    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.pendingTxWatcher.resubmitPendingTxs.bind(this)))
+    this.blockTracker.on('sync', this.pendingTxWatcher.queryPendingTxs.bind(this))
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore())
