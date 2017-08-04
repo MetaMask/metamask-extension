@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const PropTypes = require('react').PropTypes
 const h = require('react-hyperscript')
-const MenuDroppo = require('menu-droppo')
+const MenuDroppo = require('./menu-droppo')
 const extend = require('xtend')
 
 const noop = () => {}
