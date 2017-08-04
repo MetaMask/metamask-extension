@@ -66,7 +66,7 @@ class DropdownMenuItem extends Component {
         style: {
           listStyle: 'none',
           padding: '8px 0px 8px 0px',
-          fontSize: '12px',
+          fontSize: '18px',
           fontStyle: 'normal',
           fontFamily: 'Montserrat Regular',
           cursor: 'pointer',
