@@ -5,9 +5,13 @@
 - Replace account scren with an account drop-down menu.
 - Replace confusing buttons with an new account-specific drop-down menu.
 
+## 3.9.4 2017-8-03
+
+- Fixed bug that prevented transactions from being rejected.
+
 ## 3.9.3 2017-8-03
 
-- Add support for EGO uport token
+- Add support for EGO ujo token
 - Continuously update blacklist for known phishing sites in background.
 - Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
 
