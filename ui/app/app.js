@@ -30,6 +30,8 @@ const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const ethUtil = require('ethereumjs-util')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -37,6 +39,14 @@ inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+  const {
+    identities,
+    accounts,
+    address,
+  } = state.metamask
+  let selected = address || Object.keys(accounts)[0]
+  // let checksumAddress = selected && ethUtil.toChecksumAddress(selected)
+
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
@@ -57,6 +67,10 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+
+    // state needed to get account dropdown temporarily rendering from app bar
+    identities,
+    selected,
   }
 }
 
@@ -168,6 +182,14 @@ App.prototype.renderAppBar = function () {
             alignItems: 'center',
           },
         }, [
+
+          props.isUnlocked && h(AccountDropdowns, {
+            style: {},
+            enableAccountsSelector: true,
+            identities: this.props.identities,
+            selected: this.props.selected,
+            network: this.props.network,
+          }, []),
 
           // hamburger
           props.isUnlocked && h(SandwichExpando, {
