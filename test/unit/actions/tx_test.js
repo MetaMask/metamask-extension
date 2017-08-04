@@ -49,12 +49,11 @@ describe('tx confirmation screen', function () {
           clearSeedWordCache (cb) { cb() },
         })
 
-        let action
-        actions.cancelTx({value: firstTxId})((dispatchAction) => {
-          action = dispatchAction
+        actions.cancelTx({value: firstTxId})((action) => {
+          result = reducers(initialState, action)
+          done()
         })
-        result = reducers(initialState, action)
-        done()
+        
       })
 
       it('should transition to the account detail view', function () {
