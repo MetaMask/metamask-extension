@@ -2,7 +2,7 @@ const assert = require('assert')
 const { sufficientBalance } = require('../../app/scripts/lib/util')
 
 
-describe.only('SufficientBalance', function () {
+describe('SufficientBalance', function () {
   it('returns true if max tx cost is equal to balance.', function () {
     const tx = {
       'value': '0x1',
