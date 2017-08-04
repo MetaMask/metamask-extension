@@ -53,6 +53,7 @@
     "babel-runtime": "^6.23.0",
     "bip39": "^2.2.0",
     "bluebird": "^3.5.0",
+    "bn.js": "^4.11.7",
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
     "client-sw-ready-event": "^3.3.0",
