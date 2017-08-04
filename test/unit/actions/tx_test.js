@@ -48,8 +48,6 @@ describe('tx confirmation screen', function () {
           cancelTransaction (txId, cb) { cb() },
           clearSeedWordCache (cb) { cb() },
         })
-          // var dispatchExpect = sinon.mock()
-          // dispatchExpect.once()
 
         let action
         actions.cancelTx({value: firstTxId})((dispatchAction) => {
