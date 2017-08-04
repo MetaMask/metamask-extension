@@ -21,7 +21,7 @@ Notice.prototype.render = function () {
   return (
     h('.flex-column.flex-center.flex-grow', {
       style: {
-        width: '100%', 
+        width: '100%',
       },
     }, [
       h('h3.flex-center.text-transform-uppercase.terms-header', {

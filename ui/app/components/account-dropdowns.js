@@ -37,7 +37,7 @@ class AccountDropdowns extends Component {
           },
           style: {
             fontSize: '24px',
-          }
+          },
         },
         [
           h(
@@ -94,7 +94,7 @@ class AccountDropdowns extends Component {
               Identicon,
               {
                 style: {
-                  marginLeft: '10px'
+                  marginLeft: '10px',
                 },
                 diameter: 32,
               },
@@ -113,7 +113,7 @@ class AccountDropdowns extends Component {
               Identicon,
               {
                 style: {
-                  marginLeft: '10px'
+                  marginLeft: '10px',
                 },
                 diameter: 32,
               },

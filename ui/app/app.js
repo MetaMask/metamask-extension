@@ -31,7 +31,6 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
-const ethUtil = require('ethereumjs-util')
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -44,8 +43,7 @@ function mapStateToProps (state) {
     accounts,
     address,
   } = state.metamask
-  let selected = address || Object.keys(accounts)[0]
-  // let checksumAddress = selected && ethUtil.toChecksumAddress(selected)
+  const selected = address || Object.keys(accounts)[0]
 
   return {
     // state from plugin
@@ -252,7 +250,7 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('mainnet')),
         style: {
-          fontSize: '18px'
+          fontSize: '18px',
         },
       },
       [
@@ -269,7 +267,7 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('ropsten')),
         style: {
-          fontSize: '18px'
+          fontSize: '18px',
         },
       },
       [
@@ -286,7 +284,7 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('kovan')),
         style: {
-          fontSize: '18px'
+          fontSize: '18px',
         },
       },
       [
@@ -303,7 +301,7 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
         style: {
-          fontSize: '18px'
+          fontSize: '18px',
         },
       },
       [
@@ -320,7 +318,7 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
         style: {
-          fontSize: '18px'
+          fontSize: '18px',
         },
       },
       [
@@ -339,7 +337,7 @@ App.prototype.renderNetworkDropdown = function () {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => this.props.dispatch(actions.showConfigPage()),
         style: {
-          fontSize: '18px'
+          fontSize: '18px',
         },
       },
       [
@@ -625,7 +623,6 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
-
       return h(
         DropdownMenuItem,
         {
