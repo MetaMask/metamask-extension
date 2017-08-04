@@ -5,6 +5,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
 const TxProviderUtil = require('../lib/tx-utils')
+const PendingTransactionUtils = require('../lib/pending-tx-watchers')
 const getStack = require('../lib/util').getStack
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
@@ -21,6 +22,9 @@ module.exports = class TransactionController extends EventEmitter {
     this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
+    this.signEthTx = opts.signTransaction
+    this.ethStore = opts.ethStore
+
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       getPendingTransactions: (address) => {
@@ -32,15 +36,31 @@ module.exports = class TransactionController extends EventEmitter {
       },
     })
     this.query = new EthQuery(this.provider)
-    this.txProviderUtils = new TxProviderUtil(this.query)
-    this.blockTracker.on('rawBlock', this.checkForTxInBlock.bind(this))
+    this.txProviderUtils = new TxProviderUtil(this.provider)
+
+    this.pendingTxUtils = new PendingTransactionUtils({
+      provider: this.provider,
+      nonceTracker: this.nonceTracker,
+      getBalance: (address) => this.ethStore.getState().accounts[address].balance,
+      publishTransaction: this.txProviderUtils.publishTransaction.bind(this.txProviderUtils),
+      getPendingTransactions: (address) => {
+        return this.getFilteredTxList({
+          from: address,
+          status: 'submitted',
+        })
+      },
+    })
+
+    this.pendingTxUtils.on('txWarning', this.updateTx.bind(this))
+    this.pendingTxUtils.on('txFailed', this.setTxStatusFailed.bind(this))
+    this.pendingTxUtils.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
+
+    this.blockTracker.on('rawBlock', this.pendingTxUtils.checkForTxInBlock.bind(this))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
     // where ethStore hasent been populated by the results yet
-    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.resubmitPendingTxs.bind(this)))
-    this.blockTracker.on('sync', this.queryPendingTxs.bind(this))
-    this.signEthTx = opts.signTransaction
-    this.ethStore = opts.ethStore
+    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.pendingTxUtils.resubmitPendingTxs.bind(this)))
+    this.blockTracker.on('sync', this.pendingTxUtils.queryPendingTxs.bind(this))
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore())
@@ -229,7 +249,7 @@ module.exports = class TransactionController extends EventEmitter {
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {
-      if(!err.message) err.message = 'Transaction failed during approval'
+      if (!err.message) err.message = 'Transaction failed during approval'
       this.setTxStatusFailed(txId, err)
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) nonceLock.releaseLock()
@@ -374,73 +394,6 @@ module.exports = class TransactionController extends EventEmitter {
     this.updateTx(txMeta)
   }
 
-  //  checks if a signed tx is in a block and
-  // if included sets the tx status as 'confirmed'
-  checkForTxInBlock (block) {
-    const signedTxList = this.getFilteredTxList({status: 'submitted'})
-    if (!signedTxList.length) return
-    signedTxList.forEach((txMeta) => {
-      const txHash = txMeta.hash
-      const txId = txMeta.id
-
-      if (!txHash) {
-        const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
-        noTxHashErr.name = 'NoTxHashError'
-        this.setTxStatusFailed(txId, noTxHashErr)
-      }
-
-
-      block.transactions.forEach((tx) => {
-        if (tx.hash === txHash) this.setTxStatusConfirmed(txId)
-      })
-    })
-  }
-
-  queryPendingTxs ({oldBlock, newBlock}) {
-    // check pending transactions on start
-    if (!oldBlock) {
-      this._checkPendingTxs()
-      return
-    }
-    // if we synced by more than one block, check for missed pending transactions
-    const diff = Number.parseInt(newBlock.number) - Number.parseInt(oldBlock.number)
-    if (diff > 1) this._checkPendingTxs()
-  }
-
-  resubmitPendingTxs () {
-    const pending = this.getTxsByMetaData('status', 'submitted')
-    // only try resubmitting if their are transactions to resubmit
-    if (!pending.length) return
-    pending.forEach((txMeta) => this._resubmitTx(txMeta).catch((err) => {
-      /*
-      Dont marked as failed if the error is a "known" transaction warning
-      "there is already a transaction with the same sender-nonce
-      but higher/same gas price"
-      */
-      const errorMessage = err.message.toLowerCase()
-      const isKnownTx = (
-        // geth
-        errorMessage.includes('replacement transaction underpriced')
-        || errorMessage.includes('known transaction')
-        // parity
-        || errorMessage.includes('gas price too low to replace')
-        || errorMessage.includes('transaction with the same hash was already imported')
-        // other
-        || errorMessage.includes('gateway timeout')
-        || errorMessage.includes('nonce too low')
-      )
-      // ignore resubmit warnings, return early
-      if (isKnownTx) return
-      // encountered real error - transition to error state
-      this.setTxStatusFailed(txMeta.id, {
-        stack: err.stack || err.message,
-        errCode: err.errCode || err,
-        message: err.message,
-      })
-    }))
-  }
-
-
 /* _____________________________________
 |                                      |
 |           PRIVATE METHODS            |
@@ -481,76 +434,5 @@ module.exports = class TransactionController extends EventEmitter {
       metamaskNetworkId: this.getNetwork(),
     })
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
-  }
-
-  async _resubmitTx (txMeta) {
-    const address = txMeta.txParams.from
-    const balance = this.ethStore.getState().accounts[address].balance
-    if (!('retryCount' in txMeta)) txMeta.retryCount = 0
-
-    // if the value of the transaction is greater then the balance, fail.
-    if (!this.txProviderUtils.sufficientBalance(txMeta.txParams, balance)) {
-      const message = 'Insufficient balance.'
-      this.setTxStatusFailed(txMeta.id, {
-        stack: '_resubmitTx: custom tx-controller error',
-        message,
-      })
-      log.error(message)
-      return
-    }
-
-    // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) return
-
-    // Increment a try counter.
-    txMeta.retryCount++
-    const rawTx = txMeta.rawTx
-    return await this.txProviderUtils.publishTransaction(rawTx)
-  }
-
-  // checks the network for signed txs and
-  // if confirmed sets the tx status as 'confirmed'
-  async _checkPendingTxs () {
-    const signedTxList = this.getFilteredTxList({status: 'submitted'})
-    // in order to keep the nonceTracker accurate we block it while updating pending transactions
-    const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
-    try {
-      await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
-    } catch (err) {
-      console.error('TransactionController - Error updating pending transactions')
-      console.error(err)
-    }
-    nonceGlobalLock.releaseLock()
-  }
-
-  async _checkPendingTx (txMeta) {
-    const txHash = txMeta.hash
-    const txId = txMeta.id
-    // extra check in case there was an uncaught error during the
-    // signature and submission process
-    if (!txHash) {
-      const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
-      noTxHashErr.name = 'NoTxHashError'
-      this.setTxStatusFailed(txId, noTxHashErr)
-    }
-    // get latest transaction status
-    let txParams
-    try {
-      txParams = await this.query.getTransactionByHash(txHash)
-      if (!txParams) return
-      if (txParams.blockNumber) {
-        this.setTxStatusConfirmed(txId)
-      }
-    } catch (err) {
-      if (err || !txParams) {
-        txMeta.err = {
-          isWarning: true,
-          errorCode: err,
-          message: 'There was a problem loading this transaction.',
-        }
-        this.updateTx(txMeta)
-        throw err
-      }
-    }
   }
 }
