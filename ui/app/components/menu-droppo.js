@@ -8,12 +8,11 @@ module.exports = MenuDroppoComponent
 
 
 inherits(MenuDroppoComponent, Component)
-function MenuDroppoComponent() {
+function MenuDroppoComponent () {
   Component.call(this)
 }
 
-MenuDroppoComponent.prototype.render = function() {
-
+MenuDroppoComponent.prototype.render = function () {
   const speed = this.props.speed || '300ms'
   const useCssTransition = this.props.useCssTransition
   const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
@@ -52,31 +51,25 @@ MenuDroppoComponent.prototype.render = function() {
         }
       `),
 
-      !!useCssTransition
+      useCssTransition
         ? h(ReactCSSTransitionGroup, {
           className: 'css-transition-group',
           transitionName: 'menu-droppo',
           transitionEnterTimeout: parseInt(speed),
           transitionLeaveTimeout: parseInt(speed),
         }, this.renderPrimary())
-        : this.renderPrimary()
+        : this.renderPrimary(),
     ])
   )
 }
 
-MenuDroppoComponent.prototype.renderPrimary = function() {
+MenuDroppoComponent.prototype.renderPrimary = function () {
   const isOpen = this.props.isOpen
   if (!isOpen) {
     return null
-    return h('span', {
-      key: 'menu-droppo-null',
-      style: {
-        height: '0px',
-      }
-    })
   }
 
-  let innerStyle = this.props.innerStyle || {}
+  const innerStyle = this.props.innerStyle || {}
 
   return (
     h('.menu-droppo', {
@@ -87,7 +80,7 @@ MenuDroppoComponent.prototype.renderPrimary = function() {
   )
 }
 
-MenuDroppoComponent.prototype.manageListeners = function() {
+MenuDroppoComponent.prototype.manageListeners = function () {
   const isOpen = this.props.isOpen
   const onClickOutside = this.props.onClickOutside
 
@@ -98,40 +91,40 @@ MenuDroppoComponent.prototype.manageListeners = function() {
   }
 }
 
-MenuDroppoComponent.prototype.componentDidMount = function() {
+MenuDroppoComponent.prototype.componentDidMount = function () {
   if (this && document.body) {
-    this.globalClickHandler = this.globalClickOccurred.bind(this);
+    this.globalClickHandler = this.globalClickOccurred.bind(this)
     document.body.addEventListener('click', this.globalClickHandler)
     var container = findDOMNode(this)
     this.container = container
   }
 }
 
-MenuDroppoComponent.prototype.componentWillUnmount = function() {
+MenuDroppoComponent.prototype.componentWillUnmount = function () {
   if (this && document.body) {
     document.body.removeEventListener('click', this.globalClickHandler)
   }
 }
 
-MenuDroppoComponent.prototype.globalClickOccurred = function(event) {
+MenuDroppoComponent.prototype.globalClickOccurred = function (event) {
   const target = event.target
   const container = findDOMNode(this)
-  const isOpen = this.props.isOpen
 
   if (target !== container &&
-     !isDescendant(this.container, event.target) &&
-     this.outsideClickHandler) {
-     this.outsideClickHandler(event)
+    !isDescendant(this.container, event.target) &&
+    this.outsideClickHandler) {
+    this.outsideClickHandler(event)
   }
 }
 
-function isDescendant(parent, child) {
-   var node = child.parentNode;
-   while (node != null) {
-     if (node == parent) {
-       return true;
-     }
-     node = node.parentNode;
-   }
-   return false;
+function isDescendant (parent, child) {
+  var node = child.parentNode
+  while (node !== null) {
+    if (node === parent) {
+      return true
+    }
+    node = node.parentNode
+  }
+
+  return false
 }
