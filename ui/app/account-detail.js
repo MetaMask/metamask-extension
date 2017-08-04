@@ -145,6 +145,7 @@ AccountDetailScreen.prototype.render = function () {
 
               h('div', {
                 style: {
+                  marginTop: '-10px',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   paddingTop: '3px',
