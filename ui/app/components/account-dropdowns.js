@@ -183,7 +183,7 @@ class AccountDropdowns extends Component {
   }
 
   render () {
-    const { style } = this.props
+    const { style, enableAccountsSelector, enableAccountOptions } = this.props
     const { optionsMenuActive, accountSelectorActive } = this.state
 
     return h(
@@ -192,10 +192,12 @@ class AccountDropdowns extends Component {
         style: style,
       },
       [
-        h(
+        enableAccountsSelector && h(
           'i.fa.fa-angle-down',
           {
-            style: {},
+            style: {
+              fontSize: '1.8em',
+            },
             onClick: (event) => {
               event.stopPropagation()
               this.setState({
@@ -206,10 +208,13 @@ class AccountDropdowns extends Component {
           },
           this.renderAccountSelector(),
         ),
-        h(
+        enableAccountOptions && h(
           'i.fa.fa-ellipsis-h',
           {
-            style: { 'marginLeft': '10px'},
+            style: {
+              marginRight: '0.5em',
+              fontSize: '1.8em',
+            },
             onClick: (event) => {
               event.stopPropagation()
               this.setState({
@@ -223,6 +228,11 @@ class AccountDropdowns extends Component {
       ]
     )
   }
+}
+
+AccountDropdowns.defaultProps = {
+  enableAccountsSelector: false,
+  enableAccountOptions: false,
 }
 
 AccountDropdowns.propTypes = {
