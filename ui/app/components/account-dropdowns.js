@@ -36,7 +36,7 @@ class AccountDropdowns extends Component {
             this.props.actions.showAccountDetail(identity.address)
           },
           style: {
-            marginTop: index === 0 ? '10px' : '',
+            marginTop: index === 0 ? '5px' : '',
             fontSize: '24px',
           },
         },
@@ -66,12 +66,15 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         style: {
-          marginLeft: '-220px',
+          marginLeft: '-238px',
           marginTop: '38px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
-          width: '285px',
+          width: '300px',
+        },
+        innerStyle: {
+          padding: '8px 25px',
         },
         isOpen: accountSelectorActive,
         onClickOutside: (event) => {
@@ -123,7 +126,7 @@ class AccountDropdowns extends Component {
               style: {
                 marginLeft: '20px',
                 fontSize: '24px',
-                marginButtom: '20px',
+                marginBottom: '5px',
               },
             }, 'Import Account'),
           ]
