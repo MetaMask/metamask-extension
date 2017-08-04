@@ -4,8 +4,8 @@ const PhishingDetector = require('eth-phishing-detect/src/detector')
 
 // compute phishing lists
 const PHISHING_DETECTION_CONFIG = require('eth-phishing-detect/src/config.json')
-// every ten minutes
-const POLLING_INTERVAL = 10 * 60 * 1000
+// every four minutes
+const POLLING_INTERVAL = 4 * 60 * 1000
 
 class BlacklistController {
 
@@ -41,6 +41,7 @@ class BlacklistController {
 
   scheduleUpdates () {
     if (this._phishingUpdateIntervalRef) return
+    this.updatePhishingList()
     this._phishingUpdateIntervalRef = setInterval(() => {
       this.updatePhishingList()
     }, POLLING_INTERVAL)
