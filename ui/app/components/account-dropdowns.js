@@ -35,17 +35,23 @@ class AccountDropdowns extends Component {
           onClick: () => {
             this.props.actions.showAccountDetail(identity.address)
           },
+          style: {
+            fontSize: '24px',
+          }
         },
         [
           h(
             Identicon,
             {
               address: identity.address,
-              diameter: 16,
+              diameter: 32,
+              style: {
+                marginLeft: '10px',
+              },
             },
           ),
-          h('span', { style: { marginLeft: '10px' } }, identity.name || ''),
-          h('span', { style: { marginLeft: '10px' } }, isSelected ? h('.check', '✓') : null),
+          h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, identity.name || ''),
+          h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
         ]
       )
     })
@@ -59,10 +65,12 @@ class AccountDropdowns extends Component {
       Dropdown,
       {
         style: {
-          marginLeft: '-125px',
+          marginLeft: '-220px',
+          marginTop: '38px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
+          width: '285px',
         },
         isOpen: accountSelectorActive,
         onClickOutside: (event) => {
@@ -85,10 +93,13 @@ class AccountDropdowns extends Component {
             h(
               Identicon,
               {
-                diameter: 16,
+                style: {
+                  marginLeft: '10px'
+                },
+                diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '10px' } }, 'Create Account'),
+            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Create Account'),
           ],
         ),
         h(
@@ -101,10 +112,13 @@ class AccountDropdowns extends Component {
             h(
               Identicon,
               {
-                diameter: 16,
+                style: {
+                  marginLeft: '10px'
+                },
+                diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '10px' } }, 'Import Account'),
+            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Import Account'),
           ]
         ),
       ]
