@@ -198,7 +198,6 @@ App.prototype.renderAppBar = function () {
             isOpen: state.isMainMenuOpen,
             color: 'rgb(247,146,30)',
             onClick: () => {
-              event.stopPropagation()
               this.setState({
                 isMainMenuOpen: !state.isMainMenuOpen,
               })
