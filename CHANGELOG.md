@@ -5,6 +5,10 @@
 - Replace account scren with an account drop-down menu.
 - Replace confusing buttons with an new account-specific drop-down menu.
 
+## 3.9.5 2017-8-04
+
+- Improved phishing detection configuration update rate 
+
 ## 3.9.4 2017-8-03
 
 - Fixed bug that prevented transactions from being rejected.
