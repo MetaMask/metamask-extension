@@ -3,6 +3,28 @@ App Sections
   TODO: Move into separate files.
 */
 
+/*
+debug / dev
+*/
+
+#app-content {
+  border: 2px solid green;
+}
+
+#design-container {
+  position: absolute;
+  left: 360px;
+  top: -42px;
+  width: calc(100vw - 360px);
+  height: 100vh;
+  overflow: scroll;
+}
+
+#design-container img {
+  width: 2000px;
+  margin-right: 600px;
+}
+
 /* initialize */
 
 textarea.twelve-word-phrase {
