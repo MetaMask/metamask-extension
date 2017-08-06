@@ -1,67 +1,7 @@
-@import './buttons.scss'
-
-/*
-app
-*/
-
-.app-header {
-  padding: 6px 8px;
-  // background: #EFEFEF; // $gallery
-}
-
-.app-header h1 {
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  color: #22232C; // $shark
-}
-
-h2.page-subtitle {
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  color: #AEAEAE;
-  font-size: 1em;
-  margin: 12px;
-}
-
-.app-footer {
-  padding-bottom: 10px;
-  align-items: center;
-}
-
-.identicon {
-  height: 46px;
-  width: 46px;
-  background-size: cover;
-  border-radius: 100%;
-  border: 3px solid gray;
-}
-
-textarea.twelve-word-phrase {
-  padding: 12px;
-  width: 300px;
-  height: 140px;
-  font-size: 16px;
-  background: white;
-  resize: none;
-}
-
-.network-indicator {
-  display: flex;
-  align-items: center;
-  font-size: 0.6em;
-
-}
-
-.network-name {
-  width: 5.2em;
-  line-height: 9px;
-  text-rendering: geometricPrecision;
-}
-
-.check {
-  margin-left: 7px;
-  color: #F7861C;
-  flex: 1 0 auto;
-  display: flex;
-  justify-content: flex-end;
-}
+@import './buttons.scss';
+@import './header.scss';
+@import './footer.scss';
+@import './identicon.scss';
+@import './network.scss';
+@import './sections.scss';
+@import './newui-sections.scss';

@@ -48,3 +48,12 @@ a {
 a:hover{
   color: #df6b0e;
 }
+
+input.large-input, textarea.large-input {
+  /*margin-bottom: 24px;*/
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}

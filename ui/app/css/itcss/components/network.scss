@@ -1,0 +1,12 @@
+.network-indicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.6em;
+
+}
+
+.network-name {
+  width: 5.2em;
+  line-height: 9px;
+  text-rendering: geometricPrecision;
+}
