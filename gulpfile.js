@@ -179,6 +179,26 @@ const jsFiles = [
   'popup',
 ]
 
+// scss compilation and autoprefixing tasks
+
+gulp.task('build:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'))
+});
+gulp.task('watch:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(watch('ui/app/css/**/*.scss'))
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'))
+});
+
 // bundle tasks
 
 var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
@@ -191,28 +211,6 @@ jsFiles.forEach((jsFile) => {
 
 gulp.task('dev:js', gulp.parallel(...jsDevStrings))
 gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
-gulp.task('build:scss', function () {
-  return gulp.src('ui/app/css/index.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(sourcemaps.write())
-    .pipe(autoprefixer())
-    .pipe(gulp.dest('ui/app/css/output'));
-});
-gulp.task('watch:scss', function () {
-  return gulp.src('ui/app/css/index.scss')
-    .pipe(watch('ui/app/css/**/*.scss'))
-    .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(sourcemaps.write())
-    .pipe(autoprefixer())
-    .pipe(gulp.dest('ui/app/css/output'));
-});
-
-gulp.task('copy:watch', function(){
-  gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
-})
-
 
 // disc bundle analyzer tasks
 
