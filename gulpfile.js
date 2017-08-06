@@ -148,6 +148,9 @@ gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:productio
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
+gulp.task('watch:style', function(){
+  gulp.watch(['ui/app/css/**/*.scss'], gulp.series(['build:scss']))
+});
 
 // lint js
 
@@ -191,7 +194,7 @@ gulp.task('build:scss', function () {
 });
 gulp.task('watch:scss', function () {
   return gulp.src('ui/app/css/index.scss')
-    .pipe(watch('ui/app/css/**/*.scss'))
+    // .pipe(watch('ui/app/css/**/*.scss'))
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(sourcemaps.write())
@@ -237,7 +240,7 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 
 // high level tasks
 
-gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
+gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:style', 'copy:watch', 'dev:reload')))
 
 gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
 gulp.task('dist', gulp.series('build', 'zip'))
