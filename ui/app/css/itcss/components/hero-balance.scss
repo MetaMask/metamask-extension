@@ -7,31 +7,50 @@ $break-large: 576px;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    margin: 0.3em 0.9em 0.8em;
+    margin: 0.3em 0.9em 0.8em 0.9em;
   }
 
   @media screen and (min-width: $break-large) {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 1.5em 0.9em 0.8em 0.9em;
   }
 
   .hero-balance-display {
-    @media screen and (max-width: $break-small) {
-      text-align: center;
-    }
-
-    @media screen and (min-width: $break-large) {
-    }
-
-    .token-amount {
-      font-size: 1.8em;
-      margin-top: 1em;
-    }
-
     .fiat-amount {
-      font-size: 1.1em;
-      margin-top: 0.8em;
       color: #A0A0A0;
       // TODO: colors
     }
+    @media screen and (max-width: $break-small) {
+      text-align: center;
+
+      .token-amount {
+        font-size: 1.8em;
+        margin-top: 1em;
+      }
+
+      .fiat-amount {
+        font-size: 1.1em;
+        margin-top: 0.8em;
+      }
+    }
+
+    @media screen and (min-width: $break-large) {
+      flex-grow: 3;
+      margin-left: 1.2vw;
+
+      .token-amount {
+        font-size: 2.2vw;
+      }
+
+      .fiat-amount {
+        font-size: 1.7vw;
+        margin-top: 0.3em;
+      }
+    }
+
   }
 
   .hero-balance-icon {
@@ -41,12 +60,36 @@ $break-large: 576px;
   }
 
   .hero-balance-buttons {
+    button.btn-clear {
+      width: 81px;
+      height: 32px;
+      font-size: .7em;
+      background: white;
+      border: 1px solid;
+
+      @media screen and (max-width: $break-small) {
+        width: 100%;
+        margin-top: 1.3em;
+      }
+
+      @media screen and (min-width: $break-large) {
+        flex-grow: 2;
+        width: 5.8vw;
+        min-width: 75px;
+        height: 4.2vh;
+        min-height: 28px;
+        font-size: .7em;
+      }
+
+    }
+
     @media screen and (max-width: $break-small) {
       width: 100%;
       margin-top: 1.3em;
     }
 
     @media screen and (min-width: $break-large) {
+      flex-grow: 2;
     }
 
   }
