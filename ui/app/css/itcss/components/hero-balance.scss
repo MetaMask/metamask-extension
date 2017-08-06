@@ -1,0 +1,53 @@
+$break-small: 575px;
+$break-large: 576px;
+
+.hero-balance {
+  @media screen and (max-width: $break-small) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0.3em 0.9em 0.8em;
+  }
+
+  @media screen and (min-width: $break-large) {
+  }
+
+  .hero-balance-display {
+    @media screen and (max-width: $break-small) {
+      text-align: center;
+    }
+
+    @media screen and (min-width: $break-large) {
+    }
+
+    .token-amount {
+      font-size: 1.8em;
+      margin-top: 1em;
+    }
+
+    .fiat-amount {
+      font-size: 1.1em;
+      margin-top: 0.8em;
+      color: #A0A0A0;
+      // TODO: colors
+    }
+  }
+
+  .hero-balance-icon {
+    border-radius: 30px;
+    // TODO: colors
+    border: 1px solid #DEDEDE; 
+  }
+
+  .hero-balance-buttons {
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      margin-top: 1.3em;
+    }
+
+    @media screen and (min-width: $break-large) {
+    }
+
+  }
+}

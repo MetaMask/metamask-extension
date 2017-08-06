@@ -91,65 +91,52 @@ TxView.prototype.render = function () {
 
     ]),
 
-    h('div.flex-row', {
-      style: {
-        margin: '1.8em 0.9em 0.8em 0.9em',
-        // flex: '1 0 520px',
-      }
+    // laptop: flex-row, flex-center
+    // mobile: flex-column
+    h('div.hero-balance', {
+      style: {},
     }, [
 
-      // laptop: flex-row
-      // mobile: flex-column
-      h('div.flex-row.flex-center', {
-        style: {
-        }
-      }, [
+      // laptop: 50px 50px
+      // mobile: 100px 100px
+      h('img.hero-balance-icon', {
+        src: '../images/eth_logo.svg',
+        width: '60px',
+        height: '60px',
+        style: {}
+      }),
 
-        // laptop: 50px 50px
-        // mobile: 100px 100px
-        h('img', {
-          src: '../images/eth_logo.svg',
-          width: '50px',
-          height: '50px',
-          style: {
-            borderRadius: '25px',
-            border: '1px solid',
-          }
-        }),
-
-        // laptop: 5vw?
-        // phone: 50vw?
-        h('div.flex-column.flex-center', {
+      // laptop: 5vw?
+      // phone: 50vw?
+      h('div.hero-balance-display', {}, [
+        h('div.token-amount', {
           style: {}
-        }, [
-          h('div', {}, '1001.124 ETH'),
+        }, '1001.124 ETH'),
 
-          h('div', {}, '$300,000 USD'),
-        ]),
-
-        // laptop: 10vw?
-        // phone: 75vw?
-        h('div.flex-row.flex-center', {
-          style: {
-            width: '100%',
-          }
-        }, [
-          h('button.btn-clear', {
-            style: {
-              textAlign: 'center',
-            },
-          }, 'BUY'),
-
-          h('button.btn-clear', {
-            style: {
-              textAlign: 'center',
-            },
-          }, 'SEND'),
-
-        ]),
+        h('div.fiat-amount', {
+          style: {}
+        }, '$300,000 USD'),
       ]),
 
+      // laptop: 10vw?
+      // phone: 75vw?
+      h('div.flex-row.flex-center.hero-balance-buttons', {
+        style: {}
+      }, [
+        h('button.btn-clear', {
+          style: {
+            textAlign: 'center',
+          },
+        }, 'BUY'),
 
+        h('button.btn-clear', {
+          style: {
+            textAlign: 'center',
+            marginLeft: '1.4em',
+          },
+        }, 'SEND'),
+
+      ]),
     ]),
 
     h('div.flex-row', {
