@@ -19,6 +19,8 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
+var sass = require('gulp-sass')
+var autoprefixer = require('gulp-autoprefixer')
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
@@ -189,6 +191,28 @@ jsFiles.forEach((jsFile) => {
 
 gulp.task('dev:js', gulp.parallel(...jsDevStrings))
 gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+gulp.task('build:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'));
+});
+gulp.task('watch:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(watch('ui/app/css/**/*.scss'))
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'));
+});
+
+gulp.task('copy:watch', function(){
+  gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
+})
+
 
 // disc bundle analyzer tasks
 
@@ -215,9 +239,9 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 
 // high level tasks
 
-gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
 
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
+gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
 gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators

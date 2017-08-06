@@ -9,6 +9,12 @@ borders/font/any gray: #4A4A4A
 application specific styles
 */
 
+@import './fonts.scss';
+@import './reset.scss';
+@import './lib.scss';
+@import './transitions.scss';
+
+
 * {
   box-sizing: border-box;
 }
@@ -832,7 +838,7 @@ div.message-container > div:first-child {
     margin-top: 35px;
     // position: relative;
     width: 100%;
-    height: 100%
+    height: 100%;
   }
 
   button.btn-clear {
