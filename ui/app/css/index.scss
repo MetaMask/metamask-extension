@@ -1,13 +1,18 @@
 /*
-faint orange (textfield shades) #FAF6F0
-light orange (button shades): #F5C26D
-dark orange (text): #F5A623
-borders/font/any gray: #4A4A4A
-*/
+  ITCSS
 
-/*
-application specific styles
-*/
+  http://www.creativebloq.com/web-design/manage-large-css-projects-itcss-101517528
+  https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/
+ */
+
+@import 'settings/index.scss';
+@import 'tools/index.scss';
+@import 'generic/index.scss';
+@import 'base/index.scss';
+@import 'objects/index.scss';
+@import 'components/index.scss';
+@import 'trumps/index.scss';
+
 
 @import './fonts.scss';
 @import './reset.scss';
