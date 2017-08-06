@@ -4,11 +4,6 @@
   http://www.creativebloq.com/web-design/manage-large-css-projects-itcss-101517528
   https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/
  */
-@import './fonts.scss';
-@import './reset.scss';
-@import './lib.scss';
-@import './transitions.scss';
-
 @import './itcss/settings/index.scss';
 @import './itcss/tools/index.scss';
 @import './itcss/generic/index.scss';

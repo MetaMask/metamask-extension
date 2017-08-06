@@ -100,11 +100,15 @@ TxView.prototype.render = function () {
           }
         }, [
           h('button.btn-clear', {
-            textAlign: 'center'
+            style: {
+              textAlign: 'center',
+            },
           }, 'BUY'),
 
           h('button.btn-clear', {
-            textAlign: 'center'
+            style: {
+              textAlign: 'center',
+            },
           }, 'SEND'),
 
         ]),
