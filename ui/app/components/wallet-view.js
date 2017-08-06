@@ -31,7 +31,7 @@ function WalletView () {
 const noop = () => {}
 
 WalletView.prototype.render = function () {
-  const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684'
+  const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684' // TODO: remove fake address
   const { network, responsiveDisplayClassname, style } = this.props
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {

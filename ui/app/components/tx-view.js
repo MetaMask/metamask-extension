@@ -7,7 +7,7 @@ const actions = require('../actions')
 const SlideoutMenu = require('react-burger-menu').slide
 const WalletView = require('./wallet-view')
 
-// const Identicon = require('./identicon')
+const Identicon = require('./identicon')
 // const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
 // const Content = require('./wallet-content-display')
 
@@ -41,6 +41,8 @@ function TxView () {
 }
 
 TxView.prototype.render = function () {
+  const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684' // TODO: remove fake address
+
   return h('div.tx-view.flex-column', {
     style: {
       flexGrow: 2,
@@ -49,16 +51,49 @@ TxView.prototype.render = function () {
       background: '#FFFFFF',
     }
   }, [
-    h('div.phone-visible.fa.fa-bars', {
-      onClick: () => {
-        this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
+
+    h('div.flex-row.phone-visible', {
+      style: {
+        margin: '1em 0.9em',
+        alignItems: 'center'
       }
     }, [
+      // burger
+      h('div.fa.fa-bars', {
+        style: {
+          fontSize: '1.3em',
+        },
+        onClick: () => {
+          this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
+        }
+      }, []),
+
+      //account display
+      h('.identicon-wrapper.select-none', {
+        style: {
+          marginLeft: '0.9em',
+        },
+      }, [
+        h(Identicon, {
+          diameter: 24,
+          address: selected,
+        }),
+      ]),
+
+      h('span', {
+        style: {
+          fontSize: '1.2em',
+          marginLeft: '0.5em', // TODO: switch all units for this component to em
+        }
+      }, [
+        'Account 1'
+      ]),
+
     ]),
 
     h('div.flex-row', {
       style: {
-        margin: '1.8em 1.3em 0.8em 1.3em',
+        margin: '1.8em 0.9em 0.8em 0.9em',
         // flex: '1 0 520px',
       }
     }, [
@@ -119,7 +154,7 @@ TxView.prototype.render = function () {
 
     h('div.flex-row', {
       style: {
-        margin: '1.8em 1.3em 0.8em 1.3em',
+        margin: '1.8em 0.9em 0.8em 0.9em',
       }
     }, [
 
