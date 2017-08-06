@@ -5,194 +5,22 @@
   https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/
  */
 
-@import 'settings/index.scss';
-@import 'tools/index.scss';
-@import 'generic/index.scss';
-@import 'base/index.scss';
-@import 'objects/index.scss';
-@import 'components/index.scss';
-@import 'trumps/index.scss';
-
+@import './itcss/settings/index.scss';
+@import './itcss/tools/index.scss';
+@import './itcss/generic/index.scss';
+@import './itcss/base/index.scss';
+@import './itcss/objects/index.scss';
+@import './itcss/components/index.scss';
+@import './itcss/trumps/index.scss';
 
 @import './fonts.scss';
 @import './reset.scss';
 @import './lib.scss';
 @import './transitions.scss';
 
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  font-family: 'Montserrat Regular', Arial;
-  color: #4D4D4D;
-  font-weight: 300;
-  line-height: 1.4em;
-  background: #F7F7F7;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  min-height: 500px;
-}
-
-.app-root {
-  overflow: hidden;
-  position: relative
-}
-
-.app-primary {
-  display: flex;
-}
-
-input:focus, textarea:focus {
-  outline: none;
-}
-
-.full-size {
-  height: 100%;
-  width: 100%;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.full-height {
-  height: 100%;
-}
-
-.full-flex-height {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
-
-#app-content {
-  overflow-x: hidden;
-  min-width: 357px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-// TODO: remove/refactor for new design
-
-// button, input[type="submit"] {
-//   font-family: 'Montserrat Bold';
-//   outline: none;
-//   cursor: pointer;
-//   padding: 8px 12px;
-//   border: none;
-//   color: white;
-//   transform-origin: center center;
-//   transition: transform 50ms ease-in;
-//   /* default orange */
-//   background: rgba(247, 134, 28, 1);
-//   box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-// }
-
-.btn-green {
-  background-color: #02C9B1; // TODO: reusable color in colors.css
-}
-
-
-button.btn-clear {
-  background: white;
-  border: 1px solid;
-}
-
-// No longer used in flat design, remove when modal buttons done
-// div.wallet-btn {
-//   border: 1px solid rgb(91, 93, 103);
-//   border-radius: 2px;
-//   height: 30px;
-//   width: 75px;
-//   font-size: 0.8em;
-//   text-align: center;
-//   line-height: 25px;
-// }
-
-// .btn-red {
-//   background: rgba(254, 35, 17, 1);
-//   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
-// }
-
-// button[disabled], input[type="submit"][disabled] {
-//   cursor: not-allowed;
-//   background: rgba(197, 197, 197, 1);
-//   box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
-// }
-
-// button.spaced {
-//   margin: 2px;
-// }
-
-// button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
-//   transform: scale(1.1);
-// }
-// button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
-//   transform: scale(0.95);
-// }
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-a:hover{
-  color: #df6b0e;
-}
-
 /*
 app
 */
-
-.active {
-  color: #909090;
-}
-
-button.primary {
-  padding: 8px 12px;
-  background: #F7861C;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-  color: white;
-  font-size: 1.1em;
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-}
-
-.btn-light {
-  padding: 8px 12px;
-  // background: #FFFFFF; // $bg-white
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-  color: #585D67; // TODO: make reusable light button color
-  font-size: 1.1em;
-  font-family: 'Montserrat Regular';
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 20px;
-  border-radius: 2px;
-  border: 1px solid #979797; // #TODO: make reusable light border color
-  opacity: 0.5;
-}
-
-// TODO: cleanup: not used anywhere
-button.btn-thin {
-  border: 1px solid;
-  border-color: #4D4D4D;
-  color: #4D4D4D;
-  background: rgb(255, 174, 41);
-  border-radius: 4px;
-  min-width: 200px;
-  margin: 12px 0;
-  padding: 6px;
-  font-size: 13px;
-}
 
 .app-header {
   padding: 6px 8px;
@@ -850,7 +678,7 @@ div.message-container > div:first-child {
     width: 100px;
     height: 50px;
     font-size: .7em;
-    background: green;
+    background: white;
     border: 1px solid;
   }
 }

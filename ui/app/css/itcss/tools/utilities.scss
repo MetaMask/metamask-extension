@@ -1,0 +1,30 @@
+/*
+  Utility Classes
+ */
+.full-size {
+  height: 100%;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-flex-height {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+/*
+  Misc
+ */
+
+// Move into component-level contextual 'active' state later
+.active {
+  color: #909090;
+}

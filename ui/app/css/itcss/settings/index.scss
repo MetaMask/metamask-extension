@@ -1,5 +1,2 @@
-// Variables
-$white-linen: #FAF6F0; // formerly 'faint orange (textfield shades)'
-$rajah: #F5C26D; // formerly 'light orange (button shades)'
-$buttercup: #F5A623; // formerly 'dark orange (text)'
-$tundora: #4A4A4A; // formerly 'borders/font/any gray'
+@import './variables.scss';
+@import './typography.scss';
