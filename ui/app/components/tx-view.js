@@ -99,8 +99,6 @@ TxView.prototype.render = function () {
       // mobile: 100px 100px
       h('img.hero-balance-icon', {
         src: '../images/eth_logo.svg',
-        width: '60px',
-        height: '60px',
         style: {}
       }),
 
