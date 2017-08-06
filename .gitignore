@@ -24,6 +24,9 @@ test/background.js
 test/bundle.js
 test/test-bundle.js
 
+#ignore css sourcemaps
+ui/app/css/output/itcss/
+
 notes.txt
 
 .coveralls.yml
