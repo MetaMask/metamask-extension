@@ -37,7 +37,7 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 
-module.exports = connect(mapStateToProps)(App)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
 inherits(App, Component)
 function App () { Component.call(this) }
@@ -64,6 +64,12 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    hideSidebar: () => {dispatch(actions.hideSidebar())},
   }
 }
 
@@ -151,7 +157,10 @@ App.prototype.renderSidebar = function() {
     // overlay
     // TODO: add onClick for overlay to close sidebar
     this.props.sidebarOpen ? h('div.sidebar-overlay', {
-      style: {}
+      style: {},
+      onClick: () => {
+        this.props.hideSidebar()
+      },
     }, []) : undefined,
   ])
 }
