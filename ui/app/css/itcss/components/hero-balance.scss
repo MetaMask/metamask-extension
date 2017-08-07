@@ -28,13 +28,13 @@ $break-large: 576px;
       text-align: center;
 
       .token-amount {
-        font-size: 1.8em;
-        margin-top: 1em;
+        font-size: 175%;
+        margin-top: 15%;
       }
 
       .fiat-amount {
-        font-size: 1.1em;
-        margin-top: 0.8em;
+        font-size: 115%;
+        margin-top: 8.5%;
       }
     }
 
@@ -55,46 +55,51 @@ $break-large: 576px;
   }
 
   .hero-balance-icon {
-    border-radius: 10vw;
+    border-radius: 30px;
+    width: 60px;
+    height: 60px;
     // TODO: colors
     border: 1px solid #DEDEDE; 
-    width: 5vw;
-    height: 5vw;
-    min-width: 45px;
-    min-height: 45px;
-    max-width: 65px;
-    max-height: 65px;
+
+    @media screen and (min-width: $break-large) {
+      border-radius: 10vw;
+      width: 5vw;
+      height: 5vw;
+      min-width: 45px;
+      min-height: 45px;
+      max-width: 65px;
+      max-height: 65px;
+    }
+
   }
 
   .hero-balance-buttons {
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      height: 100px; // needed a round number to set the heights of the buttons inside
+    }
+
+    @media screen and (min-width: $break-large) {
+      flex-grow: 2;
+    }
+
     button.btn-clear {
-      width: 5%;
-      height: 32px;
-      font-size: .7em;
+      font-size: 75%;
       background: white;
       border: 1px solid;
 
       @media screen and (max-width: $break-small) {
-        width: 100%;
-        margin-top: 1.3em;
+        width: 22%;
+        height: 55%;
       }
 
       @media screen and (min-width: $break-large) {
+        width: 5%;
         flex-grow: 2;
         height: 4.2vh;
         min-height: 28px;
         font-size: .7em;
       }
-
-    }
-
-    @media screen and (max-width: $break-small) {
-      width: 100%;
-      margin-top: 1.3em;
-    }
-
-    @media screen and (min-width: $break-large) {
-      flex-grow: 2;
     }
 
   }
