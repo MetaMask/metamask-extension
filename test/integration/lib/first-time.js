@@ -90,7 +90,13 @@ QUnit.test('render init screen', function (assert) {
     return wait()
   }).then(function (){
 
-    var qrButton = app.find('.fa.fa-qrcode')[0]
+    var qrButton = app.find('.fa.fa-ellipsis-h')[0] // open account settings dropdown
+    qrButton.click()
+
+    return wait(1000)
+  }).then(function (){
+
+    var qrButton = app.find('.dropdown-menu-item')[1] // qr code item
     qrButton.click()
 
     return wait(1000)

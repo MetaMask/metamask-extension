@@ -1,23 +1,19 @@
-var fs = require('fs')
-var path = require('path')
-var browserify = require('browserify')
-var tests = fs.readdirSync(path.join(__dirname, 'lib'))
-var bundlePath = path.join(__dirname, 'bundle.js')
+const fs = require('fs')
+const path = require('path')
+const browserify = require('browserify')
+const tests = fs.readdirSync(path.join(__dirname, 'lib'))
+const bundlePath = path.join(__dirname, 'bundle.js')
 
-var b = browserify()
+const b = browserify()
 
-// Remove old bundle
-try {
-  fs.unlinkSync(bundlePath)
+const writeStream = fs.createWriteStream(bundlePath)
 
-  var writeStream = fs.createWriteStream(bundlePath)
+tests.forEach(function (fileName) {
+  b.add(path.join(__dirname, 'lib', fileName))
+})
 
-  tests.forEach(function (fileName) {
-    b.add(path.join(__dirname, 'lib', fileName))
-  })
-
-  b.bundle().pipe(writeStream)
-} catch (e) {
-  console.error('Integration build failure', e)
-}
-
+b.bundle()
+.pipe(writeStream)
+.on('error', (err) => {
+  throw err
+})

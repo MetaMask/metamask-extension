@@ -26,7 +26,11 @@ UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
-    h('.flex-column', [
+    h('.flex-column', {
+      style: {
+        width: 'inherit',
+      },
+    }, [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
         h(Mascot, {

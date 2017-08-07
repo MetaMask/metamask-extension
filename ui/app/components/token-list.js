@@ -47,10 +47,11 @@ TokenList.prototype.render = function () {
     return h(TokenCell, tokenData)
   })
 
-  return h('div', [
-    h('ol', {
+  return h('.full-flex-height', [
+    this.renderTokenStatusBar(),
+
+    h('ol.full-flex-height.flex-column', {
       style: {
-        height: '260px',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
@@ -63,6 +64,7 @@ TokenList.prototype.render = function () {
           flex-direction: row;
           align-items: center;
           padding: 10px;
+          min-height: 50px;
         }
 
         li.token-cell > h3 {
@@ -76,17 +78,37 @@ TokenList.prototype.render = function () {
 
       `),
       ...tokenViews,
-      tokenViews.length ? null : this.message('No Tokens Found.'),
+      h('.flex-grow'),
     ]),
-    this.addTokenButtonElement(),
   ])
 }
 
-TokenList.prototype.addTokenButtonElement = function () {
-  return h('div', [
-    h('div.footer.hover-white.pointer', {
+TokenList.prototype.renderTokenStatusBar = function () {
+  const { tokens } = this.state
+
+  let msg
+  if (tokens.length === 1) {
+    msg = `You own 1 token`
+  } else if (tokens.length === 1) {
+    msg = `You own ${tokens.length} tokens`
+  } else {
+    msg = `No tokens found`
+  }
+
+  return h('div', {
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      minHeight: '70px',
+      padding: '10px',
+    },
+  }, [
+    h('span', msg),
+    h('button', {
       key: 'reveal-account-bar',
-      onClick: () => {
+      onClick: (event) => {
+        event.preventDefault()
         this.props.addToken()
       },
       style: {
@@ -97,7 +119,7 @@ TokenList.prototype.addTokenButtonElement = function () {
         alignItems: 'center',
       },
     }, [
-      h('i.fa.fa-plus.fa-lg'),
+      'ADD TOKEN',
     ]),
   ])
 }
