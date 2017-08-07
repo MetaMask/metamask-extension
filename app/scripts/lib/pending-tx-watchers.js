@@ -103,7 +103,7 @@ module.exports = class PendingTransactionWatchers extends EventEmitter {
     if (!sufficientBalance(txMeta.txParams, balance)) {
       const insufficientFundsError = new Error('Insufficient balance during rebroadcast.')
       this.emit('txFailed', txMeta.id, insufficientFundsError)
-      log.error(message)
+      log.error(insufficientFundsError)
       return
     }
 
