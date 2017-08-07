@@ -18,7 +18,6 @@ const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 
 // slideout menu
 const WalletView = require('./components/wallet-view')
-const SlideoutMenu = require('react-burger-menu').slide
 
 // other views
 const ConfigScreen = require('./config')
@@ -36,6 +35,7 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
@@ -43,6 +43,13 @@ inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+  const {
+    identities,
+    accounts,
+    address,
+  } = state.metamask
+  const selected = address || Object.keys(accounts)[0]
+
   return {
     // state from plugin
     sidebarOpen: state.appState.sidebarOpen,
@@ -64,6 +71,10 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+
+    // state needed to get account dropdown temporarily rendering from app bar
+    identities,
+    selected,
   }
 }
 
@@ -233,6 +244,7 @@ App.prototype.renderNetworkDropdown = function () {
   const isOpen = state.isNetworkMenuOpen
 
   return h(Dropdown, {
+    useCssTransition: true,
     isOpen,
     onClickOutside: (event) => {
       const { classList } = event.target
@@ -240,7 +252,7 @@ App.prototype.renderNetworkDropdown = function () {
         classList.contains('menu-icon'),
         classList.contains('network-name'),
         classList.contains('network-indicator'),
-      ].filter(bool => bool).length === 0;
+      ].filter(bool => bool).length === 0
       // classes from three constituent nodes of the toggle element
 
       if (isNotToggleElement) {
@@ -264,6 +276,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'main',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.diamond'),
@@ -278,6 +293,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'ropsten',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('ropsten')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.red-dot'),
@@ -292,6 +310,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'kovan',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('kovan')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.hollow-diamond'),
@@ -306,6 +327,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'rinkeby',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('.menu-icon.golden-square'),
@@ -320,6 +344,9 @@ App.prototype.renderNetworkDropdown = function () {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -336,6 +363,9 @@ App.prototype.renderNetworkDropdown = function () {
       {
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => this.props.dispatch(actions.showConfigPage()),
+        style: {
+          fontSize: '18px',
+        },
       },
       [
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -352,12 +382,17 @@ App.prototype.renderDropdown = function () {
   const isOpen = state.isMainMenuOpen
 
   return h(Dropdown, {
+    useCssTransition: true,
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
-      const { classList } = event.target
-      const isNotToggleElement = !classList.contains('sandwich-expando')
-      if (isNotToggleElement) {
+      const classList = event.target.classList
+      const parentClassList = event.target.parentElement.classList
+
+      const isToggleElement = classList.contains('sandwich-expando') ||
+        parentClassList.contains('sandwich-expando')
+
+      if (isOpen && !isToggleElement) {
         this.setState({ isMainMenuOpen: false })
       }
     },
@@ -610,7 +645,6 @@ App.prototype.renderCommonRpc = function (rpcList, provider) {
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
-
       return h(
         DropdownMenuItem,
         {

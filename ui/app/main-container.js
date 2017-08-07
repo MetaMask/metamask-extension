@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TxView = require('./components/tx-view')
 const WalletView = require('./components/wallet-view')
-const SlideoutMenu = require('react-burger-menu').slide
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const ConfigScreen = require('./config')

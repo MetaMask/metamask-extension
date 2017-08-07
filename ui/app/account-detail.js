@@ -128,6 +128,7 @@ AccountDetailScreen.prototype.render = function () {
                       selected,
                       network,
                       identities: props.identities,
+                      enableAccountOptions: true,
                     },
                   ),
                 ]
@@ -152,7 +153,6 @@ AccountDetailScreen.prototype.render = function () {
                   fontSize: '13px',
                   fontFamily: 'Montserrat Light',
                   textRendering: 'geometricPrecision',
-                  marginTop: '10px',
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },

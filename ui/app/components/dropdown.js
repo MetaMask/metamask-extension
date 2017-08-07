@@ -1,14 +1,14 @@
 const Component = require('react').Component
 const PropTypes = require('react').PropTypes
 const h = require('react-hyperscript')
-const MenuDroppo = require('menu-droppo')
+const MenuDroppo = require('./menu-droppo')
 const extend = require('xtend')
 
 const noop = () => {}
 
 class Dropdown extends Component {
   render () {
-    const { isOpen, onClickOutside, style, innerStyle, children } = this.props
+    const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition } = this.props
 
     const innerStyleDefaults = extend({
       borderRadius: '4px',
@@ -20,6 +20,7 @@ class Dropdown extends Component {
     return h(
       MenuDroppo,
       {
+        useCssTransition,
         isOpen,
         zIndex: 11,
         onClickOutside,
@@ -43,6 +44,7 @@ class Dropdown extends Component {
 Dropdown.defaultProps = {
   isOpen: false,
   onClick: noop,
+  useCssTransition: false,
 }
 
 Dropdown.propTypes = {
@@ -54,7 +56,7 @@ Dropdown.propTypes = {
 
 class DropdownMenuItem extends Component {
   render () {
-    const { onClick, closeMenu, children } = this.props
+    const { onClick, closeMenu, children, style } = this.props
 
     return h(
       'li.dropdown-menu-item',
@@ -63,17 +65,17 @@ class DropdownMenuItem extends Component {
           onClick()
           closeMenu()
         },
-        style: {
+        style: Object.assign({
           listStyle: 'none',
           padding: '8px 0px 8px 0px',
-          fontSize: '12px',
+          fontSize: '18px',
           fontStyle: 'normal',
           fontFamily: 'Montserrat Regular',
           cursor: 'pointer',
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
-        },
+        }, style),
       },
       children
     )

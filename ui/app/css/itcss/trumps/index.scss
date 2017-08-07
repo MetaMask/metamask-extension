@@ -51,3 +51,38 @@
 .app-primary.from-left .main-enter:not(.main-enter-active) {
   transform: translateX(-360px);
 }
+
+i.fa.fa-question-circle.fa-lg.menu-icon {
+  font-size: 18px;
+}
+
+/*
+  Hacky breakpoint fix for account + tab sections
+    Resolves issue from @frankiebee in
+    https://github.com/MetaMask/metamask-extension/pull/1835
+  Please remove this when integrating new designs
+ */
+
+// This is commented out, because it's not needed in NewUI.
+// We will have a new css architecture w/ different breakpoints.
+
+// @media screen and (min-width: 575px) and (max-width: 800px) {
+//   .account-data-subsection {
+//     flex: 0 0 auto !important; // reset flex
+//     margin-left: 10px !important; // create additional horizontal space
+//     margin-right: 10px !important;
+//     width: 40%;
+//   }
+
+//   .tabSection {
+//     flex: 0 0 auto !important;
+//     margin-left: 10px !important;
+//     margin-right: 10px !important;
+//     min-width: 285px;
+//     width: 49%;
+//   }
+
+//   .name-label {
+//     width: 80%;
+//   }
+// }

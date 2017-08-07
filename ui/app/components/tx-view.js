@@ -4,7 +4,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
 // slideout menu
-const SlideoutMenu = require('react-burger-menu').slide
 const WalletView = require('./wallet-view')
 
 const Identicon = require('./identicon')
