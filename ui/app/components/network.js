@@ -60,7 +60,7 @@ Network.prototype.render = function () {
   }
 
   return (
-    h('#network_component.pointer', {
+    h('.network-component.pointer', {
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [

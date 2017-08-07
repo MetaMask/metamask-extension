@@ -1,6 +1,22 @@
 .app-header {
+  align-items: center;
+  visibility: visible;
+  background: rgb(239, 239, 239);
+  padding-top: 1.5vh;
+  height: 12vh;
+  max-height: 60px;
+  position: relative;
+  z-index: 12;
   padding: 6px 8px;
   // background: #EFEFEF; // $gallery
+
+  @media screen and (max-width: 575px) {
+    position: fixed;
+    height: 34px;
+    width: 100%;
+    box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.08);
+    z-index: 30;
+  }
 }
 
 .app-header h1 {
@@ -15,4 +31,24 @@ h2.page-subtitle {
   color: #AEAEAE;
   font-size: 1em;
   margin: 12px;
+}
+
+.network-component-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  @media screen and (min-width: 576px) {
+    margin-bottom: 1.8em;
+  }
+}
+
+.left-menu-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  @media screen and (min-width: 576px) {
+    margin-bottom: 1.8em;
+  }
 }

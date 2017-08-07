@@ -172,25 +172,11 @@ App.prototype.renderAppBar = function () {
     }, [
 
       h('.app-header.flex-row.flex-space-between', {
-        style: {
-          alignItems: 'center',
-          visibility: props.isUnlocked ? 'visible' : 'none',
-          background: '#EFEFEF', // $gallery
-          paddingTop: '1.5vh',
-          height: '12vh',
-          maxHeight: '60px',
-          position: 'relative',
-          zIndex: 12,
-        },
+        style: {},
       }, [
 
-        h('div.left-menu-section', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '1.8em',
-          },
+        h('div.left-menu-wrapper', {
+          style: {},
         }, [
           // mini logo
           h('img', {
@@ -209,13 +195,8 @@ App.prototype.renderAppBar = function () {
 
         ]),
 
-        h('div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '1.8em',
-          },
+        h('div.network-component-wrapper', {
+          style: {},
         }, [
           // Network Indicator
           h(NetworkIndicator, {

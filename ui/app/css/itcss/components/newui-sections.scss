@@ -2,10 +2,10 @@
   NewUI Container Elements
  */
 
+// Main container
 .main-container {
   position: absolute;
   z-index: 18;
-  box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   font-family: DIN OT;
   display: flex;
   flex-wrap: wrap;
@@ -56,6 +56,7 @@
     margin-top: 35px;
     width: 85%;
     height: 90vh;
+    box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   }
 }
 
@@ -64,6 +65,7 @@
     margin-top: 35px;
     width: 80%;
     height: 82vh;
+    box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   }
 }
 
@@ -72,6 +74,7 @@
     margin-top: 35px;
     width: 65%;
     height: 82vh;
+    box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
   }
 }
 
@@ -86,7 +89,6 @@
 
   .main-container {
     margin-top: 35px;
-    // position: relative;
     width: 100%;
     height: 100%;
   }
