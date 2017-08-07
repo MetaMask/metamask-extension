@@ -54,16 +54,16 @@ TxView.prototype.render = function () {
       style: {
         margin: '1em 0.9em',
         alignItems: 'center'
-      }
+      },
+      onClick: () => {
+        this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
+      },
     }, [
       // burger
       h('div.fa.fa-bars', {
         style: {
           fontSize: '1.3em',
         },
-        onClick: () => {
-          this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
-        }
       }, []),
 
       //account display
