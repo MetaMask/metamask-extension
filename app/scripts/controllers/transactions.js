@@ -54,12 +54,12 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxWatchers.on('txFailed', this.setTxStatusFailed.bind(this))
     this.pendingTxWatchers.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
 
-    this.blockTracker.on('rawBlock', this.pendingTxWatchers.checkForTxInBlock.bind(this))
+    this.blockTracker.on('rawBlock', this.pendingTxWatchers.checkForTxInBlock.bind(this.pendingTxWatchers))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
     // where ethStore hasent been populated by the results yet
-    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.pendingTxWatchers.resubmitPendingTxs.bind(this)))
-    this.blockTracker.on('sync', this.pendingTxWatchers.queryPendingTxs.bind(this))
+    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.pendingTxWatchers.resubmitPendingTxs.bind(this.pendingTxWatchers)))
+    this.blockTracker.on('sync', this.pendingTxWatchers.queryPendingTxs.bind(this.pendingTxWatchers))
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore())
