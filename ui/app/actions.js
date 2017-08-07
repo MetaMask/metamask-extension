@@ -467,9 +467,12 @@ function cancelPersonalMsg (msgData) {
 }
 
 function cancelTx (txData) {
-  log.debug(`background.cancelTransaction`)
-  background.cancelTransaction(txData.id)
-  return actions.completedTx(txData.id)
+  return (dispatch) => {
+    log.debug(`background.cancelTransaction`)
+    background.cancelTransaction(txData.id, () => {
+      dispatch(actions.completedTx(txData.id))
+    })
+  }
 }
 
 //
