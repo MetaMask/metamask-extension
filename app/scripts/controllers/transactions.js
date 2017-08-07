@@ -246,7 +246,6 @@ module.exports = class TransactionController extends EventEmitter {
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {
-      if (!err.message) err.message = 'Transaction failed during approval'
       this.setTxStatusFailed(txId, err)
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) nonceLock.releaseLock()
