@@ -42,18 +42,9 @@ WalletView.prototype.render = function () {
     }
   }, [
 
-    h('div.phone-visible.fa.fa-bars', {
-      onClick: () => {
-        this.props.hideSidebar()
-      }
-    }, [
-    ]),
-
     // TODO: Separate component: wallet account details
-    h('div.flex-row.flex-center', {
-      style: {
-        margin: '1.8em 1.3em',
-      }
+    h('div.flex-column', {
+      style: {}
     }, [
 
       h('.identicon-wrapper.select-none', [
