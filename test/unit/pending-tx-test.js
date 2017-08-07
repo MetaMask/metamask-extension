@@ -224,7 +224,7 @@ describe('PendingTransactionWatcher', function () {
       pendingTxWatcher.resubmitPendingTxs()
     })
   })
-  describe('#_resubmitTx with a too-low balance', function () {
+  describe.only('#_resubmitTx with a too-low balance', function () {
     it('should return before publishing the transaction because to low of balance', function (done) {
     const lowBalance = '0x0'
     pendingTxWatcher.getBalance = (address) => {
@@ -237,8 +237,8 @@ describe('PendingTransactionWatcher', function () {
 
     // Stubbing out current account state:
     // Adding the fake tx:
-    pendingTxWatcher.once('txWarning', (txMeta) => {
-      assert(txMeta.warning.message, 'Should have a warning message')
+    pendingTxWatcher.once('txFailed', (txId, err) => {
+      assert(err, 'Should have a error')
       done()
     })
     pendingTxWatcher._resubmitTx(txMeta)
