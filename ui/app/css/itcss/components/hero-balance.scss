@@ -40,26 +40,14 @@ $break-large: 576px;
 
     @media screen and (min-width: $break-large) {
       flex-grow: 3;
-      margin-left: 1.2vw;
+      margin-left: 3%;
 
       .token-amount {
-        font-size: 2.1vw;
-
-        @media screen and (max-width: $break-medium) {
-          font-size: 3vw;
-        }
-
+        font-size: 125%;
       }
 
       .fiat-amount {
-        font-size: 1.7vw;
-        margin-top: 0.3em;
-
-        @media screen and (max-width: $break-medium) {
-          font-size: 2.5vw;
-          margin-top: 0em;
-        }
-
+        font-size: 105%;
       }
 
     }
@@ -67,7 +55,7 @@ $break-large: 576px;
   }
 
   .hero-balance-icon {
-    border-radius: 30px;
+    border-radius: 10vw;
     // TODO: colors
     border: 1px solid #DEDEDE; 
     width: 5vw;
@@ -80,7 +68,7 @@ $break-large: 576px;
 
   .hero-balance-buttons {
     button.btn-clear {
-      width: 81px;
+      width: 5%;
       height: 32px;
       font-size: .7em;
       background: white;
@@ -93,8 +81,6 @@ $break-large: 576px;
 
       @media screen and (min-width: $break-large) {
         flex-grow: 2;
-        width: 5.8vw;
-        min-width: 75px;
         height: 4.2vh;
         min-height: 28px;
         font-size: .7em;
