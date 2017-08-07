@@ -18,7 +18,7 @@
 
 .tx-view {
   flex: 63.5 0 66.5%;
-  background: #FFFFFF; // TODO: add to resuable colors
+  background: $white; // TODO: add to resuable colors
 }
 
 
@@ -26,7 +26,7 @@
 
 .wallet-view {
   flex: 33.5 0 33.5%;
-  background: #FAFAFA, // TODO: add to reusable colors
+  background: $wild-sand,
 }
 
 .account-options-menu {

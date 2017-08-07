@@ -57,7 +57,10 @@ WalletView.prototype.render = function () {
       ]),
 
       h('div.flex-column.flex-center', {
-
+        style: {
+         // constrains size of absolutely positioned wrappers
+          position: 'relative',
+        },
       }, [
 
         h('.identicon-wrapper.select-none', {
@@ -77,30 +80,18 @@ WalletView.prototype.render = function () {
           'Account 1'
         ]),
 
-        //  h(AccountDropdowns, {
-        //   style: {
-        //     // position: 'absolute',
-        //     // left: '58.5%',
-        //     // top: '10.25%',
-        //   },
-        //   selected,
-        //   network,
-        //   identities,
-        //   enableAccountsSelector: true,
-        // }, []),
-        h('div.flex-column.flex-center,', {
+        h(AccountDropdowns, {
           style: {
             position: 'absolute',
-            marginLeft: '42px',
-            marginTop: '-10px',
+            left: '66.5%',
+            top: '19.5%',
           },
-        }, h('i.fa.fa-angle-down', {}, [])),
-
+          selected,
+          network,
+          identities,
+          enableAccountsSelector: true,
+        }, []),
       ]),
-
-      // position: absolute;
-      // left: 58.5%;
-      // top: 10.25%;
 
       h(
         AccountDropdowns,
