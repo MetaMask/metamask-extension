@@ -19,7 +19,7 @@ const sufficientBalance = require('./util').sufficientBalance
 
 */
 
-module.exports = class PendingTransactionWatcher extends EventEmitter {
+module.exports = class PendingTransactionWatchers extends EventEmitter {
   constructor (config) {
     super()
     this.query = new EthQuery(config.provider)
@@ -101,11 +101,8 @@ module.exports = class PendingTransactionWatcher extends EventEmitter {
 
     // if the value of the transaction is greater then the balance, fail.
     if (!sufficientBalance(txMeta.txParams, balance)) {
-      const message = 'Insufficient balance during rebroadcast.'
-      txMeta.warning = {
-        message,
-      }
-      this.emit('txWarning', txMeta)
+      const insufficientFundsError = new Error('Insufficient balance during rebroadcast.')
+      this.emit('txFailed', txMeta.id, insufficientFundsError)
       log.error(message)
       return
     }
