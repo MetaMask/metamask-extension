@@ -15,17 +15,27 @@
 
 
 // tx view
+
 .tx-view {
   flex: 63.5 0 66.5%;
-  background: '#FFFFFF'; // TODO: add to resuable colors
+  background: #FFFFFF; // TODO: add to resuable colors
 }
+
+
+// wallet view
 
 .wallet-view {
   flex: 33.5 0 33.5%;
   background: #FAFAFA, // TODO: add to reusable colors
 }
 
-// wallet view
+.account-options-menu {
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5% 7%;
+}
+
+
 
 .wallet-view.sidebar {
   flex: 1 0 230px;
@@ -118,6 +128,13 @@
 
 // wallet view
 .account-name {
-  font-size: 102%;
-  margin-left: 3%;
+  @media screen and (max-width: 575px) {
+    font-size: 102%;
+    margin-left: 3%;
+  }
+
+  @media screen and (max-width: 575px) {
+    text-align: center;
+  }
+
 }

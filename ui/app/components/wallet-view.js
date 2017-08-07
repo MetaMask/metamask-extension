@@ -13,6 +13,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebarOpen,
+    identities: state.metamask.identities,
   }
 }
 
@@ -32,7 +33,7 @@ const noop = () => {}
 
 WalletView.prototype.render = function () {
   const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684' // TODO: remove fake address
-  const { network, responsiveDisplayClassname, style } = this.props
+  const { network, responsiveDisplayClassname, style, identities } = this.props
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
@@ -43,18 +44,63 @@ WalletView.prototype.render = function () {
       style: {}
     }, [
 
-      h('.identicon-wrapper.select-none', [
-        h(Identicon, {
-          diameter: 24,
-          address: selected,
-        }),
+      h('div.flex-row.account-options-menu', {
+      }, [
+
+        h(AccountDropdowns, {
+          // selected,
+          // network,
+          // identities: props.identities,
+          enableAccountOptions: true,
+        }, []),
+
       ]),
 
-      h('span.account-name', {
-        style: {}
+      h('div.flex-column.flex-center', {
+
       }, [
-        'Account 1'
+
+        h('.identicon-wrapper.select-none', {
+          style: {
+            marginBottom: '1%',
+          },
+        }, [
+          h(Identicon, {
+            diameter: 54,
+            address: selected,
+          }),
+        ]),
+
+        h('span.account-name', {
+          style: {}
+        }, [
+          'Account 1'
+        ]),
+
+        //  h(AccountDropdowns, {
+        //   style: {
+        //     // position: 'absolute',
+        //     // left: '58.5%',
+        //     // top: '10.25%',
+        //   },
+        //   selected,
+        //   network,
+        //   identities,
+        //   enableAccountsSelector: true,
+        // }, []),
+        h('div.flex-column.flex-center,', {
+          style: {
+            position: 'absolute',
+            marginLeft: '42px',
+            marginTop: '-10px',
+          },
+        }, h('i.fa.fa-angle-down', {}, [])),
+
       ]),
+
+      // position: absolute;
+      // left: 58.5%;
+      // top: 10.25%;
 
       h(
         AccountDropdowns,
