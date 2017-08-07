@@ -232,12 +232,21 @@ hr.horizontal-line {
   align-items: center;
 }
 
+.tabSection {
+  min-width: 350px;
+}
+
 .menu-icon {
   display: inline-block;
-  height: 9px;
-  min-width: 9px;
+  height: 12px;
+  min-width: 12px;
   margin: 13px;
 }
+
+i.fa.fa-question-circle.fa-lg.menu-icon {
+  font-size: 18px;
+}
+
 .ether-icon {
   background: rgb(0, 163, 68);
   border-radius: 20px;
@@ -265,4 +274,32 @@ hr.horizontal-line {
   text-align: center;
   margin-top: 20px;
   color: red;
+}
+
+/*
+  Hacky breakpoint fix for account + tab sections
+    Resolves issue from @frankiebee in
+    https://github.com/MetaMask/metamask-extension/pull/1835
+  Please remove this when integrating new designs
+ */
+
+@media screen and (min-width: 575px) and (max-width: 800px) {
+  .account-data-subsection {
+    flex: 0 0 auto !important; // reset flex
+    margin-left: 10px !important; // create additional horizontal space
+    margin-right: 10px !important;
+    width: 40%;
+  }
+
+  .tabSection {
+    flex: 0 0 auto !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    min-width: 285px;
+    width: 49%;
+  }
+
+  .name-label {
+    width: 80%;
+  }
 }

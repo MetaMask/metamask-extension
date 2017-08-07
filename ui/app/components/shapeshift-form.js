@@ -2,7 +2,6 @@ const PersistentForm = require('../../lib/persistent-form')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const actions = require('../actions')
 const Qr = require('./qr-code')
 const isValidAddress = require('../util').isValidAddress
@@ -24,14 +23,7 @@ function ShapeshiftForm () {
 }
 
 ShapeshiftForm.prototype.render = function () {
-  return h(ReactCSSTransitionGroup, {
-    className: 'css-transition-group',
-    transitionName: 'main',
-    transitionEnterTimeout: 300,
-    transitionLeaveTimeout: 300,
-  }, [
-    this.props.qrRequested ? h(Qr, {key: 'qr'}) : this.renderMain(),
-  ])
+  return this.props.qrRequested ? h(Qr, {key: 'qr'}) : this.renderMain()
 }
 
 ShapeshiftForm.prototype.renderMain = function () {

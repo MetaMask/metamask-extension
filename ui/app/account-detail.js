@@ -3,21 +3,17 @@ const extend = require('xtend')
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const CopyButton = require('./components/copyButton')
-const AccountInfoLink = require('./components/account-info-link')
 const actions = require('./actions')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const valuesFor = require('./util').valuesFor
-
 const Identicon = require('./components/identicon')
 const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
-const Tooltip = require('./components/tooltip')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
+const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 
@@ -54,12 +50,13 @@ AccountDetailScreen.prototype.render = function () {
 
   return (
 
-    h('.account-detail-section', [
+    h('.account-detail-section.full-flex-height', [
 
-      // identicon, label, balance, etc
+    // identicon, label, balance, etc
       h('.account-data-subsection', {
         style: {
           margin: '0 20px',
+          flex: '1 0 auto',
         },
       }, [
 
@@ -84,6 +81,7 @@ AccountDetailScreen.prototype.render = function () {
             style: {
               lineHeight: '10px',
               marginLeft: '15px',
+              width: '100%',
             },
           }, [
             h(EditableLabel, {
@@ -98,7 +96,43 @@ AccountDetailScreen.prototype.render = function () {
 
               // What is shown when not editing + edit text:
               h('label.editing-label', [h('.edit-text', 'edit')]),
-              h('h2.font-medium.color-forest', {name: 'edit'}, identity && identity.name),
+              h(
+                'div',
+                {
+                  style: {
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                  },
+                },
+                [
+                  h(
+                    'h2.font-medium.color-forest',
+                    {
+                      name: 'edit',
+                      style: {
+                      },
+                    },
+                    [
+                      identity && identity.name,
+                    ]
+                  ),
+                  h(
+                    AccountDropdowns,
+                    {
+                      style: {
+                        marginRight: '8px',
+                        marginLeft: 'auto',
+                        cursor: 'pointer',
+                      },
+                      selected,
+                      network,
+                      identities: props.identities,
+                      enableAccountOptions: true,
+                    },
+                  ),
+                ]
+              ),
             ]),
             h('.flex-row', {
               style: {
@@ -119,61 +153,10 @@ AccountDetailScreen.prototype.render = function () {
                   fontSize: '13px',
                   fontFamily: 'Montserrat Light',
                   textRendering: 'geometricPrecision',
-                  marginTop: '10px',
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },
               }, checksumAddress),
-
-              // copy and export
-
-              h('.flex-row', {
-                style: {
-                  justifyContent: 'flex-end',
-                },
-              }, [
-
-                h(AccountInfoLink, { selected, network }),
-
-                h(CopyButton, {
-                  value: checksumAddress,
-                }),
-
-                h(Tooltip, {
-                  title: 'QR Code',
-                }, [
-                  h('i.fa.fa-qrcode.pointer.pop-hover', {
-                    onClick: () => props.dispatch(actions.showQrView(selected, identity ? identity.name : '')),
-                    style: {
-                      fontSize: '18px',
-                      position: 'relative',
-                      color: 'rgb(247, 134, 28)',
-                      top: '5px',
-                      marginLeft: '3px',
-                      marginRight: '3px',
-                    },
-                  }),
-                ]),
-
-                h(Tooltip, {
-                  title: 'Export Private Key',
-                }, [
-                  h('div', {
-                    style: {
-                      display: 'flex',
-                      alignItems: 'center',
-                    },
-                  }, [
-                    h('img.cursor-pointer.color-orange', {
-                      src: 'images/key-32.png',
-                      onClick: () => this.requestAccountExport(selected),
-                      style: {
-                        height: '19px',
-                      },
-                    }),
-                  ]),
-                ]),
-              ]),
             ]),
 
             // account ballence
@@ -197,14 +180,11 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
+          h('.flex-grow'),
+
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
-            style: {
-              marginBottom: '20px',
-              marginRight: '8px',
-              position: 'absolute',
-              left: '219px',
-            },
+            style: { marginRight: '10px' },
           }, 'BUY'),
 
           h('button', {
@@ -219,14 +199,7 @@ AccountDetailScreen.prototype.render = function () {
       ]),
 
       // subview (tx history, pk export confirm, buy eth warning)
-      h(ReactCSSTransitionGroup, {
-        className: 'css-transition-group',
-        transitionName: 'main',
-        transitionEnterTimeout: 300,
-        transitionLeaveTimeout: 300,
-      }, [
-        this.subview(),
-      ]),
+      this.subview(),
 
     ])
   )
@@ -254,7 +227,7 @@ AccountDetailScreen.prototype.subview = function () {
 AccountDetailScreen.prototype.tabSections = function () {
   const { currentAccountTab } = this.props
 
-  return h('section.tabSection', [
+  return h('section.tabSection.full-flex-height.grow-tenx', [
 
     h(TabBar, {
       tabs: [
@@ -304,8 +277,4 @@ AccountDetailScreen.prototype.transactionList = function () {
       this.props.dispatch(actions.viewPendingTx(txId))
     },
   })
-}
-
-AccountDetailScreen.prototype.requestAccountExport = function () {
-  this.props.dispatch(actions.requestExportAccount())
 }
