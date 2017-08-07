@@ -58,7 +58,7 @@ WalletView.prototype.render = function () {
 
       h('div.flex-column.flex-center', {
         style: {
-         // constrains size of absolutely positioned wrappers
+          // constrains size of absolutely positioned wrappers
           position: 'relative',
         },
       }, [
@@ -83,7 +83,10 @@ WalletView.prototype.render = function () {
         h(AccountDropdowns, {
           style: {
             position: 'absolute',
-            left: '66.5%',
+            left: 'calc(50% + 28px + 5.5px)',
+            // left: '42px',
+            // top: '-10px'
+            // left: '66.5%',
             top: '19.5%',
           },
           selected,

@@ -3,6 +3,7 @@ $break-medium: 780px;
 $break-large: 576px;
 
 .hero-balance {
+
   @media screen and (max-width: $break-small) {
     display: flex;
     flex-direction: column;
@@ -90,7 +91,9 @@ $break-large: 576px;
         min-height: 28px;
         font-size: .7em;
       }
+
     }
 
   }
+
 }
