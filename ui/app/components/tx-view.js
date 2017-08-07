@@ -104,7 +104,7 @@ TxView.prototype.render = function () {
 
       // laptop: 5vw?
       // phone: 50vw?
-      h('div.hero-balance-display', {}, [
+      h('div.flex-column.hero-balance-display', {}, [
         h('div.token-amount', {
           style: {}
         }, '1001.124 ETH'),
