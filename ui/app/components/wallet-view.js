@@ -35,11 +35,7 @@ WalletView.prototype.render = function () {
   const { network, responsiveDisplayClassname, style } = this.props
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
-    style: {
-      flex: '28 0 28%',
-      background: '#FAFAFA', // TODO: add to reusable colors
-      ...style,
-    }
+    style: {},
   }, [
 
     // TODO: Separate component: wallet account details

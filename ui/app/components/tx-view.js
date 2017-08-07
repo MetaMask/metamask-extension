@@ -43,10 +43,7 @@ TxView.prototype.render = function () {
   const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684' // TODO: remove fake address
 
   return h('div.tx-view.flex-column', {
-    style: {
-      flex: '62 0 62%',
-      background: '#FFFFFF',
-    }
+    style: {},
   }, [
 
     h('div.flex-row.phone-visible', {

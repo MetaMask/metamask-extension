@@ -13,7 +13,21 @@
   overflow-y: scroll;
 }
 
-.sidebar {
+
+// tx view
+.tx-view {
+  flex: 63.5 0 66.5%;
+  background: '#FFFFFF'; // TODO: add to resuable colors
+}
+
+.wallet-view {
+  flex: 33.5 0 33.5%;
+  background: #FAFAFA, // TODO: add to reusable colors
+}
+
+// wallet view
+
+.wallet-view.sidebar {
   flex: 1 0 230px;
   background: rgb(250, 250, 250);
   z-index: 26;
