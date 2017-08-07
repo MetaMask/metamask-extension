@@ -18,4 +18,3 @@ module.exports = function (unapprovedTxs, unapprovedMsgs, personalMsgs, network)
 
   return allValues
 }
-

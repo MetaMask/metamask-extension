@@ -100,7 +100,7 @@ ExportAccountView.prototype.render = function () {
           textOverflow: 'ellipsis',
           overflow: 'hidden',
           webkitUserSelect: 'text',
-          width: '100%',
+          maxWidth: '275px',
         },
         onClick: function (event) {
           copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
