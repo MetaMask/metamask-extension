@@ -224,7 +224,7 @@ describe('PendingTransactionWatcher', function () {
       pendingTxWatcher.resubmitPendingTxs()
     })
   })
-  describe.only('#_resubmitTx with a too-low balance', function () {
+  describe('#_resubmitTx with a too-low balance', function () {
     it('should return before publishing the transaction because to low of balance', function (done) {
     const lowBalance = '0x0'
     pendingTxWatcher.getBalance = (address) => {
