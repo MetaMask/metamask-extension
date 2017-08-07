@@ -26,7 +26,7 @@ $break-large: 576px;
 
       .token-amount {
         font-size: 175%;
-        margin-top: 15%;
+        margin-top: 12.5%;
       }
 
       .fiat-amount {
@@ -79,7 +79,7 @@ $break-large: 576px;
       border: 1px solid;
 
       @media screen and (max-width: $break-small) {
-        width: 22%;
+        width: 28%;
         height: 55%;
       }
 

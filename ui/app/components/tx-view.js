@@ -78,11 +78,8 @@ TxView.prototype.render = function () {
         }),
       ]),
 
-      h('span', {
-        style: {
-          fontSize: '1.2em',
-          marginLeft: '0.5em', // TODO: switch all units for this component to em
-        }
+      h('span.account-name', {
+        style: {}
       }, [
         'Account 1'
       ]),
