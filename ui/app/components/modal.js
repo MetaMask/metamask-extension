@@ -32,6 +32,7 @@ Modal.prototype.render = function () {
 
   return h(FadeModal,
     {
+      className: 'modal',
       keyboard: false,
       onHide: () => {this.onHide()},
       ref: (ref) => {
