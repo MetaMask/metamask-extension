@@ -31,6 +31,7 @@ function mapDispatchToProps (dispatch) {
   return {
     showSidebar: () => { dispatch(actions.showSidebar()) },
     hideSidebar: () => { dispatch(actions.hideSidebar()) },
+    showModal: () => { dispatch(actions.showModal()) },
   }
 }
 
@@ -118,6 +119,9 @@ TxView.prototype.render = function () {
         h('button.btn-clear', {
           style: {
             textAlign: 'center',
+          },
+          onClick: () => {
+            this.props.showModal()
           },
         }, 'BUY'),
 
