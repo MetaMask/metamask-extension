@@ -40,9 +40,12 @@ function reduceApp (state, action) {
     accountDetail: {
       subview: 'transactions',
     },
-    transForward: true, // Used to render transition direction
-    isLoading: false,   // Used to display loading indicator
-    warning: null,      // Used to display error text
+    // Used to render transition direction
+    transForward: true,
+    // Used to display loading indicator
+    isLoading: false,
+    // Used to display error text
+    warning: null,
   }, state.appState)
 
   switch (action.type) {

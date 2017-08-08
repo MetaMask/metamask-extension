@@ -24,7 +24,11 @@ TransactionList.prototype.render = function () {
 
   return (
 
-    h('section.transaction-list', [
+    h('section.transaction-list.full-flex-height', {
+      style: {
+        justifyContent: 'center',
+      },
+    }, [
 
       h('style', `
         .transaction-list .transaction-list-item:not(:last-of-type) {
@@ -39,7 +43,7 @@ TransactionList.prototype.render = function () {
       h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '300px',
+          height: '100%',
           padding: '0 20px',
           textAlign: 'center',
         },
@@ -64,13 +68,17 @@ TransactionList.prototype.render = function () {
               },
             })
           })
-        : h('.flex-center', {
+        : h('.flex-center.full-flex-height', {
           style: {
             flexDirection: 'column',
-            height: '100%',
+            justifyContent: 'center',
           },
         }, [
-          'No transaction history.',
+          h('p', {
+            style: {
+              marginTop: '50px',
+            },
+          }, 'No transaction history.'),
         ]),
       ]),
     ])

@@ -171,7 +171,6 @@ gulp.task('default', ['lint'], function () {
 const jsFiles = [
   'inpage',
   'contentscript',
-  'blacklister',
   'background',
   'popup',
 ]

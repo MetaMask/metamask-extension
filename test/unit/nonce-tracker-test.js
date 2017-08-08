@@ -31,12 +31,11 @@ describe('Nonce Tracker', function () {
   })
 
   describe('#getNonceLock', function () {
-    it('should work', async function (done) {
+    it('should work', async function () {
       this.timeout(15000)
       const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
       assert.equal(nonceLock.nextNonce, '1', 'nonce should be 1')
       await nonceLock.releaseLock()
-      done()
     })
   })
 })
