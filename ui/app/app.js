@@ -36,6 +36,7 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const Modal = require('./components/modal')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
@@ -105,6 +106,9 @@ App.prototype.render = function () {
       },
     }, [
 
+      // global modal
+      this.renderGlobalModal(),
+
       // app bar
       this.renderAppBar(),
 
@@ -124,6 +128,12 @@ App.prototype.render = function () {
       this.renderPrimary(),
     ])
   )
+}
+
+App.prototype.renderGlobalModal = function() {
+  return h(Modal, {
+    ref: "modalRef",
+  }, ['test modal'])
 }
 
 App.prototype.renderSidebar = function() {
