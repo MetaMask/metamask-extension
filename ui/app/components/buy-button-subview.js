@@ -143,7 +143,7 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
     return h('div.flex-column', {
       style: {
         alignItems: 'center',
-        margin: '50px',
+        margin: '20px 50px',
       },
     }, [
       h('h3.text-transform-uppercase', {
