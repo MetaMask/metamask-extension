@@ -4,8 +4,8 @@ const clone = require('clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
-const TxProviderUtils = require('../lib/tx-utils')
-const PendingTransactionWatchers = require('../lib/pending-tx-watchers')
+const TxProviderUtil = require('../lib/tx-utils')
+const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
 
@@ -35,13 +35,17 @@ module.exports = class TransactionController extends EventEmitter {
       },
     })
     this.query = new EthQuery(this.provider)
-    this.txProviderUtils = new TxProviderUtils(this.provider)
+    this.txProviderUtil = new TxProviderUtil(this.provider)
 
-    this.pendingTxWatchers = new PendingTransactionWatchers({
+    this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
-      getBalance: (address) => this.ethStore.getState().accounts[address].balance,
-      publishTransaction: this.txProviderUtils.publishTransaction.bind(this.txProviderUtils),
+      getBalance: async (address) => {
+        const account = this.ethStore.getState().accounts[address]
+        if (!account) return
+        return account.balance
+      },
+      publishTransaction: this.txProviderUtil.publishTransaction.bind(this.txProviderUtil),
       getPendingTransactions: (address) => {
         return this.getFilteredTxList({
           from: address,
@@ -50,16 +54,18 @@ module.exports = class TransactionController extends EventEmitter {
       },
     })
 
-    this.pendingTxWatchers.on('txWarning', this.updateTx.bind(this))
-    this.pendingTxWatchers.on('txFailed', this.setTxStatusFailed.bind(this))
-    this.pendingTxWatchers.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
+    this.pendingTxTracker.on('txWarning', this.updateTx.bind(this))
+    this.pendingTxTracker.on('txFailed', this.setTxStatusFailed.bind(this))
+    this.pendingTxTracker.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
 
-    this.blockTracker.on('rawBlock', this.pendingTxWatchers.checkForTxInBlock.bind(this.pendingTxWatchers))
+    this.blockTracker.on('rawBlock', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
     // where ethStore hasent been populated by the results yet
-    this.blockTracker.once('latest', () => this.blockTracker.on('latest', this.pendingTxWatchers.resubmitPendingTxs.bind(this.pendingTxWatchers)))
-    this.blockTracker.on('sync', this.pendingTxWatchers.queryPendingTxs.bind(this.pendingTxWatchers))
+    this.blockTracker.once('latest', () => {
+      this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
+    })
+    this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
     // memstore is computed from a few different stores
     this._updateMemstore()
     this.store.subscribe(() => this._updateMemstore())
@@ -191,7 +197,7 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    await this.txProviderUtils.validateTxParams(txParams)
+    await this.txProviderUtil.validateTxParams(txParams)
     // construct txMeta
     const txMeta = {
       id: createId(),
@@ -217,7 +223,7 @@ module.exports = class TransactionController extends EventEmitter {
       txParams.gasPrice = gasPrice
     }
     // set gasLimit
-    return await this.txProviderUtils.analyzeGasUsage(txMeta)
+    return await this.txProviderUtil.analyzeGasUsage(txMeta)
   }
 
   async updateAndApproveTransaction (txMeta) {
@@ -260,7 +266,7 @@ module.exports = class TransactionController extends EventEmitter {
     const fromAddress = txParams.from
     // add network/chain id
     txParams.chainId = this.getChainId()
-    const ethTx = this.txProviderUtils.buildEthTxFromParams(txParams)
+    const ethTx = this.txProviderUtil.buildEthTxFromParams(txParams)
     await this.signEthTx(ethTx, fromAddress)
     this.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
@@ -271,7 +277,7 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.rawTx = rawTx
     this.updateTx(txMeta)
-    const txHash = await this.txProviderUtils.publishTransaction(rawTx)
+    const txHash = await this.txProviderUtil.publishTransaction(rawTx)
     this.setTxHash(txId, txHash)
     this.setTxStatusSubmitted(txId)
   }

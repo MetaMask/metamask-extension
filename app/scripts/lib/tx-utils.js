@@ -13,7 +13,7 @@ its passed ethquery
 and used to do things like calculate gas of a tx.
 */
 
-module.exports = class txProvideUtils {
+module.exports = class txProvideUtil {
   constructor (provider) {
     this.query = new EthQuery(provider)
   }

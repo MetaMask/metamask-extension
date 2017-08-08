@@ -19,7 +19,7 @@ const sufficientBalance = require('./util').sufficientBalance
 
 */
 
-module.exports = class PendingTransactionWatchers extends EventEmitter {
+module.exports = class PendingTransactionTracker extends EventEmitter {
   constructor (config) {
     super()
     this.query = new EthQuery(config.provider)
@@ -97,6 +97,7 @@ module.exports = class PendingTransactionWatchers extends EventEmitter {
   async _resubmitTx (txMeta) {
     const address = txMeta.txParams.from
     const balance = this.getBalance(address)
+    if (balance === undefined) return
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
     // if the value of the transaction is greater then the balance, fail.
