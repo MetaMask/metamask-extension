@@ -18,8 +18,6 @@ BalanceComponent.prototype.render = function () {
   const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
 
   return h('div.balance-container', {}, [
-    // laptop: 50px 50px
-    // mobile: 100px 100px
 
     // TODO: balance icon needs to be passed in
     h('img.balance-icon', {
@@ -44,8 +42,6 @@ BalanceComponent.prototype.renderBalance = function (formattedBalance) {
     ])
   }
 
-  // laptop: 5vw?
-  // phone: 50vw?
   return h('div.flex-column.balance-display', {}, [
     h('div.token-amount', {
       style: {},
