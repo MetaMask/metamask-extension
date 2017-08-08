@@ -43,6 +43,7 @@
           ]
         }
       ],
+      "reactify",
       "envify",
       "brfs"
     ]
@@ -53,6 +54,7 @@
     "babel-runtime": "^6.23.0",
     "bip39": "^2.2.0",
     "bluebird": "^3.5.0",
+    "boron": "^0.2.3",
     "browser-passworder": "^2.0.3",
     "browserify-derequire": "^0.9.4",
     "client-sw-ready-event": "^3.3.0",
@@ -119,6 +121,7 @@
     "react-simple-file-input": "^1.0.0",
     "react-tooltip-component": "^0.3.0",
     "react-transition-group": "^2.2.0",
+    "reactify": "^1.1.1",
     "readable-stream": "^2.1.2",
     "redux": "^3.0.5",
     "redux-logger": "^2.10.2",
