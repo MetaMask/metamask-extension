@@ -10,16 +10,20 @@ const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
+const { createStubedProvider } = require('../stub/provider')
 
 describe('Transaction Controller', function () {
-  let txController
+  let txController, engine, provider, providerResultStub
 
   beforeEach(function () {
+    providerResultStub = {}
+    provider = createStubedProvider(providerResultStub)
+
     txController = new TransactionController({
+      provider,
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
-      provider: { sendAsync: noop },
       ethStore: { getState: noop },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
@@ -27,19 +31,7 @@ describe('Transaction Controller', function () {
       }),
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
-    txController.query = new Proxy({}, {
-      get: (queryStubResult, key) => {
-        if (key === 'stubResult') {
-          return function (method, ...args) {
-            queryStubResult[method] = args
-          }
-        } else {
-          const returnValues = queryStubResult[key]
-          return () => Promise.resolve(...returnValues)
-        }
-      },
-    })
-    txController.txProviderUtils = new TxProvideUtils(txController.query)
+    txController.txProviderUtils = new TxProvideUtils(txController.provider)
   })
 
   describe('#newUnapprovedTransaction', function () {
@@ -76,7 +68,6 @@ describe('Transaction Controller', function () {
     it('should resolve when finished and status is submitted and resolve with the hash', function (done) {
       txController.once('newUnaprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
-          console.log('HELLLO')
           txController.setTxHash(txMetaFromEmit.id, '0x0')
           txController.setTxStatusSubmitted(txMetaFromEmit.id)
         }, 10)
@@ -93,7 +84,6 @@ describe('Transaction Controller', function () {
     it('should reject when finished and status is rejected', function (done) {
       txController.once('newUnaprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
-          console.log('HELLLO')
           txController.setTxStatusRejected(txMetaFromEmit.id)
         }, 10)
       })
@@ -133,11 +123,9 @@ describe('Transaction Controller', function () {
           'to':'0xc684832530fcbddae4b4230a47e991ddcec2831d',
         },
       }
-
-      txController.query.stubResult('gasPrice', '0x4a817c800')
-      txController.query.stubResult('getBlockByNumber', { gasLimit: '0x47b784' })
-      txController.query.stubResult('estimateGas', '0x5209')
-
+        providerResultStub.eth_gasPrice = '4a817c800'
+        providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' }
+        providerResultStub.eth_estimateGas = '5209'
       txController.addTxDefaults(txMeta)
       .then((txMetaWithDefaults) => {
         assert(txMetaWithDefaults.txParams.value, '0x0','should have added 0x0 as the value')
@@ -394,9 +382,8 @@ describe('Transaction Controller', function () {
       const wrongValue = '0x05'
 
       txController.addTx(txMeta)
-
-      txController.query.stubResult('estimateGas', wrongValue)
-      txController.query.stubResult('gasPrice', wrongValue)
+      providerResultStub.eth_gasPrice = wrongValue
+      providerResultStub.eth_estimateGas = '0x5209'
 
       const signStub = sinon.stub(txController, 'signTransaction').callsFake(() => Promise.resolve())
 
@@ -427,48 +414,6 @@ describe('Transaction Controller', function () {
         assert.equal(ethTx.getChainId(), currentNetworkId)
         done()
       }).catch(done)
-    })
-  })
-
-  describe('#_resubmitTx with a too-low balance', function () {
-    it('should fail the transaction', function (done) {
-      const from = '0xda0da0'
-      const txMeta = {
-        id: 1,
-        status: 'submitted',
-        metamaskNetworkId: currentNetworkId,
-        txParams: {
-          from,
-          nonce: '0x1',
-          value: '0xfffff',
-        },
-      }
-
-      const lowBalance = '0x0'
-      const fakeStoreState = { accounts: {} }
-      fakeStoreState.accounts[from] = {
-        balance: lowBalance,
-        nonce: '0x0',
-      }
-
-      // Stubbing out current account state:
-      const getStateStub = sinon.stub(txController.ethStore, 'getState')
-      .returns(fakeStoreState)
-
-      // Adding the fake tx:
-      txController.addTx(clone(txMeta))
-
-      txController._resubmitTx(txMeta)
-      .then(() => {
-        const updatedMeta = txController.getTx(txMeta.id)
-        assert.notEqual(updatedMeta.status, txMeta.status, 'status changed.')
-        assert.equal(updatedMeta.status, 'failed', 'tx set to failed.')
-        done()
-      })
-      .catch((err) => {
-        assert.ifError(err, 'should not throw an error')
-        done(err)
-      })
     })
   })
 })
