@@ -44,17 +44,12 @@ BalanceComponent.prototype.renderBalance = function (formattedBalance) {
     ])
   }
 
-  var balanceObj = generateBalanceObject(formattedBalance, shorten ? 1 : 3)
-  var balanceValue = shorten ? balanceObj.shortBalance : balanceObj.balance
-
-  var label = balanceObj.label
-
   // laptop: 5vw?
   // phone: 50vw?
   return h('div.flex-column.balance-display', {}, [
     h('div.token-amount', {
       style: {},
-    }, `${balanceValue} ${label}`),
+    }, this.getTokenBalance(formattedBalance, shorten)),
 
     showFiat ? this.renderFiatValue(formattedBalance) : null,
   ])
@@ -65,25 +60,33 @@ BalanceComponent.prototype.renderFiatValue = function (formattedBalance) {
   const props = this.props
   const { conversionRate, currentCurrency } = props
 
-  if (formattedBalance === 'None') return formattedBalance
-  var fiatDisplayNumber
-  var splitBalance = formattedBalance.split(' ')
+  const fiatDisplayNumber = this.getFiatDisplayNumber(formattedBalance, conversionRate)
 
-  if (conversionRate !== 0) {
-    fiatDisplayNumber = (Number(splitBalance[0]) * conversionRate).toFixed(2)
-  } else {
-    fiatDisplayNumber = 'N/A'
-  }
-
-  return fiatDisplay(fiatDisplayNumber, currentCurrency)
+  return this.renderFiatAmount(fiatDisplayNumber, currentCurrency)
 }
 
-function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
-  if (fiatDisplayNumber !== 'N/A') {
-    return h('div.fiat-amount', {
-      style: {},
-    }, `${fiatDisplayNumber} ${fiatSuffix}`)
-  } else {
-    return h('div')
-  }
+BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatSuffix) {
+  if (fiatDisplayNumber === 'N/A') return null
+
+  return h('div.fiat-amount', {
+    style: {},
+  }, `${fiatDisplayNumber} ${fiatSuffix}`)
+}
+
+BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {
+  const balanceObj = generateBalanceObject(formattedBalance, shorten ? 1 : 3)
+
+  const balanceValue = shorten ? balanceObj.shortBalance : balanceObj.balance
+  const label = balanceObj.label
+
+  return `${balanceValue} ${label}`
+}
+
+BalanceComponent.prototype.getFiatDisplayNumber = function (formattedBalance, conversionRate) {
+  if (formattedBalance === 'None') return formattedBalance
+  if (conversionRate === 0) return 'N/A'
+
+  const splitBalance = formattedBalance.split(' ')
+
+  return (Number(splitBalance[0]) * conversionRate).toFixed(2)
 }
