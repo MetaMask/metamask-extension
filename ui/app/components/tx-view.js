@@ -1,10 +1,14 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const actions = require('../actions')
 // slideout menu
 const WalletView = require('./wallet-view')
+
+// balance component
+const BalanceComponent = require('./balance-component')
 
 const Identicon = require('./identicon')
 // const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
@@ -15,13 +19,18 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 function mapStateToProps (state) {
   return {
     sidebarOpen: state.appState.sidebarOpen,
+    identities: state.metamask.identities,
+    accounts: state.metamask.accounts,
+    address: state.metamask.selectedAddress,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    showSidebar: () => {dispatch(actions.showSidebar())},
-    hideSidebar: () => {dispatch(actions.hideSidebar())},
+    showSidebar: () => { dispatch(actions.showSidebar()) },
+    hideSidebar: () => { dispatch(actions.hideSidebar()) },
   }
 }
 
@@ -40,7 +49,13 @@ function TxView () {
 }
 
 TxView.prototype.render = function () {
-  const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684' // TODO: remove fake address
+
+  var props = this.props
+  var selected = props.address || Object.keys(props.accounts)[0]
+  var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
+  var identity = props.identities[selected]
+  var account = props.accounts[selected]
+  const { conversionRate, currentCurrency } = props
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -62,7 +77,7 @@ TxView.prototype.render = function () {
         },
       }, []),
 
-      //account display
+      // account display
       h('.identicon-wrapper.select-none', {
         style: {
           marginLeft: '0.9em',
@@ -75,9 +90,9 @@ TxView.prototype.render = function () {
       ]),
 
       h('span.account-name', {
-        style: {}
+        style: {},
       }, [
-        'Account 1'
+        identity.name,
       ]),
 
     ]),
@@ -88,24 +103,12 @@ TxView.prototype.render = function () {
       style: {},
     }, [
 
-      // laptop: 50px 50px
-      // mobile: 100px 100px
-      h('img.hero-balance-icon', {
-        src: '../images/eth_logo.svg',
-        style: {}
+      h(BalanceComponent, {
+        balanceValue: account && account.balance,
+        conversionRate,
+        currentCurrency,
+        style: {},
       }),
-
-      // laptop: 5vw?
-      // phone: 50vw?
-      h('div.flex-column.hero-balance-display', {}, [
-        h('div.token-amount', {
-          style: {}
-        }, '1001.124 ETH'),
-
-        h('div.fiat-amount', {
-          style: {}
-        }, '$300,000 USD'),
-      ]),
 
       // laptop: 10vw?
       // phone: 75vw?
