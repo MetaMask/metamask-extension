@@ -36,6 +36,7 @@ function reduceApp (state, action) {
   var appState = extend({
     shouldClose: false,
     menuOpen: false,
+    modalOpen: false,
     sidebarOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
@@ -56,6 +57,17 @@ function reduceApp (state, action) {
     case actions.SIDEBAR_CLOSE:
       return extend(appState, {
         sidebarOpen: false,
+      })
+
+    // modal methods:
+    case actions.MODAL_OPEN:
+      return extend(appState, {
+        modalOpen: true,
+      })
+
+    case actions.MODAL_CLOSE:
+      return extend(appState, {
+        modalOpen: false,
       })
 
     // transition methods

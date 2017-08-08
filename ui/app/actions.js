@@ -5,6 +5,11 @@ var actions = {
 
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // modal state
+  MODAL_OPEN: 'UI_MODAL_OPEN',
+  MODAL_CLOSE: 'UI_MODAL_CLOSE',
+  showModal: showModal,
+  hideModal: hideModal,
   // sidebar state
   SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
@@ -765,6 +770,18 @@ function useEtherscanProvider () {
   background.useEtherscanProvider()
   return {
     type: actions.USE_ETHERSCAN_PROVIDER,
+  }
+}
+
+function showModal () {
+  return {
+    type: actions.MODAL_OPEN,
+  }
+}
+
+function hideModal () {
+  return {
+    type: actions.MODAL_CLOSE,
   }
 }
 
