@@ -154,12 +154,21 @@ function failIfFailed (transaction) {
   if (transaction.status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }
-  if (transaction.err) {
+  if (transaction.err || transaction.warning) {
+    const { err, warning = {} } = transaction
+    const errFirst = !!(( err && warning ) || err)
+    const message = errFirst ? err.message : warning.message
+
+    errFirst ? err.message : warning.message
+
+
     return h(Tooltip, {
-      title: transaction.err.message,
+      title: message,
       position: 'bottom',
     }, [
-      h('span.error', ' (Failed)'),
+      h(`span.${errFirst ? 'error' : 'warning'}`,
+        ` (${errFirst ? 'Failed' : 'Warning'})`
+      ),
     ])
   }
 }

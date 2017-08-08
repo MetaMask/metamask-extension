@@ -33,10 +33,10 @@ ShapeshiftForm.prototype.renderMain = function () {
 
   return h('.flex-column', {
     style: {
-      // marginTop: '10px',
+      position: 'relative',
       padding: '25px',
       paddingTop: '5px',
-      width: '100%',
+      width: '90%',
       minHeight: '215px',
       alignItems: 'center',
       overflowY: 'auto',
@@ -58,7 +58,9 @@ ShapeshiftForm.prototype.renderMain = function () {
         },
       }),
 
-      h('.input-container', [
+      h('.input-container', {
+        position: 'relative',
+      }, [
         h('input#fromCoin.buy-inputs.ex-coins', {
           type: 'text',
           list: 'coinList',
@@ -79,27 +81,31 @@ ShapeshiftForm.prototype.renderMain = function () {
           style: {
             fontSize: '12px',
             color: '#F7861C',
-            position: 'relative',
-            bottom: '48px',
-            left: '106px',
+            position: 'absolute',
           },
         }),
       ]),
 
-      h('.icon-control', [
-        h('i.fa.fa-refresh.fa-4.orange', {
-          style: {
-            bottom: '5px',
-            left: '5px',
-            color: '#F7861C',
-          },
-          onClick: this.updateCoin.bind(this),
-        }),
+      h('.icon-control', {
+        style: {
+          position: 'relative',
+        },
+      }, [
+        // Not visible on the screen, can't see it on master.
+
+        // h('i.fa.fa-refresh.fa-4.orange', {
+        //   style: {
+        //     bottom: '5px',
+        //     left: '5px',
+        //     color: '#F7861C',
+        //   },
+        //   onClick: this.updateCoin.bind(this),
+        // }),
         h('i.fa.fa-chevron-right.fa-4.orange', {
           style: {
-            position: 'relative',
-            bottom: '26px',
-            left: '10px',
+            position: 'absolute',
+            bottom: '35%',
+            left: '0%',
             color: '#F7861C',
           },
           onClick: this.updateCoin.bind(this),
@@ -117,69 +123,73 @@ ShapeshiftForm.prototype.renderMain = function () {
         },
       }),
     ]),
+
     h('.flex-column', {
       style: {
+        marginTop: '1%',
         alignItems: 'flex-start',
       },
     }, [
-      this.props.warning ? this.props.warning && h('span.error.flex-center', {
-        style: {
-          textAlign: 'center',
-          width: '229px',
-          height: '82px',
-        },
-      },
-        this.props.warning) : this.renderInfo(),
+      this.props.warning
+        ? this.props.warning
+        && h('span.error.flex-center', {
+          style: {
+            textAlign: 'center',
+            width: '229px',
+            height: '82px',
+          },
+        }, this.props.warning)
+        : this.renderInfo(),
+
+      this.renderRefundAddressForCoin(coin),
     ]),
 
-    h(this.activeToggle('.input-container'), {
+  ])
+}
+
+ShapeshiftForm.prototype.renderRefundAddressForCoin = function (coin) {
+  return h(this.activeToggle('.input-container'), {
+    style: {
+      marginTop: '1%',
+    },
+  }, [
+
+    h('div', `${coin} Address:`),
+
+    h('input#fromCoinAddress.buy-inputs', {
+      type: 'text',
+      placeholder: `Your ${coin} Refund Address`,
+      dataset: {
+        persistentFormId: 'refund-address',
+
+      },
       style: {
-        padding: '10px',
-        paddingTop: '0px',
-        width: '100%',
+        boxSizing: 'border-box',
+        width: '227px',
+        height: '30px',
+        padding: ' 5px ',
+      },
+    }),
+
+    h('i.fa.fa-pencil-square-o.edit-text', {
+      style: {
+        fontSize: '12px',
+        color: '#F7861C',
+        position: 'absolute',
+      },
+    }),
+    h('div.flex-row', {
+      style: {
+        justifyContent: 'flex-start',
       },
     }, [
-
-      h('div', `${coin} Address:`),
-
-      h('input#fromCoinAddress.buy-inputs', {
-        type: 'text',
-        placeholder: `Your ${coin} Refund Address`,
-        dataset: {
-          persistentFormId: 'refund-address',
-        },
+      h('button', {
+        onClick: this.shift.bind(this),
         style: {
-          boxSizing: 'border-box',
-          width: '227px',
-          height: '30px',
-          padding: ' 5px ',
+          marginTop: '1%',
         },
-      }),
-
-      h('i.fa.fa-pencil-square-o.edit-text', {
-        style: {
-          fontSize: '12px',
-          color: '#F7861C',
-          position: 'relative',
-          bottom: '10px',
-          right: '11px',
-        },
-      }),
-      h('.flex-row', {
-        style: {
-          justifyContent: 'flex-end',
-        },
-      }, [
-        h('button', {
-          onClick: this.shift.bind(this),
-          style: {
-            marginTop: '10px',
-            position: 'relative',
-            bottom: '40px',
-          },
-        },
-        'Submit'),
-      ]),
+      },
+      'Submit'),
     ]),
   ])
 }

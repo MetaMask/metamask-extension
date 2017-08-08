@@ -1,7 +1,11 @@
-const ethUtil = require('ethereumjs-util')
+const EthQuery = require('ethjs-query')
 const Transaction = require('ethereumjs-tx')
 const normalize = require('eth-sig-util').normalize
-const BN = ethUtil.BN
+const {
+  hexToBn,
+  BnMultiplyByFraction,
+  bnToHex,
+} = require('./util')
 
 /*
 tx-utils are utility methods for Transaction manager
@@ -9,9 +13,9 @@ its passed ethquery
 and used to do things like calculate gas of a tx.
 */
 
-module.exports = class txProvideUtils {
-  constructor (ethQuery) {
-    this.query = ethQuery
+module.exports = class txProvideUtil {
+  constructor (provider) {
+    this.query = new EthQuery(provider)
   }
 
   async analyzeGasUsage (txMeta) {
@@ -91,31 +95,4 @@ module.exports = class txProvideUtils {
       throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
     }
   }
-
-  sufficientBalance (txParams, hexBalance) {
-    const balance = hexToBn(hexBalance)
-    const value = hexToBn(txParams.value)
-    const gasLimit = hexToBn(txParams.gas)
-    const gasPrice = hexToBn(txParams.gasPrice)
-
-    const maxCost = value.add(gasLimit.mul(gasPrice))
-    return balance.gte(maxCost)
-  }
-
-}
-
-// util
-
-function bnToHex (inputBn) {
-  return ethUtil.addHexPrefix(inputBn.toString(16))
-}
-
-function hexToBn (inputHex) {
-  return new BN(ethUtil.stripHexPrefix(inputHex), 16)
-}
-
-function BnMultiplyByFraction (targetBN, numerator, denominator) {
-  const numBN = new BN(numerator)
-  const denomBN = new BN(denominator)
-  return targetBN.mul(numBN).div(denomBN)
 }
