@@ -1,10 +1,7 @@
 const Component = require('react').Component
-
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-// const elementType = require('react-prop-types/lib/elementType')
-// const PropTypes from 'prop-types'
 const FadeModal = require('boron').FadeModal
 const actions = require('../actions')
 const isMobileView = require('../../lib/is-mobile-view')
@@ -30,16 +27,16 @@ function Modal () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
+const mobileModalStyles = {
+  width: '95%',
+}
+
+const laptopModalStyles = {
+  width: '66%',
+  top: '30%',
+}
+
 Modal.prototype.render = function () {
-
-  const mobileModalStyles = {
-    width: '95%',
-  }
-
-  const laptopModalStyles = {
-    width: '66%',
-    top: '30%',
-  }
 
   return h(FadeModal,
     {
@@ -78,7 +75,11 @@ Modal.prototype.show = function() {
   this.modalRef.show()
 }
 
+// TODO: specify default props and proptypes
 // Modal.defaultProps = {}
+
+// const elementType = require('react-prop-types/lib/elementType')
+// const PropTypes from 'prop-types'
 
 // Modal.propTypes = {
 //   active: PropTypes.bool,

@@ -98,10 +98,7 @@ App.prototype.render = function () {
 
     h('.flex-column.full-height', {
       style: {
-        // Windows was showing a vertical scroll bar:
         overflowX: 'hidden',
-        // TODO: check with dev who committed L75, see if this still happens, and whether auto is enough
-        // overflowY: 'auto',
         position: 'relative',
         alignItems: 'center',
       },
@@ -140,9 +137,6 @@ App.prototype.renderGlobalModal = function() {
 }
 
 App.prototype.renderSidebar = function() {
-  // if (!this.props.sidebarOpen) {
-  //   return null;
-  // }
 
   return h('div', {
   }, [
@@ -170,7 +164,7 @@ App.prototype.renderSidebar = function() {
       transitionEnterTimeout: 300,
       transitionLeaveTimeout: 200,
     }, [
-      // content
+      // A second instance of Walletview is used for non-mobile viewports
       this.props.sidebarOpen ? h(WalletView, {
         responsiveDisplayClassname: '.sidebar',
         style: {},
@@ -501,10 +495,6 @@ App.prototype.renderPrimary = function () {
       isUnlocked: props.isUnlocked,
     })
   }
-
-  // Note for @Zanibar - isUnlocked stays true.
-  // console.log("props.isUnlocked", props.isUnlocked)
-  // console.log("props.isUnlocked", props.currentView.name)
 
   // show current view
   switch (props.currentView.name) {

@@ -26,10 +26,12 @@ function BuyOptions () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
 
+// BuyOptions is currently meant to be rendered inside <Modal />
+// It is the only component in this codebase that does so
+// It utilizes modal styles
 BuyOptions.prototype.render = function () {
   return h('div', {}, [
     h('div.modal-content.transfers-subview', {
-
     }, [
       h('div.modal-content-title-wrapper.flex-column.flex-center', {
         style: {},
@@ -44,7 +46,6 @@ BuyOptions.prototype.render = function () {
 
         h('div.modal-content-option', {
           onClick: () => {
-            console.log("buy clicked")
             const { toCoinbase, address } = this.props
             toCoinbase(address)
           },
