@@ -1,5 +1,62 @@
-.modal {
-  // first child - component
-  // second child - background
-  //  boron should provide them, but we need breakpoints
+.modal-contents {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'DIN OT';
+}
+
+@media screen and (max-width: 575px) {
+  .buy-options {
+    flex-direction: column;
+    padding: 5% 33%;
+  }
+
+  div.buy-option {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    height: 15vh;
+    margin: 10px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid black;
+    padding: 0% 7%;
+    justify-content: space-around;
+
+    div.buy-option-title {
+      font-size: 20px;
+    }
+
+    div.buy-option-subtitle {
+      font-size: 16px;
+    }
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .buy-options {
+    flex-direction: row;
+  }
+
+  div.buy-option {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+    height: 135px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid black;
+    padding: 0% 7%;
+
+    div.buy-option-title {
+      font-size: 1.55em;
+      margin-top: 22%;
+    }
+
+    div.buy-option-subtitle {
+      font-size: 0.95em;
+      margin-top: 15%;
+    }
+  }
 }

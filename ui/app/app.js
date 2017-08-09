@@ -133,7 +133,55 @@ App.prototype.render = function () {
 App.prototype.renderGlobalModal = function() {
   return h(Modal, {
     ref: "modalRef",
-  }, ['test modal'])
+  }, [
+    h('div.modal-contents.transfers-subview', {
+
+    }, [
+      h('div.flex-column.flex-center', {
+        style: {
+          justifyContent: 'space-around',
+          width: '100%',
+          height: '100px',
+        },
+      }, [
+        h('div', {
+          style: {
+            fontSize: '26px',
+            marginTop: '15px',
+          },
+        }, 'Transfers'),
+        h('div', {}, 'How would you like to buy Ether?'),
+      ]),
+
+      h('div.buy-options.flex-column.flex-center', {}, [
+
+        h('div.buy-option', {}, [
+          h('div.buy-option-title', {}, 'Coinbase'),
+          h('div.buy-option-subtitle', {}, 'Buy with Fiat'),
+
+        ]),
+
+        h('div.buy-option', {}, [
+          h('div.buy-option-title', {}, 'Shapeshift'),
+          h('div.buy-option-subtitle', {}, 'Trade any digital asset for any other'),
+        ]),
+
+        h('div.buy-option', {}, [
+          h('div.buy-option-title', {}, 'Coinbase'),
+          h('div.buy-option-subtitle', {}, 'Deposit from another account'),
+        ]),
+
+      ]),
+
+      h('div', {
+        style: {
+          textTransform: 'uppercase',
+          width: '100%',
+          height: '50px',
+        }
+      }, 'Cancel'),
+    ])
+  ])
 }
 
 App.prototype.renderSidebar = function() {

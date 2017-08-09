@@ -38,6 +38,9 @@ Modal.prototype.render = function () {
       ref: (ref) => {
         this.modalRef = ref
       },
+      modalStyle: {
+        width: '95%',
+      },
     },
     this.props.children,
   )
