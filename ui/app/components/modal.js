@@ -31,7 +31,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 const mobileModalStyles = {
   width: '95%',
   // Used to create matching t/l/r/b space in mobile view.
-  top: isPopupOrNotification() === 'popup' ? '47vh' : '36.5vh',
+  top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
   boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
 }
 
