@@ -306,6 +306,17 @@ function bundleTask(opts) {
     return (
 
       bundler.bundle()
+
+      // handle errors
+      .on('error', (err) => {
+        beep()
+        if (opts.watch) {
+          console.warn(err.stack)
+        } else {
+          throw err
+        }
+      })
+      
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
@@ -314,7 +325,7 @@ function bundleTask(opts) {
       .pipe(buffer())
       // sourcemaps
       // loads map from browserify file
-      .pipe(gulpif(debug, sourcemaps.init({loadMaps: true})))
+      .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
       // writes .map file
       .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles
@@ -327,4 +338,8 @@ function bundleTask(opts) {
 
     )
   }
+}
+
+function beep () {
+  process.stdout.write('\x07')
 }
