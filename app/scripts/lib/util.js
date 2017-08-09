@@ -1,5 +1,6 @@
 const ethUtil = require('ethereumjs-util')
-const BN = ethUtil.BN
+const assert = require('assert')
+const BN = require('bn.js')
 
 module.exports = {
   getStack,
@@ -15,6 +16,10 @@ function getStack () {
 }
 
 function sufficientBalance (txParams, hexBalance) {
+  // validate hexBalance is a hex string
+  assert.equal(typeof hexBalance, 'string', 'sufficientBalance - hexBalance is not a hex string')
+  assert.equal(hexBalance.slice(0, 2), '0x', 'sufficientBalance - hexBalance is not a hex string')
+
   const balance = hexToBn(hexBalance)
   const value = hexToBn(txParams.value)
   const gasLimit = hexToBn(txParams.gas)

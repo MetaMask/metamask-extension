@@ -40,7 +40,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
-      getBalance: async (address) => {
+      getBalance: (address) => {
         const account = this.ethStore.getState().accounts[address]
         if (!account) return
         return account.balance
@@ -382,9 +382,12 @@ module.exports = class TransactionController extends EventEmitter {
     this._setTxStatus(txId, 'confirmed')
   }
 
-  setTxStatusFailed (txId, reason) {
+  setTxStatusFailed (txId, err) {
     const txMeta = this.getTx(txId)
-    txMeta.err = reason
+    txMeta.err = {
+      message: err.toString(),
+      stack: err.stack,
+    }
     this.updateTx(txMeta)
     this._setTxStatus(txId, 'failed')
   }
