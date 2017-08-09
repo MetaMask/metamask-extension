@@ -37,6 +37,7 @@ const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const Modal = require('./components/modal')
+const BuyOptions = require('./components/buy-options')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
@@ -134,42 +135,7 @@ App.prototype.renderGlobalModal = function() {
   return h(Modal, {
     ref: "modalRef",
   }, [
-    h('div.modal-content.transfers-subview', {
-
-    }, [
-      h('div.modal-content-title-wrapper.flex-column.flex-center', {
-        style: {},
-      }, [
-        h('div.modal-content-title', {
-          style: {},
-        }, 'Transfers'),
-        h('div', {}, 'How would you like to buy Ether?'),
-      ]),
-
-      h('div.modal-content-options.flex-column.flex-center', {}, [
-
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Coinbase'),
-          h('div.modal-content-option-subtitle', {}, 'Buy with Fiat'),
-
-        ]),
-
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Shapeshift'),
-          h('div.modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
-        ]),
-
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Direct Deposit'),
-          h('div.modal-content-option-subtitle', {}, 'Deposit from another account'),
-        ]),
-
-      ]),
-
-      h('div.modal-content-footer', {
-        style: {},
-      }, 'Cancel'),
-    ])
+    h(BuyOptions, {}, []),
   ])
 }
 
