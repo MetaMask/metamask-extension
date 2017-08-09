@@ -1,7 +1,7 @@
 const assert = require('assert')
-const ethUtil = require('ethereumjs-util')
-const BN = ethUtil.BN
+const BN = require('bn.js')
 
+const { hexToBn, bnToHex } = require('../../app/scripts/lib/util')
 const TxUtils = require('../../app/scripts/lib/tx-utils')
 
 
@@ -14,44 +14,6 @@ describe('txUtils', function () {
         return () => {}
       },
     }))
-  })
-
-  describe('#sufficientBalance', function () {
-    it('returns true if max tx cost is equal to balance.', function () {
-      const tx = {
-        'value': '0x1',
-        'gas': '0x2',
-        'gasPrice': '0x3',
-      }
-      const balance = '0x8'
-
-      const result = txUtils.sufficientBalance(tx, balance)
-      assert.ok(result, 'sufficient balance found.')
-    })
-
-    it('returns true if max tx cost is less than balance.', function () {
-      const tx = {
-        'value': '0x1',
-        'gas': '0x2',
-        'gasPrice': '0x3',
-      }
-      const balance = '0x9'
-
-      const result = txUtils.sufficientBalance(tx, balance)
-      assert.ok(result, 'sufficient balance found.')
-    })
-
-    it('returns false if max tx cost is more than balance.', function () {
-      const tx = {
-        'value': '0x1',
-        'gas': '0x2',
-        'gasPrice': '0x3',
-      }
-      const balance = '0x6'
-
-      const result = txUtils.sufficientBalance(tx, balance)
-      assert.ok(!result, 'insufficient balance found.')
-    })
   })
 
   describe('chain Id', function () {
@@ -96,7 +58,7 @@ describe('txUtils', function () {
       assert(outputBn.eq(expectedBn), 'returns the original estimatedGas value')
     })
 
-    it('buffers up to reccomend gas limit reccomended ceiling', function () {
+    it('buffers up to recommend gas limit recommended ceiling', function () {
       // naive estimatedGas: 0x16e360 (1.5 mil)
       const inputHex = '0x16e360'
       // dummy gas limit: 0x1e8480 (2 mil)
@@ -107,17 +69,7 @@ describe('txUtils', function () {
       // const inputBn = hexToBn(inputHex)
       // const outputBn = hexToBn(output)
       const expectedHex = bnToHex(ceilGasLimitBn)
-      assert.equal(output, expectedHex, 'returns the gas limit reccomended ceiling value')
+      assert.equal(output, expectedHex, 'returns the gas limit recommended ceiling value')
     })
   })
 })
-
-// util
-
-function hexToBn (inputHex) {
-  return new BN(ethUtil.stripHexPrefix(inputHex), 16)
-}
-
-function bnToHex (inputBn) {
-  return ethUtil.addHexPrefix(inputBn.toString(16))
-}
