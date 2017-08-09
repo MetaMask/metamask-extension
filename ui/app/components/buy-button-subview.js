@@ -138,30 +138,40 @@ BuyButtonSubview.prototype.primarySubview = function () {
   switch (network) {
     case 'loading':
       return
-      
+
     case '1':
       return this.mainnetSubview()
 
+    // Ropsten, Rinkeby, Kovan
     case '3':
     case '4':
     case '42':
-      const networkName = networkNames[network]
-      const label = `${networkName} Test Faucet`
-      return (
-        h('div.flex-column', {
+    const networkName = networkNames[network]
+    const label = `${networkName} Test Faucet`
+    return (
+      h('div.flex-column', {
+        style: {
+          alignItems: 'center',
+          margin: '20px 50px',
+        },
+      }, [
+        h('button.text-transform-uppercase', {
+          onClick: () => this.props.dispatch(actions.buyEth({ network })),
           style: {
-            alignItems: 'center',
-            margin: '20px 50px',
+            marginTop: '15px',
           },
-        }, [
+        }, label),
+        // Kovan only: Dharma loans beta
+        network === '42' ? (
           h('button.text-transform-uppercase', {
-            onClick: () => this.props.dispatch(actions.buyEth({ network })),
+            onClick: () => this.navigateTo('https://borrow.dharma.io/'),
             style: {
               marginTop: '15px',
             },
-          }, label),
-        ])
-      )
+          }, 'Borrow With Dharma (Beta)')
+        ) : null
+      ])
+    )
 
     default:
       return (
