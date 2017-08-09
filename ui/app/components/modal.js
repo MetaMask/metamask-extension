@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
 const actions = require('../actions')
 const isMobileView = require('../../lib/is-mobile-view')
+const isPopupOrNotification = require('../../../app/scripts/lib/is-popup-or-notification')
 
 function mapStateToProps (state) {
   return {
@@ -29,12 +30,14 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 const mobileModalStyles = {
   width: '95%',
+  // Used to create matching t/l/r/b space in mobile view.
+  top: isPopupOrNotification() === 'popup' ? '47vh' : '36.5vh',
   boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
 }
 
 const laptopModalStyles = {
   width: '66%',
-  top: '30%',
+  top: 'calc(30% + 10px)',
   boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
 }
 
