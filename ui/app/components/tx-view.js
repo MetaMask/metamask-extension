@@ -10,6 +10,9 @@ const WalletView = require('./wallet-view')
 // balance component
 const BalanceComponent = require('./balance-component')
 
+// tx list
+const TxList = require('./tx-list')
+
 const Identicon = require('./identicon')
 // const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
 // const Content = require('./wallet-content-display')
@@ -22,6 +25,8 @@ function mapStateToProps (state) {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
     address: state.metamask.selectedAddress,
+    transactions: state.metamask.selectedAddressTxList || [],
+    shapeShiftTxList: state.metamask.shapeShiftTxList,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
   }
@@ -35,15 +40,6 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-const contentDivider = h('div', {
-  style: {
-    marginLeft: '1.3em',
-    marginRight: '1.3em',
-    height:'1px',
-    background:'#E7E7E7', // TODO: make custom color
-  },
-})
-
 inherits(TxView, Component)
 function TxView () {
   Component.call(this)
@@ -56,7 +52,9 @@ TxView.prototype.render = function () {
   var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
   var account = props.accounts[selected]
-  const { conversionRate, currentCurrency } = props
+  const { conversionRate, currentCurrency, transactions } = props
+
+  console.log(transactions)
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -114,7 +112,7 @@ TxView.prototype.render = function () {
       // laptop: 10vw?
       // phone: 75vw?
       h('div.flex-row.flex-center.hero-balance-buttons', {
-        style: {}
+        style: {},
       }, [
         h('button.btn-clear', {
           style: {
@@ -135,97 +133,7 @@ TxView.prototype.render = function () {
       ]),
     ]),
 
-    h('div.flex-row', {
-      style: {
-        margin: '1.8em 0.9em 0.8em 0.9em',
-      }
-    }, [
-
-      // tx-view-tab.js
-      h('div.flex-row', {
-      }, [
-
-        h('div', {
-          style: {
-            borderBottom: '0.07em solid black',
-            paddingBottom: '0.015em',
-          }
-        }, 'TRANSACTIONS'),
-
-        h('div', {
-          style: {
-            marginLeft: '1.25em',
-          }
-        }, 'TOKENS'),
-
-      ]),
-    ]),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-  ])
-  // column
-  // tab row
-  // divider
-  // item
-}
-
-TxView.prototype.renderTransactionListItem = function () {
-  return h('div.flex-column', {
-    style: {
-      alignItems: 'stretch',
-      margin: '0.6em 1.3em 0.6em 1.3em',
-    }
-  }, [
-
-    h('div', {
-      style: {
-        flexGrow: 1,
-        marginTop: '0.3em',
-      }
-    }, 'Jul 01, 2017'),
-
-    h('div.flex-row', {
-      style: {
-        alignItems: 'stretch',
-      }
-    }, [
-
-      h('div', {
-        style: {
-          flexGrow: 1,
-        }
-      }, 'icon'),
-
-      h('div', {
-        style: {
-          flexGrow: 3,
-        }
-      }, 'Hash'),
-
-      h('div', {
-        style: {
-          flexGrow: 5,
-        }
-      }, 'Status'),
-
-      h('div', {
-        style: {
-          flexGrow: 2,
-        }
-      }, 'Details'),
-
-    ])
+    h(TxList, {}),
 
   ])
 }
-
-
