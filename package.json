@@ -155,8 +155,8 @@
     "enzyme": "^2.8.2",
     "eslint-plugin-chai": "0.0.1",
     "eslint-plugin-mocha": "^4.9.0",
-    "fs-promise": "^2.0.3",
     "eth-json-rpc-middleware": "^1.2.7",
+    "fs-promise": "^2.0.3",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-if": "^2.0.1",
     "gulp-json-editor": "^2.2.1",
@@ -191,7 +191,7 @@
     "uglifyify": "^4.0.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
+    "watchify": "^3.9.0"
   },
   "engines": {
     "node": ">=0.8.0"
