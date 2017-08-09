@@ -20,7 +20,15 @@ module.exports = class txProvideUtil {
 
   async analyzeGasUsage (txMeta) {
     const block = await this.query.getBlockByNumber('latest', true)
-    const estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
+    let estimatedGasHex
+    try {
+      estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
+    } catch (err) {
+      if (err.message.includes('Transaction execution error.')) {
+        txMeta.simulationFails = true
+        return txMeta
+      }
+    }
     this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
     return txMeta
   }
@@ -35,8 +43,8 @@ module.exports = class txProvideUtil {
       const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
       txParams.gas = bnToHex(saferGasLimitBN)
     }
-    // run tx, see if it will OOG
-    return this.query.estimateGas(txParams)
+    // run tx
+    return await this.query.estimateGas(txParams)
   }
 
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
