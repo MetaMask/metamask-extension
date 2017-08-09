@@ -248,26 +248,27 @@ function zipTask(target) {
   }
 }
 
-function generateBundler(opts) {
-  var browserifyOpts = assign({}, watchify.args, {
+function generateBundler(opts, performBundle) {
+  const browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
     plugin: 'browserify-derequire',
     debug: debug,
     fullPaths: debug,
   })
 
-  return browserify(browserifyOpts)
-}
-
-function discTask(opts) {
-  let bundler = generateBundler(opts)
+  let bundler = browserify(browserifyOpts)
 
   if (opts.watch) {
     bundler = watchify(bundler)
-    // on any dep update, runs the bundler
+    // on any file update, re-runs the bundler
     bundler.on('update', performBundle)
   }
 
+  return bundler
+}
+
+function discTask(opts) {
+  const bundler = generateBundler(opts, performBundle)
   // output build logs to terminal
   bundler.on('log', gutil.log)
 
@@ -289,14 +290,7 @@ function discTask(opts) {
 
 
 function bundleTask(opts) {
-  let bundler = generateBundler(opts)
-
-  if (opts.watch) {
-    bundler = watchify(bundler)
-    // on any file update, re-runs the bundler
-    bundler.on('update', performBundle)
-  }
-
+  const bundler = generateBundler(opts, performBundle)
   // output build logs to terminal
   bundler.on('log', gutil.log)
 
@@ -316,7 +310,7 @@ function bundleTask(opts) {
           throw err
         }
       })
-      
+
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
