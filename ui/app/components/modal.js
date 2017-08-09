@@ -29,11 +29,17 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
 const mobileModalStyles = {
   width: '95%',
+  boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
 }
 
 const laptopModalStyles = {
   width: '66%',
   top: '30%',
+  boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+}
+
+const backdropStyles = {
+  backgroundColor: 'rgba(245, 245, 245, 0.85)',
 }
 
 Modal.prototype.render = function () {
@@ -47,6 +53,7 @@ Modal.prototype.render = function () {
         this.modalRef = ref
       },
       modalStyle: isMobileView() ? mobileModalStyles : laptopModalStyles,
+      backdropStyle: backdropStyles,
     },
     this.props.children,
   )
