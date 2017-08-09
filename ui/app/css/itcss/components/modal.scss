@@ -1,4 +1,4 @@
-.modal-contents {
+.modal-content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -7,12 +7,29 @@
 }
 
 @media screen and (max-width: 575px) {
-  .buy-options {
+  .modal-content-title-wrapper {
+    justify-content: space-around;
+    width: 100%;
+    height: 100px;
+  }
+
+  .modal-content.title {
+    font-size: 26px;
+    margin-top: 15px;
+  }
+
+  .modal-content-options {
     flex-direction: column;
     padding: 5% 33%;
   }
 
-  div.buy-option {
+  .modal-content-footer {
+    text-transform: uppercase;
+    width: 100%;
+    height: 50px;
+  }
+
+  div.modal-content-option {
     display: flex;
     flex-direction: column;
     width: 80vw;
@@ -24,39 +41,56 @@
     padding: 0% 7%;
     justify-content: space-around;
 
-    div.buy-option-title {
+    div.modal-content-option-title {
       font-size: 20px;
     }
 
-    div.buy-option-subtitle {
+    div.modal-content-option-subtitle {
       font-size: 16px;
     }
   }
 }
 
 @media screen and (min-width: 576px) {
-  .buy-options {
+  .modal-content-title-wrapper {
+    justify-content: space-around;
+    width: 100%;
+    height: 100px;
+  }
+
+  .modal-content.title {
+    font-size: 26px;
+    margin-top: 15px;
+  }
+
+  .modal-content-footer {
+    text-transform: uppercase;
+    width: 100%;
+    height: 50px;
+  }
+
+  .modal-content-options {
     flex-direction: row;
   }
 
-  div.buy-option {
+  div.modal-content-option {
     display: flex;
     flex-direction: column;
-    width: 150px;
-    height: 135px;
+    width: 20vw;
+    height: 18vw;
     text-align: center;
     border-radius: 6px;
     border: 1px solid black;
-    padding: 0% 7%;
+    margin: 0px .5vw;
+    justify-content: space-around;
 
-    div.buy-option-title {
-      font-size: 1.55em;
-      margin-top: 22%;
+    div.modal-content-option-title {
+      font-size: 20px;
     }
 
-    div.buy-option-subtitle {
-      font-size: 0.95em;
-      margin-top: 15%;
+    div.modal-content-option-subtitle {
+      font-size: 16px;
+      padding: 0px 20px;
     }
   }
 }
