@@ -169,7 +169,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
               marginTop: '15px',
             },
           }, 'Borrow With Dharma (Beta)')
-        ) : null
+        ) : null,
       ])
     )
 
