@@ -46,9 +46,8 @@ module.exports = class TransactionController extends EventEmitter {
         return account.balance
       },
       publishTransaction: this.txProviderUtil.publishTransaction.bind(this.txProviderUtil),
-      getPendingTransactions: (address) => {
+      getPendingTransactions: () => {
         return this.getFilteredTxList({
-          from: address,
           status: 'submitted',
         })
       },

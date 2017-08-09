@@ -66,7 +66,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
 
 
   resubmitPendingTxs () {
-    const pending = this.getPendingTransactions('status', 'submitted')
+    const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
     pending.forEach((txMeta) => this._resubmitTx(txMeta).catch((err) => {
