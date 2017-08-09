@@ -46,10 +46,11 @@ module.exports = class TransactionController extends EventEmitter {
         return account.balance
       },
       publishTransaction: this.txProviderUtil.publishTransaction.bind(this.txProviderUtil),
-      getPendingTransactions: (address) => {
+      getPendingTransactions: () => {
+        const network = this.getNetwork()
         return this.getFilteredTxList({
-          from: address,
           status: 'submitted',
+          metamaskNetworkId: network,
         })
       },
     })
