@@ -86,3 +86,13 @@ i.fa.fa-question-circle.fa-lg.menu-icon {
 //     width: 80%;
 //   }
 // }
+
+
+
+// This text is contained inside a div.
+// ID needed to override user agent stylesheet.
+// See components/modal.scss
+#modal-content-footer-text {
+  font-family: 'DIN OT';
+  font-size: 16px;
+}

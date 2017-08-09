@@ -16,6 +16,9 @@ function mapDispatchToProps (dispatch) {
     toCoinbase: (address) => {
       dispatch(actions.buyEth({ network: '1', address, amount: 0 }))
     },
+    hideModal: () => {
+      dispatch(actions.hideModal())
+    }
   }
 }
 
@@ -66,9 +69,12 @@ BuyOptions.prototype.render = function () {
 
       ]),
 
-      h('div.modal-content-footer', {
-        style: {},
-      }, 'Cancel'),
+      h('button', {
+        style: {
+          background: 'white',
+        },
+        onClick: () => { this.props.hideModal() },
+      }, h('div.modal-content-footer#modal-content-footer-text',{}, 'Cancel')),
     ])
   ])
 }
