@@ -160,7 +160,7 @@ App.prototype.renderGlobalModal = function() {
         ]),
 
         h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Coinbase'),
+          h('div.modal-content-option-title', {}, 'Direct Deposit'),
           h('div.modal-content-option-subtitle', {}, 'Deposit from another account'),
         ]),
 

@@ -87,11 +87,29 @@
 
     div.modal-content-option-title {
       font-size: 20px;
+
+      @media screen and (max-width: 679px) {
+        font-size: 14px;
+      }
+
+      @media screen and (min-width: 1281px) {
+        font-size: 26px;
+      }
     }
 
     div.modal-content-option-subtitle {
       font-size: 16px;
-      padding: 0px 20px;
+      padding: 0px 10px;
+      height: 25%;
+
+      @media screen and (max-width: 679px) {
+        font-size: 10px;
+      }
+
+      @media screen and (min-width: 1281px) {
+        font-size: 20px;
+      }
+
     }
 
     div.modal-content-footer {
