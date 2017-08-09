@@ -382,9 +382,12 @@ module.exports = class TransactionController extends EventEmitter {
     this._setTxStatus(txId, 'confirmed')
   }
 
-  setTxStatusFailed (txId, reason) {
+  setTxStatusFailed (txId, err) {
     const txMeta = this.getTx(txId)
-    txMeta.err = reason
+    txMeta.err = {
+      message: err.toString(),
+      stack: err.stack,
+    }
     this.updateTx(txMeta)
     this._setTxStatus(txId, 'failed')
   }
