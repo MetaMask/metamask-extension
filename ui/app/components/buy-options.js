@@ -7,12 +7,13 @@ const actions = require('../actions')
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
+    address: state.metamask.selectedAddress,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    toCoinbase: () => {
+    toCoinbase: (address) => {
       dispatch(actions.buyEth({ network: '1', address, amount: 0 }))
     },
   }
@@ -41,13 +42,15 @@ BuyOptions.prototype.render = function () {
 
       h('div.modal-content-options.flex-column.flex-center', {}, [
 
-        h('div.modal-content-option', {}, [
+        h('div.modal-content-option', {
+          onClick: () => {
+            console.log("buy clicked")
+            const { toCoinbase, address } = this.props
+            toCoinbase(address)
+          },
+        }, [
           h('div.modal-content-option-title', {}, 'Coinbase'),
-          h('div.modal-content-option-subtitle', {
-            onClick: () => {
-              this.props.toCoinbase()
-            },
-          }, 'Buy with Fiat'),
+          h('div.modal-content-option-subtitle', {}, 'Buy with Fiat'),
         ]),
 
         h('div.modal-content-option', {}, [
