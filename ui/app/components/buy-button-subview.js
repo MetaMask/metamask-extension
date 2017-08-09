@@ -8,11 +8,7 @@ const ShapeshiftForm = require('./shapeshift-form')
 const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
-const networkNames = {
-  3: 'Ropsten',
-  4: 'Rinkeby',
-  42: 'Kovan',
-}
+const networkNames = require('../../../app/scripts/config.js').networkNames
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -146,30 +142,30 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '3':
     case '4':
     case '42':
-    const networkName = networkNames[network]
-    const label = `${networkName} Test Faucet`
-    return (
-      h('div.flex-column', {
-        style: {
-          alignItems: 'center',
-          margin: '20px 50px',
-        },
-      }, [
-        h('button.text-transform-uppercase', {
-          onClick: () => this.props.dispatch(actions.buyEth({ network })),
+      const networkName = networkNames[network]
+      const label = `${networkName} Test Faucet`
+      return (
+        h('div.flex-column', {
           style: {
-            marginTop: '15px',
+            alignItems: 'center',
+            margin: '20px 50px',
           },
-        }, label),
-        // Kovan only: Dharma loans beta
-        network === '42' ? (
+        }, [
           h('button.text-transform-uppercase', {
-            onClick: () => this.navigateTo('https://borrow.dharma.io/'),
+            onClick: () => this.props.dispatch(actions.buyEth({ network })),
             style: {
               marginTop: '15px',
             },
-          }, 'Borrow With Dharma (Beta)')
-        ) : null,
+          }, label),
+          // Kovan only: Dharma loans beta
+          network === '42' ? (
+            h('button.text-transform-uppercase', {
+              onClick: () => this.navigateTo('https://borrow.dharma.io/'),
+              style: {
+                marginTop: '15px',
+              },
+            }, 'Borrow With Dharma (Beta)')
+          ) : null,
       ])
     )
 
