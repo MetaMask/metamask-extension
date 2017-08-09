@@ -40,7 +40,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
-      getBalance: async (address) => {
+      getBalance: (address) => {
         const account = this.ethStore.getState().accounts[address]
         if (!account) return
         return account.balance
