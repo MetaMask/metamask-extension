@@ -104,12 +104,21 @@
 
       @media screen and (max-width: 679px) {
         font-size: 10px;
+        padding: 0px 10px;
+        margin-bottom: 5px;
+        line-height: 15px;
+      }
+
+      @media screen and (min-width: 680px) {
+        font-size: 14px;
+        padding: 0px 4px;
+        margin-bottom: 2px;
       }
 
       @media screen and (min-width: 1281px) {
         font-size: 20px;
+        padding: 0px 0px;
       }
-
     }
 
     div.modal-content-footer {
