@@ -38,7 +38,9 @@ function WalletView () {
 const noop = () => {}
 
 WalletView.prototype.render = function () {
-  const { network, responsiveDisplayClassname, style, identities, selectedAddress } = this.props
+  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount } = this.props
+
+  console.log(selectedAccount)
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
