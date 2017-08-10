@@ -67,7 +67,7 @@ class DropdownMenuItem extends Component {
         },
         style: Object.assign({
           listStyle: 'none',
-          padding: '8px 0px 8px 0px',
+          padding: '8px 0px',
           fontSize: '18px',
           fontStyle: 'normal',
           fontFamily: 'Montserrat Regular',
@@ -75,6 +75,7 @@ class DropdownMenuItem extends Component {
           display: 'flex',
           justifyContent: 'flex-start',
           alignItems: 'center',
+          color: 'white',
         }, style),
       },
       children

@@ -6,14 +6,20 @@ const Identicon = require('./identicon')
 const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
 const Content = require('./wallet-content-display')
 const actions = require('../actions')
+const selectors = require('../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
 
 function mapStateToProps (state) {
+
   return {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebarOpen,
     identities: state.metamask.identities,
+    accounts: state.metamask.accounts,
+    selectedAddress: selectors.getSelectedAddress(state),
+    selectedIdentity: selectors.getSelectedIdentity(state),
+    selectedAccount: selectors.getSelectedAccount(state),
   }
 }
 
@@ -32,8 +38,7 @@ function WalletView () {
 const noop = () => {}
 
 WalletView.prototype.render = function () {
-  const selected = '0x82df11beb942BEeeD58d466fCb0F0791365C7684' // TODO: remove fake address
-  const { network, responsiveDisplayClassname, style, identities } = this.props
+  const { network, responsiveDisplayClassname, style, identities, selectedAddress } = this.props
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
@@ -45,20 +50,32 @@ WalletView.prototype.render = function () {
     }, [
 
       h('div.flex-row.account-options-menu', {
+        style: {
+          position: 'relative',
+        },
       }, [
 
         h(AccountDropdowns, {
-          // selected,
-          // network,
-          // identities: props.identities,
+          selected: selectedAddress,
+          network,
+          identities,
           enableAccountOptions: true,
+          dropdownWrapperStyle: {
+            padding: '1px 15px',
+            marginLeft: '-25px',
+            position: 'absolute',
+            width: '122%', //TODO, refactor all of this component out into media queries
+          },
+          menuItemStyles: {
+            padding: '0px 0px',
+            margin: '22px 0px',
+          }
         }, []),
 
       ]),
 
       h('div.flex-column.flex-center', {
         style: {
-          // constrains size of absolutely positioned wrappers
           position: 'relative',
         },
       }, [
@@ -70,7 +87,7 @@ WalletView.prototype.render = function () {
         }, [
           h(Identicon, {
             diameter: 54,
-            address: selected,
+            address: selectedAddress,
           }),
         ]),
 
@@ -84,31 +101,14 @@ WalletView.prototype.render = function () {
           style: {
             position: 'absolute',
             left: 'calc(50% + 28px + 5.5px)',
-            // left: '42px',
-            // top: '-10px'
-            // left: '66.5%',
             top: '19.5%',
           },
-          selected,
+          selected: selectedAddress,
           network,
           identities,
           enableAccountsSelector: true,
         }, []),
       ]),
-
-      h(
-        AccountDropdowns,
-        {
-          style: {
-            marginLeft: 'auto',
-            cursor: 'pointer',
-          },
-          selected,
-          network, // TODO: this prop could be in the account dropdown container
-          identities: {},
-        },
-      ),
-
     ]),
 
     h(Content, {
@@ -128,6 +128,5 @@ WalletView.prototype.render = function () {
         marginTop: '1.3em',
       }
     })
-
   ])
 }

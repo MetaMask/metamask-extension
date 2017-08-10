@@ -22,7 +22,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, selected } = this.props
+    const { identities, selected, menuItemStyles, dropdownWrapperStyle } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
@@ -35,10 +35,13 @@ class AccountDropdowns extends Component {
           onClick: () => {
             this.props.actions.showAccountDetail(identity.address)
           },
-          style: {
-            marginTop: index === 0 ? '5px' : '',
-            fontSize: '24px',
-          },
+          style: Object.assign(
+            {
+              marginTop: index === 0 ? '5px' : '',
+              fontSize: '24px',
+            },
+            menuItemStyles,
+          ),
         },
         [
           h(
@@ -59,8 +62,8 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountSelector () {
-    const { actions } = this.props
-    const { accountSelectorActive } = this.state
+    const { actions, dropdownWrapperStyle } = this.props
+    const { accountSelectorActive, menuItemStyles } = this.state
 
     return h(
       Dropdown,
@@ -93,6 +96,10 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => actions.addNewAccount(),
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
           },
           [
             h(
@@ -112,6 +119,10 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => actions.showImportPage(),
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
           },
           [
             h(
@@ -137,16 +148,20 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions } = this.props
-    const { optionsMenuActive } = this.state
+    const { actions, dropdownWrapperStyle } = this.props
+    const { optionsMenuActive, menuItemStyles } = this.state
 
     return h(
       Dropdown,
       {
-        style: {
-          marginLeft: '-215px',
-          minWidth: '180px',
-        },
+        style: Object.assign(
+          {
+            marginLeft: '-10px',
+            position: 'absolute',
+            width: '29vh', // affects both mobile and laptop views
+          },
+          dropdownWrapperStyle,
+        ),
         isOpen: optionsMenuActive,
         onClickOutside: () => {
           const { classList } = event.target
@@ -166,6 +181,10 @@ class AccountDropdowns extends Component {
               const url = genAccountLink(selected, network)
               global.platform.openWindow({ url })
             },
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
           },
           'View account on Etherscan',
         ),
@@ -178,6 +197,10 @@ class AccountDropdowns extends Component {
               var identity = identities[selected]
               actions.showQrView(selected, identity ? identity.name : '')
             },
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
           },
           'Show QR Code',
         ),
@@ -190,6 +213,10 @@ class AccountDropdowns extends Component {
               const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
               copyToClipboard(checkSumAddress)
             },
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
           },
           'Copy Address to clipboard',
         ),
@@ -200,6 +227,10 @@ class AccountDropdowns extends Component {
             onClick: () => {
               actions.requestAccountExport()
             },
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
           },
           'Export Private Key',
         ),
@@ -208,7 +239,7 @@ class AccountDropdowns extends Component {
   }
 
   render () {
-    const { style, enableAccountsSelector, enableAccountOptions } = this.props
+    const { style, enableAccountsSelector, enableAccountOptions, dropdownWrapperStyle } = this.props
     const { optionsMenuActive, accountSelectorActive } = this.state
 
     return h(
@@ -267,7 +298,7 @@ AccountDropdowns.defaultProps = {
 
 AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
-  selected: PropTypes.string,
+  selected: PropTypes.string, // TODO: refactor to be more explicit: selectedAddress
 }
 
 const mapDispatchToProps = (dispatch) => {
