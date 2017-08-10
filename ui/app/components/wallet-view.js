@@ -11,6 +11,7 @@ const selectors = require('../selectors')
 module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
 
 function mapStateToProps (state) {
+
   return {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebarOpen,
@@ -24,8 +25,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showSendPage: () => { dispatch(actions.showSendPage()) },
-    hideSidebar: () => { dispatch(actions.hideSidebar()) },
+    showSendPage: () => {dispatch(actions.showSendPage())},
+    hideSidebar: () => {dispatch(actions.hideSidebar())},
   }
 }
 
@@ -37,7 +38,7 @@ function WalletView () {
 const noop = () => {}
 
 WalletView.prototype.render = function () {
-  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedIdentity } = this.props
+  const { network, responsiveDisplayClassname, style, identities, selectedAddress } = this.props
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
@@ -45,7 +46,7 @@ WalletView.prototype.render = function () {
 
     // TODO: Separate component: wallet account details
     h('div.flex-column', {
-      style: {},
+      style: {}
     }, [
 
       h('div.flex-row.account-options-menu', {
@@ -91,9 +92,9 @@ WalletView.prototype.render = function () {
         ]),
 
         h('span.account-name', {
-          style: {},
+          style: {}
         }, [
-          selectedIdentity.name,
+          'Account 1'
         ]),
 
         h(AccountDropdowns, {
@@ -102,31 +103,30 @@ WalletView.prototype.render = function () {
             left: 'calc(50% + 28px + 5.5px)',
             top: '19.5%',
           },
-          selectedAddress,
+          selected: selectedAddress,
           network,
           identities,
           enableAccountsSelector: true,
         }, []),
       ]),
-
     ]),
 
     h(Content, {
-      title: 'Wallet',
-      amount: '1001.124 ETH',
-      fiatValue: '$300,000.00 USD',
-      active: true,
+     title: 'Wallet',
+     amount: '1001.124 ETH',
+     fiatValue: '$300,000.00 USD',
+     active: true,
     }),
 
     // Wallet contents
     h(Content, {
-      title: 'Total Token Balance',
-      amount: '45.439 ETH',
-      fiatValue: '$13,000.00 USD',
+      title: "Total Token Balance",
+      amount: "45.439 ETH",
+      fiatValue: "$13,000.00 USD",
       active: false,
       style: {
         marginTop: '1.3em',
-      },
-    }),
+      }
+    })
   ])
 }
