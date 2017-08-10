@@ -20,15 +20,21 @@ const Identicon = require('./identicon')
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
 function mapStateToProps (state) {
+  const sidebarOpen = state.appState.sidebarOpen
+
+  const identities = state.metamask.identities
+  const accounts = state.metamask.accounts
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
+  const identity = identities[selectedAddress]
+  const account = accounts[selectedAddress]
+
   return {
-    sidebarOpen: state.appState.sidebarOpen,
-    identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
-    address: state.metamask.selectedAddress,
-    transactions: state.metamask.selectedAddressTxList || [],
-    shapeShiftTxList: state.metamask.shapeShiftTxList,
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
+    sidebarOpen,
+    selectedAddress,
+    checksumAddress,
+    identity,
+    account,
   }
 }
 
@@ -47,14 +53,7 @@ function TxView () {
 
 TxView.prototype.render = function () {
 
-  var props = this.props
-  var selected = props.address || Object.keys(props.accounts)[0]
-  var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
-  var identity = props.identities[selected]
-  var account = props.accounts[selected]
-  const { conversionRate, currentCurrency, transactions } = props
-
-  console.log(transactions)
+  const { selectedAddress, identity, account } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -63,7 +62,7 @@ TxView.prototype.render = function () {
     h('div.flex-row.phone-visible', {
       style: {
         margin: '1em 0.9em',
-        alignItems: 'center'
+        alignItems: 'center',
       },
       onClick: () => {
         this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
@@ -84,7 +83,7 @@ TxView.prototype.render = function () {
       }, [
         h(Identicon, {
           diameter: 24,
-          address: selected,
+          address: selectedAddress,
         }),
       ]),
 
@@ -104,8 +103,6 @@ TxView.prototype.render = function () {
 
       h(BalanceComponent, {
         balanceValue: account && account.balance,
-        conversionRate,
-        currentCurrency,
         style: {},
       }),
 
