@@ -2,12 +2,14 @@
 
 ## Current Master
 
+## 3.9.6 2017-8-09
+
 - Replace account screen with an account drop-down menu.
-- Replace confusing buttons with a new account-specific drop-down menu.
+- Replace account buttons with a new account-specific drop-down menu.
 
 ## 3.9.5 2017-8-04
 
-- Improved phishing detection configuration update rate 
+- Improved phishing detection configuration update rate
 
 ## 3.9.4 2017-8-03
 
