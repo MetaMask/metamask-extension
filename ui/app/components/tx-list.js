@@ -7,12 +7,18 @@ const valuesFor = require('../util').valuesFor
 
 module.exports = connect(mapStateToProps)(TxList)
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
+  const network = state.metamask.network
+  const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
+
+  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
+  const transactions = state.metamask.selectedAddressTxList || []
+
+  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
+  .sort((a, b) => b.time - a.time)
+
   return {
-    network: state.metamask.network,
-    unapprovedMsgs: valuesFor(state.metamask.unapprovedMsgs),
-    shapeShiftTxList: state.metamask.shapeShiftTxList,
-    transactions: state.metamask.selectedAddressTxList || [],
+    txsToRender,
     conversionRate: state.metamask.conversionRate,
   }
 }
@@ -33,16 +39,9 @@ const contentDivider = h('div', {
 
 TxList.prototype.render = function () {
 
-  const { transactions, network, unapprovedMsgs, conversionRate } = this.props
+  const { txsToRender, conversionRate } = this.props
 
-  var shapeShiftTxList
-  if (network === '1') {
-    shapeShiftTxList = this.props.shapeShiftTxList
-  }
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
-  .sort((a, b) => b.time - a.time)
-
-  console.log("transactions to render", txsToRender)
+  console.log('transactions to render', txsToRender)
 
   return h('div.flex-column.tx-list-container', {}, [
 
