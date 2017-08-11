@@ -107,14 +107,23 @@ AccountDetailScreen.prototype.render = function () {
                 },
                 [
                   h(
-                    'h2.font-medium.color-forest',
+                    'div.font-medium.color-forest',
                     {
                       name: 'edit',
                       style: {
                       },
                     },
                     [
-                      identity && identity.name,
+                      h('h2', {
+                        style: {
+                          maxWidth: '180px',
+                          overflowX: 'hidden',
+                          textOverflow: 'ellipsis',
+                          padding: '5px 0px',
+                        },
+                      }, [
+                        identity && identity.name,
+                      ]),
                     ]
                   ),
                   h(
