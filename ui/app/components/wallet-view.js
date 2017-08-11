@@ -242,5 +242,56 @@ WalletView.prototype.render = function () {
 
     ]),
 
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
   ])
 }

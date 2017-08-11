@@ -7,8 +7,12 @@
 
 @media screen and (max-width: $break-small) {
   .tx-list-header-wrapper {
-    margin-top: 1em;
-    margin-bottom: 1.4em;
+    margin-top: 0.2em;
+    margin-bottom: 0.6em;
+    // TODO: Resolve Layout Conflicst in Wallet View
+    //  - This fixes txlist "transactions" title dispay
+    // margin-top: 0.2em;
+    // margin-bottom: 0.6em;
     justify-content: center;
   }
 
