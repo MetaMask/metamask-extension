@@ -6,6 +6,7 @@ const Identicon = require('./identicon')
 const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
 const Content = require('./wallet-content-display')
 const actions = require('../actions')
+const BalanceComponent = require('./balance-component')
 const selectors = require('../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
@@ -113,22 +114,133 @@ WalletView.prototype.render = function () {
       ]),
     ]),
 
-    h(Content, {
-     title: 'Wallet',
-     amount: '1001.124 ETH',
-     fiatValue: '$300,000.00 USD',
-     active: true,
-    }),
+    //'Wallet' - Title
+    // Not visible on mobile
+    h('div.flex-column.wallet-view-title-wrapper', {}, [
+      h('span.wallet-view-title', {}, [
+        'Wallet',
+      ])
+    ]),
 
-    // Wallet contents
-    h(Content, {
-      title: "Total Token Balance",
-      amount: "45.439 ETH",
-      fiatValue: "$13,000.00 USD",
-      active: false,
-      style: {
-        marginTop: '1.3em',
-      }
-    })
+    //Wallet Balances
+    h('div.flex-column.wallet-balance-wrapper-active', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
+    h('div.flex-column', {}, [
+
+      h('div', {}, [
+
+        h('div.wallet-balance', {}, [
+
+          h(BalanceComponent, {
+            balanceValue: selectedAccount.balance,
+            style: {},
+          }),
+
+        ]),
+
+      ])
+
+    ]),
+
   ])
 }

@@ -28,7 +28,22 @@ $wallet-view-bg: $wild-sand;
 
 .wallet-view {
   flex: 33.5 0 33.5%;
-  background: $wallet-view-bg,
+  background: $wallet-view-bg;
+  overflow-y: scroll;
+}
+
+.wallet-view-title-wrapper {
+  height: 25px;
+}
+
+.wallet-view-title {
+  margin-left: 15px;
+  font-size: 16px;
+
+  // No title on mobile
+  @media screen and (max-width: 575px) {
+    display: none;
+  }
 }
 
 .account-options-menu {
