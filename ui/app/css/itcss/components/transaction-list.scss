@@ -1,23 +1,54 @@
-.tx-list-header {
-  margin: 1.8em 1.3em 1.8em 1.3em;
+.tx-list-container {
+  height: 87.5%;
+  @media screen and (min-width: $break-large) {
+    overflow-y: scroll;
+  }
+}
+
+@media screen and (max-width: $break-small) {
+  .tx-list-header-wrapper {
+    margin-top: 1em;
+    margin-bottom: 1.4em;
+    justify-content: center;
+  }
+
+  .tx-list-header {
+    align-self: center;
+    font-size: 12px;
+    color: $dusty-gray;
+  }
+}
+
+@media screen and (min-width: $break-large) {
+  .tx-list-header-wrapper {
+    flex: 0 0 55px;
+  }
+
+  .tx-list-header {
+    font-size: 16px;
+    margin: 1.8em 1.3em 1.8em 1.3em;
+  }
 }
 
 .tx-list-content-divider {
-  margin: 0.1em 1.3em 0.1em 1.3em;
   height: 1px;
   background: rgb(231, 231, 231);
   flex: 0 0 1px;
-}
 
-.tx-list-container {
-  height: 87.5%;
-  overflow-y: scroll;
+  @media screen and (max-width: $break-small) {
+    margin: 0.1em 0em 0.1em 0em;
+  }
+
+  @media screen and (min-width: $break-large) {
+    margin: 0.1em 1.3em 0.1em 1.3em;
+  }
 }
 
 .tx-list-item-wrapper {
   flex: 0 0 70px;
   align-items: stretch;
   justify-content: flex-start;
+
   @media screen and (max-width: $break-small) {
     margin: 0em 1.3em 0.95em 1.3em;
   }
@@ -31,6 +62,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
+
   @media screen and (max-width: $break-small) {
     margin-top: 6px;
     margin-bottom: 20px;

@@ -22,12 +22,7 @@ function TxList () {
 }
 
 const contentDivider = h('div.tx-list-content-divider', {
-  style: {
-    marginLeft: '1.3em',
-    marginRight: '1.3em',
-    height:'1px',
-    background:'#E7E7E7', // TODO: make custom color
-  },
+  style: {},
 })
 
 TxList.prototype.render = function () {
@@ -38,11 +33,11 @@ TxList.prototype.render = function () {
 
   return h('div.flex-column.tx-list-container', {}, [
 
-    h('div.flex-row.tx-list-header', {
+    h('div.flex-row.tx-list-header-wrapper', {
       style: {},
     }, [
 
-      h('div.flex-row', {
+      h('div.flex-row.tx-list-header', {
       }, [
 
         h('div', {
