@@ -47,11 +47,12 @@ describe('Transaction Controller', function () {
         metamaskNetworkId: currentNetworkId,
         txParams,
       }
-      txController._saveTxList([txMeta])
+      txController.txStateManager._saveTxList([txMeta])
       stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txMeta))
     })
 
     afterEach(function () {
+      txController.txStateManager._saveTxList([])
       stub.restore()
     })
 
@@ -69,7 +70,7 @@ describe('Transaction Controller', function () {
       txController.once('newUnaprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.setTxHash(txMetaFromEmit.id, '0x0')
-          txController.setTxStatusSubmitted(txMetaFromEmit.id)
+          txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id)
         }, 10)
       })
 
@@ -84,7 +85,7 @@ describe('Transaction Controller', function () {
     it('should reject when finished and status is rejected', function (done) {
       txController.once('newUnaprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
-          txController.setTxStatusRejected(txMetaFromEmit.id)
+          txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id)
         }, 10)
       })
 
@@ -107,7 +108,7 @@ describe('Transaction Controller', function () {
         assert(('txParams' in txMeta), 'should have a txParams')
         assert(('history' in txMeta), 'should have a history')
 
-        const memTxMeta = txController.getTx(txMeta.id)
+        const memTxMeta = txController.txStateManager.getTx(txMeta.id)
         assert.deepEqual(txMeta, memTxMeta, `txMeta should be stored in txController after adding it\n  expected: ${txMeta} \n  got: ${memTxMeta}`)
         addTxDefaultsStub.restore()
         done()
@@ -160,202 +161,31 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getTxList', function () {
-    it('when new should return empty array', function () {
-      var result = txController.getTxList()
-      assert.ok(Array.isArray(result))
-      assert.equal(result.length, 0)
-    })
-  })
-
   describe('#addTx', function () {
-    it('adds a tx returned in getTxList', function () {
-      var tx = { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
-      txController.addTx(tx, noop)
-      var result = txController.getTxList()
-      assert.ok(Array.isArray(result))
-      assert.equal(result.length, 1)
-      assert.equal(result[0].id, 1)
-    })
-
-    it('does not override txs from other networks', function () {
-      var tx = { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
-      var tx2 = { id: 2, status: 'confirmed', metamaskNetworkId: otherNetworkId, txParams: {} }
-      txController.addTx(tx, noop)
-      txController.addTx(tx2, noop)
-      var result = txController.getFullTxList()
-      var result2 = txController.getTxList()
-      assert.equal(result.length, 2, 'txs were deleted')
-      assert.equal(result2.length, 1, 'incorrect number of txs on network.')
-    })
-
-    it('cuts off early txs beyond a limit', function () {
-      const limit = txController.txHistoryLimit
-      for (let i = 0; i < limit + 1; i++) {
-        const tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
-        txController.addTx(tx, noop)
-      }
-      var result = txController.getTxList()
-      assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-      assert.equal(result[0].id, 1, 'early txs truncted')
-    })
-
-    it('cuts off early txs beyond a limit whether or not it is confirmed or rejected', function () {
-      const limit = txController.txHistoryLimit
-      for (let i = 0; i < limit + 1; i++) {
-        const tx = { id: i, time: new Date(), status: 'rejected', metamaskNetworkId: currentNetworkId, txParams: {} }
-        txController.addTx(tx, noop)
-      }
-      var result = txController.getTxList()
-      assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-      assert.equal(result[0].id, 1, 'early txs truncted')
-    })
-
-    it('cuts off early txs beyond a limit but does not cut unapproved txs', function () {
-      var unconfirmedTx = { id: 0, time: new Date(), status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      txController.addTx(unconfirmedTx, noop)
-      const limit = txController.txHistoryLimit
-      for (let i = 1; i < limit + 1; i++) {
-        const tx = { id: i, time: new Date(), status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }
-        txController.addTx(tx, noop)
-      }
-      var result = txController.getTxList()
-      assert.equal(result.length, limit, `limit of ${limit} txs enforced`)
-      assert.equal(result[0].id, 0, 'first tx should still be there')
-      assert.equal(result[0].status, 'unapproved', 'first tx should be unapproved')
-      assert.equal(result[1].id, 2, 'early txs truncted')
-    })
-  })
-
-  describe('#setTxStatusSigned', function () {
-    it('sets the tx status to signed', function () {
-      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      txController.addTx(tx, noop)
-      txController.setTxStatusSigned(1)
-      var result = txController.getTxList()
-      assert.ok(Array.isArray(result))
-      assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'signed')
-    })
-
-    it('should emit a signed event to signal the exciton of callback', (done) => {
-      this.timeout(10000)
-      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      const noop = function () {
-        assert(true, 'event listener has been triggered and noop executed')
-        done()
-      }
-      txController.addTx(tx)
-      txController.on('1:signed', noop)
-      txController.setTxStatusSigned(1)
-    })
-  })
-
-  describe('#setTxStatusRejected', function () {
-    it('sets the tx status to rejected', function () {
-      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      txController.addTx(tx)
-      txController.setTxStatusRejected(1)
-      var result = txController.getTxList()
-      assert.ok(Array.isArray(result))
-      assert.equal(result.length, 1)
-      assert.equal(result[0].status, 'rejected')
-    })
-
-    it('should emit a rejected event to signal the exciton of callback', (done) => {
-      this.timeout(10000)
-      var tx = { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }
-      txController.addTx(tx)
-      const noop = function (err, txId) {
-        assert(true, 'event listener has been triggered and noop executed')
-        done()
-      }
-      txController.on('1:rejected', noop)
-      txController.setTxStatusRejected(1)
-    })
-  })
-
-  describe('#updateTx', function () {
-    it('replaces the tx with the same id', function () {
-      txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.updateTx({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: currentNetworkId, txParams: {} })
-      var result = txController.getTx('1')
-      assert.equal(result.hash, 'foo')
-    })
-
-    it('updates gas price', function () {
-      const originalGasPrice = '0x01'
-      const desiredGasPrice = '0x02'
-
-      const txMeta = {
-        id: '1',
+    it('should emit updates', function (done) {
+      txMeta = {
         status: 'unapproved',
+        id: 1,
         metamaskNetworkId: currentNetworkId,
-        txParams: {
-          gasPrice: originalGasPrice,
-        },
+        txParams: {}
       }
 
-      const updatedMeta = clone(txMeta)
-
+      const eventNames = ['update', 'updateBadge', '1:unapproved']
+      const listeners = []
+      eventNames.forEach((eventName) => {
+        listeners.push(new Promise((resolve) => {
+          txController.once(eventName, (arg) => {
+            resolve(arg)
+          })
+        }))
+      })
+      Promise.all(listeners)
+      .then((returnValues) => {
+        assert.deepEqual(returnValues.pop(), txMeta, 'last event 1:unapproved should return txMeta')
+        done()
+      })
+      .catch(done)
       txController.addTx(txMeta)
-      updatedMeta.txParams.gasPrice = desiredGasPrice
-      txController.updateTx(updatedMeta)
-      var result = txController.getTx('1')
-      assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
-    })
-  })
-
-  describe('#getUnapprovedTxList', function () {
-    it('returns unapproved txs in a hash', function () {
-      txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      const result = txController.getUnapprovedTxList()
-      assert.equal(typeof result, 'object')
-      assert.equal(result['1'].status, 'unapproved')
-      assert.equal(result['2'], undefined)
-    })
-  })
-
-  describe('#getTx', function () {
-    it('returns a tx with the requested id', function () {
-      txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      assert.equal(txController.getTx('1').status, 'unapproved')
-      assert.equal(txController.getTx('2').status, 'confirmed')
-    })
-  })
-
-  describe('#getFilteredTxList', function () {
-    it('returns a tx with the requested data', function () {
-      const txMetas = [
-        { id: 0, status: 'unapproved', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
-        { id: 1, status: 'unapproved', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
-        { id: 2, status: 'unapproved', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
-        { id: 3, status: 'unapproved', txParams: { from: '0xbb', to: '0xaa' }, metamaskNetworkId: currentNetworkId },
-        { id: 4, status: 'unapproved', txParams: { from: '0xbb', to: '0xaa' }, metamaskNetworkId: currentNetworkId },
-        { id: 5, status: 'confirmed', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
-        { id: 6, status: 'confirmed', txParams: { from: '0xaa', to: '0xbb' }, metamaskNetworkId: currentNetworkId },
-        { id: 7, status: 'confirmed', txParams: { from: '0xbb', to: '0xaa' }, metamaskNetworkId: currentNetworkId },
-        { id: 8, status: 'confirmed', txParams: { from: '0xbb', to: '0xaa' }, metamaskNetworkId: currentNetworkId },
-        { id: 9, status: 'confirmed', txParams: { from: '0xbb', to: '0xaa' }, metamaskNetworkId: currentNetworkId },
-      ]
-      txMetas.forEach((txMeta) => txController.addTx(txMeta, noop))
-      let filterParams
-
-      filterParams = { status: 'unapproved', from: '0xaa' }
-      assert.equal(txController.getFilteredTxList(filterParams).length, 3, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-      filterParams = { status: 'unapproved', to: '0xaa' }
-      assert.equal(txController.getFilteredTxList(filterParams).length, 2, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-      filterParams = { status: 'confirmed', from: '0xbb' }
-      assert.equal(txController.getFilteredTxList(filterParams).length, 3, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-      filterParams = { status: 'confirmed' }
-      assert.equal(txController.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-      filterParams = { from: '0xaa' }
-      assert.equal(txController.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
-      filterParams = { to: '0xaa' }
-      assert.equal(txController.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
     })
   })
 
@@ -389,11 +219,11 @@ describe('Transaction Controller', function () {
 
       const pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
         txController.setTxHash('1', originalValue)
-        txController.setTxStatusSubmitted('1')
+        txController.txStateManager.setTxStatusSubmitted('1')
       })
 
       txController.approveTransaction(txMeta.id).then(() => {
-        const result = txController.getTx(txMeta.id)
+        const result = txController.txStateManager.getTx(txMeta.id)
         const params = result.txParams
 
         assert.equal(params.gas, originalValue, 'gas unmodified')

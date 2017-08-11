@@ -4,6 +4,7 @@ const clone = require('clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
+const TransactionStateManger = require('../lib/tx-state-manager')
 const TxProviderUtil = require('../lib/tx-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const createId = require('../lib/random-id')
@@ -12,17 +13,22 @@ const NonceTracker = require('../lib/nonce-tracker')
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
     super()
-    this.store = new ObservableStore(extend({
-      transactions: [],
-    }, opts.initState))
-    this.memStore = new ObservableStore({})
     this.networkStore = opts.networkStore || new ObservableStore({})
     this.preferencesStore = opts.preferencesStore || new ObservableStore({})
-    this.txHistoryLimit = opts.txHistoryLimit
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
     this.ethStore = opts.ethStore
+
+    this.memStore = new ObservableStore({})
+    this.query = new EthQuery(this.provider)
+    this.txProviderUtil = new TxProviderUtil(this.provider)
+
+    this.txStateManager = new TransactionStateManger(extend({
+      transactions: [],
+      txHistoryLimit: opts.txHistoryLimit,
+      getNetwork: this.getNetwork.bind(this),
+    }, opts.initState))
 
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
@@ -34,8 +40,6 @@ module.exports = class TransactionController extends EventEmitter {
         })
       },
     })
-    this.query = new EthQuery(this.provider)
-    this.txProviderUtil = new TxProviderUtil(this.provider)
 
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
@@ -69,7 +73,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
     // memstore is computed from a few different stores
     this._updateMemstore()
-    this.store.subscribe(() => this._updateMemstore())
+    this.txStateManager.subscribe(() => this._updateMemstore())
     this.networkStore.subscribe(() => this._updateMemstore())
     this.preferencesStore.subscribe(() => this._updateMemstore())
   }
@@ -86,84 +90,27 @@ module.exports = class TransactionController extends EventEmitter {
     return this.preferencesStore.getState().selectedAddress
   }
 
-  // Returns the number of txs for the current network.
-  getTxCount () {
-    return this.getTxList().length
-  }
-
-  // Returns the full tx list across all networks
-  getFullTxList () {
-    return this.store.getState().transactions
-  }
-
   getUnapprovedTxCount () {
     return Object.keys(this.getUnapprovedTxList()).length
   }
 
   getPendingTxCount () {
-    return this.getTxsByMetaData('status', 'signed').length
+    return this.txStateManager.getTxsByMetaData('status', 'signed').length
   }
 
   // Returns the tx list
-  getTxList () {
-    const network = this.getNetwork()
-    const fullTxList = this.getFullTxList()
-    return this.getTxsByMetaData('metamaskNetworkId', network, fullTxList)
-  }
 
-  // gets tx by Id and returns it
-  getTx (txId) {
-    const txList = this.getTxList()
-    const txMeta = txList.find(txData => txData.id === txId)
-    return txMeta
-  }
   getUnapprovedTxList () {
-    const txList = this.getTxList()
-    return txList.filter((txMeta) => txMeta.status === 'unapproved')
-    .reduce((result, tx) => {
+    const txList = this.txStateManager.getTxsByMetaData('status', 'unapproved')
+    return txList.reduce((result, tx) => {
       result[tx.id] = tx
       return result
     }, {})
   }
 
-  updateTx (txMeta) {
-    // create txMeta snapshot for history
-    const txMetaForHistory = clone(txMeta)
-    // dont include previous history in this snapshot
-    delete txMetaForHistory.history
-    // add snapshot to tx history
-    if (!txMeta.history) txMeta.history = []
-    txMeta.history.push(txMetaForHistory)
-
-    const txId = txMeta.id
-    const txList = this.getFullTxList()
-    const index = txList.findIndex(txData => txData.id === txId)
-    if (!txMeta.history) txMeta.history = []
-    txMeta.history.push(txMetaForHistory)
-
-    txList[index] = txMeta
-    this._saveTxList(txList)
-    this.emit('update')
-  }
-
   // Adds a tx to the txlist
   addTx (txMeta) {
-    const txCount = this.getTxCount()
-    const network = this.getNetwork()
-    const fullTxList = this.getFullTxList()
-    const txHistoryLimit = this.txHistoryLimit
-
-    // checks if the length of the tx history is
-    // longer then desired persistence limit
-    // and then if it is removes only confirmed
-    // or rejected tx's.
-    // not tx's that are pending or unapproved
-    if (txCount > txHistoryLimit - 1) {
-      const index = fullTxList.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected') && network === txMeta.metamaskNetworkId))
-      fullTxList.splice(index, 1)
-    }
-    fullTxList.push(txMeta)
-    this._saveTxList(fullTxList)
+    this.txStateManager.addTx(txMeta)
     this.emit('update')
 
     this.once(`${txMeta.id}:signed`, function (txId) {
@@ -211,7 +158,7 @@ module.exports = class TransactionController extends EventEmitter {
     // add default tx params
     await this.addTxDefaults(txMeta)
     // save txMeta
-    this.addTx(txMeta)
+    this.txStateManager.addTx(txMeta)
     return txMeta
   }
 
@@ -306,132 +253,10 @@ module.exports = class TransactionController extends EventEmitter {
     this.updateTx(txMeta)
   }
 
-  /*
-  Takes an object of fields to search for eg:
-  let thingsToLookFor = {
-    to: '0x0..',
-    from: '0x0..',
-    status: 'signed',
-    err: undefined,
-  }
-  and returns a list of tx with all
-  options matching
-
-  ****************HINT****************
-  | `err: undefined` is like looking |
-  | for a tx with no err             |
-  | so you can also search txs that  |
-  | dont have something as well by   |
-  | setting the value as undefined   |
-  ************************************
-
-  this is for things like filtering a the tx list
-  for only tx's from 1 account
-  or for filltering for all txs from one account
-  and that have been 'confirmed'
-  */
-  getFilteredTxList (opts) {
-    let filteredTxList
-    Object.keys(opts).forEach((key) => {
-      filteredTxList = this.getTxsByMetaData(key, opts[key], filteredTxList)
-    })
-    return filteredTxList
-  }
-
-  getTxsByMetaData (key, value, txList = this.getTxList()) {
-    return txList.filter((txMeta) => {
-      if (txMeta.txParams[key]) {
-        return txMeta.txParams[key] === value
-      } else {
-        return txMeta[key] === value
-      }
-    })
-  }
-
-  // STATUS METHODS
-  // get::set status
-
-  // should return the status of the tx.
-  getTxStatus (txId) {
-    const txMeta = this.getTx(txId)
-    return txMeta.status
-  }
-
-  // should update the status of the tx to 'rejected'.
-  setTxStatusRejected (txId) {
-    this._setTxStatus(txId, 'rejected')
-  }
-
-  // should update the status of the tx to 'approved'.
-  setTxStatusApproved (txId) {
-    this._setTxStatus(txId, 'approved')
-  }
-
-  // should update the status of the tx to 'signed'.
-  setTxStatusSigned (txId) {
-    this._setTxStatus(txId, 'signed')
-  }
-
-  // should update the status of the tx to 'submitted'.
-  setTxStatusSubmitted (txId) {
-    this._setTxStatus(txId, 'submitted')
-  }
-
-  // should update the status of the tx to 'confirmed'.
-  setTxStatusConfirmed (txId) {
-    this._setTxStatus(txId, 'confirmed')
-  }
-
-  setTxStatusFailed (txId, err) {
-    const txMeta = this.getTx(txId)
-    txMeta.err = {
-      message: err.toString(),
-      stack: err.stack,
-    }
-    this.updateTx(txMeta)
-    this._setTxStatus(txId, 'failed')
-  }
-
-  // merges txParams obj onto txData.txParams
-  // use extend to ensure that all fields are filled
-  updateTxParams (txId, txParams) {
-    const txMeta = this.getTx(txId)
-    txMeta.txParams = extend(txMeta.txParams, txParams)
-    this.updateTx(txMeta)
-  }
-
 /* _____________________________________
 |                                      |
 |           PRIVATE METHODS            |
 |______________________________________*/
-
-
-  //  Should find the tx in the tx list and
-  //  update it.
-  //  should set the status in txData
-  //    - `'unapproved'` the user has not responded
-  //    - `'rejected'` the user has responded no!
-  //    - `'approved'` the user has approved the tx
-  //    - `'signed'` the tx is signed
-  //    - `'submitted'` the tx is sent to a server
-  //    - `'confirmed'` the tx has been included in a block.
-  //    - `'failed'` the tx failed for some reason, included on tx data.
-  _setTxStatus (txId, status) {
-    const txMeta = this.getTx(txId)
-    txMeta.status = status
-    this.emit(`${txMeta.id}:${status}`, txId)
-    if (status === 'submitted' || status === 'rejected') {
-      this.emit(`${txMeta.id}:finished`, txMeta)
-    }
-    this.updateTx(txMeta)
-    this.emit('updateBadge')
-  }
-
-  // Saves the new/updated txList.
-  // Function is intended only for internal use
-  _saveTxList (transactions) {
-    this.store.updateState({ transactions })
-  }
 
   _updateMemstore () {
     const unapprovedTxs = this.getUnapprovedTxList()
