@@ -1,44 +1,77 @@
+.tx-list-header {
+  margin: 1.8em 1.3em 1.8em 1.3em;
+}
+
+.tx-list-content-divider {
+  margin: 0.1em 1.3em 0.1em 1.3em;
+  height: 1px;
+  background: rgb(231, 231, 231);
+  flex: 0 0 1px;
+}
+
+.tx-list-container {
+  height: 87.5%;
+  overflow-y: scroll;
+}
+
 .tx-list-item-wrapper {
+  flex: 0 0 70px;
   align-items: stretch;
-  justify-content: 'flex-start',
-  margin: '0.6em 1.3em 0.6em 1.3em',
-  overflow: 'scroll',
+  justify-content: flex-start;
+  margin: 0em 1.3em 0em 1.3em;
 }
 
 .tx-list-date-wrapper {
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: 'auto';
-  margin-top: '0.3em';
+  flex-basis: auto;
+  margin-top: 6px;
 }
 
 .tx-list-content-wrapper {
-  alignItems: 'stretch';
+  align-items: stretch;
+  margin-bottom: 8px;
 }
 
 .tx-list-date {
   color: $dusty-gray;
-  font-size: 8px;
+  font-size: 14px;
 }
 
 .tx-list-identicon-wrapper {
+  align-self: center;
   flex: 1 1 auto;
+  margin-left: 3px;
 }
 
 .tx-list-account-wrapper {
   flex: 3 3 auto;
-  font-size: 12px;
+  align-self: center;
+}
+
+.tx-list-account {
+  font-size: 16px;
 }
 
 .tx-list-status-wrapper {
+  align-self: center;
   flex: 5 5 auto;
 }
 
 .tx-list-status {
   color: $dusty-gray;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .tx-list-details-wrapper {
+  align-self: center;
   flex: 2 2 auto;
+}
+
+.tx-list-value {
+  font-size: 16px;
+}
+
+.tx-list-fiat-value {
+  font-size: 12px;
 }

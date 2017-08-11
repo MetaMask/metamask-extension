@@ -21,7 +21,7 @@ function TxList () {
   Component.call(this)
 }
 
-const contentDivider = h('div', {
+const contentDivider = h('div.tx-list-content-divider', {
   style: {
     marginLeft: '1.3em',
     marginRight: '1.3em',
@@ -38,13 +38,10 @@ TxList.prototype.render = function () {
 
   return h('div.flex-column.tx-list-container', {}, [
 
-    h('div.flex-row.tx-list', {
-      style: {
-        margin: '1.8em 0.9em 0.8em 0.9em',
-      },
+    h('div.flex-row.tx-list-header', {
+      style: {},
     }, [
 
-      // tx-view-tab.js
       h('div.flex-row', {
       }, [
 
@@ -53,6 +50,7 @@ TxList.prototype.render = function () {
         }, 'TRANSACTIONS'),
 
       ]),
+
     ]),
 
     contentDivider,
@@ -61,41 +59,41 @@ TxList.prototype.render = function () {
 
     contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
-    // this.renderTransactionListItem(),
+    this.renderTransactionListItem(),
 
-    // contentDivider,
+    contentDivider,
 
   ])
 }
@@ -106,7 +104,7 @@ TxList.prototype.renderTransactionListItem = function () {
     dateString: 'Jul 01, 2017',
     address: '0x82df11beb942beeed58d466fcb0f0791365c7684',
     transactionStatus: 'Confirmed',
-    transactionAmount: '3'
+    transactionAmount: '+ 3 ETH'
   }
 
   const { address, transactionStatus, transactionAmount, dateString } = props
@@ -132,14 +130,14 @@ TxList.prototype.renderTransactionListItem = function () {
       }, [
         h(Identicon, {
           address,
-          diameter: 18,
+          diameter: 24,
         })
       ]),
 
       h('div.tx-list-account-wrapper', {
         style: {}
       }, [
-        h('span', {}, [
+        h('span.tx-list-account', {}, [
           '0x82df11be...7684', //address
         ]),
       ]),
@@ -156,12 +154,12 @@ TxList.prototype.renderTransactionListItem = function () {
         style: {}
       }, [
 
-        h('span', {}, [
+        h('span.tx-list-value', {}, [
           transactionAmount,
         ]),
 
-        h('span', {}, [
-          '300 USD',
+        h('span.tx-list-fiat-value', {}, [
+          '+ $300 USD',
         ]),
 
       ]),
