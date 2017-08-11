@@ -6,7 +6,7 @@ function setupDappAutoReload (web3, observable) {
     get: (_web3, name) => {
       // get the time of use
       if (name !== '_used') {
-        console.warn('MetaMask: web3 will be deprecated in the future in favor of the ethereumProvider \nhttps://github.com/ethereum/mist/releases/tag/v0.9.0')
+        console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/ethereum/mist/releases/tag/v0.9.0')
         _web3._used = Date.now()
       }
       return _web3[name]
