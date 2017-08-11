@@ -2,24 +2,17 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const selectors = require('../selectors')
+const Identicon = require('./identicon')
 
 const valuesFor = require('../util').valuesFor
 
 module.exports = connect(mapStateToProps)(TxList)
 
 function mapStateToProps (state) {
-  const network = state.metamask.network
-  const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
-
-  const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
-  const transactions = state.metamask.selectedAddressTxList || []
-
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
-  .sort((a, b) => b.time - a.time)
-
   return {
-    txsToRender,
-    conversionRate: state.metamask.conversionRate,
+    txsToRender: selectors.transactionsSelector(state),
+    conversionRate: selectors.conversionRateSelector(state),
   }
 }
 
@@ -56,17 +49,8 @@ TxList.prototype.render = function () {
       }, [
 
         h('div', {
-          style: {
-            borderBottom: '0.07em solid black',
-            paddingBottom: '0.015em',
-          }
+          style: {}
         }, 'TRANSACTIONS'),
-
-        h('div', {
-          style: {
-            marginLeft: '1.25em',
-          }
-        }, 'TOKENS'),
 
       ]),
     ]),
@@ -77,31 +61,77 @@ TxList.prototype.render = function () {
 
     contentDivider,
 
-    this.renderTransactionListItem(),
+    // this.renderTransactionListItem(),
 
-    contentDivider,
+    // contentDivider,
 
-    // column
-    // tab row
-    // divider
-    // item
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
+    // this.renderTransactionListItem(),
+
+    // contentDivider,
+
   ])
 }
 
 TxList.prototype.renderTransactionListItem = function () {
+  // fake data
+  const props = {
+    dateString: 'Jul 01, 2017',
+    address: '0x82df11beb942beeed58d466fcb0f0791365c7684',
+    transactionStatus: 'Confirmed',
+    transactionAmount: '3'
+  }
+
+  const { address, transactionStatus, transactionAmount, dateString } = props
+
   return h('div.flex-column', {
     style: {
       alignItems: 'stretch',
+      justifyContent: 'flex-start',
       margin: '0.6em 1.3em 0.6em 1.3em',
+      overflow: 'none'
     }
   }, [
 
     h('div', {
       style: {
         flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 'auto',
         marginTop: '0.3em',
       }
-    }, 'Jul 01, 2017'),
+    }, [
+      h('span', {}, [
+        dateString,
+      ])
+    ]),
 
     h('div.flex-row', {
       style: {
@@ -113,28 +143,49 @@ TxList.prototype.renderTransactionListItem = function () {
         style: {
           flexGrow: 1,
         }
-      }, 'icon'),
+      }, [
+        h(Identicon, {
+          address,
+          diameter: 24,
+        })
+      ]),
 
       h('div', {
         style: {
           flexGrow: 3,
         }
-      }, 'Hash'),
+      }, [
+        h('span', {}, [
+          '0x82df11be...7684', //address
+        ]),
+      ]),
 
       h('div', {
         style: {
           flexGrow: 5,
         }
-      }, 'Status'),
+      }, [
+        h('span', {}, [
+          transactionStatus,
+        ]),
+      ]),
 
-      h('div', {
+      h('div.flex-column', {
         style: {
           flexGrow: 2,
         }
-      }, 'Details'),
+      }, [
 
+        h('span', {}, [
+          transactionAmount,
+        ]),
+
+        h('span', {}, [
+          '300 USD',
+        ]),
+
+      ]),
     ])
-
   ])
 }
 

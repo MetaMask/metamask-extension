@@ -4,18 +4,11 @@ const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const actions = require('../actions')
-// slideout menu
+
 const WalletView = require('./wallet-view')
-
-// balance component
 const BalanceComponent = require('./balance-component')
-
-// tx list
 const TxList = require('./tx-list')
-
 const Identicon = require('./identicon')
-// const AccountDropdowns = require('./account-dropdowns').AccountDropdowns
-// const Content = require('./wallet-content-display')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
@@ -68,14 +61,13 @@ TxView.prototype.render = function () {
         this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
       },
     }, [
-      // burger
+
       h('div.fa.fa-bars', {
         style: {
           fontSize: '1.3em',
         },
       }, []),
 
-      // account display
       h('.identicon-wrapper.select-none', {
         style: {
           marginLeft: '0.9em',
@@ -95,8 +87,6 @@ TxView.prototype.render = function () {
 
     ]),
 
-    // laptop: flex-row, flex-center
-    // mobile: flex-column
     h('div.hero-balance', {
       style: {},
     }, [
@@ -106,8 +96,6 @@ TxView.prototype.render = function () {
         style: {},
       }),
 
-      // laptop: 10vw?
-      // phone: 75vw?
       h('div.flex-row.flex-center.hero-balance-buttons', {
         style: {},
       }, [
