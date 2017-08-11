@@ -1,10 +1,18 @@
 const Component = require('react').Component
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
-module.exports = BalanceComponent
+module.exports = connect(mapStateToProps)(BalanceComponent)
+
+function mapStateToProps (state) {
+  return {
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
+  }
+}
 
 inherits(BalanceComponent, Component)
 function BalanceComponent () {
@@ -18,8 +26,6 @@ BalanceComponent.prototype.render = function () {
   const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
 
   return h('div.balance-container', {}, [
-    // laptop: 50px 50px
-    // mobile: 100px 100px
 
     // TODO: balance icon needs to be passed in
     h('img.balance-icon', {
@@ -44,8 +50,6 @@ BalanceComponent.prototype.renderBalance = function (formattedBalance) {
     ])
   }
 
-  // laptop: 5vw?
-  // phone: 50vw?
   return h('div.flex-column.balance-display', {}, [
     h('div.token-amount', {
       style: {},
@@ -57,8 +61,7 @@ BalanceComponent.prototype.renderBalance = function (formattedBalance) {
 
 BalanceComponent.prototype.renderFiatValue = function (formattedBalance) {
 
-  const props = this.props
-  const { conversionRate, currentCurrency } = props
+  const { conversionRate, currentCurrency } = this.props
 
   const fiatDisplayNumber = this.getFiatDisplayNumber(formattedBalance, conversionRate)
 
