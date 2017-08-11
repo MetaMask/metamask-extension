@@ -134,19 +134,21 @@ TxList.prototype.renderTransactionListItem = function () {
         })
       ]),
 
-      h('div.tx-list-account-wrapper', {
-        style: {}
-      }, [
-        h('span.tx-list-account', {}, [
-          '0x82df11be...7684', //address
+      h('div.tx-list-account-and-status-wrapper', {}, [
+        h('div.tx-list-account-wrapper', {
+          style: {}
+        }, [
+          h('span.tx-list-account', {}, [
+            '0x82df11be...7684', //address
+          ]),
         ]),
-      ]),
 
-      h('div.tx-list-status-wrapper', {
-        style: {}
-      }, [
-        h('span.tx-list-status', {}, [
-          transactionStatus,
+        h('div.tx-list-status-wrapper', {
+          style: {}
+        }, [
+          h('span.tx-list-status', {}, [
+            transactionStatus,
+          ]),
         ]),
       ]),
 

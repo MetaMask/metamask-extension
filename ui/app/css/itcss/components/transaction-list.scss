@@ -18,14 +18,26 @@
   flex: 0 0 70px;
   align-items: stretch;
   justify-content: flex-start;
-  margin: 0em 1.3em 0em 1.3em;
+  @media screen and (max-width: $break-small) {
+    margin: 0em 1.3em 0.95em 1.3em;
+  }
+
+  @media screen and (min-width: $break-large) {
+    margin: 0em 1.3em 0em 1.3em;
+  }
 }
 
 .tx-list-date-wrapper {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
-  margin-top: 6px;
+  @media screen and (max-width: $break-small) {
+    margin-top: 6px;
+    margin-bottom: 20px;
+  }
+  @media screen and (min-width: $break-large) {
+    margin-top: 6px;
+  }
 }
 
 .tx-list-content-wrapper {
@@ -44,34 +56,50 @@
   margin-left: 3px;
 }
 
-.tx-list-account-wrapper {
-  flex: 3 3 auto;
-  align-self: center;
-}
+.tx-list-account-and-status-wrapper {
+  display: flex;
+  flex: 8 8 auto;
 
-.tx-list-account {
-  font-size: 16px;
-}
+  @media screen and (max-width: $break-small) {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: center;
+  }
 
-.tx-list-status-wrapper {
-  align-self: center;
-  flex: 5 5 auto;
-}
+  @media screen and (min-width: $break-large) {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
 
-.tx-list-status {
-  color: $dusty-gray;
-  font-size: 16px;
+    .tx-list-account-wrapper {
+      flex: 2 2 auto;
+    }
+
+    .tx-list-status-wrapper {
+      flex: 6 6 auto;
+    }
+  }
+
+  .tx-list-account {
+    font-size: 16px;
+  }
+
+  .tx-list-status {
+    color: $dusty-gray;
+    font-size: 16px;
+  }
 }
 
 .tx-list-details-wrapper {
   align-self: center;
   flex: 2 2 auto;
-}
 
-.tx-list-value {
-  font-size: 16px;
-}
+  .tx-list-value {
+    font-size: 16px;
+  }
 
-.tx-list-fiat-value {
-  font-size: 12px;
+  .tx-list-fiat-value {
+    font-size: 12px;
+  }
 }
