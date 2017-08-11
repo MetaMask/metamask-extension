@@ -111,69 +111,49 @@ TxList.prototype.renderTransactionListItem = function () {
 
   const { address, transactionStatus, transactionAmount, dateString } = props
 
-  return h('div.flex-column', {
-    style: {
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      margin: '0.6em 1.3em 0.6em 1.3em',
-      overflow: 'none'
-    }
+  return h('div.flex-column.tx-list-item-wrapper', {
+    style: {}
   }, [
 
-    h('div', {
-      style: {
-        flexGrow: 1,
-        flexShrink: 1,
-        flexBasis: 'auto',
-        marginTop: '0.3em',
-      }
+    h('div.tx-list-date-wrapper', {
+      style: {}
     }, [
-      h('span', {}, [
+      h('span.tx-list-date', {}, [
         dateString,
       ])
     ]),
 
-    h('div.flex-row', {
-      style: {
-        alignItems: 'stretch',
-      }
+    h('div.flex-row.tx-list-content-wrapper', {
+      style: {}
     }, [
 
-      h('div', {
-        style: {
-          flexGrow: 1,
-        }
+      h('div.tx-list-identicon-wrapper', {
+        style: {}
       }, [
         h(Identicon, {
           address,
-          diameter: 24,
+          diameter: 18,
         })
       ]),
 
-      h('div', {
-        style: {
-          flexGrow: 3,
-        }
+      h('div.tx-list-account-wrapper', {
+        style: {}
       }, [
         h('span', {}, [
           '0x82df11be...7684', //address
         ]),
       ]),
 
-      h('div', {
-        style: {
-          flexGrow: 5,
-        }
+      h('div.tx-list-status-wrapper', {
+        style: {}
       }, [
-        h('span', {}, [
+        h('span.tx-list-status', {}, [
           transactionStatus,
         ]),
       ]),
 
-      h('div.flex-column', {
-        style: {
-          flexGrow: 2,
-        }
+      h('div.flex-column.tx-list-details-wrapper', {
+        style: {}
       }, [
 
         h('span', {}, [

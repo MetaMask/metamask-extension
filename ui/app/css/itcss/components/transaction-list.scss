@@ -1,0 +1,44 @@
+.tx-list-item-wrapper {
+  align-items: stretch;
+  justify-content: 'flex-start',
+  margin: '0.6em 1.3em 0.6em 1.3em',
+  overflow: 'scroll',
+}
+
+.tx-list-date-wrapper {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 'auto';
+  margin-top: '0.3em';
+}
+
+.tx-list-content-wrapper {
+  alignItems: 'stretch';
+}
+
+.tx-list-date {
+  color: $dusty-gray;
+  font-size: 8px;
+}
+
+.tx-list-identicon-wrapper {
+  flex: 1 1 auto;
+}
+
+.tx-list-account-wrapper {
+  flex: 3 3 auto;
+  font-size: 12px;
+}
+
+.tx-list-status-wrapper {
+  flex: 5 5 auto;
+}
+
+.tx-list-status {
+  color: $dusty-gray;
+  font-size: 12px;
+}
+
+.tx-list-details-wrapper {
+  flex: 2 2 auto;
+}
