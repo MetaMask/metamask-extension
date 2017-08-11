@@ -2,6 +2,10 @@
   NewUI Container Elements
  */
 
+// Component Colors
+$tx-view-bg: $white;
+$wallet-view-bg: $wild-sand;
+
 // Main container
 .main-container {
   position: absolute;
@@ -13,20 +17,18 @@
   overflow-y: scroll;
 }
 
-
 // tx view
 
 .tx-view {
   flex: 63.5 0 66.5%;
-  background: $white; // TODO: add to resuable colors
+  background: $tx-view-bg;
 }
-
 
 // wallet view
 
 .wallet-view {
   flex: 33.5 0 33.5%;
-  background: $wild-sand,
+  background: $wallet-view-bg,
 }
 
 .account-options-menu {
@@ -34,8 +36,6 @@
   justify-content: flex-start;
   margin: 5% 7%;
 }
-
-
 
 .wallet-view.sidebar {
   flex: 1 0 230px;
@@ -136,5 +136,4 @@
   @media screen and (max-width: 575px) {
     text-align: center;
   }
-
 }

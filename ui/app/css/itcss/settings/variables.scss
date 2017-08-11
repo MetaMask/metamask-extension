@@ -2,7 +2,11 @@
   Variables
  */
 
-// Colors
+
+
+/*
+  Colors
+ */
 $white-linen: #FAF6F0; // formerly 'faint orange (textfield shades)'
 $rajah: #F5C26D; // formerly 'light orange (button shades)'
 $buttercup: #F5A623; // formerly 'dark orange (text)'
@@ -13,20 +17,29 @@ $shark: #22232C;
 $wild-sand: #F6F6F6;
 $white: #FFFFFF;
 $dusty-gray: #9B9B9B;
+$alto: #DEDEDE;
 
-// Z Indicies - Planned
+/*
+  Z-Indicies
+ */
+
+// Planned
 $dropdown-z: 30;
 $container-z: 15;
 $header-z: 12;
 
-// Z Indicies - Current
-// app - 11
-// hex/bn as decimal input - 1 - remove?
-// dropdown - 11
-// loading - 10 - higher?
-// mascot - 0 - remove?
+/*
+  Z Indicies - Current
+  app - 11
+  hex/bn as decimal input - 1 - remove?
+  dropdown - 11
+  loading - 10 - higher?
+  mascot - 0 - remove?
+ */
 
-// Responsive Breakpoints
+/*
+  Responsive Breakpoints
+ */
 $break-small: 575px;
 $break-midpoint: 780px;
 $break-large: 576px;

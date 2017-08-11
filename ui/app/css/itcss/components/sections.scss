@@ -3,12 +3,7 @@ App Sections
   TODO: Move into separate files.
 */
 
-/*
-debug / dev
-*/
-
 /* initialize */
-
 textarea.twelve-word-phrase {
   padding: 12px;
   width: 300px;
@@ -57,6 +52,7 @@ textarea.twelve-word-phrase {
   opacity: 0.0;
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
+
 .lock.unlocked {
   transform: scale(1);
   opacity: 1;
@@ -67,15 +63,18 @@ textarea.twelve-word-phrase {
   transform: scaleX(1) translateX(0);
   transition: transform 250ms ease-in;
 }
+
 .lock.unlocked .lock-top {
   transform: scaleX(-1) translateX(-12px);
   transition: transform 250ms ease-in;
 }
+
 .lock.unlocked:hover {
   border-radius: 4px;
   background: #e5e5e5;
   border: 1px solid #b1b1b1;
 }
+
 .lock.unlocked:active {
   background: #c3c3c3;
 }
@@ -105,27 +104,34 @@ textarea.twelve-word-phrase {
 .editable-label{
   display: flex;
 }
+
 /* Webkit */
+
 .unlock-screen input::-webkit-input-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
+
 /* Firefox 18- */
+
 .unlock-screen input:-moz-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
+
 /* Firefox 19+ */
+
 .unlock-screen input::-moz-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
+
 /* IE */
+
 .unlock-screen input:-ms-input-placeholder {
   text-align: center;
   font-size: 1.2em;
 }
-
 
 /* accounts */
 
@@ -344,18 +350,6 @@ textarea.twelve-word-phrase {
   color: rgba(247, 134, 28, 1);
 }
 
-.radio-titles-subtext {
-
-}
-
-.selected-exchange {
-
-}
-
-.buy-radio {
-
-}
-
 .eth-warning{
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
@@ -380,6 +374,7 @@ textarea.twelve-word-phrase {
   border-radius: 2px;
 
 }
+
 .input-container:hover .buy-inputs{
   box-sizing: inherit;
   border: solid;
