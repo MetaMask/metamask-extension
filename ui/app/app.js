@@ -43,6 +43,7 @@ function mapStateToProps (state) {
     accounts,
     address,
   } = state.metamask
+  console.log("ADDRESS:", address)
   const selected = address || Object.keys(accounts)[0]
 
   return {
@@ -185,7 +186,7 @@ App.prototype.renderAppBar = function () {
             style: {},
             enableAccountsSelector: true,
             identities: this.props.identities,
-            selected: this.props.selected,
+            selected: this.props.currentView.context,
             network: this.props.network,
           }, []),
 
