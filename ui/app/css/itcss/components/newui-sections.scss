@@ -24,19 +24,25 @@ $wallet-view-bg: $wild-sand;
   background: $tx-view-bg;
 }
 
-// wallet view
+// wallet view and sidebar
 
 .wallet-view {
+  display: flex;
+  flex-direction: column;
   flex: 33.5 0 33.5%;
   background: $wallet-view-bg;
 
   @media screen and (min-width: 576px) {
     overflow-y: scroll;
   }
+
+  .wallet-view-account-details {
+    flex: 0 0 150px;
+  }
 }
 
 .wallet-view-title-wrapper {
-  height: 25px;
+  flex: 0 0 25px;
 }
 
 .wallet-view-title {
@@ -47,12 +53,6 @@ $wallet-view-bg: $wild-sand;
   @media screen and (max-width: 575px) {
     display: none;
   }
-}
-
-.account-options-menu {
-  align-items: center;
-  justify-content: flex-start;
-  margin: 5% 7%;
 }
 
 .wallet-view.sidebar {
@@ -84,6 +84,8 @@ $wallet-view-bg: $wild-sand;
   visibility: visible;
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+// main-container media queries
 
 @media screen and (min-width: 576px) {
   .lap-visible {
@@ -153,4 +155,11 @@ $wallet-view-bg: $wild-sand;
   @media screen and (max-width: 575px) {
     text-align: center;
   }
+}
+
+// account options dropdown
+.account-options-menu {
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5% 7%;
 }

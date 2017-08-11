@@ -3,6 +3,10 @@ $wallet-balance-breakpoint: 890px;
 $wallet-balance-breakpoint-range:
   "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
 
+.wallet-balance-wrapper {
+  flex: 0 0 80px
+}
+
 .wallet-balance {
   background: inherit;
   display: flex;

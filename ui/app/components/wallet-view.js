@@ -41,14 +41,24 @@ const noop = () => {}
 WalletView.prototype.render = function () {
   const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount } = this.props
 
+  // temporary logs + fake extra wallets
   console.log(selectedAccount)
+
+  const extraWallet = h('div.flex-column.wallet-balance-wrapper', {}, [
+      h('div.wallet-balance', {}, [
+        h(BalanceComponent, {
+          balanceValue: selectedAccount.balance,
+          style: {},
+        }),
+      ]),
+  ])
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
   }, [
 
     // TODO: Separate component: wallet account details
-    h('div.flex-column', {
+    h('div.flex-column.wallet-view-account-details', {
       style: {}
     }, [
 
@@ -123,9 +133,7 @@ WalletView.prototype.render = function () {
     ]),
 
     //Wallet Balances
-    h('div.flex-column.wallet-balance-wrapper-active', {}, [
-
-      h('div', {}, [
+    h('div.flex-column.wallet-balance-wrapper.wallet-balance-wrapper-active', {}, [
 
         h('div.wallet-balance', {}, [
 
@@ -136,13 +144,9 @@ WalletView.prototype.render = function () {
 
         ]),
 
-      ])
-
     ]),
 
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
+    h('div.flex-column.wallet-balance-wrapper', {}, [
 
         h('div.wallet-balance', {}, [
 
@@ -153,145 +157,17 @@ WalletView.prototype.render = function () {
 
         ]),
 
-      ])
-
     ]),
 
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
-    h('div.flex-column', {}, [
-
-      h('div', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-      ])
-
-    ]),
-
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
+    extraWallet,
   ])
 }
