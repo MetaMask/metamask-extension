@@ -29,7 +29,10 @@ $wallet-view-bg: $wild-sand;
 .wallet-view {
   flex: 33.5 0 33.5%;
   background: $wallet-view-bg;
-  overflow-y: scroll;
+
+  @media screen and (min-width: 576px) {
+    overflow-y: scroll;
+  }
 }
 
 .wallet-view-title-wrapper {
@@ -129,7 +132,6 @@ $wallet-view-bg: $wild-sand;
   .main-container {
     margin-top: 35px;
     width: 100%;
-    height: 100%;
   }
 
   button.btn-clear {
