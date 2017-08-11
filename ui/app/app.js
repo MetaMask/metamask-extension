@@ -43,7 +43,6 @@ function mapStateToProps (state) {
     accounts,
     address,
   } = state.metamask
-  console.log("ADDRESS:", address)
   const selected = address || Object.keys(accounts)[0]
 
   return {

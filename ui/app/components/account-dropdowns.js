@@ -27,10 +27,6 @@ class AccountDropdowns extends Component {
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
       const isSelected = identity.address === selected
-      console.log("address", identity.address)
-      console.log("selected:", selected)
-      console.log("isSelected:", isSelected)
-      // debugger;
 
       return h(
         DropdownMenuItem,
@@ -63,7 +59,7 @@ class AccountDropdowns extends Component {
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-            }
+            },
           }, identity.name || ''),
           h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
         ]
