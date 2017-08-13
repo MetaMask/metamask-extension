@@ -385,6 +385,8 @@ App.prototype.renderNetworkDropdown = function () {
   ])
 }
 
+
+// TODO: Remove if will be dead code in NewUI
 App.prototype.renderDropdown = function () {
   const state = this.state || {}
   const isOpen = state.isMainMenuOpen
