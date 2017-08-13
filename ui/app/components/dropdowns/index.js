@@ -5,7 +5,7 @@
 // App-Specific Instances
 // const AccountSelectionDropdown = require('./account-selection-dropdown')
 // const AccountOptionsDropdown = require('./account-options-dropdown')
-const NetworkDropdown = require('./network-dropdown')
+const NetworkDropdown = require('./network-dropdown').default
 
 module.exports = {
   // AccountSelectionDropdown,

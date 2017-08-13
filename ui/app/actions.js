@@ -15,6 +15,11 @@ var actions = {
   SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
   showSidebar: showSidebar,
   hideSidebar: hideSidebar,
+  // network dropdown open
+  NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
+  NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
+  showNetworkDropdown: showNetworkDropdown,
+  hideNetworkDropdown: hideNetworkDropdown,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -772,6 +777,19 @@ function useEtherscanProvider () {
     type: actions.USE_ETHERSCAN_PROVIDER,
   }
 }
+
+function showNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_OPEN,
+  }
+}
+
+function hideNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_CLOSE,
+  }
+}
+
 
 function showModal () {
   return {

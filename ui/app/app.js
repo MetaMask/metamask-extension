@@ -36,6 +36,8 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const NetworkDropdown = require('./components/dropdowns/network-dropdown')
+console.log('imported:', NetworkDropdown)
 
 // Global Modals
 const BuyModal = require('./components/modals/index').BuyModal
@@ -55,6 +57,7 @@ function mapStateToProps (state) {
 
   return {
     // state from plugin
+    networkDropdownOpen: state.appState.networkDropdownOpen,
     sidebarOpen: state.appState.sidebarOpen,
     isLoading: state.appState.isLoading,
     loadingMessage: state.appState.loadingMessage,
@@ -81,9 +84,11 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, ownProps) {
   return {
     hideSidebar: () => {dispatch(actions.hideSidebar())},
+    showNetworkDropdown: () => {dispatch(actions.showNetworkDropdown())},
+    hideNetworkDropdown: () => {dispatch(actions.hideNetworkDropdown())},
   }
 }
 
@@ -115,7 +120,11 @@ App.prototype.render = function () {
       this.renderSidebar(),
 
       // network dropdown
-      this.renderNetworkDropdown(),
+      h(NetworkDropdown, {
+        provider: this.props.provider,
+        frequentRpcList: this.props.frequentRpcList,
+      }, []),
+      // this.renderNetworkDropdown(),
       // this.renderDropdown(),
 
       h(Loading, {
@@ -233,7 +242,14 @@ App.prototype.renderAppBar = function () {
             onClick: (event) => {
               event.preventDefault()
               event.stopPropagation()
-              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
+              console.log("NI CLICK:", this.props.networkDropdownOpen)
+              if (this.props.networkDropdownOpen === false) {
+                this.props.showNetworkDropdown()
+              } else {
+                this.props.hideNetworkDropdown()
+              }
+              // this.props.toggleNetworkOpen()
+              // this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
             },
           }),
 
@@ -249,6 +265,7 @@ App.prototype.renderNetworkDropdown = function () {
   const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
   const rpcList = props.frequentRpcList
   const state = this.state || {}
+  console.log("this.state:", state)
   const isOpen = state.isNetworkMenuOpen
 
   return h(Dropdown, {

@@ -38,6 +38,7 @@ function reduceApp (state, action) {
     menuOpen: false,
     modalOpen: false,
     sidebarOpen: false,
+    networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
@@ -51,6 +52,17 @@ function reduceApp (state, action) {
   }, state.appState)
 
   switch (action.type) {
+    // dropdown methods
+    case actions.NETWORK_DROPDOWN_OPEN:
+      return extend(appState, {
+        networkDropdownOpen: true,
+      })
+
+    case actions.NETWORK_DROPDOWN_CLOSE:
+      return extend(appState, {
+        networkDropdownOpen: false,
+      })
+
     // sidebar methods
     case actions.SIDEBAR_OPEN:
       return extend(appState, {
@@ -74,7 +86,6 @@ function reduceApp (state, action) {
       })
 
     // transition methods
-
     case actions.TRANSITION_FORWARD:
       return extend(appState, {
         transForward: true,

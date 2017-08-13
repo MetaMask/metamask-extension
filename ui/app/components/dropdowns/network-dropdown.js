@@ -3,16 +3,14 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-
-// connect, dispatch actions...
-        // onClick: () => props.dispatch(actions.setProviderType('mainnet')),
-        // onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
-        // onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
-        // onClick: () => this.props.dispatch(actions.showConfigPage()),
+const Dropdown = require('../dropdown').Dropdown
+const DropdownMenuItem = require('../dropdown').DropdownMenuItem
 
 function mapStateToProps (state) {
   return {
-    active: state.appState.modalOpen
+    provider: state.metamask.provider,
+    frequentRpcList: state.metamask.frequentRpcList || [],
+    networkDropdownOpen: state.appState.networkDropdownOpen,
   }
 }
 
@@ -21,6 +19,20 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
+    setProviderType: (type) => {
+      dispatch(actions.setProviderType(type))
+    },
+    setDefaultRpcTarget: () => {
+      dispatch(actions.setDefaultRpcTarget(type))
+    },
+    setRpcTarget: (target) => {
+      dispatch(actions.setRpcTarget(target))
+    },
+    showConfigPage: () => {
+      dispatch(actions.showConfigPage())
+    },
+    showNetworkDropdown: () => {dispatch(actions.showNetworkDropdown())},
+    hideNetworkDropdown: () => {dispatch(actions.hideNetworkDropdown())},
   }
 }
 
@@ -30,18 +42,20 @@ function NetworkDropdown () {
   Component.call(this)
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(NetworkDropdown)
-
 // renderNetworkDropdown
 // renderCustomOption
 // renderCommonRpc
 // TODO: specify default props and proptypes
 NetworkDropdown.prototype.render = function () {
+  console.log("RENDER")
   const props = this.props
   const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
   const rpcList = props.frequentRpcList
   const state = this.state || {}
-  const isOpen = state.isNetworkMenuOpen
+  console.log("this.state", state)
+  const isOpen = this.props.networkDropdownOpen
+
+  console.log("isOpen", isOpen)
 
   return h(Dropdown, {
     useCssTransition: true,
@@ -56,7 +70,7 @@ NetworkDropdown.prototype.render = function () {
       // classes from three constituent nodes of the toggle element
 
       if (isNotToggleElement) {
-        this.setState({ isNetworkMenuOpen: false })
+        this.props.hideNetworkDropdown()
       }
     },
     zIndex: 11,
@@ -74,8 +88,8 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         key: 'main',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => props.setProviderType('mainnet'),
         style: {
           fontSize: '18px',
         },
@@ -91,8 +105,8 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         key: 'ropsten',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('ropsten')),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => props.setProviderType('ropsten'),
         style: {
           fontSize: '18px',
         },
@@ -108,8 +122,8 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         key: 'kovan',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('kovan')),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => props.setProviderType('kovan'),
         style: {
           fontSize: '18px',
         },
@@ -125,8 +139,8 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         key: 'rinkeby',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => propssetProviderType('rinkeby'),
         style: {
           fontSize: '18px',
         },
@@ -142,8 +156,8 @@ NetworkDropdown.prototype.render = function () {
       DropdownMenuItem,
       {
         key: 'default',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => props.setDefaultRpcTarget(),
         style: {
           fontSize: '18px',
         },
@@ -161,8 +175,8 @@ NetworkDropdown.prototype.render = function () {
     h(
       DropdownMenuItem,
       {
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => this.props.dispatch(actions.showConfigPage()),
+        closeMenu: () => this.props.hideNetworkDropdown(),
+        onClick: () => this.props.showConfigPage(),
         style: {
           fontSize: '18px',
         },
@@ -211,8 +225,8 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
         DropdownMenuItem,
         {
           key: `common${rpc}`,
-          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
+          closeMenu: () => this.props.hideNetworkDropdown(),
+          onClick: () => props.setRpcTarget(rpc),
         },
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -246,8 +260,8 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
         DropdownMenuItem,
         {
           key: rpcTarget,
-          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
-          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+          onClick: () => props.setRpcTarget(rpcTarget),
+          closeMenu: () => this.props.hideNetworkDropdown(),
         },
         [
           h('i.fa.fa-question-circle.fa-lg.menu-icon'),
@@ -257,3 +271,6 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
       )
   }
 }
+
+const comp = connect(mapStateToProps, mapDispatchToProps)(NetworkDropdown)
+module.exports = comp
