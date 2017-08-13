@@ -36,8 +36,9 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
-const Modal = require('./components/modal')
-const BuyOptions = require('./components/buy-options')
+
+// Global Modals
+const BuyModal = require('./components/modals/index').BuyModal
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
@@ -105,7 +106,7 @@ App.prototype.render = function () {
     }, [
 
       // global modal
-      this.renderGlobalModal(),
+      h(BuyModal, {}, []),
 
       // app bar
       this.renderAppBar(),

@@ -3,9 +3,9 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
-const actions = require('../actions')
-const isMobileView = require('../../lib/is-mobile-view')
-const isPopupOrNotification = require('../../../app/scripts/lib/is-popup-or-notification')
+const actions = require('../../actions')
+const isMobileView = require('../../../lib/is-mobile-view')
+const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
 
 function mapStateToProps (state) {
   return {
@@ -21,6 +21,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+// Global Modal Component
 inherits(Modal, Component)
 function Modal () {
   Component.call(this)
