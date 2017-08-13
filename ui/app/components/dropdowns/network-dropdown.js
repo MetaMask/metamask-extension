@@ -42,20 +42,15 @@ function NetworkDropdown () {
   Component.call(this)
 }
 
-// renderNetworkDropdown
-// renderCustomOption
-// renderCommonRpc
+module.exports = connect(mapStateToProps, mapDispatchToProps)(NetworkDropdown)
+
 // TODO: specify default props and proptypes
 NetworkDropdown.prototype.render = function () {
-  console.log("RENDER")
   const props = this.props
   const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
   const rpcList = props.frequentRpcList
   const state = this.state || {}
-  console.log("this.state", state)
   const isOpen = this.props.networkDropdownOpen
-
-  console.log("isOpen", isOpen)
 
   return h(Dropdown, {
     useCssTransition: true,
@@ -271,6 +266,3 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
       )
   }
 }
-
-const comp = connect(mapStateToProps, mapDispatchToProps)(NetworkDropdown)
-module.exports = comp
