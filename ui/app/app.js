@@ -37,7 +37,6 @@ const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
-console.log('imported:', NetworkDropdown)
 
 // Global Modals
 const BuyModal = require('./components/modals/index').BuyModal
@@ -124,8 +123,6 @@ App.prototype.render = function () {
         provider: this.props.provider,
         frequentRpcList: this.props.frequentRpcList,
       }, []),
-      // this.renderNetworkDropdown(),
-      // this.renderDropdown(),
 
       h(Loading, {
         isLoading: isLoading || isLoadingNetwork,
@@ -399,51 +396,6 @@ App.prototype.renderNetworkDropdown = function () {
       ]
     ),
 
-  ])
-}
-
-
-// TODO: Remove if will be dead code in NewUI
-App.prototype.renderDropdown = function () {
-  const state = this.state || {}
-  const isOpen = state.isMainMenuOpen
-
-  return h(Dropdown, {
-    useCssTransition: true,
-    isOpen: isOpen,
-    zIndex: 11,
-    onClickOutside: (event) => {
-      const classList = event.target.classList
-      const parentClassList = event.target.parentElement.classList
-
-      const isToggleElement = classList.contains('sandwich-expando') ||
-        parentClassList.contains('sandwich-expando')
-
-      if (isOpen && !isToggleElement) {
-        this.setState({ isMainMenuOpen: false })
-      }
-    },
-    style: {
-      position: 'absolute',
-      right: '2px',
-      top: '38px',
-    },
-    innerStyle: {},
-  }, [
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.showConfigPage()) },
-    }, 'Settings'),
-
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.lockMetamask()) },
-    }, 'Lock'),
-
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.showInfoPage()) },
-    }, 'Info/Help'),
   ])
 }
 
