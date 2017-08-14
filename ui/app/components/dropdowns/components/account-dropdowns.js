@@ -64,16 +64,16 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountSelector () {
-    const { actions, dropdownWrapperStyle } = this.props
+    const { actions, dropdownWrapperStyle, useCssTransition } = this.props
     const { accountSelectorActive, menuItemStyles } = this.state
 
     return h(
       Dropdown,
       {
-        useCssTransition: true, // Hardcoded because account selector is temporarily in app-header
+        useCssTransition,
         style: {
-          marginLeft: '-238px',
-          marginTop: '38px',
+          marginLeft: '-185px',
+          marginTop: '50px',
           minWidth: '180px',
           overflowY: 'auto',
           maxHeight: '300px',
@@ -150,12 +150,13 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions, dropdownWrapperStyle } = this.props
+    const { actions, dropdownWrapperStyle, useCssTransition } = this.props
     const { optionsMenuActive, menuItemStyles } = this.state
 
     return h(
       Dropdown,
       {
+        useCssTransition,
         style: Object.assign(
           {
             marginLeft: '-10px',

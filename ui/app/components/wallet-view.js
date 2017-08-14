@@ -72,6 +72,7 @@ WalletView.prototype.render = function () {
           selected: selectedAddress,
           network,
           identities,
+          useCssTransition: true,
           enableAccountOptions: true,
           dropdownWrapperStyle: {
             padding: '1px 15px',
@@ -100,6 +101,7 @@ WalletView.prototype.render = function () {
               left: 'calc(50% + 28px + 5.5px)',
               top: '14px',
             },
+            useCssTransition: true,
             selected: selectedAddress,
             network,
             identities,
