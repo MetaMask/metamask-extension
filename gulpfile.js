@@ -21,9 +21,13 @@ var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
 var sass = require('gulp-sass')
 var autoprefixer = require('gulp-autoprefixer')
+var gulpStylelint = require('gulp-stylelint')
+var stylefmt = require('gulp-stylefmt')
+
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
+
 
 // browser reload
 
@@ -182,9 +186,25 @@ gulp.task('build:scss', function () {
     .pipe(autoprefixer())
     .pipe(gulp.dest('ui/app/css/output'))
 })
-gulp.task('watch:scss', function(){
+gulp.task('watch:scss', function() {
   gulp.watch(['ui/app/css/**/*.scss'], gulp.series(['build:scss']))
 })
+
+gulp.task('lint-scss', function() {
+  return gulp
+    .src('ui/app/css/itcss/**/*.scss')
+    .pipe(gulpStylelint({
+      reporters: [
+        {formatter: 'string', console: true}
+      ]
+    }));
+});
+
+gulp.task('fmt-scss', function () {
+  return gulp.src('ui/app/css/itcss/**/*.scss')
+    .pipe(stylefmt())
+    .pipe(gulp.dest('ui/app/css/itcss'));
+});
 
 // bundle tasks
 

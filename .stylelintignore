@@ -1,0 +1,10 @@
+app/
+development/
+dist/
+docs/
+fonts/
+images/
+mascara/
+node_modules/
+notices/
+test/
