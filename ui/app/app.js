@@ -26,8 +26,6 @@ const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
-const Dropdown = require('./components/dropdown').Dropdown
-const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkIndicator = require('./components/network')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
@@ -35,7 +33,6 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
-const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 
 // Global Modals
