@@ -88,21 +88,29 @@ WalletView.prototype.render = function () {
       ]),
 
       h('div.flex-column.flex-center', {
-        style: {
-          position: 'relative',
-        },
       }, [
-
-        h('.identicon-wrapper.select-none', {
+        h('div', {
           style: {
-            marginBottom: '1%',
-          },
+            position: 'relative',
+          }
         }, [
-          h(Identicon, {
-            diameter: 54,
-            address: selectedAddress,
-          }),
+          h(AccountDropdowns, {
+            style: {
+              position: 'absolute',
+              left: 'calc(50% + 28px + 5.5px)',
+              top: '14px',
+            },
+            selected: selectedAddress,
+            network,
+            identities,
+            enableAccountsSelector: true,
+          }, []),
         ]),
+
+        h(Identicon, {
+          diameter: 54,
+          address: selectedAddress,
+        }),
 
         h('span.account-name', {
           style: {}
@@ -110,17 +118,6 @@ WalletView.prototype.render = function () {
           'Account 1'
         ]),
 
-        h(AccountDropdowns, {
-          style: {
-            position: 'absolute',
-            left: 'calc(50% + 28px + 5.5px)',
-            top: '19.5%',
-          },
-          selected: selectedAddress,
-          network,
-          identities,
-          enableAccountsSelector: true,
-        }, []),
       ]),
     ]),
 
