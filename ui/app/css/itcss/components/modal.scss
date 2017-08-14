@@ -37,7 +37,7 @@
     margin: 10px;
     text-align: center;
     border-radius: 6px;
-    border: 1px solid black;
+    border: 1px solid $black;
     padding: 0% 7%;
     justify-content: space-around;
 
@@ -71,7 +71,7 @@
 
   .modal-content-options {
     flex-direction: row;
-    margin: 20px 0px
+    margin: 20px 0;
   }
 
   div.modal-content-option {
@@ -81,8 +81,8 @@
     height: 18vw;
     text-align: center;
     border-radius: 6px;
-    border: 1px solid black;
-    margin: 0px .5vw;
+    border: 1px solid $black;
+    margin: 0 .5vw;
     justify-content: space-around;
 
     div.modal-content-option-title {
@@ -99,25 +99,25 @@
 
     div.modal-content-option-subtitle {
       font-size: 16px;
-      padding: 0px 10px;
+      padding: 0 10px;
       height: 25%;
 
       @media screen and (max-width: 679px) {
         font-size: 10px;
-        padding: 0px 10px;
+        padding: 0 10px;
         margin-bottom: 5px;
         line-height: 15px;
       }
 
       @media screen and (min-width: 680px) {
         font-size: 14px;
-        padding: 0px 4px;
+        padding: 0 4px;
         margin-bottom: 2px;
       }
 
       @media screen and (min-width: 1281px) {
         font-size: 20px;
-        padding: 0px 0px;
+        padding: 0;
       }
     }
 

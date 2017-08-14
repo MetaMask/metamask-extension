@@ -5,11 +5,11 @@
 /* color */
 
 .color-orange {
-  color: #F7861C; // TODO: move to settings/variables
+  color: #f7861c; // TODO: move to settings/variables
 }
 
 .color-forest {
-  color: #0A5448; // TODO: move to settings/variables
+  color: #0a5448; // TODO: move to settings/variables
 }
 
 /* lib */
@@ -23,18 +23,10 @@
   width: 100%;
 }
 
-.full-height {
-  height: 100%;
-}
-
 .full-flex-height {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-}
-
-.full-width {
-  width: 100%;
 }
 
 .full-height {
@@ -141,16 +133,19 @@
 .pointer {
   cursor: pointer;
 }
+
 .cursor-pointer {
   cursor: pointer;
   transform-origin: center center;
   transition: transform 50ms ease-in-out;
 }
+
 .cursor-pointer:hover {
   transform: scale(1.1);
 }
+
 .cursor-pointer:active {
-  transform: scale(0.95);
+  transform: scale(.95);
 }
 
 .cursor-disabled {
@@ -170,7 +165,7 @@
 }
 
 .bold {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .text-transform-uppercase {
@@ -195,12 +190,12 @@ hr.horizontal-line {
 }
 
 .hover-white:hover {
-  background: white;
+  background: $white;
 }
 
 .red-dot {
-  background: #E91550;
-  color: white;
+  background: #e91550;
+  color: $white;
   border-radius: 10px;
 }
 
@@ -215,14 +210,14 @@ hr.horizontal-line {
 }
 
 .golden-square {
-  background: #EBB33F;
+  background: #ebb33f;
 }
 
 .pending-dot {
-  background: red;
+  background: $red;
   left: 14px;
   top: 14px;
-  color: white;
+  color: $white;
   border-radius: 10px;
   height: 20px;
   min-width: 20px;
@@ -237,9 +232,9 @@ hr.horizontal-line {
 .keyring-label {
   z-index: 1;
   font-size: 11px;
-  background: rgba(255,0,0,0.8);
+  background: rgba(255, 0, 0, .8);
   bottom: -47px;
-  color: white;
+  color: $white;
   border-radius: 10px;
   height: 20px;
   min-width: 20px;
@@ -270,8 +265,9 @@ hr.horizontal-line {
   background: rgb(0, 163, 68);
   border-radius: 20px;
 }
+
 .testnet-icon {
-  background: #2465E1;
+  background: #2465e1;
 }
 
 .drop-menu-item {
@@ -292,7 +288,7 @@ hr.horizontal-line {
 .critical-error {
   text-align: center;
   margin-top: 20px;
-  color: red;
+  color: $red;
 }
 
 /*
@@ -301,7 +297,7 @@ hr.horizontal-line {
 
 // TODO: move into component-level contextual 'active' state
 .letter-spacey {
-  letter-spacing: 0.1em;
+  letter-spacing: .1em;
 }
 
 .active {
@@ -310,7 +306,7 @@ hr.horizontal-line {
 
 .check {
   margin-left: 7px;
-  color: #F7861C;
+  color: #f7861c;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;

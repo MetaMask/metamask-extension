@@ -1,3 +1,7 @@
+// Old scss, do not lint - clean up later
+/* stylelint-disable */
+
+
 /*
 App Sections
   TODO: Move into separate files.
@@ -9,14 +13,14 @@ textarea.twelve-word-phrase {
   width: 300px;
   height: 140px;
   font-size: 16px;
-  background: white;
+  background: $white;
   resize: none;
 }
 
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #F7861C;
+  border-color: #f7861c;
   border-style: solid;
 }
 
@@ -35,11 +39,11 @@ textarea.twelve-word-phrase {
 
 /* unlock */
 .error {
-  color: #E20202;
+  color: #e20202;
 }
 
 .warning {
-  color: #FFAE00;
+  color: #ffae00;
 }
 
 .lock {
@@ -49,7 +53,7 @@ textarea.twelve-word-phrase {
 
 .lock.locked {
   transform: scale(1.5);
-  opacity: 0.0;
+  opacity: 0;
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
 
@@ -96,12 +100,13 @@ textarea.twelve-word-phrase {
   width: 260px;
 }
 
-.sizing-input{
+.sizing-input {
   font-size: 14px;
   height: 30px;
   padding-left: 5px;
 }
-.editable-label{
+
+.editable-label {
   display: flex;
 }
 
@@ -140,7 +145,7 @@ textarea.twelve-word-phrase {
 }
 
 .accounts-section .horizontal-line {
-  margin: 0px 18px;
+  margin: 0 18px;
 }
 
 .accounts-list-option {
@@ -157,7 +162,7 @@ textarea.twelve-word-phrase {
 }
 
 .unconftx-link .fa-arrow-right {
-  margin: 0px -8px 0px 8px;
+  margin: 0 -8px 0px 8px;
 }
 
 /* identity panel */
@@ -184,7 +189,7 @@ textarea.twelve-word-phrase {
 .identity-panel i {
   margin-top: 32px;
   margin-right: 6px;
-  color: #B9B9B9;
+  color: #b9b9b9;
 }
 
 .identity-panel .arrow-right {
@@ -195,34 +200,33 @@ textarea.twelve-word-phrase {
 }
 
 .identity-copy.flex-column {
-  flex: 0.25 0 auto;
+  flex: .25 0 auto;
   justify-content: center;
 }
 
 /* accounts screen */
 
 .identity-section {
-
 }
 
 .identity-section .identity-panel {
-  background: #E9E9E9;
-  border-bottom: 1px solid #B1B1B1;
+  background: #e9e9e9;
+  border-bottom: 1px solid #b1b1b1;
   cursor: pointer;
 }
 
 .identity-section .identity-panel.selected {
-  background: white;
-  color: #F3C83E;
+  background: $white;
+  color: #f3c83e;
 }
 
 .identity-section .identity-panel.selected .identicon {
-  border-color: orange;
+  border-color: $orange;
 }
 
 .identity-section .accounts-list-option:hover,
 .identity-section .accounts-list-option.selected {
-  background:white;
+  background: $white;
 }
 
 /* account detail screen */
@@ -238,15 +242,14 @@ textarea.twelve-word-phrase {
   flex-grow: 10;
 }
 
-.name-label{
-
+.name-label {
 }
 
 .unapproved-tx-icon {
   height: 16px;
   width: 16px;
   background: rgb(47, 174, 244);
-  border-color: #AEAEAE;
+  border-color: $silver-chalice;
   border-radius: 13px;
 }
 
@@ -262,7 +265,7 @@ textarea.twelve-word-phrase {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #F7861C;
+  color: #f7861c;
 }
 
 .name-label:hover .edit-text {
@@ -276,8 +279,8 @@ textarea.twelve-word-phrase {
   margin: 12px;
   margin-bottom: 24px;
   border-radius: 4px;
-  border: 2px solid #F3C83E;
-  background: #FAF6F0;
+  border: 2px solid #f3c83e;
+  background: #faf6f0;
 }
 
 /* Send Screen */
@@ -294,25 +297,25 @@ textarea.twelve-word-phrase {
 /* Ether Balance Widget */
 
 .ether-balance-amount {
-  color: #F7861C;
+  color: #f7861c;
 }
 
 .ether-balance-label {
-  color: #ABA9AA;
+  color: #aba9aa;
 }
 
 /* Info screen */
-.info-gray{
+.info-gray {
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
-  color: #AEAEAE;
+  color: $silver-chalice;
 }
 
-.icon-size{
+.icon-size {
   width: 20px;
 }
 
-.info{
+.info {
   font-family: 'Montserrat Regular', Arial;
   padding-bottom: 10px;
   display: inline-block;
@@ -325,7 +328,6 @@ textarea.twelve-word-phrase {
   align-items: center;
 }
 
-
 .custom-radio-selected {
   width: 17px;
   height: 17px;
@@ -334,7 +336,7 @@ textarea.twelve-word-phrase {
   border-radius: 15px;
   border-width: 5px;
   background: rgba(247, 134, 28, 1);
-  border-color: #F7F7F7;
+  border-color: #f7f7f7;
 }
 
 .custom-radio-inactive {
@@ -343,26 +345,26 @@ textarea.twelve-word-phrase {
   border: solid;
   border-width: 1px;
   border-radius: 24px;
-  border-color: #AEAEAE;
+  border-color: $silver-chalice;
 }
 
 .radio-titles {
   color: rgba(247, 134, 28, 1);
 }
 
-.eth-warning{
+.eth-warning {
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
 
-.buy-subview{
+.buy-subview {
   transition: opacity 400ms ease-in, transform 400ms ease-in;
 }
 
-.input-container:hover .edit-text{
+.input-container:hover .edit-text {
   visibility: visible;
 }
 
-.buy-inputs{
+.buy-inputs {
   font-family: 'Montserrat Light';
   font-size: 13px;
   height: 20px;
@@ -370,34 +372,32 @@ textarea.twelve-word-phrase {
   box-sizing: border-box;
   border: solid;
   border-color: transparent;
-  border-width: 0.5px;
+  border-width: .5px;
   border-radius: 2px;
-
 }
 
-.input-container:hover .buy-inputs{
+.input-container:hover .buy-inputs {
   box-sizing: inherit;
   border: solid;
-  border-color: #F7861C;
-  border-width: 0.5px;
+  border-color: #f7861c;
+  border-width: .5px;
   border-radius: 2px;
 }
 
-.buy-inputs:focus{
+.buy-inputs:focus {
   border: solid;
-  border-color: #F7861C;
-  border-width: 0.5px;
+  border-color: #f7861c;
+  border-width: .5px;
   border-radius: 2px;
 }
 
 .activeForm {
-  background: #F7F7F7;
+  background: #f7f7f7;
   border: none;
   border-radius: 8px 8px 0px 0px;
   width: 50%;
   text-align: center;
   padding-bottom: 4px;
-
 }
 
 .inactiveForm {
@@ -416,12 +416,12 @@ textarea.twelve-word-phrase {
   width: 118px;
   height: 42px;
   padding: 1px;
-  color: #4D4D4D;
+  color: #4d4d4d;
 }
 
-.marketinfo{
+.marketinfo {
   font-family: 'Montserrat light';
-  color: #AEAEAE;
+  color: $silver-chalice;
   font-size: 15px;
   line-height: 17px;
 }
@@ -436,25 +436,25 @@ textarea.twelve-word-phrase {
   overflow: scroll;
 }
 
-.icon-control .fa-refresh{
+.icon-control .fa-refresh {
   visibility: hidden;
 }
 
-.icon-control:hover .fa-refresh{
+.icon-control:hover .fa-refresh {
   visibility: visible;
 }
 
-.icon-control:hover .fa-chevron-right{
+.icon-control:hover .fa-chevron-right {
   visibility: hidden;
 }
 
 .inactive {
-    color: #AEAEAE;
+  color: $silver-chalice;
 }
 
-.inactive button{
-    background: #AEAEAE;
-    color: white;
+.inactive button {
+  background: $silver-chalice;
+  color: $white;
 }
 
 .ellip-address {
@@ -467,21 +467,23 @@ textarea.twelve-word-phrase {
 }
 
 .qr-header {
-    font-size: 25px;
-    margin-top: 40px;
+  font-size: 25px;
+  margin-top: 40px;
 }
 
 .qr-message {
   font-size: 12px;
-  color: #F7861C;
+  color: #f7861c;
 }
 
 div.message-container > div:first-child {
   margin-top: 18px;
   font-size: 15px;
-  color: #4D4D4D;
+  color: #4d4d4d;
 }
 
 .pop-hover:hover {
   transform: scale(1.1);
 }
+
+/* stylelint-enable */

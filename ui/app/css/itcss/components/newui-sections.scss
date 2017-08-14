@@ -10,7 +10,7 @@ $wallet-view-bg: $wild-sand;
 .main-container {
   position: absolute;
   z-index: 18;
-  font-family: DIN OT;
+  font-family: "DIN OT";
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -61,14 +61,14 @@ $wallet-view-bg: $wild-sand;
   z-index: 26;
   position: fixed;
   top: 35px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 1;
   visibility: visible;
   will-change: transform;
   overflow-y: auto;
-  box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 4px;
+  box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
   width: 85%;
   height: 100%;
 }
@@ -77,12 +77,12 @@ $wallet-view-bg: $wild-sand;
   z-index: 25;
   position: fixed;
   top: 35px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 1;
   visibility: visible;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, .3);
 }
 
 // main-container media queries
@@ -100,7 +100,7 @@ $wallet-view-bg: $wild-sand;
     margin-top: 35px;
     width: 85%;
     height: 90vh;
-    box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
 
@@ -109,7 +109,7 @@ $wallet-view-bg: $wild-sand;
     margin-top: 35px;
     width: 80%;
     height: 82vh;
-    box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
 
@@ -118,7 +118,7 @@ $wallet-view-bg: $wild-sand;
     margin-top: 35px;
     width: 65%;
     height: 82vh;
-    box-shadow: 0 0 7px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
 }
 
@@ -140,13 +140,14 @@ $wallet-view-bg: $wild-sand;
     width: 93px;
     height: 50px;
     font-size: .7em;
-    background: white;
+    background: $white;
     border: 1px solid;
   }
 }
 
 // wallet view
 .account-name {
+
   @media screen and (max-width: 575px) {
     font-size: 102%;
     margin-left: 3%;

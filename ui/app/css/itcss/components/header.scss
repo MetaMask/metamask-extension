@@ -1,20 +1,18 @@
 .app-header {
   align-items: center;
   visibility: visible;
-  background: rgb(239, 239, 239);
-  padding-top: 1.5vh;
+  background: $gallery;
+  padding: 6px 8px;
   height: 12vh;
   max-height: 60px;
   position: relative;
   z-index: 12;
-  padding: 6px 8px;
-  // background: #EFEFEF; // $gallery
 
   @media screen and (max-width: 575px) {
     position: fixed;
     height: 34px;
     width: 100%;
-    box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .08);
     z-index: 30;
   }
 }
@@ -22,13 +20,13 @@
 .app-header h1 {
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
-  color: #22232C; // $shark
+  color: #22232c; // $shark
 }
 
 h2.page-subtitle {
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
-  color: #AEAEAE;
+  color: #aeaeae;
   font-size: 1em;
   margin: 12px;
 }

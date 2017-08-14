@@ -1,42 +1,43 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:300,500);
-@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,500');
+
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
 
 @font-face {
   font-family: 'Montserrat Regular';
-    src: url('/fonts/Montserrat/Montserrat-Regular.woff') format('woff');
-    src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
-  font-weight: normal;
+  src: url('/fonts/Montserrat/Montserrat-Regular.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
   font-size: 'small';
 }
 
 @font-face {
   font-family: 'Montserrat Bold';
-    src: url('/fonts/Montserrat/Montserrat-Bold.woff') format('woff');
-    src: url('/fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
-  font-weight: normal;
+  src: url('/fonts/Montserrat/Montserrat-Bold.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Montserrat Light';
-    src: url('/fonts/Montserrat/Montserrat-Light.woff') format('woff');
-    src: url('/fonts/Montserrat/Montserrat-Light.ttf') format('truetype');
-  font-weight: normal;
+  src: url('/fonts/Montserrat/Montserrat-Light.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-Light.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Montserrat UltraLight';
-    src: url('/fonts/Montserrat/Montserrat-UltraLight.woff') format('woff');
-    src: url('/fonts/Montserrat/Montserrat-UltraLight.ttf') format('truetype');
-  font-weight: normal;
+  src: url('/fonts/Montserrat/Montserrat-UltraLight.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-UltraLight.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'DIN OT';
-    src: url('/fonts/DIN_OT/DINOT-2.otf') format('opentype');
-  font-weight: normal;
+  src: url('/fonts/DIN_OT/DINOT-2.otf') format('opentype');
+  font-weight: 400;
   font-style: normal;
 }

@@ -1,5 +1,6 @@
 .tx-list-container {
   height: 87.5%;
+
   @media screen and (min-width: $break-large) {
     overflow-y: scroll;
   }
@@ -7,8 +8,8 @@
 
 @media screen and (max-width: $break-small) {
   .tx-list-header-wrapper {
-    margin-top: 0.2em;
-    margin-bottom: 0.6em;
+    margin-top: .2em;
+    margin-bottom: .6em;
     // TODO: Resolve Layout Conflicst in Wallet View
     //  - This fixes txlist "transactions" title dispay
     // margin-top: 0.2em;
@@ -30,7 +31,7 @@
 
   .tx-list-header {
     font-size: 16px;
-    margin: 1.8em 1.3em 1.8em 1.3em;
+    margin: 1.8em 1.3em;
   }
 }
 
@@ -40,11 +41,11 @@
   flex: 0 0 1px;
 
   @media screen and (max-width: $break-small) {
-    margin: 0.1em 0em 0.1em 0em;
+    margin: .1em 0;
   }
 
   @media screen and (min-width: $break-large) {
-    margin: 0.1em 1.3em 0.1em 1.3em;
+    margin: .1em 1.3em;
   }
 }
 
@@ -54,23 +55,22 @@
   justify-content: flex-start;
 
   @media screen and (max-width: $break-small) {
-    margin: 0em 1.3em 0.95em 1.3em;
+    margin: 0 1.3em .95em;
   }
 
   @media screen and (min-width: $break-large) {
-    margin: 0em 1.3em 0em 1.3em;
+    margin: 0 1.3em;
   }
 }
 
 .tx-list-date-wrapper {
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: auto;
+  flex: 1 1 auto;
 
   @media screen and (max-width: $break-small) {
     margin-top: 6px;
     margin-bottom: 20px;
   }
+
   @media screen and (min-width: $break-large) {
     margin-top: 6px;
   }

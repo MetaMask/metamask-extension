@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    margin: 0.3em 0.9em 0em 0.9em;
+    margin: .3em .9em 0;
     height: 80vh;
     max-height: 225px;
   }
@@ -15,7 +15,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    margin: 2.8em 0.9em 0.8em 0.9em;
+    margin: 2.8em .9em .8em;
   }
 
   .balance-container {
@@ -47,7 +47,7 @@
       .fiat-amount {
         font-size: 115%;
         margin-top: 8.5%;
-        color: #A0A0A0;
+        color: #a0a0a0;
       }
     }
 
@@ -61,7 +61,7 @@
       }
 
       .fiat-amount {
-        margin-top: 0.25%;
+        margin-top: .25%;
         font-size: 105%;
       }
     }
@@ -75,6 +75,7 @@
   }
 
   .hero-balance-buttons {
+
     @media screen and (max-width: $break-small) {
       width: 100%;
       height: 100px; // needed a round number to set the heights of the buttons inside
@@ -86,7 +87,7 @@
 
     button.btn-clear {
       font-size: 75%;
-      background: white;
+      background: $white;
       border: 1px solid;
 
       @media screen and (max-width: $break-small) {

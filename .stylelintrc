@@ -34,8 +34,6 @@
       {
         "ignore": [
           "after-comment",
-          "all-nested",
-          "blockless-group"
         ]
       }
     ],

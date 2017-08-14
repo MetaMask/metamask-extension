@@ -3,8 +3,8 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const Dropdown = require('../dropdown').Dropdown
-const DropdownMenuItem = require('../dropdown').DropdownMenuItem
+const Dropdown = require('./components/dropdown').Dropdown
+const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 
 function mapStateToProps (state) {
   return {

@@ -3,11 +3,11 @@
  */
 
 .btn-green {
-  background-color: #02C9B1; // TODO: reusable color in colors.css
+  background-color: #02c9b1; // TODO: reusable color in colors.css
 }
 
 button.btn-clear {
-  background: white;
+  background: $white;
   border: 1px solid;
 }
 
@@ -46,9 +46,9 @@ button.btn-clear {
 
 button.primary {
   padding: 8px 12px;
-  background: #F7861C;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-  color: white;
+  background: #f7861c;
+  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  color: $white;
   font-size: 1.1em;
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
@@ -57,8 +57,8 @@ button.primary {
 .btn-light {
   padding: 8px 12px;
   // background: #FFFFFF; // $bg-white
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
-  color: #585D67; // TODO: make reusable light button color
+  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  color: #585d67; // TODO: make reusable light button color
   font-size: 1.1em;
   font-family: 'Montserrat Regular';
   text-transform: uppercase;
@@ -66,14 +66,14 @@ button.primary {
   line-height: 20px;
   border-radius: 2px;
   border: 1px solid #979797; // #TODO: make reusable light border color
-  opacity: 0.5;
+  opacity: .5;
 }
 
 // TODO: cleanup: not used anywhere
 button.btn-thin {
   border: 1px solid;
-  border-color: #4D4D4D;
-  color: #4D4D4D;
+  border-color: #4d4d4d;
+  color: #4d4d4d;
   background: rgb(255, 174, 41);
   border-radius: 4px;
   min-width: 200px;
