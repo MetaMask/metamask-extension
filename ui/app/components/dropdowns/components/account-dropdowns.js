@@ -17,7 +17,9 @@ class AccountDropdowns extends Component {
       accountSelectorActive: false,
       optionsMenuActive: false,
     }
-    this.accountSelectorToggleClassName = 'accounts-selector'
+    // Used for orangeaccount selector icon
+    // this.accountSelectorToggleClassName = 'accounts-selector'
+    this.accountSelectorToggleClassName = 'fa-angle-down'
     this.optionsMenuToggleClassName = 'fa-ellipsis-h'
   }
 
