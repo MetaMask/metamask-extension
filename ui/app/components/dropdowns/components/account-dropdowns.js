@@ -1,12 +1,12 @@
 const Component = require('react').Component
 const PropTypes = require('react').PropTypes
 const h = require('react-hyperscript')
-const actions = require('../actions')
-const genAccountLink = require('../../lib/account-link.js')
+const actions = require('../../../actions')
+const genAccountLink = require('../../../../lib/account-link.js')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
-const Identicon = require('./identicon')
+const Identicon = require('../../identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 
@@ -314,6 +314,5 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-module.exports = {
-  AccountDropdowns: connect(null, mapDispatchToProps)(AccountDropdowns),
-}
+module.exports = connect(null, mapDispatchToProps)(AccountDropdowns)
+
