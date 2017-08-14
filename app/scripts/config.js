@@ -12,4 +12,9 @@ module.exports = {
     kovan: KOVAN_RPC_URL,
     rinkeby: RINKEBY_RPC_URL,
   },
+  networkNames: {
+    3: 'Ropsten',
+    4: 'Rinkeby',
+    42: 'Kovan',
+  },
 }
