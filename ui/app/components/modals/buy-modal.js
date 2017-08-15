@@ -21,3 +21,23 @@ BuyModal.prototype.render = function () {
 }
 
 // TODO: specify default props and proptypes
+
+// Generalize to multiple modals:
+//   Modal API:
+//    - props {
+//      key: ['BUY', 'EDIT_ACCOUNT_NAME', 'ACCOUNT_DETAILS']
+//    }
+//    - These props will be passed as 'active'
+//      mapStateToProps(state, ownProps) {
+//        active: state.appState.modal[key]
+//      }
+//    - Modal accepts:
+//      - mobileModalStyles, for mobile viewports
+//      - laptopModalStyles, for laptop viewports
+//      - backdropStyles
+//      - Do not set defaults, they are unneeded here
+// 
+// If multiple-step modals are needed:
+//  - pass a component with internal state that tracks buy steps
+//    - steps could technically be in redux
+//  - it renders and does not trigger open/close actions until done
