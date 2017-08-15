@@ -105,6 +105,8 @@ var actions = {
   txError: txError,
   nextTx: nextTx,
   previousTx: previousTx,
+  cancelAllTx: cancelAllTx,
+  CANCEL_ALL_TX: 'CANCEL_ALL_TX',
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
@@ -470,6 +472,12 @@ function cancelTx (txData) {
   }
 }
 
+function cancelAllTx (txsData) {
+  return (dispatch) => {
+    txsData.forEach((txData) => dispatch(actions.cancelTx(txData)))
+    dispatch(actions.goHome())
+  }
+}
 //
 // initialize screen
 //
