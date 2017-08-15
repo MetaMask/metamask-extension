@@ -270,10 +270,9 @@ AccountDetailScreen.prototype.tabSwitchView = function () {
         style: {
           padding: '80px',
         },
-      }, [`
-        Token List is temporally
-        you can check your token balnce
-        `, h('span.hotFix', {
+      }, [
+      'Token lists are temporarily down. You can check you your token balances ',
+      h('span.hotFix', {
           style: {
             color: 'rgba(247, 134, 28, 1)',
           },
