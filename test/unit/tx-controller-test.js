@@ -306,9 +306,9 @@ describe('Transaction Controller', function () {
       txController.addTx(txMeta)
       const updatedTx = txController.getTx('1')
       // verify tx was initialized correctly
-      assert.equal(result.history.length, 1, 'one history item (initial)')
-      assert.equal(Array.isArray(result.history[0]), false, 'first history item is initial state')
-      assert.deepEqual(result.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
+      assert.equal(updatedTx.history.length, 1, 'one history item (initial)')
+      assert.equal(Array.isArray(updatedTx.history[0]), false, 'first history item is initial state')
+      assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
       // modify value and updateTx
       updatedTx.txParams.gasPrice = desiredGasPrice
       txController.updateTx(updatedTx)
