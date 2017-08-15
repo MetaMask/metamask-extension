@@ -12,7 +12,7 @@ const ExportAccountView = require('./components/account-export')
 const ethUtil = require('ethereumjs-util')
 const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
-const TokenList = require('./components/token-list')
+// const TokenList = require('./components/token-list')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
@@ -255,17 +255,34 @@ AccountDetailScreen.prototype.tabSections = function () {
 
 AccountDetailScreen.prototype.tabSwitchView = function () {
   const props = this.props
-  const { address, network } = props
-  const { currentAccountTab, tokens } = this.props
+  const { address/*, network */} = props
+  const { currentAccountTab/*, tokens*/ } = this.props
 
   switch (currentAccountTab) {
     case 'tokens':
-      return h(TokenList, {
-        userAddress: address,
-        network,
-        tokens,
-        addToken: () => this.props.dispatch(actions.showAddTokenPage()),
-      })
+      // return h(TokenList, {
+      //   userAddress: address,
+      //   network,
+      //   tokens,
+      //   addToken: () => this.props.dispatch(actions.showAddTokenPage()),
+      // })
+      return h('.hotFix', {
+        style: {
+          padding: '80px',
+        },
+      }, [
+      'Token lists are temporarily down. You can check you your token balances ',
+      h('span.hotFix', {
+          style: {
+            color: 'rgba(247, 134, 28, 1)',
+            cursor: 'pointer',
+          },
+          onClick: () => {
+            global.platform.openWindow({
+            url: `https://ethplorer.io/address/${address}`,
+          })
+          },
+        }, 'here')])
     default:
       return this.transactionList()
   }
