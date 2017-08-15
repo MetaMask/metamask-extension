@@ -117,7 +117,7 @@ AccountDetailScreen.prototype.render = function () {
                       h('h2', {
                         style: {
                           maxWidth: '180px',
-                          overflowX: 'hidden',
+                          overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           padding: '5px 0px',
                         },
