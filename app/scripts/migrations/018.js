@@ -32,7 +32,7 @@ function transformState (state) {
   const transactions = newState.TransactionController.transactions
   newState.TransactionController.transactions = transactions.map((txMeta) => {
     // no history: initialize
-    if (!txMeta.history || tx.history.length === 0) {
+    if (!txMeta.history || txMeta.history.length === 0) {
       const snapshot = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
       txMeta.history = [snapshot]
       return txMeta

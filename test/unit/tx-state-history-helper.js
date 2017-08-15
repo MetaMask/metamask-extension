@@ -3,7 +3,7 @@ const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-hel
 const testVault = require('../data/v17-long-history.json')
 
 
-describe('history-differ', function () {
+describe('tx-state-history-helper', function () {
   it('migrates history to diffs and can recover original values', function () {
     testVault.data.TransactionController.transactions.forEach((tx, index) => {
       const newHistory = txStateHistoryHelper.migrateFromSnapshotsToDiffs(tx.history)

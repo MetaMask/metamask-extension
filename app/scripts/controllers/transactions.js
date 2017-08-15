@@ -1,6 +1,5 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
-const clone = require('clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
