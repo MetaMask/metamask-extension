@@ -106,7 +106,6 @@ var actions = {
   nextTx: nextTx,
   previousTx: previousTx,
   cancelAllTx: cancelAllTx,
-  CANCEL_ALL_TX: 'CANCEL_ALL_TX',
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
