@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.9.7 2017-8-15
+
 - hotfix - disable token list
 - Added a deprecation warning for web3 https://github.com/ethereum/mist/releases/tag/v0.9.0
 
