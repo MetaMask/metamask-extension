@@ -275,6 +275,7 @@ AccountDetailScreen.prototype.tabSwitchView = function () {
       h('span.hotFix', {
           style: {
             color: 'rgba(247, 134, 28, 1)',
+            cursor: 'pointer',
           },
           onClick: () => {
             global.platform.openWindow({
