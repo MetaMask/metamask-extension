@@ -473,8 +473,12 @@ function cancelTx (txData) {
 
 function cancelAllTx (txsData) {
   return (dispatch) => {
-    txsData.forEach((txData) => dispatch(actions.cancelTx(txData)))
-    dispatch(actions.goHome())
+    txsData.forEach((txData, i) => {
+      background.cancelTransaction(txData.id, () => {
+        dispatch(actions.completedTx(txData.id))
+        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+      })
+    })
   }
 }
 //
