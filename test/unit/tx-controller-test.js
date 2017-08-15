@@ -6,11 +6,14 @@ const clone = require('clone')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxProvideUtils = require('../../app/scripts/lib/tx-utils')
+const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
+
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 const { createStubedProvider } = require('../stub/provider')
+
 
 describe('Transaction Controller', function () {
   let txController, engine, provider, providerResultStub
@@ -287,7 +290,7 @@ describe('Transaction Controller', function () {
       assert.equal(savedResult.hash, 'foo')
     })
 
-    it('updates gas price', function () {
+    it('updates gas price and adds history items', function () {
       const originalGasPrice = '0x01'
       const desiredGasPrice = '0x02'
 
@@ -300,13 +303,22 @@ describe('Transaction Controller', function () {
         },
       }
 
-
       txController.addTx(txMeta)
-      const updatedMeta = txController.getTx('1')
-      updatedMeta.txParams.gasPrice = desiredGasPrice
-      txController.updateTx(updatedMeta)
-      var result = txController.getTx('1')
+      const updatedTx = txController.getTx('1')
+      // verify tx was initialized correctly
+      assert.equal(result.history.length, 1, 'one history item (initial)')
+      assert.equal(Array.isArray(result.history[0]), false, 'first history item is initial state')
+      assert.deepEqual(result.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
+      // modify value and updateTx
+      updatedTx.txParams.gasPrice = desiredGasPrice
+      txController.updateTx(updatedTx)
+      // check updated value
+      const result = txController.getTx('1')
       assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
+      // validate history was updated
+      assert.equal(result.history.length, 2, 'two history items (initial + diff)')
+      const expectedEntry = { op: 'replace', path: '/txParams/gasPrice', value: desiredGasPrice }
+      assert.deepEqual(result.history[1], [expectedEntry], 'two history items (initial + diff)')
     })
   })
 
