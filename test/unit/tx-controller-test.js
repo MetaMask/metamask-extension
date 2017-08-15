@@ -47,7 +47,7 @@ describe('Transaction Controller', function () {
         metamaskNetworkId: currentNetworkId,
         txParams,
       }
-      txController._saveTxList([txMeta])
+      txController.addTx(txMeta)
       stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txMeta))
     })
 
@@ -279,9 +279,12 @@ describe('Transaction Controller', function () {
     it('replaces the tx with the same id', function () {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       txController.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.updateTx({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: currentNetworkId, txParams: {} })
-      var result = txController.getTx('1')
-      assert.equal(result.hash, 'foo')
+      const tx1 = txController.getTx('1')
+      tx1.status = 'blah'
+      tx1.hash = 'foo'
+      txController.updateTx(tx1)
+      const savedResult = txController.getTx('1')
+      assert.equal(savedResult.hash, 'foo')
     })
 
     it('updates gas price', function () {
@@ -297,9 +300,9 @@ describe('Transaction Controller', function () {
         },
       }
 
-      const updatedMeta = clone(txMeta)
 
       txController.addTx(txMeta)
+      const updatedMeta = txController.getTx('1')
       updatedMeta.txParams.gasPrice = desiredGasPrice
       txController.updateTx(updatedMeta)
       var result = txController.getTx('1')
