@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.9.8 2017-8-16
+
 - Reenable token list.
 - Remove default tokens.
 
