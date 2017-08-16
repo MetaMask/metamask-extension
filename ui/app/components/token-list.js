@@ -5,16 +5,6 @@ const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
 const normalizeAddress = require('eth-sig-util').normalize
 
-const defaultTokens = []
-const contracts = require('eth-contract-metadata')
-for (const address in contracts) {
-  const contract = contracts[address]
-  if (contract.erc20) {
-    contract.address = address
-    defaultTokens.push(contract)
-  }
-}
-
 module.exports = TokenList
 
 inherits(TokenList, Component)
@@ -153,7 +143,7 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: uniqueMergeTokens(defaultTokens, this.props.tokens),
+    tokens: this.props.tokens,
     pollingInterval: 8000,
   })
 
