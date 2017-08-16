@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Reenable token list.
+- Remove default tokens.
+
 ## 3.9.7 2017-8-15
 
 - hotfix - disable token list
