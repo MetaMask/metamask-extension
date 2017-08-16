@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
-const normalizeAddress = require('eth-sig-util').normalize
 
 module.exports = TokenList
 
@@ -187,18 +186,5 @@ TokenList.prototype.updateBalances = function (tokens) {
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
-}
-
-function uniqueMergeTokens (tokensA, tokensB) {
-  const uniqueAddresses = []
-  const result = []
-  tokensA.concat(tokensB).forEach((token) => {
-    const normal = normalizeAddress(token.address)
-    if (!uniqueAddresses.includes(normal)) {
-      uniqueAddresses.push(normal)
-      result.push(token)
-    }
-  })
-  return result
 }
 
