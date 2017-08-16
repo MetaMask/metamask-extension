@@ -19,17 +19,52 @@ html, body {
   font-weight: 300;
   line-height: 1.4em;
   background: #F7F7F7;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 500px;
+}
+
+.app-root {
+  overflow: hidden;
+  position: relative
+}
+
+.app-primary {
+  display: flex;
 }
 
 input:focus, textarea:focus {
   outline: none;
 }
 
+.full-size {
+  height: 100%;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-flex-height {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
 #app-content {
   overflow-x: hidden;
   min-width: 357px;
-  width: 360px;
-  height: 500px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 button, input[type="submit"] {
@@ -130,10 +165,6 @@ h2.page-subtitle {
   margin: 12px;
 }
 
-.app-primary {
-
-}
-
 .app-footer {
   padding-bottom: 10px;
   align-items: center;
@@ -170,7 +201,7 @@ textarea.twelve-word-phrase {
 }
 
 .check {
-  margin-left: 7px;
+  margin-left: 12px;
   color: #F7861C;
   flex: 1 0 auto;
   display: flex;
@@ -403,8 +434,16 @@ input.large-input {
 /* account detail screen */
 
 .account-detail-section {
-
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  flex-direction: inherit;
 }
+
+.grow-tenx {
+  flex-grow: 10;
+}
+
 .name-label{
 
 }

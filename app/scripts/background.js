@@ -11,7 +11,6 @@ const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const extension = require('extensionizer')
 const firstTimeState = require('./first-time-state')
-const isPhish = require('./lib/is-phish')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -91,16 +90,12 @@ function setupController (initState) {
 
   extension.runtime.onConnect.addListener(connectRemote)
   function connectRemote (remotePort) {
-    if (remotePort.name === 'blacklister') {
-      return checkBlacklist(remotePort)
-    }
-
-    var isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
-    var portStream = new PortStream(remotePort)
+    const isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
+    const portStream = new PortStream(remotePort)
     if (isMetaMaskInternalProcess) {
       // communication with popup
       popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
-      controller.setupTrustedCommunication(portStream, 'MetaMask', remotePort.name)
+      controller.setupTrustedCommunication(portStream, 'MetaMask')
       // record popup as closed
       if (remotePort.name === 'popup') {
         endOfStream(portStream, () => {
@@ -109,7 +104,7 @@ function setupController (initState) {
       }
     } else {
       // communication with page
-      var originDomain = urlUtil.parse(remotePort.sender.url).hostname
+      const originDomain = urlUtil.parse(remotePort.sender.url).hostname
       controller.setupUntrustedCommunication(portStream, originDomain)
     }
   }
@@ -126,7 +121,7 @@ function setupController (initState) {
   // plugin badge text
   function updateBadge () {
     var label = ''
-    var unapprovedTxCount = controller.txController.unapprovedTxCount
+    var unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     var unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
     var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs
@@ -138,27 +133,6 @@ function setupController (initState) {
   }
 
   return Promise.resolve()
-}
-
-// Listen for new pages and return if blacklisted:
-function checkBlacklist (port) {
-  const handler = handleNewPageLoad.bind(null, port)
-  port.onMessage.addListener(handler)
-  setTimeout(() => {
-    port.onMessage.removeListener(handler)
-  }, 30000)
-}
-
-function handleNewPageLoad (port, message) {
-  const { pageLoaded } = message
-  if (!pageLoaded || !global.metamaskController) return
-
-  const state = global.metamaskController.getState()
-  const updatedBlacklist = state.blacklist
-
-  if (isPhish({ updatedBlacklist, hostname: pageLoaded })) {
-    port.postMessage({ 'blacklist': pageLoaded })
-  }
 }
 
 //

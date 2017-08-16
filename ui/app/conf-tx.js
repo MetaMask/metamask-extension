@@ -1,6 +1,5 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
@@ -92,34 +91,25 @@ ConfirmTxScreen.prototype.render = function () {
 
       warningIfExists(props.warning),
 
-      h(ReactCSSTransitionGroup, {
-        className: 'css-transition-group',
-        transitionName: 'main',
-        transitionEnterTimeout: 300,
-        transitionLeaveTimeout: 300,
-      }, [
-
-        currentTxView({
-          // Properties
-          txData: txData,
-          key: txData.id,
-          selectedAddress: props.selectedAddress,
-          accounts: props.accounts,
-          identities: props.identities,
-          conversionRate,
-          currentCurrency,
-          blockGasLimit,
-          // Actions
-          buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
-          sendTransaction: this.sendTransaction.bind(this),
-          cancelTransaction: this.cancelTransaction.bind(this, txData),
-          signMessage: this.signMessage.bind(this, txData),
-          signPersonalMessage: this.signPersonalMessage.bind(this, txData),
-          cancelMessage: this.cancelMessage.bind(this, txData),
-          cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
-        }),
-
-      ]),
+      currentTxView({
+        // Properties
+        txData: txData,
+        key: txData.id,
+        selectedAddress: props.selectedAddress,
+        accounts: props.accounts,
+        identities: props.identities,
+        conversionRate,
+        currentCurrency,
+        blockGasLimit,
+        // Actions
+        buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
+        sendTransaction: this.sendTransaction.bind(this),
+        cancelTransaction: this.cancelTransaction.bind(this, txData),
+        signMessage: this.signMessage.bind(this, txData),
+        signPersonalMessage: this.signPersonalMessage.bind(this, txData),
+        cancelMessage: this.cancelMessage.bind(this, txData),
+        cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
+      }),
     ])
   )
 }

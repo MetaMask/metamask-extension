@@ -16,6 +16,7 @@ const NoticeController = require('./notice-controller')
 const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
+const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
@@ -69,6 +70,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
+    this.blacklistController = new BlacklistController({
+      initState: initState.BlacklistController,
+    })
+    this.blacklistController.scheduleUpdates()
 
     // rpc provider
     this.provider = this.initializeProvider()
@@ -108,6 +113,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ethQuery: this.ethQuery,
       ethStore: this.ethStore,
     })
+    this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
 
     // notices
     this.noticeController = new NoticeController({
@@ -150,6 +156,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
+    })
+    this.blacklistController.store.subscribe((state) => {
+      this.store.updateState({ BlacklistController: state })
     })
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
@@ -195,7 +204,7 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      processTransaction: (txParams, cb) => this.newUnapprovedTransaction(txParams, cb),
+      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
 
@@ -308,7 +317,7 @@ module.exports = class MetamaskController extends EventEmitter {
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
-      cancelTransaction: txController.cancelTransaction.bind(txController),
+      cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
 
       // messageManager
@@ -326,8 +335,15 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupUntrustedCommunication (connectionStream, originDomain) {
+    // Check if new connection is blacklisted
+    if (this.blacklistController.checkForPhishing(originDomain)) {
+      console.log('MetaMask - sending phishing warning for', originDomain)
+      this.sendPhishingWarning(connectionStream, originDomain)
+      return
+    }
+
     // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
+    const mx = setupMultiplex(connectionStream)
     // connect features
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
     this.setupPublicConfig(mx.createStream('publicConfig'))
@@ -335,10 +351,16 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
+    const mx = setupMultiplex(connectionStream)
     // connect features
     this.setupControllerConnection(mx.createStream('controller'))
     this.setupProviderConnection(mx.createStream('provider'), originDomain)
+  }
+
+  sendPhishingWarning (connectionStream, hostname) {
+    const mx = setupMultiplex(connectionStream)
+    const phishingStream = mx.createStream('phishing')
+    phishingStream.write({ hostname })
   }
 
   setupControllerConnection (outStream) {
@@ -439,27 +461,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
-
-  newUnapprovedTransaction (txParams, cb) {
-    log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const self = this
-    self.txController.addUnapprovedTransaction(txParams, (err, txMeta) => {
-      if (err) return cb(err)
-      self.sendUpdate()
-      self.opts.showUnapprovedTx(txMeta)
-      // listen for tx completion (success, fail)
-      self.txController.once(`${txMeta.id}:finished`, (completedTx) => {
-        switch (completedTx.status) {
-          case 'submitted':
-            return cb(null, completedTx.hash)
-          case 'rejected':
-            return cb(new Error('MetaMask Tx Signature: User denied transaction signature.'))
-          default:
-            return cb(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
-        }
-      })
-    })
-  }
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)
@@ -646,6 +647,4 @@ module.exports = class MetamaskController extends EventEmitter {
       return Promise.resolve(rpcTarget)
     })
   }
-
-
 }

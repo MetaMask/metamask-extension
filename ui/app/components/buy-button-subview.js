@@ -8,6 +8,7 @@ const ShapeshiftForm = require('./shapeshift-form')
 const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
+const networkNames = require('../../../app/scripts/config.js').networkNames
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -30,16 +31,30 @@ function BuyButtonSubview () {
 }
 
 BuyButtonSubview.prototype.render = function () {
+  return (
+    h('div', {
+      style: {
+        width: '100%',
+      },
+    }, [
+      this.headerSubview(),
+      this.primarySubview(),
+    ])
+  )
+}
+
+BuyButtonSubview.prototype.headerSubview = function () {
   const props = this.props
   const isLoading = props.isSubLoading
-
   return (
-    h('.buy-eth-section.flex-column', {
+
+    h('.flex-column', {
       style: {
         alignItems: 'center',
       },
     }, [
-             // back button
+
+      // header bar (back button, label)
       h('.flex-row', {
         style: {
           alignItems: 'center',
@@ -63,6 +78,8 @@ BuyButtonSubview.prototype.render = function () {
           },
         }, 'Buy Eth'),
       ]),
+
+      // loading indication
       h('div', {
         style: {
           position: 'absolute',
@@ -70,8 +87,10 @@ BuyButtonSubview.prototype.render = function () {
           left: '49vw',
         },
       }, [
-        h(Loading, {isLoading}),
+        h(Loading, { isLoading }),
       ]),
+
+      // account panel
       h('div', {
         style: {
           width: '80%',
@@ -83,17 +102,92 @@ BuyButtonSubview.prototype.render = function () {
           account: props.account,
         }),
       ]),
-      h('h3.text-transform-uppercase', {
+
+      h('.flex-row', {
         style: {
-          paddingLeft: '15px',
-          fontFamily: 'Montserrat Light',
-          width: '100vw',
-          background: 'rgb(235, 235, 235)',
-          color: 'rgb(174, 174, 174)',
-          paddingTop: '4px',
-          paddingBottom: '4px',
+          alignItems: 'center',
+          justifyContent: 'center',
         },
-      }, 'Select Service'),
+      }, [
+        h('h3.text-transform-uppercase.flex-center', {
+          style: {
+            paddingLeft: '15px',
+            width: '100vw',
+            background: 'rgb(235, 235, 235)',
+            color: 'rgb(174, 174, 174)',
+            paddingTop: '4px',
+            paddingBottom: '4px',
+          },
+        }, 'Select Service'),
+      ]),
+
+    ])
+
+  )
+}
+
+
+BuyButtonSubview.prototype.primarySubview = function () {
+  const props = this.props
+  const network = props.network
+
+  switch (network) {
+    case 'loading':
+      return
+
+    case '1':
+      return this.mainnetSubview()
+
+    // Ropsten, Rinkeby, Kovan
+    case '3':
+    case '4':
+    case '42':
+      const networkName = networkNames[network]
+      const label = `${networkName} Test Faucet`
+      return (
+        h('div.flex-column', {
+          style: {
+            alignItems: 'center',
+            margin: '20px 50px',
+          },
+        }, [
+          h('button.text-transform-uppercase', {
+            onClick: () => this.props.dispatch(actions.buyEth({ network })),
+            style: {
+              marginTop: '15px',
+            },
+          }, label),
+          // Kovan only: Dharma loans beta
+          network === '42' ? (
+            h('button.text-transform-uppercase', {
+              onClick: () => this.navigateTo('https://borrow.dharma.io/'),
+              style: {
+                marginTop: '15px',
+              },
+            }, 'Borrow With Dharma (Beta)')
+          ) : null,
+      ])
+    )
+
+    default:
+      return (
+        h('h2.error', 'Unknown network ID')
+      )
+
+  }
+}
+
+BuyButtonSubview.prototype.mainnetSubview = function () {
+  const props = this.props
+
+  return (
+
+    h('.flex-column', {
+      style: {
+        alignItems: 'center',
+      },
+    }, [
+
       h('.flex-row.selected-exchange', {
         style: {
           position: 'relative',
@@ -115,6 +209,7 @@ BuyButtonSubview.prototype.render = function () {
           onClick: this.radioHandler.bind(this),
         }),
       ]),
+
       h('h3.text-transform-uppercase', {
         style: {
           paddingLeft: '15px',
@@ -126,8 +221,10 @@ BuyButtonSubview.prototype.render = function () {
           paddingBottom: '4px',
         },
       }, props.buyView.subview),
+
       this.formVersionSubview(),
     ])
+
   )
 }
 
@@ -139,39 +236,6 @@ BuyButtonSubview.prototype.formVersionSubview = function () {
     } else if (this.props.buyView.formView.shapeshift) {
       return h(ShapeshiftForm, this.props)
     }
-  } else {
-    return h('div.flex-column', {
-      style: {
-        alignItems: 'center',
-        margin: '50px',
-      },
-    }, [
-      h('h3.text-transform-uppercase', {
-        style: {
-          width: '225px',
-          marginBottom: '15px',
-        },
-      }, 'In order to access this feature, please switch to the Main Network'),
-      ((network === '3') || (network === '4') || (network === '42')) ? h('h3.text-transform-uppercase', 'or go to the') : null,
-      (network === '3') ? h('button.text-transform-uppercase', {
-        onClick: () => this.props.dispatch(actions.buyEth({ network })),
-        style: {
-          marginTop: '15px',
-        },
-      }, 'Ropsten Test Faucet') : null,
-      (network === '4') ? h('button.text-transform-uppercase', {
-        onClick: () => this.props.dispatch(actions.buyEth({ network })),
-        style: {
-          marginTop: '15px',
-        },
-      }, 'Rinkeby Test Faucet') : null,
-      (network === '42') ? h('button.text-transform-uppercase', {
-        onClick: () => this.props.dispatch(actions.buyEth({ network })),
-        style: {
-          marginTop: '15px',
-        },
-      }, 'Kovan Test Faucet') : null,
-    ])
   }
 }
 

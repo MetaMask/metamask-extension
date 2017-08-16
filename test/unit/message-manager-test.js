@@ -1,7 +1,7 @@
 const assert = require('assert')
 const MessageManger = require('../../app/scripts/lib/message-manager')
 
-describe('Transaction Manager', function () {
+describe('Message Manager', function () {
   let messageManager
 
   beforeEach(function () {

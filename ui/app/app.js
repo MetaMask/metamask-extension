@@ -3,14 +3,12 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
 // unlock
 const UnlockScreen = require('./unlock')
 // accounts
-const AccountsScreen = require('./accounts')
 const AccountDetailScreen = require('./account-detail')
 const SendTransactionScreen = require('./send')
 const ConfirmTxScreen = require('./conf-tx')
@@ -24,15 +22,15 @@ const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
 const SandwichExpando = require('sandwich-expando')
-const MenuDroppo = require('menu-droppo')
-const DropMenuItem = require('./components/drop-menu-item')
+const Dropdown = require('./components/dropdown').Dropdown
+const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkIndicator = require('./components/network')
-const Tooltip = require('./components/tooltip')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -40,6 +38,13 @@ inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+  const {
+    identities,
+    accounts,
+    address,
+  } = state.metamask
+  const selected = address || Object.keys(accounts)[0]
+
   return {
     // state from plugin
     isLoading: state.appState.isLoading,
@@ -60,6 +65,10 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+
+    // state needed to get account dropdown temporarily rendering from app bar
+    identities,
+    selected,
   }
 }
 
@@ -69,16 +78,16 @@ App.prototype.render = function () {
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
-
   log.debug('Main ui render function')
 
   return (
 
-    h('.flex-column.flex-grow.full-height', {
+    h('.flex-column.full-height', {
       style: {
         // Windows was showing a vertical scroll bar:
         overflow: 'hidden',
         position: 'relative',
+        alignItems: 'center',
       },
     }, [
 
@@ -93,20 +102,12 @@ App.prototype.render = function () {
       }),
 
       // panel content
-      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
+      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          height: '380px',
-          width: '360px',
+          width: '100%',
         },
       }, [
-        h(ReactCSSTransitionGroup, {
-          className: 'css-transition-group',
-          transitionName: 'main',
-          transitionEnterTimeout: 300,
-          transitionLeaveTimeout: 300,
-        }, [
-          this.renderPrimary(),
-        ]),
+        this.renderPrimary(),
       ]),
     ])
   )
@@ -123,14 +124,16 @@ App.prototype.renderAppBar = function () {
 
   return (
 
-    h('div', [
+    h('.full-width', {
+      height: '38px',
+    }, [
 
       h('.app-header.flex-row.flex-space-between', {
         style: {
           alignItems: 'center',
           visibility: props.isUnlocked ? 'visible' : 'none',
           background: props.isUnlocked ? 'white' : 'none',
-          height: '36px',
+          height: '38px',
           position: 'relative',
           zIndex: 12,
         },
@@ -178,32 +181,26 @@ App.prototype.renderAppBar = function () {
           },
         }, [
 
-          // small accounts nav
-          props.isUnlocked && h(Tooltip, { title: 'Switch Accounts' }, [
-            h('img.cursor-pointer.color-orange', {
-              src: 'images/switch_acc.svg',
-              style: {
-                width: '23.5px',
-                marginRight: '8px',
-              },
-              onClick: (event) => {
-                event.stopPropagation()
-                this.props.dispatch(actions.showAccountsPage())
-              },
-            }),
-          ]),
+          props.isUnlocked && h(AccountDropdowns, {
+            style: {},
+            enableAccountsSelector: true,
+            identities: this.props.identities,
+            selected: this.props.currentView.context,
+            network: this.props.network,
+          }, []),
 
           // hamburger
           props.isUnlocked && h(SandwichExpando, {
+            className: 'sandwich-expando',
             width: 16,
             barHeight: 2,
             padding: 0,
             isOpen: state.isMainMenuOpen,
             color: 'rgb(247,146,30)',
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              this.setState({ isMainMenuOpen: !state.isMainMenuOpen })
+            onClick: () => {
+              this.setState({
+                isMainMenuOpen: !state.isMainMenuOpen,
+              })
             },
           }),
         ]),
@@ -214,84 +211,141 @@ App.prototype.renderAppBar = function () {
 
 App.prototype.renderNetworkDropdown = function () {
   const props = this.props
+  const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
   const rpcList = props.frequentRpcList
   const state = this.state || {}
   const isOpen = state.isNetworkMenuOpen
 
-  return h(MenuDroppo, {
+  return h(Dropdown, {
+    useCssTransition: true,
     isOpen,
     onClickOutside: (event) => {
-      this.setState({ isNetworkMenuOpen: !isOpen })
+      const { classList } = event.target
+      const isNotToggleElement = [
+        classList.contains('menu-icon'),
+        classList.contains('network-name'),
+        classList.contains('network-indicator'),
+      ].filter(bool => bool).length === 0
+      // classes from three constituent nodes of the toggle element
+
+      if (isNotToggleElement) {
+        this.setState({ isNetworkMenuOpen: false })
+      }
     },
     zIndex: 11,
     style: {
       position: 'absolute',
-      left: 0,
+      left: '2px',
       top: '36px',
     },
     innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+      padding: '2px 16px 2px 0px',
     },
-  }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
+  }, [
 
-    h(DropMenuItem, {
-      label: 'Main Ethereum Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('mainnet')),
-      icon: h('.menu-icon.diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        key: 'main',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.diamond'),
+        'Main Ethereum Network',
+        providerType === 'mainnet' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Ropsten Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('ropsten')),
-      icon: h('.menu-icon.red-dot'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        key: 'ropsten',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('ropsten')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.red-dot'),
+        'Ropsten Test Network',
+        providerType === 'ropsten' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Kovan Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
-      action: () => props.dispatch(actions.setProviderType('kovan')),
-      icon: h('.menu-icon.hollow-diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        key: 'kovan',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('kovan')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.hollow-diamond'),
+        'Kovan Test Network',
+        providerType === 'kovan' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Rinkeby Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
-      action: () => props.dispatch(actions.setProviderType('rinkeby')),
-      icon: h('.menu-icon.golden-square'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        key: 'rinkeby',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('.menu-icon.golden-square'),
+        'Rinkeby Test Network',
+        providerType === 'rinkeby' ? h('.check', '✓') : null,
+      ]
+    ),
 
-    h(DropMenuItem, {
-      label: 'Localhost 8545',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
-      icon: h('i.fa.fa-question-circle.fa-lg'),
-      activeNetworkRender: props.provider.rpcTarget,
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        key: 'default',
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+        'Localhost 8545',
+        activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
+      ]
+    ),
 
     this.renderCustomOption(props.provider),
     this.renderCommonRpc(rpcList, props.provider),
 
-    h(DropMenuItem, {
-      label: 'Custom RPC',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-question-circle.fa-lg'),
-    }),
+    h(
+      DropdownMenuItem,
+      {
+        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
+        onClick: () => this.props.dispatch(actions.showConfigPage()),
+        style: {
+          fontSize: '18px',
+        },
+      },
+      [
+        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+        'Custom RPC',
+        activeNetwork === 'custom' ? h('.check', '✓') : null,
+      ]
+    ),
 
   ])
 }
@@ -300,54 +354,42 @@ App.prototype.renderDropdown = function () {
   const state = this.state || {}
   const isOpen = state.isMainMenuOpen
 
-  return h(MenuDroppo, {
+  return h(Dropdown, {
+    useCssTransition: true,
     isOpen: isOpen,
     zIndex: 11,
     onClickOutside: (event) => {
-      this.setState({ isMainMenuOpen: !isOpen })
+      const classList = event.target.classList
+      const parentClassList = event.target.parentElement.classList
+
+      const isToggleElement = classList.contains('sandwich-expando') ||
+        parentClassList.contains('sandwich-expando')
+
+      if (isOpen && !isToggleElement) {
+        this.setState({ isMainMenuOpen: false })
+      }
     },
     style: {
       position: 'absolute',
-      right: 0,
-      top: '36px',
+      right: '2px',
+      top: '38px',
     },
-    innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-    },
-  }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
-
-    h(DropMenuItem, {
-      label: 'Settings',
+    innerStyle: {},
+  }, [
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.showConfigPage()) },
+    }, 'Settings'),
 
-    h(DropMenuItem, {
-      label: 'Import Account',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showImportPage()),
-      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.lockMetamask()) },
+    }, 'Lock'),
 
-    h(DropMenuItem, {
-      label: 'Lock',
+    h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg'),
-    }),
-
-    h(DropMenuItem, {
-      label: 'Info/Help',
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg'),
-    }),
+      onClick: () => { this.props.dispatch(actions.showInfoPage()) },
+    }, 'Info/Help'),
   ])
 }
 
@@ -432,10 +474,6 @@ App.prototype.renderPrimary = function () {
 
   // show current view
   switch (props.currentView.name) {
-
-    case 'accounts':
-      log.debug('rendering accounts screen')
-      return h(AccountsScreen, {key: 'accounts'})
 
     case 'accountDetail':
       log.debug('rendering account detail screen')
@@ -525,6 +563,8 @@ App.prototype.toggleMetamaskActive = function () {
 
 App.prototype.renderCustomOption = function (provider) {
   const { rpcTarget, type } = provider
+  const props = this.props
+
   if (type !== 'rpc') return null
 
   // Concatenate long URLs
@@ -539,13 +579,19 @@ App.prototype.renderCustomOption = function (provider) {
       return null
 
     default:
-      return h(DropMenuItem, {
-        label,
-        key: rpcTarget,
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-        activeNetworkRender: 'custom',
-      })
+      return h(
+        DropdownMenuItem,
+        {
+          key: rpcTarget,
+          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
+          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+        },
+        [
+          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+          label,
+          h('.check', '✓'),
+        ]
+      )
   }
 }
 
@@ -571,21 +617,26 @@ App.prototype.getNetworkName = function () {
 }
 
 App.prototype.renderCommonRpc = function (rpcList, provider) {
-  const { rpcTarget } = provider
   const props = this.props
+  const rpcTarget = provider.rpcTarget
 
   return rpcList.map((rpc) => {
     if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
       return null
     } else {
-      return h(DropMenuItem, {
-        label: rpc,
-        key: rpc,
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => props.dispatch(actions.setRpcTarget(rpc)),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-        activeNetworkRender: rpc,
-      })
+      return h(
+        DropdownMenuItem,
+        {
+          key: `common${rpc}`,
+          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
+          onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
+        },
+        [
+          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+          rpc,
+          rpcTarget === rpc ? h('.check', '✓') : null,
+        ]
+      )
     }
   })
 }

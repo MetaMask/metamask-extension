@@ -45,13 +45,15 @@ describe('tx confirmation screen', function () {
       before(function (done) {
         actions._setBackgroundConnection({
           approveTransaction (txId, cb) { cb('An error!') },
-          cancelTransaction (txId) { /* noop */ },
+          cancelTransaction (txId, cb) { cb() },
           clearSeedWordCache (cb) { cb() },
         })
 
-        const action = actions.cancelTx({value: firstTxId})
-        result = reducers(initialState, action)
-        done()
+        actions.cancelTx({value: firstTxId})((action) => {
+          result = reducers(initialState, action)
+          done()
+        })
+        
       })
 
       it('should transition to the account detail view', function () {
