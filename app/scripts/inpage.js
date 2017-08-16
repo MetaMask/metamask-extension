@@ -35,7 +35,8 @@ web3.setProvider = function () {
 const origin = window.location.origin
 const shouldExport = !(
   origin === 'https://zero.metamask.io' ||
-  (origin === 'http://localhost:9001' && METAMASK_DEBUG)
+  (origin === 'http://localhost:9001' && METAMASK_DEBUG) ||
+  getMascarSettings()
 )
 
 if (shouldExport) {
@@ -52,6 +53,12 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
 //
 // util
 //
+
+function getMascarSettings () {
+  const data = global.localStorage['MetaMask-Config']
+  const config = data ? JSON.parse(data) : {}
+  return config.mascara
+}
 
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace

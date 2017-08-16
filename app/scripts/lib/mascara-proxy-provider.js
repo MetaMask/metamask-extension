@@ -31,6 +31,8 @@ module.exports = function setupMascaraProxyProvider (extensionProvider) {
       if (key === 'isMascaraActive') {
         if (!global.mascaraProvider) throw new Error('No Mascara Detected')
         isMascaraActive = value
+        saveMascaraSettings(value)
+        triggerReset()
         return value
       } else {
         if (isMascaraActive) {
@@ -51,3 +53,17 @@ function triggerReset () {
   global.location.reload()
 }
 
+function saveMascaraSettings (isActive) {
+  const data = getConfig()
+  data.mascara = isActive
+  setConfig(data)
+}
+
+function getConfig () {
+  const data = global.localStorage['MetaMask-Config']
+  return data ? JSON.parse(data) : {}
+}
+
+function setConfig (data) {
+  global.localStorage['MetaMask-Config'] = JSON.stringify(data)
+}
