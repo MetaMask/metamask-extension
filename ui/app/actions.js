@@ -97,7 +97,6 @@ var actions = {
   cancelMsg: cancelMsg,
   signPersonalMsg,
   cancelPersonalMsg,
-  sendTx: sendTx,
   signTx: signTx,
   updateAndApproveTx,
   cancelTx: cancelTx,
@@ -397,26 +396,13 @@ function signPersonalMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
     global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
+      if (err) dispatch(actions.displayWarning(err.message))
+      dispatch(this.goHome())
     })
-    dispatch(this.showConfTxPage())
-  }
-}
-
-function sendTx (txData) {
-  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
-  return (dispatch) => {
-    log.debug(`actions calling background.approveTransaction`)
-    background.approveTransaction(txData.id, (err) => {
-      if (err) {
-        dispatch(actions.txError(err))
-        return log.error(err.message)
-      }
-      dispatch(actions.completedTx(txData.id))
-    })
+    dispatch(actions.showConfTxPage())
   }
 }
 
@@ -428,6 +414,7 @@ function updateAndApproveTx (txData) {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
+        dispatch(actions.goHome())
         return log.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
