@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where some transaction submission errors would show an empty screen.
+
 ## 3.9.8 2017-8-16
 
 - Reenable token list.
