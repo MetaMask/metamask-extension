@@ -3,6 +3,8 @@
 ## Current Master
 
 - Fix bug where some transaction submission errors would show an empty screen.
+- Fix formatting of eth_sign "Sign Message" view.
+- Add deprecation warning to eth_sign "Sign Message" view.
 
 ## 3.9.8 2017-8-16
 
