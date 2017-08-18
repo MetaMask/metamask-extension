@@ -25,6 +25,10 @@
   margin-top: 15px;
 }
 
+.create-password__import-link {
+  margin-bottom: 54px;
+}
+
 .first-time-flow__input {
   width: 350px;
   font-size: 18px;
@@ -62,4 +66,20 @@ button.first-time-flow__button:hover {
   color: #1B344D;
   font-size: 18px;
   line-height: 23px;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.breadcrumb {
+  height: 10px;
+  width: 10px;
+  border: 1px solid #979797;
+  border-radius: 50%;
+}
+
+.breadcrumb + .breadcrumb {
+  margin-left: 10px;
 }

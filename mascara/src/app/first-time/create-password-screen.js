@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react'
+import Breadcrumbs from './breadcrumbs'
 
 export default class CreatePasswordScreen extends Component {
 
@@ -32,12 +33,12 @@ export default class CreatePasswordScreen extends Component {
         </button>
         <a
           href=""
-          className="first-time-flow__link"
+          className="first-time-flow__link create-password__import-link"
           onClick={e => e.preventDefault()}
         >
           Import an account
         </a>
-        <div />
+        <Breadcrumbs total={3} currentIndex={0} />
       </div>
     )
   }
