@@ -3,6 +3,8 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
+// mascara
+const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -43,6 +45,10 @@ function mapStateToProps (state) {
     accounts,
     address,
     keyrings,
+    isMascara,
+    isInitialized,
+    noActiveNotices,
+    seedWords
   } = state.metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -56,6 +62,8 @@ function mapStateToProps (state) {
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
+    isMascara: state.metamask.isMascara,
+    isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
     seedWords: state.metamask.seedWords,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
@@ -123,6 +131,11 @@ App.prototype.renderAppBar = function () {
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
+  const {isMascara, isOnboarding} = props
+
+  if (isMascara && isOnboarding) {
+    return null
+  }
 
   return (
 
@@ -407,9 +420,20 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
   )
 }
 
+App.prototype.renderMascaraFirstTime = function () {
+  return 'hi'
+}
+
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
+  const {isMascara, isOnboarding} = props
+
+  if (isMascara && isOnboarding) {
+    return h(MascaraFirstTime, {
+      screenType: MascaraFirstTime.getScreenType(props)
+    })
+  }
 
   // notices
   if (!props.noActiveNotices) {

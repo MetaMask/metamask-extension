@@ -1,5 +1,6 @@
 const extend = require('xtend')
 const actions = require('../actions')
+const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
 
 module.exports = reduceMetamask
 
@@ -10,6 +11,7 @@ function reduceMetamask (state, action) {
   var metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
+    isMascara: window.platform instanceof MetamascaraPlatform,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
