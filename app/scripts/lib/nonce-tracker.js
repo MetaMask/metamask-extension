@@ -29,14 +29,10 @@ class NonceTracker {
     // calculate next nonce
     // we need to make sure our base count
     // and pending count are from the same block
-    const localNonceHex = this._getLocalNonce(address)
+    const localNonceHex = this._getHighestLocalNonce(address)
     let localNonce = parseInt(localNonceHex, 16)
-    try {
-      assert(Number.isInteger(localNonce), `nonce-tracker - localNonce is not an integer - got: (${typeof localNonce}) "${localNonce}"`)
-    } catch (e) {
-      // throw out localNonce if not a number
-      localNonce = 0
-    }
+    // throw out localNonce if not a number
+    if (!Number.isInteger(localNonce)) localNonce = 0
     const currentBlock = await this._getCurrentBlock()
     const pendingTransactions = this.getPendingTransactions(address)
     const pendingCount = pendingTransactions.length
@@ -44,7 +40,8 @@ class NonceTracker {
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
-    const nextNonce = Math.max(baseCount, localNonce + 1) + pendingCount
+    if (localNonce) ++localNonce
+    const nextNonce = Math.max(baseCount + pendingCount, localNonce)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
     // collect the numbers used to calculate the nonce for debugging
     const blockNumber = currentBlock.number
@@ -92,9 +89,11 @@ class NonceTracker {
     return mutex
   }
 
-  _getLocalNonce (address) {
+  _getHighestLocalNonce (address) {
     const confirmedTransactions = this.getConfirmedTransactions(address)
-    const localNonces = confirmedTransactions.map((txMeta) => txMeta.txParams.nonce)
+    const pendingTransactions = this.getPendingTransactions(address)
+    const transactions = confirmedTransactions.concat(pendingTransactions)
+    const localNonces = transactions.map((txMeta) => txMeta.txParams.nonce)
     return localNonces.reduce((nonce, highestNonce) => {
       return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
     }, '0x0')
