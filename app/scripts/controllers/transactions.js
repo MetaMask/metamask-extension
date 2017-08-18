@@ -1,6 +1,5 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
-const clone = require('clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
@@ -8,6 +7,7 @@ const TxProviderUtil = require('../lib/tx-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
+const txStateHistoryHelper = require('../lib/tx-state-history-helper')
 
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
@@ -128,19 +128,17 @@ module.exports = class TransactionController extends EventEmitter {
 
   updateTx (txMeta) {
     // create txMeta snapshot for history
-    const txMetaForHistory = clone(txMeta)
-    // dont include previous history in this snapshot
-    delete txMetaForHistory.history
-    // add snapshot to tx history
-    if (!txMeta.history) txMeta.history = []
-    txMeta.history.push(txMetaForHistory)
+    const currentState = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
+    // recover previous tx state obj
+    const previousState = txStateHistoryHelper.replayHistory(txMeta.history)
+    // generate history entry and add to history
+    const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState)
+    txMeta.history.push(entry)
 
+    // commit txMeta to state
     const txId = txMeta.id
     const txList = this.getFullTxList()
     const index = txList.findIndex(txData => txData.id === txId)
-    if (!txMeta.history) txMeta.history = []
-    txMeta.history.push(txMetaForHistory)
-
     txList[index] = txMeta
     this._saveTxList(txList)
     this.emit('update')
@@ -148,16 +146,22 @@ module.exports = class TransactionController extends EventEmitter {
 
   // Adds a tx to the txlist
   addTx (txMeta) {
-    const txCount = this.getTxCount()
-    const network = this.getNetwork()
-    const fullTxList = this.getFullTxList()
-    const txHistoryLimit = this.txHistoryLimit
+    // initialize history
+    txMeta.history = []
+    // capture initial snapshot of txMeta for history
+    const snapshot = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
+    txMeta.history.push(snapshot)
 
     // checks if the length of the tx history is
     // longer then desired persistence limit
     // and then if it is removes only confirmed
     // or rejected tx's.
     // not tx's that are pending or unapproved
+    const txCount = this.getTxCount()
+    const network = this.getNetwork()
+    const fullTxList = this.getFullTxList()
+    const txHistoryLimit = this.txHistoryLimit
+
     if (txCount > txHistoryLimit - 1) {
       const index = fullTxList.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected') && network === txMeta.metamaskNetworkId))
       fullTxList.splice(index, 1)
@@ -206,7 +210,6 @@ module.exports = class TransactionController extends EventEmitter {
       status: 'unapproved',
       metamaskNetworkId: this.getNetwork(),
       txParams: txParams,
-      history: [],
     }
     // add default tx params
     await this.addTxDefaults(txMeta)
