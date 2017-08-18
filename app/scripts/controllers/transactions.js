@@ -1,6 +1,5 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
-const clone = require('clone')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const EthQuery = require('ethjs-query')
@@ -24,16 +23,18 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = new EthQuery(this.provider)
     this.txProviderUtil = new TxProviderUtil(this.provider)
 
-    this.txStateManager = new TransactionStateManger(extend({
-      transactions: [],
+    this.txStateManager = new TransactionStateManger({
+      initState: extend({
+        transactions: [],
+      }, opts.initState),
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
-    }, opts.initState))
+    })
 
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       getPendingTransactions: (address) => {
-        return this.getFilteredTxList({
+        return this.txStateManager.getFilteredTxList({
           from: address,
           status: 'submitted',
           err: undefined,
@@ -52,16 +53,16 @@ module.exports = class TransactionController extends EventEmitter {
       publishTransaction: this.txProviderUtil.publishTransaction.bind(this.txProviderUtil),
       getPendingTransactions: () => {
         const network = this.getNetwork()
-        return this.getFilteredTxList({
+        return this.txStateManager.getFilteredTxList({
           status: 'submitted',
           metamaskNetworkId: network,
         })
       },
     })
 
-    this.pendingTxTracker.on('txWarning', this.updateTx.bind(this))
-    this.pendingTxTracker.on('txFailed', this.setTxStatusFailed.bind(this))
-    this.pendingTxTracker.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
+    this.pendingTxTracker.on('txWarning', this.txStateManager.updateTx.bind(this.txStateManager))
+    this.pendingTxTracker.on('txFailed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
+    this.pendingTxTracker.on('txConfirmed', this.txStateManager.setTxStatusConfirmed.bind(this.txStateManager))
 
     this.blockTracker.on('rawBlock', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either
@@ -91,35 +92,17 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   getUnapprovedTxCount () {
-    return Object.keys(this.getUnapprovedTxList()).length
+    return Object.keys(this.txStateManager.getUnapprovedTxList()).length
   }
 
   getPendingTxCount () {
     return this.txStateManager.getTxsByMetaData('status', 'signed').length
   }
 
-  // Returns the tx list
-
-  getUnapprovedTxList () {
-    const txList = this.txStateManager.getTxsByMetaData('status', 'unapproved')
-    return txList.reduce((result, tx) => {
-      result[tx.id] = tx
-      return result
-    }, {})
-  }
-
   // Adds a tx to the txlist
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)
     this.emit('update')
-
-    this.once(`${txMeta.id}:signed`, function (txId) {
-      this.removeAllListeners(`${txMeta.id}:rejected`)
-    })
-    this.once(`${txMeta.id}:rejected`, function (txId) {
-      this.removeAllListeners(`${txMeta.id}:signed`)
-    })
-
     this.emit('updateBadge')
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
@@ -130,7 +113,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit('newUnaprovedTx', txMeta)
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
-      this.once(`${txMeta.id}:finished`, (completedTx) => {
+      this.txStateManager.once(`${txMeta.id}:finished`, (completedTx) => {
         switch (completedTx.status) {
           case 'submitted':
             return resolve(completedTx.hash)
@@ -158,7 +141,7 @@ module.exports = class TransactionController extends EventEmitter {
     // add default tx params
     await this.addTxDefaults(txMeta)
     // save txMeta
-    this.txStateManager.addTx(txMeta)
+    this.addTx(txMeta)
     return txMeta
   }
 
@@ -175,7 +158,7 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   async updateAndApproveTransaction (txMeta) {
-    this.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta)
     await this.approveTransaction(txMeta.id)
   }
 
@@ -183,9 +166,9 @@ module.exports = class TransactionController extends EventEmitter {
     let nonceLock
     try {
       // approve
-      this.setTxStatusApproved(txId)
+      this.txStateManager.setTxStatusApproved(txId)
       // get next nonce
-      const txMeta = this.getTx(txId)
+      const txMeta = this.txStateManager.getTx(txId)
       const fromAddress = txMeta.txParams.from
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
@@ -193,14 +176,14 @@ module.exports = class TransactionController extends EventEmitter {
       txMeta.txParams.nonce = nonceLock.nextNonce
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
-      this.updateTx(txMeta)
+      this.txStateManager.updateTx(txMeta)
       // sign transaction
       const rawTx = await this.signTransaction(txId)
       await this.publishTransaction(txId, rawTx)
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock()
     } catch (err) {
-      this.setTxStatusFailed(txId, err)
+      this.txStateManager.setTxStatusFailed(txId, err)
       // must set transaction to submitted/failed before releasing lock
       if (nonceLock) nonceLock.releaseLock()
       // continue with error chain
@@ -209,29 +192,29 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   async signTransaction (txId) {
-    const txMeta = this.getTx(txId)
+    const txMeta = this.txStateManager.getTx(txId)
     const txParams = txMeta.txParams
     const fromAddress = txParams.from
     // add network/chain id
     txParams.chainId = this.getChainId()
     const ethTx = this.txProviderUtil.buildEthTxFromParams(txParams)
     await this.signEthTx(ethTx, fromAddress)
-    this.setTxStatusSigned(txMeta.id)
+    this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
   }
 
   async publishTransaction (txId, rawTx) {
-    const txMeta = this.getTx(txId)
+    const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
-    this.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta)
     const txHash = await this.txProviderUtil.publishTransaction(rawTx)
     this.setTxHash(txId, txHash)
-    this.setTxStatusSubmitted(txId)
+    this.txStateManager.setTxStatusSubmitted(txId)
   }
 
   async cancelTransaction (txId) {
-    this.setTxStatusRejected(txId)
+    this.txStateManager.setTxStatusRejected(txId)
   }
 
 
@@ -248,9 +231,9 @@ module.exports = class TransactionController extends EventEmitter {
   // receives a txHash records the tx as signed
   setTxHash (txId, txHash) {
     // Add the tx hash to the persisted meta-tx object
-    const txMeta = this.getTx(txId)
+    const txMeta = this.txStateManager.getTx(txId)
     txMeta.hash = txHash
-    this.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta)
   }
 
 /* _____________________________________
@@ -259,8 +242,8 @@ module.exports = class TransactionController extends EventEmitter {
 |______________________________________*/
 
   _updateMemstore () {
-    const unapprovedTxs = this.getUnapprovedTxList()
-    const selectedAddressTxList = this.getFilteredTxList({
+    const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
+    const selectedAddressTxList = this.txStateManager.getFilteredTxList({
       from: this.getSelectedAddress(),
       metamaskNetworkId: this.getNetwork(),
     })

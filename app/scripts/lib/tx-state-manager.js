@@ -23,7 +23,25 @@ module.exports = class TransactionStateManger extends ObservableStore {
     return this.getState().transactions
   }
 
+  // Returns the tx list
+
+  getUnapprovedTxList () {
+    const txList = this.getTxsByMetaData('status', 'unapproved')
+    return txList.reduce((result, tx) => {
+      result[tx.id] = tx
+      return result
+    }, {})
+  }
+
+
   addTx (txMeta) {
+    this.once(`${txMeta.id}:signed`, function (txId) {
+      this.removeAllListeners(`${txMeta.id}:rejected`)
+    })
+    this.once(`${txMeta.id}:rejected`, function (txId) {
+      this.removeAllListeners(`${txMeta.id}:signed`)
+    })
+
     const transactions = this.getFullTxList()
     const txCount = this.getTxCount()
     const txHistoryLimit = this.txHistoryLimit
@@ -37,7 +55,6 @@ module.exports = class TransactionStateManger extends ObservableStore {
       const index = transactions.findIndex((metaTx) => ((metaTx.status === 'confirmed' || metaTx.status === 'rejected')))
       transactions.splice(index, 1)
     }
-    transactions.push(txMeta)
     transactions.push(txMeta)
     this._saveTxList(transactions)
   }
