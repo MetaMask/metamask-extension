@@ -29,10 +29,8 @@ class NonceTracker {
     // calculate next nonce
     // we need to make sure our base count
     // and pending count are from the same block
-    const localNonceHex = this._getHighestLocalNonce(address)
-    let localNonce = parseInt(localNonceHex, 16)
+    const localNextNonce = this._getLocalNextNonce(address)
     // throw out localNonce if not a number
-    if (!Number.isInteger(localNonce)) localNonce = 0
     const currentBlock = await this._getCurrentBlock()
     const pendingTransactions = this.getPendingTransactions(address)
     const pendingCount = pendingTransactions.length
@@ -40,12 +38,11 @@ class NonceTracker {
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
-    if (localNonce) ++localNonce
-    const nextNonce = Math.max(baseCount + pendingCount, localNonce)
+    const nextNonce = Math.max(baseCount + pendingCount, localNextNonce)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
     // collect the numbers used to calculate the nonce for debugging
     const blockNumber = currentBlock.number
-    const nonceDetails = { blockNumber, baseCount, baseCountHex, pendingCount, localNonceHex, localNonce }
+    const nonceDetails = { blockNumber, baseCount, baseCountHex, pendingCount, localNextNonce }
     // return nonce and release cb
     return { nextNonce, nonceDetails, releaseLock }
   }
@@ -89,14 +86,27 @@ class NonceTracker {
     return mutex
   }
 
-  _getHighestLocalNonce (address) {
+  // _getNetworkNonce (address) {
+
+  // }
+
+  _getLocalNextNonce (address) {
     const confirmedTransactions = this.getConfirmedTransactions(address)
     const pendingTransactions = this.getPendingTransactions(address)
     const transactions = confirmedTransactions.concat(pendingTransactions)
     const localNonces = transactions.map((txMeta) => txMeta.txParams.nonce)
-    return localNonces.reduce((nonce, highestNonce) => {
+    const localNonceHex = localNonces.reduce((nonce, highestNonce) => {
       return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
     }, '0x0')
+    let localNonce = parseInt(localNonceHex, 16)
+    if (
+      // the local nonce is not 0
+      localNonce ||
+      // or their are pending or confirmed transactions
+      pendingTransactions.length ||
+      confirmedTransactions.length
+      ) ++localNonce
+    return localNonce
   }
 
   // this is a hotfix for the fact that the blockTracker will
