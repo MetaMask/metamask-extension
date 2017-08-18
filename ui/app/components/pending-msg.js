@@ -18,6 +18,9 @@ PendingMsg.prototype.render = function () {
 
     h('div', {
       key: msgData.id,
+      style: {
+        maxWidth: '350px',
+      },
     }, [
 
       // header
@@ -35,7 +38,7 @@ PendingMsg.prototype.render = function () {
       }, `Signing this message can have
         dangerous side effects. Only sign messages from
         sites you fully trust with your entire account.
-        This will be fixed in a future version.`),
+        This dangerous method will be removed in a future version.`),
 
       // message details
       h(PendingTxDetails, state),
