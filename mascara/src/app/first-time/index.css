@@ -1,0 +1,65 @@
+.first-time-flow {
+  height: 100vh;
+  width: 100vw;
+  background-color: #FFF;
+}
+
+.create-password {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 67px 0 0 146px;
+  max-width: 350px;
+}
+
+.create-password__title {
+  height: 102px;
+  width: 280px;
+  color: #1B344D;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 51px;
+  margin-bottom: 24px;
+}
+
+.create-password__confirm-input {
+  margin-top: 15px;
+}
+
+.first-time-flow__input {
+  width: 350px;
+  font-size: 18px;
+  line-height: 24px;
+  padding: 15px 28px;
+  border: 1px solid #CDCDCD;
+  background-color: #FFFFFF;
+}
+
+.first-time-flow__input::placeholder {
+  color: #9B9B9B;
+  font-weight: 200;
+}
+
+.first-time-flow__button {
+  height: 54px;
+  width: 198px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.14);
+  color: #FFFFFF;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 35px 0 14px;
+  transition: 200ms ease-in-out;
+}
+
+button.first-time-flow__button:hover {
+  transform: scale(1);
+  background-color: rgba(247, 134, 28, 0.9);
+}
+
+.first-time-flow__link {
+  color: #1B344D;
+  font-size: 18px;
+  line-height: 23px;
+}

@@ -48,7 +48,11 @@ export default class FirstTimeFlow extends Component {
   }
 
   render() {
-    return <div>{this.renderScreen()}</div>
+    return (
+      <div className="first-time-flow">
+        {this.renderScreen()}
+      </div>
+    )
   }
 
 }
