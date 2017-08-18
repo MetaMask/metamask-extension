@@ -4,10 +4,11 @@ const Mutex = require('await-semaphore').Mutex
 
 class NonceTracker {
 
-  constructor ({ provider, getPendingTransactions }) {
+  constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
     this.provider = provider
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
+    this.getConfirmedTransactions = getConfirmedTransactions
     this.lockMap = {}
   }
 
@@ -28,6 +29,14 @@ class NonceTracker {
     // calculate next nonce
     // we need to make sure our base count
     // and pending count are from the same block
+    const localNonceHex = this._getLocalNonce(address)
+    let localNonce = parseInt(localNonceHex, 16)
+    try {
+      assert(Number.isInteger(localNonce), `nonce-tracker - localNonce is not an integer - got: (${typeof localNonce}) "${localNonce}"`)
+    } catch (e) {
+      // throw out localNonce if not a number
+      localNonce = 0
+    }
     const currentBlock = await this._getCurrentBlock()
     const pendingTransactions = this.getPendingTransactions(address)
     const pendingCount = pendingTransactions.length
@@ -35,11 +44,11 @@ class NonceTracker {
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
-    const nextNonce = baseCount + pendingCount
+    const nextNonce = Math.max(baseCount, localNonce + 1) + pendingCount
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
     // collect the numbers used to calculate the nonce for debugging
     const blockNumber = currentBlock.number
-    const nonceDetails = { blockNumber, baseCount, baseCountHex, pendingCount }
+    const nonceDetails = { blockNumber, baseCount, baseCountHex, pendingCount, localNonceHex, localNonce }
     // return nonce and release cb
     return { nextNonce, nonceDetails, releaseLock }
   }
@@ -81,6 +90,14 @@ class NonceTracker {
       this.lockMap[lockId] = mutex
     }
     return mutex
+  }
+
+  _getLocalNonce (address) {
+    const confirmedTransactions = this.getConfirmedTransactions(address)
+    const localNonces = confirmedTransactions.map((txMeta) => txMeta.txParams.nonce)
+    return localNonces.reduce((nonce, highestNonce) => {
+      return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
+    }, '0x0')
   }
 
   // this is a hotfix for the fact that the blockTracker will
