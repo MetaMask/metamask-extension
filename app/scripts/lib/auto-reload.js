@@ -19,6 +19,7 @@ function setupDappAutoReload (web3, observable) {
 
   observable.subscribe(function (state) {
     // get the initial network
+    if (web3.currentProvider.isMascaraActive) return
     const curentNetVersion = state.networkVersion
     if (!networkVersion) networkVersion = curentNetVersion
 

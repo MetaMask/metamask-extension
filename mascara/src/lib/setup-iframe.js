@@ -13,7 +13,7 @@ function setupIframe(opts) {
   })
   var iframe = frame.iframe
   iframe.style.setProperty('display', 'none')
-  var iframeStream = new IframeStream(iframe)
+  var iframeStream = IframeStream(iframe)
 
   return iframeStream
 }

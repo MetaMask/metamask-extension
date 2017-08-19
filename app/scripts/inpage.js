@@ -6,9 +6,10 @@ const LocalMessageDuplexStream = require('post-message-stream')
 // const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
+const setupMascaraProxyProvider = require('./lib/mascara-proxy-provider.js')
 restoreContextAfterImports()
 
-
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 //
 // setup plugin communication
 //
@@ -21,7 +22,7 @@ var metamaskStream = new LocalMessageDuplexStream({
 
 // compose the inpage provider
 var inpageProvider = new MetamaskInpageProvider(metamaskStream)
-
+inpageProvider = setupMascaraProxyProvider(inpageProvider)
 //
 // setup web3
 //
@@ -30,19 +31,34 @@ var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
   console.log('MetaMask - overrode web3.setProvider')
 }
-console.log('MetaMask - injected web3')
 // export global web3, with usage-detection
-setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+const origin = window.location.origin
+const shouldExport = !(
+  origin === 'https://zero.metamask.io' ||
+  (origin === 'http://localhost:9001' && METAMASK_DEBUG) ||
+  getMascarSettings()
+)
 
+if (shouldExport) {
+  setupDappAutoReload(web3, inpageProvider.publicConfigStore)
+  console.log('MetaMask - injected web3')
+}
 // set web3 defaultAccount
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
-  web3.eth.defaultAccount = state.selectedAddress
+  // if not using the mascara provider
+  if (!inpageProvider.isMascaraActive) web3.eth.defaultAccount = state.selectedAddress
 })
 
 //
 // util
 //
+
+function getMascarSettings () {
+  const data = global.localStorage['MetaMask-Config']
+  const config = data ? JSON.parse(data) : {}
+  return config.mascara
+}
 
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
@@ -65,4 +81,3 @@ function restoreContextAfterImports () {
     console.warn('MetaMask - global.define could not be overwritten.')
   }
 }
-

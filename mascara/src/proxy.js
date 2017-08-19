@@ -11,7 +11,7 @@ const background = new SWcontroller({
   intervalDelay,
 })
 
-const pageStream = new ParentStream()
+const pageStream = ParentStream()
 background.on('ready', (_) => {
   let swStream = SwStream({
     serviceWorker: background.controller,

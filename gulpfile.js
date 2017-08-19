@@ -22,7 +22,6 @@ var mkdirp = require('mkdirp')
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
-
 // browser reload
 
 gulp.task('dev:reload', function() {
@@ -121,7 +120,7 @@ gulp.task('manifest:production', function() {
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
   ],{base: './dist/'})
-  .pipe(gulpif(!debug,jsoneditor(function(json) {
+  .pipe(gulpif(!debug, jsoneditor(function(json) {
     json.background.scripts = ["scripts/background.js"]
     return json
   })))
