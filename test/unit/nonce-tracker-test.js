@@ -1,12 +1,12 @@
 const assert = require('assert')
 const NonceTracker = require('../../app/scripts/lib/nonce-tracker')
 const MockTxGen = require('../lib/mock-tx-gen')
+let providerResultStub = {}
 
 describe('Nonce Tracker', function () {
   let nonceTracker, provider
   let getPendingTransactions, pendingTxs
   let getConfirmedTransactions, confirmedTxs
-  let providerResultStub = {}
 
   describe('#getNonceLock', function () {
 
@@ -15,7 +15,8 @@ describe('Nonce Tracker', function () {
         const txGen = new MockTxGen()
         confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 3 })
         pendingTxs = txGen.generate({ status: 'pending' }, { count: 1 })
-        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs)
+        console.dir(txGen.txs)
+        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs, '0x1')
       })
 
       it('should work', async function () {
@@ -27,7 +28,6 @@ describe('Nonce Tracker', function () {
 
       it('should use localNonce if network returns a nonce lower then a confirmed tx in state', async function () {
         this.timeout(15000)
-        providerResultStub.result = '0x1'
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
         assert.equal(nonceLock.nextNonce, '4', 'nonce should be 4')
         await nonceLock.releaseLock()
@@ -102,10 +102,10 @@ describe('Nonce Tracker', function () {
   })
 })
 
-function generateNonceTrackerWith(pending, confirmed) {
+function generateNonceTrackerWith(pending, confirmed, providerStub = '0x0') {
   const getPendingTransactions = () => pending
   const getConfirmedTransactions = () => confirmed
-  providerResultStub.result = '0x0'
+  providerResultStub.result = providerStub
   const provider = {
     sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
     _blockTracker: {
