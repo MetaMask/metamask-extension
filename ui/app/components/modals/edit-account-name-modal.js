@@ -33,9 +33,6 @@ function EditAccountNameModal () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(EditAccountNameModal)
 
-// EditAccountNameModal is currently meant to be rendered inside <Modal />
-// It is the only component in this codebase that does so
-// It utilizes modal styles
 EditAccountNameModal.prototype.render = function () {
   const { hideModal, saveAccountLabel, identity } = this.props
 

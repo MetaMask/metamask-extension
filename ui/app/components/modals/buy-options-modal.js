@@ -29,9 +29,6 @@ function BuyOptions () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
 
-// BuyOptions is currently meant to be rendered inside <Modal />
-// It is the only component in this codebase that does so
-// It utilizes modal styles
 BuyOptions.prototype.render = function () {
   return h('div', {}, [
     h('div.buy-modal-content.transfers-subview', {

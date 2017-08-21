@@ -46,7 +46,7 @@ WalletContentDisplay.prototype.render = function () {
         marginLeft: '-1.3em',
         height: '6em',
         width: '0.3em',
-        background: '#D8D8D8', // TODO: add to resuable colors
+        background: '#D8D8D8', // $alto
       }
     }, [
     ])

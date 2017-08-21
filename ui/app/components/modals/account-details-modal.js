@@ -4,13 +4,15 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const { getSelectedIdentity, getSelectedAddress } = require('../../selectors')
-
+const genAccountLink = require('../../../lib/account-link.js')
+const Identicon = require('../identicon')
 const QrView = require('../qr-code')
 
 function mapStateToProps (state) {
   return {
+    network: state.metamask.network,
     address: state.metamask.selectedAddress,
-    // selectedAddress: getSelectedAddress(state),
+    selectedAddress: getSelectedAddress(state),
     selectedIdentity: getSelectedIdentity(state),
   }
 }
@@ -31,18 +33,24 @@ function AccountDetailsModal () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModal)
 
-// AccountDetailsModal is currently meant to be rendered inside <Modal />
-// It is the only component in this codebase that does so
-// It utilizes modal styles
 AccountDetailsModal.prototype.render = function () {
-  const { selectedIdentity } = this.props
+  const { selectedIdentity, selectedAddress, network } = this.props
 
   return h('div', {}, [
     h('div.account-details-modal-wrapper', {
     }, [
 
       h('div', {}, [
-        'ICON',
+
+        h(
+          Identicon,
+          {
+            address: selectedIdentity.address,
+            diameter: 64,
+            style: {},
+          },
+        ),
+
       ]),
 
       h('div', {}, [
@@ -64,21 +72,22 @@ AccountDetailsModal.prototype.render = function () {
       ]),
 
       // divider
-      h('div', {
-        style: {
-          width: '100%',
-          height: '1px',
-          margin: '10px 0px',
-          backgroundColor: '#D8D8D8',
-        }
+      h('div.account-details-modal-divider', {
+        style: {}
       }, []),
 
-      h('div', {}, [
-        'View aCcount on etherscan',
+      h('button.btn-clear', {
+        onClick: () => {
+          const url = genAccountLink(selectedIdentity.address, network)
+          global.platform.openWindow({ url })
+        },
+      }, [
+        'View account on Etherscan',
       ]),
 
-      h('div', {}, [
-        'export private key',
+      // Holding on redesign for Export Private Key functionality
+      h('button.btn-clear', {}, [
+        'Export private key',
       ]),
 
     ])
