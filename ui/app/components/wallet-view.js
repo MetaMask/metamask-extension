@@ -39,10 +39,9 @@ function WalletView () {
 const noop = () => {}
 
 WalletView.prototype.render = function () {
-  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount, accounts } = this.props
-
+  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount, accounts, selectedIdentity } = this.props
   // temporary logs + fake extra wallets
-  console.log(selectedAccount)
+  console.log("walletview, selectedAccount:", selectedAccount)
 
   const extraWallet = h('div.flex-column.wallet-balance-wrapper', {}, [
       h('div.wallet-balance', {}, [
@@ -121,7 +120,7 @@ WalletView.prototype.render = function () {
         h('span.account-name', {
           style: {}
         }, [
-          'Account 1'
+          selectedIdentity.name
         ]),
 
       ]),
