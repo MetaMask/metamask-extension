@@ -14,18 +14,63 @@ const EditAccountNameModal = require('./edit-account-name-modal')
 const NewAccountModal = require('./new-account-modal')
 
 const MODALS = {
-  BUY: [
-    h(BuyOptions, {}, []),
-  ],
-  EDIT_ACCOUNT_NAME: [
-    h(EditAccountNameModal, {}, []),
-  ],
-  ACCOUNT_DETAILS: [
-    h(AccountDetailsModal, {}, []),
-  ],
-  NEW_ACCOUNT: [
-    h(NewAccountModal, {}, []),
-  ]
+  BUY: {
+    contents: [
+      h(BuyOptions, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    },
+    laptopModalStyle: {
+      width: '66%',
+      top: 'calc(30% + 10px)',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    },
+  },
+
+  EDIT_ACCOUNT_NAME: {
+    contents: [
+      h(EditAccountNameModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    },
+    laptopModalStyle: {
+      width: '45%',
+      top: 'calc(30% + 10px)',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    },
+  },
+
+  ACCOUNT_DETAILS: {
+    contents: [
+      h(AccountDetailsModal, {}, []),
+    ],
+    mobileModalStyle: {},
+    laptopModalStyle: {},
+  },
+
+  NEW_ACCOUNT: {
+    contents: [
+      h(NewAccountModal, {}, []),
+    ],
+    mobileModalStyle: {},
+    laptopModalStyle: {}
+  },
+
+  DEFAULT: {
+    contents: [],
+    mobileModalStyle: {},
+    laptopModalStyle: {},
+  }
+}
+
+const BACKDROPSTYLE = {
+  backgroundColor: 'rgba(245, 245, 245, 0.85)',
 }
 
 function mapStateToProps (state) {
@@ -51,26 +96,11 @@ function Modal () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Modal)
 
-const mobileModalStyles = {
-  width: '95%',
-  // Used to create matching t/l/r/b space in mobile view.
-  top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
-  boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-}
-
-const laptopModalStyles = {
-  width: '66%',
-  top: 'calc(30% + 10px)',
-  boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-}
-
-const backdropStyles = {
-  backgroundColor: 'rgba(245, 245, 245, 0.85)',
-}
-
 Modal.prototype.render = function () {
+  const modal = MODALS[this.props.modalState.name || 'DEFAULT']
 
-  const children = MODALS[this.props.modalState.name] || []
+  const children = modal.contents
+  const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
 
   return h(FadeModal,
     {
@@ -80,8 +110,8 @@ Modal.prototype.render = function () {
       ref: (ref) => {
         this.modalRef = ref
       },
-      modalStyle: isMobileView() ? mobileModalStyles : laptopModalStyles,
-      backdropStyle: backdropStyles,
+      modalStyle,
+      backdropStyle: BACKDROPSTYLE,
     },
     children,
   )
@@ -109,16 +139,3 @@ Modal.prototype.hide = function() {
 Modal.prototype.show = function() {
   this.modalRef.show()
 }
-
-// TODO: specify default props and proptypes
-// Modal.defaultProps = {}
-
-// const elementType = require('react-prop-types/lib/elementType')
-// const PropTypes from 'prop-types'
-
-// Modal.propTypes = {
-//   active: PropTypes.bool,
-//   hideModal: PropTypes.func.isRequired,
-//   component: elementType,
-//   onHideCallback: PropTypes.func,
-// }
