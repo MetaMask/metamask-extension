@@ -1,0 +1,14 @@
+.account-dropdown-name {
+  
+}
+
+.account-dropdown-balance {
+  color: $dusty-gray;
+}
+
+.account-dropdown-edit-button {
+  color: $dusty-gray;
+  &:hover {
+    color: $white;
+  }
+}

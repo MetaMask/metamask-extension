@@ -39,7 +39,7 @@ function WalletView () {
 const noop = () => {}
 
 WalletView.prototype.render = function () {
-  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount } = this.props
+  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount, accounts } = this.props
 
   // temporary logs + fake extra wallets
   console.log(selectedAccount)
@@ -96,10 +96,14 @@ WalletView.prototype.render = function () {
           }
         }, [
           h(AccountDropdowns, {
+            accounts,
             style: {
               position: 'absolute',
               left: 'calc(50% + 28px + 5.5px)',
               top: '14px',
+            },
+            innerStyle: {
+              padding: '2px 16px',
             },
             useCssTransition: true,
             selected: selectedAddress,

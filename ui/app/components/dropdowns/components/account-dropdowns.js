@@ -9,6 +9,7 @@ const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('../../identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
+const { formatBalance } = require('../../../util')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -24,11 +25,14 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, selected, menuItemStyles, dropdownWrapperStyle, actions } = this.props
+    const { identities, accounts, selected, menuItemStyles, dropdownWrapperStyle, actions } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
       const isSelected = identity.address === selected
+
+      const balanceValue = accounts[key].balance
+      const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
 
       return h(
         DropdownMenuItem,
@@ -46,45 +50,77 @@ class AccountDropdowns extends Component {
           ),
         },
         [
-          h('div.flex-row', {}, [
+          h('div.flex-row.flex-center', {}, [
 
             h('span', {
               style: {
-                flex: '1 1 auto',
+                flex: '1 1 0',
+                minWidth: '20px',
+                minHeight: '30px',
               }
-            }, isSelected ? h('.check', '✓') : null),
+            }, [
+              h('span', {
+                style: {
+                  flex: '1 1 auto',
+                  fontSize: '14px',
+                }
+              }, isSelected ? h('i.fa.fa-check') : null),
+            ]),
 
             h(
               Identicon,
               {
                 address: identity.address,
-                diameter: 32,
+                diameter: 24,
                 style: {
                   flex: '1 1 auto',
+                  marginLeft: '10px',
                 },
               },
             ),
 
-            h('span', {
+            h('span.flex-column', {
               style: {
-                flex: '5 5 auto',
-                fontSize: '24px',
-                maxWidth: '145px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              },
-            }, identity.name || ''),
+                flex: '10 10 auto',
+                width: '175px',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                marginLeft: '10px',
+              }
+            }, [
+              h('span.account-dropdown-name', {
+                style: {
+                  fontSize: '18px',
+                  maxWidth: '145px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                },
+              }, identity.name || ''),
+
+              h('span.account-dropdown-balance', {
+                style: {
+                  fontSize: '14px',
+                },
+              }, formattedBalance)
+            ]),
 
             h('span', {
               style: {
-                flex: '2 2 auto',
-                fontSize: '18px',
+                flex: '3 3 auto',
               },
-              onClick: () => {
-                actions.showNewAccountModal()
-              }
-            }, 'Edit'),
+            }, [
+              h('span.account-dropdown-edit-button', {
+                style: {
+                  fontSize: '16px',
+                },
+                onClick: () => {
+                  actions.showNewAccountModal()
+                },
+              }, [
+                'Edit',
+              ])
+            ]),
 
           ])
         ]
@@ -93,7 +129,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountSelector () {
-    const { actions, dropdownWrapperStyle, useCssTransition } = this.props
+    const { actions, dropdownWrapperStyle, useCssTransition, innerStyle } = this.props
     const { accountSelectorActive, menuItemStyles } = this.state
 
     return h(
@@ -108,7 +144,7 @@ class AccountDropdowns extends Component {
           maxHeight: '300px',
           width: '300px',
         },
-        innerStyle: {},
+        innerStyle,
         isOpen: accountSelectorActive,
         onClickOutside: (event) => {
           const { classList } = event.target
@@ -141,7 +177,7 @@ class AccountDropdowns extends Component {
               },
             ),
             h('span', {
-              style: { marginLeft: '20px', fontSize: '24px' },
+              style: { marginLeft: '20px', fontSize: '18px' },
               onClick: () => {
                 actions.showNewAccountModal()
               },
@@ -171,7 +207,7 @@ class AccountDropdowns extends Component {
             h('span', {
               style: {
                 marginLeft: '20px',
-                fontSize: '24px',
+                fontSize: '18px',
                 marginBottom: '5px',
               },
             }, 'Import Account'),

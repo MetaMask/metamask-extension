@@ -18,10 +18,10 @@ const MODALS = {
     h(BuyOptions, {}, []),
   ],
   EDIT_ACCOUNT_NAME: [
-    h(AccountDetailsModal, {}, []),
+    h(EditAccountNameModal, {}, []),
   ],
   ACCOUNT_DETAILS: [
-    h(EditAccountNameModal, {}, []),
+    h(AccountDetailsModal, {}, []),
   ],
   NEW_ACCOUNT: [
     h(NewAccountModal, {}, []),
