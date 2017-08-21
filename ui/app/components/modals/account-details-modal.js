@@ -30,44 +30,40 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModa
 // It utilizes modal styles
 AccountDetailsModal.prototype.render = function () {
   return h('div', {}, [
-    h('div.buy-modal-content.transfers-subview', {
+    h('div.account-details-modal-wrapper', {
     }, [
-      h('div.buy-modal-content-title-wrapper.flex-column.flex-center', {
-        style: {},
-      }, [
-        h('div.buy-modal-content-title', {
-          style: {},
-        }, 'Account Details Modal'),
-        h('div', {}, 'How would you like to buy Ether?'),
+
+      h('div', {}, [
+        'ICON',
       ]),
 
-      h('div.buy-modal-content-options.flex-column.flex-center', {}, [
-
-        h('div.buy-modal-content-option', {
-          onClick: () => {},
-        }, [
-          h('div.buy-modal-content-option-title', {}, 'Coinbase'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Buy with Fiat'),
-        ]),
-
-        h('div.buy-modal-content-option', {}, [
-          h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
-        ]),
-
-        h('div.buy-modal-content-option', {}, [
-          h('div.buy-modal-content-option-title', {}, 'Direct Deposit'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Deposit from another account'),
-        ]),
-
+      h('div', {}, [
+        'X',
       ]),
 
-      h('button', {
-        style: {
-          background: 'white',
-        },
-        onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text',{}, 'Cancel')),
+      h('div', {}, [
+      ]),
+
+      h('div', {}, [
+        'QR Code',
+      ]),
+
+      h('div', {}, [
+        'Account Display',
+      ]),
+
+      h('div', {}, [
+        'divider',
+      ]),
+
+      h('div', {}, [
+        'View aCcount on etherscan',
+      ]),
+
+      h('div', {}, [
+        'export private key',
+      ]),
+
     ])
   ])
 }

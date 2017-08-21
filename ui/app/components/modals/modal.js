@@ -40,7 +40,7 @@ const MODALS = {
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     },
     laptopModalStyle: {
-      width: '45%',
+      width: '375px',
       top: 'calc(30% + 10px)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     },
@@ -50,8 +50,16 @@ const MODALS = {
     contents: [
       h(AccountDetailsModal, {}, []),
     ],
-    mobileModalStyle: {},
-    laptopModalStyle: {},
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '48vh' : '36.5vh',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    },
+    laptopModalStyle: {
+      width: '360px',
+      top: 'calc(30% + 10px)',
+      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    },
   },
 
   NEW_ACCOUNT: {
