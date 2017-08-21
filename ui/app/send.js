@@ -59,20 +59,13 @@ SendTransactionScreen.prototype.render = function () {
 
   return (
 
-    h('div.flex-column.flex-grow', {
-      style: {
-        minWidth: '355px', // TODO: maxWidth TBD, use home.html
-      },
+    h('div.send-screen-wrapper', {
+      style: {},
     }, [
 
       // Main Send token Card
-      h('div.send-screen.flex-column.flex-grow', {
-        style: {
-          marginLeft: '3.5%',
-          marginRight: '3.5%',
-          background: '#FFFFFF', // $background-white
-          boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
-        }
+      h('div.send-screen-card', {
+        style: {}
       }, [
         h('section.flex-center.flex-row', {
           style: {

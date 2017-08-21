@@ -1,0 +1,30 @@
+.send-screen-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 355px;
+  // width: 50%;
+  z-index: 50; //TODO
+  position: absolute;
+  top: 40px;
+  // height: 65%;
+}
+
+.send-screen-card {
+  display: flex;
+  flex-direction: column;
+  margin-left: 3.5%;
+  margin-right: 3.5%;
+  background: $white;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+}
+
+/* Send Screen */
+
+.send-screen section {
+  margin: 4px 16px;
+}
+
+.send-screen input {
+  width: 100%;
+  font-size: 12px;
+}
