@@ -15,7 +15,6 @@ describe('Nonce Tracker', function () {
         const txGen = new MockTxGen()
         confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 3 })
         pendingTxs = txGen.generate({ status: 'pending' }, { count: 1 })
-        console.dir(txGen.txs)
         nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs, '0x1')
       })
 
@@ -62,7 +61,6 @@ describe('Nonce Tracker', function () {
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        console.dir(nonceLock.nextNonce)
         assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
         await nonceLock.releaseLock()
       })
@@ -78,7 +76,6 @@ describe('Nonce Tracker', function () {
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        console.dir(nonceLock.nextNonce)
         assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
         await nonceLock.releaseLock()
       })
@@ -94,8 +91,22 @@ describe('Nonce Tracker', function () {
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        console.dir(nonceLock.nextNonce)
         assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        await nonceLock.releaseLock()
+      })
+    })
+
+    describe('when provider nonce is higher than other metrics', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        pendingTxs = txGen.generate({ status: 'pending' }, { count: 2 })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x05')
+      })
+
+      it('should return nonce after those', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '6', 'nonce should be 6')
         await nonceLock.releaseLock()
       })
     })
