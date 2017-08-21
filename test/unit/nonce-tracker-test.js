@@ -14,7 +14,7 @@ describe('Nonce Tracker', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
         confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 3 })
-        pendingTxs = txGen.generate({ status: 'pending' }, { count: 1 })
+        pendingTxs = txGen.generate({ status: 'submitted' }, { count: 1 })
         nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs, '0x1')
       })
 
@@ -51,7 +51,7 @@ describe('Nonce Tracker', function () {
         const txGen = new MockTxGen()
         confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 1 })
         pendingTxs = txGen.generate({
-          status: 'pending',
+          status: 'submitted',
           txParams: { nonce: '0x01' },
         }, { count: 5 })
 
@@ -61,7 +61,7 @@ describe('Nonce Tracker', function () {
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        assert.equal(nonceLock.nextNonce, '2', `nonce should be 2 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
@@ -76,7 +76,7 @@ describe('Nonce Tracker', function () {
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        assert.equal(nonceLock.nextNonce, '2', `nonce should be 2 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
@@ -84,14 +84,14 @@ describe('Nonce Tracker', function () {
     describe('when local pending count is higher than other metrics', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
-        pendingTxs = txGen.generate({ status: 'pending' }, { count: 2 })
+        pendingTxs = txGen.generate({ status: 'submitted' }, { count: 2 })
         nonceTracker = generateNonceTrackerWith(pendingTxs, [])
       })
 
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        assert.equal(nonceLock.nextNonce, '2', `nonce should be 2 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
@@ -99,21 +99,21 @@ describe('Nonce Tracker', function () {
     describe('when provider nonce is higher than other metrics', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
-        pendingTxs = txGen.generate({ status: 'pending' }, { count: 2 })
+        pendingTxs = txGen.generate({ status: 'submitted' }, { count: 2 })
         nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x05')
       })
 
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '6', 'nonce should be 6')
+        assert.equal(nonceLock.nextNonce, '5', `nonce should be 5 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
   })
 })
 
-function generateNonceTrackerWith(pending, confirmed, providerStub = '0x0') {
+function generateNonceTrackerWith (pending, confirmed, providerStub = '0x0') {
   const getPendingTransactions = () => pending
   const getConfirmedTransactions = () => confirmed
   providerResultStub.result = providerStub
