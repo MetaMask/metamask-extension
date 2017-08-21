@@ -10,7 +10,7 @@ const QrView = require('../qr-code')
 function mapStateToProps (state) {
   return {
     address: state.metamask.selectedAddress,
-    selectedAddress: getSelectedAddress(state),
+    // selectedAddress: getSelectedAddress(state),
     selectedIdentity: getSelectedIdentity(state),
   }
 }
@@ -35,6 +35,8 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModa
 // It is the only component in this codebase that does so
 // It utilizes modal styles
 AccountDetailsModal.prototype.render = function () {
+  const { selectedIdentity } = this.props
+
   return h('div', {}, [
     h('div.account-details-modal-wrapper', {
     }, [
@@ -53,8 +55,8 @@ AccountDetailsModal.prototype.render = function () {
       h('div', {}, [
         h(QrView, {
           Qr: {
-            message: this.props.selectedAddress,
-            data: this.props.selectedIdentity,
+            message: this.props.selectedIdentity.name,
+            data: this.props.selectedIdentity.address,
           }
         }, []),
       ]),

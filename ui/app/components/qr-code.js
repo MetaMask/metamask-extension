@@ -10,11 +10,7 @@ module.exports = connect(mapStateToProps)(QrCodeView)
 
 function mapStateToProps (state) {
   return {
-    // Qr: state.appState.Qr,
-    /*
-      Qr.message - address
-      Qr.data - identity
-     */
+    // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
     buyView: state.appState.buyView,
     warning: state.appState.warning,
   }
