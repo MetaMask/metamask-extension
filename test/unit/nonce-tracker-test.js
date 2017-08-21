@@ -1,5 +1,6 @@
 const assert = require('assert')
 const NonceTracker = require('../../app/scripts/lib/nonce-tracker')
+const MockTxGen = require('../lib/mock-tx-gen')
 
 describe('Nonce Tracker', function () {
   let nonceTracker, provider
@@ -8,41 +9,9 @@ describe('Nonce Tracker', function () {
   let providerResultStub = {}
 
   beforeEach(function () {
-    pendingTxs = [{
-      'status': 'submitted',
-      'txParams': {
-        'from': '0x7d3517b0d011698406d6e0aed8453f0be2697926',
-        'gas': '0x30d40',
-        'value': '0x0',
-        'nonce': '0x3',
-      },
-    }]
-    confirmedTxs = [{
-      'status': 'confirmed',
-      'txParams': {
-        'from': '0x7d3517b0d011698406d6e0aed8453f0be2697926',
-        'gas': '0x30d40',
-        'value': '0x0',
-        'nonce': '0x0',
-      },
-    }, {
-      'status': 'confirmed',
-      'txParams': {
-        'from': '0x7d3517b0d011698406d6e0aed8453f0be2697926',
-        'gas': '0x30d40',
-        'value': '0x0',
-        'nonce': '0x1',
-      },
-    }, {
-      'status': 'confirmed',
-      'txParams': {
-        'from': '0x7d3517b0d011698406d6e0aed8453f0be2697926',
-        'gas': '0x30d40',
-        'value': '0x0',
-        'nonce': '0x2',
-      },
-    }]
-
+    const txGen = new MockTxGen()
+    confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 3 })
+    pendingTxs = txGen.generate({ status: 'pending' }, { count: 1 })
 
     getPendingTransactions = () => pendingTxs
     getConfirmedTransactions = () => confirmedTxs
@@ -66,6 +35,10 @@ describe('Nonce Tracker', function () {
       const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
       assert.equal(nonceLock.nextNonce, '4', 'nonce should be 4')
       await nonceLock.releaseLock()
+    })
+
+    it('should return 0 if there are no previous transactions', async function () {
+
     })
 
     it('should use localNonce if network returns a nonce lower then a confirmed tx in state', async function () {
