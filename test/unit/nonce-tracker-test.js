@@ -15,21 +15,7 @@ describe('Nonce Tracker', function () {
         const txGen = new MockTxGen()
         confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 3 })
         pendingTxs = txGen.generate({ status: 'pending' }, { count: 1 })
-
-        getPendingTransactions = () => pendingTxs
-        getConfirmedTransactions = () => confirmedTxs
-        providerResultStub.result = '0x3'
-        provider = {
-          sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
-          _blockTracker: {
-            getCurrentBlock: () => '0x11b568',
-          },
-        }
-        nonceTracker = new NonceTracker({
-          provider,
-          getPendingTransactions,
-          getConfirmedTransactions,
-        })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs)
       })
 
       it('should work', async function () {
@@ -50,20 +36,7 @@ describe('Nonce Tracker', function () {
 
     describe('with no previous txs', function () {
       beforeEach(function () {
-        getPendingTransactions = () => []
-        getConfirmedTransactions = () => []
-        providerResultStub.result = '0x0'
-        provider = {
-          sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
-          _blockTracker: {
-            getCurrentBlock: () => '0x11b568',
-          },
-        }
-        nonceTracker = new NonceTracker({
-          provider,
-          getPendingTransactions,
-          getConfirmedTransactions,
-        })
+        nonceTracker = generateNonceTrackerWith([], [])
       })
 
       it('should return 0', async function () {
@@ -73,5 +46,76 @@ describe('Nonce Tracker', function () {
         await nonceLock.releaseLock()
       })
     })
+
+    describe('with multiple previous txs with same nonce', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 1 })
+        pendingTxs = txGen.generate({
+          status: 'pending',
+          txParams: { nonce: '0x01' },
+        }, { count: 5 })
+
+        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs)
+      })
+
+      it('should return nonce after those', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        console.dir(nonceLock.nextNonce)
+        assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        await nonceLock.releaseLock()
+      })
+    })
+
+    describe('when local confirmed count is higher than network nonce', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 2 })
+        nonceTracker = generateNonceTrackerWith([], confirmedTxs)
+      })
+
+      it('should return nonce after those', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        console.dir(nonceLock.nextNonce)
+        assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        await nonceLock.releaseLock()
+      })
+    })
+
+    describe('when local pending count is higher than other metrics', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        pendingTxs = txGen.generate({ status: 'pending' }, { count: 2 })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [])
+      })
+
+      it('should return nonce after those', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        console.dir(nonceLock.nextNonce)
+        assert.equal(nonceLock.nextNonce, '2', 'nonce should be 2')
+        await nonceLock.releaseLock()
+      })
+    })
   })
 })
+
+function generateNonceTrackerWith(pending, confirmed) {
+  const getPendingTransactions = () => pending
+  const getConfirmedTransactions = () => confirmed
+  providerResultStub.result = '0x0'
+  const provider = {
+    sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
+    _blockTracker: {
+      getCurrentBlock: () => '0x11b568',
+    },
+  }
+  return new NonceTracker({
+    provider,
+    getPendingTransactions,
+    getConfirmedTransactions,
+  })
+}
+
