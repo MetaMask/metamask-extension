@@ -46,6 +46,7 @@ class AccountDropdowns extends Component {
           ),
         },
         [
+          // MOVE CHECKMARK UP
           h(
             Identicon,
             {
@@ -67,6 +68,7 @@ class AccountDropdowns extends Component {
             },
           }, identity.name || ''),
           h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
+          // EDIT
         ]
       )
     })
@@ -122,7 +124,12 @@ class AccountDropdowns extends Component {
                 diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Create Account'),
+            h('span', {
+              style: { marginLeft: '20px', fontSize: '24px' },
+              onClick: () => {
+                actions.showNewAccountModal()
+              },
+            }, 'Create Account'),
           ],
         ),
         h(
@@ -350,6 +357,9 @@ const mapDispatchToProps = (dispatch) => {
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       showAccountDetailModal: () => {
         dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
+      },
+      showNewAccountModal: () => {
+        dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
       },
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),

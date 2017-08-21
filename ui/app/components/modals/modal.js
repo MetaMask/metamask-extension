@@ -11,6 +11,7 @@ const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-n
 const BuyOptions = require('./buy-options-modal')
 const AccountDetailsModal = require('./account-details-modal')
 const EditAccountNameModal = require('./edit-account-name-modal')
+const NewAccountModal = require('./new-account-modal')
 
 const MODALS = {
   BUY: [
@@ -22,6 +23,9 @@ const MODALS = {
   ACCOUNT_DETAILS: [
     h(EditAccountNameModal, {}, []),
   ],
+  NEW_ACCOUNT: [
+    h(NewAccountModal, {}, []),
+  ]
 }
 
 function mapStateToProps (state) {
