@@ -43,7 +43,11 @@ EditAccountNameModal.prototype.render = function () {
     h('div.flex-column.edit-account-name-modal-content', {
     }, [
 
-      h('div.edit-account-name-modal-cancel', {}, [
+      h('div.edit-account-name-modal-cancel', {
+        onClick: () => {
+          hideModal()
+        },
+      }, [
         h('i.fa.fa-times'),
       ]),
 
