@@ -3,10 +3,15 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const { getSelectedIdentity, getSelectedAddress } = require('../../selectors')
+
+const QrView = require('../qr-code')
 
 function mapStateToProps (state) {
   return {
     address: state.metamask.selectedAddress,
+    selectedAddress: getSelectedAddress(state),
+    selectedIdentity: getSelectedIdentity(state),
   }
 }
 
@@ -14,7 +19,8 @@ function mapDispatchToProps (dispatch) {
   return {
     hideModal: () => {
       dispatch(actions.hideModal())
-    }
+    },
+    showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
   }
 }
 
@@ -45,7 +51,12 @@ AccountDetailsModal.prototype.render = function () {
       ]),
 
       h('div', {}, [
-        'QR Code',
+        h(QrView, {
+          Qr: {
+            message: this.props.selectedAddress,
+            data: this.props.selectedIdentity,
+          }
+        }, []),
       ]),
 
       h('div', {}, [
