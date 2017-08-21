@@ -6,11 +6,14 @@ const clone = require('clone')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxProvideUtils = require('../../app/scripts/lib/tx-utils')
+const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
+
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 const { createStubedProvider } = require('../stub/provider')
+
 
 describe('Transaction Controller', function () {
   let txController, engine, provider, providerResultStub
@@ -46,9 +49,10 @@ describe('Transaction Controller', function () {
         id: 1,
         metamaskNetworkId: currentNetworkId,
         txParams,
+        history: [],
       }
       txController.txStateManager._saveTxList([txMeta])
-      stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txMeta))
+      stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txController.txStateManager.addTx(txMeta)))
     })
 
     afterEach(function () {
@@ -163,7 +167,8 @@ describe('Transaction Controller', function () {
 
   describe('#addTx', function () {
     it('should emit updates', function (done) {
-      txMeta = {
+      const txMeta = {
+        id: '1',
         status: 'unapproved',
         id: 1,
         metamaskNetworkId: currentNetworkId,

@@ -2,6 +2,23 @@
 
 ## Current Master
 
+## 3.9.9 2017-8-18
+
+- Fix bug where some transaction submission errors would show an empty screen.
+- Fix bug that could mis-render token balances when very small.
+- Fix formatting of eth_sign "Sign Message" view.
+- Add deprecation warning to eth_sign "Sign Message" view.
+
+## 3.9.8 2017-8-16
+
+- Reenable token list.
+- Remove default tokens.
+
+## 3.9.7 2017-8-15
+
+- hotfix - disable token list
+- Added a deprecation warning for web3 https://github.com/ethereum/mist/releases/tag/v0.9.0
+
 ## 3.9.6 2017-8-09
 
 - Replace account screen with an account drop-down menu.

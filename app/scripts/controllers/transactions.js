@@ -114,6 +114,7 @@ module.exports = class TransactionController extends EventEmitter {
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${txMeta.id}:finished`, (completedTx) => {
+        this.emit('updateBadge')
         switch (completedTx.status) {
           case 'submitted':
             return resolve(completedTx.hash)
@@ -136,7 +137,6 @@ module.exports = class TransactionController extends EventEmitter {
       status: 'unapproved',
       metamaskNetworkId: this.getNetwork(),
       txParams: txParams,
-      history: [],
     }
     // add default tx params
     await this.addTxDefaults(txMeta)

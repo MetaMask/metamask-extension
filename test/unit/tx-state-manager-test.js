@@ -150,7 +150,7 @@ describe('TransactionStateManger', function () {
       assert.equal(result.hash, 'foo')
     })
 
-    it('updates gas price', function () {
+    it('updates gas price and adds history items', function () {
       const originalGasPrice = '0x01'
       const desiredGasPrice = '0x02'
 
@@ -166,10 +166,21 @@ describe('TransactionStateManger', function () {
       const updatedMeta = clone(txMeta)
 
       txStateManager.addTx(txMeta)
-      updatedMeta.txParams.gasPrice = desiredGasPrice
-      txStateManager.updateTx(updatedMeta)
-      let result = txStateManager.getTx('1')
+      const updatedTx = txController.getTx('1')
+      // verify tx was initialized correctly
+      assert.equal(updatedTx.history.length, 1, 'one history item (initial)')
+      assert.equal(Array.isArray(updatedTx.history[0]), false, 'first history item is initial state')
+      assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
+      // modify value and updateTx
+      updatedTx.txParams.gasPrice = desiredGasPrice
+      txController.updateTx(updatedTx)
+      // check updated value
+      const result = txController.getTx('1')
       assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
+      // validate history was updated
+      assert.equal(result.history.length, 2, 'two history items (initial + diff)')
+      const expectedEntry = { op: 'replace', path: '/txParams/gasPrice', value: desiredGasPrice }
+      assert.deepEqual(result.history[1], [expectedEntry], 'two history items (initial + diff)')
     })
   })
 
