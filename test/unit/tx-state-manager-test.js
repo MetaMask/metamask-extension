@@ -2,6 +2,7 @@ const assert = require('assert')
 const clone = require('clone')
 const ObservableStore = require('obs-store')
 const TxStateManager = require('../../app/scripts/lib/tx-state-manager')
+const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
 const noop = () => true
 
 describe('TransactionStateManger', function () {
@@ -145,7 +146,9 @@ describe('TransactionStateManger', function () {
     it('replaces the tx with the same id', function () {
       txStateManager.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       txStateManager.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txStateManager.updateTx({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: currentNetworkId, txParams: {} })
+      const txMeta = txStateManager.getTx('1')
+      txMeta.hash = 'foo'
+      txStateManager.updateTx(txMeta)
       let result = txStateManager.getTx('1')
       assert.equal(result.hash, 'foo')
     })
@@ -166,16 +169,16 @@ describe('TransactionStateManger', function () {
       const updatedMeta = clone(txMeta)
 
       txStateManager.addTx(txMeta)
-      const updatedTx = txController.getTx('1')
+      const updatedTx = txStateManager.getTx('1')
       // verify tx was initialized correctly
       assert.equal(updatedTx.history.length, 1, 'one history item (initial)')
       assert.equal(Array.isArray(updatedTx.history[0]), false, 'first history item is initial state')
       assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
       // modify value and updateTx
       updatedTx.txParams.gasPrice = desiredGasPrice
-      txController.updateTx(updatedTx)
+      txStateManager.updateTx(updatedTx)
       // check updated value
-      const result = txController.getTx('1')
+      const result = txStateManager.getTx('1')
       assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
       // validate history was updated
       assert.equal(result.history.length, 2, 'two history items (initial + diff)')
