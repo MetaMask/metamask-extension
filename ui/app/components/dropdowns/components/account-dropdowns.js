@@ -24,7 +24,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, selected, menuItemStyles, dropdownWrapperStyle } = this.props
+    const { identities, selected, menuItemStyles, dropdownWrapperStyle, actions } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
@@ -46,29 +46,47 @@ class AccountDropdowns extends Component {
           ),
         },
         [
-          // MOVE CHECKMARK UP
-          h(
-            Identicon,
-            {
-              address: identity.address,
-              diameter: 32,
+          h('div.flex-row', {}, [
+
+            h('span', {
               style: {
-                marginLeft: '10px',
+                flex: '1 1 auto',
+              }
+            }, isSelected ? h('.check', '✓') : null),
+
+            h(
+              Identicon,
+              {
+                address: identity.address,
+                diameter: 32,
+                style: {
+                  flex: '1 1 auto',
+                },
               },
-            },
-          ),
-          h('span', {
-            style: {
-              marginLeft: '20px',
-              fontSize: '24px',
-              maxWidth: '145px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            },
-          }, identity.name || ''),
-          h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
-          // EDIT
+            ),
+
+            h('span', {
+              style: {
+                flex: '5 5 auto',
+                fontSize: '24px',
+                maxWidth: '145px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              },
+            }, identity.name || ''),
+
+            h('span', {
+              style: {
+                flex: '2 2 auto',
+                fontSize: '18px',
+              },
+              onClick: () => {
+                actions.showNewAccountModal()
+              }
+            }, 'Edit'),
+
+          ])
         ]
       )
     })
@@ -90,9 +108,7 @@ class AccountDropdowns extends Component {
           maxHeight: '300px',
           width: '300px',
         },
-        innerStyle: {
-          padding: '8px 25px',
-        },
+        innerStyle: {},
         isOpen: accountSelectorActive,
         onClickOutside: (event) => {
           const { classList } = event.target
@@ -343,7 +359,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
       },
       showNewAccountModal: () => {
-        dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
+        dispatch(actions.showModal({ name: 'EDIT_ACCOUNT_NAME' }))
       },
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),
