@@ -189,7 +189,7 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => {
-              this.props.showAccountDetail()
+              this.props.actions.showAccountDetailModal()
             },
             style: Object.assign(
               {},
@@ -348,6 +348,9 @@ const mapDispatchToProps = (dispatch) => {
       showConfigPage: () => dispatch(actions.showConfigPage()),
       requestAccountExport: () => dispatch(actions.requestExportAccount()),
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
+      showAccountDetailModal: () => {
+        dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
+      },
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),

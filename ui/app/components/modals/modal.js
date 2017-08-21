@@ -6,14 +6,22 @@ const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
 const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
-const BuyOptions = require('../buy-options')
+
+// Modal Components
+const BuyOptions = require('./buy-options-modal')
+const AccountDetailsModal = require('./account-details-modal')
+const EditAccountNameModal = require('./edit-account-name-modal')
 
 const MODALS = {
   BUY: [
     h(BuyOptions, {}, []),
   ],
-  EDIT_ACCOUNT_NAME: [],
-  ACCOUNT_DETAILS: [],
+  EDIT_ACCOUNT_NAME: [
+    h(AccountDetailsModal, {}, []),
+  ],
+  ACCOUNT_DETAILS: [
+    h(EditAccountNameModal, {}, []),
+  ],
 }
 
 function mapStateToProps (state) {
