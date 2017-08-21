@@ -226,22 +226,6 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => {
-              const { selected, identities } = this.props
-              var identity = identities[selected]
-              actions.showQrView(selected, identity ? identity.name : '')
-            },
-            style: Object.assign(
-              {},
-              menuItemStyles,
-            ),
-          },
-          'Show QR Code',
-        ),
-        h(
-          DropdownMenuItem,
-          {
-            closeMenu: () => {},
-            onClick: () => {
               const { selected } = this.props
               const checkSumAddress = selected && ethUtil.toChecksumAddress(selected)
               copyToClipboard(checkSumAddress)
