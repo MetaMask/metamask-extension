@@ -189,6 +189,20 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => {
+              this.props.showAccountDetail()
+            },
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
+          },
+          'Account Details',
+        ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => {
               const { selected, network } = this.props
               const url = genAccountLink(selected, network)
               global.platform.openWindow({ url })
