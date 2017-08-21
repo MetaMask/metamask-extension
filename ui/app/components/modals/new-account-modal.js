@@ -22,59 +22,49 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-inherits(BuyOptions, Component)
-function BuyOptions () {
+inherits(NewAccountModal, Component)
+function NewAccountModal () {
   Component.call(this)
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(NewAccountModal)
 
-// BuyOptions is currently meant to be rendered inside <Modal />
-// It is the only component in this codebase that does so
-// It utilizes modal styles
-BuyOptions.prototype.render = function () {
+NewAccountModal.prototype.render = function () {
   return h('div', {}, [
-    h('div.buy-modal-content.transfers-subview', {
+    h('div.new-account-modal-wrapper', {
     }, [
-      h('div.buy-modal-content-title-wrapper.flex-column.flex-center', {
-        style: {},
-      }, [
-        h('div.buy-modal-content-title', {
-          style: {},
-        }, 'New Account Modal'),
-        h('div', {}, 'How would you like to buy Ether?'),
+      h('div', {}, [
+        'New Account',
       ]),
 
-      h('div.buy-modal-content-options.flex-column.flex-center', {}, [
-
-        h('div.buy-modal-content-option', {
-          onClick: () => {
-            const { toCoinbase, address } = this.props
-            toCoinbase(address)
-          },
-        }, [
-          h('div.buy-modal-content-option-title', {}, 'Coinbase'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Buy with Fiat'),
+      h('div', {}, [
+        h('i.fa.fa-times', {}, [
         ]),
-
-        h('div.buy-modal-content-option', {}, [
-          h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
-        ]),
-
-        h('div.buy-modal-content-option', {}, [
-          h('div.buy-modal-content-option-title', {}, 'Direct Deposit'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Deposit from another account'),
-        ]),
-
+      ]),
+      
+      h('div', {}, [
+        'Account Name',
       ]),
 
-      h('button', {
-        style: {
-          background: 'white',
-        },
-        onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text',{}, 'Cancel')),
+      h('div', {}, [
+        h('input', {
+          placeholder: 'E.g. My new account'
+        }, []),
+      ]),
+
+      h('div', {}, [
+        'or',
+      ]),
+
+      h('div', {}, [
+        'Import an account',
+      ]),
+
+      h('div', {}, [
+        h('button.btn-clear', {}, [
+          'SAVE',
+        ]),
+      ]),
     ])
   ])
 }

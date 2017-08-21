@@ -166,10 +166,19 @@
 }
 
 // Account Details Modal
-
 .account-details-modal-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
+}
+
+// New Account Modal
+.new-account-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
 }
