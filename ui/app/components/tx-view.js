@@ -36,6 +36,7 @@ function mapDispatchToProps (dispatch) {
     showSidebar: () => { dispatch(actions.showSidebar()) },
     hideSidebar: () => { dispatch(actions.hideSidebar()) },
     showModal: (payload) => { dispatch(actions.showModal(payload)) },
+    showSendPage: () => { dispatch(actions.showSendPage()) },
   }
 }
 
@@ -114,6 +115,9 @@ TxView.prototype.render = function () {
           style: {
             textAlign: 'center',
             marginLeft: '1.4em',
+          },
+          onClick: () => {
+            this.props.showSendPage()
           },
         }, 'SEND'),
 

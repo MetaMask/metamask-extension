@@ -18,7 +18,7 @@ function mapDispatchToProps (dispatch) {
     },
     hideModal: () => {
       dispatch(actions.hideModal())
-    }
+    },
   }
 }
 
