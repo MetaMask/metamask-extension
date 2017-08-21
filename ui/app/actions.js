@@ -791,15 +791,17 @@ function hideNetworkDropdown () {
 }
 
 
-function showModal () {
+function showModal (payload) {
   return {
     type: actions.MODAL_OPEN,
+    payload,
   }
 }
 
-function hideModal () {
+function hideModal (payload) {
   return {
     type: actions.MODAL_CLOSE,
+    payload,
   }
 }
 

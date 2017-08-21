@@ -36,7 +36,7 @@ const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 
 // Global Modals
-const BuyModal = require('./components/modals/index').BuyModal
+const Modal = require('./components/modals/index').Modal
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
@@ -107,7 +107,7 @@ App.prototype.render = function () {
     }, [
 
       // global modal
-      h(BuyModal, {}, []),
+      h(Modal, {}, []),
 
       // app bar
       this.renderAppBar(),

@@ -36,7 +36,12 @@ function reduceApp (state, action) {
   var appState = extend({
     shouldClose: false,
     menuOpen: false,
-    modalOpen: false,
+    modal: {
+      open: false,
+      modalState: {
+        name: null,
+      },
+    },
     sidebarOpen: false,
     networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
@@ -77,12 +82,20 @@ function reduceApp (state, action) {
     // modal methods:
     case actions.MODAL_OPEN:
       return extend(appState, {
-        modalOpen: true,
+        modal: Object.assign(
+          state.appState.modal,
+          { open: true },
+          { modalState: action.payload },
+        ),
       })
 
     case actions.MODAL_CLOSE:
       return extend(appState, {
-        modalOpen: false,
+        modal: Object.assign(
+          state.appState.modal,
+          { open: false },
+          { modalState: action.payload || state.appState.modal.modalState },
+        ),
       })
 
     // transition methods

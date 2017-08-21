@@ -6,10 +6,20 @@ const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
 const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
+const BuyOptions = require('../buy-options')
+
+const MODALS = {
+  BUY: [
+    h(BuyOptions, {}, []),
+  ],
+  EDIT_ACCOUNT_NAME: [],
+  ACCOUNT_DETAILS: [],
+}
 
 function mapStateToProps (state) {
   return {
-    active: state.appState.modalOpen
+    active: state.appState.modal.open,
+    modalState: state.appState.modal.modalState,
   }
 }
 
@@ -48,6 +58,8 @@ const backdropStyles = {
 
 Modal.prototype.render = function () {
 
+  const children = MODALS[this.props.modalState.name] || []
+
   return h(FadeModal,
     {
       className: 'modal',
@@ -59,7 +71,7 @@ Modal.prototype.render = function () {
       modalStyle: isMobileView() ? mobileModalStyles : laptopModalStyles,
       backdropStyle: backdropStyles,
     },
-    this.props.children,
+    children,
   )
 }
 

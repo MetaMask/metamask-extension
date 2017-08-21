@@ -35,7 +35,7 @@ function mapDispatchToProps (dispatch) {
   return {
     showSidebar: () => { dispatch(actions.showSidebar()) },
     hideSidebar: () => { dispatch(actions.hideSidebar()) },
-    showModal: () => { dispatch(actions.showModal()) },
+    showModal: (payload) => { dispatch(actions.showModal(payload)) },
   }
 }
 
@@ -104,7 +104,9 @@ TxView.prototype.render = function () {
             textAlign: 'center',
           },
           onClick: () => {
-            this.props.showModal()
+            this.props.showModal({
+              name: 'BUY',
+            })
           },
         }, 'BUY'),
 
