@@ -246,6 +246,21 @@ class AccountDropdowns extends Component {
           },
           'Export Private Key',
         ),
+        h(
+          DropdownMenuItem,
+          {
+            closeMenu: () => {},
+            onClick: () => {
+              // Add Token Scren
+            },
+            style: Object.assign(
+              {},
+              menuItemStyles,
+            ),
+          },
+          'Add Token',
+        ),
+
       ]
     )
   }
