@@ -1,14 +1,20 @@
 import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux';
 import CreatePasswordScreen from './create-password-screen'
+import UniqueImageScreen from './unique-image-screen'
 
-export default class FirstTimeFlow extends Component {
+class FirstTimeFlow extends Component {
 
   static propTypes = {
-    screenType: PropTypes.string
+    isInitialized: PropTypes.bool,
+    seedWords: PropTypes.string,
+    noActiveNotices: PropTypes.bool
   };
 
   static defaultProps = {
-    screenType: FirstTimeFlow.CREATE_PASSWORD
+    isInitialized: false,
+    seedWords: '',
+    noActiveNotices: false
   };
 
   static SCREEN_TYPE = {
@@ -20,8 +26,22 @@ export default class FirstTimeFlow extends Component {
     BUY_ETHER: 'buy_ether'
   };
 
-  static getScreenType = ({isInitialized, noActiveNotices, seedWords}) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      screenType: this.getScreenType()
+    }
+  }
+
+  setScreenType(screenType) {
+    this.setState({ screenType })
+  }
+
+  getScreenType() {
+    const {isInitialized, seedWords, noActiveNotices} = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
+
+    return SCREEN_TYPE.UNIQUE_IMAGE
 
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
@@ -39,9 +59,19 @@ export default class FirstTimeFlow extends Component {
   renderScreen() {
     const {SCREEN_TYPE} = FirstTimeFlow
 
-    switch (this.props.screenType) {
+    switch (this.state.screenType) {
       case SCREEN_TYPE.CREATE_PASSWORD:
-        return <CreatePasswordScreen />
+        return (
+          <CreatePasswordScreen
+            next={() => this.setScreenType(SCREEN_TYPE.UNIQUE_IMAGE)}
+          />
+        )
+      case SCREEN_TYPE.UNIQUE_IMAGE:
+        return (
+          <UniqueImageScreen
+            next={() => this.setScreenType(SCREEN_TYPE.TERM_OF_USE)}
+          />
+        )
       default:
         return <noscript />
     }
@@ -56,3 +86,12 @@ export default class FirstTimeFlow extends Component {
   }
 
 }
+
+export default connect(
+  ({ metamask: { isInitialized, seedWords, noActiveNotices } }) => ({
+    isInitialized,
+    seedWords,
+    noActiveNotices
+  })
+)(FirstTimeFlow)
+

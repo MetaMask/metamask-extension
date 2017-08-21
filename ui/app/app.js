@@ -106,10 +106,7 @@ App.prototype.render = function () {
       this.renderNetworkDropdown(),
       this.renderDropdown(),
 
-      h(Loading, {
-        isLoading: isLoading || isLoadingNetwork,
-        loadingMessage: loadMessage,
-      }),
+      this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // panel content
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
@@ -401,6 +398,17 @@ App.prototype.renderDropdown = function () {
   ])
 }
 
+App.prototype.renderLoadingIndicator = function({ isLoading, isLoadingNetwork, loadMessage }) {
+  const { isMascara } = this.props;
+
+  return isMascara
+    ? null
+    : h(Loading, {
+      isLoading: isLoading || isLoadingNetwork,
+      loadingMessage: loadMessage,
+    })
+}
+
 App.prototype.renderBackButton = function (style, justArrow = false) {
   var props = this.props
   return (
@@ -420,19 +428,13 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
   )
 }
 
-App.prototype.renderMascaraFirstTime = function () {
-  return 'hi'
-}
-
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
   const {isMascara, isOnboarding} = props
 
   if (isMascara && isOnboarding) {
-    return h(MascaraFirstTime, {
-      screenType: MascaraFirstTime.getScreenType(props)
-    })
+    return h(MascaraFirstTime)
   }
 
   // notices

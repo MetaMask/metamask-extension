@@ -1,18 +1,21 @@
+$primary
+
 .first-time-flow {
   height: 100vh;
   width: 100vw;
   background-color: #FFF;
 }
 
-.create-password {
+.create-password,
+.unique-image {
   display: flex;
   flex-flow: column nowrap;
   margin: 67px 0 0 146px;
-  max-width: 350px;
+  max-width: 35rem;
 }
 
-.create-password__title {
-  height: 102px;
+.create-password__title,
+.unique-image__title {
   width: 280px;
   color: #1B344D;
   font-size: 40px;
@@ -27,6 +30,23 @@
 
 .create-password__import-link {
   margin-bottom: 54px;
+}
+
+.unique-image__title {
+  margin-top: 24px;
+}
+
+.unique-image__body-text {
+  width: 335px;
+  color: #1B344D;
+  font-size: 16px;
+  line-height: 23px;
+  font-family: Montserrat UltraLight;
+}
+
+.unique-image__body-text +
+.unique-image__body-text {
+  margin-top: 24px;
 }
 
 .first-time-flow__input {
@@ -57,6 +77,11 @@
   transition: 200ms ease-in-out;
 }
 
+button.first-time-flow__button[disabled] {
+  background-color: rgba(247, 134, 28, 0.9);
+  opacity: .6;
+}
+
 button.first-time-flow__button:hover {
   transform: scale(1);
   background-color: rgba(247, 134, 28, 0.9);
@@ -82,4 +107,27 @@ button.first-time-flow__button:hover {
 
 .breadcrumb + .breadcrumb {
   margin-left: 10px;
+}
+
+.loading-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  margin-top: 143px;
+}
+
+.loading-screen .spinner {
+  margin-bottom: 25px;
+  width: 100px;
+  height: 100px;
+}
+
+.loading-screen__message {
+  color: #1B344D;
+  font-size: 20px;
+  line-height: 26px;
+  text-align: center;
+  font-family: Montserrat UltraLight;
 }

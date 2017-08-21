@@ -243,19 +243,26 @@ function createNewVaultAndKeychain (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndKeychain`)
-    background.createNewVaultAndKeychain(password, (err) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      log.debug(`background.placeSeedWords`)
-      background.placeSeedWords((err) => {
+
+    return new Promise((resolve, reject) => {
+      background.createNewVaultAndKeychain(password, (err) => {
         if (err) {
-          return dispatch(actions.displayWarning(err.message))
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
         }
-        dispatch(actions.hideLoadingIndication())
-        forceUpdateMetamaskState(dispatch)
+        log.debug(`background.placeSeedWords`)
+        background.placeSeedWords((err) => {
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+            return reject(err)
+          }
+          dispatch(actions.hideLoadingIndication())
+          forceUpdateMetamaskState(dispatch)
+          resolve()
+        })
       })
-    })
+    });
+
   }
 }
 
