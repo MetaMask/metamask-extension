@@ -52,22 +52,26 @@ AccountDetailsModal.prototype.render = function () {
       h('div', {}, [
       ]),
 
-      h('div', {}, [
-        h(QrView, {
-          Qr: {
-            message: this.props.selectedIdentity.name,
-            data: this.props.selectedIdentity.address,
-          }
-        }, []),
-      ]),
+      h(QrView, {
+        Qr: {
+          message: this.props.selectedIdentity.name,
+          data: this.props.selectedIdentity.address,
+        }
+      }, []),
 
       h('div', {}, [
         'Account Display',
       ]),
 
-      h('div', {}, [
-        'divider',
-      ]),
+      // divider
+      h('div', {
+        style: {
+          width: '100%',
+          height: '1px',
+          margin: '10px 0px',
+          backgroundColor: '#D8D8D8',
+        }
+      }, []),
 
       h('div', {}, [
         'View aCcount on etherscan',

@@ -29,28 +29,28 @@ QrCodeView.prototype.render = function () {
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
-  return h('.main-container.flex-column', {
-    key: 'qr',
+  return h('.div.flex-column.flex-center', {
+    // key: 'qr',
     style: {
-      justifyContent: 'center',
-      paddingBottom: '45px',
-      paddingLeft: '45px',
-      paddingRight: '45px',
-      alignItems: 'center',
+      // justifyContent: 'center',
+      // paddingBottom: '45px',
+      // paddingLeft: '45px',
+      // paddingRight: '45px',
+      // alignItems: 'center',
     },
   }, [
     Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
 
     this.props.warning ? this.props.warning && h('span.error.flex-center', {
       style: {
-        textAlign: 'center',
-        width: '229px',
-        height: '82px',
+        // textAlign: 'center',
+        // width: '229px',
+        // height: '82px',
       },
     },
     this.props.warning) : null,
 
-    h('#qr-container.flex-column', {
+    h('.div', {
       style: {
         marginTop: '25px',
         marginBottom: '15px',
@@ -59,15 +59,15 @@ QrCodeView.prototype.render = function () {
         __html: qrImage.createTableTag(4),
       },
     }),
-    h('.flex-row', [
-      h('h3.ellip-address', {
+    h('.div', [
+      h('span.qr-ellip-address', {
         style: {
           width: '247px',
         },
       }, Qr.data),
-      h(CopyButton, {
-        value: Qr.data,
-      }),
+      // h(CopyButton, {
+      //   value: Qr.data,
+      // }),
     ]),
   ])
 }
