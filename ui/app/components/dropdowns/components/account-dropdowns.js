@@ -115,7 +115,7 @@ class AccountDropdowns extends Component {
                   fontSize: '16px',
                 },
                 onClick: () => {
-                  actions.showNewAccountModal()
+                  actions.showEditAccountModal(identity)
                 },
               }, [
                 'Edit',
@@ -394,8 +394,14 @@ const mapDispatchToProps = (dispatch) => {
       showAccountDetailModal: () => {
         dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
       },
+      showEditAccountModal: (identity) => {
+        dispatch(actions.showModal({
+          name: 'EDIT_ACCOUNT_NAME',
+          identity,
+        }))
+      },
       showNewAccountModal: () => {
-        dispatch(actions.showModal({ name: 'EDIT_ACCOUNT_NAME' }))
+        dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
       },
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),

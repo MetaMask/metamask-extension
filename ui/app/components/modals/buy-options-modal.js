@@ -34,37 +34,37 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
 // It utilizes modal styles
 BuyOptions.prototype.render = function () {
   return h('div', {}, [
-    h('div.modal-content.transfers-subview', {
+    h('div.buy-modal-content.transfers-subview', {
     }, [
-      h('div.modal-content-title-wrapper.flex-column.flex-center', {
+      h('div.buy-modal-content-title-wrapper.flex-column.flex-center', {
         style: {},
       }, [
-        h('div.modal-content-title', {
+        h('div.buy-modal-content-title', {
           style: {},
         }, 'Transfers'),
         h('div', {}, 'How would you like to buy Ether?'),
       ]),
 
-      h('div.modal-content-options.flex-column.flex-center', {}, [
+      h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
-        h('div.modal-content-option', {
+        h('div.buy-modal-content-option', {
           onClick: () => {
             const { toCoinbase, address } = this.props
             toCoinbase(address)
           },
         }, [
-          h('div.modal-content-option-title', {}, 'Coinbase'),
-          h('div.modal-content-option-subtitle', {}, 'Buy with Fiat'),
+          h('div.buy-modal-content-option-title', {}, 'Coinbase'),
+          h('div.buy-modal-content-option-subtitle', {}, 'Buy with Fiat'),
         ]),
 
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Shapeshift'),
-          h('div.modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
+        h('div.buy-modal-content-option', {}, [
+          h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
+          h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
         ]),
 
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Direct Deposit'),
-          h('div.modal-content-option-subtitle', {}, 'Deposit from another account'),
+        h('div.buy-modal-content-option', {}, [
+          h('div.buy-modal-content-option-title', {}, 'Direct Deposit'),
+          h('div.buy-modal-content-option-subtitle', {}, 'Deposit from another account'),
         ]),
 
       ]),
@@ -74,7 +74,7 @@ BuyOptions.prototype.render = function () {
           background: 'white',
         },
         onClick: () => { this.props.hideModal() },
-      }, h('div.modal-content-footer#modal-content-footer-text',{}, 'Cancel')),
+      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text',{}, 'Cancel')),
     ])
   ])
 }

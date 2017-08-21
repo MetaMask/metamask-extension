@@ -3,78 +3,73 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const { getSelectedAccount } = require('../../selectors')
 
 function mapStateToProps (state) {
   return {
-    network: state.metamask.network,
-    address: state.metamask.selectedAddress,
+    selectedAccount: getSelectedAccount(state),
+    identity: state.appState.modal.modalState.identity,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    toCoinbase: (address) => {
-      dispatch(actions.buyEth({ network: '1', address, amount: 0 }))
-    },
     hideModal: () => {
       dispatch(actions.hideModal())
-    }
+    },
+    saveAccountLabel: (account, label) => {
+      dispatch(actions.saveAccountLabel(account, label))
+    },
   }
 }
 
-inherits(BuyOptions, Component)
-function BuyOptions () {
+inherits(EditAccountNameModal, Component)
+function EditAccountNameModal () {
   Component.call(this)
+  this.state = {
+    inputText: '',
+  }
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(EditAccountNameModal)
 
-// BuyOptions is currently meant to be rendered inside <Modal />
+// EditAccountNameModal is currently meant to be rendered inside <Modal />
 // It is the only component in this codebase that does so
 // It utilizes modal styles
-BuyOptions.prototype.render = function () {
+EditAccountNameModal.prototype.render = function () {
+  const { hideModal, saveAccountLabel, identity } = this.props
+
   return h('div', {}, [
-    h('div.modal-content.transfers-subview', {
+    h('div.flex-column.edit-account-name-modal-content', {
     }, [
-      h('div.modal-content-title-wrapper.flex-column.flex-center', {
-        style: {},
-      }, [
-        h('div.modal-content-title', {
-          style: {},
-        }, 'Edit Account Name Modal'),
-        h('div', {}, 'How would you like to buy Ether?'),
+
+      h('div.edit-account-name-modal-cancel', {}, [
+        h('i.fa.fa-times'),
       ]),
 
-      h('div.modal-content-options.flex-column.flex-center', {}, [
+      h('div.edit-account-name-modal-title', {
+      }, ['Edit Account Name']),
 
-        h('div.modal-content-option', {
-          onClick: () => {
-            const { toCoinbase, address } = this.props
-            toCoinbase(address)
-          },
-        }, [
-          h('div.modal-content-option-title', {}, 'Coinbase'),
-          h('div.modal-content-option-subtitle', {}, 'Buy with Fiat'),
-        ]),
-
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Shapeshift'),
-          h('div.modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
-        ]),
-
-        h('div.modal-content-option', {}, [
-          h('div.modal-content-option-title', {}, 'Direct Deposit'),
-          h('div.modal-content-option-subtitle', {}, 'Deposit from another account'),
-        ]),
-
-      ]),
-
-      h('button', {
-        style: {
-          background: 'white',
+      h('input.edit-account-name-modal-input', {
+        placeholder: identity.name,
+        onChange: (event) => {
+          this.setState({ inputText: event.target.value })
         },
-        onClick: () => { this.props.hideModal() },
-      }, h('div.modal-content-footer#modal-content-footer-text',{}, 'Cancel')),
+        value: this.state.inputText,
+      }, []),
+
+      h('button.btn-clear.edit-account-name-modal-save-button', {
+        onClick: () => {
+          if (this.state.inputText.length !== 0) {
+            saveAccountLabel(identity.address, this.state.inputText)
+            hideModal()
+          }
+        },
+        disabled: this.state.inputText.length === 0,
+      }, [
+        'SAVE',
+      ]),
+
     ])
   ])
 }

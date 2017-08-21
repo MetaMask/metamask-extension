@@ -1,4 +1,5 @@
-.modal-content {
+// Buy Modal
+.buy-modal-content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -7,29 +8,29 @@
 }
 
 @media screen and (max-width: 575px) {
-  .modal-content-title-wrapper {
+  .buy-modal-content-title-wrapper {
     justify-content: space-around;
     width: 100%;
     height: 100px;
   }
 
-  .modal-content-title {
+  .buy-modal-content-title {
     font-size: 26px;
     margin-top: 15px;
   }
 
-  .modal-content-options {
+  .buy-modal-content-options {
     flex-direction: column;
     padding: 5% 33%;
   }
 
-  .modal-content-footer {
+  .buy-modal-content-footer {
     text-transform: uppercase;
     width: 100%;
     height: 50px;
   }
 
-  div.modal-content-option {
+  div.buy-modal-content-option {
     display: flex;
     flex-direction: column;
     width: 80vw;
@@ -41,40 +42,40 @@
     padding: 0% 7%;
     justify-content: space-around;
 
-    div.modal-content-option-title {
+    div.buy-modal-content-option-title {
       font-size: 20px;
     }
 
-    div.modal-content-option-subtitle {
+    div.buy-modal-content-option-subtitle {
       font-size: 16px;
     }
   }
 }
 
 @media screen and (min-width: 576px) {
-  .modal-content-title-wrapper {
+  .buy-modal-content-title-wrapper {
     justify-content: space-around;
     width: 100%;
     height: 110px;
   }
 
-  .modal-content-title {
+  .buy-modal-content-title {
     font-size: 26px;
     margin-top: 15px;
   }
 
-  .modal-content-footer {
+  .buy-modal-content-footer {
     text-transform: uppercase;
     width: 100%;
     height: 50px;
   }
 
-  .modal-content-options {
+  .buy-modal-content-options {
     flex-direction: row;
     margin: 20px 0;
   }
 
-  div.modal-content-option {
+  div.buy-modal-content-option {
     display: flex;
     flex-direction: column;
     width: 20vw;
@@ -85,7 +86,7 @@
     margin: 0 .5vw;
     justify-content: space-around;
 
-    div.modal-content-option-title {
+    div.buy-modal-content-option-title {
       font-size: 20px;
 
       @media screen and (max-width: 679px) {
@@ -97,7 +98,7 @@
       }
     }
 
-    div.modal-content-option-subtitle {
+    div.buy-modal-content-option-subtitle {
       font-size: 16px;
       padding: 0 10px;
       height: 25%;
@@ -121,8 +122,45 @@
       }
     }
 
-    div.modal-content-footer {
+    div.buy-modal-content-footer {
       margin-top: 8vh;
     }
   }
+}
+
+// Edit Account Name Modal
+.edit-account-name-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.edit-account-name-modal-cancel {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  font-size: 25px;
+}
+
+.edit-account-name-modal-title {
+  margin: 15px;
+}
+
+.edit-account-name-modal-save-button {
+  width: 33%;
+  height: 45px;
+  margin: 15px;
+  font-weight: bold;
+  margin-top: 25px;
+}
+
+.edit-account-name-modal-input {
+  width: 90%;
+  height: 50px;
+  text-align: left;
+  margin: 10px;
+  padding: 10px;
+  font-size: 18px;
 }
