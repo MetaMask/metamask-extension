@@ -134,7 +134,7 @@ SendTransactionScreen.prototype.render = function () {
 
           h('div.send-screen-amount-labels', {}, [
             h('span', {}, ['Amount']),
-            h('span', {}, ['ETH <> USD'])
+            h('span', {}, ['ETH <> USD']), //holding on icon from design
           ]),
 
           h('input.large-input.send-screen-input', {
@@ -148,12 +148,20 @@ SendTransactionScreen.prototype.render = function () {
           h('div.send-screen-gas-labels', {}, [
             h('span', {}, [
               h('i.fa.fa-bolt', {}, []),
+
+              // not working ATM.
+              // Ship with fa-bolt if it's slowing us down...
+              // h('img.send-screen-bolt-icon', {
+              //   src: '../images/mm_bolt.svg',
+              //   style: {},
+              // }, []),
+
               'Gas fee:',
             ]),
             h('span', {}, ['What\'s this?']),
           ]),
 
-          h('input.large-input.send-screen-input', {
+          h('input.large-input.send-screen-gas-input', {
             placeholder: '0',
           }, []),
 

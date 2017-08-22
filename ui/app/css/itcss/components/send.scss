@@ -51,6 +51,13 @@
   width: 100%;
 }
 
+.send-screen-gas-input {
+  width: 100%;
+  background-color: $concrete;
+  border-width: 0px;
+  border-style: none;
+}
+
 .send-screen-amount-labels {
   display: flex;
   flex-direction: row;
@@ -62,3 +69,5 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.send-screen-bolt-icon {}
