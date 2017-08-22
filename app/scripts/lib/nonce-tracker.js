@@ -30,9 +30,11 @@ class NonceTracker {
     const nonceDetails = await this._getNetworkNonceAndDetails(address)
     const networkNonce = nonceDetails.networkNonce
     const nextNonce = Math.max(networkNonce, localNextNonce)
+    const currentPendingNonce = this._getLocalPendingNonce(address)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
     // collect the numbers used to calculate the nonce for debugging
     nonceDetails.localNextNonce = localNextNonce
+    nonceDetails.currentPendingNonce = currentPendingNonce
     // return nonce and release cb
     return { nextNonce, nonceDetails, releaseLock }
   }
@@ -82,17 +84,14 @@ class NonceTracker {
     // and pending count are from the same block
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.blockNumber
-    const pendingNonce = this._getLocalPendingNonce(address)
-    const pendingCount = this._getPendingTransactionCount(address)
-    assert(Number.isInteger(pendingCount), `nonce-tracker - pendingCount is not an integer - got: (${typeof pendingCount}) "${pendingCount}"`)
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     // if the nonce provided by the network is higher then a pending tx
     // toss out the pending txCount
-    const networkNonce = pendingNonce > baseCount ? baseCount + pendingCount : baseCount
+    const networkNonce = baseCount
 
-    return {networkNonce, blockNumber, baseCountHex, baseCount, pendingCount, pendingNonce}
+    return {networkNonce, blockNumber, baseCountHex, baseCount}
   }
 
   _getLocalNextNonce (address) {
