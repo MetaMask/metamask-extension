@@ -110,6 +110,21 @@ describe('Nonce Tracker', function () {
         await nonceLock.releaseLock()
       })
     })
+
+    describe('when there are some pending nonces below the remote one and some over.', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        pendingTxs = txGen.generate({ status: 'submitted' }, { count: 5 })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x03')
+      })
+
+      it('should return nonce after those', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '5', `nonce should be 5 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
   })
 })
 
