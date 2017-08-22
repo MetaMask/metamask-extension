@@ -139,11 +139,9 @@ class NonceTracker {
   }
 
   _getHighestNonce (txList) {
-    const nonces = txList.map((txMeta) => txMeta.txParams.nonce)
-    const nonceHex = nonces.reduce((highestNonce, nonce) => {
-      return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
-    }, '0x0')
-    return parseInt(nonceHex, 16)
+    const nonces = txList.map((txMeta) => parseInt(txMeta.txParams.nonce, 16))
+    const highestNonce = Math.max.apply(null, nonces)
+    return highestNonce
   }
 
   // this is a hotfix for the fact that the blockTracker will
