@@ -33,6 +33,9 @@ function AccountDetailsModal () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModal)
 
+// Not yet pixel perfect todos:
+  // fonts of qr-header and close button
+
 AccountDetailsModal.prototype.render = function () {
   const { selectedIdentity, selectedAddress, network } = this.props
 
@@ -40,24 +43,21 @@ AccountDetailsModal.prototype.render = function () {
     h('div.account-details-modal-wrapper', {
     }, [
 
-      h('div', {}, [
+      h('div.account-details-modal-header', {}, [
+        h('div', {}, [
 
-        h(
-          Identicon,
-          {
-            address: selectedIdentity.address,
-            diameter: 64,
-            style: {},
-          },
-        ),
+          h(
+            Identicon,
+            {
+              address: selectedIdentity.address,
+              diameter: 64,
+              style: {},
+            },
+          ),
 
-      ]),
+        ]),
 
-      h('div', {}, [
-        'X',
-      ]),
-
-      h('div', {}, [
+        h('div.account-details-modal-close', {}),
       ]),
 
       h(QrView, {
@@ -66,10 +66,6 @@ AccountDetailsModal.prototype.render = function () {
           data: this.props.selectedIdentity.address,
         }
       }, []),
-
-      h('div', {}, [
-        'Account Display',
-      ]),
 
       // divider
       h('div.account-details-modal-divider', {

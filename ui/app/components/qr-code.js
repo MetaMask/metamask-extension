@@ -41,7 +41,7 @@ QrCodeView.prototype.render = function () {
     },
     this.props.warning) : null,
 
-    h('.div', {
+    h('.div.qr-wrapper', {
       style: {
         marginTop: '25px',
         marginBottom: '15px',
@@ -50,7 +50,7 @@ QrCodeView.prototype.render = function () {
         __html: qrImage.createTableTag(4),
       },
     }),
-    h('.div', [
+    h('.div.ellip-address-wrapper', [
       h('span.qr-ellip-address', {
         style: {
           width: '247px',

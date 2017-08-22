@@ -57,7 +57,7 @@ const MODALS = {
     },
     laptopModalStyle: {
       width: '360px',
-      top: 'calc(30% + 10px)',
+      top: 'calc(33% + 10px)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     },
   },
