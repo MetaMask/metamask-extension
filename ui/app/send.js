@@ -53,6 +53,8 @@ function SendTransactionScreen () {
       amount: '0.0001', // see L544
       gasPrice: '4a817c800',
       gas: '0x7b0d',
+      txData: null,
+      memo: '',
     },
   }
 }
@@ -220,7 +222,38 @@ SendTransactionScreen.prototype.render = function () {
 
           h('div', {}, ['Transaction memo (optional)']),
 
-          h('input.large-input.send-screen-input', {}, [
+          h('input.large-input.send-screen-input', {
+            onChange: () => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    memo: event.target.value,
+                  }
+                ),
+              })
+            },
+          }, [
+          ]),
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div', {}, ['Data (optional)']),
+
+          h('input.large-input.send-screen-input', {
+            onChange: () => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    txData: event.target.value,
+                  }
+                ),
+              })
+            },
+          }, [
           ]),
 
         ]),
