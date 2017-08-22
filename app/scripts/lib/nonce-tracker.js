@@ -94,9 +94,9 @@ class NonceTracker {
   }
 
   async _getlocalNextNonce (address) {
-    const confirmedTransactions = this._reduceTxListToUniqueNonces(this.getConfirmedTransactions(address))
-    const pendingTransactions = this._reduceTxListToUniqueNonces(this.getPendingTransactions(address))
-    const transactions = this._reduceTxListToUniqueNonces(confirmedTransactions.concat(pendingTransactions))
+    const confirmedTransactions = this.getConfirmedTransactions(address)
+    const pendingTransactions = this.getPendingTransactions(address)
+    const transactions = confirmedTransactions.concat(pendingTransactions)
     const highestNonce = this._getHighestNonce(transactions)
     let localNonce = highestNonce
     // throw out localNonce if not a number
@@ -115,7 +115,7 @@ class NonceTracker {
   }
 
   _getLocalPendingNonce (address) {
-    const pendingTransactions = this._reduceTxListToUniqueNonces(this.getPendingTransactions(address))
+    const pendingTransactions = this.getPendingTransactions(address)
     const localNonce = this._getHighestNonce(pendingTransactions)
     return localNonce
   }
