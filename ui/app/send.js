@@ -42,6 +42,19 @@ function mapStateToProps (state) {
 inherits(SendTransactionScreen, PersistentForm)
 function SendTransactionScreen () {
   PersistentForm.call(this)
+
+  // [WIP] These are the bare minimum of tx props needed to sign a transaction
+  // We will need a few more for contract-related interactions
+  this.state = {
+    newTx: {
+      from: '',
+      to: '',
+      // these values are hardcoded, so "Next" can be clicked
+      amount: '0.0001', // see L544
+      gasPrice: '4a817c800',
+      gas: '0x7b0d',
+    },
+  }
 }
 
 SendTransactionScreen.prototype.render = function () {
@@ -59,6 +72,9 @@ SendTransactionScreen.prototype.render = function () {
     conversionRate,
     currentCurrency,
   } = props
+
+  console.log({ selectedIdentity, identities })
+  console.log("SendTransactionScreen state:", this.state)
 
   return (
 
@@ -96,7 +112,19 @@ SendTransactionScreen.prototype.render = function () {
 
           h('input.large-input.send-screen-input', {
             list: 'accounts',
-            value: selectedIdentity.address
+            placeholder: 'Account',
+            value: this.state.from,
+            onChange: (event) => {
+              console.log("event", event.target.value)
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    from: event.target.value,
+                  }
+                ),
+              })
+            },
           }, [
           ]),
 
@@ -122,7 +150,17 @@ SendTransactionScreen.prototype.render = function () {
           h(EnsInput, {
             name: 'address',
             placeholder: 'Recipient Address',
-            onChange: this.recipientDidChange.bind(this),
+            onChange: () => {
+              console.log("event", event.target.value)
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    to: event.target.value,
+                  }
+                ),
+              })
+            },
             network,
             identities,
             addressBook,
@@ -138,7 +176,18 @@ SendTransactionScreen.prototype.render = function () {
           ]),
 
           h('input.large-input.send-screen-input', {
-            placeholder: '$0 USD',
+            placeholder: '0 ETH',
+            type: 'number',
+            onChange: () => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    amount: event.target.value,
+                  }
+                ),
+              })
+            }
           }, []),
 
         ]),
@@ -444,11 +493,18 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
 
 SendTransactionScreen.prototype.onSubmit = function () {
   const state = this.state || {}
-  const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
+
+  // const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
+  const recipient = state.newTx.to
+
   const nickname = state.nickname || ' '
-  const input = document.querySelector('input[name="amount"]').value
-  const value = util.normalizeEthStringToWei(input)
-  // TODO: check with team on whether txData is removed completely.
+
+  // const input = document.querySelector('input[name="amount"]').value
+  // const input = state.newTx.value
+  // const value = util.normalizeEthStringToWei(input)
+
+  // https://consensys.slack.com/archives/G1L7H42BT/p1503439134000169?thread_ts=1503438076.000411&cid=G1L7H42BT
+  // From @kumavis: "not needed for MVP but we will end up adding it again so consider just adding it now"
   const txData = false;
   // Must replace with memo data.
   // const txData = document.querySelector('input[name="txData"]').value
@@ -456,15 +512,15 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const balance = this.props.balance
   let message
 
-  if (value.gt(balance)) {
-    message = 'Insufficient funds.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
+  // if (value.gt(balance)) {
+  //   message = 'Insufficient funds.'
+  //   return this.props.dispatch(actions.displayWarning(message))
+  // }
 
-  if (input < 0) {
-    message = 'Can not send negative amounts of ETH.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
+  // if (input < 0) {
+  //   message = 'Can not send negative amounts of ETH.'
+  //   return this.props.dispatch(actions.displayWarning(message))
+  // }
 
   if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
     message = 'Recipient address is invalid.'
@@ -481,8 +537,15 @@ SendTransactionScreen.prototype.onSubmit = function () {
   this.props.dispatch(actions.addToAddressBook(recipient, nickname))
 
   var txParams = {
-    from: this.props.address,
-    value: '0x' + value.toString(16),
+    // from: this.props.address,
+    from: this.state.newTx.to,
+
+    // value: '0x' + value.toString(16),
+    value: '0x38d7ea4c68000', // hardcoded
+
+    // New: gas will now be specified on this step
+    gas: this.state.newTx.gas,
+    gasPrice: this.state.newTx.gasPrice
   }
 
   if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)
