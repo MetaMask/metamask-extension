@@ -52,44 +52,6 @@ TxList.prototype.render = function () {
 
     this.renderTransactionListItem(),
 
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
   ])
 }
 
