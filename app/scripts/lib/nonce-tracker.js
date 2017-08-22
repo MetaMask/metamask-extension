@@ -1,4 +1,4 @@
-const EthQuery = require('eth-query')
+const EthQuery = require('ethjs-query')
 const assert = require('assert')
 const Mutex = require('await-semaphore').Mutex
 
@@ -50,15 +50,6 @@ class NonceTracker {
     })
   }
 
-  async _getTxCount (address, currentBlock) {
-    const blockNumber = currentBlock.number
-    return new Promise((resolve, reject) => {
-      this.ethQuery.getTransactionCount(address, blockNumber, (err, result) => {
-        err ? reject(err) : resolve(result)
-      })
-    })
-  }
-
   async _globalMutexFree () {
     const globalMutex = this._lookupMutex('global')
     const release = await globalMutex.acquire()
@@ -86,7 +77,7 @@ class NonceTracker {
     // and pending count are from the same block
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.blockNumber
-    const baseCountHex = await this._getTxCount(address, currentBlock)
+    const baseCountHex = await this.ethQuery.getTransactionCount(address, blockNumber)
     const baseCount = parseInt(baseCountHex, 16)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nonceDetails = { blockNumber, baseCountHex, baseCount }
