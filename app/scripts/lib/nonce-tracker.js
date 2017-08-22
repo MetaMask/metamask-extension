@@ -110,14 +110,14 @@ class NonceTracker {
   }
 
   _getLocalPendingNonce (address) {
-    const pendingTransactions = this.getPendingTransactions(address)
-    const highestNonce = this._getHighestNonce(pendingTransactions)
+    const transactions = this.getPendingTransactions(address)
+    const highestNonce = this._getHighestNonce(transactions)
     return highestNonce
   }
 
   _getLocalConfirmedNonce (address) {
-    const pendingTransactions = this.getConfirmedTransactions(address)
-    const highestNonce = this._getHighestNonce(pendingTransactions)
+    const transactions = this.getConfirmedTransactions(address)
+    const highestNonce = this._getHighestNonce(transactions)
     return highestNonce
   }
 
