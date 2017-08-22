@@ -42,3 +42,23 @@
   border: 1px solid $alto;
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
 }
+
+.send-screen-input-wrapper {
+  width: 95%;
+}
+
+.send-screen-input {
+  width: 100%;
+}
+
+.send-screen-amount-labels {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.send-screen-gas-labels {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

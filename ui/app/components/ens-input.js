@@ -44,14 +44,7 @@ EnsInput.prototype.render = function () {
   return h('div', {
     style: { width: '100%' },
   }, [
-    h('span', {
-      style: {
-        textAlign: 'left',
-      }
-    }, [
-      'To:'
-    ]),
-    h('input.large-input', opts),
+    h('input.large-input.send-screen-input', opts),
     // The address book functionality.
     h('datalist#addresses',
       [
@@ -132,7 +125,7 @@ EnsInput.prototype.componentDidUpdate = function (prevProps, prevState) {
 
 EnsInput.prototype.ensIcon = function (recipient) {
   const { hoverText } = this.state || {}
-  return h('span', {
+  return h('span.#ensIcon', {
     title: hoverText,
     style: {
       position: 'absolute',

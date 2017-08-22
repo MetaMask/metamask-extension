@@ -11,6 +11,7 @@ const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
+const { getSelectedIdentity } = require('./selectors')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
@@ -18,6 +19,7 @@ module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   var result = {
+    selectedIdentity: getSelectedIdentity(state),
     address: state.metamask.selectedAddress,
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
@@ -47,6 +49,7 @@ SendTransactionScreen.prototype.render = function () {
 
   const props = this.props
   const {
+    selectedIdentity,
     address,
     account,
     identity,
@@ -75,26 +78,42 @@ SendTransactionScreen.prototype.render = function () {
 
         h('div', {}, [
           'Send'
-        ])
+        ]),
 
-        h('div', {}, [
+        h('div', {
+          style: {
+            textAlign: 'center',
+          },
+        }, [
           'Send Ethereum to anyone with an Ethereum account'
-        ])
+        ]),
 
-        h('div', {}, [
+        h('div.send-screen-input-wrapper', {}, [
 
           h('div', {}, [
             'From:'
           ]),
 
-          h('input', {
-            placeholder: '(Placeholder) - My Account 1 - 5924 - Available ETH 2.0'.
+          h('input.large-input.send-screen-input', {
+            list: 'accounts',
+            value: selectedIdentity.address
           }, [
-          ])
+          ]),
 
-        ])
+          h('datalist#accounts', {}, [
+            Object.keys(props.identities).map((key) => {
+              const identity = props.identities[key]
+              return h('option', {
+                value: identity.address,
+                label: identity.name,
+                key: identity.address,
+              })
+            }),
+          ]),
 
-        h('div', {}, [
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
 
           h('div', {}, [
             'To:'
@@ -109,9 +128,45 @@ SendTransactionScreen.prototype.render = function () {
             addressBook,
           }),
 
-        ])
+        ]),
 
-        // [WIP] - Styling Send Screen - Need to bring in data contract for signTx
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div.send-screen-amount-labels', {}, [
+            h('span', {}, ['Amount']),
+            h('span', {}, ['ETH <> USD'])
+          ]),
+
+          h('input.large-input.send-screen-input', {
+            placeholder: '$0 USD',
+          }, []),
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div.send-screen-gas-labels', {}, [
+            h('span', {}, [
+              h('i.fa.fa-bolt', {}, []),
+              'Gas fee:',
+            ]),
+            h('span', {}, ['What\'s this?']),
+          ]),
+
+          h('input.large-input.send-screen-input', {
+            placeholder: '0',
+          }, []),
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div', {}, ['Transaction memo (optional)']),
+
+          h('input.large-input.send-screen-input', {}, [
+          ]),
+
+        ]),
 
       ]),
 
