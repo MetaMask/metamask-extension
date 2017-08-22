@@ -6,14 +6,14 @@
   height: 12vh;
   max-height: 60px;
   position: relative;
-  z-index: 12;
+  z-index: $header-z-index;
 
   @media screen and (max-width: 575px) {
     position: fixed;
     height: 34px;
     width: 100%;
     box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .08);
-    z-index: 30;
+    z-index: $mobile-header-z-index;
   }
 }
 

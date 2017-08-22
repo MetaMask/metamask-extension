@@ -1,13 +1,18 @@
 .send-screen-wrapper {
   display: flex;
   flex-direction: column;
-  min-width: 355px;
-  // width: 50%;
-  z-index: 50; //TODO
+  min-width: 320px;
+  min-height: 500px;
+  z-index: $send-card-z-index;
   position: absolute;
-  top: 40px;
-  // height: 65%;
+  top: 5%;
+
+  @media screen and (max-width: $break-small) {
+    top: 33px;
+  }
+
 }
+
 
 .send-screen-card {
   display: flex;
