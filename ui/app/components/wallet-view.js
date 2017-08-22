@@ -43,15 +43,6 @@ WalletView.prototype.render = function () {
   // temporary logs + fake extra wallets
   console.log("walletview, selectedAccount:", selectedAccount)
 
-  const extraWallet = h('div.flex-column.wallet-balance-wrapper', {}, [
-      h('div.wallet-balance', {}, [
-        h(BalanceComponent, {
-          balanceValue: selectedAccount.balance,
-          style: {},
-        }),
-      ]),
-  ])
-
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
   }, [
@@ -148,28 +139,15 @@ WalletView.prototype.render = function () {
 
     ]),
 
-    h('div.flex-column.wallet-balance-wrapper', {}, [
-
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-    ]),
-
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
-    extraWallet,
   ])
 }
+
+// TODO: Extra wallets, for dev testing. Remove when PRing to master.
+// const extraWallet = h('div.flex-column.wallet-balance-wrapper', {}, [
+//     h('div.wallet-balance', {}, [
+//       h(BalanceComponent, {
+//         balanceValue: selectedAccount.balance,
+//         style: {},
+//       }),
+//     ]),
+// ])

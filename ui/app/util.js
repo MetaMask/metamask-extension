@@ -1,4 +1,10 @@
 const ethUtil = require('ethereumjs-util')
+const vreme = new (require('vreme'))()
+
+// formatData :: ( date: <Unix Timestamp> ) -> String
+function formatDate (date) {
+  return vreme.format(new Date(date), 'March 16 2014 14:30')
+}
 
 var valueTable = {
   wei: '1000000000000000000',
@@ -36,6 +42,7 @@ module.exports = {
   valueTable: valueTable,
   bnTable: bnTable,
   isHex: isHex,
+  formatDate,
 }
 
 function valuesFor (obj) {

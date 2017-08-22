@@ -11,6 +11,7 @@ const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
+const { getSelectedIdentity } = require('./selectors')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
@@ -18,6 +19,7 @@ module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   var result = {
+    selectedIdentity: getSelectedIdentity(state),
     address: state.metamask.selectedAddress,
     accounts: state.metamask.accounts,
     identities: state.metamask.identities,
@@ -40,6 +42,21 @@ function mapStateToProps (state) {
 inherits(SendTransactionScreen, PersistentForm)
 function SendTransactionScreen () {
   PersistentForm.call(this)
+
+  // [WIP] These are the bare minimum of tx props needed to sign a transaction
+  // We will need a few more for contract-related interactions
+  this.state = {
+    newTx: {
+      from: '',
+      to: '',
+      // these values are hardcoded, so "Next" can be clicked
+      amount: '0.0001', // see L544
+      gasPrice: '4a817c800',
+      gas: '0x7b0d',
+      txData: null,
+      memo: '',
+    },
+  }
 }
 
 SendTransactionScreen.prototype.render = function () {
@@ -47,6 +64,7 @@ SendTransactionScreen.prototype.render = function () {
 
   const props = this.props
   const {
+    selectedIdentity,
     address,
     account,
     identity,
@@ -56,6 +74,9 @@ SendTransactionScreen.prototype.render = function () {
     conversionRate,
     currentCurrency,
   } = props
+
+  console.log({ selectedIdentity, identities })
+  console.log("SendTransactionScreen state:", this.state)
 
   return (
 
@@ -75,26 +96,54 @@ SendTransactionScreen.prototype.render = function () {
 
         h('div', {}, [
           'Send'
-        ])
+        ]),
 
-        h('div', {}, [
+        h('div', {
+          style: {
+            textAlign: 'center',
+          },
+        }, [
           'Send Ethereum to anyone with an Ethereum account'
-        ])
+        ]),
 
-        h('div', {}, [
+        h('div.send-screen-input-wrapper', {}, [
 
           h('div', {}, [
             'From:'
           ]),
 
-          h('input', {
-            placeholder: '(Placeholder) - My Account 1 - 5924 - Available ETH 2.0'.
+          h('input.large-input.send-screen-input', {
+            list: 'accounts',
+            placeholder: 'Account',
+            value: this.state.from,
+            onChange: (event) => {
+              console.log("event", event.target.value)
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    from: event.target.value,
+                  }
+                ),
+              })
+            },
           }, [
-          ])
+          ]),
 
-        ])
+          h('datalist#accounts', {}, [
+            Object.keys(props.identities).map((key) => {
+              const identity = props.identities[key]
+              return h('option', {
+                value: identity.address,
+                label: identity.name,
+                key: identity.address,
+              })
+            }),
+          ]),
 
-        h('div', {}, [
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
 
           h('div', {}, [
             'To:'
@@ -103,15 +152,111 @@ SendTransactionScreen.prototype.render = function () {
           h(EnsInput, {
             name: 'address',
             placeholder: 'Recipient Address',
-            onChange: this.recipientDidChange.bind(this),
+            onChange: () => {
+              console.log("event", event.target.value)
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    to: event.target.value,
+                  }
+                ),
+              })
+            },
             network,
             identities,
             addressBook,
           }),
 
-        ])
+        ]),
 
-        // [WIP] - Styling Send Screen - Need to bring in data contract for signTx
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div.send-screen-amount-labels', {}, [
+            h('span', {}, ['Amount']),
+            h('span', {}, ['ETH <> USD']), //holding on icon from design
+          ]),
+
+          h('input.large-input.send-screen-input', {
+            placeholder: '0 ETH',
+            type: 'number',
+            onChange: () => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    amount: event.target.value,
+                  }
+                ),
+              })
+            }
+          }, []),
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div.send-screen-gas-labels', {}, [
+            h('span', {}, [
+              h('i.fa.fa-bolt', {}, []),
+
+              // not working ATM.
+              // Ship with fa-bolt if it's slowing us down...
+              // h('img.send-screen-bolt-icon', {
+              //   src: '../images/mm_bolt.svg',
+              //   style: {},
+              // }, []),
+
+              'Gas fee:',
+            ]),
+            h('span', {}, ['What\'s this?']),
+          ]),
+
+          h('input.large-input.send-screen-gas-input', {
+            placeholder: '0',
+          }, []),
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div', {}, ['Transaction memo (optional)']),
+
+          h('input.large-input.send-screen-input', {
+            onChange: () => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    memo: event.target.value,
+                  }
+                ),
+              })
+            },
+          }, [
+          ]),
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+
+          h('div', {}, ['Data (optional)']),
+
+          h('input.large-input.send-screen-input', {
+            onChange: () => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    txData: event.target.value,
+                  }
+                ),
+              })
+            },
+          }, [
+          ]),
+
+        ]),
 
       ]),
 
@@ -381,11 +526,18 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
 
 SendTransactionScreen.prototype.onSubmit = function () {
   const state = this.state || {}
-  const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
+
+  // const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
+  const recipient = state.newTx.to
+
   const nickname = state.nickname || ' '
-  const input = document.querySelector('input[name="amount"]').value
-  const value = util.normalizeEthStringToWei(input)
-  // TODO: check with team on whether txData is removed completely.
+
+  // const input = document.querySelector('input[name="amount"]').value
+  // const input = state.newTx.value
+  // const value = util.normalizeEthStringToWei(input)
+
+  // https://consensys.slack.com/archives/G1L7H42BT/p1503439134000169?thread_ts=1503438076.000411&cid=G1L7H42BT
+  // From @kumavis: "not needed for MVP but we will end up adding it again so consider just adding it now"
   const txData = false;
   // Must replace with memo data.
   // const txData = document.querySelector('input[name="txData"]').value
@@ -393,20 +545,20 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const balance = this.props.balance
   let message
 
-  if (value.gt(balance)) {
-    message = 'Insufficient funds.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
+  // if (value.gt(balance)) {
+  //   message = 'Insufficient funds.'
+  //   return this.props.dispatch(actions.displayWarning(message))
+  // }
 
-  if (input < 0) {
-    message = 'Can not send negative amounts of ETH.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
+  // if (input < 0) {
+  //   message = 'Can not send negative amounts of ETH.'
+  //   return this.props.dispatch(actions.displayWarning(message))
+  // }
 
-  if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
-    message = 'Recipient address is invalid.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
+  // if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
+  //   message = 'Recipient address is invalid.'
+  //   return this.props.dispatch(actions.displayWarning(message))
+  // }
 
   if (txData && !isHex(ethUtil.stripHexPrefix(txData))) {
     message = 'Transaction data must be hex string.'
@@ -417,9 +569,23 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(actions.addToAddressBook(recipient, nickname))
 
-  var txParams = {
-    from: this.props.address,
-    value: '0x' + value.toString(16),
+  // var txParams = {
+  //   // from: this.props.address,
+  //   from: this.state.newTx.to,
+
+  //   // value: '0x' + value.toString(16),
+  //   value: '0x38d7ea4c68000', // hardcoded
+
+  //   // New: gas will now be specified on this step
+  //   gas: this.state.newTx.gas,
+  //   gasPrice: this.state.newTx.gasPrice
+  // }
+
+  // Hardcoded
+  var txParams =  {
+    from: '0x82df11beb942beeed58d466fcb0f0791365c7684',
+    to: '0xa43126b621db5b4fd98f959d9e5499f655913d34',
+    value: '0x0',
   }
 
   if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)

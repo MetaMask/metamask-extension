@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const selectors = require('../selectors')
 const Identicon = require('./identicon')
+const { formatBalance, formatDate } = require('../util')
 
 const valuesFor = require('../util').valuesFor
 
@@ -50,58 +51,21 @@ TxList.prototype.render = function () {
 
     contentDivider,
 
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
-
-    this.renderTransactionListItem(),
-
-    contentDivider,
+    txsToRender.map((transaction) => {
+      return this.renderTransactionListItem(transaction)
+    }),
 
   ])
 }
 
-TxList.prototype.renderTransactionListItem = function () {
-  // fake data
+// TODO: Consider moving TxListItem into a separate component
+TxList.prototype.renderTransactionListItem = function (transaction) {
   const props = {
-    dateString: 'Jul 01, 2017',
-    address: '0x82df11beb942beeed58d466fcb0f0791365c7684',
-    transactionStatus: 'Confirmed',
-    transactionAmount: '+ 3 ETH'
+    dateString: formatDate(transaction.time),
+    address: transaction.txParams.to,
+    transactionStatus: transaction.status,
+    transactionAmount: formatBalance(transaction.txParams.value, 6),
   }
-
   const { address, transactionStatus, transactionAmount, dateString } = props
 
   return h('div.flex-column.tx-list-item-wrapper', {
@@ -134,7 +98,7 @@ TxList.prototype.renderTransactionListItem = function () {
           style: {}
         }, [
           h('span.tx-list-account', {}, [
-            '0x82df11be...7684', //address
+            `${address.slice(0, 10)}...${address.slice(-4)}`
           ]),
         ]),
 
