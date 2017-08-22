@@ -34,9 +34,6 @@ class NonceTracker {
     nonceDetails.network = networkNonceResult.details
     const nextNonce = Math.max(networkNonceResult.nonce, localNonceResult.nonce)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
-    // collect the numbers used to calculate the nonce for debugging
-    const currentPendingNonce = this._getLocalPendingNonce(address)
-    nonceDetails.currentPendingNonce = currentPendingNonce
     // return nonce and release cb
     return { nextNonce, nonceDetails, releaseLock }
   }
@@ -98,18 +95,6 @@ class NonceTracker {
     }
     const nonceDetails = { highestNonce, haveHighestNonce }
     return { name: 'local', nonce: nextNonce, details: nonceDetails }
-  }
-
-  _getLocalPendingNonce (address) {
-    const transactions = this.getPendingTransactions(address)
-    const highestNonce = this._getHighestNonce(transactions)
-    return highestNonce
-  }
-
-  _getLocalConfirmedNonce (address) {
-    const transactions = this.getConfirmedTransactions(address)
-    const highestNonce = this._getHighestNonce(transactions)
-    return highestNonce
   }
 
   _getLocalHighestNonce (address) {
