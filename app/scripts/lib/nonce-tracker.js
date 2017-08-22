@@ -37,25 +37,6 @@ class NonceTracker {
     return { nextNonce, nonceDetails, releaseLock }
   }
 
-  getPendingTransactionCount (address) {
-    const pendingTransactions = this.getPendingTransactions(address)
-    return this.reduceTxListToUniqueNonces(pendingTransactions).length
-  }
-
-
-  reduceTxListToUniqueNonces (txList) {
-    const reducedTxList = txList.reduce((reducedList, txMeta, index) => {
-      if (!index) return [txMeta]
-      const nonceMatches = txList.filter((txData) => {
-        return txMeta.txParams.nonce === txData.txParams.nonce
-      })
-      if (nonceMatches.length > 1) return reducedList
-      reducedList.push(txMeta)
-      return reducedList
-    }, [])
-    return reducedTxList
-  }
-
   async _getCurrentBlock () {
     const blockTracker = this._getBlockTracker()
     const currentBlock = blockTracker.getCurrentBlock()
@@ -102,43 +83,66 @@ class NonceTracker {
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.blockNumber
     const pendingNonce = this._getLocalPendingNonce(address)
-    const pendingCount = this.getPendingTransactionCount(address)
+    const pendingCount = this._getPendingTransactionCount(address)
     assert(Number.isInteger(pendingCount), `nonce-tracker - pendingCount is not an integer - got: (${typeof pendingCount}) "${pendingCount}"`)
     const baseCountHex = await this._getTxCount(address, currentBlock)
     const baseCount = parseInt(baseCountHex, 16)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
-    let networkNonce = pendingNonce > baseCount ? baseCount + pendingCount : baseCount
+    // if the nonce provided by the network is higher then a pending tx
+    // toss out the pending txCount
+    const networkNonce = pendingNonce > baseCount ? baseCount + pendingCount : baseCount
+
     return {networkNonce, blockNumber, baseCountHex, baseCount, pendingCount, pendingNonce}
   }
 
-  _getLocalPendingNonce (address) {
-    const pendingTransactions = this.reduceTxListToUniqueNonces(this.getPendingTransactions(address))
-    const localNonces = pendingTransactions.map((txMeta) => txMeta.txParams.nonce)
-    const localNonceHex = localNonces.reduce((highestNonce, nonce) => {
-      return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
-    }, '0x0')
-    return parseInt(localNonceHex, 16)
-  }
-
   _getLocalNextNonce (address) {
-    const confirmedTransactions = this.reduceTxListToUniqueNonces(this.getConfirmedTransactions(address))
-    const pendingTransactions = this.reduceTxListToUniqueNonces(this.getPendingTransactions(address))
-    const transactions = this.reduceTxListToUniqueNonces(confirmedTransactions.concat(pendingTransactions))
-    const localNonces = transactions.map((txMeta) => txMeta.txParams.nonce)
-    const localNonceHex = localNonces.reduce((highestNonce, nonce) => {
-      return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
-    }, '0x0')
-    let localNonce = parseInt(localNonceHex, 16)
+    const confirmedTransactions = this._reduceTxListToUniqueNonces(this.getConfirmedTransactions(address))
+    const pendingTransactions = this._reduceTxListToUniqueNonces(this.getPendingTransactions(address))
+    const transactions = this._reduceTxListToUniqueNonces(confirmedTransactions.concat(pendingTransactions))
+    let localNonce = this._getHighestNonce(transactions)
     // throw out localNonce if not a number
     if (!Number.isInteger(localNonce)) localNonce = 0
     if (
       // the local nonce is not 0
       localNonce ||
       // or their are pending or confirmed transactions
-      this.getPendingTransactionCount(address) ||
+      this._getPendingTransactionCount(address) ||
       confirmedTransactions.length
     ) ++localNonce
     return localNonce
+  }
+
+  _getLocalPendingNonce (address) {
+    const pendingTransactions = this._reduceTxListToUniqueNonces(this.getPendingTransactions(address))
+    const localNonce = this._getHighestNonce(pendingTransactions)
+    return localNonce
+  }
+
+  _getPendingTransactionCount (address) {
+    const pendingTransactions = this.getPendingTransactions(address)
+    return this._reduceTxListToUniqueNonces(pendingTransactions).length
+  }
+
+
+  _reduceTxListToUniqueNonces (txList) {
+    const reducedTxList = txList.reduce((reducedList, txMeta, index) => {
+      if (!index) return [txMeta]
+      const nonceMatches = txList.filter((txData) => {
+        return txMeta.txParams.nonce === txData.txParams.nonce
+      })
+      if (nonceMatches.length > 1) return reducedList
+      reducedList.push(txMeta)
+      return reducedList
+    }, [])
+    return reducedTxList
+  }
+
+  _getHighestNonce (txList) {
+    const nonces = txList.map((txMeta) => txMeta.txParams.nonce)
+    const nonceHex = nonces.reduce((highestNonce, nonce) => {
+      return parseInt(nonce, 16) > parseInt(highestNonce, 16) ? nonce : highestNonce
+    }, '0x0')
+    return parseInt(nonceHex, 16)
   }
 
   // this is a hotfix for the fact that the blockTracker will
