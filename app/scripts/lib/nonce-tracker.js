@@ -84,7 +84,13 @@ class NonceTracker {
   async _getlocalNextNonce (address) {
     let nextNonce
     // check our local tx history for the highest nonce (if any)
-    const highestNonce = this._getLocalHighestNonce(address)
+    const confirmedTransactions = this.getConfirmedTransactions(address)
+    const pendingTransactions = this.getPendingTransactions(address)
+    const transactions = confirmedTransactions.concat(pendingTransactions)
+    const highestConfirmedNonce = this._getHighestNonce(confirmedTransactions)
+    const highestPendingNonce = this._getHighestNonce(pendingTransactions)
+    const highestNonce = this._getHighestNonce(transactions)
+
     const haveHighestNonce = Number.isInteger(highestNonce)
     if (haveHighestNonce) {
       // next nonce is the nonce after our last
@@ -93,16 +99,8 @@ class NonceTracker {
       // no local tx history so next must be first (zero)
       nextNonce = 0
     }
-    const nonceDetails = { highestNonce, haveHighestNonce }
+    const nonceDetails = { highestNonce, haveHighestNonce, highestConfirmedNonce, highestPendingNonce }
     return { name: 'local', nonce: nextNonce, details: nonceDetails }
-  }
-
-  _getLocalHighestNonce (address) {
-    const confirmedTransactions = this.getConfirmedTransactions(address)
-    const pendingTransactions = this.getPendingTransactions(address)
-    const transactions = confirmedTransactions.concat(pendingTransactions)
-    const highestNonce = this._getHighestNonce(transactions)
-    return highestNonce
   }
 
   _getPendingTransactionCount (address) {
