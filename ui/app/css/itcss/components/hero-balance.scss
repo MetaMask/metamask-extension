@@ -89,18 +89,23 @@
       font-size: 75%;
       background: $white;
       border: 1px solid;
+      border-radius: 2px;
 
       @media screen and (max-width: $break-small) {
-        width: 28%;
+        width: 23%;
         height: 55%;
+        border-color: $black;
       }
 
       @media screen and (min-width: $break-large) {
         width: 5%;
-        flex-grow: 2;
-        height: 4.2vh;
+        flex-grow: 1;
+        height: 4.6vh;
         min-height: 28px;
-        font-size: .7em;
+        font-size: .6em;
+        border-color: $curious-blue;
+        color: $curious-blue;
+        padding: 0px;
       }
     }
   }
