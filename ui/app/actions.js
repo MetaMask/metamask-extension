@@ -648,10 +648,9 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddTokenPage (transitionForward = true) {
+function showAddTokenPage () {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
-    value: transitionForward,
   }
 }
 

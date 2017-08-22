@@ -308,7 +308,7 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => {
-              // Add Token Scren
+              actions.showAddTokenPage()
             },
             style: Object.assign(
               {},
@@ -402,6 +402,9 @@ const mapDispatchToProps = (dispatch) => {
       },
       showNewAccountModal: () => {
         dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
+      },
+      showAddTokenPage: () => {
+        dispatch(actions.showAddTokenPage())
       },
       addNewAccount: () => dispatch(actions.addNewAccount()),
       showImportPage: () => dispatch(actions.showImportPage()),
