@@ -7,15 +7,21 @@ $primary
 }
 
 .create-password,
-.unique-image {
+.unique-image,
+.tou {
   display: flex;
   flex-flow: column nowrap;
   margin: 67px 0 0 146px;
   max-width: 35rem;
 }
 
+.tou {
+  max-width: 46rem;
+}
+
 .create-password__title,
-.unique-image__title {
+.unique-image__title,
+.tou__title {
   width: 280px;
   color: #1B344D;
   font-size: 40px;
@@ -32,7 +38,8 @@ $primary
   margin-bottom: 54px;
 }
 
-.unique-image__title {
+.unique-image__title,
+.tou__title {
   margin-top: 24px;
 }
 
@@ -47,6 +54,21 @@ $primary
 .unique-image__body-text +
 .unique-image__body-text {
   margin-top: 24px;
+}
+
+.tou__body {
+  border: 1px solid #979797;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  margin: 0 142px 0 0;
+  height: 334px;
+  overflow-y: auto;
+  color: #757575;
+  font-family: Montserrat UltraLight;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: justify;
+  padding: 22px 30px;
 }
 
 .first-time-flow__input {

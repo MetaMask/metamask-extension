@@ -696,21 +696,23 @@ function goBackToInitView () {
 
 function markNoticeRead (notice) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     log.debug(`background.markNoticeRead`)
-    background.markNoticeRead(notice, (err, notice) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err))
-      }
-      if (notice) {
-        return dispatch(actions.showNotice(notice))
-      } else {
-        dispatch(this.clearNotices())
-        return {
-          type: actions.SHOW_ACCOUNTS_PAGE,
+    return new Promise((resolve, reject) => {
+      background.markNoticeRead(notice, (err, notice) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err))
+          return reject(err)
         }
-      }
+        if (notice) {
+          dispatch(actions.showNotice(notice))
+          resolve()
+        } else {
+          dispatch(actions.clearNotices())
+          resolve()
+        }
+      })
     })
   }
 }

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux';
 import CreatePasswordScreen from './create-password-screen'
 import UniqueImageScreen from './unique-image-screen'
+import NoticeScreen from './notice-screen'
 
 class FirstTimeFlow extends Component {
 
@@ -20,7 +21,7 @@ class FirstTimeFlow extends Component {
   static SCREEN_TYPE = {
     CREATE_PASSWORD: 'create_password',
     UNIQUE_IMAGE: 'unique_image',
-    TERM_OF_USE: 'term_of_use',
+    NOTICE: 'notice',
     BACK_UP_PHRASE: 'back_up_phrase',
     CONFIRM_BACK_UP_PHRASE: 'confirm_back_up_phrase',
     BUY_ETHER: 'buy_ether'
@@ -41,14 +42,14 @@ class FirstTimeFlow extends Component {
     const {isInitialized, seedWords, noActiveNotices} = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
 
-    return SCREEN_TYPE.UNIQUE_IMAGE
+    // return SCREEN_TYPE.UNIQUE_IMAGE
 
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
     }
 
     if (!noActiveNotices) {
-      return SCREEN_TYPE.TERM_OF_USE
+      return SCREEN_TYPE.NOTICE
     }
 
     if (seedWords) {
@@ -69,7 +70,13 @@ class FirstTimeFlow extends Component {
       case SCREEN_TYPE.UNIQUE_IMAGE:
         return (
           <UniqueImageScreen
-            next={() => this.setScreenType(SCREEN_TYPE.TERM_OF_USE)}
+            next={() => this.setScreenType(SCREEN_TYPE.NOTICE)}
+          />
+        )
+      case SCREEN_TYPE.NOTICE:
+        return (
+          <NoticeScreen
+            next={() => this.setScreenType(SCREEN_TYPE.BACK_UP_PHRASE)}
           />
         )
       default:
