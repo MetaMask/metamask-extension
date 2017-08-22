@@ -522,10 +522,10 @@ SendTransactionScreen.prototype.onSubmit = function () {
   //   return this.props.dispatch(actions.displayWarning(message))
   // }
 
-  if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
-    message = 'Recipient address is invalid.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
+  // if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
+  //   message = 'Recipient address is invalid.'
+  //   return this.props.dispatch(actions.displayWarning(message))
+  // }
 
   if (txData && !isHex(ethUtil.stripHexPrefix(txData))) {
     message = 'Transaction data must be hex string.'
@@ -536,16 +536,23 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(actions.addToAddressBook(recipient, nickname))
 
-  var txParams = {
-    // from: this.props.address,
-    from: this.state.newTx.to,
+  // var txParams = {
+  //   // from: this.props.address,
+  //   from: this.state.newTx.to,
 
-    // value: '0x' + value.toString(16),
-    value: '0x38d7ea4c68000', // hardcoded
+  //   // value: '0x' + value.toString(16),
+  //   value: '0x38d7ea4c68000', // hardcoded
 
-    // New: gas will now be specified on this step
-    gas: this.state.newTx.gas,
-    gasPrice: this.state.newTx.gasPrice
+  //   // New: gas will now be specified on this step
+  //   gas: this.state.newTx.gas,
+  //   gasPrice: this.state.newTx.gasPrice
+  // }
+
+  // Hardcoded
+  var txParams =  {
+    from: '0x82df11beb942beeed58d466fcb0f0791365c7684',
+    to: '0xa43126b621db5b4fd98f959d9e5499f655913d34',
+    value: '0x0',
   }
 
   if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)
