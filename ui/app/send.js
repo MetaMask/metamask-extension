@@ -67,75 +67,39 @@ SendTransactionScreen.prototype.render = function () {
       h('div.send-screen-card', {
         style: {}
       }, [
-        h('section.flex-center.flex-row', {
-          style: {
-            zIndex: 15, // $token-icon-z-index
-            marginTop: '-35px',
-          }
-        }, [
-          h(Identicon, {
-            address: ARAGON,
-            diameter: 76,
-          }),
-        ]),
 
-        h('h3.flex-center', {
-          style: {
-            marginTop: '-18px',
-            fontSize: '16px',
-          },
-        }, [
-          'Send Tokens',
-        ]),
+        h('img.send-eth-icon', {
+          src: '../images/eth_logo.svg',
+          style: {},
+        }),
 
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '12px',
-          },
-        }, [
-          'Send Tokens to anyone with an Ethereum account',
-        ]),
+        h('div', {}, [
+          'Send'
+        ])
 
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            marginTop: '2px',
-            fontSize: '12px',
-          },
-        }, [
-          'Your Aragon Token Balance is:',
-        ]),
+        h('div', {}, [
+          'Send Ethereum to anyone with an Ethereum account'
+        ])
 
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '36px',
-            marginTop: '8px',
-          },
-        }, [
-          '2.34',
-        ]),
+        h('div', {}, [
 
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '12px',
-            marginTop: '4px',
-          },
-        }, [
-          'ANT',
-        ]),
+          h('div', {}, [
+            'From:'
+          ]),
 
-        // error message
-        props.error && h('span.error.flex-center', props.error),
+          h('input', {
+            placeholder: '(Placeholder) - My Account 1 - 5924 - Available ETH 2.0'.
+          }, [
+          ])
 
-        // 'to' field
-        h('section.flex-row.flex-center', {
-          style: {
-            fontSize: '12px',
-          },
-        }, [
+        ])
+
+        h('div', {}, [
+
+          h('div', {}, [
+            'To:'
+          ]),
+
           h(EnsInput, {
             name: 'address',
             placeholder: 'Recipient Address',
@@ -144,87 +108,11 @@ SendTransactionScreen.prototype.render = function () {
             identities,
             addressBook,
           }),
-        ]),
 
-        // 'amount' and send button
-        h('section.flex-column.flex-center', [
-          h('div.flex-row.flex-center', {
-            style: {
-              fontSize: '12px',
-              width: '100%',
-              justifyContent: 'space-between',
-            }
-          },[
-            h('span', { style: {} }, ['Amount']),
-            h('span', { style: {} }, ['Token <> USD']),
-          ]),
+        ])
 
-          h('input.large-input', {
-            name: 'amount',
-            placeholder: '0',
-            type: 'number',
-            style: {
-              marginRight: '6px',
-              fontSize: '12px',
-            },
-            dataset: {
-              persistentFormId: 'tx-amount',
-            },
-          }),
+        // [WIP] - Styling Send Screen - Need to bring in data contract for signTx
 
-        ]),
-
-        h('section.flex-column.flex-center', [
-          h('div.flex-row.flex-center', {
-            style: {
-              fontSize: '12px',
-              width: '100%',
-              justifyContent: 'space-between',
-            }
-          },[
-            h('span', { style: {} }, ['Gas Fee:']),
-            h('span', { style: { fontSize: '8px' } }, ['What\'s this?']),
-          ]),
-
-          h('input.large-input', {
-            name: 'Gas Fee',
-            placeholder: '0',
-            type: 'number',
-            style: {
-              fontSize: '12px',
-              marginRight: '6px',
-            },
-            // dataset: {
-            //   persistentFormId: 'tx-amount',
-            // },
-          }),
-
-        ]),
-
-        h('section.flex-column.flex-center', {
-          style: {
-            marginBottom: '10px',
-          },
-        }, [
-          h('div.flex-row.flex-center', {
-            style: {
-              fontSize: '12px',
-              width: '100%',
-              justifyContent: 'flex-start',
-            }
-          },[
-            h('span', { style: {} }, ['Transaction Memo (optional)']),
-          ]),
-
-          h('input.large-input', {
-            name: 'memo',
-            placeholder: '',
-            type: 'string',
-            style: {
-              marginRight: '6px',
-            },
-          }),
-        ]),
       ]),
 
       // Buttons underneath card
@@ -254,7 +142,7 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
-// WIP - hyperscript for renderSendToken - hook up later
+// WIP - hyperscript for renderSendToken - hook up later - can take pieces to re-implement
 SendTransactionScreen.prototype.renderSendToken = function () {
   this.persistentFormParentId = 'send-tx-form'
 

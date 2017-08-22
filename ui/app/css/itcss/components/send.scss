@@ -16,6 +16,8 @@
 .send-screen-card {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   margin-left: 3.5%;
   margin-right: 3.5%;
   background: $white;
@@ -31,4 +33,12 @@
 .send-screen input {
   width: 100%;
   font-size: 12px;
+}
+
+.send-eth-icon {
+  border-radius: 25px;
+  width: 45px;
+  height: 45px;
+  border: 1px solid $alto;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
 }
