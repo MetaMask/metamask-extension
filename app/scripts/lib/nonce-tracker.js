@@ -105,7 +105,7 @@ class NonceTracker {
       // no local tx history so next must be first (zero)
       nextNonce = 0
     }
-    const nonceDetails = { highestNonce }
+    const nonceDetails = { highestNonce, haveHighestNonce }
     return { name: 'local', nonce: nextNonce, details: nonceDetails }
   }
 
