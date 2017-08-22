@@ -114,7 +114,7 @@ TxView.prototype.render = function () {
         h('button.btn-clear', {
           style: {
             textAlign: 'center',
-            marginLeft: '1.4em',
+            marginLeft: '0.8em',
           },
           onClick: () => {
             this.props.showSendPage()
