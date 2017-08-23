@@ -8,7 +8,8 @@ $primary
 
 .create-password,
 .unique-image,
-.tou {
+.tou,
+.backup-phrase {
   display: flex;
   flex-flow: column nowrap;
   margin: 67px 0 0 146px;
@@ -19,15 +20,25 @@ $primary
   max-width: 46rem;
 }
 
+.backup-phrase {
+  max-width: 100%;
+}
+
 .create-password__title,
 .unique-image__title,
-.tou__title {
+.tou__title,
+.backup-phrase__title {
   width: 280px;
   color: #1B344D;
   font-size: 40px;
   font-weight: 500;
   line-height: 51px;
   margin-bottom: 24px;
+}
+
+.tou__title,
+.backup-phrase__title {
+  width: 480px;
 }
 
 .create-password__confirm-input {
@@ -39,20 +50,29 @@ $primary
 }
 
 .unique-image__title,
-.tou__title {
+.tou__title,
+.backup-phrase__title {
   margin-top: 24px;
 }
 
-.unique-image__body-text {
-  width: 335px;
+.unique-image__body-text,
+.backup-phrase__body-text {
   color: #1B344D;
   font-size: 16px;
   line-height: 23px;
   font-family: Montserrat UltraLight;
 }
 
-.unique-image__body-text +
 .unique-image__body-text {
+  width: 335px;
+}
+
+.unique-image__body-text +
+.unique-image__body-text,
+.backup-phrase__body-text +
+.backup-phrase__body-text,
+.backup-phrase__tips-text +
+.backup-phrase__tips-text {
   margin-top: 24px;
 }
 
@@ -69,6 +89,134 @@ $primary
   line-height: 15px;
   text-align: justify;
   padding: 22px 30px;
+}
+
+.backup-phrase__content-wrapper {
+  display: flex;
+  flex: row nowrap;
+}
+
+.backup-phrase__body-text {
+  width: 450px;
+}
+
+.backup-phrase__tips {
+  margin: 40px 85px;
+  width: 285px;
+}
+
+.backup-phrase__tips-text {
+  color: #5B5D67;
+  font-size: 16px;
+  line-height: 23px;
+  font-family: Montserrat UltraLight;
+}
+
+.backup-phrase__secret {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 349px;
+  border: 1px solid #CDCDCD;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  padding: 20px 0;
+  margin-top: 36px;
+}
+
+.backup-phrase__secret-words {
+  width: 310px;
+  color: #5B5D67;
+  font-family: Montserrat Light;
+  font-size: 20px;
+  line-height: 26px;
+  text-align: center;
+}
+
+.backup-phrase__secret-words--hidden {
+  filter: blur(5px);
+}
+
+.backup-phrase__secret-blocker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding: 13px 0 18px;
+}
+
+.backup-phrase__reveal-button {
+  border: 1px solid #979797;
+  border-radius: 4px;
+  background: none;
+  box-shadow: none;
+  color: #FFFFFF;
+  font-family: Montserrat Regular;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 15px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+.backup-phrase__back-button,
+.backup-phrase__back-button:hover {
+  position: absolute;
+  top: 24px;
+  color: #22232C;
+  font-family: Montserrat Regular;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+button.backup-phrase__reveal-button:hover {
+  transform: scale(1);
+}
+
+.backup-phrase__confirm-secret {
+  height: 190px;
+  width: 495px;
+  border: 1px solid #CDCDCD;
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  margin: 25px 0 36px;
+  padding: 17px;
+}
+
+.backup-phrase__confirm-seed-options {
+  display: flex;
+  flex-flow: row wrap;
+  width: 465px;
+  position: relative;
+  left: -7px;
+}
+
+.backup-phrase__confirm-seed-option {
+  color: #5B5D67;
+  font-family: Montserrat Light;
+  font-size: 16px;
+  line-height: 21px;
+  background-color: #E7E7E7;
+  padding: 8px 19px;
+  box-shadow: none;
+  min-width: 65px;
+  margin: 7px;
+}
+
+.backup-phrase__confirm-seed-option--selected {
+  background-color: #85D1CC;
+  color: #FFFFFF;
+}
+
+button.backup-phrase__confirm-seed-option:hover {
+  transform: scale(1);
 }
 
 .first-time-flow__input {

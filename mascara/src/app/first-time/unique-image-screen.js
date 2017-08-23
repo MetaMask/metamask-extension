@@ -5,7 +5,7 @@ import Breadcrumbs from './breadcrumbs'
 
 class UniqueImageScreen extends Component {
   static propTypes = {
-    address: PropTypes.string.isRequired,
+    address: PropTypes.string,
     next: PropTypes.func.isRequired
   }
 

@@ -56,6 +56,7 @@
     "bluebird": "^3.5.0",
     "bn.js": "^4.11.7",
     "browserify-derequire": "^0.9.4",
+    "classnames": "^2.2.5",
     "client-sw-ready-event": "^3.3.0",
     "clone": "^2.1.1",
     "copy-to-clipboard": "^3.0.8",

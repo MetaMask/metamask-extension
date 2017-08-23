@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import CreatePasswordScreen from './create-password-screen'
 import UniqueImageScreen from './unique-image-screen'
 import NoticeScreen from './notice-screen'
+import BackupPhraseScreen from './backup-phrase-screen'
 
 class FirstTimeFlow extends Component {
 
@@ -77,6 +78,12 @@ class FirstTimeFlow extends Component {
         return (
           <NoticeScreen
             next={() => this.setScreenType(SCREEN_TYPE.BACK_UP_PHRASE)}
+          />
+        )
+      case SCREEN_TYPE.BACK_UP_PHRASE:
+        return (
+          <BackupPhraseScreen
+            next={() => this.setScreenType(SCREEN_TYPE.BUY_ETHER)}
           />
         )
       default:

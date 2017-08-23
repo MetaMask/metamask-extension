@@ -215,14 +215,18 @@ function confirmSeedWords () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.clearSeedWordCache`)
-    background.clearSeedWordCache((err, account) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
+    return new Promise((resolve, reject) => {
+      background.clearSeedWordCache((err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
 
-      log.info('Seed word cache cleared. ' + account)
-      dispatch(actions.showAccountDetail(account))
+        log.info('Seed word cache cleared. ' + account)
+        dispatch(actions.showAccountDetail(account))
+        resolve(account)
+      })
     })
   }
 }
