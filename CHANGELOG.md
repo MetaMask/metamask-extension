@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.9.10 2017-8-23
+
 - Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
 - Remove link to eth-tx-viz from identicons in tx history.
 
