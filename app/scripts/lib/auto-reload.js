@@ -3,6 +3,10 @@ module.exports = setupDappAutoReload
 function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
   let hasBeenWarned = false
+  let reloadInProgress = false
+  let lastTimeUsed
+  let lastSeenNetwork
+
   global.web3 = new Proxy(web3, {
     get: (_web3, key) => {
       // show warning once on web3 access
@@ -11,29 +15,42 @@ function setupDappAutoReload (web3, observable) {
         hasBeenWarned = true
       }
       // get the time of use
-      if (key !== '_used') {
-        _web3._used = Date.now()
-      }
+      lastTimeUsed = Date.now()
+      // return value normally
       return _web3[key]
     },
     set: (_web3, key, value) => {
+      // set value normally
       _web3[key] = value
     },
   })
-  var networkVersion
 
   observable.subscribe(function (state) {
-    // get the initial network
-    const curentNetVersion = state.networkVersion
-    if (!networkVersion) networkVersion = curentNetVersion
+    // if reload in progress, no need to check reload logic
+    if (reloadInProgress) return
 
-    if (curentNetVersion !== networkVersion && web3._used) {
-      const timeSinceUse = Date.now() - web3._used
-      // if web3 was recently used then delay the reloading of the page
-      timeSinceUse > 500 ? triggerReset() : setTimeout(triggerReset, 500)
-      // prevent reentry into if statement if state updates again before
-      // reload
-      networkVersion = curentNetVersion
+    const currentNetwork = state.networkVersion
+
+    // set the initial network
+    if (!lastSeenNetwork) {
+      lastSeenNetwork = currentNetwork
+      return
+    }
+
+    // skip reload logic if web3 not used
+    if (!lastTimeUsed) return
+
+    // if network did not change, exit
+    if (currentNetwork === lastSeenNetwork) return
+
+    // initiate page reload
+    reloadInProgress = true
+    const timeSinceUse = Date.now() - lastTimeUsed
+    // if web3 was recently used then delay the reloading of the page
+    if (timeSinceUse > 500) {
+      triggerReset()
+    } else {
+      setTimeout(triggerReset, 500)
     }
   })
 }
