@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
+
 ## 3.9.9 2017-8-18
 
 - Fix bug where some transaction submission errors would show an empty screen.
