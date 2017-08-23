@@ -42,10 +42,7 @@ QrCodeView.prototype.render = function () {
     this.props.warning) : null,
 
     h('.div.qr-wrapper', {
-      style: {
-        marginTop: '25px',
-        marginBottom: '15px',
-      },
+      style: {},
       dangerouslySetInnerHTML: {
         __html: qrImage.createTableTag(4),
       },

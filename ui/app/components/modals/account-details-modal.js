@@ -43,22 +43,21 @@ AccountDetailsModal.prototype.render = function () {
     h('div.account-details-modal-wrapper', {
     }, [
 
-      h('div.account-details-modal-header', {}, [
-        h('div', {}, [
+      h('div', {}, [
 
-          h(
-            Identicon,
-            {
-              address: selectedIdentity.address,
-              diameter: 64,
-              style: {},
-            },
-          ),
+        // Needs a border; requires changes to svg
+        h(
+          Identicon,
+          {
+            address: selectedIdentity.address,
+            diameter: 64,
+            style: {},
+          },
+        ),
 
-        ]),
-
-        h('div.account-details-modal-close', {}),
       ]),
+
+      h('div.account-details-modal-close', {}),
 
       h(QrView, {
         Qr: {

@@ -172,11 +172,12 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
-  padding: 5px 10px;
+  padding: 5px 0px;
+  border-radius: 4px;
 }
 
 .account-details-modal-wrapper .qr-header {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .account-details-modal-wrapper .qr-wrapper {
@@ -201,6 +202,7 @@
   width: 75%;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding: 10px;
 }
 
 .account-details-modal-divider {
@@ -210,26 +212,17 @@
   background-color: $alto;
 }
 
-.account-details-modal-header .identicon {
-  margin-top: -50%;
-}
-
-.account-details-modal-header {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  background: 'yellow';
-}
-
-.account-details-modal-header::before {
-  content: "X";
-  visibility: hidden;
+.account-details-modal-wrapper .identicon {
+  margin-top: -55.5%;
 }
 
 .account-details-modal-close:after {
     content: '\00D7';
     font-size: 1.5em;
     color: grey;
+    position: absolute;
+    top: 5px;
+    right: 10px;
 }
 
 // New Account Modal
