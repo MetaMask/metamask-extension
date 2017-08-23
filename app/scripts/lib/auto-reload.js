@@ -2,17 +2,22 @@ module.exports = setupDappAutoReload
 
 function setupDappAutoReload (web3, observable) {
   // export web3 as a global, checking for usage
+  let hasBeenWarned = false
   global.web3 = new Proxy(web3, {
-    get: (_web3, name) => {
-      // get the time of use
-      if (name !== '_used') {
+    get: (_web3, key) => {
+      // show warning once on web3 access
+      if (!hasBeenWarned && key !== 'currentProvider') {
         console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/ethereum/mist/releases/tag/v0.9.0')
+        hasBeenWarned = true
+      }
+      // get the time of use
+      if (key !== '_used') {
         _web3._used = Date.now()
       }
-      return _web3[name]
+      return _web3[key]
     },
-    set: (_web3, name, value) => {
-      _web3[name] = value
+    set: (_web3, key, value) => {
+      _web3[key] = value
     },
   })
   var networkVersion
