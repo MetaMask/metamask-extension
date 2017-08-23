@@ -7,7 +7,6 @@
 - Fix formatting of eth_sign "Sign Message" view.
 - Add deprecation warning to eth_sign "Sign Message" view.
 
-
 ## 3.9.8 2017-8-16
 
 - Reenable token list.
