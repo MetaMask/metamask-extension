@@ -53,11 +53,11 @@ NewAccountModal.prototype.render = function () {
         'or',
       ]),
 
-      h('div', {}, [
+      h('div.new-account-modal-content.import', {}, [
         'Import an account',
       ]),
 
-      h('div.new-account-modal-content', {}, [
+      h('div.new-account-modal-content.button', {}, [
         h('button.btn-clear', {}, [
           'SAVE',
         ]),

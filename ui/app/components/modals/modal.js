@@ -71,7 +71,7 @@ const MODALS = {
       top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
-      width: '360px',
+      width: '449px',
       top: 'calc(33% + 45px)',
     },
   },
