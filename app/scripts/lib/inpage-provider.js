@@ -27,7 +27,7 @@ function MetamaskInpageProvider (connectionStream) {
   )
 
   // ignore phishing warning message (handled elsewhere)
-  multiStream.ignoreStream('phishing') 
+  multiStream.ignoreStream('phishing')
 
   // connect to async provider
   const asyncProvider = self.asyncProvider = new StreamProvider()
@@ -80,7 +80,7 @@ MetamaskInpageProvider.prototype.send = function (payload) {
     case 'eth_coinbase':
       // read from localStorage
       selectedAddress = self.publicConfigStore.getState().selectedAddress
-      result = selectedAddress
+      result = selectedAddress || null
       break
 
     case 'eth_uninstallFilter':
@@ -90,7 +90,7 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     case 'net_version':
       const networkVersion = self.publicConfigStore.getState().networkVersion
-      result = networkVersion
+      result = networkVersion  || null
       break
 
     // throw not-supported Error
