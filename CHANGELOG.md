@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Remove link to eth-tx-viz from identicons in tx history.
+
 ## 3.9.9 2017-8-18
 
 - Fix bug where some transaction submission errors would show an empty screen.
