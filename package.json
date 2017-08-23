@@ -82,6 +82,7 @@
     "express": "^4.14.0",
     "extension-link-enabler": "^1.0.0",
     "extensionizer": "^1.0.0",
+    "fast-json-patch": "^2.0.4",
     "fast-levenshtein": "^2.0.6",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-eslint": "^4.0.0",

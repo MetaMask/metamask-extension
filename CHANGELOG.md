@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.9.9 2017-8-18
+
 - Fix bug where some transaction submission errors would show an empty screen.
 - Fix bug that could mis-render token balances when very small.
 - Fix formatting of eth_sign "Sign Message" view.
