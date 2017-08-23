@@ -234,3 +234,58 @@
   position: relative;
   border: 1px solid #d8d8d8;
 }
+
+.new-account-modal-header {
+  background: #efefef;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 1.5em;
+}
+
+.modal-close-x:after {
+    content: '\00D7';
+    font-size: 2em;
+    color: $alto;
+    position: absolute;
+    top: 25px;
+    right: 17.5px;
+    font-family: sans-serif;
+}
+
+.new-account-modal-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  padding-bottom: 25px;
+  font-size: 1em;
+}
+
+.new-account-input-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.new-account-input {
+  padding: 15px;
+  padding-bottom: 20px;
+  border-radius: 4px;
+  border: 1px solid $alto;
+  width: 70%;
+  font-size: 1em;
+  font-color: $alto;
+}
+
+.new-account-modal-wrapper .btn-clear {
+  font-size: 1em;
+  font-weight: bold;
+  background: #fff;
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 12px;
+  width: 30%;
+  color: $tundora;
+}
