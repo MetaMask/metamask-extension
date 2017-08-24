@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix nonce calculation bug that would sometimes generate very wrong nonces.
+
 ## 3.9.10 2017-8-23
 
 - Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
