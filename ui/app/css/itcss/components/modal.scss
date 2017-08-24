@@ -194,8 +194,8 @@
 .account-details-modal-wrapper .btn-clear {
   min-height: 28px;
   font-size: 1em;
-  border-color: #2f9ae0;
-  color: #2f9ae0;
+  border-color: $curious-blue;
+  color: $curious-blue;
   padding: 0px;
   border-radius: 2px;
   flex-basis: 100%;
@@ -232,7 +232,7 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
-  border: 1px solid #d8d8d8;
+  border: 1px solid $alto;
   box-shadow: 0 0 2px 2px $alto;
 }
 
@@ -312,7 +312,7 @@
 .new-account-modal-wrapper .btn-clear {
   font-size: 14px;
   font-weight: bold;
-  background: #fff;
+  background: $white;
   border: 1px solid;
   border-radius: 2px;
   width: 30%;
