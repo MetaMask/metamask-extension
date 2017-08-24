@@ -142,6 +142,26 @@ describe('Nonce Tracker', function () {
         await nonceLock.releaseLock()
       })
     })
+
+    describe('A normal usage condition.', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        const confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 10 })
+        const pendingTxs = txGen.generate({
+          status: 'submitted',
+          nonce: 100,
+        }, { count: 1 })
+                                         // 0x32 is 50 in hex:
+        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs, '0x32')
+      })
+
+      it('should return nonce after network nonce', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '10', `nonce should be 10 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
   })
 })
 
