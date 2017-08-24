@@ -30,6 +30,7 @@ module.exports = {
 function transformState (state) {
   const newState = state
   const transactions = newState.TransactionController.transactions
+
   newState.TransactionController.transactions = transactions.map((txMeta, _, txList) => {
     if (txMeta.status !== 'submitted') return txMeta
 
@@ -38,7 +39,14 @@ function transformState (state) {
     .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
     const highestConfirmedNonce = getHighestNonce(confirmedTxs)
 
-    if (parseInt(txMeta.txParams.nonce, 16) > highestConfirmedNonce + 1) {
+    const pendingTxs = txList.filter((tx) => tx.status === 'submitted')
+    .filter((tx) => tx.txParams.from === txMeta.txParams.from)
+    .filter((tx) => tx.metamaskNetworkId.from === txMeta.metamaskNetworkId.from)
+    const highestContinuousNonce = getHighestContinuousFrom(pendingTxs, highestConfirmedNonce)
+
+    const maxNonce = Math.max(highestContinuousNonce, highestConfirmedNonce)
+
+    if (parseInt(txMeta.txParams.nonce, 16) > maxNonce + 1) {
       txMeta.status = 'failed'
       txMeta.err = {
         message: 'nonce too high',
@@ -50,6 +58,20 @@ function transformState (state) {
   return newState
 }
 
+function getHighestContinuousFrom (txList, startPoint) {
+  const nonces = txList.map((txMeta) => {
+    const nonce = txMeta.txParams.nonce
+    return parseInt(nonce, 16)
+  })
+
+  let highest = startPoint
+  while (nonces.includes(highest)) {
+    highest++
+  }
+
+  return { name: 'local', nonce: highest, details: { startPoint, highest } }
+}
+
 function getHighestNonce (txList) {
   const nonces = txList.map((txMeta) => {
   const nonce = txMeta.txParams.nonce
@@ -58,3 +80,4 @@ function getHighestNonce (txList) {
   const highestNonce = Math.max.apply(null, nonces)
   return highestNonce
 }
+
