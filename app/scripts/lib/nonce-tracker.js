@@ -89,8 +89,7 @@ class NonceTracker {
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.blockNumber
     const baseCountBN = await this.ethQuery.getTransactionCount(address, blockNumber)
-    const baseString = baseCountBN.toString()
-    const baseCount = parseInt(baseString)
+    const baseCount = baseCountBN.toNumber()
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nonceDetails = { blockNumber, baseCount }
     return { name: 'network', nonce: baseCount, details: nonceDetails }
