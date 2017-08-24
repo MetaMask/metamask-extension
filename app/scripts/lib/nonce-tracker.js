@@ -86,7 +86,6 @@ class NonceTracker {
     // check our local tx history for the highest nonce (if any)
     const confirmedTransactions = this.getConfirmedTransactions(address)
     const pendingTransactions = this.getPendingTransactions(address)
-    const transactions = confirmedTransactions.concat(pendingTransactions)
 
     const highestConfirmedNonce = this._getHighestNonce(confirmedTransactions)
     const highestPendingNonce = this._getHighestNonce(pendingTransactions)
