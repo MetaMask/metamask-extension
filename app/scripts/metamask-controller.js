@@ -6,7 +6,8 @@ const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
-const streamIntoProvider = require('web3-stream-provider/handler')
+const RpcEngine = require('json-rpc-engine')
+const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -375,19 +376,40 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupProviderConnection (outStream, originDomain) {
-    streamIntoProvider(outStream, this.provider, onRequest, onResponse)
+    const engine = new RpcEngine()
+    engine.push(originMiddleware)
+    engine.push(loggerMiddleware)
+    engine.push(createProviderMiddleware({ provider: this.provider }))
+    
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+    outStream.pipe(providerStream).pipe(outStream)
+    
     // append dapp origin domain to request
-    function onRequest (request) {
-      request.origin = originDomain
+    function originMiddleware (req, res, next, end) {
+      req.origin = originDomain
+      next()
     }
     // log rpc activity
-    function onResponse (err, request, response) {
-      if (err) return console.error(err)
-      if (response.error) {
-        console.error('Error in RPC response:\n', response)
+    function loggerMiddleware (req, res, next, end) {
+      next((cb) => {
+        if (res.error) {
+          console.error('Error in RPC response:\n', res)
+        }
+        if (req.isMetamaskInternal) return
+        log.info(`RPC (${originDomain}):`, req, '->', res)
+        cb()
+      })
+    }
+    // forward requests to provider
+    function createProviderMiddleware({ provider }) {
+      return (req, res, next, end) => {
+        provider.sendAsync(req, (err, _res) => {
+          if (err) return end(err)
+          res.result = _res.result
+          end()
+        })
       }
-      if (request.isMetamaskInternal) return
-      log.info(`RPC (${originDomain}):`, request, '->', response)
     }
   }
 

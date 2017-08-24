@@ -1,8 +1,8 @@
 const pipe = require('pump')
-const StreamProvider = require('web3-stream-provider')
+const RpcEngine = require('json-rpc-engine')
+const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
 const ObjectMultiplex = require('./obj-multiplex')
-const createRandomId = require('./random-id')
 
 module.exports = MetamaskInpageProvider
 
@@ -30,38 +30,20 @@ function MetamaskInpageProvider (connectionStream) {
   multiStream.ignoreStream('phishing') 
 
   // connect to async provider
-  const asyncProvider = self.asyncProvider = new StreamProvider()
+  const streamMiddleware = createStreamMiddleware()
   pipe(
-    asyncProvider,
+    streamMiddleware.stream,
     multiStream.createStream('provider'),
-    asyncProvider,
+    streamMiddleware.stream,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
   // start and stop polling to unblock first block lock
 
-  self.idMap = {}
-  // handle sendAsync requests via asyncProvider
-  self.sendAsync = function (payload, cb) {
-    // rewrite request ids
-    var request = eachJsonMessage(payload, (message) => {
-      var newId = createRandomId()
-      self.idMap[newId] = message.id
-      message.id = newId
-      return message
-    })
-    // forward to asyncProvider
-    asyncProvider.sendAsync(request, function (err, res) {
-      if (err) return cb(err)
-      // transform messages to original ids
-      eachJsonMessage(res, (message) => {
-        var oldId = self.idMap[message.id]
-        delete self.idMap[message.id]
-        message.id = oldId
-        return message
-      })
-      cb(null, res)
-    })
-  }
+  // handle sendAsync requests via dapp-side rpc engine
+  const engine = new RpcEngine()
+  engine.push(streamMiddleware)
+
+  self.sendAsync = engine.handle.bind(engine)
 }
 
 MetamaskInpageProvider.prototype.send = function (payload) {
@@ -120,14 +102,6 @@ MetamaskInpageProvider.prototype.isConnected = function () {
 MetamaskInpageProvider.prototype.isMetaMask = true
 
 // util
-
-function eachJsonMessage (payload, transformFn) {
-  if (Array.isArray(payload)) {
-    return payload.map(transformFn)
-  } else {
-    return transformFn(payload)
-  }
-}
 
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskInpageProvider - lost connection to ${remoteLabel}`

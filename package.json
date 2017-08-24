@@ -93,6 +93,7 @@
     "iframe-stream": "^3.0.0",
     "inject-css": "^0.1.1",
     "jazzicon": "^1.2.0",
+    "json-rpc-middleware-stream": "^1.0.0",
     "loglevel": "^1.4.1",
     "metamask-logo": "^2.1.2",
     "mississippi": "^1.2.0",
