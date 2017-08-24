@@ -143,7 +143,7 @@ describe('Nonce Tracker', function () {
       })
     })
 
-    describe('A normal usage condition.', function () {
+    describe('When all three return different values', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
         const confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 10 })
@@ -158,7 +158,7 @@ describe('Nonce Tracker', function () {
       it('should return nonce after network nonce', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '10', `nonce should be 10 got ${nonceLock.nextNonce}`)
+        assert.equal(nonceLock.nextNonce, '50', `nonce should be 50 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
