@@ -18,10 +18,10 @@ describe('Nonce Tracker', function () {
         nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs, '0x1')
       })
 
-      it('should work', async function () {
+      it('should return 4', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '4', 'nonce should be 4')
+        assert.equal(nonceLock.nextNonce, '4', `nonce should be 4 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
 
@@ -41,7 +41,7 @@ describe('Nonce Tracker', function () {
       it('should return 0', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '0', 'nonce should be 0')
+        assert.equal(nonceLock.nextNonce, '0', `nonce should be 0 returned ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
