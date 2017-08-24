@@ -28,9 +28,9 @@ class NonceTracker {
     const releaseLock = await this._takeMutex(address)
     // evaluate multiple nextNonce strategies
     const nonceDetails = {}
-    const localNonceResult = await this._getlocalNextNonce(address)
-    nonceDetails.local = localNonceResult.details
     const networkNonceResult = await this._getNetworkNextNonce(address)
+    const localNonceResult = await this._getLocalNextNonce(address, networkNonceResult)
+    nonceDetails.local = localNonceResult.details
     nonceDetails.network = networkNonceResult.details
     const nextNonce = Math.max(networkNonceResult.nonce, localNonceResult.nonce)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
@@ -81,15 +81,16 @@ class NonceTracker {
     return { name: 'network', nonce: baseCount, details: nonceDetails }
   }
 
-  async _getlocalNextNonce (address) {
+  async _getLocalNextNonce (address, networkNonce) {
     let nextNonce
     // check our local tx history for the highest nonce (if any)
     const confirmedTransactions = this.getConfirmedTransactions(address)
     const pendingTransactions = this.getPendingTransactions(address)
     const transactions = confirmedTransactions.concat(pendingTransactions)
+
     const highestConfirmedNonce = this._getHighestNonce(confirmedTransactions)
     const highestPendingNonce = this._getHighestNonce(pendingTransactions)
-    const highestNonce = this._getHighestNonce(transactions)
+    const highestNonce = Math.max(highestConfirmedNonce, highestPendingNonce)
 
     const haveHighestNonce = Number.isInteger(highestNonce)
     if (haveHighestNonce) {
