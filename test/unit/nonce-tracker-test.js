@@ -125,6 +125,23 @@ describe('Nonce Tracker', function () {
         await nonceLock.releaseLock()
       })
     })
+
+    describe('when there are pending nonces non sequentially over the network nonce.', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        txGen.generate({ status: 'submitted' }, { count: 5 })
+        // 5 over that number
+        pendingTxs = txGen.generate({ status: 'submitted' }, { count: 5 })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x00')
+      })
+
+      it('should return nonce after network nonce', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '0', `nonce should be 0 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
   })
 })
 
