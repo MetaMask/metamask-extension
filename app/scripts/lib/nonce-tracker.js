@@ -37,8 +37,14 @@ class NonceTracker {
     const pendingTxs = this.getPendingTransactions(address)
     const localNonceResult = this._getHighestContinuousFrom(pendingTxs, highestSuggested) || 0
 
-    nonceDetails.local = localNonceResult.details
-    nonceDetails.network = networkNonceResult.details
+    nonceDetails.params = {
+      highestLocalNonce,
+      highestSuggested,
+      nextNetworkNonce,
+    }
+    nonceDetails.local = localNonceResult
+    nonceDetails.network = networkNonceResult
+
     const nextNonce = Math.max(networkNonceResult.nonce, localNonceResult.nonce)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
 
@@ -82,8 +88,9 @@ class NonceTracker {
     // and pending count are from the same block
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.blockNumber
-    const baseCountHex = await this.ethQuery.getTransactionCount(address, blockNumber)
-    const baseCount = parseInt(baseCountHex, 16)
+    const baseCountBN = await this.ethQuery.getTransactionCount(address, blockNumber)
+    const baseString = baseCountBN.toString()
+    const baseCount = parseInt(baseString)
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
     const nonceDetails = { blockNumber, baseCount }
     return { name: 'network', nonce: baseCount, details: nonceDetails }
