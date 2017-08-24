@@ -69,7 +69,7 @@ function getHighestContinuousFrom (txList, startPoint) {
     highest++
   }
 
-  return { name: 'local', nonce: highest, details: { startPoint, highest } }
+  return highest
 }
 
 function getHighestNonce (txList) {
