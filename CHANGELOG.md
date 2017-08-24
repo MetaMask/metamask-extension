@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix nonce calculation bug that would sometimes generate very wrong nonces.
+- Give up resubmitting a transaction after 3500 blocks.
 
 ## 3.9.10 2017-8-23
 
