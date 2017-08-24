@@ -11,6 +11,7 @@ const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
+const NewTooltip = require('./components/new-tooltip.js')
 const { getSelectedIdentity } = require('./selectors')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
@@ -56,6 +57,7 @@ function SendTransactionScreen () {
       txData: null,
       memo: '',
     },
+    tooltipShown: false,
   }
 }
 
@@ -216,9 +218,15 @@ SendTransactionScreen.prototype.render = function () {
             placeholder: '0',
           }, []),
 
-          h('div.send-screen-gas-input-customize', {}, [
+          h('div.send-screen-gas-input-customize', {
+            onClick: this.toggleTooltip.bind(this),
+          }, [
             'Customize'
           ]),
+
+          h(NewTooltip, {
+            show: this.state.tooltipShown,
+          }),
 
         ]),
 
@@ -509,6 +517,10 @@ SendTransactionScreen.prototype.renderSendToken = function () {
     ])
 
   )
+}
+
+SendTransactionScreen.prototype.toggleTooltip = function () {
+  this.setState({ tooltipShown: !this.state.tooltipShown })
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {

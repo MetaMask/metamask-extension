@@ -121,6 +121,7 @@
     "react-redux": "^5.0.5",
     "react-select": "^1.0.0-rc.2",
     "react-simple-file-input": "^1.0.0",
+    "react-tooltip": "^3.3.0",
     "react-tooltip-component": "^0.3.0",
     "react-transition-group": "^2.2.0",
     "reactify": "^1.1.1",

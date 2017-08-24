@@ -81,3 +81,14 @@
   font-size: 12px;
   cursor: pointer;
 }
+
+div.__react_component_tooltip.send-tooltip {
+  left: 177px;
+  top: 50px;
+  width: 237px;
+  height: 307px;
+  background-color: white;
+  opacity: 1;
+  box-shadow: grey 0px 0px 5px;
+  z-index: 1050;
+}
