@@ -30,10 +30,12 @@ class NonceTracker {
     const nonceDetails = {}
     const networkNonceResult = await this._getNetworkNextNonce(address)
     const highestLocallyConfirmed = this._getHighestLocallyConfirmed(address)
+    const nextNetworkNonce = networkNonceResult.nonce
+    const highestLocalNonce = highestLocallyConfirmed
+    const highestSuggested = Math.max(nextNetworkNonce, highestLocalNonce)
 
-    const highestConfirmed = Math.max(networkNonceResult.nonce, highestLocallyConfirmed)
     const pendingTxs = this.getPendingTransactions(address)
-    const localNonceResult = this._getHighestContinuousFrom(pendingTxs, highestConfirmed) || 0
+    const localNonceResult = this._getHighestContinuousFrom(pendingTxs, highestSuggested) || 0
 
     nonceDetails.local = localNonceResult.details
     nonceDetails.network = networkNonceResult.details
@@ -90,7 +92,7 @@ class NonceTracker {
   _getHighestLocallyConfirmed (address) {
     const confirmedTransactions = this.getConfirmedTransactions(address)
     const highest = this._getHighestNonce(confirmedTransactions)
-    return highest
+    return Number.isInteger(highest) ? highest + 1 : 0
   }
 
   _reduceTxListToUniqueNonces (txList) {
@@ -116,14 +118,11 @@ class NonceTracker {
     const nonces = txList.map((txMeta) => parseInt(txMeta.txParams.nonce, 16))
 
     let highest = startPoint
-    while (nonces.includes(highest + 1)) {
+    while (nonces.includes(highest)) {
       highest++
     }
 
-    const haveHighestNonce = Number.isInteger(highest) && highest > 0
-    const nonce = haveHighestNonce ? highest + 1 : 0
-
-    return { name: 'local', nonce }
+    return { name: 'local', nonce: highest, details: { startPoint, highest } }
   }
 
   // this is a hotfix for the fact that the blockTracker will

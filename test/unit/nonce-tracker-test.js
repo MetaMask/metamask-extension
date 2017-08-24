@@ -55,7 +55,7 @@ describe('Nonce Tracker', function () {
           txParams: { nonce: '0x01' },
         }, { count: 5 })
 
-        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs)
+        nonceTracker = generateNonceTrackerWith(pendingTxs, confirmedTxs, '0x0')
       })
 
       it('should return nonce after those', async function () {
@@ -69,14 +69,14 @@ describe('Nonce Tracker', function () {
     describe('when local confirmed count is higher than network nonce', function () {
       beforeEach(function () {
         const txGen = new MockTxGen()
-        confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 2 })
-        nonceTracker = generateNonceTrackerWith([], confirmedTxs)
+        confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 3 })
+        nonceTracker = generateNonceTrackerWith([], confirmedTxs, '0x1')
       })
 
       it('should return nonce after those', async function () {
         this.timeout(15000)
         const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
-        assert.equal(nonceLock.nextNonce, '2', `nonce should be 2 got ${nonceLock.nextNonce}`)
+        assert.equal(nonceLock.nextNonce, '3', `nonce should be 3 got ${nonceLock.nextNonce}`)
         await nonceLock.releaseLock()
       })
     })
