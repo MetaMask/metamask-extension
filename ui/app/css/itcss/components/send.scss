@@ -45,6 +45,7 @@
 
 .send-screen-input-wrapper {
   width: 95%;
+  position: relative;
 }
 
 .send-screen-input {
@@ -71,3 +72,12 @@
 }
 
 .send-screen-bolt-icon {}
+
+.send-screen-gas-input-customize {
+  position: absolute;
+  top: 30px;
+  right: 18px;
+  color: #3098DC;
+  font-size: 12px;
+  cursor: pointer;
+}

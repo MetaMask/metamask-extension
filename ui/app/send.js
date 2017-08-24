@@ -216,6 +216,10 @@ SendTransactionScreen.prototype.render = function () {
             placeholder: '0',
           }, []),
 
+          h('div.send-screen-gas-input-customize', {}, [
+            'Customize'
+          ]),
+
         ]),
 
         h('div.send-screen-input-wrapper', {}, [
