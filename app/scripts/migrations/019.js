@@ -3,8 +3,8 @@ const version = 19
 
 /*
 
-This migration sets transactions with the 'Gave up submitting tx.' err message
-to a 'failed' stated
+This migration sets transactions as failed
+whos nonce is too high
 
 */
 
