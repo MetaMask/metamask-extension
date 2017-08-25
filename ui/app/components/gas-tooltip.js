@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const InputNumber = require('./input-number.js')
+const findDOMNode = require('react-dom').findDOMNode
 
 module.exports = GasTooltip
 
@@ -15,12 +16,6 @@ function GasTooltip () {
 
   this.updateGasPrice = this.updateGasPrice.bind(this);
   this.updateGasLimit = this.updateGasLimit.bind(this);
-}
-
-GasTooltip.prototype.componentWillMount == function () {
-  const { gasPrice = 0, gasLimit = 0 } = this.props
-
-  this.setState({ gasPrice, gasLimit });
 }
 
 GasTooltip.prototype.updateGasPrice = function (newPrice) {
@@ -42,6 +37,8 @@ GasTooltip.prototype.updateGasLimit = function (newLimit) {
 GasTooltip.prototype.render = function () {
   const { position, title, children, className, isOpen } = this.props
   const { gasPrice, gasLimit } = this.state
+
+  this.manageListeners()
   
   return isOpen
     ? h('div.customize-gas-tooltip-container', {}, [
@@ -77,3 +74,56 @@ GasTooltip.prototype.render = function () {
       ])
     : null
 }
+
+GasTooltip.prototype.manageListeners = function () {
+  const isOpen = this.props.isOpen
+  const onClickOutside = this.props.onClickOutside
+
+  if (isOpen) {
+    this.outsideClickHandler = onClickOutside
+  } else if (!isOpen) {
+    this.outsideClickHandler = null
+  }
+}
+
+GasTooltip.prototype.componentDidMount = function () {
+  if (this && document.body) {
+    this.globalClickHandler = this.globalClickOccurred.bind(this)
+    document.body.addEventListener('click', this.globalClickHandler)
+    var container = findDOMNode(this)
+    this.container = container
+  }
+}
+
+GasTooltip.prototype.componentWillUnmount = function () {
+  if (this && document.body) {
+    document.body.removeEventListener('click', this.globalClickHandler)
+  }
+}
+
+GasTooltip.prototype.globalClickOccurred = function (event) {
+  const target = event.target
+  const container = findDOMNode(this)
+  console.log(`target`, target);
+  console.log(`container`, container);
+  console.log(`this.container`, this.container);
+  console.log(`this.outsideClickHandler`, this.outsideClickHandler);
+  if (target !== container &&
+    !isDescendant(container, target) &&
+    this.outsideClickHandler) {
+    this.outsideClickHandler(event)
+  }
+}
+
+function isDescendant (parent, child) {
+  var node = child.parentNode
+  while (node !== null) {
+    if (node === parent) {
+      return true
+    }
+    node = node.parentNode
+  }
+
+  return false
+}
+

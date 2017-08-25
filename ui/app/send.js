@@ -58,7 +58,7 @@ function SendTransactionScreen () {
       txData: null,
       memo: '',
     },
-    tooltipShown: false,
+    tooltipIsOpen: false,
   }
 }
 
@@ -221,14 +221,15 @@ SendTransactionScreen.prototype.render = function () {
           }, []),
 
           h('div.send-screen-gas-input-customize', {
-            onClick: this.toggleTooltip.bind(this),
+            onClick: () => this.setTooltipOpen.bind(this)(!this.state.tooltipIsOpen),
           }, [
             'Customize'
           ]),
 
           h(GasTooltip, {
-            isOpen: this.state.tooltipShown,
+            isOpen: this.state.tooltipIsOpen,
             className: 'send-tooltip',
+            onClickOutside: () => this.setTooltipOpen.bind(this)(false),
             onFeeChange: ({gasLimit, gasPrice}) => {
               this.setState({
                 newTx: Object.assign(
@@ -532,8 +533,8 @@ SendTransactionScreen.prototype.renderSendToken = function () {
   )
 }
 
-SendTransactionScreen.prototype.toggleTooltip = function () {
-  this.setState({ tooltipShown: !this.state.tooltipShown })
+SendTransactionScreen.prototype.setTooltipOpen = function (isOpen) {
+  this.setState({ tooltipIsOpen: isOpen })
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
