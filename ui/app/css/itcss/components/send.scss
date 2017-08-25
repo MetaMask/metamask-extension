@@ -6,6 +6,7 @@
   z-index: $send-card-z-index;
   position: absolute;
   top: 5%;
+  font-family: 'DIN OT';
 
   @media screen and (max-width: $break-small) {
     top: 33px;
@@ -54,9 +55,16 @@
 
 .send-screen-gas-input {
   width: 100%;
-  background-color: $concrete;
+  height: 41px;
+  border-radius: 3px;
+  background-color: #f3f3f3;
   border-width: 0px;
   border-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 12px;
 }
 
 .send-screen-amount-labels {
@@ -82,10 +90,7 @@
 }
 
 .send-screen-gas-input-customize {
-  position: absolute;
-  top: 30px;
-  right: 18px;
-  color: #3098DC;
+  color: $curious-blue;
   font-size: 12px;
   cursor: pointer;
 }
@@ -103,7 +108,8 @@
   padding: 13px 19px;
   font-size: 16px;
   border-radius: 4px;
-  font-family: 'Montserrat Regular';
+  font-family: 'Avenir Next';
+  font-weigth: 500;
 }
 
 .gas-tooltip-arrow {
