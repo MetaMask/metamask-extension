@@ -16,9 +16,9 @@ function InputNumber () {
   this.setValue = this.setValue.bind(this);
 }
 
-InputNumber.prototype.componentWillMount == function () {
+InputNumber.prototype.componentWillMount = function () {
   const { initValue = 0 } = this.props
-
+  
   this.setState({ value: initValue });
 }
 
@@ -36,7 +36,7 @@ InputNumber.prototype.setValue = function (newValue) {
 InputNumber.prototype.render = function () {
   const { unitLabel, step = 1, min, placeholder } = this.props
   const { value } = this.state
-
+  
   return h('div.customize-gas-input-wrapper', {}, [
     h('input.customize-gas-input', {
       placeholder,

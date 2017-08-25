@@ -10,6 +10,7 @@ const addressSummary = require('./util').addressSummary
 const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
+const FiatValue = require('./components/fiat-value.js')
 const ethUtil = require('ethereumjs-util')
 const GasTooltip = require('./components/gas-tooltip.js')
 const { getSelectedIdentity } = require('./selectors')
@@ -54,7 +55,7 @@ function SendTransactionScreen () {
       amount: '0.0001', // see L544
       gasPrice: '4a817c800',
       gas: '0x7b0d',
-      gasFee: 0,
+      gasFee: ((parseInt('0x7b0d', 16) * parseInt('4a817c800', 16)) / 1000000000).toFixed(10),
       txData: null,
       memo: '',
     },
@@ -225,20 +226,22 @@ SendTransactionScreen.prototype.render = function () {
             h('span', {}, ['What\'s this?']),
           ]),
 
-          h('input.large-input.send-screen-gas-input', {
-            placeholder: '0',
-            value: this.state.newTx.gasFee
-          }, []),
-
-          h('div.send-screen-gas-input-customize', {
-            onClick: () => this.setTooltipOpen.bind(this)(!this.state.tooltipIsOpen),
-          }, [
-            'Customize'
+          h('div.large-input.send-screen-gas-input', {}, [
+            h(FiatValue, {
+              value: this.state.newTx.gasFee.toString(16), conversionRate, currentCurrency }
+            ),
+            h('div.send-screen-gas-input-customize', {
+              onClick: () => this.setTooltipOpen.bind(this)(!this.state.tooltipIsOpen),
+            }, [
+              'Customize'
+            ]),
           ]),
 
           h(GasTooltip, {
             isOpen: this.state.tooltipIsOpen,
             className: 'send-tooltip',
+            gasPrice: parseInt(this.state.newTx.gasPrice, 16),
+            gasLimit: parseInt(this.state.newTx.gas, 16),
             onClickOutside: () => this.setTooltipOpen.bind(this)(false),
             onFeeChange: ({gasLimit, gasPrice}) => {
               this.setState({
@@ -246,6 +249,8 @@ SendTransactionScreen.prototype.render = function () {
                   this.state.newTx,
                   {
                     gasFee: ((gasLimit * gasPrice) / 1000000000).toFixed(10),
+                    gas: gasLimit,
+                    gasPrice,
                   }
                 ),
               })

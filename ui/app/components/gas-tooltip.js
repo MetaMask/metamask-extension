@@ -18,6 +18,12 @@ function GasTooltip () {
   this.updateGasLimit = this.updateGasLimit.bind(this);
 }
 
+GasTooltip.prototype.componentWillMount = function () {
+  const { gasPrice = 0, gasLimit = 0} = this.props
+  
+  this.setState({ gasPrice, gasLimit })
+}
+
 GasTooltip.prototype.updateGasPrice = function (newPrice) {
   const { onFeeChange } = this.props
   const { gasLimit } = this.state
@@ -57,7 +63,11 @@ GasTooltip.prototype.render = function () {
             initValue: gasPrice,
             onChange: (newPrice) => this.updateGasPrice(newPrice), 
           }),
-          h('div.gas-tooltip-input-label', {}, [
+          h('div.gas-tooltip-input-label', {
+            style: {
+              'marginTop': '81px',
+            },
+          }, [
             h('span.gas-tooltip-label', {}, ['Gas Limit']),
             h('i.fa.fa-info-circle')
           ]),
@@ -104,10 +114,7 @@ GasTooltip.prototype.componentWillUnmount = function () {
 GasTooltip.prototype.globalClickOccurred = function (event) {
   const target = event.target
   const container = findDOMNode(this)
-  console.log(`target`, target);
-  console.log(`container`, container);
-  console.log(`this.container`, this.container);
-  console.log(`this.outsideClickHandler`, this.outsideClickHandler);
+  
   if (target !== container &&
     !isDescendant(container, target) &&
     this.outsideClickHandler) {
