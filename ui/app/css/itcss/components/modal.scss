@@ -172,6 +172,37 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
+  padding: 5px 0px;
+  border-radius: 4px;
+}
+
+.account-details-modal-wrapper .qr-header {
+  margin-top: 15px;
+}
+
+.account-details-modal-wrapper .qr-wrapper {
+  margin-top: 15px;
+}
+
+.account-details-modal-wrapper .ellip-address-wrapper {
+  display: flex;
+  justify-content: center;
+  border: 1px solid $alto;
+  padding: 5px 10px 5px 10px;
+}
+
+.account-details-modal-wrapper .btn-clear {
+  min-height: 28px;
+  font-size: 1em;
+  border-color: #2f9ae0;
+  color: #2f9ae0;
+  padding: 0px;
+  border-radius: 2px;
+  flex-basis: 100%;
+  width: 75%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
 .account-details-modal-divider {
@@ -179,6 +210,19 @@
   height: 1px;
   margin: 10px 0px;
   background-color: $alto;
+}
+
+.account-details-modal-wrapper .identicon {
+  margin-top: -55.5%;
+}
+
+.account-details-modal-close:after {
+    content: '\00D7';
+    font-size: 1.5em;
+    color: grey;
+    position: absolute;
+    top: 5px;
+    right: 10px;
 }
 
 // New Account Modal

@@ -33,6 +33,9 @@ function AccountDetailsModal () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModal)
 
+// Not yet pixel perfect todos:
+  // fonts of qr-header and close button
+
 AccountDetailsModal.prototype.render = function () {
   const { selectedIdentity, selectedAddress, network } = this.props
 
@@ -42,6 +45,7 @@ AccountDetailsModal.prototype.render = function () {
 
       h('div', {}, [
 
+        // Needs a border; requires changes to svg
         h(
           Identicon,
           {
@@ -53,12 +57,7 @@ AccountDetailsModal.prototype.render = function () {
 
       ]),
 
-      h('div', {}, [
-        'X',
-      ]),
-
-      h('div', {}, [
-      ]),
+      h('div.account-details-modal-close', {}),
 
       h(QrView, {
         Qr: {
@@ -66,10 +65,6 @@ AccountDetailsModal.prototype.render = function () {
           data: this.props.selectedIdentity.address,
         }
       }, []),
-
-      h('div', {}, [
-        'Account Display',
-      ]),
 
       // divider
       h('div.account-details-modal-divider', {

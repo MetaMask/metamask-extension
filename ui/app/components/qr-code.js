@@ -41,16 +41,13 @@ QrCodeView.prototype.render = function () {
     },
     this.props.warning) : null,
 
-    h('.div', {
-      style: {
-        marginTop: '25px',
-        marginBottom: '15px',
-      },
+    h('.div.qr-wrapper', {
+      style: {},
       dangerouslySetInnerHTML: {
         __html: qrImage.createTableTag(4),
       },
     }),
-    h('.div', [
+    h('.div.ellip-address-wrapper', [
       h('span.qr-ellip-address', {
         style: {
           width: '247px',
