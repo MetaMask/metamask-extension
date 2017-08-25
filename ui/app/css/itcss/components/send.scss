@@ -73,6 +73,14 @@
 
 .send-screen-bolt-icon {}
 
+.selected-currency {
+  color: $curious-blue;
+}
+
+.unselected-currency {
+  cursor: pointer;
+}
+
 .send-screen-gas-input-customize {
   position: absolute;
   top: 30px;

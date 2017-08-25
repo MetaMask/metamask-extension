@@ -177,7 +177,17 @@ SendTransactionScreen.prototype.render = function () {
 
           h('div.send-screen-amount-labels', {}, [
             h('span', {}, ['Amount']),
-            h('span', {}, ['ETH <> USD']), //holding on icon from design
+            h('span', {}, [
+              h('span', {
+                className: currentCurrency === 'ETH' ? 'selected-currency' : 'unselected-currency',
+                onClick: this.setCurrentCurrency.bind(this, 'ETH') 
+              }, ['ETH']),
+              '<>',
+              h('span', {
+                className: currentCurrency === 'USD' ? 'selected-currency' : 'unselected-currency',
+                onClick: this.setCurrentCurrency.bind(this, 'USD'), 
+              }, ['USD']),
+            ]), //holding on icon from design
           ]),
 
           h('input.large-input.send-screen-input', {
@@ -535,6 +545,10 @@ SendTransactionScreen.prototype.renderSendToken = function () {
 
 SendTransactionScreen.prototype.setTooltipOpen = function (isOpen) {
   this.setState({ tooltipIsOpen: isOpen })
+}
+
+SendTransactionScreen.prototype.setCurrentCurrency = function (newCurrency) {
+  this.props.dispatch(actions.setCurrentCurrency(newCurrency))
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
