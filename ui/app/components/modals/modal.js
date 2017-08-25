@@ -66,8 +66,14 @@ const MODALS = {
     contents: [
       h(NewAccountModal, {}, []),
     ],
-    mobileModalStyle: {},
-    laptopModalStyle: {}
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
   },
 
   DEFAULT: {

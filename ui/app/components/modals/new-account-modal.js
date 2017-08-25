@@ -33,34 +33,31 @@ NewAccountModal.prototype.render = function () {
   return h('div', {}, [
     h('div.new-account-modal-wrapper', {
     }, [
-      h('div', {}, [
+      h('div.new-account-modal-header', {}, [
         'New Account',
       ]),
 
-      h('div', {}, [
-        h('i.fa.fa-times', {}, [
-        ]),
-      ]),
+      h('div.modal-close-x', {}),
       
-      h('div', {}, [
+      h('div.new-account-modal-content', {}, [
         'Account Name',
       ]),
 
-      h('div', {}, [
-        h('input', {
+      h('div.new-account-input-wrapper', {}, [
+        h('input.new-account-input', {
           placeholder: 'E.g. My new account'
         }, []),
       ]),
 
-      h('div', {}, [
+      h('div.new-account-modal-content', {}, [
         'or',
       ]),
 
-      h('div', {}, [
+      h('div.new-account-modal-content.import', {}, [
         'Import an account',
       ]),
 
-      h('div', {}, [
+      h('div.new-account-modal-content.button', {}, [
         h('button.btn-clear', {}, [
           'SAVE',
         ]),
