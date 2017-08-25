@@ -11,7 +11,7 @@ const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const ethUtil = require('ethereumjs-util')
-const NewTooltip = require('./components/new-tooltip.js')
+const GasTooltip = require('./components/gas-tooltip.js')
 const { getSelectedIdentity } = require('./selectors')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
@@ -54,6 +54,7 @@ function SendTransactionScreen () {
       amount: '0.0001', // see L544
       gasPrice: '4a817c800',
       gas: '0x7b0d',
+      gasFee: 0,
       txData: null,
       memo: '',
     },
@@ -216,6 +217,7 @@ SendTransactionScreen.prototype.render = function () {
 
           h('input.large-input.send-screen-gas-input', {
             placeholder: '0',
+            value: this.state.newTx.gasFee
           }, []),
 
           h('div.send-screen-gas-input-customize', {
@@ -224,8 +226,19 @@ SendTransactionScreen.prototype.render = function () {
             'Customize'
           ]),
 
-          h(NewTooltip, {
-            show: this.state.tooltipShown,
+          h(GasTooltip, {
+            isOpen: this.state.tooltipShown,
+            className: 'send-tooltip',
+            onFeeChange: ({gasLimit, gasPrice}) => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    gasFee: ((gasLimit * gasPrice) / 1000000000).toFixed(10),
+                  }
+                ),
+              })
+            }
           }),
 
         ]),
