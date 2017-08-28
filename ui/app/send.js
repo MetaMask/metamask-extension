@@ -267,18 +267,17 @@ SendTransactionScreen.prototype.render = function () {
             })
             : h('div', {}, [`${this.state.newTx.gasFee} ETH`]),
             h('div.send-screen-gas-input-customize', {
-              onClick: () => this.setTooltipOpen.bind(this)(!this.state.tooltipIsOpen),
+              onClick: () => this.toggleTooltip.bind(this)(!this.state.tooltipIsOpen),
             }, [
               'Customize'
             ]),
           ]),
 
-          h(GasTooltip, {
-            isOpen: this.state.tooltipIsOpen,
+          this.state.tooltipIsOpen && h(GasTooltip, {
             className: 'send-tooltip',
             gasPrice: parseInt(this.state.newTx.gasPrice, 16),
             gasLimit: parseInt(this.state.newTx.gas, 16),
-            onClickOutside: () => this.setTooltipOpen.bind(this)(false),
+            onClose: this.closeTooltip.bind(this),
             onFeeChange: ({gasLimit, gasPrice}) => {
               this.setState({
                 newTx: Object.assign(
@@ -585,8 +584,12 @@ SendTransactionScreen.prototype.renderSendToken = function () {
   )
 }
 
-SendTransactionScreen.prototype.setTooltipOpen = function (isOpen) {
-  this.setState({ tooltipIsOpen: isOpen })
+SendTransactionScreen.prototype.toggleTooltip = function () {
+  this.setState({ tooltipIsOpen: !this.state.tooltipIsOpen })
+}
+
+SendTransactionScreen.prototype.closeTooltip = function () {
+  this.setState({ tooltipIsOpen: false })
 }
 
 SendTransactionScreen.prototype.setCurrentCurrency = function (newCurrency) {
