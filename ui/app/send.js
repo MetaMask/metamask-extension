@@ -64,6 +64,17 @@ function SendTransactionScreen () {
     },
     tooltipIsOpen: false,
   }
+
+  this.back = this.back.bind(this)
+  this.back = this.back.bind(this)
+  this.closeTooltip = this.closeTooltip.bind(this)
+  this.getTxFeeBn = this.getTxFeeBn.bind(this)
+  this.onSubmit = this.onSubmit.bind(this)
+  this.onSubmit = this.onSubmit.bind(this)
+  this.recipientDidChange = this.recipientDidChange.bind(this)
+  this.setCurrentCurrency = this.setCurrentCurrency.bind(this)
+  this.setCurrentCurrency = this.setCurrentCurrency.bind(this)
+  this.toggleTooltip = this.toggleTooltip.bind(this)
 }
 
 SendTransactionScreen.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
@@ -206,12 +217,12 @@ SendTransactionScreen.prototype.render = function () {
             h('span', {}, [
               h('span', {
                 className: currentCurrency === 'ETH' ? 'selected-currency' : 'unselected-currency',
-                onClick: this.setCurrentCurrency.bind(this, 'ETH') 
+                onClick: () => this.setCurrentCurrency('ETH') 
               }, ['ETH']),
               '<>',
               h('span', {
                 className: currentCurrency === 'USD' ? 'selected-currency' : 'unselected-currency',
-                onClick: this.setCurrentCurrency.bind(this, 'USD'), 
+                onClick: () => this.setCurrentCurrency('USD'), 
               }, ['USD']),
             ]), //holding on icon from design
           ]),
@@ -255,7 +266,7 @@ SendTransactionScreen.prototype.render = function () {
           h('div.large-input.send-screen-gas-input', {}, [
             currentCurrency === 'USD'
             ? h(FiatValue, {
-              value: this.getTxFeeBn.bind(this)(this.state.newTx.gas.toString(16), this.state.newTx.gasPrice.toString(16)).toString(16),
+              value: this.getTxFeeBn(this.state.newTx.gas.toString(16), this.state.newTx.gasPrice.toString(16)).toString(16),
               conversionRate,
               currentCurrency,
               style: {
@@ -277,7 +288,7 @@ SendTransactionScreen.prototype.render = function () {
             className: 'send-tooltip',
             gasPrice: parseInt(this.state.newTx.gasPrice, 16),
             gasLimit: parseInt(this.state.newTx.gas, 16),
-            onClose: this.closeTooltip.bind(this),
+            onClose: this.closeTooltip,
             onFeeChange: ({gasLimit, gasPrice}) => {
               this.setState({
                 newTx: Object.assign(
@@ -341,7 +352,7 @@ SendTransactionScreen.prototype.render = function () {
       h('section.flex-column.flex-center', [
 
         h('button.btn-light', {
-          onClick: this.onSubmit.bind(this),
+          onClick: this.onSubmit,
           style: {
             marginTop: '8px',
             width: '8em',
@@ -350,7 +361,7 @@ SendTransactionScreen.prototype.render = function () {
         }, 'Next'),
 
         h('button.btn-light', {
-          onClick: this.back.bind(this),
+          onClick: this.back,
           style: {
             background: '#F7F7F7', // $alabaster
             border: 'none',
@@ -469,7 +480,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
           h(EnsInput, {
             name: 'address',
             placeholder: 'Recipient Address',
-            onChange: this.recipientDidChange.bind(this),
+            onChange: this.recipientDidChange,
             network,
             identities,
             addressBook,
@@ -561,7 +572,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
       h('section.flex-column.flex-center', [
 
         h('button.btn-light', {
-          onClick: this.onSubmit.bind(this),
+          onClick: this.onSubmit,
           style: {
             marginTop: '8px',
             width: '8em',
@@ -570,7 +581,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
         }, 'Next'),
 
         h('button.btn-light', {
-          onClick: this.back.bind(this),
+          onClick: this.back,
           style: {
             background: '#F7F7F7', // $alabaster
             border: 'none',
