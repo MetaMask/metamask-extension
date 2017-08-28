@@ -1,6 +1,7 @@
 const EventEmitter = require('events')
 const EthQuery = require('ethjs-query')
 const sufficientBalance = require('./util').sufficientBalance
+const RETRY_LIMIT = 3500 // Retry 3500 blocks, or about 1 day.
 /*
 
   Utility class for tracking the transactions as they
@@ -28,6 +29,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.getBalance = config.getBalance
     this.getPendingTransactions = config.getPendingTransactions
     this.publishTransaction = config.publishTransaction
+    this.giveUpOnTransaction = config.giveUpOnTransaction
   }
 
   //  checks if a signed tx is in a block and
@@ -99,6 +101,10 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     const balance = this.getBalance(address)
     if (balance === undefined) return
     if (!('retryCount' in txMeta)) txMeta.retryCount = 0
+
+    if (txMeta.retryCount > RETRY_LIMIT) {
+      return this.giveUpOnTransaction(txMeta.id)
+    }
 
     // if the value of the transaction is greater then the balance, fail.
     if (!sufficientBalance(txMeta.txParams, balance)) {

@@ -28,12 +28,26 @@ class NonceTracker {
     const releaseLock = await this._takeMutex(address)
     // evaluate multiple nextNonce strategies
     const nonceDetails = {}
-    const localNonceResult = await this._getlocalNextNonce(address)
-    nonceDetails.local = localNonceResult.details
     const networkNonceResult = await this._getNetworkNextNonce(address)
-    nonceDetails.network = networkNonceResult.details
+    const highestLocallyConfirmed = this._getHighestLocallyConfirmed(address)
+    const nextNetworkNonce = networkNonceResult.nonce
+    const highestLocalNonce = highestLocallyConfirmed
+    const highestSuggested = Math.max(nextNetworkNonce, highestLocalNonce)
+
+    const pendingTxs = this.getPendingTransactions(address)
+    const localNonceResult = this._getHighestContinuousFrom(pendingTxs, highestSuggested) || 0
+
+    nonceDetails.params = {
+      highestLocalNonce,
+      highestSuggested,
+      nextNetworkNonce,
+    }
+    nonceDetails.local = localNonceResult
+    nonceDetails.network = networkNonceResult
+
     const nextNonce = Math.max(networkNonceResult.nonce, localNonceResult.nonce)
     assert(Number.isInteger(nextNonce), `nonce-tracker - nextNonce is not an integer - got: (${typeof nextNonce}) "${nextNonce}"`)
+
     // return nonce and release cb
     return { nextNonce, nonceDetails, releaseLock }
   }
@@ -74,38 +88,17 @@ class NonceTracker {
     // and pending count are from the same block
     const currentBlock = await this._getCurrentBlock()
     const blockNumber = currentBlock.blockNumber
-    const baseCountHex = await this.ethQuery.getTransactionCount(address, blockNumber)
-    const baseCount = parseInt(baseCountHex, 16)
+    const baseCountBN = await this.ethQuery.getTransactionCount(address, blockNumber || 'latest')
+    const baseCount = baseCountBN.toNumber()
     assert(Number.isInteger(baseCount), `nonce-tracker - baseCount is not an integer - got: (${typeof baseCount}) "${baseCount}"`)
-    const nonceDetails = { blockNumber, baseCountHex, baseCount }
+    const nonceDetails = { blockNumber, baseCount }
     return { name: 'network', nonce: baseCount, details: nonceDetails }
   }
 
-  async _getlocalNextNonce (address) {
-    let nextNonce
-    // check our local tx history for the highest nonce (if any)
+  _getHighestLocallyConfirmed (address) {
     const confirmedTransactions = this.getConfirmedTransactions(address)
-    const pendingTransactions = this.getPendingTransactions(address)
-    const transactions = confirmedTransactions.concat(pendingTransactions)
-    const highestConfirmedNonce = this._getHighestNonce(confirmedTransactions)
-    const highestPendingNonce = this._getHighestNonce(pendingTransactions)
-    const highestNonce = this._getHighestNonce(transactions)
-
-    const haveHighestNonce = Number.isInteger(highestNonce)
-    if (haveHighestNonce) {
-      // next nonce is the nonce after our last
-      nextNonce = highestNonce + 1
-    } else {
-      // no local tx history so next must be first (zero)
-      nextNonce = 0
-    }
-    const nonceDetails = { highestNonce, haveHighestNonce, highestConfirmedNonce, highestPendingNonce }
-    return { name: 'local', nonce: nextNonce, details: nonceDetails }
-  }
-
-  _getPendingTransactionCount (address) {
-    const pendingTransactions = this.getPendingTransactions(address)
-    return this._reduceTxListToUniqueNonces(pendingTransactions).length
+    const highest = this._getHighestNonce(confirmedTransactions)
+    return Number.isInteger(highest) ? highest + 1 : 0
   }
 
   _reduceTxListToUniqueNonces (txList) {
@@ -122,9 +115,28 @@ class NonceTracker {
   }
 
   _getHighestNonce (txList) {
-    const nonces = txList.map((txMeta) => parseInt(txMeta.txParams.nonce, 16))
+    const nonces = txList.map((txMeta) => {
+      const nonce = txMeta.txParams.nonce
+      assert(typeof nonce, 'string', 'nonces should be hex strings')
+      return parseInt(nonce, 16)
+    })
     const highestNonce = Math.max.apply(null, nonces)
     return highestNonce
+  }
+
+  _getHighestContinuousFrom (txList, startPoint) {
+    const nonces = txList.map((txMeta) => {
+      const nonce = txMeta.txParams.nonce
+      assert(typeof nonce, 'string', 'nonces should be hex strings')
+      return parseInt(nonce, 16)
+    })
+
+    let highest = startPoint
+    while (nonces.includes(highest)) {
+      highest++
+    }
+
+    return { name: 'local', nonce: highest, details: { startPoint, highest } }
   }
 
   // this is a hotfix for the fact that the blockTracker will

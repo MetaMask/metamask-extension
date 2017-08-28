@@ -5,6 +5,11 @@
 - Make eth_sign deprecation warning less noisy
 - Fix bug with network version serialization over synchronous RPC
 
+## 3.9.11 2017-8-24
+
+- Fix nonce calculation bug that would sometimes generate very wrong nonces.
+- Give up resubmitting a transaction after 3500 blocks.
+
 ## 3.9.10 2017-8-23
 
 - Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
