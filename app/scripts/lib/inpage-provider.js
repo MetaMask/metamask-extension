@@ -90,7 +90,7 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     case 'net_version':
       const networkVersion = self.publicConfigStore.getState().networkVersion
-      result = networkVersion  || null
+      result = networkVersion || null
       break
 
     // throw not-supported Error
