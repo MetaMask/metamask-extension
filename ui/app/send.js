@@ -58,7 +58,6 @@ function SendTransactionScreen () {
       amount: '0.0001', // see L544
       gasPrice: '0x19',
       gas: '0x7b0d',
-      gasFee: ((parseInt('0x7b0d', 16) * parseInt('0x19', 16)) / 1000000000).toFixed(6),
       txData: null,
       memo: '',
     },
@@ -276,7 +275,19 @@ SendTransactionScreen.prototype.render = function () {
                 lineHeight: '22.4px'
               }
             })
-            : h('div', {}, [`${this.state.newTx.gasFee} ETH`]),
+            : h(EthBalance, {
+                value: this.getTxFeeBn(this.state.newTx.gas.toString(16), this.state.newTx.gasPrice.toString(16)).toString(16),
+                currentCurrency,
+                conversionRate,
+                showFiat: false,
+                hideTooltip: true,
+                styleOveride: {
+                  color: '#5d5d5d',
+                  fontSize: '16px',
+                  fontFamily: 'DIN OT',
+                  lineHeight: '22.4px'
+                }
+            }),
             h('div.send-screen-gas-input-customize', {
               onClick: () => this.toggleTooltip.bind(this)(!this.state.tooltipIsOpen),
             }, [
@@ -294,8 +305,6 @@ SendTransactionScreen.prototype.render = function () {
                 newTx: Object.assign(
                   this.state.newTx,
                   {
-                    // TODO: determine how prices are rounded on master
-                    gasFee: ((gasPrice / 1000000000) * gasLimit).toFixed(6),
                     gas: gasLimit,
                     gasPrice,
                   }
