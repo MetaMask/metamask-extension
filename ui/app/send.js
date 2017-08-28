@@ -5,13 +5,15 @@ const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
 const actions = require('./actions')
 const util = require('./util')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
+const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
 const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const FiatValue = require('./components/fiat-value.js')
-const ethUtil = require('ethereumjs-util')
 const GasTooltip = require('./components/gas-tooltip.js')
 const { getSelectedIdentity } = require('./selectors')
 
@@ -30,6 +32,7 @@ function mapStateToProps (state) {
     addressBook: state.metamask.addressBook,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    blockGasLimit: state.metamask.currentBlockGasLimit,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -53,14 +56,36 @@ function SendTransactionScreen () {
       to: '',
       // these values are hardcoded, so "Next" can be clicked
       amount: '0.0001', // see L544
-      gasPrice: '4a817c800',
+      gasPrice: '0x19',
       gas: '0x7b0d',
-      gasFee: ((parseInt('0x7b0d', 16) * parseInt('4a817c800', 16)) / 1000000000).toFixed(10),
+      gasFee: ((parseInt('0x7b0d', 16) * parseInt('0x19', 16)) / 1000000000).toFixed(6),
       txData: null,
       memo: '',
     },
     tooltipIsOpen: false,
   }
+}
+
+SendTransactionScreen.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
+  const numBN = new BN(numerator)
+  const denomBN = new BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
+}
+
+SendTransactionScreen.prototype.getTxFeeBn = function (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16)) {
+  const { blockGasLimit } = this.props;
+  const gasBn = hexToBn(gas)
+  const gasLimit = new BN(parseInt(blockGasLimit))
+  const safeGasLimit = this.bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
+
+
+  // Gas Price
+  const gasPriceBn = hexToBn(gasPrice)
+  const txFeeBn = gasBn.mul(gasPriceBn)
+
+  const fiatMultiplier = hexToBn((1000000000).toString(16))
+  const txFeeAsFiatBn = txFeeBn.mul(fiatMultiplier)
+  return txFeeAsFiatBn;
 }
 
 SendTransactionScreen.prototype.render = function () {
@@ -226,10 +251,21 @@ SendTransactionScreen.prototype.render = function () {
             h('span', {}, ['What\'s this?']),
           ]),
 
+          // TODO: handle loading time when switching to USD
           h('div.large-input.send-screen-gas-input', {}, [
-            h(FiatValue, {
-              value: this.state.newTx.gasFee.toString(16), conversionRate, currentCurrency }
-            ),
+            currentCurrency === 'USD'
+            ? h(FiatValue, {
+              value: this.getTxFeeBn.bind(this)(this.state.newTx.gas.toString(16), this.state.newTx.gasPrice.toString(16)).toString(16),
+              conversionRate,
+              currentCurrency,
+              style: {
+                color: '#5d5d5d',
+                fontSize: '16px',
+                fontFamily: 'DIN OT',
+                lineHeight: '22.4px'
+              }
+            })
+            : h('div', {}, [`${this.state.newTx.gasFee} ETH`]),
             h('div.send-screen-gas-input-customize', {
               onClick: () => this.setTooltipOpen.bind(this)(!this.state.tooltipIsOpen),
             }, [
@@ -248,7 +284,8 @@ SendTransactionScreen.prototype.render = function () {
                 newTx: Object.assign(
                   this.state.newTx,
                   {
-                    gasFee: ((gasLimit * gasPrice) / 1000000000).toFixed(10),
+                    // TODO: determine how prices are rounded on master
+                    gasFee: ((gasPrice / 1000000000) * gasLimit).toFixed(6),
                     gas: gasLimit,
                     gasPrice,
                   }

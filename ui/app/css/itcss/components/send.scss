@@ -65,6 +65,8 @@
   align-items: center;
   padding-left: 10px;
   padding-right: 12px;
+  font-size: 16px;
+  color: $scorpion;
 }
 
 .send-screen-amount-labels {
@@ -78,8 +80,6 @@
   flex-direction: row;
   justify-content: space-between;
 }
-
-.send-screen-bolt-icon {}
 
 .selected-currency {
   color: $curious-blue;
