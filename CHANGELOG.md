@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Make eth_sign deprecation warning less noisy
+- Fix bug with network version serialization over synchronous RPC
+
 ## 3.9.10 2017-8-23
 
 - Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
