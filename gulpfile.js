@@ -196,7 +196,8 @@ gulp.task('lint-scss', function() {
     .pipe(gulpStylelint({
       reporters: [
         {formatter: 'string', console: true}
-      ]
+      ],
+      fix: true,
     }));
 });
 
