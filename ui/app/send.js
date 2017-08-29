@@ -5,13 +5,19 @@ const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
 const actions = require('./actions')
 const util = require('./util')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
+const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const numericBalance = require('./util').numericBalance
 const addressSummary = require('./util').addressSummary
+const bnMultiplyByFraction = require('./util').bnMultiplyByFraction
 const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
-const ethUtil = require('ethereumjs-util')
+const FiatValue = require('./components/fiat-value.js')
+const GasTooltip = require('./components/gas-tooltip.js')
 const { getSelectedIdentity } = require('./selectors')
+const getTxFeeBn = require('./util').getTxFeeBn
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
@@ -28,6 +34,7 @@ function mapStateToProps (state) {
     addressBook: state.metamask.addressBook,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
+    blockGasLimit: state.metamask.currentBlockGasLimit,
   }
 
   result.error = result.warning && result.warning.split('.')[0]
@@ -51,12 +58,20 @@ function SendTransactionScreen () {
       to: '',
       // these values are hardcoded, so "Next" can be clicked
       amount: '0.0001', // see L544
-      gasPrice: '4a817c800',
+      gasPrice: '0x5d21dba00',
       gas: '0x7b0d',
       txData: null,
       memo: '',
     },
+    tooltipIsOpen: false,
   }
+
+  this.back = this.back.bind(this)
+  this.closeTooltip = this.closeTooltip.bind(this)
+  this.onSubmit = this.onSubmit.bind(this)
+  this.recipientDidChange = this.recipientDidChange.bind(this)
+  this.setCurrentCurrency = this.setCurrentCurrency.bind(this)
+  this.toggleTooltip = this.toggleTooltip.bind(this)
 }
 
 SendTransactionScreen.prototype.render = function () {
@@ -74,6 +89,8 @@ SendTransactionScreen.prototype.render = function () {
     conversionRate,
     currentCurrency,
   } = props
+  const { blockGasLimit, newTx } = this.state
+  const { gas, gasPrice } = newTx
 
   console.log({ selectedIdentity, identities })
   console.log("SendTransactionScreen state:", this.state)
@@ -174,7 +191,17 @@ SendTransactionScreen.prototype.render = function () {
 
           h('div.send-screen-amount-labels', {}, [
             h('span', {}, ['Amount']),
-            h('span', {}, ['ETH <> USD']), //holding on icon from design
+            h('span', {}, [
+              h('span', {
+                className: currentCurrency === 'ETH' ? 'selected-currency' : 'unselected-currency',
+                onClick: () => this.setCurrentCurrency('ETH') 
+              }, ['ETH']),
+              '<>',
+              h('span', {
+                className: currentCurrency === 'USD' ? 'selected-currency' : 'unselected-currency',
+                onClick: () => this.setCurrentCurrency('USD'), 
+              }, ['USD']),
+            ]), //holding on icon from design
           ]),
 
           h('input.large-input.send-screen-input', {
@@ -195,6 +222,21 @@ SendTransactionScreen.prototype.render = function () {
         ]),
 
         h('div.send-screen-input-wrapper', {}, [
+          this.state.tooltipIsOpen && h(GasTooltip, {
+            className: 'send-tooltip',
+            gasPrice,
+            gasLimit: gas,
+            onClose: this.closeTooltip,
+            onFeeChange: ({gasLimit, gasPrice}) => {
+              this.setState({
+                newTx: {
+                  ...this.state.newTx,
+                  gas: gasLimit,
+                  gasPrice,
+                },
+              })
+            }
+          }),
 
           h('div.send-screen-gas-labels', {}, [
             h('span', {}, [
@@ -212,9 +254,39 @@ SendTransactionScreen.prototype.render = function () {
             h('span', {}, ['What\'s this?']),
           ]),
 
-          h('input.large-input.send-screen-gas-input', {
-            placeholder: '0',
-          }, []),
+          // TODO: handle loading time when switching to USD
+          h('div.large-input.send-screen-gas-input', {}, [
+            currentCurrency === 'USD'
+            ? h(FiatValue, {
+              value: getTxFeeBn(gas, gasPrice, blockGasLimit),
+              conversionRate,
+              currentCurrency,
+              style: {
+                color: '#5d5d5d',
+                fontSize: '16px',
+                fontFamily: 'DIN OT',
+                lineHeight: '22.4px'
+              }
+            })
+            : h(EthBalance, {
+                value: getTxFeeBn(gas, gasPrice, blockGasLimit),
+                currentCurrency,
+                conversionRate,
+                showFiat: false,
+                hideTooltip: true,
+                styleOveride: {
+                  color: '#5d5d5d',
+                  fontSize: '16px',
+                  fontFamily: 'DIN OT',
+                  lineHeight: '22.4px'
+                }
+            }),
+            h('div.send-screen-gas-input-customize', {
+              onClick: this.toggleTooltip,
+            }, [
+              'Customize'
+            ]),
+          ]),
 
         ]),
 
@@ -264,7 +336,7 @@ SendTransactionScreen.prototype.render = function () {
       h('section.flex-column.flex-center', [
 
         h('button.btn-light', {
-          onClick: this.onSubmit.bind(this),
+          onClick: this.onSubmit,
           style: {
             marginTop: '8px',
             width: '8em',
@@ -273,7 +345,7 @@ SendTransactionScreen.prototype.render = function () {
         }, 'Next'),
 
         h('button.btn-light', {
-          onClick: this.back.bind(this),
+          onClick: this.back,
           style: {
             background: '#F7F7F7', // $alabaster
             border: 'none',
@@ -392,7 +464,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
           h(EnsInput, {
             name: 'address',
             placeholder: 'Recipient Address',
-            onChange: this.recipientDidChange.bind(this),
+            onChange: this.recipientDidChange,
             network,
             identities,
             addressBook,
@@ -484,7 +556,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
       h('section.flex-column.flex-center', [
 
         h('button.btn-light', {
-          onClick: this.onSubmit.bind(this),
+          onClick: this.onSubmit,
           style: {
             marginTop: '8px',
             width: '8em',
@@ -493,7 +565,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
         }, 'Next'),
 
         h('button.btn-light', {
-          onClick: this.back.bind(this),
+          onClick: this.back,
           style: {
             background: '#F7F7F7', // $alabaster
             border: 'none',
@@ -505,6 +577,18 @@ SendTransactionScreen.prototype.renderSendToken = function () {
     ])
 
   )
+}
+
+SendTransactionScreen.prototype.toggleTooltip = function () {
+  this.setState({ tooltipIsOpen: !this.state.tooltipIsOpen })
+}
+
+SendTransactionScreen.prototype.closeTooltip = function () {
+  this.setState({ tooltipIsOpen: false })
+}
+
+SendTransactionScreen.prototype.setCurrentCurrency = function (newCurrency) {
+  this.props.dispatch(actions.setCurrentCurrency(newCurrency))
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {

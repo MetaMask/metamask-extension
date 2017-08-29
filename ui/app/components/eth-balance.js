@@ -37,7 +37,17 @@ EthBalanceComponent.prototype.render = function () {
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
   var props = this.props
-  const { conversionRate, shorten, incoming, currentCurrency } = props
+  const {
+    conversionRate,
+    shorten,
+    incoming,
+    currentCurrency,
+    hideTooltip,
+    styleOveride,
+  } = props
+
+  const { fontSize, color, fontFamily, lineHeight } = styleOveride
+
   if (value === 'None') return value
   if (value === '...') return value
   var balanceObj = generateBalanceObject(value, shorten ? 1 : 3)
@@ -54,36 +64,41 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
   }
 
   var label = balanceObj.label
+  const tooltipProps = hideTooltip ? {} : {
+    position: 'bottom',
+    title: `${ethNumber} ${ethSuffix}`,
+  };
 
   return (
-    h(Tooltip, {
-      position: 'bottom',
-      title: `${ethNumber} ${ethSuffix}`,
-    }, h('div.flex-column', [
-      h('.flex-row', {
-        style: {
-          alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Montserrat Light',
-          textRendering: 'geometricPrecision',
-        },
-      }, [
-        h('div', {
+    h(hideTooltip ? 'div' : Tooltip,
+      tooltipProps,
+      h('div.flex-column', [
+        h('.flex-row', {
           style: {
-            width: '100%',
-            textAlign: 'right',
+            alignItems: 'flex-end',
+            lineHeight: lineHeight || '13px',
+            fontFamily: fontFamily || 'Montserrat Light',
+            textRendering: 'geometricPrecision',
           },
-        }, incoming ? `+${balance}` : balance),
-        h('div', {
-          style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
-            marginLeft: '5px',
-          },
-        }, label),
-      ]),
+        }, [
+          h('div', {
+            style: {
+              width: '100%',
+              textAlign: 'right',
+              fontSize: fontSize || 'inherit',
+              color: color || 'inherit',
+            },
+          }, incoming ? `+${balance}` : balance),
+          h('div', {
+            style: {
+              color: color || '#AEAEAE',
+              fontSize: fontSize || '12px',
+              marginLeft: '5px',
+            },
+          }, label),
+        ]),
 
-      showFiat ? h(FiatValue, { value: props.value, conversionRate, currentCurrency }) : null,
-    ]))
+        showFiat ? h(FiatValue, { value: props.value, conversionRate, currentCurrency }) : null,
+      ]))
   )
 }

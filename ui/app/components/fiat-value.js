@@ -12,7 +12,7 @@ function FiatValue () {
 
 FiatValue.prototype.render = function () {
   const props = this.props
-  const { conversionRate, currentCurrency } = props
+  const { conversionRate, currentCurrency, style } = props
 
   const value = formatBalance(props.value, 6)
 
@@ -28,16 +28,18 @@ FiatValue.prototype.render = function () {
     fiatTooltipNumber = 'Unknown'
   }
 
-  return fiatDisplay(fiatDisplayNumber, currentCurrency)
+  return fiatDisplay(fiatDisplayNumber, currentCurrency, style)
 }
 
-function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
+function fiatDisplay (fiatDisplayNumber, fiatSuffix, styleOveride = {}) {
+  const { fontSize, color, fontFamily, lineHeight } = styleOveride
+
   if (fiatDisplayNumber !== 'N/A') {
     return h('.flex-row', {
       style: {
         alignItems: 'flex-end',
-        lineHeight: '13px',
-        fontFamily: 'Montserrat Light',
+        lineHeight: lineHeight || '13px',
+        fontFamily: fontFamily || 'Montserrat Light',
         textRendering: 'geometricPrecision',
       },
     }, [
@@ -45,15 +47,15 @@ function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
         style: {
           width: '100%',
           textAlign: 'right',
-          fontSize: '12px',
-          color: '#333333',
+          fontSize: fontSize || '12px',
+          color: color || '#333333',
         },
       }, fiatDisplayNumber),
       h('div', {
         style: {
-          color: '#AEAEAE',
+          color: color || '#AEAEAE',
           marginLeft: '5px',
-          fontSize: '12px',
+          fontSize: fontSize || '12px',
         },
       }, fiatSuffix),
     ])

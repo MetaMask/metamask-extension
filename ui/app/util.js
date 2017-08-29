@@ -1,4 +1,5 @@
 const ethUtil = require('ethereumjs-util')
+const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const vreme = new (require('vreme'))()
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -43,6 +44,8 @@ module.exports = {
   bnTable: bnTable,
   isHex: isHex,
   formatDate,
+  bnMultiplyByFraction,
+  getTxFeeBn,
 }
 
 function valuesFor (obj) {
@@ -221,4 +224,23 @@ function readableDate (ms) {
 
 function isHex (str) {
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
+}
+
+function bnMultiplyByFraction (targetBN, numerator, denominator) {
+  const numBN = new ethUtil.BN(numerator)
+  const denomBN = new ethUtil.BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
+}
+
+function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
+  // Gas Limit
+  const gasBn = hexToBn(gas)
+  const gasLimit = new ethUtil.BN(parseInt(blockGasLimit))
+  const safeGasLimit = bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
+
+  // Gas Price
+  const gasPriceBn = hexToBn(gasPrice)
+  const txFeeBn = gasBn.mul(gasPriceBn)
+
+  return txFeeBn.toString(16);
 }

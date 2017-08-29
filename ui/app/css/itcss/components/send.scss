@@ -6,6 +6,7 @@
   z-index: $send-card-z-index;
   position: absolute;
   top: 5%;
+  font-family: 'DIN OT';
 
   @media screen and (max-width: $break-small) {
     top: 33px;
@@ -45,6 +46,7 @@
 
 .send-screen-input-wrapper {
   width: 95%;
+  position: relative;
 }
 
 .send-screen-input {
@@ -53,9 +55,18 @@
 
 .send-screen-gas-input {
   width: 100%;
-  background-color: $concrete;
+  height: 41px;
+  border-radius: 3px;
+  background-color: #f3f3f3;
   border-width: 0px;
   border-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 12px;
+  font-size: 16px;
+  color: $scorpion;
 }
 
 .send-screen-amount-labels {
@@ -70,4 +81,128 @@
   justify-content: space-between;
 }
 
-.send-screen-bolt-icon {}
+.selected-currency {
+  color: $curious-blue;
+}
+
+.unselected-currency {
+  cursor: pointer;
+}
+
+.send-screen-gas-input-customize {
+  color: $curious-blue;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.gas-tooltip-close-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+}
+
+.customize-gas-tooltip-container {
+  position: absolute;
+  bottom: 50px;
+  width: 237px;
+  height: 307px;
+  background-color: white;
+  opacity: 1;
+  box-shadow: grey 0px 0px 5px;
+  z-index: 1050;
+  padding: 13px 19px;
+  font-size: 16px;
+  border-radius: 4px;
+  font-family: 'Lato';
+  font-weigth: 500;
+}
+
+.gas-tooltip-arrow {
+  height: 25px;
+  width: 25px;
+  z-index: 1200;
+  background: white;
+  position: absolute;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  left: 107px;
+  top: 294px;
+  -webkit-box-shadow: 0 0 5px grey;
+  box-shadow: 2px 2px 2px $alto;
+}
+
+.customize-gas-tooltip-container input[type=number]::-webkit-inner-spin-button { 
+    -webkit-appearance: none;
+    display:none;
+}
+
+.customize-gas-tooltip-container input[type=number]:hover::-webkit-inner-spin-button { 
+    -webkit-appearance: none;
+    display:none;
+}  
+
+.customize-gas-tooltip {
+  position: relative;
+}
+
+.gas-tooltip {
+  display: flex;
+  justify-content: center;
+}
+
+.gas-tooltip-label {
+  font-size: 16px;
+  color: $tundora;
+}
+
+.gas-tooltip-header {
+  padding-bottom: 12px;
+}
+
+.gas-tooltip-input-label {
+  margin-bottom: 5px;
+}
+
+.gas-tooltip-input-label i {
+  color: $silver-chalice;
+  margin-left: 6px;
+}
+
+.customize-gas-input {
+  width: 178px;
+  height: 28px;
+  border: 1px solid $alto;
+  font-size: 16px;
+  color: $nile-blue;
+  padding-left: 8px;
+}
+
+.customize-gas-input-wrapper {
+  position: relative;
+}
+
+.gas-tooltip-input-detail {
+  position: absolute;
+  top: 4px;
+  right: 26px;
+  font-size: 12px;
+  color: $silver-chalice;
+}
+
+.gas-tooltip-input-arrows {
+  position: absolute;
+  top: 0px;
+  left: 178px;
+  width: 17px;
+  height: 28px;
+  border: 1px solid #dadada;
+  border-left: 0px;
+  display: flex;
+  flex-direction: column;
+  color: #9b9b9b;
+  font-size: 0.8em;
+  padding: 1px 4px;
+}
