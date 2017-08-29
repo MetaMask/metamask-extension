@@ -4,11 +4,10 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
-const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
-const FiatValue = require('./components/fiat-value')
 const GasTooltip = require('./components/send/gas-tooltip')
 const CurrencyToggle = require('./components/send/currency-toggle')
+const GasFeeDisplay = require('./components/send/gas-fee-display')
 const { getSelectedIdentity } = require('./selectors')
 
 const {
@@ -24,7 +23,6 @@ const { stripHexPrefix, addHexPrefix, BN } = require('ethereumjs-util')
 const {
   addressSummary,
   bnMultiplyByFraction,
-  getTxFeeBn,
   isHex,
   numericBalance,
 } = require('./util')
@@ -269,30 +267,12 @@ SendTransactionScreen.prototype.render = function () {
 
           // TODO: handle loading time when switching to USD
           h('div.large-input.send-screen-gas-input', {}, [
-            currentCurrency === 'USD'
-            ? h(FiatValue, {
-              value: getTxFeeBn(gas, gasPrice, blockGasLimit),
-              conversionRate,
+            h(GasFeeDisplay, {
               currentCurrency,
-              style: {
-                color: '#5d5d5d',
-                fontSize: '16px',
-                fontFamily: 'DIN OT',
-                lineHeight: '22.4px'
-              }
-            })
-            : h(EthBalance, {
-                value: getTxFeeBn(gas, gasPrice, blockGasLimit),
-                currentCurrency,
-                conversionRate,
-                showFiat: false,
-                hideTooltip: true,
-                styleOveride: {
-                  color: '#5d5d5d',
-                  fontSize: '16px',
-                  fontFamily: 'DIN OT',
-                  lineHeight: '22.4px'
-                }
+              conversionRate,
+              gas,
+              gasPrice,
+              blockGasLimit,
             }),
             h('div.send-screen-gas-input-customize', {
               onClick: this.toggleTooltip,
