@@ -1,49 +1,68 @@
-const inherits = require('util').inherits
+const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
-const actions = require('./actions')
-const util = require('./util')
-const ethUtil = require('ethereumjs-util')
-const BN = ethUtil.BN
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
-const numericBalance = require('./util').numericBalance
-const addressSummary = require('./util').addressSummary
-const bnMultiplyByFraction = require('./util').bnMultiplyByFraction
-const isHex = require('./util').isHex
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
-const FiatValue = require('./components/fiat-value.js')
-const GasTooltip = require('./components/gas-tooltip.js')
+const FiatValue = require('./components/fiat-value')
+const GasTooltip = require('./components/gas-tooltip')
 const { getSelectedIdentity } = require('./selectors')
-const getTxFeeBn = require('./util').getTxFeeBn
+
+const {
+  setCurrentCurrency,
+  showAccountsPage,
+  backToAccountDetail,
+  displayWarning,
+  hideWarning,
+  addToAddressBook,
+  signTx,
+} = require('./actions')
+const { stripHexPrefix, addHexPrefix, BN } = require('ethereumjs-util')
+const {
+  addressSummary,
+  bnMultiplyByFraction,
+  getTxFeeBn,
+  isHex,
+  numericBalance,
+} = require('./util')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
-  var result = {
-    selectedIdentity: getSelectedIdentity(state),
-    address: state.metamask.selectedAddress,
-    accounts: state.metamask.accounts,
-    identities: state.metamask.identities,
-    warning: state.appState.warning,
-    network: state.metamask.network,
-    addressBook: state.metamask.addressBook,
-    conversionRate: state.metamask.conversionRate,
-    currentCurrency: state.metamask.currentCurrency,
-    blockGasLimit: state.metamask.currentBlockGasLimit,
+  const {
+    selectedAddress: address,
+    accounts,
+    identities,
+    network,
+    addressBook,
+    conversionRate,
+    currentCurrency,
+    currentBlockGasLimit: blockGasLimit,
+  } = state.metamask
+  const { warning } = state.appState
+  const selectedIdentity = getSelectedIdentity(state)
+  const account = accounts[address]
+
+  return {
+    address,
+    accounts,
+    identities,
+    network,
+    addressBook,
+    conversionRate,
+    currentCurrency,
+    blockGasLimit,
+    warning,
+    selectedIdentity,
+    error: warning && warning.split('.')[0],
+    account,
+    identity: identities[address],
+    balance: account ? numericBalance(account.balance) : null,
   }
-
-  result.error = result.warning && result.warning.split('.')[0]
-
-  result.account = result.accounts[result.address]
-  result.identity = result.identities[result.address]
-  result.balance = result.account ? numericBalance(result.account.balance) : null
-
-  return result
 }
 
 inherits(SendTransactionScreen, PersistentForm)
@@ -588,17 +607,17 @@ SendTransactionScreen.prototype.closeTooltip = function () {
 }
 
 SendTransactionScreen.prototype.setCurrentCurrency = function (newCurrency) {
-  this.props.dispatch(actions.setCurrentCurrency(newCurrency))
+  this.props.dispatch(setCurrentCurrency(newCurrency))
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
   event.stopPropagation()
-  this.props.dispatch(actions.showAccountsPage())
+  this.props.dispatch(showAccountsPage())
 }
 
 SendTransactionScreen.prototype.back = function () {
   var address = this.props.address
-  this.props.dispatch(actions.backToAccountDetail(address))
+  this.props.dispatch(backToAccountDetail(address))
 }
 
 SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickname) {
@@ -644,14 +663,14 @@ SendTransactionScreen.prototype.onSubmit = function () {
   //   return this.props.dispatch(actions.displayWarning(message))
   // }
 
-  if (txData && !isHex(ethUtil.stripHexPrefix(txData))) {
+  if (txData && !isHex(stripHexPrefix(txData))) {
     message = 'Transaction data must be hex string.'
-    return this.props.dispatch(actions.displayWarning(message))
+    return this.props.dispatch(displayWarning(message))
   }
 
-  this.props.dispatch(actions.hideWarning())
+  this.props.dispatch(hideWarning())
 
-  this.props.dispatch(actions.addToAddressBook(recipient, nickname))
+  this.props.dispatch(addToAddressBook(recipient, nickname))
 
   // var txParams = {
   //   // from: this.props.address,
@@ -672,8 +691,8 @@ SendTransactionScreen.prototype.onSubmit = function () {
     value: '0x0',
   }
 
-  if (recipient) txParams.to = ethUtil.addHexPrefix(recipient)
+  if (recipient) txParams.to = addHexPrefix(recipient)
   if (txData) txParams.data = txData
 
-  this.props.dispatch(actions.signTx(txParams))
+  this.props.dispatch(signTx(txParams))
 }

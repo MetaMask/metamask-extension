@@ -352,16 +352,16 @@ function showInfoPage () {
 
 function setCurrentCurrency (currencyCode) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         log.error(err.stack)
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
-        type: this.SET_CURRENT_FIAT,
+        type: actions.SET_CURRENT_FIAT,
         value: {
           currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
