@@ -22,7 +22,10 @@ function GasTooltip () {
 GasTooltip.prototype.componentWillMount = function () {
   const { gasPrice = 0, gasLimit = 0} = this.props
   
-  this.setState({ gasPrice, gasLimit })
+  this.setState({
+    gasPrice: parseInt(gasPrice, 16) / 1000000000,
+    gasLimit: parseInt(gasLimit, 16),
+  })
 }
 
 GasTooltip.prototype.updateGasPrice = function (newPrice) {
@@ -30,7 +33,10 @@ GasTooltip.prototype.updateGasPrice = function (newPrice) {
   const { gasLimit } = this.state
 
   this.setState({ gasPrice: newPrice })
-  onFeeChange({ gasLimit, gasPrice: newPrice })
+  onFeeChange({
+    gasLimit: gasLimit.toString(16),
+    gasPrice: (newPrice * 1000000000).toString(16)
+  })
 }
 
 GasTooltip.prototype.updateGasLimit = function (newLimit) {
@@ -38,7 +44,10 @@ GasTooltip.prototype.updateGasLimit = function (newLimit) {
   const { gasPrice } = this.state
 
   this.setState({ gasLimit: newLimit })
-  onFeeChange({ gasLimit: newLimit, gasPrice })
+  onFeeChange({
+    gasLimit: newLimit.toString(16),
+    gasPrice: (gasPrice * 1000000000).toString(16)
+  })
 }
 
 GasTooltip.prototype.onClose = function (e) {
@@ -63,10 +72,9 @@ GasTooltip.prototype.render = function () {
         ]),
         h(InputNumber, {
           unitLabel: 'GWEI',
-          step: 0.0001,
-          min: 0.0000,
-          placeholder: '0.0000',
-          fixed: 4,
+          step: 1,
+          min: 0,
+          placeholder: '0',
           initValue: gasPrice,
           onChange: (newPrice) => this.updateGasPrice(newPrice), 
         }),

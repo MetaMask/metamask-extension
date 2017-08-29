@@ -58,7 +58,7 @@ function SendTransactionScreen () {
       to: '',
       // these values are hardcoded, so "Next" can be clicked
       amount: '0.0001', // see L544
-      gasPrice: '0x19',
+      gasPrice: '0x5d21dba00',
       gas: '0x7b0d',
       txData: null,
       memo: '',
@@ -92,7 +92,8 @@ SendTransactionScreen.prototype.render = function () {
     conversionRate,
     currentCurrency,
   } = props
-  const { blockGasLimit } = this.state
+  const { blockGasLimit, newTx } = this.state
+  const { gas, gasPrice } = newTx
 
   console.log({ selectedIdentity, identities })
   console.log("SendTransactionScreen state:", this.state)
@@ -245,7 +246,7 @@ SendTransactionScreen.prototype.render = function () {
           h('div.large-input.send-screen-gas-input', {}, [
             currentCurrency === 'USD'
             ? h(FiatValue, {
-              value: getTxFeeBn(this.state.newTx.gas.toString(16), this.state.newTx.gasPrice.toString(16), blockGasLimit).toString(16),
+              value: getTxFeeBn(gas, gasPrice, blockGasLimit),
               conversionRate,
               currentCurrency,
               style: {
@@ -256,7 +257,7 @@ SendTransactionScreen.prototype.render = function () {
               }
             })
             : h(EthBalance, {
-                value: getTxFeeBn(this.state.newTx.gas.toString(16), this.state.newTx.gasPrice.toString(16), blockGasLimit).toString(16),
+                value: getTxFeeBn(gas, gasPrice, blockGasLimit),
                 currentCurrency,
                 conversionRate,
                 showFiat: false,
@@ -277,8 +278,8 @@ SendTransactionScreen.prototype.render = function () {
 
           this.state.tooltipIsOpen && h(GasTooltip, {
             className: 'send-tooltip',
-            gasPrice: parseInt(this.state.newTx.gasPrice, 16),
-            gasLimit: parseInt(this.state.newTx.gas, 16),
+            gasPrice,
+            gasLimit: gas,
             onClose: this.closeTooltip,
             onFeeChange: ({gasLimit, gasPrice}) => {
               this.setState({

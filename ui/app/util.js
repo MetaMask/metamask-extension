@@ -233,6 +233,7 @@ function bnMultiplyByFraction (targetBN, numerator, denominator) {
 }
 
 function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
+  // Gas Limit
   const gasBn = hexToBn(gas)
   const gasLimit = new ethUtil.BN(parseInt(blockGasLimit))
   const safeGasLimit = bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
@@ -240,9 +241,6 @@ function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimi
   // Gas Price
   const gasPriceBn = hexToBn(gasPrice)
   const txFeeBn = gasBn.mul(gasPriceBn)
-  
-  const fiatMultiplier = hexToBn((1000000000).toString(16))
-  const txFeeAsFiatBn = txFeeBn.mul(fiatMultiplier)
 
-  return txFeeAsFiatBn;
+  return txFeeBn.toString(16);
 }
