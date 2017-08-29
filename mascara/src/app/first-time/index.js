@@ -5,6 +5,7 @@ import UniqueImageScreen from './unique-image-screen'
 import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
+import BuyEtherScreen from './buy-ether-screen'
 
 class FirstTimeFlow extends Component {
 
@@ -45,7 +46,7 @@ class FirstTimeFlow extends Component {
     const {isInitialized, seedWords, noActiveNotices} = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
 
-    // return SCREEN_TYPE.IMPORT_ACCOUNT
+    return SCREEN_TYPE.BUY_ETHER
 
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
@@ -94,6 +95,12 @@ class FirstTimeFlow extends Component {
         return (
           <BackupPhraseScreen
             next={() => this.setScreenType(SCREEN_TYPE.BUY_ETHER)}
+          />
+        )
+      case SCREEN_TYPE.BUY_ETHER:
+        return (
+          <BuyEtherScreen
+            
           />
         )
       default:
