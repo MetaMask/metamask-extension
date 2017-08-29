@@ -7,7 +7,8 @@ const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const EthBalance = require('./components/eth-balance')
 const EnsInput = require('./components/ens-input')
 const FiatValue = require('./components/fiat-value')
-const GasTooltip = require('./components/gas-tooltip')
+const GasTooltip = require('./components/send/gas-tooltip')
+const CurrencyToggle = require('./components/send/currency-toggle')
 const { getSelectedIdentity } = require('./selectors')
 
 const {
@@ -210,17 +211,10 @@ SendTransactionScreen.prototype.render = function () {
 
           h('div.send-screen-amount-labels', {}, [
             h('span', {}, ['Amount']),
-            h('span', {}, [
-              h('span', {
-                className: currentCurrency === 'ETH' ? 'selected-currency' : 'unselected-currency',
-                onClick: () => this.setCurrentCurrency('ETH') 
-              }, ['ETH']),
-              '<>',
-              h('span', {
-                className: currentCurrency === 'USD' ? 'selected-currency' : 'unselected-currency',
-                onClick: () => this.setCurrentCurrency('USD'), 
-              }, ['USD']),
-            ]), //holding on icon from design
+            h(CurrencyToggle, {
+              currentCurrency,
+              onClick: (newCurrency) => this.setCurrentCurrency(newCurrency)
+            }), //holding on icon from design
           ]),
 
           h('input.large-input.send-screen-input', {
