@@ -46,7 +46,7 @@ class FirstTimeFlow extends Component {
     const {isInitialized, seedWords, noActiveNotices} = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
 
-    return SCREEN_TYPE.BUY_ETHER
+    // return SCREEN_TYPE.IMPORT_ACCOUNT
 
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
@@ -100,7 +100,7 @@ class FirstTimeFlow extends Component {
       case SCREEN_TYPE.BUY_ETHER:
         return (
           <BuyEtherScreen
-            
+
           />
         )
       default:

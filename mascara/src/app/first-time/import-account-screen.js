@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import classnames from 'classnames'
-import {importNewAccount} from '../../../../ui/app/actions'
+import {importNewAccount, hideWarning} from '../../../../ui/app/actions'
 import {connect} from 'react-redux';
 
 const Input = ({ label, placeholder, onChange, errorMessage, type = 'text' }) => (
@@ -29,6 +29,7 @@ class ImportAccountScreen extends Component {
     back: PropTypes.func.isRequired,
     next: PropTypes.func.isRequired,
     importNewAccount: PropTypes.func.isRequired,
+    hideWarning: PropTypes.func.isRequired,
   };
 
   state = {
@@ -152,7 +153,10 @@ class ImportAccountScreen extends Component {
           <select
             className="import-account__dropdown"
             value={selectedOption}
-            onChange={e => this.setState({ selectedOption: e.target.value })}
+            onChange={e => {
+              this.setState({ selectedOption: e.target.value })
+              this.props.hideWarning()
+            }}
           >
             <option value={OPTIONS.PRIVATE_KEY}>Private Key</option>
             <option value={OPTIONS.JSON_FILE}>JSON File</option>
@@ -180,6 +184,7 @@ class ImportAccountScreen extends Component {
 export default connect(
   ({ appState: { isLoading, warning } }) => ({ isLoading, warning }),
   dispatch => ({
-    importNewAccount: (strategy, args) => dispatch(importNewAccount(strategy, args))
+    importNewAccount: (strategy, args) => dispatch(importNewAccount(strategy, args)),
+    hideWarning: () => dispatch(hideWarning()),
   })
 )(ImportAccountScreen)
