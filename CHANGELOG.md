@@ -4,6 +4,7 @@
 
 - Make eth_sign deprecation warning less noisy
 - Fix bug with network version serialization over synchronous RPC
+- Add MetaMask version to state logs.
 
 ## 3.9.11 2017-8-24
 
