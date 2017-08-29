@@ -69,7 +69,7 @@ function SendTransactionScreen () {
       from: '',
       to: '',
       // these values are hardcoded, so "Next" can be clicked
-      amount: '0.0001', // see L544
+      amount: '0x0', // see L544
       gasPrice: '0x5d21dba00',
       gas: '0x7b0d',
       txData: null,
@@ -98,6 +98,7 @@ SendTransactionScreen.prototype.render = function () {
     conversionRate,
     currentCurrency,
   } = props
+
   const { blockGasLimit, newTx } = this.state
   const { gas, gasPrice } = newTx
 
@@ -141,16 +142,14 @@ SendTransactionScreen.prototype.render = function () {
           h('input.large-input.send-screen-input', {
             list: 'accounts',
             placeholder: 'Account',
-            value: this.state.from,
+            value: this.state.newTx.from,
             onChange: (event) => {
               console.log('event', event.target.value)
               this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    from: event.target.value,
-                  }
-                ),
+                newTx: {
+                  ...this.state.newTx,
+                  from: event.target.value,
+                },
               })
             },
           }, [
@@ -175,24 +174,61 @@ SendTransactionScreen.prototype.render = function () {
             'To:',
           ]),
 
-          h(EnsInput, {
+          h('input.large-input.send-screen-input', {
             name: 'address',
-            placeholder: 'Recipient Address',
-            onChange: () => {
+            list: 'addresses',
+            placeholder: 'Address',
+            value: this.state.newTx.to,
+            onChange: (event) => {
               console.log('event', event.target.value)
               this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    to: event.target.value,
-                  }
-                ),
+                newTx: {
+                  ...this.state.newTx,
+                  to: event.target.value,
+                },
               })
             },
-            network,
-            identities,
-            addressBook,
-          }),
+          }, [
+          ]),
+
+          h('datalist#addresses', {}, [
+            // Corresponds to the addresses owned.
+            Object.keys(props.identities).map((key) => {
+              const identity = props.identities[key]
+              return h('option', {
+                value: identity.address,
+                label: identity.name,
+                key: identity.address,
+              })
+            }),
+            // Corresponds to previously sent-to addresses.
+            props.addressBook.map((identity) => {
+              return h('option', {
+                value: identity.address,
+                label: identity.name,
+                key: identity.address,
+              })
+            }),
+          ]),
+
+          // h(EnsInput, {
+          //   name: 'address',
+          //   placeholder: 'Recipient Address',
+          //   value: this.state.newTx.to,
+          //   onChange: (event) => {
+          //     this.setState({
+          //       newTx: Object.assign(
+          //         this.state.newTx,
+          //         {
+          //           to: event.target.value,
+          //         }
+          //       ),
+          //     })
+          //   },
+          //   network,
+          //   identities,
+          //   addressBook,
+          // }),
 
         ]),
 
@@ -209,7 +245,7 @@ SendTransactionScreen.prototype.render = function () {
           h('input.large-input.send-screen-input', {
             placeholder: '0 ETH',
             type: 'number',
-            onChange: () => {
+            onChange: (event) => {
               this.setState({
                 newTx: Object.assign(
                   this.state.newTx,
@@ -631,23 +667,15 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(addToAddressBook(recipient, nickname))
 
-  // var txParams = {
-  //   // from: this.props.address,
-  //   from: this.state.newTx.to,
-
-  //   // value: '0x' + value.toString(16),
-  //   value: '0x38d7ea4c68000', // hardcoded
-
-  //   // New: gas will now be specified on this step
-  //   gas: this.state.newTx.gas,
-  //   gasPrice: this.state.newTx.gasPrice
-  // }
-
-  // Hardcoded
   var txParams = {
-    from: '0x82df11beb942beeed58d466fcb0f0791365c7684',
-    to: '0xa43126b621db5b4fd98f959d9e5499f655913d34',
-    value: '0x0',
+    from: this.state.newTx.from,
+    to: this.state.newTx.to,
+
+    value: this.state.newTx.amount.toString(16),
+
+    // New: gas will now be specified on this step
+    gas: this.state.newTx.gas,
+    gasPrice: this.state.newTx.gasPrice
   }
 
   if (recipient) txParams.to = addHexPrefix(recipient)
