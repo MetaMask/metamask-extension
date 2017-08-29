@@ -11,7 +11,6 @@
   @media screen and (max-width: $break-small) {
     top: 33px;
   }
-
 }
 
 .send-screen-card {
@@ -22,7 +21,7 @@
   margin-left: 3.5%;
   margin-right: 3.5%;
   background: $white;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
 }
 
 /* Send Screen */
@@ -41,7 +40,7 @@
   width: 45px;
   height: 45px;
   border: 1px solid $alto;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
 }
 
 .send-screen-input-wrapper {
@@ -58,7 +57,7 @@
   height: 41px;
   border-radius: 3px;
   background-color: #f3f3f3;
-  border-width: 0px;
+  border-width: 0;
   border-style: none;
   display: flex;
   justify-content: space-between;
@@ -109,40 +108,38 @@
   bottom: 50px;
   width: 237px;
   height: 307px;
-  background-color: white;
+  background-color: $white;
   opacity: 1;
-  box-shadow: grey 0px 0px 5px;
+  box-shadow: $alto 0 0 5px;
   z-index: 1050;
   padding: 13px 19px;
   font-size: 16px;
   border-radius: 4px;
   font-family: 'Lato';
-  font-weigth: 500;
+  font-weight: 500;
 }
 
 .gas-tooltip-arrow {
   height: 25px;
   width: 25px;
   z-index: 1200;
-  background: white;
+  background: $white;
   position: absolute;
-  -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
   left: 107px;
   top: 294px;
-  -webkit-box-shadow: 0 0 5px grey;
   box-shadow: 2px 2px 2px $alto;
 }
 
-.customize-gas-tooltip-container input[type=number]::-webkit-inner-spin-button { 
-    -webkit-appearance: none;
-    display:none;
+.customize-gas-tooltip-container input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
 }
 
-.customize-gas-tooltip-container input[type=number]:hover::-webkit-inner-spin-button { 
-    -webkit-appearance: none;
-    display:none;
-}  
+.customize-gas-tooltip-container input[type="number"]:hover::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  display: none;
+}
 
 .customize-gas-tooltip {
   position: relative;
@@ -194,15 +191,15 @@
 
 .gas-tooltip-input-arrows {
   position: absolute;
-  top: 0px;
+  top: 0;
   left: 178px;
   width: 17px;
   height: 28px;
   border: 1px solid #dadada;
-  border-left: 0px;
+  border-left: 0;
   display: flex;
   flex-direction: column;
   color: #9b9b9b;
-  font-size: 0.8em;
+  font-size: .8em;
   padding: 1px 4px;
 }

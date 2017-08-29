@@ -152,7 +152,7 @@
   width: 33%;
   height: 45px;
   margin: 15px;
-  font-weight: bold;
+  font-weight: 700;
   margin-top: 25px;
 }
 
@@ -172,7 +172,7 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
-  padding: 5px 0px;
+  padding: 5px 0;
   border-radius: 4px;
 }
 
@@ -188,7 +188,7 @@
   display: flex;
   justify-content: center;
   border: 1px solid $alto;
-  padding: 5px 10px 5px 10px;
+  padding: 5px 10px;
 }
 
 .account-details-modal-wrapper .btn-clear {
@@ -196,7 +196,6 @@
   font-size: 1em;
   border-color: $curious-blue;
   color: $curious-blue;
-  padding: 0px;
   border-radius: 2px;
   flex-basis: 100%;
   width: 75%;
@@ -208,7 +207,7 @@
 .account-details-modal-divider {
   width: 100%;
   height: 1px;
-  margin: 10px 0px;
+  margin: 10px 0;
   background-color: $alto;
 }
 
@@ -216,13 +215,13 @@
   margin-top: -55.5%;
 }
 
-.account-details-modal-close:after {
-    content: '\00D7';
-    font-size: 1.5em;
-    color: grey;
-    position: absolute;
-    top: 5px;
-    right: 10px;
+.account-details-modal-close::after {
+  content: '\00D7';
+  font-size: 1.5em;
+  color: $alto;
+  position: absolute;
+  top: 5px;
+  right: 10px;
 }
 
 // New Account Modal
@@ -246,14 +245,14 @@
   color: $nile-blue;
 }
 
-.modal-close-x:after {
-    content: '\00D7';
-    font-size: 2em;
-    color: $dusty-gray;
-    position: absolute;
-    top: 25px;
-    right: 17.5px;
-    font-family: sans-serif;
+.modal-close-x::after {
+  content: '\00D7';
+  font-size: 2em;
+  color: $dusty-gray;
+  position: absolute;
+  top: 25px;
+  right: 17.5px;
+  font-family: sans-serif;
 }
 
 .new-account-modal-content {
@@ -283,26 +282,30 @@
   border: 1px solid $alto;
   width: 70%;
   font-size: 1em;
-  font-color: $alto;
+  color: $alto;
 }
 
 // For reference on below placeholder selectors: https://stackoverflow.com/questions/2610497/change-an-html5-inputs-placeholder-color-with-css
 .new-account-input::-webkit-input-placeholder {
-    color: $dusty-gray;
+  color: $dusty-gray;
 }
+
 .new-account-input:-moz-placeholder {
-   color: $dusty-gray;
-   opacity: 1;
+  color: $dusty-gray;
+  opacity: 1;
 }
+
 .new-account-input::-moz-placeholder {
-   color: $dusty-gray;
-   opacity: 1;
+  color: $dusty-gray;
+  opacity: 1;
 }
+
 .new-account-input:-ms-input-placeholder {
-   color: $dusty-gray;
+  color: $dusty-gray;
 }
+
 .new-account-input::-ms-input-placeholder {
-   color: $dusty-gray;
+  color: $dusty-gray;
 }
 
 .new-account-modal-content.button {
@@ -311,7 +314,7 @@
 
 .new-account-modal-wrapper .btn-clear {
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
   background: $white;
   border: 1px solid;
   border-radius: 2px;

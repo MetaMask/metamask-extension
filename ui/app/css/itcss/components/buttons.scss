@@ -27,10 +27,11 @@ button.btn-clear {
 //   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
 // }
 
-button[disabled], input[type="submit"][disabled] {
+button[disabled],
+input[type="submit"][disabled] {
   cursor: not-allowed;
   background: rgba(197, 197, 197, 1);
-  box-shadow: 0px 3px 6px rgba(197, 197, 197, 0.36);
+  box-shadow: 0 3px 6px rgba(197, 197, 197, .36);
 }
 
 // button.spaced {
