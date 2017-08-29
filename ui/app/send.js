@@ -67,12 +67,9 @@ function SendTransactionScreen () {
   }
 
   this.back = this.back.bind(this)
-  this.back = this.back.bind(this)
   this.closeTooltip = this.closeTooltip.bind(this)
   this.onSubmit = this.onSubmit.bind(this)
-  this.onSubmit = this.onSubmit.bind(this)
   this.recipientDidChange = this.recipientDidChange.bind(this)
-  this.setCurrentCurrency = this.setCurrentCurrency.bind(this)
   this.setCurrentCurrency = this.setCurrentCurrency.bind(this)
   this.toggleTooltip = this.toggleTooltip.bind(this)
 }
@@ -232,13 +229,11 @@ SendTransactionScreen.prototype.render = function () {
             onClose: this.closeTooltip,
             onFeeChange: ({gasLimit, gasPrice}) => {
               this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    gas: gasLimit,
-                    gasPrice,
-                  }
-                ),
+                newTx: {
+                  ...this.state.newTx,
+                  gas: gasLimit,
+                  gasPrice,
+                },
               })
             }
           }),
@@ -287,7 +282,7 @@ SendTransactionScreen.prototype.render = function () {
                 }
             }),
             h('div.send-screen-gas-input-customize', {
-              onClick: () => this.toggleTooltip.bind(this)(!this.state.tooltipIsOpen),
+              onClick: this.toggleTooltip,
             }, [
               'Customize'
             ]),

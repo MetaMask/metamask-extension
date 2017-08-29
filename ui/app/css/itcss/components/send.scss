@@ -148,6 +148,11 @@
   position: relative;
 }
 
+.gas-tooltip {
+  display: flex;
+  justify-content: center;
+}
+
 .gas-tooltip-label {
   font-size: 16px;
   color: $tundora;

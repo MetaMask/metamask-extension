@@ -59,12 +59,7 @@ GasTooltip.prototype.render = function () {
   const { position, title, children, className } = this.props
   const { gasPrice, gasLimit } = this.state
 
-  return h('div', {
-    style: {
-      display: 'flex',
-      justifyContent: 'center',
-    }
-  }, [
+  return h('div.gas-tooltip', {}, [
     h('div.gas-tooltip-close-area', {
       onClick: this.onClose
     }),
