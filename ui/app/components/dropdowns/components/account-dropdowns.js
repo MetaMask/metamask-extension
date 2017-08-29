@@ -25,7 +25,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, accounts, selected, menuItemStyles, dropdownWrapperStyle, actions } = this.props
+    const { identities, accounts, selected, menuItemStyles, actions } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
@@ -57,13 +57,13 @@ class AccountDropdowns extends Component {
                 flex: '1 1 0',
                 minWidth: '20px',
                 minHeight: '30px',
-              }
+              },
             }, [
               h('span', {
                 style: {
                   flex: '1 1 auto',
                   fontSize: '14px',
-                }
+                },
               }, isSelected ? h('i.fa.fa-check') : null),
             ]),
 
@@ -86,7 +86,7 @@ class AccountDropdowns extends Component {
                 alignItems: 'flex-start',
                 justifyContent: 'center',
                 marginLeft: '10px',
-              }
+              },
             }, [
               h('span.account-dropdown-name', {
                 style: {
@@ -102,7 +102,7 @@ class AccountDropdowns extends Component {
                 style: {
                   fontSize: '14px',
                 },
-              }, formattedBalance)
+              }, formattedBalance),
             ]),
 
             h('span', {
@@ -119,17 +119,17 @@ class AccountDropdowns extends Component {
                 },
               }, [
                 'Edit',
-              ])
+              ]),
             ]),
 
-          ])
+          ]),
         ]
       )
     })
   }
 
   renderAccountSelector () {
-    const { actions, dropdownWrapperStyle, useCssTransition, innerStyle } = this.props
+    const { actions, useCssTransition, innerStyle } = this.props
     const { accountSelectorActive, menuItemStyles } = this.state
 
     return h(
@@ -323,7 +323,7 @@ class AccountDropdowns extends Component {
   }
 
   render () {
-    const { style, enableAccountsSelector, enableAccountOptions, dropdownWrapperStyle } = this.props
+    const { style, enableAccountsSelector, enableAccountOptions } = this.props
     const { optionsMenuActive, accountSelectorActive } = this.state
 
     return h(

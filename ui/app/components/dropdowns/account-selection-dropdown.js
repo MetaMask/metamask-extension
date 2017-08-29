@@ -12,6 +12,7 @@ module.exports = AccountSelectionDropdown
 
 // TODO: specify default props and proptypes
 // TODO: hook up to state, connect to redux to clean up API
+// TODO: selectedAddress is not defined... should we use selected?
 AccountSelectionDropdown.prototype.render = function () {
   const { selected, network, identities, style, dropdownWrapperStyle, menuItemStyles } = this.props
 
@@ -21,8 +22,8 @@ AccountSelectionDropdown.prototype.render = function () {
     selected: selectedAddress,
     network,
     identities,
-    style: !!style ? style : {},
-    dropdownWrapperStyle: !!dropdownWrapperStyle ? dropdownWrapperStyle : {},
-    menuItemStyles: !!menuItemStyles ? menuItemStyles : {},
+    style: style || {},
+    dropdownWrapperStyle: dropdownWrapperStyle || {},
+    menuItemStyles: menuItemStyles || {},
   }, [])
 }

@@ -5,15 +5,10 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
 const valuesFor = require('./util').valuesFor
-const Identicon = require('./components/identicon')
-const EthBalance = require('./components/eth-balance')
 const TransactionList = require('./components/transaction-list')
 const ExportAccountView = require('./components/account-export')
-const ethUtil = require('ethereumjs-util')
-const EditableLabel = require('./components/editable-label')
 const TabBar = require('./components/tab-bar')
 const TokenList = require('./components/token-list')
-const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
 
 module.exports = connect(mapStateToProps)(AccountDetailScreen)
 

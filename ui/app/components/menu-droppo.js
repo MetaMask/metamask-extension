@@ -19,7 +19,7 @@ MenuDroppoComponent.prototype.render = function () {
 
   this.manageListeners()
 
-  let style = this.props.style || {}
+  const style = this.props.style || {}
   if (!('position' in style)) {
     style.position = 'fixed'
   }

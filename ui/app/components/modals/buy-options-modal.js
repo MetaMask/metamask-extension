@@ -18,7 +18,7 @@ function mapDispatchToProps (dispatch) {
     },
     hideModal: () => {
       dispatch(actions.hideModal())
-    }
+    },
   }
 }
 
@@ -71,7 +71,7 @@ BuyOptions.prototype.render = function () {
           background: 'white',
         },
         onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text',{}, 'Cancel')),
-    ])
+      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, 'Cancel')),
+    ]),
   ])
 }

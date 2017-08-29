@@ -30,7 +30,7 @@ AccountAndTransactionDetails.prototype.render = function () {
     // transaction
     h(TxView, {
       style: {
-      }
+      },
     }, [
     ]),
   ])

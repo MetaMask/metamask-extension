@@ -5,7 +5,6 @@ const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const actions = require('../actions')
 
-const WalletView = require('./wallet-view')
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
 const Identicon = require('./identicon')

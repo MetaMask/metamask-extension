@@ -38,14 +38,14 @@ NewAccountModal.prototype.render = function () {
       ]),
 
       h('div.modal-close-x', {}),
-      
+
       h('div.new-account-modal-content', {}, [
         'Account Name',
       ]),
 
       h('div.new-account-input-wrapper', {}, [
         h('input.new-account-input', {
-          placeholder: 'E.g. My new account'
+          placeholder: 'E.g. My new account',
         }, []),
       ]),
 
@@ -62,6 +62,6 @@ NewAccountModal.prototype.render = function () {
           'SAVE',
         ]),
       ]),
-    ])
+    ]),
   ])
 }

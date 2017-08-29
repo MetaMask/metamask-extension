@@ -4,7 +4,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
-const Content = require('./wallet-content-display')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const selectors = require('../selectors')
@@ -26,8 +25,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showSendPage: () => {dispatch(actions.showSendPage())},
-    hideSidebar: () => {dispatch(actions.hideSidebar())},
+    showSendPage: () => { dispatch(actions.showSendPage()) },
+    hideSidebar: () => { dispatch(actions.hideSidebar()) },
   }
 }
 
@@ -36,12 +35,10 @@ function WalletView () {
   Component.call(this)
 }
 
-const noop = () => {}
-
 WalletView.prototype.render = function () {
-  const { network, responsiveDisplayClassname, style, identities, selectedAddress, selectedAccount, accounts, selectedIdentity } = this.props
+  const { network, responsiveDisplayClassname, identities, selectedAddress, selectedAccount, accounts, selectedIdentity } = this.props
   // temporary logs + fake extra wallets
-  console.log("walletview, selectedAccount:", selectedAccount)
+  console.log('walletview, selectedAccount:', selectedAccount)
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},
@@ -49,7 +46,7 @@ WalletView.prototype.render = function () {
 
     // TODO: Separate component: wallet account details
     h('div.flex-column.wallet-view-account-details', {
-      style: {}
+      style: {},
     }, [
 
       h('div.flex-row.account-options-menu', {
@@ -68,12 +65,12 @@ WalletView.prototype.render = function () {
             padding: '1px 15px',
             marginLeft: '-25px',
             position: 'absolute',
-            width: '122%', //TODO, refactor all of this component out into media queries
+            width: '122%', // TODO, refactor all of this component out into media queries
           },
           menuItemStyles: {
             padding: '0px 0px',
             margin: '22px 0px',
-          }
+          },
         }, []),
 
       ]),
@@ -83,7 +80,7 @@ WalletView.prototype.render = function () {
         h('div', {
           style: {
             position: 'relative',
-          }
+          },
         }, [
           h(AccountDropdowns, {
             accounts,
@@ -109,23 +106,23 @@ WalletView.prototype.render = function () {
         }),
 
         h('span.account-name', {
-          style: {}
+          style: {},
         }, [
-          selectedIdentity.name
+          selectedIdentity.name,
         ]),
 
       ]),
     ]),
 
-    //'Wallet' - Title
+    // 'Wallet' - Title
     // Not visible on mobile
     h('div.flex-column.wallet-view-title-wrapper', {}, [
       h('span.wallet-view-title', {}, [
         'Wallet',
-      ])
+      ]),
     ]),
 
-    //Wallet Balances
+    // Wallet Balances
     h('div.flex-column.wallet-balance-wrapper.wallet-balance-wrapper-active', {}, [
 
         h('div.wallet-balance', {}, [

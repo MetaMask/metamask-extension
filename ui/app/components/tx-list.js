@@ -6,8 +6,6 @@ const selectors = require('../selectors')
 const Identicon = require('./identicon')
 const { formatBalance, formatDate } = require('../util')
 
-const valuesFor = require('../util').valuesFor
-
 module.exports = connect(mapStateToProps)(TxList)
 
 function mapStateToProps (state) {
@@ -28,7 +26,7 @@ const contentDivider = h('div.tx-list-content-divider', {
 
 TxList.prototype.render = function () {
 
-  const { txsToRender, conversionRate } = this.props
+  const { txsToRender } = this.props
 
   console.log('transactions to render', txsToRender)
 
@@ -42,7 +40,7 @@ TxList.prototype.render = function () {
       }, [
 
         h('div', {
-          style: {}
+          style: {},
         }, 'TRANSACTIONS'),
 
       ]),
@@ -69,41 +67,41 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
   const { address, transactionStatus, transactionAmount, dateString } = props
 
   return h('div.flex-column.tx-list-item-wrapper', {
-    style: {}
+    style: {},
   }, [
 
     h('div.tx-list-date-wrapper', {
-      style: {}
+      style: {},
     }, [
       h('span.tx-list-date', {}, [
         dateString,
-      ])
+      ]),
     ]),
 
     h('div.flex-row.tx-list-content-wrapper', {
-      style: {}
+      style: {},
     }, [
 
       h('div.tx-list-identicon-wrapper', {
-        style: {}
+        style: {},
       }, [
         h(Identicon, {
           address,
           diameter: 24,
-        })
+        }),
       ]),
 
       h('div.tx-list-account-and-status-wrapper', {}, [
         h('div.tx-list-account-wrapper', {
-          style: {}
+          style: {},
         }, [
           h('span.tx-list-account', {}, [
-            `${address.slice(0, 10)}...${address.slice(-4)}`
+            `${address.slice(0, 10)}...${address.slice(-4)}`,
           ]),
         ]),
 
         h('div.tx-list-status-wrapper', {
-          style: {}
+          style: {},
         }, [
           h('span.tx-list-status', {}, [
             transactionStatus,
@@ -112,7 +110,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
       ]),
 
       h('div.flex-column.tx-list-details-wrapper', {
-        style: {}
+        style: {},
       }, [
 
         h('span.tx-list-value', {}, [
@@ -124,7 +122,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
         ]),
 
       ]),
-    ])
+    ]),
   ])
 }
 

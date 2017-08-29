@@ -3,9 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const NetworkIndicator = require('./components/network')
 const txHelper = require('../lib/tx-helper')
-const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
 
 const PendingTx = require('./components/pending-tx')
 const PendingMsg = require('./components/pending-msg')
@@ -39,15 +37,13 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs, currentCurrency,
-    unapprovedMsgs, unapprovedPersonalMsgs, conversionRate, blockGasLimit } = props
+  const { network, unapprovedTxs, currentCurrency, unapprovedMsgs,
+    unapprovedPersonalMsgs, conversionRate, blockGasLimit } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
 
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
-  var isNotification = isPopupOrNotification() === 'notification'
-
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
@@ -149,14 +145,14 @@ ConfirmTxScreen.prototype.goHome = function (event) {
   this.props.dispatch(actions.goHome())
 }
 
-function warningIfExists (warning) {
-  if (warning &&
-     // Do not display user rejections on this screen:
-     warning.indexOf('User denied transaction signature') === -1) {
-    return h('.error', {
-      style: {
-        margin: 'auto',
-      },
-    }, warning)
-  }
-}
+// function warningIfExists (warning) {
+//   if (warning &&
+//      // Do not display user rejections on this screen:
+//      warning.indexOf('User denied transaction signature') === -1) {
+//     return h('.error', {
+//       style: {
+//         margin: 'auto',
+//       },
+//     }, warning)
+//   }
+// }

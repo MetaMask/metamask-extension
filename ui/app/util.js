@@ -2,6 +2,10 @@ const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const vreme = new (require('vreme'))()
 
+const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
+const GWEI_FACTOR = new ethUtil.BN(1e9)
+const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+
 // formatData :: ( date: <Unix Timestamp> ) -> String
 function formatDate (date) {
   return vreme.format(new Date(date), 'March 16 2014 14:30')
@@ -233,14 +237,9 @@ function bnMultiplyByFraction (targetBN, numerator, denominator) {
 }
 
 function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
-  // Gas Limit
   const gasBn = hexToBn(gas)
-  const gasLimit = new ethUtil.BN(parseInt(blockGasLimit))
-  const safeGasLimit = bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
-
-  // Gas Price
   const gasPriceBn = hexToBn(gasPrice)
   const txFeeBn = gasBn.mul(gasPriceBn)
 
-  return txFeeBn.toString(16);
+  return txFeeBn.toString(16)
 }

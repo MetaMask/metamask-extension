@@ -10,31 +10,32 @@ const selectors = {
 
 module.exports = selectors
 
-function getSelectedAddress(state) {
+function getSelectedAddress (state) {
+  // TODO: accounts is not defined. Is it needed?
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
 
   return selectedAddress
 }
 
-function getSelectedIdentity(state) {
+function getSelectedIdentity (state) {
   const selectedAddress = getSelectedAddress(state)
   const identities = state.metamask.identities
 
   return identities[selectedAddress]
 }
 
-function getSelectedAccount(state) {
+function getSelectedAccount (state) {
   const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
 }
 
-function conversionRateSelector(state) {
+function conversionRateSelector (state) {
   return state.metamask.conversionRate
 }
 
-function transactionsSelector(state) {
+function transactionsSelector (state) {
   const { network } = state.metamask
   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined

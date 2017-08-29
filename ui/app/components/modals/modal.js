@@ -80,7 +80,7 @@ const MODALS = {
     contents: [],
     mobileModalStyle: {},
     laptopModalStyle: {},
-  }
+  },
 }
 
 const BACKDROPSTYLE = {
@@ -120,7 +120,7 @@ Modal.prototype.render = function () {
     {
       className: 'modal',
       keyboard: false,
-      onHide: () => {this.onHide()},
+      onHide: () => { this.onHide() },
       ref: (ref) => {
         this.modalRef = ref
       },
@@ -131,7 +131,7 @@ Modal.prototype.render = function () {
   )
 }
 
-Modal.prototype.componentWillReceiveProps = function(nextProps) {
+Modal.prototype.componentWillReceiveProps = function (nextProps) {
   if (nextProps.active) {
     this.show()
   } else if (this.props.active) {
@@ -139,17 +139,17 @@ Modal.prototype.componentWillReceiveProps = function(nextProps) {
   }
 }
 
-Modal.prototype.onHide = function() {
+Modal.prototype.onHide = function () {
   if (this.props.onHideCallback) {
     this.props.onHideCallback()
   }
   this.props.hideModal()
 }
 
-Modal.prototype.hide = function() {
+Modal.prototype.hide = function () {
   this.modalRef.hide()
 }
 
-Modal.prototype.show = function() {
+Modal.prototype.show = function () {
   this.modalRef.show()
 }
