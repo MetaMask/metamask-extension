@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const InputNumber = require('./input-number.js')
+const InputNumber = require('../input-number.js')
 const findDOMNode = require('react-dom').findDOMNode
 
 module.exports = GasTooltip
