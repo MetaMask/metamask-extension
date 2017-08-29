@@ -310,18 +310,25 @@ function importNewAccount (strategy, args) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     log.debug(`background.importAccountWithStrategy`)
-    background.importAccountWithStrategy(strategy, args, (err) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
-      log.debug(`background.getState`)
-      background.getState((err, newState) => {
-        dispatch(actions.hideLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.importAccountWithStrategy(strategy, args, (err) => {
         if (err) {
-          return dispatch(actions.displayWarning(err.message))
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
         }
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch({
-          type: actions.SHOW_ACCOUNT_DETAIL,
-          value: newState.selectedAddress,
+        log.debug(`background.getState`)
+        background.getState((err, newState) => {
+          dispatch(actions.hideLoadingIndication())
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+            return reject(err)
+          }
+          dispatch(actions.updateMetamaskState(newState))
+          dispatch({
+            type: actions.SHOW_ACCOUNT_DETAIL,
+            value: newState.selectedAddress,
+          })
+          resolve(newState)
         })
       })
     })

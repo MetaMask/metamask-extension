@@ -4,6 +4,7 @@ import CreatePasswordScreen from './create-password-screen'
 import UniqueImageScreen from './unique-image-screen'
 import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
+import ImportAccountScreen from './import-account-screen'
 
 class FirstTimeFlow extends Component {
 
@@ -21,6 +22,7 @@ class FirstTimeFlow extends Component {
 
   static SCREEN_TYPE = {
     CREATE_PASSWORD: 'create_password',
+    IMPORT_ACCOUNT: 'import_account',
     UNIQUE_IMAGE: 'unique_image',
     NOTICE: 'notice',
     BACK_UP_PHRASE: 'back_up_phrase',
@@ -43,7 +45,7 @@ class FirstTimeFlow extends Component {
     const {isInitialized, seedWords, noActiveNotices} = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
 
-    // return SCREEN_TYPE.UNIQUE_IMAGE
+    // return SCREEN_TYPE.IMPORT_ACCOUNT
 
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
@@ -66,6 +68,14 @@ class FirstTimeFlow extends Component {
         return (
           <CreatePasswordScreen
             next={() => this.setScreenType(SCREEN_TYPE.UNIQUE_IMAGE)}
+            goToImportAccount={() => this.setScreenType(SCREEN_TYPE.IMPORT_ACCOUNT)}
+          />
+        )
+      case SCREEN_TYPE.IMPORT_ACCOUNT:
+        return (
+          <ImportAccountScreen
+            back={() => this.setScreenType(SCREEN_TYPE.CREATE_PASSWORD)}
+            next={() => this.setScreenType(SCREEN_TYPE.NOTICE)}
           />
         )
       case SCREEN_TYPE.UNIQUE_IMAGE:

@@ -8,6 +8,7 @@ class CreatePasswordScreen extends Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
     createAccount: PropTypes.func.isRequired,
+    goToImportAccount: PropTypes.func.isRequired,
     next: PropTypes.func.isRequired
   }
 
@@ -43,7 +44,7 @@ class CreatePasswordScreen extends Component {
   }
 
   render() {
-    const { isLoading } = this.props
+    const { isLoading, goToImportAccount } = this.props
 
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
@@ -74,7 +75,10 @@ class CreatePasswordScreen extends Component {
           <a
             href=""
             className="first-time-flow__link create-password__import-link"
-            onClick={e => e.preventDefault()}
+            onClick={e => {
+              e.preventDefault()
+              goToImportAccount()
+            }}
           >
             Import an account
           </a>
