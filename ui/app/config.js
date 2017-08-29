@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const currencies = require('./conversion.json').rows
+const infuraCurrencies = require('./infura-conversion.json').symbols
 const validUrl = require('valid-url')
 const copyToClipboard = require('copy-to-clipboard')
 
@@ -166,8 +166,8 @@ function currentConversionInformation (metamaskState, state) {
         state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
       defaultValue: currentCurrency,
-    }, currencies.map((currency) => {
-      return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)
+    }, infuraCurrencies.map((currency) => {
+      return h('option', {key: currency, value: currency}, currency)
     })
   ),
   ])
