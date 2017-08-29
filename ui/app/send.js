@@ -3,7 +3,6 @@ const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Identicon = require('./components/identicon')
-const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const EnsInput = require('./components/ens-input')
 const GasTooltip = require('./components/send/gas-tooltip')
 const CurrencyToggle = require('./components/send/currency-toggle')
@@ -19,13 +18,8 @@ const {
   addToAddressBook,
   signTx,
 } = require('./actions')
-const { stripHexPrefix, addHexPrefix, BN } = require('ethereumjs-util')
-const {
-  addressSummary,
-  bnMultiplyByFraction,
-  isHex,
-  numericBalance,
-} = require('./util')
+const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
+const { isHex, numericBalance } = require('./util')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
@@ -98,9 +92,6 @@ SendTransactionScreen.prototype.render = function () {
   const props = this.props
   const {
     selectedIdentity,
-    address,
-    account,
-    identity,
     network,
     identities,
     addressBook,
@@ -111,7 +102,7 @@ SendTransactionScreen.prototype.render = function () {
   const { gas, gasPrice } = newTx
 
   console.log({ selectedIdentity, identities })
-  console.log("SendTransactionScreen state:", this.state)
+  console.log('SendTransactionScreen state:', this.state)
 
   return (
 
@@ -121,7 +112,7 @@ SendTransactionScreen.prototype.render = function () {
 
       // Main Send token Card
       h('div.send-screen-card', {
-        style: {}
+        style: {},
       }, [
 
         h('img.send-eth-icon', {
@@ -130,7 +121,7 @@ SendTransactionScreen.prototype.render = function () {
         }),
 
         h('div', {}, [
-          'Send'
+          'Send',
         ]),
 
         h('div', {
@@ -138,13 +129,13 @@ SendTransactionScreen.prototype.render = function () {
             textAlign: 'center',
           },
         }, [
-          'Send Ethereum to anyone with an Ethereum account'
+          'Send Ethereum to anyone with an Ethereum account',
         ]),
 
         h('div.send-screen-input-wrapper', {}, [
 
           h('div', {}, [
-            'From:'
+            'From:',
           ]),
 
           h('input.large-input.send-screen-input', {
@@ -152,7 +143,7 @@ SendTransactionScreen.prototype.render = function () {
             placeholder: 'Account',
             value: this.state.from,
             onChange: (event) => {
-              console.log("event", event.target.value)
+              console.log('event', event.target.value)
               this.setState({
                 newTx: Object.assign(
                   this.state.newTx,
@@ -181,14 +172,14 @@ SendTransactionScreen.prototype.render = function () {
         h('div.send-screen-input-wrapper', {}, [
 
           h('div', {}, [
-            'To:'
+            'To:',
           ]),
 
           h(EnsInput, {
             name: 'address',
             placeholder: 'Recipient Address',
             onChange: () => {
-              console.log("event", event.target.value)
+              console.log('event', event.target.value)
               this.setState({
                 newTx: Object.assign(
                   this.state.newTx,
@@ -211,8 +202,8 @@ SendTransactionScreen.prototype.render = function () {
             h('span', {}, ['Amount']),
             h(CurrencyToggle, {
               currentCurrency,
-              onClick: (newCurrency) => this.setCurrentCurrency(newCurrency)
-            }), //holding on icon from design
+              onClick: (newCurrency) => this.setCurrentCurrency(newCurrency),
+            }), // holding on icon from design
           ]),
 
           h('input.large-input.send-screen-input', {
@@ -227,7 +218,7 @@ SendTransactionScreen.prototype.render = function () {
                   }
                 ),
               })
-            }
+            },
           }, []),
 
         ]),
@@ -277,10 +268,10 @@ SendTransactionScreen.prototype.render = function () {
             h('div.send-screen-gas-input-customize', {
               onClick: this.toggleTooltip,
             }, [
-              'Customize'
+              'Customize',
             ]),
           ]),
-
+          
         ]),
 
         h('div.send-screen-input-wrapper', {}, [
@@ -333,7 +324,7 @@ SendTransactionScreen.prototype.render = function () {
           style: {
             marginTop: '8px',
             width: '8em',
-            background: '#FFFFFF'
+            background: '#FFFFFF',
           },
         }, 'Next'),
 
@@ -358,14 +349,9 @@ SendTransactionScreen.prototype.renderSendToken = function () {
 
   const props = this.props
   const {
-    address,
-    account,
-    identity,
     network,
     identities,
     addressBook,
-    conversionRate,
-    currentCurrency,
   } = props
 
   return (
@@ -383,13 +369,13 @@ SendTransactionScreen.prototype.renderSendToken = function () {
           marginRight: '3.5%',
           background: '#FFFFFF', // $background-white
           boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
-        }
+        },
       }, [
         h('section.flex-center.flex-row', {
           style: {
             zIndex: 15, // $token-icon-z-index
             marginTop: '-35px',
-          }
+          },
         }, [
           h(Identicon, {
             address: ARAGON,
@@ -471,8 +457,8 @@ SendTransactionScreen.prototype.renderSendToken = function () {
               fontSize: '12px',
               width: '100%',
               justifyContent: 'space-between',
-            }
-          },[
+            },
+          }, [
             h('span', { style: {} }, ['Amount']),
             h('span', { style: {} }, ['Token <> USD']),
           ]),
@@ -498,8 +484,8 @@ SendTransactionScreen.prototype.renderSendToken = function () {
               fontSize: '12px',
               width: '100%',
               justifyContent: 'space-between',
-            }
-          },[
+            },
+          }, [
             h('span', { style: {} }, ['Gas Fee:']),
             h('span', { style: { fontSize: '8px' } }, ['What\'s this?']),
           ]),
@@ -529,8 +515,8 @@ SendTransactionScreen.prototype.renderSendToken = function () {
               fontSize: '12px',
               width: '100%',
               justifyContent: 'flex-start',
-            }
-          },[
+            },
+          }, [
             h('span', { style: {} }, ['Transaction Memo (optional)']),
           ]),
 
@@ -553,7 +539,7 @@ SendTransactionScreen.prototype.renderSendToken = function () {
           style: {
             marginTop: '8px',
             width: '8em',
-            background: '#FFFFFF'
+            background: '#FFFFFF',
           },
         }, 'Next'),
 
@@ -615,11 +601,10 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   // https://consensys.slack.com/archives/G1L7H42BT/p1503439134000169?thread_ts=1503438076.000411&cid=G1L7H42BT
   // From @kumavis: "not needed for MVP but we will end up adding it again so consider just adding it now"
-  const txData = false;
+  const txData = false
   // Must replace with memo data.
   // const txData = document.querySelector('input[name="txData"]').value
 
-  const balance = this.props.balance
   let message
 
   // if (value.gt(balance)) {
@@ -659,7 +644,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
   // }
 
   // Hardcoded
-  var txParams =  {
+  var txParams = {
     from: '0x82df11beb942beeed58d466fcb0f0791365c7684',
     to: '0xa43126b621db5b4fd98f959d9e5499f655913d34',
     value: '0x0',

@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const { inherits } = require('util')
 const {
   formatBalance,
-  generateBalanceObject
+  generateBalanceObject,
 } = require('../util')
 const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
@@ -58,7 +58,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
   const containerProps = hideTooltip ? {} : {
     position: 'bottom',
     title: `${ethNumber} ${ethSuffix}`,
-  };
+  }
 
   return (
     h(hideTooltip ? 'div' : Tooltip,

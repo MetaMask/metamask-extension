@@ -8,17 +8,10 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
-const MiniAccountPanel = require('./mini-account-panel')
-const Copyable = require('./copyable')
-const EthBalance = require('./eth-balance')
-const addressSummary = util.addressSummary
-const nameForAddress = require('../../lib/contract-namer')
-const BNInput = require('./bn-as-decimal-input')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
-const MIN_GAS_LIMIT_BN = new BN(21000)
 
 
 // Faked, for Icon
@@ -34,8 +27,8 @@ const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 //   actionButtons
 const sectionDivider = h('div', {
   style: {
-    height:'1px',
-    background:'#E7E7E7',
+    height: '1px',
+    background: '#E7E7E7',
   },
 })
 
@@ -43,8 +36,8 @@ const contentDivider = h('div', {
   style: {
     marginLeft: '16px',
     marginRight: '16px',
-    height:'1px',
-    background:'#E7E7E7',
+    height: '1px',
+    background: '#E7E7E7',
   },
 })
 
@@ -61,15 +54,13 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit } = props
+  const { blockGasLimit } = props
 
-  const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
   // Account Details
   const address = txParams.from || props.selectedAddress
-  const identity = props.identities[address] || { address: address }
   const account = props.accounts[address]
   const balance = account ? account.balance : '0x0'
 
@@ -79,8 +70,6 @@ PendingTx.prototype.render = function () {
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
-  const gasLimit = new BN(parseInt(blockGasLimit))
-  const safeGasLimit = this.bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
 
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
@@ -89,8 +78,6 @@ PendingTx.prototype.render = function () {
   const txFeeBn = gasBn.mul(gasPriceBn)
   const valueBn = hexToBn(txParams.value)
   const maxCost = txFeeBn.add(valueBn)
-
-  const dataLength = txParams.data ? (txParams.data.length - 2) / 2 : 0
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
@@ -112,13 +99,13 @@ PendingTx.prototype.render = function () {
           marginRight: '3.5%',
           background: '#FFFFFF', // $background-white
           boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
-        }
+        },
       }, [
         h('section.flex-center.flex-row', {
           style: {
             zIndex: 15, // $token-icon-z-index
             marginTop: '-35px',
-          }
+          },
         }, [
           h(Identicon, {
             address: ARAGON,
@@ -178,23 +165,23 @@ PendingTx.prototype.render = function () {
           h('div', {
             style: {
               width: '50%',
-            }
+            },
           }, [
             h('span', {
               style: {
                 textAlign: 'left',
                 fontSize: '12px',
-              }
+              },
             }, [
-              'From'
-            ])
+              'From',
+            ]),
           ]),
 
           h('div', {
             style: {
               width: '50%',
-            }
-          },[
+            },
+          }, [
             h('div', {
               style: {
                 textAlign: 'left',
@@ -208,8 +195,8 @@ PendingTx.prototype.render = function () {
                 textAlign: 'left',
                 fontSize: '8px',
               },
-            }, 'Your Balance 2.34 ANT')
-          ])
+            }, 'Your Balance 2.34 ANT'),
+          ]),
         ]),
 
         contentDivider,
@@ -219,23 +206,23 @@ PendingTx.prototype.render = function () {
           h('div', {
             style: {
               width: '50%',
-            }
+            },
           }, [
             h('span', {
               style: {
                 textAlign: 'left',
                 fontSize: '12px',
-              }
+              },
             }, [
-              'To'
-            ])
+              'To',
+            ]),
           ]),
 
           h('div', {
             style: {
               width: '50%',
-            }
-          },[
+            },
+          }, [
             h('div', {
               style: {
                 textAlign: 'left',
@@ -249,8 +236,8 @@ PendingTx.prototype.render = function () {
                 textAlign: 'left',
                 fontSize: '8px',
               },
-            }, '...5924')
-          ])
+            }, '...5924'),
+          ]),
         ]),
 
         contentDivider,
@@ -260,23 +247,23 @@ PendingTx.prototype.render = function () {
           h('div', {
             style: {
               width: '50%',
-            }
+            },
           }, [
             h('span', {
               style: {
                 textAlign: 'left',
                 fontSize: '12px',
-              }
+              },
             }, [
-              'Gas Fee'
-            ])
+              'Gas Fee',
+            ]),
           ]),
 
           h('div', {
             style: {
               width: '50%',
-            }
-          },[
+            },
+          }, [
             h('div', {
               style: {
                 textAlign: 'left',
@@ -290,8 +277,8 @@ PendingTx.prototype.render = function () {
                 textAlign: 'left',
                 fontSize: '8px',
               },
-            }, '0.001575 ETH')
-          ])
+            }, '0.001575 ETH'),
+          ]),
         ]),
 
         contentDivider,
@@ -305,39 +292,39 @@ PendingTx.prototype.render = function () {
             paddingLeft: '6px',
             paddingRight: '6px',
             marginBottom: '10px',
-          }
+          },
         }, [
           h('div', {
             style: {
               width: '50%',
-            }
+            },
           }, [
             h('div', {
               style: {
                 textAlign: 'left',
                 fontSize: '12px',
                 marginBottom: '-10px',
-              }
+              },
             }, [
-              'Total Tokens'
+              'Total Tokens',
             ]),
 
             h('div', {
               style: {
                 textAlign: 'left',
                 fontSize: '8px',
-              }
+              },
             }, [
-              'Total Gas'
-            ])
+              'Total Gas',
+            ]),
 
           ]),
 
           h('div', {
             style: {
               width: '50%',
-            }
-          },[
+            },
+          }, [
             h('div', {
               style: {
                 textAlign: 'left',
@@ -351,8 +338,8 @@ PendingTx.prototype.render = function () {
                 textAlign: 'left',
                 fontSize: '8px',
               },
-            }, '0.249 ETH')
-          ])
+            }, '0.249 ETH'),
+          ]),
         ]),
 
       ]), // end of container

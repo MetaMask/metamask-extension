@@ -1,8 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const TxView = require('./components/tx-view')
-const WalletView = require('./components/wallet-view')
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const ConfigScreen = require('./config')
@@ -24,7 +22,7 @@ MainContainer.prototype.render = function () {
   //  - router in separate func
   let contents = {
     component: AccountAndTransactionDetails,
-    key: 'account-detail', 
+    key: 'account-detail',
     style: {},
   }
 
@@ -36,12 +34,14 @@ MainContainer.prototype.render = function () {
           component: HDRestoreVaultScreen,
           key: 'HDRestoreVaultScreen',
         }
+        break
       case 'config':
         log.debug('rendering config screen from unlock screen.')
         contents = {
           component: ConfigScreen,
           key: 'config',
         }
+        break
       default:
         log.debug('rendering locked screen')
         contents = {
@@ -65,7 +65,7 @@ MainContainer.prototype.render = function () {
   }, [
     h(contents.component, {
       key: contents.key,
-    }, [])
+    }, []),
   ])
 }
 

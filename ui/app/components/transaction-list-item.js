@@ -156,7 +156,7 @@ function failIfFailed (transaction) {
   }
   if (transaction.err || transaction.warning) {
     const { err, warning = {} } = transaction
-    const errFirst = !!(( err && warning ) || err)
+    const errFirst = !!((err && warning) || err)
     const message = errFirst ? err.message : warning.message
 
     errFirst ? err.message : warning.message

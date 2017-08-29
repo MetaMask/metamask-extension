@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const findDOMNode = require('react-dom').findDOMNode
 
 module.exports = InputNumber
 
@@ -13,13 +12,13 @@ function InputNumber () {
     value: 0,
   }
 
-  this.setValue = this.setValue.bind(this);
+  this.setValue = this.setValue.bind(this)
 }
 
 InputNumber.prototype.componentWillMount = function () {
   const { initValue = 0 } = this.props
-  
-  this.setState({ value: initValue });
+
+  this.setState({ value: initValue })
 }
 
 InputNumber.prototype.setValue = function (newValue) {
@@ -34,23 +33,23 @@ InputNumber.prototype.setValue = function (newValue) {
 }
 
 InputNumber.prototype.render = function () {
-  const { unitLabel, step = 1, min, placeholder } = this.props
+  const { unitLabel, step = 1, placeholder } = this.props
   const { value } = this.state
-  
+
   return h('div.customize-gas-input-wrapper', {}, [
     h('input.customize-gas-input', {
       placeholder,
       type: 'number',
       value,
-      onChange: (e) => this.setValue(Number(e.target.value))
+      onChange: (e) => this.setValue(Number(e.target.value)),
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
       h('i.fa.fa-angle-up', {
-        onClick: () => this.setValue(value + step)
+        onClick: () => this.setValue(value + step),
       }),
       h('i.fa.fa-angle-down', {
-        onClick: () => this.setValue(value - step)
+        onClick: () => this.setValue(value - step),
       }),
     ]),
   ])

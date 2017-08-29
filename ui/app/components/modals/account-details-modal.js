@@ -37,7 +37,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModa
   // fonts of qr-header and close button
 
 AccountDetailsModal.prototype.render = function () {
-  const { selectedIdentity, selectedAddress, network } = this.props
+  const { selectedIdentity, network } = this.props
 
   return h('div', {}, [
     h('div.account-details-modal-wrapper', {
@@ -63,12 +63,12 @@ AccountDetailsModal.prototype.render = function () {
         Qr: {
           message: this.props.selectedIdentity.name,
           data: this.props.selectedIdentity.address,
-        }
+        },
       }, []),
 
       // divider
       h('div.account-details-modal-divider', {
-        style: {}
+        style: {},
       }, []),
 
       h('button.btn-clear', {
@@ -85,6 +85,6 @@ AccountDetailsModal.prototype.render = function () {
         'Export private key',
       ]),
 
-    ])
+    ]),
   ])
 }

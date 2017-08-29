@@ -14,13 +14,13 @@ CurrencyToggle.prototype.render = function () {
   return h('span', {}, [
     h('span', {
       className: currentCurrency === 'ETH' ? 'selected-currency' : 'unselected-currency',
-      onClick: () => onClick('ETH') 
+      onClick: () => onClick('ETH'),
     }, ['ETH']),
     '<>',
     h('span', {
       className: currentCurrency === 'USD' ? 'selected-currency' : 'unselected-currency',
-      onClick: () => onClick('USD'), 
+      onClick: () => onClick('USD'),
     }, ['USD']),
-  ]) //holding on icon from design
+  ]) // holding on icon from design
 }
 

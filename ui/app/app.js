@@ -6,8 +6,6 @@ const actions = require('./actions')
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
-// unlock
-const UnlockScreen = require('./unlock')
 // accounts
 const MainContainer = require('./main-container')
 const SendTransactionScreen = require('./send')
@@ -25,7 +23,6 @@ const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
-const SandwichExpando = require('sandwich-expando')
 const NetworkIndicator = require('./components/network')
 const BuyView = require('./components/buy-button-subview')
 const QrView = require('./components/qr-code')
@@ -82,15 +79,15 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
-    hideSidebar: () => {dispatch(actions.hideSidebar())},
-    showNetworkDropdown: () => {dispatch(actions.showNetworkDropdown())},
-    hideNetworkDropdown: () => {dispatch(actions.hideNetworkDropdown())},
+    hideSidebar: () => { dispatch(actions.hideSidebar()) },
+    showNetworkDropdown: () => { dispatch(actions.showNetworkDropdown()) },
+    hideNetworkDropdown: () => { dispatch(actions.hideNetworkDropdown()) },
   }
 }
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward, network, sidebarOpen } = props
+  const { isLoading, loadingMessage, network } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
@@ -132,15 +129,15 @@ App.prototype.render = function () {
   )
 }
 
-App.prototype.renderGlobalModal = function() {
+App.prototype.renderGlobalModal = function () {
   return h(Modal, {
-    ref: "modalRef",
+    ref: 'modalRef',
   }, [
-    h(BuyOptions, {}, []),
+    // h(BuyOptions, {}, []),
   ])
 }
 
-App.prototype.renderSidebar = function() {
+App.prototype.renderSidebar = function () {
 
   return h('div', {
   }, [
@@ -192,14 +189,10 @@ App.prototype.renderAppBar = function () {
     return null
   }
 
-  const props = this.props
-  const state = this.state || {}
-  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
-
   return (
 
     h('.full-width', {
-      style: {}
+      style: {},
     }, [
 
       h('.app-header.flex-row.flex-space-between', {

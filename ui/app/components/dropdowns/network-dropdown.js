@@ -23,6 +23,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.setProviderType(type))
     },
     setDefaultRpcTarget: () => {
+      // TODO: type is not defined. Is it needed?
       dispatch(actions.setDefaultRpcTarget(type))
     },
     setRpcTarget: (target) => {
@@ -31,8 +32,8 @@ function mapDispatchToProps (dispatch) {
     showConfigPage: () => {
       dispatch(actions.showConfigPage())
     },
-    showNetworkDropdown: () => {dispatch(actions.showNetworkDropdown())},
-    hideNetworkDropdown: () => {dispatch(actions.hideNetworkDropdown())},
+    showNetworkDropdown: () => { dispatch(actions.showNetworkDropdown()) },
+    hideNetworkDropdown: () => { dispatch(actions.hideNetworkDropdown()) },
   }
 }
 
@@ -49,7 +50,6 @@ NetworkDropdown.prototype.render = function () {
   const props = this.props
   const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
   const rpcList = props.frequentRpcList
-  const state = this.state || {}
   const isOpen = this.props.networkDropdownOpen
 
   return h(Dropdown, {
@@ -135,7 +135,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'rinkeby',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => propssetProviderType('rinkeby'),
+        onClick: () => props.setProviderType('rinkeby'),
         style: {
           fontSize: '18px',
         },

@@ -1,7 +1,6 @@
 // Reusable Dropdown Components
-//TODO: Refactor into separate components
+// TODO: Refactor into separate components
 const Dropdown = require('./components/dropdown').Dropdown
-const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const AccountDropdowns = require('./components/account-dropdowns')
 
 // App-Specific Instances

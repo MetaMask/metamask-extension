@@ -18,7 +18,7 @@ WalletContentDisplay.prototype.render = function () {
       marginLeft: '1.3em',
       alignItems: 'flex-start',
       ...style,
-    }
+    },
   }, [
 
     h('span', {
@@ -47,9 +47,9 @@ WalletContentDisplay.prototype.render = function () {
         height: '6em',
         width: '0.3em',
         background: '#D8D8D8', // $alto
-      }
+      },
     }, [
-    ])
+    ]),
   ])
 
 }

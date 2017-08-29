@@ -12,7 +12,7 @@ function Tooltip () {
 
 Tooltip.prototype.render = function () {
   const props = this.props
-  const { position, title, children, show = true } = props
+  const { position, title, children } = props
 
   return h(ReactTooltip, {
     position: position || 'left',

@@ -71,6 +71,6 @@ EditAccountNameModal.prototype.render = function () {
         'SAVE',
       ]),
 
-    ])
+    ]),
   ])
 }

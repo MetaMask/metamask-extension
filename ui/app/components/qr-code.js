@@ -4,7 +4,6 @@ const qrCode = require('qrcode-npm').qrcode
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const isHexPrefixed = require('ethereumjs-util').isHexPrefixed
-const CopyButton = require('./copyButton')
 
 module.exports = connect(mapStateToProps)(QrCodeView)
 
