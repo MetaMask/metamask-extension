@@ -225,6 +225,23 @@ SendTransactionScreen.prototype.render = function () {
         ]),
 
         h('div.send-screen-input-wrapper', {}, [
+          this.state.tooltipIsOpen && h(GasTooltip, {
+            className: 'send-tooltip',
+            gasPrice,
+            gasLimit: gas,
+            onClose: this.closeTooltip,
+            onFeeChange: ({gasLimit, gasPrice}) => {
+              this.setState({
+                newTx: Object.assign(
+                  this.state.newTx,
+                  {
+                    gas: gasLimit,
+                    gasPrice,
+                  }
+                ),
+              })
+            }
+          }),
 
           h('div.send-screen-gas-labels', {}, [
             h('span', {}, [
@@ -275,24 +292,6 @@ SendTransactionScreen.prototype.render = function () {
               'Customize'
             ]),
           ]),
-
-          this.state.tooltipIsOpen && h(GasTooltip, {
-            className: 'send-tooltip',
-            gasPrice,
-            gasLimit: gas,
-            onClose: this.closeTooltip,
-            onFeeChange: ({gasLimit, gasPrice}) => {
-              this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    gas: gasLimit,
-                    gasPrice,
-                  }
-                ),
-              })
-            }
-          }),
 
         ]),
 
