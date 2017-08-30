@@ -1,22 +1,22 @@
 const Component = require('react').Component
+const { connect } = require('react-redux')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
 const clone = require('clone')
+const FiatValue = require('./fiat-value')
+const Identicon = require('./identicon')
+const { setCurrentCurrency } = require('../actions')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
+const { conversionUtil } = require('../conversion-util')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
-
-
-// Faked, for Icon
-const Identicon = require('./identicon')
-const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
 // Next: create separate react components
 // roughly 5 components:
@@ -29,6 +29,8 @@ const sectionDivider = h('div', {
   style: {
     height: '1px',
     background: '#E7E7E7',
+    margin: 0,
+    marginTop: '18px',
   },
 })
 
@@ -36,12 +38,31 @@ const contentDivider = h('div', {
   style: {
     marginLeft: '16px',
     marginRight: '16px',
-    height: '1px',
+    height: '1.4px',
     background: '#E7E7E7',
   },
 })
 
-module.exports = PendingTx
+module.exports = connect(mapStateToProps, mapDispatchToProps)(PendingTx)
+
+function mapStateToProps (state) {
+  const {
+    conversionRate,
+    identities,
+  } = state.metamask
+
+  return {
+    conversionRate,
+    identities,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('USD'))
+  }
+}
+
 inherits(PendingTx, Component)
 function PendingTx () {
   Component.call(this)
@@ -52,11 +73,16 @@ function PendingTx () {
   }
 }
 
+PendingTx.prototype.componentWillMount = function () {
+  this.props.setCurrentCurrencyToUSD()
+}
+
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { blockGasLimit } = props
+  const { blockGasLimit, conversionRate, identities } = props
 
   const txMeta = this.gatherTxMeta()
+  console.log(`txMeta`, txMeta);
   const txParams = txMeta.txParams || {}
 
   // Account Details
@@ -76,11 +102,42 @@ PendingTx.prototype.render = function () {
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
+
   const valueBn = hexToBn(txParams.value)
   const maxCost = txFeeBn.add(valueBn)
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
+
+  const fromName = identities[txParams.from].name;
+  const toName = identities[txParams.to].name;
+
+  const endOfFromAddress = txParams.from.slice(txParams.from.length - 4)
+  const endOfToAddress = txParams.to.slice(txParams.to.length - 4)
+
+  const gasFeeInUSD = conversionUtil(txFeeBn, {
+    fromFormat: 'BN',
+    fromCurrency: 'GWEI',
+    toCurrency: 'USD',
+    conversionRate,
+  })
+  const gasFeeInETH = conversionUtil(txFeeBn, {
+    fromFormat: 'BN',
+    fromCurrency: 'GWEI',
+    toCurrency: 'ETH',
+    conversionRate,
+  })
+
+  const totalInUSD = conversionUtil(hexToBn('0xa1'), {
+    fromFormat: 'BN',
+    toCurrency: 'USD',
+    conversionRate,
+  })
+  const totalInETH = conversionUtil(hexToBn('0xa1'), {
+    fromFormat: 'BN',
+    toCurrency: 'ETH',
+    conversionRate,
+  })
 
   this.inputs = []
 
@@ -93,66 +150,66 @@ PendingTx.prototype.render = function () {
     }, [
 
       // Main Send token Card
-      h('div.send-screen.flex-column.flex-grow', {
-        style: {
-          marginLeft: '3.5%',
-          marginRight: '3.5%',
-          background: '#FFFFFF', // $background-white
-          boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
-        },
-      }, [
-        h('section.flex-center.flex-row', {
-          style: {
-            zIndex: 15, // $token-icon-z-index
-            marginTop: '-35px',
-          },
-        }, [
-          h(Identicon, {
-            address: ARAGON,
-            diameter: 76,
-          }),
+      h('div.confirm-screen-wrapper.flex-column.flex-grow', {}, [
+
+        h('h3.flex-center.confirm-screen-header', {}, [
+
+          h('button.confirm-screen-back-button', {}, 'BACK'),
+
+          h('div.confirm-screen-title', {}, 'Confirm Transaction'),
+          
         ]),
 
-        //
-        // Required Fields
-        //
+        h('div.flex-row.flex-center.confirm-screen-identicons', {}, [
 
-        h('h3.flex-center', {
-          style: {
-            marginTop: '-18px',
-            fontSize: '16px',
-          },
-        }, [
-          'Confirm Transaction',
+          h('div.confirm-screen-account-wrapper', {}, [
+            h(
+              Identicon,
+              {
+                address: txParams.from,
+                diameter: 64,
+                style: {},
+              },
+            ),
+            h('span.confirm-screen-account-name', {}, fromName),
+            h('span.confirm-screen-account-number', {}, endOfFromAddress),
+
+          ]),
+
+          h('i.fa.fa-arrow-right.fa-lg'),
+
+          h('div.confirm-screen-account-wrapper', {}, [
+            h(
+              Identicon,
+              {
+                address: txParams.to,
+                diameter: 64,
+                style: {},
+              },
+            ),
+            h('span.confirm-screen-account-name', {}, toName),
+            h('span.confirm-screen-account-number', {}, endOfToAddress),
+          ])
+
         ]),
 
-        h('h3.flex-center', {
+        h('h3.flex-center.confirm-screen-sending-to-message', {
           style: {
             textAlign: 'center',
             fontSize: '12px',
-          },
+          }
         }, [
-          'You\'re sending to Recipient ...5924',
+          `You're sending to Recipient ...${endOfToAddress}`
         ]),
 
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '36px',
-            marginTop: '8px',
-          },
-        }, [
-          '0.24',
+        h('h3.flex-center.confirm-screen-send-amount', {}, [`$${totalInUSD}`]),
+
+        h('h3.flex-center.confirm-screen-send-amount-currency', {}, [
+          'USD',
         ]),
 
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '12px',
-            marginTop: '4px',
-          },
-        }, [
-          'ANT',
+        h('h3.flex-center.confirm-screen-send-memo', {}, [
+          txParams.memo || 'Fake memo',
         ]),
 
         // error message
@@ -160,19 +217,14 @@ PendingTx.prototype.render = function () {
 
         sectionDivider,
 
-        h('section.flex-row.flex-center', {
+        h('section.flex-row.flex-center.confirm-screen-row', {
         }, [
           h('div', {
             style: {
               width: '50%',
             },
           }, [
-            h('span', {
-              style: {
-                textAlign: 'left',
-                fontSize: '12px',
-              },
-            }, [
+            h('span.confirm-screen-label', {}, [
               'From',
             ]),
           ]),
@@ -182,38 +234,22 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '10px',
-                marginBottom: '-10px',
-              },
-            }, 'Aragon Token'),
+            h('div.confirm-screen-account-name', {}, fromName),
 
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '8px',
-              },
-            }, 'Your Balance 2.34 ANT'),
+            h('div.confirm-screen-account-number', {}, `...${endOfFromAddress}`),
           ]),
         ]),
 
         contentDivider,
 
-        h('section.flex-row.flex-center', {
+        h('section.flex-row.flex-center.confirm-screen-row', {
         }, [
           h('div', {
             style: {
               width: '50%',
             },
           }, [
-            h('span', {
-              style: {
-                textAlign: 'left',
-                fontSize: '12px',
-              },
-            }, [
+            h('span.confirm-screen-label', {}, [
               'To',
             ]),
           ]),
@@ -223,38 +259,22 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '10px',
-                marginBottom: '-10px',
-              },
-            }, 'Ethereum Address'),
+            h('div.confirm-screen-account-name', {}, toName),
 
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '8px',
-              },
-            }, '...5924'),
+            h('div.confirm-screen-account-number', {}, `...${endOfToAddress}`),
           ]),
         ]),
 
         contentDivider,
 
-        h('section.flex-row.flex-center', {
+        h('section.flex-row.flex-center.confirm-screen-row', {
         }, [
           h('div', {
             style: {
               width: '50%',
             },
           }, [
-            h('span', {
-              style: {
-                textAlign: 'left',
-                fontSize: '12px',
-              },
-            }, [
+            h('span.confirm-screen-label', {}, [
               'Gas Fee',
             ]),
           ]),
@@ -264,49 +284,22 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '10px',
-                marginBottom: '-10px',
-              },
-            }, '$0.04 USD'),
+            h('div.confirm-screen-account-name', {}, `$${gasFeeInUSD} USD`),
 
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '8px',
-              },
-            }, '0.001575 ETH'),
+            h('div.confirm-screen-account-number', {}, `${gasFeeInETH} ETH`),
           ]),
         ]),
 
         contentDivider,
 
-        h('section.flex-row.flex-center', {
-          style: {
-            backgroundColor: '#F6F6F6', // $wild-sand
-            borderRadius: '8px',
-            marginLeft: '10px',
-            marginRight: '10px',
-            paddingLeft: '6px',
-            paddingRight: '6px',
-            marginBottom: '10px',
-          },
-        }, [
+        h('section.flex-row.flex-center.confirm-screen-total-box ', {}, [
           h('div', {
             style: {
               width: '50%',
             },
           }, [
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '12px',
-                marginBottom: '-10px',
-              },
-            }, [
-              'Total Tokens',
+            h('span.confirm-screen-label', {}, [
+              'Total ',
             ]),
 
             h('div', {
@@ -315,7 +308,7 @@ PendingTx.prototype.render = function () {
                 fontSize: '8px',
               },
             }, [
-              'Total Gas',
+              'Amount + Gas',
             ]),
 
           ]),
@@ -325,20 +318,9 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '10px',
-                marginBottom: '-10px',
-              },
-            }, '0.24 ANT (127.00 USD)'),
+            h('div.confirm-screen-account-name', {}, `$${totalInUSD} USD`),
 
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '8px',
-              },
-            }, '0.249 ETH'),
+            h('div.confirm-screen-account-number', {}, `${totalInETH} ETH`),
           ]),
         ]),
 
@@ -356,32 +338,14 @@ PendingTx.prototype.render = function () {
         // }, 'Reset'),
 
         // Accept Button
-        h('input.confirm.btn-green', {
+        h('input.confirm-screen-confirm-button', {
           type: 'submit',
           value: 'CONFIRM',
-          style: {
-            marginTop: '8px',
-            width: '8em',
-            color: '#FFFFFF',
-            borderRadius: '2px',
-            fontSize: '12px',
-            lineHeight: '20px',
-            textAlign: 'center',
-            borderStyle: 'none',
-          },
-          disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
+          // disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
         }),
 
         // Cancel Button
-        h('button.cancel.btn-light', {
-          style: {
-            background: '#F7F7F7', // $alabaster
-            border: 'none',
-            opacity: 1,
-            width: '8em',
-          },
-          onClick: props.cancelTransaction,
-        }, 'CANCEL'),
+        h('button.cancel.btn-light.confirm-screen-cancel-button', {}, 'CANCEL'),
       ]),
     ]) // end of minwidth wrapper
   )
