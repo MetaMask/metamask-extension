@@ -3,7 +3,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const selectors = require('../selectors')
-const Identicon = require('./identicon')
+const TxListItem = require('./tx-list-item')
 const { formatBalance, formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 
@@ -53,16 +53,6 @@ TxList.prototype.render = function () {
   ])
 }
 
-TxList.prototype.getAddressText = function (transaction) {
-  const {
-    txParams: { to },
-  } = transaction
-
-  return to
-    ? `${to.slice(0, 10)}...${to.slice(-4)}`
-    : 'Contract Published'
-}
-
 TxList.prototype.renderTranstions = function () {
   const { txsToRender } = this.props
 
@@ -92,70 +82,21 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
   } = props
   const { showConfTxPage } = this.props
 
-  return h('div.tx-list-item', {
-    key: transaction.id,
-  }, [
-    h('div.flex-column.tx-list-item__wrapper', {
-      onClick: () => transactionStatus === 'unapproved' && showConfTxPage({id: transActionId}),
-      style: {},
-    }, [
+  if (!address) return null
+    
+  const opts = {
+    transactionStatus,
+    transActionId,
+    dateString,
+    address,
+    transactionAmount,
+  }
 
-      h('div.tx-list-date-wrapper', {
-        style: {},
-      }, [
-        h('span.tx-list-date', {}, [
-          dateString,
-        ]),
-      ]),
+  if (transactionStatus === 'unapproved') {
+    opts.onClick = () => showConfTxPage({id: transActionId})
+    opts.className = '.tx-list-pending-item-container'
+  }
 
-      h('div.flex-row.tx-list-content-wrapper', {
-        style: {},
-      }, [
-
-        h('div.tx-list-identicon-wrapper', {
-          style: {},
-        }, [
-          h(Identicon, {
-            address,
-            diameter: 28,
-          }),
-        ]),
-
-        h('div.tx-list-account-and-status-wrapper', {}, [
-          h('div.tx-list-account-wrapper', {
-            style: {},
-          }, [
-            h('span.tx-list-account', {}, [
-              this.getAddressText(transaction),
-            ]),
-          ]),
-
-          h('div.tx-list-status-wrapper', {
-            style: {},
-          }, [
-            h('span.tx-list-status', {}, [
-              transactionStatus,
-            ]),
-          ]),
-        ]),
-
-        h('div.flex-column.tx-list-details-wrapper', {
-          style: {},
-        }, [
-
-          h('span.tx-list-value', {}, [
-            transactionAmount,
-          ]),
-
-          h('span.tx-list-fiat-value', {}, [
-            '+ $300 USD',
-          ]),
-
-        ]),
-
-      ]),
-    ]),
-
-  ])
+  return h(TxListItem, opts)
 }
 
