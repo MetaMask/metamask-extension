@@ -2,6 +2,7 @@
   height: 100vh;
   width: 100vw;
   background-color: #FFF;
+  overflow: auto;
 }
 
 .create-password,

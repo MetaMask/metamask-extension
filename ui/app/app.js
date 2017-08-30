@@ -5,6 +5,7 @@ const h = require('react-hyperscript')
 const actions = require('./actions')
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
+const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -130,7 +131,13 @@ App.prototype.renderAppBar = function () {
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
   const {isMascara, isOnboarding} = props
 
+  // Do not render header if user is in mascara onboarding
   if (isMascara && isOnboarding) {
+    return null
+  }
+
+  // Do not render header if user is in mascara buy ether
+  if (isMascara && props.currentView.name === 'buyEth') {
     return null
   }
 
@@ -433,9 +440,9 @@ App.prototype.renderPrimary = function () {
   var props = this.props
   const {isMascara, isOnboarding} = props
 
-  if (isMascara && isOnboarding) {
-    return h(MascaraFirstTime)
-  }
+  // if (isMascara && isOnboarding) {
+  //   return h(MascaraFirstTime)
+  // }
 
   // notices
   if (!props.noActiveNotices) {
@@ -534,7 +541,9 @@ App.prototype.renderPrimary = function () {
 
     case 'buyEth':
       log.debug('rendering buy ether screen')
-      return h(BuyView, {key: 'buyEthView'})
+      return isMascara
+        ? h(MascaraBuyEtherScreen, {key: 'buyEthView'})
+        : h(BuyView, {key: 'buyEthView'})
 
     case 'qr':
       log.debug('rendering show qr screen')

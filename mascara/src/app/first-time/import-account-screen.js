@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react'
-import classnames from 'classnames'
-import {importNewAccount, hideWarning} from '../../../../ui/app/actions'
 import {connect} from 'react-redux';
+import classnames from 'classnames'
+import LoadingScreen from './loading-screen'
+import {importNewAccount, hideWarning} from '../../../../ui/app/actions'
 
 const Input = ({ label, placeholder, onChange, errorMessage, type = 'text' }) => (
   <div className="import-account__input-wrapper">
@@ -132,7 +133,9 @@ class ImportAccountScreen extends Component {
     const { OPTIONS } = ImportAccountScreen;
     const { selectedOption } = this.state;
 
-    return (
+    return isLoading
+      ? <LoadingScreen loadingMessage="Creating your new account" />
+      : (
         <div className="import-account">
           <a
             className="import-account__back-button"

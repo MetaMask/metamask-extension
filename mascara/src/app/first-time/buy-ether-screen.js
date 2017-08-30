@@ -2,7 +2,9 @@ import React, {Component, PropTypes} from 'react'
 import classnames from 'classnames'
 import {connect} from 'react-redux'
 import {qrcode} from 'qrcode-npm'
+import copyToClipboard from 'copy-to-clipboard'
 import Identicon from '../../../../ui/app/components/identicon'
+import {buyEth, showAccountDetail} from '../../../../ui/app/actions'
 
 class BuyEtherScreen extends Component {
   static OPTION_VALUES = {
@@ -28,10 +30,34 @@ class BuyEtherScreen extends Component {
 
   static propTypes = {
     address: PropTypes.string,
+    goToCoinbase: PropTypes.func.isRequired,
+    showAccountDetail: PropTypes.func.isRequired,
   }
 
   state = {
     selectedOption: BuyEtherScreen.OPTION_VALUES.COINBASE,
+    justCopied: false
+  }
+
+  copyToClipboard = () => {
+    const { address } = this.props;
+
+    this.setState({ justCopied: true }, () => copyToClipboard(address))
+
+    setTimeout(() => this.setState({ justCopied: false }), 1000)
+  }
+
+  renderSkipStep() {
+    const {showAccountDetail, address} = this.props
+
+    return (
+      <button
+        className="first-time-flow__button--tertiary"
+        onClick={() => showAccountDetail(address)}
+      >
+        Skip this step
+      </button>
+    )
   }
 
   renderCoinbaseLogo() {
@@ -59,32 +85,34 @@ class BuyEtherScreen extends Component {
     )
   }
 
+  renderCoinbaseForm() {
+    return (
+      <div className="buy-ether__action-content-wrapper">
+        <div>{this.renderCoinbaseLogo()}</div>
+        <div className="buy-ether__body-text">Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin.</div>
+        <a className="first-time-flow__link buy-ether__faq-link">What is Ethereum?</a>
+        <div className="buy-ether__buttons">
+          <button
+            className="first-time-flow__button"
+            onClick={() => this.goToCoinbase(address)}
+          >
+            Buy
+          </button>
+          <div className="buy-ether__button-separator-text">or</div>
+          {this.renderSkipStep()}
+        </div>
+      </div>
+    )
+  }
+
   renderContent() {
-    const { OPTION_VALUES } = BuyEtherScreen;
-    const { address } = this.props;
+    const { OPTION_VALUES } = BuyEtherScreen
+    const { address, goToCoinbase } = this.props
+    const { justCopied } = this.state
 
     switch (this.state.selectedOption) {
       case OPTION_VALUES.COINBASE:
-        return (
-          <div className="buy-ether__action-content-wrapper">
-            <div>{this.renderCoinbaseLogo()}</div>
-            <div className="buy-ether__body-text">Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin.</div>
-            <a className="first-time-flow__link buy-ether__faq-link">What is Ethereum?</a>
-            <div className="buy-ether__buttons">
-              <button
-                className="first-time-flow__button"
-              >
-                Buy
-              </button>
-              <div className="buy-ether__button-separator-text">or</div>
-              <button
-                className="first-time-flow__button--tertiary"
-              >
-                Skip this step
-              </button>
-            </div>
-          </div>
-        )
+        return this.renderCoinbaseForm()
       case OPTION_VALUES.SHAPESHIFT:
         return (
           <div className="buy-ether__action-content-wrapper">
@@ -97,11 +125,7 @@ class BuyEtherScreen extends Component {
                 Buy
               </button>
               <div className="buy-ether__button-separator-text">or</div>
-              <button
-                className="first-time-flow__button--tertiary"
-              >
-                Skip this step
-              </button>
+              {this.renderSkipStep()}
             </div>
           </div>
         )
@@ -113,19 +137,17 @@ class BuyEtherScreen extends Component {
           <div className="buy-ether__action-content-wrapper">
             <div dangerouslySetInnerHTML={{ __html: qrImage.createTableTag(4) }} />
             <div className="buy-ether__body-text">Deposit Ether directly into your account.</div>
-            <div className="buy-ether__small-body-text">  (This is the account address that MetaMask created for you to recieve funds.)</div>
+            <div className="buy-ether__small-body-text">(This is the account address that MetaMask created for you to recieve funds.)</div>
             <div className="buy-ether__buttons">
               <button
                 className="first-time-flow__button"
+                onClick={this.copyToClipboard}
+                disabled={justCopied}
               >
-                Copy
+                { justCopied ? 'Copied' : 'Copy' }
               </button>
               <div className="buy-ether__button-separator-text">or</div>
-              <button
-                className="first-time-flow__button--tertiary"
-              >
-                Skip this step
-              </button>
+              {this.renderSkipStep()}
             </div>
           </div>
         )
@@ -177,8 +199,11 @@ class BuyEtherScreen extends Component {
 }
 
 export default connect(
-  ({ metamask: { identities } }) => ({
-    address: Object.entries(identities)
-      .map(([key]) => key)[0]
+  ({ metamask: { selectedAddress } }) => ({
+    address: selectedAddress
+  }),
+  dispatch => ({
+    goToCoinbase: address => dispatch(buyEth({ network: '1', address, amount: 0 })),
+    showAccountDetail: address => dispatch(showAccountDetail(address)),
   })
 )(BuyEtherScreen)

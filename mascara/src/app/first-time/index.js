@@ -6,19 +6,22 @@ import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
 import BuyEtherScreen from './buy-ether-screen'
+import {buyEthView} from '../../../../ui/app/actions'
 
 class FirstTimeFlow extends Component {
 
   static propTypes = {
     isInitialized: PropTypes.bool,
     seedWords: PropTypes.string,
-    noActiveNotices: PropTypes.bool
+    address: PropTypes.string,
+    noActiveNotices: PropTypes.bool,
+    goToBuyEtherView: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     isInitialized: false,
     seedWords: '',
-    noActiveNotices: false
+    noActiveNotices: false,
   };
 
   static SCREEN_TYPE = {
@@ -28,7 +31,6 @@ class FirstTimeFlow extends Component {
     NOTICE: 'notice',
     BACK_UP_PHRASE: 'back_up_phrase',
     CONFIRM_BACK_UP_PHRASE: 'confirm_back_up_phrase',
-    BUY_ETHER: 'buy_ether'
   };
 
   constructor(props) {
@@ -43,7 +45,11 @@ class FirstTimeFlow extends Component {
   }
 
   getScreenType() {
-    const {isInitialized, seedWords, noActiveNotices} = this.props;
+    const {
+      isInitialized,
+      seedWords,
+      noActiveNotices,
+    } = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
 
     // return SCREEN_TYPE.IMPORT_ACCOUNT
@@ -63,6 +69,7 @@ class FirstTimeFlow extends Component {
 
   renderScreen() {
     const {SCREEN_TYPE} = FirstTimeFlow
+    const {goToBuyEtherView, address} = this.props
 
     switch (this.state.screenType) {
       case SCREEN_TYPE.CREATE_PASSWORD:
@@ -94,13 +101,7 @@ class FirstTimeFlow extends Component {
       case SCREEN_TYPE.BACK_UP_PHRASE:
         return (
           <BackupPhraseScreen
-            next={() => this.setScreenType(SCREEN_TYPE.BUY_ETHER)}
-          />
-        )
-      case SCREEN_TYPE.BUY_ETHER:
-        return (
-          <BuyEtherScreen
-
+            next={() => goToBuyEtherView(address)}
           />
         )
       default:
@@ -119,10 +120,14 @@ class FirstTimeFlow extends Component {
 }
 
 export default connect(
-  ({ metamask: { isInitialized, seedWords, noActiveNotices } }) => ({
+  ({ metamask: { isInitialized, seedWords, noActiveNotices, selectedAddress } }) => ({
     isInitialized,
     seedWords,
-    noActiveNotices
+    noActiveNotices,
+    address: selectedAddress,
+  }),
+  dispatch => ({
+    goToBuyEtherView: address => dispatch(buyEthView(address))
   })
 )(FirstTimeFlow)
 

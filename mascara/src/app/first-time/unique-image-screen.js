@@ -33,8 +33,7 @@ class UniqueImageScreen extends Component {
 }
 
 export default connect(
-  ({ metamask: { identities } }) => ({
-    address: Object.entries(identities)
-      .map(([key]) => key)[0]
+  ({ metamask: { selectedAddress } }) => ({
+    address: selectedAddress
   })
 )(UniqueImageScreen)

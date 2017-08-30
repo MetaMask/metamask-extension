@@ -57,10 +57,9 @@ class NoticeScreen extends Component {
 }
 
 export default connect(
-  ({ metamask: { identities, lastUnreadNotice } }) => ({
+  ({ metamask: { selectedAddress, lastUnreadNotice } }) => ({
     lastUnreadNotice,
-    address: Object.entries(identities)
-      .map(([key]) => key)[0]
+    address: selectedAddress
   }),
   dispatch => ({
     markNoticeRead: notice => dispatch(markNoticeRead(notice))

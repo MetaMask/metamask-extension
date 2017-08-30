@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import Identicon from '../../../../ui/app/components/identicon'
 import {confirmSeedWords} from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
+import LoadingScreen from './loading-screen'
 
 const LockIcon = props => (
   <svg
@@ -36,9 +37,10 @@ const LockIcon = props => (
 
 class BackupPhraseScreen extends Component {
   static propTypes = {
+    isLoading: PropTypes.bool.isRequired,
     address: PropTypes.string.isRequired,
     seedWords: PropTypes.string.isRequired,
-    next: PropTypes.func.isRequired
+    next: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -211,19 +213,22 @@ class BackupPhraseScreen extends Component {
   }
 
   render() {
-    return (
-      <div className="backup-phrase">
-        {this.renderBack()}
-        <Identicon address={this.props.address} diameter={70} />
-        {this.renderContent()}
-      </div>
-    )
+    return this.props.isLoading
+      ? <LoadingScreen loadingMessage="Creating your new account" />
+      : (
+        <div className="backup-phrase">
+          {this.renderBack()}
+          <Identicon address={this.props.address} diameter={70} />
+          {this.renderContent()}
+        </div>
+      )
   }
 }
 
 export default connect(
-  ({ metamask: { selectedAddress, seedWords } }) => ({
+  ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
     seedWords,
+    isLoading,
     address: selectedAddress
   }),
   dispatch => ({
