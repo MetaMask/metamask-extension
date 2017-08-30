@@ -361,7 +361,8 @@ button.backup-phrase__confirm-seed-option:hover {
   flex-flow: column nowrap;
 }
 
-.buy-ether__side-panel-item {
+.buy-ether__side-panel-item,
+.buy-ether__side-panel-exit {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -372,6 +373,13 @@ button.backup-phrase__confirm-seed-option:hover {
   line-height: 18px;
   cursor: pointer;
   min-width: 140px;
+}
+
+.buy-ether__side-panel-exit {
+  color: #FF001F;
+}
+
+.buy-ether__side-panel-item {
   border-bottom: 1px solid #CDCDCD;
 }
 

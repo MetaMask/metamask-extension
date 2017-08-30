@@ -47,16 +47,18 @@ class BuyEtherScreen extends Component {
     setTimeout(() => this.setState({ justCopied: false }), 1000)
   }
 
-  renderSkipStep() {
+  renderSkip() {
     const {showAccountDetail, address} = this.props
 
     return (
-      <button
-        className="first-time-flow__button--tertiary"
+      <div
+        className="buy-ether__side-panel-exit"
         onClick={() => showAccountDetail(address)}
       >
-        Skip this step
-      </button>
+        <div className="buy-ether__side-panel-item-name">
+          Do it later
+        </div>
+      </div>
     )
   }
 
@@ -100,8 +102,6 @@ class BuyEtherScreen extends Component {
           >
             Buy
           </button>
-          <div className="buy-ether__button-separator-text">or</div>
-          {this.renderSkipStep()}
         </div>
       </div>
     )
@@ -126,8 +126,6 @@ class BuyEtherScreen extends Component {
               >
                 Buy
               </button>
-              <div className="buy-ether__button-separator-text">or</div>
-              {this.renderSkipStep()}
             </div>
           </div>
         )
@@ -148,8 +146,6 @@ class BuyEtherScreen extends Component {
               >
                 { justCopied ? 'Copied' : 'Copy' }
               </button>
-              <div className="buy-ether__button-separator-text">or</div>
-              {this.renderSkipStep()}
             </div>
           </div>
         )
@@ -189,6 +185,7 @@ class BuyEtherScreen extends Component {
                   )}
                 </div>
               ))}
+              {this.renderSkip()}
             </div>
             <div className="buy-ether__action-content">
               {this.renderContent()}
