@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux';
 import classnames from 'classnames'
+import shuffle from 'lodash.shuffle'
+import {compose, onlyUpdateForPropTypes} from 'recompose'
 import Identicon from '../../../../ui/app/components/identicon'
 import {confirmSeedWords} from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
@@ -41,6 +43,7 @@ class BackupPhraseScreen extends Component {
     address: PropTypes.string.isRequired,
     seedWords: PropTypes.string.isRequired,
     next: PropTypes.func.isRequired,
+    confirmSeedWords: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -52,14 +55,19 @@ class BackupPhraseScreen extends Component {
     CONFIRM: 'confirm'
   };
 
-  state = {
-    isShowingSecret: false,
-    page: BackupPhraseScreen.PAGE.SECRET,
-    selectedSeeds: []
+  constructor(props) {
+    super(props)
+    this.state = {
+      isShowingSecret: false,
+      page: BackupPhraseScreen.PAGE.SECRET,
+      selectedSeeds: [],
+      shuffledSeeds: shuffle(props.seedWords.split(' ')),
+    }
   }
 
   renderSecretWordsContainer() {
-    const { isShowingSecret } = this.state;
+    const { isShowingSecret } = this.state
+
     return (
       <div className="backup-phrase__secret">
         <div className={classnames('backup-phrase__secret-words', {
@@ -84,6 +92,7 @@ class BackupPhraseScreen extends Component {
 
   renderSecretScreen() {
     const { isShowingSecret } = this.state
+
     return (
       <div className="backup-phrase__content-wrapper">
         <div>
@@ -125,8 +134,8 @@ class BackupPhraseScreen extends Component {
 
   renderConfirmationScreen() {
     const { seedWords, confirmSeedWords, next } = this.props;
-    const { selectedSeeds } = this.state;
-    const isValid = seedWords === selectedSeeds.join(' ')
+    const { selectedSeeds, shuffledSeeds } = this.state;
+    const isValid = seedWords === selectedSeeds.map(([_, seed]) => seed).join(' ')
 
     return (
       <div className="backup-phrase__content-wrapper">
@@ -136,7 +145,7 @@ class BackupPhraseScreen extends Component {
             Please select each phrase in order to make sure it is correct.
           </div>
           <div className="backup-phrase__confirm-secret">
-            {selectedSeeds.map((word, i) => (
+            {selectedSeeds.map(([_, word], i) => (
               <button
                 key={i}
                 className="backup-phrase__confirm-seed-option"
@@ -146,8 +155,11 @@ class BackupPhraseScreen extends Component {
             ))}
           </div>
           <div className="backup-phrase__confirm-seed-options">
-            {seedWords.split(' ').map((word, i) => {
-              const isSelected = selectedSeeds.includes(word)
+            {shuffledSeeds.map((word, i) => {
+              const isSelected = selectedSeeds
+                .filter(([index, seed]) => seed === word && index === i)
+                .length
+
               return (
                 <button
                   key={i}
@@ -157,11 +169,12 @@ class BackupPhraseScreen extends Component {
                   onClick={() => {
                     if (!isSelected) {
                       this.setState({
-                        selectedSeeds: [...selectedSeeds, word]
+                        selectedSeeds: [...selectedSeeds, [i, word]]
                       })
                     } else {
                       this.setState({
-                        selectedSeeds: selectedSeeds.filter(seed => seed !== word)
+                        selectedSeeds: selectedSeeds
+                          .filter(([index, seed]) => !(seed === word && index === i))
                       })
                     }
                   }}
@@ -225,13 +238,16 @@ class BackupPhraseScreen extends Component {
   }
 }
 
-export default connect(
-  ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
-    seedWords,
-    isLoading,
-    address: selectedAddress
-  }),
-  dispatch => ({
-    confirmSeedWords: () => dispatch(confirmSeedWords())
-  })
+export default compose(
+  onlyUpdateForPropTypes,
+  connect(
+    ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
+      seedWords,
+      isLoading,
+      address: selectedAddress
+    }),
+    dispatch => ({
+      confirmSeedWords: () => dispatch(confirmSeedWords())
+    })
+  )
 )(BackupPhraseScreen)

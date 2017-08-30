@@ -440,9 +440,9 @@ App.prototype.renderPrimary = function () {
   var props = this.props
   const {isMascara, isOnboarding} = props
 
-  // if (isMascara && isOnboarding) {
-  //   return h(MascaraFirstTime)
-  // }
+  if (isMascara && isOnboarding) {
+    return h(MascaraFirstTime)
+  }
 
   // notices
   if (!props.noActiveNotices) {
