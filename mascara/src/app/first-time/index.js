@@ -52,7 +52,7 @@ class FirstTimeFlow extends Component {
     } = this.props;
     const {SCREEN_TYPE} = FirstTimeFlow
 
-    // return SCREEN_TYPE.BACK_UP_PHRASE
+    // return SCREEN_TYPE.NOTICE
 
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
