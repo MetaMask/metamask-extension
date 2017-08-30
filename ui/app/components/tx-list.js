@@ -5,13 +5,20 @@ const inherits = require('util').inherits
 const selectors = require('../selectors')
 const Identicon = require('./identicon')
 const { formatBalance, formatDate } = require('../util')
+const { showConfTxPage } = require('../actions')
 
-module.exports = connect(mapStateToProps)(TxList)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 
 function mapStateToProps (state) {
   return {
     txsToRender: selectors.transactionsSelector(state),
     conversionRate: selectors.conversionRateSelector(state),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id }))
   }
 }
 
@@ -22,7 +29,7 @@ function TxList () {
 
 TxList.prototype.render = function () {
 
-  // console.log('transactions to render', txsToRender)
+  const { txsToRender, showConfTxPage } = this.props
 
   return h('div.flex-column.tx-list-container', {}, [
 
@@ -73,18 +80,23 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     address: transaction.txParams.to,
     transactionStatus: transaction.status,
     transactionAmount: formatBalance(transaction.txParams.value, 6),
+    transActionId: transaction.id,
   }
+
   const {
     address,
     transactionStatus,
     transactionAmount,
     dateString,
+    transActionId,
   } = props
+  const { showConfTxPage } = this.props
 
   return h('div.tx-list-item', {
     key: transaction.id,
   }, [
     h('div.flex-column.tx-list-item__wrapper', {
+      onClick: () => transactionStatus === 'unapproved' && showConfTxPage({id: transActionId}),
       style: {},
     }, [
 

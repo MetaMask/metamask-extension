@@ -245,7 +245,7 @@ BuyButtonSubview.prototype.navigateTo = function (url) {
 
 BuyButtonSubview.prototype.backButtonContext = function () {
   if (this.props.context === 'confTx') {
-    this.props.dispatch(actions.showConfTxPage(false))
+    this.props.dispatch(actions.showConfTxPage({transForward: false}))
   } else {
     this.props.dispatch(actions.goHome())
   }
