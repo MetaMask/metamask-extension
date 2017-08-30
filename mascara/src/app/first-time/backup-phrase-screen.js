@@ -56,12 +56,13 @@ class BackupPhraseScreen extends Component {
   };
 
   constructor(props) {
+    const {seedWords} = props
     super(props)
     this.state = {
       isShowingSecret: false,
       page: BackupPhraseScreen.PAGE.SECRET,
       selectedSeeds: [],
-      shuffledSeeds: shuffle(props.seedWords.split(' ')),
+      shuffledSeeds: seedWords && shuffle(seedWords.split(' ')),
     }
   }
 

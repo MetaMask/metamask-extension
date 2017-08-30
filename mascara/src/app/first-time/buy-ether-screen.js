@@ -86,6 +86,8 @@ class BuyEtherScreen extends Component {
   }
 
   renderCoinbaseForm() {
+    const {goToCoinbase, address} = this.props;
+
     return (
       <div className="buy-ether__action-content-wrapper">
         <div>{this.renderCoinbaseLogo()}</div>
@@ -94,7 +96,7 @@ class BuyEtherScreen extends Component {
         <div className="buy-ether__buttons">
           <button
             className="first-time-flow__button"
-            onClick={() => this.goToCoinbase(address)}
+            onClick={() => goToCoinbase(address)}
           >
             Buy
           </button>
