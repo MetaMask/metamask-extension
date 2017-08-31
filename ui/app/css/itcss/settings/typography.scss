@@ -43,6 +43,13 @@
 }
 
 @font-face {
+  font-family: 'DIN OT Light';
+  src: url('/fonts/DIN_OT/DINOT-2.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Lato';
   src: url('/fonts/Lato/Lato-Regular.ttf') format('truetype');
   font-weight: 400;
