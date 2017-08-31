@@ -106,7 +106,7 @@ $wallet-view-bg: $wild-sand;
 
 @media screen and (min-width: 769px) {
   .main-container {
-    margin-top: 35px;
+    margin-top: 6.9vh;
     width: 80%;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
@@ -115,7 +115,7 @@ $wallet-view-bg: $wild-sand;
 
 @media screen and (min-width: 1281px) {
   .main-container {
-    margin-top: 35px;
+    margin-top: 6.9vh;
     width: 65%;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
@@ -162,5 +162,5 @@ $wallet-view-bg: $wild-sand;
 .account-options-menu {
   align-items: center;
   justify-content: flex-start;
-  margin: 5% 7%;
+  margin: 5% 7% 0%;
 }

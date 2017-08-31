@@ -198,46 +198,47 @@ App.prototype.renderAppBar = function () {
       h('.app-header.flex-row.flex-space-between', {
         style: {},
       }, [
+        h('div.app-header-contents', {}, [
+          h('div.left-menu-wrapper', {
+            style: {},
+          }, [
+            // mini logo
+            h('img', {
+              height: 24,
+              width: 24,
+              src: '/images/icon-128.png',
+            }),
 
-        h('div.left-menu-wrapper', {
-          style: {},
-        }, [
-          // mini logo
-          h('img', {
-            height: 24,
-            width: 24,
-            src: '/images/icon-128.png',
-          }),
+            // metamask name
+            h('h1', {
+              style: {
+                position: 'relative',
+                left: '9px',
+              },
+            }, 'MetaMask'),
 
-          // metamask name
-          h('h1', {
-            style: {
-              position: 'relative',
-              left: '9px',
-            },
-          }, 'MetaMask'),
+          ]),
 
-        ]),
+          h('div.network-component-wrapper', {
+            style: {},
+          }, [
+            // Network Indicator
+            h(NetworkIndicator, {
+              network: this.props.network,
+              provider: this.props.provider,
+              onClick: (event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                if (this.props.networkDropdownOpen === false) {
+                  this.props.showNetworkDropdown()
+                } else {
+                  this.props.hideNetworkDropdown()
+                }
+              },
+            }),
 
-        h('div.network-component-wrapper', {
-          style: {},
-        }, [
-          // Network Indicator
-          h(NetworkIndicator, {
-            network: this.props.network,
-            provider: this.props.provider,
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              if (this.props.networkDropdownOpen === false) {
-                this.props.showNetworkDropdown()
-              } else {
-                this.props.hideNetworkDropdown()
-              }
-            },
-          }),
-
-        ]),
+          ]),
+        ])
       ]),
 
     ])
