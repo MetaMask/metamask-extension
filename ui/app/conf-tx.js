@@ -10,6 +10,15 @@ const PendingMsg = require('./components/pending-msg')
 const PendingPersonalMsg = require('./components/pending-personal-msg')
 const Loading = require('./components/loading')
 
+const contentDivider = h('div', {
+  style: {
+    marginLeft: '16px',
+    marginRight: '16px',
+    height:'1px',
+    background:'#E7E7E7',
+  },
+})
+
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
 function mapStateToProps (state) {

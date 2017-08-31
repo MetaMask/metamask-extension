@@ -14,7 +14,10 @@ $wallet-view-bg: $wild-sand;
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  overflow-y: scroll;
+}
+
+.main-container::-webkit-scrollbar {
+  display: none; 
 }
 
 // tx view
