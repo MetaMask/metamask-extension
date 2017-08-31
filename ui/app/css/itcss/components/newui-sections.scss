@@ -44,6 +44,12 @@ $wallet-view-bg: $wild-sand;
   }
 }
 
+@media screen and (min-width: 576px) {
+  .wallet-view::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .wallet-view-title-wrapper {
   flex: 0 0 25px;
 }
