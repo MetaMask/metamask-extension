@@ -6,6 +6,10 @@
   }
 }
 
+.tx-list-header {
+  text-transform: capitalize;
+}
+
 @media screen and (max-width: $break-small) {
   .tx-list-header-wrapper {
     margin-top: .2em;
@@ -124,6 +128,7 @@
   .tx-list-status {
     color: $dusty-gray;
     font-size: 16px;
+    text-transform: capitalize;
   }
 }
 
