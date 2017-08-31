@@ -40,8 +40,8 @@ TxList.prototype.render = function () {
       }, [
 
         h('div', {
-          style: {},
-        }, 'TRANSACTIONS'),
+          style: {}
+        }, 'transactions'),
 
       ]),
 
