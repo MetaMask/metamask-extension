@@ -83,6 +83,7 @@
 
     @media screen and (min-width: $break-large) {
       flex-grow: 2;
+      justify-content: flex-end;
     }
 
     button.btn-clear {
@@ -98,14 +99,12 @@
       }
 
       @media screen and (min-width: $break-large) {
-        width: 5%;
-        flex-grow: 1;
-        height: 4.6vh;
-        min-height: 28px;
         font-size: .6em;
         border-color: $curious-blue;
         color: $curious-blue;
-        padding: 0;
+        padding: 0px;
+        width: 85px;
+        height: 34px;
       }
     }
   }
