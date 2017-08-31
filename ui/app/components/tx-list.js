@@ -66,63 +66,68 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
   }
   const { address, transactionStatus, transactionAmount, dateString } = props
 
-  return h('div.flex-column.tx-list-item-wrapper', {
-    style: {},
-  }, [
-
-    h('div.tx-list-date-wrapper', {
-      style: {},
-    }, [
-      h('span.tx-list-date', {}, [
-        dateString,
-      ]),
-    ]),
-
-    h('div.flex-row.tx-list-content-wrapper', {
-      style: {},
+  return h('div', {}, [
+    h('div.flex-column.tx-list-item-wrapper', {
+      style: {}
     }, [
 
-      h('div.tx-list-identicon-wrapper', {
-        style: {},
+      h('div.tx-list-date-wrapper', {
+        style: {}
       }, [
-        h(Identicon, {
-          address,
-          diameter: 24,
-        }),
+        h('span.tx-list-date', {}, [
+          dateString,
+        ])
       ]),
 
-      h('div.tx-list-account-and-status-wrapper', {}, [
-        h('div.tx-list-account-wrapper', {
-          style: {},
+      h('div.flex-row.tx-list-content-wrapper', {
+        style: {}
+      }, [
+
+        h('div.tx-list-identicon-wrapper', {
+          style: {}
         }, [
-          h('span.tx-list-account', {}, [
-            `${address.slice(0, 10)}...${address.slice(-4)}`,
+          h(Identicon, {
+            address,
+            diameter: 28,
+          })
+        ]),
+
+        h('div.tx-list-account-and-status-wrapper', {}, [
+          h('div.tx-list-account-wrapper', {
+            style: {}
+          }, [
+            h('span.tx-list-account', {}, [
+              `${address.slice(0, 10)}...${address.slice(-4)}`
+            ]),
+          ]),
+
+          h('div.tx-list-status-wrapper', {
+            style: {}
+          }, [
+            h('span.tx-list-status', {}, [
+              transactionStatus,
+            ]),
           ]),
         ]),
 
-        h('div.tx-list-status-wrapper', {
-          style: {},
+        h('div.flex-column.tx-list-details-wrapper', {
+          style: {}
         }, [
-          h('span.tx-list-status', {}, [
-            transactionStatus,
+
+          h('span.tx-list-value', {}, [
+            transactionAmount,
           ]),
-        ]),
-      ]),
 
-      h('div.flex-column.tx-list-details-wrapper', {
-        style: {},
-      }, [
+          h('span.tx-list-fiat-value', {}, [
+            '+ $300 USD',
+          ]),
 
-        h('span.tx-list-value', {}, [
-          transactionAmount,
-        ]),
-
-        h('span.tx-list-fiat-value', {}, [
-          '+ $300 USD',
         ]),
 
       ]),
     ]),
+    contentDivider
+
   ])
 }
 
