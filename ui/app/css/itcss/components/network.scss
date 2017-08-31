@@ -12,3 +12,19 @@
   font-size: 10px;
   flex: 1 0 auto;
 }
+
+.network-name {
+  font-weight: 100;
+  flex: 1 0 auto;
+  color: $dusty-gray;
+}
+
+.network-check,
+.network-check__transparent {
+  color: $white;
+  margin-left: 7px;
+}
+
+.network-check__transparent {
+  opacity: 0;
+}

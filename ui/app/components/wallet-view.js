@@ -90,7 +90,7 @@ WalletView.prototype.render = function () {
               top: '14px',
             },
             innerStyle: {
-              padding: '2px 16px',
+              padding: '10px 16px',
             },
             useCssTransition: true,
             selected: selectedAddress,
