@@ -1,10 +1,16 @@
+.account-dropdown-name {
+  font-family: 'DIN OT';
+}
+
 .account-dropdown-balance {
   color: $dusty-gray;
+  line-height: 19px;
 }
 
 .account-dropdown-edit-button {
   color: $dusty-gray;
-
+  font-family: "DIN OT";
+  font-weight: 500;
   &:hover {
     color: $white;
   }

@@ -79,9 +79,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
-    hideSidebar: () => { dispatch(actions.hideSidebar()) },
-    showNetworkDropdown: () => { dispatch(actions.showNetworkDropdown()) },
-    hideNetworkDropdown: () => { dispatch(actions.hideNetworkDropdown()) },
+    dispatch,
+    hideSidebar: () => dispatch(actions.hideSidebar()),
+    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
+    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
   }
 }
 

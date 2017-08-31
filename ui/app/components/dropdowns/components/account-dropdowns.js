@@ -101,6 +101,8 @@ class AccountDropdowns extends Component {
               h('span.account-dropdown-balance', {
                 style: {
                   fontSize: '14px',
+                  fontFamily: 'Avenir',
+                  fontWeight: 500,
                 },
               }, formattedBalance),
             ]),
@@ -177,7 +179,13 @@ class AccountDropdowns extends Component {
               },
             ),
             h('span', {
-              style: { marginLeft: '20px', fontSize: '18px' },
+              style: {
+                marginLeft: '20px',
+                fontSize: '18px',
+                fontFamily: 'DIN OT',
+                fontSize: '16px',
+                lineHeight: '23px',
+              },
               onClick: () => {
                 actions.showNewAccountModal()
               },
@@ -209,6 +217,9 @@ class AccountDropdowns extends Component {
                 marginLeft: '20px',
                 fontSize: '18px',
                 marginBottom: '5px',
+                fontFamily: 'DIN OT',
+                fontSize: '16px',
+                lineHeight: '23px',
               },
             }, 'Import Account'),
           ]
@@ -251,7 +262,10 @@ class AccountDropdowns extends Component {
               this.props.actions.showAccountDetailModal()
             },
             style: Object.assign(
-              {},
+              {
+                fontFamily: 'DIN OT',
+                fontSize: 16,
+              },
               menuItemStyles,
             ),
           },
@@ -267,7 +281,10 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
             style: Object.assign(
-              {},
+              {
+                fontFamily: 'DIN OT',
+                fontSize: 16,
+              },
               menuItemStyles,
             ),
           },
@@ -283,7 +300,10 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
             style: Object.assign(
-              {},
+              {
+                fontFamily: 'DIN OT',
+                fontSize: 16,
+              },
               menuItemStyles,
             ),
           },
@@ -297,7 +317,10 @@ class AccountDropdowns extends Component {
               actions.requestAccountExport()
             },
             style: Object.assign(
-              {},
+              {
+                fontFamily: 'DIN OT',
+                fontSize: 16,
+              },
               menuItemStyles,
             ),
           },
@@ -311,7 +334,10 @@ class AccountDropdowns extends Component {
               actions.showAddTokenPage()
             },
             style: Object.assign(
-              {},
+              {
+                fontFamily: 'DIN OT',
+                fontSize: 16,
+              },
               menuItemStyles,
             ),
           },
