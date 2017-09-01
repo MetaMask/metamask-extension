@@ -6,6 +6,8 @@
 - Fix bug with network version serialization over synchronous RPC
 - Add MetaMask version to state logs.
 - Add the total amount of tokens when multiple tokens are added under the token list
+- Use HTTPS links for Etherscan.
+- Update Support center link to new one with HTTPS.
 
 ## 3.9.11 2017-8-24
 
