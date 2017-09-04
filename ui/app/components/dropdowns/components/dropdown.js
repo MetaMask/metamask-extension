@@ -8,7 +8,15 @@ const noop = () => {}
 
 class Dropdown extends Component {
   render () {
-    const { isOpen, onClickOutside, style, innerStyle, children, useCssTransition } = this.props
+    const {
+      containerClassName,
+      isOpen,
+      onClickOutside,
+      style,
+      innerStyle,
+      children,
+      useCssTransition,
+    } = this.props
 
     const innerStyleDefaults = extend({
       borderRadius: '4px',
@@ -20,6 +28,7 @@ class Dropdown extends Component {
     return h(
       MenuDroppo,
       {
+        containerClassName,
         useCssTransition,
         isOpen,
         zIndex: 30,

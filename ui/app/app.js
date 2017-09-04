@@ -214,7 +214,8 @@ App.prototype.renderAppBar = function () {
             h('h1', {
               style: {
                 position: 'relative',
-                left: '9px',
+                paddingLeft: '9px',
+                color: '#5B5D67',
               },
             }, 'MetaMask'),
 
@@ -239,7 +240,7 @@ App.prototype.renderAppBar = function () {
             }),
 
           ]),
-        ])
+        ]),
       ]),
 
     ])

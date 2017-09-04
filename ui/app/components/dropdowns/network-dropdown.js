@@ -54,7 +54,7 @@ NetworkDropdown.prototype.render = function () {
     fontFamily: 'DIN OT',
     fontSize: '16px',
     lineHeight: '20px',
-  };
+  }
 
   return h(Dropdown, {
     useCssTransition: true,
@@ -72,10 +72,10 @@ NetworkDropdown.prototype.render = function () {
         this.props.hideNetworkDropdown()
       }
     },
+    containerClassName: 'network-droppo',
     zIndex: 11,
     style: {
       position: 'absolute',
-      right: '2px',
       top: '38px',
       minWidth: '309px',
     },
@@ -95,9 +95,9 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'mainnet' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
         h('.menu-icon.diamond'),
-        h('span.network-name', {
+        h('span.network-name-item', {
           style: {
-            color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b'
+            color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
           },
         }, 'Main Ethereum Network'),
       ]
@@ -114,9 +114,9 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'ropsten' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
         h('.menu-icon.red-dot'),
-        h('span.network-name', {
+        h('span.network-name-item', {
           style: {
-            color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b'
+            color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
           },
         }, 'Ropsten Test Network'),
       ]
@@ -133,9 +133,9 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'kovan' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
         h('.menu-icon.hollow-diamond'),
-        h('span.network-name', {
+        h('span.network-name-item', {
           style: {
-            color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b'
+            color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
           },
         }, 'Kovan Test Network'),
       ]
@@ -152,9 +152,9 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'rinkeby' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
         h('.menu-icon.golden-square'),
-        h('span.network-name', {
+        h('span.network-name-item', {
           style: {
-            color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b'
+            color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
           },
         }, 'Rinkeby Test Network'),
       ]
@@ -171,9 +171,9 @@ NetworkDropdown.prototype.render = function () {
       [
         activeNetwork === 'http://localhost:8545' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-        h('span.network-name', {
+        h('span.network-name-item', {
           style: {
-            color: activeNetwork === 'http://localhost:8545' ? '#ffffff' : '#9b9b9b'
+            color: activeNetwork === 'http://localhost:8545' ? '#ffffff' : '#9b9b9b',
           },
         }, 'Localhost 8545'),
       ]
@@ -192,9 +192,9 @@ NetworkDropdown.prototype.render = function () {
       [
         activeNetwork === 'custom' ? h('.check', '✓') : h('.network-check__transparent', '✓'),
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-        h('span.network-name', {
+        h('span.network-name-item', {
           style: {
-            color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b'
+            color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
           },
         }, 'Custom RPC'),
       ]

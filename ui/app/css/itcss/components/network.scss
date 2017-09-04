@@ -5,15 +5,30 @@
 }
 
 .network-name {
-  width: 5.2em;
-  line-height: 9px;
-  text-rendering: geometricPrecision;
+  line-height: 12px;
+  padding: 0 4px;
   font-family: 'DIN OT';
   font-size: 10px;
   flex: 1 0 auto;
 }
 
-.network-name {
+.network-droppo {
+  right: 2px;
+
+  @media screen and (min-width: 576px) {
+    right: calc(((100% - 85vw) / 2) + 2px);
+  }
+
+  @media screen and (min-width: 769px) {
+    right: calc(((100% - 80vw) / 2) + 2px);
+  }
+
+  @media screen and (min-width: 1281px) {
+    right: calc(((100% - 65vw) / 2) + 2px);
+  }
+}
+
+.network-name-item {
   font-weight: 100;
   flex: 1 0 auto;
   color: $dusty-gray;

@@ -181,7 +181,6 @@ class AccountDropdowns extends Component {
             h('span', {
               style: {
                 marginLeft: '20px',
-                fontSize: '18px',
                 fontFamily: 'DIN OT',
                 fontSize: '16px',
                 lineHeight: '23px',
@@ -215,7 +214,6 @@ class AccountDropdowns extends Component {
             h('span', {
               style: {
                 marginLeft: '20px',
-                fontSize: '18px',
                 marginBottom: '5px',
                 fontFamily: 'DIN OT',
                 fontSize: '16px',
@@ -231,6 +229,10 @@ class AccountDropdowns extends Component {
   renderAccountOptions () {
     const { actions, dropdownWrapperStyle, useCssTransition } = this.props
     const { optionsMenuActive, menuItemStyles } = this.state
+    const dropdownMenuItemStyle = {
+      fontFamily: 'DIN OT',
+      fontSize: 16,
+    }
 
     return h(
       Dropdown,
@@ -262,10 +264,7 @@ class AccountDropdowns extends Component {
               this.props.actions.showAccountDetailModal()
             },
             style: Object.assign(
-              {
-                fontFamily: 'DIN OT',
-                fontSize: 16,
-              },
+              dropdownMenuItemStyle,
               menuItemStyles,
             ),
           },
@@ -281,10 +280,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
             style: Object.assign(
-              {
-                fontFamily: 'DIN OT',
-                fontSize: 16,
-              },
+              dropdownMenuItemStyle,
               menuItemStyles,
             ),
           },
@@ -300,10 +296,7 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
             style: Object.assign(
-              {
-                fontFamily: 'DIN OT',
-                fontSize: 16,
-              },
+              dropdownMenuItemStyle,
               menuItemStyles,
             ),
           },
@@ -317,10 +310,7 @@ class AccountDropdowns extends Component {
               actions.requestAccountExport()
             },
             style: Object.assign(
-              {
-                fontFamily: 'DIN OT',
-                fontSize: 16,
-              },
+              dropdownMenuItemStyle,
               menuItemStyles,
             ),
           },
@@ -334,10 +324,7 @@ class AccountDropdowns extends Component {
               actions.showAddTokenPage()
             },
             style: Object.assign(
-              {
-                fontFamily: 'DIN OT',
-                fontSize: 16,
-              },
+              dropdownMenuItemStyle,
               menuItemStyles,
             ),
           },
