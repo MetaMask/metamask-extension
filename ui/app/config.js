@@ -167,7 +167,9 @@ function currentConversionInformation (metamaskState, state) {
         state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
       defaultValue: currentCurrency,
-    }, infuraCurrencies.map((currency) => {
+    }, infuraCurrencies.sort((a, b) => {
+      return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
+    }).map((currency) => {
       return h('option', {key: currency.symbol, value: currency.symbol}, `${currency.quote.code.toUpperCase()} - ${currency.quote.name}`)
     })
   ),
