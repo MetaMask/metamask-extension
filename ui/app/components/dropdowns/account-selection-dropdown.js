@@ -15,7 +15,7 @@ module.exports = AccountSelectionDropdown
 // TODO: selectedAddress is not defined... should we use selected?
 AccountSelectionDropdown.prototype.render = function () {
   const { selected, network, identities, style, dropdownWrapperStyle, menuItemStyles } = this.props
-  console.log({style})
+
   return h(AccountDropdowns, {
     enableAccountOptions: false,
     enableAccountsSelector: true,

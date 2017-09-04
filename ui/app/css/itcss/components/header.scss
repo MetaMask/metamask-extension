@@ -2,11 +2,12 @@
   align-items: center;
   visibility: visible;
   background: $gallery;
-  padding: 6px 8px;
   height: 14.4vh;
   max-height: 97px;
   position: relative;
   z-index: $header-z-index;
+  display: flex;
+  flex-flow: column nowrap;
 
   @media screen and (max-width: 575px) {
     position: fixed;
@@ -19,13 +20,22 @@
 
 .app-header-contents {
   display: flex;
-  justify-content: inherit;
+  justify-content: space-between;
+  flex-flow: row nowrap;
   width: 100%;
+  height: 6.9vh;
 
   @media screen and (min-width: 576px) {
+    width: 85vw;
+  }
+
+  @media screen and (min-width: 769px) {
     width: 80vw;
-    margin-left: 10vw;
-    margin-bottom: 15px;
+    height: 6.9vh;
+  }
+
+  @media screen and (min-width: 1281px) {
+    width: 65vw;
   }
 }
 
@@ -47,18 +57,10 @@ h2.page-subtitle {
   display: flex;
   flex-direction: row;
   align-items: center;
-
-  @media screen and (min-width: 576px) {
-    margin-bottom: 1.8em;
-  }
 }
 
 .left-menu-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
-
-  @media screen and (min-width: 576px) {
-    margin-bottom: 1.8em;
-  }
 }
