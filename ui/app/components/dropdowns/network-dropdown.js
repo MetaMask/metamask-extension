@@ -147,13 +147,7 @@ NetworkDropdown.prototype.render = function () {
         key: 'rinkeby',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => props.setProviderType('rinkeby'),
-<<<<<<< HEAD
-        style: {
-          fontSize: '18px',
-        },
-=======
         style: dropdownMenuItemStyle,
->>>>>>> Fix menu style
       },
       [
         providerType === 'rinkeby' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
