@@ -166,7 +166,9 @@ function currentConversionInformation (metamaskState, state) {
         state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
       defaultValue: currentCurrency,
-    }, currencies.map((currency) => {
+    }, currencies.sort((a, b) => {
+      return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
+    }).map((currency) => {
       return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)
     })
   ),
