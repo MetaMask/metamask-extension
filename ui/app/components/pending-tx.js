@@ -142,7 +142,7 @@ PendingTx.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.flex-column.flex-grow', {
+    h('div.flex-column.flex-grow.confirm-screen-container', {
       style: {
         // overflow: 'scroll',
         minWidth: '355px', // TODO: maxWidth TBD, use home.html
@@ -196,7 +196,7 @@ PendingTx.prototype.render = function () {
         h('h3.flex-center.confirm-screen-sending-to-message', {
           style: {
             textAlign: 'center',
-            fontSize: '12px',
+            fontSize: '16px',
           }
         }, [
           `You're sending to Recipient ...${endOfToAddress}`
@@ -234,9 +234,9 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div.confirm-screen-account-name', {}, fromName),
+            h('div.confirm-screen-row-info', {}, fromName),
 
-            h('div.confirm-screen-account-number', {}, `...${endOfFromAddress}`),
+            h('div.confirm-screen-row-detail', {}, `...${endOfFromAddress}`),
           ]),
         ]),
 
@@ -259,9 +259,9 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div.confirm-screen-account-name', {}, toName),
+            h('div.confirm-screen-row-info', {}, toName),
 
-            h('div.confirm-screen-account-number', {}, `...${endOfToAddress}`),
+            h('div.confirm-screen-row-detail', {}, `...${endOfToAddress}`),
           ]),
         ]),
 
@@ -284,9 +284,9 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div.confirm-screen-account-name', {}, `$${gasFeeInUSD} USD`),
+            h('div.confirm-screen-row-info', {}, `$${gasFeeInUSD} USD`),
 
-            h('div.confirm-screen-account-number', {}, `${gasFeeInETH} ETH`),
+            h('div.confirm-screen-row-detail', {}, `${gasFeeInETH} ETH`),
           ]),
         ]),
 
@@ -318,9 +318,9 @@ PendingTx.prototype.render = function () {
               width: '50%',
             },
           }, [
-            h('div.confirm-screen-account-name', {}, `$${totalInUSD} USD`),
+            h('div.confirm-screen-row-info', {}, `$${totalInUSD} USD`),
 
-            h('div.confirm-screen-account-number', {}, `${totalInETH} ETH`),
+            h('div.confirm-screen-row-detail', {}, `${totalInETH} ETH`),
           ]),
         ]),
 

@@ -1,3 +1,15 @@
+.confirm-screen-container {
+  position: absolute;
+
+  @media screen and (max-width: 575px) {
+    margin-top: 35px;
+  }
+
+  @media screen and (min-width: 576px) {
+    margin-top: 6.9vh;
+  }
+}
+
 .confirm-screen-wrapper {
   display: flex;
   flex-direction: column;
@@ -12,10 +24,6 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
   padding-top: 20px;
   padding-bottom: 31px;
-
-  @media screen and (max-width: $break-small) {
-    margin-top: 33px;
-  }
 
   @media screen and (min-width: $break-large) {
     width: 498px;
@@ -78,7 +86,7 @@
   flex-direction: column;
 }
 
-.confirm-screen-account-name {
+.confirm-screen-account-name, .confirm-screen-row-info {
   font-size: 16px;
   line-height: 24px;
   color: $scorpion;
@@ -104,14 +112,14 @@
 .confirm-screen-sending-to-message {
   text-align: center;
   font-size: 16px;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .confirm-screen-send-amount {
   font-size: 64px;
   color: $scorpion;
-  margin-top: 26px;
-  line-height: 76px; 
+  margin-top: 12px;
+  line-height: 60px; 
   text-align: center;
   font-family: 'DIN NEXT Light';
 }
@@ -119,7 +127,6 @@
 .confirm-screen-send-amount-currency {
   font-size: 20px;
   line-height: 20px;
-  margin-top: 16px;
   text-align: center;
 }
 
@@ -139,13 +146,21 @@
 }
 
 section .confirm-screen-account-name,
-section .confirm-screen-account-number {
+section .confirm-screen-account-number,
+.confirm-screen-row-info,
+.confirm-screen-row-detail {
   text-align: left;
 }
 
 .confirm-screen-row {
   margin-top: 15px;
   margin-bottom: 11.5px;
+}
+
+.confirm-screen-row-detail {
+  font-size: 12px;
+  line-height: 16px;
+  color: $dusty-gray;
 }
 
 .confirm-screen-total-box {
