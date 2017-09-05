@@ -3,11 +3,13 @@
 ## Current Master
 
 - Make eth_sign deprecation warning less noisy
+- Add useful link to eth_sign deprecation warning.
 - Fix bug with network version serialization over synchronous RPC
 - Add MetaMask version to state logs.
 - Add the total amount of tokens when multiple tokens are added under the token list
 - Use HTTPS links for Etherscan.
 - Update Support center link to new one with HTTPS.
+- Make web3 deprecation notice more useful by linking to a descriptive article.
 
 ## 3.9.11 2017-8-24
 
