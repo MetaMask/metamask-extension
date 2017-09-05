@@ -11,7 +11,7 @@ function setupDappAutoReload (web3, observable) {
     get: (_web3, key) => {
       // show warning once on web3 access
       if (!hasBeenWarned && key !== 'currentProvider') {
-        console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/ethereum/mist/releases/tag/v0.9.0')
+        console.warn('MetaMask: web3 will be deprecated in the near future in favor of the ethereumProvider \nhttps://github.com/MetaMask/faq/blob/master/detecting_metamask.md#web3-deprecation')
         hasBeenWarned = true
       }
       // get the time of use
