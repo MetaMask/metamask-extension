@@ -6,11 +6,14 @@ const clone = require('clone')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxProvideUtils = require('../../app/scripts/lib/tx-utils')
+const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
+
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
 const { createStubedProvider } = require('../stub/provider')
+
 
 describe('Transaction Controller', function () {
   let txController, engine, provider, providerResultStub
@@ -47,7 +50,7 @@ describe('Transaction Controller', function () {
         metamaskNetworkId: currentNetworkId,
         txParams,
       }
-      txController._saveTxList([txMeta])
+      txController.addTx(txMeta)
       stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txMeta))
     })
 
@@ -279,12 +282,15 @@ describe('Transaction Controller', function () {
     it('replaces the tx with the same id', function () {
       txController.addTx({ id: '1', status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
       txController.addTx({ id: '2', status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} }, noop)
-      txController.updateTx({ id: '1', status: 'blah', hash: 'foo', metamaskNetworkId: currentNetworkId, txParams: {} })
-      var result = txController.getTx('1')
-      assert.equal(result.hash, 'foo')
+      const tx1 = txController.getTx('1')
+      tx1.status = 'blah'
+      tx1.hash = 'foo'
+      txController.updateTx(tx1)
+      const savedResult = txController.getTx('1')
+      assert.equal(savedResult.hash, 'foo')
     })
 
-    it('updates gas price', function () {
+    it('updates gas price and adds history items', function () {
       const originalGasPrice = '0x01'
       const desiredGasPrice = '0x02'
 
@@ -297,13 +303,22 @@ describe('Transaction Controller', function () {
         },
       }
 
-      const updatedMeta = clone(txMeta)
-
       txController.addTx(txMeta)
-      updatedMeta.txParams.gasPrice = desiredGasPrice
-      txController.updateTx(updatedMeta)
-      var result = txController.getTx('1')
+      const updatedTx = txController.getTx('1')
+      // verify tx was initialized correctly
+      assert.equal(updatedTx.history.length, 1, 'one history item (initial)')
+      assert.equal(Array.isArray(updatedTx.history[0]), false, 'first history item is initial state')
+      assert.deepEqual(updatedTx.history[0], txStateHistoryHelper.snapshotFromTxMeta(updatedTx), 'first history item is initial state')
+      // modify value and updateTx
+      updatedTx.txParams.gasPrice = desiredGasPrice
+      txController.updateTx(updatedTx)
+      // check updated value
+      const result = txController.getTx('1')
       assert.equal(result.txParams.gasPrice, desiredGasPrice, 'gas price updated')
+      // validate history was updated
+      assert.equal(result.history.length, 2, 'two history items (initial + diff)')
+      const expectedEntry = { op: 'replace', path: '/txParams/gasPrice', value: desiredGasPrice }
+      assert.deepEqual(result.history[1], [expectedEntry], 'two history items (initial + diff)')
     })
   })
 

@@ -59,7 +59,16 @@ class AccountDropdowns extends Component {
             },
           ),
           this.indicateIfLoose(keyring.type),
-          h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, identity.name || ''),
+          h('span', {
+            style: {
+              marginLeft: '20px',
+              fontSize: '24px',
+              maxWidth: '145px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            },
+          }, identity.name || ''),
           h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
         ]
       )

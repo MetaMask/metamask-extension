@@ -3,17 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
-const normalizeAddress = require('eth-sig-util').normalize
-
-const defaultTokens = []
-const contracts = require('eth-contract-metadata')
-for (const address in contracts) {
-  const contract = contracts[address]
-  if (contract.erc20) {
-    contract.address = address
-    defaultTokens.push(contract)
-  }
-}
 
 module.exports = TokenList
 
@@ -38,7 +27,24 @@ TokenList.prototype.render = function () {
 
   if (error) {
     log.error(error)
-    return this.message('There was a problem loading your token balances.')
+    return h('.hotFix', {
+      style: {
+        padding: '80px',
+      },
+    }, [
+      'We had trouble loading your token balances. You can view them ',
+      h('span.hotFix', {
+        style: {
+          color: 'rgba(247, 134, 28, 1)',
+          cursor: 'pointer',
+        },
+        onClick: () => {
+          global.platform.openWindow({
+          url: `https://ethplorer.io/address/${userAddress}`,
+        })
+        },
+      }, 'here'),
+    ])
   }
 
   const tokenViews = tokens.map((tokenData) => {
@@ -89,7 +95,7 @@ TokenList.prototype.renderTokenStatusBar = function () {
   let msg
   if (tokens.length === 1) {
     msg = `You own 1 token`
-  } else if (tokens.length === 1) {
+  } else if (tokens.length > 1) {
     msg = `You own ${tokens.length} tokens`
   } else {
     msg = `No tokens found`
@@ -153,7 +159,7 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: uniqueMergeTokens(defaultTokens, this.props.tokens),
+    tokens: this.props.tokens,
     pollingInterval: 8000,
   })
 
@@ -197,18 +203,5 @@ TokenList.prototype.updateBalances = function (tokens) {
 TokenList.prototype.componentWillUnmount = function () {
   if (!this.tracker) return
   this.tracker.stop()
-}
-
-function uniqueMergeTokens (tokensA, tokensB) {
-  const uniqueAddresses = []
-  const result = []
-  tokensA.concat(tokensB).forEach((token) => {
-    const normal = normalizeAddress(token.address)
-    if (!uniqueAddresses.includes(normal)) {
-      uniqueAddresses.push(normal)
-      result.push(token)
-    }
-  })
-  return result
 }
 
