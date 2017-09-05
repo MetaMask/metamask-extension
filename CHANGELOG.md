@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix bug that made nonce calculation incompatible with multiple networks.
 - Make eth_sign deprecation warning less noisy
 - Add useful link to eth_sign deprecation warning.
 - Fix bug with network version serialization over synchronous RPC

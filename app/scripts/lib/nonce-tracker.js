@@ -4,11 +4,17 @@ const Mutex = require('await-semaphore').Mutex
 
 class NonceTracker {
 
-  constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
+  constructor ({
+    provider,
+    getPendingTransactions,
+    getConfirmedTransactions,
+    getNetwork,
+  }) {
     this.provider = provider
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
     this.getConfirmedTransactions = getConfirmedTransactions
+    this.getNetwork = getNetwork
     this.lockMap = {}
   }
 
@@ -96,7 +102,11 @@ class NonceTracker {
   }
 
   _getHighestLocallyConfirmed (address) {
+    const network = this.getNetwork()
     const confirmedTransactions = this.getConfirmedTransactions(address)
+    .filter((tx) => {
+      return tx.metamaskNetworkId === network
+    })
     const highest = this._getHighestNonce(confirmedTransactions)
     return Number.isInteger(highest) ? highest + 1 : 0
   }

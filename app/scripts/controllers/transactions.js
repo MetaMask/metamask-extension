@@ -44,6 +44,7 @@ module.exports = class TransactionController extends EventEmitter {
         const msg = `Gave up submitting after 3500 blocks un-mined.`
         this.setTxStatusFailed(txId, msg)
       },
+      getNetwork: () => this.getNetwork(),
     })
     this.query = new EthQuery(this.provider)
     this.txProviderUtil = new TxProviderUtil(this.provider)

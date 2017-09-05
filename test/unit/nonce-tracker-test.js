@@ -162,12 +162,42 @@ describe('Nonce Tracker', function () {
         await nonceLock.releaseLock()
       })
     })
+
+    describe('When using multiple networks', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+
+        const otherNetTxs = txGen.generate({
+          status: 'confirmed',
+          metamaskNetworkId: '2',
+        }, { count: 10 })
+
+        const confirmedTxs = txGen.generate({
+          status: 'confirmed',
+          metamaskNetworkId: '1',
+          txParams: { nonce: '0x00' },
+        }, { count: 1 })
+
+        const txs = otherNetTxs.concat(confirmedTxs)
+                                         // 0x32 is 50 in hex:
+        nonceTracker = generateNonceTrackerWith([], txs, '0x1')
+      })
+
+      it('should return nonce after network nonce', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '1', `nonce should be 1 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
+
   })
 })
 
 function generateNonceTrackerWith (pending, confirmed, providerStub = '0x0') {
   const getPendingTransactions = () => pending
   const getConfirmedTransactions = () => confirmed
+  const getNetwork = () => '1'
   providerResultStub.result = providerStub
   const provider = {
     sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
@@ -179,6 +209,7 @@ function generateNonceTrackerWith (pending, confirmed, providerStub = '0x0') {
     provider,
     getPendingTransactions,
     getConfirmedTransactions,
+    getNetwork,
   })
 }
 

@@ -2,6 +2,7 @@ const extend = require('xtend')
 const BN = require('ethereumjs-util').BN
 const template = {
   'status': 'submitted',
+  'metamaskNetworkId': '1',
   'txParams': {
     'from': '0x7d3517b0d011698406d6e0aed8453f0be2697926',
     'gas': '0x30d40',
