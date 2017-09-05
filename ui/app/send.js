@@ -193,20 +193,19 @@ SendTransactionScreen.prototype.render = function () {
 
           h('datalist#addresses', {}, [
             // Corresponds to the addresses owned.
-            Object.keys(props.identities).map((key) => {
-              const identity = props.identities[key]
+            Object.entries(props.identities).map(([key, { address, name }]) => {
               return h('option', {
-                value: identity.address,
-                label: identity.name,
-                key: identity.address,
+                value: address,
+                label: name,
+                key: address,
               })
             }),
             // Corresponds to previously sent-to addresses.
-            props.addressBook.map((identity) => {
+            props.addressBook.map(({ address, name }) => {
               return h('option', {
-                value: identity.address,
-                label: identity.name,
-                key: identity.address,
+                value: address,
+                label: name,
+                key: address,
               })
             }),
           ]),
