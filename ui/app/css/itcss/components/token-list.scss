@@ -1,0 +1,21 @@
+.token-list-item {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 20px 24px;
+  cursor: pointer;
+
+  &__identicon {
+    margin-right: 15px;
+    border: '1px solid #dedede';
+  }
+
+  &__token-balance {
+    font-size: 130%;
+  }
+
+  &__fiat-amount {
+    margin-top: .25%;
+    font-size: 105%;
+  }
+}

@@ -6,6 +6,13 @@
 $tx-view-bg: $white;
 $wallet-view-bg: $wild-sand;
 
+html {
+
+  @media screen and (max-width: 575px) {
+    height: 500px;
+  }
+}
+
 // Main container
 .main-container {
   position: absolute;
@@ -17,7 +24,7 @@ $wallet-view-bg: $wild-sand;
 }
 
 .main-container::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
 // tx view
@@ -37,6 +44,7 @@ $wallet-view-bg: $wild-sand;
 
   @media screen and (min-width: 576px) {
     overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   .wallet-view-account-details {
@@ -142,7 +150,10 @@ $wallet-view-bg: $wild-sand;
 
   .main-container {
     margin-top: 35px;
+    height: calc(100% - 34px);
     width: 100%;
+    overflow-y: auto;
+    background-color: $white;
   }
 
   button.btn-clear {

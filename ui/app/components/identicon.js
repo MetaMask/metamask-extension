@@ -18,9 +18,11 @@ function IdenticonComponent () {
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
+  const { className = '' } = props
   var diameter = props.diameter || this.defaultDiameter
   return (
-    h('div.identicon', {
+    h('div', {
+      className: `${className} identicon`,
       key: 'identicon-' + this.props.address,
       style: {
         display: 'flex',

@@ -13,23 +13,34 @@ function TokenCell () {
 
 TokenCell.prototype.render = function () {
   const props = this.props
-  const { address, symbol, string, network, userAddress } = props
+  const {
+    address,
+    symbol,
+    string,
+    network,
+    // userAddress,
+  } = props
 
   return (
-    h('li.token-cell', {
+    h('div.token-list-item', {
       style: { cursor: network === '1' ? 'pointer' : 'default' },
-      onClick: this.view.bind(this, address, userAddress, network),
+      // onClick: this.view.bind(this, address, userAddress, network),
     }, [
 
       h(Identicon, {
-        diameter: 50,
+        className: 'token-list-item__identicon',
+        diameter: 45,
         address,
         network,
       }),
 
-      h('h3', `${string || 0} ${symbol}`),
+      h('h.token-list-item__balance-wrapper', null, [
+        h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
-      h('span', { style: { flex: '1 0 auto' } }),
+        h('div.token-list-item__fiat-amount', {
+          style: {},
+        }, '210 FPO'),
+      ]),
 
       /*
       h('button', {

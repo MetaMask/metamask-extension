@@ -6,6 +6,7 @@ const Identicon = require('./identicon')
 const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
+const TokenList = require('./token-list')
 const selectors = require('../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
@@ -17,6 +18,7 @@ function mapStateToProps (state) {
     sidebarOpen: state.appState.sidebarOpen,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
+    tokens: state.metamask.tokens,
     selectedAddress: selectors.getSelectedAddress(state),
     selectedIdentity: selectors.getSelectedIdentity(state),
     selectedAccount: selectors.getSelectedAccount(state),
@@ -35,8 +37,23 @@ function WalletView () {
   Component.call(this)
 }
 
+WalletView.prototype.renderTokenBalances = function () {
+  // const { tokens = [] } = this.props
+  // return tokens.map(({ address, decimals, symbol }) => (
+  //   h(BalanceComponent, {
+  //     balanceValue: 0,
+  //     style: {},
+  //   })
+  // ))
+  return h(TokenList)
+}
+
 WalletView.prototype.render = function () {
-  const { network, responsiveDisplayClassname, identities, selectedAddress, selectedAccount, accounts, selectedIdentity } = this.props
+  const {
+    network, responsiveDisplayClassname, identities,
+    selectedAddress, selectedAccount, accounts,
+    selectedIdentity,
+  } = this.props
   // temporary logs + fake extra wallets
   console.log('walletview, selectedAccount:', selectedAccount)
 
@@ -134,7 +151,10 @@ WalletView.prototype.render = function () {
 
         ]),
 
+
     ]),
+
+    this.renderTokenBalances(),
 
   ])
 }

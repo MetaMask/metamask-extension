@@ -40,7 +40,7 @@ TxList.prototype.render = function () {
       }, [
 
         h('div', {
-          style: {}
+          style: {},
         }, 'transactions'),
 
       ]),
@@ -64,45 +64,52 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     transactionStatus: transaction.status,
     transactionAmount: formatBalance(transaction.txParams.value, 6),
   }
-  const { address, transactionStatus, transactionAmount, dateString } = props
+  const {
+    address = '',
+    transactionStatus,
+    transactionAmount,
+    dateString,
+  } = props
 
-  return h('div', {}, [
+  return h('div', {
+    key: transaction.id,
+  }, [
     h('div.flex-column.tx-list-item-wrapper', {
-      style: {}
+      style: {},
     }, [
 
       h('div.tx-list-date-wrapper', {
-        style: {}
+        style: {},
       }, [
         h('span.tx-list-date', {}, [
           dateString,
-        ])
+        ]),
       ]),
 
       h('div.flex-row.tx-list-content-wrapper', {
-        style: {}
+        style: {},
       }, [
 
         h('div.tx-list-identicon-wrapper', {
-          style: {}
+          style: {},
         }, [
           h(Identicon, {
             address,
             diameter: 28,
-          })
+          }),
         ]),
 
         h('div.tx-list-account-and-status-wrapper', {}, [
           h('div.tx-list-account-wrapper', {
-            style: {}
+            style: {},
           }, [
             h('span.tx-list-account', {}, [
-              `${address.slice(0, 10)}...${address.slice(-4)}`
+              `${address.slice(0, 10)}...${address.slice(-4)}`,
             ]),
           ]),
 
           h('div.tx-list-status-wrapper', {
-            style: {}
+            style: {},
           }, [
             h('span.tx-list-status', {}, [
               transactionStatus,
@@ -111,7 +118,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
         ]),
 
         h('div.flex-column.tx-list-details-wrapper', {
-          style: {}
+          style: {},
         }, [
 
           h('span.tx-list-value', {}, [
@@ -126,7 +133,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
 
       ]),
     ]),
-    contentDivider
+    contentDivider,
 
   ])
 }

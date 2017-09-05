@@ -3,7 +3,7 @@ $wallet-balance-breakpoint: 890px;
 $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
 
 .wallet-balance-wrapper {
-  flex: 0 0 80px;
+  flex: 0 0 auto;
 }
 
 .wallet-balance {
@@ -12,6 +12,8 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  flex: 0 0 auto;
+  cursor: pointer;
 
   .balance-container {
     display: flex;
