@@ -28,6 +28,15 @@ TxListItem.prototype.render = function () {
     className,
   } = this.props
 
+  const transactionStatusColor = transactionStatus === 'rejected'
+    ? '#d0021b'
+    : 'inherit'
+  ;
+  const transactionAmountColor = transactionStatus === 'confirmed'
+    ? '#02c9b1'
+    : 'inherit'
+  ;
+
   return h(`div${className || ''}`, {
     key: transActionId,
     onClick: () => onClick && onClick(transActionId),
@@ -67,7 +76,11 @@ TxListItem.prototype.render = function () {
           h('div.tx-list-status-wrapper', {
             style: {},
           }, [
-            h('span.tx-list-status', {}, [
+            h('span.tx-list-status', {
+              style: {
+                color: transactionStatusColor,
+              },
+            }, [
               transactionStatus,
             ]),
           ]),
@@ -77,7 +90,11 @@ TxListItem.prototype.render = function () {
           style: {},
         }, [
 
-          h('span.tx-list-value', {}, [
+          h('span.tx-list-value', {
+            style: {
+              color: transactionAmountColor,
+            },
+          }, [
             transactionAmount,
           ]),
 
