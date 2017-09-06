@@ -55,6 +55,17 @@ module.exports = class TransactionController extends EventEmitter {
           status: 'submitted',
         })
       },
+      getConfirmedTransactions: (address) => {
+        return this.getFilteredTxList({
+          from: address,
+          status: 'confirmed',
+          err: undefined,
+        })
+      },
+      giveUpOnTransaction: (txId) => {
+        const msg = `Gave up submitting after 3500 blocks un-mined.`
+        this.setTxStatusFailed(txId, msg)
+      },
     })
 
     this.pendingTxTracker = new PendingTransactionTracker({
