@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
+const NetworkDropdownIcon = require('./components/network-dropdown-icon')
 
 function mapStateToProps (state) {
   return {
@@ -94,7 +95,11 @@ NetworkDropdown.prototype.render = function () {
       },
       [
         providerType === 'mainnet' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
-        h('.menu-icon.diamond'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#038789', // $blue-lagoon
+          nonSelectBackgroundColor: '#15afb2',
+          isSelected: providerType === 'mainnet',
+        }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
@@ -113,7 +118,11 @@ NetworkDropdown.prototype.render = function () {
       },
       [
         providerType === 'ropsten' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
-        h('.menu-icon.red-dot'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#e91550', // $crimson
+          nonSelectBackgroundColor: '#ec2c50',
+          isSelected: providerType === 'ropsten',
+        }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
@@ -132,7 +141,11 @@ NetworkDropdown.prototype.render = function () {
       },
       [
         providerType === 'kovan' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
-        h('.menu-icon.hollow-diamond'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#690496', // $purple
+          nonSelectBackgroundColor: '#b039f3',
+          isSelected: providerType === 'kovan',
+        }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
@@ -151,7 +164,11 @@ NetworkDropdown.prototype.render = function () {
       },
       [
         providerType === 'rinkeby' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
-        h('.menu-icon.golden-square'),
+        h(NetworkDropdownIcon, {
+          backgroundColor: '#ebb33f', // $tulip-tree
+          nonSelectBackgroundColor: '#ecb23e',
+          isSelected: providerType === 'rinkeby',
+        }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
@@ -170,7 +187,10 @@ NetworkDropdown.prototype.render = function () {
       },
       [
         activeNetwork === 'http://localhost:8545' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+        h(NetworkDropdownIcon, {
+          isSelected: activeNetwork === 'http://localhost:8545',
+          innerBorder: '1px solid #9b9b9b',
+        }),
         h('span.network-name-item', {
           style: {
             color: activeNetwork === 'http://localhost:8545' ? '#ffffff' : '#9b9b9b',
@@ -191,7 +211,10 @@ NetworkDropdown.prototype.render = function () {
       },
       [
         activeNetwork === 'custom' ? h('.check', '✓') : h('.network-check__transparent', '✓'),
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
+        h(NetworkDropdownIcon, {
+          isSelected: activeNetwork === 'custom',
+          innerBorder: '1px solid #9b9b9b',
+        }),
         h('span.network-name-item', {
           style: {
             color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',

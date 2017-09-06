@@ -43,3 +43,20 @@
 .network-check__transparent {
   opacity: 0;
 }
+
+.menu-icon-circle {
+  height: 17px;
+  width: 17px;
+  border-radius: 17px;
+}
+
+.menu-icon-circle-select {
+  height: 23px;
+  width: 23px;
+  margin: 9px;
+  background: none;
+  border-radius: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
