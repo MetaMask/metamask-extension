@@ -1,5 +1,7 @@
 const assert = require('assert')
+const Transaction = require('ethereumjs-tx')
 const BN = require('bn.js')
+
 
 const { hexToBn, bnToHex } = require('../../app/scripts/lib/util')
 const TxUtils = require('../../app/scripts/lib/tx-utils')
@@ -28,7 +30,7 @@ describe('txUtils', function () {
         nonce: '0x3',
         chainId: 42,
       }
-      const ethTx = txUtils.buildEthTxFromParams(txParams)
+      const ethTx = new Transaction(txParams)
       assert.equal(ethTx.getChainId(), 42, 'chainId is set from tx params')
     })
   })
