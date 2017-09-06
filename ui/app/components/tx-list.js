@@ -65,11 +65,13 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     transactionAmount: formatBalance(transaction.txParams.value, 6),
   }
   const {
-    address = '',
+    address,
     transactionStatus,
     transactionAmount,
     dateString,
   } = props
+
+  if (!address) return null
 
   return h('div', {
     key: transaction.id,

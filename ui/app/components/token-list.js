@@ -45,7 +45,7 @@ TokenList.prototype.render = function () {
   const { userAddress, network } = this.props
 
   if (isLoading) {
-    return this.message('Loading')
+    return this.message('Loading Tokens...')
   }
 
   if (error) {
@@ -115,22 +115,29 @@ TokenList.prototype.createFreshTokenTracker = function () {
   })
 }
 
-TokenList.prototype.componentWillUpdate = function (nextProps) {
-  if (nextProps.network === 'loading') return
-  const oldNet = this.props.network
-  const newNet = nextProps.network
+TokenList.prototype.componentDidUpdate = function (nextProps) {
+  const {
+    network: oldNet,
+    userAddress: oldAddress,
+  } = this.props
+  const {
+    network: newNet,
+    userAddress: newAddress,
+  } = nextProps
 
-  if (oldNet && newNet && newNet !== oldNet) {
-    this.setState({ isLoading: true })
-    this.createFreshTokenTracker()
-  }
+  if (newNet === 'loading') return
+  if (!oldNet || !newNet || !oldAddress || !newAddress) return
+  if (oldAddress === newAddress && oldNet === newNet) return
+
+  this.setState({ isLoading: true })
+  this.createFreshTokenTracker()
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
-  // const heldTokens = tokens.filter(token => {
-  //   return token.balance !== '0' && token.string !== '0.000'
-  // })
-  this.setState({ tokens: tokens, isLoading: false })
+  const heldTokens = tokens.filter(token => {
+    return token.balance !== '0' && token.string !== '0.000'
+  })
+  this.setState({ tokens: heldTokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
