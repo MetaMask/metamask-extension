@@ -8,21 +8,22 @@ describe('PendingBalanceCalculator', function () {
   let nonceTracker
 
   describe('if you have no pending txs and one ether', function () {
-    const ether = '0x' + (new BN(1e18)).toString(16)
+    const ether = '0x' + (new BN(String(1e18))).toString(16)
 
     beforeEach(function () {
-      nonceTracker = generateNonceTrackerWith([], ether)
+      nonceTracker = generateBalaneCalcWith([], ether)
     })
 
-    it('returns the network balance', function () {
-      const result = nonceTracker.getBalance()
-      assert.equal(result, ether, 'returns one ether')
+    it('returns the network balance', async function () {
+      const result = await nonceTracker.getBalance()
+      assert.equal(result, ether, `gave ${result} needed ${ether}`)
     })
   })
 })
 
 function generateBalaneCalcWith (transactions, providerStub = '0x0') {
-  const getPendingTransactions = () => transactions
+  const getPendingTransactions = () => Promise.resolve(transactions)
+  const getBalance = () => Promise.resolve(providerStub)
   providerResultStub.result = providerStub
   const provider = {
     sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
@@ -31,7 +32,7 @@ function generateBalaneCalcWith (transactions, providerStub = '0x0') {
     },
   }
   return new PendingBalanceCalculator({
-    provider,
+    getBalance,
     getPendingTransactions,
   })
 }
