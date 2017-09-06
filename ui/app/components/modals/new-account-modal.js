@@ -49,11 +49,11 @@ NewAccountModal.prototype.render = function () {
         }, []),
       ]),
 
-      h('div.new-account-modal-content', {}, [
+      h('div.new-account-modal-content.after-input', {}, [
         'or',
       ]),
 
-      h('div.new-account-modal-content.import', {}, [
+      h('div.new-account-modal-content.after-input', {}, [
         'Import an account',
       ]),
 

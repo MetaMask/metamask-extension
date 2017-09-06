@@ -252,6 +252,7 @@
   position: relative;
   border: 1px solid $alto;
   box-shadow: 0 0 2px 2px $alto;
+  font-family: 'Montserrat Light';
 }
 
 .new-account-modal-header {
@@ -262,6 +263,7 @@
   padding: 30px;
   font-size: 22px;
   color: $nile-blue;
+  height: 79px;
 }
 
 .modal-close-x::after {
@@ -278,13 +280,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 13px;
-  font-size: 18px;
+  margin-top: 15px;
+  font-size: 17px;
   color: $nile-blue;
 }
 
-.new-account-modal-content.import {
-  padding-top: 2px;
+.new-account-modal-content.after-input {
+  margin-top: 15px;
+  line-height: 25px;
 }
 
 .new-account-input-wrapper {
@@ -292,6 +295,7 @@
   width: 100%;
   justify-content: center;
   padding-bottom: 2px;
+  margin-top: 13px;
 }
 
 .new-account-input {
@@ -299,9 +303,11 @@
   padding-bottom: 20px;
   border-radius: 8px;
   border: 1px solid $alto;
-  width: 70%;
+  width: 73%;
   font-size: 1em;
   color: $alto;
+  font-family: Montserrat Light;
+  font-size: 17px;
 }
 
 // For reference on below placeholder selectors: https://stackoverflow.com/questions/2610497/change-an-html5-inputs-placeholder-color-with-css
@@ -328,7 +334,10 @@
 }
 
 .new-account-modal-content.button {
-  padding-top: 9px;
+  margin-top: 22px;
+  margin-bottom: 30px;
+  width: 113px;
+  height: 44px;
 }
 
 .new-account-modal-wrapper .btn-clear {
@@ -337,6 +346,6 @@
   background: $white;
   border: 1px solid;
   border-radius: 2px;
-  width: 30%;
   color: $tundora;
+  flex: 1;
 }
