@@ -9,7 +9,14 @@ class PendingBalanceCalculator {
   }
 
   async getBalance() {
-    const balance = await this.getBalance
+    const results = await Promise.all([
+      this.getBalance(),
+      this.getPendingTransactions(),
+    ])
+
+    const balance = results[0]
+    const pending = results[1]
+
     return balance
   }
 
