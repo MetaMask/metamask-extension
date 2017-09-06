@@ -37,7 +37,9 @@ NewAccountModal.prototype.render = function () {
         'New Account',
       ]),
 
-      h('div.modal-close-x', {}),
+      h('div.modal-close-x', {
+        onClick: this.props.hideModal,
+      }),
 
       h('div.new-account-modal-content', {}, [
         'Account Name',
