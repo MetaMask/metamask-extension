@@ -1,5 +1,4 @@
 const EthQuery = require('ethjs-query')
-const normalize = require('eth-sig-util').normalize
 const {
   hexToBn,
   BnMultiplyByFraction,
