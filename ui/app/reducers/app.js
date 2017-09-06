@@ -360,7 +360,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'confTx',
-          context: action.id && indexForPending(state, action.id) || 0,
+          context: action.id ? indexForPending(state, action.id) : 0,
         },
         transForward: action.transForward,
         warning: null,
