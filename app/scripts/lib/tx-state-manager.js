@@ -33,7 +33,6 @@ module.exports = class TransactionStateManger extends ObservableStore {
     }, {})
   }
 
-
   addTx (txMeta) {
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)

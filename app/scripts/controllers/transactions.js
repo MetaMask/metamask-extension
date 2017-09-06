@@ -2,12 +2,28 @@ const EventEmitter = require('events')
 const extend = require('xtend')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
+const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
 const TransactionStateManger = require('../lib/tx-state-manager')
-const TxProviderUtil = require('../lib/tx-utils')
+const TxGasUtil = require('../lib/tx-gas-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
+
+/*
+  Transaction Controller is an aggregate of sub-controllers and trackers
+  composing them in a way to be exposed to the metamask controller
+    - txStateManager
+      responsible for the state of a transaction and
+      storing the transaction
+    - pendingTxTracker
+      watching blocks for transactions to be include
+      and emitting confirmed events
+    - txGasUtil
+      gas calculations and safety buffering
+    - nonceTracker
+      calculating nonces
+*/
 
 module.exports = class TransactionController extends EventEmitter {
   constructor (opts) {
@@ -21,7 +37,7 @@ module.exports = class TransactionController extends EventEmitter {
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
-    this.txProviderUtil = new TxProviderUtil(this.provider)
+    this.txGasUtil = new TxGasUtil(this.provider)
 
     this.txStateManager = new TransactionStateManger({
       initState: extend({
@@ -37,7 +53,6 @@ module.exports = class TransactionController extends EventEmitter {
         return this.txStateManager.getFilteredTxList({
           from: address,
           status: 'submitted',
-          err: undefined,
         })
       },
     })
@@ -50,14 +65,15 @@ module.exports = class TransactionController extends EventEmitter {
         if (!account) return
         return account.balance
       },
-      publishTransaction: this.txProviderUtil.publishTransaction.bind(this.txProviderUtil),
+      publishTransaction: this.query.sendRawTransaction,
       getPendingTransactions: () => {
-        const network = this.getNetwork()
-        return this.txStateManager.getFilteredTxList({
-          status: 'submitted',
-          metamaskNetworkId: network,
-        })
+        return this.txStateManager.getFilteredTxList({ status: 'submitted' })
       },
+    })
+
+    this.txStateManager.subscribe(() => {
+      this.emit('update')
+      this.emit('updateBadge')
     })
 
     this.pendingTxTracker.on('txWarning', this.txStateManager.updateTx.bind(this.txStateManager))
@@ -99,11 +115,19 @@ module.exports = class TransactionController extends EventEmitter {
     return this.txStateManager.getTxsByMetaData('status', 'signed').length
   }
 
+  getChainId () {
+    const networkState = this.networkStore.getState()
+    const getChainId = parseInt(networkState)
+    if (Number.isNaN(getChainId)) {
+      return 0
+    } else {
+      return getChainId
+    }
+  }
+
   // Adds a tx to the txlist
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)
-    this.emit('update')
-    this.emit('updateBadge')
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
@@ -114,7 +138,6 @@ module.exports = class TransactionController extends EventEmitter {
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${txMeta.id}:finished`, (completedTx) => {
-        this.emit('updateBadge')
         switch (completedTx.status) {
           case 'submitted':
             return resolve(completedTx.hash)
@@ -129,7 +152,7 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    await this.txProviderUtil.validateTxParams(txParams)
+    await this.txGasUtil.validateTxParams(txParams)
     // construct txMeta
     const txMeta = {
       id: createId(),
@@ -148,13 +171,11 @@ module.exports = class TransactionController extends EventEmitter {
   async addTxDefaults (txMeta) {
     const txParams = txMeta.txParams
     // ensure value
+    const gasPrice = txParams.gasPrice || await this.query.gasPrice()
     txParams.value = txParams.value || '0x0'
-    if (!txParams.gasPrice) {
-      const gasPrice = await this.query.gasPrice()
-      txParams.gasPrice = gasPrice
-    }
+    txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     // set gasLimit
-    return await this.txProviderUtil.analyzeGasUsage(txMeta)
+    return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
 
   async updateAndApproveTransaction (txMeta) {
@@ -197,7 +218,7 @@ module.exports = class TransactionController extends EventEmitter {
     const fromAddress = txParams.from
     // add network/chain id
     txParams.chainId = this.getChainId()
-    const ethTx = this.txProviderUtil.buildEthTxFromParams(txParams)
+    const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
@@ -208,24 +229,13 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
     this.txStateManager.updateTx(txMeta)
-    const txHash = await this.txProviderUtil.publishTransaction(rawTx)
+    const txHash = await this.query.sendRawTransaction(rawTx)
     this.setTxHash(txId, txHash)
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
   async cancelTransaction (txId) {
     this.txStateManager.setTxStatusRejected(txId)
-  }
-
-
-  getChainId () {
-    const networkState = this.networkStore.getState()
-    const getChainId = parseInt(networkState)
-    if (Number.isNaN(getChainId)) {
-      return 0
-    } else {
-      return getChainId
-    }
   }
 
   // receives a txHash records the tx as signed

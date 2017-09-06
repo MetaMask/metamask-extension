@@ -5,7 +5,7 @@ const ObservableStore = require('obs-store')
 const clone = require('clone')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
-const TxProvideUtils = require('../../app/scripts/lib/tx-utils')
+const TxGasUtils = require('../../app/scripts/lib/tx-gas-utils')
 const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
 
 const noop = () => true
@@ -34,7 +34,7 @@ describe('Transaction Controller', function () {
       }),
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
-    txController.txProviderUtils = new TxProvideUtils(txController.provider)
+    txController.txProviderUtils = new TxGasUtils(txController.provider)
   })
 
   describe('#newUnapprovedTransaction', function () {
