@@ -105,7 +105,7 @@ NetworkDropdown.prototype.render = function () {
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'mainnet' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
+        providerType === 'mainnet' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#038789', // $blue-lagoon
           nonSelectBackgroundColor: '#15afb2',
@@ -128,7 +128,7 @@ NetworkDropdown.prototype.render = function () {
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'ropsten' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
+        providerType === 'ropsten' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#e91550', // $crimson
           nonSelectBackgroundColor: '#ec2c50',
@@ -151,7 +151,7 @@ NetworkDropdown.prototype.render = function () {
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'kovan' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
+        providerType === 'kovan' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#690496', // $purple
           nonSelectBackgroundColor: '#b039f3',
@@ -174,7 +174,7 @@ NetworkDropdown.prototype.render = function () {
         style: dropdownMenuItemStyle,
       },
       [
-        providerType === 'rinkeby' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
+        providerType === 'rinkeby' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           backgroundColor: '#ebb33f', // $tulip-tree
           nonSelectBackgroundColor: '#ecb23e',
@@ -197,7 +197,7 @@ NetworkDropdown.prototype.render = function () {
         style: dropdownMenuItemStyle,
       },
       [
-        activeNetwork === 'http://localhost:8545' ? h('.network-check', '✓') : h('.network-check__transparent', '✓'),
+        activeNetwork === 'http://localhost:8545' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           isSelected: activeNetwork === 'http://localhost:8545',
           innerBorder: '1px solid #9b9b9b',
@@ -221,7 +221,7 @@ NetworkDropdown.prototype.render = function () {
         style: dropdownMenuItemStyle,
       },
       [
-        activeNetwork === 'custom' ? h('.check', '✓') : h('.network-check__transparent', '✓'),
+        activeNetwork === 'custom' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
           isSelected: activeNetwork === 'custom',
           innerBorder: '1px solid #9b9b9b',
