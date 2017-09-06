@@ -60,3 +60,37 @@
   justify-content: center;
   align-items: center;
 }
+
+.network-dropdown-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.network-dropdown-divider {
+  width: 100%;
+  height: 1px;
+  margin: 10px 0;
+  background-color: $scorpion;
+}
+
+.network-dropdown-title {
+  height: 25px;
+  width: 75px;
+  color: $white;
+  font-family: 'DIN OT';
+  font-size: 18px;
+  line-height: 25px;
+  text-align: center;
+}
+
+.network-dropdown-content {
+  height: 36px;
+  width: 265px;
+  color: $dusty-gray;
+  font-family: 'DIN OT';
+  font-size: 14px;
+  line-height: 18px;
+}
+

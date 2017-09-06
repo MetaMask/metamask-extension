@@ -85,6 +85,17 @@ NetworkDropdown.prototype.render = function () {
     },
   }, [
 
+    h('div.network-dropdown-header', {}, [
+      h('div.network-dropdown-title', {}, 'Networks'),
+
+      h('div.network-dropdown-divider'),
+
+      h('div.network-dropdown-content',
+        {},
+        'The default network for Ether transactions is Main Net.'
+      ),
+    ]),
+
     h(
       DropdownMenuItem,
       {
