@@ -57,7 +57,9 @@ AccountDetailsModal.prototype.render = function () {
 
       ]),
 
-      h('div.account-details-modal-close', {}),
+      h('div.account-details-modal-close', {
+        onClick: this.props.hideModal,
+      }),
 
       h(QrView, {
         Qr: {
