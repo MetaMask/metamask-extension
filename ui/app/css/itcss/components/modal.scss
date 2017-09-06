@@ -1,3 +1,7 @@
+.modal > div:focus {
+  outline: none !important;
+}
+
 // Buy Modal
 .buy-modal-content {
   flex-direction: column;
