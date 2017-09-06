@@ -77,10 +77,6 @@ module.exports = class txProvideUtil {
     return bnToHex(upperGasLimitBn)
   }
 
-  async publishTransaction (rawTx) {
-    return await this.query.sendRawTransaction(rawTx)
-  }
-
   async validateTxParams (txParams) {
     if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
       throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)

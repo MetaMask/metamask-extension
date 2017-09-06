@@ -4,7 +4,7 @@ const BN = require('bn.js')
 
 
 const { hexToBn, bnToHex } = require('../../app/scripts/lib/util')
-const TxUtils = require('../../app/scripts/lib/tx-utils')
+const TxUtils = require('../../app/scripts/lib/tx-gas-utils')
 
 
 describe('txUtils', function () {
