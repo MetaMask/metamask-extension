@@ -73,10 +73,10 @@
 
 .tx-list-pending-item-container {
   cursor: pointer;
-}
 
-.tx-list-pending-item-container:hover {
-  background: $alto;
+  &:hover {
+    background: rgba($alto, .2);
+  }
 }
 
 .tx-list-date-wrapper {
