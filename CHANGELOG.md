@@ -2,6 +2,9 @@
 
 ## Current Master
 
+## 3.9.12 2017-9-6
+
+- Fix bug that prevented Web3 1.0 compatibility
 - Make eth_sign deprecation warning less noisy
 - Add useful link to eth_sign deprecation warning.
 - Fix bug with network version serialization over synchronous RPC
