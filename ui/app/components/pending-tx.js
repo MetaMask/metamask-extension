@@ -103,11 +103,12 @@ PendingTx.prototype.render = function () {
 
   const txFeeBn = gasBn.mul(gasPriceBn)
 
-  const valueBn = hexToBn(txParams.value)
-  const maxCost = txFeeBn.add(valueBn)
+  const amountBn = hexToBn(txParams.value)
 
-  const balanceBn = hexToBn(balance)
-  const insufficientBalance = balanceBn.lt(maxCost)
+  // TODO: insufficient balance should be handled on send screen
+  // const maxCost = txFeeBn.add(amountBn)
+  // const balanceBn = hexToBn(balance)
+  // const insufficientBalance = balanceBn.lt(maxCost)
 
   const fromName = identities[txParams.from].name;
   const toName = identities[txParams.to].name;
@@ -128,12 +129,12 @@ PendingTx.prototype.render = function () {
     conversionRate,
   })
 
-  const totalInUSD = conversionUtil(hexToBn('0xa1'), {
+  const totalInUSD = conversionUtil(amountBn, {
     fromFormat: 'BN',
     toCurrency: 'USD',
     conversionRate,
   })
-  const totalInETH = conversionUtil(hexToBn('0xa1'), {
+  const totalInETH = conversionUtil(amountBn, {
     fromFormat: 'BN',
     toCurrency: 'ETH',
     conversionRate,
