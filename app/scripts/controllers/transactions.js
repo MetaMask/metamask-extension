@@ -56,7 +56,7 @@ module.exports = class TransactionController extends EventEmitter {
         })
       },
       getConfirmedTransactions: (address) => {
-        return this.getFilteredTxList({
+        return this.txStateManager.getFilteredTxList({
           from: address,
           status: 'confirmed',
           err: undefined,
