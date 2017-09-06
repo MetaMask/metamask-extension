@@ -17,6 +17,7 @@ function reduceMetamask (state, action) {
     lastUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
+    selectedTokenAddress: null,
   }, state.metamask)
 
   switch (action.type) {
@@ -114,6 +115,11 @@ function reduceMetamask (state, action) {
       })
       delete newState.seedWords
       return newState
+
+    case actions.SET_SELECTED_TOKEN:
+      return extend(metamaskState, {
+        selectedTokenAddress: action.value,
+      })
 
     case actions.SAVE_ACCOUNT_LABEL:
       const account = action.value.account

@@ -8,7 +8,6 @@ const connect = require('react-redux').connect
 const selectors = require('../selectors')
 
 function mapStateToProps (state) {
-
   return {
     network: state.metamask.network,
     tokens: state.metamask.tokens,
@@ -42,7 +41,6 @@ function TokenList () {
 TokenList.prototype.render = function () {
   const state = this.state
   const { tokens, isLoading, error } = state
-  const { userAddress, network } = this.props
 
   if (isLoading) {
     return this.message('Loading Tokens...')
@@ -53,13 +51,7 @@ TokenList.prototype.render = function () {
     return this.message('There was a problem loading your token balances.')
   }
 
-  const tokenViews = tokens.map((tokenData) => {
-    tokenData.network = network
-    tokenData.userAddress = userAddress
-    return h(TokenCell, tokenData)
-  })
-
-  return h('div', tokenViews)
+  return h('div', tokens.map((tokenData) => h(TokenCell, tokenData)))
 }
 
 TokenList.prototype.message = function (body) {

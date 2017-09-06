@@ -2,13 +2,19 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const TokenBalance = require('./token-balance')
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
 module.exports = connect(mapStateToProps)(BalanceComponent)
 
 function mapStateToProps (state) {
+  const accounts = state.metamask.accounts
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const account = accounts[selectedAddress]
+
   return {
+    account,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
   }
@@ -21,9 +27,8 @@ function BalanceComponent () {
 
 BalanceComponent.prototype.render = function () {
   const props = this.props
-  const { balanceValue } = props
-  const needsParse = 'needsParse' in props ? props.needsParse : true
-  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
+  // const { balanceValue } = props
+  const { token } = props
 
   return h('div.balance-container', {}, [
 
@@ -33,13 +38,24 @@ BalanceComponent.prototype.render = function () {
       style: {},
     }),
 
-    this.renderBalance(formattedBalance),
+    token ? this.renderTokenBalance() : this.renderBalance(),
   ])
 }
 
-BalanceComponent.prototype.renderBalance = function (formattedBalance) {
+BalanceComponent.prototype.renderTokenBalance = function () {
+  const { token } = this.props
+
+  return h('div.flex-column.balance-display', [
+    h('div.token-amount', [ h(TokenBalance, { token }) ]),
+  ])
+}
+
+BalanceComponent.prototype.renderBalance = function () {
   const props = this.props
-  const { shorten } = props
+  const { shorten, account } = props
+  const balanceValue = account && account.balance
+  const needsParse = 'needsParse' in props ? props.needsParse : true
+  const formattedBalance = balanceValue ? formatBalance(balanceValue, 6, needsParse) : '...'
   const showFiat = 'showFiat' in props ? props.showFiat : true
 
   if (formattedBalance === 'None' || formattedBalance === '...') {

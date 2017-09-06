@@ -22,6 +22,7 @@ function mapStateToProps (state) {
     selectedAddress: selectors.getSelectedAddress(state),
     selectedIdentity: selectors.getSelectedIdentity(state),
     selectedAccount: selectors.getSelectedAccount(state),
+    selectedTokenAddress: state.metamask.selectedTokenAddress,
   }
 }
 
@@ -29,6 +30,7 @@ function mapDispatchToProps (dispatch) {
   return {
     showSendPage: () => { dispatch(actions.showSendPage()) },
     hideSidebar: () => { dispatch(actions.hideSidebar()) },
+    unsetSelectedToken: () => dispatch(actions.setSelectedToken()),
   }
 }
 
@@ -37,15 +39,26 @@ function WalletView () {
   Component.call(this)
 }
 
-WalletView.prototype.renderTokenBalances = function () {
-  // const { tokens = [] } = this.props
-  // return tokens.map(({ address, decimals, symbol }) => (
-  //   h(BalanceComponent, {
-  //     balanceValue: 0,
-  //     style: {},
-  //   })
-  // ))
-  return h(TokenList)
+WalletView.prototype.renderWalletBalance = function () {
+  const { selectedTokenAddress, selectedAccount, unsetSelectedToken } = this.props
+  const selectedClass = selectedTokenAddress
+    ? ''
+    : 'wallet-balance-wrapper--active'
+  const className = `flex-column wallet-balance-wrapper ${selectedClass}`
+
+  return h('div', { className }, [
+    h('div.wallet-balance',
+      {
+        onClick: () => unsetSelectedToken(),
+      },
+      [
+        h(BalanceComponent, {
+          balanceValue: selectedAccount.balance,
+          style: {},
+        }),
+      ]
+    ),
+  ])
 }
 
 WalletView.prototype.render = function () {
@@ -139,22 +152,9 @@ WalletView.prototype.render = function () {
       ]),
     ]),
 
-    // Wallet Balances
-    h('div.flex-column.wallet-balance-wrapper.wallet-balance-wrapper-active', {}, [
+    this.renderWalletBalance(),
 
-        h('div.wallet-balance', {}, [
-
-          h(BalanceComponent, {
-            balanceValue: selectedAccount.balance,
-            style: {},
-          }),
-
-        ]),
-
-
-    ]),
-
-    this.renderTokenBalances(),
+    h(TokenList),
 
   ])
 }

@@ -4,6 +4,12 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
 .wallet-balance-wrapper {
   flex: 0 0 auto;
+  transition: linear 200ms;
+  background: rgba($wallet-balance-bg, 0);
+
+  &--active {
+    background: rgba($wallet-balance-bg, 1);
+  }
 }
 
 .wallet-balance {
@@ -61,8 +67,4 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
     height: 45px;
     border: 1px solid $alto;
   }
-}
-
-.wallet-balance-wrapper-active {
-  background: $wallet-balance-bg;
 }

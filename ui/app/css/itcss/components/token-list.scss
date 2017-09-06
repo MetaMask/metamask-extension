@@ -1,9 +1,22 @@
+$wallet-balance-breakpoint: 890px;
+$wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
+
 .token-list-item {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   padding: 20px 24px;
   cursor: pointer;
+  transition: linear 200ms;
+  background-color: rgba($wallet-balance-bg, 0);
+
+  @media #{$wallet-balance-breakpoint-range} {
+    padding: 10% 4%;
+  }
+
+  &--active {
+    background-color: rgba($wallet-balance-bg, 1);
+  }
 
   &__identicon {
     margin-right: 15px;

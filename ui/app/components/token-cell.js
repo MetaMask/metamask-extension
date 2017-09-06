@@ -1,10 +1,27 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
 const Identicon = require('./identicon')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
+const selectors = require('../selectors')
+const actions = require('../actions')
 
-module.exports = TokenCell
+function mapStateToProps (state) {
+  return {
+    network: state.metamask.network,
+    selectedTokenAddress: state.metamask.selectedTokenAddress,
+    userAddress: selectors.getSelectedAddress(state),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenCell)
 
 inherits(TokenCell, Component)
 function TokenCell () {
@@ -18,13 +35,17 @@ TokenCell.prototype.render = function () {
     symbol,
     string,
     network,
+    setSelectedToken,
+    selectedTokenAddress,
     // userAddress,
   } = props
 
   return (
     h('div.token-list-item', {
-      style: { cursor: network === '1' ? 'pointer' : 'default' },
+      className: `token-list-item ${selectedTokenAddress ? 'token-list-item--active' : ''}`,
+      // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
+      onClick: () => setSelectedToken(address),
     }, [
 
       h(Identicon, {

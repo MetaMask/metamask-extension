@@ -4,6 +4,7 @@ const selectors = {
   getSelectedAddress,
   getSelectedIdentity,
   getSelectedAccount,
+  getSelectedToken,
   conversionRateSelector,
   transactionsSelector,
 }
@@ -29,6 +30,14 @@ function getSelectedAccount (state) {
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
+}
+
+function getSelectedToken (state) {
+  const tokens = state.metamask.tokens || []
+  const selectedTokenAddress = state.metamask.selectedTokenAddress
+  const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
+
+  return selectedToken || null
 }
 
 function conversionRateSelector (state) {

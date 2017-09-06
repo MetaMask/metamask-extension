@@ -4,10 +4,12 @@ const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const actions = require('../actions')
+const selectors = require('../selectors')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
 const Identicon = require('./identicon')
+const TokenBalance = require('./token-balance')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
@@ -16,6 +18,7 @@ function mapStateToProps (state) {
 
   const identities = state.metamask.identities
   const accounts = state.metamask.accounts
+  const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
   const identity = identities[selectedAddress]
@@ -25,6 +28,8 @@ function mapStateToProps (state) {
     sidebarOpen,
     selectedAddress,
     checksumAddress,
+    selectedTokenAddress,
+    selectedToken: selectors.getSelectedToken(state),
     identity,
     account,
   }
@@ -44,9 +49,41 @@ function TxView () {
   Component.call(this)
 }
 
+TxView.prototype.renderHeroBalance = function () {
+  const {account, selectedToken, showModal, showSendPage } = this.props
+
+  return h('div.hero-balance', {}, [
+
+    h(BalanceComponent, {
+      balanceValue: account && account.balance,
+      token: selectedToken,
+    }),
+
+    h('div.flex-row.flex-center.hero-balance-buttons', {}, [
+      h('button.btn-clear', {
+        style: {
+          textAlign: 'center',
+        },
+        onClick: () => showModal({
+          name: 'BUY',
+        }),
+      }, 'BUY'),
+
+      h('button.btn-clear', {
+        style: {
+          textAlign: 'center',
+          marginLeft: '0.8em',
+        },
+        onClick: showSendPage,
+      }, 'SEND'),
+
+    ]),
+  ])
+}
+
 TxView.prototype.render = function () {
 
-  const { selectedAddress, identity, account } = this.props
+  const { selectedAddress, identity } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -87,41 +124,7 @@ TxView.prototype.render = function () {
 
     ]),
 
-    h('div.hero-balance', {
-      style: {},
-    }, [
-
-      h(BalanceComponent, {
-        balanceValue: account && account.balance,
-        style: {},
-      }),
-
-      h('div.flex-row.flex-center.hero-balance-buttons', {
-        style: {},
-      }, [
-        h('button.btn-clear', {
-          style: {
-            textAlign: 'center',
-          },
-          onClick: () => {
-            this.props.showModal({
-              name: 'BUY',
-            })
-          },
-        }, 'BUY'),
-
-        h('button.btn-clear', {
-          style: {
-            textAlign: 'center',
-            marginLeft: '0.8em',
-          },
-          onClick: () => {
-            this.props.showSendPage()
-          },
-        }, 'SEND'),
-
-      ]),
-    ]),
+    this.renderHeroBalance(),
 
     h(TxList, {}),
 

@@ -83,6 +83,8 @@ var actions = {
   hideWarning: hideWarning,
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
+  SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
+  setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -583,6 +585,13 @@ function lockMetamask () {
 function setCurrentAccountTab (newTabName) {
   log.debug(`background.setCurrentAccountTab: ${newTabName}`)
   return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
+}
+
+function setSelectedToken (tokenAddress) {
+  return {
+    type: actions.SET_SELECTED_TOKEN,
+    value: tokenAddress || null,
+  }
 }
 
 function showAccountDetail (address) {
