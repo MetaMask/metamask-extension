@@ -15,7 +15,6 @@ class PendingBalanceCalculator {
   }
 
   async getBalance() {
-    console.log('getting balance')
     const results = await Promise.all([
       this.getNetworkBalance(),
       this.getPendingTransactions(),
@@ -24,15 +23,9 @@ class PendingBalanceCalculator {
     const balance = results[0]
     const pending = results[1]
 
-    console.dir(pending)
-    console.dir(balance.toString())
-    console.trace('but why')
-
     const pendingValue = pending.reduce((total, tx) => {
       return total.add(this.valueFor(tx))
     }, new BN(0))
-
-    console.log(`subtracting ${pendingValue.toString()} from ${balance.toString()}`)
 
     return `0x${ balance.sub(pendingValue).toString(16) }`
   }
@@ -40,7 +33,6 @@ class PendingBalanceCalculator {
   valueFor (tx) {
     const txValue = tx.txParams.value
     const normalized = normalize(txValue).substring(2)
-    console.log({ txValue, normalized })
     const value = this.hexToBn(txValue)
     return value
   }

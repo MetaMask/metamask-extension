@@ -57,12 +57,7 @@ describe('PendingBalanceCalculator', function () {
     })
 
     it('returns the network balance', async function () {
-      console.log('one')
-      console.dir(balanceCalculator)
-      console.dir(balanceCalculator.getBalance.toString())
       const result = await balanceCalculator.getBalance()
-      console.log('two')
-      console.dir(result)
       assert.equal(result, '0x0', `gave ${result} needed '0x0'`)
       return true
     })
