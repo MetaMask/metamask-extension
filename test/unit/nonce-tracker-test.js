@@ -162,6 +162,25 @@ describe('Nonce Tracker', function () {
         await nonceLock.releaseLock()
       })
     })
+
+    describe('Faq issue 67', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        const confirmedTxs = txGen.generate({ status: 'confirmed' }, { count: 64 })
+        const pendingTxs = txGen.generate({
+          status: 'submitted',
+        }, { count: 10 })
+                                         // 0x40 is 64 in hex:
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x40')
+      })
+
+      it('should return nonce after network nonce', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '74', `nonce should be 74 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
   })
 })
 
