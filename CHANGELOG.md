@@ -2,6 +2,7 @@
 
 ## Current Master
 - Readded loose keyring label back into the account list.
+- Added button to reject all transactions (thanks [davidp94](https://github.com/davidp94)!)
 
 ## 3.9.12 2017-9-6
 
