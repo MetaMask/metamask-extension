@@ -52,7 +52,7 @@ QrCodeView.prototype.render = function () {
           width: '247px',
         },
         value: Qr.data,
-        readonly: 'readonly',
+        readonly: true,
       }),
       // h(CopyButton, {
       //   value: Qr.data,
