@@ -295,7 +295,7 @@ AccountDropdowns.defaultProps = {
 AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
   selected: PropTypes.string,
-  keyrings: PropTypes.objectOf(PropTypes.object),
+  keyrings: PropTypes.array,
 }
 
 const mapDispatchToProps = (dispatch) => {
