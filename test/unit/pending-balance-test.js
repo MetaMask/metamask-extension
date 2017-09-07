@@ -72,7 +72,7 @@ describe('PendingBalanceCalculator', function () {
       balanceCalculator = generateBalanceCalcWith(pendingTxs, etherBn)
     })
 
-    it('returns the network balance', async function () {
+    it('returns the subtracted result', async function () {
       const result = await balanceCalculator.getBalance()
       assert.equal(result, '0x0', `gave ${result} needed '0x0'`)
       return true
