@@ -2,6 +2,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
 const TxListItem = require('./tx-list-item')
 const { formatBalance, formatDate } = require('../util')
@@ -71,6 +72,8 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     transactionStatus: transaction.status,
     transactionAmount: formatBalance(transaction.txParams.value, 6),
     transActionId: transaction.id,
+    transactionHash: transaction.hash,
+    transactionNetworkId: transaction.metamaskNetworkId,
   }
 
   const {
@@ -79,6 +82,8 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     transactionAmount,
     dateString,
     transActionId,
+    transactionHash,
+    transactionNetworkId,
   } = props
   const { showConfTxPage } = this.props
 
@@ -90,13 +95,33 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     dateString,
     address,
     transactionAmount,
+    transactionHash,
+    className: '.tx-list-clickable',
   }
 
   if (transactionStatus === 'unapproved') {
     opts.onClick = () => showConfTxPage({id: transActionId})
-    opts.className = '.tx-list-pending-item-container'
+    opts.className += '.tx-list-pending-item-container'
+  }
+  else if (transactionHash) {
+    opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }
 
   return h(TxListItem, opts)
 }
 
+TxList.prototype.view = function (txHash, network) {
+  const url = etherscanLinkFor(txHash, network)
+  if (url) {
+    navigateTo(url)
+  }
+}
+
+function navigateTo (url) {
+  global.platform.openWindow({ url })
+}
+
+function etherscanLinkFor (txHash, network) {
+  const prefix = prefixForNetwork(network)
+  return `https://${prefix}etherscan.io/tx/${txHash}`
+}

@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
 module.exports = TxListItem
@@ -24,7 +25,7 @@ TxListItem.prototype.render = function () {
     dateString,
     address,
     transactionAmount,
-    className
+    className,
   } = this.props
 
   return h(`div${className || ''}`, {
@@ -89,4 +90,3 @@ TxListItem.prototype.render = function () {
     ]) // holding on icon from design
   ])
 }
-
