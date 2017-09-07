@@ -22,7 +22,7 @@ Network.prototype.render = function () {
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
-    return h('span', {
+    return h('span.pointer', {
       style: {
         display: 'flex',
         alignItems: 'center',
@@ -37,7 +37,7 @@ Network.prototype.render = function () {
         },
         src: 'images/loading.svg',
       }),
-      h('i.fa.fa-sort-desc'),
+      h('i.fa.fa-caret-down'),
     ])
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
@@ -73,7 +73,7 @@ Network.prototype.render = function () {
                 style: {
                   color: '#039396',
                 }},
-              'Ethereum Main Net'),
+              'Main Network'),
               h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':
