@@ -89,6 +89,18 @@ ConfirmTxScreen.prototype.render = function () {
         }),
       ]),
 
+      h('h3', {
+        style: {
+          alignSelf: 'flex-end',
+          display: unconfTxList.length > 1 ? 'block' : 'none',
+        },
+      }, [
+        h('i.fa.fa-trash.fa-lg.cursor-pointer', {
+          title: 'Cancel All Pending Transactions',
+          onClick: () => props.dispatch(actions.cancelAllTx(unconfTxList)),
+        }),
+      ]), 
+
       warningIfExists(props.warning),
 
       currentTxView({
