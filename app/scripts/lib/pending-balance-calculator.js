@@ -6,13 +6,13 @@ class PendingBalanceCalculator {
 
   constructor ({ getBalance, getPendingTransactions }) {
     this.getPendingTransactions = getPendingTransactions
-    this.getBalance = getBalance
+    this.getNetworkBalance = getBalance
   }
 
   async getBalance() {
     console.log('getting balance')
     const results = await Promise.all([
-      this.getBalance(),
+      this.getNetworkBalance(),
       this.getPendingTransactions(),
     ])
     console.dir(results)
@@ -21,18 +21,23 @@ class PendingBalanceCalculator {
     const pending = results[1]
 
     console.dir({ balance, pending })
+    console.dir(pending)
 
     const pendingValue = pending.reduce(function (total, tx) {
-      return total.sub(this.valueFor(tx))
+      return total.add(this.valueFor(tx))
     }, new BN(0))
 
     const balanceBn = new BN(normalize(balance))
+    console.log(`subtracting ${pendingValue.toString()} from ${balanceBn.toString()}`)
 
     return `0x${ balanceBn.sub(pendingValue).toString(16) }`
   }
 
   valueFor (tx) {
-    const value = new BN(normalize(tx.txParams.value))
+    const txValue = tx.txParams.value
+    const normalized = normalize(txValue).substring(2)
+    console.log({ txValue, normalized })
+    const value = new BN(normalize(txValue).substring(2), 16)
     return value
   }
 
