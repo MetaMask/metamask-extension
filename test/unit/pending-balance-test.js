@@ -27,6 +27,22 @@ describe('PendingBalanceCalculator', function () {
       const result = balanceCalculator.valueFor(pendingTxs[0])
       assert.equal(result.toString(), etherBn.toString(), 'computes one ether')
     })
+
+    it('calculates gas costs as well', function () {
+      const txGen = new MockTxGen()
+      pendingTxs = txGen.generate({
+        status: 'submitted',
+        txParams: {
+          value: '0x0',
+          gasPrice: '0x2',
+          gas: '0x3',
+        }
+      }, { count: 1 })
+
+      const balanceCalculator = generateBalanceCalcWith([], zeroBn)
+      const result = balanceCalculator.valueFor(pendingTxs[0])
+      assert.equal(result.toString(), '6', 'computes one ether')
+    })
   })
 
   describe('if you have no pending txs and one ether', function () {
