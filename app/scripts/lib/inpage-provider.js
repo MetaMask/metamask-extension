@@ -1,5 +1,6 @@
 const pipe = require('pump')
 const RpcEngine = require('json-rpc-engine')
+const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
 const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
 const ObjectMultiplex = require('./obj-multiplex')
@@ -27,7 +28,7 @@ function MetamaskInpageProvider (connectionStream) {
   )
 
   // ignore phishing warning message (handled elsewhere)
-  multiStream.ignoreStream('phishing') 
+  multiStream.ignoreStream('phishing')
 
   // connect to async provider
   const streamMiddleware = createStreamMiddleware()
@@ -41,6 +42,7 @@ function MetamaskInpageProvider (connectionStream) {
 
   // handle sendAsync requests via dapp-side rpc engine
   const engine = new RpcEngine()
+  engine.push(createIdRemapMiddleware())
   engine.push(streamMiddleware)
 
   self.sendAsync = engine.handle.bind(engine)
