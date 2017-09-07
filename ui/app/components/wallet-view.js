@@ -64,11 +64,11 @@ WalletView.prototype.renderWalletBalance = function () {
 WalletView.prototype.render = function () {
   const {
     network, responsiveDisplayClassname, identities,
-    selectedAddress, selectedAccount, accounts,
+    selectedAddress, accounts,
     selectedIdentity,
   } = this.props
   // temporary logs + fake extra wallets
-  console.log('walletview, selectedAccount:', selectedAccount)
+  // console.log('walletview, selectedAccount:', selectedAccount)
 
   return h('div.wallet-view.flex-column' + (responsiveDisplayClassname || ''), {
     style: {},

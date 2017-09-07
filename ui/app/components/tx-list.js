@@ -20,14 +20,9 @@ function TxList () {
   Component.call(this)
 }
 
-const contentDivider = h('div.tx-list-content-divider', {
-  style: {},
-})
-
 TxList.prototype.render = function () {
 
-  const { txsToRender } = this.props
-  console.log('transactions to render', txsToRender)
+  // console.log('transactions to render', txsToRender)
 
   return h('div.flex-column.tx-list-container', {}, [
 
@@ -46,13 +41,29 @@ TxList.prototype.render = function () {
 
     ]),
 
-    contentDivider,
-
-    txsToRender.map((transaction) => {
-      return this.renderTransactionListItem(transaction)
-    }),
+    this.renderTranstions(),
 
   ])
+}
+
+TxList.prototype.getAddressText = function (transaction) {
+  const {
+    txParams: { to },
+  } = transaction
+
+  return to
+    ? `${to.slice(0, 10)}...${to.slice(-4)}`
+    : 'Contract Published'
+}
+
+TxList.prototype.renderTranstions = function () {
+  const { txsToRender } = this.props
+
+  return txsToRender.length
+    ? txsToRender.map((transaction) => {
+      return this.renderTransactionListItem(transaction)
+    })
+    : h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])
 }
 
 // TODO: Consider moving TxListItem into a separate component
@@ -70,12 +81,10 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     dateString,
   } = props
 
-  if (!address) return null
-
-  return h('div', {
+  return h('div.tx-list-item', {
     key: transaction.id,
   }, [
-    h('div.flex-column.tx-list-item-wrapper', {
+    h('div.flex-column.tx-list-item__wrapper', {
       style: {},
     }, [
 
@@ -105,7 +114,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
             style: {},
           }, [
             h('span.tx-list-account', {}, [
-              `${address.slice(0, 10)}...${address.slice(-4)}`,
+              this.getAddressText(transaction),
             ]),
           ]),
 
@@ -134,7 +143,6 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
 
       ]),
     ]),
-    contentDivider,
 
   ])
 }

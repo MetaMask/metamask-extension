@@ -6,13 +6,6 @@
 $tx-view-bg: $white;
 $wallet-view-bg: $wild-sand;
 
-html {
-
-  @media screen and (max-width: 575px) {
-    height: 500px;
-  }
-}
-
 // Main container
 .main-container {
   position: absolute;

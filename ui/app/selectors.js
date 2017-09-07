@@ -45,11 +45,16 @@ function conversionRateSelector (state) {
 }
 
 function transactionsSelector (state) {
-  const { network } = state.metamask
+  const { network, selectedTokenAddress } = state.metamask
   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
   const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
   const transactions = state.metamask.selectedAddressTxList || []
   const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
 
-  return txsToRender.sort((a, b) => b.time - a.time)
+  return selectedTokenAddress
+    ? txsToRender
+      .filter(({ to }) => to === selectedTokenAddress)
+      .sort((a, b) => b.time - a.time)
+    : txsToRender
+      .sort((a, b) => b.time - a.time)
 }

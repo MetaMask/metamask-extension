@@ -61,14 +61,6 @@
   flex: 0 0 70px;
   align-items: stretch;
   justify-content: flex-start;
-
-  @media screen and (max-width: $break-small) {
-    margin: 0 1.3em .95em;
-  }
-
-  @media screen and (min-width: $break-large) {
-    margin: 0 2.37em;
-  }
 }
 
 .tx-list-date-wrapper {
@@ -93,11 +85,13 @@
 .tx-list-date {
   color: $dusty-gray;
   font-size: 12px;
+  font-family: "Montserrat UltraLight";
 }
 
 .tx-list-identicon-wrapper {
   align-self: center;
-  flex: 0.5 1 auto;
+  flex: 0 0 auto;
+  margin-right: 16px;
 }
 
 .tx-list-account-and-status-wrapper {
@@ -118,6 +112,7 @@
 
     .tx-list-account-wrapper {
       flex: 1.3 2 auto;
+      min-width: 153px;
     }
 
     .tx-list-status-wrapper {
@@ -137,18 +132,41 @@
   }
 }
 
-.tx-list-details-wrapper {
-  align-self: center;
-  flex: 2 2 auto;
-  color: $dusty-gray;
+.tx-list-item {
+  border-top: 1px solid rgb(231, 231, 231);
 
-  .tx-list-value {
-    font-size: 16px;
-    text-align: right;
+  @media screen and (max-width: $break-small) {
+    margin: 0 1.3em .95em;
   }
 
-  .tx-list-fiat-value {
-    font-size: 12px;
-    text-align: right;
+  @media screen and (min-width: $break-large) {
+    margin: 0 2.37em;
+  }
+
+  &:last-of-type {
+    border-bottom: 1px solid rgb(231, 231, 231);
+    margin-bottom: 32px;
+  }
+
+  &__wrapper {
+    align-self: center;
+    flex: 2 2 auto;
+    color: $dusty-gray;
+
+    .tx-list-value {
+      font-size: 16px;
+      text-align: right;
+    }
+
+    .tx-list-fiat-value {
+      font-size: 12px;
+      text-align: right;
+    }
+  }
+
+  &--empty {
+    text-align: center;
+    border-bottom: none !important;
+    padding: 16px;
   }
 }

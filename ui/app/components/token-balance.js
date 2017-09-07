@@ -77,13 +77,15 @@ TokenBalance.prototype.createFreshTokenTracker = function () {
 TokenBalance.prototype.componentDidUpdate = function (nextProps) {
   const {
     userAddress: oldAddress,
+    token: { address: oldTokenAddress },
   } = this.props
   const {
     userAddress: newAddress,
+    token: { address: newTokenAddress },
   } = nextProps
 
-  if (!oldAddress || !newAddress) return
-  if (oldAddress === newAddress) return
+  if ((!oldAddress || !newAddress) && (!oldTokenAddress || !newTokenAddress)) return
+  if ((oldAddress === newAddress) && (oldTokenAddress === newTokenAddress)) return
 
   this.setState({ isLoading: true })
   this.createFreshTokenTracker()

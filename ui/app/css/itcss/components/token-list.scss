@@ -10,6 +10,23 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   transition: linear 200ms;
   background-color: rgba($wallet-balance-bg, 0);
 
+  &__token-balance {
+    font-size: 130%;
+
+    @media #{$wallet-balance-breakpoint-range} {
+      font-size: 105%;
+    }
+  }
+
+  &__fiat-amount {
+    margin-top: .25%;
+    font-size: 105%;
+
+    @media #{$wallet-balance-breakpoint-range} {
+      font-size: 95%;
+    }
+  }
+
   @media #{$wallet-balance-breakpoint-range} {
     padding: 10% 4%;
   }
@@ -21,14 +38,9 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   &__identicon {
     margin-right: 15px;
     border: '1px solid #dedede';
-  }
 
-  &__token-balance {
-    font-size: 130%;
-  }
-
-  &__fiat-amount {
-    margin-top: .25%;
-    font-size: 105%;
+    @media #{$wallet-balance-breakpoint-range} {
+      margin-right: 4%;
+    }
   }
 }
