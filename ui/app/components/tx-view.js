@@ -40,6 +40,7 @@ function mapDispatchToProps (dispatch) {
     hideSidebar: () => { dispatch(actions.hideSidebar()) },
     showModal: (payload) => { dispatch(actions.showModal(payload)) },
     showSendPage: () => { dispatch(actions.showSendPage()) },
+    showSendTokenPage: () => { dispatch(actions.showSendTokenPage()) },
   }
 }
 
@@ -60,7 +61,7 @@ TxView.prototype.renderHeroBalance = function () {
 }
 
 TxView.prototype.renderButtons = function () {
-  const {selectedToken, showModal, showSendPage } = this.props
+  const {selectedToken, showModal, showSendPage, showSendTokenPage } = this.props
 
   return !selectedToken
     ? (
@@ -90,7 +91,7 @@ TxView.prototype.renderButtons = function () {
             textAlign: 'center',
             marginLeft: '0.8em',
           },
-          onClick: showSendPage,
+          onClick: showSendTokenPage,
         }, 'SEND'),
       ])
     )

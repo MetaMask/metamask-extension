@@ -93,8 +93,10 @@ TokenBalance.prototype.componentDidUpdate = function (nextProps) {
 
 TokenBalance.prototype.updateBalance = function (tokens = []) {
   const [{ string, symbol }] = tokens
+  const { balanceOnly } = this.props
+
   this.setState({
-    balance: `${string} ${symbol}`,
+    balance: balanceOnly ? string : `${string} ${symbol}`,
     isLoading: false,
   })
 }

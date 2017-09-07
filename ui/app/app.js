@@ -9,6 +9,7 @@ const NewKeyChainScreen = require('./new-keychain')
 // accounts
 const MainContainer = require('./main-container')
 const SendTransactionScreen = require('./send')
+const SendTokenScreen = require('./components/send-token')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -326,6 +327,10 @@ App.prototype.renderPrimary = function () {
     case 'sendTransaction':
       log.debug('rendering send tx screen')
       return h(SendTransactionScreen, {key: 'send-transaction'})
+
+    case 'sendToken':
+      log.debug('rendering send token screen')
+      return h(SendTokenScreen, {key: 'sendToken'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')

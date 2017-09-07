@@ -203,3 +203,44 @@
   font-size: .8em;
   padding: 1px 4px;
 }
+
+.send-token {
+  width: 498px;
+  height: 605px;
+  background-color: #fff;
+  display: flex;
+  flex-flow: column nowrap;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  padding: 46px 40.5px 26px;
+  position: relative;
+  top: -26px;
+  z-index: 25;
+  align-items: center;
+  font-family: "Montserrat Light";
+
+  .identicon {
+    position: absolute;
+    top: -35px;
+    z-index: 25;
+  }
+
+  &__title {
+    color: $scorpion;
+    font-size: 20px;
+    line-height: 29px;
+  }
+
+  &__description,
+  &__balance-text,
+  &__token-symbol {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  &__token-balance {
+    font-size: 43px;
+    line-height: 40px;
+    margin-top: 13px;
+  }
+}

@@ -219,6 +219,16 @@ function reduceApp (state, action) {
         warning: null,
       })
 
+    case actions.SHOW_SEND_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'sendToken',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+        warning: null,
+      })
+
     case actions.SHOW_NEW_KEYCHAIN:
       return extend(appState, {
         currentView: {
