@@ -1,5 +1,4 @@
 const BN = require('ethereumjs-util').BN
-const EthQuery = require('ethjs-query')
 const normalize = require('eth-sig-util').normalize
 
 class PendingBalanceCalculator {
@@ -27,7 +26,7 @@ class PendingBalanceCalculator {
       return total.add(this.valueFor(tx))
     }, new BN(0))
 
-    return `0x${ balance.sub(pendingValue).toString(16) }`
+    return `0x${balance.sub(pendingValue).toString(16)}`
   }
 
   valueFor (tx) {
