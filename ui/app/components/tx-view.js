@@ -142,7 +142,7 @@ TxView.prototype.render = function () {
 
     this.renderHeroBalance(),
 
-    h(TxList, {}),
+    h(TxList),
 
   ])
 }

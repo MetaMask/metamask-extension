@@ -34,19 +34,10 @@ TxList.prototype.render = function () {
 
   return h('div.flex-column.tx-list-container', {}, [
 
-    h('div.flex-row.tx-list-header-wrapper', {
-      style: {},
-    }, [
-
-      h('div.flex-row.tx-list-header', {
-      }, [
-
-        h('div', {
-          style: {},
-        }, 'transactions'),
-
+    h('div.flex-row.tx-list-header-wrapper', [
+      h('div.flex-row.tx-list-header', [
+        h('div', 'transactions'),
       ]),
-
     ]),
 
     this.renderTranstions(),
@@ -61,7 +52,7 @@ TxList.prototype.renderTranstions = function () {
     ? txsToRender.map((transaction) => {
       return this.renderTransactionListItem(transaction)
     })
-    : h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])
+    : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
 }
 
 // TODO: Consider moving TxListItem into a separate component
@@ -87,9 +78,8 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
   } = props
   const { showConfTxPage } = this.props
 
-  if (!address) return null
-    
   const opts = {
+    key: transactionHash,
     transactionStatus,
     transActionId,
     dateString,
@@ -102,9 +92,8 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
   if (transactionStatus === 'unapproved') {
     opts.onClick = () => showConfTxPage({id: transActionId})
     opts.className += '.tx-list-pending-item-container'
-    opt.transactionStatus = 'Not Started'
-  }
-  else if (transactionHash) {
+    opts.transactionStatus = 'Not Started'
+  } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }
 
