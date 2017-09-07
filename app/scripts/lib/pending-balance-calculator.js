@@ -15,30 +15,31 @@ class PendingBalanceCalculator {
       this.getNetworkBalance(),
       this.getPendingTransactions(),
     ])
-    console.dir(results)
 
     const balance = results[0]
     const pending = results[1]
 
-    console.dir({ balance, pending })
     console.dir(pending)
 
-    const pendingValue = pending.reduce(function (total, tx) {
+    const pendingValue = pending.reduce((total, tx) => {
       return total.add(this.valueFor(tx))
     }, new BN(0))
 
-    const balanceBn = new BN(normalize(balance))
-    console.log(`subtracting ${pendingValue.toString()} from ${balanceBn.toString()}`)
+    console.log(`subtracting ${pendingValue.toString()} from ${balance.toString()}`)
 
-    return `0x${ balanceBn.sub(pendingValue).toString(16) }`
+    return `0x${ balance.sub(pendingValue).toString(16) }`
   }
 
   valueFor (tx) {
     const txValue = tx.txParams.value
     const normalized = normalize(txValue).substring(2)
     console.log({ txValue, normalized })
-    const value = new BN(normalize(txValue).substring(2), 16)
+    const value = this.hexToBn(txValue)
     return value
+  }
+
+  hexToBn (hex) {
+    return new BN(normalize(hex).substring(2), 16)
   }
 
 }

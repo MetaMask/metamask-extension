@@ -4,6 +4,7 @@ const MockTxGen = require('../lib/mock-tx-gen')
 const BN = require('ethereumjs-util').BN
 let providerResultStub = {}
 
+const zeroBn = new BN(0)
 const etherBn = new BN(String(1e18))
 const ether = '0x' + etherBn.toString(16)
 
@@ -22,7 +23,7 @@ describe('PendingBalanceCalculator', function () {
         }
       }, { count: 1 })
 
-      const balanceCalculator = generateBalaneCalcWith([], '0x0')
+      const balanceCalculator = generateBalanceCalcWith([], zeroBn)
       const result = balanceCalculator.valueFor(pendingTxs[0])
       assert.equal(result.toString(), etherBn.toString(), 'computes one ether')
     })
@@ -31,7 +32,7 @@ describe('PendingBalanceCalculator', function () {
   describe('if you have no pending txs and one ether', function () {
 
     beforeEach(function () {
-      balanceCalculator = generateBalaneCalcWith([], ether)
+      balanceCalculator = generateBalanceCalcWith([], zeroBn)
     })
 
     it('returns the network balance', async function () {
@@ -52,7 +53,7 @@ describe('PendingBalanceCalculator', function () {
         }
       }, { count: 1 })
 
-      balanceCalculator = generateBalaneCalcWith(pendingTxs, ether)
+      balanceCalculator = generateBalanceCalcWith(pendingTxs, etherBn)
     })
 
     it('returns the network balance', async function () {
@@ -69,7 +70,7 @@ describe('PendingBalanceCalculator', function () {
   })
 })
 
-function generateBalaneCalcWith (transactions, providerStub = '0x0') {
+function generateBalanceCalcWith (transactions, providerStub = zeroBn) {
   const getPendingTransactions = () => Promise.resolve(transactions)
   const getBalance = () => Promise.resolve(providerStub)
   providerResultStub.result = providerStub
