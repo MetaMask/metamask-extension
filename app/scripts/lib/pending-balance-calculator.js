@@ -32,9 +32,15 @@ class PendingBalanceCalculator {
 
   valueFor (tx) {
     const txValue = tx.txParams.value
-    const normalized = normalize(txValue).substring(2)
     const value = this.hexToBn(txValue)
-    return value
+    const gasPrice = this.hexToBn(tx.txParams.gasPrice)
+
+    const gas = tx.txParams.gas
+    const gasLimit = tx.txParams.gasLimit
+    const gasLimitBn = this.hexToBn(gas || gasLimit)
+
+    const gasCost = gasPrice.mul(gasLimitBn)
+    return value.add(gasCost)
   }
 
   hexToBn (hex) {
