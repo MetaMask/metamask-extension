@@ -89,18 +89,6 @@ ConfirmTxScreen.prototype.render = function () {
         }),
       ]),
 
-      h('h3', {
-        style: {
-          alignSelf: 'flex-end',
-          display: unconfTxList.length > 1 ? 'block' : 'none',
-        },
-      }, [
-        h('i.fa.fa-trash.fa-lg.cursor-pointer', {
-          title: 'Cancel All Pending Transactions',
-          onClick: () => props.dispatch(actions.cancelAllTx(unconfTxList)),
-        }),
-      ]), 
-
       warningIfExists(props.warning),
 
       currentTxView({
@@ -117,6 +105,7 @@ ConfirmTxScreen.prototype.render = function () {
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),
         cancelTransaction: this.cancelTransaction.bind(this, txData),
+        cancelAllTransactions: this.cancelAllTransactions.bind(this, unconfTxList),
         signMessage: this.signMessage.bind(this, txData),
         signPersonalMessage: this.signPersonalMessage.bind(this, txData),
         cancelMessage: this.cancelMessage.bind(this, txData),
@@ -161,6 +150,12 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   this.stopPropagation(event)
   event.preventDefault()
   this.props.dispatch(actions.cancelTx(txData))
+}
+
+ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event) {
+  this.stopPropagation(event)
+  event.preventDefault()
+  this.props.dispatch(actions.cancelAllTx(unconfTxList))
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {

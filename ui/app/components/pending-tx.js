@@ -318,6 +318,17 @@ PendingTx.prototype.render = function () {
             onClick: props.cancelTransaction,
           }, 'Reject'),
         ]),
+        h('.flex-row.flex-space-around.conf-buttons', {
+          style: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            margin: '14px 25px',
+          },
+        }, [
+          h('button.cancel.btn-red', {
+            onClick: props.cancelAllTransactions,
+          }, 'Reject All'),
+        ]),
       ]),
     ])
   )
