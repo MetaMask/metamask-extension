@@ -32,7 +32,7 @@ describe('PendingBalanceCalculator', function () {
   describe('if you have no pending txs and one ether', function () {
 
     beforeEach(function () {
-      balanceCalculator = generateBalanceCalcWith([], zeroBn)
+      balanceCalculator = generateBalanceCalcWith([], etherBn)
     })
 
     it('returns the network balance', async function () {

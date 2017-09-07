@@ -25,6 +25,8 @@ class PendingBalanceCalculator {
     const pending = results[1]
 
     console.dir(pending)
+    console.dir(balance.toString())
+    console.trace('but why')
 
     const pendingValue = pending.reduce((total, tx) => {
       return total.add(this.valueFor(tx))
