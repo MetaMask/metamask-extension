@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Readded loose keyring label back into the account list.
 
 ## 3.9.12 2017-9-6
 

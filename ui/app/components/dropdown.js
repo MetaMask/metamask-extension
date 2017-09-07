@@ -32,7 +32,7 @@ class Dropdown extends Component {
           'style',
           `
           li.dropdown-menu-item:hover { color:rgb(225, 225, 225); }
-          li.dropdown-menu-item { color: rgb(185, 185, 185); }
+          li.dropdown-menu-item { color: rgb(185, 185, 185); position: relative }
           `
         ),
         ...children,
