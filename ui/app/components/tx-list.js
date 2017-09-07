@@ -96,7 +96,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     address,
     transactionAmount,
     transactionHash,
-    className: '.tx-list-clickable',
+    className: '.tx-list-item.tx-list-clickable',
   }
 
   if (transactionStatus === 'unapproved') {
