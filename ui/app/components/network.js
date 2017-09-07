@@ -74,6 +74,7 @@ Network.prototype.render = function () {
                   color: '#039396',
                 }},
               'Ethereum Main Net'),
+              h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
@@ -83,6 +84,7 @@ Network.prototype.render = function () {
                   color: '#ff6666',
                 }},
               'Ropsten Test Net'),
+              h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
@@ -92,6 +94,7 @@ Network.prototype.render = function () {
                   color: '#690496',
                 }},
               'Kovan Test Net'),
+              h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
@@ -101,6 +104,7 @@ Network.prototype.render = function () {
                   color: '#e7a218',
                 }},
               'Rinkeby Test Net'),
+              h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:
             return h('.network-indicator', [
@@ -116,6 +120,7 @@ Network.prototype.render = function () {
                   color: '#AEAEAE',
                 }},
               'Private Network'),
+              h('i.fa.fa-caret-down.fa-lg'),
             ])
         }
       })(),
