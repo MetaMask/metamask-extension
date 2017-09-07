@@ -62,10 +62,6 @@ module.exports = class TransactionController extends EventEmitter {
           err: undefined,
         })
       },
-      giveUpOnTransaction: (txId) => {
-        const msg = `Gave up submitting after 3500 blocks un-mined.`
-        this.setTxStatusFailed(txId, msg)
-      },
     })
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -79,6 +75,10 @@ module.exports = class TransactionController extends EventEmitter {
       publishTransaction: this.query.sendRawTransaction,
       getPendingTransactions: () => {
         return this.txStateManager.getFilteredTxList({ status: 'submitted' })
+      },
+      giveUpOnTransaction: (txId) => {
+        const msg = `Gave up submitting after 3500 blocks un-mined.`
+        this.setTxStatusFailed(txId, msg)
       },
     })
 
