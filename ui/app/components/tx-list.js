@@ -102,6 +102,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
   if (transactionStatus === 'unapproved') {
     opts.onClick = () => showConfTxPage({id: transActionId})
     opts.className += '.tx-list-pending-item-container'
+    opt.transactionStatus = 'Not Started'
   }
   else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
