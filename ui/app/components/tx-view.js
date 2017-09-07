@@ -9,7 +9,6 @@ const selectors = require('../selectors')
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
 const Identicon = require('./identicon')
-const TokenBalance = require('./token-balance')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
@@ -18,11 +17,11 @@ function mapStateToProps (state) {
 
   const identities = state.metamask.identities
   const accounts = state.metamask.accounts
+  const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
   const identity = identities[selectedAddress]
-  const account = accounts[selectedAddress]
 
   return {
     sidebarOpen,
@@ -31,7 +30,7 @@ function mapStateToProps (state) {
     selectedTokenAddress,
     selectedToken: selectors.getSelectedToken(state),
     identity,
-    account,
+    network,
   }
 }
 
@@ -50,40 +49,55 @@ function TxView () {
 }
 
 TxView.prototype.renderHeroBalance = function () {
-  const {account, selectedToken, showModal, showSendPage } = this.props
+  const { selectedToken } = this.props
 
   return h('div.hero-balance', {}, [
 
-    h(BalanceComponent, {
-      balanceValue: account && account.balance,
-      token: selectedToken,
-    }),
+    h(BalanceComponent, { token: selectedToken }),
 
-    h('div.flex-row.flex-center.hero-balance-buttons', {}, [
-      h('button.btn-clear', {
-        style: {
-          textAlign: 'center',
-        },
-        onClick: () => showModal({
-          name: 'BUY',
-        }),
-      }, 'BUY'),
-
-      h('button.btn-clear', {
-        style: {
-          textAlign: 'center',
-          marginLeft: '0.8em',
-        },
-        onClick: showSendPage,
-      }, 'SEND'),
-
-    ]),
+    this.renderButtons(),
   ])
 }
 
-TxView.prototype.render = function () {
+TxView.prototype.renderButtons = function () {
+  const {selectedToken, showModal, showSendPage } = this.props
 
-  const { selectedAddress, identity } = this.props
+  return !selectedToken
+    ? (
+      h('div.flex-row.flex-center.hero-balance-buttons', [
+        h('button.btn-clear', {
+          style: {
+            textAlign: 'center',
+          },
+          onClick: () => showModal({
+            name: 'BUY',
+          }),
+        }, 'BUY'),
+
+        h('button.btn-clear', {
+          style: {
+            textAlign: 'center',
+            marginLeft: '0.8em',
+          },
+          onClick: showSendPage,
+        }, 'SEND'),
+      ])
+    )
+    : (
+      h('div.flex-row.flex-center.hero-balance-buttons', [
+        h('button.btn-clear', {
+          style: {
+            textAlign: 'center',
+            marginLeft: '0.8em',
+          },
+          onClick: showSendPage,
+        }, 'SEND'),
+      ])
+    )
+}
+
+TxView.prototype.render = function () {
+  const { selectedAddress, identity, network } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -113,6 +127,7 @@ TxView.prototype.render = function () {
         h(Identicon, {
           diameter: 24,
           address: selectedAddress,
+          network,
         }),
       ]),
 

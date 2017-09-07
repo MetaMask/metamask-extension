@@ -3,6 +3,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
+const Identicon = require('./identicon')
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
@@ -10,11 +11,13 @@ module.exports = connect(mapStateToProps)(BalanceComponent)
 
 function mapStateToProps (state) {
   const accounts = state.metamask.accounts
+  const network = state.metamask.network
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   const account = accounts[selectedAddress]
 
   return {
     account,
+    network,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
   }
@@ -27,15 +30,19 @@ function BalanceComponent () {
 
 BalanceComponent.prototype.render = function () {
   const props = this.props
-  // const { balanceValue } = props
-  const { token } = props
+  const { token, network } = props
 
   return h('div.balance-container', {}, [
 
     // TODO: balance icon needs to be passed in
-    h('img.balance-icon', {
-      src: '../images/eth_logo.svg',
-      style: {},
+    // h('img.balance-icon', {
+    //   src: '../images/eth_logo.svg',
+    //   style: {},
+    // }),
+    h(Identicon, {
+      diameter: 45,
+      address: token && token.address,
+      network,
     }),
 
     token ? this.renderTokenBalance() : this.renderBalance(),

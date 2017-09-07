@@ -27,7 +27,6 @@ const contentDivider = h('div.tx-list-content-divider', {
 TxList.prototype.render = function () {
 
   const { txsToRender } = this.props
-
   console.log('transactions to render', txsToRender)
 
   return h('div.flex-column.tx-list-container', {}, [

@@ -49,7 +49,7 @@ WalletView.prototype.renderWalletBalance = function () {
   return h('div', { className }, [
     h('div.wallet-balance',
       {
-        onClick: () => unsetSelectedToken(),
+        onClick: unsetSelectedToken,
       },
       [
         h(BalanceComponent, {
