@@ -69,7 +69,7 @@
     "eth-bin-to-ops": "^1.0.1",
     "eth-contract-metadata": "^1.1.4",
     "eth-hd-keyring": "^1.1.1",
-    "eth-json-rpc-filters": "^1.0.1",
+    "eth-json-rpc-filters": "^1.0.2",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
     "eth-sig-util": "^1.2.2",
