@@ -3,7 +3,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const infuraCurrencies = require('./infura-conversion.json').objects
+const infuraCurrencies = require('./infura-conversion.json').sort((a, b) => {
+      return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
+    })
 const validUrl = require('valid-url')
 const exportAsFile = require('./util').exportAsFile
 
@@ -167,9 +169,7 @@ function currentConversionInformation (metamaskState, state) {
         state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
       defaultValue: currentCurrency,
-    }, infuraCurrencies.sort((a, b) => {
-      return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
-    }).map((currency) => {
+    }, infuraCurrencies.map((currency) => {
       return h('option', {key: currency.symbol, value: currency.symbol}, `${currency.quote.code.toUpperCase()} - ${currency.quote.name}`)
     })
   ),
