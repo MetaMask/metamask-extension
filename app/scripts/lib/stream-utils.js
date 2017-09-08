@@ -1,5 +1,4 @@
 const Through = require('through2')
-const endOfStream = require('end-of-stream')
 const ObjectMultiplex = require('obj-multiplex')
 const pump = require('pump')
 
