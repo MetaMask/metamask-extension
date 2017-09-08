@@ -8,6 +8,7 @@ const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
+const createFilterMiddleware = require('eth-json-rpc-filters')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -78,12 +79,13 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
+    this.blockTracker = this.provider
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
     this.ethStore = new EthStore({
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
     })
 
     // key mgmt
@@ -110,7 +112,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
       ethStore: this.ethStore,
     })
@@ -387,6 +389,10 @@ module.exports = class MetamaskController extends EventEmitter {
     const engine = new RpcEngine()
     engine.push(originMiddleware)
     engine.push(loggerMiddleware)
+    engine.push(createFilterMiddleware({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+    }))
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
