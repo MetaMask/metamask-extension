@@ -151,6 +151,10 @@
     font-size: 16px;
     text-transform: capitalize;
   }
+
+  .tx-list-status--rejected {
+    color: $monzo;
+  }
 }
 
 .tx-list-item {
@@ -179,6 +183,10 @@
       text-align: right;
     }
 
+    .tx-list-value--confirmed {
+      color: $caribbean-green;
+    }
+
     .tx-list-fiat-value {
       font-size: 12px;
       text-align: right;
@@ -190,4 +198,13 @@
     border-bottom: none !important;
     padding: 16px;
   }
+}
+
+.tx-list-value {
+  font-size: 16px;
+  text-align: right;
+}
+
+.tx-list-value--confirmed {
+  color: $caribbean-green;
 }

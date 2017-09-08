@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const hyperClassnames = require('../../lib/hyper-classnames')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
@@ -28,14 +29,12 @@ TxListItem.prototype.render = function () {
     className,
   } = this.props
 
-  const transactionStatusColor = transactionStatus === 'rejected'
-    ? '#d0021b'
-    : 'inherit'
-  ;
-  const transactionAmountColor = transactionStatus === 'confirmed'
-    ? '#02c9b1'
-    : 'inherit'
-  ;
+  const txStatusClassNames = hyperClassnames('span.tx-list-status', {
+    '.tx-list-status--rejected': transactionStatus === 'rejected'
+  })
+  const txAmountClassNames = hyperClassnames('span.tx-list-value', {
+    '.tx-list-value--confirmed': transactionStatus === 'confirmed'
+  })
 
   return h(`div${className || ''}`, {
     key: transActionId,
@@ -76,11 +75,7 @@ TxListItem.prototype.render = function () {
           h('div.tx-list-status-wrapper', {
             style: {},
           }, [
-            h('span.tx-list-status', {
-              style: {
-                color: transactionStatusColor,
-              },
-            }, [
+            h(txStatusClassNames, {}, [
               transactionStatus,
             ]),
           ]),
@@ -90,11 +85,7 @@ TxListItem.prototype.render = function () {
           style: {},
         }, [
 
-          h('span.tx-list-value', {
-            style: {
-              color: transactionAmountColor,
-            },
-          }, [
+          h(txAmountClassNames, {}, [
             transactionAmount,
           ]),
 
