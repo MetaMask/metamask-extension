@@ -36,7 +36,7 @@ module.exports = class TransactionStateManger extends ObservableStore {
   getPendingTransactions (address) {
     const opts = { status: 'submitted' }
     if (address) opts.from = address
-    return this.txStateManager.getFilteredTxList(opts)
+    return this.getFilteredTxList(opts)
   }
 
   addTx (txMeta) {
