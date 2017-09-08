@@ -3,7 +3,7 @@ const RpcEngine = require('json-rpc-engine')
 const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
 const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
-const ObjectMultiplex = require('./obj-multiplex')
+const ObjectMultiplex = require('obj-multiplex')
 
 module.exports = MetamaskInpageProvider
 
@@ -11,10 +11,10 @@ function MetamaskInpageProvider (connectionStream) {
   const self = this
 
   // setup connectionStream multiplexing
-  var multiStream = self.multiStream = ObjectMultiplex()
+  const mux = self.mux = new ObjectMultiplex()
   pump(
     connectionStream,
-    multiStream,
+    mux,
     connectionStream,
     (err) => logStreamDisconnectWarning('MetaMask', err)
   )
@@ -22,19 +22,19 @@ function MetamaskInpageProvider (connectionStream) {
   // subscribe to metamask public config (one-way)
   self.publicConfigStore = new LocalStorageStore({ storageKey: 'MetaMask-Config' })
   pump(
-    multiStream.createStream('publicConfig'),
+    mux.createStream('publicConfig'),
     self.publicConfigStore,
     (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
   )
 
   // ignore phishing warning message (handled elsewhere)
-  multiStream.ignoreStream('phishing')
+  mux.ignoreStream('phishing')
 
   // connect to async provider
   const streamMiddleware = createStreamMiddleware()
   pump(
     streamMiddleware.stream,
-    multiStream.createStream('provider'),
+    mux.createStream('provider'),
     streamMiddleware.stream,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
