@@ -206,7 +206,7 @@ AddTokenScreen.prototype.validateInputs = function () {
 
   const ownAddress = identitiesList.includes(standardAddress)
   if (ownAddress) {
-    msg = 'Personal address detected. Input the token contact address.'
+    msg = 'Personal address detected. Input the token contract address.'
   }
 
   const isValid = validAddress && validDecimals && !ownAddress
