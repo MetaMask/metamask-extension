@@ -33,6 +33,12 @@ module.exports = class TransactionStateManger extends ObservableStore {
     }, {})
   }
 
+  getPendingTransactions (address) {
+    const opts = { status: 'submitted' }
+    if (address) opts.from = address
+    return this.txStateManager.getFilteredTxList(opts)
+  }
+
   addTx (txMeta) {
     this.once(`${txMeta.id}:signed`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:rejected`)

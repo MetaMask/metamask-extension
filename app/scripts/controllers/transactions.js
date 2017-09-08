@@ -49,12 +49,7 @@ module.exports = class TransactionController extends EventEmitter {
 
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
-      getPendingTransactions: (address) => {
-        return this.txStateManager.getFilteredTxList({
-          from: address,
-          status: 'submitted',
-        })
-      },
+      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
       getConfirmedTransactions: (address) => {
         return this.txStateManager.getFilteredTxList({
           from: address,
@@ -73,9 +68,7 @@ module.exports = class TransactionController extends EventEmitter {
         return account.balance
       },
       publishTransaction: this.query.sendRawTransaction,
-      getPendingTransactions: () => {
-        return this.txStateManager.getFilteredTxList({ status: 'submitted' })
-      },
+      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
       giveUpOnTransaction: (txId) => {
         const msg = `Gave up submitting after 3500 blocks un-mined.`
         this.setTxStatusFailed(txId, msg)
@@ -122,8 +115,8 @@ module.exports = class TransactionController extends EventEmitter {
     return Object.keys(this.txStateManager.getUnapprovedTxList()).length
   }
 
-  getPendingTxCount () {
-    return this.txStateManager.getTxsByMetaData('status', 'signed').length
+  getPendingTxCount (account) {
+    return this.txStateManager.getPendingTransactions(account).length
   }
 
   getChainId () {

@@ -37,6 +37,28 @@ describe('Transaction Controller', function () {
     txController.txProviderUtils = new TxGasUtils(txController.provider)
   })
 
+  describe('#getState', function () {
+    it('should return a state object with the right keys and datat types', function (){
+      const exposedState = txController.getState()
+      assert('unapprovedTxs' in exposedState, 'state should have the key unapprovedTxs')
+      assert('selectedAddressTxList' in exposedState, 'state should have the key selectedAddressTxList')
+      assert(typeof exposedState.unapprovedTxs === 'object', 'should be an object')
+      assert(Array.isArray(exposedState.selectedAddressTxList), 'should be an array')
+    })
+  })
+
+  describe('#getUnapprovedTxCount', function () {
+    it('should return the number of unapproved txs', function () {
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 2, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 3, status: 'unapproved', metamaskNetworkId: currentNetworkId, txParams: {} },
+      ])
+      const unapprovedTxCount = txController.getUnapprovedTxCount()
+      assert.equal(unapprovedTxCount, 3, 'should be 3')
+    })
+  })
+
   describe('#newUnapprovedTransaction', function () {
     let stub, txMeta, txParams
     beforeEach(function () {
