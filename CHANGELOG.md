@@ -1,6 +1,21 @@
 # Changelog
 
 ## Current Master
+- Readded loose keyring label back into the account list.
+- Add info on token contract addresses.
+- Add validation preventing users from inputting their own addresses as token tracking addresses.
+
+## 3.9.12 2017-9-6
+
+- Fix bug that prevented Web3 1.0 compatibility
+- Make eth_sign deprecation warning less noisy
+- Add useful link to eth_sign deprecation warning.
+- Fix bug with network version serialization over synchronous RPC
+- Add MetaMask version to state logs.
+- Add the total amount of tokens when multiple tokens are added under the token list
+- Use HTTPS links for Etherscan.
+- Update Support center link to new one with HTTPS.
+- Make web3 deprecation notice more useful by linking to a descriptive article.
 
 ## 3.9.11 2017-8-24
 

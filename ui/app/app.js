@@ -42,6 +42,7 @@ function mapStateToProps (state) {
     identities,
     accounts,
     address,
+    keyrings,
   } = state.metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -69,6 +70,7 @@ function mapStateToProps (state) {
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
     selected,
+    keyrings,
   }
 }
 
@@ -187,6 +189,7 @@ App.prototype.renderAppBar = function () {
             identities: this.props.identities,
             selected: this.props.currentView.context,
             network: this.props.network,
+            keyrings: this.props.keyrings,
           }, []),
 
           // hamburger

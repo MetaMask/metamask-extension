@@ -215,12 +215,13 @@ hr.horizontal-line {
   z-index: 1;
   font-size: 11px;
   background: rgba(255,0,0,0.8);
-  bottom: -47px;
   color: white;
+  bottom: 0px;
+  left: -8px;
   border-radius: 10px;
   height: 20px;
   min-width: 20px;
-  position: relative;
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;

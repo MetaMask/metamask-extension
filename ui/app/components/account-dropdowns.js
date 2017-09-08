@@ -22,11 +22,18 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, selected } = this.props
+    const { identities, selected, keyrings } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
       const isSelected = identity.address === selected
+
+      const simpleAddress = identity.address.substring(2).toLowerCase()
+
+      const keyring = keyrings.find((kr) => {
+        return kr.accounts.includes(simpleAddress) ||
+          kr.accounts.includes(identity.address)
+      })
 
       return h(
         DropdownMenuItem,
@@ -51,6 +58,7 @@ class AccountDropdowns extends Component {
               },
             },
           ),
+          this.indicateIfLoose(keyring),
           h('span', {
             style: {
               marginLeft: '20px',
@@ -65,6 +73,14 @@ class AccountDropdowns extends Component {
         ]
       )
     })
+  }
+
+  indicateIfLoose (keyring) {
+    try { // Sometimes keyrings aren't loaded yet:
+      const type = keyring.type
+      const isLoose = type !== 'HD Key Tree'
+      return isLoose ? h('.keyring-label', 'LOOSE') : null
+    } catch (e) { return }
   }
 
   renderAccountSelector () {
@@ -144,6 +160,8 @@ class AccountDropdowns extends Component {
       ]
     )
   }
+
+
 
   renderAccountOptions () {
     const { actions } = this.props
@@ -278,6 +296,7 @@ AccountDropdowns.defaultProps = {
 AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
   selected: PropTypes.string,
+  keyrings: PropTypes.array,
 }
 
 const mapDispatchToProps = (dispatch) => {

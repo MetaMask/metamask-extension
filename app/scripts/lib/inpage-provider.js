@@ -38,8 +38,6 @@ function MetamaskInpageProvider (connectionStream) {
     streamMiddleware.stream,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
-  // start and stop polling to unblock first block lock
-
   // handle sendAsync requests via dapp-side rpc engine
   const engine = new RpcEngine()
   engine.push(createIdRemapMiddleware())
@@ -64,7 +62,7 @@ MetamaskInpageProvider.prototype.send = function (payload) {
     case 'eth_coinbase':
       // read from localStorage
       selectedAddress = self.publicConfigStore.getState().selectedAddress
-      result = selectedAddress
+      result = selectedAddress || null
       break
 
     case 'eth_uninstallFilter':
@@ -74,7 +72,7 @@ MetamaskInpageProvider.prototype.send = function (payload) {
 
     case 'net_version':
       const networkVersion = self.publicConfigStore.getState().networkVersion
-      result = networkVersion
+      result = networkVersion || null
       break
 
     // throw not-supported Error

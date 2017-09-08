@@ -1,5 +1,5 @@
 const Iframe = require('iframe')
-const IframeStream = require('iframe-stream').IframeStream
+const createIframeStream = require('iframe-stream').IframeStream
 
 module.exports = setupIframe
 
@@ -13,7 +13,7 @@ function setupIframe(opts) {
   })
   var iframe = frame.iframe
   iframe.style.setProperty('display', 'none')
-  var iframeStream = new IframeStream(iframe)
+  var iframeStream = createIframeStream(iframe)
 
   return iframeStream
 }
