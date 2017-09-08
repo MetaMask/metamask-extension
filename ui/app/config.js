@@ -3,7 +3,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const currencies = require('./conversion.json').rows
+const currencies = require('./conversion.json').rows.sort((a, b) => {
+      return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
+    });
 const validUrl = require('valid-url')
 const copyToClipboard = require('copy-to-clipboard')
 
@@ -166,9 +168,7 @@ function currentConversionInformation (metamaskState, state) {
         state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
       defaultValue: currentCurrency,
-    }, currencies.sort((a, b) => {
-      return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase());
-    }).map((currency) => {
+    }, currencies.map((currency) => {
       return h('option', {key: currency.code, value: currency.code}, `${currency.code} - ${currency.name}`)
     })
   ),
