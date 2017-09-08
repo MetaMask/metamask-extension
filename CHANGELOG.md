@@ -5,6 +5,10 @@
 - Add info on token contract addresses.
 - Add validation preventing users from inputting their own addresses as token tracking addresses.
 
+## 3.9.13 2017-9-8
+
+- Changed the way we initialize the inpage provider to fix a bug affecting some developers.
+
 ## 3.9.12 2017-9-6
 
 - Fix bug that prevented Web3 1.0 compatibility
