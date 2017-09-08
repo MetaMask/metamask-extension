@@ -1,6 +1,0 @@
-machine:
-  node:
-    version: 8.1.4
-test:
-  override:
-    - "npm run ci"
