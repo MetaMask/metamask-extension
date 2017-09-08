@@ -4,12 +4,12 @@ const startPopup = require('./popup-core')
 const PortStream = require('./lib/port-stream.js')
 const isPopupOrNotification = require('./lib/is-popup-or-notification')
 const extension = require('extensionizer')
-const ExtensionPlatform = require('./platforms/extension')
+const WindowPlatform = require('./platforms/window')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 
 // create platform global
-global.platform = new ExtensionPlatform()
+global.platform = new WindowPlatform()
 
 // inject css
 const css = MetaMaskUiCss()
