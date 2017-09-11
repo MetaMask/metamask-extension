@@ -52,6 +52,8 @@ ConfirmTxScreen.prototype.render = function () {
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
 
+  const unconfTxListLength = unconfTxList.length
+
   return (
 
     h('.flex-column.flex-grow', [
@@ -101,10 +103,12 @@ ConfirmTxScreen.prototype.render = function () {
         conversionRate,
         currentCurrency,
         blockGasLimit,
+        unconfTxListLength,
         // Actions
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),
         cancelTransaction: this.cancelTransaction.bind(this, txData),
+        cancelAllTransactions: this.cancelAllTransactions.bind(this, unconfTxList),
         signMessage: this.signMessage.bind(this, txData),
         signPersonalMessage: this.signPersonalMessage.bind(this, txData),
         cancelMessage: this.cancelMessage.bind(this, txData),
@@ -149,6 +153,12 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   this.stopPropagation(event)
   event.preventDefault()
   this.props.dispatch(actions.cancelTx(txData))
+}
+
+ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event) {
+  this.stopPropagation(event)
+  event.preventDefault()
+  this.props.dispatch(actions.cancelAllTx(unconfTxList))
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
