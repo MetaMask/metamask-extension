@@ -114,10 +114,10 @@ ExportAccountView.prototype.render = function () {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
       }, 'Done'),
       h('button', {
-        onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
-        stlye: {
+        style: {
           marginLeft: '10px',
         },
+        onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
       }, 'Save as File'),
     ])
   }
