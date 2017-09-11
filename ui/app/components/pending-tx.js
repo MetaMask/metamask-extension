@@ -67,6 +67,7 @@ PendingTx.prototype.render = function () {
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
   const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
+  const showRejectAll = props.unconfTxListLength > 1
 
   this.inputs = []
 
@@ -318,7 +319,7 @@ PendingTx.prototype.render = function () {
             onClick: props.cancelTransaction,
           }, 'Reject'),
         ]),
-        h('.flex-row.flex-space-around.conf-buttons', {
+        showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
           style: {
             display: 'flex',
             justifyContent: 'flex-end',
@@ -328,7 +329,7 @@ PendingTx.prototype.render = function () {
           h('button.cancel.btn-red', {
             onClick: props.cancelAllTransactions,
           }, 'Reject All'),
-        ]),
+        ]) : null,
       ]),
     ])
   )

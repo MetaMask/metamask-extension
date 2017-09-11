@@ -52,6 +52,8 @@ ConfirmTxScreen.prototype.render = function () {
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
 
+  const unconfTxListLength = unconfTxList.length
+
   return (
 
     h('.flex-column.flex-grow', [
@@ -101,6 +103,7 @@ ConfirmTxScreen.prototype.render = function () {
         conversionRate,
         currentCurrency,
         blockGasLimit,
+        unconfTxListLength,
         // Actions
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),
