@@ -115,6 +115,9 @@ ExportAccountView.prototype.render = function () {
       }, 'Done'),
       h('button', {
         onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
+        stlye: {
+          marginLeft: '10px',
+        },
       }, 'Save as File'),
     ])
   }
