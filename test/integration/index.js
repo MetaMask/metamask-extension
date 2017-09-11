@@ -20,6 +20,7 @@ pump(
   writeStream,
   (err) => {
     if (err) throw err
-    console.log('bundle completed.')
+    console.log(`Integration test build completed: "${bundlePath}"`)
+    process.exit(0)
   }
 )
