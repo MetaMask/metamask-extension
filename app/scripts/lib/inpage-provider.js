@@ -38,13 +38,21 @@ function MetamaskInpageProvider (connectionStream) {
     streamMiddleware.stream,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
-  // handle sendAsync requests via dapp-side rpc engine
-  const engine = new RpcEngine()
-  engine.push(createIdRemapMiddleware())
-  engine.push(streamMiddleware)
 
-  self.sendAsync = engine.handle.bind(engine)
+  // handle sendAsync requests via dapp-side rpc engine
+  const rpcEngine = new RpcEngine()
+  rpcEngine.push(createIdRemapMiddleware())
+  rpcEngine.push(streamMiddleware)
+  self.rpcEngine = rpcEngine
 }
+
+// handle sendAsync requests via asyncProvider
+// also remap ids inbound and outbound
+MetamaskInpageProvider.prototype.sendAsync = function (payload, cb) {
+  const self = this
+  self.rpcEngine.handle(payload, cb)
+}
+
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
@@ -89,10 +97,6 @@ MetamaskInpageProvider.prototype.send = function (payload) {
     jsonrpc: payload.jsonrpc,
     result: result,
   }
-}
-
-MetamaskInpageProvider.prototype.sendAsync = function () {
-  throw new Error('MetamaskInpageProvider - sendAsync not overwritten')
 }
 
 MetamaskInpageProvider.prototype.isConnected = function () {
