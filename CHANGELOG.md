@@ -7,7 +7,7 @@
 - Add validation preventing users from inputting their own addresses as token tracking addresses.
 - Add AUD to currency list (thanks to strelok1 https://github.com/strelok1).
 - Sort currencies by currency name (also thanks to strelok1).
-
+- Added button to reject all transactions (thanks to davidp94! https://github.com/davidp94)
 
 ## 3.9.13 2017-9-8
 
