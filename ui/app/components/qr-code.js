@@ -47,11 +47,13 @@ QrCodeView.prototype.render = function () {
       },
     }),
     h('.div.ellip-address-wrapper', [
-      h('span.qr-ellip-address', {
+      h('input.qr-ellip-address', {
         style: {
           width: '247px',
         },
-      }, Qr.data),
+        value: Qr.data,
+        readonly: true,
+      }),
       // h(CopyButton, {
       //   value: Qr.data,
       // }),

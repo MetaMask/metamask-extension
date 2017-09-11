@@ -1,3 +1,7 @@
+.modal > div:focus {
+  outline: none !important;
+}
+
 // Buy Modal
 .buy-modal-content {
   flex-direction: column;
@@ -172,16 +176,19 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
-  padding: 5px 0;
+  padding: 5px 0 31px 0;
+  border: 1px solid $silver;
   border-radius: 4px;
+  font-family: 'Montserrat UltraLight';
 }
 
 .account-details-modal-wrapper .qr-header {
-  margin-top: 15px;
+  margin-top: 9px;
+  font-size: 20px;
 }
 
 .account-details-modal-wrapper .qr-wrapper {
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 .account-details-modal-wrapper .ellip-address-wrapper {
@@ -189,25 +196,37 @@
   justify-content: center;
   border: 1px solid $alto;
   padding: 5px 10px;
+  font-family: 'Montserrat Light';
+  margin-top: 7px;
+  width: 286px;
+}
+
+.account-details-modal-wrapper .qr-ellip-address {
+  width: 254px;
+  border: none;
+  font-family: 'Montserrat Light';
+  font-size: 14px;
 }
 
 .account-details-modal-wrapper .btn-clear {
   min-height: 28px;
-  font-size: 1em;
+  font-size: 14px;
   border-color: $curious-blue;
   color: $curious-blue;
   border-radius: 2px;
   flex-basis: 100%;
   width: 75%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 10px;
+  margin-top: 17px;
+  padding: 10px 22px;
+  height: 44px;
+  width: 235px;
+  font-family: 'Montserrat Light';
 }
 
 .account-details-modal-divider {
   width: 100%;
   height: 1px;
-  margin: 10px 0;
+  margin: 19px 0 8px 0;
   background-color: $alto;
 }
 
@@ -217,11 +236,11 @@
 
 .account-details-modal-close::after {
   content: '\00D7';
-  font-size: 1.5em;
-  color: $alto;
+  font-size: 40px;
+  color: $dusty-gray;
   position: absolute;
-  top: 5px;
-  right: 10px;
+  top: 10px;
+  right: 12px;
 }
 
 // New Account Modal
@@ -233,6 +252,7 @@
   position: relative;
   border: 1px solid $alto;
   box-shadow: 0 0 2px 2px $alto;
+  font-family: 'Montserrat Light';
 }
 
 .new-account-modal-header {
@@ -243,6 +263,7 @@
   padding: 30px;
   font-size: 22px;
   color: $nile-blue;
+  height: 79px;
 }
 
 .modal-close-x::after {
@@ -259,13 +280,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 13px;
-  font-size: 18px;
+  margin-top: 15px;
+  font-size: 17px;
   color: $nile-blue;
 }
 
-.new-account-modal-content.import {
-  padding-top: 2px;
+.new-account-modal-content.after-input {
+  margin-top: 15px;
+  line-height: 25px;
 }
 
 .new-account-input-wrapper {
@@ -273,6 +295,7 @@
   width: 100%;
   justify-content: center;
   padding-bottom: 2px;
+  margin-top: 13px;
 }
 
 .new-account-input {
@@ -280,9 +303,12 @@
   padding-bottom: 20px;
   border-radius: 8px;
   border: 1px solid $alto;
-  width: 70%;
+  width: 100%;
   font-size: 1em;
   color: $alto;
+  font-family: Montserrat Light;
+  font-size: 17px;
+  margin: 0 60px;
 }
 
 // For reference on below placeholder selectors: https://stackoverflow.com/questions/2610497/change-an-html5-inputs-placeholder-color-with-css
@@ -309,7 +335,10 @@
 }
 
 .new-account-modal-content.button {
-  padding-top: 9px;
+  margin-top: 22px;
+  margin-bottom: 30px;
+  width: 113px;
+  height: 44px;
 }
 
 .new-account-modal-wrapper .btn-clear {
@@ -318,6 +347,6 @@
   background: $white;
   border: 1px solid;
   border-radius: 2px;
-  width: 30%;
   color: $tundora;
+  flex: 1;
 }

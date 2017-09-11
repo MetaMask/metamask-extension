@@ -2,16 +2,24 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
-const Identicon = require('./identicon')
+const TxListItem = require('./tx-list-item')
 const { formatBalance, formatDate } = require('../util')
+const { showConfTxPage } = require('../actions')
 
-module.exports = connect(mapStateToProps)(TxList)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 
 function mapStateToProps (state) {
   return {
     txsToRender: selectors.transactionsSelector(state),
     conversionRate: selectors.conversionRateSelector(state),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id }))
   }
 }
 
@@ -22,38 +30,19 @@ function TxList () {
 
 TxList.prototype.render = function () {
 
-  // console.log('transactions to render', txsToRender)
+  const { txsToRender, showConfTxPage } = this.props
 
   return h('div.flex-column.tx-list-container', {}, [
 
-    h('div.flex-row.tx-list-header-wrapper', {
-      style: {},
-    }, [
-
-      h('div.flex-row.tx-list-header', {
-      }, [
-
-        h('div', {
-          style: {},
-        }, 'transactions'),
-
+    h('div.flex-row.tx-list-header-wrapper', [
+      h('div.flex-row.tx-list-header', [
+        h('div', 'transactions'),
       ]),
-
     ]),
 
     this.renderTranstions(),
 
   ])
-}
-
-TxList.prototype.getAddressText = function (transaction) {
-  const {
-    txParams: { to },
-  } = transaction
-
-  return to
-    ? `${to.slice(0, 10)}...${to.slice(-4)}`
-    : 'Contract Published'
 }
 
 TxList.prototype.renderTranstions = function () {
@@ -63,7 +52,7 @@ TxList.prototype.renderTranstions = function () {
     ? txsToRender.map((transaction) => {
       return this.renderTransactionListItem(transaction)
     })
-    : h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])
+    : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
 }
 
 // TODO: Consider moving TxListItem into a separate component
@@ -73,77 +62,56 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     address: transaction.txParams.to,
     transactionStatus: transaction.status,
     transactionAmount: formatBalance(transaction.txParams.value, 6),
+    transActionId: transaction.id,
+    transactionHash: transaction.hash,
+    transactionNetworkId: transaction.metamaskNetworkId,
   }
+
   const {
     address,
     transactionStatus,
     transactionAmount,
     dateString,
+    transActionId,
+    transactionHash,
+    transactionNetworkId,
   } = props
+  const { showConfTxPage } = this.props
 
-  return h('div.tx-list-item', {
-    key: transaction.id,
-  }, [
-    h('div.flex-column.tx-list-item__wrapper', {
-      style: {},
-    }, [
+  const opts = {
+    key: transactionHash,
+    transactionStatus,
+    transActionId,
+    dateString,
+    address,
+    transactionAmount,
+    transactionHash,
+    className: '.tx-list-item.tx-list-clickable',
+  }
 
-      h('div.tx-list-date-wrapper', {
-        style: {},
-      }, [
-        h('span.tx-list-date', {}, [
-          dateString,
-        ]),
-      ]),
+  if (transactionStatus === 'unapproved') {
+    opts.onClick = () => showConfTxPage({id: transActionId})
+    opts.className += '.tx-list-pending-item-container'
+    opts.transactionStatus = 'Not Started'
+  } else if (transactionHash) {
+    opts.onClick = () => this.view(transactionHash, transactionNetworkId)
+  }
 
-      h('div.flex-row.tx-list-content-wrapper', {
-        style: {},
-      }, [
-
-        h('div.tx-list-identicon-wrapper', {
-          style: {},
-        }, [
-          h(Identicon, {
-            address,
-            diameter: 28,
-          }),
-        ]),
-
-        h('div.tx-list-account-and-status-wrapper', {}, [
-          h('div.tx-list-account-wrapper', {
-            style: {},
-          }, [
-            h('span.tx-list-account', {}, [
-              this.getAddressText(transaction),
-            ]),
-          ]),
-
-          h('div.tx-list-status-wrapper', {
-            style: {},
-          }, [
-            h('span.tx-list-status', {}, [
-              transactionStatus,
-            ]),
-          ]),
-        ]),
-
-        h('div.flex-column.tx-list-details-wrapper', {
-          style: {},
-        }, [
-
-          h('span.tx-list-value', {}, [
-            transactionAmount,
-          ]),
-
-          h('span.tx-list-fiat-value', {}, [
-            '+ $300 USD',
-          ]),
-
-        ]),
-
-      ]),
-    ]),
-
-  ])
+  return h(TxListItem, opts)
 }
 
+TxList.prototype.view = function (txHash, network) {
+  const url = etherscanLinkFor(txHash, network)
+  if (url) {
+    navigateTo(url)
+  }
+}
+
+function navigateTo (url) {
+  global.platform.openWindow({ url })
+}
+
+function etherscanLinkFor (txHash, network) {
+  const prefix = prefixForNetwork(network)
+  return `https://${prefix}etherscan.io/tx/${txHash}`
+}

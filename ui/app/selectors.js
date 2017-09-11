@@ -51,9 +51,10 @@ function transactionsSelector (state) {
   const transactions = state.metamask.selectedAddressTxList || []
   const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
 
+  console.log({txsToRender, selectedTokenAddress})
   return selectedTokenAddress
     ? txsToRender
-      .filter(({ to }) => to === selectedTokenAddress)
+      .filter(({ txParams: { to } }) => to === selectedTokenAddress)
       .sort((a, b) => b.time - a.time)
     : txsToRender
       .sort((a, b) => b.time - a.time)
