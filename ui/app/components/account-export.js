@@ -20,20 +20,21 @@ function mapStateToProps (state) {
 }
 
 ExportAccountView.prototype.render = function () {
-  var state = this.props
-  var accountDetail = state.accountDetail
+  const state = this.props
+  const accountDetail = state.accountDetail
+  const nickname = state.identities[state.address].name
 
   if (!accountDetail) return h('div')
-  var accountExport = accountDetail.accountExport
+  const accountExport = accountDetail.accountExport
 
-  var notExporting = accountExport === 'none'
-  var exportRequested = accountExport === 'requested'
-  var accountExported = accountExport === 'completed'
+  const notExporting = accountExport === 'none'
+  const exportRequested = accountExport === 'requested'
+  const accountExported = accountExport === 'completed'
 
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    var warning = `Export private keys at your own risk.`
+    const warning = `Export private keys at your own risk.`
     return (
       h('div', {
         style: {
@@ -89,6 +90,8 @@ ExportAccountView.prototype.render = function () {
   }
 
   if (accountExported) {
+    const plainKey = ethUtil.stripHexPrefix(accountDetail.privateKey)
+
     return h('div.privateKey', {
       style: {
         margin: '0 20px',
@@ -105,10 +108,13 @@ ExportAccountView.prototype.render = function () {
         onClick: function (event) {
           copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
         },
-      }, ethUtil.stripHexPrefix(accountDetail.privateKey)),
+      }, plainKey),
       h('button', {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
       }, 'Done'),
+      h('button', {
+        onClick: () => this.exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
+      }, 'Save as File'),
     ])
   }
 }
@@ -117,6 +123,21 @@ ExportAccountView.prototype.onExportKeyPress = function (event) {
   if (event.key !== 'Enter') return
   event.preventDefault()
 
-  var input = document.getElementById('exportAccount').value
+  const input = document.getElementById('exportAccount').value
   this.props.dispatch(actions.exportAccount(input, this.props.address))
+}
+
+ExportAccountView.prototype.exportAsFile = function (filename, data) {
+  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
+  const blob = new Blob([data], {type: 'text/csv'})
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, filename)
+  } else {
+    const elem = window.document.createElement('a')
+    elem.href = window.URL.createObjectURL(blob)
+    elem.download = filename
+    document.body.appendChild(elem)
+    elem.click()
+    document.body.removeChild(elem)
+  }
 }
