@@ -49,6 +49,7 @@ InputNumber.prototype.render = function () {
         onClick: () => this.setValue(value + step),
       }),
       h('i.fa.fa-angle-down', {
+        style: { cursor: 'pointer' },
         onClick: () => this.setValue(value - step),
       }),
     ]),

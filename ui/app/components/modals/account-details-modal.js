@@ -39,21 +39,17 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModa
 AccountDetailsModal.prototype.render = function () {
   const { selectedIdentity, network } = this.props
 
-  return h('div', {}, [
-    h('div.account-details-modal-wrapper', {
-    }, [
+  return h('div', { style: { borderRadius: '4px' }}, [
+    h('div.account-details-modal-wrapper', [
 
-      h('div', {}, [
+      h('div', [
 
         // Needs a border; requires changes to svg
-        h(
-          Identicon,
-          {
-            address: selectedIdentity.address,
-            diameter: 64,
-            style: {},
-          },
-        ),
+        h(Identicon, {
+          address: selectedIdentity.address,
+          diameter: 64,
+          style: {},
+        }),
 
       ]),
 
@@ -66,26 +62,20 @@ AccountDetailsModal.prototype.render = function () {
           message: this.props.selectedIdentity.name,
           data: this.props.selectedIdentity.address,
         },
-      }, []),
+      }),
 
       // divider
-      h('div.account-details-modal-divider', {
-        style: {},
-      }, []),
+      h('div.account-details-modal-divider'),
 
       h('button.btn-clear', {
         onClick: () => {
           const url = genAccountLink(selectedIdentity.address, network)
           global.platform.openWindow({ url })
         },
-      }, [
-        'View account on Etherscan',
-      ]),
+      }, [ 'View account on Etherscan' ]),
 
       // Holding on redesign for Export Private Key functionality
-      h('button.btn-clear', {}, [
-        'Export private key',
-      ]),
+      h('button.btn-clear', [ 'Export private key' ]),
 
     ]),
   ])

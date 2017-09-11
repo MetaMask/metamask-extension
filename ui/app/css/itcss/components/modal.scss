@@ -180,6 +180,10 @@
   border: 1px solid $silver;
   border-radius: 4px;
   font-family: 'Montserrat UltraLight';
+
+  button {
+    cursor: pointer;
+  }
 }
 
 .account-details-modal-wrapper .qr-header {
@@ -231,7 +235,12 @@
 }
 
 .account-details-modal-wrapper .identicon {
-  margin-top: -55.5%;
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  top: -32px;
+  margin-bottom: -32px;
 }
 
 .account-details-modal-close::after {
@@ -241,6 +250,7 @@
   position: absolute;
   top: 10px;
   right: 12px;
+  cursor: pointer;
 }
 
 // New Account Modal

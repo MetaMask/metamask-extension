@@ -243,4 +243,23 @@
     line-height: 40px;
     margin-top: 13px;
   }
+
+  .send-screen-input-wrapper {
+    .fa-bolt {
+      padding-right: 4px;
+    }
+
+    .large-input {
+      border: 1px solid $dusty-gray;
+      border-radius: 4px;
+      margin: 4px 0 20px;
+      font-size: 16px;
+      line-height: 22.4px;
+      font-family: "DIN OT";
+    }
+
+    .send-screen-gas-input {
+      border: 1px solid transparent;
+    }
+  }
 }

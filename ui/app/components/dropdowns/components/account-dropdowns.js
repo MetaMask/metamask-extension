@@ -232,6 +232,8 @@ class AccountDropdowns extends Component {
     const dropdownMenuItemStyle = {
       fontFamily: 'DIN OT',
       fontSize: 16,
+      lineHeight: '24px',
+      padding: '8px',
     }
 
     return h(
@@ -347,15 +349,9 @@ class AccountDropdowns extends Component {
       [
         enableAccountsSelector && h(
           'i.fa.fa-angle-down',
-          // 'div.cursor-pointer.color-orange.accounts-selector',
           {
             style: {
-              // fontSize: '135%',
-              // background: 'url(images/switch_acc.svg) white center center no-repeat',
-              // height: '25px',
-              // width: '25px',
-              // transform: 'scale(0.75)',
-              // marginRight: '3px',
+              cursor: 'pointer',
             },
             onClick: (event) => {
               event.stopPropagation()
@@ -372,6 +368,7 @@ class AccountDropdowns extends Component {
           {
             style: {
               fontSize: '135%',
+              cursor: 'pointer',
             },
             onClick: (event) => {
               event.stopPropagation()
