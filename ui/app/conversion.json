@@ -202,6 +202,13 @@
       "statuses": [
         "primary"
       ]
+    },
+    {
+      "code": "AUD",
+      "name": "Australian Dollar",
+      "statuses": [
+        "secondary"
+      ]
     }
   ]
 }
