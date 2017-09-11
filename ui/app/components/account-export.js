@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const exportAsFile = require('../util').exportAsFile
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
@@ -113,7 +114,7 @@ ExportAccountView.prototype.render = function () {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
       }, 'Done'),
       h('button', {
-        onClick: () => this.exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
+        onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
       }, 'Save as File'),
     ])
   }
@@ -125,19 +126,4 @@ ExportAccountView.prototype.onExportKeyPress = function (event) {
 
   const input = document.getElementById('exportAccount').value
   this.props.dispatch(actions.exportAccount(input, this.props.address))
-}
-
-ExportAccountView.prototype.exportAsFile = function (filename, data) {
-  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
-  const blob = new Blob([data], {type: 'text/csv'})
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveBlob(blob, filename)
-  } else {
-    const elem = window.document.createElement('a')
-    elem.href = window.URL.createObjectURL(blob)
-    elem.download = filename
-    document.body.appendChild(elem)
-    elem.click()
-    document.body.removeChild(elem)
-  }
 }
