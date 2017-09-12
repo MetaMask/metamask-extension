@@ -10,4 +10,4 @@ dependencies:
     # get latest stable firefox
     - sudo apt-get install firefox
     # get latest stable chrome
-    - sudo apt-get install google-chrome
+    - sudo apt-get install google-chrome-stable
