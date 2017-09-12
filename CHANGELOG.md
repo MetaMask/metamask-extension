@@ -6,6 +6,7 @@
 - Add ability to export seed words as a file.
 - Changed state logs to a file download than a clipboard copy.
 - Fix link to support center.
+- Fixed tooltip icon locations to avoid overflow.
 
 ## 3.10.0 2017-9-11
 
