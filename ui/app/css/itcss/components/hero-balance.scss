@@ -87,10 +87,10 @@
     }
 
     button.btn-clear {
-      font-size: 75%;
       background: $white;
       border: 1px solid;
       border-radius: 2px;
+      font-size: 12px;
 
       @media screen and (max-width: $break-small) {
         width: 23%;
@@ -99,10 +99,9 @@
       }
 
       @media screen and (min-width: $break-large) {
-        font-size: .6em;
         border-color: $curious-blue;
         color: $curious-blue;
-        padding: 0px;
+        padding: 0;
         width: 85px;
         height: 34px;
       }

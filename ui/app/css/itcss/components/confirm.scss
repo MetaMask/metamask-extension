@@ -1,5 +1,6 @@
 .confirm-screen-container {
   position: absolute;
+  align-items: center;
 
   @media screen and (max-width: 575px) {
     margin-top: 35px;

@@ -46,6 +46,27 @@
 .send-screen-input-wrapper {
   width: 95%;
   position: relative;
+
+  &__error-message {
+    display: none;
+  }
+
+  &--error {
+    input,
+    .send-screen-gas-input {
+      border-color: $red !important;
+    }
+
+    .send-screen-input-wrapper__error-message {
+      display: block;
+      position: absolute;
+      bottom: 4px;
+      font-size: 12px;
+      line-height: 12px;
+      left: 8px;
+      color: $red;
+    }
+  }
 }
 
 .send-screen-input {

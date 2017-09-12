@@ -22,14 +22,14 @@ CurrencyToggle.prototype.render = function () {
         'currency-toggle__item--selected': currencyA === currentCurrency,
       }),
       onClick: () => onClick(currencyA),
-    }, ['ETH']),
+    }, [ currencyA ]),
     '<>',
     h('span', {
       className: classnames('currency-toggle__item', {
         'currency-toggle__item--selected': currencyB === currentCurrency,
       }),
       onClick: () => onClick(currencyB),
-    }, ['USD']),
+    }, [ currencyB ]),
   ]) // holding on icon from design
 }
 

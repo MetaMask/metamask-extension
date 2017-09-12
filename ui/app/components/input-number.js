@@ -22,7 +22,7 @@ InputNumber.prototype.componentWillMount = function () {
 }
 
 InputNumber.prototype.setValue = function (newValue) {
-  const { fixed, min, onChange } = this.props
+  const { fixed, min = -1, onChange } = this.props
 
   if (fixed) newValue = Number(newValue.toFixed(4))
 

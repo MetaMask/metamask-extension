@@ -2,6 +2,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
+const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
@@ -62,10 +63,60 @@ function SendTokenScreen () {
   Component.call(this)
   this.state = {
     to: '',
+    amount: null,
     selectedCurrency: 'USD',
     isGasTooltipOpen: false,
     gasPrice: '0x5d21dba00',
     gasLimit: '0x7b0d',
+    errors: {},
+  }
+}
+
+SendTokenScreen.prototype.validate = function () {
+  const {
+    to,
+    amount,
+    gasPrice: hexGasPrice,
+    gasLimit: hexGasLimit,
+  } = this.state
+
+  const gasPrice = parseInt(hexGasPrice, 16)
+  const gasLimit = parseInt(hexGasLimit, 16) / 1000000000
+
+  if (to && amount && gasPrice && gasLimit) {
+    return {
+      isValid: true,
+      errors: {},
+    }
+  }
+
+  const errors = {
+    to: !to ? 'Required' : null,
+    amount: !Number(amount) ? 'Required' : null,
+    gasPrice: !gasPrice ? 'Gas Price Required' : null,
+    gasLimit: !gasLimit ? 'Gas Limit Required' : null,
+  }
+
+  return {
+    isValid: false,
+    errors,
+  }
+}
+
+SendTokenScreen.prototype.submit = function () {
+  // const {
+  //   to,
+  //   amount,
+  //   selectedCurrency,
+  //   isGasTooltipOpen,
+  //   gasPrice,
+  //   gasLimit,
+  // } = this.state
+
+  const { isValid, errors } = this.validate()
+
+  if (!isValid) {
+    return this.setState({ errors })
   }
 }
 
@@ -77,16 +128,24 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
 
   const {
     to,
+    errors: { to: errorMessage },
   } = this.state
 
-  return h('div.send-screen-input-wrapper', {}, [
+  return h('div', {
+    className: classnames('send-screen-input-wrapper', {
+      'send-screen-input-wrapper--error': errorMessage,
+    }),
+  }, [
     h('div', ['To:']),
     h('input.large-input.send-screen-input', {
       name: 'address',
       list: 'addresses',
       placeholder: 'Address',
       value: to,
-      onChange: e => this.setState({ to: e.target.value }),
+      onChange: e => this.setState({
+        to: e.target.value,
+        errors: {},
+      }),
     }),
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
@@ -105,23 +164,30 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         })
       }),
     ]),
+    h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
   ])
 }
 
 SendTokenScreen.prototype.renderAmountInput = function () {
   const {
     selectedCurrency,
+    amount,
+    errors: { amount: errorMessage },
   } = this.state
 
   const {
     selectedToken: {symbol},
   } = this.props
 
-  return h('div.send-screen-input-wrapper', {}, [
+  return h('div.send-screen-input-wrapper', {
+    className: classnames('send-screen-input-wrapper', {
+      'send-screen-input-wrapper--error': errorMessage,
+    }),
+  }, [
     h('div.send-screen-amount-labels', [
       h('span', ['Amount']),
       h(CurrencyToggle, {
-        selectedCurrency,
+        currentCurrency: selectedCurrency,
         currencies: [ symbol, 'USD' ],
         onClick: currency => this.setState({ selectedCurrency: currency }),
       }),
@@ -129,8 +195,13 @@ SendTokenScreen.prototype.renderAmountInput = function () {
     h('input.large-input.send-screen-input', {
       placeholder: `0 ${symbol}`,
       type: 'number',
-      onChange: e => this.setState({ amount: e.target.value }),
+      value: amount,
+      onChange: e => this.setState({
+        amount: e.target.value,
+        errors: {},
+      }),
     }),
+    h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
   ])
 }
 
@@ -140,6 +211,10 @@ SendTokenScreen.prototype.renderGasInput = function () {
     gasPrice,
     gasLimit,
     selectedCurrency,
+    errors: {
+      gasPrice: gasPriceErrorMessage,
+      gasLimit: gasLimitErrorMessage,
+    },
   } = this.state
 
   const {
@@ -147,14 +222,18 @@ SendTokenScreen.prototype.renderGasInput = function () {
     currentBlockGasLimit,
   } = this.props
 
-  return h('div.send-screen-input-wrapper', [
+  return h('div.send-screen-input-wrapper', {
+    className: classnames('send-screen-input-wrapper', {
+      'send-screen-input-wrapper--error': gasPriceErrorMessage || gasLimitErrorMessage,
+    }),
+  }, [
     isGasTooltipOpen && h(GasTooltip, {
       className: 'send-tooltip',
       gasPrice,
       gasLimit,
       onClose: () => this.setState({ isGasTooltipOpen: false }),
       onFeeChange: ({ gasLimit, gasPrice }) => {
-        this.setState({ gasLimit, gasPrice })
+        this.setState({ gasLimit, gasPrice, errors: {} })
       },
     }),
 
@@ -176,6 +255,9 @@ SendTokenScreen.prototype.renderGasInput = function () {
         ['Customize']
       ),
     ]),
+    h('div.send-screen-input-wrapper__error-message', [
+      gasPriceErrorMessage || gasLimitErrorMessage,
+    ]),
   ])
 }
 
@@ -194,7 +276,7 @@ SendTokenScreen.prototype.renderButtons = function () {
 
   return h('div.send-token__button-group', [
     h('button.send-token__button-next.btn-secondary', {
-
+      onClick: () => this.submit(),
     }, ['Next']),
     h('button.send-token__button-cancel.btn-tertiary', {
       onClick: () => backToAccountDetail(selectedAddress),
