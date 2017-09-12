@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const ethUtil = require('ethereumjs-util')
+const { addHexPrefix } = require('ethereumjs-util')
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
@@ -50,6 +50,14 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
+    hideWarning: () => dispatch(actions.hideWarning()),
+    addToAddressBook: (recipient, nickname) => dispatch(
+      actions.addToAddressBook(recipient, nickname)
+    ),
+    signTx: txParams => dispatch(actions.signTx(txParams)),
+    signTokenTx: (tokenAddress, toAddress, amount, txData) => (
+      dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
+    ),
     // showSidebar: () => { dispatch(actions.showSidebar()) },
     // hideSidebar: () => { dispatch(actions.hideSidebar()) },
     // showModal: (payload) => { dispatch(actions.showModal(payload)) },
@@ -75,13 +83,14 @@ function SendTokenScreen () {
 SendTokenScreen.prototype.validate = function () {
   const {
     to,
-    amount,
+    amount: stringAmount,
     gasPrice: hexGasPrice,
     gasLimit: hexGasLimit,
   } = this.state
 
   const gasPrice = parseInt(hexGasPrice, 16)
   const gasLimit = parseInt(hexGasLimit, 16) / 1000000000
+  const amount = Number(stringAmount)
 
   if (to && amount && gasPrice && gasLimit) {
     return {
@@ -92,7 +101,7 @@ SendTokenScreen.prototype.validate = function () {
 
   const errors = {
     to: !to ? 'Required' : null,
-    amount: !Number(amount) ? 'Required' : null,
+    amount: !amount ? 'Required' : null,
     gasPrice: !gasPrice ? 'Gas Price Required' : null,
     gasLimit: !gasLimit ? 'Gas Limit Required' : null,
   }
@@ -104,20 +113,41 @@ SendTokenScreen.prototype.validate = function () {
 }
 
 SendTokenScreen.prototype.submit = function () {
-  // const {
-  //   to,
-  //   amount,
-  //   selectedCurrency,
-  //   isGasTooltipOpen,
-  //   gasPrice,
-  //   gasLimit,
-  // } = this.state
+  const {
+    to,
+    amount,
+    gasPrice,
+    gasLimit,
+  } = this.state
+
+  const {
+    identities,
+    selectedAddress,
+    selectedTokenAddress,
+    hideWarning,
+    addToAddressBook,
+    signTokenTx,
+  } = this.props
+
+  const { nickname = ' ' } = identities[to] || {}
 
   const { isValid, errors } = this.validate()
 
   if (!isValid) {
     return this.setState({ errors })
   }
+
+  hideWarning()
+  addToAddressBook(to, nickname)
+
+  const txParams = {
+    from: selectedAddress,
+    value: '0',
+    gas: gasLimit,
+    gasPrice: gasPrice,
+  }
+
+  signTokenTx(selectedTokenAddress, to, Number(amount).toString(16), txParams)
 }
 
 SendTokenScreen.prototype.renderToAddressInput = function () {

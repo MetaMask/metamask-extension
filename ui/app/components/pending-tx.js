@@ -91,9 +91,9 @@ PendingTx.prototype.render = function () {
   // const maxCost = txFeeBn.add(amountBn)
   // const balanceBn = hexToBn(balance)
   // const insufficientBalance = balanceBn.lt(maxCost)
-
-  const fromName = identities[txParams.from].name;
-  const toName = identities[txParams.to].name;
+  const fromName = identities[txParams.from].name
+  const to = identities[txParams.to]
+  const toName = to ? to.name : ' '
 
   const endOfFromAddress = txParams.from.slice(txParams.from.length - 4)
   const endOfToAddress = txParams.to.slice(txParams.to.length - 4)
