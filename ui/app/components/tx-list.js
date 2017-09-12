@@ -49,9 +49,7 @@ TxList.prototype.renderTranstions = function () {
   const { txsToRender } = this.props
 
   return txsToRender.length
-    ? txsToRender.map((transaction) => {
-      return this.renderTransactionListItem(transaction)
-    })
+    ? txsToRender.map((transaction) => this.renderTransactionListItem(transaction))
     : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
 }
 

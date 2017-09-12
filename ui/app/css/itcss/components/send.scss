@@ -80,12 +80,16 @@
   justify-content: space-between;
 }
 
-.selected-currency {
-  color: $curious-blue;
-}
+.currency-toggle {
+  &__item {
+    color: $curious-blue;
+    cursor: pointer;
 
-.unselected-currency {
-  cursor: pointer;
+    &--selected {
+      color: $black;
+      cursor: default;
+    }
+  }
 }
 
 .send-screen-gas-input-customize {
@@ -115,7 +119,7 @@
   padding: 13px 19px;
   font-size: 16px;
   border-radius: 4px;
-  font-family: 'Lato';
+  font-family: "Lato";
   font-weight: 500;
 }
 
@@ -205,18 +209,23 @@
 }
 
 .send-token {
-  width: 498px;
-  height: 605px;
-  background-color: #fff;
   display: flex;
   flex-flow: column nowrap;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
-  padding: 46px 40.5px 26px;
-  position: relative;
-  top: -26px;
   z-index: 25;
-  align-items: center;
   font-family: "Montserrat Light";
+
+  &__content {
+    width: 498px;
+    height: 605px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+    padding: 46px 40.5px 26px;
+    position: relative;
+    top: -26px;
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+  }
 
   .identicon {
     position: absolute;
@@ -242,6 +251,16 @@
     font-size: 40px;
     line-height: 40px;
     margin-top: 13px;
+  }
+
+  &__button-group {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    button {
+      width: 163px;
+    }
   }
 
   .send-screen-input-wrapper {

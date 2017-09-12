@@ -23,16 +23,16 @@ function mapStateToProps (state) {
   const addressBook = state.metamask.addressBook
   const conversionRate = state.metamask.conversionRate
   const currentBlockGasLimit = state.metamask.currentBlockGasLimit
-  // const accounts = state.metamask.accounts
+  const accounts = state.metamask.accounts
   // const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
-  // const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   // const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
   // const identity = identities[selectedAddress]
 
   return {
     // sidebarOpen,
-    // selectedAddress,
+    selectedAddress,
     // checksumAddress,
     selectedTokenAddress,
     identities,
@@ -48,6 +48,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     // showSidebar: () => { dispatch(actions.showSidebar()) },
     // hideSidebar: () => { dispatch(actions.hideSidebar()) },
     // showModal: (payload) => { dispatch(actions.showModal(payload)) },
@@ -121,6 +122,7 @@ SendTokenScreen.prototype.renderAmountInput = function () {
       h('span', ['Amount']),
       h(CurrencyToggle, {
         selectedCurrency,
+        currencies: [ symbol, 'USD' ],
         onClick: currency => this.setState({ selectedCurrency: currency }),
       }),
     ]),
@@ -178,12 +180,25 @@ SendTokenScreen.prototype.renderGasInput = function () {
 }
 
 SendTokenScreen.prototype.renderMemoInput = function () {
-  return h('div.send-screen-input-wrapper', {}, [
+  return h('div.send-screen-input-wrapper', [
     h('div', {}, ['Transaction memo (optional)']),
     h(
       'input.large-input.send-screen-input',
       { onChange: e => this.setState({ memo: e.target.value }) }
     ),
+  ])
+}
+
+SendTokenScreen.prototype.renderButtons = function () {
+  const { selectedAddress, backToAccountDetail } = this.props
+
+  return h('div.send-token__button-group', [
+    h('button.send-token__button-next.btn-secondary', {
+
+    }, ['Next']),
+    h('button.send-token__button-cancel.btn-tertiary', {
+      onClick: () => backToAccountDetail(selectedAddress),
+    }, ['Cancel']),
   ])
 }
 
@@ -194,20 +209,23 @@ SendTokenScreen.prototype.render = function () {
   } = this.props
 
   return h('div.send-token', [
-    h(Identicon, {
-      diameter: 75,
-      address: selectedTokenAddress,
-    }),
-    h('div.send-token__title', ['Send Tokens']),
-    h('div.send-token__description', ['Send Tokens to anyone with an Ethereum account']),
-    h('div.send-token__balance-text', ['Your Token Balance is:']),
-    h('div.send-token__token-balance', [
-      h(TokenBalance, { token: selectedToken, balanceOnly: true }),
+    h('div.send-token__content', [
+      h(Identicon, {
+        diameter: 75,
+        address: selectedTokenAddress,
+      }),
+      h('div.send-token__title', ['Send Tokens']),
+      h('div.send-token__description', ['Send Tokens to anyone with an Ethereum account']),
+      h('div.send-token__balance-text', ['Your Token Balance is:']),
+      h('div.send-token__token-balance', [
+        h(TokenBalance, { token: selectedToken, balanceOnly: true }),
+      ]),
+      h('div.send-token__token-symbol', [selectedToken.symbol]),
+      this.renderToAddressInput(),
+      this.renderAmountInput(),
+      this.renderGasInput(),
+      this.renderMemoInput(),
     ]),
-    h('div.send-token__token-symbol', [selectedToken.symbol]),
-    this.renderToAddressInput(),
-    this.renderAmountInput(),
-    this.renderGasInput(),
-    this.renderMemoInput(),
+    this.renderButtons(),
   ])
 }

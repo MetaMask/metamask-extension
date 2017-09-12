@@ -82,3 +82,21 @@ button.btn-thin {
   padding: 6px;
   font-size: 13px;
 }
+
+.btn-secondary {
+  border: 1px solid #979797;
+  border-radius: 2px;
+  background-color: $white;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 16px 42px;
+}
+
+.btn-tertiary {
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background-color: transparent;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 16px 42px;
+}
