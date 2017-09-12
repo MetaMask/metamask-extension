@@ -1,12 +1,14 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
-const pipe = require('pump')
+const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
-const streamIntoProvider = require('web3-stream-provider/handler')
+const RpcEngine = require('json-rpc-engine')
+const createEngineStream = require('json-rpc-middleware-stream/engineStream')
+const createFilterMiddleware = require('eth-json-rpc-filters')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -77,12 +79,13 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
+    this.blockTracker = this.provider
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
     this.ethStore = new EthStore({
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
     })
 
     // key mgmt
@@ -109,7 +112,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
       ethStore: this.ethStore,
     })
@@ -366,7 +369,14 @@ module.exports = class MetamaskController extends EventEmitter {
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
-    outStream.pipe(dnode).pipe(outStream)
+    pump(
+      outStream,
+      dnode,
+      outStream,
+      (err) => {
+        if (err) console.error(err)
+      }
+    )
     dnode.on('remote', (remote) => {
       // push updates to popup
       const sendUpdate = remote.sendUpdate.bind(remote)
@@ -375,26 +385,64 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupProviderConnection (outStream, originDomain) {
-    streamIntoProvider(outStream, this.provider, onRequest, onResponse)
-    // append dapp origin domain to request
-    function onRequest (request) {
-      request.origin = originDomain
-    }
-    // log rpc activity
-    function onResponse (err, request, response) {
-      if (err) return console.error(err)
-      if (response.error) {
-        console.error('Error in RPC response:\n', response)
+    // setup json rpc engine stack
+    const engine = new RpcEngine()
+    engine.push(originMiddleware)
+    engine.push(loggerMiddleware)
+    engine.push(createFilterMiddleware({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+    }))
+    engine.push(createProviderMiddleware({ provider: this.provider }))
+
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+    pump(
+      outStream,
+      providerStream,
+      outStream,
+      (err) => {
+        if (err) console.error(err)
       }
-      if (request.isMetamaskInternal) return
-      log.info(`RPC (${originDomain}):`, request, '->', response)
+    )
+
+    // append dapp origin domain to request
+    function originMiddleware (req, res, next, end) {
+      req.origin = originDomain
+      next()
+    }
+
+    // log rpc activity
+    function loggerMiddleware (req, res, next, end) {
+      next((cb) => {
+        if (res.error) {
+          console.error('Error in RPC response:\n', res)
+        }
+        if (req.isMetamaskInternal) return
+        log.info(`RPC (${originDomain}):`, req, '->', res)
+        cb()
+      })
+    }
+
+    // forward requests to provider
+    function createProviderMiddleware({ provider }) {
+      return (req, res, next, end) => {
+        provider.sendAsync(req, (err, _res) => {
+          if (err) return end(err)
+          res.result = _res.result
+          end()
+        })
+      }
     }
   }
 
   setupPublicConfig (outStream) {
-    pipe(
+    pump(
       this.publicConfigStore,
-      outStream
+      outStream,
+      (err) => {
+        if (err) console.error(err)
+      }
     )
   }
 

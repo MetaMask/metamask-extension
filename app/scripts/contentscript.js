@@ -1,11 +1,12 @@
-const LocalMessageDuplexStream = require('post-message-stream')
-const PongStream = require('ping-pong-stream/pong')
-const PortStream = require('./lib/port-stream.js')
-const ObjectMultiplex = require('./lib/obj-multiplex')
-const extension = require('extensionizer')
-
 const fs = require('fs')
 const path = require('path')
+const pump = require('pump')
+const LocalMessageDuplexStream = require('post-message-stream')
+const PongStream = require('ping-pong-stream/pong')
+const ObjectMultiplex = require('obj-multiplex')
+const extension = require('extensionizer')
+const PortStream = require('./lib/port-stream.js')
+
 const inpageText = fs.readFileSync(path.join(__dirname, 'inpage.js')).toString()
 
 // Eventually this streaming injection could be replaced with:
@@ -50,22 +51,42 @@ function setupStreams () {
   pageStream.pipe(pluginStream).pipe(pageStream)
 
   // setup local multistream channels
-  const mx = ObjectMultiplex()
-  mx.on('error', console.error)
-  mx.pipe(pageStream).pipe(mx)
-  mx.pipe(pluginStream).pipe(mx)
+  const mux = new ObjectMultiplex()
+  pump(
+    mux,
+    pageStream,
+    mux,
+    (err) => logStreamDisconnectWarning('MetaMask Inpage', err)
+  )
+  pump(
+    mux,
+    pluginStream,
+    mux,
+    (err) => logStreamDisconnectWarning('MetaMask Background', err)
+  )
 
   // connect ping stream
   const pongStream = new PongStream({ objectMode: true })
-  pongStream.pipe(mx.createStream('pingpong')).pipe(pongStream)
+  pump(
+    mux,
+    pongStream,
+    mux,
+    (err) => logStreamDisconnectWarning('MetaMask PingPongStream', err)
+  )
 
   // connect phishing warning stream
-  const phishingStream = mx.createStream('phishing')
+  const phishingStream = mux.createStream('phishing')
   phishingStream.once('data', redirectToPhishingWarning)
 
   // ignore unused channels (handled by background, inpage)
-  mx.ignoreStream('provider')
-  mx.ignoreStream('publicConfig')
+  mux.ignoreStream('provider')
+  mux.ignoreStream('publicConfig')
+}
+
+function logStreamDisconnectWarning (remoteLabel, err) {
+  let warningMsg = `MetamaskContentscript - lost connection to ${remoteLabel}`
+  if (err) warningMsg += '\n' + err.stack
+  console.warn(warningMsg)
 }
 
 function shouldInjectWeb3 () {
