@@ -180,6 +180,7 @@
     "karma-cli": "^1.0.1",
     "karma-firefox-launcher": "^1.0.1",
     "karma-qunit": "^1.2.1",
+    "karma-source-map-support": "^1.2.0",
     "lodash.assign": "^4.0.6",
     "mocha": "^3.4.2",
     "mocha-eslint": "^4.0.0",
