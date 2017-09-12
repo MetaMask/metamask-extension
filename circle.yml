@@ -4,3 +4,10 @@ machine:
 test:
   override:
     - "npm run ci"
+dependencies:
+  pre:
+    - sudo apt-get update
+    # get latest stable firefox
+    - sudo apt-get install firefox
+    # get latest stable chrome
+    - sudo apt-get install google-chrome
