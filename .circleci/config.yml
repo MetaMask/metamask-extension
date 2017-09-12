@@ -24,6 +24,18 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@4'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install npm deps
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
           name: Test
           command: npm run ci
       - store_artifacts:
