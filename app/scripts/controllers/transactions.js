@@ -1,5 +1,4 @@
 const EventEmitter = require('events')
-const extend = require('xtend')
 const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
@@ -60,17 +59,14 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
+      retryLimit: 3500, // Retry 3500 blocks, or about 1 day.
       getBalance: (address) => {
         const account = this.ethStore.getState().accounts[address]
         if (!account) return
         return account.balance
       },
-      publishTransaction: this.query.sendRawTransaction,
+      publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
-      giveUpOnTransaction: (txId) => {
-        const err = new Error(`Gave up submitting after 3500 blocks un-mined.`)
-        this.setTxStatusFailed(txId, err)
-      },
     })
 
     this.txStateManager.store.subscribe(() => this.emit('updateBadge'))
@@ -193,7 +189,7 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      txMeta.txParams.nonce = nonceLock.nextNonce
+      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonceLock.nextNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
       this.txStateManager.updateTx(txMeta)
