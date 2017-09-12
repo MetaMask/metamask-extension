@@ -1,52 +1,86 @@
 version: 2
 jobs:
+
+  clone:
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    working_directory: /metamask
+    steps:
+      - checkout
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - save_cache:
+          key: v1-repo-{{ checksum ".circle-sha" }}
+          paths:
+            - /metamask
+
+  install_deps:
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    working_directory: /metamask
+    steps:
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - v1-repo-{{ checksum ".circle-sha" }}
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@4'
+      - restore_cache:
+          keys:
+            - v1-deps-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: v1-deps-{{ checksum "package.json" }}
+          paths:
+            - /metamask/node-modules
+
   build:
-    # The primary container is an instance of the first list image listed. Your build commands run in this container.
-    docker:
-      - image: circleci/node:8-stretch-browsers
-    steps:
-      - checkout
-      - run:
-          name: Update npm
-          command: 'sudo npm install -g npm@4'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: Install npm deps
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+      docker:
+        - image: node:8-stretch-browsers
+      working_directory: /metamask
+      steps:
+        - run:
+            name: save SHA to a file
+            command: echo $CIRCLE_SHA1 > .circle-sha
+        - restore_cache:
+            keys:
+              - v1-repo-{{ checksum ".circle-sha" }}
+        - restore_cache:
+            keys:
+              - v1-deps-{{ checksum "package.json" }}
+        - run: npm run build
+
   test:
-    docker:
-      - image: circleci/node:8-stretch-browsers
-    steps:
-      - checkout
-      - run:
-          name: Update npm
-          command: 'sudo npm install -g npm@4'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: Install npm deps
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-      - run:
-          name: Test
-          command: npm run ci
-      - store_artifacts:
-          path: coverage
-          prefix: coverage
+      docker:
+        - image: node:8-stretch-browsers
+      working_directory: /metamask
+      steps:
+        - run:
+            name: save SHA to a file
+            command: echo $CIRCLE_SHA1 > .circle-sha
+        - restore_cache:
+            keys:
+              - v1-repo-{{ checksum ".circle-sha" }}
+        - restore_cache:
+            keys:
+              - v1-deps-{{ checksum "package.json" }}
+        - run: npm run ci
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      - clone
+      - install_deps:
+          requires:
+            - clone
+      - build:
+          requires:
+            - install_deps
       - test:
           requires:
-            - build
+            - install_deps
