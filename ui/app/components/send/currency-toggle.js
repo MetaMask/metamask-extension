@@ -1,6 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const classnames = require('classnames')
+
 module.exports = CurrencyToggle
 
 inherits(CurrencyToggle, Component)
@@ -8,19 +10,26 @@ function CurrencyToggle () {
   Component.call(this)
 }
 
+const defaultCurrencies = [ 'ETH', 'USD' ]
+
 CurrencyToggle.prototype.render = function () {
   const { onClick, currentCurrency } = this.props
+  const [currencyA, currencyB] = this.props.currencies || defaultCurrencies
 
-  return h('span', {}, [
+  return h('span.currency-toggle', {}, [
     h('span', {
-      className: currentCurrency === 'ETH' ? 'selected-currency' : 'unselected-currency',
-      onClick: () => onClick('ETH'),
-    }, ['ETH']),
+      className: classnames('currency-toggle__item', {
+        'currency-toggle__item--selected': currencyA === currentCurrency,
+      }),
+      onClick: () => onClick(currencyA),
+    }, [ currencyA ]),
     '<>',
     h('span', {
-      className: currentCurrency === 'USD' ? 'selected-currency' : 'unselected-currency',
-      onClick: () => onClick('USD'),
-    }, ['USD']),
+      className: classnames('currency-toggle__item', {
+        'currency-toggle__item--selected': currencyB === currentCurrency,
+      }),
+      onClick: () => onClick(currencyB),
+    }, [ currencyB ]),
   ]) // holding on icon from design
 }
 

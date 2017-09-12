@@ -1,7 +1,8 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const ethUtil = require('ethereumjs-util')
+const { addHexPrefix } = require('ethereumjs-util')
+const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
@@ -23,16 +24,16 @@ function mapStateToProps (state) {
   const addressBook = state.metamask.addressBook
   const conversionRate = state.metamask.conversionRate
   const currentBlockGasLimit = state.metamask.currentBlockGasLimit
-  // const accounts = state.metamask.accounts
+  const accounts = state.metamask.accounts
   // const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
-  // const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   // const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
   // const identity = identities[selectedAddress]
 
   return {
     // sidebarOpen,
-    // selectedAddress,
+    selectedAddress,
     // checksumAddress,
     selectedTokenAddress,
     identities,
@@ -48,6 +49,15 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
+    hideWarning: () => dispatch(actions.hideWarning()),
+    addToAddressBook: (recipient, nickname) => dispatch(
+      actions.addToAddressBook(recipient, nickname)
+    ),
+    signTx: txParams => dispatch(actions.signTx(txParams)),
+    signTokenTx: (tokenAddress, toAddress, amount, txData) => (
+      dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
+    ),
     // showSidebar: () => { dispatch(actions.showSidebar()) },
     // hideSidebar: () => { dispatch(actions.hideSidebar()) },
     // showModal: (payload) => { dispatch(actions.showModal(payload)) },
@@ -61,11 +71,83 @@ function SendTokenScreen () {
   Component.call(this)
   this.state = {
     to: '',
+    amount: null,
     selectedCurrency: 'USD',
     isGasTooltipOpen: false,
     gasPrice: '0x5d21dba00',
     gasLimit: '0x7b0d',
+    errors: {},
   }
+}
+
+SendTokenScreen.prototype.validate = function () {
+  const {
+    to,
+    amount: stringAmount,
+    gasPrice: hexGasPrice,
+    gasLimit: hexGasLimit,
+  } = this.state
+
+  const gasPrice = parseInt(hexGasPrice, 16)
+  const gasLimit = parseInt(hexGasLimit, 16) / 1000000000
+  const amount = Number(stringAmount)
+
+  if (to && amount && gasPrice && gasLimit) {
+    return {
+      isValid: true,
+      errors: {},
+    }
+  }
+
+  const errors = {
+    to: !to ? 'Required' : null,
+    amount: !amount ? 'Required' : null,
+    gasPrice: !gasPrice ? 'Gas Price Required' : null,
+    gasLimit: !gasLimit ? 'Gas Limit Required' : null,
+  }
+
+  return {
+    isValid: false,
+    errors,
+  }
+}
+
+SendTokenScreen.prototype.submit = function () {
+  const {
+    to,
+    amount,
+    gasPrice,
+    gasLimit,
+  } = this.state
+
+  const {
+    identities,
+    selectedAddress,
+    selectedTokenAddress,
+    hideWarning,
+    addToAddressBook,
+    signTokenTx,
+  } = this.props
+
+  const { nickname = ' ' } = identities[to] || {}
+
+  const { isValid, errors } = this.validate()
+
+  if (!isValid) {
+    return this.setState({ errors })
+  }
+
+  hideWarning()
+  addToAddressBook(to, nickname)
+
+  const txParams = {
+    from: selectedAddress,
+    value: '0',
+    gas: gasLimit,
+    gasPrice: gasPrice,
+  }
+
+  signTokenTx(selectedTokenAddress, to, Number(amount).toString(16), txParams)
 }
 
 SendTokenScreen.prototype.renderToAddressInput = function () {
@@ -76,16 +158,24 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
 
   const {
     to,
+    errors: { to: errorMessage },
   } = this.state
 
-  return h('div.send-screen-input-wrapper', {}, [
+  return h('div', {
+    className: classnames('send-screen-input-wrapper', {
+      'send-screen-input-wrapper--error': errorMessage,
+    }),
+  }, [
     h('div', ['To:']),
     h('input.large-input.send-screen-input', {
       name: 'address',
       list: 'addresses',
       placeholder: 'Address',
       value: to,
-      onChange: e => this.setState({ to: e.target.value }),
+      onChange: e => this.setState({
+        to: e.target.value,
+        errors: {},
+      }),
     }),
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
@@ -104,31 +194,44 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         })
       }),
     ]),
+    h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
   ])
 }
 
 SendTokenScreen.prototype.renderAmountInput = function () {
   const {
     selectedCurrency,
+    amount,
+    errors: { amount: errorMessage },
   } = this.state
 
   const {
     selectedToken: {symbol},
   } = this.props
 
-  return h('div.send-screen-input-wrapper', {}, [
+  return h('div.send-screen-input-wrapper', {
+    className: classnames('send-screen-input-wrapper', {
+      'send-screen-input-wrapper--error': errorMessage,
+    }),
+  }, [
     h('div.send-screen-amount-labels', [
       h('span', ['Amount']),
       h(CurrencyToggle, {
-        selectedCurrency,
+        currentCurrency: selectedCurrency,
+        currencies: [ symbol, 'USD' ],
         onClick: currency => this.setState({ selectedCurrency: currency }),
       }),
     ]),
     h('input.large-input.send-screen-input', {
       placeholder: `0 ${symbol}`,
       type: 'number',
-      onChange: e => this.setState({ amount: e.target.value }),
+      value: amount,
+      onChange: e => this.setState({
+        amount: e.target.value,
+        errors: {},
+      }),
     }),
+    h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
   ])
 }
 
@@ -138,6 +241,10 @@ SendTokenScreen.prototype.renderGasInput = function () {
     gasPrice,
     gasLimit,
     selectedCurrency,
+    errors: {
+      gasPrice: gasPriceErrorMessage,
+      gasLimit: gasLimitErrorMessage,
+    },
   } = this.state
 
   const {
@@ -145,14 +252,18 @@ SendTokenScreen.prototype.renderGasInput = function () {
     currentBlockGasLimit,
   } = this.props
 
-  return h('div.send-screen-input-wrapper', [
+  return h('div.send-screen-input-wrapper', {
+    className: classnames('send-screen-input-wrapper', {
+      'send-screen-input-wrapper--error': gasPriceErrorMessage || gasLimitErrorMessage,
+    }),
+  }, [
     isGasTooltipOpen && h(GasTooltip, {
       className: 'send-tooltip',
       gasPrice,
       gasLimit,
       onClose: () => this.setState({ isGasTooltipOpen: false }),
       onFeeChange: ({ gasLimit, gasPrice }) => {
-        this.setState({ gasLimit, gasPrice })
+        this.setState({ gasLimit, gasPrice, errors: {} })
       },
     }),
 
@@ -174,16 +285,32 @@ SendTokenScreen.prototype.renderGasInput = function () {
         ['Customize']
       ),
     ]),
+    h('div.send-screen-input-wrapper__error-message', [
+      gasPriceErrorMessage || gasLimitErrorMessage,
+    ]),
   ])
 }
 
 SendTokenScreen.prototype.renderMemoInput = function () {
-  return h('div.send-screen-input-wrapper', {}, [
+  return h('div.send-screen-input-wrapper', [
     h('div', {}, ['Transaction memo (optional)']),
     h(
       'input.large-input.send-screen-input',
       { onChange: e => this.setState({ memo: e.target.value }) }
     ),
+  ])
+}
+
+SendTokenScreen.prototype.renderButtons = function () {
+  const { selectedAddress, backToAccountDetail } = this.props
+
+  return h('div.send-token__button-group', [
+    h('button.send-token__button-next.btn-secondary', {
+      onClick: () => this.submit(),
+    }, ['Next']),
+    h('button.send-token__button-cancel.btn-tertiary', {
+      onClick: () => backToAccountDetail(selectedAddress),
+    }, ['Cancel']),
   ])
 }
 
@@ -194,20 +321,23 @@ SendTokenScreen.prototype.render = function () {
   } = this.props
 
   return h('div.send-token', [
-    h(Identicon, {
-      diameter: 75,
-      address: selectedTokenAddress,
-    }),
-    h('div.send-token__title', ['Send Tokens']),
-    h('div.send-token__description', ['Send Tokens to anyone with an Ethereum account']),
-    h('div.send-token__balance-text', ['Your Token Balance is:']),
-    h('div.send-token__token-balance', [
-      h(TokenBalance, { token: selectedToken, balanceOnly: true }),
+    h('div.send-token__content', [
+      h(Identicon, {
+        diameter: 75,
+        address: selectedTokenAddress,
+      }),
+      h('div.send-token__title', ['Send Tokens']),
+      h('div.send-token__description', ['Send Tokens to anyone with an Ethereum account']),
+      h('div.send-token__balance-text', ['Your Token Balance is:']),
+      h('div.send-token__token-balance', [
+        h(TokenBalance, { token: selectedToken, balanceOnly: true }),
+      ]),
+      h('div.send-token__token-symbol', [selectedToken.symbol]),
+      this.renderToAddressInput(),
+      this.renderAmountInput(),
+      this.renderGasInput(),
+      this.renderMemoInput(),
     ]),
-    h('div.send-token__token-symbol', [selectedToken.symbol]),
-    this.renderToAddressInput(),
-    this.renderAmountInput(),
-    this.renderGasInput(),
-    this.renderMemoInput(),
+    this.renderButtons(),
   ])
 }

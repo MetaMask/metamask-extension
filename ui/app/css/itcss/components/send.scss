@@ -46,6 +46,27 @@
 .send-screen-input-wrapper {
   width: 95%;
   position: relative;
+
+  &__error-message {
+    display: none;
+  }
+
+  &--error {
+    input,
+    .send-screen-gas-input {
+      border-color: $red !important;
+    }
+
+    .send-screen-input-wrapper__error-message {
+      display: block;
+      position: absolute;
+      bottom: 4px;
+      font-size: 12px;
+      line-height: 12px;
+      left: 8px;
+      color: $red;
+    }
+  }
 }
 
 .send-screen-input {
@@ -80,12 +101,16 @@
   justify-content: space-between;
 }
 
-.selected-currency {
-  color: $curious-blue;
-}
+.currency-toggle {
+  &__item {
+    color: $curious-blue;
+    cursor: pointer;
 
-.unselected-currency {
-  cursor: pointer;
+    &--selected {
+      color: $black;
+      cursor: default;
+    }
+  }
 }
 
 .send-screen-gas-input-customize {
@@ -115,7 +140,7 @@
   padding: 13px 19px;
   font-size: 16px;
   border-radius: 4px;
-  font-family: 'Lato';
+  font-family: "Lato";
   font-weight: 500;
 }
 
@@ -205,18 +230,23 @@
 }
 
 .send-token {
-  width: 498px;
-  height: 605px;
-  background-color: #fff;
   display: flex;
   flex-flow: column nowrap;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
-  padding: 46px 40.5px 26px;
-  position: relative;
-  top: -26px;
   z-index: 25;
-  align-items: center;
   font-family: "Montserrat Light";
+
+  &__content {
+    width: 498px;
+    height: 605px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+    padding: 46px 40.5px 26px;
+    position: relative;
+    top: -26px;
+    align-items: center;
+    display: flex;
+    flex-flow: column nowrap;
+  }
 
   .identicon {
     position: absolute;
@@ -242,5 +272,34 @@
     font-size: 40px;
     line-height: 40px;
     margin-top: 13px;
+  }
+
+  &__button-group {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    button {
+      width: 163px;
+    }
+  }
+
+  .send-screen-input-wrapper {
+    .fa-bolt {
+      padding-right: 4px;
+    }
+
+    .large-input {
+      border: 1px solid $dusty-gray;
+      border-radius: 4px;
+      margin: 4px 0 20px;
+      font-size: 16px;
+      line-height: 22.4px;
+      font-family: "DIN OT";
+    }
+
+    .send-screen-gas-input {
+      border: 1px solid transparent;
+    }
   }
 }

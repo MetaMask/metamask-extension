@@ -22,7 +22,7 @@ InputNumber.prototype.componentWillMount = function () {
 }
 
 InputNumber.prototype.setValue = function (newValue) {
-  const { fixed, min, onChange } = this.props
+  const { fixed, min = -1, onChange } = this.props
 
   if (fixed) newValue = Number(newValue.toFixed(4))
 
@@ -49,6 +49,7 @@ InputNumber.prototype.render = function () {
         onClick: () => this.setValue(value + step),
       }),
       h('i.fa.fa-angle-down', {
+        style: { cursor: 'pointer' },
         onClick: () => this.setValue(value - step),
       }),
     ]),

@@ -1,3 +1,4 @@
+const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 
 var actions = {
@@ -118,6 +119,7 @@ var actions = {
   cancelPersonalMsg,
   sendTx: sendTx,
   signTx: signTx,
+  signTokenTx: signTokenTx,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -192,6 +194,7 @@ module.exports = actions
 var background = null
 function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
+  console.log({ background })
 }
 
 function goHome () {
@@ -436,6 +439,19 @@ function sendTx (txData) {
       }
       dispatch(actions.completedTx(txData.id))
     })
+  }
+}
+
+function signTokenTx (tokenAddress, toAddress, amount, txData) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    const token = global.eth.contract(abi).at(tokenAddress)
+    token.transfer(toAddress, amount, txData)
+      .catch(err => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.displayWarning(err.message))
+      })
+    dispatch(actions.showConfTxPage({}))
   }
 }
 

@@ -62,6 +62,9 @@ const MODALS = {
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       borderRadius: '4px',
     },
+    contentStyle: {
+      borderRadius: '4px',
+    }
   },
 
   NEW_ACCOUNT: {
@@ -117,6 +120,7 @@ Modal.prototype.render = function () {
 
   const children = modal.contents
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
+  const contentStyle = modal.contentStyle || {};
 
   return h(FadeModal,
     {
@@ -127,6 +131,7 @@ Modal.prototype.render = function () {
         this.modalRef = ref
       },
       modalStyle,
+      contentStyle,
       backdropStyle: BACKDROPSTYLE,
     },
     children,

@@ -1,6 +1,7 @@
 const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const Dnode = require('dnode')
+const Eth = require('ethjs')
 const EthQuery = require('eth-query')
 const launchMetamaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
@@ -34,6 +35,7 @@ function setupWeb3Connection (connectionStream) {
   providerStream.on('error', console.error.bind(console))
   global.ethereumProvider = providerStream
   global.ethQuery = new EthQuery(providerStream)
+  global.eth = new Eth(providerStream)
 }
 
 function setupControllerConnection (connectionStream, cb) {
@@ -47,6 +49,7 @@ function setupControllerConnection (connectionStream, cb) {
   })
   connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
   accountManagerDnode.once('remote', function (accountManager) {
+    console.log({ accountManager })
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)
     cb(null, accountManager)

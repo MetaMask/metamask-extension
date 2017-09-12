@@ -674,7 +674,7 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
     // New: gas will now be specified on this step
     gas: this.state.newTx.gas,
-    gasPrice: this.state.newTx.gasPrice
+    gasPrice: this.state.newTx.gasPrice,
   }
 
   if (recipient) txParams.to = addHexPrefix(recipient)
