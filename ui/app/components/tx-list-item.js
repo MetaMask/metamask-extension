@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const classnames = require('classnames')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
@@ -67,9 +68,13 @@ TxListItem.prototype.render = function () {
           h('div.tx-list-status-wrapper', {
             style: {},
           }, [
-            h('span.tx-list-status', {}, [
+            h('span', {
+              className: classnames('tx-list-status', {
+                'tx-list-status--rejected': transactionStatus === 'rejected'
+              })
+            }, 
               transactionStatus,
-            ]),
+            ),
           ]),
         ]),
 
@@ -77,9 +82,13 @@ TxListItem.prototype.render = function () {
           style: {},
         }, [
 
-          h('span.tx-list-value', {}, [
-            transactionAmount,
-          ]),
+          h('span', {
+            className: classnames('tx-list-value', {
+              'tx-list-value--confirmed': transactionStatus === 'confirmed'
+            })
+          },
+            transactionAmount
+          ),
 
           h('span.tx-list-fiat-value', {}, [
             '+ $300 USD',
