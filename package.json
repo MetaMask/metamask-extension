@@ -22,7 +22,6 @@
     "ui": "npm run genStates && beefy ui-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "mock": "beefy mock-dev.js:bundle.js --live --open --index=./development/index.html --cwd ./",
     "buildMock": "npm run genStates && browserify ./mock-dev.js -o ./development/bundle.js",
-    "testem": "npm run buildMock && testem",
     "announce": "node development/announcer.js",
     "generateNotice": "node notices/notice-generator.js",
     "deleteNotice": "node notices/notice-delete.js",
