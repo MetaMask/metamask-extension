@@ -15,21 +15,23 @@ async function runFirstTimeUsageTest(assert, done) {
 
   const app = $('iframe').contents().find('#app-content .mock-app-root')
 
-  const recurseNotices = async () => {
+  // recurse notices
+  while (true) {
     const button = app.find('button')
     if (button.html() === 'Accept') {
+      // still notices to accept
       const termsPage = app.find('.markdown')[0]
       termsPage.scrollTop = termsPage.scrollHeight
       await wait()
       button.click()
       await wait()
-      await recurseNotices()
     } else {
-      await wait()
+      // exit loop
+      break
     }
   }
 
-  await recurseNotices()
+  await wait()
 
   // Scroll through terms
   const title = app.find('h1').text()
