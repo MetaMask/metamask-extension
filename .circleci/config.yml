@@ -4,7 +4,7 @@ jobs:
   clone:
     docker:
       - image: circleci/node:8-stretch-browsers
-    working_directory: metamask
+    working_directory: /tmp/metamask
     steps:
       - checkout
       - run:
@@ -13,12 +13,12 @@ jobs:
       - save_cache:
           key: v1-repo-{{ checksum ".circle-sha" }}
           paths:
-            - metamask
+            - /tmp/metamask
 
   install_deps:
     docker:
       - image: circleci/node:8-stretch-browsers
-    working_directory: metamask
+    working_directory: /tmp/metamask
     steps:
       - run:
           name: save SHA to a file
@@ -36,12 +36,12 @@ jobs:
       - save_cache:
           key: v1-deps-{{ checksum "package.json" }}
           paths:
-            - metamask/node-modules
+            - /tmp/metamask/node-modules
 
   build:
       docker:
         - image: node:8-stretch-browsers
-      working_directory: metamask
+      working_directory: /tmp/metamask
       steps:
         - run:
             name: save SHA to a file
@@ -57,7 +57,7 @@ jobs:
   test:
       docker:
         - image: node:8-stretch-browsers
-      working_directory: metamask
+      working_directory: /tmp/metamask
       steps:
         - run:
             name: save SHA to a file
