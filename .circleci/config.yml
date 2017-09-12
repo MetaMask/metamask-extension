@@ -3,7 +3,7 @@ jobs:
   build:
     # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
-      - image: circleci/node:8.1.3
+      - image: circleci/node:8-stretch-browsers
     steps:
       - checkout
       - run:
@@ -20,7 +20,7 @@ jobs:
             - node_modules
   test:
     docker:
-      - image: circleci/node:8.1.3
+      - image: circleci/node:8-stretch-browsers
     steps:
       - checkout
       - run:
