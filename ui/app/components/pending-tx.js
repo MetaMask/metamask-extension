@@ -85,8 +85,6 @@ PendingTx.prototype.render = function () {
 
   const txFeeBn = gasBn.mul(gasPriceBn)
 
-  const amountBn = hexToBn(txParams.value)
-
   // TODO: insufficient balance should be handled on send screen
   // const maxCost = txFeeBn.add(amountBn)
   // const balanceBn = hexToBn(balance)
@@ -99,27 +97,39 @@ PendingTx.prototype.render = function () {
   const endOfToAddress = txParams.to.slice(txParams.to.length - 4)
 
   const gasFeeInUSD = conversionUtil(txFeeBn, {
-    fromFormat: 'BN',
-    fromCurrency: 'GWEI',
+    fromNumericBase: 'BN',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    fromCurrency: 'ETH',
     toCurrency: 'USD',
+    numberOfDecimals: 2,
     conversionRate,
   })
   const gasFeeInETH = conversionUtil(txFeeBn, {
-    fromFormat: 'BN',
-    fromCurrency: 'GWEI',
+    fromNumericBase: 'BN',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    fromCurrency: 'ETH',
     toCurrency: 'ETH',
+    numberOfDecimals: 6,
     conversionRate,
   })
 
-  const totalInUSD = conversionUtil(amountBn, {
-    fromFormat: 'BN',
+  const totalInUSD = conversionUtil(txParams.value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
     toCurrency: 'USD',
+    numberOfDecimals: 2,
     conversionRate,
   })
-  const totalInETH = conversionUtil(amountBn, {
-    fromFormat: 'BN',
+  const totalInETH = conversionUtil(txParams.value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
     toCurrency: 'ETH',
     conversionRate,
+    numberOfDecimals: 6,
   })
 
   this.inputs = []
