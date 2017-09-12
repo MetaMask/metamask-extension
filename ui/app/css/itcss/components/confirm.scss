@@ -207,3 +207,7 @@ section .confirm-screen-account-number,
 #pending-tx-form {
   flex: 1 0 auto;
 }
+
+.confirm-screen-row + .confirm-screen-row {
+  border-top: 1px solid #E7E7E7;
+}

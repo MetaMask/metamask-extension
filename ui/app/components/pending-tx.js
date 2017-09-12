@@ -34,15 +34,6 @@ const sectionDivider = h('div', {
   },
 })
 
-const contentDivider = h('div', {
-  style: {
-    marginLeft: '16px',
-    marginRight: '16px',
-    height: '1.4px',
-    background: '#E7E7E7',
-  },
-})
-
 module.exports = connect(mapStateToProps, mapDispatchToProps)(PendingTx)
 
 function mapStateToProps (state) {
@@ -212,8 +203,8 @@ PendingTx.prototype.render = function () {
           txParams.memo || 'Fake memo',
         ]),
 
-        // error message
-        props.error && h('span.error.flex-center', props.error),
+        // TODO: put this error message in the right place
+        // props.error && h('span.error.flex-center', props.error),
 
         sectionDivider,
 
@@ -240,7 +231,6 @@ PendingTx.prototype.render = function () {
           ]),
         ]),
 
-        contentDivider,
 
         h('section.flex-row.flex-center.confirm-screen-row', {
         }, [
@@ -265,7 +255,6 @@ PendingTx.prototype.render = function () {
           ]),
         ]),
 
-        contentDivider,
 
         h('section.flex-row.flex-center.confirm-screen-row', {
         }, [
@@ -290,7 +279,6 @@ PendingTx.prototype.render = function () {
           ]),
         ]),
 
-        contentDivider,
 
         h('section.flex-row.flex-center.confirm-screen-total-box ', {}, [
           h('div', {
