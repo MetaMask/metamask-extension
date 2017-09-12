@@ -10,6 +10,13 @@ QUnit.test('render init screen', (assert) => {
   })
 })
 
+QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
+  if (failed > 0) {
+    console.warn('Test failures - dumping DOM:')
+    console.log(document.documentElement.innerHTML)
+  }
+})
+
 async function runFirstTimeUsageTest(assert, done) {
   await wait()
 
