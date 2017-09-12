@@ -10,18 +10,19 @@ QUnit.test('render init screen', (assert) => {
   })
 })
 
-QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
-  if (failed > 0) {
-    const app = $('iframe').contents()[0].documentElement
-    console.warn('Test failures - dumping DOM:')
-    console.log(app.innerHTML)
-  }
-})
+// QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
+//   if (failed > 0) {
+//     const app = $('iframe').contents()[0].documentElement
+//     console.warn('Test failures - dumping DOM:')
+//     console.log(app.innerHTML)
+//   }
+// })
 
 async function runFirstTimeUsageTest(assert, done) {
-  await wait()
 
-  const app = $('iframe').contents().find('#app-content .mock-app-root')
+  await timeout()
+
+  const app = $('#app-content .mock-app-root')
 
   // recurse notices
   while (true) {
@@ -30,16 +31,16 @@ async function runFirstTimeUsageTest(assert, done) {
       // still notices to accept
       const termsPage = app.find('.markdown')[0]
       termsPage.scrollTop = termsPage.scrollHeight
-      await wait()
+      await timeout()
       button.click()
-      await wait()
+      await timeout()
     } else {
       // exit loop
       break
     }
   }
 
-  await wait()
+  await timeout()
 
   // Scroll through terms
   const title = app.find('h1').text()
@@ -51,13 +52,13 @@ async function runFirstTimeUsageTest(assert, done) {
   pwBox.value = PASSWORD
   confBox.value = PASSWORD
 
-  await wait()
+  await timeout()
 
   // create vault
   const createButton = app.find('button.primary')[0]
   createButton.click()
 
-  await wait(1500)
+  await timeout(1500)
 
   const created = app.find('h3')[0]
   assert.equal(created.textContent, 'Vault Created', 'Vault created screen')
@@ -67,7 +68,7 @@ async function runFirstTimeUsageTest(assert, done) {
   assert.ok(button, 'button present')
   button.click()
 
-  await wait(1000)
+  await timeout(1000)
 
   const detail = app.find('.account-detail-section')[0]
   assert.ok(detail, 'Account detail section loaded.')
@@ -75,7 +76,7 @@ async function runFirstTimeUsageTest(assert, done) {
   const sandwich = app.find('.sandwich-expando')[0]
   sandwich.click()
 
-  await wait()
+  await timeout()
 
   const menu = app.find('.menu-droppo')[0]
   const children = menu.children
@@ -83,7 +84,7 @@ async function runFirstTimeUsageTest(assert, done) {
   assert.ok(lock, 'Lock menu item found')
   lock.click()
 
-  await wait(1000)
+  await timeout(1000)
 
   const pwBox2 = app.find('#password-box')[0]
   pwBox2.value = PASSWORD
@@ -91,39 +92,47 @@ async function runFirstTimeUsageTest(assert, done) {
   const createButton2 = app.find('button.primary')[0]
   createButton2.click()
 
-  await wait(1000)
+  await timeout(1000)
 
   const detail2 = app.find('.account-detail-section')[0]
   assert.ok(detail2, 'Account detail section loaded again.')
 
-  await wait()
+  await timeout()
 
   // open account settings dropdown
   const qrButton = app.find('.fa.fa-ellipsis-h')[0]
   qrButton.click()
 
-  await wait(1000)
+  await timeout(1000)
 
   // qr code item
   const qrButton2 = app.find('.dropdown-menu-item')[1]
   qrButton2.click()
 
-  await wait(1000)
+  await timeout(1000)
 
   const qrHeader = app.find('.qr-header')[0]
   const qrContainer = app.find('#qr-container')[0]
   assert.equal(qrHeader.textContent, 'Account 1', 'Should show account label.')
   assert.ok(qrContainer, 'QR Container found')
 
-  await wait()
+  await timeout()
 
   const networkMenu = app.find('.network-indicator')[0]
   networkMenu.click()
 
-  await wait()
+  await timeout()
 
   const networkMenu2 = app.find('.network-indicator')[0]
   const children2 = networkMenu2.children
   children2.length[3]
   assert.ok(children2, 'All network options present')
+}
+
+function timeout(time) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      resolve()
+    }, time * 3 || 1500)
+  })
 }
