@@ -1,0 +1,86 @@
+version: 2
+jobs:
+
+  clone:
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    working_directory: /tmp/metamask
+    steps:
+      - checkout
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - save_cache:
+          key: v1-repo-{{ checksum ".circle-sha" }}
+          paths:
+            - /tmp/metamask
+
+  install_deps:
+    docker:
+      - image: circleci/node:8-stretch-browsers
+    working_directory: /tmp/metamask
+    steps:
+      - run:
+          name: save SHA to a file
+          command: echo $CIRCLE_SHA1 > .circle-sha
+      - restore_cache:
+          keys:
+            - v1-repo-{{ checksum ".circle-sha" }}
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@4'
+      - restore_cache:
+          keys:
+            - v1-deps-{{ checksum "package.json" }}
+      - run: npm install
+      - save_cache:
+          key: v1-deps-{{ checksum "package.json" }}
+          paths:
+            - /tmp/metamask/node_modules
+
+  build:
+      docker:
+        - image: circleci/node:8-stretch-browsers
+      working_directory: /tmp/metamask
+      steps:
+        - run:
+            name: save SHA to a file
+            command: echo $CIRCLE_SHA1 > .circle-sha
+        - restore_cache:
+            keys:
+              - v1-repo-{{ checksum ".circle-sha" }}
+        - restore_cache:
+            keys:
+              - v1-deps-{{ checksum "package.json" }}
+        - run: npm run build
+
+  test:
+      docker:
+        - image: circleci/node:8-stretch-browsers
+      working_directory: /tmp/metamask
+      steps:
+        - run:
+            name: save SHA to a file
+            command: echo $CIRCLE_SHA1 > .circle-sha
+        - restore_cache:
+            keys:
+              - v1-repo-{{ checksum ".circle-sha" }}
+        - restore_cache:
+            keys:
+              - v1-deps-{{ checksum "package.json" }}
+        - run: npm run ci
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - clone
+      - install_deps:
+          requires:
+            - clone
+      - build:
+          requires:
+            - install_deps
+      - test:
+          requires:
+            - install_deps
