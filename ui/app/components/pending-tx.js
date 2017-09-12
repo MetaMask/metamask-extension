@@ -74,18 +74,24 @@ PendingTx.prototype.getTotal = function () {
   const { params = [] } = decodedData || {}
   const { name, value } = params[1] || {}
   const amountBn = name === '_value'
-    ? new BN(value)
-    : hexToBn(txParams.value)
-
+    ? value
+    : txParams.value
+  
   const USD = conversionUtil(amountBn, {
-    fromFormat: 'BN',
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
     toCurrency: 'USD',
+    numberOfDecimals: 2,
     conversionRate,
   })
   const ETH = conversionUtil(amountBn, {
-    fromFormat: 'BN',
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
     toCurrency: 'ETH',
     conversionRate,
+    numberOfDecimals: 6,
   })
 
   return {
@@ -109,15 +115,21 @@ PendingTx.prototype.getGasFee = function () {
   const txFeeBn = gasBn.mul(gasPriceBn)
 
   const USD = conversionUtil(txFeeBn, {
-    fromFormat: 'BN',
-    fromCurrency: 'GWEI',
+    fromNumericBase: 'BN',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    fromCurrency: 'ETH',
     toCurrency: 'USD',
+    numberOfDecimals: 2,
     conversionRate,
   })
   const ETH = conversionUtil(txFeeBn, {
-    fromFormat: 'BN',
-    fromCurrency: 'GWEI',
+    fromNumericBase: 'BN',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    fromCurrency: 'ETH',
     toCurrency: 'ETH',
+    numberOfDecimals: 6,
     conversionRate,
   })
 
