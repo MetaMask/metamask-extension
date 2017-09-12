@@ -1,10 +1,16 @@
 const extend = require('xtend')
+const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const txStateHistoryHelper = require('./tx-state-history-helper')
 
-module.exports = class TransactionStateManger extends ObservableStore {
+module.exports = class TransactionStateManger extends EventEmitter {
   constructor ({initState, txHistoryLimit, getNetwork}) {
-    super(initState)
+    super()
+
+    this.store = new ObservableStore(
+      extend({
+        transactions: [],
+    }, initState))
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
   }
@@ -20,7 +26,7 @@ module.exports = class TransactionStateManger extends ObservableStore {
   }
 
   getFullTxList () {
-    return this.getState().transactions
+    return this.store.getState().transactions
   }
 
   // Returns the tx list
@@ -196,10 +202,9 @@ module.exports = class TransactionStateManger extends ObservableStore {
     this._setTxStatus(txId, 'failed')
   }
 
-/* _____________________________________
-|                                      |
-|           PRIVATE METHODS            |
-|______________________________________*/
+//
+//           PRIVATE METHODS
+//
 
   //  Should find the tx in the tx list and
   //  update it.
@@ -225,6 +230,6 @@ module.exports = class TransactionStateManger extends ObservableStore {
   // Saves the new/updated txList.
   // Function is intended only for internal use
   _saveTxList (transactions) {
-    this.updateState({ transactions })
+    this.store.updateState({ transactions })
   }
 }

@@ -40,9 +40,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.txGasUtil = new TxGasUtil(this.provider)
 
     this.txStateManager = new TransactionStateManger({
-      initState: extend({
-        transactions: [],
-      }, opts.initState),
+      initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
     })
@@ -70,15 +68,12 @@ module.exports = class TransactionController extends EventEmitter {
       publishTransaction: this.query.sendRawTransaction,
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
       giveUpOnTransaction: (txId) => {
-        const msg = `Gave up submitting after 3500 blocks un-mined.`
-        this.setTxStatusFailed(txId, msg)
+        const err = new Error(`Gave up submitting after 3500 blocks un-mined.`)
+        this.setTxStatusFailed(txId, err)
       },
     })
 
-    this.txStateManager.subscribe(() => {
-      this.emit('update')
-      this.emit('updateBadge')
-    })
+    this.txStateManager.store.subscribe(() => this.emit('updateBadge'))
 
     this.pendingTxTracker.on('txWarning', this.txStateManager.updateTx.bind(this.txStateManager))
     this.pendingTxTracker.on('txFailed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
@@ -94,7 +89,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker.on('sync', this.pendingTxTracker.queryPendingTxs.bind(this.pendingTxTracker))
     // memstore is computed from a few different stores
     this._updateMemstore()
-    this.txStateManager.subscribe(() => this._updateMemstore())
+    this.txStateManager.store.subscribe(() => this._updateMemstore())
     this.networkStore.subscribe(() => this._updateMemstore())
     this.preferencesStore.subscribe(() => this._updateMemstore())
   }
@@ -250,10 +245,9 @@ module.exports = class TransactionController extends EventEmitter {
     this.txStateManager.updateTx(txMeta)
   }
 
-/* _____________________________________
-|                                      |
-|           PRIVATE METHODS            |
-|______________________________________*/
+//
+//           PRIVATE METHODS
+//
 
   _updateMemstore () {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
