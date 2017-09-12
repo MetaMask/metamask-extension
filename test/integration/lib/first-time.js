@@ -5,7 +5,7 @@ QUnit.module('first time usage')
 QUnit.test('render init screen', (assert) => {
   const done = assert.async()
   runFirstTimeUsageTest(assert).then(done).catch((err) => {
-    assert.notOk(err, 'Should not error')
+    assert.notOk(err, `Error was thrown: ${err.stack}`)
     done()
   })
 })
@@ -40,8 +40,6 @@ async function runFirstTimeUsageTest(assert, done) {
   }
 
   await wait()
-
-  throw new Error('bad and booshy')
 
   // Scroll through terms
   const title = app.find('h1').text()
