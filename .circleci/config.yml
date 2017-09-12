@@ -36,7 +36,7 @@ jobs:
       - save_cache:
           key: v1-deps-{{ checksum "package.json" }}
           paths:
-            - /tmp/metamask/node-modules
+            - /tmp/metamask/node_modules
 
   build:
       docker:
