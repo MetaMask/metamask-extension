@@ -25,14 +25,6 @@ const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 //   divider
 //   contentBox
 //   actionButtons
-const sectionDivider = h('div', {
-  style: {
-    height: '1px',
-    background: '#E7E7E7',
-    margin: 0,
-    marginTop: '18px',
-  },
-})
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(PendingTx)
 
@@ -199,14 +191,12 @@ PendingTx.prototype.render = function () {
           'USD',
         ]),
 
-        h('h3.flex-center.confirm-screen-send-memo', {}, [
-          txParams.memo || 'Fake memo',
-        ]),
+        h('div.flex-center.confirm-memo-wrapper', {}, h(
+          'h3.confirm-screen-send-memo', {}, txParams.memo || 'Fake memo'
+        )),
 
         // TODO: put this error message in the right place
         // props.error && h('span.error.flex-center', props.error),
-
-        sectionDivider,
 
         h('section.flex-row.flex-center.confirm-screen-row', {
         }, [

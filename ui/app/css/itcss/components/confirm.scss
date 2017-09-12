@@ -42,6 +42,10 @@
   margin-right: 10px;
 }
 
+.confirm-screen-wrapper > .confirm-memo-wrapper {
+  margin: 0;
+}
+
 .confirm-screen-wrapper > .confirm-screen-header {
   @media screen and (max-width: $break-small) {
     margin-left: 8px;
@@ -130,12 +134,18 @@
   text-align: center;
 }
 
+.confirm-memo-wrapper {
+  width: 100%;
+  border-bottom: 1px solid $gallery;
+}
+
 .confirm-screen-send-memo {
   color: $dusty-gray;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
   margin-top: 21px;
+  margin-bottom: 18px;
 }
 
 .confirm-screen-label {
@@ -209,5 +219,5 @@ section .confirm-screen-account-number,
 }
 
 .confirm-screen-row + .confirm-screen-row {
-  border-top: 1px solid #E7E7E7;
+  border-top: 1px solid $gallery;
 }
