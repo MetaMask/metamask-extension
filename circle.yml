@@ -8,8 +8,10 @@ dependencies:
   pre:
     - sudo apt-get update
     # get latest stable firefox
-    - sudo rm -rf `which firefox`
-    - sudo apt-get install firefox
+    - sudo dpkg -P firefox
+    - sudo apt-get clean
+    - sudo apt-get install -f firefox
     # get latest stable chrome
-    - sudo rm -rf `which google-chrome`
-    - sudo apt-get install google-chrome-stable
+    - sudo dpkg -P google-chrome
+    - sudo apt-get clean
+    - sudo apt-get install -f google-chrome-stable
