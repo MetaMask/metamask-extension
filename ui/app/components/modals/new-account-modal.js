@@ -37,7 +37,9 @@ NewAccountModal.prototype.render = function () {
         'New Account',
       ]),
 
-      h('div.modal-close-x', {}),
+      h('div.modal-close-x', {
+        onClick: this.props.hideModal,
+      }),
 
       h('div.new-account-modal-content', {}, [
         'Account Name',
@@ -49,11 +51,11 @@ NewAccountModal.prototype.render = function () {
         }, []),
       ]),
 
-      h('div.new-account-modal-content', {}, [
+      h('div.new-account-modal-content.after-input', {}, [
         'or',
       ]),
 
-      h('div.new-account-modal-content.import', {}, [
+      h('div.new-account-modal-content.after-input', {}, [
         'Import an account',
       ]),
 

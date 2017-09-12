@@ -421,7 +421,7 @@ function signTx (txData) {
       if (err) return dispatch(actions.displayWarning(err.message))
       dispatch(actions.hideWarning())
     })
-    dispatch(actions.showConfTxPage())
+    dispatch(actions.showConfTxPage({}))
   }
 }
 
@@ -626,10 +626,11 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage (transForward = true) {
+function showConfTxPage ({transForward = true, id}) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
-    transForward: transForward,
+    transForward,
+    id,
   }
 }
 

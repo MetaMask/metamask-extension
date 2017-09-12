@@ -61,6 +61,27 @@
   flex: 0 0 70px;
   align-items: stretch;
   justify-content: flex-start;
+
+  @media screen and (max-width: $break-small) {
+    padding: 0 1.3em .95em;
+  }
+
+  @media screen and (min-width: $break-large) {
+    // margin: 0 2.37em;
+  }
+}
+
+.tx-list-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($alto, .2);
+  }
+}
+
+.tx-list-pending-item-container {
+  cursor: pointer;
+  opacity: 0.5;
 }
 
 .tx-list-date-wrapper {

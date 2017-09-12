@@ -36,12 +36,6 @@ function startApp (metamaskState, accountManager, opts) {
     networkVersion: opts.networkVersion,
   })
 
-  // if unconfirmed txs, start on txConf page
-  const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.network)
-  if (unapprovedTxsAll.length > 0) {
-    store.dispatch(actions.showConfTxPage())
-  }
-
   accountManager.on('update', function (metamaskState) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })

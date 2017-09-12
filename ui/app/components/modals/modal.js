@@ -54,11 +54,13 @@ const MODALS = {
       width: '95%',
       top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      borderRadius: '4px',
     },
     laptopModalStyle: {
       width: '360px',
       top: 'calc(33% + 45px)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+      borderRadius: '4px',
     },
   },
 
