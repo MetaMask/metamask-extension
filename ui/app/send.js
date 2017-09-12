@@ -20,6 +20,7 @@ const {
 } = require('./actions')
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
 const { isHex, numericBalance } = require('./util')
+const { conversionUtil } = require('./conversion-util')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
@@ -666,11 +667,19 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(addToAddressBook(recipient, nickname))
 
+  const sendAmount = conversionUtil(this.state.newTx.amount, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    fromCurrency: this.props.currentCurrency,
+    toCurrency: 'ETH',
+    conversionRate: this.props.conversionRate,
+  })
+
   var txParams = {
     from: this.state.newTx.from,
     to: this.state.newTx.to,
 
-    value: this.state.newTx.amount.toString(16),
+    value: sendAmount,
 
     // New: gas will now be specified on this step
     gas: this.state.newTx.gas,
