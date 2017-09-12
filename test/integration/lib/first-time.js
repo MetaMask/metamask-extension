@@ -5,13 +5,11 @@ QUnit.module('first time usage')
 QUnit.test('render init screen', (assert) => {
   const done = assert.async()
   runFirstTimeUsageTest(assert).then(done).catch((err) => {
-    assert.notOk(err, 'Should not error')
+    assert.notOk(err, `Error was thrown: ${err.stack}`)
     done()
   })
 })
 
-<<<<<<< HEAD
-=======
 // QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
 //   if (failed > 0) {
 //     const app = $('iframe').contents()[0].documentElement
@@ -20,36 +18,29 @@ QUnit.test('render init screen', (assert) => {
 //   }
 // })
 
->>>>>>> 5c53bab... test - integration - drop testem for karma
 async function runFirstTimeUsageTest(assert, done) {
 
   await timeout()
 
   const app = $('#app-content .mock-app-root')
 
-  const recurseNotices = async () => {
+  // recurse notices
+  while (true) {
     const button = app.find('button')
     if (button.html() === 'Accept') {
+      // still notices to accept
       const termsPage = app.find('.markdown')[0]
       termsPage.scrollTop = termsPage.scrollHeight
       await timeout()
       button.click()
-<<<<<<< HEAD
-      await wait()
-      await recurseNotices()
-=======
       await timeout()
->>>>>>> 5c53bab... test - integration - drop testem for karma
     } else {
-      await wait()
+      // exit loop
+      break
     }
   }
 
-<<<<<<< HEAD
-  await recurseNotices()
-=======
   await timeout()
->>>>>>> 5c53bab... test - integration - drop testem for karma
 
   // Scroll through terms
   const title = app.find('h1').text()
