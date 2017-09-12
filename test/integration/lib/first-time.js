@@ -12,7 +12,7 @@ QUnit.test('render init screen', (assert) => {
 
 QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
   if (failed > 0) {
-    const app = $('iframe').contents()
+    const app = $('iframe').contents()[0].documentElement
     console.warn('Test failures - dumping DOM:')
     console.log(app.innerHTML)
   }
@@ -40,6 +40,8 @@ async function runFirstTimeUsageTest(assert, done) {
   }
 
   await wait()
+
+  throw new Error('bad and booshy')
 
   // Scroll through terms
   const title = app.find('h1').text()
