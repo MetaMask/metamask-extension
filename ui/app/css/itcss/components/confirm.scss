@@ -1,0 +1,223 @@
+.confirm-screen-container {
+  position: absolute;
+
+  @media screen and (max-width: 575px) {
+    margin-top: 35px;
+  }
+
+  @media screen and (min-width: 576px) {
+    margin-top: 6.9vh;
+  }
+}
+
+.confirm-screen-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 753px;
+  z-index: 100;
+  top: 5%;
+  font-family: 'DIN NEXT';
+  margin-left: 3.5%;
+  margin-right: 3.5%;
+  background: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  padding-top: 20px;
+  padding-bottom: 31px;
+
+  @media screen and (min-width: $break-large) {
+    width: 498px;
+  }
+}
+
+.confirm-screen-wrapper > h3,
+.confirm-screen-wrapper > div,
+.confirm-screen-wrapper > section {
+  margin-left: 23px; 
+  margin-right: 23px;
+}
+
+.confirm-screen-wrapper > .confirm-screen-total-box {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.confirm-screen-wrapper > .confirm-memo-wrapper {
+  margin: 0;
+}
+
+.confirm-screen-wrapper > .confirm-screen-header {
+  @media screen and (max-width: $break-small) {
+    margin-left: 8px;
+  }
+}
+
+.confirm-screen-header {
+  font-size: 26px;
+  position: relative;
+
+  @media screen and (max-width: $break-small) {
+   font-size: 22px;
+  }
+}
+
+.confirm-screen-title {
+  @media screen and (max-width: $break-small) {
+   margin-left: 22px;
+   margin-right: 8px;
+  }
+}
+
+.confirm-screen-back-button {
+  background: $white;
+  border: 1px solid $dusty-gray;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  color: $black;
+  padding: 6px 13px 7px 12px;
+  border-radius: 2px;
+  height: 30px;
+  width: 54px;
+
+  @media screen and (max-width: $break-small) {
+   margin-right: 12px;
+  }
+}
+
+.confirm-screen-account-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirm-screen-account-name, .confirm-screen-row-info {
+  font-size: 16px;
+  line-height: 24px;
+  color: $scorpion;
+  text-align: center;
+}
+
+.confirm-screen-account-number {
+  font-size: 10px;
+  line-height: 16px;
+  color: $dusty-gray;
+  text-align: center;
+}
+
+.confirm-screen-identicons {
+  margin-top: 48px;
+
+  i {
+    align-self: start;
+    margin: 20px 14px 0 14px;
+  }
+}
+
+.confirm-screen-sending-to-message {
+  text-align: center;
+  font-size: 16px;
+  margin-top: 30px;
+}
+
+.confirm-screen-send-amount {
+  font-size: 64px;
+  color: $scorpion;
+  margin-top: 12px;
+  line-height: 60px; 
+  text-align: center;
+  font-family: 'DIN NEXT Light';
+}
+
+.confirm-screen-send-amount-currency {
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.confirm-memo-wrapper {
+  width: 100%;
+  border-bottom: 1px solid $gallery;
+}
+
+.confirm-screen-send-memo {
+  color: $dusty-gray;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  margin-top: 21px;
+  margin-bottom: 18px;
+}
+
+.confirm-screen-label {
+  font-size: 18px; 
+  line-height: 25px;
+  color: $scorpion;
+  text-align: left;
+}
+
+section .confirm-screen-account-name,
+section .confirm-screen-account-number,
+.confirm-screen-row-info,
+.confirm-screen-row-detail {
+  text-align: left;
+}
+
+.confirm-screen-row {
+  margin-top: 15px;
+  margin-bottom: 11.5px;
+}
+
+.confirm-screen-row-detail {
+  font-size: 12px;
+  line-height: 16px;
+  color: $dusty-gray;
+}
+
+.confirm-screen-total-box {
+  background-color: $wild-sand;
+  border-radius: 8px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 22px 14px 22px;
+  margin-bottom: 10px;
+  margin-top: 13px;
+}
+
+.confirm-screen-confirm-button {
+  height: 62px;
+  width: 216.88px;
+  border-radius: 2px;
+  background-color: #02C9B1;
+  font-size: 16px;
+  color: $white;
+  text-align: center;
+  font-family: 'DIN NEXT';
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 23px;
+  border-width: 0;
+  box-shadow: none;
+}
+
+.btn-light.confirm-screen-cancel-button {
+  height: 62px;
+  width: 216.88px;
+  background: none;
+  border: none;
+  opacity: 1;
+  width: 8em;
+  font-family: 'DIN NEXT';
+  border-width: 0;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 16px;
+  box-shadow: none;
+}
+
+#pending-tx-form {
+  flex: 1 0 auto;
+}
+
+.confirm-screen-row + .confirm-screen-row {
+  border-top: 1px solid $gallery;
+}

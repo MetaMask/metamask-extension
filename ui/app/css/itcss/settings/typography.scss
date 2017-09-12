@@ -50,6 +50,20 @@
 }
 
 @font-face {
+  font-family: 'DIN NEXT';
+  src: url('/fonts/DIN NEXT/DIN NEXT W01 Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN NEXT Light';
+  src: url('/fonts/DIN NEXT/DIN NEXT W10 Light.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Lato';
   src: url('/fonts/Lato/Lato-Regular.ttf') format('truetype');
   font-weight: 400;
