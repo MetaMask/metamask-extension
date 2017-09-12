@@ -11,4 +11,4 @@ dependencies:
     - sudo apt-get install firefox
     - firefox_cmd=`which firefox`; sudo rm -f $firefox_cmd; sudo ln -s `which firefox.ubuntu` $firefox_cmd
     # get latest stable chrome
-    - sudo apt-get install google-chrome-stable
+    - sudo apt-get install chromium-browser
