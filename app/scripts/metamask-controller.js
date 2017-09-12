@@ -115,6 +115,12 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
 
+    // computed balances (accounting for pending transactions)
+    this.balancesController = new BalancesController({
+      ethStore: this.ethStore,
+      txController: this.txController,
+    })
+
     // notices
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,

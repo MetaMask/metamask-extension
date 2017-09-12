@@ -96,3 +96,4 @@ function generateBalanceCalcWith (transactions, providerStub = zeroBn) {
     getPendingTransactions,
   })
 }
+
