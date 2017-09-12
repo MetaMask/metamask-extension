@@ -40,7 +40,7 @@ jobs:
 
   build:
       docker:
-        - image: node:8-stretch-browsers
+        - image: circleci/node:8-stretch-browsers
       working_directory: /tmp/metamask
       steps:
         - run:
@@ -56,7 +56,7 @@ jobs:
 
   test:
       docker:
-        - image: node:8-stretch-browsers
+        - image: circleci/node:8-stretch-browsers
       working_directory: /tmp/metamask
       steps:
         - run:
