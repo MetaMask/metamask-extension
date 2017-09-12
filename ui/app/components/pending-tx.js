@@ -66,6 +66,8 @@ PendingTx.prototype.render = function () {
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
+  const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
+  const showRejectAll = props.unconfTxListLength > 1
 
   this.inputs = []
 
@@ -297,14 +299,6 @@ PendingTx.prototype.render = function () {
             margin: '14px 25px',
           },
         }, [
-
-
-          insufficientBalance ?
-            h('button.btn-green', {
-              onClick: props.buyEth,
-            }, 'Buy Ether')
-          : null,
-
           h('button', {
             onClick: (event) => {
               this.resetGasFields()
@@ -312,18 +306,30 @@ PendingTx.prototype.render = function () {
             },
           }, 'Reset'),
 
-          // Accept Button
-          h('input.confirm.btn-green', {
-            type: 'submit',
-            value: 'SUBMIT',
-            style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
-          }),
+          // Accept Button or Buy Button
+          insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
+            h('input.confirm.btn-green', {
+              type: 'submit',
+              value: 'SUBMIT',
+              style: { marginLeft: '10px' },
+              disabled: buyDisabled,
+            }),
 
           h('button.cancel.btn-red', {
             onClick: props.cancelTransaction,
           }, 'Reject'),
         ]),
+        showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
+          style: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            margin: '14px 25px',
+          },
+        }, [
+          h('button.cancel.btn-red', {
+            onClick: props.cancelAllTransactions,
+          }, 'Reject All'),
+        ]) : null,
       ]),
     ])
   )
