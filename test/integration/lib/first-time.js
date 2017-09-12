@@ -12,8 +12,9 @@ QUnit.test('render init screen', (assert) => {
 
 QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
   if (failed > 0) {
+    const app = $('iframe').contents()
     console.warn('Test failures - dumping DOM:')
-    console.log(document.documentElement.innerHTML)
+    console.log(app.innerHTML)
   }
 })
 
