@@ -40,26 +40,26 @@ TxList.prototype.render = function () {
       ]),
     ]),
 
-    this.renderTranstions(),
+    this.renderTransaction(),
 
   ])
 }
 
-TxList.prototype.renderTranstions = function () {
-  const { txsToRender } = this.props
+TxList.prototype.renderTransaction = function () {
+  const { txsToRender, conversionRate } = this.props
 
   return txsToRender.length
-    ? txsToRender.map((transaction) => this.renderTransactionListItem(transaction))
+    ? txsToRender.map((transaction) => this.renderTransactionListItem(transaction, conversionRate))
     : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
 }
 
 // TODO: Consider moving TxListItem into a separate component
-TxList.prototype.renderTransactionListItem = function (transaction) {
+TxList.prototype.renderTransactionListItem = function (transaction, conversionRate) {
   const props = {
     dateString: formatDate(transaction.time),
     address: transaction.txParams.to,
     transactionStatus: transaction.status,
-    transactionAmount: formatBalance(transaction.txParams.value, 6),
+    transactionAmount: transaction.txParams.value,
     transActionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
@@ -85,6 +85,7 @@ TxList.prototype.renderTransactionListItem = function (transaction) {
     transactionAmount,
     transactionHash,
     className: '.tx-list-item.tx-list-clickable',
+    conversionRate,
   }
 
   if (transactionStatus === 'unapproved') {

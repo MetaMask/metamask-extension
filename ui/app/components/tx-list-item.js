@@ -5,6 +5,8 @@ const classnames = require('classnames')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
+const { conversionUtil } = require('../conversion-util')
+
 module.exports = TxListItem
 
 inherits(TxListItem, Component)
@@ -27,7 +29,25 @@ TxListItem.prototype.render = function () {
     address,
     transactionAmount,
     className,
+    conversionRate,
   } = this.props
+
+  const totalInUSD = conversionUtil(transactionAmount, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: 'USD',
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+  const totalInETH = conversionUtil(transactionAmount, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: 'ETH',
+    conversionRate,
+    numberOfDecimals: 6,
+  })
 
   return h(`div${className || ''}`, {
     key: transActionId,
@@ -87,11 +107,11 @@ TxListItem.prototype.render = function () {
               'tx-list-value--confirmed': transactionStatus === 'confirmed'
             })
           },
-            transactionAmount
+            `${totalInETH} ETH`,
           ),
 
           h('span.tx-list-fiat-value', {}, [
-            '+ $300 USD',
+            `${totalInUSD} USD`,
           ]),
 
         ]),
