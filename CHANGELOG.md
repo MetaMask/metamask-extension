@@ -5,6 +5,7 @@
 - Add ability to export private keys as a file.
 - Add ability to export seed words as a file.
 - Changed state logs to a file download than a clipboard copy.
+- Add specific error for failed recipient address checksum.
 
 ## 3.10.0 2017-9-11
 
