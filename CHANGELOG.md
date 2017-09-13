@@ -6,6 +6,7 @@
 - Add ability to export seed words as a file.
 - Changed state logs to a file download than a clipboard copy.
 - Fix link to support center.
+- Warn users when a dapp proposes a high gas limit (90% of blockGasLimit or higher)
 
 ## 3.10.0 2017-9-11
 
