@@ -176,7 +176,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-    case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
       return extend(appState, {
         currentView: {
           name: 'createVault',
@@ -360,7 +360,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'confTx',
-          context: action.id ? indexForPending(state, action.id) : 0,
+          context: action.id ? indexForPending(state, action.id) : indexForLastPending(state),
         },
         transForward: action.transForward,
         warning: null,
@@ -638,4 +638,8 @@ function indexForPending (state, txId) {
   const match = unconfTxList.find((tx) => tx.id === txId)
   const index = unconfTxList.indexOf(match)
   return index
+}
+
+function indexForLastPending (state) {
+  return getUnconfActionList(state).length
 }
