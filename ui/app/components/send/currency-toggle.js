@@ -13,20 +13,20 @@ function CurrencyToggle () {
 const defaultCurrencies = [ 'ETH', 'USD' ]
 
 CurrencyToggle.prototype.renderToggles = function () {
-  const { onClick, currentCurrency } = this.props
+  const { onClick, activeCurrency } = this.props
   const [currencyA, currencyB] = this.props.currencies || defaultCurrencies
 
   return [
     h('span', {
       className: classnames('currency-toggle__item', {
-        'currency-toggle__item--selected': currencyA === currentCurrency,
+        'currency-toggle__item--selected': currencyA === activeCurrency,
       }),
       onClick: () => onClick(currencyA),
     }, [ currencyA ]),
     '<>',
     h('span', {
       className: classnames('currency-toggle__item', {
-        'currency-toggle__item--selected': currencyB === currentCurrency,
+        'currency-toggle__item--selected': currencyB === activeCurrency,
       }),
       onClick: () => onClick(currencyB),
     }, [ currencyB ]),

@@ -10,7 +10,6 @@ const GasFeeDisplay = require('./components/send/gas-fee-display')
 const { getSelectedIdentity } = require('./selectors')
 
 const {
-  setCurrentCurrency,
   showAccountsPage,
   backToAccountDetail,
   displayWarning,
@@ -35,7 +34,6 @@ function mapStateToProps (state) {
     network,
     addressBook,
     conversionRate,
-    currentCurrency,
     currentBlockGasLimit: blockGasLimit,
   } = state.metamask
   const { warning } = state.appState
@@ -49,7 +47,6 @@ function mapStateToProps (state) {
     network,
     addressBook,
     conversionRate,
-    currentCurrency,
     blockGasLimit,
     warning,
     selectedIdentity,
@@ -77,6 +74,7 @@ function SendTransactionScreen () {
       txData: null,
       memo: '',
     },
+    activeCurrency: 'USD', 
     tooltipIsOpen: false,
   }
 
@@ -84,7 +82,7 @@ function SendTransactionScreen () {
   this.closeTooltip = this.closeTooltip.bind(this)
   this.onSubmit = this.onSubmit.bind(this)
   this.recipientDidChange = this.recipientDidChange.bind(this)
-  this.setCurrentCurrency = this.setCurrentCurrency.bind(this)
+  this.setActiveCurrency = this.setActiveCurrency.bind(this)
   this.toggleTooltip = this.toggleTooltip.bind(this)
 }
 
@@ -98,12 +96,11 @@ SendTransactionScreen.prototype.render = function () {
     identities,
     addressBook,
     conversionRate,
-    currentCurrency,
   } = props
 
-  const { blockGasLimit, newTx } = this.state
+  const { blockGasLimit, newTx, activeCurrency } = this.state
   const { gas, gasPrice } = newTx
-
+  console.log(`activeCurrency`, activeCurrency);
   console.log({ selectedIdentity, identities })
   console.log('SendTransactionScreen state:', this.state)
 
@@ -238,8 +235,8 @@ SendTransactionScreen.prototype.render = function () {
           h('div.send-screen-amount-labels', {}, [
             h('span', {}, ['Amount']),
             h(CurrencyToggle, {
-              currentCurrency,
-              onClick: (newCurrency) => this.setCurrentCurrency(newCurrency),
+              activeCurrency,
+              onClick: (newCurrency) => this.setActiveCurrency(newCurrency),
             }), // holding on icon from design
           ]),
 
@@ -296,7 +293,7 @@ SendTransactionScreen.prototype.render = function () {
           // TODO: handle loading time when switching to USD
           h('div.large-input.send-screen-gas-input', {}, [
             h(GasFeeDisplay, {
-              currentCurrency,
+              activeCurrency,
               conversionRate,
               gas,
               gasPrice,
@@ -356,8 +353,8 @@ SendTransactionScreen.prototype.render = function () {
       // Buttons underneath card
       h('section.flex-column.flex-center', [
 
-        h('button.btn-light', {
-          onClick: this.onSubmit,
+        h('div.btn-light.send-screen-send-button', {
+          onClick: (event) => this.onSubmit(event),
           style: {
             marginTop: '8px',
             width: '8em',
@@ -603,8 +600,8 @@ SendTransactionScreen.prototype.closeTooltip = function () {
   this.setState({ tooltipIsOpen: false })
 }
 
-SendTransactionScreen.prototype.setCurrentCurrency = function (newCurrency) {
-  this.props.dispatch(setCurrentCurrency(newCurrency))
+SendTransactionScreen.prototype.setActiveCurrency = function (newCurrency) {
+  this.setState({ activeCurrency: newCurrency })
 }
 
 SendTransactionScreen.prototype.navigateToAccounts = function (event) {
@@ -624,7 +621,8 @@ SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickna
   })
 }
 
-SendTransactionScreen.prototype.onSubmit = function () {
+SendTransactionScreen.prototype.onSubmit = function (event) {
+  event.preventDefault()
   const state = this.state || {}
 
   // const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')

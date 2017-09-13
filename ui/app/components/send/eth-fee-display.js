@@ -13,7 +13,7 @@ function EthFeeDisplay () {
 
 EthFeeDisplay.prototype.render = function () {
   const {
-    currentCurrency,
+    activeCurrency,
     conversionRate,
     gas,
     gasPrice,
@@ -22,7 +22,7 @@ EthFeeDisplay.prototype.render = function () {
 
   return h(EthBalance, {
     value: getTxFeeBn(gas, gasPrice, blockGasLimit),
-    currentCurrency,
+    currentCurrency: activeCurrency,
     conversionRate,
     showFiat: false,
     hideTooltip: true,
