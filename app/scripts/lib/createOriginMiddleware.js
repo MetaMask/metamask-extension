@@ -3,7 +3,7 @@ module.exports = createOriginMiddleware
 
 function createOriginMiddleware({ origin }) {
   return function originMiddleware (req, res, next, end) {
-    req.origin = originDomain
+    req.origin = origin
     next()
   }
 }
