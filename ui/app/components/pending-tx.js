@@ -7,13 +7,11 @@ abiDecoder.addABI(abi)
 const inherits = require('util').inherits
 const actions = require('../actions')
 const clone = require('clone')
-const FiatValue = require('./fiat-value')
 const Identicon = require('./identicon')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
-const util = require('../util')
 const { conversionUtil } = require('../conversion-util')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
@@ -77,6 +75,26 @@ PendingTx.prototype.getTotal = function () {
   const amountBn = name === '_value'
     ? value
     : txParams.value
+<<<<<<< HEAD
+=======
+
+  const USD = conversionUtil(amountBn, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: 'USD',
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+  const ETH = conversionUtil(amountBn, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: 'ETH',
+    conversionRate,
+    numberOfDecimals: 6,
+  })
+>>>>>>> ea2e98c7... Lint fix.
 
   if (name === '_value') {
     const token = util.getContractAtAddress(txParams.to)

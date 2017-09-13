@@ -14,12 +14,12 @@ module.exports = AccountSelectionDropdown
 // TODO: hook up to state, connect to redux to clean up API
 // TODO: selectedAddress is not defined... should we use selected?
 AccountSelectionDropdown.prototype.render = function () {
-  const { selected, network, identities, style, dropdownWrapperStyle, menuItemStyles } = this.props
+  // const { selected } = this.props
+  const { network, identities, style, dropdownWrapperStyle, menuItemStyles } = this.props
 
   return h(AccountDropdowns, {
     enableAccountOptions: false,
     enableAccountsSelector: true,
-    selected: selectedAddress,
     network,
     identities,
     style: style || {},

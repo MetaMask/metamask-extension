@@ -13,7 +13,7 @@ module.exports = selectors
 
 function getSelectedAddress (state) {
   // TODO: accounts is not defined. Is it needed?
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const selectedAddress = state.metamask.selectedAddress // || Object.keys(accounts)[0]
 
   return selectedAddress
 }

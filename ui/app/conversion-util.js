@@ -24,7 +24,7 @@
 
 const BigNumber = require('bignumber.js')
 const R = require('ramda')
-const { stripHexPrefix } = require('ethereumjs-util')
+const { stripHexPrefix, BN } = require('ethereumjs-util')
 
 BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN,
@@ -44,7 +44,7 @@ const toBigNumber = {
   BN: n => new BigNumber(n.toString(16), 16),
 }
 const toNormalizedDenomination = {
-  WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER)
+  WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
 }
 const toSpecifiedDenomination = {
   WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER)
@@ -89,7 +89,7 @@ const converter = R.pipe(
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPropApplySetterMap('toNumericBase', baseChange),
   R.view(R.lensProp('value'))
-);
+)
 
 const conversionUtil = (value, {
   fromCurrency = null,
@@ -112,7 +112,7 @@ const conversionUtil = (value, {
   conversionRate,
   ethToUSDRate,
   value,
-});
+})
 
 module.exports = {
   conversionUtil,
