@@ -305,11 +305,7 @@ PendingTx.prototype.render = function () {
         // }, 'Reset'),
 
         // Accept Button
-        h('input.confirm-screen-confirm-button', {
-          type: 'submit',
-          value: 'CONFIRM',
-          // disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
-        }),
+        h('button.confirm-screen-confirm-button', ['CONFIRM']),
 
         // Cancel Button
         h('button.cancel.btn-light.confirm-screen-cancel-button', {}, 'CANCEL'),

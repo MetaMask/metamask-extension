@@ -28,9 +28,12 @@ function mapStateToProps (state) {
   // const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
+  const selectedToken = selectors.getSelectedToken(state)
+  const tokenExchangeRates = state.metamask.tokenExchangeRates
+  const pair = `${selectedToken.symbol.toLowerCase()}_eth`
+  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
   // const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
   // const identity = identities[selectedAddress]
-
   return {
     // sidebarOpen,
     selectedAddress,
@@ -39,8 +42,9 @@ function mapStateToProps (state) {
     identities,
     addressBook,
     conversionRate,
+    tokenExchangeRate,
     currentBlockGasLimit,
-    selectedToken: selectors.getSelectedToken(state),
+    selectedToken,
     // selectedToken: selectors.getSelectedToken(state),
     // identity,
     // network,
@@ -58,6 +62,7 @@ function mapDispatchToProps (dispatch) {
     signTokenTx: (tokenAddress, toAddress, amount, txData) => (
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
+    updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
     // showSidebar: () => { dispatch(actions.showSidebar()) },
     // hideSidebar: () => { dispatch(actions.hideSidebar()) },
     // showModal: (payload) => { dispatch(actions.showModal(payload)) },
@@ -71,13 +76,22 @@ function SendTokenScreen () {
   Component.call(this)
   this.state = {
     to: '',
-    amount: null,
+    amount: '',
     selectedCurrency: 'USD',
     isGasTooltipOpen: false,
     gasPrice: '0x5d21dba00',
     gasLimit: '0x7b0d',
     errors: {},
   }
+}
+
+SendTokenScreen.prototype.componentWillMount = function () {
+  const {
+    updateTokenExchangeRate,
+    selectedToken: { symbol },
+  } = this.props
+
+  updateTokenExchangeRate(symbol)
 }
 
 SendTokenScreen.prototype.validate = function () {
@@ -206,6 +220,7 @@ SendTokenScreen.prototype.renderAmountInput = function () {
   } = this.state
 
   const {
+    tokenExchangeRate,
     selectedToken: {symbol},
   } = this.props
 
@@ -217,8 +232,8 @@ SendTokenScreen.prototype.renderAmountInput = function () {
     h('div.send-screen-amount-labels', [
       h('span', ['Amount']),
       h(CurrencyToggle, {
-        currentCurrency: selectedCurrency,
-        currencies: [ symbol, 'USD' ],
+        currentCurrency: tokenExchangeRate ? selectedCurrency : 'USD',
+        currencies: tokenExchangeRate ? [ symbol, 'USD' ] : [],
         onClick: currency => this.setState({ selectedCurrency: currency }),
       }),
     ]),
@@ -249,6 +264,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
 
   const {
     conversionRate,
+    tokenExchangeRate,
     currentBlockGasLimit,
   } = this.props
 
@@ -274,6 +290,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
     h('div.large-input.send-screen-gas-input', [
       h(GasFeeDisplay, {
         conversionRate,
+        tokenExchangeRate,
         gasPrice,
         currentCurrency: selectedCurrency,
         gas: gasLimit,

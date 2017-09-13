@@ -229,6 +229,17 @@
   padding: 1px 4px;
 }
 
+.token-gas {
+  &__amount {
+    display: inline-block;
+    margin-right: 4px;
+  }
+
+  &__symbol {
+    display: inline-block;
+  }
+}
+
 .send-token {
   display: flex;
   flex-flow: column nowrap;

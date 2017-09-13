@@ -163,6 +163,8 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
+  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
+  updateTokenExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -1075,6 +1077,28 @@ function shapeShiftRequest (query, options, cb) {
     return shapShiftReq.send(jsonObj)
   } else {
     return shapShiftReq.send()
+  }
+}
+
+function updateTokenExchangeRate (token = '') {
+  const pair = `${token.toLowerCase()}_eth`
+
+  return dispatch => {
+    if (!token) {
+      return
+    }
+
+    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
+      if (!marketinfo.error) {
+        dispatch({
+          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
+          payload: {
+            pair,
+            marketinfo,
+          },
+        })
+      }
+    })
   }
 }
 

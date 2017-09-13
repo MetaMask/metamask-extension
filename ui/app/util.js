@@ -50,6 +50,7 @@ module.exports = {
   formatDate,
   bnMultiplyByFraction,
   getTxFeeBn,
+  shortenBalance,
 }
 
 function valuesFor (obj) {
