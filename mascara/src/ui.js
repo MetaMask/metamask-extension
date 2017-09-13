@@ -44,13 +44,18 @@ background.on('ready', (sw) => {
   background.removeListener('updatefound', connectApp)
   connectApp(sw)
 })
-background.on('updatefound', () => window.location.reload())
+background.on('updatefound', windowReload)
 
 background.startWorker()
 .then(() => {
   setTimeout(() => {
     const appContent = document.getElementById(`app-content`)
-    if (!appContent.children.length) window.location.reload()
+    if (!appContent.children.length) windowReload()
   }, 2000)
 })
 console.log('hello from MetaMascara ui!')
+
+function windowReload() {
+  if (window.METAMASK_SKIP_RELOAD) return
+  window.location.reload()
+}

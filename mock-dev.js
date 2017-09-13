@@ -96,7 +96,6 @@ function startApp(){
   const container = document.createElement('div')
   container.id = 'app-content'
   body.appendChild(container)
-  console.log('container', container)
 
   render(
     h('.super-dev-container', [
