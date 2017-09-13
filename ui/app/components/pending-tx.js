@@ -307,7 +307,7 @@ PendingTx.prototype.render = function () {
       ]),
 
       h('form#pending-tx-form.flex-column.flex-center', {
-        // onSubmit: this.onSubmit,
+        onSubmit: this.onSubmit,
       }, [
         // Reset Button
         // h('button', {

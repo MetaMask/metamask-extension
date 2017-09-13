@@ -241,7 +241,7 @@ SendTransactionScreen.prototype.render = function () {
           ]),
 
           h('input.large-input.send-screen-input', {
-            placeholder: `0 ${currentCurrency}`,
+            placeholder: `0 ${activeCurrency}`,
             type: 'number',
             onChange: (event) => {
               this.setState({
