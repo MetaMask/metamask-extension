@@ -53,6 +53,7 @@ PendingTx.prototype.render = function () {
   const gasBn = hexToBn(gas)
   const gasLimit = new BN(parseInt(blockGasLimit))
   const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
+  const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 18, 20)
   const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
@@ -67,7 +68,7 @@ PendingTx.prototype.render = function () {
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
-  const dangerousGasLimit = gasBn.gte(safeGasLimitBN)
+  const dangerousGasLimit = gasBn.gte(saferGasLimitBN)
   const gasLimitSpecified = txMeta.gasLimitSpecified
   const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
   const showRejectAll = props.unconfTxListLength > 1
