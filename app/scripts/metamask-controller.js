@@ -340,7 +340,7 @@ module.exports = class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
     if (this.blacklistController.checkForPhishing(originDomain)) {
-      console.log('MetaMask - sending phishing warning for', originDomain)
+      log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
     }
@@ -374,7 +374,7 @@ module.exports = class MetamaskController extends EventEmitter {
       dnode,
       outStream,
       (err) => {
-        if (err) console.error(err)
+        if (err) log.error(err)
       }
     )
     dnode.on('remote', (remote) => {
@@ -402,7 +402,7 @@ module.exports = class MetamaskController extends EventEmitter {
       providerStream,
       outStream,
       (err) => {
-        if (err) console.error(err)
+        if (err) log.error(err)
       }
     )
 
@@ -416,7 +416,7 @@ module.exports = class MetamaskController extends EventEmitter {
     function loggerMiddleware (req, res, next, end) {
       next((cb) => {
         if (res.error) {
-          console.error('Error in RPC response:\n', res)
+          log.error('Error in RPC response:\n', res)
         }
         if (req.isMetamaskInternal) return
         log.info(`RPC (${originDomain}):`, req, '->', res)
@@ -441,7 +441,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.publicConfigStore,
       outStream,
       (err) => {
-        if (err) console.error(err)
+        if (err) log.error(err)
       }
     )
   }
