@@ -49,7 +49,6 @@ ConfirmTxScreen.prototype.render = function () {
   var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
 
-
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
 

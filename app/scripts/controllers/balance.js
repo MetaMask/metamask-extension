@@ -1,6 +1,4 @@
 const ObservableStore = require('obs-store')
-const normalizeAddress = require('eth-sig-util').normalize
-const extend = require('xtend')
 const PendingBalanceCalculator = require('../lib/pending-balance-calculator')
 const BN = require('ethereumjs-util').BN
 
@@ -12,12 +10,11 @@ class BalanceController {
     this.ethStore = ethStore
     this.txController = txController
 
-    const initState = extend({
+    const initState = {
       ethBalance: undefined,
-    }, opts.initState)
+    }
     this.store = new ObservableStore(initState)
 
-    const { getBalance, getPendingTransactions } = opts
     this.balanceCalc = new PendingBalanceCalculator({
       getBalance: () => Promise.resolve(this._getBalance()),
       getPendingTransactions: this._getPendingTransactions.bind(this),
@@ -46,7 +43,7 @@ class BalanceController {
     const balances = store.accounts
     const entry = balances[this.address]
     const balance = entry.balance
-    return balance ? new BN(balance.substring(2), 16) : new BN(0)
+    return balance ? new BN(balance.substring(2), 16) : undefined
   }
 
   _getPendingTransactions () {

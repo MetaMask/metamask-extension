@@ -22,6 +22,8 @@ class PendingBalanceCalculator {
     const balance = results[0]
     const pending = results[1]
 
+    if (!balance) return undefined
+
     const pendingValue = pending.reduce((total, tx) => {
       return total.add(this.valueFor(tx))
     }, new BN(0))

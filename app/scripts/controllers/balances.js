@@ -1,5 +1,4 @@
 const ObservableStore = require('obs-store')
-const normalizeAddress = require('eth-sig-util').normalize
 const extend = require('xtend')
 const BalanceController = require('./balance')
 
@@ -14,8 +13,15 @@ class BalancesController {
       computedBalances: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
+    this.balances = {}
 
     this._initBalanceUpdating()
+  }
+
+  updateAllBalances () {
+    for (let address in this.balances) {
+      this.balances[address].updateBalance()
+    }
   }
 
   _initBalanceUpdating () {
@@ -50,6 +56,7 @@ class BalancesController {
       newState.computedBalances[address] = accountBalance
       this.store.updateState(newState)
     })
+    this.balances[address] = updater
     updater.updateBalance()
   }
 }

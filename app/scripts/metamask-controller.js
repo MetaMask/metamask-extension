@@ -121,6 +121,10 @@ module.exports = class MetamaskController extends EventEmitter {
       ethStore: this.ethStore,
       txController: this.txController,
     })
+    this.networkController.on('networkDidChange', () => {
+      this.balancesController.updateAllBalances()
+    })
+    this.balancesController.updateAllBalances()
 
     // notices
     this.noticeController = new NoticeController({
