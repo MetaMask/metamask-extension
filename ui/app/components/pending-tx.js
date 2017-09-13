@@ -4,14 +4,12 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../actions')
 const clone = require('clone')
-const FiatValue = require('./fiat-value')
 const Identicon = require('./identicon')
 const { setCurrentCurrency } = require('../actions')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
-const util = require('../util')
 const { conversionUtil } = require('../conversion-util')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
@@ -42,7 +40,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('USD'))
+    setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('USD')),
   }
 }
 
@@ -62,18 +60,14 @@ PendingTx.prototype.componentWillMount = function () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { blockGasLimit, conversionRate, identities } = props
+  const { conversionRate, identities } = props
 
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
-  // Account Details
-  const address = txParams.from || props.selectedAddress
-  const account = props.accounts[address]
-  const balance = account ? account.balance : '0x0'
-
   // recipient check
-  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
+  // TODO: need to do below validation
+  // const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
 
   // Gas
   const gas = txParams.gas
@@ -86,6 +80,7 @@ PendingTx.prototype.render = function () {
   const txFeeBn = gasBn.mul(gasPriceBn)
 
   // TODO: insufficient balance should be handled on send screen
+  // const balance = account ? account.balance : '0x0'
   // const maxCost = txFeeBn.add(amountBn)
   // const balanceBn = hexToBn(balance)
   // const insufficientBalance = balanceBn.lt(maxCost)
@@ -150,7 +145,7 @@ PendingTx.prototype.render = function () {
           h('button.confirm-screen-back-button', {}, 'BACK'),
 
           h('div.confirm-screen-title', {}, 'Confirm Transaction'),
-          
+
         ]),
 
         h('div.flex-row.flex-center.confirm-screen-identicons', {}, [
@@ -182,7 +177,7 @@ PendingTx.prototype.render = function () {
             ),
             h('span.confirm-screen-account-name', {}, toName),
             h('span.confirm-screen-account-number', {}, endOfToAddress),
-          ])
+          ]),
 
         ]),
 
@@ -190,9 +185,9 @@ PendingTx.prototype.render = function () {
           style: {
             textAlign: 'center',
             fontSize: '16px',
-          }
+          },
         }, [
-          `You're sending to Recipient ...${endOfToAddress}`
+          `You're sending to Recipient ...${endOfToAddress}`,
         ]),
 
         h('h3.flex-center.confirm-screen-send-amount', {}, [`$${totalInUSD}`]),

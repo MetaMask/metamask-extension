@@ -71,7 +71,7 @@ Network.prototype.render = function () {
             return h('.network-indicator', [
               h(NetworkDropdownIcon, {
                 backgroundColor: '#038789', // $blue-lagoon
-                nonSelectBackgroundColor: '#15afb2'
+                nonSelectBackgroundColor: '#15afb2',
               }),
               h('.network-name', {
                 style: {

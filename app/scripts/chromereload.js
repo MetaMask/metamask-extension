@@ -32,7 +32,7 @@
 
 window.LiveReloadOptions = { host: 'localhost' };
 
-(function e (t, n, r) { function s (o, u) { if (!n[o]) { if (!t[o]) { var a = typeof require === 'function' && require; if (!u && a) return a(o, !0); if (i) return i(o, !0); var f = new Error("Cannot find module '" + o + "'"); throw f.code = 'MODULE_NOT_FOUND', f } var l = n[o] = {exports: {}}; t[o][0].call(l.exports, function (e) { var n = t[o][1][e]; return s(n ? n : e) }, l, l.exports, e, t, n, r) } return n[o].exports } var i = typeof require === 'function' && require; for (var o = 0; o < r.length; o++)s(r[o]); return s })({1: [function (require, module, exports) {
+(function e (t, n, r) { function s (o, u) { if (!n[o]) { if (!t[o]) { var a = typeof require === 'function' && require; if (!u && a) return a(o, !0); if (i) return i(o, !0); var f = new Error("Cannot find module '" + o + "'"); throw f.code = 'MODULE_NOT_FOUND', f } var l = n[o] = {exports: {}}; t[o][0].call(l.exports, function (e) { var n = t[o][1][e]; return s(n || e) }, l, l.exports, e, t, n, r) } return n[o].exports } var i = typeof require === 'function' && require; for (var o = 0; o < r.length; o++)s(r[o]); return s })({1: [function (require, module, exports) {
   (function () {
     var Connector, PROTOCOL_6, PROTOCOL_7, Parser, Version, _ref
 
@@ -880,7 +880,7 @@ window.LiveReloadOptions = { host: 'localhost' };
 
       Reloader.prototype.reloadStylesheet = function (path) {
         var imported, link, links, match, style, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1
-        links = (function () {
+        links = function () {
           var _i, _len, _ref, _results
           _ref = this.document.getElementsByTagName('link')
           _results = []
@@ -891,7 +891,7 @@ window.LiveReloadOptions = { host: 'localhost' };
             }
           }
           return _results
-        }).call(this)
+        }.call(this)
         imported = []
         _ref = this.document.getElementsByTagName('style')
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {

@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const { addHexPrefix } = require('ethereumjs-util')
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')

@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
-const txHelper = require('./lib/tx-helper')
 global.log = require('loglevel')
 
 module.exports = launchMetamaskUi

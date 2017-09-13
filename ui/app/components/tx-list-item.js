@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const classnames = require('classnames')
-const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
 module.exports = TxListItem
@@ -70,9 +69,9 @@ TxListItem.prototype.render = function () {
           }, [
             h('span', {
               className: classnames('tx-list-status', {
-                'tx-list-status--rejected': transactionStatus === 'rejected'
-              })
-            }, 
+                'tx-list-status--rejected': transactionStatus === 'rejected',
+              }),
+            },
               transactionStatus,
             ),
           ]),
@@ -84,8 +83,8 @@ TxListItem.prototype.render = function () {
 
           h('span', {
             className: classnames('tx-list-value', {
-              'tx-list-value--confirmed': transactionStatus === 'confirmed'
-            })
+              'tx-list-value--confirmed': transactionStatus === 'confirmed',
+            }),
           },
             transactionAmount
           ),
@@ -96,6 +95,6 @@ TxListItem.prototype.render = function () {
 
         ]),
       ]),
-    ]) // holding on icon from design
+    ]), // holding on icon from design
   ])
 }

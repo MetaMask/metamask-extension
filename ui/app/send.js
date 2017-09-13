@@ -92,9 +92,7 @@ SendTransactionScreen.prototype.render = function () {
   const props = this.props
   const {
     selectedIdentity,
-    network,
     identities,
-    addressBook,
     conversionRate,
     currentCurrency,
   } = props
@@ -272,7 +270,7 @@ SendTransactionScreen.prototype.render = function () {
                   gasPrice,
                 },
               })
-            }
+            },
           }),
 
           h('div.send-screen-gas-labels', {}, [
@@ -306,7 +304,7 @@ SendTransactionScreen.prototype.render = function () {
               'Customize',
             ]),
           ]),
-          
+
         ]),
 
         h('div.send-screen-input-wrapper', {}, [

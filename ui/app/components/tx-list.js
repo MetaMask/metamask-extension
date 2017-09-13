@@ -19,7 +19,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id }))
+    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id })),
   }
 }
 
@@ -29,9 +29,6 @@ function TxList () {
 }
 
 TxList.prototype.render = function () {
-
-  const { txsToRender, showConfTxPage } = this.props
-
   return h('div.flex-column.tx-list-container', {}, [
 
     h('div.flex-row.tx-list-header-wrapper', [

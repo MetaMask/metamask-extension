@@ -27,7 +27,7 @@ function MetamaskInpageProvider (connectionStream) {
   )
 
   // ignore phishing warning message (handled elsewhere)
-  multiStream.ignoreStream('phishing') 
+  multiStream.ignoreStream('phishing')
 
   // connect to async provider
   const asyncProvider = self.asyncProvider = new StreamProvider()

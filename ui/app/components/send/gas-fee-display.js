@@ -38,7 +38,7 @@ GasFeeDisplay.prototype.render = function () {
         blockGasLimit,
       })
     default:
-      return h('noscript');
+      return h('noscript')
   }
 }
 

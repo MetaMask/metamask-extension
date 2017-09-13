@@ -19,7 +19,7 @@ AccountSelectionDropdown.prototype.render = function () {
   return h(AccountDropdowns, {
     enableAccountOptions: false,
     enableAccountsSelector: true,
-    selected: selectedAddress,
+    selected,
     network,
     identities,
     style: style || {},
