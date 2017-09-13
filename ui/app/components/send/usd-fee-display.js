@@ -13,7 +13,7 @@ function USDFeeDisplay () {
 
 USDFeeDisplay.prototype.render = function () {
   const {
-    currentCurrency,
+    activeCurrency,
     conversionRate,
     gas,
     gasPrice,
@@ -23,7 +23,7 @@ USDFeeDisplay.prototype.render = function () {
   return h(FiatValue, {
     value: getTxFeeBn(gas, gasPrice, blockGasLimit),
     conversionRate,
-    currentCurrency,
+    currentCurrency: activeCurrency,
     style: {
       color: '#5d5d5d',
       fontSize: '16px',

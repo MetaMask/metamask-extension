@@ -28,17 +28,17 @@ GasFeeDisplay.prototype.getTokenValue = function () {
 
 GasFeeDisplay.prototype.render = function () {
   const {
-    currentCurrency,
+    activeCurrency,
     conversionRate,
     gas,
     gasPrice,
     blockGasLimit,
   } = this.props
 
-  switch (currentCurrency) {
+  switch (activeCurrency) {
     case 'USD':
       return h(USDFeeDisplay, {
-        currentCurrency,
+        activeCurrency,
         conversionRate,
         gas,
         gasPrice,
@@ -46,7 +46,7 @@ GasFeeDisplay.prototype.render = function () {
       })
     case 'ETH':
       return h(EthFeeDisplay, {
-        currentCurrency,
+        activeCurrency,
         conversionRate,
         gas,
         gasPrice,
@@ -55,7 +55,7 @@ GasFeeDisplay.prototype.render = function () {
     default:
       return h('div.token-gas', [
         h('div.token-gas__amount', this.getTokenValue()),
-        h('div.token-gas__symbol', currentCurrency),
+        h('div.token-gas__symbol', activeCurrency),
       ])
   }
 }
