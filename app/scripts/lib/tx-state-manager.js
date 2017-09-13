@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
+const ethUtil = require('ethereumjs-util')
 const txStateHistoryHelper = require('./tx-state-history-helper')
 
 module.exports = class TransactionStateManger extends EventEmitter {
@@ -82,6 +83,14 @@ module.exports = class TransactionStateManger extends EventEmitter {
   }
 
   updateTx (txMeta) {
+    if (txMeta.txParams) {
+      Object.keys(txMeta.txParams).forEach((key) => {
+        let value = txMeta.txParams[key]
+        if (typeof value !== 'string') console.error(`${key}: ${value} in txParams is not a string`)
+        if (!ethUtil.isHexPrefixed(value)) console.error('is not hex prefixed, anything on txParams must be hex prefixed')
+      })
+    }
+
     // create txMeta snapshot for history
     const currentState = txStateHistoryHelper.snapshotFromTxMeta(txMeta)
     // recover previous tx state obj

@@ -212,7 +212,7 @@ module.exports = class TransactionController extends EventEmitter {
     const txParams = txMeta.txParams
     const fromAddress = txParams.from
     // add network/chain id
-    txParams.chainId = this.getChainId()
+    txParams.chainId = ethUtil.addHexPrefix(this.getChainId().toString(16))
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
     this.txStateManager.setTxStatusSigned(txMeta.id)
