@@ -52,7 +52,8 @@ PendingTx.prototype.render = function () {
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
   const gasLimit = new BN(parseInt(blockGasLimit))
-  const safeGasLimit = this.bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
+  const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
+  const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
@@ -66,6 +67,8 @@ PendingTx.prototype.render = function () {
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
+  const dangerousGasLimit = gasBn.gte(safeGasLimitBN)
+  const gasLimitSpecified = txMeta.gasLimitSpecified
   const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
   const showRejectAll = props.unconfTxListLength > 1
 
@@ -263,33 +266,44 @@ PendingTx.prototype.render = function () {
             text-transform: uppercase;
           }
         `),
+        h('.cell.row', {
+          style: {
+            textAlign: 'center',
+          },
+        }, [
+          txMeta.simulationFails ?
+            h('.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Transaction Error. Exception thrown in contract code.')
+          : null,
 
-        txMeta.simulationFails ?
-          h('.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Transaction Error. Exception thrown in contract code.')
-        : null,
+          !isValidAddress ?
+            h('.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+          : null,
 
-        !isValidAddress ?
-          h('.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
-        : null,
+          insufficientBalance ?
+            h('span.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Insufficient balance for transaction')
+          : null,
 
-        insufficientBalance ?
-          h('span.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Insufficient balance for transaction')
-        : null,
+          (dangerousGasLimit && gasLimitSpecified) ?
+            h('span.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Gas limit set dangerously high. Approving this transaction is likely to fail.')
+          : null,
+        ]),
+
 
         // send + cancel
         h('.flex-row.flex-space-around.conf-buttons', {
