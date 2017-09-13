@@ -434,6 +434,7 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.status = status
     this.emit(`${txMeta.id}:${status}`, txId)
+    this.emit(`${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
     }
