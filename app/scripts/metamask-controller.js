@@ -7,8 +7,12 @@ const ObservableStore = require('obs-store')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
+const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
 const createFilterMiddleware = require('eth-json-rpc-filters')
+const createOriginMiddleware = require('./lib/createOriginMiddleware')
+const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
+const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -26,8 +30,6 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
-const debounce = require('debounce')
-
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -384,11 +386,11 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  setupProviderConnection (outStream, originDomain) {
+  setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
-    engine.push(originMiddleware)
-    engine.push(loggerMiddleware)
+    engine.push(createOriginMiddleware({ origin }))
+    engine.push(createLoggerMiddleware({ origin }))
     engine.push(createFilterMiddleware({
       provider: this.provider,
       blockTracker: this.blockTracker,
@@ -405,35 +407,6 @@ module.exports = class MetamaskController extends EventEmitter {
         if (err) log.error(err)
       }
     )
-
-    // append dapp origin domain to request
-    function originMiddleware (req, res, next, end) {
-      req.origin = originDomain
-      next()
-    }
-
-    // log rpc activity
-    function loggerMiddleware (req, res, next, end) {
-      next((cb) => {
-        if (res.error) {
-          log.error('Error in RPC response:\n', res)
-        }
-        if (req.isMetamaskInternal) return
-        log.info(`RPC (${originDomain}):`, req, '->', res)
-        cb()
-      })
-    }
-
-    // forward requests to provider
-    function createProviderMiddleware({ provider }) {
-      return (req, res, next, end) => {
-        provider.sendAsync(req, (err, _res) => {
-          if (err) return end(err)
-          res.result = _res.result
-          end()
-        })
-      }
-    }
   }
 
   setupPublicConfig (outStream) {
