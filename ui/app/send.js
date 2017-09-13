@@ -21,6 +21,7 @@ const {
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
 const { isHex, numericBalance } = require('./util')
 const { conversionUtil } = require('./conversion-util')
+const BigNumber = require('bignumber.js')
 
 const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
@@ -243,7 +244,7 @@ SendTransactionScreen.prototype.render = function () {
           ]),
 
           h('input.large-input.send-screen-input', {
-            placeholder: '0 ETH',
+            placeholder: `0 ${currentCurrency}`,
             type: 'number',
             onChange: (event) => {
               this.setState({
@@ -667,14 +668,19 @@ SendTransactionScreen.prototype.onSubmit = function () {
 
   this.props.dispatch(addToAddressBook(recipient, nickname))
 
+  // TODO: need a clean way to integrate this into conversionUtil
+  const sendConversionRate = this.props.currentCurrency === 'ETH'
+    ? this.props.conversionRate
+    : new BigNumber(1.0).div(this.props.conversionRate)
+
   const sendAmount = conversionUtil(this.state.newTx.amount, {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
     fromCurrency: this.props.currentCurrency,
     toCurrency: 'ETH',
-    conversionRate: this.props.conversionRate,
+    conversionRate: sendConversionRate,
   })
-
+  
   var txParams = {
     from: this.state.newTx.from,
     to: this.state.newTx.to,
