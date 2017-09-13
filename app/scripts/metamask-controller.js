@@ -389,12 +389,16 @@ module.exports = class MetamaskController extends EventEmitter {
   setupProviderConnection (outStream, origin) {
     // setup json rpc engine stack
     const engine = new RpcEngine()
-    engine.push(createOriginMiddleware({ origin }))
-    engine.push(createLoggerMiddleware({ origin }))
-    engine.push(createFilterMiddleware({
+
+    // create filter polyfill middleware
+    const filterMiddleware = createFilterMiddleware({
       provider: this.provider,
       blockTracker: this.blockTracker,
-    }))
+    })
+
+    engine.push(createOriginMiddleware({ origin }))
+    engine.push(createLoggerMiddleware({ origin }))
+    engine.push(filterMiddleware)
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
@@ -404,6 +408,8 @@ module.exports = class MetamaskController extends EventEmitter {
       providerStream,
       outStream,
       (err) => {
+        // cleanup filter polyfill middleware
+        filterMiddleware.destroy()
         if (err) log.error(err)
       }
     )
