@@ -20,6 +20,7 @@ const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
+const BalancesController = require('./controllers/balances')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -174,6 +175,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.store.subscribe(this.sendUpdate.bind(this))
     this.ethStore.subscribe(this.sendUpdate.bind(this))
     this.txController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.balancesController.store.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
@@ -248,6 +250,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
+
     return extend(
       {
         isInitialized,
@@ -258,6 +261,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
+      this.balancesController.store.getState(),
       this.preferencesController.store.getState(),
       this.addressBookController.store.getState(),
       this.currencyController.store.getState(),
