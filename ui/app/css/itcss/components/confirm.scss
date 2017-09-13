@@ -4,6 +4,7 @@
 
   @media screen and (max-width: 575px) {
     margin-top: 35px;
+    width: 100%;
   }
 
   @media screen and (min-width: 576px) {
@@ -14,28 +15,19 @@
 .confirm-screen-wrapper {
   display: flex;
   flex-direction: column;
-  min-width: 320px;
-  min-height: 753px;
+  align-items: center;
   z-index: 100;
   top: 5%;
   font-family: 'DIN NEXT';
-  margin-left: 3.5%;
-  margin-right: 3.5%;
   background: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
-  padding-top: 20px;
-  padding-bottom: 31px;
+  // padding: 20px 24px 32px;
+  color: $scorpion;
+  width: 100%;
 
   @media screen and (min-width: $break-large) {
     width: 498px;
   }
-}
-
-.confirm-screen-wrapper > h3,
-.confirm-screen-wrapper > div,
-.confirm-screen-wrapper > section {
-  margin-left: 23px; 
-  margin-right: 23px;
 }
 
 .confirm-screen-wrapper > .confirm-screen-total-box {
@@ -48,6 +40,7 @@
 }
 
 .confirm-screen-wrapper > .confirm-screen-header {
+
   @media screen and (max-width: $break-small) {
     margin-left: 8px;
   }
@@ -56,23 +49,30 @@
 .confirm-screen-header {
   font-size: 26px;
   position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  width: 100%;
+  padding: 20px 24px 0;
 
   @media screen and (max-width: $break-small) {
-   font-size: 22px;
+    font-size: 22px;
   }
 }
 
 .confirm-screen-title {
+  line-height: 27px;
+
   @media screen and (max-width: $break-small) {
-   margin-left: 22px;
-   margin-right: 8px;
+    margin-left: 22px;
+    margin-right: 8px;
   }
 }
 
 .confirm-screen-back-button {
   background: $white;
   border: 1px solid $dusty-gray;
-  left: 0;
+  left: 24px;
   position: absolute;
   text-align: center;
   color: $black;
@@ -82,7 +82,7 @@
   width: 54px;
 
   @media screen and (max-width: $break-small) {
-   margin-right: 12px;
+    margin-right: 12px;
   }
 }
 
@@ -91,7 +91,12 @@
   flex-direction: column;
 }
 
-.confirm-screen-account-name, .confirm-screen-row-info {
+.confirm-screen-account-name {
+  margin-top: 12px;
+}
+
+.confirm-screen-account-name,
+.confirm-screen-row-info {
   font-size: 16px;
   line-height: 24px;
   color: $scorpion;
@@ -106,11 +111,11 @@
 }
 
 .confirm-screen-identicons {
-  margin-top: 48px;
+  margin-top: 24px;
 
   i {
     align-self: start;
-    margin: 20px 14px 0 14px;
+    margin: 42px 14px 0;
   }
 }
 
@@ -118,13 +123,14 @@
   text-align: center;
   font-size: 16px;
   margin-top: 30px;
+  font-family: 'DIN NEXT Light';
 }
 
 .confirm-screen-send-amount {
   font-size: 64px;
   color: $scorpion;
   margin-top: 12px;
-  line-height: 60px; 
+  line-height: 60px;
   text-align: center;
   font-family: 'DIN NEXT Light';
 }
@@ -136,8 +142,9 @@
 }
 
 .confirm-memo-wrapper {
+  min-height: 24px;
   width: 100%;
-  border-bottom: 1px solid $gallery;
+  border-bottom: 1px solid $alto;
 }
 
 .confirm-screen-send-memo {
@@ -147,11 +154,12 @@
   text-align: center;
   margin-top: 21px;
   margin-bottom: 18px;
+  font-family: 'DIN NEXT Light';
 }
 
 .confirm-screen-label {
-  font-size: 18px; 
-  line-height: 25px;
+  font-size: 18px;
+  line-height: 40px;
   color: $scorpion;
   text-align: left;
 }
@@ -163,32 +171,60 @@ section .confirm-screen-account-number,
   text-align: left;
 }
 
+.confirm-screen-rows {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  padding: 0 24px 32px;
+}
+
+.confirm-screen-section-column {
+  flex: .5;
+}
+
 .confirm-screen-row {
-  margin-top: 15px;
-  margin-bottom: 11.5px;
+  display: flex;
+  flex-flow: row nowrap;
+  border-bottom: 1px solid $alto;
+  width: calc(100% - 24px);
+  align-items: center;
+  padding: 12px 0;
+  margin: 0 12px;
 }
 
 .confirm-screen-row-detail {
   font-size: 12px;
   line-height: 16px;
   color: $dusty-gray;
+  font-family: 'DIN NEXT Light';
 }
 
 .confirm-screen-total-box {
   background-color: $wild-sand;
   border-radius: 8px;
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 22px 14px 22px;
-  margin-bottom: 10px;
+  padding: 22px 14px;
   margin-top: 13px;
+
+  .confirm-screen-label {
+    line-height: 18px;
+  }
+
+  .confirm-screen-row-detail {
+    color: $scorpion;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    line-height: 20px;
+    font-family: 'DIN NEXT Light';
+  }
 }
 
 .confirm-screen-confirm-button {
   height: 62px;
   width: 216.88px;
   border-radius: 2px;
-  background-color: #02C9B1;
+  background-color: #02c9b1;
   font-size: 16px;
   color: $white;
   text-align: center;
@@ -217,8 +253,4 @@ section .confirm-screen-account-number,
 
 #pending-tx-form {
   flex: 1 0 auto;
-}
-
-.confirm-screen-row + .confirm-screen-row {
-  border-top: 1px solid $gallery;
 }
