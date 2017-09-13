@@ -48,6 +48,7 @@ function mapDispatchToProps (dispatch) {
   return {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('USD')),
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
+    cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id }))
   }
 }
 
@@ -294,7 +295,7 @@ PendingTx.prototype.render = function () {
       ]),
 
       h('form#pending-tx-form.flex-column.flex-center', {
-        onSubmit: this.onSubmit,
+        // onSubmit: this.onSubmit,
       }, [
         // Reset Button
         // h('button', {
@@ -308,7 +309,9 @@ PendingTx.prototype.render = function () {
         h('button.confirm-screen-confirm-button', ['CONFIRM']),
 
         // Cancel Button
-        h('button.cancel.btn-light.confirm-screen-cancel-button', {}, 'CANCEL'),
+        h('div.cancel.btn-light.confirm-screen-cancel-button', {
+          onClick: (event) => this.cancel(event, txMeta),
+        }, 'CANCEL'),
       ]),
     ])
   )
@@ -354,12 +357,18 @@ PendingTx.prototype.onSubmit = function (event) {
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
   this.setState({ valid, submitting: true })
+
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
     this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
     this.setState({ submitting: false })
   }
+}
+
+PendingTx.prototype.cancel = function (event, txMeta) {
+  event.preventDefault()
+  this.props.cancelTransaction(txMeta)
 }
 
 PendingTx.prototype.checkValidity = function () {
