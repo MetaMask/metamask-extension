@@ -194,7 +194,6 @@ module.exports = actions
 var background = null
 function _setBackgroundConnection (backgroundConnection) {
   background = backgroundConnection
-  console.log({ background })
 }
 
 function goHome () {

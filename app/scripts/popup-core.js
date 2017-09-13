@@ -49,7 +49,6 @@ function setupControllerConnection (connectionStream, cb) {
   })
   connectionStream.pipe(accountManagerDnode).pipe(connectionStream)
   accountManagerDnode.once('remote', function (accountManager) {
-    console.log({ accountManager })
     // setup push events
     accountManager.on = eventEmitter.on.bind(eventEmitter)
     cb(null, accountManager)

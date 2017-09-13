@@ -1,12 +1,14 @@
 const Component = require('react').Component
 const { connect } = require('react-redux')
 const h = require('react-hyperscript')
+const abi = require('human-standard-token-abi')
+const abiDecoder = require('abi-decoder')
+abiDecoder.addABI(abi)
 const inherits = require('util').inherits
 const actions = require('../actions')
 const clone = require('clone')
 const FiatValue = require('./fiat-value')
 const Identicon = require('./identicon')
-const { setCurrentCurrency } = require('../actions')
 
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
@@ -33,16 +35,19 @@ function mapStateToProps (state) {
     conversionRate,
     identities,
   } = state.metamask
-
+  const accounts = state.metamask.accounts
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   return {
     conversionRate,
     identities,
+    selectedAddress,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('USD'))
+    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('USD')),
+    backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
   }
 }
 
@@ -54,258 +59,242 @@ function PendingTx () {
     txData: null,
     submitting: false,
   }
+  this.onSubmit = this.onSubmit.bind(this)
 }
 
 PendingTx.prototype.componentWillMount = function () {
   this.props.setCurrentCurrencyToUSD()
 }
 
-PendingTx.prototype.render = function () {
-  const props = this.props
-  const { blockGasLimit, conversionRate, identities } = props
-
+PendingTx.prototype.getTotal = function () {
+  const { conversionRate } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  const { params = [] } = decodedData || {}
+  const { name, value } = params[1] || {}
+  const amountBn = name === '_value'
+    ? new BN(value)
+    : hexToBn(txParams.value)
 
-  // Account Details
-  const address = txParams.from || props.selectedAddress
-  const account = props.accounts[address]
-  const balance = account ? account.balance : '0x0'
+  const USD = conversionUtil(amountBn, {
+    fromFormat: 'BN',
+    toCurrency: 'USD',
+    conversionRate,
+  })
+  const ETH = conversionUtil(amountBn, {
+    fromFormat: 'BN',
+    toCurrency: 'ETH',
+    conversionRate,
+  })
 
-  // recipient check
-  const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
+  return {
+    USD,
+    ETH,
+  }
+}
+
+PendingTx.prototype.getGasFee = function () {
+  const { conversionRate } = this.props
+  const txMeta = this.gatherTxMeta()
+  const txParams = txMeta.txParams || {}
 
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
-
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
 
-  const amountBn = hexToBn(txParams.value)
-
-  // TODO: insufficient balance should be handled on send screen
-  // const maxCost = txFeeBn.add(amountBn)
-  // const balanceBn = hexToBn(balance)
-  // const insufficientBalance = balanceBn.lt(maxCost)
-  const fromName = identities[txParams.from].name
-  const to = identities[txParams.to]
-  const toName = to ? to.name : ' '
-
-  const endOfFromAddress = txParams.from.slice(txParams.from.length - 4)
-  const endOfToAddress = txParams.to.slice(txParams.to.length - 4)
-
-  const gasFeeInUSD = conversionUtil(txFeeBn, {
+  const USD = conversionUtil(txFeeBn, {
     fromFormat: 'BN',
     fromCurrency: 'GWEI',
     toCurrency: 'USD',
     conversionRate,
   })
-  const gasFeeInETH = conversionUtil(txFeeBn, {
+  const ETH = conversionUtil(txFeeBn, {
     fromFormat: 'BN',
     fromCurrency: 'GWEI',
     toCurrency: 'ETH',
     conversionRate,
   })
 
-  const totalInUSD = conversionUtil(amountBn, {
-    fromFormat: 'BN',
-    toCurrency: 'USD',
-    conversionRate,
-  })
-  const totalInETH = conversionUtil(amountBn, {
-    fromFormat: 'BN',
-    toCurrency: 'ETH',
-    conversionRate,
-  })
+  return {
+    USD,
+    ETH,
+  }
+}
+
+PendingTx.prototype.getData = function () {
+  const { identities } = this.props
+  const txMeta = this.gatherTxMeta()
+  const txParams = txMeta.txParams || {}
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  const { name, params = [] } = decodedData || {}
+  const { type, value } = params[0] || {}
+  const { USD: gasFeeInUSD, ETH: gasFeeInETH } = this.getGasFee()
+  const { USD: totalInUSD, ETH: totalInETH } = this.getTotal()
+
+  if (name === 'transfer' && type === 'address') {
+    return {
+      from: {
+        address: txParams.from,
+        name: identities[txParams.from].name,
+      },
+      to: {
+        address: value,
+        name: identities[value] ? identities[value].name : 'New Recipient',
+      },
+      memo: txParams.memo || '',
+      gasFeeInUSD,
+      gasFeeInETH,
+      totalInUSD,
+      totalInETH,
+    }
+  } else {
+    return {
+      from: {
+        address: txParams.from,
+        name: identities[txParams.from].name,
+      },
+      to: {
+        address: txParams.to,
+        name: identities[txParams.to] ? identities[txParams.to].name : 'New Recipient',
+      },
+      memo: txParams.memo || '',
+      gasFeeInUSD,
+      gasFeeInETH,
+      totalInUSD,
+      totalInETH,
+    }
+  }
+}
+
+PendingTx.prototype.render = function () {
+  const { backToAccountDetail, selectedAddress } = this.props
+  const txMeta = this.gatherTxMeta()
+  const txParams = txMeta.txParams || {}
+
+  // recipient check
+  // const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
+
+  const {
+    from: {
+      address: fromAddress,
+      name: fromName,
+    },
+    to: {
+      address: toAddress,
+      name: toName,
+    },
+    memo,
+    gasFeeInUSD,
+    gasFeeInETH,
+    totalInUSD,
+    totalInETH,
+  } = this.getData()
 
   this.inputs = []
 
   return (
     h('div.flex-column.flex-grow.confirm-screen-container', {
-      style: {
-        // overflow: 'scroll',
-        minWidth: '355px', // TODO: maxWidth TBD, use home.html
-      },
+      style: { minWidth: '355px' },
     }, [
-
       // Main Send token Card
-      h('div.confirm-screen-wrapper.flex-column.flex-grow', {}, [
-
-        h('h3.flex-center.confirm-screen-header', {}, [
-
-          h('button.confirm-screen-back-button', {}, 'BACK'),
-
-          h('div.confirm-screen-title', {}, 'Confirm Transaction'),
-          
+      h('div.confirm-screen-wrapper.flex-column.flex-grow', [
+        h('h3.flex-center.confirm-screen-header', [
+          h('button.confirm-screen-back-button', {
+            onClick: () => backToAccountDetail(selectedAddress),
+          }, 'BACK'),
+          h('div.confirm-screen-title', 'Confirm Transaction'),
         ]),
-
-        h('div.flex-row.flex-center.confirm-screen-identicons', {}, [
-
-          h('div.confirm-screen-account-wrapper', {}, [
+        h('div.flex-row.flex-center.confirm-screen-identicons', [
+          h('div.confirm-screen-account-wrapper', [
             h(
               Identicon,
               {
-                address: txParams.from,
-                diameter: 64,
-                style: {},
+                address: fromAddress,
+                diameter: 100,
               },
             ),
-            h('span.confirm-screen-account-name', {}, fromName),
-            h('span.confirm-screen-account-number', {}, endOfFromAddress),
-
+            h('span.confirm-screen-account-name', fromName),
+            h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
           ]),
-
           h('i.fa.fa-arrow-right.fa-lg'),
-
-          h('div.confirm-screen-account-wrapper', {}, [
+          h('div.confirm-screen-account-wrapper', [
             h(
               Identicon,
               {
                 address: txParams.to,
-                diameter: 64,
-                style: {},
+                diameter: 100,
               },
             ),
-            h('span.confirm-screen-account-name', {}, toName),
-            h('span.confirm-screen-account-number', {}, endOfToAddress),
-          ])
-
+            h('span.confirm-screen-account-name', toName),
+            h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
+          ]),
         ]),
 
         h('h3.flex-center.confirm-screen-sending-to-message', {
           style: {
             textAlign: 'center',
             fontSize: '16px',
-          }
+          },
         }, [
-          `You're sending to Recipient ...${endOfToAddress}`
+          `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         ]),
 
-        h('h3.flex-center.confirm-screen-send-amount', {}, [`$${totalInUSD}`]),
-
-        h('h3.flex-center.confirm-screen-send-amount-currency', {}, [
-          'USD',
+        h('h3.flex-center.confirm-screen-send-amount', [`$${totalInUSD}`]),
+        h('h3.flex-center.confirm-screen-send-amount-currency', [ 'USD' ]),
+        h('div.flex-center.confirm-memo-wrapper', [
+          h('h3.confirm-screen-send-memo', [ memo ]),
         ]),
 
-        h('div.flex-center.confirm-memo-wrapper', {}, h(
-          'h3.confirm-screen-send-memo', {}, txParams.memo || 'Fake memo'
-        )),
-
-        // TODO: put this error message in the right place
-        // props.error && h('span.error.flex-center', props.error),
-
-        h('section.flex-row.flex-center.confirm-screen-row', {
-        }, [
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('span.confirm-screen-label', {}, [
-              'From',
+        h('div.confirm-screen-rows', [
+          h('section.flex-row.flex-center.confirm-screen-row', [
+            h('span.confirm-screen-label.confirm-screen-section-column', [ 'From' ]),
+            h('div.confirm-screen-section-column', [
+              h('div.confirm-screen-row-info', fromName),
+              h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
             ]),
           ]),
 
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('div.confirm-screen-row-info', {}, fromName),
-
-            h('div.confirm-screen-row-detail', {}, `...${endOfFromAddress}`),
-          ]),
-        ]),
-
-
-        h('section.flex-row.flex-center.confirm-screen-row', {
-        }, [
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('span.confirm-screen-label', {}, [
-              'To',
+          h('section.flex-row.flex-center.confirm-screen-row', [
+            h('span.confirm-screen-label.confirm-screen-section-column', [ 'To' ]),
+            h('div.confirm-screen-section-column', [
+              h('div.confirm-screen-row-info', toName),
+              h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
             ]),
           ]),
 
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('div.confirm-screen-row-info', {}, toName),
+          h('section.flex-row.flex-center.confirm-screen-row', [
+            h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
+            h('div.confirm-screen-section-column', [
+              h('div.confirm-screen-row-info', `$${gasFeeInUSD} USD`),
 
-            h('div.confirm-screen-row-detail', {}, `...${endOfToAddress}`),
-          ]),
-        ]),
-
-
-        h('section.flex-row.flex-center.confirm-screen-row', {
-        }, [
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('span.confirm-screen-label', {}, [
-              'Gas Fee',
+              h('div.confirm-screen-row-detail', `${gasFeeInETH} ETH`),
             ]),
           ]),
 
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('div.confirm-screen-row-info', {}, `$${gasFeeInUSD} USD`),
 
-            h('div.confirm-screen-row-detail', {}, `${gasFeeInETH} ETH`),
-          ]),
-        ]),
-
-
-        h('section.flex-row.flex-center.confirm-screen-total-box ', {}, [
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('span.confirm-screen-label', {}, [
-              'Total ',
+          h('section.flex-row.flex-center.confirm-screen-total-box ', [
+            h('div.confirm-screen-section-column', [
+              h('span.confirm-screen-label', [ 'Total ' ]),
+              h('div.confirm-screen-total-box__subtitle', [ 'Amount + Gas' ]),
             ]),
 
-            h('div', {
-              style: {
-                textAlign: 'left',
-                fontSize: '8px',
-              },
-            }, [
-              'Amount + Gas',
+            h('div.confirm-screen-section-column', [
+              h('div.confirm-screen-row-info', `$${totalInUSD} USD`),
+              h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
             ]),
-
-          ]),
-
-          h('div', {
-            style: {
-              width: '50%',
-            },
-          }, [
-            h('div.confirm-screen-row-info', {}, `$${totalInUSD} USD`),
-
-            h('div.confirm-screen-row-detail', {}, `${totalInETH} ETH`),
-          ]),
+        ]),
         ]),
 
-      ]), // end of container
+      ]),
 
       h('form#pending-tx-form.flex-column.flex-center', {
-        onSubmit: this.onSubmit.bind(this),
+        onSubmit: this.onSubmit,
       }, [
         // Reset Button
         // h('button', {
@@ -325,7 +314,7 @@ PendingTx.prototype.render = function () {
         // Cancel Button
         h('button.cancel.btn-light.confirm-screen-cancel-button', {}, 'CANCEL'),
       ]),
-    ]) // end of minwidth wrapper
+    ])
   )
 }
 
