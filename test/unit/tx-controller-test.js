@@ -59,6 +59,19 @@ describe('Transaction Controller', function () {
     })
   })
 
+  describe('#getPendingTxCount', function () {
+    it('should return the number of pending txs', function () {
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 2, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {} },
+      ])
+      const pendingTxCount = txController.getPendingTxCount()
+      assert.equal(pendingTxCount, 3, 'should be 3')
+    })
+  })
+
+
   describe('#newUnapprovedTransaction', function () {
     let stub, txMeta, txParams
     beforeEach(function () {
