@@ -296,7 +296,7 @@ PendingTx.prototype.render = function () {
             }, 'Insufficient balance for transaction')
           : null,
 
-          (dangerousGasLimit && gasLimitSpecified) ?
+          (dangerousGasLimit && !gasLimitSpecified) ?
             h('span.error', {
               style: {
                 fontSize: '0.9em',
