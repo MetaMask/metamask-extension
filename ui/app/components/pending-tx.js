@@ -33,7 +33,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit } = props
+  const { currentCurrency, blockGasLimit, computedBalances } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -42,8 +42,8 @@ PendingTx.prototype.render = function () {
   // Account Details
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
-  const account = props.accounts[address]
-  const balance = account ? account.balance : '0x0'
+  const account = computedBalances[address]
+  const balance = account ? account.ethBalance : '0x0'
 
   // recipient check
   const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
