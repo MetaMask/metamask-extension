@@ -346,23 +346,23 @@ module.exports = class MetamaskController extends EventEmitter {
     }
 
     // setup multiplexing
-    const mx = setupMultiplex(connectionStream)
+    const mux = setupMultiplex(connectionStream)
     // connect features
-    this.setupProviderConnection(mx.createStream('provider'), originDomain)
-    this.setupPublicConfig(mx.createStream('publicConfig'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
-    const mx = setupMultiplex(connectionStream)
+    const mux = setupMultiplex(connectionStream)
     // connect features
-    this.setupControllerConnection(mx.createStream('controller'))
-    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+    this.setupControllerConnection(mux.createStream('controller'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
   }
 
   sendPhishingWarning (connectionStream, hostname) {
-    const mx = setupMultiplex(connectionStream)
-    const phishingStream = mx.createStream('phishing')
+    const mux = setupMultiplex(connectionStream)
+    const phishingStream = mux.createStream('phishing')
     phishingStream.write({ hostname })
   }
 
