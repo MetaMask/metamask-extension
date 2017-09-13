@@ -28,10 +28,10 @@
     "deleteNotice": "node notices/notice-delete.js",
     "mascara": "node ./mascara/example/server",
     "testMascara": "npm run buildMascara && karma start test/mascara.conf.js",
-    "buildMascara": "npm run buildMascaraUi && npm run buildMascaraBackground && npm run buildMascaraTests",
-    "buildMascaraUi": "browserify mascara/test/test-ui.js -o mascara/test/ui-bundle.js",
-    "buildMascaraBackground": "browserify mascara/src/background.js -o mascara/test/background.js",
-    "buildMascaraTests": "browserify test/integration/lib/first-time.js -o mascara/test/test-bundle.js"
+    "buildMascara": "mkdir -p dist/mascara && npm run buildMascaraUi && npm run buildMascaraBackground && npm run buildMascaraTests",
+    "buildMascaraUi": "browserify mascara/test/test-ui.js -o dist/mascara/ui.js",
+    "buildMascaraBackground": "browserify mascara/src/background.js -o dist/mascara/background.js",
+    "buildMascaraTests": "browserify test/integration/lib/first-time.js -o dist/mascara/tests.js"
   },
   "browserify": {
     "transform": [
