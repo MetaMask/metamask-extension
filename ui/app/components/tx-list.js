@@ -49,7 +49,7 @@ TxList.prototype.renderTransaction = function () {
   const { txsToRender, conversionRate } = this.props
 
   return txsToRender.length
-    ? txsToRender.map((transaction) => this.renderTransactionListItem(transaction, conversionRate))
+    ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate))
     : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
 }
 
@@ -77,7 +77,8 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const { showConfTxPage } = this.props
 
   const opts = {
-    key: transactionHash,
+    key: transActionId,
+    txParams: transaction.txParams,
     transactionStatus,
     transActionId,
     dateString,

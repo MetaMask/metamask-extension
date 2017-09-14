@@ -66,11 +66,11 @@
   flex-flow: column nowrap;
 
   @media screen and (max-width: $break-small) {
-    padding: 0 1.3em .95em;
+    padding: 0 1.3em;
   }
 
   @media screen and (min-width: $break-large) {
-    // margin: 0 2.37em;
+    padding-bottom: 12px;
   }
 }
 
@@ -79,16 +79,12 @@
 
   &:hover {
     background: rgba($alto, .2);
-
-    .tx-list-details-wrapper {
-      background: transparent;
-    }
   }
 }
 
 .tx-list-pending-item-container {
   cursor: pointer;
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .tx-list-date-wrapper {
@@ -96,11 +92,10 @@
 
   @media screen and (max-width: $break-small) {
     margin-top: 6px;
-    margin-bottom: 20px;
   }
 
   @media screen and (min-width: $break-large) {
-    margin-top: 13px;
+    margin-top: 12px;
   }
 }
 
@@ -149,6 +144,7 @@
 .tx-list-account-and-status-wrapper {
   display: flex;
   flex: 1 1 auto;
+  flex-flow: row wrap;
   width: 0;
 
   @media screen and (max-width: $break-small) {
@@ -184,7 +180,8 @@
     text-transform: capitalize;
   }
 
-  .tx-list-status--rejected {
+  .tx-list-status--rejected,
+  .tx-list-status--failed {
     color: $monzo;
   }
 }
@@ -238,7 +235,6 @@
 .tx-list-details-wrapper {
   overflow: hidden;
   flex: 0 0 35%;
-  background: rgba($white, .8);
 }
 
 .tx-list-value {

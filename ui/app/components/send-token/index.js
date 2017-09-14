@@ -141,6 +141,7 @@ SendTokenScreen.prototype.submit = function () {
     hideWarning,
     addToAddressBook,
     signTokenTx,
+    selectedToken,
   } = this.props
 
   const { nickname = ' ' } = identities[to] || {}
@@ -161,7 +162,11 @@ SendTokenScreen.prototype.submit = function () {
     gasPrice: gasPrice,
   }
 
-  signTokenTx(selectedTokenAddress, to, Number(amount).toString(16), txParams)
+  const { decimals } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  const sendAmount = Number(amount * multiplier).toString(16)
+
+  signTokenTx(selectedTokenAddress, to, sendAmount, txParams)
 }
 
 SendTokenScreen.prototype.renderToAddressInput = function () {

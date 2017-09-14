@@ -1,36 +1,59 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const classnames = require('classnames')
+const abi = require('human-standard-token-abi')
+const abiDecoder = require('abi-decoder')
+abiDecoder.addABI(abi)
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
 const { conversionUtil } = require('../conversion-util')
 
-module.exports = TxListItem
+module.exports = connect(mapStateToProps)(TxListItem)
+
+function mapStateToProps (state) {
+  return {
+    tokens: state.metamask.tokens,
+  }
+}
 
 inherits(TxListItem, Component)
 function TxListItem () {
   Component.call(this)
 }
 
-TxListItem.prototype.getAddressText = function (address) {
-  return address
-    ? `${address.slice(0, 10)}...${address.slice(-4)}`
-    : 'Contract Published'
+TxListItem.prototype.getAddressText = function () {
+  const {
+    address,
+    txParams = {},
+  } = this.props
+
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  const { name: txDataName, params = [] } = decodedData || {}
+  const { value } = params[0] || {}
+
+  switch (txDataName) {
+    case 'transfer':
+      return `${value.slice(0, 10)}...${value.slice(-4)}`
+    default:
+      return address
+        ? `${address.slice(0, 10)}...${address.slice(-4)}`
+        : 'Contract Published'
+  }
 }
 
-TxListItem.prototype.render = function () {
+TxListItem.prototype.getSendEtherTotal = function () {
   const {
-    transactionStatus,
-    onClick,
-    transActionId,
-    dateString,
-    address,
     transactionAmount,
-    className,
     conversionRate,
+    address,
   } = this.props
+
+  if (!address) {
+    return {}
+  }
 
   const totalInUSD = conversionUtil(transactionAmount, {
     fromNumericBase: 'hex',
@@ -48,6 +71,50 @@ TxListItem.prototype.render = function () {
     conversionRate,
     numberOfDecimals: 6,
   })
+
+  return {
+    total: `${totalInETH} ETH`,
+    fiatTotal: `${totalInUSD} USD`,
+  }
+}
+
+TxListItem.prototype.getSendTokenTotal = function () {
+  const {
+    txParams = {},
+    tokens,
+  } = this.props
+
+  const toAddress = txParams.to
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  const { params = [] } = decodedData || {}
+  const { value } = params[1] || {}
+  const { decimals, symbol } = tokens.filter(({ address }) => address === toAddress)[0] || {}
+
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  const total = Number(value / multiplier)
+
+  return {
+    total: `${total} ${symbol}`,
+  }
+}
+
+TxListItem.prototype.render = function () {
+  const {
+    transactionStatus,
+    onClick,
+    transActionId,
+    dateString,
+    address,
+    className,
+    txParams = {},
+  } = this.props
+
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  const { name: txDataName } = decodedData || {}
+
+  const { total, fiatTotal } = txDataName === 'transfer'
+    ? this.getSendTokenTotal()
+    : this.getSendEtherTotal()
 
   return h(`div${className || ''}`, {
     key: transActionId,
@@ -90,9 +157,10 @@ TxListItem.prototype.render = function () {
           }, [
             h('span', {
               className: classnames('tx-list-status', {
-                'tx-list-status--rejected': transactionStatus === 'rejected'
-              })
-            }, 
+                'tx-list-status--rejected': transactionStatus === 'rejected',
+                'tx-list-status--failed': transactionStatus === 'failed',
+              }),
+            },
               transactionStatus,
             ),
           ]),
@@ -104,15 +172,11 @@ TxListItem.prototype.render = function () {
 
           h('span', {
             className: classnames('tx-list-value', {
-              'tx-list-value--confirmed': transactionStatus === 'confirmed'
-            })
-          },
-            `${totalInETH} ETH`,
-          ),
+              'tx-list-value--confirmed': transactionStatus === 'confirmed',
+            }),
+          }, total),
 
-          h('span.tx-list-fiat-value', {}, [
-            `${totalInUSD} USD`,
-          ]),
+          h('span.tx-list-fiat-value', fiatTotal),
 
         ]),
       ]),
