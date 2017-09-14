@@ -48,7 +48,7 @@ function mapDispatchToProps (dispatch) {
   return {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('USD')),
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
-    cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id }))
+    cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
   }
 }
 
@@ -77,28 +77,55 @@ PendingTx.prototype.getTotal = function () {
   const amountBn = name === '_value'
     ? value
     : txParams.value
-  
-  const USD = conversionUtil(amountBn, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromCurrency: 'ETH',
-    toCurrency: 'USD',
-    numberOfDecimals: 2,
-    conversionRate,
-  })
-  const ETH = conversionUtil(amountBn, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromCurrency: 'ETH',
-    toCurrency: 'ETH',
-    conversionRate,
-    numberOfDecimals: 6,
-  })
 
-  return {
-    USD,
-    ETH,
+  if (name === '_value') {
+    const token = util.getContractAtAddress(txParams.to)
+    token.symbol().then(symbol => console.log({symbol}))
+    console.log({txParams, txMeta, decodedData, token})
+    const USD = conversionUtil(amountBn, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromCurrency: 'ETH',
+      toCurrency: 'USD',
+      numberOfDecimals: 2,
+      conversionRate,
+    })
+    const ETH = conversionUtil(amountBn, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromCurrency: 'ETH',
+      toCurrency: 'ETH',
+      conversionRate,
+      numberOfDecimals: 6,
+    })
+    return {
+      USD,
+      ETH,
+    }
+  } else {
+    const USD = conversionUtil(amountBn, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromCurrency: 'ETH',
+      toCurrency: 'USD',
+      numberOfDecimals: 2,
+      conversionRate,
+    })
+    const ETH = conversionUtil(amountBn, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromCurrency: 'ETH',
+      toCurrency: 'ETH',
+      conversionRate,
+      numberOfDecimals: 6,
+    })
+
+    return {
+      USD,
+      ETH,
+    }
   }
+
 }
 
 PendingTx.prototype.getGasFee = function () {
@@ -400,12 +427,11 @@ PendingTx.prototype.getFormEl = function () {
 
 // After a customizable state value has been updated,
 PendingTx.prototype.gatherTxMeta = function () {
-  log.debug(`pending-tx gatherTxMeta`)
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
 
-  log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
+  // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData
 }
 

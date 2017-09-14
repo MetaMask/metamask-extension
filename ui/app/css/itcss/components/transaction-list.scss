@@ -39,7 +39,7 @@
   }
 
   .tx-list-container::-webkit-scrollbar {
-    display: none; 
+    display: none;
   }
 }
 
@@ -58,9 +58,12 @@
 }
 
 .tx-list-item-wrapper {
-  flex: 0 0 70px;
+  flex: 1 1 auto;
+  width: 0;
   align-items: stretch;
   justify-content: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
 
   @media screen and (max-width: $break-small) {
     padding: 0 1.3em .95em;
@@ -76,6 +79,10 @@
 
   &:hover {
     background: rgba($alto, .2);
+
+    .tx-list-details-wrapper {
+      background: transparent;
+    }
   }
 }
 
@@ -101,6 +108,30 @@
   align-items: stretch;
   margin-bottom: 4px;
   margin-top: 2px;
+  flex: 1 0 auto;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+
+  @media screen and (max-width: $break-small) {
+    font-size: 12px;
+
+    .tx-list-status {
+      font-size: 12px !important;
+    }
+
+    .tx-list-account {
+      font-size: 14px !important;
+    }
+
+    .tx-list-value {
+      font-size: 14px;
+    }
+
+    .tx-list-fiat-value {
+      font-size: 12px;
+    }
+  }
 }
 
 .tx-list-date {
@@ -117,7 +148,8 @@
 
 .tx-list-account-and-status-wrapper {
   display: flex;
-  flex: 8 8 auto;
+  flex: 1 1 auto;
+  width: 0;
 
   @media screen and (max-width: $break-small) {
     flex-direction: column;
@@ -159,9 +191,12 @@
 
 .tx-list-item {
   border-top: 1px solid rgb(231, 231, 231);
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
 
   @media screen and (max-width: $break-small) {
-    margin: 0 1.3em .95em;
+    // margin: 0 1.3em .95em; !important
   }
 
   @media screen and (min-width: $break-large) {
@@ -200,9 +235,25 @@
   }
 }
 
+.tx-list-details-wrapper {
+  overflow: hidden;
+  flex: 0 0 35%;
+  background: rgba($white, .8);
+}
+
 .tx-list-value {
   font-size: 16px;
   text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tx-list-fiat-value {
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .tx-list-value--confirmed {

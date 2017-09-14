@@ -1,3 +1,4 @@
+const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const vreme = new (require('vreme'))()
@@ -51,6 +52,7 @@ module.exports = {
   bnMultiplyByFraction,
   getTxFeeBn,
   shortenBalance,
+  getContractAtAddress,
 }
 
 function valuesFor (obj) {
@@ -243,4 +245,8 @@ function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimi
   const txFeeBn = gasBn.mul(gasPriceBn)
 
   return txFeeBn.toString(16)
+}
+
+function getContractAtAddress (tokenAddress) {
+  return global.eth.contract(abi).at(tokenAddress)
 }

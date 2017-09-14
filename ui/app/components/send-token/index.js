@@ -292,7 +292,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
         conversionRate,
         tokenExchangeRate,
         gasPrice,
-        currentCurrency: selectedCurrency,
+        activeCurrency: selectedCurrency,
         gas: gasLimit,
         blockGasLimit: currentBlockGasLimit,
       }),
