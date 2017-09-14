@@ -94,7 +94,7 @@ startApp()
 function startApp(){
   const body = document.body
   const container = document.createElement('div')
-  container.id = 'app-content'
+  container.id = 'test-container'
   body.appendChild(container)
 
   render(
@@ -112,7 +112,7 @@ function startApp(){
 
       h(Selector, { actions, selectedKey: selectedView, states, store }),
 
-      h('.mock-app-root', {
+      h('#app-content', {
         style: {
           height: '500px',
           width: '360px',

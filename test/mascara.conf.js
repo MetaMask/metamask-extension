@@ -10,5 +10,8 @@ module.exports = function(config) {
   settings.files.push({ pattern: 'dist/mascara/background.js', watched: false, included: false, served: true }),
   settings.proxies['/background.js'] = '/base/dist/mascara/background.js'
 
+  // use this to keep the browser open for debugging
+  settings.browserNoActivityTimeout = 10000000
+
   config.set(settings)
 }

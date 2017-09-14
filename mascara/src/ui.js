@@ -2,8 +2,6 @@ const injectCss = require('inject-css')
 const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
 const SwStream = require('sw-stream/lib/sw-stream.js')
 const MetaMaskUiCss = require('../../ui/css')
-const setupIframe = require('./lib/setup-iframe.js')
-const MetamaskInpageProvider = require('../../app/scripts/lib/inpage-provider.js')
 const MetamascaraPlatform = require('../../app/scripts/platforms/window')
 const startPopup = require('../../app/scripts/popup-core')
 
@@ -32,7 +30,7 @@ const connectApp = function (readSw) {
     serviceWorker: background.controller,
     context: name,
   })
-  startPopup({container, connectionStream}, (err, store) => {
+  startPopup({ container, connectionStream }, (err, store) => {
     if (err) return displayCriticalError(err)
     store.subscribe(() => {
       const state = store.getState()
@@ -49,8 +47,8 @@ background.on('updatefound', windowReload)
 background.startWorker()
 .then(() => {
   setTimeout(() => {
-    const appContent = document.getElementById(`app-content`)
-    if (!appContent.children.length) windowReload()
+    const container = document.getElementById(`app-content`)
+    if (!container.children.length) windowReload()
   }, 2000)
 })
 console.log('hello from MetaMascara ui!')

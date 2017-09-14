@@ -10,19 +10,11 @@ QUnit.test('render init screen', (assert) => {
   })
 })
 
-// QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
-//   if (failed > 0) {
-//     const app = $('iframe').contents()[0].documentElement
-//     console.warn('Test failures - dumping DOM:')
-//     console.log(app.innerHTML)
-//   }
-// })
-
 async function runFirstTimeUsageTest(assert, done) {
 
   await timeout()
 
-  const app = $('#app-content .mock-app-root')
+  const app = $('#app-content')
 
   // recurse notices
   while (true) {
@@ -32,10 +24,12 @@ async function runFirstTimeUsageTest(assert, done) {
       const termsPage = app.find('.markdown')[0]
       termsPage.scrollTop = termsPage.scrollHeight
       await timeout()
+      console.log('Clearing notice')
       button.click()
       await timeout()
     } else {
       // exit loop
+      console.log('No more notices...')
       break
     }
   }

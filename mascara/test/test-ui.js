@@ -7,7 +7,6 @@ window.addEventListener('load', () => {
   const container = document.createElement('div')
   container.id = 'app-content'
   body.appendChild(container)
-
   // start ui
   require('../src/ui.js')
 })
