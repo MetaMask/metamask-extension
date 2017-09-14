@@ -97,6 +97,7 @@ function currentTxView (opts) {
       return h(PendingPersonalMsg, opts)
     }
   }
+  return h(Loading, { isLoading: true })
 }
 
 ConfirmTxScreen.prototype.buyEth = function (address, event) {
