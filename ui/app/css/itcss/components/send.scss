@@ -7,10 +7,10 @@
   @media screen and (max-width: $break-small) {
     width: 100%;
     overflow-y: auto;
+  }
 
-    section {
-      flex: 0 0 auto;
-    }
+  section {
+    flex: 0 0 auto;
   }
 }
 
@@ -24,13 +24,13 @@
   display: flex;
   flex-flow: column nowrap;
   width: 498px;
+  flex: 1 0 auto;
 
   @media screen and (max-width: $break-small) {
     top: 0;
     width: 100%;
     box-shadow: none;
     padding: 12px;
-    flex: 1 0 auto;
   }
 }
 
@@ -314,12 +314,26 @@
     align-items: center;
     display: flex;
     flex-flow: column nowrap;
+    flex: 1 0 auto;
+
+    @media screen and (max-width: $break-small) {
+      top: 0;
+      width: 100%;
+      box-shadow: none;
+      padding: 12px;
+    }
   }
 
   .identicon {
     position: absolute;
     top: -35px;
     z-index: 25;
+
+    @media screen and (max-width: $break-small) {
+      position: relative;
+      top: 0;
+      flex: 0 0 auto;
+    }
   }
 
   &__title {
@@ -334,6 +348,7 @@
     margin-top: 10px;
     font-size: 14px;
     line-height: 24px;
+    text-align: center;
   }
 
   &__token-balance {
@@ -346,6 +361,11 @@
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+    flex: 0 0 auto;
+
+    @media screen and (max-width: $break-small) {
+      margin-top: 24px;
+    }
 
     button {
       width: 163px;
