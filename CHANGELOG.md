@@ -2,12 +2,34 @@
 
 ## Current Master
 
+- Add ability to export private keys as a file.
+- Add ability to export seed words as a file.
+- Changed state logs to a file download than a clipboard copy.
+- Fix link to support center.
+
+## 3.10.0 2017-9-11
+
+- Readded loose keyring label back into the account list.
+- Remove cryptonator from chrome permissions.
+- Add info on token contract addresses.
+- Add validation preventing users from inputting their own addresses as token tracking addresses.
+- Added button to reject all transactions (thanks to davidp94! https://github.com/davidp94)
+
+## 3.9.13 2017-9-8
+
+- Changed the way we initialize the inpage provider to fix a bug affecting some developers.
+
+## 3.9.12 2017-9-6
+
+- Fix bug that prevented Web3 1.0 compatibility
 - Make eth_sign deprecation warning less noisy
+- Add useful link to eth_sign deprecation warning.
 - Fix bug with network version serialization over synchronous RPC
 - Add MetaMask version to state logs.
 - Add the total amount of tokens when multiple tokens are added under the token list
 - Use HTTPS links for Etherscan.
 - Update Support center link to new one with HTTPS.
+- Make web3 deprecation notice more useful by linking to a descriptive article.
 
 ## 3.9.11 2017-8-24
 

@@ -85,40 +85,47 @@ actions.update = function(stateName) {
 var css = MetaMaskUiCss()
 injectCss(css)
 
-const container = document.querySelector('#app-content')
-
 // parse opts
 var store = configureStore(firstState)
 
 // start app
-render(
-  h('.super-dev-container', [
+startApp()
 
-    h('button', {
-      onClick: (ev) => {
-        ev.preventDefault()
-        store.dispatch(actions.update('terms'))
-      },
-      style: {
-        margin: '19px 19px 0px 19px',
-      },
-    }, 'Reset State'),
+function startApp(){
+  const body = document.body
+  const container = document.createElement('div')
+  container.id = 'app-content'
+  body.appendChild(container)
+  console.log('container', container)
 
-    h(Selector, { actions, selectedKey: selectedView, states, store }),
+  render(
+    h('.super-dev-container', [
 
-    h('.mock-app-root', {
-      style: {
-        height: '500px',
-        width: '360px',
-        boxShadow: 'grey 0px 2px 9px',
-        margin: '20px',
-      },
-    }, [
-      h(Root, {
-       store: store,
-      }),
-    ]),
+      h('button', {
+        onClick: (ev) => {
+          ev.preventDefault()
+          store.dispatch(actions.update('terms'))
+        },
+        style: {
+          margin: '19px 19px 0px 19px',
+        },
+      }, 'Reset State'),
 
-  ]
-), container)
+      h(Selector, { actions, selectedKey: selectedView, states, store }),
 
+      h('.mock-app-root', {
+        style: {
+          height: '500px',
+          width: '360px',
+          boxShadow: 'grey 0px 2px 9px',
+          margin: '20px',
+        },
+      }, [
+        h(Root, {
+         store: store,
+        }),
+      ]),
+
+    ]
+  ), container)
+}

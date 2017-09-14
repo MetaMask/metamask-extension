@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const exportAsFile = require('../util').exportAsFile
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
@@ -20,20 +21,21 @@ function mapStateToProps (state) {
 }
 
 ExportAccountView.prototype.render = function () {
-  var state = this.props
-  var accountDetail = state.accountDetail
+  const state = this.props
+  const accountDetail = state.accountDetail
+  const nickname = state.identities[state.address].name
 
   if (!accountDetail) return h('div')
-  var accountExport = accountDetail.accountExport
+  const accountExport = accountDetail.accountExport
 
-  var notExporting = accountExport === 'none'
-  var exportRequested = accountExport === 'requested'
-  var accountExported = accountExport === 'completed'
+  const notExporting = accountExport === 'none'
+  const exportRequested = accountExport === 'requested'
+  const accountExported = accountExport === 'completed'
 
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    var warning = `Export private keys at your own risk.`
+    const warning = `Export private keys at your own risk.`
     return (
       h('div', {
         style: {
@@ -89,6 +91,8 @@ ExportAccountView.prototype.render = function () {
   }
 
   if (accountExported) {
+    const plainKey = ethUtil.stripHexPrefix(accountDetail.privateKey)
+
     return h('div.privateKey', {
       style: {
         margin: '0 20px',
@@ -105,10 +109,16 @@ ExportAccountView.prototype.render = function () {
         onClick: function (event) {
           copyToClipboard(ethUtil.stripHexPrefix(accountDetail.privateKey))
         },
-      }, ethUtil.stripHexPrefix(accountDetail.privateKey)),
+      }, plainKey),
       h('button', {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
       }, 'Done'),
+      h('button', {
+        style: {
+          marginLeft: '10px',
+        },
+        onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
+      }, 'Save as File'),
     ])
   }
 }
@@ -117,6 +127,6 @@ ExportAccountView.prototype.onExportKeyPress = function (event) {
   if (event.key !== 'Enter') return
   event.preventDefault()
 
-  var input = document.getElementById('exportAccount').value
+  const input = document.getElementById('exportAccount').value
   this.props.dispatch(actions.exportAccount(input, this.props.address))
 }

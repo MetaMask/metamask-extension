@@ -5,7 +5,8 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const infuraCurrencies = require('./infura-conversion.json').symbols
 const validUrl = require('valid-url')
-const copyToClipboard = require('copy-to-clipboard')
+const exportAsFile = require('./util').exportAsFile
+
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -110,9 +111,9 @@ ConfigScreen.prototype.render = function () {
                 alignSelf: 'center',
               },
               onClick (event) {
-                copyToClipboard(window.logState())
+                exportAsFile('MetaMask State Logs', window.logState())
               },
-            }, 'Copy State Logs'),
+            }, 'Download State Logs'),
           ]),
 
           h('hr.horizontal-line'),

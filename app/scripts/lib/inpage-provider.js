@@ -40,29 +40,36 @@ function MetamaskInpageProvider (connectionStream) {
   // start and stop polling to unblock first block lock
 
   self.idMap = {}
-  // handle sendAsync requests via asyncProvider
-  self.sendAsync = function (payload, cb) {
-    // rewrite request ids
-    var request = eachJsonMessage(payload, (message) => {
-      var newId = createRandomId()
-      self.idMap[newId] = message.id
-      message.id = newId
+}
+
+// handle sendAsync requests via asyncProvider
+// also remap ids inbound and outbound
+MetamaskInpageProvider.prototype.sendAsync = function (payload, cb) {
+  const self = this
+
+  // rewrite request ids
+  const request = eachJsonMessage(payload, (_message) => {
+    const message = Object.assign({}, _message)
+    const newId = createRandomId()
+    self.idMap[newId] = message.id
+    message.id = newId
+    return message
+  })
+
+  // forward to asyncProvider
+  self.asyncProvider.sendAsync(request, (err, _res) => {
+    if (err) return cb(err)
+    // transform messages to original ids
+    const res = eachJsonMessage(_res, (message) => {
+      const oldId = self.idMap[message.id]
+      delete self.idMap[message.id]
+      message.id = oldId
       return message
     })
-    // forward to asyncProvider
-    asyncProvider.sendAsync(request, function (err, res) {
-      if (err) return cb(err)
-      // transform messages to original ids
-      eachJsonMessage(res, (message) => {
-        var oldId = self.idMap[message.id]
-        delete self.idMap[message.id]
-        message.id = oldId
-        return message
-      })
-      cb(null, res)
-    })
-  }
+    cb(null, res)
+  })
 }
+
 
 MetamaskInpageProvider.prototype.send = function (payload) {
   const self = this
@@ -107,10 +114,6 @@ MetamaskInpageProvider.prototype.send = function (payload) {
     jsonrpc: payload.jsonrpc,
     result: result,
   }
-}
-
-MetamaskInpageProvider.prototype.sendAsync = function () {
-  throw new Error('MetamaskInpageProvider - sendAsync not overwritten')
 }
 
 MetamaskInpageProvider.prototype.isConnected = function () {
