@@ -400,15 +400,16 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   this.props.dispatch(addToAddressBook(recipient, nickname))
 
   // TODO: need a clean way to integrate this into conversionUtil
-  const sendConversionRate = this.props.currentCurrency === 'ETH'
+  const sendConversionRate = state.activeCurrency === 'ETH'
     ? this.props.conversionRate
     : new BigNumber(1.0).div(this.props.conversionRate)
 
   const sendAmount = conversionUtil(this.state.newTx.amount, {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
-    fromCurrency: this.props.currentCurrency,
+    fromCurrency: state.activeCurrency,
     toCurrency: 'ETH',
+    toDenomination: 'WEI',
     conversionRate: sendConversionRate,
   })
   
