@@ -3,7 +3,7 @@ machine:
     version: 8.1.4
 test:
   override:
-    - "npm run ci"
+    - "npm test"
 dependencies:
   pre:
     - sudo apt-get update
