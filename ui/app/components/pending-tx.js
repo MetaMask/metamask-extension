@@ -88,6 +88,7 @@ PendingTx.prototype.getTotal = function () {
       fromCurrency: 'ETH',
       toCurrency: 'USD',
       numberOfDecimals: 2,
+      fromDenomination: 'WEI',
       conversionRate,
     })
     const ETH = conversionUtil(amountBn, {
@@ -95,6 +96,7 @@ PendingTx.prototype.getTotal = function () {
       toNumericBase: 'dec',
       fromCurrency: 'ETH',
       toCurrency: 'ETH',
+      fromDenomination: 'WEI',
       conversionRate,
       numberOfDecimals: 6,
     })
@@ -109,6 +111,7 @@ PendingTx.prototype.getTotal = function () {
       fromCurrency: 'ETH',
       toCurrency: 'USD',
       numberOfDecimals: 2,
+      fromDenomination: 'WEI',
       conversionRate,
     })
     const ETH = conversionUtil(amountBn, {
@@ -116,6 +119,7 @@ PendingTx.prototype.getTotal = function () {
       toNumericBase: 'dec',
       fromCurrency: 'ETH',
       toCurrency: 'ETH',
+      fromDenomination: 'WEI',
       conversionRate,
       numberOfDecimals: 6,
     })

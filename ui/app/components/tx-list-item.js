@@ -60,6 +60,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
     toNumericBase: 'dec',
     fromCurrency: 'ETH',
     toCurrency: 'USD',
+    fromDenomination: 'WEI',
     numberOfDecimals: 2,
     conversionRate,
   })
@@ -68,6 +69,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
     toNumericBase: 'dec',
     fromCurrency: 'ETH',
     toCurrency: 'ETH',
+    fromDenomination: 'WEI',
     conversionRate,
     numberOfDecimals: 6,
   })
