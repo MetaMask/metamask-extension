@@ -1,11 +1,7 @@
 .send-screen-wrapper {
   display: flex;
-  flex-direction: column;
-  min-width: 320px;
-  min-height: 500px;
-  z-index: $send-card-z-index;
-  position: absolute;
-  top: 5%;
+  flex-flow: column nowrap;
+  z-index: 25;
   font-family: 'DIN OT';
 
   @media screen and (max-width: $break-small) {
@@ -14,14 +10,15 @@
 }
 
 .send-screen-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: 3.5%;
-  margin-right: 3.5%;
-  background: $white;
+  background-color: #fff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  padding: 46px 40.5px 26px;
+  position: relative;
+  top: -26px;
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 498px;
 }
 
 /* Send Screen */
@@ -36,16 +33,38 @@
 }
 
 .send-eth-icon {
-  border-radius: 25px;
-  width: 45px;
-  height: 45px;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
   border: 1px solid $alto;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, .2);
+  position: absolute;
+  top: -35px;
+  z-index: 25;
+  padding: 4px;
+  background-color: $white;
 }
 
 .send-screen-input-wrapper {
   width: 95%;
   position: relative;
+
+  .fa-bolt {
+    padding-right: 4px;
+  }
+
+  .large-input {
+    border: 1px solid $dusty-gray;
+    border-radius: 4px;
+    margin: 4px 0 20px;
+    font-size: 16px;
+    line-height: 22.4px;
+    font-family: "DIN OT";
+  }
+
+  .send-screen-gas-input {
+    border: 1px solid transparent;
+  }
 
   &__error-message {
     display: none;
@@ -240,6 +259,26 @@
   }
 }
 
+.send-screen {
+  &__title {
+    color: $scorpion;
+    font-size: 18px;
+    line-height: 29px;
+  }
+
+  &__subtitle {
+    margin: 10px 0 20px;
+    font-size: 14px;
+    line-height: 24px;
+  }
+
+  &__send-button,
+  &__cancel-button {
+    width: 163px;
+    text-align: center;
+  }
+}
+
 .send-token {
   display: flex;
   flex-flow: column nowrap;
@@ -292,25 +331,6 @@
 
     button {
       width: 163px;
-    }
-  }
-
-  .send-screen-input-wrapper {
-    .fa-bolt {
-      padding-right: 4px;
-    }
-
-    .large-input {
-      border: 1px solid $dusty-gray;
-      border-radius: 4px;
-      margin: 4px 0 20px;
-      font-size: 16px;
-      line-height: 22.4px;
-      font-family: "DIN OT";
-    }
-
-    .send-screen-gas-input {
-      border: 1px solid transparent;
     }
   }
 }

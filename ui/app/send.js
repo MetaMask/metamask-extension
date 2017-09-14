@@ -91,52 +91,34 @@ SendTransactionScreen.prototype.render = function () {
 
   const props = this.props
   const {
-    selectedIdentity,
-    network,
-    identities,
-    addressBook,
+    // selectedIdentity,
+    // network,
+    // identities,
+    // addressBook,
     conversionRate,
   } = props
 
   const { blockGasLimit, newTx, activeCurrency } = this.state
   const { gas, gasPrice } = newTx
-  console.log(`activeCurrency`, activeCurrency);
-  console.log({ selectedIdentity, identities })
-  console.log('SendTransactionScreen state:', this.state)
+  // console.log(`activeCurrency`, activeCurrency)
+  // console.log({ selectedIdentity, identities })
+  // console.log('SendTransactionScreen state:', this.state)
 
   return (
 
-    h('div.send-screen-wrapper', {
-      style: {},
-    }, [
-
+    h('div.send-screen-wrapper', [
       // Main Send token Card
-      h('div.send-screen-card', {
-        style: {},
-      }, [
+      h('div.send-screen-card', [
 
-        h('img.send-eth-icon', {
-          src: '../images/eth_logo.svg',
-          style: {},
-        }),
+        h('img.send-eth-icon', { src: '../images/eth_logo.svg' }),
 
-        h('div', {}, [
-          'Send',
-        ]),
+        h('div.send-screen__title', 'Send'),
 
-        h('div', {
-          style: {
-            textAlign: 'center',
-          },
-        }, [
-          'Send Ethereum to anyone with an Ethereum account',
-        ]),
+        h('div.send-screen__subtitle', 'Send Ethereum to anyone with an Ethereum account'),
 
-        h('div.send-screen-input-wrapper', {}, [
+        h('div.send-screen-input-wrapper', [
 
-          h('div', {}, [
-            'From:',
-          ]),
+          h('div', 'From:'),
 
           h('input.large-input.send-screen-input', {
             list: 'accounts',
@@ -151,10 +133,9 @@ SendTransactionScreen.prototype.render = function () {
                 },
               })
             },
-          }, [
-          ]),
+          }),
 
-          h('datalist#accounts', {}, [
+          h('datalist#accounts', [
             Object.keys(props.identities).map((key) => {
               const identity = props.identities[key]
               return h('option', {
@@ -167,11 +148,9 @@ SendTransactionScreen.prototype.render = function () {
 
         ]),
 
-        h('div.send-screen-input-wrapper', {}, [
+        h('div.send-screen-input-wrapper', [
 
-          h('div', {}, [
-            'To:',
-          ]),
+          h('div', 'To:'),
 
           h('input.large-input.send-screen-input', {
             name: 'address',
@@ -187,10 +166,9 @@ SendTransactionScreen.prototype.render = function () {
                 },
               })
             },
-          }, [
-          ]),
+          }),
 
-          h('datalist#addresses', {}, [
+          h('datalist#addresses', [
             // Corresponds to the addresses owned.
             Object.entries(props.identities).map(([key, { address, name }]) => {
               return h('option', {
@@ -230,10 +208,10 @@ SendTransactionScreen.prototype.render = function () {
 
         ]),
 
-        h('div.send-screen-input-wrapper', {}, [
+        h('div.send-screen-input-wrapper', [
 
-          h('div.send-screen-amount-labels', {}, [
-            h('span', {}, ['Amount']),
+          h('div.send-screen-amount-labels', [
+            h('span', 'Amount'),
             h(CurrencyToggle, {
               activeCurrency,
               onClick: (newCurrency) => this.setActiveCurrency(newCurrency),
@@ -253,11 +231,11 @@ SendTransactionScreen.prototype.render = function () {
                 ),
               })
             },
-          }, []),
+          }),
 
         ]),
 
-        h('div.send-screen-input-wrapper', {}, [
+        h('div.send-screen-input-wrapper', [
           this.state.tooltipIsOpen && h(GasTooltip, {
             className: 'send-tooltip',
             gasPrice,
@@ -271,23 +249,15 @@ SendTransactionScreen.prototype.render = function () {
                   gasPrice,
                 },
               })
-            }
+            },
           }),
 
-          h('div.send-screen-gas-labels', {}, [
-            h('span', {}, [
-              h('i.fa.fa-bolt', {}, []),
-
-              // not working ATM.
-              // Ship with fa-bolt if it's slowing us down...
-              // h('img.send-screen-bolt-icon', {
-              //   src: '../images/mm_bolt.svg',
-              //   style: {},
-              // }, []),
-
+          h('div.send-screen-gas-labels', [
+            h('span', [
+              h('i.fa.fa-bolt'),
               'Gas fee:',
             ]),
-            h('span', {}, ['What\'s this?']),
+            h('span', 'What\'s this?'),
           ]),
 
           // TODO: handle loading time when switching to USD
@@ -305,13 +275,11 @@ SendTransactionScreen.prototype.render = function () {
               'Customize',
             ]),
           ]),
-          
+
         ]),
 
-        h('div.send-screen-input-wrapper', {}, [
-
-          h('div', {}, ['Transaction memo (optional)']),
-
+        h('div.send-screen-input-wrapper', [
+          h('div', 'Transaction memo (optional)'),
           h('input.large-input.send-screen-input', {
             onChange: () => {
               this.setState({
@@ -323,15 +291,11 @@ SendTransactionScreen.prototype.render = function () {
                 ),
               })
             },
-          }, [
-          ]),
-
+          }),
         ]),
 
         h('div.send-screen-input-wrapper', {}, [
-
           h('div', {}, ['Data (optional)']),
-
           h('input.large-input.send-screen-input', {
             onChange: () => {
               this.setState({
@@ -343,248 +307,17 @@ SendTransactionScreen.prototype.render = function () {
                 ),
               })
             },
-          }, [
-          ]),
-
+          }),
         ]),
-
       ]),
 
       // Buttons underneath card
       h('section.flex-column.flex-center', [
-
-        h('div.btn-light.send-screen-send-button', {
+        h('button.btn-secondary.send-screen__send-button', {
           onClick: (event) => this.onSubmit(event),
-          style: {
-            marginTop: '8px',
-            width: '8em',
-            background: '#FFFFFF',
-          },
         }, 'Next'),
-
-        h('button.btn-light', {
+        h('button.btn-tertiary.send-screen__cancel-button', {
           onClick: this.back,
-          style: {
-            background: '#F7F7F7', // $alabaster
-            border: 'none',
-            opacity: 1,
-            width: '8em',
-          },
-        }, 'Cancel'),
-      ]),
-    ])
-
-  )
-}
-
-// WIP - hyperscript for renderSendToken - hook up later - can take pieces to re-implement
-SendTransactionScreen.prototype.renderSendToken = function () {
-  this.persistentFormParentId = 'send-tx-form'
-
-  const props = this.props
-  const {
-    network,
-    identities,
-    addressBook,
-  } = props
-
-  return (
-
-    h('div.flex-column.flex-grow', {
-      style: {
-        minWidth: '355px', // TODO: maxWidth TBD, use home.html
-      },
-    }, [
-
-      // Main Send token Card
-      h('div.send-screen.flex-column.flex-grow', {
-        style: {
-          marginLeft: '3.5%',
-          marginRight: '3.5%',
-          background: '#FFFFFF', // $background-white
-          boxShadow: '0 2px 4px 0 rgba(0,0,0,0.08)',
-        },
-      }, [
-        h('section.flex-center.flex-row', {
-          style: {
-            zIndex: 15, // $token-icon-z-index
-            marginTop: '-35px',
-          },
-        }, [
-          h(Identicon, {
-            address: ARAGON,
-            diameter: 76,
-          }),
-        ]),
-
-        h('h3.flex-center', {
-          style: {
-            marginTop: '-18px',
-            fontSize: '16px',
-          },
-        }, [
-          'Send Tokens',
-        ]),
-
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '12px',
-          },
-        }, [
-          'Send Tokens to anyone with an Ethereum account',
-        ]),
-
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            marginTop: '2px',
-            fontSize: '12px',
-          },
-        }, [
-          'Your Aragon Token Balance is:',
-        ]),
-
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '36px',
-            marginTop: '8px',
-          },
-        }, [
-          '2.34',
-        ]),
-
-        h('h3.flex-center', {
-          style: {
-            textAlign: 'center',
-            fontSize: '12px',
-            marginTop: '4px',
-          },
-        }, [
-          'ANT',
-        ]),
-
-        // error message
-        props.error && h('span.error.flex-center', props.error),
-
-        // 'to' field
-        h('section.flex-row.flex-center', {
-          style: {
-            fontSize: '12px',
-          },
-        }, [
-          h(EnsInput, {
-            name: 'address',
-            placeholder: 'Recipient Address',
-            onChange: this.recipientDidChange,
-            network,
-            identities,
-            addressBook,
-          }),
-        ]),
-
-        // 'amount' and send button
-        h('section.flex-column.flex-center', [
-          h('div.flex-row.flex-center', {
-            style: {
-              fontSize: '12px',
-              width: '100%',
-              justifyContent: 'space-between',
-            },
-          }, [
-            h('span', { style: {} }, ['Amount']),
-            h('span', { style: {} }, ['Token <> USD']),
-          ]),
-
-          h('input.large-input', {
-            name: 'amount',
-            placeholder: '0',
-            type: 'number',
-            style: {
-              marginRight: '6px',
-              fontSize: '12px',
-            },
-            dataset: {
-              persistentFormId: 'tx-amount',
-            },
-          }),
-
-        ]),
-
-        h('section.flex-column.flex-center', [
-          h('div.flex-row.flex-center', {
-            style: {
-              fontSize: '12px',
-              width: '100%',
-              justifyContent: 'space-between',
-            },
-          }, [
-            h('span', { style: {} }, ['Gas Fee:']),
-            h('span', { style: { fontSize: '8px' } }, ['What\'s this?']),
-          ]),
-
-          h('input.large-input', {
-            name: 'Gas Fee',
-            placeholder: '0',
-            type: 'number',
-            style: {
-              fontSize: '12px',
-              marginRight: '6px',
-            },
-            // dataset: {
-            //   persistentFormId: 'tx-amount',
-            // },
-          }),
-
-        ]),
-
-        h('section.flex-column.flex-center', {
-          style: {
-            marginBottom: '10px',
-          },
-        }, [
-          h('div.flex-row.flex-center', {
-            style: {
-              fontSize: '12px',
-              width: '100%',
-              justifyContent: 'flex-start',
-            },
-          }, [
-            h('span', { style: {} }, ['Transaction Memo (optional)']),
-          ]),
-
-          h('input.large-input', {
-            name: 'memo',
-            placeholder: '',
-            type: 'string',
-            style: {
-              marginRight: '6px',
-            },
-          }),
-        ]),
-      ]),
-
-      // Buttons underneath card
-      h('section.flex-column.flex-center', [
-
-        h('button.btn-light', {
-          onClick: this.onSubmit,
-          style: {
-            marginTop: '8px',
-            width: '8em',
-            background: '#FFFFFF',
-          },
-        }, 'Next'),
-
-        h('button.btn-light', {
-          onClick: this.back,
-          style: {
-            background: '#F7F7F7', // $alabaster
-            border: 'none',
-            opacity: 1,
-            width: '8em',
-          },
         }, 'Cancel'),
       ]),
     ])
