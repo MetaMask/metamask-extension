@@ -99,7 +99,7 @@ App.prototype.render = function () {
 
     h('.flex-column.full-height', {
       style: {
-        overflowX: 'hidden',
+        overflow: 'hidden',
         position: 'relative',
         alignItems: 'center',
       },

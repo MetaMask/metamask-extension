@@ -5,7 +5,12 @@
   font-family: 'DIN OT';
 
   @media screen and (max-width: $break-small) {
-    top: 33px;
+    width: 100%;
+    overflow-y: auto;
+
+    section {
+      flex: 0 0 auto;
+    }
   }
 }
 
@@ -19,6 +24,14 @@
   display: flex;
   flex-flow: column nowrap;
   width: 498px;
+
+  @media screen and (max-width: $break-small) {
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+    padding: 12px;
+    flex: 1 0 auto;
+  }
 }
 
 /* Send Screen */
@@ -43,6 +56,11 @@
   z-index: 25;
   padding: 4px;
   background-color: $white;
+
+  @media screen and (max-width: $break-small) {
+    position: relative;
+    top: 0;
+  }
 }
 
 .send-screen-input-wrapper {

@@ -42,10 +42,13 @@ textarea:focus {
 /* stylelint-disable */
 #app-content {
   overflow-x: hidden;
-  min-width: 357px;
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  @media screen and (max-width: $break-small) {
+    background-color: $white;
+  }
 }
 /* stylelint-enable */
 

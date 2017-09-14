@@ -2,19 +2,21 @@
   align-items: center;
   visibility: visible;
   background: $gallery;
-  height: 14.4vh;
-  max-height: 97px;
   position: relative;
   z-index: $header-z-index;
   display: flex;
   flex-flow: column nowrap;
 
   @media screen and (max-width: 575px) {
-    position: fixed;
-    height: 34px;
+    padding: 0 12px;
     width: 100%;
     box-shadow: 0 2px 2px 1px rgba(0, 0, 0, .08);
     z-index: $mobile-header-z-index;
+  }
+
+  @media screen and (min-width: 576px) {
+    height: 14.4vh;
+    max-height: 97px;
   }
 }
 
@@ -25,13 +27,16 @@
   width: 100%;
   height: 6.9vh;
 
+  @media screen and (max-width: 575px) {
+    height: 100%;
+  }
+
   @media screen and (min-width: 576px) {
     width: 85vw;
   }
 
   @media screen and (min-width: 769px) {
     width: 80vw;
-    height: 6.9vh;
   }
 
   @media screen and (min-width: 1281px) {

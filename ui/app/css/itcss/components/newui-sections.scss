@@ -70,7 +70,7 @@ $wallet-view-bg: $wild-sand;
   background: rgb(250, 250, 250);
   z-index: $sidebar-z-index;
   position: fixed;
-  top: 35px;
+  top: 41px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -86,7 +86,7 @@ $wallet-view-bg: $wild-sand;
 .sidebar-overlay {
   z-index: $sidebar-overlay-z-index;
   position: fixed;
-  top: 35px;
+  top: 41px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -142,8 +142,8 @@ $wallet-view-bg: $wild-sand;
   }
 
   .main-container {
-    margin-top: 35px;
-    height: calc(100% - 34px);
+    margin-top: 41px;
+    height: calc(100% - 41px);
     width: 100%;
     overflow-y: auto;
     background-color: $white;
