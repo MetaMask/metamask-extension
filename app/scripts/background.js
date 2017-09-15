@@ -1,6 +1,8 @@
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pipe = require('pump')
+const log = require('loglevel')
+const extension = require('extensionizer')
 const LocalStorageStore = require('obs-store/lib/localStorage')
 const storeTransform = require('obs-store/lib/transform')
 const ExtensionPlatform = require('./platforms/extension')
@@ -9,13 +11,11 @@ const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const extension = require('extensionizer')
 const firstTimeState = require('./first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 
-const log = require('loglevel')
 window.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -29,12 +29,12 @@ let popupIsOpen = false
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 
 // initialization flow
-initialize().catch(console.error)
+initialize().catch(log.error)
 
 async function initialize () {
   const initState = await loadStateFromPersistence()
   await setupController(initState)
-  console.log('MetaMask initialization complete.')
+  log.debug('MetaMask initialization complete.')
 }
 
 //
