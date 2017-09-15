@@ -12,7 +12,7 @@ QUnit.test('render init screen', (assert) => {
 
 async function runFirstTimeUsageTest(assert, done) {
 
-  await timeout(10000)
+  await timeout()
 
   const app = $('#app-content')
 
