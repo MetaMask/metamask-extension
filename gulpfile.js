@@ -151,7 +151,7 @@ gulp.task('copy:watch', function(){
 
 gulp.task('lint', function () {
   // Ignoring node_modules, dist/firefox, and docs folders:
-  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js'])
+  return gulp.src(['app/**/*.js', 'ui/**/*.js', 'mascara/src', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js'])
     .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
     // eslint.format() outputs the lint results to the console.
     // Alternatively use eslint.formatEach() (see Docs).
