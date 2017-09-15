@@ -12,7 +12,6 @@ QUnit.test('render init screen', (assert) => {
 
 async function runFirstTimeUsageTest(assert, done) {
   let waitTime = 0
-  window.METAMASK_SKIP_RELOAD = true
   if (window.METAMASK_PLATFORM_TYPE === 'mascara') waitTime = 2000
   await timeout(waitTime)
 
