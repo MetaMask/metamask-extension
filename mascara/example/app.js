@@ -8,6 +8,11 @@ function web3Detect() {
   } else {
     logToDom('no web3 detected!')
   }
+  if (global.metamask) {
+    logToDom('metamask detected!')
+  } else {
+    logToDom('no metamask detected!')
+  }
 }
 
 function startApp(){
