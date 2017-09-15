@@ -33,7 +33,7 @@ web3.setProvider = function () {
 console.log('MetaMask - injected web3')
 // export global web3, with usage-detection
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
-
+global.META_MASK = true
 // set web3 defaultAccount
 
 inpageProvider.publicConfigStore.subscribe(function (state) {
