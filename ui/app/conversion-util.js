@@ -13,6 +13,7 @@
 * @param {string} [options.fromDenomination = 'WEI'] The denomination of the passed value
 * @param {number} [options.numberOfDecimals] The desired number of in the result
 * @param {number} [options.conversionRate] The rate to use to make the fromCurrency -> toCurrency conversion
+* @param {number} [options.ethToUSDRate] If present, a second conversion - at ethToUSDRate - happens after conversionRate is applied.
 * @returns {(number | string | BN)}
 *
 * The utility passes value along with the options as a single object to the `converter` function.
@@ -80,6 +81,7 @@ const converter = R.pipe(
   whenPropApplySetterMap('fromNumericBase', toBigNumber),
   whenPropApplySetterMap('fromDenomination', toNormalizedDenomination),
   whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
+  whenPredSetWithPropAndSetter(R.prop('ethToUSDRate'), 'ethToUSDRate', convert),
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPropApplySetterMap('toNumericBase', baseChange),
   R.view(R.lensProp('value'))
@@ -93,6 +95,7 @@ const conversionUtil = (value, {
   fromDenomination,
   numberOfDecimals,
   conversionRate,
+  ethToUSDRate,
 }) => converter({
   fromCurrency,
   toCurrency,
@@ -101,6 +104,7 @@ const conversionUtil = (value, {
   fromDenomination,
   numberOfDecimals,
   conversionRate,
+  ethToUSDRate,
   value,
 });
 

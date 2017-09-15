@@ -6,18 +6,22 @@ const Identicon = require('./identicon')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
 const actions = require('../actions')
+const { conversionUtil } = require('../conversion-util')
 
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     selectedTokenAddress: state.metamask.selectedTokenAddress,
     userAddress: selectors.getSelectedAddress(state),
+    tokenExchangeRates: state.metamask.tokenExchangeRates,
+    ethToUSDRate: state.metamask.conversionRate,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
+    updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
   }
 }
 
@@ -26,6 +30,15 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenCell)
 inherits(TokenCell, Component)
 function TokenCell () {
   Component.call(this)
+}
+
+TokenCell.prototype.componentWillMount = function () {
+  const {
+    updateTokenExchangeRate,
+    symbol,
+  } = this.props
+
+  updateTokenExchangeRate(symbol)
 }
 
 TokenCell.prototype.render = function () {
@@ -37,8 +50,29 @@ TokenCell.prototype.render = function () {
     network,
     setSelectedToken,
     selectedTokenAddress,
+    tokenExchangeRates,
+    ethToUSDRate,
     // userAddress,
   } = props
+  
+  const pair = `${symbol.toLowerCase()}_eth`;
+
+  let currentTokenToEthRate;
+  let currentTokenInUSD;
+  let formattedUSD = ''
+
+  if (tokenExchangeRates[pair]) {
+    currentTokenToEthRate = tokenExchangeRates[pair].rate;
+    currentTokenInUSD = conversionUtil(string, {
+      fromNumericBase: 'dec',
+      fromCurrency: symbol,
+      toCurrency: 'USD',
+      numberOfDecimals: 2,
+      conversionRate: currentTokenToEthRate,
+      ethToUSDRate,
+    })
+    formattedUSD = `$${currentTokenInUSD} USD`;
+  }
 
   return (
     h('div.token-list-item', {
@@ -58,9 +92,9 @@ TokenCell.prototype.render = function () {
       h('h.token-list-item__balance-wrapper', null, [
         h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
-        // h('div.token-list-item__fiat-amount', {
-        //   style: {},
-        // }, '210 FPO'),
+        h('div.token-list-item__fiat-amount', {
+          style: {},
+        }, formattedUSD),
       ]),
 
       /*
