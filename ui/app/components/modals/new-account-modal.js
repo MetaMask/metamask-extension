@@ -19,6 +19,10 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
+    createAccount: () => {
+      dispatch(actions.addNewAccount())
+      dispatch(actions.hideModal())
+    },
   }
 }
 
@@ -60,7 +64,9 @@ NewAccountModal.prototype.render = function () {
       ]),
 
       h('div.new-account-modal-content.button', {}, [
-        h('button.btn-clear', {}, [
+        h('button.btn-clear', {
+          onClick: this.props.createAccount
+        }, [
           'SAVE',
         ]),
       ]),

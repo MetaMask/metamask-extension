@@ -162,11 +162,11 @@ class AccountDropdowns extends Component {
           DropdownMenuItem,
           {
             closeMenu: () => {},
-            onClick: () => actions.addNewAccount(),
             style: Object.assign(
               {},
               menuItemStyles,
             ),
+            onClick: () => actions.showNewAccountModal(),
           },
           [
             h(
@@ -184,9 +184,6 @@ class AccountDropdowns extends Component {
                 fontFamily: 'DIN OT',
                 fontSize: '16px',
                 lineHeight: '23px',
-              },
-              onClick: () => {
-                actions.showNewAccountModal()
               },
             }, 'Create Account'),
           ],
