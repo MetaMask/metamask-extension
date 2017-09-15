@@ -63,9 +63,7 @@ function windowReload() {
 }
 
 function timeout (time) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(function () {
-      resolve()
-    }, time || 1500)
+  return new Promise((resolve) => {
+    setTimeout(resolve, time || 1500)
   })
 }
