@@ -88,15 +88,17 @@ BalanceComponent.prototype.renderFiatValue = function (formattedBalance) {
 
   const fiatDisplayNumber = this.getFiatDisplayNumber(formattedBalance, conversionRate)
 
-  return this.renderFiatAmount(fiatDisplayNumber, currentCurrency)
+  const fiatPrefix = currentCurrency === 'USD' ? '$' : ''
+
+  return this.renderFiatAmount(fiatDisplayNumber, currentCurrency, fiatPrefix)
 }
 
-BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatSuffix) {
+BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatSuffix, fiatPrefix) {
   if (fiatDisplayNumber === 'N/A') return null
 
   return h('div.fiat-amount', {
     style: {},
-  }, `${fiatDisplayNumber} ${fiatSuffix}`)
+  }, `${fiatPrefix}${fiatDisplayNumber} ${fiatSuffix}`)
 }
 
 BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {

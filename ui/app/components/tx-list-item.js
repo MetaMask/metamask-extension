@@ -74,7 +74,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
 
   return {
     total: `${totalInETH} ETH`,
-    fiatTotal: `${totalInUSD} USD`,
+    fiatTotal: `$${totalInUSD} USD`,
   }
 }
 
