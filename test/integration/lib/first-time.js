@@ -12,7 +12,7 @@ QUnit.test('render init screen', (assert) => {
 
 async function runFirstTimeUsageTest(assert, done) {
 
-  await timeout()
+  await timeout(10000)
 
   const app = $('#app-content')
 
@@ -123,7 +123,7 @@ async function runFirstTimeUsageTest(assert, done) {
   assert.ok(children2, 'All network options present')
 }
 
-function timeout(time) {
+function timeout (time) {
   return new Promise(function (resolve, reject) {
     setTimeout(function () {
       resolve()

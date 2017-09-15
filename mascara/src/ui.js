@@ -30,30 +30,41 @@ const connectApp = function (readSw) {
     serviceWorker: background.controller,
     context: name,
   })
-  startPopup({ container, connectionStream }, (err, store) => {
-    if (err) return displayCriticalError(err)
-    store.subscribe(() => {
-      const state = store.getState()
-      if (state.appState.shouldClose) window.close()
+  return new Promise((resolve, reject) => {
+    startPopup({ container, connectionStream }, (err, store) => {
+      console.log('hello from MetaMascara ui!')
+      if (err) reject(err)
+      store.subscribe(() => {
+        const state = store.getState()
+        if (state.appState.shouldClose) window.close()
+      })
+      resolve()
     })
   })
 }
-background.on('ready', (sw) => {
-  background.removeListener('updatefound', connectApp)
-  connectApp(sw)
+background.on('ready', async (sw) => {
+  try {
+    background.removeListener('updatefound', connectApp)
+    await timeout(1000)
+    await connectApp(sw)
+    console.log('hello from cb ready event!')
+  } catch (e) {
+    console.error(e)
+  }
 })
 background.on('updatefound', windowReload)
 
 background.startWorker()
-.then(() => {
-  setTimeout(() => {
-    const container = document.getElementById(`app-content`)
-    if (!container.children.length) windowReload()
-  }, 2000)
-})
-console.log('hello from MetaMascara ui!')
 
 function windowReload() {
   if (window.METAMASK_SKIP_RELOAD) return
   window.location.reload()
+}
+
+function timeout (time) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      resolve()
+    }, time || 1500)
+  })
 }
