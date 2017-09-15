@@ -49,6 +49,7 @@ function mapDispatchToProps (dispatch) {
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('USD')),
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
+    markTransactionAsViewed: (id) => dispatch(actions.markTransactionAsViewed(id)),
   }
 }
 
@@ -65,6 +66,9 @@ function PendingTx () {
 
 PendingTx.prototype.componentWillMount = function () {
   this.props.setCurrentCurrencyToUSD()
+  if (this.props.txData) {
+    this.props.markTransactionAsViewed(this.props.txData.id)
+  }
 }
 
 PendingTx.prototype.getTotal = function () {

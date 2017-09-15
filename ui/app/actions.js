@@ -128,6 +128,9 @@ var actions = {
   previousTx: previousTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
+  SET_LATEST_UNAPPROVED_TX: 'SET_LATEST_UNAPPROVED_TX',
+  setLatestUnapprovedTx,
+  markTransactionAsViewed,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -506,6 +509,13 @@ function cancelTx (txData) {
   }
 }
 
+function setLatestUnapprovedTx (latestUnapprovedTx) {
+  return {
+    type: actions.SET_LATEST_UNAPPROVED_TX,
+    tx: latestUnapprovedTx,
+  }
+}
+
 //
 // initialize screen
 //
@@ -701,6 +711,13 @@ function addToken (address, symbol, decimals) {
 function goBackToInitView () {
   return {
     type: actions.BACK_TO_INIT_MENU,
+  }
+}
+
+function markTransactionAsViewed (txId) {
+  return (dispatch) => {
+    log.debug(`background.markTransactionAsViewed`)
+    background.markTransactionAsViewed(txId)
   }
 }
 

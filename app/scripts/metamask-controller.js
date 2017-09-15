@@ -317,6 +317,7 @@ module.exports = class MetamaskController extends EventEmitter {
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
 
       // txController
+      markTransactionAsViewed: this.markTransactionAsViewed.bind(this),
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
 
@@ -646,5 +647,11 @@ module.exports = class MetamaskController extends EventEmitter {
     .then(() => {
       return Promise.resolve(rpcTarget)
     })
+  }
+
+// transactions
+  
+  markTransactionAsViewed(txId) {
+    this.txController.markTransactionAsViewed(txId)
   }
 }

@@ -8,7 +8,6 @@ global.log = require('loglevel')
 
 module.exports = launchMetamaskUi
 
-
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 function launchMetamaskUi (opts, cb) {
@@ -38,6 +37,7 @@ function startApp (metamaskState, accountManager, opts) {
 
   accountManager.on('update', function (metamaskState) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
+    store.dispatch(actions.setLatestUnapprovedTx(metamaskState.latestUnapprovedTx))
   })
 
   // start app

@@ -126,6 +126,16 @@ module.exports = class TransactionController extends EventEmitter {
     }, {})
   }
 
+  markTransactionAsViewed(id) {
+    const { latestUnapprovedTx } = this.getState()
+    if (id === latestUnapprovedTx.id) {
+      this._updateLatestUnapprovedTx(id, true);
+    }
+  }
+  setLatestUnapprovedTx (id) {
+    this._updateLatestUnapprovedTx(id);
+  }
+
   updateTx (txMeta) {
     // create txMeta snapshot for history
     const txMetaForHistory = clone(txMeta)
@@ -172,7 +182,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.once(`${txMeta.id}:rejected`, function (txId) {
       this.removeAllListeners(`${txMeta.id}:signed`)
     })
-
+    this.setLatestUnapprovedTx(txMeta.id)
     this.emit('updateBadge')
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
@@ -440,5 +450,12 @@ module.exports = class TransactionController extends EventEmitter {
       metamaskNetworkId: this.getNetwork(),
     })
     this.memStore.updateState({ unapprovedTxs, selectedAddressTxList })
+  }
+
+  _updateLatestUnapprovedTx (transactionId, viewed = false) {
+    this.memStore.updateState({ latestUnapprovedTx: {
+      id: transactionId,
+      viewed,
+    } })
   }
 }
