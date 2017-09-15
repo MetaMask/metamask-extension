@@ -15,6 +15,7 @@ const container = document.getElementById('app-content')
 
 var name = 'popup'
 window.METAMASK_UI_TYPE = name
+window.METAMASK_PLATFORM_TYPE = 'mascara'
 
 let intervalDelay =  Math.floor(Math.random() * (30000 - 1000)) + 1000
 
