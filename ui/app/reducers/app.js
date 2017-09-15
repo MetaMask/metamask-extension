@@ -8,11 +8,17 @@ module.exports = reduceApp
 function reduceApp (state, action) {
   log.debug('App Reducer got ' + action.type)
   // clone and defaults
-  const selectedAddress = state.metamask.selectedAddress
+  let selectedAddress = state.metamask.selectedAddress
+  const { latestUnapprovedTx } = state.metamask
   const hasUnconfActions = checkUnconfActions(state)
   let name = 'accounts'
   if (selectedAddress) {
     name = 'accountDetail'
+  }
+  if (latestUnapprovedTx && !latestUnapprovedTx.viewed) {
+    log.debug('latest unapproved transaction unviewed, defaulting to conf-tx view')
+    name = 'confTx'
+    selectedAddress = indexForLatestUnapprovedTx(state)
   }
 
   var defaultView = {
@@ -50,6 +56,7 @@ function reduceApp (state, action) {
     isLoading: false,
     // Used to display error text
     warning: null,
+    viewedUnconfTransactions: {},
   }, state.appState)
 
   switch (action.type) {
@@ -232,6 +239,12 @@ function reduceApp (state, action) {
           context: appState.currentView.context,
         },
         transForward: true,
+      })
+
+    case actions.SET_LATEST_UNAPPROVED_TX:
+      return extend(appState, {
+        latestUnapprovedTx: action.tx,
+        currentView: !action.tx || !action.tx.viewed ? defaultView : appState.currentView,
       })
 
   // unlock
@@ -642,4 +655,11 @@ function indexForPending (state, txId) {
 
 function indexForLastPending (state) {
   return getUnconfActionList(state).length
+}
+
+function indexForLatestUnapprovedTx (state) {
+  const unconfActionList = getUnconfActionList(state)
+  const { latestUnapprovedTx } = state.metamask
+
+  return unconfActionList.findIndex((tx) => tx.id === latestUnapprovedTx.id)
 }
