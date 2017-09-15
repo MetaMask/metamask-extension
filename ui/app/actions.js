@@ -626,6 +626,7 @@ function showAccountDetail (address) {
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
+      dispatch(actions.setSelectedToken())
     })
   }
 }
