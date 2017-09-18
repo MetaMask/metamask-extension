@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.10.1 2017-9-18
+
 - Add ability to export private keys as a file.
 - Add ability to export seed words as a file.
 - Changed state logs to a file download than a clipboard copy.
