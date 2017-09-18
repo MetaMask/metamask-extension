@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 2017,
@@ -10,7 +11,9 @@
       "arrowFunctions": true,
       "objectLiteralShorthandMethods": true,
       "objectLiteralShorthandProperties": true,
-      "templateStrings": true
+      "templateStrings": true,
+      "classes": true,
+      "jsx": true
     },
   },
 
@@ -23,7 +26,8 @@
 
   "plugins": [
     "mocha",
-    "chai"
+    "chai",
+    "react"
   ],
 
   "globals": {

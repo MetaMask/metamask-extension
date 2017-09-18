@@ -494,6 +494,17 @@ function reduceApp (state, action) {
         },
       })
 
+
+    case actions.ONBOARDING_BUY_ETH_VIEW:
+      return extend(appState, {
+        transForward: true,
+        currentView: {
+          name: 'onboardingBuyEth',
+          context: appState.currentView.name,
+        },
+        identity: state.metamask.identities[action.value],
+      })
+
     case actions.COINBASE_SUBVIEW:
       return extend(appState, {
         buyView: {

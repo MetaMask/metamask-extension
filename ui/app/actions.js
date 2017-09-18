@@ -133,6 +133,8 @@ var actions = {
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
   // buy Eth with coinbase
+  onboardingBuyEthView,
+  ONBOARDING_BUY_ETH_VIEW: 'ONBOARDING_BUY_ETH_VIEW',
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
   buyEthView: buyEthView,
@@ -900,6 +902,13 @@ function buyEth (opts) {
     dispatch({
       type: actions.BUY_ETH,
     })
+  }
+}
+
+function onboardingBuyEthView (address) {
+  return {
+    type: actions.ONBOARDING_BUY_ETH_VIEW,
+    value: address,
   }
 }
 

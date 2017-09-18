@@ -66,7 +66,7 @@ class BackupPhraseScreen extends Component {
     }
   }
 
-  renderSecretWordsContainer() {
+  renderSecretWordsContainer () {
     const { isShowingSecret } = this.state
 
     return (
@@ -197,7 +197,7 @@ class BackupPhraseScreen extends Component {
     ) 
   }
 
-  renderBack() {
+  renderBack () {
     return this.state.page === BackupPhraseScreen.PAGE.CONFIRM
       ? (
         <a
@@ -216,17 +216,17 @@ class BackupPhraseScreen extends Component {
       : null
   }
 
-  renderContent() {
-    switch(this.state.page) {
+  renderContent () {
+    switch (this.state.page) {
       case BackupPhraseScreen.PAGE.CONFIRM:
-        return this.renderConfirmationScreen();
+        return this.renderConfirmationScreen()
       case BackupPhraseScreen.PAGE.SECRET:
       default:
-        return this.renderSecretScreen();
+        return this.renderSecretScreen()
     }
   }
 
-  render() {
+  render () {
     return this.props.isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
@@ -245,10 +245,10 @@ export default compose(
     ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
       seedWords,
       isLoading,
-      address: selectedAddress
+      address: selectedAddress,
     }),
     dispatch => ({
-      confirmSeedWords: () => dispatch(confirmSeedWords())
+      confirmSeedWords: () => dispatch(confirmSeedWords()),
     })
   )
 )(BackupPhraseScreen)

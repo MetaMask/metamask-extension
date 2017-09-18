@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'
 import CreatePasswordScreen from './create-password-screen'
 import UniqueImageScreen from './unique-image-screen'
 import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
 import BuyEtherScreen from './buy-ether-screen'
-import {buyEthView} from '../../../../ui/app/actions'
+import {onboardingBuyEthView} from '../../../../ui/app/actions'
 
 class FirstTimeFlow extends Component {
 
@@ -33,23 +33,23 @@ class FirstTimeFlow extends Component {
     CONFIRM_BACK_UP_PHRASE: 'confirm_back_up_phrase',
   };
 
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
-      screenType: this.getScreenType()
+      screenType: this.getScreenType(),
     }
   }
 
-  setScreenType(screenType) {
+  setScreenType (screenType) {
     this.setState({ screenType })
   }
 
-  getScreenType() {
+  getScreenType () {
     const {
       isInitialized,
       seedWords,
       noActiveNotices,
-    } = this.props;
+    } = this.props
     const {SCREEN_TYPE} = FirstTimeFlow
 
     // return SCREEN_TYPE.NOTICE
@@ -67,7 +67,7 @@ class FirstTimeFlow extends Component {
     }
   };
 
-  renderScreen() {
+  renderScreen () {
     const {SCREEN_TYPE} = FirstTimeFlow
     const {goToBuyEtherView, address} = this.props
 
@@ -109,7 +109,7 @@ class FirstTimeFlow extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div className="first-time-flow">
         {this.renderScreen()}
@@ -127,7 +127,7 @@ export default connect(
     address: selectedAddress,
   }),
   dispatch => ({
-    goToBuyEtherView: address => dispatch(buyEthView(address))
+    goToBuyEtherView: address => dispatch(onboardingBuyEthView(address)),
   })
 )(FirstTimeFlow)
 
