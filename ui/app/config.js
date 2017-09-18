@@ -3,8 +3,8 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const infuraCurrencies = require('./infura-conversion.json').sort((a, b) => {
-      return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
+const infuraCurrencies = require('./infura-conversion.json').objects.sort((a, b) => {
+      return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
     })
 const validUrl = require('valid-url')
 const exportAsFile = require('./util').exportAsFile
