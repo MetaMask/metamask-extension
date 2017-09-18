@@ -48,10 +48,28 @@ TokenList.prototype.render = function () {
 
   if (error) {
     log.error(error)
-    return this.message('There was a problem loading your token balances.')
+    return h('.hotFix', {
+      style: {
+        padding: '80px',
+      },
+    }, [
+      'We had trouble loading your token balances. You can view them ',
+      h('span.hotFix', {
+        style: {
+          color: 'rgba(247, 134, 28, 1)',
+          cursor: 'pointer',
+        },
+        onClick: () => {
+          global.platform.openWindow({
+          url: `https://ethplorer.io/address/${userAddress}`,
+        })
+        },
+      }, 'here'),
+    ])
   }
 
   return h('div', tokens.map((tokenData) => h(TokenCell, tokenData)))
+
 }
 
 TokenList.prototype.message = function (body) {
@@ -84,7 +102,7 @@ TokenList.prototype.createFreshTokenTracker = function () {
   this.tracker = new TokenTracker({
     userAddress,
     provider: global.ethereumProvider,
-    tokens: uniqueMergeTokens(defaultTokens, this.props.tokens),
+    tokens: this.props.tokens,
     pollingInterval: 8000,
   })
 
@@ -149,4 +167,3 @@ function uniqueMergeTokens (tokensA, tokensB = []) {
   })
   return result
 }
-

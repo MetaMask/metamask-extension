@@ -1,4 +1,4 @@
-const ParentStream = require('iframe-stream').ParentStream
+const createParentStream = require('iframe-stream').ParentStream
 const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
 const SwStream = require('sw-stream/lib/sw-stream.js')
 const SetupUntrustedComunication = ('./lib/setup-untrusted-connection.js')
@@ -11,7 +11,7 @@ const background = new SWcontroller({
   intervalDelay,
 })
 
-const pageStream = new ParentStream()
+const pageStream = createParentStream()
 background.on('ready', (_) => {
   let swStream = SwStream({
     serviceWorker: background.controller,

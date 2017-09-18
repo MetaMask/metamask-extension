@@ -240,6 +240,15 @@ PendingTx.prototype.render = function () {
     totalInETH,
   } = this.getData()
 
+  // This is from the latest master
+  // It handles some of the errors that we are not currently handling
+  // Leaving as comments fo reference
+
+  // const balanceBn = hexToBn(balance)
+  // const insufficientBalance = balanceBn.lt(maxCost)
+  // const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
+  // const showRejectAll = props.unconfTxListLength > 1
+
   this.inputs = []
 
   return (
@@ -332,9 +341,88 @@ PendingTx.prototype.render = function () {
               h('div.confirm-screen-row-info', `$${totalInUSD} USD`),
               h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
             ]),
-        ]),
+          ]),
         ]),
 
+// These are latest errors handling from master
+// Leaving as comments as reference when we start implementing error handling
+//         h('style', `
+//           .conf-buttons button {
+//             margin-left: 10px;
+//             text-transform: uppercase;
+//           }
+//         `),
+
+//         txMeta.simulationFails ?
+//           h('.error', {
+//             style: {
+//               marginLeft: 50,
+//               fontSize: '0.9em',
+//             },
+//           }, 'Transaction Error. Exception thrown in contract code.')
+//         : null,
+
+//         !isValidAddress ?
+//           h('.error', {
+//             style: {
+//               marginLeft: 50,
+//               fontSize: '0.9em',
+//             },
+//           }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+//         : null,
+
+//         insufficientBalance ?
+//           h('span.error', {
+//             style: {
+//               marginLeft: 50,
+//               fontSize: '0.9em',
+//             },
+//           }, 'Insufficient balance for transaction')
+//         : null,
+
+//         // send + cancel
+//         h('.flex-row.flex-space-around.conf-buttons', {
+//           style: {
+//             display: 'flex',
+//             justifyContent: 'flex-end',
+//             margin: '14px 25px',
+//           },
+//         }, [
+//           h('button', {
+//             onClick: (event) => {
+//               this.resetGasFields()
+//               event.preventDefault()
+//             },
+//           }, 'Reset'),
+
+//           // Accept Button or Buy Button
+//           insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
+//             h('input.confirm.btn-green', {
+//               type: 'submit',
+//               value: 'SUBMIT',
+//               style: { marginLeft: '10px' },
+//               disabled: buyDisabled,
+//             }),
+
+//           h('button.cancel.btn-red', {
+//             onClick: props.cancelTransaction,
+//           }, 'Reject'),
+//         ]),
+//         showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
+//           style: {
+//             display: 'flex',
+//             justifyContent: 'flex-end',
+//             margin: '14px 25px',
+//           },
+//         }, [
+//           h('button.cancel.btn-red', {
+//             onClick: props.cancelAllTransactions,
+//           }, 'Reject All'),
+//         ]) : null,
+//       ]),
+//     ])
+//   )
+// }
       ]),
 
       h('form#pending-tx-form.flex-column.flex-center', {

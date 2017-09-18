@@ -171,9 +171,9 @@ class KeyringController extends EventEmitter {
       return this.setupAccounts(checkedAccounts)
     })
     .then(() => this.persistAllKeyrings())
+    .then(() => this._updateMemStoreKeyrings())
     .then(() => this.fullUpdate())
     .then(() => {
-      this._updateMemStoreKeyrings()
       return keyring
     })
   }
@@ -208,6 +208,7 @@ class KeyringController extends EventEmitter {
     return selectedKeyring.addAccounts(1)
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
+    .then(this._updateMemStoreKeyrings.bind(this))
     .then(this.fullUpdate.bind(this))
   }
 

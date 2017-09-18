@@ -103,7 +103,7 @@ InfoScreen.prototype.render = function () {
             [
               h('div.fa.fa-support', [
                 h('a.info', {
-                  href: 'http://metamask.consensyssupport.happyfox.com',
+                  href: 'https://support.metamask.io',
                   target: '_blank',
                 }, 'Visit our Support Center'),
               ]),

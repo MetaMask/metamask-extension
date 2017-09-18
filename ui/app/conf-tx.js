@@ -76,6 +76,7 @@ ConfirmTxScreen.prototype.render = function () {
     cancelMessage: this.cancelMessage.bind(this, txData),
     cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
   })
+
 }
 
 function currentTxView (opts) {
@@ -114,6 +115,12 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   this.stopPropagation(event)
   event.preventDefault()
   this.props.dispatch(actions.cancelTx(txData))
+}
+
+ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event) {
+  this.stopPropagation(event)
+  event.preventDefault()
+  this.props.dispatch(actions.cancelAllTx(unconfTxList))
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {

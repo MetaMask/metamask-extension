@@ -46,6 +46,7 @@ function mapStateToProps (state) {
     identities,
     accounts,
     address,
+    keyrings,
   } = state.metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -75,6 +76,7 @@ function mapStateToProps (state) {
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
     selected,
+    keyrings,
   }
 }
 

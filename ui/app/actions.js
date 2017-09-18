@@ -126,6 +126,7 @@ var actions = {
   txError: txError,
   nextTx: nextTx,
   previousTx: previousTx,
+  cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
@@ -420,6 +421,7 @@ function signPersonalMsg (msgData) {
 
 function signTx (txData) {
   return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
     global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
       if (err) return dispatch(actions.displayWarning(err.message))
@@ -464,6 +466,7 @@ function updateAndApproveTx (txData) {
       dispatch(actions.hideLoadingIndication())
       if (err) {
         dispatch(actions.txError(err))
+        dispatch(actions.goHome())
         return log.error(err.message)
       }
       dispatch(actions.completedTx(txData.id))
@@ -506,6 +509,16 @@ function cancelTx (txData) {
   }
 }
 
+function cancelAllTx (txsData) {
+  return (dispatch) => {
+    txsData.forEach((txData, i) => {
+      background.cancelTransaction(txData.id, () => {
+        dispatch(actions.completedTx(txData.id))
+        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+      })
+    })
+  }
+}
 //
 // initialize screen
 //

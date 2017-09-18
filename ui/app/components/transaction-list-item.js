@@ -60,16 +60,7 @@ TransactionListItem.prototype.render = function () {
     }, [
 
       h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        h('.pop-hover', {
-          onClick: (event) => {
-            event.stopPropagation()
-            if (!isTx || isPending) return
-            var url = `https://metamask.github.io/eth-tx-viz/?tx=${transaction.hash}`
-            global.platform.openWindow({ url })
-          },
-        }, [
-          h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
-        ]),
+        h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
       ]),
 
       h(Tooltip, {

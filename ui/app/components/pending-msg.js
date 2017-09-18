@@ -18,6 +18,9 @@ PendingMsg.prototype.render = function () {
 
     h('div', {
       key: msgData.id,
+      style: {
+        maxWidth: '350px',
+      },
     }, [
 
       // header
@@ -32,10 +35,21 @@ PendingMsg.prototype.render = function () {
         style: {
           margin: '10px',
         },
-      }, `Signing this message can have
+      }, [
+        `Signing this message can have
         dangerous side effects. Only sign messages from
         sites you fully trust with your entire account.
-        This will be fixed in a future version.`),
+        This dangerous method will be removed in a future version. `,
+        h('a', {
+          href: 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527',
+          style: { color: 'rgb(247, 134, 28)' },
+          onClick: (event) => {
+            event.preventDefault()
+            const url = 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527'
+            global.platform.openWindow({ url })
+          },
+        }, 'Read more here.'),
+      ]),
 
       // message details
       h(PendingTxDetails, state),

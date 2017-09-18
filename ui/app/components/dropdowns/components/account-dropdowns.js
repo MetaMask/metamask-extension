@@ -25,7 +25,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccounts () {
-    const { identities, accounts, selected, menuItemStyles, actions } = this.props
+    const { identities, accounts, selected, menuItemStyles, actions, keyrings } = this.props
 
     return Object.keys(identities).map((key, index) => {
       const identity = identities[key]
@@ -33,6 +33,12 @@ class AccountDropdowns extends Component {
 
       const balanceValue = accounts[key].balance
       const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
+      const simpleAddress = identity.address.substring(2).toLowerCase()
+
+      const keyring = keyrings.find((kr) => {
+        return kr.accounts.includes(simpleAddress) ||
+          kr.accounts.includes(identity.address)
+      })
 
       return h(
         DropdownMenuItem,
@@ -88,6 +94,7 @@ class AccountDropdowns extends Component {
                 marginLeft: '10px',
               },
             }, [
+              this.indicateIfLoose(keyring),
               h('span.account-dropdown-name', {
                 style: {
                   fontSize: '18px',
@@ -97,6 +104,7 @@ class AccountDropdowns extends Component {
                   textOverflow: 'ellipsis',
                 },
               }, identity.name || ''),
+              h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
 
               h('span.account-dropdown-balance', {
                 style: {
@@ -125,9 +133,33 @@ class AccountDropdowns extends Component {
             ]),
 
           ]),
+// =======
+//             },
+//           ),
+//           this.indicateIfLoose(keyring),
+//           h('span', {
+//             style: {
+//               marginLeft: '20px',
+//               fontSize: '24px',
+//               maxWidth: '145px',
+//               whiteSpace: 'nowrap',
+//               overflow: 'hidden',
+//               textOverflow: 'ellipsis',
+//             },
+//           }, identity.name || ''),
+//           h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
+// >>>>>>> master:ui/app/components/account-dropdowns.js
         ]
       )
     })
+  }
+
+  indicateIfLoose (keyring) {
+    try { // Sometimes keyrings aren't loaded yet:
+      const type = keyring.type
+      const isLoose = type !== 'HD Key Tree'
+      return isLoose ? h('.keyring-label', 'LOOSE') : null
+    } catch (e) { return }
   }
 
   renderAccountSelector () {
@@ -389,7 +421,8 @@ AccountDropdowns.defaultProps = {
 
 AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
-  selected: PropTypes.string, // TODO: refactor to be more explicit: selectedAddress
+  selected: PropTypes.string,
+  keyrings: PropTypes.array,
 }
 
 const mapDispatchToProps = (dispatch) => {
