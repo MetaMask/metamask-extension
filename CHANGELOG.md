@@ -5,7 +5,10 @@
 - Add ability to export private keys as a file.
 - Add ability to export seed words as a file.
 - Changed state logs to a file download than a clipboard copy.
+- Fixed a long standing memory leak associated with filters installed by dapps
 - Fix link to support center.
+- Fixed tooltip icon locations to avoid overflow.
+- Warn users when a dapp proposes a high gas limit (90% of blockGasLimit or higher)
 
 ## 3.10.0 2017-9-11
 

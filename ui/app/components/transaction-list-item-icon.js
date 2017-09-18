@@ -35,7 +35,7 @@ TransactionIcon.prototype.render = function () {
     case 'submitted':
       return h(Tooltip, {
         title: 'Pending',
-        position: 'bottom',
+        position: 'right',
       }, [
         h('i.fa.fa-ellipsis-h', {
           style: {

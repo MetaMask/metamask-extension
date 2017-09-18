@@ -1,12 +1,18 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
-const pipe = require('pump')
+const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const EthStore = require('./lib/eth-store')
 const EthQuery = require('eth-query')
-const streamIntoProvider = require('web3-stream-provider/handler')
+const RpcEngine = require('json-rpc-engine')
+const debounce = require('debounce')
+const createEngineStream = require('json-rpc-middleware-stream/engineStream')
+const createFilterMiddleware = require('eth-json-rpc-filters')
+const createOriginMiddleware = require('./lib/createOriginMiddleware')
+const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
+const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -24,8 +30,6 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
-const debounce = require('debounce')
-
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -77,12 +81,13 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
+    this.blockTracker = this.provider
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
     this.ethStore = new EthStore({
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
     })
 
     // key mgmt
@@ -109,7 +114,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
       ethStore: this.ethStore,
     })
@@ -337,36 +342,43 @@ module.exports = class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
     if (this.blacklistController.checkForPhishing(originDomain)) {
-      console.log('MetaMask - sending phishing warning for', originDomain)
+      log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
     }
 
     // setup multiplexing
-    const mx = setupMultiplex(connectionStream)
+    const mux = setupMultiplex(connectionStream)
     // connect features
-    this.setupProviderConnection(mx.createStream('provider'), originDomain)
-    this.setupPublicConfig(mx.createStream('publicConfig'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
-    const mx = setupMultiplex(connectionStream)
+    const mux = setupMultiplex(connectionStream)
     // connect features
-    this.setupControllerConnection(mx.createStream('controller'))
-    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+    this.setupControllerConnection(mux.createStream('controller'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
   }
 
   sendPhishingWarning (connectionStream, hostname) {
-    const mx = setupMultiplex(connectionStream)
-    const phishingStream = mx.createStream('phishing')
+    const mux = setupMultiplex(connectionStream)
+    const phishingStream = mux.createStream('phishing')
     phishingStream.write({ hostname })
   }
 
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
-    outStream.pipe(dnode).pipe(outStream)
+    pump(
+      outStream,
+      dnode,
+      outStream,
+      (err) => {
+        if (err) log.error(err)
+      }
+    )
     dnode.on('remote', (remote) => {
       // push updates to popup
       const sendUpdate = remote.sendUpdate.bind(remote)
@@ -374,27 +386,42 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  setupProviderConnection (outStream, originDomain) {
-    streamIntoProvider(outStream, this.provider, onRequest, onResponse)
-    // append dapp origin domain to request
-    function onRequest (request) {
-      request.origin = originDomain
-    }
-    // log rpc activity
-    function onResponse (err, request, response) {
-      if (err) return console.error(err)
-      if (response.error) {
-        console.error('Error in RPC response:\n', response)
+  setupProviderConnection (outStream, origin) {
+    // setup json rpc engine stack
+    const engine = new RpcEngine()
+
+    // create filter polyfill middleware
+    const filterMiddleware = createFilterMiddleware({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+    })
+
+    engine.push(createOriginMiddleware({ origin }))
+    engine.push(createLoggerMiddleware({ origin }))
+    engine.push(filterMiddleware)
+    engine.push(createProviderMiddleware({ provider: this.provider }))
+
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+    pump(
+      outStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // cleanup filter polyfill middleware
+        filterMiddleware.destroy()
+        if (err) log.error(err)
       }
-      if (request.isMetamaskInternal) return
-      log.info(`RPC (${originDomain}):`, request, '->', response)
-    }
+    )
   }
 
   setupPublicConfig (outStream) {
-    pipe(
+    pump(
       this.publicConfigStore,
-      outStream
+      outStream,
+      (err) => {
+        if (err) log.error(err)
+      }
     )
   }
 

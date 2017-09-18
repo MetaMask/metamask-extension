@@ -65,7 +65,7 @@ TransactionListItem.prototype.render = function () {
 
       h(Tooltip, {
         title: 'Transaction Number',
-        position: 'bottom',
+        position: 'right',
       }, [
         h('span', {
           style: {
