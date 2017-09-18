@@ -28,7 +28,7 @@ FiatValue.prototype.render = function () {
     fiatTooltipNumber = 'Unknown'
   }
 
-  return fiatDisplay(fiatDisplayNumber, currentCurrency)
+  return fiatDisplay(fiatDisplayNumber, currentCurrency.toUpperCase())
 }
 
 function fiatDisplay (fiatDisplayNumber, fiatSuffix) {

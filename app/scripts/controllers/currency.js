@@ -8,7 +8,7 @@ class CurrencyController {
 
   constructor (opts = {}) {
     const initState = extend({
-      currentCurrency: 'ethusd',
+      currentCurrency: 'usd',
       conversionRate: 0,
       conversionDate: 'N/A',
     }, opts.initState)
@@ -45,7 +45,7 @@ class CurrencyController {
 
   updateConversionRate () {
     const currentCurrency = this.getCurrentCurrency()
-    return fetch(`https://api.infura.io/v1/ticker/${currentCurrency}`)
+    return fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency}`)
     .then(response => response.json())
     .then((parsedResponse) => {
       this.setConversionRate(Number(parsedResponse.bid))
