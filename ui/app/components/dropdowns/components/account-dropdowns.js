@@ -453,5 +453,11 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-module.exports = connect(null, mapDispatchToProps)(AccountDropdowns)
+function mapStateToProps (state) {
+  return {
+    keyrings: state.metamask.keyrings,
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDropdowns)
 
