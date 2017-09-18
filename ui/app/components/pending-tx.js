@@ -140,6 +140,13 @@ PendingTx.prototype.getGasFee = function () {
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
+  
+  // From latest master
+//   const gasLimit = new BN(parseInt(blockGasLimit))
+//   const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
+//   const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 18, 20)
+//   const safeGasLimit = safeGasLimitBN.toString(10)
+
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
@@ -248,6 +255,8 @@ PendingTx.prototype.render = function () {
   // const insufficientBalance = balanceBn.lt(maxCost)
   // const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
   // const showRejectAll = props.unconfTxListLength > 1
+//   const dangerousGasLimit = gasBn.gte(saferGasLimitBN)
+//   const gasLimitSpecified = txMeta.gasLimitSpecified
 
   this.inputs = []
 
