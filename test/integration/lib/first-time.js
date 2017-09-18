@@ -10,19 +10,12 @@ QUnit.test('render init screen', (assert) => {
   })
 })
 
-// QUnit.testDone(({ module, name, total, passed, failed, skipped, todo, runtime }) => {
-//   if (failed > 0) {
-//     const app = $('iframe').contents()[0].documentElement
-//     console.warn('Test failures - dumping DOM:')
-//     console.log(app.innerHTML)
-//   }
-// })
-
 async function runFirstTimeUsageTest(assert, done) {
+  let waitTime = 0
+  if (window.METAMASK_PLATFORM_TYPE === 'mascara') waitTime = 4000
+  await timeout(waitTime)
 
-  await timeout()
-
-  const app = $('#app-content .mock-app-root')
+  const app = $('#app-content')
 
   // recurse notices
   while (true) {
@@ -32,10 +25,12 @@ async function runFirstTimeUsageTest(assert, done) {
       const termsPage = app.find('.markdown')[0]
       termsPage.scrollTop = termsPage.scrollHeight
       await timeout()
+      console.log('Clearing notice')
       button.click()
       await timeout()
     } else {
       // exit loop
+      console.log('No more notices...')
       break
     }
   }
@@ -129,10 +124,8 @@ async function runFirstTimeUsageTest(assert, done) {
   assert.ok(children2, 'All network options present')
 }
 
-function timeout(time) {
-  return new Promise(function (resolve, reject) {
-    setTimeout(function () {
-      resolve()
-    }, time * 3 || 1500)
+function timeout (time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, time || 1500)
   })
 }
