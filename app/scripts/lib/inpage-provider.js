@@ -1,8 +1,9 @@
-const pipe = require('pump')
-const StreamProvider = require('web3-stream-provider')
+const pump = require('pump')
+const RpcEngine = require('json-rpc-engine')
+const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
+const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
-const ObjectMultiplex = require('./obj-multiplex')
-const createRandomId = require('./random-id')
+const ObjectMultiplex = require('obj-multiplex')
 
 module.exports = MetamaskInpageProvider
 
@@ -10,64 +11,46 @@ function MetamaskInpageProvider (connectionStream) {
   const self = this
 
   // setup connectionStream multiplexing
-  var multiStream = self.multiStream = ObjectMultiplex()
-  pipe(
+  const mux = self.mux = new ObjectMultiplex()
+  pump(
     connectionStream,
-    multiStream,
+    mux,
     connectionStream,
     (err) => logStreamDisconnectWarning('MetaMask', err)
   )
 
   // subscribe to metamask public config (one-way)
   self.publicConfigStore = new LocalStorageStore({ storageKey: 'MetaMask-Config' })
-  pipe(
-    multiStream.createStream('publicConfig'),
+  pump(
+    mux.createStream('publicConfig'),
     self.publicConfigStore,
     (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
   )
 
   // ignore phishing warning message (handled elsewhere)
-  multiStream.ignoreStream('phishing')
+  mux.ignoreStream('phishing')
 
   // connect to async provider
-  const asyncProvider = self.asyncProvider = new StreamProvider()
-  pipe(
-    asyncProvider,
-    multiStream.createStream('provider'),
-    asyncProvider,
+  const streamMiddleware = createStreamMiddleware()
+  pump(
+    streamMiddleware.stream,
+    mux.createStream('provider'),
+    streamMiddleware.stream,
     (err) => logStreamDisconnectWarning('MetaMask RpcProvider', err)
   )
-  // start and stop polling to unblock first block lock
 
-  self.idMap = {}
+  // handle sendAsync requests via dapp-side rpc engine
+  const rpcEngine = new RpcEngine()
+  rpcEngine.push(createIdRemapMiddleware())
+  rpcEngine.push(streamMiddleware)
+  self.rpcEngine = rpcEngine
 }
 
 // handle sendAsync requests via asyncProvider
 // also remap ids inbound and outbound
 MetamaskInpageProvider.prototype.sendAsync = function (payload, cb) {
   const self = this
-
-  // rewrite request ids
-  const request = eachJsonMessage(payload, (_message) => {
-    const message = Object.assign({}, _message)
-    const newId = createRandomId()
-    self.idMap[newId] = message.id
-    message.id = newId
-    return message
-  })
-
-  // forward to asyncProvider
-  self.asyncProvider.sendAsync(request, (err, _res) => {
-    if (err) return cb(err)
-    // transform messages to original ids
-    const res = eachJsonMessage(_res, (message) => {
-      const oldId = self.idMap[message.id]
-      delete self.idMap[message.id]
-      message.id = oldId
-      return message
-    })
-    cb(null, res)
-  })
+  self.rpcEngine.handle(payload, cb)
 }
 
 
@@ -123,14 +106,6 @@ MetamaskInpageProvider.prototype.isConnected = function () {
 MetamaskInpageProvider.prototype.isMetaMask = true
 
 // util
-
-function eachJsonMessage (payload, transformFn) {
-  if (Array.isArray(payload)) {
-    return payload.map(transformFn)
-  } else {
-    return transformFn(payload)
-  }
-}
 
 function logStreamDisconnectWarning (remoteLabel, err) {
   let warningMsg = `MetamaskInpageProvider - lost connection to ${remoteLabel}`
