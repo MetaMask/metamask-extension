@@ -3,6 +3,8 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const Tooltip = require('./components/tooltip.js')
+
 
 const ethUtil = require('ethereumjs-util')
 const abi = require('human-standard-token-abi')
@@ -15,6 +17,7 @@ module.exports = connect(mapStateToProps)(AddTokenScreen)
 
 function mapStateToProps (state) {
   return {
+    identities: state.metamask.identities,
   }
 }
 
@@ -64,15 +67,25 @@ AddTokenScreen.prototype.render = function () {
         }, [
 
           h('div', [
-            h('span', {
-              style: { fontWeight: 'bold', paddingRight: '10px'},
-            }, 'Token Address'),
+            h(Tooltip, {
+              position: 'top',
+              title: 'The contract of the actual token contract. Click for more info.',
+            }, [
+              h('a', {
+                style: { fontWeight: 'bold', paddingRight: '10px'},
+                href: 'https://consensyssupport.happyfox.com/staff/kb/article/24-what-is-a-token-contract-address',
+                target: '_blank',
+              }, [
+                h('span', 'Token Contract Address  '),
+                h('i.fa.fa-question-circle'),
+              ]),
+            ]),
           ]),
 
           h('section.flex-row.flex-center', [
             h('input#token-address', {
               name: 'address',
-              placeholder: 'Token Address',
+              placeholder: 'Token Contract Address',
               onChange: this.tokenAddressDidChange.bind(this),
               style: {
                 width: 'inherit',
@@ -171,7 +184,9 @@ AddTokenScreen.prototype.tokenAddressDidChange = function (event) {
 AddTokenScreen.prototype.validateInputs = function () {
   let msg = ''
   const state = this.state
+  const identitiesList = Object.keys(this.props.identities)
   const { address, symbol, decimals } = state
+  const standardAddress = ethUtil.addHexPrefix(address).toLowerCase()
 
   const validAddress = ethUtil.isValidAddress(address)
   if (!validAddress) {
@@ -189,7 +204,12 @@ AddTokenScreen.prototype.validateInputs = function () {
     msg += 'Symbol must be between 0 and 10 characters.'
   }
 
-  const isValid = validAddress && validDecimals
+  const ownAddress = identitiesList.includes(standardAddress)
+  if (ownAddress) {
+    msg = 'Personal address detected. Input the token contract address.'
+  }
+
+  const isValid = validAddress && validDecimals && !ownAddress
 
   if (!isValid) {
     this.setState({
@@ -215,4 +235,3 @@ AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address)
     this.setState({ symbol: symbol[0], decimals: decimals[0].toString() })
   }
 }
-

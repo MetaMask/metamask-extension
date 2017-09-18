@@ -2,6 +2,61 @@
 
 ## Current Master
 
+- Add ability to export private keys as a file.
+- Add ability to export seed words as a file.
+- Changed state logs to a file download than a clipboard copy.
+- Fixed a long standing memory leak associated with filters installed by dapps
+- Fix link to support center.
+
+## 3.10.0 2017-9-11
+
+- Readded loose keyring label back into the account list.
+- Remove cryptonator from chrome permissions.
+- Add info on token contract addresses.
+- Add validation preventing users from inputting their own addresses as token tracking addresses.
+- Added button to reject all transactions (thanks to davidp94! https://github.com/davidp94)
+
+## 3.9.13 2017-9-8
+
+- Changed the way we initialize the inpage provider to fix a bug affecting some developers.
+
+## 3.9.12 2017-9-6
+
+- Fix bug that prevented Web3 1.0 compatibility
+- Make eth_sign deprecation warning less noisy
+- Add useful link to eth_sign deprecation warning.
+- Fix bug with network version serialization over synchronous RPC
+- Add MetaMask version to state logs.
+- Add the total amount of tokens when multiple tokens are added under the token list
+- Use HTTPS links for Etherscan.
+- Update Support center link to new one with HTTPS.
+- Make web3 deprecation notice more useful by linking to a descriptive article.
+
+## 3.9.11 2017-8-24
+
+- Fix nonce calculation bug that would sometimes generate very wrong nonces.
+- Give up resubmitting a transaction after 3500 blocks.
+
+## 3.9.10 2017-8-23
+
+- Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
+- Remove link to eth-tx-viz from identicons in tx history.
+
+## 3.9.9 2017-8-18
+
+- Fix bug where some transaction submission errors would show an empty screen.
+- Fix bug that could mis-render token balances when very small.
+- Fix formatting of eth_sign "Sign Message" view.
+- Add deprecation warning to eth_sign "Sign Message" view.
+
+## 3.9.8 2017-8-16
+
+- Reenable token list.
+- Remove default tokens.
+
+## 3.9.7 2017-8-15
+
+- hotfix - disable token list
 - Added a deprecation warning for web3 https://github.com/ethereum/mist/releases/tag/v0.9.0
 
 ## 3.9.6 2017-8-09

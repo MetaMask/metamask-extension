@@ -80,7 +80,7 @@ UnlockScreen.prototype.render = function () {
             color: 'rgb(247, 134, 28)',
             textDecoration: 'underline',
           },
-        }, 'I forgot my password.'),
+        }, 'Restore from seed phrase'),
       ]),
     ])
   )

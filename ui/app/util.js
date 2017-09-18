@@ -53,6 +53,7 @@ module.exports = {
   getTxFeeBn,
   shortenBalance,
   getContractAtAddress,
+  exportAsFile: exportAsFile,
 }
 
 function valuesFor (obj) {
@@ -249,4 +250,19 @@ function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimi
 
 function getContractAtAddress (tokenAddress) {
   return global.eth.contract(abi).at(tokenAddress)
+}
+
+function exportAsFile (filename, data) {
+  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
+  const blob = new Blob([data], {type: 'text/csv'})
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, filename)
+  } else {
+    const elem = window.document.createElement('a')
+    elem.href = window.URL.createObjectURL(blob)
+    elem.download = filename
+    document.body.appendChild(elem)
+    elem.click()
+    document.body.removeChild(elem)
+  }
 }
