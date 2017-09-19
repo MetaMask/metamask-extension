@@ -4,6 +4,10 @@
 
 - Fix bug that would sometimes display transactions as failed that could be successfully mined.
 
+## 3.10.2 2017-9-18
+
+rollback to 3.10.0 due to bug
+
 ## 3.10.1 2017-9-18
 
 - Add ability to export private keys as a file.
