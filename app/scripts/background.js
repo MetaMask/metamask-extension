@@ -20,6 +20,7 @@ window.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 
 const platform = new ExtensionPlatform()
+platform.context = 'extension'
 const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
 
