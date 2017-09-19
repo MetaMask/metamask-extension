@@ -54,6 +54,7 @@ module.exports = {
   shortenBalance,
   getContractAtAddress,
   exportAsFile: exportAsFile,
+  isInvalidChecksumAddress,
 }
 
 function valuesFor (obj) {
@@ -81,6 +82,12 @@ function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+}
+
+function isInvalidChecksumAddress (address) {
+  var prefixed = ethUtil.addHexPrefix(address)
+  if (address === '0x0000000000000000000000000000000000000000') return false
+  return !isAllOneCase(prefixed) && !ethUtil.isValidChecksumAddress(prefixed) && ethUtil.isValidAddress(prefixed)
 }
 
 function isAllOneCase (address) {

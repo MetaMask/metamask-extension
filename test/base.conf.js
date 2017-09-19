@@ -2,7 +2,7 @@
 // Generated on Mon Sep 11 2017 18:45:48 GMT-0700 (PDT)
 
 module.exports = function(config) {
-  config.set({
+  return {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: process.cwd(),
 
@@ -16,9 +16,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'development/bundle.js',
       'test/integration/jquery-3.1.0.min.js',
-      'test/integration/bundle.js',
       { pattern: 'dist/chrome/images/**/*.*', watched: false, included: false, served: true },
       { pattern: 'dist/chrome/fonts/**/*.*', watched: false, included: false, served: true },
     ],
@@ -57,5 +55,5 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity
-  })
+  }
 }
