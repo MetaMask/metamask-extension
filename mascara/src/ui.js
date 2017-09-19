@@ -2,8 +2,6 @@ const injectCss = require('inject-css')
 const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
 const SwStream = require('sw-stream/lib/sw-stream.js')
 const MetaMaskUiCss = require('../../ui/css')
-const setupIframe = require('./lib/setup-iframe.js')
-const MetamaskInpageProvider = require('../../app/scripts/lib/inpage-provider.js')
 const MetamascaraPlatform = require('../../app/scripts/platforms/window')
 const startPopup = require('../../app/scripts/popup-core')
 
@@ -17,6 +15,7 @@ const container = document.getElementById('app-content')
 
 var name = 'popup'
 window.METAMASK_UI_TYPE = name
+window.METAMASK_PLATFORM_TYPE = 'mascara'
 
 let intervalDelay =  Math.floor(Math.random() * (30000 - 1000)) + 1000
 
@@ -32,25 +31,39 @@ const connectApp = function (readSw) {
     serviceWorker: background.controller,
     context: name,
   })
-  startPopup({container, connectionStream}, (err, store) => {
-    if (err) return displayCriticalError(err)
-    store.subscribe(() => {
-      const state = store.getState()
-      if (state.appState.shouldClose) window.close()
+  return new Promise((resolve, reject) => {
+    startPopup({ container, connectionStream }, (err, store) => {
+      console.log('hello from MetaMascara ui!')
+      if (err) reject(err)
+      store.subscribe(() => {
+        const state = store.getState()
+        if (state.appState.shouldClose) window.close()
+      })
+      resolve()
     })
   })
 }
-background.on('ready', (sw) => {
-  background.removeListener('updatefound', connectApp)
-  connectApp(sw)
+background.on('ready', async (sw) => {
+  try {
+    background.removeListener('updatefound', connectApp)
+    await timeout(1000)
+    await connectApp(sw)
+    console.log('hello from cb ready event!')
+  } catch (e) {
+    console.error(e)
+  }
 })
-background.on('updatefound', () => window.location.reload())
+background.on('updatefound', windowReload)
 
 background.startWorker()
-.then(() => {
-  setTimeout(() => {
-    const appContent = document.getElementById(`app-content`)
-    if (!appContent.children.length) window.location.reload()
-  }, 2000)
-})
-console.log('hello from MetaMascara ui!')
+
+function windowReload() {
+  if (window.METAMASK_SKIP_RELOAD) return
+  window.location.reload()
+}
+
+function timeout (time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time || 1500)
+  })
+}

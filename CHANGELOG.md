@@ -2,11 +2,22 @@
 
 ## Current Master
 
+- Fix bug that would sometimes display transactions as failed that could be successfully mined.
+
+## 3.10.2 2017-9-18
+
+rollback to 3.10.0 due to bug
+
+## 3.10.1 2017-9-18
+
 - Add ability to export private keys as a file.
 - Add ability to export seed words as a file.
 - Changed state logs to a file download than a clipboard copy.
+- Add specific error for failed recipient address checksum.
 - Fixed a long standing memory leak associated with filters installed by dapps
 - Fix link to support center.
+- Fixed tooltip icon locations to avoid overflow.
+- Warn users when a dapp proposes a high gas limit (90% of blockGasLimit or higher)
 
 ## 3.10.0 2017-9-11
 
