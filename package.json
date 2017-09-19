@@ -99,6 +99,7 @@
     "json-rpc-engine": "^3.1.0",
     "json-rpc-middleware-stream": "^1.0.0",
     "loglevel": "^1.4.1",
+    "metamascara": "^1.1.1",
     "metamask-logo": "^2.1.2",
     "mississippi": "^1.2.0",
     "mkdirp": "^0.5.1",
