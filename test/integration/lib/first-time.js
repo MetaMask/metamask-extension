@@ -53,7 +53,7 @@ async function runFirstTimeUsageTest(assert, done) {
   const createButton = app.find('button.primary')[0]
   createButton.click()
 
-  await timeout(1500)
+  await timeout(3000)
 
   const created = app.find('h3')[0]
   assert.equal(created.textContent, 'Vault Created', 'Vault created screen')
