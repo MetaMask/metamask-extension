@@ -1,6 +1,7 @@
 const Web3 = require('web3')
 const setupProvider = require('./lib/setup-provider.js')
-const setupDappAutoReload = require('../../app/scripts/lib/auto-reload.js')
+const setupDappAutoReloadForMetaMask = require('./lib/auto-reload-and-export.js')
+const setupDappAutoReloadForWeb3 = require('../../app/scripts/lib/auto-reload.js')
 const MASCARA_ORIGIN = process.env.MASCARA_ORIGIN || 'http://localhost:9001'
 console.log('MASCARA_ORIGIN:', MASCARA_ORIGIN)
 
@@ -13,8 +14,11 @@ const provider = setupProvider({
 })
 instrumentForUserInteractionTriggers(provider)
 
-const web3 = new Web3(provider)
-setupDappAutoReload(web3, provider.publicConfigStore)
+// export metamask
+setupDappAutoReloadForMetaMask(provider, provider.publicConfigStore)
+// export web3
+const web3 = new Web3(global.metamask.createDefaultProvider())
+setupDappAutoReloadForWeb3(web3, provider.publicConfigStore)
 //
 // ui stuff
 //
@@ -27,7 +31,7 @@ window.addEventListener('click', maybeTriggerPopup)
 //
 
 function maybeTriggerPopup(){
-  if (!shouldPop) return
+  if (!shouldPop || window.META_MASK) return
   shouldPop = false
   window.open(MASCARA_ORIGIN, '', 'width=360 height=500')
   console.log('opening window...')
@@ -35,7 +39,7 @@ function maybeTriggerPopup(){
 
 function instrumentForUserInteractionTriggers(provider){
   const _super = provider.sendAsync.bind(provider)
-  provider.sendAsync = function(payload, cb){
+  provider.sendAsync = function (payload, cb) {
     if (payload.method === 'eth_sendTransaction') {
       console.log('saw send')
       shouldPop = true
