@@ -265,6 +265,75 @@
   background-color: $alto;
 }
 
+// Export Private Key Modal
+
+.account-modal-container .account-name {
+  margin-top: 9px;
+  font-size: 20px;
+}
+
+.account-modal-container .modal-body-title {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.private-key-password {
+  display: flex;
+  flex-direction: column;
+}
+
+.private-key-password-label {
+  color: $scorpion;
+  font-size: 14px;
+  line-height: 18px;
+  margin-bottom: 10px;
+}
+
+.private-key-password-input {
+  padding: 10px 0 13px 17px;
+  font-size: 16px;
+  line-height: 21px;
+  width: 291px;
+  height: 44px;
+}
+
+.private-key-password::-webkit-input-placeholder {
+  color: $dusty-gray;
+  font-family: 'Montserrat UltraLight';
+}
+
+.private-key-password-warning {
+  border-radius: 8px;
+  background-color: #FFF6F6;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  color: $crimson;
+  width: 292px;
+  padding: 9px 15px;
+  margin-top: 18px;
+  font-family: 'Montserrat Regular';
+}
+
+.export-private-key-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  .btn-clear {
+    width: 141px;
+    height: 54px;
+  }
+
+  .btn-cancel {
+    margin-right: 15px;
+    border-color: $dusty-gray;
+    color: $scorpion;
+  }
+}
+
+
 // New Account Modal
 .new-account-modal-wrapper {
   display: flex;
