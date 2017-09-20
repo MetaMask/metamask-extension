@@ -337,9 +337,7 @@ class AccountDropdowns extends Component {
           DropdownMenuItem,
           {
             closeMenu: () => {},
-            onClick: () => {
-              actions.requestAccountExport()
-            },
+            onClick: () => this.props.actions.showExportPrivateKeyModal(),
             style: Object.assign(
               dropdownMenuItemStyle,
               menuItemStyles,
@@ -429,7 +427,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
       showConfigPage: () => dispatch(actions.showConfigPage()),
-      requestAccountExport: () => dispatch(actions.requestExportAccount()),
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       showAccountDetailModal: () => {
         dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
@@ -442,6 +439,9 @@ const mapDispatchToProps = (dispatch) => {
       },
       showNewAccountModal: () => {
         dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
+      },
+      showExportPrivateKeyModal: () => {
+        dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
       },
       showAddTokenPage: () => {
         dispatch(actions.showAddTokenPage())

@@ -214,45 +214,48 @@
 
 // Account Details Modal
 
-.account-modal-container .qr-header {
-  margin-top: 9px;
-  font-size: 20px;
-}
+.account-modal-container {
 
-.account-modal-container .qr-wrapper {
-  margin-top: 5px;
-}
+  .qr-header {
+    margin-top: 9px;
+    font-size: 20px;
+  }
 
-.account-modal-container .ellip-address-wrapper {
-  display: flex;
-  justify-content: center;
-  border: 1px solid $alto;
-  padding: 5px 10px;
-  font-family: 'Montserrat Light';
-  margin-top: 7px;
-  width: 286px;
-}
+  .qr-wrapper {
+    margin-top: 5px;
+  }
 
-.account-modal-container .qr-ellip-address {
-  width: 247px;
-  border: none;
-  font-family: 'Montserrat Light';
-  font-size: 14px;
-}
+  .ellip-address-wrapper {
+    display: flex;
+    justify-content: center;
+    border: 1px solid $alto;
+    padding: 5px 10px;
+    font-family: 'Montserrat Light';
+    margin-top: 7px;
+    width: 286px;
+  }
 
-.account-modal-container .btn-clear {
-  min-height: 28px;
-  font-size: 14px;
-  border-color: $curious-blue;
-  color: $curious-blue;
-  border-radius: 2px;
-  flex-basis: 100%;
-  width: 75%;
-  margin-top: 17px;
-  padding: 10px 22px;
-  height: 44px;
-  width: 235px;
-  font-family: 'Montserrat Light';
+  .qr-ellip-address, .ellip-address {
+    width: 247px;
+    border: none;
+    font-family: 'Montserrat Light';
+    font-size: 14px;
+  }
+
+  .btn-clear {
+    min-height: 28px;
+    font-size: 14px;
+    border-color: $curious-blue;
+    color: $curious-blue;
+    border-radius: 2px;
+    flex-basis: 100%;
+    width: 75%;
+    margin-top: 17px;
+    padding: 10px 22px;
+    height: 44px;
+    width: 235px;
+    font-family: 'Montserrat Light';
+  }
 }
 
 .account-modal-divider {
