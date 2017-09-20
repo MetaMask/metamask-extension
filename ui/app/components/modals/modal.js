@@ -11,7 +11,26 @@ const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-n
 const BuyOptions = require('./buy-options-modal')
 const AccountDetailsModal = require('./account-details-modal')
 const EditAccountNameModal = require('./edit-account-name-modal')
+const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
+
+const accountModalStyle = {
+  mobileModalStyle: {
+    width: '95%',
+    top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    borderRadius: '4px',
+  },
+  laptopModalStyle: {
+    width: '360px',
+    top: 'calc(33% + 45px)',
+    boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
+    borderRadius: '4px',
+  },
+  contentStyle: {
+    borderRadius: '4px',
+  },
+}
 
 const MODALS = {
   BUY: {
@@ -51,21 +70,14 @@ const MODALS = {
     contents: [
       h(AccountDetailsModal, {}, []),
     ],
-    mobileModalStyle: {
-      width: '95%',
-      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      borderRadius: '4px',
-    },
-    laptopModalStyle: {
-      width: '360px',
-      top: 'calc(33% + 45px)',
-      boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
-      borderRadius: '4px',
-    },
-    contentStyle: {
-      borderRadius: '4px',
-    },
+    ...accountModalStyle,
+  },
+
+  EXPORT_PRIVATE_KEY: {
+    contents: [
+      h(ExportPrivateKeyModal, {}, []),
+    ],
+    ...accountModalStyle,
   },
 
   NEW_ACCOUNT: {
