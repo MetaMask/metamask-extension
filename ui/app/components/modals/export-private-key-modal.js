@@ -37,5 +37,27 @@ ExportPrivateKeyModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
       
+      h('span.modal-body-title', 'Download Private Keys'),
+
+      h('div.private-key-password', {}, [
+        h('span.private-key-password-label', 'Type Your Password'),
+
+        h('input.private-key-password-input', {
+          type: 'password',
+          placeholder: 'Type password',
+        }),
+      ]),
+
+      h('div.private-key-password-warning', `Warning: Never disclose this key.
+        Anyone with your private keys can take steal any assets held in your
+        account.`
+      ),
+
+      h('div.export-private-key-buttons', {}, [
+        h('button.btn-clear.btn-cancel', {}, 'Cancel'),
+
+        h('button.btn-clear', 'Download'),
+      ]),
+      
   ])
 }
