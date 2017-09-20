@@ -6,6 +6,7 @@ const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
+const { isValidAddress } = require('../../util')
 
 // const BalanceComponent = require('./balance-component')
 const Identicon = require('../identicon')
@@ -14,12 +15,12 @@ const CurrencyToggle = require('../send/currency-toggle')
 const GasTooltip = require('../send/gas-tooltip')
 const GasFeeDisplay = require('../send/gas-fee-display')
 
-
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendTokenScreen)
 
 function mapStateToProps (state) {
   // const sidebarOpen = state.appState.sidebarOpen
 
+  const { warning } = state.appState
   const identities = state.metamask.identities
   const addressBook = state.metamask.addressBook
   const conversionRate = state.metamask.conversionRate
@@ -34,6 +35,7 @@ function mapStateToProps (state) {
   const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
   // const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
   // const identity = identities[selectedAddress]
+
   return {
     // sidebarOpen,
     selectedAddress,
@@ -45,6 +47,7 @@ function mapStateToProps (state) {
     tokenExchangeRate,
     currentBlockGasLimit,
     selectedToken,
+    warning,
     // selectedToken: selectors.getSelectedToken(state),
     // identity,
     // network,
@@ -106,13 +109,6 @@ SendTokenScreen.prototype.validate = function () {
   const gasLimit = parseInt(hexGasLimit, 16) / 1000000000
   const amount = Number(stringAmount)
 
-  if (to && amount && gasPrice && gasLimit) {
-    return {
-      isValid: true,
-      errors: {},
-    }
-  }
-
   const errors = {
     to: !to ? 'Required' : null,
     amount: !amount ? 'Required' : null,
@@ -120,9 +116,14 @@ SendTokenScreen.prototype.validate = function () {
     gasLimit: !gasLimit ? 'Gas Limit Required' : null,
   }
 
+  if(to && !isValidAddress(to)) {
+    errors.to = 'Invalid address'
+  }
+
+  const isValid = Object.entries(errors).every(([key, value]) => value === null)
   return {
-    isValid: false,
-    errors,
+    isValid,
+    errors: isValid ? {} : errors,
   }
 }
 
@@ -145,7 +146,6 @@ SendTokenScreen.prototype.submit = function () {
   } = this.props
 
   const { nickname = ' ' } = identities[to] || {}
-
   const { isValid, errors } = this.validate()
 
   if (!isValid) {
@@ -340,6 +340,7 @@ SendTokenScreen.prototype.render = function () {
   const {
     selectedTokenAddress,
     selectedToken,
+    warning,
   } = this.props
 
   return h('div.send-token', [
@@ -359,6 +360,11 @@ SendTokenScreen.prototype.render = function () {
       this.renderAmountInput(),
       this.renderGasInput(),
       this.renderMemoInput(),
+      warning && h('div.send-screen-input-wrapper--error', {}, 
+        h('div.send-screen-input-wrapper__error-message', [
+          warning,
+        ])
+      ),
     ]),
     this.renderButtons(),
   ])
