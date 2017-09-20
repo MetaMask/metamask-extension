@@ -55,6 +55,7 @@ module.exports = {
   getContractAtAddress,
   exportAsFile: exportAsFile,
   isInvalidChecksumAddress,
+  allNull,
 }
 
 function valuesFor (obj) {
@@ -272,4 +273,8 @@ function exportAsFile (filename, data) {
     elem.click()
     document.body.removeChild(elem)
   }
+}
+
+function allNull (obj) {
+  return Object.entries(obj).every(([key, value]) => value === null)
 }

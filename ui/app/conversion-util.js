@@ -123,7 +123,20 @@ const addCurrencies = (a, b, { toNumericBase, numberOfDecimals }) => {
   })
 }
 
+const conversionGreaterThan = (
+  { value, fromNumericBase },
+  { value: compareToValue, fromNumericBase: compareToBase },
+) => {
+  const firstValue = converter({ value, fromNumericBase })
+  const secondValue = converter({
+    value: compareToValue,
+    fromNumericBase: compareToBase,
+  })
+  return firstValue.gt(secondValue)
+}
+
 module.exports = {
   conversionUtil,
   addCurrencies,
+  conversionGreaterThan,
 }

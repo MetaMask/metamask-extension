@@ -18,8 +18,8 @@ const {
   signTx,
 } = require('./actions')
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
-const { isHex, numericBalance, isValidAddress } = require('./util')
-const { conversionUtil } = require('./conversion-util')
+const { isHex, numericBalance, isValidAddress, allNull } = require('./util')
+const { conversionUtil, conversionGreaterThan } = require('./conversion-util')
 const BigNumber = require('bignumber.js')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
@@ -51,7 +51,7 @@ function mapStateToProps (state) {
     error: warning && warning.split('.')[0],
     account,
     identity: identities[address],
-    balance: account ? numericBalance(account.balance) : null,
+    balance: account ? account.balance : null,
   }
 }
 
@@ -65,8 +65,8 @@ function SendTransactionScreen () {
     newTx: {
       from: '',
       to: '',
-      // these values are hardcoded, so "Next" can be clicked
-      amount: '0x0', // see L544
+      amount: 0,
+      amountToSend: '0x0',
       gasPrice: '0x5d21dba00',
       gas: '0x7b0d',
       txData: null,
@@ -74,6 +74,8 @@ function SendTransactionScreen () {
     },
     activeCurrency: 'USD', 
     tooltipIsOpen: false,
+    errors: {},
+    isValid: false,
   }
 
   this.back = this.back.bind(this)
@@ -81,12 +83,26 @@ function SendTransactionScreen () {
   this.onSubmit = this.onSubmit.bind(this)
   this.setActiveCurrency = this.setActiveCurrency.bind(this)
   this.toggleTooltip = this.toggleTooltip.bind(this)
+  this.validate = this.validate.bind(this)
+  this.getAmountToSend = this.getAmountToSend.bind(this)
+  this.setErrorsFor = this.setErrorsFor.bind(this)
+  this.clearErrorsFor = this.clearErrorsFor.bind(this)
 
   this.renderFromInput = this.renderFromInput.bind(this)
   this.renderToInput = this.renderToInput.bind(this)
   this.renderAmountInput = this.renderAmountInput.bind(this)
   this.renderGasInput = this.renderGasInput.bind(this)
   this.renderMemoInput = this.renderMemoInput.bind(this)
+  this.renderErrorMessage = this.renderErrorMessage.bind(this)
+}
+
+SendTransactionScreen.prototype.renderErrorMessage = function(errorType, warning) {
+  const { errors } = this.state
+  const errorMessage = errors[errorType];
+
+  return errorMessage || warning
+    ? h('div.send-screen-input-wrapper__error-message', [ errorMessage || warning ])
+    : null
 }
 
 SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
@@ -106,6 +122,8 @@ SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
           },
         })
       },
+      onBlur: () => this.setErrorsFor('from'),
+      onFocus: () => this.clearErrorsFor('from'),
     }),
 
     h('datalist#accounts', [
@@ -117,6 +135,8 @@ SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
         })
       }),
     ]),
+
+    this.renderErrorMessage('from'),
 
   ])
 }
@@ -139,6 +159,8 @@ SendTransactionScreen.prototype.renderToInput = function (to, identities, addres
           },
         })
       },
+      onBlur: () => this.setErrorsFor('to'),
+      onFocus: () => this.clearErrorsFor('to'),
     }),
 
     h('datalist#addresses', [
@@ -159,6 +181,8 @@ SendTransactionScreen.prototype.renderToInput = function (to, identities, addres
         })
       }),
     ]),
+
+    this.renderErrorMessage('to'),
 
   ])
 }
@@ -183,11 +207,16 @@ SendTransactionScreen.prototype.renderAmountInput = function (activeCurrency) {
             this.state.newTx,
             {
               amount: event.target.value,
+              amountToSend: this.getAmountToSend(event.target.value),
             }
           ),
         })
       },
+      onBlur: () => this.setErrorsFor('amount'),
+      onFocus: () => this.clearErrorsFor('amount'),
     }),
+
+    this.renderErrorMessage('amount'),
 
   ])
 }
@@ -260,14 +289,13 @@ SendTransactionScreen.prototype.render = function () {
 
   const props = this.props
   const {
-    // selectedIdentity,
-    // network,
+    warning,
     identities,
     addressBook,
     conversionRate,
   } = props
 
-  const { blockGasLimit, newTx, activeCurrency } = this.state
+  const { blockGasLimit, newTx, activeCurrency, isValid } = this.state
   const { gas, gasPrice } = newTx
 
   return (
@@ -292,12 +320,15 @@ SendTransactionScreen.prototype.render = function () {
 
         this.renderMemoInput(),
 
+        this.renderErrorMessage(null, warning),
+
       ]),
 
       // Buttons underneath card
       h('section.flex-column.flex-center', [
         h('button.btn-secondary.send-screen__send-button', {
-          onClick: (event) => this.onSubmit(event),
+          className: !isValid && 'send-screen__send-button__disabled',
+          onClick: (event) => isValid && this.onSubmit(event),
         }, 'Next'),
         h('button.btn-tertiary.send-screen__cancel-button', {
           onClick: this.back,
@@ -325,62 +356,140 @@ SendTransactionScreen.prototype.back = function () {
   this.props.dispatch(backToAccountDetail(address))
 }
 
+SendTransactionScreen.prototype.validate = function (balance, amountToSend, { to, from }) {
+  const sufficientBalance = conversionGreaterThan(
+    {
+      value: balance,
+      fromNumericBase: 'hex',
+    },
+    {
+      value: amountToSend,
+      fromNumericBase: 'hex',
+    },
+  )
+
+  const amountLessThanZero = conversionGreaterThan(
+    {
+      value: 0,
+      fromNumericBase: 'dec',
+    },
+    {
+      value: amountToSend,
+      fromNumericBase: 'hex',
+    },
+  )
+
+  const errors = {}
+
+  if (!sufficientBalance) {
+    errors.amount = 'Insufficient funds.'
+  }
+
+  if (amountLessThanZero) {
+    errors.amount = 'Can not send negative amounts of ETH.'
+  }
+
+  if (!from) {
+    errors.from = 'Required'
+  }
+
+  if (from && !isValidAddress(from)) {
+    errors.from = 'Sender address is invalid.'
+  }
+
+  if (!to) {
+    errors.to = 'Required'
+  }
+
+  if (to && !isValidAddress(to)) {
+    errors.to = 'Recipient address is invalid.'
+  }
+
+  // if (txData && !isHex(stripHexPrefix(txData))) {
+  //   message = 'Transaction data must be hex string.'
+  //   return this.props.dispatch(displayWarning(message))
+  // }
+
+  return {
+    isValid: allNull(errors),
+    errors,
+  }
+}
+
+SendTransactionScreen.prototype.getAmountToSend = function (amount) {
+  const { activeCurrency } = this.state
+  const { conversionRate } = this.props
+
+  // TODO: need a clean way to integrate this into conversionUtil
+  const sendConversionRate = activeCurrency === 'ETH'
+    ? conversionRate
+    : new BigNumber(1.0).div(conversionRate)
+
+  return conversionUtil(amount, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    fromCurrency: activeCurrency,
+    toCurrency: 'ETH',
+    toDenomination: 'WEI',
+    conversionRate: sendConversionRate,
+  })
+}
+
+SendTransactionScreen.prototype.setErrorsFor = function (field) {
+  const { balance } = this.props
+  const { newTx, errors: previousErrors } = this.state
+  const { amountToSend } = newTx
+
+  const {
+    isValid,
+    errors: newErrors
+  } = this.validate(balance, amountToSend, newTx)
+
+  const nextErrors = Object.assign({}, previousErrors, {
+    [field]: newErrors[field] || null
+  })
+
+  if (!isValid) {
+    this.setState({
+      errors: nextErrors,
+      isValid,
+    })
+  }
+}
+
+SendTransactionScreen.prototype.clearErrorsFor = function (field) {
+  const { errors: previousErrors } = this.state
+  const nextErrors = Object.assign({}, previousErrors, {
+    [field]: null
+  })
+
+  this.setState({
+    errors: nextErrors,
+    isValid: allNull(nextErrors),
+  })
+}
+
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
-  const { warning } = this.props
+  const { warning, balance, amountToSend } = this.props
   const state = this.state || {}
 
   const recipient = state.newTx.to
+  const sender = state.newTx.from
   const nickname = state.nickname || ' '
 
   // TODO: convert this to hex when created and include it in send
   const txData = state.newTx.memo
 
-  let message
-
-  // if (value.gt(balance)) {
-  //   message = 'Insufficient funds.'
-  //   return this.props.dispatch(actions.displayWarning(message))
-  // }
-
-  // if (input < 0) {
-  //   message = 'Can not send negative amounts of ETH.'
-  //   return this.props.dispatch(actions.displayWarning(message))
-  // }
-
-  if (!isValidAddress(recipient) && !recipient) {
-    message = 'Recipient address is invalid.'
-    return this.props.dispatch(displayWarning(message))
-  }
-
-  if (txData && !isHex(stripHexPrefix(txData))) {
-    message = 'Transaction data must be hex string.'
-    return this.props.dispatch(displayWarning(message))
-  }
-
   this.props.dispatch(hideWarning())
 
   this.props.dispatch(addToAddressBook(recipient, nickname))
 
-  // TODO: need a clean way to integrate this into conversionUtil
-  const sendConversionRate = state.activeCurrency === 'ETH'
-    ? this.props.conversionRate
-    : new BigNumber(1.0).div(this.props.conversionRate)
-
-  const sendAmount = conversionUtil(this.state.newTx.amount, {
-    fromNumericBase: 'dec',
-    toNumericBase: 'hex',
-    fromCurrency: state.activeCurrency,
-    toCurrency: 'ETH',
-    toDenomination: 'WEI',
-    conversionRate: sendConversionRate,
-  })
-  
   var txParams = {
     from: this.state.newTx.from,
     to: this.state.newTx.to,
 
-    value: sendAmount,
+    value: amountToSend,
 
     gas: this.state.newTx.gas,
     gasPrice: this.state.newTx.gasPrice,
@@ -389,7 +498,5 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   if (recipient) txParams.to = addHexPrefix(recipient)
   if (txData) txParams.data = txData
 
-  if (!warning) {
-    this.props.dispatch(signTx(txParams))
-  }
+  this.props.dispatch(signTx(txParams))
 }
