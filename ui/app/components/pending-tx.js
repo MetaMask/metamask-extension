@@ -14,7 +14,7 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
 const util = require('../util')
-const { conversionUtil } = require('../conversion-util')
+const { conversionUtil, addCurrencies } = require('../conversion-util')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
@@ -67,7 +67,7 @@ PendingTx.prototype.componentWillMount = function () {
   this.props.setCurrentCurrencyToUSD()
 }
 
-PendingTx.prototype.getTotal = function () {
+PendingTx.prototype.getAmount = function () {
   const { conversionRate } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
@@ -186,7 +186,16 @@ PendingTx.prototype.getData = function () {
   const { name, params = [] } = decodedData || {}
   const { type, value } = params[0] || {}
   const { USD: gasFeeInUSD, ETH: gasFeeInETH } = this.getGasFee()
-  const { USD: totalInUSD, ETH: totalInETH } = this.getTotal()
+  const { USD: amountInUSD, ETH: amountInETH } = this.getAmount()
+
+  const totalInUSD = addCurrencies(gasFeeInUSD, amountInUSD, {
+    toNumericBase: 'dec',
+    numberOfDecimals: 2,
+  })
+  const totalInETH = addCurrencies(gasFeeInETH, amountInETH, {
+    toNumericBase: 'dec',
+    numberOfDecimals: 6,
+  })
 
   if (name === 'transfer' && type === 'address') {
     return {
@@ -201,8 +210,8 @@ PendingTx.prototype.getData = function () {
       memo: txParams.memo || '',
       gasFeeInUSD,
       gasFeeInETH,
-      totalInUSD,
-      totalInETH,
+      amountInUSD,
+      amountInETH,
     }
   } else {
     return {
@@ -217,6 +226,8 @@ PendingTx.prototype.getData = function () {
       memo: txParams.memo || '',
       gasFeeInUSD,
       gasFeeInETH,
+      amountInUSD,
+      amountInETH,
       totalInUSD,
       totalInETH,
     }
@@ -243,6 +254,8 @@ PendingTx.prototype.render = function () {
     memo,
     gasFeeInUSD,
     gasFeeInETH,
+    amountInUSD,
+    amountInETH,
     totalInUSD,
     totalInETH,
   } = this.getData()
@@ -307,7 +320,7 @@ PendingTx.prototype.render = function () {
           `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         ]),
 
-        h('h3.flex-center.confirm-screen-send-amount', [`$${totalInUSD}`]),
+        h('h3.flex-center.confirm-screen-send-amount', [`$${amountInUSD}`]),
         h('h3.flex-center.confirm-screen-send-amount-currency', [ 'USD' ]),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ]),
