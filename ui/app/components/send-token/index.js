@@ -346,7 +346,7 @@ SendTokenScreen.prototype.render = function () {
       this.renderAmountInput(),
       this.renderGasInput(),
       this.renderMemoInput(),
-      warning && h('div.send-screen-input-wrapper--error',
+      warning && h('div.send-screen-input-wrapper--error', {}, 
         h('div.send-screen-input-wrapper__error-message', [
           warning,
         ])
