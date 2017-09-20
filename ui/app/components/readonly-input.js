@@ -14,13 +14,17 @@ ReadOnlyInput.prototype.render = function () {
     wrapperClass = '',
     inputClass = '',
     value,
+    textarea,
   } = this.props
 
+  const inputType = textarea ? 'textarea' : 'input'
+
   return h('div', {className: wrapperClass}, [
-    h('input', {
+    h(inputType, {
       className: inputClass,
       value,
       readOnly: true,
+      onFocus: event => event.target.select(),
     }),
   ])
 }

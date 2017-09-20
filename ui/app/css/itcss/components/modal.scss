@@ -283,11 +283,16 @@
   flex-direction: column;
 }
 
-.private-key-password-label {
+.private-key-password-label, .private-key-password-error {
   color: $scorpion;
   font-size: 14px;
   line-height: 18px;
   margin-bottom: 10px;
+}
+
+.private-key-password-error {
+  color: $crimson;
+  margin-bottom: 0;
 }
 
 .private-key-password-input {
@@ -331,6 +336,27 @@
     border-color: $dusty-gray;
     color: $scorpion;
   }
+}
+
+.private-key-password-display-wrapper {
+  height: 80px;
+  width: 291px;
+  border: 1px solid $silver; 
+  border-radius: 2px;
+}
+
+.private-key-password-display-textarea {
+  color: $crimson;
+  font-family: "DIN OT"; 
+  font-size: 16px; 
+  line-height: 21px;
+  border: none;
+  height: 75px;
+  width: 253px;
+  overflow: hidden;
+  resize: none;
+  padding: 9px 13px 8px;
+  text-transform: uppercase;
 }
 
 
