@@ -3,25 +3,21 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity, getSelectedAddress } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
-const Identicon = require('../identicon')
 const QrView = require('../qr-code')
 
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
-    address: state.metamask.selectedAddress,
-    selectedAddress: getSelectedAddress(state),
     selectedIdentity: getSelectedIdentity(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    hideModal: () => {
-      dispatch(actions.hideModal())
-    },
+    // Is this supposed to be used somewhere?
     showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
   }
 }
@@ -34,49 +30,28 @@ function AccountDetailsModal () {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModal)
 
 // Not yet pixel perfect todos:
-  // fonts of qr-header and close button
+  // fonts of qr-header
 
 AccountDetailsModal.prototype.render = function () {
   const { selectedIdentity, network } = this.props
+  const { name, address } = selectedIdentity
 
-  return h('div', { style: { borderRadius: '4px' }}, [
-    h('div.account-details-modal-wrapper', [
-
-      h('div', [
-
-        // Needs a border; requires changes to svg
-        h(Identicon, {
-          address: selectedIdentity.address,
-          diameter: 64,
-          style: {},
-        }),
-
-      ]),
-
-      h('div.account-details-modal-close', {
-        onClick: this.props.hideModal,
-      }),
-
+  return h(AccountModalContainer, {}, [
       h(QrView, {
         Qr: {
-          message: this.props.selectedIdentity.name,
-          data: this.props.selectedIdentity.address,
+          message: name,
+          data: address,
         },
       }),
 
-      // divider
-      h('div.account-details-modal-divider'),
+      h('div.account-modal-divider'),
 
       h('button.btn-clear', {
-        onClick: () => {
-          const url = genAccountLink(selectedIdentity.address, network)
-          global.platform.openWindow({ url })
-        },
+        onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
       }, [ 'View account on Etherscan' ]),
 
       // Holding on redesign for Export Private Key functionality
       h('button.btn-clear', [ 'Export private key' ]),
-
-    ]),
+      
   ])
 }

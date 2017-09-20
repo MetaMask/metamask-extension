@@ -175,8 +175,8 @@
   font-size: 18px;
 }
 
-// Account Details Modal
-.account-details-modal-wrapper {
+// Account Modal Container
+.account-modal-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -192,16 +192,38 @@
   }
 }
 
-.account-details-modal-wrapper .qr-header {
+.account-modal-close::after {
+  content: '\00D7';
+  font-size: 40px;
+  color: $dusty-gray;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  cursor: pointer;
+}
+
+.account-modal-container .identicon {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  top: -32px;
+  margin-bottom: -32px;
+}
+
+
+// Account Details Modal
+
+.account-modal-container .qr-header {
   margin-top: 9px;
   font-size: 20px;
 }
 
-.account-details-modal-wrapper .qr-wrapper {
+.account-modal-container .qr-wrapper {
   margin-top: 5px;
 }
 
-.account-details-modal-wrapper .ellip-address-wrapper {
+.account-modal-container .ellip-address-wrapper {
   display: flex;
   justify-content: center;
   border: 1px solid $alto;
@@ -211,14 +233,14 @@
   width: 286px;
 }
 
-.account-details-modal-wrapper .qr-ellip-address {
+.account-modal-container .qr-ellip-address {
   width: 254px;
   border: none;
   font-family: 'Montserrat Light';
   font-size: 14px;
 }
 
-.account-details-modal-wrapper .btn-clear {
+.account-modal-container .btn-clear {
   min-height: 28px;
   font-size: 14px;
   border-color: $curious-blue;
@@ -233,30 +255,11 @@
   font-family: 'Montserrat Light';
 }
 
-.account-details-modal-divider {
+.account-modal-divider {
   width: 100%;
   height: 1px;
   margin: 19px 0 8px 0;
   background-color: $alto;
-}
-
-.account-details-modal-wrapper .identicon {
-  position: relative;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  top: -32px;
-  margin-bottom: -32px;
-}
-
-.account-details-modal-close::after {
-  content: '\00D7';
-  font-size: 40px;
-  color: $dusty-gray;
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  cursor: pointer;
 }
 
 // New Account Modal
