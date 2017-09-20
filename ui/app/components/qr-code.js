@@ -4,6 +4,7 @@ const qrCode = require('qrcode-npm').qrcode
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const isHexPrefixed = require('ethereumjs-util').isHexPrefixed
+const ReadOnlyInput = require('./readonly-input')
 
 module.exports = connect(mapStateToProps)(QrCodeView)
 
@@ -46,18 +47,11 @@ QrCodeView.prototype.render = function () {
         __html: qrImage.createTableTag(4),
       },
     }),
-    h('.div.ellip-address-wrapper', [
-      h('input.qr-ellip-address', {
-        style: {
-          width: '247px',
-        },
-        value: Qr.data,
-        readOnly: true,
-      }),
-      // h(CopyButton, {
-      //   value: Qr.data,
-      // }),
-    ]),
+    h(ReadOnlyInput, {
+      wrapperClass: 'ellip-address-wrapper',
+      inputClass: 'qr-ellip-address',
+      value: Qr.data,
+    }),
   ])
 }
 
