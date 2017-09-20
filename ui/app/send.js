@@ -18,11 +18,9 @@ const {
   signTx,
 } = require('./actions')
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
-const { isHex, numericBalance } = require('./util')
+const { isHex, numericBalance, isValidAddress } = require('./util')
 const { conversionUtil } = require('./conversion-util')
 const BigNumber = require('bignumber.js')
-
-const ARAGON = '960b236A07cf122663c4303350609A66A7B288C0'
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -81,9 +79,180 @@ function SendTransactionScreen () {
   this.back = this.back.bind(this)
   this.closeTooltip = this.closeTooltip.bind(this)
   this.onSubmit = this.onSubmit.bind(this)
-  this.recipientDidChange = this.recipientDidChange.bind(this)
   this.setActiveCurrency = this.setActiveCurrency.bind(this)
   this.toggleTooltip = this.toggleTooltip.bind(this)
+
+  this.renderFromInput = this.renderFromInput.bind(this)
+  this.renderToInput = this.renderToInput.bind(this)
+  this.renderAmountInput = this.renderAmountInput.bind(this)
+  this.renderGasInput = this.renderGasInput.bind(this)
+  this.renderMemoInput = this.renderMemoInput.bind(this)
+}
+
+SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
+  return h('div.send-screen-input-wrapper', [
+
+    h('div', 'From:'),
+
+    h('input.large-input.send-screen-input', {
+      list: 'accounts',
+      placeholder: 'Account',
+      value: from,
+      onChange: (event) => {
+        this.setState({
+          newTx: {
+            ...this.state.newTx,
+            from: event.target.value,
+          },
+        })
+      },
+    }),
+
+    h('datalist#accounts', [
+      Object.entries(identities).map(([key, { address, name }]) => {
+        return h('option', {
+          value: address,
+          label: name,
+          key: address,
+        })
+      }),
+    ]),
+
+  ])
+}
+
+SendTransactionScreen.prototype.renderToInput = function (to, identities, addressBook) {
+  return h('div.send-screen-input-wrapper', [
+
+    h('div', 'To:'),
+
+    h('input.large-input.send-screen-input', {
+      name: 'address',
+      list: 'addresses',
+      placeholder: 'Address',
+      value: to,
+      onChange: (event) => {
+        this.setState({
+          newTx: {
+            ...this.state.newTx,
+            to: event.target.value,
+          },
+        })
+      },
+    }),
+
+    h('datalist#addresses', [
+      // Corresponds to the addresses owned.
+      ...Object.entries(identities).map(([key, { address, name }]) => {
+        return h('option', {
+          value: address,
+          label: name,
+          key: address,
+        })
+      }),
+      // Corresponds to previously sent-to addresses.
+      ...addressBook.map(({ address, name }) => {
+        return h('option', {
+          value: address,
+          label: name,
+          key: address,
+        })
+      }),
+    ]),
+
+  ])
+}
+
+SendTransactionScreen.prototype.renderAmountInput = function (activeCurrency) {
+  return h('div.send-screen-input-wrapper', [
+
+    h('div.send-screen-amount-labels', [
+      h('span', 'Amount'),
+      h(CurrencyToggle, {
+        activeCurrency,
+        onClick: (newCurrency) => this.setActiveCurrency(newCurrency),
+      }), // holding on icon from design
+    ]),
+
+    h('input.large-input.send-screen-input', {
+      placeholder: `0 ${activeCurrency}`,
+      type: 'number',
+      onChange: (event) => {
+        this.setState({
+          newTx: Object.assign(
+            this.state.newTx,
+            {
+              amount: event.target.value,
+            }
+          ),
+        })
+      },
+    }),
+
+  ])
+}
+
+SendTransactionScreen.prototype.renderGasInput = function (gasPrice, gas, activeCurrency, conversionRate, blockGasLimit) {
+  return h('div.send-screen-input-wrapper', [
+    this.state.tooltipIsOpen && h(GasTooltip, {
+      className: 'send-tooltip',
+      gasPrice,
+      gasLimit: gas,
+      onClose: this.closeTooltip,
+      onFeeChange: ({gasLimit, gasPrice}) => {
+        this.setState({
+          newTx: {
+            ...this.state.newTx,
+            gas: gasLimit,
+            gasPrice,
+          },
+        })
+      },
+    }),
+
+    h('div.send-screen-gas-labels', [
+      h('span', [
+        h('i.fa.fa-bolt'),
+        'Gas fee:',
+      ]),
+      h('span', 'What\'s this?'),
+    ]),
+
+    // TODO: handle loading time when switching to USD
+    h('div.large-input.send-screen-gas-input', {}, [
+      h(GasFeeDisplay, {
+        activeCurrency,
+        conversionRate,
+        gas,
+        gasPrice,
+        blockGasLimit,
+      }),
+      h('div.send-screen-gas-input-customize', {
+        onClick: this.toggleTooltip,
+      }, [
+        'Customize',
+      ]),
+    ]),
+
+  ])
+}
+
+SendTransactionScreen.prototype.renderMemoInput = function () {
+  return h('div.send-screen-input-wrapper', [
+    h('div', 'Transaction memo (optional)'),
+    h('input.large-input.send-screen-input', {
+      onChange: () => {
+        this.setState({
+          newTx: Object.assign(
+            this.state.newTx,
+            {
+              memo: event.target.value,
+            }
+          ),
+        })
+      },
+    }),
+  ])
 }
 
 SendTransactionScreen.prototype.render = function () {
@@ -93,16 +262,13 @@ SendTransactionScreen.prototype.render = function () {
   const {
     // selectedIdentity,
     // network,
-    // identities,
-    // addressBook,
+    identities,
+    addressBook,
     conversionRate,
   } = props
 
   const { blockGasLimit, newTx, activeCurrency } = this.state
   const { gas, gasPrice } = newTx
-  // console.log(`activeCurrency`, activeCurrency)
-  // console.log({ selectedIdentity, identities })
-  // console.log('SendTransactionScreen state:', this.state)
 
   return (
 
@@ -116,199 +282,16 @@ SendTransactionScreen.prototype.render = function () {
 
         h('div.send-screen__subtitle', 'Send Ethereum to anyone with an Ethereum account'),
 
-        h('div.send-screen-input-wrapper', [
+        this.renderFromInput(this.state.newTx.from, identities),
 
-          h('div', 'From:'),
+        this.renderToInput(this.state.newTx.to, identities, addressBook),
 
-          h('input.large-input.send-screen-input', {
-            list: 'accounts',
-            placeholder: 'Account',
-            value: this.state.newTx.from,
-            onChange: (event) => {
-              console.log('event', event.target.value)
-              this.setState({
-                newTx: {
-                  ...this.state.newTx,
-                  from: event.target.value,
-                },
-              })
-            },
-          }),
+        this.renderAmountInput(activeCurrency),
 
-          h('datalist#accounts', [
-            Object.keys(props.identities).map((key) => {
-              const identity = props.identities[key]
-              return h('option', {
-                value: identity.address,
-                label: identity.name,
-                key: identity.address,
-              })
-            }),
-          ]),
+        this.renderGasInput(gasPrice, gas, activeCurrency, conversionRate, blockGasLimit),
 
-        ]),
+        this.renderMemoInput(),
 
-        h('div.send-screen-input-wrapper', [
-
-          h('div', 'To:'),
-
-          h('input.large-input.send-screen-input', {
-            name: 'address',
-            list: 'addresses',
-            placeholder: 'Address',
-            value: this.state.newTx.to,
-            onChange: (event) => {
-              console.log('event', event.target.value)
-              this.setState({
-                newTx: {
-                  ...this.state.newTx,
-                  to: event.target.value,
-                },
-              })
-            },
-          }),
-
-          h('datalist#addresses', [
-            // Corresponds to the addresses owned.
-            Object.entries(props.identities).map(([key, { address, name }]) => {
-              return h('option', {
-                value: address,
-                label: name,
-                key: address,
-              })
-            }),
-            // Corresponds to previously sent-to addresses.
-            props.addressBook.map(({ address, name }) => {
-              return h('option', {
-                value: address,
-                label: name,
-                key: address,
-              })
-            }),
-          ]),
-
-          // h(EnsInput, {
-          //   name: 'address',
-          //   placeholder: 'Recipient Address',
-          //   value: this.state.newTx.to,
-          //   onChange: (event) => {
-          //     this.setState({
-          //       newTx: Object.assign(
-          //         this.state.newTx,
-          //         {
-          //           to: event.target.value,
-          //         }
-          //       ),
-          //     })
-          //   },
-          //   network,
-          //   identities,
-          //   addressBook,
-          // }),
-
-        ]),
-
-        h('div.send-screen-input-wrapper', [
-
-          h('div.send-screen-amount-labels', [
-            h('span', 'Amount'),
-            h(CurrencyToggle, {
-              activeCurrency,
-              onClick: (newCurrency) => this.setActiveCurrency(newCurrency),
-            }), // holding on icon from design
-          ]),
-
-          h('input.large-input.send-screen-input', {
-            placeholder: `0 ${activeCurrency}`,
-            type: 'number',
-            onChange: (event) => {
-              this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    amount: event.target.value,
-                  }
-                ),
-              })
-            },
-          }),
-
-        ]),
-
-        h('div.send-screen-input-wrapper', [
-          this.state.tooltipIsOpen && h(GasTooltip, {
-            className: 'send-tooltip',
-            gasPrice,
-            gasLimit: gas,
-            onClose: this.closeTooltip,
-            onFeeChange: ({gasLimit, gasPrice}) => {
-              this.setState({
-                newTx: {
-                  ...this.state.newTx,
-                  gas: gasLimit,
-                  gasPrice,
-                },
-              })
-            },
-          }),
-
-          h('div.send-screen-gas-labels', [
-            h('span', [
-              h('i.fa.fa-bolt'),
-              'Gas fee:',
-            ]),
-            h('span', 'What\'s this?'),
-          ]),
-
-          // TODO: handle loading time when switching to USD
-          h('div.large-input.send-screen-gas-input', {}, [
-            h(GasFeeDisplay, {
-              activeCurrency,
-              conversionRate,
-              gas,
-              gasPrice,
-              blockGasLimit,
-            }),
-            h('div.send-screen-gas-input-customize', {
-              onClick: this.toggleTooltip,
-            }, [
-              'Customize',
-            ]),
-          ]),
-
-        ]),
-
-        h('div.send-screen-input-wrapper', [
-          h('div', 'Transaction memo (optional)'),
-          h('input.large-input.send-screen-input', {
-            onChange: () => {
-              this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    memo: event.target.value,
-                  }
-                ),
-              })
-            },
-          }),
-        ]),
-
-        h('div.send-screen-input-wrapper', {}, [
-          h('div', {}, ['Data (optional)']),
-          h('input.large-input.send-screen-input', {
-            onChange: () => {
-              this.setState({
-                newTx: Object.assign(
-                  this.state.newTx,
-                  {
-                    txData: event.target.value,
-                  }
-                ),
-              })
-            },
-          }),
-        ]),
       ]),
 
       // Buttons underneath card
@@ -337,41 +320,21 @@ SendTransactionScreen.prototype.setActiveCurrency = function (newCurrency) {
   this.setState({ activeCurrency: newCurrency })
 }
 
-SendTransactionScreen.prototype.navigateToAccounts = function (event) {
-  event.stopPropagation()
-  this.props.dispatch(showAccountsPage())
-}
-
 SendTransactionScreen.prototype.back = function () {
   var address = this.props.address
   this.props.dispatch(backToAccountDetail(address))
 }
 
-SendTransactionScreen.prototype.recipientDidChange = function (recipient, nickname) {
-  this.setState({
-    recipient: recipient,
-    nickname: nickname,
-  })
-}
-
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
+  const { warning } = this.props
   const state = this.state || {}
 
-  // const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const recipient = state.newTx.to
-
   const nickname = state.nickname || ' '
 
-  // const input = document.querySelector('input[name="amount"]').value
-  // const input = state.newTx.value
-  // const value = util.normalizeEthStringToWei(input)
-
-  // https://consensys.slack.com/archives/G1L7H42BT/p1503439134000169?thread_ts=1503438076.000411&cid=G1L7H42BT
-  // From @kumavis: "not needed for MVP but we will end up adding it again so consider just adding it now"
-  const txData = false
-  // Must replace with memo data.
-  // const txData = document.querySelector('input[name="txData"]').value
+  // TODO: convert this to hex when created and include it in send
+  const txData = state.newTx.memo
 
   let message
 
@@ -385,14 +348,9 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   //   return this.props.dispatch(actions.displayWarning(message))
   // }
 
-  if ((util.isInvalidChecksumAddress(recipient))) {
-    message = 'Recipient address checksum is invalid.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
-
-  if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
+  if (!isValidAddress(recipient) && !recipient) {
     message = 'Recipient address is invalid.'
-    return this.props.dispatch(actions.displayWarning(message))
+    return this.props.dispatch(displayWarning(message))
   }
 
   if (txData && !isHex(stripHexPrefix(txData))) {
@@ -424,7 +382,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
 
     value: sendAmount,
 
-    // New: gas will now be specified on this step
     gas: this.state.newTx.gas,
     gasPrice: this.state.newTx.gasPrice,
   }
@@ -432,5 +389,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   if (recipient) txParams.to = addHexPrefix(recipient)
   if (txData) txParams.data = txData
 
-  this.props.dispatch(signTx(txParams))
+  if (!warning) {
+    this.props.dispatch(signTx(txParams))
+  }
 }
