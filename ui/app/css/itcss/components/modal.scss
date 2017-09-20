@@ -9,6 +9,12 @@
   justify-content: center;
   text-align: center;
   font-family: 'DIN OT';
+  padding: 0 16px;
+}
+
+.buy-modal-content-option {
+  cursor: pointer;
+  color: #5B5D67;
 }
 
 @media screen and (max-width: 575px) {
@@ -44,7 +50,6 @@
     border-radius: 6px;
     border: 1px solid $black;
     padding: 0% 7%;
-    justify-content: space-around;
 
     div.buy-modal-content-option-title {
       font-size: 20px;
@@ -76,29 +81,30 @@
 
   .buy-modal-content-options {
     flex-direction: row;
-    margin: 20px 0;
+    margin: 20px 0 60px;
   }
 
   div.buy-modal-content-option {
     display: flex;
     flex-direction: column;
     width: 20vw;
-    height: 18vw;
+    height: 120px;
     text-align: center;
     border-radius: 6px;
     border: 1px solid $black;
-    margin: 0 .5vw;
-    justify-content: space-around;
+    margin: 0 8px;
+    padding: 18px 0;
 
     div.buy-modal-content-option-title {
       font-size: 20px;
+      margin-bottom: 12px;
 
       @media screen and (max-width: 679px) {
         font-size: 14px;
       }
 
       @media screen and (min-width: 1281px) {
-        font-size: 26px;
+        font-size: 20px;
       }
     }
 
@@ -121,7 +127,7 @@
       }
 
       @media screen and (min-width: 1281px) {
-        font-size: 20px;
+        font-size: 16px;
         padding: 0;
       }
     }
