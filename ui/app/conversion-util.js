@@ -114,6 +114,16 @@ const conversionUtil = (value, {
   value,
 });
 
+const addCurrencies = (a, b, { toNumericBase, numberOfDecimals }) => {
+  const value = (new BigNumber(a)).add(b);
+  return converter({
+    value,
+    toNumericBase,
+    numberOfDecimals,
+  })
+}
+
 module.exports = {
   conversionUtil,
+  addCurrencies,
 }
