@@ -1,5 +1,6 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const classnames = require('classnames')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Fuse = require('fuse.js')
@@ -7,14 +8,14 @@ const contractMap = require('eth-contract-metadata')
 const contractList = Object.entries(contractMap).map(([ _, tokenData]) => tokenData)
 const fuse = new Fuse(contractList, {
     shouldSort: true,
-    threshold: 0.3,
+    threshold: 0.45,
     location: 0,
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
     keys: ['address', 'name', 'symbol'],
 })
-// const actions = require('./actions')
+const actions = require('./actions')
 // const Tooltip = require('./components/tooltip.js')
 
 
@@ -25,11 +26,17 @@ const EthContract = require('ethjs-contract')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
-module.exports = connect(mapStateToProps)(AddTokenScreen)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(AddTokenScreen)
 
 function mapStateToProps (state) {
   return {
     identities: state.metamask.identities,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    goHome: () => dispatch(actions.goHome()),
   }
 }
 
@@ -40,33 +47,63 @@ function AddTokenScreen () {
     // address: null,
     // symbol: 'TOKEN',
     // decimals: 18,
+    customAddress: '',
+    customSymbol: '',
+    customDecimals: 0,
     searchQuery: '',
     isCollapsed: true,
+    selectedToken: {},
   }
+  this.tokenAddressDidChange = this.tokenAddressDidChange.bind(this)
   Component.call(this)
 }
 
+AddTokenScreen.prototype.toggleToken = function (symbol) {
+  const { selectedToken } = this.state
+  const { [symbol]: isSelected } = selectedToken
+  this.setState({
+    selectedToken: {
+      ...selectedToken,
+      [symbol]: !isSelected,
+    },
+  })
+}
+
 AddTokenScreen.prototype.renderCustomForm = function () {
+  const { customAddress, customSymbol, customDecimals } = this.state
+
   return !this.state.isCollapsed && (
     h('div.add-token__add-custom-form', [
       h('div.add-token__add-custom-field', [
         h('div.add-token__add-custom-label', 'Token Address'),
-        h('input.add-token__add-custom-input', { type: 'text' }),
+        h('input.add-token__add-custom-input', {
+          type: 'text',
+          onChange: this.tokenAddressDidChange,
+          value: customAddress,
+        }),
       ]),
       h('div.add-token__add-custom-field', [
         h('div.add-token__add-custom-label', 'Token Symbol'),
-        h('input.add-token__add-custom-input', { type: 'text', disabled: true }),
+        h('input.add-token__add-custom-input', {
+          type: 'text',
+          value: customSymbol,
+          disabled: true,
+        }),
       ]),
       h('div.add-token__add-custom-field', [
         h('div.add-token__add-custom-label', 'Decimals of Precision'),
-        h('input.add-token__add-custom-input', { type: 'text', disabled: true }),
+        h('input.add-token__add-custom-input', {
+          type: 'number',
+          value: customDecimals,
+          disabled: true,
+        }),
       ]),
     ])
   )
 }
 
 AddTokenScreen.prototype.renderTokenList = function () {
-  const { searchQuery = '' } = this.state
+  const { searchQuery = '', selectedToken } = this.state
   const results = searchQuery
     ? fuse.search(searchQuery) || []
     : contractList
@@ -74,9 +111,13 @@ AddTokenScreen.prototype.renderTokenList = function () {
   return Array(6).fill(undefined)
     .map((_, i) => {
       const { logo, symbol, name } = results[i] || {}
-      console.log({ i, logo, symbol, name })
       return Boolean(logo || symbol || name) && (
-        h('div.add-token__token-wrapper', [
+        h('div.add-token__token-wrapper', {
+          className: classnames('add-token__token-wrapper', {
+            'add-token__token-wrapper--selected': selectedToken[symbol],
+          }),
+          onClick: () => this.toggleToken(symbol),
+        }, [
           h('div.add-token__token-icon', {
             style: {
               backgroundImage: `url(images/contract/${logo})`,
@@ -93,6 +134,7 @@ AddTokenScreen.prototype.renderTokenList = function () {
 
 AddTokenScreen.prototype.render = function () {
   const { isCollapsed } = this.state
+  const { goHome } = this.props
 
   return (
     h('div.add-token', [
@@ -124,7 +166,9 @@ AddTokenScreen.prototype.render = function () {
       ]),
       h('div.add-token__buttons', [
         h('button.btn-secondary', 'Next'),
-        h('button.btn-tertiary', 'Cancel'),
+        h('button.btn-tertiary', {
+          onClick: goHome,
+        }, 'Cancel'),
       ]),
     ])
   )
@@ -270,12 +314,16 @@ AddTokenScreen.prototype.componentWillMount = function () {
   this.TokenContract = this.contract(abi)
 }
 
-AddTokenScreen.prototype.tokenAddressDidChange = function (event) {
-  const el = event.target
-  const address = el.value.trim()
-  if (ethUtil.isValidAddress(address) && address !== emptyAddr) {
-    this.setState({ address })
-    this.attemptToAutoFillTokenParams(address)
+AddTokenScreen.prototype.tokenAddressDidChange = function (e) {
+  const customAddress = e.target.value.trim()
+  this.setState({ customAddress })
+  if (ethUtil.isValidAddress(customAddress) && customAddress !== emptyAddr) {
+    this.attemptToAutoFillTokenParams(customAddress)
+  } else {
+    this.setState({
+      customSymbol: '',
+      customDecimals: 0,
+    })
   }
 }
 
@@ -330,6 +378,9 @@ AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address)
 
   const [ symbol, decimals ] = results
   if (symbol && decimals) {
-    this.setState({ symbol: symbol[0], decimals: decimals[0].toString() })
+    this.setState({
+      customSymbol: symbol[0],
+      customDecimals: decimals[0].toString(),
+    })
   }
 }

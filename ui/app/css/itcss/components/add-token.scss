@@ -140,11 +140,22 @@
   }
 
   &__token-wrapper {
+    transition: 200ms ease-in-out;
     display: flex;
     flex-flow: row nowrap;
-    flex: 0 0 50%;
+    flex: 0 0 45%;
     align-items: center;
-    padding: 24px 0 24px 24px;
+    padding: 12px;
+    margin: 2.5%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+
+    &:hover,
+    &--selected {
+      border: 2px solid $malibu-blue;
+    }
   }
 
   &__token-name {
