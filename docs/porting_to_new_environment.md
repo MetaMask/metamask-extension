@@ -6,10 +6,31 @@ MetaMask has been under continuous development for nearly two years now, and weâ
 
 The core functionality of MetaMask all lives in what we call [The MetaMask Controller](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/metamask-controller.js). Our goal for this file is for it to eventually be its own javascript module that can be imported into any JS-compatible context, allowing it to fully manage an app's relationship to Ethereum.
 
-The MM Controller exposes most of its functionality via two methods:
+#### Constructor
 
-- [metamask.getState()](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/metamask-controller.js#L241) - This method returns a javascript object representing the current MetaMask state. This includes things like known accounts, sent transactions, current exchange rates, and more! The controller is also an event emitter, so you can subscribe to state updates via `metamask.on('update', handleStateUpdate)`. State examples available [here](https://github.com/MetaMask/metamask-extension/tree/master/development/states) under the `metamask` key. (Warning: some are outdated)
-- [metamask.getApi()](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/metamask-controller.js#L274-L335) - Returns a JavaScript object filled with callback functions representing every operation our user interface ever performs. Everything from creating new accounts, changing the current network, to sending a transaction, is provided via these API methods. We export this external API on an object because it allows us to easily expose this API over a port using [dnode](https://www.npmjs.com/package/dnode), which is how our WebExtension's UI works!
+When calling `new MetaMask(opts)`, many platform-specific options are configured. The keys on `opts` are as follows:
+
+- initState: The last emitted state, used for restoring persistent state between sessions.
+- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and customizing the encryption method.
+
+##### Platform Options
+
+The `platform` object has a variety of options:
+
+- reload (function) - Will be called when MetaMask would like to reload its own context.
+- openWindow ({ url }) - Will be called when MetaMask would like to open a web page. It will be passed a single `options` object with a `url` key, with a string value.
+- getVersion() - Should return the current MetaMask version, as described in the current `CHANGELOG.md` or `app/manifest.json`.
+- encryptor - An object that includes two methods:
+  - encrypt(password, object) - returns a Promise of a string that is ready for storage.
+  - decrypt(password, encryptedString) - Accepts the encrypted output of `encrypt` and returns a Promise of a restored `object` as it was encrypted.
+
+#### [metamask.getState()](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/metamask-controller.js#L241)
+
+This method returns a javascript object representing the current MetaMask state. This includes things like known accounts, sent transactions, current exchange rates, and more! The controller is also an event emitter, so you can subscribe to state updates via `metamask.on('update', handleStateUpdate)`. State examples available [here](https://github.com/MetaMask/metamask-extension/tree/master/development/states) under the `metamask` key. (Warning: some are outdated)
+
+#### [metamask.getApi()](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/metamask-controller.js#L274-L335)
+
+Returns a JavaScript object filled with callback functions representing every operation our user interface ever performs. Everything from creating new accounts, changing the current network, to sending a transaction, is provided via these API methods. We export this external API on an object because it allows us to easily expose this API over a port using [dnode](https://www.npmjs.com/package/dnode), which is how our WebExtension's UI works!
 
 ### The UI
 
