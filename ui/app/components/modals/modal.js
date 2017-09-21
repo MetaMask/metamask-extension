@@ -121,7 +121,7 @@ Modal.prototype.render = function () {
 
   const children = modal.contents
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
-  const contentStyle = modal.contentStyle || {};
+  const contentStyle = modal.contentStyle || {}
 
   return h(FadeModal,
     {

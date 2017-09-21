@@ -91,10 +91,15 @@ SendTransactionScreen.prototype.render = function () {
 
   const props = this.props
   const {
+<<<<<<< HEAD
     // selectedIdentity,
     // network,
     // identities,
     // addressBook,
+=======
+    selectedIdentity,
+    identities,
+>>>>>>> ea2e98c7... Lint fix.
     conversionRate,
   } = props
 
@@ -275,6 +280,13 @@ SendTransactionScreen.prototype.render = function () {
               'Customize',
             ]),
           ]),
+<<<<<<< HEAD
+=======
+
+        ]),
+
+        h('div.send-screen-input-wrapper', {}, [
+>>>>>>> ea2e98c7... Lint fix.
 
         ]),
 
@@ -417,7 +429,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     toDenomination: 'WEI',
     conversionRate: sendConversionRate,
   })
-  
+
   var txParams = {
     from: this.state.newTx.from,
     to: this.state.newTx.to,

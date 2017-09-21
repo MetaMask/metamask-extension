@@ -3,10 +3,13 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const classnames = require('classnames')
+<<<<<<< HEAD
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
+=======
+>>>>>>> ea2e98c7... Lint fix.
 const Identicon = require('./identicon')
 
 const { conversionUtil } = require('../conversion-util')
@@ -182,6 +185,6 @@ TxListItem.prototype.render = function () {
 
         ]),
       ]),
-    ]) // holding on icon from design
+    ]), // holding on icon from design
   ])
 }
