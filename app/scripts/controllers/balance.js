@@ -5,9 +5,9 @@ const BN = require('ethereumjs-util').BN
 class BalanceController {
 
   constructor (opts = {}) {
-    const { address, ethStore, txController } = opts
+    const { address, accountTracker, txController } = opts
     this.address = address
-    this.ethStore = ethStore
+    this.accountTracker = accountTracker
     this.txController = txController
 
     const initState = {
@@ -39,7 +39,7 @@ class BalanceController {
   }
 
   _getBalance () {
-    const store = this.ethStore.getState()
+    const store = this.accountTracker.getState()
     const balances = store.accounts
     const entry = balances[this.address]
     const balance = entry.balance
