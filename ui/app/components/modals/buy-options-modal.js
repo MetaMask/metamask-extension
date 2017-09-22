@@ -19,6 +19,9 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
+    showAccountDetailModal: () => {
+      dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
+    },
   }
 }
 
@@ -59,7 +62,9 @@ BuyOptions.prototype.render = function () {
           h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
         ]),
 
-        h('div.buy-modal-content-option', {}, [
+        h('div.buy-modal-content-option', {
+          onClick: () => this.goToAccountDetailsModal()
+        }, [
           h('div.buy-modal-content-option-title', {}, 'Direct Deposit'),
           h('div.buy-modal-content-option-subtitle', {}, 'Deposit from another account'),
         ]),
@@ -74,4 +79,9 @@ BuyOptions.prototype.render = function () {
       }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, 'Cancel')),
     ]),
   ])
+}
+
+BuyOptions.prototype.goToAccountDetailsModal = function () {
+  this.props.hideModal()
+  this.props.showAccountDetailModal()
 }
