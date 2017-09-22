@@ -11,8 +11,8 @@ function ReadOnlyInput () {
 
 ReadOnlyInput.prototype.render = function () {
   const {
-    wrapperClass,
-    inputClass,
+    wrapperClass = '',
+    inputClass = '',
     value,
   } = this.props
 
