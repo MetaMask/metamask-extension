@@ -11,7 +11,16 @@ The core functionality of MetaMask all lives in what we call [The MetaMask Contr
 When calling `new MetaMask(opts)`, many platform-specific options are configured. The keys on `opts` are as follows:
 
 - initState: The last emitted state, used for restoring persistent state between sessions.
-- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and customizing the encryption method.
+- platform: The `platform` object defines a variety of platform-specific functions, including opening the confirmation view, and opening web sites.
+- encryptor - An object that provides access to the desired encryption methods.
+
+##### Encryptor
+
+An object that provides two simple methods, which can encrypt in any format you prefer. This parameter is optional, and will default to the browser-native WebCrypto API.
+
+- encrypt(password, object) - returns a Promise of a string that is ready for storage.
+- decrypt(password, encryptedString) - Accepts the encrypted output of `encrypt` and returns a Promise of a restored `object` as it was encrypted.
+
 
 ##### Platform Options
 
@@ -20,9 +29,6 @@ The `platform` object has a variety of options:
 - reload (function) - Will be called when MetaMask would like to reload its own context.
 - openWindow ({ url }) - Will be called when MetaMask would like to open a web page. It will be passed a single `options` object with a `url` key, with a string value.
 - getVersion() - Should return the current MetaMask version, as described in the current `CHANGELOG.md` or `app/manifest.json`.
-- encryptor - An object that includes two methods:
-  - encrypt(password, object) - returns a Promise of a string that is ready for storage.
-  - decrypt(password, encryptedString) - Accepts the encrypted output of `encrypt` and returns a Promise of a restored `object` as it was encrypted.
 
 #### [metamask.getState()](https://github.com/MetaMask/metamask-extension/blob/master/app/scripts/metamask-controller.js#L241)
 

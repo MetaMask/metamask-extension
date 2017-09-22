@@ -95,7 +95,7 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.KeyringController,
       ethStore: this.ethStore,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
-      encryptor: opts.platform.encryptor || undefined,
+      encryptor: opts.encryptor || undefined,
     })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
