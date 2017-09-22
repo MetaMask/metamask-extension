@@ -380,36 +380,36 @@ function reduceApp (state, action) {
 
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
-      const otherUnconfActions = getUnconfActionList(state)
-      .filter(tx => tx.id !== action.value)
-      const hasOtherUnconfActions = otherUnconfActions.length > 0
+      // const otherUnconfActions = getUnconfActionList(state)
+      // .filter(tx => tx.id !== action.value)
+      // const hasOtherUnconfActions = otherUnconfActions.length > 0
 
-      if (hasOtherUnconfActions) {
-        log.debug('reducer detected txs - rendering confTx view')
-        return extend(appState, {
-          transForward: false,
-          currentView: {
-            name: 'confTx',
-            context: 0,
-          },
-          warning: null,
-        })
-      } else {
-        log.debug('attempting to close popup')
-        return extend(appState, {
-          // indicate notification should close
-          shouldClose: true,
-          transForward: false,
-          warning: null,
-          currentView: {
-            name: 'accountDetail',
-            context: state.metamask.selectedAddress,
-          },
-          accountDetail: {
-            subview: 'transactions',
-          },
-        })
-      }
+      // if (hasOtherUnconfActions) {
+      //   log.debug('reducer detected txs - rendering confTx view')
+      //   return extend(appState, {
+      //     transForward: false,
+      //     currentView: {
+      //       name: 'confTx',
+      //       context: 0,
+      //     },
+      //     warning: null,
+      //   })
+      // } else {
+      log.debug('attempting to close popup')
+      return extend(appState, {
+        // indicate notification should close
+        shouldClose: true,
+        transForward: false,
+        warning: null,
+        currentView: {
+          name: 'accountDetail',
+          context: state.metamask.selectedAddress,
+        },
+        accountDetail: {
+          subview: 'transactions',
+        },
+      })
+      // }
 
     case actions.NEXT_TX:
       return extend(appState, {

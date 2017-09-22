@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const { addHexPrefix } = require('ethereumjs-util')
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
@@ -26,20 +25,15 @@ function mapStateToProps (state) {
   const conversionRate = state.metamask.conversionRate
   const currentBlockGasLimit = state.metamask.currentBlockGasLimit
   const accounts = state.metamask.accounts
-  // const network = state.metamask.network
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   const selectedToken = selectors.getSelectedToken(state)
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const pair = `${selectedToken.symbol.toLowerCase()}_eth`
   const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
-  // const checksumAddress = selectedAddress && ethUtil.toChecksumAddress(selectedAddress)
-  // const identity = identities[selectedAddress]
 
   return {
-    // sidebarOpen,
     selectedAddress,
-    // checksumAddress,
     selectedTokenAddress,
     identities,
     addressBook,
@@ -48,9 +42,6 @@ function mapStateToProps (state) {
     currentBlockGasLimit,
     selectedToken,
     warning,
-    // selectedToken: selectors.getSelectedToken(state),
-    // identity,
-    // network,
   }
 }
 
@@ -66,11 +57,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
-    // showSidebar: () => { dispatch(actions.showSidebar()) },
-    // hideSidebar: () => { dispatch(actions.hideSidebar()) },
-    // showModal: (payload) => { dispatch(actions.showModal(payload)) },
-    // showSendPage: () => { dispatch(actions.showSendPage()) },
-    // showSendTokenPage: () => { dispatch(actions.showSendTokenPage()) },
   }
 }
 
@@ -116,7 +102,7 @@ SendTokenScreen.prototype.validate = function () {
     gasLimit: !gasLimit ? 'Gas Limit Required' : null,
   }
 
-  if(to && !isValidAddress(to)) {
+  if (to && !isValidAddress(to)) {
     errors.to = 'Invalid address'
   }
 
@@ -360,7 +346,7 @@ SendTokenScreen.prototype.render = function () {
       this.renderAmountInput(),
       this.renderGasInput(),
       this.renderMemoInput(),
-      warning && h('div.send-screen-input-wrapper--error', {}, 
+      warning && h('div.send-screen-input-wrapper--error',
         h('div.send-screen-input-wrapper__error-message', [
           warning,
         ])

@@ -9,6 +9,7 @@ const inherits = require('util').inherits
 const actions = require('../../actions')
 const util = require('../../util')
 const ConfirmSendEther = require('./confirm-send-ether')
+const ConfirmSendToken = require('./confirm-send-token')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
@@ -46,33 +47,51 @@ function PendingTx () {
   this.state = {
     isFetching: true,
     transactionType: '',
+    tokenAddress: '',
+    tokenSymbol: '',
+    tokenDecimals: '',
   }
 }
 
-PendingTx.prototype.componentWillMount = function () {
+PendingTx.prototype.componentWillMount = async function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
   this.props.setCurrentCurrencyToUSD()
 
-  if (txParams.to) {
+  if (!txParams.to) {
+    return this.setState({
+      transactionType: TX_TYPES.DEPLOY_CONTRACT,
+      isFetching: false,
+    })
+  }
+
+  try {
     const token = util.getContractAtAddress(txParams.to)
-    token
-    .symbol()
-    .then(result => {
-      const symbol = result[0] || null
+    const results = await Promise.all([
+      token.symbol(),
+      token.decimals(),
+    ])
+
+    const [ symbol, decimals ] = results
+
+    if (symbol[0] && decimals[0]) {
       this.setState({
-        transactionType: symbol ? TX_TYPES.SEND_TOKEN : TX_TYPES.SEND_ETHER,
+        transactionType: TX_TYPES.SEND_TOKEN,
+        tokenAddress: txParams.to,
+        tokenSymbol: symbol[0],
+        tokenDecimals: decimals[0],
         isFetching: false,
       })
-    })
-    .catch(() => this.setState({
-      transactionType: TX_TYPES.SEND_ETHER,
-      isFetching: false,
-    }))
-  } else {
+    } else {
+      this.setState({
+        transactionType: TX_TYPES.SEND_ETHER,
+        isFetching: false,
+      })
+    }
+  } catch (e) {
     this.setState({
-      transactionType: TX_TYPES.DEPLOY_CONTRACT,
+      transactionType: TX_TYPES.SEND_ETHER,
       isFetching: false,
     })
   }
@@ -87,16 +106,36 @@ PendingTx.prototype.gatherTxMeta = function () {
 }
 
 PendingTx.prototype.render = function () {
-  const { isFetching, transactionType } = this.state
+  const {
+    isFetching,
+    transactionType,
+    tokenAddress,
+    tokenSymbol,
+    tokenDecimals,
+  } = this.state
+
+  const { sendTransaction } = this.props
 
   if (isFetching) {
     return h('noscript')
   }
 
-
   switch (transactionType) {
     case TX_TYPES.SEND_ETHER:
-      return h(ConfirmSendEther, { txData: this.gatherTxMeta() })
+      return h(ConfirmSendEther, {
+        txData: this.gatherTxMeta(),
+        sendTransaction,
+      })
+    case TX_TYPES.SEND_TOKEN:
+      return h(ConfirmSendToken, {
+        txData: this.gatherTxMeta(),
+        sendTransaction,
+        token: {
+          address: tokenAddress,
+          symbol: tokenSymbol,
+          decimals: tokenDecimals,
+        },
+      })
     default:
       return h('noscript')
   }
