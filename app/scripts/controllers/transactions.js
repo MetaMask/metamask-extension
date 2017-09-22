@@ -22,7 +22,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
-    this.ethStore = opts.ethStore
+    this.accountTracker = opts.accountTracker
 
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
@@ -52,7 +52,7 @@ module.exports = class TransactionController extends EventEmitter {
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       getBalance: (address) => {
-        const account = this.ethStore.getState().accounts[address]
+        const account = this.accountTracker.getState().accounts[address]
         if (!account) return
         return account.balance
       },
@@ -73,7 +73,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.blockTracker.on('rawBlock', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
-    // where ethStore hasent been populated by the results yet
+    // where accountTracker hasent been populated by the results yet
     this.blockTracker.once('latest', () => {
       this.blockTracker.on('latest', this.pendingTxTracker.resubmitPendingTxs.bind(this.pendingTxTracker))
     })
@@ -434,6 +434,7 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.status = status
     this.emit(`${txMeta.id}:${status}`, txId)
+    this.emit(`${status}`, txId)
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
     }
