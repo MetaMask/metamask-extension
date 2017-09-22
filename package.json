@@ -69,6 +69,7 @@
     "end-of-stream": "^1.1.0",
     "ensnare": "^1.0.0",
     "eth-bin-to-ops": "^1.0.1",
+    "eth-block-tracker": "^2.2.0",
     "eth-contract-metadata": "^1.1.4",
     "eth-hd-keyring": "^1.1.1",
     "eth-json-rpc-filters": "^1.1.0",
