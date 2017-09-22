@@ -42,6 +42,9 @@ function reduceApp (state, action) {
       modalState: {
         name: null,
       },
+      previousModalState: {
+        name: null,
+      }
     },
     sidebarOpen: false,
     networkDropdownOpen: false,
@@ -87,6 +90,7 @@ function reduceApp (state, action) {
           state.appState.modal,
           { open: true },
           { modalState: action.payload },
+          { previousModalState: appState.modal.modalState},
         ),
       })
 
@@ -95,7 +99,8 @@ function reduceApp (state, action) {
         modal: Object.assign(
           state.appState.modal,
           { open: false },
-          { modalState: action.payload || state.appState.modal.modalState },
+          { modalState: { name: null } },
+          { previousModalState: appState.modal.modalState}, 
         ),
       })
 

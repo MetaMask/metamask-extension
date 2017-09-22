@@ -28,8 +28,13 @@ function AccountModalContainer () {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountModalContainer)
 
 AccountModalContainer.prototype.render = function () {
-  const { selectedIdentity, children } = this.props
-  console.log(`children`, children);
+  const {
+    selectedIdentity,
+    children,
+    showBackButton = false,
+    backButtonAction,
+  } = this.props
+
   return h('div', { style: { borderRadius: '4px' }}, [
     h('div.account-modal-container', [
 
@@ -41,6 +46,16 @@ AccountModalContainer.prototype.render = function () {
           diameter: 64,
           style: {},
         }),
+
+      ]),
+
+      showBackButton && h('div.account-modal-back', {
+        onClick: backButtonAction,
+      }, [
+
+        h('i.fa.fa-angle-left.fa-lg'),
+
+        h('span.account-modal-back__text', ' Back'),
 
       ]),
 

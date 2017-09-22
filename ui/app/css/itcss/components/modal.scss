@@ -192,6 +192,21 @@
   }
 }
 
+.account-modal-back {
+  color: $dusty-gray;
+  position: absolute;
+  top: 13px;
+  left: 17px;
+  cursor: pointer;
+
+  &__text {
+    margin-top: 2px;
+    font-family: 'DIN OT';
+    font-size: 14px;
+    line-height: 18px;
+  }
+}
+
 .account-modal-close::after {
   content: '\00D7';
   font-size: 40px;
