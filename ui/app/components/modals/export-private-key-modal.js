@@ -14,12 +14,14 @@ function mapStateToProps (state) {
     privateKey: state.appState.accountDetail.privateKey,
     network: state.metamask.network,
     selectedIdentity: getSelectedIdentity(state),
+    previousModalState: state.appState.modal.previousModalState.name,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     exportAccount: (password, address) => dispatch(actions.exportAccount(password, address)),
+    showAccountDetailModal: () => dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' })),
     hideModal: () => dispatch(actions.hideModal()),
   }
 }
@@ -86,10 +88,16 @@ ExportPrivateKeyModal.prototype.render = function () {
     network,
     privateKey,
     warning,
+    showAccountDetailModal,
+    hideModal,
+    previousModalState,
   } = this.props
   const { name, address } = selectedIdentity
 
-  return h(AccountModalContainer, {}, [
+  return h(AccountModalContainer, {
+    showBackButton: previousModalState === 'ACCOUNT_DETAILS',
+    backButtonAction: () => showAccountDetailModal(),
+  }, [
 
       h('span.account-name', name),
 

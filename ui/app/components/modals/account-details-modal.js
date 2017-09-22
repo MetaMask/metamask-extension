@@ -19,6 +19,10 @@ function mapDispatchToProps (dispatch) {
   return {
     // Is this supposed to be used somewhere?
     showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
+    showExportPrivateKeyModal: () => {
+      dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
+    },
+    hideModal: () => dispatch(actions.hideModal()),
   }
 }
 
@@ -33,7 +37,12 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModa
   // fonts of qr-header
 
 AccountDetailsModal.prototype.render = function () {
-  const { selectedIdentity, network } = this.props
+  const {
+    selectedIdentity,
+    network,
+    showExportPrivateKeyModal,
+    hideModal,
+  } = this.props
   const { name, address } = selectedIdentity
 
   return h(AccountModalContainer, {}, [
@@ -51,7 +60,11 @@ AccountDetailsModal.prototype.render = function () {
       }, [ 'View account on Etherscan' ]),
 
       // Holding on redesign for Export Private Key functionality
-      h('button.btn-clear', [ 'Export private key' ]),
+      h('button.btn-clear', {
+        onClick: () => {
+          showExportPrivateKeyModal()
+        },
+      }, [ 'Export private key' ]),
       
   ])
 }
