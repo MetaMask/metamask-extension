@@ -1,34 +1,20 @@
 const Component = require('react').Component
 const { connect } = require('react-redux')
 const h = require('react-hyperscript')
-const abi = require('human-standard-token-abi')
-const abiDecoder = require('abi-decoder')
-abiDecoder.addABI(abi)
 const inherits = require('util').inherits
-const actions = require('../actions')
+const actions = require('../../actions')
 const clone = require('clone')
-const FiatValue = require('./fiat-value')
-const Identicon = require('./identicon')
-
+const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const hexToBn = require('../../../app/scripts/lib/hex-to-bn')
-const util = require('../util')
-const { conversionUtil, addCurrencies } = require('../conversion-util')
+const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
+const { conversionUtil, addCurrencies } = require('../../conversion-util')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 
-// Next: create separate react components
-// roughly 5 components:
-//   heroIcon
-//   numericDisplay (contains symbol + currency)
-//   divider
-//   contentBox
-//   actionButtons
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(PendingTx)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendEther)
 
 function mapStateToProps (state) {
   const {
@@ -52,87 +38,45 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-inherits(PendingTx, Component)
-function PendingTx () {
+inherits(ConfirmSendEther, Component)
+function ConfirmSendEther () {
   Component.call(this)
-  this.state = {
-    valid: true,
-    txData: null,
-    submitting: false,
-  }
+  this.state = {}
   this.onSubmit = this.onSubmit.bind(this)
 }
 
-PendingTx.prototype.componentWillMount = function () {
-  this.props.setCurrentCurrencyToUSD()
-}
-
-PendingTx.prototype.getAmount = function () {
+ConfirmSendEther.prototype.getAmount = function () {
   const { conversionRate } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
-  const { params = [] } = decodedData || {}
-  const { name, value } = params[1] || {}
-  const amountBn = name === '_value'
-    ? value
-    : txParams.value
 
-  if (name === '_value') {
-    const token = util.getContractAtAddress(txParams.to)
-    token.symbol().then(symbol => console.log({symbol}))
-    console.log({txParams, txMeta, decodedData, token})
-    const USD = conversionUtil(amountBn, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromCurrency: 'ETH',
-      toCurrency: 'USD',
-      numberOfDecimals: 2,
-      fromDenomination: 'WEI',
-      conversionRate,
-    })
-    const ETH = conversionUtil(amountBn, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromCurrency: 'ETH',
-      toCurrency: 'ETH',
-      fromDenomination: 'WEI',
-      conversionRate,
-      numberOfDecimals: 6,
-    })
-    return {
-      USD,
-      ETH,
-    }
-  } else {
-    const USD = conversionUtil(amountBn, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromCurrency: 'ETH',
-      toCurrency: 'USD',
-      numberOfDecimals: 2,
-      fromDenomination: 'WEI',
-      conversionRate,
-    })
-    const ETH = conversionUtil(amountBn, {
-      fromNumericBase: 'hex',
-      toNumericBase: 'dec',
-      fromCurrency: 'ETH',
-      toCurrency: 'ETH',
-      fromDenomination: 'WEI',
-      conversionRate,
-      numberOfDecimals: 6,
-    })
+  const USD = conversionUtil(txParams.value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: 'USD',
+    numberOfDecimals: 2,
+    fromDenomination: 'WEI',
+    conversionRate,
+  })
+  const ETH = conversionUtil(txParams.value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromCurrency: 'ETH',
+    toCurrency: 'ETH',
+    fromDenomination: 'WEI',
+    conversionRate,
+    numberOfDecimals: 6,
+  })
 
-    return {
-      USD,
-      ETH,
-    }
+  return {
+    USD,
+    ETH,
   }
 
 }
 
-PendingTx.prototype.getGasFee = function () {
+ConfirmSendEther.prototype.getGasFee = function () {
   const { conversionRate } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
@@ -140,7 +84,7 @@ PendingTx.prototype.getGasFee = function () {
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
-  
+
   // From latest master
 //   const gasLimit = new BN(parseInt(blockGasLimit))
 //   const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
@@ -178,13 +122,10 @@ PendingTx.prototype.getGasFee = function () {
   }
 }
 
-PendingTx.prototype.getData = function () {
+ConfirmSendEther.prototype.getData = function () {
   const { identities } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
-  const { name, params = [] } = decodedData || {}
-  const { type, value } = params[0] || {}
   const { USD: gasFeeInUSD, ETH: gasFeeInETH } = this.getGasFee()
   const { USD: amountInUSD, ETH: amountInETH } = this.getAmount()
 
@@ -197,50 +138,29 @@ PendingTx.prototype.getData = function () {
     numberOfDecimals: 6,
   })
 
-  if (name === 'transfer' && type === 'address') {
-    return {
-      from: {
-        address: txParams.from,
-        name: identities[txParams.from].name,
-      },
-      to: {
-        address: value,
-        name: identities[value] ? identities[value].name : 'New Recipient',
-      },
-      memo: txParams.memo || '',
-      gasFeeInUSD,
-      gasFeeInETH,
-      amountInUSD,
-      amountInETH,
-    }
-  } else {
-    return {
-      from: {
-        address: txParams.from,
-        name: identities[txParams.from].name,
-      },
-      to: {
-        address: txParams.to,
-        name: identities[txParams.to] ? identities[txParams.to].name : 'New Recipient',
-      },
-      memo: txParams.memo || '',
-      gasFeeInUSD,
-      gasFeeInETH,
-      amountInUSD,
-      amountInETH,
-      totalInUSD,
-      totalInETH,
-    }
+  return {
+    from: {
+      address: txParams.from,
+      name: identities[txParams.from].name,
+    },
+    to: {
+      address: txParams.to,
+      name: identities[txParams.to] ? identities[txParams.to].name : 'New Recipient',
+    },
+    memo: txParams.memo || '',
+    gasFeeInUSD,
+    gasFeeInETH,
+    amountInUSD,
+    amountInETH,
+    totalInUSD,
+    totalInETH,
   }
 }
 
-PendingTx.prototype.render = function () {
+ConfirmSendEther.prototype.render = function () {
   const { backToAccountDetail, selectedAddress } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-
-  // recipient check
-  // const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
 
   const {
     from: {
@@ -255,7 +175,6 @@ PendingTx.prototype.render = function () {
     gasFeeInUSD,
     gasFeeInETH,
     amountInUSD,
-    amountInETH,
     totalInUSD,
     totalInETH,
   } = this.getData()
@@ -450,13 +369,6 @@ PendingTx.prototype.render = function () {
       h('form#pending-tx-form.flex-column.flex-center', {
         onSubmit: this.onSubmit,
       }, [
-        // Reset Button
-        // h('button', {
-        //   onClick: (event) => {
-        //     this.resetGasFields()
-        //     event.preventDefault()
-        //   },
-        // }, 'Reset'),
 
         // Accept Button
         h('button.confirm-screen-confirm-button', ['CONFIRM']),
@@ -470,42 +382,7 @@ PendingTx.prototype.render = function () {
   )
 }
 
-// PendingTx.prototype.gasPriceChanged = function (newBN, valid) {
-//   log.info(`Gas price changed to: ${newBN.toString(10)}`)
-//   const txMeta = this.gatherTxMeta()
-//   txMeta.txParams.gasPrice = '0x' + newBN.toString('hex')
-//   this.setState({
-//     txData: clone(txMeta),
-//     valid,
-//   })
-// }
-
-// PendingTx.prototype.gasLimitChanged = function (newBN, valid) {
-//   log.info(`Gas limit changed to ${newBN.toString(10)}`)
-//   const txMeta = this.gatherTxMeta()
-//   txMeta.txParams.gas = '0x' + newBN.toString('hex')
-//   this.setState({
-//     txData: clone(txMeta),
-//     valid,
-//   })
-// }
-
-// PendingTx.prototype.resetGasFields = function () {
-//   log.debug(`pending-tx resetGasFields`)
-
-//   this.inputs.forEach((hexInput) => {
-//     if (hexInput) {
-//       hexInput.setValid()
-//     }
-//   })
-
-//   this.setState({
-//     txData: null,
-//     valid: true,
-//   })
-// }
-
-PendingTx.prototype.onSubmit = function (event) {
+ConfirmSendEther.prototype.onSubmit = function (event) {
   event.preventDefault()
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
@@ -519,18 +396,18 @@ PendingTx.prototype.onSubmit = function (event) {
   }
 }
 
-PendingTx.prototype.cancel = function (event, txMeta) {
+ConfirmSendEther.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
   this.props.cancelTransaction(txMeta)
 }
 
-PendingTx.prototype.checkValidity = function () {
+ConfirmSendEther.prototype.checkValidity = function () {
   const form = this.getFormEl()
   const valid = form.checkValidity()
   return valid
 }
 
-PendingTx.prototype.getFormEl = function () {
+ConfirmSendEther.prototype.getFormEl = function () {
   const form = document.querySelector('form#pending-tx-form')
   // Stub out form for unit tests:
   if (!form) {
@@ -540,7 +417,7 @@ PendingTx.prototype.getFormEl = function () {
 }
 
 // After a customizable state value has been updated,
-PendingTx.prototype.gatherTxMeta = function () {
+ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
@@ -549,7 +426,7 @@ PendingTx.prototype.gatherTxMeta = function () {
   return txData
 }
 
-PendingTx.prototype.verifyGasParams = function () {
+ConfirmSendEther.prototype.verifyGasParams = function () {
   // We call this in case the gas has not been modified at all
   if (!this.state) { return true }
   return (
@@ -558,11 +435,11 @@ PendingTx.prototype.verifyGasParams = function () {
   )
 }
 
-PendingTx.prototype._notZeroOrEmptyString = function (obj) {
+ConfirmSendEther.prototype._notZeroOrEmptyString = function (obj) {
   return obj !== '' && obj !== '0x0'
 }
 
-PendingTx.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
+ConfirmSendEther.prototype.bnMultiplyByFraction = function (targetBN, numerator, denominator) {
   const numBN = new BN(numerator)
   const denomBN = new BN(denominator)
   return targetBN.mul(numBN).div(denomBN)
