@@ -181,7 +181,7 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         to: e.target.value,
         errors: {},
       }),
-      onFocus: () => to && this.setState({ to: '' }),
+      onFocus: event => to && event.target.select(),
     }),
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
