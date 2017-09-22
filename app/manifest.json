@@ -58,10 +58,8 @@
     "storage",
     "clipboardWrite",
     "http://localhost:8545/",
-    "https://rinkeby.infura.io/metamask/",
-    "https://mainnet.infura.io/metamask/",
-    "https://ropsten.infura.io/metamask/",
-    "https://kovan.infura.io/metamask/"
+    "https://*.infura.io/",
+    "https://api.cryptonator.com"
     ],
   "web_accessible_resources": [
     "scripts/inpage.js"
