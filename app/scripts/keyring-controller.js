@@ -27,7 +27,7 @@ class KeyringController extends EventEmitter {
   constructor (opts) {
     super()
     const initState = opts.initState || {}
-    this.keyringTypes = keyringTypes
+    this.keyringTypes = opts.keyringTypes || keyringTypes
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({
       isUnlocked: false,
