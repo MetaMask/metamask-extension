@@ -1,4 +1,4 @@
-/* Ethereum Store
+/* Account Tracker
  *
  * This module is responsible for tracking any number of accounts
  * and caching their current balances & transaction counts.

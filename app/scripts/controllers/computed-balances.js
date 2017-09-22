@@ -2,7 +2,7 @@ const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const BalanceController = require('./balance')
 
-class BalancesController {
+class ComputedbalancesController {
 
   constructor (opts = {}) {
     const { ethStore, txController } = opts
@@ -61,4 +61,4 @@ class BalancesController {
   }
 }
 
-module.exports = BalancesController
+module.exports = ComputedbalancesController
