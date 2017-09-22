@@ -349,9 +349,25 @@ function navigateToNewAccountScreen () {
   }
 }
 
-function addNewAccount () {
+function addNewAccount (oldIdentities) {
   log.debug(`background.addNewAccount`)
-  return callBackgroundThenUpdate(background.addNewAccount)
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.addNewAccount((err, { identities: newIdentities}) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        const newAccountAddress = Object.keys(newIdentities).find(address => !oldIdentities[address])
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(newAccountAddress)
+      })
+    });
+  }
 }
 
 function showInfoPage () {

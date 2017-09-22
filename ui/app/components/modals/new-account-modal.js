@@ -8,6 +8,7 @@ function mapStateToProps (state) {
   return {
     network: state.metamask.network,
     address: state.metamask.selectedAddress,
+    identities: state.metamask.identities,
   }
 }
 
@@ -19,9 +20,12 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
-    createAccount: () => {
-      dispatch(actions.addNewAccount())
-      dispatch(actions.hideModal())
+    createAccount: (identities, newAccountName) => {
+      dispatch(actions.addNewAccount(identities))
+        .then((newAccountAddress) => {
+          dispatch(actions.saveAccountLabel(newAccountAddress, newAccountName))
+          dispatch(actions.hideModal())
+        })
     },
   }
 }
@@ -29,11 +33,18 @@ function mapDispatchToProps (dispatch) {
 inherits(NewAccountModal, Component)
 function NewAccountModal () {
   Component.call(this)
+
+  this.state = {
+    newAccountName: ''
+  }
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(NewAccountModal)
 
 NewAccountModal.prototype.render = function () {
+  const { identities } = this.props
+  const { newAccountName } = this.state
+
   return h('div', {}, [
     h('div.new-account-modal-wrapper', {
     }, [
@@ -52,6 +63,7 @@ NewAccountModal.prototype.render = function () {
       h('div.new-account-input-wrapper', {}, [
         h('input.new-account-input', {
           placeholder: 'E.g. My new account',
+          onChange: (event) => this.setState({ newAccountName: event.target.value })
         }, []),
       ]),
 
@@ -65,7 +77,7 @@ NewAccountModal.prototype.render = function () {
 
       h('div.new-account-modal-content.button', {}, [
         h('button.btn-clear', {
-          onClick: this.props.createAccount
+          onClick: () => this.props.createAccount(identities, newAccountName)
         }, [
           'SAVE',
         ]),
