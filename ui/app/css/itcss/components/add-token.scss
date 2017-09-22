@@ -56,6 +56,10 @@
     margin-top: 24px;
   }
 
+  &__confirmation-description {
+    margin: 12px 0;
+  }
+
   &__content-container {
     width: 100%;
     border-bottom: 1px solid $gallery;
@@ -65,6 +69,18 @@
     padding: 11px 0;
     width: 263px;
     margin: 0 auto;
+    position: relative;
+  }
+
+  &__search-input-error-message {
+    position: absolute;
+    bottom: -10px;
+    font-size: 12px;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: $red;
   }
 
   &__input {
@@ -89,9 +105,13 @@
     font-size: 18px;
     line-height: 24px;
     text-align: center;
-    padding: 11px 0 19px;
+    padding: 12px 0;
     font-weight: 600;
     cursor: pointer;
+
+    &:hover {
+      background-color: $gallery;
+    }
   }
 
   &__add-custom-form {
@@ -103,6 +123,24 @@
   &__add-custom-field {
     width: 290px;
     margin: 0 auto;
+    position: relative;
+
+    &--error {
+      .add-token__add-custom-input {
+        border-color: $red;
+      }
+    }
+  }
+
+  &__add-custom-error-message {
+    position: absolute;
+    bottom: -21px;
+    font-size: 12px;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: $red;
   }
 
   &__add-custom-label {
@@ -152,9 +190,12 @@
     cursor: pointer;
     border: 2px solid transparent;
 
-    &:hover,
+    &:hover {
+      border: 2px solid rgba($malibu-blue, .5);
+    }
+
     &--selected {
-      border: 2px solid $malibu-blue;
+      border: 2px solid $malibu-blue !important;
     }
   }
 
@@ -180,5 +221,53 @@
     box-shadow: 0 2px 4px 0 rgba($black, .24);
     margin-right: 12px;
     flex: 0 0 auto;
+  }
+
+  &__confirmation-token-list {
+    display: flex;
+    flex-flow: column nowrap;
+
+    .token-balance {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: flex-start;
+
+      &__amount {
+        color: $scorpion;
+        font-size: 43px;
+        font-weight: 300;
+        line-height: 43px;
+        margin-right: 8px;
+      }
+
+      &__symbol {
+        color: $scorpion;
+        font-size: 16px;
+        line-height: 24px;
+      }
+    }
+  }
+
+  &__confirmation-title {
+    padding: 30px 120px 12px;
+  }
+
+  &__confirmation-content {
+    padding-bottom: 60px;
+  }
+
+  &__confirmation-token-list-item {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 0 120px;
+    align-items: center;
+  }
+
+  &__confirmation-token-list-item + &__confirmation-token-list-item {
+    margin-top: 30px;
+  }
+
+  &__confirmation-token-icon {
+    margin-right: 18px;
   }
 }

@@ -147,6 +147,7 @@ var actions = {
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
   addToken,
+  addTokens,
   setRpcTarget: setRpcTarget,
   setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
@@ -700,15 +701,37 @@ function showAddTokenPage () {
 function addToken (address, symbol, decimals) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addToken(address, symbol, decimals, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      setTimeout(() => {
-        dispatch(actions.goHome())
-      }, 250)
+    return new Promise((resolve, reject) => {
+      background.addToken(address, symbol, decimals, (err) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        resolve()
+        // setTimeout(() => {
+        //   dispatch(actions.goHome())
+        // }, 250)
+      })
     })
+  }
+}
+
+function addTokens (tokens) {
+  return dispatch => {
+    if (Array.isArray(tokens)) {
+      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
+        dispatch(addToken(address, symbol, decimals))
+      )))
+    } else {
+      return Promise.all(
+        Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addToken(address, symbol, decimals))
+        ))
+      )
+    }
   }
 }
 

@@ -17,7 +17,8 @@ module.exports = connect(mapStateToProps)(TokenBalance)
 inherits(TokenBalance, Component)
 function TokenBalance () {
   this.state = {
-    balance: '',
+    string: '',
+    symbol: '',
     isLoading: true,
     error: null,
   }
@@ -26,11 +27,14 @@ function TokenBalance () {
 
 TokenBalance.prototype.render = function () {
   const state = this.state
-  const { balance, isLoading } = state
+  const { symbol, string, balanceOnly, isLoading } = state
 
   return isLoading
     ? h('span', '')
-    : h('span', balance)
+    : h('span.token-balance', [
+      h('span.token-balance__amount', string),
+      !balanceOnly && h('span.token-balance__symbol', symbol),
+    ])
 }
 
 TokenBalance.prototype.componentDidMount = function () {
@@ -93,10 +97,10 @@ TokenBalance.prototype.componentDidUpdate = function (nextProps) {
 
 TokenBalance.prototype.updateBalance = function (tokens = []) {
   const [{ string, symbol }] = tokens
-  const { balanceOnly } = this.props
 
   this.setState({
-    balance: balanceOnly ? string : `${string} ${symbol}`,
+    string,
+    symbol,
     isLoading: false,
   })
 }

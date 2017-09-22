@@ -77,7 +77,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const { showConfTxPage } = this.props
 
   const opts = {
-    key: transActionId,
+    key: transActionId || transactionHash,
     txParams: transaction.txParams,
     transactionStatus,
     transActionId,
