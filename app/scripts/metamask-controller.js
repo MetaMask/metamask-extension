@@ -86,6 +86,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
+    this.accountTracker = new AccountTracker({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+    })
 
     // key mgmt
     this.keyringController = new KeyringController({
