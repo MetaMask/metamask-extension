@@ -123,14 +123,9 @@ SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
         })
       },
       onBlur: () => this.setErrorsFor('from'),
-      onFocus: () => {
+      onFocus: event => {
         this.clearErrorsFor('from'),
-        this.state.newTx.from && this.setState({
-          newTx: {
-            ...this.state.newTx,
-            from: '',
-          },
-        })
+        this.state.newTx.from && event.target.select()
       },
     }),
 
@@ -168,14 +163,9 @@ SendTransactionScreen.prototype.renderToInput = function (to, identities, addres
         })
       },
       onBlur: () => this.setErrorsFor('to'),
-      onFocus: () => {
+      onFocus: event => {
         this.clearErrorsFor('to')
-        this.state.newTx.to && this.setState({
-          newTx: {
-            ...this.state.newTx,
-            to: '',
-          },
-        })
+        this.state.newTx.to && event.target.select()
       },
     }),
 
