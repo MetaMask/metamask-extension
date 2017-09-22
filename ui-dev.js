@@ -61,7 +61,7 @@ const actions = {
 var css = MetaMaskUiCss()
 injectCss(css)
 
-const container = document.querySelector('#app-content')
+const container = document.querySelector('#test-container')
 
 // parse opts
 var store = configureStore(states[selectedView])
@@ -72,7 +72,7 @@ render(
 
     h(Selector, { actions, selectedKey: selectedView, states, store }),
 
-    h('.mock-app-root', {
+    h('#app-content', {
       style: {
         height: '500px',
         width: '360px',

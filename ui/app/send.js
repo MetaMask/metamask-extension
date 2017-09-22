@@ -262,6 +262,11 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
+  if ((util.isInvalidChecksumAddress(recipient))) {
+    message = 'Recipient address checksum is invalid.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
   if ((!util.isValidAddress(recipient) && !txData) || (!recipient && !txData)) {
     message = 'Recipient address is invalid.'
     return this.props.dispatch(actions.displayWarning(message))
