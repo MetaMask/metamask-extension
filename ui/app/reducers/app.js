@@ -494,7 +494,6 @@ function reduceApp (state, action) {
         },
       })
 
-
     case actions.ONBOARDING_BUY_ETH_VIEW:
       return extend(appState, {
         transForward: true,

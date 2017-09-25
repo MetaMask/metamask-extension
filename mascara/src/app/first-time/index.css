@@ -578,7 +578,8 @@ button.first-time-flow__button--tertiary:hover {
   flex: 1 0 auto;
 }
 
-.shapeshift-form__selector-label {
+.shapeshift-form__selector-label,
+.shapeshift-form__deposit-instruction {
   color: #757575;
   color: rgba(0, 0, 0, 0.45);
   font-family: Montserrat Light;
@@ -597,10 +598,8 @@ button.first-time-flow__button--tertiary:hover {
   text-align: center;
   width: 100%;
   height: 45px;
-}
-
-.shapeshift-form__address-input-wrapper {
-  padding-bottom: 24px;
+  line-height: 44px;
+  font-family: Montserrat Light;
 }
 
 .shapeshift-form__address-input-label {
@@ -622,6 +621,18 @@ button.first-time-flow__button--tertiary:hover {
   width: 100%;
 }
 
+.shapeshift-form__address-input-wrapper--error .shapeshift-form__address-input {
+  border-color: #FF001F;
+}
+
+.shapeshift-form__address-input-error-message {
+  color: #FF001F;
+  font-family: Montserrat Light;
+  font-size: 12px;
+  height: 24px;
+  line-height: 18px;
+}
+
 .shapeshift-form__metadata {
   display: flex;
   flex-flow: row wrap;
@@ -640,11 +651,11 @@ button.first-time-flow__button--tertiary:hover {
 }
 
 .shapeshift-form__metadata-wrapper:nth-child(odd) {
-  padding-right: 24px;
+  padding-right: 14px;
 }
 
 .shapeshift-form__metadata-label {
-  flex: 1 0 65%;
+  flex: 1 0 60%;
 }
 
 .shapeshift-form__metadata-value {
@@ -653,4 +664,10 @@ button.first-time-flow__button--tertiary:hover {
   color: #000;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.shapeshift-form__qr-code {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
 }

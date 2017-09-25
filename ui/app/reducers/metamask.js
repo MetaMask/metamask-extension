@@ -19,6 +19,8 @@ function reduceMetamask (state, action) {
     lastUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
+    tokenExchangeRates: {},
+    coinOptions: {},
   }, state.metamask)
 
   switch (action.type) {
@@ -130,6 +132,25 @@ function reduceMetamask (state, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
+      })
+
+    case actions.PAIR_UPDATE:
+      const { value: { marketinfo: pairMarketInfo } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [pairMarketInfo.pair]: pairMarketInfo,
+        },
+      })
+
+    case actions.SHAPESHIFT_SUBVIEW:
+      const { value: { marketinfo, coinOptions } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [marketinfo.pair]: marketinfo,
+        },
+        coinOptions,
       })
 
     default:

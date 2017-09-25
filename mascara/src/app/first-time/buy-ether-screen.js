@@ -3,6 +3,7 @@ import classnames from 'classnames'
 import {connect} from 'react-redux'
 import {qrcode} from 'qrcode-npm'
 import copyToClipboard from 'copy-to-clipboard'
+import ShapeShiftForm from '../shapeshift-form'
 import Identicon from '../../../../ui/app/components/identicon'
 import {buyEth, showAccountDetail} from '../../../../ui/app/actions'
 
@@ -79,12 +80,6 @@ class BuyEtherScreen extends Component {
     )
   }
 
-  renderShapeShiftLogo () {
-    return (
-      <div className='shapeshift-logo' />
-    )
-  }
-
   renderCoinbaseForm () {
     const {goToCoinbase, address} = this.props
 
@@ -119,83 +114,13 @@ class BuyEtherScreen extends Component {
       case OPTION_VALUES.SHAPESHIFT:
         return (
           <div className='buy-ether__action-content-wrapper'>
-            <div>{this.renderShapeShiftLogo()}</div>
+            <div className='shapeshift-logo' />
             <div className='buy-ether__body-text'>
               Trade any leading blockchain asset for any other. Protection by Design. No Account Needed.
             </div>
-            <div className='shapeshift-form'>
-              <div className='shapeshift-form__selectors'>
-                <div className='shapeshift-form__selector'>
-                  <div className='shapeshift-form__selector-label'>
-                    Deposit
-                  </div>
-                  <select className='shapeshift-form__selector-input'>
-                    <option value='btc'>BTC</option>
-                  </select>
-                </div>
-                <div
-                  className='icon shapeshift-form__caret'
-                  style={{ backgroundImage: 'url(images/caret-right.svg)'}}
-                />
-                <div className='shapeshift-form__selector'>
-                  <div className='shapeshift-form__selector-label'>
-                    Receive
-                  </div>
-                  <select className='shapeshift-form__selector-input'>
-                    <option value='btc'>BTC</option>
-                  </select>
-                </div>
-              </div>
-              <div className='shapeshift-form__address-input-wrapper'>
-                <div className='shapeshift-form__address-input-label'>
-                  Your Refund Address
-                </div>
-                <input type='text' className='shapeshift-form__address-input' />
-              </div>
-              <div className='shapeshift-form__metadata'>
-                <div className='shapeshift-form__metadata-wrapper'>
-                  <div className='shapeshift-form__metadata-label'>
-                    Status:
-                  </div>
-                  <div className='shapeshift-form__metadata-value'>
-                    Available
-                  </div>
-                </div>
-                <div className='shapeshift-form__metadata-wrapper'>
-                  <div className='shapeshift-form__metadata-label'>
-                    Limit:
-                  </div>
-                  <div className='shapeshift-form__metadata-value'>
-                    2.06856464
-                  </div>
-                </div>
-                <div className='shapeshift-form__metadata-wrapper'>
-                  <div className='shapeshift-form__metadata-label'>
-                    Exchange Rate:
-                  </div>
-                  <div className='shapeshift-form__metadata-value'>
-                    12.21840214
-                  </div>
-                </div>
-                <div className='shapeshift-form__metadata-wrapper'>
-                  <div className='shapeshift-form__metadata-label'>
-                    Minimum:
-                  </div>
-                  <div className='shapeshift-form__metadata-value'>
-                    0.000163
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='buy-ether__buttons'>
-              <button
-                className='first-time-flow__button'
-              >
-                Buy
-              </button>
-            </div>
+            <ShapeShiftForm btnClass='first-time-flow__button' />
           </div>
-        )
+          )
       case OPTION_VALUES.QR_CODE:
         return (
           <div className='buy-ether__action-content-wrapper'>

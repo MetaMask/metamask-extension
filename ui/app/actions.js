@@ -138,6 +138,7 @@ var actions = {
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
   buyEthView: buyEthView,
+  buyWithShapeShift,
   BUY_ETH_VIEW: 'BUY_ETH_VIEW',
   COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
   coinBaseSubview: coinBaseSubview,
@@ -977,6 +978,18 @@ function coinShiftRquest (data, marketData) {
   }
 }
 
+function buyWithShapeShift (data) {
+  return dispatch => new Promise((resolve, reject) => {
+    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+      if (response.error) {
+        return reject(response.error)
+      }
+      background.createShapeShiftTx(response.deposit, response.depositType)
+      return resolve(response)
+    })
+  })
+}
+
 function showQrView (data, message) {
   return {
     type: actions.SHOW_QR_VIEW,
@@ -1010,9 +1023,14 @@ function shapeShiftRequest (query, options, cb) {
   options.method ? method = options.method : method = 'GET'
 
   var requestListner = function (request) {
-    queryResponse = JSON.parse(this.responseText)
-    cb ? cb(queryResponse) : null
-    return queryResponse
+    try {
+      queryResponse = JSON.parse(this.responseText)
+      cb ? cb(queryResponse) : null
+      return queryResponse
+    } catch (e) {
+      cb ? cb({error: e}) : null
+      return e
+    }
   }
 
   var shapShiftReq = new XMLHttpRequest()
