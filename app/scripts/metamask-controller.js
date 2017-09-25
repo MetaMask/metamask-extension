@@ -96,6 +96,7 @@ module.exports = class MetamaskController extends EventEmitter {
       initState: initState.KeyringController,
       accountTracker: this.accountTracker,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      encryptor: opts.encryptor || undefined,
     })
 
     // account tracker watches balances, nonces, and any code at their address.
