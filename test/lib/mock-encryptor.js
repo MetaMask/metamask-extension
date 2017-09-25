@@ -29,4 +29,8 @@ module.exports = {
     return 'WHADDASALT!'
   },
 
+  getRandomValues () {
+    return 'SOO RANDO!!!1'
+  }
+
 }
