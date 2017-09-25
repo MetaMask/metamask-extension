@@ -197,16 +197,6 @@ describe('Transaction Controller', function () {
     })
   })
 
-  xdescribe('#updateAndApprovedTransaction', function () {
-    it('should update txMeta and approve status for Tx', async function () {
-      txController.txStateManager.addTx({ id: 0, status: 'unapproved', txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d', nonce: '0x1', value: '0xfffff' }, metamaskNetworkId: currentNetworkId })
-      const txMeta = txController.txStateManager.getTx(0)
-      txMeta.value = '0xffffe'
-      provider.eth_sendRawTransaction = 0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385
-      await txController.updateAndApproveTransaction(txMeta)
-    })
-  })
-
   describe('#validateTxParams', function () {
     it('does not throw for positive values', function (done) {
       var sample = {
