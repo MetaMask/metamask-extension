@@ -5,10 +5,11 @@ const BN = require('ethereumjs-util').BN
 class BalanceController {
 
   constructor (opts = {}) {
-    const { address, accountTracker, txController } = opts
+    const { address, accountTracker, txController, blockTracker } = opts
     this.address = address
     this.accountTracker = accountTracker
     this.txController = txController
+    this.blockTracker = blockTracker
 
     const initState = {
       ethBalance: undefined,
@@ -36,7 +37,7 @@ class BalanceController {
     this.txController.on('confirmed', update)
     this.txController.on('failed', update)
     this.accountTracker.subscribe(update)
-    this.txController.blockTracker.on('block', update)
+    this.blockTracker.on('block', update)
   }
 
   async _getBalance () {
