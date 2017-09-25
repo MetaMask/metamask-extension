@@ -16,7 +16,7 @@ class BalanceController {
     this.store = new ObservableStore(initState)
 
     this.balanceCalc = new PendingBalanceCalculator({
-      getBalance: () => Promise.resolve(this._getBalance()),
+      getBalance: () => this._getBalance(),
       getPendingTransactions: this._getPendingTransactions.bind(this),
     })
 
@@ -35,24 +35,24 @@ class BalanceController {
     this.txController.on('submitted', update)
     this.txController.on('confirmed', update)
     this.txController.on('failed', update)
+    this.accountTracker.subscribe(update)
     this.txController.blockTracker.on('block', update)
   }
 
-  _getBalance () {
-    const store = this.accountTracker.getState()
-    const balances = store.accounts
-    const entry = balances[this.address]
+  async _getBalance () {
+    const { accounts } = this.accountTracker.getState()
+    const entry = accounts[this.address]
     const balance = entry.balance
     return balance ? new BN(balance.substring(2), 16) : undefined
   }
 
-  _getPendingTransactions () {
+  async _getPendingTransactions () {
     const pending = this.txController.getFilteredTxList({
       from: this.address,
       status: 'submitted',
       err: undefined,
     })
-    return Promise.resolve(pending)
+    return pending
   }
 
 }
