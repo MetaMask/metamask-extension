@@ -20,7 +20,7 @@ class BalanceController {
       getPendingTransactions: this._getPendingTransactions.bind(this),
     })
 
-    this.registerUpdates()
+    this._registerUpdates()
   }
 
   async updateBalance () {
@@ -30,7 +30,7 @@ class BalanceController {
     })
   }
 
-  registerUpdates () {
+  _registerUpdates () {
     const update = this.updateBalance.bind(this)
     this.txController.on('submitted', update)
     this.txController.on('confirmed', update)

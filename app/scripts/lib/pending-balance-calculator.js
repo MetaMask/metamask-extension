@@ -19,19 +19,17 @@ class PendingBalanceCalculator {
       this.getPendingTransactions(),
     ])
 
-    const balance = results[0]
-    const pending = results[1]
-
+    const [ balance, pending ] = results
     if (!balance) return undefined
 
     const pendingValue = pending.reduce((total, tx) => {
-      return total.add(this.valueFor(tx))
+      return total.add(this.calculateMaxCost(tx))
     }, new BN(0))
 
     return `0x${balance.sub(pendingValue).toString(16)}`
   }
 
-  valueFor (tx) {
+  calculateMaxCost (tx) {
     const txValue = tx.txParams.value
     const value = this.hexToBn(txValue)
     const gasPrice = this.hexToBn(tx.txParams.gasPrice)
