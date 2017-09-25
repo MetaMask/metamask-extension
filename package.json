@@ -67,7 +67,7 @@
     "dnode": "^1.2.2",
     "end-of-stream": "^1.1.0",
     "ensnare": "^1.0.0",
-    "eslint-plugin-react": "^7.3.0",
+    "eslint-plugin-react": "^7.4.0",
     "eth-bin-to-ops": "^1.0.1",
     "eth-block-tracker": "^2.2.0",
     "eth-contract-metadata": "^1.1.4",

@@ -3036,9 +3036,9 @@ eslint-plugin-mocha@^4.9.0:
   dependencies:
     ramda "^0.24.1"
 
-eslint-plugin-react@^7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.3.0.tgz#ca9368da36f733fbdc05718ae4e91f778f38e344"
+eslint-plugin-react@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.4.0.tgz#300a95861b9729c087d362dd64abcc351a74364a"
   dependencies:
     doctrine "^2.0.0"
     has "^1.0.1"
@@ -5249,7 +5249,7 @@ jsmin@1.x:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/jsmin/-/jsmin-1.0.1.tgz#e7bd0dcd6496c3bf4863235bf461a3d98aa3b98c"
 
-json-rpc-engine@^3.0.1, json-rpc-engine@^3.1.0:
+json-rpc-engine@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-3.1.0.tgz#09285363372857569d75f61df6591b1b0afb0758"
   dependencies:
@@ -5257,16 +5257,26 @@ json-rpc-engine@^3.0.1, json-rpc-engine@^3.1.0:
     babel-preset-env "^1.3.2"
     babelify "^7.3.0"
 
+json-rpc-engine@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-3.2.0.tgz#d34dff106c8339c337a894da801f73b1f77b1bc8"
+  dependencies:
+    async "^2.0.1"
+    babel-preset-env "^1.3.2"
+    babelify "^7.3.0"
+    json-rpc-error "^2.0.0"
+
 json-rpc-error@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/json-rpc-error/-/json-rpc-error-2.0.0.tgz#a7af9c202838b5e905c7250e547f1aff77258a02"
   dependencies:
     inherits "^2.0.1"
 
-json-rpc-middleware-stream@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/json-rpc-middleware-stream/-/json-rpc-middleware-stream-1.0.0.tgz#84d0faefe123ce9cfc7a9753e6e5236b9a104522"
+json-rpc-middleware-stream@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/json-rpc-middleware-stream/-/json-rpc-middleware-stream-1.0.1.tgz#c9b8a005c80af32e6df8bb88e6bdd1300484a4ed"
   dependencies:
+    end-of-stream "^1.4.0"
     eth-block-tracker "^2.1.2"
     ethjs-query "^0.2.9"
     json-rpc-engine "^3.0.1"
