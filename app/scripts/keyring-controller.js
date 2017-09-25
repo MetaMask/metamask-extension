@@ -37,7 +37,7 @@ class KeyringController extends EventEmitter {
     })
 
     this.accountTracker = opts.accountTracker
-    this.encryptor = encryptor
+    this.encryptor = opts.encryptor || encryptor
     this.keyrings = []
     this.getNetwork = opts.getNetwork
   }
