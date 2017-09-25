@@ -124,7 +124,7 @@ SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
       },
       onBlur: () => this.setErrorsFor('from'),
       onFocus: event => {
-        this.clearErrorsFor('from'),
+        this.clearErrorsFor('from')
         this.state.newTx.from && event.target.select()
       },
     }),
