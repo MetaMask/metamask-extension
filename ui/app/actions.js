@@ -131,15 +131,7 @@ var actions = {
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // send screen
   estimateGas,
-  updateGasEstimate,
-  UPDATE_GAS_ESTIMATE: 'UPDATE_GAS_ESTIMATE',
-  updateGasPrice,
-  UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   getGasPrice,
-  CLEAR_GAS_ESTIMATE: 'CLEAR_GAS_ESTIMATE',
-  CLEAR_GAS_PRICE: 'CLEAR_GAS_PRICE',
-  clearGasEstimate,
-  clearGasPrice,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -462,20 +454,30 @@ function signTx (txData) {
 
 function estimateGas ({ to, amount }) {
   return (dispatch) => {
-    global.ethQuery.estimateGas({ to, amount }, (err, data) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
-      dispatch(actions.updateGasEstimate(data))
+    return new Promise((resolve, reject) => {
+      global.ethQuery.estimateGas({ to, amount }, (err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        return resolve(data)
+      })
     })
   }
 }
 
 function getGasPrice () {
   return (dispatch) => {
-    global.ethQuery.gasPrice((err, data) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.hideWarning())
-      dispatch(actions.updateGasPrice(data))
+    return new Promise((resolve, reject) => {
+      global.ethQuery.gasPrice((err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        return resolve(data)
+      })
     })
   }
 }
@@ -535,32 +537,6 @@ function txError (err) {
     type: actions.TRANSACTION_ERROR,
     message: err.message,
   }
-}
-
-function updateGasEstimate (gas) {
-  return {
-    type: actions.UPDATE_GAS_ESTIMATE,
-    value: gas,
-  }
-}
-
-function clearGasEstimate () {
-  return {
-    type: actions.CLEAR_GAS_ESTIMATE,
-  }
-}
-
-function updateGasPrice (gasPrice) {
-  return {
-    type: actions.UPDATE_GAS_PRICE,
-    value: gasPrice,
-  }
-}
-
-function clearGasPrice () {
-   return {
-    type: actions.CLEAR_GAS_PRICE,
-  } 
 }
 
 function cancelMsg (msgData) {

@@ -18,8 +18,6 @@ const {
   signTx,
   estimateGas,
   getGasPrice,
-  clearGasEstimate,
-  clearGasPrice,
 } = require('./actions')
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
 const { isHex, numericBalance, isValidAddress, allNull } = require('./util')
@@ -52,8 +50,6 @@ function mapStateToProps (state) {
     addressBook,
     conversionRate,
     blockGasLimit,
-    blockGasPrice,
-    estimatedGas,
     warning,
     selectedIdentity,
     error: warning && warning.split('.')[0],
@@ -73,16 +69,15 @@ function SendTransactionScreen () {
     newTx: {
       from: '',
       to: '',
-      amount: 0,
       amountToSend: '0x0',
       gasPrice: null,
       gas: null,
       amount: '0x0', 
-      gasPrice: null,
-      gas: null,
       txData: null,
       memo: '',
     },
+    blockGasPrice: null,
+    estimatedGas: null,
     activeCurrency: 'USD', 
     tooltipIsOpen: false,
     errors: {},
@@ -106,11 +101,6 @@ function SendTransactionScreen () {
   this.renderGasInput = this.renderGasInput.bind(this)
   this.renderMemoInput = this.renderMemoInput.bind(this)
   this.renderErrorMessage = this.renderErrorMessage.bind(this)
-}
-
-SendTransactionScreen.prototype.componentWillMount = function() {
-  this.props.dispatch(clearGasEstimate())
-  this.props.dispatch(clearGasPrice())
 }
 
 SendTransactionScreen.prototype.renderErrorMessage = function(errorType, warning) {
@@ -316,11 +306,16 @@ SendTransactionScreen.prototype.render = function () {
     identities,
     addressBook,
     conversionRate,
-    estimatedGas,
-    blockGasPrice,
   } = props
 
-  const { blockGasLimit, newTx, activeCurrency, isValid } = this.state
+  const {
+    blockGasLimit,
+    newTx,
+    activeCurrency,
+    isValid,
+    blockGasPrice,
+    estimatedGas,
+  } = this.state
   const { gas, gasPrice } = newTx
 
   return (
@@ -386,8 +381,16 @@ SendTransactionScreen.prototype.estimateGasAndPrice = function () {
   const { errors, sendAmount, newTx } = this.state
 
   if (!errors.to && !errors.amount && newTx.amount > 0) {
-    this.props.dispatch(getGasPrice())
-    this.props.dispatch(estimateGas({ to: newTx.to, amount: sendAmount }))
+    Promise.all([
+      this.props.dispatch(getGasPrice()),
+      this.props.dispatch(estimateGas({ to: newTx.to, amount: sendAmount })),
+    ])
+    .then(([blockGasPrice, estimatedGas]) => {
+      this.setState({
+        blockGasPrice,
+        estimatedGas,
+      })
+    })
   }
 }
 

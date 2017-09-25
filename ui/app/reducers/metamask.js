@@ -19,8 +19,6 @@ function reduceMetamask (state, action) {
     addressBook: [],
     selectedTokenAddress: null,
     tokenExchangeRates: {},
-    estimatedGas: null,
-    blockGasPrice: null,
   }, state.metamask)
 
   switch (action.type) {
@@ -74,26 +72,6 @@ function reduceMetamask (state, action) {
         provider: {
           type: action.value,
         },
-      })
-
-    case actions.UPDATE_GAS_ESTIMATE:
-      return extend(metamaskState, {
-        estimatedGas: action.value,
-      })
-
-    case actions.UPDATE_GAS_PRICE:
-      return extend(metamaskState, {
-        blockGasPrice: action.value,
-      })
-
-    case actions.CLEAR_GAS_ESTIMATE:
-      return extend(metamaskState, {
-        estimatedGas: null,
-      })
-
-    case actions.CLEAR_GAS_PRICE:
-      return extend(metamaskState, {
-        blockGasPrice: null,
       })
 
     case actions.COMPLETED_TX:
