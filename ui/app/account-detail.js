@@ -32,6 +32,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     currentAccountTab: state.metamask.currentAccountTab,
     tokens: state.metamask.tokens,
+    computedBalances: state.metamask.computedBalances,
   }
 }
 
@@ -45,7 +46,7 @@ AccountDetailScreen.prototype.render = function () {
   var selected = props.address || Object.keys(props.accounts)[0]
   var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
-  var account = props.accounts[selected]
+  var account = props.computedBalances[selected]
   const { network, conversionRate, currentCurrency } = props
 
   return (
@@ -180,7 +181,7 @@ AccountDetailScreen.prototype.render = function () {
         }, [
 
           h(EthBalance, {
-            value: account && account.balance,
+            value: account && account.ethBalance,
             conversionRate,
             currentCurrency,
             style: {

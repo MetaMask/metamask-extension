@@ -104,6 +104,7 @@ var actions = {
   txError: txError,
   nextTx: nextTx,
   previousTx: previousTx,
+  cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
   // app messages
@@ -457,6 +458,16 @@ function cancelTx (txData) {
   }
 }
 
+function cancelAllTx (txsData) {
+  return (dispatch) => {
+    txsData.forEach((txData, i) => {
+      background.cancelTransaction(txData.id, () => {
+        dispatch(actions.completedTx(txData.id))
+        i === txsData.length - 1 ? dispatch(actions.goHome()) : null
+      })
+    })
+  }
+}
 //
 // initialize screen
 //

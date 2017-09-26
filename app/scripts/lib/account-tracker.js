@@ -1,4 +1,4 @@
-/* Ethereum Store
+/* Account Tracker
  *
  * This module is responsible for tracking any number of accounts
  * and caching their current balances & transaction counts.
@@ -10,19 +10,21 @@
 const async = require('async')
 const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
+const EventEmitter = require('events').EventEmitter
 function noop () {}
 
 
-class EthereumStore extends ObservableStore {
+class AccountTracker extends EventEmitter {
 
   constructor (opts = {}) {
-    super({
+    super()
+
+    const initState = {
       accounts: {},
-      transactions: {},
-      currentBlockNumber: '0',
-      currentBlockHash: '',
       currentBlockGasLimit: '',
-    })
+    }
+    this.store = new ObservableStore(initState)
+
     this._provider = opts.provider
     this._query = new EthQuery(this._provider)
     this._blockTracker = opts.blockTracker
@@ -37,33 +39,18 @@ class EthereumStore extends ObservableStore {
   //
 
   addAccount (address) {
-    const accounts = this.getState().accounts
+    const accounts = this.store.getState().accounts
     accounts[address] = {}
-    this.updateState({ accounts })
+    this.store.updateState({ accounts })
     if (!this._currentBlockNumber) return
     this._updateAccount(address)
   }
 
   removeAccount (address) {
-    const accounts = this.getState().accounts
+    const accounts = this.store.getState().accounts
     delete accounts[address]
-    this.updateState({ accounts })
+    this.store.updateState({ accounts })
   }
-
-  addTransaction (txHash) {
-    const transactions = this.getState().transactions
-    transactions[txHash] = {}
-    this.updateState({ transactions })
-    if (!this._currentBlockNumber) return
-    this._updateTransaction(this._currentBlockNumber, txHash, noop)
-  }
-
-  removeTransaction (txHash) {
-    const transactions = this.getState().transactions
-    delete transactions[txHash]
-    this.updateState({ transactions })
-  }
-
 
   //
   // private
@@ -72,53 +59,32 @@ class EthereumStore extends ObservableStore {
   _updateForBlock (block) {
     const blockNumber = '0x' + block.number.toString('hex')
     this._currentBlockNumber = blockNumber
-    this.updateState({ currentBlockNumber: parseInt(blockNumber) })
-    this.updateState({ currentBlockHash: `0x${block.hash.toString('hex')}`})
-    this.updateState({ currentBlockGasLimit: `0x${block.gasLimit.toString('hex')}` })
+
+    this.store.updateState({ currentBlockGasLimit: `0x${block.gasLimit.toString('hex')}` })
+
     async.parallel([
       this._updateAccounts.bind(this),
-      this._updateTransactions.bind(this, blockNumber),
     ], (err) => {
       if (err) return console.error(err)
-      this.emit('block', this.getState())
+      this.emit('block', this.store.getState())
     })
   }
 
   _updateAccounts (cb = noop) {
-    const accounts = this.getState().accounts
+    const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
     async.each(addresses, this._updateAccount.bind(this), cb)
   }
 
   _updateAccount (address, cb = noop) {
-    const accounts = this.getState().accounts
     this._getAccount(address, (err, result) => {
       if (err) return cb(err)
       result.address = address
+      const accounts = this.store.getState().accounts
       // only populate if the entry is still present
       if (accounts[address]) {
         accounts[address] = result
-        this.updateState({ accounts })
-      }
-      cb(null, result)
-    })
-  }
-
-  _updateTransactions (block, cb = noop) {
-    const transactions = this.getState().transactions
-    const txHashes = Object.keys(transactions)
-    async.each(txHashes, this._updateTransaction.bind(this, block), cb)
-  }
-
-  _updateTransaction (block, txHash, cb = noop) {
-    // would use the block here to determine how many confirmations the tx has
-    const transactions = this.getState().transactions
-    this._query.getTransaction(txHash, (err, result) => {
-      if (err) return cb(err)
-      // only populate if the entry is still present
-      if (transactions[txHash]) {
-        transactions[txHash] = result
-        this.updateState({ transactions })
+        this.store.updateState({ accounts })
       }
       cb(null, result)
     })
@@ -135,4 +101,4 @@ class EthereumStore extends ObservableStore {
 
 }
 
-module.exports = EthereumStore
+module.exports = AccountTracker

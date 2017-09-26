@@ -35,8 +35,9 @@ class KeyringController extends EventEmitter {
       keyrings: [],
       identities: {},
     })
-    this.ethStore = opts.ethStore
-    this.encryptor = encryptor
+
+    this.accountTracker = opts.accountTracker
+    this.encryptor = opts.encryptor || encryptor
     this.keyrings = []
     this.getNetwork = opts.getNetwork
   }
@@ -171,9 +172,9 @@ class KeyringController extends EventEmitter {
       return this.setupAccounts(checkedAccounts)
     })
     .then(() => this.persistAllKeyrings())
+    .then(() => this._updateMemStoreKeyrings())
     .then(() => this.fullUpdate())
     .then(() => {
-      this._updateMemStoreKeyrings()
       return keyring
     })
   }
@@ -208,6 +209,7 @@ class KeyringController extends EventEmitter {
     return selectedKeyring.addAccounts(1)
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
+    .then(this._updateMemStoreKeyrings.bind(this))
     .then(this.fullUpdate.bind(this))
   }
 
@@ -337,7 +339,7 @@ class KeyringController extends EventEmitter {
   //
   // Initializes the provided account array
   // Gives them numerically incremented nicknames,
-  // and adds them to the ethStore for regular balance checking.
+  // and adds them to the accountTracker for regular balance checking.
   setupAccounts (accounts) {
     return this.getAccounts()
     .then((loadedAccounts) => {
@@ -360,7 +362,7 @@ class KeyringController extends EventEmitter {
       throw new Error('Problem loading account.')
     }
     const address = normalizeAddress(account)
-    this.ethStore.addAccount(address)
+    this.accountTracker.addAccount(address)
     return this.createNickname(address)
   }
 
@@ -566,12 +568,12 @@ class KeyringController extends EventEmitter {
   clearKeyrings () {
     let accounts
     try {
-      accounts = Object.keys(this.ethStore.getState())
+      accounts = Object.keys(this.accountTracker.getState())
     } catch (e) {
       accounts = []
     }
     accounts.forEach((address) => {
-      this.ethStore.removeAccount(address)
+      this.accountTracker.removeAccount(address)
     })
 
     // clear keyrings from memory

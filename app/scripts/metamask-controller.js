@@ -1,12 +1,18 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
 const promiseToCallback = require('promise-to-callback')
-const pipe = require('pump')
+const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
-const EthStore = require('./lib/eth-store')
+const AccountTracker = require('./lib/account-tracker')
 const EthQuery = require('eth-query')
-const streamIntoProvider = require('web3-stream-provider/handler')
+const RpcEngine = require('json-rpc-engine')
+const debounce = require('debounce')
+const createEngineStream = require('json-rpc-middleware-stream/engineStream')
+const createFilterMiddleware = require('eth-json-rpc-filters')
+const createOriginMiddleware = require('./lib/createOriginMiddleware')
+const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
+const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('./keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -20,12 +26,11 @@ const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
+const BalancesController = require('./controllers/computed-balances')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
-const debounce = require('debounce')
-
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -77,22 +82,30 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
+    this.blockTracker = this.provider
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
-    this.ethStore = new EthStore({
+    // account tracker watches balances, nonces, and any code at their address.
+    this.accountTracker = new AccountTracker({
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
     })
 
     // key mgmt
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
-      ethStore: this.ethStore,
+      accountTracker: this.accountTracker,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      encryptor: opts.encryptor || undefined,
     })
+
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
+      this.accountTracker.addAccount(address)
+    })
+    this.keyringController.on('removedAccount', (address) => {
+      this.accountTracker.removeAccount(address)
     })
 
     // address book controller
@@ -109,11 +122,22 @@ module.exports = class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(this),
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
-      blockTracker: this.provider,
+      blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
-      ethStore: this.ethStore,
+      accountTracker: this.accountTracker,
     })
     this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
+
+    // computed balances (accounting for pending transactions)
+    this.balancesController = new BalancesController({
+      accountTracker: this.accountTracker,
+      txController: this.txController,
+      blockTracker: this.blockTracker,
+    })
+    this.networkController.on('networkDidChange', () => {
+      this.balancesController.updateAllBalances()
+    })
+    this.balancesController.updateAllBalances()
 
     // notices
     this.noticeController = new NoticeController({
@@ -166,8 +190,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // manual mem state subscriptions
     this.networkController.store.subscribe(this.sendUpdate.bind(this))
-    this.ethStore.subscribe(this.sendUpdate.bind(this))
+    this.accountTracker.store.subscribe(this.sendUpdate.bind(this))
     this.txController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.balancesController.store.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
@@ -242,16 +267,18 @@ module.exports = class MetamaskController extends EventEmitter {
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
+
     return extend(
       {
         isInitialized,
       },
       this.networkController.store.getState(),
-      this.ethStore.getState(),
+      this.accountTracker.store.getState(),
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
+      this.balancesController.store.getState(),
       this.preferencesController.store.getState(),
       this.addressBookController.store.getState(),
       this.currencyController.store.getState(),
@@ -337,36 +364,43 @@ module.exports = class MetamaskController extends EventEmitter {
   setupUntrustedCommunication (connectionStream, originDomain) {
     // Check if new connection is blacklisted
     if (this.blacklistController.checkForPhishing(originDomain)) {
-      console.log('MetaMask - sending phishing warning for', originDomain)
+      log.debug('MetaMask - sending phishing warning for', originDomain)
       this.sendPhishingWarning(connectionStream, originDomain)
       return
     }
 
     // setup multiplexing
-    const mx = setupMultiplex(connectionStream)
+    const mux = setupMultiplex(connectionStream)
     // connect features
-    this.setupProviderConnection(mx.createStream('provider'), originDomain)
-    this.setupPublicConfig(mx.createStream('publicConfig'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupPublicConfig(mux.createStream('publicConfig'))
   }
 
   setupTrustedCommunication (connectionStream, originDomain) {
     // setup multiplexing
-    const mx = setupMultiplex(connectionStream)
+    const mux = setupMultiplex(connectionStream)
     // connect features
-    this.setupControllerConnection(mx.createStream('controller'))
-    this.setupProviderConnection(mx.createStream('provider'), originDomain)
+    this.setupControllerConnection(mux.createStream('controller'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
   }
 
   sendPhishingWarning (connectionStream, hostname) {
-    const mx = setupMultiplex(connectionStream)
-    const phishingStream = mx.createStream('phishing')
+    const mux = setupMultiplex(connectionStream)
+    const phishingStream = mux.createStream('phishing')
     phishingStream.write({ hostname })
   }
 
   setupControllerConnection (outStream) {
     const api = this.getApi()
     const dnode = Dnode(api)
-    outStream.pipe(dnode).pipe(outStream)
+    pump(
+      outStream,
+      dnode,
+      outStream,
+      (err) => {
+        if (err) log.error(err)
+      }
+    )
     dnode.on('remote', (remote) => {
       // push updates to popup
       const sendUpdate = remote.sendUpdate.bind(remote)
@@ -374,27 +408,42 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  setupProviderConnection (outStream, originDomain) {
-    streamIntoProvider(outStream, this.provider, onRequest, onResponse)
-    // append dapp origin domain to request
-    function onRequest (request) {
-      request.origin = originDomain
-    }
-    // log rpc activity
-    function onResponse (err, request, response) {
-      if (err) return console.error(err)
-      if (response.error) {
-        console.error('Error in RPC response:\n', response)
+  setupProviderConnection (outStream, origin) {
+    // setup json rpc engine stack
+    const engine = new RpcEngine()
+
+    // create filter polyfill middleware
+    const filterMiddleware = createFilterMiddleware({
+      provider: this.provider,
+      blockTracker: this.blockTracker,
+    })
+
+    engine.push(createOriginMiddleware({ origin }))
+    engine.push(createLoggerMiddleware({ origin }))
+    engine.push(filterMiddleware)
+    engine.push(createProviderMiddleware({ provider: this.provider }))
+
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+    pump(
+      outStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // cleanup filter polyfill middleware
+        filterMiddleware.destroy()
+        if (err) log.error(err)
       }
-      if (request.isMetamaskInternal) return
-      log.info(`RPC (${originDomain}):`, request, '->', response)
-    }
+    )
   }
 
   setupPublicConfig (outStream) {
-    pipe(
+    pump(
       this.publicConfigStore,
-      outStream
+      outStream,
+      (err) => {
+        if (err) log.error(err)
+      }
     )
   }
 

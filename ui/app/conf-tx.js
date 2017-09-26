@@ -29,6 +29,7 @@ function mapStateToProps (state) {
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
+    computedBalances: state.metamask.computedBalances,
   }
 }
 
@@ -39,7 +40,7 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs, currentCurrency,
+  const { network, provider, unapprovedTxs, currentCurrency, computedBalances,
     unapprovedMsgs, unapprovedPersonalMsgs, conversionRate, blockGasLimit } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
@@ -48,9 +49,10 @@ ConfirmTxScreen.prototype.render = function () {
   var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
 
-
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
+
+  const unconfTxListLength = unconfTxList.length
 
   return (
 
@@ -101,10 +103,13 @@ ConfirmTxScreen.prototype.render = function () {
         conversionRate,
         currentCurrency,
         blockGasLimit,
+        unconfTxListLength,
+        computedBalances,
         // Actions
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),
         cancelTransaction: this.cancelTransaction.bind(this, txData),
+        cancelAllTransactions: this.cancelAllTransactions.bind(this, unconfTxList),
         signMessage: this.signMessage.bind(this, txData),
         signPersonalMessage: this.signPersonalMessage.bind(this, txData),
         cancelMessage: this.cancelMessage.bind(this, txData),
@@ -149,6 +154,12 @@ ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {
   this.stopPropagation(event)
   event.preventDefault()
   this.props.dispatch(actions.cancelTx(txData))
+}
+
+ConfirmTxScreen.prototype.cancelAllTransactions = function (unconfTxList, event) {
+  this.stopPropagation(event)
+  event.preventDefault()
+  this.props.dispatch(actions.cancelAllTx(unconfTxList))
 }
 
 ConfirmTxScreen.prototype.signMessage = function (msgData, event) {

@@ -27,7 +27,7 @@ describe('Transaction Controller', function () {
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
-      ethStore: { getState: noop },
+      accountTracker: { getState: noop },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()

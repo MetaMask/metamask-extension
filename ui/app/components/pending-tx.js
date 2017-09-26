@@ -33,7 +33,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit } = props
+  const { currentCurrency, blockGasLimit, computedBalances } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -42,8 +42,8 @@ PendingTx.prototype.render = function () {
   // Account Details
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
-  const account = props.accounts[address]
-  const balance = account ? account.balance : '0x0'
+  const account = computedBalances[address]
+  const balance = account ? account.ethBalance : '0x0'
 
   // recipient check
   const isValidAddress = !txParams.to || util.isValidAddress(txParams.to)
@@ -52,7 +52,9 @@ PendingTx.prototype.render = function () {
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
   const gasLimit = new BN(parseInt(blockGasLimit))
-  const safeGasLimit = this.bnMultiplyByFraction(gasLimit, 19, 20).toString(10)
+  const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
+  const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 18, 20)
+  const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
@@ -66,6 +68,10 @@ PendingTx.prototype.render = function () {
 
   const balanceBn = hexToBn(balance)
   const insufficientBalance = balanceBn.lt(maxCost)
+  const dangerousGasLimit = gasBn.gte(saferGasLimitBN)
+  const gasLimitSpecified = txMeta.gasLimitSpecified
+  const buyDisabled = insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting
+  const showRejectAll = props.unconfTxListLength > 1
 
   this.inputs = []
 
@@ -261,33 +267,44 @@ PendingTx.prototype.render = function () {
             text-transform: uppercase;
           }
         `),
+        h('.cell.row', {
+          style: {
+            textAlign: 'center',
+          },
+        }, [
+          txMeta.simulationFails ?
+            h('.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Transaction Error. Exception thrown in contract code.')
+          : null,
 
-        txMeta.simulationFails ?
-          h('.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Transaction Error. Exception thrown in contract code.')
-        : null,
+          !isValidAddress ?
+            h('.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+          : null,
 
-        !isValidAddress ?
-          h('.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
-        : null,
+          insufficientBalance ?
+            h('span.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Insufficient balance for transaction')
+          : null,
 
-        insufficientBalance ?
-          h('span.error', {
-            style: {
-              marginLeft: 50,
-              fontSize: '0.9em',
-            },
-          }, 'Insufficient balance for transaction')
-        : null,
+          (dangerousGasLimit && !gasLimitSpecified) ?
+            h('span.error', {
+              style: {
+                fontSize: '0.9em',
+              },
+            }, 'Gas limit set dangerously high. Approving this transaction is likely to fail.')
+          : null,
+        ]),
+
 
         // send + cancel
         h('.flex-row.flex-space-around.conf-buttons', {
@@ -297,14 +314,6 @@ PendingTx.prototype.render = function () {
             margin: '14px 25px',
           },
         }, [
-
-
-          insufficientBalance ?
-            h('button.btn-green', {
-              onClick: props.buyEth,
-            }, 'Buy Ether')
-          : null,
-
           h('button', {
             onClick: (event) => {
               this.resetGasFields()
@@ -312,18 +321,30 @@ PendingTx.prototype.render = function () {
             },
           }, 'Reset'),
 
-          // Accept Button
-          h('input.confirm.btn-green', {
-            type: 'submit',
-            value: 'SUBMIT',
-            style: { marginLeft: '10px' },
-            disabled: insufficientBalance || !this.state.valid || !isValidAddress || this.state.submitting,
-          }),
+          // Accept Button or Buy Button
+          insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
+            h('input.confirm.btn-green', {
+              type: 'submit',
+              value: 'SUBMIT',
+              style: { marginLeft: '10px' },
+              disabled: buyDisabled,
+            }),
 
           h('button.cancel.btn-red', {
             onClick: props.cancelTransaction,
           }, 'Reject'),
         ]),
+        showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
+          style: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            margin: '14px 25px',
+          },
+        }, [
+          h('button.cancel.btn-red', {
+            onClick: props.cancelAllTransactions,
+          }, 'Reject All'),
+        ]) : null,
       ]),
     ])
   )

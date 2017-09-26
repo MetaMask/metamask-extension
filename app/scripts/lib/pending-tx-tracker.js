@@ -74,6 +74,9 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
       but higher/same gas price"
+
+      Also don't mark as failed if it has ever been broadcast successfully.
+      A successful broadcast means it may still be mined.
       */
       const errorMessage = err.message.toLowerCase()
       const isKnownTx = (
@@ -86,6 +89,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         // other
         || errorMessage.includes('gateway timeout')
         || errorMessage.includes('nonce too low')
+        || txMeta.retryCount > 1
       )
       // ignore resubmit warnings, return early
       if (isKnownTx) return
@@ -116,10 +120,12 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) return
 
-    // Increment a try counter.
-    txMeta.retryCount++
     const rawTx = txMeta.rawTx
-    return await this.publishTransaction(rawTx)
+    const txHash = await this.publishTransaction(rawTx)
+
+    // Increment successful tries:
+    txMeta.retryCount++
+    return txHash
   }
 
   async _checkPendingTx (txMeta) {
