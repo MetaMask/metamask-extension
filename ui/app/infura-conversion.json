@@ -85,7 +85,7 @@
       },
       "quote": {
         "code": "cad",
-        "name": "Canadian dollar"
+        "name": "Canadian Dollar"
       }
     },
     {
@@ -184,7 +184,7 @@
       },
       "quote": {
         "code": "gbp",
-        "name": "Pound sterling"
+        "name": "Pound Sterling"
       }
     },
     {
@@ -239,7 +239,7 @@
       },
       "quote": {
         "code": "jpy",
-        "name": "Japanese yen"
+        "name": "Japanese Yen"
       }
     },
     {
@@ -415,7 +415,7 @@
       },
       "quote": {
         "code": "rub",
-        "name": "Russian ruble"
+        "name": "Russian Ruble"
       }
     },
     {
@@ -514,7 +514,7 @@
       },
       "quote": {
         "code": "uah",
-        "name": "Ukrainian hryvnia"
+        "name": "Ukrainian Hryvnia"
       }
     },
     {
@@ -525,7 +525,7 @@
       },
       "quote": {
         "code": "usd",
-        "name": "United States dollar"
+        "name": "United States Dollar"
       }
     },
     {
@@ -558,7 +558,7 @@
       },
       "quote": {
         "code": "xlm",
-        "name": "Stellar lumen"
+        "name": "Stellar Lumen"
       }
     },
     {
