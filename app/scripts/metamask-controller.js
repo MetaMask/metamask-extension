@@ -86,6 +86,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
+    // account tracker watches balances, nonces, and any code at their address.
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
@@ -99,11 +100,6 @@ module.exports = class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
 
-    // account tracker watches balances, nonces, and any code at their address.
-    this.accountTracker = new AccountTracker({
-      provider: this.provider,
-      blockTracker: this.provider,
-    })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
       this.accountTracker.addAccount(address)
