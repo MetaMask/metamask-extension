@@ -52,7 +52,6 @@ module.exports = class NetworkController extends EventEmitter {
     // apply the listners created by other controllers
     const blockTrackerHandlers = this.provider._blockTracker.proxyEventHandlers
     this.provider.setTarget(this._provider)
-
     this.provider._blockTracker = createEventEmitterProxy(this._provider._blockTracker, blockTrackerHandlers)
     this.emit('networkDidChange')
   }
