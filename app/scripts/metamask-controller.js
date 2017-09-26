@@ -136,6 +136,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.balancesController = new BalancesController({
       accountTracker: this.accountTracker,
       txController: this.txController,
+      blockTracker: this.blockTracker,
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
