@@ -29,7 +29,6 @@ function mapStateToProps (state) {
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
-    computedBalances: state.metamask.computedBalances,
   }
 }
 
@@ -40,7 +39,7 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, provider, unapprovedTxs, currentCurrency, computedBalances,
+  const { network, provider, unapprovedTxs, currentCurrency,
     unapprovedMsgs, unapprovedPersonalMsgs, conversionRate, blockGasLimit } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
@@ -48,6 +47,7 @@ ConfirmTxScreen.prototype.render = function () {
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
   var isNotification = isPopupOrNotification() === 'notification'
+
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
@@ -104,7 +104,6 @@ ConfirmTxScreen.prototype.render = function () {
         currentCurrency,
         blockGasLimit,
         unconfTxListLength,
-        computedBalances,
         // Actions
         buyEth: this.buyEth.bind(this, txParams.from || props.selectedAddress),
         sendTransaction: this.sendTransaction.bind(this),

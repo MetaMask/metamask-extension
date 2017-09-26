@@ -4,7 +4,6 @@
     "isUnlocked": false,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
     "identities": {},
-    "computedBalances": {},
     "frequentRpcList": [],
     "unapprovedTxs": {},
     "currentCurrency": "USD",
@@ -49,6 +48,5 @@
     "isLoading": false,
     "warning": null
   },
-  "identities": {},
-  "computedBalances": {}
+  "identities": {}
 }
