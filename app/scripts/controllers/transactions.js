@@ -72,9 +72,9 @@ module.exports = class TransactionController extends EventEmitter {
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))
 
-    this.pendingTxTracker.on('txWarning', this.txStateManager.updateTx.bind(this.txStateManager))
-    this.pendingTxTracker.on('txFailed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
-    this.pendingTxTracker.on('txConfirmed', this.txStateManager.setTxStatusConfirmed.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:warning', this.txStateManager.updateTx.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:confirmed', this.txStateManager.setTxStatusConfirmed.bind(this.txStateManager))
 
     this.blockTracker.on('rawBlock', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either

@@ -42,13 +42,13 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       if (!txHash) {
         const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
         noTxHashErr.name = 'NoTxHashError'
-        this.emit('txFailed', txId, noTxHashErr)
+        this.emit('tx:failed', txId, noTxHashErr)
         return
       }
 
 
       block.transactions.forEach((tx) => {
-        if (tx.hash === txHash) this.emit('txConfirmed', txId)
+        if (tx.hash === txHash) this.emit('tx:confirmed', txId)
       })
     })
   }
@@ -94,7 +94,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       // ignore resubmit warnings, return early
       if (isKnownTx) return
       // encountered real error - transition to error state
-      this.emit('txFailed', txMeta.id, err)
+      this.emit('tx:failed', txMeta.id, err)
     }))
   }
 
@@ -106,13 +106,13 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
 
     if (txMeta.retryCount > this.retryLimit) {
       const err = new Error(`Gave up submitting after ${this.retryLimit} blocks un-mined.`)
-      return this.emit('txFailed', txMeta.id, err)
+      return this.emit('tx:failed', txMeta.id, err)
     }
 
     // if the value of the transaction is greater then the balance, fail.
     if (!sufficientBalance(txMeta.txParams, balance)) {
       const insufficientFundsError = new Error('Insufficient balance during rebroadcast.')
-      this.emit('txFailed', txMeta.id, insufficientFundsError)
+      this.emit('tx:failed', txMeta.id, insufficientFundsError)
       log.error(insufficientFundsError)
       return
     }
@@ -136,7 +136,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     if (!txHash) {
       const noTxHashErr = new Error('We had an error while submitting this transaction, please try again.')
       noTxHashErr.name = 'NoTxHashError'
-      this.emit('txFailed', txId, noTxHashErr)
+      this.emit('tx:failed', txId, noTxHashErr)
       return
     }
     // get latest transaction status
@@ -145,14 +145,14 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       txParams = await this.query.getTransactionByHash(txHash)
       if (!txParams) return
       if (txParams.blockNumber) {
-        this.emit('txConfirmed', txId)
+        this.emit('tx:confirmed', txId)
       }
     } catch (err) {
       txMeta.warning = {
         error: err,
         message: 'There was a problem loading this transaction.',
       }
-      this.emit('txWarning', txMeta)
+      this.emit('tx:warning', txMeta)
       throw err
     }
   }
