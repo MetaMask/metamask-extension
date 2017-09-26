@@ -3,7 +3,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
-const currencies = require('./conversion.json').rows
+const currencies = require('./conversion.json').rows.sort((a, b) => {
+      return a.name.toLocaleLowerCase().localeCompare(b.name.toLocaleLowerCase())
+    })
 const validUrl = require('valid-url')
 const exportAsFile = require('./util').exportAsFile
 
