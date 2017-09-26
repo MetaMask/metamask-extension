@@ -157,7 +157,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.publicConfigStore = this.initPublicConfigStore()
 
     // manual disk state subscriptions
-    this.txController.txStateManager.store.subscribe((state) => {
+    this.txController.store.subscribe((state) => {
       this.store.updateState({ TransactionController: state })
     })
     this.keyringController.store.subscribe((state) => {

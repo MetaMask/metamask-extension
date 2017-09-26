@@ -43,7 +43,8 @@ module.exports = class TransactionController extends EventEmitter {
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
     })
-
+    this.store = this.txStateManager.store
+    this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
@@ -69,7 +70,7 @@ module.exports = class TransactionController extends EventEmitter {
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
     })
 
-    this.txStateManager.store.subscribe(() => this.emit('updateBadge'))
+    this.txStateManager.store.subscribe(() => this.emit('update:badge'))
 
     this.pendingTxTracker.on('txWarning', this.txStateManager.updateTx.bind(this.txStateManager))
     this.pendingTxTracker.on('txFailed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))

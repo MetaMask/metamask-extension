@@ -210,7 +210,7 @@ describe('Transaction Controller', function () {
         txParams: {}
       }
 
-      const eventNames = ['updateBadge', '1:unapproved']
+      const eventNames = ['update:badge', '1:unapproved']
       const listeners = []
       eventNames.forEach((eventName) => {
         listeners.push(new Promise((resolve) => {
