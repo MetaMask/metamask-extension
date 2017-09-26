@@ -129,6 +129,9 @@ var actions = {
   cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
+  // send screen
+  estimateGas,
+  getGasPrice,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -446,6 +449,36 @@ function signTx (txData) {
       dispatch(actions.hideWarning())
     })
     dispatch(actions.showConfTxPage({}))
+  }
+}
+
+function estimateGas ({ to, amount }) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.estimateGas({ to, amount }, (err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        return resolve(data)
+      })
+    })
+  }
+}
+
+function getGasPrice () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.gasPrice((err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        return resolve(data)
+      })
+    })
   }
 }
 

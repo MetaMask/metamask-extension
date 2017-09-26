@@ -16,6 +16,8 @@ const {
   hideWarning,
   addToAddressBook,
   signTx,
+  estimateGas,
+  getGasPrice,
 } = require('./actions')
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
 const { isHex, numericBalance, isValidAddress, allNull } = require('./util')
@@ -33,6 +35,8 @@ function mapStateToProps (state) {
     addressBook,
     conversionRate,
     currentBlockGasLimit: blockGasLimit,
+    estimatedGas,
+    blockGasPrice,
   } = state.metamask
   const { warning } = state.appState
   const selectedIdentity = getSelectedIdentity(state)
@@ -65,13 +69,15 @@ function SendTransactionScreen () {
     newTx: {
       from: '',
       to: '',
-      amount: 0,
       amountToSend: '0x0',
-      gasPrice: '0x5d21dba00',
-      gas: '0x7b0d',
+      gasPrice: null,
+      gas: null,
+      amount: '0x0', 
       txData: null,
       memo: '',
     },
+    blockGasPrice: null,
+    estimatedGas: null,
     activeCurrency: 'USD', 
     tooltipIsOpen: false,
     errors: {},
@@ -87,6 +93,7 @@ function SendTransactionScreen () {
   this.getAmountToSend = this.getAmountToSend.bind(this)
   this.setErrorsFor = this.setErrorsFor.bind(this)
   this.clearErrorsFor = this.clearErrorsFor.bind(this)
+  this.estimateGasAndPrice = this.estimateGasAndPrice.bind(this)
 
   this.renderFromInput = this.renderFromInput.bind(this)
   this.renderToInput = this.renderToInput.bind(this)
@@ -162,7 +169,10 @@ SendTransactionScreen.prototype.renderToInput = function (to, identities, addres
           },
         })
       },
-      onBlur: () => this.setErrorsFor('to'),
+      onBlur: () => {
+        this.setErrorsFor('to')
+        this.estimateGasAndPrice()
+      },
       onFocus: event => {
         this.clearErrorsFor('to')
         this.state.newTx.to && event.target.select()
@@ -218,7 +228,10 @@ SendTransactionScreen.prototype.renderAmountInput = function (activeCurrency) {
           ),
         })
       },
-      onBlur: () => this.setErrorsFor('amount'),
+      onBlur: () => {
+        this.setErrorsFor('amount')
+        this.estimateGasAndPrice()
+      },
       onFocus: () => this.clearErrorsFor('amount'),
     }),
 
@@ -301,7 +314,14 @@ SendTransactionScreen.prototype.render = function () {
     conversionRate,
   } = props
 
-  const { blockGasLimit, newTx, activeCurrency, isValid } = this.state
+  const {
+    blockGasLimit,
+    newTx,
+    activeCurrency,
+    isValid,
+    blockGasPrice,
+    estimatedGas,
+  } = this.state
   const { gas, gasPrice } = newTx
 
   return (
@@ -322,7 +342,13 @@ SendTransactionScreen.prototype.render = function () {
 
         this.renderAmountInput(activeCurrency),
 
-        this.renderGasInput(gasPrice, gas, activeCurrency, conversionRate, blockGasLimit),
+        this.renderGasInput(
+          gasPrice || blockGasPrice || '0x0',
+          gas || estimatedGas || '0x0',
+          activeCurrency,
+          conversionRate,
+          blockGasLimit
+        ),
 
         this.renderMemoInput(),
 
@@ -355,6 +381,23 @@ SendTransactionScreen.prototype.closeTooltip = function () {
 
 SendTransactionScreen.prototype.setActiveCurrency = function (newCurrency) {
   this.setState({ activeCurrency: newCurrency })
+}
+
+SendTransactionScreen.prototype.estimateGasAndPrice = function () {
+  const { errors, sendAmount, newTx } = this.state
+
+  if (!errors.to && !errors.amount && newTx.amount > 0) {
+    Promise.all([
+      this.props.dispatch(getGasPrice()),
+      this.props.dispatch(estimateGas({ to: newTx.to, amount: sendAmount })),
+    ])
+    .then(([blockGasPrice, estimatedGas]) => {
+      this.setState({
+        blockGasPrice,
+        estimatedGas,
+      })
+    })
+  }
 }
 
 SendTransactionScreen.prototype.back = function () {
@@ -477,7 +520,7 @@ SendTransactionScreen.prototype.clearErrorsFor = function (field) {
 
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
-  const { warning, balance, amountToSend } = this.props
+  const { warning, balance } = this.props
   const state = this.state || {}
 
   const recipient = state.newTx.to
@@ -495,7 +538,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     from: this.state.newTx.from,
     to: this.state.newTx.to,
 
-    value: amountToSend,
+    value: this.state.newTx.amountToSend,
 
     gas: this.state.newTx.gas,
     gasPrice: this.state.newTx.gasPrice,

@@ -5,7 +5,7 @@ const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
-const { isValidAddress } = require('../../util')
+const { isValidAddress, allNull } = require('../../util')
 
 // const BalanceComponent = require('./balance-component')
 const Identicon = require('../identicon')
@@ -57,6 +57,9 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
+    estimateGas: ({ to, amount }) => dispatch(actions.estimateGas({ to, amount })),
+    getGasPrice: () => dispatch(actions.getGasPrice()),
+
   }
 }
 
@@ -65,11 +68,12 @@ function SendTokenScreen () {
   Component.call(this)
   this.state = {
     to: '',
-    amount: '',
+    amount: '0x0',
+    amountToSend: '0x0',
     selectedCurrency: 'USD',
     isGasTooltipOpen: false,
-    gasPrice: '0x5d21dba00',
-    gasLimit: '0x7b0d',
+    gasPrice: null,
+    gasLimit: null,
     errors: {},
   }
 }
@@ -81,6 +85,24 @@ SendTokenScreen.prototype.componentWillMount = function () {
   } = this.props
 
   updateTokenExchangeRate(symbol)
+}
+
+SendTokenScreen.prototype.estimateGasAndPrice = function () {
+  const { selectedToken } = this.props
+  const { errors, amount, to } = this.state
+
+  if (!errors.to && !errors.amount && amount > 0) {
+    Promise.all([
+      this.props.getGasPrice(),
+      this.props.estimateGas({ to, amount: this.getAmountToSend(amount, selectedToken) }),
+    ])
+    .then(([blockGasPrice, estimatedGas]) => {
+      this.setState({
+        blockGasPrice,
+        estimatedGas,
+      })
+    })
+  }
 }
 
 SendTokenScreen.prototype.validate = function () {
@@ -113,6 +135,46 @@ SendTokenScreen.prototype.validate = function () {
   }
 }
 
+SendTokenScreen.prototype.setErrorsFor = function (field) {
+  const { balance, selectedToken } = this.props
+  const { errors: previousErrors } = this.state
+
+  const {
+    isValid,
+    errors: newErrors
+  } = this.validate()
+
+  const nextErrors = Object.assign({}, previousErrors, {
+    [field]: newErrors[field] || null
+  })
+
+  if (!isValid) {
+    this.setState({
+      errors: nextErrors,
+      isValid,
+    })
+  }
+}
+
+SendTokenScreen.prototype.clearErrorsFor = function (field) {
+  const { errors: previousErrors } = this.state
+  const nextErrors = Object.assign({}, previousErrors, {
+    [field]: null
+  })
+
+  this.setState({
+    errors: nextErrors,
+    isValid: allNull(nextErrors),
+  })
+}
+
+SendTokenScreen.prototype.getAmountToSend = function (amount, selectedToken) {
+  const { decimals } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  const sendAmount = Number(amount * multiplier).toString(16)
+  return sendAmount
+}
+
 SendTokenScreen.prototype.submit = function () {
   const {
     to,
@@ -132,11 +194,6 @@ SendTokenScreen.prototype.submit = function () {
   } = this.props
 
   const { nickname = ' ' } = identities[to] || {}
-  const { isValid, errors } = this.validate()
-
-  if (!isValid) {
-    return this.setState({ errors })
-  }
 
   hideWarning()
   addToAddressBook(to, nickname)
@@ -148,9 +205,7 @@ SendTokenScreen.prototype.submit = function () {
     gasPrice: gasPrice,
   }
 
-  const { decimals } = selectedToken || {}
-  const multiplier = Math.pow(10, Number(decimals || 0))
-  const sendAmount = Number(amount * multiplier).toString(16)
+  const sendAmount = this.getAmountToSend(amount, selectedToken)
 
   signTokenTx(selectedTokenAddress, to, sendAmount, txParams)
 }
@@ -181,7 +236,14 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         to: e.target.value,
         errors: {},
       }),
-      onFocus: event => to && event.target.select(),
+      onBlur: () => {
+        this.setErrorsFor('to')
+        this.estimateGasAndPrice()
+      },
+      onFocus: event => {
+        if (to) event.target.select()
+        this.clearErrorsFor('to')
+      },
     }),
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
@@ -235,8 +297,12 @@ SendTokenScreen.prototype.renderAmountInput = function () {
       value: amount,
       onChange: e => this.setState({
         amount: e.target.value,
-        errors: {},
       }),
+      onBlur: () => {
+        this.setErrorsFor('amount')
+        this.estimateGasAndPrice()
+      },
+      onFocus: () => this.clearErrorsFor('amount'),
     }),
     h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
   ])
@@ -247,6 +313,8 @@ SendTokenScreen.prototype.renderGasInput = function () {
     isGasTooltipOpen,
     gasPrice,
     gasLimit,
+    blockGasPrice,
+    estimatedGas,
     selectedCurrency,
     errors: {
       gasPrice: gasPriceErrorMessage,
@@ -267,11 +335,19 @@ SendTokenScreen.prototype.renderGasInput = function () {
   }, [
     isGasTooltipOpen && h(GasTooltip, {
       className: 'send-tooltip',
-      gasPrice,
-      gasLimit,
+      gasPrice: gasPrice || blockGasPrice || '0x0',
+      gasLimit: gasLimit || estimatedGas || '0x0',
       onClose: () => this.setState({ isGasTooltipOpen: false }),
       onFeeChange: ({ gasLimit, gasPrice }) => {
         this.setState({ gasLimit, gasPrice, errors: {} })
+      },
+      onBlur: () => {
+        this.setErrorsFor('gasLimit')
+        this.setErrorsFor('gasPrice')
+      },
+      onFocus: () => {
+        this.clearErrorsFor('gasLimit')
+        this.clearErrorsFor('gasPrice')
       },
     }),
 
@@ -283,9 +359,9 @@ SendTokenScreen.prototype.renderGasInput = function () {
       h(GasFeeDisplay, {
         conversionRate,
         tokenExchangeRate,
-        gasPrice,
+        gasPrice: gasPrice || blockGasPrice || '0x0',
         activeCurrency: selectedCurrency,
-        gas: gasLimit,
+        gas: gasLimit || estimatedGas || '0x0',
         blockGasLimit: currentBlockGasLimit,
       }),
       h(
@@ -312,10 +388,12 @@ SendTokenScreen.prototype.renderMemoInput = function () {
 
 SendTokenScreen.prototype.renderButtons = function () {
   const { selectedAddress, backToAccountDetail } = this.props
+  const { isValid } = this.validate()
 
   return h('div.send-token__button-group', [
     h('button.send-token__button-next.btn-secondary', {
-      onClick: () => this.submit(),
+      className: !isValid && 'send-screen__send-button__disabled',
+      onClick: () => isValid && this.submit(),
     }, ['Next']),
     h('button.send-token__button-cancel.btn-tertiary', {
       onClick: () => backToAccountDetail(selectedAddress),
@@ -347,7 +425,7 @@ SendTokenScreen.prototype.render = function () {
       this.renderAmountInput(),
       this.renderGasInput(),
       this.renderMemoInput(),
-      warning && h('div.send-screen-input-wrapper--error',
+      warning && h('div.send-screen-input-wrapper--error', {}, 
         h('div.send-screen-input-wrapper__error-message', [
           warning,
         ])
