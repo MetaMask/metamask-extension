@@ -71,6 +71,7 @@ function dummyProviderConstructor() {
     // provider
     sendAsync: noop,
     // block tracker
+    _blockTracker: {},
     start: noop,
     stop: noop,
     on: noop,
