@@ -1,0 +1,70 @@
+/*
+  Variables
+ */
+
+// Base Colors
+$white: #fff;
+$black: #000;
+$orange: #ffa500;
+$red: #f00;
+
+/*
+  Colors
+  http://chir.ag/projects/name-that-color
+ */
+$white-linen: #faf6f0; // formerly 'faint orange (textfield shades)'
+$rajah: #f5c26d; // formerly 'light orange (button shades)'
+$buttercup: #f5a623; // formerly 'dark orange (text)'
+$tundora: #4a4a4a; // formerly 'borders/font/any gray'
+$gallery: #efefef;
+$alabaster: #f7f7f7;
+$shark: #22232c;
+$wild-sand: #f6f6f6;
+$white: #fff;
+$dusty-gray: #9b9b9b;
+$alto: #dedede;
+$alabaster: #fafafa;
+$silver-chalice: #aeaeae;
+$curious-blue: #2f9ae0;
+$concrete: #f3f3f3;
+$tundora: #4d4d4d;
+$nile-blue: #1b344d;
+$scorpion: #5d5d5d;
+$caribbean-green: #02C9B1;
+$silver: #cdcdcd;
+$caribbean-green: #02c9b1;
+$monzo: #d0021b;
+$crimson: #e91550;
+$blue-lagoon: #038789;
+$purple: #690496;
+$tulip-tree: #ebb33f;
+$malibu-blue: #7ac9fd;
+
+/*
+  Z-Indicies
+ */
+$dropdown-z-index: 30;
+$token-icon-z-index: 15;
+$container-z-index: 15;
+$header-z-index: 12;
+$mobile-header-z-index: 26;
+$main-container-z-index: 18;
+$send-card-z-index: 20;
+$sidebar-z-index: 26;
+$sidebar-overlay-z-index: 25;
+
+/*
+  Z Indicies - Current
+  app - 11
+  hex/bn as decimal input - 1 - remove?
+  dropdown - 11
+  loading - 10 - higher?
+  mascot - 0 - remove?
+ */
+
+/*
+  Responsive Breakpoints
+ */
+$break-small: 575px;
+$break-midpoint: 780px;
+$break-large: 576px;

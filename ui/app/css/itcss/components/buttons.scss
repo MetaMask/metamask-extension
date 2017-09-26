@@ -1,0 +1,108 @@
+/*
+  Buttons
+ */
+
+.btn-green {
+  background-color: #02c9b1; // TODO: reusable color in colors.css
+}
+
+button.btn-clear {
+  background: $white;
+  border: 1px solid;
+}
+
+// No longer used in flat design, remove when modal buttons done
+// div.wallet-btn {
+//   border: 1px solid rgb(91, 93, 103);
+//   border-radius: 2px;
+//   height: 30px;
+//   width: 75px;
+//   font-size: 0.8em;
+//   text-align: center;
+//   line-height: 25px;
+// }
+
+// .btn-red {
+//   background: rgba(254, 35, 17, 1);
+//   box-shadow: 0px 3px 6px rgba(254, 35, 17, 0.36);
+// }
+
+button[disabled],
+input[type="submit"][disabled] {
+  cursor: not-allowed;
+  opacity: .5;
+  // background: rgba(197, 197, 197, 1);
+  // box-shadow: 0 3px 6px rgba(197, 197, 197, .36);
+}
+
+// button.spaced {
+//   margin: 2px;
+// }
+
+// button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
+//   transform: scale(1.1);
+// }
+// button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
+//   transform: scale(0.95);
+// }
+
+button.primary {
+  padding: 8px 12px;
+  background: #f7861c;
+  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  color: $white;
+  font-size: 1.1em;
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+}
+
+.btn-light {
+  padding: 8px 12px;
+  // background: #FFFFFF; // $bg-white
+  box-shadow: 0 3px 6px rgba(247, 134, 28, .36);
+  color: #585d67; // TODO: make reusable light button color
+  font-size: 1.1em;
+  font-family: 'Montserrat Regular';
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 2px;
+  border: 1px solid #979797; // #TODO: make reusable light border color
+  opacity: .5;
+}
+
+// TODO: cleanup: not used anywhere
+button.btn-thin {
+  border: 1px solid;
+  border-color: #4d4d4d;
+  color: #4d4d4d;
+  background: rgb(255, 174, 41);
+  border-radius: 4px;
+  min-width: 200px;
+  margin: 12px 0;
+  padding: 6px;
+  font-size: 13px;
+}
+
+.btn-secondary {
+  border: 1px solid #979797;
+  border-radius: 2px;
+  background-color: $white;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 16px 42px;
+
+  &[disabled] {
+    background-color: $white !important;
+    opacity: .5;
+  }
+}
+
+.btn-tertiary {
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background-color: transparent;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 16px 42px;
+}

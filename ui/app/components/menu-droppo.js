@@ -13,21 +13,23 @@ function MenuDroppoComponent () {
 }
 
 MenuDroppoComponent.prototype.render = function () {
+  const { containerClassName = '' } = this.props
   const speed = this.props.speed || '300ms'
   const useCssTransition = this.props.useCssTransition
   const zIndex = ('zIndex' in this.props) ? this.props.zIndex : 0
 
   this.manageListeners()
 
-  let style = this.props.style || {}
+  const style = this.props.style || {}
   if (!('position' in style)) {
     style.position = 'fixed'
   }
   style.zIndex = zIndex
 
   return (
-    h('.menu-droppo-container', {
+    h('div', {
       style,
+      className: `.menu-droppo-container ${containerClassName}`,
     }, [
       h('style', `
         .menu-droppo-enter {

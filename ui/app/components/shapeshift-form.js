@@ -131,8 +131,8 @@ ShapeshiftForm.prototype.renderMain = function () {
       },
     }, [
       this.props.warning
-        ? this.props.warning
-        && h('span.error.flex-center', {
+        ? this.props.warning &&
+        h('span.error.flex-center', {
           style: {
             textAlign: 'center',
             width: '229px',

@@ -1,0 +1,257 @@
+.confirm-screen-container {
+  position: absolute;
+  align-items: center;
+
+  @media screen and (max-width: 575px) {
+    margin-top: 35px;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 576px) {
+    margin-top: 6.9vh;
+  }
+}
+
+.confirm-screen-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 100;
+  top: 5%;
+  font-family: 'DIN NEXT';
+  background: $white;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+  // padding: 20px 24px 32px;
+  color: $scorpion;
+  width: 100%;
+
+  @media screen and (min-width: $break-large) {
+    width: 498px;
+  }
+}
+
+.confirm-screen-wrapper > .confirm-screen-total-box {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.confirm-screen-wrapper > .confirm-memo-wrapper {
+  margin: 0;
+}
+
+.confirm-screen-wrapper > .confirm-screen-header {
+
+  @media screen and (max-width: $break-small) {
+    margin-left: 8px;
+  }
+}
+
+.confirm-screen-header {
+  font-size: 26px;
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  width: 100%;
+  padding: 20px 24px 0;
+
+  @media screen and (max-width: $break-small) {
+    font-size: 22px;
+  }
+}
+
+.confirm-screen-title {
+  line-height: 27px;
+
+  @media screen and (max-width: $break-small) {
+    margin-left: 22px;
+    margin-right: 8px;
+  }
+}
+
+.confirm-screen-back-button {
+  background: $white;
+  border: 1px solid $dusty-gray;
+  left: 24px;
+  position: absolute;
+  text-align: center;
+  color: $black;
+  padding: 6px 13px 7px 12px;
+  border-radius: 2px;
+  height: 30px;
+  width: 54px;
+
+  @media screen and (max-width: $break-small) {
+    margin-right: 12px;
+  }
+}
+
+.confirm-screen-account-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.confirm-screen-account-name {
+  margin-top: 12px;
+}
+
+.confirm-screen-account-name,
+.confirm-screen-row-info {
+  font-size: 16px;
+  line-height: 24px;
+  color: $scorpion;
+  text-align: center;
+}
+
+.confirm-screen-account-number {
+  font-size: 10px;
+  line-height: 16px;
+  color: $dusty-gray;
+  text-align: center;
+}
+
+.confirm-screen-identicons {
+  margin-top: 24px;
+
+  i {
+    align-self: start;
+    margin: 42px 14px 0;
+  }
+}
+
+.confirm-screen-sending-to-message {
+  text-align: center;
+  font-size: 16px;
+  margin-top: 30px;
+  font-family: 'DIN NEXT Light';
+}
+
+.confirm-screen-send-amount {
+  font-size: 64px;
+  color: $scorpion;
+  margin-top: 12px;
+  line-height: 60px;
+  text-align: center;
+  font-family: 'DIN NEXT Light';
+}
+
+.confirm-screen-send-amount-currency {
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.confirm-memo-wrapper {
+  min-height: 24px;
+  width: 100%;
+  border-bottom: 1px solid $alto;
+}
+
+.confirm-screen-send-memo {
+  color: $dusty-gray;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  margin-top: 21px;
+  margin-bottom: 18px;
+  font-family: 'DIN NEXT Light';
+}
+
+.confirm-screen-label {
+  font-size: 18px;
+  line-height: 40px;
+  color: $scorpion;
+  text-align: left;
+}
+
+section .confirm-screen-account-name,
+section .confirm-screen-account-number,
+.confirm-screen-row-info,
+.confirm-screen-row-detail {
+  text-align: left;
+}
+
+.confirm-screen-rows {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  padding: 0 24px 32px;
+}
+
+.confirm-screen-section-column {
+  flex: .5;
+}
+
+.confirm-screen-row {
+  display: flex;
+  flex-flow: row nowrap;
+  border-bottom: 1px solid $alto;
+  width: calc(100% - 24px);
+  align-items: center;
+  padding: 12px 0;
+  margin: 0 12px;
+}
+
+.confirm-screen-row-detail {
+  font-size: 12px;
+  line-height: 16px;
+  color: $dusty-gray;
+  font-family: 'DIN NEXT Light';
+}
+
+.confirm-screen-total-box {
+  background-color: $wild-sand;
+  border-radius: 8px;
+  padding: 22px 14px;
+  margin-top: 13px;
+
+  .confirm-screen-label {
+    line-height: 18px;
+  }
+
+  .confirm-screen-row-detail {
+    color: $scorpion;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    line-height: 20px;
+    font-family: 'DIN NEXT Light';
+  }
+}
+
+.confirm-screen-confirm-button {
+  height: 62px;
+  width: 216.88px;
+  border-radius: 2px;
+  background-color: #02c9b1;
+  font-size: 16px;
+  color: $white;
+  text-align: center;
+  font-family: 'DIN NEXT';
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 23px;
+  border-width: 0;
+  box-shadow: none;
+}
+
+.btn-light.confirm-screen-cancel-button {
+  height: 62px;
+  width: 216.88px;
+  background: none;
+  border: none;
+  opacity: 1;
+  width: 8em;
+  font-family: 'DIN NEXT';
+  border-width: 0;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 16px;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+#pending-tx-form {
+  flex: 1 0 auto;
+}

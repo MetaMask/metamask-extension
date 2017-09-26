@@ -1,0 +1,179 @@
+/*
+  NewUI Container Elements
+ */
+
+// Component Colors
+$tx-view-bg: $white;
+$wallet-view-bg: $wild-sand;
+
+// Main container
+.main-container {
+  position: absolute;
+  z-index: $main-container-z-index;
+  font-family: "DIN OT Light";
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.main-container::-webkit-scrollbar {
+  display: none;
+}
+
+// tx view
+
+.tx-view {
+  flex: 63.5 0 66.5%;
+  background: $tx-view-bg;
+}
+
+// wallet view and sidebar
+
+.wallet-view {
+  display: flex;
+  flex-direction: column;
+  flex: 33.5 0 33.5%;
+  background: $wallet-view-bg;
+
+  @media screen and (min-width: 576px) {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .wallet-view-account-details {
+    flex: 0 0 150px;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .wallet-view::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.wallet-view-title-wrapper {
+  flex: 0 0 25px;
+}
+
+.wallet-view-title {
+  margin-left: 15px;
+  font-size: 16px;
+
+  // No title on mobile
+  @media screen and (max-width: 575px) {
+    display: none;
+  }
+}
+
+.wallet-view.sidebar {
+  flex: 1 0 230px;
+  background: rgb(250, 250, 250);
+  z-index: $sidebar-z-index;
+  position: fixed;
+  top: 41px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+  visibility: visible;
+  will-change: transform;
+  overflow-y: auto;
+  box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
+  width: 85%;
+  height: 100%;
+}
+
+.sidebar-overlay {
+  z-index: $sidebar-overlay-z-index;
+  position: fixed;
+  top: 41px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+  visibility: visible;
+  background-color: rgba(0, 0, 0, .3);
+}
+
+// main-container media queries
+
+@media screen and (min-width: 576px) {
+  .lap-visible {
+    display: flex;
+  }
+
+  .phone-visible {
+    display: none;
+  }
+
+  .main-container {
+    margin-top: 6.9vh;
+    width: 85%;
+    height: 90vh;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .main-container {
+    margin-top: 6.9vh;
+    width: 80%;
+    height: 82vh;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .main-container {
+    margin-top: 6.9vh;
+    width: 65%;
+    height: 82vh;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .lap-visible {
+    display: none;
+  }
+
+  .phone-visible {
+    display: flex;
+  }
+
+  .main-container {
+    margin-top: 41px;
+    height: calc(100% - 41px);
+    width: 100%;
+    overflow-y: auto;
+    background-color: $white;
+  }
+
+  button.btn-clear {
+    width: 93px;
+    height: 50px;
+    font-size: .7em;
+    background: $white;
+    border: 1px solid;
+  }
+}
+
+// wallet view
+.account-name {
+
+  @media screen and (max-width: 575px) {
+    font-size: 102%;
+    margin-left: 3%;
+  }
+
+  @media screen and (max-width: 575px) {
+    text-align: center;
+  }
+}
+
+// account options dropdown
+.account-options-menu {
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5% 7% 0%;
+}

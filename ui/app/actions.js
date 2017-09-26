@@ -1,3 +1,4 @@
+const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 
 var actions = {
@@ -5,6 +6,21 @@ var actions = {
 
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // modal state
+  MODAL_OPEN: 'UI_MODAL_OPEN',
+  MODAL_CLOSE: 'UI_MODAL_CLOSE',
+  showModal: showModal,
+  hideModal: hideModal,
+  // sidebar state
+  SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
+  SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
+  showSidebar: showSidebar,
+  hideSidebar: hideSidebar,
+  // network dropdown open
+  NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
+  NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
+  showNetworkDropdown: showNetworkDropdown,
+  hideNetworkDropdown: hideNetworkDropdown,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -68,6 +84,8 @@ var actions = {
   hideWarning: hideWarning,
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
+  SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
+  setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -78,6 +96,8 @@ var actions = {
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
+  SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
+  showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
@@ -97,7 +117,9 @@ var actions = {
   cancelMsg: cancelMsg,
   signPersonalMsg,
   cancelPersonalMsg,
+  sendTx: sendTx,
   signTx: signTx,
+  signTokenTx: signTokenTx,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -125,6 +147,7 @@ var actions = {
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
   addToken,
+  addTokens,
   setRpcTarget: setRpcTarget,
   setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
@@ -142,6 +165,8 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
+  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
+  updateTokenExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -326,7 +351,24 @@ function navigateToNewAccountScreen () {
 
 function addNewAccount () {
   log.debug(`background.addNewAccount`)
-  return callBackgroundThenUpdate(background.addNewAccount)
+  return (dispatch, getState) => {
+    const oldIdentities = getState().metamask.identities
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.addNewAccount((err, { identities: newIdentities}) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        const newAccountAddress = Object.keys(newIdentities).find(address => !oldIdentities[address])
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(newAccountAddress)
+      })
+    });
+  }
 }
 
 function showInfoPage () {
@@ -337,16 +379,16 @@ function showInfoPage () {
 
 function setCurrentCurrency (currencyCode) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         log.error(err.stack)
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
-        type: this.SET_CURRENT_FIAT,
+        type: actions.SET_CURRENT_FIAT,
         value: {
           currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
@@ -400,10 +442,37 @@ function signTx (txData) {
     dispatch(actions.showLoadingIndication())
     global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) dispatch(actions.displayWarning(err.message))
-      dispatch(this.goHome())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.hideWarning())
     })
-    dispatch(actions.showConfTxPage())
+    dispatch(actions.showConfTxPage({}))
+  }
+}
+
+function sendTx (txData) {
+  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
+  return (dispatch) => {
+    log.debug(`actions calling background.approveTransaction`)
+    background.approveTransaction(txData.id, (err) => {
+      if (err) {
+        dispatch(actions.txError(err))
+        return log.error(err.message)
+      }
+      dispatch(actions.completedTx(txData.id))
+    })
+  }
+}
+
+function signTokenTx (tokenAddress, toAddress, amount, txData) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    const token = global.eth.contract(abi).at(tokenAddress)
+    token.transfer(toAddress, amount, txData)
+      .catch(err => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.displayWarning(err.message))
+      })
+    dispatch(actions.showConfTxPage({}))
   }
 }
 
@@ -568,6 +637,13 @@ function setCurrentAccountTab (newTabName) {
   return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
 }
 
+function setSelectedToken (tokenAddress) {
+  return {
+    type: actions.SET_SELECTED_TOKEN,
+    value: tokenAddress || null,
+  }
+}
+
 function showAccountDetail (address) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -581,6 +657,7 @@ function showAccountDetail (address) {
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
+      dispatch(actions.setSelectedToken())
     })
   }
 }
@@ -598,10 +675,11 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage (transForward = true) {
+function showConfTxPage ({transForward = true, id}) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
-    transForward: transForward,
+    transForward,
+    id,
   }
 }
 
@@ -631,25 +709,46 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddTokenPage (transitionForward = true) {
+function showAddTokenPage () {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
-    value: transitionForward,
   }
 }
 
 function addToken (address, symbol, decimals) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addToken(address, symbol, decimals, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      setTimeout(() => {
-        dispatch(actions.goHome())
-      }, 250)
+    return new Promise((resolve, reject) => {
+      background.addToken(address, symbol, decimals, (err) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        resolve()
+        // setTimeout(() => {
+        //   dispatch(actions.goHome())
+        // }, 250)
+      })
     })
+  }
+}
+
+function addTokens (tokens) {
+  return dispatch => {
+    if (Array.isArray(tokens)) {
+      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
+        dispatch(addToken(address, symbol, decimals))
+      )))
+    } else {
+      return Promise.all(
+        Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addToken(address, symbol, decimals))
+        ))
+      )
+    }
   }
 }
 
@@ -761,6 +860,46 @@ function useEtherscanProvider () {
   }
 }
 
+function showNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_OPEN,
+  }
+}
+
+function hideNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_CLOSE,
+  }
+}
+
+
+function showModal (payload) {
+  return {
+    type: actions.MODAL_OPEN,
+    payload,
+  }
+}
+
+function hideModal (payload) {
+  return {
+    type: actions.MODAL_CLOSE,
+    payload,
+  }
+}
+
+function showSidebar () {
+  return {
+    type: actions.SIDEBAR_OPEN,
+  }
+}
+
+function hideSidebar () {
+  return {
+    type: actions.SIDEBAR_CLOSE,
+  }
+}
+
+
 function showLoadingIndication (message) {
   return {
     type: actions.SHOW_LOADING,
@@ -860,6 +999,12 @@ function saveAccountLabel (account, label) {
 function showSendPage () {
   return {
     type: actions.SHOW_SEND_PAGE,
+  }
+}
+
+function showSendTokenPage () {
+  return {
+    type: actions.SHOW_SEND_TOKEN_PAGE,
   }
 }
 
@@ -986,6 +1131,28 @@ function shapeShiftRequest (query, options, cb) {
     return shapShiftReq.send(jsonObj)
   } else {
     return shapShiftReq.send()
+  }
+}
+
+function updateTokenExchangeRate (token = '') {
+  const pair = `${token.toLowerCase()}_eth`
+
+  return dispatch => {
+    if (!token) {
+      return
+    }
+
+    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
+      if (!marketinfo.error) {
+        dispatch({
+          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
+          payload: {
+            pair,
+            marketinfo,
+          },
+        })
+      }
+    })
   }
 }
 

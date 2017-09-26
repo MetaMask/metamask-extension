@@ -1,35 +1,101 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
 const Identicon = require('./identicon')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
+const selectors = require('../selectors')
+const actions = require('../actions')
+const { conversionUtil } = require('../conversion-util')
 
-module.exports = TokenCell
+function mapStateToProps (state) {
+  return {
+    network: state.metamask.network,
+    selectedTokenAddress: state.metamask.selectedTokenAddress,
+    userAddress: selectors.getSelectedAddress(state),
+    tokenExchangeRates: state.metamask.tokenExchangeRates,
+    ethToUSDRate: state.metamask.conversionRate,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
+    updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
+  }
+}
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenCell)
 
 inherits(TokenCell, Component)
 function TokenCell () {
   Component.call(this)
 }
 
+TokenCell.prototype.componentWillMount = function () {
+  const {
+    updateTokenExchangeRate,
+    symbol,
+  } = this.props
+
+  updateTokenExchangeRate(symbol)
+}
+
 TokenCell.prototype.render = function () {
   const props = this.props
-  const { address, symbol, string, network, userAddress } = props
+  const {
+    address,
+    symbol,
+    string,
+    network,
+    setSelectedToken,
+    selectedTokenAddress,
+    tokenExchangeRates,
+    ethToUSDRate,
+    // userAddress,
+  } = props
+  
+  const pair = `${symbol.toLowerCase()}_eth`;
+
+  let currentTokenToEthRate;
+  let currentTokenInUSD;
+  let formattedUSD = ''
+
+  if (tokenExchangeRates[pair]) {
+    currentTokenToEthRate = tokenExchangeRates[pair].rate;
+    currentTokenInUSD = conversionUtil(string, {
+      fromNumericBase: 'dec',
+      fromCurrency: symbol,
+      toCurrency: 'USD',
+      numberOfDecimals: 2,
+      conversionRate: currentTokenToEthRate,
+      ethToUSDRate,
+    })
+    formattedUSD = `$${currentTokenInUSD} USD`;
+  }
 
   return (
-    h('li.token-cell', {
-      style: { cursor: network === '1' ? 'pointer' : 'default' },
-      onClick: this.view.bind(this, address, userAddress, network),
+    h('div.token-list-item', {
+      className: `token-list-item ${selectedTokenAddress === address ? 'token-list-item--active' : ''}`,
+      // style: { cursor: network === '1' ? 'pointer' : 'default' },
+      // onClick: this.view.bind(this, address, userAddress, network),
+      onClick: () => setSelectedToken(address),
     }, [
 
       h(Identicon, {
-        diameter: 50,
+        className: 'token-list-item__identicon',
+        diameter: 45,
         address,
         network,
       }),
 
-      h('h3', `${string || 0} ${symbol}`),
+      h('h.token-list-item__balance-wrapper', null, [
+        h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
-      h('span', { style: { flex: '1 0 auto' } }),
+        h('div.token-list-item__fiat-amount', {
+          style: {},
+        }, formattedUSD),
+      ]),
 
       /*
       h('button', {

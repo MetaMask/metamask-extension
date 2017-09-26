@@ -1,0 +1,71 @@
+/*
+  Generic
+ */
+
+@import './reset.scss';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Montserrat Regular', Arial;
+  color: #4d4d4d;
+  font-weight: 300;
+  line-height: 1.4em;
+  background: #f7f7f7;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 500px;
+}
+
+.app-root {
+  overflow: hidden;
+  position: relative;
+}
+
+.app-primary {
+  display: flex;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
+/* stylelint-disable */
+#app-content {
+  overflow-x: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (max-width: $break-small) {
+    background-color: $white;
+  }
+}
+/* stylelint-enable */
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: #df6b0e;
+}
+
+input.large-input,
+textarea.large-input {
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}

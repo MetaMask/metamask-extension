@@ -17,6 +17,8 @@ function reduceMetamask (state, action) {
     lastUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
+    selectedTokenAddress: null,
+    tokenExchangeRates: {},
   }, state.metamask)
 
   switch (action.type) {
@@ -115,6 +117,11 @@ function reduceMetamask (state, action) {
       delete newState.seedWords
       return newState
 
+    case actions.SET_SELECTED_TOKEN:
+      return extend(metamaskState, {
+        selectedTokenAddress: action.value,
+      })
+
     case actions.SAVE_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
@@ -128,6 +135,15 @@ function reduceMetamask (state, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
+      })
+
+    case actions.UPDATE_TOKEN_EXCHANGE_RATE:
+    const { payload: { pair, marketinfo } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [pair]: marketinfo,
+        },
       })
 
     default:

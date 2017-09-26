@@ -1,0 +1,444 @@
+.modal > div:focus {
+  outline: none !important;
+}
+
+// Buy Modal
+.buy-modal-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'DIN OT';
+  padding: 0 16px;
+}
+
+.buy-modal-content-option {
+  cursor: pointer;
+  color: #5B5D67;
+}
+
+@media screen and (max-width: 575px) {
+  .buy-modal-content-title-wrapper {
+    justify-content: space-around;
+    width: 100%;
+    height: 100px;
+  }
+
+  .buy-modal-content-title {
+    font-size: 26px;
+    margin-top: 15px;
+  }
+
+  .buy-modal-content-options {
+    flex-direction: column;
+    padding: 5% 33%;
+  }
+
+  .buy-modal-content-footer {
+    text-transform: uppercase;
+    width: 100%;
+    height: 50px;
+  }
+
+  div.buy-modal-content-option {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    height: 15vh;
+    margin: 10px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid $black;
+    padding: 0% 7%;
+
+    div.buy-modal-content-option-title {
+      font-size: 20px;
+    }
+
+    div.buy-modal-content-option-subtitle {
+      font-size: 16px;
+    }
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .buy-modal-content-title-wrapper {
+    justify-content: space-around;
+    width: 100%;
+    height: 110px;
+  }
+
+  .buy-modal-content-title {
+    font-size: 26px;
+    margin-top: 15px;
+  }
+
+  .buy-modal-content-footer {
+    text-transform: uppercase;
+    width: 100%;
+    height: 50px;
+  }
+
+  .buy-modal-content-options {
+    flex-direction: row;
+    margin: 20px 0 60px;
+  }
+
+  div.buy-modal-content-option {
+    display: flex;
+    flex-direction: column;
+    width: 20vw;
+    height: 120px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid $black;
+    margin: 0 8px;
+    padding: 18px 0;
+
+    div.buy-modal-content-option-title {
+      font-size: 20px;
+      margin-bottom: 12px;
+
+      @media screen and (max-width: 679px) {
+        font-size: 14px;
+      }
+
+      @media screen and (min-width: 1281px) {
+        font-size: 20px;
+      }
+    }
+
+    div.buy-modal-content-option-subtitle {
+      font-size: 16px;
+      padding: 0 10px;
+      height: 25%;
+
+      @media screen and (max-width: 679px) {
+        font-size: 10px;
+        padding: 0 10px;
+        margin-bottom: 5px;
+        line-height: 15px;
+      }
+
+      @media screen and (min-width: 680px) {
+        font-size: 14px;
+        padding: 0 4px;
+        margin-bottom: 2px;
+      }
+
+      @media screen and (min-width: 1281px) {
+        font-size: 16px;
+        padding: 0;
+      }
+    }
+
+    div.buy-modal-content-footer {
+      margin-top: 8vh;
+    }
+  }
+}
+
+// Edit Account Name Modal
+.edit-account-name-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.edit-account-name-modal-cancel {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  font-size: 25px;
+}
+
+.edit-account-name-modal-title {
+  margin: 15px;
+}
+
+.edit-account-name-modal-save-button {
+  width: 33%;
+  height: 45px;
+  margin: 15px;
+  font-weight: 700;
+  margin-top: 25px;
+}
+
+.edit-account-name-modal-input {
+  width: 90%;
+  height: 50px;
+  text-align: left;
+  margin: 10px;
+  padding: 10px;
+  font-size: 18px;
+}
+
+// Account Modal Container
+.account-modal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  padding: 5px 0 31px 0;
+  border: 1px solid $silver;
+  border-radius: 4px;
+  font-family: 'Montserrat UltraLight';
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.account-modal-close::after {
+  content: '\00D7';
+  font-size: 40px;
+  color: $dusty-gray;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  cursor: pointer;
+}
+
+.account-modal-container .identicon {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  top: -32px;
+  margin-bottom: -32px;
+}
+
+
+// Account Details Modal
+
+.account-modal-container {
+
+  .qr-header {
+    margin-top: 9px;
+    font-size: 20px;
+  }
+
+  .qr-wrapper {
+    margin-top: 5px;
+  }
+
+  .ellip-address-wrapper {
+    display: flex;
+    justify-content: center;
+    border: 1px solid $alto;
+    padding: 5px 10px;
+    font-family: 'Montserrat Light';
+    margin-top: 7px;
+    width: 286px;
+  }
+
+  .qr-ellip-address, .ellip-address {
+    width: 247px;
+    border: none;
+    font-family: 'Montserrat Light';
+    font-size: 14px;
+  }
+
+  .btn-clear {
+    min-height: 28px;
+    font-size: 14px;
+    border-color: $curious-blue;
+    color: $curious-blue;
+    border-radius: 2px;
+    flex-basis: 100%;
+    width: 75%;
+    margin-top: 17px;
+    padding: 10px 22px;
+    height: 44px;
+    width: 235px;
+    font-family: 'Montserrat Light';
+  }
+}
+
+.account-modal-divider {
+  width: 100%;
+  height: 1px;
+  margin: 19px 0 8px 0;
+  background-color: $alto;
+}
+
+// Export Private Key Modal
+
+.account-modal-container .account-name {
+  margin-top: 9px;
+  font-size: 20px;
+}
+
+.account-modal-container .modal-body-title {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.private-key-password {
+  display: flex;
+  flex-direction: column;
+}
+
+.private-key-password-label {
+  color: $scorpion;
+  font-size: 14px;
+  line-height: 18px;
+  margin-bottom: 10px;
+}
+
+.private-key-password-input {
+  padding: 10px 0 13px 17px;
+  font-size: 16px;
+  line-height: 21px;
+  width: 291px;
+  height: 44px;
+}
+
+.private-key-password::-webkit-input-placeholder {
+  color: $dusty-gray;
+  font-family: 'Montserrat UltraLight';
+}
+
+.private-key-password-warning {
+  border-radius: 8px;
+  background-color: #FFF6F6;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  color: $crimson;
+  width: 292px;
+  padding: 9px 15px;
+  margin-top: 18px;
+  font-family: 'Montserrat Regular';
+}
+
+.export-private-key-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  .btn-clear {
+    width: 141px;
+    height: 54px;
+  }
+
+  .btn-cancel {
+    margin-right: 15px;
+    border-color: $dusty-gray;
+    color: $scorpion;
+  }
+}
+
+
+// New Account Modal
+.new-account-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border: 1px solid $alto;
+  box-shadow: 0 0 2px 2px $alto;
+  font-family: 'Montserrat Light';
+}
+
+.new-account-modal-header {
+  background: $wild-sand;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 22px;
+  color: $nile-blue;
+  height: 79px;
+}
+
+.modal-close-x::after {
+  content: '\00D7';
+  font-size: 2em;
+  color: $dusty-gray;
+  position: absolute;
+  top: 25px;
+  right: 17.5px;
+  font-family: sans-serif;
+  cursor: pointer;
+}
+
+.new-account-modal-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  font-size: 17px;
+  color: $nile-blue;
+}
+
+.new-account-modal-content.after-input {
+  margin-top: 15px;
+  line-height: 25px;
+}
+
+.new-account-input-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding-bottom: 2px;
+  margin-top: 13px;
+}
+
+.new-account-input {
+  padding: 15px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid $alto;
+  width: 100%;
+  font-size: 1em;
+  color: $dusty-gray;
+  font-family: Montserrat Light;
+  font-size: 17px;
+  margin: 0 60px;
+}
+
+// For reference on below placeholder selectors: https://stackoverflow.com/questions/2610497/change-an-html5-inputs-placeholder-color-with-css
+.new-account-input::-webkit-input-placeholder {
+  color: $dusty-gray;
+}
+
+.new-account-input:-moz-placeholder {
+  color: $dusty-gray;
+  opacity: 1;
+}
+
+.new-account-input::-moz-placeholder {
+  color: $dusty-gray;
+  opacity: 1;
+}
+
+.new-account-input:-ms-input-placeholder {
+  color: $dusty-gray;
+}
+
+.new-account-input::-ms-input-placeholder {
+  color: $dusty-gray;
+}
+
+.new-account-modal-content.button {
+  margin-top: 22px;
+  margin-bottom: 30px;
+  width: 113px;
+  height: 44px;
+}
+
+.new-account-modal-wrapper .btn-clear {
+  font-size: 14px;
+  font-weight: 700;
+  background: $white;
+  border: 1px solid;
+  border-radius: 2px;
+  color: $tundora;
+  flex: 1;
+}
