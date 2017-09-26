@@ -21,7 +21,7 @@ describe('# Network Controller', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
         const provider = networkController.provider
-        networkController._provider = {test: true}
+        networkController.provider.setTarget({test: true, on: () => {}})
         assert.ok(provider.test)
       })
     })
@@ -71,6 +71,7 @@ function dummyProviderConstructor() {
     // provider
     sendAsync: noop,
     // block tracker
+    _blockTracker: {},
     start: noop,
     stop: noop,
     on: noop,

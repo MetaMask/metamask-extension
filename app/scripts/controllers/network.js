@@ -4,6 +4,7 @@ const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
+const createEventEmitterProxy = require('../lib/events-proxy.js')
 const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 
@@ -31,16 +32,8 @@ module.exports = class NetworkController extends EventEmitter {
   initializeProvider (opts, providerContructor = MetaMaskProvider) {
     this.providerInit = opts
     this._provider = providerContructor(opts)
-    this._proxy = new Proxy(this._provider, {
-      get: (obj, name) => {
-        if (name === 'on') return this._on.bind(this)
-        return this._provider[name]
-      },
-      set: (obj, name, value) => {
-        this._provider[name] = value
-        return value
-      },
-    })
+    this._proxy = createEventEmitterProxy(this._provider)
+    this.provider._blockTracker = createEventEmitterProxy(this._provider._blockTracker)
     this.provider.on('block', this._logBlock.bind(this))
     this.provider.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this.provider)
@@ -55,11 +48,11 @@ module.exports = class NetworkController extends EventEmitter {
 
     this._provider.removeAllListeners()
     this._provider.stop()
-    this.provider = MetaMaskProvider(newInit)
+    this._provider = MetaMaskProvider(newInit)
     // apply the listners created by other controllers
-    Object.keys(this._providerListeners).forEach((key) => {
-      this._providerListeners[key].forEach((handler) => this._provider.addListener(key, handler))
-    })
+    const blockTrackerHandlers = this.provider._blockTracker.proxyEventHandlers
+    this.provider.setTarget(this._provider)
+    this.provider._blockTracker = createEventEmitterProxy(this._provider._blockTracker, blockTrackerHandlers)
     this.emit('networkDidChange')
   }
 
@@ -120,11 +113,5 @@ module.exports = class NetworkController extends EventEmitter {
   _logBlock (block) {
     log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
     this.verifyNetwork()
-  }
-
-  _on (event, handler) {
-    if (!this._providerListeners[event]) this._providerListeners[event] = []
-    this._providerListeners[event].push(handler)
-    this._provider.on(event, handler)
   }
 }
