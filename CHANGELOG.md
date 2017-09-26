@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug that could mis-render token balances when very small. (Not actually included in 3.9.9)
+
 ## 3.10.3 2017-9-21
 
 - Fix bug where metamask-dapp connections are lost on rpc error
