@@ -10,15 +10,21 @@
 const async = require('async')
 const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
+const EventEmitter = require('events').EventEmitter
 function noop () {}
 
 
-class EthereumStore extends ObservableStore {
+class AccountTracker extends EventEmitter {
 
   constructor (opts = {}) {
-    super({
+    super()
+
+    const initState = {
       accounts: {},
-    })
+      currentBlockGasLimit: '',
+    }
+    this.store = new ObservableStore(initState)
+
     this._provider = opts.provider
     this._query = new EthQuery(this._provider)
     this._blockTracker = opts.blockTracker
@@ -33,17 +39,17 @@ class EthereumStore extends ObservableStore {
   //
 
   addAccount (address) {
-    const accounts = this.getState().accounts
+    const accounts = this.store.getState().accounts
     accounts[address] = {}
-    this.updateState({ accounts })
+    this.store.updateState({ accounts })
     if (!this._currentBlockNumber) return
     this._updateAccount(address)
   }
 
   removeAccount (address) {
-    const accounts = this.getState().accounts
+    const accounts = this.store.getState().accounts
     delete accounts[address]
-    this.updateState({ accounts })
+    this.store.updateState({ accounts })
   }
 
   //
@@ -54,29 +60,31 @@ class EthereumStore extends ObservableStore {
     const blockNumber = '0x' + block.number.toString('hex')
     this._currentBlockNumber = blockNumber
 
+    this.store.updateState({ currentBlockGasLimit: `0x${block.gasLimit.toString('hex')}` })
+
     async.parallel([
       this._updateAccounts.bind(this),
     ], (err) => {
       if (err) return console.error(err)
-      this.emit('block', this.getState())
+      this.emit('block', this.store.getState())
     })
   }
 
   _updateAccounts (cb = noop) {
-    const accounts = this.getState().accounts
+    const accounts = this.store.getState().accounts
     const addresses = Object.keys(accounts)
     async.each(addresses, this._updateAccount.bind(this), cb)
   }
 
   _updateAccount (address, cb = noop) {
-    const accounts = this.getState().accounts
     this._getAccount(address, (err, result) => {
       if (err) return cb(err)
       result.address = address
+      const accounts = this.store.getState().accounts
       // only populate if the entry is still present
       if (accounts[address]) {
         accounts[address] = result
-        this.updateState({ accounts })
+        this.store.updateState({ accounts })
       }
       cb(null, result)
     })
@@ -93,4 +101,4 @@ class EthereumStore extends ObservableStore {
 
 }
 
-module.exports = EthereumStore
+module.exports = AccountTracker

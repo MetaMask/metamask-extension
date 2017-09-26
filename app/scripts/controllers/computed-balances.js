@@ -20,15 +20,15 @@ class ComputedbalancesController {
   }
 
   updateAllBalances () {
-    for (let address in this.balances) {
+    for (let address in this.accountTracker.store.getState().accounts) {
       this.balances[address].updateBalance()
     }
   }
 
   _initBalanceUpdating () {
-    const store = this.accountTracker.getState()
+    const store = this.accountTracker.store.getState()
     this.addAnyAccountsFromStore(store)
-    this.accountTracker.subscribe(this.addAnyAccountsFromStore.bind(this))
+    this.accountTracker.store.subscribe(this.addAnyAccountsFromStore.bind(this))
   }
 
   addAnyAccountsFromStore(store) {
