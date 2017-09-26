@@ -114,10 +114,4 @@ module.exports = class NetworkController extends EventEmitter {
     log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
     this.verifyNetwork()
   }
-
-  _on (event, handler) {
-    if (!this._providerListeners[event]) this._providerListeners[event] = []
-    this._providerListeners[event].push(handler)
-    this._provider.on(event, handler)
-  }
 }
