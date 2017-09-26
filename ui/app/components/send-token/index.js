@@ -5,7 +5,7 @@ const classnames = require('classnames')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
-const { isValidAddress } = require('../../util')
+const { isValidAddress, allNull } = require('../../util')
 
 // const BalanceComponent = require('./balance-component')
 const Identicon = require('../identicon')
@@ -65,7 +65,8 @@ function SendTokenScreen () {
   Component.call(this)
   this.state = {
     to: '',
-    amount: '',
+    amount: '0x0',
+    amountToSend: '0x0',
     selectedCurrency: 'USD',
     isGasTooltipOpen: false,
     gasPrice: '0x5d21dba00',
@@ -113,6 +114,46 @@ SendTokenScreen.prototype.validate = function () {
   }
 }
 
+SendTokenScreen.prototype.setErrorsFor = function (field) {
+  const { balance, selectedToken } = this.props
+  const { errors: previousErrors } = this.state
+
+  const {
+    isValid,
+    errors: newErrors
+  } = this.validate()
+
+  const nextErrors = Object.assign({}, previousErrors, {
+    [field]: newErrors[field] || null
+  })
+
+  if (!isValid) {
+    this.setState({
+      errors: nextErrors,
+      isValid,
+    })
+  }
+}
+
+SendTokenScreen.prototype.clearErrorsFor = function (field) {
+  const { errors: previousErrors } = this.state
+  const nextErrors = Object.assign({}, previousErrors, {
+    [field]: null
+  })
+
+  this.setState({
+    errors: nextErrors,
+    isValid: allNull(nextErrors),
+  })
+}
+
+SendTokenScreen.prototype.getAmountToSend = function (amount, selectedToken) {
+  const { decimals } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  const sendAmount = Number(amount * multiplier).toString(16)
+  return sendAmount
+}
+
 SendTokenScreen.prototype.submit = function () {
   const {
     to,
@@ -132,11 +173,6 @@ SendTokenScreen.prototype.submit = function () {
   } = this.props
 
   const { nickname = ' ' } = identities[to] || {}
-  const { isValid, errors } = this.validate()
-
-  if (!isValid) {
-    return this.setState({ errors })
-  }
 
   hideWarning()
   addToAddressBook(to, nickname)
@@ -148,9 +184,7 @@ SendTokenScreen.prototype.submit = function () {
     gasPrice: gasPrice,
   }
 
-  const { decimals } = selectedToken || {}
-  const multiplier = Math.pow(10, Number(decimals || 0))
-  const sendAmount = Number(amount * multiplier).toString(16)
+  const sendAmount = this.getAmountToSend(amount, selectedToken)
 
   signTokenTx(selectedTokenAddress, to, sendAmount, txParams)
 }
@@ -181,6 +215,8 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         to: e.target.value,
         errors: {},
       }),
+      onBlur: () => this.setErrorsFor('to'),
+      onFocus: () => this.clearErrorsFor('to'),
     }),
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
@@ -234,8 +270,9 @@ SendTokenScreen.prototype.renderAmountInput = function () {
       value: amount,
       onChange: e => this.setState({
         amount: e.target.value,
-        errors: {},
       }),
+      onBlur: () => this.setErrorsFor('amount'),
+      onFocus: () => this.clearErrorsFor('amount'),
     }),
     h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
   ])
@@ -271,6 +308,14 @@ SendTokenScreen.prototype.renderGasInput = function () {
       onClose: () => this.setState({ isGasTooltipOpen: false }),
       onFeeChange: ({ gasLimit, gasPrice }) => {
         this.setState({ gasLimit, gasPrice, errors: {} })
+      },
+      onBlur: () => {
+        this.setErrorsFor('gasLimit')
+        this.setErrorsFor('gasPrice')
+      },
+      onFocus: () => {
+        this.clearErrorsFor('gasLimit')
+        this.clearErrorsFor('gasPrice')
       },
     }),
 
@@ -311,10 +356,12 @@ SendTokenScreen.prototype.renderMemoInput = function () {
 
 SendTokenScreen.prototype.renderButtons = function () {
   const { selectedAddress, backToAccountDetail } = this.props
+  const { isValid } = this.validate()
 
   return h('div.send-token__button-group', [
     h('button.send-token__button-next.btn-secondary', {
-      onClick: () => this.submit(),
+      className: !isValid && 'send-screen__send-button__disabled',
+      onClick: () => isValid && this.submit(),
     }, ['Next']),
     h('button.send-token__button-cancel.btn-tertiary', {
       onClick: () => backToAccountDetail(selectedAddress),
