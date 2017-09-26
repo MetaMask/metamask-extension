@@ -4,7 +4,7 @@ const promiseToCallback = require('promise-to-callback')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
-const EthStore = require('./lib/eth-store')
+const AccountTracker = require('./lib/account-tracker')
 const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
 const debounce = require('debounce')
@@ -26,6 +26,7 @@ const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TransactionController = require('./controllers/transactions')
+const BalancesController = require('./controllers/computed-balances')
 const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
@@ -85,7 +86,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
-    this.ethStore = new EthStore({
+    // account tracker watches balances, nonces, and any code at their address.
+    this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
     })
@@ -93,12 +95,17 @@ module.exports = class MetamaskController extends EventEmitter {
     // key mgmt
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
-      ethStore: this.ethStore,
+      accountTracker: this.accountTracker,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
+
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
+      this.accountTracker.addAccount(address)
+    })
+    this.keyringController.on('removedAccount', (address) => {
+      this.accountTracker.removeAccount(address)
     })
 
     // address book controller
@@ -117,9 +124,20 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
-      ethStore: this.ethStore,
+      accountTracker: this.accountTracker,
     })
     this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
+
+    // computed balances (accounting for pending transactions)
+    this.balancesController = new BalancesController({
+      accountTracker: this.accountTracker,
+      txController: this.txController,
+      blockTracker: this.blockTracker,
+    })
+    this.networkController.on('networkDidChange', () => {
+      this.balancesController.updateAllBalances()
+    })
+    this.balancesController.updateAllBalances()
 
     // notices
     this.noticeController = new NoticeController({
@@ -172,8 +190,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // manual mem state subscriptions
     this.networkController.store.subscribe(this.sendUpdate.bind(this))
-    this.ethStore.subscribe(this.sendUpdate.bind(this))
+    this.accountTracker.store.subscribe(this.sendUpdate.bind(this))
     this.txController.memStore.subscribe(this.sendUpdate.bind(this))
+    this.balancesController.store.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
@@ -248,16 +267,18 @@ module.exports = class MetamaskController extends EventEmitter {
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
     const isInitialized = (!!wallet || !!vault)
+
     return extend(
       {
         isInitialized,
       },
       this.networkController.store.getState(),
-      this.ethStore.getState(),
+      this.accountTracker.store.getState(),
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
+      this.balancesController.store.getState(),
       this.preferencesController.store.getState(),
       this.addressBookController.store.getState(),
       this.currencyController.store.getState(),

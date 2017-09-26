@@ -3,6 +3,7 @@
 ## Current Master
 
 - Remove Slack link from info page, since it is a big phishing target.
+- Fix bug that could mis-render token balances when very small. (Not actually included in 3.9.9)
 
 ## 3.10.3 2017-9-21
 
