@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Remove Slack link from info page, since it is a big phishing target.
+
 ## 3.10.3 2017-9-21
 
 - Fix bug where metamask-dapp connections are lost on rpc error
