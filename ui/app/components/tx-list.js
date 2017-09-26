@@ -47,7 +47,6 @@ TxList.prototype.render = function () {
 
 TxList.prototype.renderTransaction = function () {
   const { txsToRender, conversionRate } = this.props
-
   return txsToRender.length
     ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate))
     : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
@@ -55,6 +54,12 @@ TxList.prototype.renderTransaction = function () {
 
 // TODO: Consider moving TxListItem into a separate component
 TxList.prototype.renderTransactionListItem = function (transaction, conversionRate) {
+  // console.log({transaction})
+  // refer to transaction-list.js:line 58
+  if (transaction.key === 'shapeshift') {
+    return null
+  }
+
   const props = {
     dateString: formatDate(transaction.time),
     address: transaction.txParams.to,
