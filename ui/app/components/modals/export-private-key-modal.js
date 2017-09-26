@@ -31,11 +31,19 @@ function ExportPrivateKeyModal () {
   Component.call(this)
 
   this.state = {
-    password: ''
+    password: '',
+    privateKey: null,
   }
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ExportPrivateKeyModal)
+
+ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (password, address) {
+  const { exportAccount } = this.props
+
+  exportAccount(password, address)
+    .then(privateKey => this.setState({ privateKey }))
+}
 
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
   return h('span.private-key-password-label', privateKey
@@ -68,15 +76,13 @@ ExportPrivateKeyModal.prototype.renderButton = function (className, onClick, lab
   }, label)
 }
 
-ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address) {
-  const { hideModal, exportAccount } = this.props
-
+ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
     !privateKey && this.renderButton('btn-clear btn-cancel', () => hideModal(), 'Cancel'),
 
     (privateKey
       ? this.renderButton('btn-clear', () => hideModal(), 'Done')
-      : this.renderButton('btn-clear', () => exportAccount(this.state.password, address), 'Download')
+      : this.renderButton('btn-clear', () => this.exportAccountAndGetPrivateKey(this.state.password, address), 'Download')
     ),
 
   ])
@@ -86,13 +92,14 @@ ExportPrivateKeyModal.prototype.render = function () {
   const {
     selectedIdentity,
     network,
-    privateKey,
     warning,
     showAccountDetailModal,
     hideModal,
     previousModalState,
   } = this.props
   const { name, address } = selectedIdentity
+
+  const { privateKey } = this.state
 
   return h(AccountModalContainer, {
     showBackButton: previousModalState === 'ACCOUNT_DETAILS',
@@ -124,7 +131,7 @@ ExportPrivateKeyModal.prototype.render = function () {
         account.`
       ),
 
-      this.renderButtons(privateKey, this.state.password, address),
+      this.renderButtons(privateKey, this.state.password, address, hideModal),
       
   ])
 }
