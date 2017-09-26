@@ -130,7 +130,10 @@ SendTransactionScreen.prototype.renderFromInput = function (from, identities) {
         })
       },
       onBlur: () => this.setErrorsFor('from'),
-      onFocus: () => this.clearErrorsFor('from'),
+      onFocus: event => {
+        this.clearErrorsFor('from')
+        this.state.newTx.from && event.target.select()
+      },
     }),
 
     h('datalist#accounts', [
@@ -170,7 +173,10 @@ SendTransactionScreen.prototype.renderToInput = function (to, identities, addres
         this.setErrorsFor('to')
         this.estimateGasAndPrice()
       },
-      onFocus: () => this.clearErrorsFor('to'),
+      onFocus: event => {
+        this.clearErrorsFor('to')
+        this.state.newTx.to && event.target.select()
+      },
     }),
 
     h('datalist#addresses', [

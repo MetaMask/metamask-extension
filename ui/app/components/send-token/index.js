@@ -240,7 +240,10 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         this.setErrorsFor('to')
         this.estimateGasAndPrice()
       },
-      onFocus: () => this.clearErrorsFor('to'),
+      onFocus: event => {
+        if (to) event.target.select()
+        this.clearErrorsFor('to')
+      },
     }),
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
