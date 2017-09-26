@@ -27,11 +27,8 @@ describe('KeyringController', function () {
       ethStore: {
         addAccount (acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
       },
+      encryptor: mockEncryptor,
     })
-
-    // Stub out the browser crypto for a mock encryptor.
-    // Browser crypto is tested in the integration test suite.
-    keyringController.encryptor = mockEncryptor
 
     keyringController.createNewVaultAndKeychain(password)
     .then(function (newState) {

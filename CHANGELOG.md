@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.10.3 2017-9-21
+
 - Fix bug where metamask-dapp connections are lost on rpc error
 - Fix bug that would sometimes display transactions as failed that could be successfully mined.
 
