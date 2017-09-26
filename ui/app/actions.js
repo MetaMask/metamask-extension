@@ -106,6 +106,7 @@ var actions = {
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
+  exportAccountComplete,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
   // tx conf screen
@@ -984,24 +985,36 @@ function exportAccount (password, address) {
     dispatch(self.showLoadingIndication())
 
     log.debug(`background.submitPassword`)
-    background.submitPassword(password, function (err) {
-      if (err) {
-        log.error('Error in submiting password.')
-        dispatch(self.hideLoadingIndication())
-        return dispatch(self.displayWarning('Incorrect Password.'))
-      }
-      log.debug(`background.exportAccount`)
-      background.exportAccount(address, function (err, result) {
-        dispatch(self.hideLoadingIndication())
-
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, function (err) {
         if (err) {
-          log.error(err)
-          return dispatch(self.displayWarning('Had a problem exporting the account.'))
+          log.error('Error in submiting password.')
+          dispatch(self.hideLoadingIndication())
+          dispatch(self.displayWarning('Incorrect Password.'))
+          return reject(err)
         }
+        log.debug(`background.exportAccount`)
+        return background.exportAccount(address, function (err, result) {
+          dispatch(self.hideLoadingIndication())
 
-        dispatch(self.showPrivateKey(result))
+          if (err) {
+            log.error(err)
+            dispatch(self.displayWarning('Had a problem exporting the account.'))
+            return reject(err)
+          }
+
+          dispatch(self.exportAccountComplete())
+
+          return resolve(result)
+        })
       })
     })
+  }
+}
+
+function exportAccountComplete() {
+  return {
+    type: actions.EXPORT_ACCOUNT,
   }
 }
 
