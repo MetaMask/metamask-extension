@@ -1,4 +1,4 @@
-/* Account Tracker
+/* Ethereum Store
  *
  * This module is responsible for tracking any number of accounts
  * and caching their current balances & transaction counts.
@@ -18,6 +18,10 @@ class EthereumStore extends ObservableStore {
   constructor (opts = {}) {
     super({
       accounts: {},
+      transactions: {},
+      currentBlockNumber: '0',
+      currentBlockHash: '',
+      currentBlockGasLimit: '',
     })
     this._provider = opts.provider
     this._query = new EthQuery(this._provider)
@@ -46,6 +50,21 @@ class EthereumStore extends ObservableStore {
     this.updateState({ accounts })
   }
 
+  addTransaction (txHash) {
+    const transactions = this.getState().transactions
+    transactions[txHash] = {}
+    this.updateState({ transactions })
+    if (!this._currentBlockNumber) return
+    this._updateTransaction(this._currentBlockNumber, txHash, noop)
+  }
+
+  removeTransaction (txHash) {
+    const transactions = this.getState().transactions
+    delete transactions[txHash]
+    this.updateState({ transactions })
+  }
+
+
   //
   // private
   //
@@ -53,9 +72,12 @@ class EthereumStore extends ObservableStore {
   _updateForBlock (block) {
     const blockNumber = '0x' + block.number.toString('hex')
     this._currentBlockNumber = blockNumber
-
+    this.updateState({ currentBlockNumber: parseInt(blockNumber) })
+    this.updateState({ currentBlockHash: `0x${block.hash.toString('hex')}`})
+    this.updateState({ currentBlockGasLimit: `0x${block.gasLimit.toString('hex')}` })
     async.parallel([
       this._updateAccounts.bind(this),
+      this._updateTransactions.bind(this, blockNumber),
     ], (err) => {
       if (err) return console.error(err)
       this.emit('block', this.getState())
@@ -77,6 +99,26 @@ class EthereumStore extends ObservableStore {
       if (accounts[address]) {
         accounts[address] = result
         this.updateState({ accounts })
+      }
+      cb(null, result)
+    })
+  }
+
+  _updateTransactions (block, cb = noop) {
+    const transactions = this.getState().transactions
+    const txHashes = Object.keys(transactions)
+    async.each(txHashes, this._updateTransaction.bind(this, block), cb)
+  }
+
+  _updateTransaction (block, txHash, cb = noop) {
+    // would use the block here to determine how many confirmations the tx has
+    const transactions = this.getState().transactions
+    this._query.getTransaction(txHash, (err, result) => {
+      if (err) return cb(err)
+      // only populate if the entry is still present
+      if (transactions[txHash]) {
+        transactions[txHash] = result
+        this.updateState({ transactions })
       }
       cb(null, result)
     })
