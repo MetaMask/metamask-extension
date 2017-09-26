@@ -194,7 +194,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // manual mem state subscriptions
     this.networkController.store.subscribe(this.sendUpdate.bind(this))
-    this.accountTracker.subscribe(this.sendUpdate.bind(this))
+    this.accountTracker.store.subscribe(this.sendUpdate.bind(this))
     this.txController.memStore.subscribe(this.sendUpdate.bind(this))
     this.balancesController.store.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
@@ -277,7 +277,7 @@ module.exports = class MetamaskController extends EventEmitter {
         isInitialized,
       },
       this.networkController.store.getState(),
-      this.accountTracker.getState(),
+      this.accountTracker.store.getState(),
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),

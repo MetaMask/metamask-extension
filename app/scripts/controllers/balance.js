@@ -36,12 +36,12 @@ class BalanceController {
     this.txController.on('submitted', update)
     this.txController.on('confirmed', update)
     this.txController.on('failed', update)
-    this.accountTracker.subscribe(update)
+    this.accountTracker.store.subscribe(update)
     this.blockTracker.on('block', update)
   }
 
   async _getBalance () {
-    const { accounts } = this.accountTracker.getState()
+    const { accounts } = this.accountTracker.store.getState()
     const entry = accounts[this.address]
     const balance = entry.balance
     return balance ? new BN(balance.substring(2), 16) : undefined
