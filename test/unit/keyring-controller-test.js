@@ -24,7 +24,7 @@ describe('KeyringController', function () {
         getTxList: () => [],
         getUnapprovedTxList: () => [],
       },
-      ethStore: {
+      accountTracker: {
         addAccount (acct) { accounts.push(ethUtil.addHexPrefix(acct)) },
       },
       encryptor: mockEncryptor,
