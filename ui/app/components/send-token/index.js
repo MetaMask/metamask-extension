@@ -57,6 +57,9 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
+    estimateGas: ({ to, amount }) => dispatch(actions.estimateGas({ to, amount })),
+    getGasPrice: () => dispatch(actions.getGasPrice()),
+
   }
 }
 
@@ -69,8 +72,8 @@ function SendTokenScreen () {
     amountToSend: '0x0',
     selectedCurrency: 'USD',
     isGasTooltipOpen: false,
-    gasPrice: '0x5d21dba00',
-    gasLimit: '0x7b0d',
+    gasPrice: null,
+    gasLimit: null,
     errors: {},
   }
 }
@@ -82,6 +85,24 @@ SendTokenScreen.prototype.componentWillMount = function () {
   } = this.props
 
   updateTokenExchangeRate(symbol)
+}
+
+SendTokenScreen.prototype.estimateGasAndPrice = function () {
+  const { selectedToken } = this.props
+  const { errors, amount, to } = this.state
+
+  if (!errors.to && !errors.amount && amount > 0) {
+    Promise.all([
+      this.props.getGasPrice(),
+      this.props.estimateGas({ to, amount: this.getAmountToSend(amount, selectedToken) }),
+    ])
+    .then(([blockGasPrice, estimatedGas]) => {
+      this.setState({
+        blockGasPrice,
+        estimatedGas,
+      })
+    })
+  }
 }
 
 SendTokenScreen.prototype.validate = function () {
@@ -215,7 +236,10 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
         to: e.target.value,
         errors: {},
       }),
-      onBlur: () => this.setErrorsFor('to'),
+      onBlur: () => {
+        this.setErrorsFor('to')
+        this.estimateGasAndPrice()
+      },
       onFocus: () => this.clearErrorsFor('to'),
     }),
     h('datalist#addresses', [
@@ -271,7 +295,10 @@ SendTokenScreen.prototype.renderAmountInput = function () {
       onChange: e => this.setState({
         amount: e.target.value,
       }),
-      onBlur: () => this.setErrorsFor('amount'),
+      onBlur: () => {
+        this.setErrorsFor('amount')
+        this.estimateGasAndPrice()
+      },
       onFocus: () => this.clearErrorsFor('amount'),
     }),
     h('div.send-screen-input-wrapper__error-message', [ errorMessage ]),
@@ -283,6 +310,8 @@ SendTokenScreen.prototype.renderGasInput = function () {
     isGasTooltipOpen,
     gasPrice,
     gasLimit,
+    blockGasPrice,
+    estimatedGas,
     selectedCurrency,
     errors: {
       gasPrice: gasPriceErrorMessage,
@@ -303,8 +332,8 @@ SendTokenScreen.prototype.renderGasInput = function () {
   }, [
     isGasTooltipOpen && h(GasTooltip, {
       className: 'send-tooltip',
-      gasPrice,
-      gasLimit,
+      gasPrice: gasPrice || blockGasPrice || '0x0',
+      gasLimit: gasLimit || estimatedGas || '0x0',
       onClose: () => this.setState({ isGasTooltipOpen: false }),
       onFeeChange: ({ gasLimit, gasPrice }) => {
         this.setState({ gasLimit, gasPrice, errors: {} })
@@ -327,9 +356,9 @@ SendTokenScreen.prototype.renderGasInput = function () {
       h(GasFeeDisplay, {
         conversionRate,
         tokenExchangeRate,
-        gasPrice,
+        gasPrice: gasPrice || blockGasPrice || '0x0',
         activeCurrency: selectedCurrency,
-        gas: gasLimit,
+        gas: gasLimit || estimatedGas || '0x0',
         blockGasLimit: currentBlockGasLimit,
       }),
       h(
