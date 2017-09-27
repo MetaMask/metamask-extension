@@ -57,9 +57,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
-    estimateGas: ({ to, amount }) => dispatch(actions.estimateGas({ to, amount })),
+    estimateGas: () => dispatch(actions.estimateGas()),
     getGasPrice: () => dispatch(actions.getGasPrice()),
-
   }
 }
 
@@ -82,27 +81,22 @@ SendTokenScreen.prototype.componentWillMount = function () {
   const {
     updateTokenExchangeRate,
     selectedToken: { symbol },
+    getGasPrice,
+    estimateGas,
   } = this.props
 
   updateTokenExchangeRate(symbol)
-}
 
-SendTokenScreen.prototype.estimateGasAndPrice = function () {
-  const { selectedToken } = this.props
-  const { errors, amount, to } = this.state
-
-  if (!errors.to && !errors.amount && amount > 0) {
-    Promise.all([
-      this.props.getGasPrice(),
-      this.props.estimateGas({ to, amount: this.getAmountToSend(amount, selectedToken) }),
-    ])
-    .then(([blockGasPrice, estimatedGas]) => {
-      this.setState({
-        blockGasPrice,
-        estimatedGas,
-      })
+  Promise.all([
+    getGasPrice(),
+    estimateGas(),
+  ])
+  .then(([blockGasPrice, estimatedGas]) => {
+    this.setState({
+      blockGasPrice,
+      estimatedGas,
     })
-  }
+  })
 }
 
 SendTokenScreen.prototype.validate = function () {
@@ -238,7 +232,6 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
       }),
       onBlur: () => {
         this.setErrorsFor('to')
-        this.estimateGasAndPrice()
       },
       onFocus: event => {
         if (to) event.target.select()
@@ -300,7 +293,6 @@ SendTokenScreen.prototype.renderAmountInput = function () {
       }),
       onBlur: () => {
         this.setErrorsFor('amount')
-        this.estimateGasAndPrice()
       },
       onFocus: () => this.clearErrorsFor('amount'),
     }),
