@@ -52,7 +52,7 @@ module.exports = class TransactionController extends EventEmitter {
       provider: this.provider,
       nonceTracker: this.nonceTracker,
       getBalance: (address) => {
-        const account = this.accountTracker.getState().accounts[address]
+        const account = this.accountTracker.store.getState().accounts[address]
         if (!account) return
         return account.balance
       },
