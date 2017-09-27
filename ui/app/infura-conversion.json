@@ -1,6 +1,61 @@
 {
   "objects": [
     {
+      "symbol": "ethaud",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "aud",
+        "name": "Australian Dollar"
+      }
+    },
+    {
+      "symbol": "ethhkd",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "hkd",
+        "name": "Hong Kong Dollar"
+      }
+    },
+    {
+      "symbol": "ethsgd",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "sgd",
+        "name": "Singapore Dollar"
+      }
+    },
+    {
+      "symbol": "ethidr",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "idr",
+        "name": "Indonesian Rupiah"
+      }
+    },
+    {
+      "symbol": "ethphp",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "php",
+        "name": "Philippine Peso"
+      }
+    },
+    {
       "symbol": "eth1st",
       "base": {
         "code": "eth",

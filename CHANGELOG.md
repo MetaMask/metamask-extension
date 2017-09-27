@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Added AUD, HKD, SGD, IDR, PHP to currency conversion list
+
 ## 3.10.3 2017-9-21
 
 - Fix bug where metamask-dapp connections are lost on rpc error
