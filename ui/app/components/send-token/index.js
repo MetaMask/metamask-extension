@@ -93,8 +93,8 @@ SendTokenScreen.prototype.componentWillMount = function () {
   ])
   .then(([blockGasPrice, estimatedGas]) => {
     this.setState({
-      blockGasPrice,
-      estimatedGas,
+      gasPrice: blockGasPrice,
+      gasLimit: estimatedGas,
     })
   })
 }
@@ -305,8 +305,6 @@ SendTokenScreen.prototype.renderGasInput = function () {
     isGasTooltipOpen,
     gasPrice,
     gasLimit,
-    blockGasPrice,
-    estimatedGas,
     selectedCurrency,
     errors: {
       gasPrice: gasPriceErrorMessage,
@@ -327,8 +325,8 @@ SendTokenScreen.prototype.renderGasInput = function () {
   }, [
     isGasTooltipOpen && h(GasTooltip, {
       className: 'send-tooltip',
-      gasPrice: gasPrice || blockGasPrice || '0x0',
-      gasLimit: gasLimit || estimatedGas || '0x0',
+      gasPrice: gasPrice || '0x0',
+      gasLimit: gasLimit || '0x0',
       onClose: () => this.setState({ isGasTooltipOpen: false }),
       onFeeChange: ({ gasLimit, gasPrice }) => {
         this.setState({ gasLimit, gasPrice, errors: {} })
@@ -351,9 +349,9 @@ SendTokenScreen.prototype.renderGasInput = function () {
       h(GasFeeDisplay, {
         conversionRate,
         tokenExchangeRate,
-        gasPrice: gasPrice || blockGasPrice || '0x0',
+        gasPrice: gasPrice || '0x0',
         activeCurrency: selectedCurrency,
-        gas: gasLimit || estimatedGas || '0x0',
+        gas: gasLimit || '0x0',
         blockGasLimit: currentBlockGasLimit,
       }),
       h(
