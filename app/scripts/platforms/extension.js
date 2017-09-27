@@ -5,10 +5,6 @@ class ExtensionPlatform {
   //
   // Public
   //
-  get isExtension () {
-    return true
-  }
-
   reload () {
     extension.runtime.reload()
   }

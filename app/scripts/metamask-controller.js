@@ -196,7 +196,7 @@ module.exports = class MetamaskController extends EventEmitter {
       },
       // rpc data source
       rpcUrl: this.networkController.getCurrentRpcAddress(),
-      originHttpHeaderKey: this.platform.isExtension ? 'X-Metamask-Origin' : undefined,
+      originHttpHeaderKey: 'X-Metamask-Origin',
       // account mgmt
       getAccounts: (cb) => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
