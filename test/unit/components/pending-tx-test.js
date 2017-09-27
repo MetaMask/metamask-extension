@@ -34,10 +34,15 @@ describe('PendingTx', function () {
     const renderer = ReactTestUtils.createRenderer()
     const newGasPrice = '0x77359400'
 
+    const computedBalances = {}
+    computedBalances[Object.keys(identities)[0]] = {
+      ethBalance: '0x00000000000000056bc75e2d63100000',
+    }
     const props = {
       identities,
       accounts: identities,
       txData,
+      computedBalances,
       sendTransaction: (txMeta, event) => {
         // Assert changes:
         const result = ethUtil.addHexPrefix(txMeta.txParams.gasPrice)
