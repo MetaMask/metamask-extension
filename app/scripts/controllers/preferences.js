@@ -22,7 +22,7 @@ class PreferencesController {
     })
   }
 
-  getSelectedAddress (_address) {
+  getSelectedAddress () {
     return this.store.getState().selectedAddress
   }
 
