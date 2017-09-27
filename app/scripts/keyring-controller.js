@@ -107,7 +107,6 @@ class KeyringController extends EventEmitter {
       const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - First Account not found.')
       const hexAccount = normalizeAddress(firstAccount)
-      this.emit('newAccount', hexAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this, password))
@@ -207,6 +206,12 @@ class KeyringController extends EventEmitter {
   // and then saves those changes.
   addNewAccount (selectedKeyring) {
     return selectedKeyring.addAccounts(1)
+    .then((accounts) => {
+      accounts.forEach((hexAccount) => {
+        this.emit('newAccount', hexAccount)
+      })
+      return accounts
+    })
     .then(this.setupAccounts.bind(this))
     .then(this.persistAllKeyrings.bind(this))
     .then(this._updateMemStoreKeyrings.bind(this))
@@ -325,7 +330,6 @@ class KeyringController extends EventEmitter {
       const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - No account found on keychain.')
       const hexAccount = normalizeAddress(firstAccount)
-      this.emit('newAccount', hexAccount)
       this.emit('newVault', hexAccount)
       return this.setupAccounts(accounts)
     })
