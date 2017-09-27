@@ -10,6 +10,7 @@ const actions = require('../../actions')
 const util = require('../../util')
 const ConfirmSendEther = require('./confirm-send-ether')
 const ConfirmSendToken = require('./confirm-send-token')
+const ConfirmDeployContract = require('./confirm-deploy-contract')
 
 const TX_TYPES = {
   DEPLOY_CONTRACT: 'deploy_contract',
@@ -135,6 +136,11 @@ PendingTx.prototype.render = function () {
           symbol: tokenSymbol,
           decimals: tokenDecimals,
         },
+      })
+    case TX_TYPES.DEPLOY_CONTRACT:
+      return h(ConfirmDeployContract, {
+        txData: this.gatherTxMeta(),
+        sendTransaction,
       })
     default:
       return h('noscript')

@@ -108,14 +108,19 @@
   line-height: 16px;
   color: $dusty-gray;
   text-align: center;
+  height: 16px;
 }
 
 .confirm-screen-identicons {
   margin-top: 24px;
 
-  i {
+  i.fa-arrow-right {
     align-self: start;
     margin: 42px 14px 0;
+  }
+
+  i.fa-file-text-o {
+    font-size: 100px;
   }
 }
 
