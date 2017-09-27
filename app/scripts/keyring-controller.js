@@ -106,7 +106,6 @@ class KeyringController extends EventEmitter {
     .then((accounts) => {
       const firstAccount = accounts[0]
       if (!firstAccount) throw new Error('KeyringController - First Account not found.')
-      const hexAccount = normalizeAddress(firstAccount)
       return this.setupAccounts(accounts)
     })
     .then(this.persistAllKeyrings.bind(this, password))
