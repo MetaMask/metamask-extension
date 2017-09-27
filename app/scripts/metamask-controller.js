@@ -232,8 +232,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
-
-      // new style msg signing
+      // personal_sign msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
     })
   }
