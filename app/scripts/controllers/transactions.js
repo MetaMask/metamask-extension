@@ -62,7 +62,7 @@ module.exports = class TransactionController extends EventEmitter {
       nonceTracker: this.nonceTracker,
       retryLimit: 3500, // Retry 3500 blocks, or about 1 day.
       getBalance: (address) => {
-        const account = this.accountTracker.getState().accounts[address]
+        const account = this.accountTracker.store.getState().accounts[address]
         if (!account) return
         return account.balance
       },
@@ -109,6 +109,10 @@ module.exports = class TransactionController extends EventEmitter {
 
   getPendingTxCount (account) {
     return this.txStateManager.getPendingTransactions(account).length
+  }
+
+  getFilteredTxList (opts) {
+    return this.txStateManager.getFilteredTxList(opts)
   }
 
   getChainId () {
