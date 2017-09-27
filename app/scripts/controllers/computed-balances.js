@@ -5,9 +5,10 @@ const BalanceController = require('./balance')
 class ComputedbalancesController {
 
   constructor (opts = {}) {
-    const { accountTracker, txController } = opts
+    const { accountTracker, txController, blockTracker } = opts
     this.accountTracker = accountTracker
     this.txController = txController
+    this.blockTracker = blockTracker
 
     const initState = extend({
       computedBalances: {},
@@ -19,15 +20,15 @@ class ComputedbalancesController {
   }
 
   updateAllBalances () {
-    for (let address in this.balances) {
+    for (let address in this.accountTracker.store.getState().accounts) {
       this.balances[address].updateBalance()
     }
   }
 
   _initBalanceUpdating () {
-    const store = this.accountTracker.getState()
+    const store = this.accountTracker.store.getState()
     this.addAnyAccountsFromStore(store)
-    this.accountTracker.subscribe(this.addAnyAccountsFromStore.bind(this))
+    this.accountTracker.store.subscribe(this.addAnyAccountsFromStore.bind(this))
   }
 
   addAnyAccountsFromStore(store) {
@@ -50,6 +51,7 @@ class ComputedbalancesController {
       address,
       accountTracker: this.accountTracker,
       txController: this.txController,
+      blockTracker: this.blockTracker,
     })
     updater.store.subscribe((accountBalance) => {
       let newState = this.store.getState()

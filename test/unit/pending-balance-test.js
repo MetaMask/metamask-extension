@@ -11,7 +11,7 @@ const ether = '0x' + etherBn.toString(16)
 describe('PendingBalanceCalculator', function () {
   let balanceCalculator
 
-  describe('#valueFor(tx)', function () {
+  describe('#calculateMaxCost(tx)', function () {
     it('returns a BN for a given tx value', function () {
       const txGen = new MockTxGen()
       pendingTxs = txGen.generate({
@@ -24,7 +24,7 @@ describe('PendingBalanceCalculator', function () {
       }, { count: 1 })
 
       const balanceCalculator = generateBalanceCalcWith([], zeroBn)
-      const result = balanceCalculator.valueFor(pendingTxs[0])
+      const result = balanceCalculator.calculateMaxCost(pendingTxs[0])
       assert.equal(result.toString(), etherBn.toString(), 'computes one ether')
     })
 
@@ -40,8 +40,8 @@ describe('PendingBalanceCalculator', function () {
       }, { count: 1 })
 
       const balanceCalculator = generateBalanceCalcWith([], zeroBn)
-      const result = balanceCalculator.valueFor(pendingTxs[0])
-      assert.equal(result.toString(), '6', 'computes one ether')
+      const result = balanceCalculator.calculateMaxCost(pendingTxs[0])
+      assert.equal(result.toString(), '6', 'computes 6 wei of gas')
     })
   })
 
@@ -82,15 +82,9 @@ describe('PendingBalanceCalculator', function () {
 })
 
 function generateBalanceCalcWith (transactions, providerStub = zeroBn) {
-  const getPendingTransactions = () => Promise.resolve(transactions)
-  const getBalance = () => Promise.resolve(providerStub)
-  providerResultStub.result = providerStub
-  const provider = {
-    sendAsync: (_, cb) => { cb(undefined, providerResultStub) },
-    _blockTracker: {
-      getCurrentBlock: () => '0x11b568',
-    },
-  }
+  const getPendingTransactions = async () => transactions
+  const getBalance = async () => providerStub
+
   return new PendingBalanceCalculator({
     getBalance,
     getPendingTransactions,
