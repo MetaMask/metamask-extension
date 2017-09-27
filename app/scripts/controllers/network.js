@@ -11,8 +11,8 @@ const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 module.exports = class NetworkController extends EventEmitter {
   constructor (config) {
     super()
-    this.networkStore = new ObservableStore('loading')
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
+    this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
     this._providerListeners = {}
@@ -21,41 +21,32 @@ module.exports = class NetworkController extends EventEmitter {
     this.providerStore.subscribe((state) => this.switchNetwork({rpcUrl: state.rpcTarget}))
   }
 
-  get provider () {
-    return this._proxy
-  }
-
-  set provider (provider) {
-    this._provider = provider
-  }
-
   initializeProvider (opts, providerContructor = MetaMaskProvider) {
-    this.providerInit = opts
+    this._providerInit = opts
     this._provider = providerContructor(opts)
     this._proxy = createEventEmitterProxy(this._provider)
-    this.provider._blockTracker = createEventEmitterProxy(this._provider._blockTracker)
-    this.provider.on('block', this._logBlock.bind(this))
-    this.provider.on('error', this.verifyNetwork.bind(this))
-    this.ethQuery = new EthQuery(this.provider)
+    this._proxy._blockTracker = createEventEmitterProxy(this._provider._blockTracker)
+    this._proxy.on('block', this._logBlock.bind(this))
+    this._proxy.on('error', this.verifyNetwork.bind(this))
+    this.ethQuery = new EthQuery(this._proxy)
     this.lookupNetwork()
-    return this.provider
+    return this._proxy
   }
 
   switchNetwork (providerInit) {
     this.setNetworkState('loading')
-    const newInit = extend(this.providerInit, providerInit)
-    this.providerInit = newInit
+    const newInit = extend(this._providerInit, providerInit)
+    this._providerInit = newInit
 
-    this._provider.removeAllListeners()
-    this._provider.stop()
+    this._proxy.removeAllListeners()
+    this._proxy.stop()
     this._provider = MetaMaskProvider(newInit)
     // apply the listners created by other controllers
-    const blockTrackerHandlers = this.provider._blockTracker.proxyEventHandlers
-    this.provider.setTarget(this._provider)
-    this.provider._blockTracker = createEventEmitterProxy(this._provider._blockTracker, blockTrackerHandlers)
+    const blockTrackerHandlers = this._proxy._blockTracker.proxyEventHandlers
+    this._proxy.setTarget(this._provider)
+    this._proxy._blockTracker = createEventEmitterProxy(this._provider._blockTracker, blockTrackerHandlers)
     this.emit('networkDidChange')
   }
-
 
   verifyNetwork () {
   // Check network when restoring connectivity:
