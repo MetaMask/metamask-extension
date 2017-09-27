@@ -25,7 +25,7 @@ describe('Transaction Controller', function () {
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
-      accountTracker: { getState: noop },
+      accountTracker: { store: {getState: noop} },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()
@@ -385,7 +385,7 @@ describe('Transaction Controller', function () {
 
   describe('#getBalance', function () {
     it('gets balance', function () {
-      sinon.stub(txController.ethStore, 'getState').callsFake(() => {
+      sinon.stub(txController.accountTracker.store, 'getState').callsFake(() => {
         return {
           accounts: {
             '0x1678a085c290ebd122dc42cba69373b5953b831d': {
