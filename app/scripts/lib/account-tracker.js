@@ -57,10 +57,8 @@ class AccountTracker extends EventEmitter {
   //
 
   _updateForBlock (block) {
-    const blockNumber = '0x' + block.number.toString('hex')
-    this._currentBlockNumber = blockNumber
-
-    this.store.updateState({ currentBlockGasLimit: `0x${block.gasLimit.toString('hex')}` })
+    this._currentBlockNumber = block.number
+    this.store.updateState({ currentBlockGasLimit: block.gasLimit })
 
     async.parallel([
       this._updateAccounts.bind(this),
