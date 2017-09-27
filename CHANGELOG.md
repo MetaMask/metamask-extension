@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Fix bug where newly created accounts were not selected.
+- Fix bug where selected account was not persisted between lockings.
+
 ## 3.10.5 2017-9-27
 
 - Fix block gas limit estimation.
