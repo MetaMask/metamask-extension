@@ -15,17 +15,16 @@ module.exports = class NetworkController extends EventEmitter {
     this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
-    this._providerListeners = {}
+    this._proxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
-    this.providerStore.subscribe((state) => this.switchNetwork({rpcUrl: state.rpcTarget}))
+    this.providerStore.subscribe((state) => this.switchNetwork({ rpcUrl: state.rpcTarget }))
   }
 
   initializeProvider (opts, providerContructor = MetaMaskProvider) {
-    this._providerInit = opts
-    this._provider = providerContructor(opts)
-    this._proxy = createEventEmitterProxy(this._provider)
-    this._proxy._blockTracker = createEventEmitterProxy(this._provider._blockTracker)
+    this._baseProviderParams = opts
+    const provider = providerContructor(opts)
+    this._setProvider(provider)
     this._proxy.on('block', this._logBlock.bind(this))
     this._proxy.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this._proxy)
@@ -33,19 +32,31 @@ module.exports = class NetworkController extends EventEmitter {
     return this._proxy
   }
 
-  switchNetwork (providerInit) {
+  switchNetwork (opts) {
     this.setNetworkState('loading')
-    const newInit = extend(this._providerInit, providerInit)
-    this._providerInit = newInit
-
-    this._proxy.removeAllListeners()
-    this._proxy.stop()
-    this._provider = MetaMaskProvider(newInit)
-    // apply the listners created by other controllers
-    const blockTrackerHandlers = this._proxy._blockTracker.proxyEventHandlers
-    this._proxy.setTarget(this._provider)
-    this._proxy._blockTracker = createEventEmitterProxy(this._provider._blockTracker, blockTrackerHandlers)
+    const providerParams = extend(this._baseProviderParams, opts)
+    this._baseProviderParams = providerParams
+    const provider = MetaMaskProvider(providerParams)
+    this._setProvider(provider)
     this.emit('networkDidChange')
+  }
+
+  _setProvider (provider) {
+    // collect old block tracker events
+    const oldProvider = this._provider
+    let blockTrackerHandlers
+    if (oldProvider) {
+      // capture old block handlers
+      blockTrackerHandlers = oldProvider._blockTracker.proxyEventHandlers
+      // tear down
+      oldProvider.removeAllListeners()
+      oldProvider.stop()
+    }
+    // override block tracler
+    provider._blockTracker = createEventEmitterProxy(provider._blockTracker, blockTrackerHandlers)
+    // set as new provider
+    this._provider = provider
+    this._proxy.setTarget(provider)
   }
 
   verifyNetwork () {

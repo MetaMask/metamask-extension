@@ -20,9 +20,9 @@ describe('# Network Controller', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
         networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
-        const provider = networkController.provider
-        networkController.provider.setTarget({test: true, on: () => {}})
-        assert.ok(provider.test)
+        const proxy = networkController._proxy
+        proxy.setTarget({ test: true, on: () => {} })
+        assert.ok(proxy.test)
       })
     })
     describe('#getNetworkState', function () {
