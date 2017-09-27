@@ -83,7 +83,7 @@
     "ethjs-contract": "^0.1.9",
     "ethjs-ens": "^2.0.0",
     "ethjs-query": "^0.2.9",
-    "express": "^4.14.0",
+    "express": "^4.15.5",
     "extension-link-enabler": "^1.0.0",
     "extensionizer": "^1.0.0",
     "fast-json-patch": "^2.0.4",
