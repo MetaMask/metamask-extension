@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.10.5 2017-9-27
+
 - Fix block gas limit estimation.
 
 ## 3.10.4 2017-9-27
