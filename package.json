@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "async": "^2.5.0",
-    "await-semaphore": "^0.1.1",
+    "await-semaphore": "0.1.2",
     "babel-runtime": "^6.23.0",
     "bluebird": "^3.5.0",
     "bn.js": "^4.11.7",
