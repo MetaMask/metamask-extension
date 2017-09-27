@@ -11,7 +11,6 @@ const async = require('async')
 const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
 const EventEmitter = require('events').EventEmitter
-const ethUtil = require('ethereumjs-util')
 function noop () {}
 
 
@@ -58,9 +57,8 @@ class AccountTracker extends EventEmitter {
   //
 
   _updateForBlock (block) {
-    const blockNumber = '0x' + block.number.toString('hex')
-    this._currentBlockNumber = blockNumber
-    const currentBlockGasLimit = ethUtil.addHexPrefix(block.gasLimit.toString())
+    this._currentBlockNumber = block.number
+    const currentBlockGasLimit = block.gasLimit
 
     this.store.updateState({ currentBlockGasLimit })
 

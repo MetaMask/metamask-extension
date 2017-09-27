@@ -84,14 +84,14 @@ describe('PendingTransactionTracker', function () {
       let newBlock, oldBlock
       newBlock = { number: '0x01' }
       pendingTxTracker._checkPendingTxs = done
-      pendingTxTracker.queryPendingTxs({oldBlock, newBlock})
+      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
     })
     it('should call #_checkPendingTxs if oldBlock and the newBlock have a diff of greater then 1', function (done) {
       let newBlock, oldBlock
       oldBlock = { number: '0x01' }
       newBlock = { number: '0x03' }
       pendingTxTracker._checkPendingTxs = done
-      pendingTxTracker.queryPendingTxs({oldBlock, newBlock})
+      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
     })
     it('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less', function (done) {
       let newBlock, oldBlock
@@ -101,7 +101,7 @@ describe('PendingTransactionTracker', function () {
         const err = new Error('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less')
         done(err)
       }
-      pendingTxTracker.queryPendingTxs({oldBlock, newBlock})
+      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
       done()
     })
   })
