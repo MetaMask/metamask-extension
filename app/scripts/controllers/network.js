@@ -41,24 +41,6 @@ module.exports = class NetworkController extends EventEmitter {
     this.emit('networkDidChange')
   }
 
-  _setProvider (provider) {
-    // collect old block tracker events
-    const oldProvider = this._provider
-    let blockTrackerHandlers
-    if (oldProvider) {
-      // capture old block handlers
-      blockTrackerHandlers = oldProvider._blockTracker.proxyEventHandlers
-      // tear down
-      oldProvider.removeAllListeners()
-      oldProvider.stop()
-    }
-    // override block tracler
-    provider._blockTracker = createEventEmitterProxy(provider._blockTracker, blockTrackerHandlers)
-    // set as new provider
-    this._provider = provider
-    this._proxy.setTarget(provider)
-  }
-
   verifyNetwork () {
   // Check network when restoring connectivity:
     if (this.isNetworkLoading()) this.lookupNetwork()
@@ -110,6 +92,24 @@ module.exports = class NetworkController extends EventEmitter {
   getRpcAddressForType (type, provider = this.getProviderConfig()) {
     if (RPC_ADDRESS_LIST[type]) return RPC_ADDRESS_LIST[type]
     return provider && provider.rpcTarget ? provider.rpcTarget : DEFAULT_RPC
+  }
+
+  _setProvider (provider) {
+    // collect old block tracker events
+    const oldProvider = this._provider
+    let blockTrackerHandlers
+    if (oldProvider) {
+      // capture old block handlers
+      blockTrackerHandlers = oldProvider._blockTracker.proxyEventHandlers
+      // tear down
+      oldProvider.removeAllListeners()
+      oldProvider.stop()
+    }
+    // override block tracler
+    provider._blockTracker = createEventEmitterProxy(provider._blockTracker, blockTrackerHandlers)
+    // set as new provider
+    this._provider = provider
+    this._proxy.setTarget(provider)
   }
 
   _logBlock (block) {
