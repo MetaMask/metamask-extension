@@ -102,7 +102,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     const address = txMeta.txParams.from
     const balance = this.getBalance(address)
     if (balance === undefined) return
-    if (!('retryCount' in txMeta)) txMeta.retryCount = 0
 
     if (txMeta.retryCount > this.retryLimit) {
       const err = new Error(`Gave up submitting after ${this.retryLimit} blocks un-mined.`)
@@ -124,7 +123,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     const txHash = await this.publishTransaction(rawTx)
 
     // Increment successful tries:
-    txMeta.retryCount++
+    this.emit('tx:retry', txMeta)
     return txHash
   }
 

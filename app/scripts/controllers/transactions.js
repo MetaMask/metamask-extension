@@ -75,6 +75,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:warning', this.txStateManager.updateTx.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:confirmed', this.txStateManager.setTxStatusConfirmed.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:retry', (txMeta) => {
+      if (!('retryCount' in txMeta)) txMeta.retryCount = 0
+      txMeta.retryCount++
+      this.txStateManager.updateTx(txMeta)
+    })
 
     this.blockTracker.on('rawBlock', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either
