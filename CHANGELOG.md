@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix block gas limit estimation.
+
 ## 3.10.4 2017-9-27
 
 - Fix bug that could mis-render token balances when very small. (Not actually included in 3.9.9)
