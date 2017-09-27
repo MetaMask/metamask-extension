@@ -70,7 +70,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('txFailed', this.setTxStatusFailed.bind(this))
     this.pendingTxTracker.on('txConfirmed', this.setTxStatusConfirmed.bind(this))
 
-    this.blockTracker.on('rawBlock', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
+    this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
     // this is a little messy but until ethstore has been either
     // removed or redone this is to guard against the race condition
     // where accountTracker hasent been populated by the results yet

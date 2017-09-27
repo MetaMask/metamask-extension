@@ -82,7 +82,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
-    this.blockTracker = this.provider
+    this.blockTracker = this.provider._blockTracker
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
