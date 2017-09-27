@@ -568,7 +568,7 @@ class KeyringController extends EventEmitter {
   clearKeyrings () {
     let accounts
     try {
-      accounts = Object.keys(this.accountTracker.getState())
+      accounts = Object.keys(this.accountTracker.store.getState())
     } catch (e) {
       accounts = []
     }
