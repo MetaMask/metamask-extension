@@ -11,7 +11,6 @@ const async = require('async')
 const EthQuery = require('eth-query')
 const ObservableStore = require('obs-store')
 const EventEmitter = require('events').EventEmitter
-const ethUtil = require('ethereumjs-util')
 function noop () {}
 
 
