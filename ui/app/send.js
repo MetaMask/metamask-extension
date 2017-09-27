@@ -93,7 +93,6 @@ function SendTransactionScreen () {
   this.getAmountToSend = this.getAmountToSend.bind(this)
   this.setErrorsFor = this.setErrorsFor.bind(this)
   this.clearErrorsFor = this.clearErrorsFor.bind(this)
-  this.estimateGasAndPrice = this.estimateGasAndPrice.bind(this)
 
   this.renderFromInput = this.renderFromInput.bind(this)
   this.renderToInput = this.renderToInput.bind(this)
@@ -101,6 +100,19 @@ function SendTransactionScreen () {
   this.renderGasInput = this.renderGasInput.bind(this)
   this.renderMemoInput = this.renderMemoInput.bind(this)
   this.renderErrorMessage = this.renderErrorMessage.bind(this)
+}
+
+SendTransactionScreen.prototype.componentWillMount = function () {
+  Promise.all([
+    this.props.dispatch(getGasPrice()),
+    this.props.dispatch(estimateGas()),
+  ])
+  .then(([blockGasPrice, estimatedGas]) => {
+    this.setState({
+      blockGasPrice,
+      estimatedGas,
+    })
+  })
 }
 
 SendTransactionScreen.prototype.renderErrorMessage = function(errorType, warning) {
@@ -171,7 +183,6 @@ SendTransactionScreen.prototype.renderToInput = function (to, identities, addres
       },
       onBlur: () => {
         this.setErrorsFor('to')
-        this.estimateGasAndPrice()
       },
       onFocus: event => {
         this.clearErrorsFor('to')
@@ -230,7 +241,6 @@ SendTransactionScreen.prototype.renderAmountInput = function (activeCurrency) {
       },
       onBlur: () => {
         this.setErrorsFor('amount')
-        this.estimateGasAndPrice()
       },
       onFocus: () => this.clearErrorsFor('amount'),
     }),
@@ -381,23 +391,6 @@ SendTransactionScreen.prototype.closeTooltip = function () {
 
 SendTransactionScreen.prototype.setActiveCurrency = function (newCurrency) {
   this.setState({ activeCurrency: newCurrency })
-}
-
-SendTransactionScreen.prototype.estimateGasAndPrice = function () {
-  const { errors, sendAmount, newTx } = this.state
-
-  if (!errors.to && !errors.amount && newTx.amount > 0) {
-    Promise.all([
-      this.props.dispatch(getGasPrice()),
-      this.props.dispatch(estimateGas({ to: newTx.to, amount: sendAmount })),
-    ])
-    .then(([blockGasPrice, estimatedGas]) => {
-      this.setState({
-        blockGasPrice,
-        estimatedGas,
-      })
-    })
-  }
 }
 
 SendTransactionScreen.prototype.back = function () {

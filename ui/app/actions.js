@@ -452,10 +452,10 @@ function signTx (txData) {
   }
 }
 
-function estimateGas ({ to, amount }) {
+function estimateGas () {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      global.ethQuery.estimateGas({ to, amount }, (err, data) => {
+      global.ethQuery.estimateGas({}, (err, data) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
