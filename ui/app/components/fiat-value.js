@@ -13,6 +13,7 @@ function FiatValue () {
 FiatValue.prototype.render = function () {
   const props = this.props
   const { conversionRate, currentCurrency } = props
+  const renderedCurrency = currentCurrency || ''
 
   const value = formatBalance(props.value, 6)
 
@@ -28,7 +29,7 @@ FiatValue.prototype.render = function () {
     fiatTooltipNumber = 'Unknown'
   }
 
-  return fiatDisplay(fiatDisplayNumber, currentCurrency)
+  return fiatDisplay(fiatDisplayNumber, renderedCurrency.toUpperCase())
 }
 
 function fiatDisplay (fiatDisplayNumber, fiatSuffix) {
