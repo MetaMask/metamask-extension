@@ -15,6 +15,11 @@ function reduceApp (state, action) {
     name = 'accountDetail'
   }
 
+  if (hasUnconfActions) {
+    log.debug('pending txs detected, defaulting to conf-tx view.')
+    name = 'confTx'
+  }
+
   var defaultView = {
     name,
     detailView: null,
