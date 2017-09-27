@@ -42,16 +42,21 @@ function setupStreams () {
     name: 'contentscript',
     target: 'inpage',
   })
-  pageStream.on('error', console.error)
   const pluginPort = extension.runtime.connect({ name: 'contentscript' })
   const pluginStream = new PortStream(pluginPort)
-  pluginStream.on('error', console.error)
 
   // forward communication plugin->inpage
-  pageStream.pipe(pluginStream).pipe(pageStream)
+  pump(
+    pageStream,
+    pluginStream,
+    pageStream,
+    (err) => logStreamDisconnectWarning('MetaMask Contentscript Forwarding', err)
+  )
 
   // setup local multistream channels
   const mux = new ObjectMultiplex()
+  mux.setMaxListeners(25)
+
   pump(
     mux,
     pageStream,

@@ -4,6 +4,21 @@
 
 - Added AUD, HKD, SGD, IDR, PHP to currency conversion list
 
+## 3.10.6 2017-9-27
+
+- Fix bug where newly created accounts were not selected.
+- Fix bug where selected account was not persisted between lockings.
+
+## 3.10.5 2017-9-27
+
+- Fix block gas limit estimation.
+
+## 3.10.4 2017-9-27
+
+- Fix bug that could mis-render token balances when very small. (Not actually included in 3.9.9)
+- Fix memory leak warning.
+- Fix bug where new event filters would not include historical events.
+
 ## 3.10.3 2017-9-21
 
 - Fix bug where metamask-dapp connections are lost on rpc error
