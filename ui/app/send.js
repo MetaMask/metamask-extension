@@ -35,8 +35,6 @@ function mapStateToProps (state) {
     addressBook,
     conversionRate,
     currentBlockGasLimit: blockGasLimit,
-    estimatedGas,
-    blockGasPrice,
   } = state.metamask
   const { warning } = state.appState
   const selectedIdentity = getSelectedIdentity(state)
@@ -76,8 +74,6 @@ function SendTransactionScreen () {
       txData: null,
       memo: '',
     },
-    blockGasPrice: null,
-    estimatedGas: null,
     activeCurrency: 'USD', 
     tooltipIsOpen: false,
     errors: {},
@@ -103,14 +99,19 @@ function SendTransactionScreen () {
 }
 
 SendTransactionScreen.prototype.componentWillMount = function () {
+  const { newTx } = this.state
+
   Promise.all([
     this.props.dispatch(getGasPrice()),
     this.props.dispatch(estimateGas()),
   ])
   .then(([blockGasPrice, estimatedGas]) => {
     this.setState({
-      blockGasPrice,
-      estimatedGas,
+      newTx: {
+        ...newTx,
+        gasPrice: blockGasPrice,
+        gas: estimatedGas,
+      },
     })
   })
 }
@@ -329,8 +330,6 @@ SendTransactionScreen.prototype.render = function () {
     newTx,
     activeCurrency,
     isValid,
-    blockGasPrice,
-    estimatedGas,
   } = this.state
   const { gas, gasPrice } = newTx
 
@@ -353,8 +352,8 @@ SendTransactionScreen.prototype.render = function () {
         this.renderAmountInput(activeCurrency),
 
         this.renderGasInput(
-          gasPrice || blockGasPrice || '0x0',
-          gas || estimatedGas || '0x0',
+          gasPrice || '0x0',
+          gas || '0x0',
           activeCurrency,
           conversionRate,
           blockGasLimit
