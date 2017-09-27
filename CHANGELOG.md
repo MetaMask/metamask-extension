@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.10.6 2017-9-27
+
 - Fix bug where newly created accounts were not selected.
 - Fix bug where selected account was not persisted between lockings.
 
