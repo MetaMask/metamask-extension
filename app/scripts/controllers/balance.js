@@ -33,9 +33,18 @@ class BalanceController {
 
   _registerUpdates () {
     const update = this.updateBalance.bind(this)
-    this.txController.on('submitted', update)
-    this.txController.on('confirmed', update)
-    this.txController.on('failed', update)
+
+    this.txController.on('tx:status-update', (txId, status) => {
+      switch (status) {
+        case 'submitted':
+        case 'confirmed':
+        case 'failed':
+          update()
+          return
+        default:
+          return
+      }
+    })
     this.accountTracker.store.subscribe(update)
     this.blockTracker.on('block', update)
   }
