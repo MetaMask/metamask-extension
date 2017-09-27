@@ -55,7 +55,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     })
   }
 
-  queryPendingTxs ({oldBlock, newBlock}) {
+  queryPendingTxs ({ oldBlock, newBlock }) {
     // check pending transactions on start
     if (!oldBlock) {
       this._checkPendingTxs()
