@@ -10,14 +10,14 @@ const PendingMsg = require('./components/pending-msg')
 const PendingPersonalMsg = require('./components/pending-personal-msg')
 const Loading = require('./components/loading')
 
-const contentDivider = h('div', {
-  style: {
-    marginLeft: '16px',
-    marginRight: '16px',
-    height:'1px',
-    background:'#E7E7E7',
-  },
-})
+// const contentDivider = h('div', {
+//   style: {
+//     marginLeft: '16px',
+//     marginRight: '16px',
+//     height:'1px',
+//     background:'#E7E7E7',
+//   },
+// })
 
 module.exports = connect(mapStateToProps)(ConfirmTxScreen)
 
@@ -36,6 +36,7 @@ function mapStateToProps (state) {
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
+    computedBalances: state.metamask.computedBalances,
   }
 }
 
@@ -46,13 +47,38 @@ function ConfirmTxScreen () {
 
 ConfirmTxScreen.prototype.render = function () {
   const props = this.props
-  const { network, unapprovedTxs, currentCurrency, unapprovedMsgs,
-    unapprovedPersonalMsgs, conversionRate, blockGasLimit } = props
+  const {
+    network,
+    unapprovedTxs,
+    currentCurrency,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    conversionRate,
+    blockGasLimit,
+    // provider,
+    // computedBalances,
+  } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
 
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
+
+  // var isNotification = isPopupOrNotification() === 'notification'
+  /*
+    Client is using the flag above to render the following in conf screen
+    // subtitle and nav
+    h('.section-title.flex-row.flex-center', [
+      !isNotification ? h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
+        onClick: this.goHome.bind(this),
+      }) : null,
+      h('h2.page-subtitle', 'Confirm Transaction'),
+      isNotification ? h(NetworkIndicator, {
+        network: network,
+        provider: provider,
+      }) : null,
+    ]),
+  */
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
   if (unconfTxList.length === 0) return h(Loading, { isLoading: true })

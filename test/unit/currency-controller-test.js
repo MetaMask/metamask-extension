@@ -15,11 +15,11 @@ describe('currency-controller', function () {
   describe('currency conversions', function () {
     describe('#setCurrentCurrency', function () {
       it('should return USD as default', function () {
-        assert.equal(currencyController.getCurrentCurrency(), 'USD')
+        assert.equal(currencyController.getCurrentCurrency(), 'usd')
       })
 
       it('should be able to set to other currency', function () {
-        assert.equal(currencyController.getCurrentCurrency(), 'USD')
+        assert.equal(currencyController.getCurrentCurrency(), 'usd')
         currencyController.setCurrentCurrency('JPY')
         var result = currencyController.getCurrentCurrency()
         assert.equal(result, 'JPY')
@@ -36,12 +36,12 @@ describe('currency-controller', function () {
     describe('#updateConversionRate', function () {
       it('should retrieve an update for ETH to USD and set it in memory', function (done) {
         this.timeout(15000)
-        nock('https://api.cryptonator.com')
-          .get('/api/ticker/eth-USD')
-          .reply(200, '{"ticker":{"base":"ETH","target":"USD","price":"11.02456145","volume":"44948.91745289","change":"-0.01472534"},"timestamp":1472072136,"success":true,"error":""}')
+        nock('https://api.infura.io')
+          .get('/v1/ticker/ethusd')
+          .reply(200, '{"base": "ETH", "quote": "USD", "bid": 288.45, "ask": 288.46, "volume": 112888.17569277, "exchange": "bitfinex", "total_volume": 272175.00106721005, "num_exchanges": 8, "timestamp": 1506444677}')
 
         assert.equal(currencyController.getConversionRate(), 0)
-        currencyController.setCurrentCurrency('USD')
+        currencyController.setCurrentCurrency('usd')
         currencyController.updateConversionRate()
         .then(function () {
           var result = currencyController.getConversionRate()
@@ -57,14 +57,14 @@ describe('currency-controller', function () {
         this.timeout(15000)
         assert.equal(currencyController.getConversionRate(), 0)
 
-        nock('https://api.cryptonator.com')
-          .get('/api/ticker/eth-JPY')
-          .reply(200, '{"ticker":{"base":"ETH","target":"JPY","price":"11.02456145","volume":"44948.91745289","change":"-0.01472534"},"timestamp":1472072136,"success":true,"error":""}')
+        nock('https://api.infura.io')
+          .get('/v1/ticker/ethjpy')
+          .reply(200, '{"base": "ETH", "quote": "JPY", "bid": 32300.0, "ask": 32400.0, "volume": 247.4616071, "exchange": "kraken", "total_volume": 247.4616071, "num_exchanges": 1, "timestamp": 1506444676}')
 
 
         var promise = new Promise(
           function (resolve, reject) {
-            currencyController.setCurrentCurrency('JPY')
+            currencyController.setCurrentCurrency('jpy')
             currencyController.updateConversionRate().then(function () {
               resolve()
             })

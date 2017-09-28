@@ -27,6 +27,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     currentAccountTab: state.metamask.currentAccountTab,
     tokens: state.metamask.tokens,
+    computedBalances: state.metamask.computedBalances,
   }
 }
 
