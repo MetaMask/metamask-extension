@@ -230,12 +230,16 @@ SendTransactionScreen.prototype.renderAmountInput = function (activeCurrency) {
       placeholder: `0 ${activeCurrency}`,
       type: 'number',
       onChange: (event) => {
+        const amountToSend = event.target.value
+          ? this.getAmountToSend(event.target.value)
+          : '0x0'
+
         this.setState({
           newTx: Object.assign(
             this.state.newTx,
             {
               amount: event.target.value,
-              amountToSend: this.getAmountToSend(event.target.value),
+              amountToSend: amountToSend,
             }
           ),
         })
