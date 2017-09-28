@@ -350,6 +350,7 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => {
+              actions.hideSidebar()
               actions.showAddTokenPage()
             },
             style: Object.assign(
@@ -426,6 +427,7 @@ AccountDropdowns.propTypes = {
 const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
+      hideSidebar: () => dispatch(actions.hideSidebar()),
       showConfigPage: () => dispatch(actions.showConfigPage()),
       showAccountDetail: (address) => dispatch(actions.showAccountDetail(address)),
       showAccountDetailModal: () => {
