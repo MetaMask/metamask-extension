@@ -47,7 +47,7 @@ const toNormalizedDenomination = {
   WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER)
 }
 const toSpecifiedDenomination = {
-  WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER)
+  WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round()
 }
 const baseChange = {
   hex: n => n.toString(16),
@@ -83,8 +83,8 @@ const whenPropApplySetterMap = (prop, setterMap) => whenPredSetWithPropAndSetter
 const converter = R.pipe(
   whenPropApplySetterMap('fromNumericBase', toBigNumber),
   whenPropApplySetterMap('fromDenomination', toNormalizedDenomination),
-  whenPropApplySetterMap('toDenomination', toSpecifiedDenomination),
   whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
+  whenPropApplySetterMap('toDenomination', toSpecifiedDenomination),
   whenPredSetWithPropAndSetter(R.prop('ethToUSDRate'), 'ethToUSDRate', convert),
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPropApplySetterMap('toNumericBase', baseChange),
