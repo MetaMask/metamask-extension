@@ -165,7 +165,7 @@ SendTokenScreen.prototype.clearErrorsFor = function (field) {
 SendTokenScreen.prototype.getAmountToSend = function (amount, selectedToken) {
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
-  const sendAmount = Number(amount * multiplier).toString(16)
+  const sendAmount = '0x' + Number(amount * multiplier).toString(16)
   return sendAmount
 }
 
