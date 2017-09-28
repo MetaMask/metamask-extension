@@ -203,15 +203,12 @@ class AccountDropdowns extends Component {
           },
           [
             h(
-              'div',
+              'i.fa.fa-plus.fa-lg',
               {
                 style: {
                   marginLeft: '8px',
-                  fontFamily: 'Montserrat UltraLight',
-                  fontSize: '30px',
                 },
-              },
-              '+'
+              }
             ),
             h('span', {
               style: {
@@ -235,13 +232,12 @@ class AccountDropdowns extends Component {
           },
           [
             h(
-              'div',
+              'i.fa.fa-download.fa-lg',
               {
                 style: {
-                  marginLeft: '10px',
+                  marginLeft: '8px',
                 },
-              },
-              String.fromCharCode(10515)
+              }
             ),
             h('span', {
               style: {
