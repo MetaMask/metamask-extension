@@ -15,6 +15,7 @@ function mapStateToProps (state) {
     userAddress: selectors.getSelectedAddress(state),
     tokenExchangeRates: state.metamask.tokenExchangeRates,
     ethToUSDRate: state.metamask.conversionRate,
+    sidebarOpen: state.appState.sidebarOpen,
   }
 }
 
@@ -22,6 +23,7 @@ function mapDispatchToProps (dispatch) {
   return {
     setSelectedToken: address => dispatch(actions.setSelectedToken(address)),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
+    hideSidebar: () => dispatch(actions.hideSidebar()),
   }
 }
 
@@ -52,6 +54,8 @@ TokenCell.prototype.render = function () {
     selectedTokenAddress,
     tokenExchangeRates,
     ethToUSDRate,
+    hideSidebar,
+    sidebarOpen,
     // userAddress,
   } = props
   
@@ -73,13 +77,16 @@ TokenCell.prototype.render = function () {
     })
     formattedUSD = `$${currentTokenInUSD} USD`;
   }
-
+ 
   return (
     h('div.token-list-item', {
       className: `token-list-item ${selectedTokenAddress === address ? 'token-list-item--active' : ''}`,
       // style: { cursor: network === '1' ? 'pointer' : 'default' },
       // onClick: this.view.bind(this, address, userAddress, network),
-      onClick: () => setSelectedToken(address),
+      onClick: () => {
+        setSelectedToken(address)
+        selectedTokenAddress !== address && sidebarOpen && hideSidebar()
+      },
     }, [
 
       h(Identicon, {

@@ -40,7 +40,13 @@ function WalletView () {
 }
 
 WalletView.prototype.renderWalletBalance = function () {
-  const { selectedTokenAddress, selectedAccount, unsetSelectedToken } = this.props
+  const {
+    selectedTokenAddress,
+    selectedAccount,
+    unsetSelectedToken,
+    hideSidebar,
+    sidebarOpen
+  } = this.props
   const selectedClass = selectedTokenAddress
     ? ''
     : 'wallet-balance-wrapper--active'
@@ -49,7 +55,10 @@ WalletView.prototype.renderWalletBalance = function () {
   return h('div', { className }, [
     h('div.wallet-balance',
       {
-        onClick: unsetSelectedToken,
+        onClick: () => {
+          unsetSelectedToken()
+          selectedTokenAddress && sidebarOpen && hideSidebar()
+        },
       },
       [
         h(BalanceComponent, {
