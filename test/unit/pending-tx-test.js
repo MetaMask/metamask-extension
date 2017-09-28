@@ -62,7 +62,7 @@ describe('PendingTransactionTracker', function () {
     it('should emit \'txFailed\' if the txMeta does not have a hash', function (done) {
       const block = Proxy.revocable({}, {}).revoke()
       pendingTxTracker.getPendingTransactions = () => [txMetaNoHash]
-      pendingTxTracker.once('txFailed', (txId, err) => {
+      pendingTxTracker.once('tx:failed', (txId, err) => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
       })
@@ -71,11 +71,11 @@ describe('PendingTransactionTracker', function () {
     it('should emit \'txConfirmed\' if the tx is in the block', function (done) {
       const block = { transactions: [txMeta]}
       pendingTxTracker.getPendingTransactions = () => [txMeta]
-      pendingTxTracker.once('txConfirmed', (txId) => {
+      pendingTxTracker.once('tx:confirmed', (txId) => {
         assert(txId, txMeta.id, 'should pass txId')
         done()
       })
-      pendingTxTracker.once('txFailed', (_, err) => { done(err) })
+      pendingTxTracker.once('tx:failed', (_, err) => { done(err) })
       pendingTxTracker.checkForTxInBlock(block)
     })
   })
@@ -84,14 +84,14 @@ describe('PendingTransactionTracker', function () {
       let newBlock, oldBlock
       newBlock = { number: '0x01' }
       pendingTxTracker._checkPendingTxs = done
-      pendingTxTracker.queryPendingTxs({oldBlock, newBlock})
+      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
     })
     it('should call #_checkPendingTxs if oldBlock and the newBlock have a diff of greater then 1', function (done) {
       let newBlock, oldBlock
       oldBlock = { number: '0x01' }
       newBlock = { number: '0x03' }
       pendingTxTracker._checkPendingTxs = done
-      pendingTxTracker.queryPendingTxs({oldBlock, newBlock})
+      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
     })
     it('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less', function (done) {
       let newBlock, oldBlock
@@ -101,14 +101,14 @@ describe('PendingTransactionTracker', function () {
         const err = new Error('should not call #_checkPendingTxs if oldBlock and the newBlock have a diff of 1 or less')
         done(err)
       }
-      pendingTxTracker.queryPendingTxs({oldBlock, newBlock})
+      pendingTxTracker.queryPendingTxs({ oldBlock, newBlock })
       done()
     })
   })
 
   describe('#_checkPendingTx', function () {
     it('should emit \'txFailed\' if the txMeta does not have a hash', function (done) {
-      pendingTxTracker.once('txFailed', (txId, err) => {
+      pendingTxTracker.once('tx:failed', (txId, err) => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
       })
@@ -122,11 +122,11 @@ describe('PendingTransactionTracker', function () {
 
     it('should emit \'txConfirmed\'', function (done) {
       providerResultStub.eth_getTransactionByHash = {blockNumber: '0x01'}
-      pendingTxTracker.once('txConfirmed', (txId) => {
+      pendingTxTracker.once('tx:confirmed', (txId) => {
         assert(txId, txMeta.id, 'should pass txId')
         done()
       })
-      pendingTxTracker.once('txFailed', (_, err) => { done(err) })
+      pendingTxTracker.once('tx:failed', (_, err) => { done(err) })
       pendingTxTracker._checkPendingTx(txMeta)
     })
   })
@@ -188,7 +188,7 @@ describe('PendingTransactionTracker', function () {
       ]
       const enoughForAllErrors = txList.concat(txList)
 
-      pendingTxTracker.on('txFailed', (_, err) => done(err))
+      pendingTxTracker.on('tx:failed', (_, err) => done(err))
 
       pendingTxTracker.getPendingTransactions = () => enoughForAllErrors
       pendingTxTracker._resubmitTx = async (tx) => {
@@ -202,7 +202,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs()
     })
     it('should emit \'txFailed\' if it encountered a real error', function (done) {
-      pendingTxTracker.once('txFailed', (id, err) => err.message === 'im some real error' ? txList[id - 1].resolve() : done(err))
+      pendingTxTracker.once('tx:failed', (id, err) => err.message === 'im some real error' ? txList[id - 1].resolve() : done(err))
 
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._resubmitTx = async (tx) => { throw new TypeError('im some real error') }
@@ -226,7 +226,7 @@ describe('PendingTransactionTracker', function () {
 
     // Stubbing out current account state:
     // Adding the fake tx:
-    pendingTxTracker.once('txFailed', (txId, err) => {
+    pendingTxTracker.once('tx:failed', (txId, err) => {
       assert(err, 'Should have a error')
       done()
     })

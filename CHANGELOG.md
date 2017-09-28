@@ -2,7 +2,31 @@
 
 ## Current Master
 
+- Added AUD, HKD, SGD, IDR, PHP to currency conversion list
+
+## 3.10.6 2017-9-27
+
+- Fix bug where newly created accounts were not selected.
+- Fix bug where selected account was not persisted between lockings.
+
+## 3.10.5 2017-9-27
+
+- Fix block gas limit estimation.
+
+## 3.10.4 2017-9-27
+
+- Fix bug that could mis-render token balances when very small. (Not actually included in 3.9.9)
+- Fix memory leak warning.
+- Fix bug where new event filters would not include historical events.
+
+## 3.10.3 2017-9-21
+
+- Fix bug where metamask-dapp connections are lost on rpc error
 - Fix bug that would sometimes display transactions as failed that could be successfully mined.
+
+## 3.10.2 2017-9-18
+
+rollback to 3.10.0 due to bug
 
 ## 3.10.1 2017-9-18
 
@@ -13,7 +37,8 @@
 - Fixed a long standing memory leak associated with filters installed by dapps
 - Fix link to support center.
 - Fixed tooltip icon locations to avoid overflow.
-- Warn users when a dapp proposes a high gas limit (90% of blockGasLimit or higher)
+- Warn users when a dapp proposes a high gas limit (90% of blockGasLimit or higher
+- Sort currencies by currency name (thanks to strelok1: https://github.com/strelok1).
 
 ## 3.10.0 2017-9-11
 
@@ -22,6 +47,7 @@
 - Add info on token contract addresses.
 - Add validation preventing users from inputting their own addresses as token tracking addresses.
 - Added button to reject all transactions (thanks to davidp94! https://github.com/davidp94)
+
 
 ## 3.9.13 2017-9-8
 
