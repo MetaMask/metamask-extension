@@ -57,13 +57,13 @@ BuyOptions.prototype.render = function () {
           h('div.buy-modal-content-option-subtitle', {}, 'Buy with Fiat'),
         ]),
 
-        h('div.buy-modal-content-option', {}, [
-          h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
-        ]),
+        // h('div.buy-modal-content-option', {}, [
+        //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
+        //   h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
+        // ]),
 
         h('div.buy-modal-content-option', {
-          onClick: () => this.goToAccountDetailsModal()
+          onClick: () => this.goToAccountDetailsModal(),
         }, [
           h('div.buy-modal-content-option-title', {}, 'Direct Deposit'),
           h('div.buy-modal-content-option-subtitle', {}, 'Deposit from another account'),
