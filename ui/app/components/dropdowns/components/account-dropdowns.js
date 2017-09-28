@@ -51,6 +51,7 @@ class AccountDropdowns extends Component {
             {
               marginTop: index === 0 ? '5px' : '',
               fontSize: '24px',
+              width: '260px',
             },
             menuItemStyles,
           ),
@@ -92,6 +93,7 @@ class AccountDropdowns extends Component {
                 alignItems: 'flex-start',
                 justifyContent: 'center',
                 marginLeft: '10px',
+                position: 'relative',
               },
             }, [
               this.indicateIfLoose(keyring),
@@ -104,7 +106,6 @@ class AccountDropdowns extends Component {
                   textOverflow: 'ellipsis',
                 },
               }, identity.name || ''),
-              h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
 
               h('span.account-dropdown-balance', {
                 style: {
@@ -202,17 +203,19 @@ class AccountDropdowns extends Component {
           },
           [
             h(
-              Identicon,
+              'div',
               {
                 style: {
-                  marginLeft: '10px',
+                  marginLeft: '8px',
+                  fontFamily: 'Montserrat UltraLight',
+                  fontSize: '30px',
                 },
-                diameter: 32,
               },
+              '+'
             ),
             h('span', {
               style: {
-                marginLeft: '20px',
+                marginLeft: '14px',
                 fontFamily: 'DIN OT',
                 fontSize: '16px',
                 lineHeight: '23px',
@@ -232,13 +235,13 @@ class AccountDropdowns extends Component {
           },
           [
             h(
-              Identicon,
+              'div',
               {
                 style: {
                   marginLeft: '10px',
                 },
-                diameter: 32,
               },
+              String.fromCharCode(10515)
             ),
             h('span', {
               style: {
