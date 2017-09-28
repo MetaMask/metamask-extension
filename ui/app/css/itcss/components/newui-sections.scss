@@ -177,3 +177,11 @@ $wallet-view-bg: $wild-sand;
   justify-content: flex-start;
   margin: 5% 7% 0%;
 }
+
+.fiat-amount {
+  text-transform: uppercase;
+}
+
+.token-balance__amount {
+  padding-right: 6px;
+}

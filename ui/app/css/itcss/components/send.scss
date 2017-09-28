@@ -370,6 +370,10 @@
     font-size: 40px;
     line-height: 40px;
     margin-top: 13px;
+
+    .token-balance__amount {
+      padding-right: 12px;
+    }
   }
 
   &__button-group {

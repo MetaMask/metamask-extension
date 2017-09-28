@@ -21,6 +21,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   &__fiat-amount {
     margin-top: .25%;
     font-size: 105%;
+    text-transform: uppercase;
 
     @media #{$wallet-balance-breakpoint-range} {
       font-size: 95%;

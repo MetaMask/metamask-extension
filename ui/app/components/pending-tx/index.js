@@ -36,7 +36,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('USD')),
+    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
   }

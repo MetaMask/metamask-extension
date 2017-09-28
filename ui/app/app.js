@@ -86,7 +86,12 @@ function mapDispatchToProps (dispatch, ownProps) {
     hideSidebar: () => dispatch(actions.hideSidebar()),
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
   }
+}
+
+App.prototype.componentWillMount = function () {
+  this.props.setCurrentCurrencyToUSD()
 }
 
 App.prototype.render = function () {

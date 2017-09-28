@@ -27,7 +27,8 @@ function TokenBalance () {
 
 TokenBalance.prototype.render = function () {
   const state = this.state
-  const { symbol, string, balanceOnly, isLoading } = state
+  const { symbol, string, isLoading } = state
+  const { balanceOnly } = this.props
 
   return isLoading
     ? h('span', '')
