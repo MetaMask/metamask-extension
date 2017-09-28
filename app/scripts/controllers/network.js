@@ -4,65 +4,42 @@ const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
+const createEventEmitterProxy = require('../lib/events-proxy.js')
 const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 
 module.exports = class NetworkController extends EventEmitter {
   constructor (config) {
     super()
-    this.networkStore = new ObservableStore('loading')
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
+    this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
-    this._providerListeners = {}
+    this._proxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
-    this.providerStore.subscribe((state) => this.switchNetwork({rpcUrl: state.rpcTarget}))
-  }
-
-  get provider () {
-    return this._proxy
-  }
-
-  set provider (provider) {
-    this._provider = provider
+    this.providerStore.subscribe((state) => this.switchNetwork({ rpcUrl: state.rpcTarget }))
   }
 
   initializeProvider (opts, providerContructor = MetaMaskProvider) {
-    this.providerInit = opts
-    this._provider = providerContructor(opts)
-    this._proxy = new Proxy(this._provider, {
-      get: (obj, name) => {
-        if (name === 'on') return this._on.bind(this)
-        return this._provider[name]
-      },
-      set: (obj, name, value) => {
-        this._provider[name] = value
-        return value
-      },
-    })
-    this.provider.on('block', this._logBlock.bind(this))
-    this.provider.on('error', this.verifyNetwork.bind(this))
-    this.ethQuery = new EthQuery(this.provider)
+    this._baseProviderParams = opts
+    const provider = providerContructor(opts)
+    this._setProvider(provider)
+    this._proxy.on('block', this._logBlock.bind(this))
+    this._proxy.on('error', this.verifyNetwork.bind(this))
+    this.ethQuery = new EthQuery(this._proxy)
     this.lookupNetwork()
-    return this.provider
+    return this._proxy
   }
 
-  switchNetwork (providerInit) {
+  switchNetwork (opts) {
     this.setNetworkState('loading')
-    const newInit = extend(this.providerInit, providerInit)
-    this.providerInit = newInit
-
-    this._provider.removeAllListeners()
-    this._provider.stop()
-    this.provider = MetaMaskProvider(newInit)
-    // apply the listners created by other controllers
-    Object.keys(this._providerListeners).forEach((key) => {
-      this._providerListeners[key].forEach((handler) => this._provider.addListener(key, handler))
-    })
+    const providerParams = extend(this._baseProviderParams, opts)
+    this._baseProviderParams = providerParams
+    const provider = MetaMaskProvider(providerParams)
+    this._setProvider(provider)
     this.emit('networkDidChange')
   }
-
 
   verifyNetwork () {
   // Check network when restoring connectivity:
@@ -117,14 +94,26 @@ module.exports = class NetworkController extends EventEmitter {
     return provider && provider.rpcTarget ? provider.rpcTarget : DEFAULT_RPC
   }
 
+  _setProvider (provider) {
+    // collect old block tracker events
+    const oldProvider = this._provider
+    let blockTrackerHandlers
+    if (oldProvider) {
+      // capture old block handlers
+      blockTrackerHandlers = oldProvider._blockTracker.proxyEventHandlers
+      // tear down
+      oldProvider.removeAllListeners()
+      oldProvider.stop()
+    }
+    // override block tracler
+    provider._blockTracker = createEventEmitterProxy(provider._blockTracker, blockTrackerHandlers)
+    // set as new provider
+    this._provider = provider
+    this._proxy.setTarget(provider)
+  }
+
   _logBlock (block) {
     log.info(`BLOCK CHANGED: #${block.number.toString('hex')} 0x${block.hash.toString('hex')}`)
     this.verifyNetwork()
-  }
-
-  _on (event, handler) {
-    if (!this._providerListeners[event]) this._providerListeners[event] = []
-    this._providerListeners[event].push(handler)
-    this._provider.on(event, handler)
   }
 }

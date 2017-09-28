@@ -24,7 +24,8 @@ describe('PendingTx', function () {
       'to': '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       'value': '0xde0b6b3a7640000',
       gasPrice,
-      'gas': '0x7b0c'},
+      'gas': '0x7b0c',
+    },
     'gasLimitSpecified': false,
     'estimatedGas': '0x5208',
   }
@@ -34,10 +35,15 @@ describe('PendingTx', function () {
     const renderer = ReactTestUtils.createRenderer()
     const newGasPrice = '0x77359400'
 
+    const computedBalances = {}
+    computedBalances[Object.keys(identities)[0]] = {
+      ethBalance: '0x00000000000000056bc75e2d63100000',
+    }
     const props = {
       identities,
       accounts: identities,
       txData,
+      computedBalances,
       sendTransaction: (txMeta, event) => {
         // Assert changes:
         const result = ethUtil.addHexPrefix(txMeta.txParams.gasPrice)
