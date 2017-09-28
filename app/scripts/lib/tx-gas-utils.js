@@ -1,6 +1,4 @@
 const EthQuery = require('ethjs-query')
-const Transaction = require('ethereumjs-tx')
-const normalize = require('eth-sig-util').normalize
 const {
   hexToBn,
   BnMultiplyByFraction,
@@ -76,26 +74,6 @@ module.exports = class txProvideUtil {
     if (bufferedGasLimitBn.lt(upperGasLimitBn)) return bnToHex(bufferedGasLimitBn)
     // otherwise use blockGasLimit
     return bnToHex(upperGasLimitBn)
-  }
-
-  // builds ethTx from txParams object
-  buildEthTxFromParams (txParams) {
-    // normalize values
-    txParams.to = normalize(txParams.to)
-    txParams.from = normalize(txParams.from)
-    txParams.value = normalize(txParams.value)
-    txParams.data = normalize(txParams.data)
-    txParams.gas = normalize(txParams.gas || txParams.gasLimit)
-    txParams.gasPrice = normalize(txParams.gasPrice)
-    txParams.nonce = normalize(txParams.nonce)
-    // build ethTx
-    log.info(`Prepared tx for signing: ${JSON.stringify(txParams)}`)
-    const ethTx = new Transaction(txParams)
-    return ethTx
-  }
-
-  async publishTransaction (rawTx) {
-    return await this.query.sendRawTransaction(rawTx)
   }
 
   async validateTxParams (txParams) {
