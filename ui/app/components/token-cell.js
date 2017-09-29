@@ -8,6 +8,8 @@ const selectors = require('../selectors')
 const actions = require('../actions')
 const { conversionUtil } = require('../conversion-util')
 
+const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
+
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
@@ -32,6 +34,10 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(TokenCell)
 inherits(TokenCell, Component)
 function TokenCell () {
   Component.call(this)
+
+  this.state = {
+    tokenMenuOpen: false,
+  }
 }
 
 TokenCell.prototype.componentWillMount = function () {
@@ -44,6 +50,7 @@ TokenCell.prototype.componentWillMount = function () {
 }
 
 TokenCell.prototype.render = function () {
+  const { tokenMenuOpen } = this.state
   const props = this.props
   const {
     address,
@@ -103,6 +110,17 @@ TokenCell.prototype.render = function () {
           style: {},
         }, formattedUSD),
       ]),
+
+      h('i.fa.fa-ellipsis-h.fa-lg.token-list-item__ellipsis.cursor-pointer', {
+        onClick: (e) => {
+          e.stopPropagation()
+          this.setState({ tokenMenuOpen: true })
+        },
+      }),
+
+      tokenMenuOpen && h(TokenMenuDropdown, {
+        onClose: () => this.setState({ tokenMenuOpen: false }),
+      }),
 
       /*
       h('button', {
