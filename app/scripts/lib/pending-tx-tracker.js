@@ -89,7 +89,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         // other
         || errorMessage.includes('gateway timeout')
         || errorMessage.includes('nonce too low')
-        || txMeta.retryCount > 1
       )
       // ignore resubmit warnings, return early
       if (isKnownTx) return
