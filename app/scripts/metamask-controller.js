@@ -25,6 +25,7 @@ const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
+const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const ConfigManager = require('./lib/config-manager')
@@ -154,6 +155,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
+    this.typedMessageManager = new TypedMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
     // manual disk state subscriptions
@@ -195,6 +197,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.balancesController.store.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.typedMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
     this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
     this.addressBookController.store.subscribe(this.sendUpdate.bind(this))
@@ -234,6 +237,7 @@ module.exports = class MetamaskController extends EventEmitter {
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
     })
   }
 
@@ -276,6 +280,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),
+      this.typedMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.balancesController.store.getState(),
       this.preferencesController.store.getState(),
@@ -353,6 +358,10 @@ module.exports = class MetamaskController extends EventEmitter {
       // personalMessageManager
       signPersonalMessage: nodeify(this.signPersonalMessage, this),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
+
+      // personalMessageManager
+      signTypedMessage: nodeify(this.signTypedMessage, this),
+      cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
@@ -546,6 +555,23 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  newUnsignedTypedMessage (msgParams, cb) {
+    const msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
+      console.log(data)
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
   signMessage (msgParams, cb) {
     log.info('MetaMaskController - signMessage')
     const msgId = msgParams.metamaskId
@@ -608,8 +634,34 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  signTypedMessage (msgParams) {
+    log.info('MetaMaskController - signTypedMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.typedMessageManager.approveMessage(msgParams)
+      .then((cleanMsgParams) => {
+        // signs the message
+        return this.keyringController.signTypedMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
+        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
+  }
+
   cancelPersonalMessage (msgId, cb) {
     const messageManager = this.personalMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  cancelTypedMessage (msgId, cb) {
+    const messageManager = this.typedMessageManager
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())

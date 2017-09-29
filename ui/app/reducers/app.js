@@ -574,9 +574,9 @@ function checkUnconfActions (state) {
 
 function getUnconfActionList (state) {
   const { unapprovedTxs, unapprovedMsgs,
-    unapprovedPersonalMsgs, network } = state.metamask
+    unapprovedPersonalMsgs, unapprovedTypedMessages, network } = state.metamask
 
-  const unconfActionList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, network)
+  const unconfActionList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
   return unconfActionList
 }
 
