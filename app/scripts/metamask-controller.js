@@ -100,6 +100,14 @@ module.exports = class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
 
+    // If only one account exists, make sure it is selected.
+    this.keyringController.store.subscribe((state) => {
+      const addresses = Object.keys(state.walletNicknames || {})
+      if (addresses.length === 1) {
+        const address = addresses[0]
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
       this.accountTracker.addAccount(address)
@@ -222,6 +230,7 @@ module.exports = class MetamaskController extends EventEmitter {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const result = []
         const selectedAddress = this.preferencesController.getSelectedAddress()
+
         // only show address if account is unlocked
         if (isUnlocked && selectedAddress) {
           result.push(selectedAddress)
