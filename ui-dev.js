@@ -61,30 +61,37 @@ const actions = {
 var css = MetaMaskUiCss()
 injectCss(css)
 
-const container = document.querySelector('#test-container')
-
 // parse opts
 var store = configureStore(states[selectedView])
 
 // start app
-render(
-  h('.super-dev-container', [
+startApp()
 
-    h(Selector, { actions, selectedKey: selectedView, states, store }),
+function startApp(){
+  const body = document.body
+  const container = document.createElement('div')
+  container.id = 'test-container'
+  body.appendChild(container)
 
-    h('#app-content', {
-      style: {
-        height: '500px',
-        width: '360px',
-        boxShadow: 'grey 0px 2px 9px',
-        margin: '20px',
-      },
-    }, [
-      h(Root, {
-       store: store,
-      }),
-    ]),
+  render(
+    h('.super-dev-container', [
 
-  ]
-), container)
+      h(Selector, { actions, selectedKey: selectedView, states, store }),
+
+      h('#app-content', {
+        style: {
+          height: '500px',
+          width: '360px',
+          boxShadow: 'grey 0px 2px 9px',
+          margin: '20px',
+        },
+      }, [
+        h(Root, {
+         store: store,
+        }),
+      ]),
+
+    ]
+  ), container)
+}
 
