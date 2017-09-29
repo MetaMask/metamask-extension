@@ -17,6 +17,13 @@
   color: #5B5D67;
 }
 
+.qr-ellip-address, .ellip-address {
+  width: 247px;
+  border: none;
+  font-family: 'Montserrat Light';
+  font-size: 14px;
+}
+
 @media screen and (max-width: 575px) {
   .buy-modal-content-title-wrapper {
     justify-content: space-around;
@@ -248,13 +255,6 @@
     font-family: 'Montserrat Light';
     margin-top: 7px;
     width: 286px;
-  }
-
-  .qr-ellip-address, .ellip-address {
-    width: 247px;
-    border: none;
-    font-family: 'Montserrat Light';
-    font-size: 14px;
   }
 
   .btn-clear {

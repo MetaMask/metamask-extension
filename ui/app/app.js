@@ -26,7 +26,6 @@ const InfoScreen = require('./info')
 const Loading = require('./components/loading')
 const NetworkIndicator = require('./components/network')
 const BuyView = require('./components/buy-button-subview')
-const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
@@ -72,7 +71,6 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
-    Qr: state.appState.Qr,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -371,37 +369,6 @@ App.prototype.renderPrimary = function () {
     case 'buyEth':
       log.debug('rendering buy ether screen')
       return h(BuyView, {key: 'buyEthView'})
-
-    case 'qr':
-      log.debug('rendering show qr screen')
-      return h('div', {
-        style: {
-          position: 'absolute',
-          height: '100%',
-          top: '0px',
-          left: '0px',
-        },
-      }, [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
-          onClick: () => props.dispatch(actions.backToAccountDetail(props.activeAddress)),
-          style: {
-            marginLeft: '10px',
-            marginTop: '50px',
-          },
-        }),
-        h('div', {
-          style: {
-            position: 'absolute',
-            left: '44px',
-            width: '285px',
-          },
-        }, [
-          h(QrView, {
-            key: 'qr',
-            Qr: props.Qr,
-          }),
-        ]),
-      ])
 
     default:
       log.debug('rendering default, account detail screen')

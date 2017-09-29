@@ -57,7 +57,7 @@ TxList.prototype.renderTransaction = function () {
 TxList.prototype.renderTransactionListItem = function (transaction, conversionRate) {
   // console.log({transaction})
   // refer to transaction-list.js:line 58
-  const shapeshiftProps = {};
+
   if (transaction.key === 'shapeshift') {
     return h(ShiftListItem, transaction)
   }

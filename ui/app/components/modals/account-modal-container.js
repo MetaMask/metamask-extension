@@ -30,10 +30,14 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountModalContai
 AccountModalContainer.prototype.render = function () {
   const {
     selectedIdentity,
-    children,
     showBackButton = false,
     backButtonAction,
   } = this.props
+  let { children } = this.props
+
+  if (children.constructor !== Array) {
+    children = [children]
+  }
 
   return h('div', { style: { borderRadius: '4px' }}, [
     h('div.account-modal-container', [
