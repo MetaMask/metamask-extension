@@ -126,7 +126,6 @@ var actions = {
   showAddTokenPage,
   addToken,
   setRpcTarget: setRpcTarget,
-  setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
@@ -706,16 +705,19 @@ function markAccountsFound () {
 // config
 //
 
-// default rpc target refers to localhost:8545 in this instance.
-function setDefaultRpcTarget () {
-  log.debug(`background.setDefaultRpcTarget`)
+function setProviderType (type) {
   return (dispatch) => {
-    background.setDefaultRpc((err, result) => {
+    log.debug(`background.setProviderType`)
+    background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks.'))
+        return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
     })
+    return {
+      type: actions.SET_PROVIDER_TYPE,
+      value: type,
+    }
   }
 }
 
@@ -741,15 +743,6 @@ function addToAddressBook (recipient, nickname) {
         return dispatch(self.displayWarning('Address book failed to update'))
       }
     })
-  }
-}
-
-function setProviderType (type) {
-  log.debug(`background.setProviderType`)
-  background.setProviderType(type)
-  return {
-    type: actions.SET_PROVIDER_TYPE,
-    value: type,
   }
 }
 

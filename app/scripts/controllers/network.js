@@ -10,6 +10,7 @@ const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 
 module.exports = class NetworkController extends EventEmitter {
+  
   constructor (config) {
     super()
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)

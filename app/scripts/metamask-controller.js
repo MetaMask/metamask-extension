@@ -336,7 +336,6 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
-      setDefaultRpc: nodeify(this.setDefaultRpc, this),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // PreferencesController
@@ -695,12 +694,6 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // network
-
-  async setDefaultRpc () {
-    const localhost = 'http://localhost:8545'
-    this.networkController.setRpcTarget(localhost)
-    return localhost
-  }
 
   async setCustomRpc (rpcTarget, rpcList) {
     this.networkController.setRpcTarget(rpcTarget)
