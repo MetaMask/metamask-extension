@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.10.7 2017-9-28
+
 - Fixed bug where sometimes the current account was not correctly set and exposed to web apps.
 - Added AUD, HKD, SGD, IDR, PHP to currency conversion list
 
