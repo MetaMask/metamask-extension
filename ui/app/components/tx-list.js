@@ -5,6 +5,7 @@ const inherits = require('util').inherits
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
 const TxListItem = require('./tx-list-item')
+const ShiftListItem = require('./shift-list-item')
 const { formatBalance, formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 
@@ -56,8 +57,9 @@ TxList.prototype.renderTransaction = function () {
 TxList.prototype.renderTransactionListItem = function (transaction, conversionRate) {
   // console.log({transaction})
   // refer to transaction-list.js:line 58
+  const shapeshiftProps = {};
   if (transaction.key === 'shapeshift') {
-    return null
+    return h(ShiftListItem, transaction)
   }
 
   const props = {
