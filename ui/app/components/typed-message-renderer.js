@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const ethUtil = require('ethereumjs-util')
 const extend = require('xtend')
 
 module.exports = TypedMessageRenderer
@@ -36,7 +35,7 @@ function renderTypedData(values) {
   return values.map(function (value) {
     return h('div', {}, [
       h('strong', {style: {display: 'block', fontWeight: 'bold', textTransform: 'capitalize'}}, String(value.name) + ':'),
-      h('div', {}, value.value)
+      h('div', {}, value.value),
     ])
   })
 }

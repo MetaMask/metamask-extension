@@ -117,7 +117,7 @@ ConfirmTxScreen.prototype.render = function () {
         signTypedMessage: this.signTypedMessage.bind(this, txData),
         cancelMessage: this.cancelMessage.bind(this, txData),
         cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
-        cancelTypedMessage: this.cancelTypedMessage.bind(this, txData)
+        cancelTypedMessage: this.cancelTypedMessage.bind(this, txData),
       }),
     ])
   )
