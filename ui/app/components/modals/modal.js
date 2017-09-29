@@ -14,6 +14,7 @@ const EditAccountNameModal = require('./edit-account-name-modal')
 const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
+const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -115,6 +116,20 @@ const MODALS = {
       h(ShapeshiftDepositTxModal),
     ],
     ...accountModalStyle,
+  },
+
+  HIDE_TOKEN_CONFIRMATION: {
+    contents: [
+      h(HideTokenConfirmationModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
   },
 
   NEW_ACCOUNT: {

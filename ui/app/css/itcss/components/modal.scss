@@ -483,3 +483,76 @@
   color: $tundora;
   flex: 1;
 }
+
+// Hide token confirmation
+
+.hide-token-confirmation {
+  min-height: 250.72px;
+  width: 374.49px;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 7px 0 rgba(0,0,0,0.5);
+
+  &__container {
+    padding: 24px 27px 21px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__identicon {
+    margin-bottom: 10px
+  }
+
+  &__symbol {
+    color: $tundora;
+    font-family: 'DIN OT';
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 7.5px;
+  }
+
+  &__title {
+    height: 30px;
+    width: 271.28px;
+    color: $tundora;
+    font-family: 'DIN OT';
+    font-size: 22px;
+    line-height: 30px;
+    text-align: center;
+    margin-bottom: 10.5px;
+  }
+
+  &__copy {
+    height: 41px;
+    width: 318px;
+    color: $scorpion;
+    font-family: 'DIN OT';
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 15px;
+    width: 100%;
+
+    button {
+      height: 44px;
+      width: 113px;
+      border: 1px solid $scorpion;
+      border-radius: 2px;
+      color: $tundora;
+      font-family: 'DIN OT';
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+  }
+}

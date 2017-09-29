@@ -1,8 +1,19 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
+const actions = require('../../actions')
 
-module.exports = TokenMenuDropdown
+module.exports = connect(null, mapDispatchToProps)(TokenMenuDropdown)
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showHideTokenConfirmationModal: (token) => {
+      dispatch(actions.showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
+    }
+  }
+}
+
 
 inherits(TokenMenuDropdown, Component)
 function TokenMenuDropdown () {
@@ -17,6 +28,8 @@ TokenMenuDropdown.prototype.onClose = function (e) {
 }
 
 TokenMenuDropdown.prototype.render = function () {
+  const { showHideTokenConfirmationModal } = this.props
+
   return h('div.token-menu-dropdown', {}, [
     h('div.token-menu-dropdown__close-area', {
       onClick: this.onClose,
@@ -27,7 +40,7 @@ TokenMenuDropdown.prototype.render = function () {
         h('div.token-menu-dropdown__option', {
           onClick: (e) => {
             e.stopPropagation()
-            console.log('div.token-menu-dropdown__option!')
+            showHideTokenConfirmationModal(this.props.token)
           },
         }, 'Hide Token')
 
@@ -35,4 +48,3 @@ TokenMenuDropdown.prototype.render = function () {
     ]),
   ])
 }
-

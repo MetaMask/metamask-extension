@@ -120,6 +120,7 @@ TokenCell.prototype.render = function () {
 
       tokenMenuOpen && h(TokenMenuDropdown, {
         onClose: () => this.setState({ tokenMenuOpen: false }),
+        token: { symbol, address },
       }),
 
       /*
