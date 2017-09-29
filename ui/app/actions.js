@@ -119,8 +119,6 @@ var actions = {
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
-  USE_ETHERSCAN_PROVIDER: 'USE_ETHERSCAN_PROVIDER',
-  useEtherscanProvider: useEtherscanProvider,
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
@@ -743,14 +741,6 @@ function addToAddressBook (recipient, nickname) {
         return dispatch(self.displayWarning('Address book failed to update'))
       }
     })
-  }
-}
-
-function useEtherscanProvider () {
-  log.debug(`background.useEtherscanProvider`)
-  background.useEtherscanProvider()
-  return {
-    type: actions.USE_ETHERSCAN_PROVIDER,
   }
 }
 
