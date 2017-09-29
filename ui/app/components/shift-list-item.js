@@ -29,7 +29,7 @@ function ShiftListItem () {
 
 ShiftListItem.prototype.render = function () {
   return (
-    h('.transaction-list-item.flex-row', {
+    h('div.tx-list-item.tx-list-clickable', {
       style: {
         paddingTop: '20px',
         paddingBottom: '20px',

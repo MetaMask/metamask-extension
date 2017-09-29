@@ -72,6 +72,7 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    Qr: state.appState.Qr,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -395,7 +396,10 @@ App.prototype.renderPrimary = function () {
             width: '285px',
           },
         }, [
-          h(QrView, {key: 'qr'}),
+          h(QrView, {
+            key: 'qr',
+            Qr: props.Qr,
+          }),
         ]),
       ])
 
