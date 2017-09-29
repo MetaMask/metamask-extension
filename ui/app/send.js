@@ -100,12 +100,17 @@ function SendTransactionScreen () {
 
 SendTransactionScreen.prototype.componentWillMount = function () {
   const { newTx } = this.state
+  const { address } = this.props
 
   Promise.all([
     this.props.dispatch(getGasPrice()),
-    this.props.dispatch(estimateGas()),
+    this.props.dispatch(estimateGas({
+      from: address,
+      gas: '746a528800',
+    })),
   ])
   .then(([blockGasPrice, estimatedGas]) => {
+    console.log({ blockGasPrice, estimatedGas})
     this.setState({
       newTx: {
         ...newTx,

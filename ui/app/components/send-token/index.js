@@ -2,6 +2,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const classnames = require('classnames')
+const abi = require('ethereumjs-abi')
 const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
@@ -57,7 +58,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
-    estimateGas: () => dispatch(actions.estimateGas()),
+    estimateGas: params => dispatch(actions.estimateGas(params)),
     getGasPrice: () => dispatch(actions.getGasPrice()),
   }
 }
@@ -83,15 +84,28 @@ SendTokenScreen.prototype.componentWillMount = function () {
     selectedToken: { symbol },
     getGasPrice,
     estimateGas,
+    selectedAddress,
   } = this.props
 
   updateTokenExchangeRate(symbol)
 
+  const data = Array.prototype.map.call(
+    abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
+    x => ('00' + x.toString(16)).slice(-2)
+  ).join('')
+
+  console.log(data)
   Promise.all([
     getGasPrice(),
-    estimateGas(),
+    estimateGas({
+      from: selectedAddress,
+      value: '0x0',
+      gas: '746a528800',
+      data,
+    }),
   ])
   .then(([blockGasPrice, estimatedGas]) => {
+    console.log({ blockGasPrice, estimatedGas})
     this.setState({
       gasPrice: blockGasPrice,
       gasLimit: estimatedGas,
