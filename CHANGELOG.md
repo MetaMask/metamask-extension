@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 3.10.8 2017-9-28
+
+- Fixed usage of new currency fetching API.
+
 ## 3.10.7 2017-9-28
 
 - Fixed bug where sometimes the current account was not correctly set and exposed to web apps.
