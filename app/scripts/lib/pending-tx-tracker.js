@@ -1,6 +1,5 @@
 const EventEmitter = require('events')
 const EthQuery = require('ethjs-query')
-const sufficientBalance = require('./util').sufficientBalance
 /*
 
   Utility class for tracking the transactions as they
@@ -12,7 +11,6 @@ const sufficientBalance = require('./util').sufficientBalance
   requires a: {
     provider: //,
     nonceTracker: //see nonce tracker,
-    getBalnce: //(address) a function for getting balances,
     getPendingTransactions: //() a function for getting an array of transactions,
     publishTransaction: //(rawTx) a async function for publishing raw transactions,
   }
@@ -25,7 +23,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
     this.retryLimit = config.retryLimit || Infinity
-    this.getBalance = config.getBalance
     this.getPendingTransactions = config.getPendingTransactions
     this.publishTransaction = config.publishTransaction
   }
@@ -99,21 +96,9 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   }
 
   async _resubmitTx (txMeta) {
-    const address = txMeta.txParams.from
-    const balance = this.getBalance(address)
-    if (balance === undefined) return
-
     if (txMeta.retryCount > this.retryLimit) {
       const err = new Error(`Gave up submitting after ${this.retryLimit} blocks un-mined.`)
       return this.emit('tx:failed', txMeta.id, err)
-    }
-
-    // if the value of the transaction is greater then the balance, fail.
-    if (!sufficientBalance(txMeta.txParams, balance)) {
-      const insufficientFundsError = new Error('Insufficient balance during rebroadcast.')
-      this.emit('tx:failed', txMeta.id, insufficientFundsError)
-      log.error(insufficientFundsError)
-      return
     }
 
     // Only auto-submit already-signed txs:

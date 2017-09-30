@@ -132,7 +132,6 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
-      accountTracker: this.accountTracker,
     })
     this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
 

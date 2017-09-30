@@ -40,14 +40,12 @@ describe('PendingTransactionTracker', function () {
 
     pendingTxTracker = new PendingTransactionTracker({
       provider,
-      getBalance: () => {},
       nonceTracker: {
         getGlobalLock: async () => {
           return { releaseLock: () => {} }
         }
       },
       getPendingTransactions: () => {return []},
-      sufficientBalance: () => {},
       publishTransaction: () => {},
     })
   })
@@ -213,30 +211,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs()
     })
   })
-  describe('#_resubmitTx with a too-low balance', function () {
-    it('should return before publishing the transaction because to low of balance', function (done) {
-    const lowBalance = '0x0'
-    pendingTxTracker.getBalance = (address) => {
-      assert.equal(address, txMeta.txParams.from, 'Should pass the address')
-      return lowBalance
-    }
-    pendingTxTracker.publishTransaction = async (rawTx) => {
-      done(new Error('tried to publish transaction'))
-    }
-
-    // Stubbing out current account state:
-    // Adding the fake tx:
-    pendingTxTracker.once('tx:failed', (txId, err) => {
-      assert(err, 'Should have a error')
-      done()
-    })
-    pendingTxTracker._resubmitTx(txMeta)
-    .catch((err) => {
-     assert.ifError(err, 'should not throw an error')
-     done(err)
-    })
-  })
-
+  describe('#_resubmitTx', function () {
     it('should publishing the transaction', function (done) {
     const enoughBalance = '0x100000'
     pendingTxTracker.getBalance = (address) => {

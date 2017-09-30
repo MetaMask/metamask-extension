@@ -25,7 +25,6 @@ describe('Transaction Controller', function () {
       networkStore: new ObservableStore(currentNetworkId),
       txHistoryLimit: 10,
       blockTracker: { getCurrentBlock: noop, on: noop, once: noop },
-      accountTracker: { store: { getState: noop } },
       signTransaction: (ethTx) => new Promise((resolve) => {
         ethTx.sign(privKey)
         resolve()
@@ -383,30 +382,6 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#getBalance', function () {
-    it('gets balance', function () {
-      sinon.stub(txController.accountTracker.store, 'getState').callsFake(() => {
-        return {
-          accounts: {
-            '0x1678a085c290ebd122dc42cba69373b5953b831d': {
-              address: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-              balance: '0x00000000000000056bc75e2d63100000',
-              code: '0x',
-              nonce: '0x0',
-            },
-            '0xc684832530fcbddae4b4230a47e991ddcec2831d': {
-              address: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
-              balance: '0x0',
-              code: '0x',
-              nonce: '0x0',
-            },
-          },
-        }
-      })
-      assert.equal(txController.pendingTxTracker.getBalance('0x1678a085c290ebd122dc42cba69373b5953b831d'), '0x00000000000000056bc75e2d63100000')
-      assert.equal(txController.pendingTxTracker.getBalance('0xc684832530fcbddae4b4230a47e991ddcec2831d'), '0x0')
-    })
-  })
 
   describe('#getPendingTransactions', function () {
     beforeEach(function () {
