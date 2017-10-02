@@ -199,8 +199,15 @@ describe('PendingTransactionTracker', function () {
 
       pendingTxTracker.resubmitPendingTxs()
     })
-    it('should emit \'tx:failed\' if it encountered a real error', function (done) {
-      pendingTxTracker.once('tx:failed', (id, err) => err.message === 'im some real error' ? txList[id - 1].resolve() : done(err))
+    it('should emit \'tx:warning\' if it encountered a real error', function (done) {
+      pendingTxTracker.once('tx:warning', (txMeta, err) => {
+        if (err.message === 'im some real error') {
+          const matchingTx = txList.find(tx => tx.id === txMeta.id)
+          matchingTx.resolve()
+        } else {
+          done(err)
+        }
+      })
 
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._resubmitTx = async (tx) => { throw new TypeError('im some real error') }
