@@ -20,8 +20,6 @@ describe('tx-state-history-helper', function () {
       })
     })
   })
-<<<<<<< Updated upstream
-=======
 
   it('replaying history does not mutate the original obj', function () {
     const initialState = { test: true, message: 'hello', value: 1 }
@@ -45,5 +43,4 @@ describe('tx-state-history-helper', function () {
     assert.equal(beforeStateSnapshot, afterStateSnapshot, 'initial state is not modified during run')
   })
 
->>>>>>> Stashed changes
 })
