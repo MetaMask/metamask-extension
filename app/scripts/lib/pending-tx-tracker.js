@@ -137,7 +137,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         message: 'There was a problem loading this transaction.',
       }
       this.emit('tx:warning', txMeta)
-      throw err
     }
   }
 
