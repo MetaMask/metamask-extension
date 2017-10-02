@@ -19,8 +19,7 @@ const migrations = require('../../app/scripts/migrations/')
 const firstTimeState = require('../../app/scripts/first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
-// const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
-const METAMASK_DEBUG = true
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 let popupIsOpen = false
 let connectedClientCount = 0
 

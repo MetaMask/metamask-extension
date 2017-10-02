@@ -1,57 +1,26 @@
-window.addEventListener('load', web3Detect)
+const EthQuery = require('ethjs-query')
+
+window.addEventListener('load', loadProvider)
 window.addEventListener('message', console.warn)
 
-function web3Detect() {
-  if (global.web3) {
-    logToDom('web3 detected!')
-    startApp()
-  } else {
-    logToDom('no web3 detected!')
-  }
+async function loadProvider() {
+  const ethereumProvider = window.metamask.createDefaultProvider({ host: 'http://localhost:9001' })
+  const ethQuery = new EthQuery(ethereumProvider)
+  const accounts = await ethQuery.accounts()
+  logToDom(accounts.length ? accounts[0] : 'LOCKED or undefined')
+  setupButton(ethQuery)
 }
 
-function startApp(){
-  console.log('app started')
-
-  var primaryAccount
-  console.log('getting main account...')
-  web3.eth.getAccounts((err, addresses) => {
-    if (err) console.error(err)
-    console.log('set address', addresses[0])
-    primaryAccount = addresses[0]
-  })
-
-  document.querySelector('.action-button-1').addEventListener('click', function(){
-    console.log('saw click')
-    console.log('sending tx')
-    primaryAccount
-    web3.eth.sendTransaction({
-      from: primaryAccount,
-      to: primaryAccount,
-      value: 0,
-    }, function(err, txHash){
-      if (err) throw err
-      console.log('sendTransaction result:', err || txHash)
-    })
-  })
-  document.querySelector('.action-button-2').addEventListener('click', function(){
-    console.log('saw click')
-    setTimeout(function(){
-      console.log('sending tx')
-      web3.eth.sendTransaction({
-        from: primaryAccount,
-        to: primaryAccount,
-        value: 0,
-      }, function(err, txHash){
-        if (err) throw err
-        console.log('sendTransaction result:', err || txHash)
-      })
-    })
-  })
-
-}
 
 function logToDom(message){
-  document.body.appendChild(document.createTextNode(message))
+  document.getElementById('account').innerText = message
   console.log(message)
+}
+
+function setupButton (ethQuery) {
+  const button = document.getElementById('action-button-1')
+  button.addEventListener('click', async () => {
+    const accounts = await ethQuery.accounts()
+    logToDom(accounts.length ? accounts[0] : 'LOCKED or undefined')
+  })
 }

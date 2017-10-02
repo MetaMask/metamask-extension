@@ -5,7 +5,6 @@ class ExtensionPlatform {
   //
   // Public
   //
-
   reload () {
     extension.runtime.reload()
   }

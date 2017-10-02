@@ -24,7 +24,8 @@ describe('PendingTx', function () {
       'to': '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
       'value': '0xde0b6b3a7640000',
       gasPrice,
-      'gas': '0x7b0c'},
+      'gas': '0x7b0c',
+    },
     'gasLimitSpecified': false,
     'estimatedGas': '0x5208',
   }

@@ -319,7 +319,7 @@ App.prototype.renderNetworkDropdown = function () {
       {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setDefaultRpcTarget()),
+        onClick: () => props.dispatch(actions.setProviderType('localhost')),
         style: {
           fontSize: '18px',
         },

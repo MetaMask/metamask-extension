@@ -114,7 +114,7 @@ function setupController (initState) {
   //
 
   updateBadge()
-  controller.txController.on('updateBadge', updateBadge)
+  controller.txController.on('update:badge', updateBadge)
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
 

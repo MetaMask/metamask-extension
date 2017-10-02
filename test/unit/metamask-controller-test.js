@@ -10,6 +10,7 @@ describe('MetaMaskController', function () {
     showUnconfirmedMessage: noop,
     unlockAccountMessage: noop,
     showUnapprovedTx: noop,
+    platform: {},
     // initial state
     initState: clone(firstTimeState),
   })
