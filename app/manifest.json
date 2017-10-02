@@ -58,8 +58,7 @@
     "storage",
     "clipboardWrite",
     "http://localhost:8545/",
-    "https://*.infura.io/",
-    "https://api.cryptonator.com"
+    "https://*.infura.io/"
     ],
   "web_accessible_resources": [
     "scripts/inpage.js"
