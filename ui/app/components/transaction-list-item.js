@@ -133,7 +133,7 @@ function recipientField (txParams, transaction, isTx, isMsg) {
     },
   }, [
     message,
-    failIfFailed(transaction),
+    renderErrorOrWarning(transaction),
   ])
 }
 
@@ -141,25 +141,35 @@ function formatDate (date) {
   return vreme.format(new Date(date), 'March 16 2014 14:30')
 }
 
-function failIfFailed (transaction) {
-  if (transaction.status === 'rejected') {
+function renderErrorOrWarning (transaction) {
+  const { status, err, warning } = transaction
+
+  // show rejected
+  if (status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }
-  if (transaction.err || transaction.warning) {
-    const { err, warning = {} } = transaction
-    const errFirst = !!(( err && warning ) || err)
-    const message = errFirst ? err.message : warning.message
 
-    errFirst ? err.message : warning.message
+  // show error
+  if (err) {
+    const message = err.message || ''
+    return (
+        h(Tooltip, {
+          title: message,
+          position: 'bottom',
+        }, [
+          h(`span.error`, ` (Failed)`),
+        ])
+    )
+  }
 
-
+  // show warning
+  if (warning) {
+    const message = warning.message
     return h(Tooltip, {
       title: message,
       position: 'bottom',
     }, [
-      h(`span.${errFirst ? 'error' : 'warning'}`,
-        ` (${errFirst ? 'Failed' : 'Warning'})`
-      ),
+      h(`span.warning`, ` (Warning)`),
     ])
   }
 }
