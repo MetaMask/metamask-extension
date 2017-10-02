@@ -94,7 +94,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         error: errorMessage,
         message: 'There was an error when resubmitting this transaction.',
       }
-      this.emit('tx:warning', txMeta)
+      this.emit('tx:warning', txMeta, err)
     }))
   }
 
@@ -139,7 +139,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         error: err,
         message: 'There was a problem loading this transaction.',
       }
-      this.emit('tx:warning', txMeta)
+      this.emit('tx:warning', txMeta, err)
     }
   }
 
