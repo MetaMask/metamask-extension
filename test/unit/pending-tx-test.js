@@ -57,7 +57,7 @@ describe('PendingTransactionTracker', function () {
       const block = Proxy.revocable({}, {}).revoke()
       pendingTxTracker.checkForTxInBlock(block)
     })
-    it('should emit \'txFailed\' if the txMeta does not have a hash', function (done) {
+    it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
       const block = Proxy.revocable({}, {}).revoke()
       pendingTxTracker.getPendingTransactions = () => [txMetaNoHash]
       pendingTxTracker.once('tx:failed', (txId, err) => {
@@ -105,7 +105,7 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkPendingTx', function () {
-    it('should emit \'txFailed\' if the txMeta does not have a hash', function (done) {
+    it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
       pendingTxTracker.once('tx:failed', (txId, err) => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
@@ -172,7 +172,7 @@ describe('PendingTransactionTracker', function () {
       .catch(done)
       pendingTxTracker.resubmitPendingTxs()
     })
-    it('should not emit \'txFailed\' if the txMeta throws a known txError', function (done) {
+    it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
       knownErrors =[
         // geth
         '     Replacement transaction Underpriced            ',
@@ -199,7 +199,7 @@ describe('PendingTransactionTracker', function () {
 
       pendingTxTracker.resubmitPendingTxs()
     })
-    it('should emit \'txFailed\' if it encountered a real error', function (done) {
+    it('should emit \'tx:failed\' if it encountered a real error', function (done) {
       pendingTxTracker.once('tx:failed', (id, err) => err.message === 'im some real error' ? txList[id - 1].resolve() : done(err))
 
       pendingTxTracker.getPendingTransactions = () => txList
