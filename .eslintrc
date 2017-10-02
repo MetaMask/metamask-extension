@@ -17,7 +17,7 @@
     },
   },
 
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["plugin:react/recommended"],
 
   "env": {
     "es6": true,
@@ -57,7 +57,7 @@
     "generator-star-spacing": [2, { "before": true, "after": true }],
     "handle-callback-err": [1, "^(err|error)$" ],
     "indent": "off",
-    "jsx-quotes": [2, "prefer-single"],
+    "jsx-quotes": [2, "prefer-double"],
     "key-spacing": 1,
     "keyword-spacing": [2, { "before": true, "after": true }],
     "new-cap": [2, { "newIsCap": true, "capIsNew": false }],

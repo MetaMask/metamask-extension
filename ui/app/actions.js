@@ -268,7 +268,7 @@ function createNewVaultAndKeychain (password) {
           resolve()
         })
       })
-    });
+    })
 
   }
 }

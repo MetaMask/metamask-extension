@@ -13,7 +13,7 @@
     "dist": "npm run dist:clear && npm install && gulp dist",
     "dist:clear": "rm -rf node_modules/eth-contract-metadata && rm -rf node_modules/eth-phishing-detect",
     "test": "npm run lint && npm run test:coverage && npm run test:integration",
-    "test:unit": "METAMASK_ENV=test mocha --require test/helper.js --recursive \"test/unit/**/*.js\"",
+    "test:unit": "METAMASK_ENV=test mocha --compilers js:babel-core/register --require test/helper.js --recursive \"test/unit/**/*.js\"",
     "test:single": "METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "npm run test:flat && npm run test:mascara",
     "test:coverage": "nyc npm run test:unit && npm run test:coveralls-upload",
