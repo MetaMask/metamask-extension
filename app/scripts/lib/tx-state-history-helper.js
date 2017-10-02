@@ -24,7 +24,8 @@ function generateHistoryEntry(previousState, newState) {
   return jsonDiffer.compare(previousState, newState)
 }
 
-function replayHistory(shortHistory) {
+function replayHistory(_shortHistory) {
+  const shortHistory = clone(_shortHistory)
   return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
 }
 
