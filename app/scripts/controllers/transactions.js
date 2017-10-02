@@ -66,13 +66,15 @@ module.exports = class TransactionController extends EventEmitter {
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))
 
-    this.pendingTxTracker.on('tx:warning', this.txStateManager.updateTx.bind(this.txStateManager))
+    this.pendingTxTracker.on('tx:warning', (txMeta) => {
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
+    })
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:confirmed', this.txStateManager.setTxStatusConfirmed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:retry', (txMeta) => {
       if (!('retryCount' in txMeta)) txMeta.retryCount = 0
       txMeta.retryCount++
-      this.txStateManager.updateTx(txMeta)
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
     })
 
     this.blockTracker.on('block', this.pendingTxTracker.checkForTxInBlock.bind(this.pendingTxTracker))
@@ -168,14 +170,14 @@ module.exports = class TransactionController extends EventEmitter {
     const txParams = txMeta.txParams
     // ensure value
     const gasPrice = txParams.gasPrice || await this.query.gasPrice()
-    txParams.value = txParams.value || '0x0'
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
+    txParams.value = txParams.value || '0x0'
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
 
   async updateAndApproveTransaction (txMeta) {
-    this.txStateManager.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
     await this.approveTransaction(txMeta.id)
   }
 
@@ -193,7 +195,7 @@ module.exports = class TransactionController extends EventEmitter {
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonceLock.nextNonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
-      this.txStateManager.updateTx(txMeta)
+      this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
       // sign transaction
       const rawTx = await this.signTransaction(txId)
       await this.publishTransaction(txId, rawTx)
@@ -224,7 +226,7 @@ module.exports = class TransactionController extends EventEmitter {
   async publishTransaction (txId, rawTx) {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
-    this.txStateManager.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
     const txHash = await this.query.sendRawTransaction(rawTx)
     this.setTxHash(txId, txHash)
     this.txStateManager.setTxStatusSubmitted(txId)
@@ -239,7 +241,7 @@ module.exports = class TransactionController extends EventEmitter {
     // Add the tx hash to the persisted meta-tx object
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.hash = txHash
-    this.txStateManager.updateTx(txMeta)
+    this.txStateManager.updateTx(txMeta, 'transactions#setTxHash')
   }
 
 //

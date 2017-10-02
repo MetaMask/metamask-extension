@@ -82,7 +82,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
     return txMeta
   }
 
-  updateTx (txMeta) {
+  updateTx (txMeta, note) {
     if (txMeta.txParams) {
       Object.keys(txMeta.txParams).forEach((key) => {
         let value = txMeta.txParams[key]
@@ -96,7 +96,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
     // recover previous tx state obj
     const previousState = txStateHistoryHelper.replayHistory(txMeta.history)
     // generate history entry and add to history
-    const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState)
+    const entry = txStateHistoryHelper.generateHistoryEntry(previousState, currentState, note)
     txMeta.history.push(entry)
 
     // commit txMeta to state
@@ -113,7 +113,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
   updateTxParams (txId, txParams) {
     const txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
-    this.updateTx(txMeta)
+    this.updateTx(txMeta, `txStateManager#updateTxParams`)
   }
 
 /*
@@ -233,7 +233,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
     if (status === 'submitted' || status === 'rejected') {
       this.emit(`${txMeta.id}:finished`, txMeta)
     }
-    this.updateTx(txMeta)
+    this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
     this.emit('update:badge')
   }
 
