@@ -167,14 +167,6 @@ App.prototype.renderAppBar = function () {
           }),
         ]),
 
-        // metamask name
-        props.isUnlocked && h('h1', {
-          style: {
-            position: 'relative',
-            left: '9px',
-          },
-        }, 'MetaMask'),
-
         props.isUnlocked && h('div', {
           style: {
             display: 'flex',
