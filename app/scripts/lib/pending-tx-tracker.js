@@ -86,12 +86,15 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         // other
         || errorMessage.includes('gateway timeout')
         || errorMessage.includes('nonce too low')
-        || txMeta.retryCount > 1
       )
       // ignore resubmit warnings, return early
       if (isKnownTx) return
       // encountered real error - transition to error state
-      this.emit('tx:failed', txMeta.id, err)
+      txMeta.warning = {
+        error: errorMessage,
+        message: 'There was an error when resubmitting this transaction.',
+      }
+      this.emit('tx:warning', txMeta)
     }))
   }
 
