@@ -20,4 +20,26 @@ describe('tx-state-history-helper', function () {
       })
     })
   })
+
+  it('replaying history does not mutate the original obj', function () {
+    const initialState = { test: true, message: 'hello', value: 1 }
+    const diff1 = {
+      "op": "replace",
+      "path": "/message",
+      "value": "haay",
+    }
+    const diff2 = {
+      "op": "replace",
+      "path": "/value",
+      "value": 2,
+    }
+    const history = [initialState, diff1, diff2]
+
+    const beforeStateSnapshot = JSON.stringify(initialState)
+    const latestState = txStateHistoryHelper.replayHistory(history)
+    const afterStateSnapshot = JSON.stringify(initialState)
+
+    assert.notEqual(initialState, latestState, 'initial state is not the same obj as the latest state')
+    assert.equal(beforeStateSnapshot, afterStateSnapshot, 'initial state is not modified during run')
+  })
 })
