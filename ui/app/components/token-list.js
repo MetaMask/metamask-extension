@@ -27,7 +27,6 @@ for (const address in contracts) {
 
 module.exports = connect(mapStateToProps)(TokenList)
 
-
 inherits(TokenList, Component)
 function TokenList () {
   this.state = {
@@ -129,15 +128,22 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
   const {
     network: oldNet,
     userAddress: oldAddress,
+    tokens,
   } = this.props
   const {
     network: newNet,
     userAddress: newAddress,
+    tokens: newTokens,
   } = nextProps
 
-  if (newNet === 'loading') return
-  if (!oldNet || !newNet || !oldAddress || !newAddress) return
-  if (oldAddress === newAddress && oldNet === newNet) return
+  const isLoading = newNet === 'loading'
+  const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress
+  const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
+  const shouldUpdateTokens = isLoading || missingInfo || sameUserAndNetwork
+
+  const tokensLengthUnchanged = tokens.length === newTokens.length
+
+  if (tokensLengthUnchanged && shouldUpdateTokens) return
 
   this.setState({ isLoading: true })
   this.createFreshTokenTracker()

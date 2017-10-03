@@ -13,7 +13,15 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    hideModal: () => dispatch(actions.hideModal()),
+    hideToken: address => {
+      dispatch(actions.removeToken(address))
+        .then(() => {
+          dispatch(actions.hideModal())
+        })
+    },
+  }
 }
 
 inherits(HideTokenConfirmationModal, Component)
@@ -26,7 +34,7 @@ function HideTokenConfirmationModal () {
 module.exports = connect(mapStateToProps, mapDispatchToProps)(HideTokenConfirmationModal)
 
 HideTokenConfirmationModal.prototype.render = function () {
-  const { token, network } = this.props
+  const { token, network, hideToken, hideModal } = this.props
   const { symbol, address } = token
 
   return h('div.hide-token-confirmation', {}, [
@@ -51,12 +59,12 @@ HideTokenConfirmationModal.prototype.render = function () {
 
       h('div.hide-token-confirmation__buttons', {}, [
         h('button.btn-clear', {
-          onClick: () => {},
+          onClick: () => hideModal(),
         }, [
           'CANCEL',
         ]),
         h('button.btn-clear', {
-          onClick: () => {},
+          onClick: () => hideToken(address),
         }, [
           'HIDE',
         ]),

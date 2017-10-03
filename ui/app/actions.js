@@ -152,6 +152,9 @@ var actions = {
   showAddTokenPage,
   addToken,
   addTokens,
+  removeToken,
+  updateTokens,
+  UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
@@ -753,16 +756,31 @@ function addToken (address, symbol, decimals) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
-      background.addToken(address, symbol, decimals, (err) => {
+      background.addToken(address, symbol, decimals, (err, tokens) => {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
         }
-        resolve()
-        // setTimeout(() => {
-        //   dispatch(actions.goHome())
-        // }, 250)
+        dispatch(actions.updateTokens(tokens))
+        resolve(tokens)
+      })
+    })
+  }
+}
+
+function removeToken (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeToken(address, (err, tokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateTokens(tokens))
+        resolve(tokens)
       })
     })
   }
@@ -783,6 +801,13 @@ function addTokens (tokens) {
         ))
       )
     }
+  }
+}
+
+function updateTokens(newTokens) {
+  return {
+    type: actions.UPDATE_TOKENS,
+    newTokens
   }
 }
 
