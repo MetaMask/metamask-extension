@@ -126,13 +126,6 @@ InfoScreen.prototype.render = function () {
                 ]),
               ]),
 
-              h('div.fa.fa-slack', [
-                h('a.info', {
-                  href: 'http://slack.metamask.io',
-                  target: '_blank',
-                }, 'Join the conversation on Slack'),
-              ]),
-
               h('div', [
                 h('.fa.fa-twitter', [
                   h('a.info', {

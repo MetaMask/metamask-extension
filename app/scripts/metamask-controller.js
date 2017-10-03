@@ -100,6 +100,14 @@ module.exports = class MetamaskController extends EventEmitter {
       encryptor: opts.encryptor || undefined,
     })
 
+    // If only one account exists, make sure it is selected.
+    this.keyringController.store.subscribe((state) => {
+      const addresses = Object.keys(state.walletNicknames || {})
+      if (addresses.length === 1) {
+        const address = addresses[0]
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
     this.keyringController.on('newAccount', (address) => {
       this.preferencesController.setSelectedAddress(address)
       this.accountTracker.addAccount(address)
@@ -124,7 +132,6 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
-      accountTracker: this.accountTracker,
     })
     this.txController.on('newUnaprovedTx', opts.showUnapprovedTx.bind(opts))
 
@@ -209,19 +216,17 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   initializeProvider () {
-    return this.networkController.initializeProvider({
+    const providerOpts = {
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
-      // rpc data source
-      rpcUrl: this.networkController.getCurrentRpcAddress(),
-      originHttpHeaderKey: 'X-Metamask-Origin',
       // account mgmt
       getAccounts: (cb) => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
         const result = []
         const selectedAddress = this.preferencesController.getSelectedAddress()
+
         // only show address if account is unlocked
         if (isUnlocked && selectedAddress) {
           result.push(selectedAddress)
@@ -234,7 +239,9 @@ module.exports = class MetamaskController extends EventEmitter {
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-    })
+    }
+    const providerProxy = this.networkController.initializeProvider(providerOpts)
+    return providerProxy
   }
 
   initPublicConfigStore () {
@@ -303,13 +310,14 @@ module.exports = class MetamaskController extends EventEmitter {
     const txController = this.txController
     const noticeController = this.noticeController
     const addressBookController = this.addressBookController
+    const networkController = this.networkController
 
     return {
       // etc
       getState: (cb) => cb(null, this.getState()),
-      setProviderType: this.networkController.setProviderType.bind(this.networkController),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
+
       // coinbase
       buyEth: this.buyEth.bind(this),
       // shapeshift
@@ -324,13 +332,15 @@ module.exports = class MetamaskController extends EventEmitter {
       // vault management
       submitPassword: this.submitPassword.bind(this),
 
+      // network management
+      setProviderType: nodeify(networkController.setProviderType, networkController),
+      setCustomRpc: nodeify(this.setCustomRpc, this),
+
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
-      setDefaultRpc: nodeify(this.setDefaultRpc, this),
-      setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -681,19 +691,13 @@ module.exports = class MetamaskController extends EventEmitter {
   createShapeShiftTx (depositAddress, depositType) {
     this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
   }
-// network
 
-  setDefaultRpc () {
-    this.networkController.setRpcTarget('http://localhost:8545')
-    return Promise.resolve('http://localhost:8545')
-  }
+  // network
 
-  setCustomRpc (rpcTarget, rpcList) {
+  async setCustomRpc (rpcTarget, rpcList) {
     this.networkController.setRpcTarget(rpcTarget)
-
-    return this.preferencesController.updateFrequentRpcList(rpcTarget)
-    .then(() => {
-      return Promise.resolve(rpcTarget)
-    })
+    await this.preferencesController.updateFrequentRpcList(rpcTarget)
+    return rpcTarget
   }
+
 }

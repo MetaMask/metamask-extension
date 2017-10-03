@@ -2,6 +2,15 @@
 
 ## Current Master
 
+- Remove Slack link from info page, since it is a big phishing target.
+
+## 3.10.8 2017-9-28
+
+- Fixed usage of new currency fetching API.
+
+## 3.10.7 2017-9-28
+
+- Fixed bug where sometimes the current account was not correctly set and exposed to web apps.
 - Added AUD, HKD, SGD, IDR, PHP to currency conversion list
 
 ## 3.10.6 2017-9-27

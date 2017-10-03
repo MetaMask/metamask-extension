@@ -45,7 +45,7 @@ class CurrencyController {
 
   updateConversionRate () {
     const currentCurrency = this.getCurrentCurrency()
-    return fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency}`)
+    return fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
     .then(response => response.json())
     .then((parsedResponse) => {
       this.setConversionRate(Number(parsedResponse.bid))

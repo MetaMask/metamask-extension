@@ -145,8 +145,6 @@ var actions = {
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
-  USE_ETHERSCAN_PROVIDER: 'USE_ETHERSCAN_PROVIDER',
-  useEtherscanProvider: useEtherscanProvider,
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
@@ -156,7 +154,6 @@ var actions = {
   updateTokens,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
-  setDefaultRpcTarget: setDefaultRpcTarget,
   setProviderType: setProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
@@ -864,16 +861,19 @@ function markAccountsFound () {
 // config
 //
 
-// default rpc target refers to localhost:8545 in this instance.
-function setDefaultRpcTarget () {
-  log.debug(`background.setDefaultRpcTarget`)
+function setProviderType (type) {
   return (dispatch) => {
-    background.setDefaultRpc((err, result) => {
+    log.debug(`background.setProviderType`)
+    background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
-        return dispatch(self.displayWarning('Had a problem changing networks.'))
+        return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
     })
+    return {
+      type: actions.SET_PROVIDER_TYPE,
+      value: type,
+    }
   }
 }
 

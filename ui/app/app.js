@@ -254,6 +254,7 @@ App.prototype.renderAppBar = function () {
   )
 }
 
+
 App.prototype.renderBackButton = function (style, justArrow = false) {
   var props = this.props
   return (

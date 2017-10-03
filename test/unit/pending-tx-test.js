@@ -40,14 +40,12 @@ describe('PendingTransactionTracker', function () {
 
     pendingTxTracker = new PendingTransactionTracker({
       provider,
-      getBalance: () => {},
       nonceTracker: {
         getGlobalLock: async () => {
           return { releaseLock: () => {} }
         }
       },
       getPendingTransactions: () => {return []},
-      sufficientBalance: () => {},
       publishTransaction: () => {},
     })
   })
@@ -59,7 +57,7 @@ describe('PendingTransactionTracker', function () {
       const block = Proxy.revocable({}, {}).revoke()
       pendingTxTracker.checkForTxInBlock(block)
     })
-    it('should emit \'txFailed\' if the txMeta does not have a hash', function (done) {
+    it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
       const block = Proxy.revocable({}, {}).revoke()
       pendingTxTracker.getPendingTransactions = () => [txMetaNoHash]
       pendingTxTracker.once('tx:failed', (txId, err) => {
@@ -107,7 +105,7 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#_checkPendingTx', function () {
-    it('should emit \'txFailed\' if the txMeta does not have a hash', function (done) {
+    it('should emit \'tx:failed\' if the txMeta does not have a hash', function (done) {
       pendingTxTracker.once('tx:failed', (txId, err) => {
         assert(txId, txMetaNoHash.id, 'should pass txId')
         done()
@@ -174,7 +172,7 @@ describe('PendingTransactionTracker', function () {
       .catch(done)
       pendingTxTracker.resubmitPendingTxs()
     })
-    it('should not emit \'txFailed\' if the txMeta throws a known txError', function (done) {
+    it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
       knownErrors =[
         // geth
         '     Replacement transaction Underpriced            ',
@@ -201,8 +199,15 @@ describe('PendingTransactionTracker', function () {
 
       pendingTxTracker.resubmitPendingTxs()
     })
-    it('should emit \'txFailed\' if it encountered a real error', function (done) {
-      pendingTxTracker.once('tx:failed', (id, err) => err.message === 'im some real error' ? txList[id - 1].resolve() : done(err))
+    it('should emit \'tx:warning\' if it encountered a real error', function (done) {
+      pendingTxTracker.once('tx:warning', (txMeta, err) => {
+        if (err.message === 'im some real error') {
+          const matchingTx = txList.find(tx => tx.id === txMeta.id)
+          matchingTx.resolve()
+        } else {
+          done(err)
+        }
+      })
 
       pendingTxTracker.getPendingTransactions = () => txList
       pendingTxTracker._resubmitTx = async (tx) => { throw new TypeError('im some real error') }
@@ -213,30 +218,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs()
     })
   })
-  describe('#_resubmitTx with a too-low balance', function () {
-    it('should return before publishing the transaction because to low of balance', function (done) {
-    const lowBalance = '0x0'
-    pendingTxTracker.getBalance = (address) => {
-      assert.equal(address, txMeta.txParams.from, 'Should pass the address')
-      return lowBalance
-    }
-    pendingTxTracker.publishTransaction = async (rawTx) => {
-      done(new Error('tried to publish transaction'))
-    }
-
-    // Stubbing out current account state:
-    // Adding the fake tx:
-    pendingTxTracker.once('tx:failed', (txId, err) => {
-      assert(err, 'Should have a error')
-      done()
-    })
-    pendingTxTracker._resubmitTx(txMeta)
-    .catch((err) => {
-     assert.ifError(err, 'should not throw an error')
-     done(err)
-    })
-  })
-
+  describe('#_resubmitTx', function () {
     it('should publishing the transaction', function (done) {
     const enoughBalance = '0x100000'
     pendingTxTracker.getBalance = (address) => {
