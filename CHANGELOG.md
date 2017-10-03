@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Remove Slack link from info page, since it is a big phishing target.
+
 ## 3.10.8 2017-9-28
 
 - Fixed usage of new currency fetching API.
