@@ -1,20 +1,9 @@
 const PASSWORD = 'password123'
-const runMascaraFirstTimeTest = require('./mascara-first-time')
 
-QUnit.module('first time usage')
+window.testUtils = require('react-dom/test-utils')
 
-QUnit.test('render init screen', (assert) => {
-  const done = assert.async()
-  runFirstTimeUsageTest(assert).then(done).catch((err) => {
-    assert.notOk(err, `Error was thrown: ${err.stack}`)
-    done()
-  })
-})
-
-async function runFirstTimeUsageTest(assert, done) {
-  if (window.METAMASK_PLATFORM_TYPE === 'mascara') {
-    return runMascaraFirstTimeTest(assert, done)
-  }
+async function runFirstTimeUsageTest (assert, done) {
+  await timeout(4000)
 
   const app = $('#app-content')
 
@@ -39,19 +28,22 @@ async function runFirstTimeUsageTest(assert, done) {
   await timeout()
 
   // Scroll through terms
-  const title = app.find('h1').text()
-  assert.equal(title, 'MetaMask', 'title screen')
+  const title = app.find('.create-password__title').text()
+  assert.equal(title, 'Create Password', 'create password screen')
 
   // enter password
-  const pwBox = app.find('#password-box')[0]
-  const confBox = app.find('#password-box-confirm')[0]
+  const pwBox = app.find('.first-time-flow__input')[0]
+  const confBox = app.find('.first-time-flow__input')[1]
   pwBox.value = PASSWORD
   confBox.value = PASSWORD
+  $(pwBox).change()
+  $(confBox).change()
+
 
   await timeout()
 
   // create vault
-  const createButton = app.find('button.primary')[0]
+  const createButton = app.find('button.first-time-flow__button')[0]
   createButton.click()
 
   await timeout(3000)
@@ -124,6 +116,8 @@ async function runFirstTimeUsageTest(assert, done) {
   children2.length[3]
   assert.ok(children2, 'All network options present')
 }
+
+module.exports = runFirstTimeUsageTest
 
 function timeout (time) {
   return new Promise((resolve, reject) => {
