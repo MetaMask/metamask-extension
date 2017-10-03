@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'
 import classnames from 'classnames'
 import LoadingScreen from './loading-screen'
 import {importNewAccount, hideWarning} from '../../../../ui/app/actions'
@@ -11,13 +11,21 @@ const Input = ({ label, placeholder, onChange, errorMessage, type = 'text' }) =>
       type={type}
       placeholder={placeholder}
       className={classnames('first-time-flow__input import-account__input', {
-        'first-time-flow__input--error': errorMessage
+        'first-time-flow__input--error': errorMessage,
       })}
       onChange={onChange}
     />
     <div className="import-account__input-error-message">{errorMessage}</div>
   </div>
 )
+
+Input.prototype.propTypes = {
+  label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  errorMessage: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+}
 
 class ImportAccountScreen extends Component {
   static OPTIONS = {
@@ -31,6 +39,7 @@ class ImportAccountScreen extends Component {
     next: PropTypes.func.isRequired,
     importNewAccount: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -39,9 +48,9 @@ class ImportAccountScreen extends Component {
     jsonFile: {},
   }
 
-  isValid() {
-    const { OPTIONS } = ImportAccountScreen;
-    const { privateKey, jsonFile, password } = this.state;
+  isValid () {
+    const { OPTIONS } = ImportAccountScreen
+    const { privateKey, jsonFile, password } = this.state
 
     switch (this.state.selectedOption) {
       case OPTIONS.JSON_FILE:
@@ -53,9 +62,9 @@ class ImportAccountScreen extends Component {
   }
 
   onClick = () => {
-    const { OPTIONS } = ImportAccountScreen;
-    const { importNewAccount, next } = this.props;
-    const { privateKey, jsonFile, password } = this.state;
+    const { OPTIONS } = ImportAccountScreen
+    const { importNewAccount, next } = this.props
+    const { privateKey, jsonFile, password } = this.state
 
     switch (this.state.selectedOption) {
       case OPTIONS.JSON_FILE:
@@ -68,18 +77,18 @@ class ImportAccountScreen extends Component {
     }
   }
 
-  renderPrivateKey() {
+  renderPrivateKey () {
     return Input({
       label: 'Add Private Key String',
       placeholder: 'Enter private key',
       onChange: e => this.setState({ privateKey: e.target.value }),
-      errorMessage: this.props.warning && 'Something went wrong. Please make sure your private key is correct.'
+      errorMessage: this.props.warning && 'Something went wrong. Please make sure your private key is correct.',
     })
   }
 
-  renderJsonFile() {
-    const { jsonFile: { name } } = this.state;
-    const { warning } = this.props;
+  renderJsonFile () {
+    const { jsonFile: { name } } = this.state
+    const { warning } = this.props
 
     return (
       <div className="">
@@ -95,7 +104,7 @@ class ImportAccountScreen extends Component {
             <label
               htmlFor="file"
               className={classnames('import-account__file-input-label', {
-                'import-account__file-input-label--error': warning
+                'import-account__file-input-label--error': warning,
               })}
             >
               Choose File
@@ -111,14 +120,14 @@ class ImportAccountScreen extends Component {
           placeholder: 'Enter Password',
           type: 'password',
           onChange: e => this.setState({ password: e.target.value }),
-          errorMessage: warning && 'Please make sure your password is correct.'
+          errorMessage: warning && 'Please make sure your password is correct.',
         })}
       </div>
     )
   }
 
-  renderContent() {
-    const { OPTIONS } = ImportAccountScreen;
+  renderContent () {
+    const { OPTIONS } = ImportAccountScreen
 
     switch (this.state.selectedOption) {
       case OPTIONS.JSON_FILE:
@@ -129,11 +138,11 @@ class ImportAccountScreen extends Component {
     }
   }
 
-  render() {
-    const { OPTIONS } = ImportAccountScreen;
-    const { selectedOption } = this.state;
+  render () {
+    const { OPTIONS } = ImportAccountScreen
+    const { selectedOption } = this.state
 
-    return isLoading
+    return this.props.isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
         <div className="import-account">
@@ -175,6 +184,7 @@ class ImportAccountScreen extends Component {
           <a
             href="https://github.com/MetaMask/faq/blob/master/README.md#q-i-cant-use-the-import-feature-for-uploading-a-json-file-the-window-keeps-closing-when-i-try-to-select-a-file"
             className="first-time-flow__link import-account__faq-link"
+            rel="noopener noreferrer"
             target="_blank"
           >
             File import not working?
