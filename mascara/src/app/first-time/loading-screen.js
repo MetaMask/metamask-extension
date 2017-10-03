@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import Spinner from './Spinner'
+import Spinner from './spinner'
 
 export default function LoadingScreen({ className = '', loadingMessage }) {
   return (
