@@ -1,19 +1,19 @@
 import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
 
 class UniqueImageScreen extends Component {
   static propTypes = {
     address: PropTypes.string,
-    next: PropTypes.func.isRequired
+    next: PropTypes.func.isRequired,
   }
 
-  render() {
+  render () {
     return (
       <div className="unique-image">
         <Identicon address={this.props.address} diameter={70} />
-        <div className="unique-image__title">You unique account image</div>
+        <div className="unique-image__title">Your unique account image</div>
         <div className="unique-image__body-text">
           This image was programmatically generated for you by your new account number.
         </div>
@@ -34,6 +34,6 @@ class UniqueImageScreen extends Component {
 
 export default connect(
   ({ metamask: { selectedAddress } }) => ({
-    address: selectedAddress
+    address: selectedAddress,
   })
 )(UniqueImageScreen)

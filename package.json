@@ -134,6 +134,7 @@
     "react-select": "^1.0.0-rc.2",
     "react-simple-file-input": "^2.0.0",
     "react-tooltip-component": "^0.3.0",
+    "react-trigger-change": "^1.0.2",
     "readable-stream": "^2.3.3",
     "recompose": "^0.25.0",
     "redux": "^3.0.5",
