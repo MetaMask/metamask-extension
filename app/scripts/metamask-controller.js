@@ -221,7 +221,6 @@ module.exports = class MetamaskController extends EventEmitter {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
-      originHttpHeaderKey: 'X-Metamask-Origin',
       // account mgmt
       getAccounts: (cb) => {
         const isUnlocked = this.keyringController.memStore.getState().isUnlocked
