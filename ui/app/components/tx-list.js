@@ -50,7 +50,11 @@ TxList.prototype.renderTransaction = function () {
   const { txsToRender, conversionRate } = this.props
   return txsToRender.length
     ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate))
-    : [h('div.tx-list-item.tx-list-item--empty', [ 'No Transactions' ])]
+    : [h(
+        'div.tx-list-item.tx-list-item--empty',
+        { key: 'tx-list-none' },
+        [ 'No Transactions' ],
+      )]
 }
 
 // TODO: Consider moving TxListItem into a separate component
@@ -88,6 +92,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     txParams: transaction.txParams,
     transactionStatus,
     transActionId,
+    key: transActionId,
     dateString,
     address,
     transactionAmount,
