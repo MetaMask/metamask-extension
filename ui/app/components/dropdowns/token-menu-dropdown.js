@@ -41,6 +41,7 @@ TokenMenuDropdown.prototype.render = function () {
           onClick: (e) => {
             e.stopPropagation()
             showHideTokenConfirmationModal(this.props.token)
+            this.props.onClose()
           },
         }, 'Hide Token')
 

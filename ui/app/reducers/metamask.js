@@ -19,6 +19,7 @@ function reduceMetamask (state, action) {
     addressBook: [],
     selectedTokenAddress: null,
     tokenExchangeRates: {},
+    tokens: [],
   }, state.metamask)
 
   switch (action.type) {
@@ -144,6 +145,11 @@ function reduceMetamask (state, action) {
           ...metamaskState.tokenExchangeRates,
           [pair]: marketinfo,
         },
+      })
+
+    case actions.UPDATE_TOKENS:
+      return extend(metamaskState, {
+        tokens: action.newTokens,
       })
 
     default:
