@@ -158,7 +158,7 @@
     "brfs": "^1.4.3",
     "browserify": "^14.4.0",
     "chai": "^4.1.0",
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.0",
     "deep-freeze-strict": "^1.1.1",
     "del": "^3.0.0",
     "envify": "^4.0.0",
