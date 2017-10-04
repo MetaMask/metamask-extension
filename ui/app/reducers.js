@@ -48,7 +48,7 @@ window.logStateString = function (cb) {
   return global.platform.getPlatformInfo((platform) => {
     state.version = version
     state.platform = platform
-    state.browser  = browser
+    state.browser = browser
     let stateString = JSON.stringify(state, removeSeedWords, 2)
     return cb(stateString)
   })
