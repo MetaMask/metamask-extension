@@ -7,7 +7,7 @@ const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('./lib/port-stream.js')
 
-const inpageText = fs.readFileSync(path.join(__dirname, 'inpage.js')).toString()
+const inpageText = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'scripts', 'inpage.js')).toString() + '//# sourceURL=' + extension.extension.getURL('scripts/inpage.js') + '\n'
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -25,7 +25,6 @@ function setupInjection () {
   try {
     // inject in-page script
     var scriptTag = document.createElement('script')
-    scriptTag.src = extension.extension.getURL('scripts/inpage.js')
     scriptTag.textContent = inpageText
     scriptTag.onload = function () { this.parentNode.removeChild(this) }
     var container = document.head || document.documentElement
