@@ -41,7 +41,7 @@ function rootReducer (state, action) {
   return state
 }
 
-window.logState = function (cb) {
+window.logStateString = function (cb) {
   let state = window.METAMASK_CACHED_LOG_STATE
   const version = global.platform.getVersion()
   const browser = window.navigator.userAgent
@@ -51,6 +51,12 @@ window.logState = function (cb) {
     state.browser  = browser
     let stateString = JSON.stringify(state, removeSeedWords, 2)
     return cb(stateString)
+  })
+}
+
+window.logState() = function () {
+  return window.logStateString((result) => {
+    return result
   })
 }
 

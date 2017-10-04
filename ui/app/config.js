@@ -113,7 +113,7 @@ ConfigScreen.prototype.render = function () {
                 alignSelf: 'center',
               },
               onClick (event) {
-                window.logState((result) => {
+                window.logStateString((result) => {
                   exportAsFile('MetaMask State Logs', result)
                 })
               },
