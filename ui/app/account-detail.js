@@ -46,7 +46,7 @@ AccountDetailScreen.prototype.render = function () {
   var selected = props.address || Object.keys(props.accounts)[0]
   var checksumAddress = selected && ethUtil.toChecksumAddress(selected)
   var identity = props.identities[selected]
-  var account = props.computedBalances[selected]
+  var account = props.accounts[selected]
   const { network, conversionRate, currentCurrency } = props
 
   return (
@@ -181,7 +181,7 @@ AccountDetailScreen.prototype.render = function () {
         }, [
 
           h(EthBalance, {
-            value: account && account.ethBalance,
+            value: account && account.balance,
             conversionRate,
             currentCurrency,
             style: {
