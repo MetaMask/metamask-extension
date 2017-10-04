@@ -155,6 +155,7 @@ var actions = {
   UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
+  updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -869,11 +870,17 @@ function setProviderType (type) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.updateProviderType(type))
+      dispatch(actions.setSelectedToken())
     })
-    return {
-      type: actions.SET_PROVIDER_TYPE,
-      value: type,
-    }
+    
+  }
+}
+
+function updateProviderType(type) {
+  return {
+    type: actions.SET_PROVIDER_TYPE,
+    value: type,
   }
 }
 
