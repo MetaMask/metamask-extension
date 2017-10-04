@@ -24,10 +24,11 @@ function mapDispatchToProps (dispatch) {
 }
 
 inherits(EditAccountNameModal, Component)
-function EditAccountNameModal () {
+function EditAccountNameModal (props) {
   Component.call(this)
+
   this.state = {
-    inputText: '',
+    inputText: props.identity.name,
   }
 }
 
