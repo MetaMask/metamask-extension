@@ -44,7 +44,9 @@ function rootReducer (state, action) {
 window.logState = function () {
   let state = window.METAMASK_CACHED_LOG_STATE
   const version = global.platform.getVersion()
+  const platform = global.platform.getPlatformInfo()
   state.version = version
+  state.platform = platform
   let stateString = JSON.stringify(state, removeSeedWords, 2)
   return stateString
 }
