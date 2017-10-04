@@ -54,9 +54,9 @@ window.logStateString = function (cb) {
   })
 }
 
-window.logState() = function () {
+window.logState = function () {
   return window.logStateString((result) => {
-    return result
+    console.log(result)
   })
 }
 
