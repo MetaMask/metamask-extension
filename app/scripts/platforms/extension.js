@@ -17,8 +17,8 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
-  getPlatformInfo () {
-    return extension.runtime.getPlatformInfo()
+  getPlatformInfo (cb) {
+    return extension.runtime.getPlatformInfo(cb)
   }
 
 }

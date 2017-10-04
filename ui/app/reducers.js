@@ -41,16 +41,17 @@ function rootReducer (state, action) {
   return state
 }
 
-window.logState = function () {
+window.logState = function (cb) {
   let state = window.METAMASK_CACHED_LOG_STATE
   const version = global.platform.getVersion()
-  const browser = window.navigator.userAgent()
-  const platform = global.platform.getPlatformInfo()
-  state.version = version
-  state.platform = platform
-  state.browser  = browser
-  let stateString = JSON.stringify(state, removeSeedWords, 2)
-  return stateString
+  const browser = window.navigator.userAgent
+  return global.platform.getPlatformInfo((platform) => {
+    state.version = version
+    state.platform = platform
+    state.browser  = browser
+    let stateString = JSON.stringify(state, removeSeedWords, 2)
+    return cb(stateString)
+  })
 }
 
 function removeSeedWords (key, value) {
