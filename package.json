@@ -53,7 +53,7 @@
     "async": "^2.5.0",
     "await-semaphore": "^0.1.1",
     "babel-runtime": "^6.23.0",
-    "bluebird": "^3.5.0",
+    "bluebird": "3.5.0",
     "bn.js": "^4.11.7",
     "browserify-derequire": "^0.9.4",
     "client-sw-ready-event": "^3.3.0",
