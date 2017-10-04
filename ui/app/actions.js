@@ -902,15 +902,6 @@ function addToAddressBook (recipient, nickname) {
   }
 }
 
-function setProviderType (type) {
-  log.debug(`background.setProviderType`)
-  background.setProviderType(type)
-  return {
-    type: actions.SET_PROVIDER_TYPE,
-    value: type,
-  }
-}
-
 function useEtherscanProvider () {
   log.debug(`background.useEtherscanProvider`)
   background.useEtherscanProvider()
