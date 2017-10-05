@@ -9,6 +9,7 @@ const NewKeyChainScreen = require('./new-keychain')
 // accounts
 const MainContainer = require('./main-container')
 const SendTransactionScreen = require('./send')
+const SendTransactionScreen2 = require('./send-v2.js')
 const SendTokenScreen = require('./components/send-token')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
@@ -333,7 +334,15 @@ App.prototype.renderPrimary = function () {
 
     case 'sendTransaction':
       log.debug('rendering send tx screen')
-      return h(SendTransactionScreen, {key: 'send-transaction'})
+      // Below param and ternary operator used for feature toggle
+      // Remove before merged to master
+      const windowParam = window.location.search.substr(1).split('=')
+      
+      const SendComponentToRender = windowParam[0] === "ft" && windowParam[1] === "send-v2"
+        ? SendTransactionScreen2
+        : SendTransactionScreen
+
+      return h(SendComponentToRender, {key: 'send-transaction'})
 
     case 'sendToken':
       log.debug('rendering send token screen')

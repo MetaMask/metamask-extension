@@ -397,3 +397,143 @@
     width: 100%;
   }
 }
+
+.send-v2 {
+  &__container {
+    height: 701px;
+    width: 380px;
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    display: flex;
+    flex-flow: column nowrap;
+    z-index: 25;
+    align-items: center;
+    font-family: Roboto;
+    position: relative;
+    top: -26px;
+
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      overflow-y: auto;
+      top: 0;
+      width: 100%;
+      box-shadow: none;
+    }
+  }
+
+  &__send-eth-icon {
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    border: 1px solid $alto;
+    z-index: 25;
+    padding: 4px;
+    background-color: $white;
+
+    @media screen and (max-width: $break-small) {
+      position: relative;
+      top: 0;
+    }
+  }
+
+  &__send-arrow-icon {
+    color: #f28930;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: -2px;
+    left: 0;
+    font-size: 1.12em;
+  }
+
+  &__arrow-background {
+    background-color: $white;
+    height: 14px;
+    width: 14px;
+    position: absolute;
+    top: 52px;
+    left: 199px;
+    border-radius: 50%;
+    z-index: 100;
+  }
+
+  &__header {
+    height: 88px;
+    width: 380px;
+    background-color: $athens-grey;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__header-tip {
+    height: 25px;
+    width: 25px;
+    background: $athens-grey;
+    position: absolute;
+    transform: rotate(45deg);
+    left: 178px;
+    top: 71px;
+  }
+
+  &__title {
+    color: $scorpion;
+    font-size: 22px;
+    line-height: 29px;
+    text-align: center;
+    margin-top: 25px;
+  }
+
+  &__copy {
+    color: $gray;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 19px;
+    text-align: center;
+    margin-top: 10px;
+    width: 287px;
+  }
+
+  &__footer {
+    height: 92px;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    border-top: 1px solid $alto;
+    position: absolute;
+    bottom: 0;
+  }
+
+  &__next-btn,
+  &__cancel-btn {
+    width: 163px;
+    text-align: center;
+    height: 55px;
+    width: 163px;
+    border-radius: 2px;
+    background-color: $white;
+    font-family: Roboto;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 21px;
+    text-align: center;
+    border: 1px solid;
+  }
+
+  &__next-btn__disabled {
+    opacity: .5;
+    cursor: auto;
+  }
+
+  &__next-btn {
+    color: $curious-blue;
+    border-color: $curious-blue;
+  }
+
+  &__cancel-btn {
+    color: $dusty-gray;
+    border-color: $dusty-gray;
+  }
+}
