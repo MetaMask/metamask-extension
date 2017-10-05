@@ -54,7 +54,7 @@ async function loadStateFromPersistence () {
   return migratedData.data
 }
 
-function setupController (initState, client) {
+async function setupController (initState, client) {
 
   //
   // MetaMask Controller
@@ -74,20 +74,19 @@ function setupController (initState, client) {
   })
   global.metamaskController = controller
 
-  controller.store.subscribe((state) => {
-    versionifyData(state)
-    .then((versionedData) => dbController.put(versionedData))
-    .catch((err) => { console.error(err) })
+  controller.store.subscribe(async (state) => {
+    try {
+      const versionedData = await versionifyData(state)
+      await dbController.put(versionedData)
+    } catch (e) { console.error('METAMASK Error:', e) }
   })
-  function versionifyData (state) {
-    return dbController.get()
-    .then((rawData) => {
-      return Promise.resolve({
-        data: state,
-        meta: rawData.meta,
-      })
-}
-    )
+
+  async function versionifyData (state) {
+    const rawData = await dbController.get()
+    return {
+      data: state,
+      meta: rawData.meta,
+    }
   }
 
   //
@@ -118,12 +117,6 @@ function setupController (initState, client) {
     controller.setupProviderConnection(mx.createStream('provider'), originDomain)
     controller.setupPublicConfig(mx.createStream('publicConfig'))
   }
-
-  //
-  // User Interface setup
-  //
-  return Promise.resolve()
-
 }
 // // this will be useful later but commented out for linting for now (liiiinting)
 // function sendMessageToAllClients (message) {
