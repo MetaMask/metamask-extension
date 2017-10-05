@@ -28,7 +28,7 @@ global.addEventListener('activate', function (event) {
   event.waitUntil(global.clients.claim())
 })
 
-console.log('inside:open')
+log.debug('inside:open')
 
 
 // // state persistence
@@ -37,7 +37,7 @@ const dbController = new DbController({
 })
 loadStateFromPersistence()
 .then((initState) => setupController(initState))
-.then(() => console.log('MetaMask initialization complete.'))
+.then(() => log.debug('MetaMask initialization complete.'))
 .catch((err) => console.error('WHILE SETTING UP:', err))
 
 //
@@ -95,7 +95,7 @@ function setupController (initState, client) {
   //
 
   connectionListener.on('remote', (portStream, messageEvent) => {
-    console.log('REMOTE CONECTION FOUND***********')
+    log.debug('REMOTE CONECTION FOUND***********')
     connectRemote(portStream, messageEvent.data.context)
   })
 
