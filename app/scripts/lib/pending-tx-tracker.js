@@ -22,7 +22,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     super()
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
-    this.retryLimit = config.retryLimit || Infinity
+    // default is one day
+    this.retryTimePeriod = config.retryTimePeriod || 86400000
     this.getPendingTransactions = config.getPendingTransactions
     this.publishTransaction = config.publishTransaction
   }
@@ -99,8 +100,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   }
 
   async _resubmitTx (txMeta) {
-    if (txMeta.retryCount > this.retryLimit) {
-      const err = new Error(`Gave up submitting after ${this.retryLimit} blocks un-mined.`)
+    if (Date.now() > txMeta.time + this.retryTimePeriod) {
+      const err = new Error(`Gave up submitting after ${this.retryTimePeriod / 3.6e+6} hours.`)
       return this.emit('tx:failed', txMeta.id, err)
     }
 
