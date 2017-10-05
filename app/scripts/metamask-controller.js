@@ -566,11 +566,16 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   newUnsignedTypedMessage (msgParams, cb) {
-    const msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
+    let msgId
+    try {
+      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
+      this.sendUpdate()
+      this.opts.showUnconfirmedMessage()
+    } catch (e) {
+      return cb(e)
+    }
+
     this.typedMessageManager.once(`${msgId}:finished`, (data) => {
-      console.log(data)
       switch (data.status) {
         case 'signed':
           return cb(null, data.rawSig)

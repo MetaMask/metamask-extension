@@ -1,6 +1,7 @@
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const createId = require('./random-id')
+const assert = require('assert')
 
 
 module.exports = class TypedMessageManager extends EventEmitter {
@@ -23,6 +24,8 @@ module.exports = class TypedMessageManager extends EventEmitter {
   }
 
   addUnapprovedMessage (msgParams) {
+    this.validateParams(msgParams)
+
     log.debug(`TypedMessageManager addUnapprovedMessage: ${JSON.stringify(msgParams)}`)
     // create txData obj with parameters and meta data
     var time = (new Date()).getTime()
@@ -39,6 +42,14 @@ module.exports = class TypedMessageManager extends EventEmitter {
     // signal update
     this.emit('update')
     return msgId
+  }
+
+  validateParams (params) {
+    assert.equal(typeof params, 'object', 'Params should ben an object.')
+    assert.ok('data' in params, 'Params must include a data field.')
+    assert.ok('from' in params, 'Params must include a from field.')
+    assert.ok(Array.isArray(params.data), 'Data should be an array.')
+    assert.equal(typeof params.from, 'string', 'From field must be a string.')
   }
 
   addMsg (msg) {
