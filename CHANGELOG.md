@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Only rebrodcast transactions for a day not a days worth of blocks
 - Remove Slack link from info page, since it is a big phishing target.
 
 ## 3.10.8 2017-9-28
