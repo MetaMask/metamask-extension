@@ -101,7 +101,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
 
   async _resubmitTx (txMeta) {
     if (Date.now() > txMeta.time + this.retryTimePeriod) {
-      const err = new Error(`Gave up submitting after ${this.retryTimePeriod / 3.6e+6} hours.`)
+      const hours = (this.retryTimePeriod / 3.6e+6).toFixed(1)
+      const err = new Error(`Gave up submitting after ${hours} hours.`)
       return this.emit('tx:failed', txMeta.id, err)
     }
 
