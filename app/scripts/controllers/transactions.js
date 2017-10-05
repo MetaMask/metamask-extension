@@ -169,6 +169,7 @@ module.exports = class TransactionController extends EventEmitter {
   async addTxDefaults (txMeta) {
     const txParams = txMeta.txParams
     // ensure value
+    txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     const gasPrice = txParams.gasPrice || await this.query.gasPrice()
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
