@@ -1,44 +1,37 @@
 global.window = global
-const self = global
-const pipe = require('pump')
 
 const SwGlobalListener = require('sw-stream/lib/sw-global-listener.js')
-const connectionListener = new SwGlobalListener(self)
+const connectionListener = new SwGlobalListener(global)
 const setupMultiplex = require('../../app/scripts/lib/stream-utils.js').setupMultiplex
-const PortStream = require('../../app/scripts/lib/port-stream.js')
 
 const DbController = require('idb-global')
 
 const SwPlatform = require('../../app/scripts/platforms/sw')
 const MetamaskController = require('../../app/scripts/metamask-controller')
-const extension = {} //require('../../app/scripts/lib/extension')
 
-const storeTransform = require('obs-store/lib/transform')
 const Migrator = require('../../app/scripts/lib/migrator/')
 const migrations = require('../../app/scripts/migrations/')
 const firstTimeState = require('../../app/scripts/first-time-state')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG
-let popupIsOpen = false
-let connectedClientCount = 0
+global.metamaskPopupIsOpen = false
 
 const log = require('loglevel')
 global.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 
-self.addEventListener('install', function(event) {
-  event.waitUntil(self.skipWaiting())
+global.addEventListener('install', function (event) {
+  event.waitUntil(global.skipWaiting())
 })
-self.addEventListener('activate', function(event) {
-  event.waitUntil(self.clients.claim())
+global.addEventListener('activate', function (event) {
+  event.waitUntil(global.clients.claim())
 })
 
 console.log('inside:open')
 
 
 // // state persistence
-let diskStore
 const dbController = new DbController({
   key: STORAGE_KEY,
 })
@@ -47,23 +40,18 @@ loadStateFromPersistence()
 .then(() => console.log('MetaMask initialization complete.'))
 .catch((err) => console.error('WHILE SETTING UP:', err))
 
-// initialization flow
-
 //
 // State and Persistence
 //
-function loadStateFromPersistence() {
+async function loadStateFromPersistence () {
   // migrations
-  let migrator = new Migrator({ migrations })
+  const migrator = new Migrator({ migrations })
   const initialState = migrator.generateInitialState(firstTimeState)
   dbController.initialState = initialState
-  return dbController.open()
-  .then((versionedData) => migrator.migrateData(versionedData))
-  .then((versionedData) => {
-    dbController.put(versionedData)
-    return Promise.resolve(versionedData)
-  })
-  .then((versionedData) => Promise.resolve(versionedData.data))
+  const versionedData = await dbController.open()
+  const migratedData = await migrator.migrateData(versionedData)
+  await dbController.put(migratedData)
+  return migratedData.data
 }
 
 function setupController (initState, client) {
@@ -89,15 +77,16 @@ function setupController (initState, client) {
   controller.store.subscribe((state) => {
     versionifyData(state)
     .then((versionedData) => dbController.put(versionedData))
-    .catch((err) => {console.error(err)})
+    .catch((err) => { console.error(err) })
   })
-  function versionifyData(state) {
+  function versionifyData (state) {
     return dbController.get()
     .then((rawData) => {
       return Promise.resolve({
         data: state,
         meta: rawData.meta,
-      })}
+      })
+}
     )
   }
 
@@ -107,7 +96,6 @@ function setupController (initState, client) {
 
   connectionListener.on('remote', (portStream, messageEvent) => {
     console.log('REMOTE CONECTION FOUND***********')
-    connectedClientCount += 1
     connectRemote(portStream, messageEvent.data.context)
   })
 
@@ -116,7 +104,7 @@ function setupController (initState, client) {
     if (isMetaMaskInternalProcess) {
       // communication with popup
       controller.setupTrustedCommunication(connectionStream, 'MetaMask')
-      popupIsOpen = true
+      global.metamaskPopupIsOpen = true
     } else {
       // communication with page
       setupUntrustedCommunication(connectionStream, context)
@@ -131,24 +119,19 @@ function setupController (initState, client) {
     controller.setupPublicConfig(mx.createStream('publicConfig'))
   }
 
-  function setupTrustedCommunication (connectionStream, originDomain) {
-    // setup multiplexing
-    var mx = setupMultiplex(connectionStream)
-    // connect features
-    controller.setupProviderConnection(mx.createStream('provider'), originDomain)
-  }
   //
   // User Interface setup
   //
   return Promise.resolve()
 
 }
+// // this will be useful later but commented out for linting for now (liiiinting)
+// function sendMessageToAllClients (message) {
+//   global.clients.matchAll().then(function (clients) {
+//     clients.forEach(function (client) {
+//       client.postMessage(message)
+//     })
+//   })
+// }
 
-function sendMessageToAllClients (message) {
-  self.clients.matchAll().then(function(clients) {
-    clients.forEach(function(client) {
-      client.postMessage(message)
-    })
-  })
-}
 function noop () {}
