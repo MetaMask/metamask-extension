@@ -26,6 +26,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.retryTimePeriod = config.retryTimePeriod || 86400000
     this.getPendingTransactions = config.getPendingTransactions
     this.publishTransaction = config.publishTransaction
+    this._checkPendingTxs()
   }
 
   //  checks if a signed tx is in a block and
