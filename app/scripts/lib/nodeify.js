@@ -4,7 +4,7 @@ const noop = function(){}
 module.exports = function nodeify (fn, context) {
   return function(){
     const args = [].slice.call(arguments)
-    const lastArg = args[args.length-1]
+    const lastArg = args[args.length - 1]
     const lastArgIsCallback = typeof lastArg === 'function'
     let callback
     if (lastArgIsCallback) {
