@@ -2,6 +2,7 @@ const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
 const createId = require('./random-id')
 const assert = require('assert')
+const sigUtil = require('eth-sig-util')
 
 
 module.exports = class TypedMessageManager extends EventEmitter {
@@ -50,6 +51,9 @@ module.exports = class TypedMessageManager extends EventEmitter {
     assert.ok('from' in params, 'Params must include a from field.')
     assert.ok(Array.isArray(params.data), 'Data should be an array.')
     assert.equal(typeof params.from, 'string', 'From field must be a string.')
+    assert.doesNotThrow(() => {
+      sigUtil.typedSignatureHash(params.data)
+    }, 'Expected EIP712 typed data')
   }
 
   addMsg (msg) {
