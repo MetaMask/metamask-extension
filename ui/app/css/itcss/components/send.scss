@@ -552,6 +552,22 @@
     }
   }
 
+  &__to-autocomplete {
+    &__input {
+      height: 54px;
+      width: 240px;
+      border: 1px solid $alto;
+      border-radius: 4px;
+      background-color: $white;
+      color: $dusty-gray;
+      padding: 10px;
+      font-family: Roboto;
+      font-size: 16px;
+      line-height: 21px;
+      font-weight: 300;
+    }
+  }
+
   &__footer {
     height: 92px;
     width: 100%;
