@@ -495,6 +495,100 @@
     width: 287px;
   }
 
+  &__form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 13px;
+    width: 100%;
+  }
+
+  &__form-row {
+    margin: 14.5px 18px 0px;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+  }
+
+  &__form-label {
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    line-height: 22px;
+    margin-top: 16px;
+  }
+
+  &__from-dropdown {
+    height: 73px;
+    width: 240px;
+    border: 1px solid $alto;
+    border-radius: 4px;
+    background-color: $white;
+    font-family: Roboto;
+    line-height: 16px;
+    font-size: 12px;
+    color: $tundora;
+
+    &__top-row {
+      display: flex;
+      margin-top: 10px;
+      margin-left: 8px;
+      position: relative;
+    }
+
+    &__account-name {
+      font-size: 16px;
+      margin-left: 8px;
+    }
+
+    &__caret-down,
+    &__check {
+      position: absolute;
+      right: 12px;
+      top: 1px;
+    }
+
+    &__caret-down {
+      color: $alto;
+    }
+
+    &__check {
+      color: $caribbean-green;
+    }
+
+    &__account-primary-balance {
+      margin-left: 34px;
+      margin-top: 4px;
+    }
+
+    &__account-secondary-balance {
+      margin-left: 34px;
+      color: $dusty-gray;
+    }
+
+    &__close-area {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: 100%;
+      height: 100%;
+    }
+    
+    &__list {
+      z-index: 1050;
+      position: absolute;
+      height: 220px;
+      width: 240px;
+      border: 1px solid $geyser;
+      border-radius: 4px;
+      background-color: $white;
+      box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
+      margin-top: 11px;
+      margin-left: -1px;
+      overflow-y: scroll;
+    }
+  }
+
   &__footer {
     height: 92px;
     width: 100%;
