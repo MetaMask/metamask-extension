@@ -5,6 +5,8 @@ const ObservableStore = require('obs-store')
 const clone = require('clone')
 const { createStubedProvider } = require('../stub/provider')
 const PendingTransactionTracker = require('../../app/scripts/lib/pending-tx-tracker')
+const MockTxGen = require('../lib/mock-tx-gen')
+const sinon = require('sinon')
 const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
@@ -47,6 +49,55 @@ describe('PendingTransactionTracker', function () {
       },
       getPendingTransactions: () => {return []},
       publishTransaction: () => {},
+    })
+  })
+
+  describe('_checkPendingTx state management', function () {
+    let stub
+
+    afterEach(function () {
+      if (stub) {
+        stub.restore()
+      }
+    })
+
+    it('should become failed if another tx with the same nonce succeeds', async function () {
+
+      // SETUP
+      const txGen = new MockTxGen()
+
+      txGen.generate({
+        id: '456',
+        value: '0x01',
+        hash: '0xbad',
+        status: 'confirmed',
+        nonce: '0x01',
+      }, { count: 1 })
+
+      const pending = txGen.generate({
+        id: '123',
+        value: '0x02',
+        hash: '0xfad',
+        status: 'submitted',
+        nonce: '0x01',
+      }, { count: 1 })[0]
+
+      stub = sinon.stub(pendingTxTracker, 'getPendingTransactions')
+      .returns(txGen.txs)
+
+      // THE EXPECTATION
+      const spy = sinon.spy()
+      pendingTxTracker.on('tx:failed', (txId, err) => {
+        assert.equal(txId, pending.id, 'should fail the pending tx')
+        assert.equal(err.name, 'NonceTakenErr', 'should emit a nonce taken error.')
+        spy(txId, err)
+      })
+
+      // THE METHOD
+      await pendingTxTracker._checkPendingTx(pending)
+
+      // THE ASSERTION
+      return sinon.assert.calledWith(spy, pending.id, 'tx failed should be emitted')
     })
   })
 
