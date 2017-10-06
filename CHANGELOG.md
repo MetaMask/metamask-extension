@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Add timer for autolock when extension is closed for an extended period.
 
 ## 3.10.9 2017-10-5
 
