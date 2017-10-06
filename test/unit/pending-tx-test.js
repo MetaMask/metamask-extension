@@ -48,6 +48,7 @@ describe('PendingTransactionTracker', function () {
         }
       },
       getPendingTransactions: () => {return []},
+      getCompletedTransactions: () => {return []},
       publishTransaction: () => {},
     })
   })
@@ -82,7 +83,7 @@ describe('PendingTransactionTracker', function () {
         nonce: '0x01',
       }, { count: 1 })[0]
 
-      stub = sinon.stub(pendingTxTracker, 'getPendingTransactions')
+      stub = sinon.stub(pendingTxTracker, 'getCompletedTransactions')
       .returns(txGen.txs)
 
       // THE EXPECTATION
@@ -97,7 +98,7 @@ describe('PendingTransactionTracker', function () {
       await pendingTxTracker._checkPendingTx(pending)
 
       // THE ASSERTION
-      return sinon.assert.calledWith(spy, pending.id, 'tx failed should be emitted')
+      assert.ok(spy.calledWith(pending.id), 'tx failed should be emitted')
     })
   })
 

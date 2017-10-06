@@ -62,6 +62,7 @@ module.exports = class TransactionController extends EventEmitter {
       retryTimePeriod: 86400000, // Retry 3500 blocks, or about 1 day.
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
+      getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))
