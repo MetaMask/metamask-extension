@@ -27,6 +27,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
+    this._checkPendingTxs()
   }
 
   //  checks if a signed tx is in a block and
