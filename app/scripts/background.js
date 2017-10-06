@@ -94,7 +94,7 @@ function setupController (initState) {
     remotePort.onDisconnect.addListener(() => {
       var autolock = setTimeout(() => {
         controller.keyringController.memStore.updateState({ isUnlocked: false })
-      }, 960000)
+      }, 9600000)
       extension.runtime.onConnect.addListener(() => {
         clearTimeout(autolock)
       })
