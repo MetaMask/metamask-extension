@@ -2,7 +2,11 @@
 
 ## Current Master
 
+## 3.10.9 2017-10-5
+
+- Only rebrodcast transactions for a day not a days worth of blocks
 - Remove Slack link from info page, since it is a big phishing target.
+- Stop computing balance based on pending transactions, to avoid edge case where users are unable to send transactions.
 
 ## 3.10.8 2017-9-28
 

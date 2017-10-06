@@ -17,17 +17,17 @@ var name = 'popup'
 window.METAMASK_UI_TYPE = name
 window.METAMASK_PLATFORM_TYPE = 'mascara'
 
-let intervalDelay =  Math.floor(Math.random() * (30000 - 1000)) + 1000
+const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
 
 const background = new SWcontroller({
   fileName: '/background.js',
   letBeIdle: false,
   intervalDelay,
-  wakeUpInterval: 20000
+  wakeUpInterval: 20000,
 })
 // Setup listener for when the service worker is read
 const connectApp = function (readSw) {
-  let connectionStream = SwStream({
+  const connectionStream = SwStream({
     serviceWorker: background.controller,
     context: name,
   })
@@ -57,7 +57,7 @@ background.on('updatefound', windowReload)
 
 background.startWorker()
 
-function windowReload() {
+function windowReload () {
   if (window.METAMASK_SKIP_RELOAD) return
   window.location.reload()
 }
