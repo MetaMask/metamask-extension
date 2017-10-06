@@ -2,6 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const { checkFeatureToggle } = require('../lib/feature-toggle-utils')
 const actions = require('./actions')
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
@@ -334,11 +335,8 @@ App.prototype.renderPrimary = function () {
 
     case 'sendTransaction':
       log.debug('rendering send tx screen')
-      // Below param and ternary operator used for feature toggle
-      // Remove before merged to master
-      const windowParam = window.location.search.substr(1).split('=')
       
-      const SendComponentToRender = windowParam[0] === "ft" && windowParam[1] === "send-v2"
+      const SendComponentToRender = checkFeatureToggle('send-v2')
         ? SendTransactionScreen2
         : SendTransactionScreen
 
