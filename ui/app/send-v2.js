@@ -3,6 +3,7 @@ const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const FromDropdown = require('./components/send/from-dropdown')
+const ToAutoComplete = require('./components/send/to-autocomplete')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -43,7 +44,8 @@ function SendTransactionScreen () {
 
 SendTransactionScreen.prototype.render = function () {
   const { accounts } = this.props
-  const { dropdownOpen } = this.state
+  const { dropdownOpen, newTx } = this.state
+  const { to } = newTx
 
   return (
 
@@ -81,7 +83,26 @@ SendTransactionScreen.prototype.render = function () {
             closeDropdown: () => this.setState({ dropdownOpen: false }),
           }),
 
-        ])
+        ]),
+
+        h('div.send-v2__form-row', [
+
+          h('div.send-v2__form-label', 'To:'),
+
+          h(ToAutoComplete, {
+            to,
+            identities: identities.map(({ identity }) => identity),
+            onChange: (event) => {
+              this.setState({
+                newTx: {
+                  ...this.state.newTx,
+                  to: event.target.value,
+                },
+              })
+            },
+          }),
+
+        ]),
 
       ]),
 
