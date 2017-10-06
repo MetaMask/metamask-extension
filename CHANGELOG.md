@@ -3,6 +3,8 @@
 ## Current Master
 
 - Add new support for new eth_signTypedData method per EIP 712.
+- Fix bug where some transactions would be shown as pending forever, even after successfully mined.
+- Fix bug where a transaction might be shown as pending forever if another tx with the same nonce was mined.
 
 ## 3.10.9 2017-10-5
 
