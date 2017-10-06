@@ -18,7 +18,14 @@ class ExtensionPlatform {
   }
 
   getPlatformInfo (cb) {
-    return extension.runtime.getPlatformInfo(cb)
+    var info
+    try {
+      info = extension.runtime.getPlatformInfo(cb)
+    } catch (e) {
+      log.debug(e)
+      info = undefined
+    }
+    return info
   }
 
 }
