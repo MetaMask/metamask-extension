@@ -90,6 +90,16 @@ function setupController (initState) {
 
   extension.runtime.onConnect.addListener(connectRemote)
   function connectRemote (remotePort) {
+
+    remotePort.onDisconnect.addListener(() => {
+      var autolock = setTimeout(() => {
+        controller.keyringController.memStore.updateState({ isUnlocked: false })
+      }, 960000)
+      extension.runtime.onConnect.addListener(() => {
+        clearTimeout(autolock)
+      })
+    })
+
     const isMetaMaskInternalProcess = remotePort.name === 'popup' || remotePort.name === 'notification'
     const portStream = new PortStream(remotePort)
     if (isMetaMaskInternalProcess) {
