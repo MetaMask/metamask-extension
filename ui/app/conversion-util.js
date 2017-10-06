@@ -36,6 +36,7 @@ const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
 // Individual Setters
 const convert = R.invoker(1, 'times')
 const round = R.invoker(2, 'toFormat')(R.__, BigNumber.ROUND_DOWN)
+const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
 
 // Setter Maps
 const toBigNumber = {
@@ -63,13 +64,23 @@ const fromAndToCurrencyPropsNotEqual = R.compose(
 )
 
 // Lens
-const valuePropertyLense = R.over(R.lensProp('value'))
+const valuePropertyLens = R.over(R.lensProp('value'))
+const conversionRateLens = R.over(R.lensProp('conversionRate'))
+
+// conditional conversionRate setting wrapper
+const whenPredSetCRWithPropAndSetter = (pred, prop, setter) => R.when(
+  pred,
+  R.converge(
+    conversionRateLens,
+    [R.pipe(R.prop(prop), setter), R.identity]
+  )
+)
 
 // conditional 'value' setting wrappers
 const whenPredSetWithPropAndSetter = (pred, prop, setter) => R.when(
   pred,
   R.converge(
-    valuePropertyLense,
+    valuePropertyLens,
     [R.pipe(R.prop(prop), setter), R.identity]
   )
 )
@@ -81,6 +92,7 @@ const whenPropApplySetterMap = (prop, setterMap) => whenPredSetWithPropAndSetter
 
 // Conversion utility function
 const converter = R.pipe(
+  whenPredSetCRWithPropAndSetter(R.prop('invertConversionRate'), 'conversionRate', invertConversionRate),
   whenPropApplySetterMap('fromNumericBase', toBigNumber),
   whenPropApplySetterMap('fromDenomination', toNormalizedDenomination),
   whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
@@ -101,6 +113,7 @@ const conversionUtil = (value, {
   numberOfDecimals,
   conversionRate,
   ethToUSDRate,
+  invertConversionRate,
 }) => converter({
   fromCurrency,
   toCurrency,
@@ -111,6 +124,7 @@ const conversionUtil = (value, {
   numberOfDecimals,
   conversionRate,
   ethToUSDRate,
+  invertConversionRate,
   value,
 });
 

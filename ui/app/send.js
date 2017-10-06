@@ -22,7 +22,6 @@ const {
 const { stripHexPrefix, addHexPrefix } = require('ethereumjs-util')
 const { isHex, numericBalance, isValidAddress, allNull } = require('./util')
 const { conversionUtil, conversionGreaterThan } = require('./conversion-util')
-const BigNumber = require('bignumber.js')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -470,18 +469,14 @@ SendTransactionScreen.prototype.getAmountToSend = function (amount) {
   const { activeCurrency } = this.state
   const { conversionRate } = this.props
 
-  // TODO: need a clean way to integrate this into conversionUtil
-  const sendConversionRate = activeCurrency === 'ETH'
-    ? conversionRate
-    : new BigNumber(1.0).div(conversionRate)
-
   return conversionUtil(amount, {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
     fromCurrency: activeCurrency,
     toCurrency: 'ETH',
     toDenomination: 'WEI',
-    conversionRate: sendConversionRate,
+    conversionRate,
+    invertConversionRate: activeCurrency !== 'ETH',
   })
 }
 
