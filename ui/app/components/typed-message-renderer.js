@@ -22,6 +22,7 @@ TypedMessageRenderer.prototype.render = function () {
     border: 'none',
     background: 'white',
     padding: '3px',
+    overflow: 'scroll',
   }, style)
 
   return (
@@ -34,7 +35,7 @@ TypedMessageRenderer.prototype.render = function () {
 function renderTypedData(values) {
   return values.map(function (value) {
     return h('div', {}, [
-      h('strong', {style: {display: 'block', fontWeight: 'bold', textTransform: 'capitalize'}}, String(value.name) + ':'),
+      h('strong', {style: {display: 'block', fontWeight: 'bold'}}, String(value.name) + ':'),
       h('div', {}, value.value),
     ])
   })
