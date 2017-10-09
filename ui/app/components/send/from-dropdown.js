@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('../identicon')
+const AccountListItem = require('./account-list-item')
 
 module.exports = FromDropdown
 
@@ -10,48 +11,15 @@ function FromDropdown () {
   Component.call(this)
 }
 
-FromDropdown.prototype.renderSingleIdentity = function (
-  account, 
-  handleClick, 
-  inList = false, 
-  selectedIdentity = {}
-) {
-  const { identity, balancesToRender } = account
-  const { name, address } = identity
-  const { primary, secondary } = balancesToRender
+FromDropdown.prototype.getListItemIcon = function (currentAccount, selectedAccount) {
+  const listItemIcon = h(`i.fa.fa-check.fa-lg`, { style: { color: '#02c9b1' } })
 
-  const iconType = inList ? 'check' : 'caret-down'
-  const showIcon = !inList || address === selectedIdentity.address
-
-  return h('div.send-v2__from-dropdown__account', {
-    onClick: () => handleClick(identity),
-  }, [
-
-    h('div.send-v2__from-dropdown__top-row', {}, [
-
-      h(
-        Identicon,
-        {
-          address,
-          diameter: 18,
-          className: 'send-v2__from-dropdown__identicon',
-        },
-      ),  
-
-      h('div.send-v2__from-dropdown__account-name', {}, name),
-
-      showIcon && h(`i.fa.fa-${iconType}.fa-lg.send-v2__from-dropdown__${iconType}`),
-
-    ]),
-
-    h('div.send-v2__from-dropdown__account-primary-balance', {}, primary),
-
-    h('div.send-v2__from-dropdown__account-secondary-balance', {}, secondary),
-
-  ])
+  return currentAccount.identity.address === selectedAccount.identity.address
+    ? listItemIcon
+    : null
 }
 
-FromDropdown.prototype.renderDropdown = function (identities, selectedIdentity, closeDropdown) {
+FromDropdown.prototype.renderDropdown = function (accounts, selectedAccount, closeDropdown) {
   return h('div', {}, [
 
     h('div.send-v2__from-dropdown__close-area', {
@@ -60,12 +28,11 @@ FromDropdown.prototype.renderDropdown = function (identities, selectedIdentity, 
 
     h('div.send-v2__from-dropdown__list', {}, [
 
-      ...identities.map(identity => this.renderSingleIdentity(
-        identity,
-        () => console.log('Select identity'),
-        true,
-        selectedIdentity
-      ))
+      ...accounts.map(account => h(AccountListItem, {
+        account, 
+        handleClick: () => console.log('Select identity'), 
+        icon: this.getListItemIcon(account, selectedAccount),
+      }))
 
     ]),
 
@@ -74,8 +41,8 @@ FromDropdown.prototype.renderDropdown = function (identities, selectedIdentity, 
 
 FromDropdown.prototype.render = function () {
   const {
-    identities,
-    selectedIdentity,
+    accounts,
+    selectedAccount,
     setFromField,
     openDropdown,
     closeDropdown,
@@ -84,9 +51,13 @@ FromDropdown.prototype.render = function () {
 
   return h('div.send-v2__from-dropdown', {}, [
 
-    this.renderSingleIdentity(selectedIdentity, openDropdown),
+    h(AccountListItem, {
+      account: selectedAccount,
+      handleClick: openDropdown,
+      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } })
+    }),
 
-    dropdownOpen && this.renderDropdown(identities, selectedIdentity.identity, closeDropdown),
+    dropdownOpen && this.renderDropdown(accounts, selectedAccount, closeDropdown),
 
   ])
     

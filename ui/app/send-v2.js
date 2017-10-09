@@ -2,13 +2,12 @@ const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
-  const mockIdentities = Array.from(new Array(5))
+  const mockAccounts = Array.from(new Array(5))
     .map((v, i) => ({
       identity: {
         name: `Test Account Name ${i}`,
@@ -20,7 +19,7 @@ function mapStateToProps (state) {
       }
     }))
 
-  return { identities: mockIdentities }
+  return { accounts: mockAccounts }
 }
 
 inherits(SendTransactionScreen, PersistentForm)
@@ -43,7 +42,7 @@ function SendTransactionScreen () {
 }
 
 SendTransactionScreen.prototype.render = function () {
-  const { identities } = this.props
+  const { accounts } = this.props
   const { dropdownOpen } = this.state
 
   return (
@@ -75,8 +74,8 @@ SendTransactionScreen.prototype.render = function () {
 
           h(FromDropdown, {
             dropdownOpen,
-            identities,
-            selectedIdentity: identities[0],
+            accounts,
+            selectedAccount: accounts[0],
             setFromField: () => console.log('Set From Field'),
             openDropdown: () => this.setState({ dropdownOpen: true }),
             closeDropdown: () => this.setState({ dropdownOpen: false }),
