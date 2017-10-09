@@ -125,7 +125,7 @@ const conversionUtil = (value, {
   conversionRate,
   ethToUSDRate,
   invertConversionRate,
-  value,
+  value: value || '0',
 });
 
 const addCurrencies = (a, b, { toNumericBase, numberOfDecimals }) => {
