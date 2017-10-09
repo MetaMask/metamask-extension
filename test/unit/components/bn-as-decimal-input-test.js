@@ -72,7 +72,7 @@ describe('BnInput', function () {
       onChange: (newBn) => {
         assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
         const reInput = BnInput.prototype.downsize(newBn.toString(), 9, 9)
-        assert.equal(reInput.toString(), target.toString(), 'should tolerate increase')
+        assert.equal(reInput.toString(), inputStr, 'should tolerate increase')
         done()
       },
     }
