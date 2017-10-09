@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where some transactions would be shown as pending forever, even after successfully mined.
+
 ## 3.10.9 2017-10-5
 
 - Only rebrodcast transactions for a day not a days worth of blocks

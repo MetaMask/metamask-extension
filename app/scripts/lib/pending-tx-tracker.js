@@ -25,7 +25,9 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     // default is one day
     this.retryTimePeriod = config.retryTimePeriod || 86400000
     this.getPendingTransactions = config.getPendingTransactions
+    this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
+    this._checkPendingTxs()
   }
 
   //  checks if a signed tx is in a block and
@@ -120,6 +122,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   async _checkPendingTx (txMeta) {
     const txHash = txMeta.hash
     const txId = txMeta.id
+
     // extra check in case there was an uncaught error during the
     // signature and submission process
     if (!txHash) {
@@ -128,6 +131,15 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:failed', txId, noTxHashErr)
       return
     }
+
+    // If another tx with the same nonce is mined, set as failed.
+    const taken = await this._checkIfNonceIsTaken(txMeta)
+    if (taken) {
+      const nonceTakenErr = new Error('Another transaction with this nonce has been mined.')
+      nonceTakenErr.name = 'NonceTakenErr'
+      return this.emit('tx:failed', txId, nonceTakenErr)
+    }
+
     // get latest transaction status
     let txParams
     try {
@@ -159,4 +171,13 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     }
     nonceGlobalLock.releaseLock()
   }
+
+  async _checkIfNonceIsTaken (txMeta) {
+    const completed = this.getCompletedTransactions()
+    const sameNonce = completed.filter((otherMeta) => {
+      return otherMeta.txParams.nonce === txMeta.txParams.nonce
+    })
+    return sameNonce.length > 0
+  }
+
 }
