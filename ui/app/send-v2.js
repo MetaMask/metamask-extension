@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const FromDropdown = require('./components/send/from-dropdown')
 const ToAutoComplete = require('./components/send/to-autocomplete')
+const CurrencyDisplay = require('./components/send/currency-display')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -19,8 +20,12 @@ function mapStateToProps (state) {
         secondary: `$30${i},000.00 USD`,
       }
     }))
+  const conversionRate = 301.0005
 
-  return { accounts: mockAccounts }
+  return {
+    accounts: mockAccounts,
+    conversionRate
+  }
 }
 
 inherits(SendTransactionScreen, PersistentForm)
@@ -31,10 +36,9 @@ function SendTransactionScreen () {
     newTx: {
       from: '',
       to: '',
-      amountToSend: '0x0',
       gasPrice: null,
-      gas: null,
-      amount: '0x0', 
+      gas: '0.001',
+      amount: '10', 
       txData: null,
       memo: '',
     },
@@ -43,9 +47,9 @@ function SendTransactionScreen () {
 }
 
 SendTransactionScreen.prototype.render = function () {
-  const { accounts } = this.props
+  const { accounts, conversionRate } = this.props
   const { dropdownOpen, newTx } = this.state
-  const { to } = newTx
+  const { to, amount, gas } = newTx
 
   return (
 
@@ -91,7 +95,7 @@ SendTransactionScreen.prototype.render = function () {
 
           h(ToAutoComplete, {
             to,
-            identities: identities.map(({ identity }) => identity),
+            identities: accounts.map(({ identity }) => identity),
             onChange: (event) => {
               this.setState({
                 newTx: {
@@ -101,6 +105,43 @@ SendTransactionScreen.prototype.render = function () {
               })
             },
           }),
+
+        ]),
+
+        h('div.send-v2__form-row', [
+
+          h('div.send-v2__form-label', 'Amount:'),
+
+          h(CurrencyDisplay, {
+            primaryCurrency: 'ETH',
+            convertedCurrency: 'USD',
+            value: amount,
+            conversionRate,
+            convertedPrefix: '$',
+            handleChange: (value) => {
+              this.setState({
+                newTx: {
+                  ...this.state.newTx,
+                  amount: value,
+                },
+              })
+            }
+          }),          
+
+        ]),
+
+        h('div.send-v2__form-row', [
+
+          h('div.send-v2__form-label', 'Gas fee:'),
+
+          h(CurrencyDisplay, {
+            primaryCurrency: 'ETH',
+            convertedCurrency: 'USD',
+            value: gas,
+            conversionRate,
+            convertedPrefix: '$',
+            readOnly: true,
+          }),          
 
         ]),
 
