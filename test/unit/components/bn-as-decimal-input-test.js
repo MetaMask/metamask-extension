@@ -48,21 +48,21 @@ describe('BnInput', function () {
       checkValidity () { return true } },
     })
   })
-  
+
   it('can tolerate wei precision', function (done) {
     const renderer = ReactTestUtils.createRenderer()
 
-    let valueStr = '1000000000000000000'
+    let valueStr = '1000000000'
 
     const value = new BN(valueStr, 10)
+    const inputStr = '1.000000001'
 
-    const inputStr = '1000000000.000000001'
 
-    let targetStr = '1000000000000000001'
+    let targetStr = '1000000001'
 
     const target = new BN(targetStr, 10)
 
-    const precision = 9 // ether precision
+    const precision = 9 // gwei precision
     const scale = 9
 
     const props = {
@@ -71,6 +71,8 @@ describe('BnInput', function () {
       precision,
       onChange: (newBn) => {
         assert.equal(newBn.toString(), target.toString(), 'should tolerate increase')
+        const reInput = BnInput.prototype.downsize(newBn.toString(), 9, 9)
+        assert.equal(reInput.toString(), target.toString(), 'should tolerate increase')
         done()
       },
     }
