@@ -270,7 +270,8 @@ ConfirmDeployContract.prototype.render = function () {
           h('button.confirm-screen-back-button', {
             onClick: () => backToAccountDetail(selectedAddress),
           }, 'BACK'),
-          h('div.confirm-screen-title', 'Confirm Transaction'),
+          h('div.confirm-screen-title', 'Confirm Contract'),
+          h('div.confirm-screen-header-tip'),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
           h('div.confirm-screen-account-wrapper', [
@@ -278,11 +279,11 @@ ConfirmDeployContract.prototype.render = function () {
               Identicon,
               {
                 address: fromAddress,
-                diameter: 100,
+                diameter: 60,
               },
             ),
             h('span.confirm-screen-account-name', fromName),
-            h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
+            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
           ]),
           h('i.fa.fa-arrow-right.fa-lg'),
           h('div.confirm-screen-account-wrapper', [
@@ -292,14 +293,14 @@ ConfirmDeployContract.prototype.render = function () {
           ]),
         ]),
 
-        h('h3.flex-center.confirm-screen-sending-to-message', {
-          style: {
-            textAlign: 'center',
-            fontSize: '16px',
-          },
-        }, [
-          `You're deploying a new contract.`,
-        ]),
+        // h('h3.flex-center.confirm-screen-sending-to-message', {
+        //   style: {
+        //     textAlign: 'center',
+        //     fontSize: '16px',
+        //   },
+        // }, [
+        //   `You're deploying a new contract.`,
+        // ]),
 
         this.renderHeroAmount(),
 
@@ -326,17 +327,17 @@ ConfirmDeployContract.prototype.render = function () {
         ]),
       ]),
 
-      h('form#pending-tx-form.flex-column.flex-center', {
+      h('form#pending-tx-form', {
         onSubmit: this.onSubmit,
       }, [
-
-        // Accept Button
-        h('button.confirm-screen-confirm-button', ['CONFIRM']),
-
         // Cancel Button
         h('div.cancel.btn-light.confirm-screen-cancel-button', {
           onClick: (event) => this.cancel(event, txMeta),
         }, 'CANCEL'),
+
+        // Accept Button
+        h('button.confirm-screen-confirm-button', ['CONFIRM']),
+
       ]),
     ])
   )

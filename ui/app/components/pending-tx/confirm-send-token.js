@@ -155,7 +155,7 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
         h('h3.flex-center.confirm-screen-send-amount', `$${fiatAmount}`),
         h('h3.flex-center.confirm-screen-send-amount-currency', 'USD'),
         h('div.flex-center.confirm-memo-wrapper', [
-          h('h3.confirm-screen-send-memo', memo),
+          h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
       ])
     )
@@ -164,7 +164,7 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
         h('h3.flex-center.confirm-screen-send-amount', tokenAmount),
         h('h3.flex-center.confirm-screen-send-amount-currency', symbol),
         h('div.flex-center.confirm-memo-wrapper', [
-          h('h3.confirm-screen-send-memo', memo),
+          h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
       ])
     )
@@ -242,7 +242,7 @@ ConfirmSendToken.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.flex-column.flex-grow.confirm-screen-container', {
+    h('div.confirm-screen-container', {
       style: { minWidth: '355px' },
     }, [
       // Main Send token Card
@@ -252,6 +252,7 @@ ConfirmSendToken.prototype.render = function () {
             onClick: () => backToAccountDetail(selectedAddress),
           }, 'BACK'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
+          h('div.confirm-screen-header-tip'),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
           h('div.confirm-screen-account-wrapper', [
@@ -259,11 +260,11 @@ ConfirmSendToken.prototype.render = function () {
               Identicon,
               {
                 address: fromAddress,
-                diameter: 100,
+                diameter: 60,
               },
             ),
             h('span.confirm-screen-account-name', fromName),
-            h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
+            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
           ]),
           h('i.fa.fa-arrow-right.fa-lg'),
           h('div.confirm-screen-account-wrapper', [
@@ -271,22 +272,22 @@ ConfirmSendToken.prototype.render = function () {
               Identicon,
               {
                 address: txParams.to,
-                diameter: 100,
+                diameter: 60,
               },
             ),
             h('span.confirm-screen-account-name', toName),
-            h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
+            // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
           ]),
         ]),
 
-        h('h3.flex-center.confirm-screen-sending-to-message', {
-          style: {
-            textAlign: 'center',
-            fontSize: '16px',
-          },
-        }, [
-          `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
-        ]),
+        // h('h3.flex-center.confirm-screen-sending-to-message', {
+        //   style: {
+        //     textAlign: 'center',
+        //     fontSize: '16px',
+        //   },
+        // }, [
+          // `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
+        // ]),
 
         this.renderHeroAmount(),
 
@@ -314,18 +315,19 @@ ConfirmSendToken.prototype.render = function () {
         ]),
       ]),
 
-      h('form#pending-tx-form.flex-column.flex-center', {
+      h('form#pending-tx-form', {
         onSubmit: this.onSubmit,
       }, [
-
-        // Accept Button
-        h('button.confirm-screen-confirm-button', ['CONFIRM']),
-
         // Cancel Button
         h('div.cancel.btn-light.confirm-screen-cancel-button', {
           onClick: (event) => this.cancel(event, txMeta),
         }, 'CANCEL'),
+
+        // Accept Button
+        h('button.confirm-screen-confirm-button', ['CONFIRM']),
       ]),
+
+
     ])
   )
 }

@@ -140,7 +140,9 @@
   }
 
   i.fa-file-text-o {
-    font-size: 100px;
+    font-size: 60px;
+    margin: 16px 8px 0 8px;
+    text-align: center;
   }
 }
 
@@ -294,7 +296,7 @@ section .confirm-screen-account-number,
   padding: 19px 18px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-
+  width: 100%;
 
   @media screen and (max-width: $break-small) {
     border-top: 1px solid $alto;
