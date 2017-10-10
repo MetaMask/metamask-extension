@@ -192,7 +192,7 @@ ConfirmSendEther.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.flex-column.flex-grow.confirm-screen-container', {
+    h('div.confirm-screen-container', {
       style: { minWidth: '355px' },
     }, [
       // Main Send token Card
@@ -202,6 +202,7 @@ ConfirmSendEther.prototype.render = function () {
             onClick: () => backToAccountDetail(selectedAddress),
           }, 'BACK'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
+          h('div.confirm-screen-header-tip'),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
           h('div.confirm-screen-account-wrapper', [
@@ -209,11 +210,11 @@ ConfirmSendEther.prototype.render = function () {
               Identicon,
               {
                 address: fromAddress,
-                diameter: 100,
+                diameter: 60,
               },
             ),
             h('span.confirm-screen-account-name', fromName),
-            h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
+            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
           ]),
           h('i.fa.fa-arrow-right.fa-lg'),
           h('div.confirm-screen-account-wrapper', [
@@ -221,27 +222,27 @@ ConfirmSendEther.prototype.render = function () {
               Identicon,
               {
                 address: txParams.to,
-                diameter: 100,
+                diameter: 60,
               },
             ),
             h('span.confirm-screen-account-name', toName),
-            h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
+            // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
           ]),
         ]),
 
-        h('h3.flex-center.confirm-screen-sending-to-message', {
-          style: {
-            textAlign: 'center',
-            fontSize: '16px',
-          },
-        }, [
-          `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
-        ]),
+        // h('h3.flex-center.confirm-screen-sending-to-message', {
+        //   style: {
+        //     textAlign: 'center',
+        //     fontSize: '16px',
+        //   },
+        // }, [
+        //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
+        // ]),
 
         h('h3.flex-center.confirm-screen-send-amount', [`$${amountInUSD}`]),
         h('h3.flex-center.confirm-screen-send-amount-currency', [ 'USD' ]),
         h('div.flex-center.confirm-memo-wrapper', [
-          h('h3.confirm-screen-send-memo', [ memo ]),
+          h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
 
         h('div.confirm-screen-rows', [
@@ -365,17 +366,16 @@ ConfirmSendEther.prototype.render = function () {
 // }
       ]),
 
-      h('form#pending-tx-form.flex-column.flex-center', {
+      h('form#pending-tx-form', {
         onSubmit: this.onSubmit,
       }, [
-
-        // Accept Button
-        h('button.confirm-screen-confirm-button', ['CONFIRM']),
-
         // Cancel Button
         h('div.cancel.btn-light.confirm-screen-cancel-button', {
           onClick: (event) => this.cancel(event, txMeta),
         }, 'CANCEL'),
+
+        // Accept Button
+        h('button.confirm-screen-confirm-button', ['CONFIRM']),
       ]),
     ])
   )
