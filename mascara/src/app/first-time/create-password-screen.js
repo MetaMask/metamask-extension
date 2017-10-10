@@ -72,6 +72,7 @@ class CreatePasswordScreen extends Component {
           >
             Create
           </button>
+          { /* }
           <a
             href=""
             className="first-time-flow__link create-password__import-link"
@@ -82,6 +83,7 @@ class CreatePasswordScreen extends Component {
           >
             Import an account
           </a>
+          { */ }
           <Breadcrumbs total={3} currentIndex={0} />
         </div>
       )
@@ -91,6 +93,6 @@ class CreatePasswordScreen extends Component {
 export default connect(
   ({ appState: { isLoading } }) => ({ isLoading }),
   dispatch => ({
-    createAccount: password => dispatch(createNewVaultAndKeychain(password))
+    createAccount: password => dispatch(createNewVaultAndKeychain(password)),
   })
 )(CreatePasswordScreen)
