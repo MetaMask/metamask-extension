@@ -19,13 +19,13 @@ class ExtensionPlatform {
 
   getPlatformInfo (cb) {
     try {
-      return extension.runtime.getPlatformInfo(cb)
+      extension.runtime.getPlatformInfo((platform) => {
+        cb(null, platform)
+      })
     } catch (e) {
-      log.debug(e)
-      return undefined
+      cb(e)
     }
   }
-
 }
 
 module.exports = ExtensionPlatform
