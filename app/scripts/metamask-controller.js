@@ -81,8 +81,22 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.blacklistController.scheduleUpdates()
 
-    // rpc provider
-    this.provider = this.initializeProvider()
+    // rpc provider and block tracker
+    this.provider = this.networkController.initializeProvider({
+      static: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      // account mgmt
+      getAccounts: nodeify(this.getAccounts, this),
+      // tx signing
+      processTransaction: nodeify(this.txController.newUnapprovedTransaction, this.txController),
+      // old style msg signing
+      processMessage: this.newUnsignedMessage.bind(this),
+      // personal_sign msg signing
+      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
+    })
     this.blockTracker = this.provider._blockTracker
 
     // eth data query tools
@@ -217,26 +231,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Constructor helpers
   //
-
-  initializeProvider () {
-    const providerOpts = {
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
-      // account mgmt
-      getAccounts: nodeify(this.getAccounts, this),
-      // tx signing
-      processTransaction: nodeify(this.txController.newUnapprovedTransaction, this.txController),
-      // old style msg signing
-      processMessage: this.newUnsignedMessage.bind(this),
-      // personal_sign msg signing
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-    }
-    const providerProxy = this.networkController.initializeProvider(providerOpts)
-    return providerProxy
-  }
 
   initPublicConfigStore () {
     // get init state
