@@ -125,7 +125,9 @@ ConfirmSendToken.prototype.getGasFee = function () {
 }
 
 ConfirmSendToken.prototype.getData = function () {
-  const { identities } = this.props
+  const { identities, tokenData } = this.props
+  const { params = [] } = tokenData
+  const { value } = params[0] || {}
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -136,7 +138,7 @@ ConfirmSendToken.prototype.getData = function () {
     },
     to: {
       address: txParams.to,
-      name: identities[txParams.to] ? identities[txParams.to].name : 'New Recipient',
+      name: identities[value] ? identities[value].name : 'New Recipient',
     },
     memo: txParams.memo || '',
   }
