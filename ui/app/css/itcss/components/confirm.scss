@@ -38,6 +38,8 @@
     top: 0;
     box-shadow: none;
     height: calc(100vh - 41px - 100px);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 
@@ -301,5 +303,7 @@ section .confirm-screen-account-number,
 
   @media screen and (max-width: $break-small) {
     border-top: 1px solid $alto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 }
