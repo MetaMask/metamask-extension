@@ -90,7 +90,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: nodeify(this.getAccounts, this),
       // tx signing
-      processTransaction: nodeify(this.txController.newUnapprovedTransaction, this.txController),
+      processTransaction: nodeify(this.newTransaction, this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing
@@ -524,6 +524,11 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
+
+  // this function wrappper lets us pass the fn reference before txController is instantiated
+  async newTransaction (txParams) {
+    return await this.txController.newUnapprovedTransaction(txParams)
+  }
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)
