@@ -82,8 +82,8 @@ module.exports = class MetamaskController extends EventEmitter {
     this.blacklistController.scheduleUpdates()
 
     // rpc provider and block tracker
-    this.provider = this.networkController.initializeProvider({
-      static: {
+    this.networkController.initializeProvider({
+      scaffold: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
       },
@@ -97,7 +97,8 @@ module.exports = class MetamaskController extends EventEmitter {
       processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
       processTypedMessage: this.newUnsignedTypedMessage.bind(this),
     })
-    this.blockTracker = this.provider._blockTracker
+    this.provider = this.networkController.providerProxy
+    this.blockTracker = this.networkController.blockTrackerProxy
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
