@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const { addCurrencies } = require('../conversion-util')
 
 module.exports = InputNumber
 
@@ -8,49 +9,44 @@ inherits(InputNumber, Component)
 function InputNumber () {
   Component.call(this)
 
-  this.state = {
-    value: 0,
-  }
-
   this.setValue = this.setValue.bind(this)
 }
 
 InputNumber.prototype.componentWillMount = function () {
-  const { initValue = 0 } = this.props
+  const { value = 0 } = this.props
 
-  this.setState({ value: initValue })
+  this.setState({ value: Number(value) })
 }
 
 InputNumber.prototype.setValue = function (newValue) {
-  const { fixed, min = -1, onChange } = this.props
+  const { fixed, min = -1, max = Infinity, onChange } = this.props
 
-  if (fixed) newValue = Number(newValue.toFixed(4))
+  newValue = Number(fixed ? newValue.toFixed(4) : newValue)
 
-  if (newValue >= min) {
-    this.setState({ value: newValue })
+  if (newValue >= min && newValue <= max) {
     onChange(newValue)
   }
 }
 
 InputNumber.prototype.render = function () {
-  const { unitLabel, step = 1, placeholder } = this.props
-  const { value } = this.state
+  const { unitLabel, step = 1, placeholder, value = 0 } = this.props
+  const valueAsNum = Number(value)
 
   return h('div.customize-gas-input-wrapper', {}, [
     h('input.customize-gas-input', {
       placeholder,
       type: 'number',
-      value,
-      onChange: (e) => this.setValue(Number(e.target.value)),
+      value: valueAsNum,
+      onChange: (e) => this.setValue(e.target.value),
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
       h('i.fa.fa-angle-up', {
-        onClick: () => this.setValue(value + step),
+        onClick: () => this.setValue(addCurrencies(valueAsNum, step)),
       }),
       h('i.fa.fa-angle-down', {
         style: { cursor: 'pointer' },
-        onClick: () => this.setValue(value - step),
+        onClick: () => this.setValue(addCurrencies(valueAsNum, step * -1)),
       }),
     ]),
   ])
