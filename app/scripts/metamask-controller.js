@@ -225,19 +225,9 @@ module.exports = class MetamaskController extends EventEmitter {
         web3_clientVersion: `MetaMask/v${version}`,
       },
       // account mgmt
-      getAccounts: (cb) => {
-        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        const result = []
-        const selectedAddress = this.preferencesController.getSelectedAddress()
-
-        // only show address if account is unlocked
-        if (isUnlocked && selectedAddress) {
-          result.push(selectedAddress)
-        }
-        cb(null, result)
-      },
+      getAccounts: nodeify(this.getAccounts, this),
       // tx signing
-      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
+      processTransaction: nodeify(this.txController.newUnapprovedTransaction, this.txController),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing
@@ -482,6 +472,18 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Opinionated Keyring Management
   //
+
+  async getAccounts () {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    const result = []
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+
+    // only show address if account is unlocked
+    if (isUnlocked && selectedAddress) {
+      result.push(selectedAddress)
+    }
+    return result
+  },
 
   addNewAccount (cb) {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
