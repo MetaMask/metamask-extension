@@ -478,7 +478,7 @@ module.exports = class MetamaskController extends EventEmitter {
       result.push(selectedAddress)
     }
     return result
-  },
+  }
 
   addNewAccount (cb) {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]

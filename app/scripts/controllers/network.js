@@ -1,6 +1,5 @@
 const assert = require('assert')
 const EventEmitter = require('events')
-const createMetamaskProvider = require('web3-provider-engine/zero.js')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
@@ -77,10 +76,10 @@ module.exports = class NetworkController extends EventEmitter {
     assert(type !== 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
     // skip if type already matches
     if (type === this.getProviderConfig().type) return
-    // lookup rpcTarget for type
+    // lookup rpcTarget for typecreateMetamaskProvider
     const rpcTarget = this.getRpcAddressForType(type)
     assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
-    // update connection
+    // update connectioncreateMetamaskProvider
     this.providerStore.updateState({ type, rpcTarget })
     this._switchNetwork({ rpcUrl: rpcTarget })
   }
@@ -108,10 +107,6 @@ module.exports = class NetworkController extends EventEmitter {
     const providerParams = extend(this._baseProviderParams, _providerParams)
     const client = createEthRpcClient(providerParams)
     this._setClient(client)
-  }
-
-  _createMetamaskProvider(providerParams) {
-    const { provider, blockTracker } = createEthRpcClient(providerParams)
   }
 
   _setClient (newClient) {
