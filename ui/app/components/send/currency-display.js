@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('../identicon')
-const AutosizeInput = require('react-input-autosize').default
 const { conversionUtil } = require('../../conversion-util')
 
 module.exports = CurrencyDisplay
@@ -17,29 +16,16 @@ function CurrencyDisplay () {
   }
 }
 
-function isValidNumber (text) {
+function isValidInput (text) {
   const re = /^([1-9]\d*|0)(\.|\.\d*)?$/
   return re.test(text)
 }
 
-CurrencyDisplay.prototype.componentDidMount = function () {
-  this.setState({
-    minWidth: this.refs.currencyDisplayInput.sizer.clientWidth + 10,
-    currentclientWidth: this.refs.currencyDisplayInput.sizer.clientWidth,
-  })
-}
+function resetCaretIfPastEnd (value, event) {
+  const caretPosition = event.target.selectionStart
 
-CurrencyDisplay.prototype.componentWillUpdate = function ({ value: nextValue }) {
-  const { value: currentValue } = this.props
-  const { currentclientWidth } = this.state
-  const newclientWidth = this.refs.currencyDisplayInput.sizer.clientWidth
-
-  if (currentclientWidth !== newclientWidth) {
-    const clientWidthChange = newclientWidth - currentclientWidth
-    this.setState({
-      minWidth: this.state.minWidth + clientWidthChange,
-      currentclientWidth: newclientWidth,
-    })
+  if (caretPosition > value.length) {
+    event.target.setSelectionRange(value.length, value.length)
   }
 }
 
@@ -54,7 +40,6 @@ CurrencyDisplay.prototype.render = function () {
     convertedPrefix = '',
     readOnly = false,
     handleChange,
-    inputFontSize,
   } = this.props
   const { minWidth } = this.state
 
@@ -71,27 +56,33 @@ CurrencyDisplay.prototype.render = function () {
 
     h('div.currency-display__primary-row', [
 
-      h(AutosizeInput, {
-        ref: 'currencyDisplayInput',
-        className: 'currency-display__input-wrapper',
-        inputClassName: 'currency-display__input',
-        value,
-        placeholder,
-        readOnly,
-        minWidth,
-        onChange: (event) => {
-          const newValue = event.target.value
-          if (newValue && !isValidNumber(newValue)) {
-            event.preventDefault()
-          }
-          else {
-            handleChange(newValue)
-          }
-        },
-        style: { fontSize: inputFontSize },
-      }),
+      h('div.currency-display__input-wrapper', [
 
-      h('span.currency-display__primary-currency', {}, primaryCurrency),
+        h('input.currency-display__input', {
+          value: `${value} ${primaryCurrency}`,
+          placeholder: `${0} ${primaryCurrency}`,
+          readOnly,
+          onChange: (event) => {
+            let newValue = event.target.value.split(' ')[0]
+
+            if (newValue === '') {
+              handleChange('0')
+            }
+            else if (newValue.match(/^0[1-9]$/)) {
+              handleChange(newValue.match(/[1-9]/)[0])
+            }
+            else if (newValue && !isValidInput(newValue)) {
+              event.preventDefault()
+            }
+            else {
+              handleChange(newValue)
+            }
+          },
+          onKeyUp: event => resetCaretIfPastEnd(value, event),
+          onClick: event => resetCaretIfPastEnd(value, event),
+        }),
+
+      ]),
 
     ]),
 
