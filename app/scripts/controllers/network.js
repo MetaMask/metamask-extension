@@ -6,6 +6,7 @@ const extend = require('xtend')
 const EthQuery = require('eth-query')
 const createEthRpcClient = require('eth-rpc-client')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
+const createObjectProxy = require('../lib/obj-proxy.js')
 const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 
@@ -17,7 +18,7 @@ module.exports = class NetworkController extends EventEmitter {
     this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
-    this.providerProxy = createEventEmitterProxy()
+    this.providerProxy = createObjectProxy()
     this.blockTrackerProxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
@@ -27,8 +28,8 @@ module.exports = class NetworkController extends EventEmitter {
     this._baseProviderParams = _providerParams
     const rpcUrl = this.getCurrentRpcAddress()
     this._configureStandardClient({ rpcUrl })
-    this.providerProxy.on('block', this._logBlock.bind(this))
-    this.providerProxy.on('error', this.verifyNetwork.bind(this))
+    this.blockTrackerProxy.on('block', this._logBlock.bind(this))
+    this.blockTrackerProxy.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this.providerProxy)
     this.lookupNetwork()
   }
