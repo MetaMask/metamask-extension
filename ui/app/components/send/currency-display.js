@@ -13,6 +13,7 @@ function CurrencyDisplay () {
 
   this.state = {
     minWidth: null,
+    currentScrollWidth: null,
   }
 }
 
@@ -22,7 +23,24 @@ function isValidNumber (text) {
 }
 
 CurrencyDisplay.prototype.componentDidMount = function () {
-  this.setState({ minWidth: this.refs.currencyDisplayInput.sizer.scrollWidth + 10 })
+  this.setState({
+    minWidth: this.refs.currencyDisplayInput.sizer.clientWidth + 10,
+    currentclientWidth: this.refs.currencyDisplayInput.sizer.clientWidth,
+  })
+}
+
+CurrencyDisplay.prototype.componentWillUpdate = function ({ value: nextValue }) {
+  const { value: currentValue } = this.props
+  const { currentclientWidth } = this.state
+  const newclientWidth = this.refs.currencyDisplayInput.sizer.clientWidth
+
+  if (currentclientWidth !== newclientWidth) {
+    const clientWidthChange = newclientWidth - currentclientWidth
+    this.setState({
+      minWidth: this.state.minWidth + clientWidthChange,
+      currentclientWidth: newclientWidth,
+    })
+  }
 }
 
 CurrencyDisplay.prototype.render = function () {
