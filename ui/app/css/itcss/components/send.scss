@@ -512,7 +512,9 @@
     font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
-    margin-top: 16px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
   }
 
   &__from-dropdown {
