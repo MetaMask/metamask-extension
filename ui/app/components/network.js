@@ -1,5 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const classnames = require('classnames');
 const inherits = require('util').inherits
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
 
@@ -61,7 +62,13 @@ Network.prototype.render = function () {
   }
 
   return (
-    h('.network-component.pointer', {
+    h('div.network-component.pointer', {
+      className: classnames('network-component pointer', {
+        'ethereum-network': providerName === 'mainnet',
+        'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
+        'kovan-test-network': providerName === 'kovan',
+        'rinkeby-test-network': providerName === 'rinkeby',
+      }),
       title: hoverText,
       onClick: (event) => this.props.onClick(event),
     }, [
@@ -71,7 +78,7 @@ Network.prototype.render = function () {
             return h('.network-indicator', [
               h(NetworkDropdownIcon, {
                 backgroundColor: '#038789', // $blue-lagoon
-                nonSelectBackgroundColor: '#15afb2'
+                nonSelectBackgroundColor: '#15afb2',
               }),
               h('.network-name', {
                 style: {

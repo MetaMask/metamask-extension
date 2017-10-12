@@ -2,7 +2,7 @@
   display: flex;
   flex-flow: column nowrap;
   z-index: 25;
-  font-family: 'DIN OT';
+  font-family: Roboto;
 
   @media screen and (max-width: $break-small) {
     width: 100%;
@@ -19,7 +19,7 @@
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
   padding: 46px 40.5px 26px;
   position: relative;
-  top: -26px;
+  // top: -26px;
   align-items: center;
   display: flex;
   flex-flow: column nowrap;
@@ -77,7 +77,7 @@
     margin: 4px 0 20px;
     font-size: 16px;
     line-height: 22.4px;
-    font-family: "DIN OT";
+    font-family: Roboto;
   }
 
   .send-screen-gas-input {
@@ -316,7 +316,7 @@
   display: flex;
   flex-flow: column nowrap;
   z-index: 25;
-  font-family: "Montserrat Light";
+  font-family: Roboto;
 
   &__content {
     width: 498px;
@@ -325,7 +325,7 @@
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
     padding: 46px 40.5px 26px;
     position: relative;
-    top: -26px;
+    // top: -26px;
     align-items: center;
     display: flex;
     flex-flow: column nowrap;
@@ -404,20 +404,18 @@
     width: 380px;
     border-radius: 8px;
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
     align-items: center;
     font-family: Roboto;
     position: relative;
-    top: -26px;
 
     @media screen and (max-width: $break-small) {
       width: 100%;
       overflow-y: auto;
       top: 0;
-      width: 100%;
       box-shadow: none;
     }
   }

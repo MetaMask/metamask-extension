@@ -27,6 +27,7 @@ const Import = require('./accounts/import')
 const InfoScreen = require('./info')
 const Loading = require('./components/loading')
 const NetworkIndicator = require('./components/network')
+const Identicon = require('./components/identicon')
 const BuyView = require('./components/buy-button-subview')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
@@ -60,6 +61,7 @@ function mapStateToProps (state) {
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
+    selectedAddress: state.metamask.selectedAddress,
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
@@ -198,7 +200,7 @@ App.prototype.renderAppBar = function () {
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
-
+  console.log(this.props)
   return (
 
     h('.full-width', {
@@ -230,24 +232,31 @@ App.prototype.renderAppBar = function () {
 
           ]),
 
-          h('div.network-component-wrapper', {
-            style: {},
-          }, [
-            // Network Indicator
-            h(NetworkIndicator, {
-              network: this.props.network,
-              provider: this.props.provider,
-              onClick: (event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                if (this.props.networkDropdownOpen === false) {
-                  this.props.showNetworkDropdown()
-                } else {
-                  this.props.hideNetworkDropdown()
-                }
-              },
-            }),
+          h('div.header__right-actions', [
+            h('div.network-component-wrapper', {
+              style: {},
+            }, [
+              // Network Indicator
+              h(NetworkIndicator, {
+                network: this.props.network,
+                provider: this.props.provider,
+                onClick: (event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  if (this.props.networkDropdownOpen === false) {
+                    this.props.showNetworkDropdown()
+                  } else {
+                    this.props.hideNetworkDropdown()
+                  }
+                },
+              }),
 
+            ]),
+
+            h(Identicon, {
+              address: this.props.selectedAddress,
+              diameter: 32,
+            }),
           ]),
         ]),
       ]),

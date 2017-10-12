@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-family: 'DIN OT';
+  font-family: Roboto;
   padding: 0 16px;
 }
 
@@ -20,7 +20,7 @@
 .qr-ellip-address, .ellip-address {
   width: 247px;
   border: none;
-  font-family: 'Montserrat Light';
+  font-family: Roboto;
   font-size: 14px;
 }
 
@@ -192,7 +192,7 @@
   padding: 5px 0 31px 0;
   border: 1px solid $silver;
   border-radius: 4px;
-  font-family: 'Montserrat UltraLight';
+  font-family: Roboto;
 
   button {
     cursor: pointer;
@@ -208,7 +208,7 @@
 
   &__text {
     margin-top: 2px;
-    font-family: 'DIN OT';
+    font-family: Roboto;
     font-size: 14px;
     line-height: 18px;
   }
@@ -252,7 +252,7 @@
     justify-content: center;
     border: 1px solid $alto;
     padding: 5px 10px;
-    font-family: 'Montserrat Light';
+    font-family: Roboto;
     margin-top: 7px;
     width: 286px;
   }
@@ -269,7 +269,7 @@
     padding: 10px 22px;
     height: 44px;
     width: 235px;
-    font-family: 'Montserrat Light';
+    font-family: Roboto;
   }
 }
 
@@ -320,7 +320,7 @@
 
 .private-key-password::-webkit-input-placeholder {
   color: $dusty-gray;
-  font-family: 'Montserrat UltraLight';
+  font-family: Roboto;
 }
 
 .private-key-password-warning {
@@ -333,7 +333,7 @@
   width: 292px;
   padding: 9px 15px;
   margin-top: 18px;
-  font-family: 'Montserrat Regular';
+  font-family: Roboto;
 }
 
 .export-private-key-buttons {
@@ -362,7 +362,7 @@
 
 .private-key-password-display-textarea {
   color: $crimson;
-  font-family: "DIN OT"; 
+  font-family: Roboto; 
   font-size: 16px; 
   line-height: 21px;
   border: none;
@@ -384,7 +384,7 @@
   position: relative;
   border: 1px solid $alto;
   box-shadow: 0 0 2px 2px $alto;
-  font-family: 'Montserrat Light';
+  font-family: Roboto;
 }
 
 .new-account-modal-header {
@@ -439,7 +439,7 @@
   width: 100%;
   font-size: 1em;
   color: $dusty-gray;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 17px;
   margin: 0 60px;
 }
@@ -506,7 +506,7 @@
 
   &__symbol {
     color: $tundora;
-    font-family: 'DIN OT';
+    font-family: Roboto;
     font-size: 16px;
     line-height: 24px;
     text-align: center;
@@ -517,7 +517,7 @@
     height: 30px;
     width: 271.28px;
     color: $tundora;
-    font-family: 'DIN OT';
+    font-family: Roboto;
     font-size: 22px;
     line-height: 30px;
     text-align: center;
@@ -528,7 +528,7 @@
     height: 41px;
     width: 318px;
     color: $scorpion;
-    font-family: 'DIN OT';
+    font-family: Roboto;
     font-size: 14px;
     line-height: 18px;
     text-align: center;
@@ -547,7 +547,7 @@
       border: 1px solid $scorpion;
       border-radius: 2px;
       color: $tundora;
-      font-family: 'DIN OT';
+      font-family: Roboto;
       font-size: 14px;
       line-height: 20px;
       text-align: center;

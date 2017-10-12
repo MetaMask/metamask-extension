@@ -102,7 +102,7 @@ NetworkDropdown.prototype.render = function () {
         key: 'main',
         closeMenu: () => this.props.hideNetworkDropdown(),
         onClick: () => props.setProviderType('mainnet'),
-        style: dropdownMenuItemStyle,
+        style: { ...dropdownMenuItemStyle, borderColor: '#038789' },
       },
       [
         providerType === 'mainnet' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),

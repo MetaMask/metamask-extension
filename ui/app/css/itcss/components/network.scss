@@ -1,14 +1,65 @@
+.network-component.pointer {
+  border: 1px solid $shark;
+  border-radius: 82px;
+  padding: 6px;
+
+  &.ethereum-network {
+    border-color: rgb(3, 135, 137);
+
+    .menu-icon-circle div {
+      background-color: rgba(3, 135, 137, .7) !important;
+    }
+  }
+
+  &.ropsten-test-network {
+    border-color: rgb(233, 21, 80);
+
+    .menu-icon-circle div {
+      background-color: rgba(233, 21, 80, .7) !important;
+    }
+  }
+
+  &.kovan-test-network {
+    border-color: rgb(105, 4, 150);
+
+    .menu-icon-circle div {
+      background-color: rgba(105, 4, 150, .7) !important;
+    }
+  }
+
+  &.rinkeby-test-network {
+    border-color: rgb(235, 179, 63);
+
+    .menu-icon-circle div {
+      background-color: rgba(235, 179, 63, .7) !important;
+    }
+  }
+}
+
+.dropdown-menu-item {
+  .menu-icon-circle,
+  .menu-icon-circle--active {
+    margin: 0 16px;
+  }
+}
+
 .network-indicator {
   display: flex;
   align-items: center;
   font-size: .6em;
+
+  .fa-caret-down {
+    line-height: 15px;
+    font-size: 12px;
+    padding: 0 4px;
+  }
 }
 
 .network-name {
-  line-height: 12px;
+  line-height: 15px;
   padding: 0 4px;
-  font-family: 'DIN OT';
-  font-size: 10px;
+  font-family: Roboto;
+  font-size: 12px;
   flex: 1 0 auto;
 }
 
@@ -46,29 +97,27 @@
   margin: 0;
 }
 
-.menu-icon-circle, .menu-icon-circle--active {
-  height: 23px;
-  width: 23px;
-  margin: 9px;
+.menu-icon-circle,
+.menu-icon-circle--active {
   background: none;
   border-radius: 22px;
   display: flex;
   justify-content: center;
   align-items: center;
   border: 1px solid transparent;
-  background: none;
+  margin: 0 4px;
 }
 
 .menu-icon-circle--active {
-  border: 1px solid white;
-  background: rgba(100, 100, 100, 0.4);
+  border: 1px solid $white;
+  background: rgba(100, 100, 100, .4);
 }
 
-.menu-icon-circle div, .menu-icon-circle--active div {
+.menu-icon-circle div,
+.menu-icon-circle--active div {
   height: 17px;
   width: 17px;
   border-radius: 17px;
-  opacity: 0.7;
 }
 
 .menu-icon-circle--active div {
@@ -93,7 +142,7 @@
   height: 25px;
   width: 75px;
   color: $white;
-  font-family: 'DIN OT';
+  font-family: Roboto;
   font-size: 18px;
   line-height: 25px;
   text-align: center;
@@ -103,7 +152,7 @@
   height: 36px;
   width: 265px;
   color: $dusty-gray;
-  font-family: 'DIN OT';
+  font-family: Roboto;
   font-size: 14px;
   line-height: 18px;
 }
