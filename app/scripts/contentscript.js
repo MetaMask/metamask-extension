@@ -7,7 +7,9 @@ const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('./lib/port-stream.js')
 
-const inpageText = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'scripts', 'inpage.js')).toString() + '//# sourceURL=' + extension.extension.getURL('scripts/inpage.js') + '\n'
+const inpagePath = path.join(__dirname, '..', '..', 'dist', 'chrome', 'scripts', 'inpage.js')
+const inpageString = fs.readFileSync(inpagePath).toString()
+const inpageText = inpageString + '//# sourceURL=' + extension.extension.getURL('scripts/inpage.js') + '\n'
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
