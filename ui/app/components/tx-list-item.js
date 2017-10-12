@@ -4,7 +4,7 @@ const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const abi = require('human-standard-token-abi')
-const abiDecoder = require('abi-decoder')
+const abiDecoder = require('abi-decoder-with-mocha-update')
 abiDecoder.addABI(abi)
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')

@@ -51,7 +51,7 @@
     ]
   },
   "dependencies": {
-    "abi-decoder": "^1.0.8",
+    "abi-decoder-with-mocha-update": "^1.0.9",
     "async": "^2.5.0",
     "await-semaphore": "^0.1.1",
     "babel-runtime": "^6.23.0",
