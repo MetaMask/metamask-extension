@@ -100,9 +100,9 @@ CurrencyDisplay.prototype.render = function () {
               this.setState({ value: newValue })
             }
           },
-          onBlur: event => this.handleChangeInHexWei(event.target.value.split(' ')[0]),
-          onKeyUp: event => resetCaretIfPastEnd(value || initValueToRender, event),
-          onClick: event => resetCaretIfPastEnd(value || initValueToRender, event),
+          onBlur: event => !readOnly && this.handleChangeInHexWei(event.target.value.split(' ')[0]),
+          onKeyUp: event => !readOnly && resetCaretIfPastEnd(value || initValueToRender, event),
+          onClick: event => !readOnly && resetCaretIfPastEnd(value || initValueToRender, event),
         }),
 
       ]),

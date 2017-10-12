@@ -137,6 +137,7 @@ var actions = {
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   updateGasLimit,
   updateGasPrice,
+  setSelectedAddress,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -696,6 +697,19 @@ function setSelectedToken (tokenAddress) {
   return {
     type: actions.SET_SELECTED_TOKEN,
     value: tokenAddress || null,
+  }
+}
+
+function setSelectedAddress (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setSelectedAddress`)
+    background.setSelectedAddress(address, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
   }
 }
 
