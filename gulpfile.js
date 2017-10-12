@@ -186,8 +186,13 @@ jsFiles.forEach((jsFile) => {
   gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
 })
 
-gulp.task('dev:js', gulp.parallel(...jsDevStrings))
-gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+// inpage must be built before all other scripts:
+const firstDevString = jsDevStrings.shift()
+gulp.task('dev:js', gulp.series(firstDevString, gulp.parallel(...jsDevStrings)))
+
+// inpage must be built before all other scripts:
+const firstBuildString = jsBuildStrings.shift()
+gulp.task('build:js',  gulp.series(firstBuildString, gulp.parallel(...jsBuildStrings)))
 
 // disc bundle analyzer tasks
 

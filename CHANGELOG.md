@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where web3 API was sometimes injected after the page loaded.
+
 ## 3.11.0 2017-10-11
 
 - Add support for new eth_signTypedData method per EIP 712.
