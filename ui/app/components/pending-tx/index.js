@@ -3,7 +3,7 @@ const { connect } = require('react-redux')
 const h = require('react-hyperscript')
 const clone = require('clone')
 const abi = require('human-standard-token-abi')
-const abiDecoder = require('abi-decoder')
+const abiDecoder = require('abi-decoder-with-mocha-update')
 abiDecoder.addABI(abi)
 const inherits = require('util').inherits
 const actions = require('../../actions')
