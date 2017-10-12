@@ -2,7 +2,20 @@
 
 ## Current Master
 
+- Fix bug where web3 API was sometimes injected after the page loaded.
+
+## 3.11.0 2017-10-11
+
+- Add support for new eth_signTypedData method per EIP 712.
+- Fix bug where some transactions would be shown as pending forever, even after successfully mined.
+- Fix bug where a transaction might be shown as pending forever if another tx with the same nonce was mined.
+- Fix link to support article on token addresses.
+
+## 3.10.9 2017-10-5
+
+- Only rebrodcast transactions for a day not a days worth of blocks
 - Remove Slack link from info page, since it is a big phishing target.
+- Stop computing balance based on pending transactions, to avoid edge case where users are unable to send transactions.
 
 ## 3.10.8 2017-9-28
 

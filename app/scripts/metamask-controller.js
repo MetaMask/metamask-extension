@@ -25,6 +25,7 @@ const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
+const TypedMessageManager = require('./lib/typed-message-manager')
 const TransactionController = require('./controllers/transactions')
 const BalancesController = require('./controllers/computed-balances')
 const ConfigManager = require('./lib/config-manager')
@@ -80,9 +81,24 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.blacklistController.scheduleUpdates()
 
-    // rpc provider
-    this.provider = this.initializeProvider()
-    this.blockTracker = this.provider._blockTracker
+    // rpc provider and block tracker
+    this.networkController.initializeProvider({
+      scaffold: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      // account mgmt
+      getAccounts: nodeify(this.getAccounts, this),
+      // tx signing
+      processTransaction: nodeify(this.newTransaction, this),
+      // old style msg signing
+      processMessage: this.newUnsignedMessage.bind(this),
+      // personal_sign msg signing
+      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
+    })
+    this.provider = this.networkController.providerProxy
+    this.blockTracker = this.networkController.blockTrackerProxy
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
@@ -161,6 +177,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.lookupNetwork()
     this.messageManager = new MessageManager()
     this.personalMessageManager = new PersonalMessageManager()
+    this.typedMessageManager = new TypedMessageManager()
     this.publicConfigStore = this.initPublicConfigStore()
 
     // manual disk state subscriptions
@@ -202,6 +219,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.balancesController.store.subscribe(this.sendUpdate.bind(this))
     this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
+    this.typedMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
     this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
     this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
     this.addressBookController.store.subscribe(this.sendUpdate.bind(this))
@@ -214,35 +232,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Constructor helpers
   //
-
-  initializeProvider () {
-    const providerOpts = {
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
-      // account mgmt
-      getAccounts: (cb) => {
-        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        const result = []
-        const selectedAddress = this.preferencesController.getSelectedAddress()
-
-        // only show address if account is unlocked
-        if (isUnlocked && selectedAddress) {
-          result.push(selectedAddress)
-        }
-        cb(null, result)
-      },
-      // tx signing
-      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
-      // old style msg signing
-      processMessage: this.newUnsignedMessage.bind(this),
-      // personal_sign msg signing
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-    }
-    const providerProxy = this.networkController.initializeProvider(providerOpts)
-    return providerProxy
-  }
 
   initPublicConfigStore () {
     // get init state
@@ -283,6 +272,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.txController.memStore.getState(),
       this.messageManager.memStore.getState(),
       this.personalMessageManager.memStore.getState(),
+      this.typedMessageManager.memStore.getState(),
       this.keyringController.memStore.getState(),
       this.balancesController.store.getState(),
       this.preferencesController.store.getState(),
@@ -363,6 +353,10 @@ module.exports = class MetamaskController extends EventEmitter {
       // personalMessageManager
       signPersonalMessage: nodeify(this.signPersonalMessage, this),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
+
+      // personalMessageManager
+      signTypedMessage: nodeify(this.signTypedMessage, this),
+      cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       // notices
       checkNotices: noticeController.updateNoticesList.bind(noticeController),
@@ -474,6 +468,18 @@ module.exports = class MetamaskController extends EventEmitter {
   // Opinionated Keyring Management
   //
 
+  async getAccounts () {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    const result = []
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+
+    // only show address if account is unlocked
+    if (isUnlocked && selectedAddress) {
+      result.push(selectedAddress)
+    }
+    return result
+  }
+
   addNewAccount (cb) {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
@@ -520,6 +526,11 @@ module.exports = class MetamaskController extends EventEmitter {
   // Identity Management
   //
 
+  // this function wrappper lets us pass the fn reference before txController is instantiated
+  async newTransaction (txParams) {
+    return await this.txController.newUnapprovedTransaction(txParams)
+  }
+
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)
     this.sendUpdate()
@@ -545,6 +556,28 @@ module.exports = class MetamaskController extends EventEmitter {
     this.sendUpdate()
     this.opts.showUnconfirmedMessage()
     this.personalMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  newUnsignedTypedMessage (msgParams, cb) {
+    let msgId
+    try {
+      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
+      this.sendUpdate()
+      this.opts.showUnconfirmedMessage()
+    } catch (e) {
+      return cb(e)
+    }
+
+    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
       switch (data.status) {
         case 'signed':
           return cb(null, data.rawSig)
@@ -618,8 +651,34 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  signTypedMessage (msgParams) {
+    log.info('MetaMaskController - signTypedMessage')
+    const msgId = msgParams.metamaskId
+    // sets the status op the message to 'approved'
+    // and removes the metamaskId for signing
+    return this.typedMessageManager.approveMessage(msgParams)
+      .then((cleanMsgParams) => {
+        // signs the message
+        return this.keyringController.signTypedMessage(cleanMsgParams)
+      })
+      .then((rawSig) => {
+        // tells the listener that the message has been signed
+        // and can be returned to the dapp
+        this.typedMessageManager.setMsgStatusSigned(msgId, rawSig)
+        return this.getState()
+      })
+  }
+
   cancelPersonalMessage (msgId, cb) {
     const messageManager = this.personalMessageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }
+
+  cancelTypedMessage (msgId, cb) {
+    const messageManager = this.typedMessageManager
     messageManager.rejectMsg(msgId)
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())

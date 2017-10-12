@@ -1,6 +1,5 @@
-module.exports = function createEventEmitterProxy(eventEmitter, listeners) {
+module.exports = function createEventEmitterProxy(eventEmitter, eventHandlers = {}) {
   let target = eventEmitter
-  const eventHandlers = listeners || {}
   const proxy = new Proxy({}, {
     get: (obj, name) => {
       // intercept listeners
@@ -14,9 +13,12 @@ module.exports = function createEventEmitterProxy(eventEmitter, listeners) {
       return true
     },
   })
+  proxy.setTarget(eventEmitter)
+  return proxy
+
   function setTarget (eventEmitter) {
     target = eventEmitter
-    // migrate listeners
+    // migrate eventHandlers
     Object.keys(eventHandlers).forEach((name) => {
       eventHandlers[name].forEach((handler) => target.on(name, handler))
     })
@@ -26,6 +28,4 @@ module.exports = function createEventEmitterProxy(eventEmitter, listeners) {
     eventHandlers[name].push(handler)
     target.on(name, handler)
   }
-  if (listeners) proxy.setTarget(eventEmitter)
-  return proxy
 }
