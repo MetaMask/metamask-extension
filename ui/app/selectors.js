@@ -7,12 +7,13 @@ const selectors = {
   getSelectedToken,
   conversionRateSelector,
   transactionsSelector,
+  accountsWithSendEtherInfoSelector,
+  getCurrentAccountWithSendEtherInfo,
 }
 
 module.exports = selectors
 
 function getSelectedAddress (state) {
-  // TODO: accounts is not defined. Is it needed?
   const selectedAddress = state.metamask.selectedAddress || Object.keys(state.metamask.accounts)[0]
 
   return selectedAddress
@@ -42,6 +43,26 @@ function getSelectedToken (state) {
 
 function conversionRateSelector (state) {
   return state.metamask.conversionRate
+}
+
+function accountsWithSendEtherInfoSelector (state) {
+  const {
+    accounts,
+    identities,
+  } = state.metamask
+
+  const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
+    return Object.assign({}, account, identities[key])
+  })
+
+  return accountsWithSendEtherInfo
+}
+
+function getCurrentAccountWithSendEtherInfo (state) {
+  const currentAddress = getSelectedAddress(state)
+  const accounts = accountsWithSendEtherInfoSelector(state)
+
+  return accounts.find(({ address }) => address === currentAddress)
 }
 
 function transactionsSelector (state) {

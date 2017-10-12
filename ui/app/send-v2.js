@@ -9,33 +9,7 @@ const MemoTextArea = require('./components/send/memo-textarea')
 
 const { showModal } = require('./actions')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SendTransactionScreen)
-
-function mapStateToProps (state) {
-  const mockAccounts = Array.from(new Array(5))
-    .map((v, i) => ({
-      identity: {
-        name: `Test Account Name ${i}`,
-        address: `0x02f567704cc6569127e18e3d00d2c85bcbfa6f0${i}`,
-      },
-      balancesToRender: {
-        primary: `100${i}.000001 ETH`,
-        secondary: `$30${i},000.00 USD`,
-      }
-    }))
-  const conversionRate = 301.0005
-
-  return {
-    accounts: mockAccounts,
-    conversionRate
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS' })),
-  }
-}
+module.exports = SendTransactionScreen
 
 inherits(SendTransactionScreen, PersistentForm)
 function SendTransactionScreen () {
@@ -46,8 +20,8 @@ function SendTransactionScreen () {
       from: '',
       to: '',
       gasPrice: null,
-      gas: '0.001',
-      amount: '10', 
+      gas: '0x0',
+      amount: '0x0', 
       txData: null,
       memo: '',
     },
@@ -56,7 +30,12 @@ function SendTransactionScreen () {
 }
 
 SendTransactionScreen.prototype.render = function () {
-  const { accounts, conversionRate, showCustomizeGasModal } = this.props
+  const {
+    accounts,
+    conversionRate,
+    showCustomizeGasModal,
+    selectedAccount
+  } = this.props
   const { dropdownOpen, newTx } = this.state
   const { to, amount, gas, memo } = newTx
 
@@ -90,10 +69,11 @@ SendTransactionScreen.prototype.render = function () {
           h(FromDropdown, {
             dropdownOpen,
             accounts,
-            selectedAccount: accounts[0],
+            selectedAccount,
             setFromField: () => console.log('Set From Field'),
             openDropdown: () => this.setState({ dropdownOpen: true }),
             closeDropdown: () => this.setState({ dropdownOpen: false }),
+            conversionRate,
           }),
 
         ]),
@@ -104,7 +84,7 @@ SendTransactionScreen.prototype.render = function () {
 
           h(ToAutoComplete, {
             to,
-            identities: accounts.map(({ identity }) => identity),
+            accounts,
             onChange: (event) => {
               this.setState({
                 newTx: {

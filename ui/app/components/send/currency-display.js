@@ -31,26 +31,39 @@ function resetCaretIfPastEnd (value, event) {
 
 CurrencyDisplay.prototype.render = function () {
   const {
-    className,
+    className = 'currency-display',
+    primaryBalanceClassName = 'currency-display__input',
+    convertedBalanceClassName = 'currency-display__converted-value',
+    conversionRate,
     primaryCurrency,
     convertedCurrency,
-    value = '',
-    placeholder = '0',
-    conversionRate,
     convertedPrefix = '',
-    readOnly = false,
     handleChange,
+    placeholder = '0',
+    readOnly = false,
+    value = '',
   } = this.props
   const { minWidth } = this.state
 
-  const convertedValue = conversionUtil(value, {
-    fromNumericBase: 'dec',
-    fromCurrency: primaryCurrency,
-    toCurrency: convertedCurrency,
+  const valueToRender = conversionUtil(value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    numberOfDecimals: 6,
     conversionRate,
   })
 
-  return h('div.currency-display', {
+  const convertedValue = conversionUtil(value, {
+    fromNumericBase: 'hex',
+    toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    fromCurrency: primaryCurrency,
+    toCurrency: convertedCurrency,
+    numberOfDecimals: 2,
+    conversionRate,
+  })
+
+  return h('div', {
     className,
   }, [
 
@@ -58,8 +71,9 @@ CurrencyDisplay.prototype.render = function () {
 
       h('div.currency-display__input-wrapper', [
 
-        h('input.currency-display__input', {
-          value: `${value} ${primaryCurrency}`,
+        h('input', {
+          className: primaryBalanceClassName,
+          value: `${valueToRender} ${primaryCurrency}`,
           placeholder: `${0} ${primaryCurrency}`,
           readOnly,
           onChange: (event) => {
@@ -86,7 +100,9 @@ CurrencyDisplay.prototype.render = function () {
 
     ]),
 
-    h('div.currency-display__converted-value', {}, `${convertedPrefix}${convertedValue} ${convertedCurrency}`),
+    h('div', {
+      className: convertedBalanceClassName,
+    }, `${convertedPrefix}${convertedValue} ${convertedCurrency}`),
 
   ])
     

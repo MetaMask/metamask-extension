@@ -14,7 +14,7 @@ function FromDropdown () {
 FromDropdown.prototype.getListItemIcon = function (currentAccount, selectedAccount) {
   const listItemIcon = h(`i.fa.fa-check.fa-lg`, { style: { color: '#02c9b1' } })
 
-  return currentAccount.identity.address === selectedAccount.identity.address
+  return currentAccount.address === selectedAccount.address
     ? listItemIcon
     : null
 }
