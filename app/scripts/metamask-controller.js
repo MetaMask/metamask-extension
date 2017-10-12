@@ -81,9 +81,24 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.blacklistController.scheduleUpdates()
 
-    // rpc provider
-    this.provider = this.initializeProvider()
-    this.blockTracker = this.provider._blockTracker
+    // rpc provider and block tracker
+    this.networkController.initializeProvider({
+      scaffold: {
+        eth_syncing: false,
+        web3_clientVersion: `MetaMask/v${version}`,
+      },
+      // account mgmt
+      getAccounts: nodeify(this.getAccounts, this),
+      // tx signing
+      processTransaction: nodeify(this.newTransaction, this),
+      // old style msg signing
+      processMessage: this.newUnsignedMessage.bind(this),
+      // personal_sign msg signing
+      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
+      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
+    })
+    this.provider = this.networkController.providerProxy
+    this.blockTracker = this.networkController.blockTrackerProxy
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
@@ -217,36 +232,6 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Constructor helpers
   //
-
-  initializeProvider () {
-    const providerOpts = {
-      static: {
-        eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
-      },
-      // account mgmt
-      getAccounts: (cb) => {
-        const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-        const result = []
-        const selectedAddress = this.preferencesController.getSelectedAddress()
-
-        // only show address if account is unlocked
-        if (isUnlocked && selectedAddress) {
-          result.push(selectedAddress)
-        }
-        cb(null, result)
-      },
-      // tx signing
-      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
-      // old style msg signing
-      processMessage: this.newUnsignedMessage.bind(this),
-      // personal_sign msg signing
-      processPersonalMessage: this.newUnsignedPersonalMessage.bind(this),
-      processTypedMessage: this.newUnsignedTypedMessage.bind(this),
-    }
-    const providerProxy = this.networkController.initializeProvider(providerOpts)
-    return providerProxy
-  }
 
   initPublicConfigStore () {
     // get init state
@@ -483,6 +468,18 @@ module.exports = class MetamaskController extends EventEmitter {
   // Opinionated Keyring Management
   //
 
+  async getAccounts () {
+    const isUnlocked = this.keyringController.memStore.getState().isUnlocked
+    const result = []
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+
+    // only show address if account is unlocked
+    if (isUnlocked && selectedAddress) {
+      result.push(selectedAddress)
+    }
+    return result
+  }
+
   addNewAccount (cb) {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
@@ -528,6 +525,11 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
+
+  // this function wrappper lets us pass the fn reference before txController is instantiated
+  async newTransaction (txParams) {
+    return await this.txController.newUnapprovedTransaction(txParams)
+  }
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)

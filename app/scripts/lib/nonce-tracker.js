@@ -4,8 +4,9 @@ const Mutex = require('await-semaphore').Mutex
 
 class NonceTracker {
 
-  constructor ({ provider, getPendingTransactions, getConfirmedTransactions }) {
+  constructor ({ provider, blockTracker, getPendingTransactions, getConfirmedTransactions }) {
     this.provider = provider
+    this.blockTracker = blockTracker
     this.ethQuery = new EthQuery(provider)
     this.getPendingTransactions = getPendingTransactions
     this.getConfirmedTransactions = getConfirmedTransactions
@@ -53,7 +54,7 @@ class NonceTracker {
   }
 
   async _getCurrentBlock () {
-    const blockTracker = this._getBlockTracker()
+    const blockTracker = this.blockTracker
     const currentBlock = blockTracker.getCurrentBlock()
     if (currentBlock) return currentBlock
     return await Promise((reject, resolve) => {
@@ -139,11 +140,6 @@ class NonceTracker {
     return { name: 'local', nonce: highest, details: { startPoint, highest } }
   }
 
-  // this is a hotfix for the fact that the blockTracker will
-  // change when the network changes
-  _getBlockTracker () {
-    return this.provider._blockTracker
-  }
 }
 
 module.exports = NonceTracker

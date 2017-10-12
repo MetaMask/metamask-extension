@@ -46,6 +46,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
+      blockTracker: this.blockTracker,
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
       getConfirmedTransactions: (address) => {
         return this.txStateManager.getFilteredTxList({
