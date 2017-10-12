@@ -32,6 +32,7 @@ BigNumber.config({
 
 // Big Number Constants
 const BIG_NUMBER_WEI_MULTIPLIER = new BigNumber('1000000000000000000')
+const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 
 // Individual Setters
 const convert = R.invoker(1, 'times')
@@ -45,10 +46,12 @@ const toBigNumber = {
   BN: n => new BigNumber(n.toString(16), 16),
 }
 const toNormalizedDenomination = {
-  WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER)
+  WEI: bigNumber => bigNumber.div(BIG_NUMBER_WEI_MULTIPLIER),
+  GWEI: bigNumber => bigNumber.div(BIG_NUMBER_GWEI_MULTIPLIER),
 }
 const toSpecifiedDenomination = {
-  WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round()
+  WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
+  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(),
 }
 const baseChange = {
   hex: n => n.toString(16),
@@ -139,8 +142,13 @@ const addCurrencies = (a, b, options = {}) => {
 }
 
 const multiplyCurrencies = (a, b, options = {}) => {
-  const { toNumericBase, numberOfDecimals } = options
-  const value = (new BigNumber(a)).times(b);
+  const {
+    toNumericBase,
+    numberOfDecimals,
+    multiplicandBase,
+    multiplierBase,
+  } = options
+  const value = (new BigNumber(a, multiplicandBase)).times(b, multiplierBase);
   return converter({
     value,
     toNumericBase,

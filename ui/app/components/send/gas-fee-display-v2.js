@@ -28,7 +28,11 @@ GasFeeDisplay.prototype.render = function () {
       ? h(CurrencyDisplay, {
         primaryCurrency: 'ETH',
         convertedCurrency: 'USD',
-        value: multiplyCurrencies(gasLimit, gasPrice, { toNumericBase: 'hex' }),
+        value: multiplyCurrencies(gasLimit, gasPrice, {
+          toNumericBase: 'hex',
+          multiplicandBase: 16,
+          multiplierBase: 16,
+        }),
         conversionRate,
         convertedPrefix: '$',
         readOnly: true,

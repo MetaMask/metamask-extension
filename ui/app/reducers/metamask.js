@@ -20,6 +20,10 @@ function reduceMetamask (state, action) {
     selectedTokenAddress: null,
     tokenExchangeRates: {},
     tokens: [],
+    send: {
+      gasLimit: null,
+      gasPrice: null,
+    },
   }, state.metamask)
 
   switch (action.type) {
@@ -150,6 +154,22 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_TOKENS:
       return extend(metamaskState, {
         tokens: action.newTokens,
+      })
+
+    case actions.UPDATE_GAS_LIMIT:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          gasLimit: action.value,
+        },
+      })
+
+    case actions.UPDATE_GAS_PRICE:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          gasPrice: action.value,
+        },
       })
 
     default:

@@ -10,6 +10,8 @@ const selectors = {
   transactionsSelector,
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
+  getGasPrice,
+  getGasLimit,
 }
 
 module.exports = selectors
@@ -46,7 +48,7 @@ function getSelectedTokenExchangeRate (state) {
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const selectedToken = getSelectedToken(state) || {}
   const { symbol = '' } = selectedToken
-  
+
   const pair = `${symbol.toLowerCase()}_eth`
   const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
 
@@ -91,4 +93,12 @@ function transactionsSelector (state) {
       .sort((a, b) => b.time - a.time)
     : txsToRender
       .sort((a, b) => b.time - a.time)
+}
+
+function getGasPrice (state) {
+  return state.metamask.send.gasPrice
+}
+
+function getGasLimit (state) {
+  return state.metamask.send.gasLimit
 }

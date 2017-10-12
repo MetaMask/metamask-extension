@@ -12,6 +12,8 @@ const {
   getSelectedToken,
   getSelectedTokenExchangeRate,
   getSelectedAddress,
+  getGasPrice,
+  getGasLimit,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -49,6 +51,8 @@ function mapStateToProps (state) {
     primaryCurrency,
     data,
     tokenToUSDRate,
+    gasPrice: getGasPrice(state),
+    gasLimit: getGasLimit(state),
   }
 }
 
