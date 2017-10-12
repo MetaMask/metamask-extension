@@ -133,6 +133,10 @@ var actions = {
   // send screen
   estimateGas,
   getGasPrice,
+  UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
+  UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
+  updateGasLimit,
+  updateGasPrice,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -463,9 +467,17 @@ function estimateGas (params = {}) {
           return reject(err)
         }
         dispatch(actions.hideWarning())
+        dispatch(actions.updateGasLimit(data))
         return resolve(data)
       })
     })
+  }
+}
+
+function updateGasLimit (gasLimit) {
+  return {
+    type: actions.UPDATE_GAS_LIMIT,
+    value: gasLimit,
   }
 }
 
@@ -478,9 +490,17 @@ function getGasPrice () {
           return reject(err)
         }
         dispatch(actions.hideWarning())
+        dispatch(actions.updateGasPrice(data))
         return resolve(data)
       })
     })
+  }
+}
+
+function updateGasPrice (gasPrice) {
+  return {
+    type: actions.UPDATE_GAS_PRICE,
+    value: gasPrice,
   }
 }
 

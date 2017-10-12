@@ -62,12 +62,6 @@ SendTransactionScreen.prototype.componentWillMount = function () {
       gas: '746a528800',
     }),
   ])
-  .then(([blockGasPrice, estimatedGas]) => {
-    this.setState({
-      gasPrice: blockGasPrice,
-      gasLimit: estimatedGas,
-    })
-  })
 }
 
 SendTransactionScreen.prototype.renderHeaderIcon = function () {
@@ -112,14 +106,16 @@ SendTransactionScreen.prototype.render = function () {
     showCustomizeGasModal,
     selectedAccount,
     primaryCurrency = 'ETH',
+    gasLimit,
+    gasPrice,
   } = this.props
 
   const {
     dropdownOpen,
     to,
     amount,
-    gasLimit,
-    gasPrice,
+    // gasLimit,
+    // gasPrice,
     memo,
   } = this.state
 
