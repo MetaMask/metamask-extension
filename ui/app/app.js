@@ -356,7 +356,12 @@ App.prototype.renderPrimary = function () {
 
     case 'sendToken':
       log.debug('rendering send token screen')
-      return h(SendTokenScreen, {key: 'sendToken'})
+
+      const SendTokenComponentToRender = checkFeatureToggle('send-v2')
+        ? SendTransactionScreen2
+        : SendTokenScreen
+
+      return h(SendTokenComponentToRender, {key: 'sendToken'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')

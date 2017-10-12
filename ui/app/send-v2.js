@@ -2,10 +2,13 @@ const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+
+const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
 const ToAutoComplete = require('./components/send/to-autocomplete')
 const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
+const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const { showModal } = require('./actions')
 
@@ -16,35 +19,118 @@ function SendTransactionScreen () {
   PersistentForm.call(this)
 
   this.state = {
-    newTx: {
-      from: '',
-      to: '',
-      gasPrice: null,
-      gas: '0x0',
-      amount: '0x0', 
-      txData: null,
-      memo: '',
-    },
+    from: '',
+    to: '',
+    gasPrice: null,
+    gasLimit: null,
+    amount: '0x0', 
+    txData: null,
+    memo: '',
     dropdownOpen: false,
   }
+}
+
+SendTransactionScreen.prototype.componentWillMount = function () {
+  const {
+    updateTokenExchangeRate,
+    selectedToken = {},
+    getGasPrice,
+    estimateGas,
+    selectedAddress,
+    data,
+  } = this.props
+  const { symbol } = selectedToken || {}
+
+  const estimateGasParams = {
+    from: selectedAddress,
+    gas: '746a528800',
+  }
+
+  if (symbol) {
+    updateTokenExchangeRate(symbol)
+    Object.assign(estimateGasParams, { value: '0x0' })
+  }
+
+  if (data) {
+    Object.assign(estimateGasParams, { data })
+  }
+
+  Promise.all([
+    getGasPrice(),
+    estimateGas({
+      from: selectedAddress,
+      gas: '746a528800',
+    }),
+  ])
+  .then(([blockGasPrice, estimatedGas]) => {
+    this.setState({
+      gasPrice: blockGasPrice,
+      gasLimit: estimatedGas,
+    })
+  })
+}
+
+SendTransactionScreen.prototype.renderHeaderIcon = function () {
+  const { selectedToken } = this.props
+
+  return h('div.send-v2__send-header-icon-container', [
+    selectedToken
+      ? h(Identicon, {
+        diameter: 40,
+        address: selectedToken.address,
+      })
+      : h('img.send-v2__send-header-icon', { src: '../images/eth_logo.svg' })
+  ])
+}
+
+SendTransactionScreen.prototype.renderTitle = function () {
+  const { selectedToken } = this.props
+
+  return h('div.send-v2__title', [selectedToken ? 'Send Tokens' : 'Send Funds'])
+}
+
+SendTransactionScreen.prototype.renderCopy = function () {
+  const { selectedToken } = this.props
+
+  const tokenText = selectedToken ? 'tokens' : 'ETH'
+
+  return h('div', [
+
+    h('div.send-v2__copy', `Only send ${tokenText} to an Ethereum address.`),
+
+    h('div.send-v2__copy', 'Sending to a different crytpocurrency that is not Ethereum may result in permanent loss.'),
+
+  ])
 }
 
 SendTransactionScreen.prototype.render = function () {
   const {
     accounts,
     conversionRate,
+    tokenToUSDRate,
+    selectedToken,
     showCustomizeGasModal,
-    selectedAccount
+    selectedAccount,
+    primaryCurrency = 'ETH',
   } = this.props
-  const { dropdownOpen, newTx } = this.state
-  const { to, amount, gas, memo } = newTx
+
+  const {
+    dropdownOpen,
+    to,
+    amount,
+    gasLimit,
+    gasPrice,
+    memo,
+  } = this.state
+
+  const amountConversionRate = selectedToken ? tokenToUSDRate : conversionRate
 
   return (
 
     h('div.send-v2__container', [
       h('div.send-v2__header', {}, [
 
-        h('img.send-v2__send-eth-icon', { src: '../images/eth_logo.svg' }),
+        this.renderHeaderIcon(),
 
         h('div.send-v2__arrow-background', [
           h('i.fa.fa-lg.fa-arrow-circle-right.send-v2__send-arrow-icon'),
@@ -53,12 +139,10 @@ SendTransactionScreen.prototype.render = function () {
         h('div.send-v2__header-tip'),
 
       ]),
-      
-      h('div.send-v2__title', 'Send Funds'),
 
-      h('div.send-v2__copy', 'Only send ETH to an Ethereum address.'),
+      this.renderTitle(),
 
-      h('div.send-v2__copy', 'Sending to a different crytpocurrency that is not Ethereum may result in permanent loss.'),
+      this.renderCopy(),
 
       h('div.send-v2__form', {}, [
 
@@ -87,10 +171,8 @@ SendTransactionScreen.prototype.render = function () {
             accounts,
             onChange: (event) => {
               this.setState({
-                newTx: {
-                  ...this.state.newTx,
-                  to: event.target.value,
-                },
+                ...this.state,
+                to: event.target.value,
               })
             },
           }),
@@ -102,17 +184,15 @@ SendTransactionScreen.prototype.render = function () {
           h('div.send-v2__form-label', 'Amount:'),
 
           h(CurrencyDisplay, {
-            primaryCurrency: 'ETH',
+            primaryCurrency,
             convertedCurrency: 'USD',
             value: amount,
-            conversionRate,
+            conversionRate: amountConversionRate,
             convertedPrefix: '$',
             handleChange: (value) => {
               this.setState({
-                newTx: {
-                  ...this.state.newTx,
-                  amount: value,
-                },
+                ...this.state,
+                amount: value,
               })
             }
           }),          
@@ -123,13 +203,11 @@ SendTransactionScreen.prototype.render = function () {
 
           h('div.send-v2__form-label', 'Gas fee:'),
 
-          h(CurrencyDisplay, {
-            primaryCurrency: 'ETH',
-            convertedCurrency: 'USD',
-            value: gas,
+          h(GasFeeDisplay, {
+            gasLimit,
+            gasPrice,
             conversionRate,
-            convertedPrefix: '$',
-            readOnly: true,
+            onClick: showCustomizeGasModal,
           }),
 
           h('div.send-v2__sliders-icon-container', {
@@ -148,10 +226,8 @@ SendTransactionScreen.prototype.render = function () {
             memo,
             onChange: (event) => {
               this.setState({
-                newTx: {
-                  ...this.state.newTx,
-                  memo: event.target.value,
-                },
+                ...this.state,
+                memo: event.target.value,
               })
             },
           }),

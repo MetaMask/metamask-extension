@@ -11,8 +11,7 @@ function CurrencyDisplay () {
   Component.call(this)
 
   this.state = {
-    minWidth: null,
-    currentScrollWidth: null,
+    value: null,
   }
 }
 
@@ -29,6 +28,18 @@ function resetCaretIfPastEnd (value, event) {
   }
 }
 
+CurrencyDisplay.prototype.handleChangeInHexWei = function (value) {
+  const { handleChange } = this.props
+
+  const valueInHexWei = conversionUtil(value, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'hex',
+    toDenomination: 'WEI',
+  })
+
+  handleChange(valueInHexWei)
+}
+
 CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
@@ -38,14 +49,13 @@ CurrencyDisplay.prototype.render = function () {
     primaryCurrency,
     convertedCurrency,
     convertedPrefix = '',
-    handleChange,
     placeholder = '0',
     readOnly = false,
-    value = '',
+    value: initValue,
   } = this.props
-  const { minWidth } = this.state
+  const { value } = this.state
 
-  const valueToRender = conversionUtil(value, {
+  const initValueToRender = conversionUtil(initValue, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
@@ -53,10 +63,8 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
   })
 
-  const convertedValue = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
+  const convertedValue = conversionUtil(value || initValueToRender, {
+    fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
@@ -73,27 +81,28 @@ CurrencyDisplay.prototype.render = function () {
 
         h('input', {
           className: primaryBalanceClassName,
-          value: `${valueToRender} ${primaryCurrency}`,
+          value: `${value || initValueToRender} ${primaryCurrency}`,
           placeholder: `${0} ${primaryCurrency}`,
           readOnly,
           onChange: (event) => {
             let newValue = event.target.value.split(' ')[0]
 
             if (newValue === '') {
-              handleChange('0')
+              this.setState({ value: '0' })
             }
             else if (newValue.match(/^0[1-9]$/)) {
-              handleChange(newValue.match(/[1-9]/)[0])
+              this.setState({ value: newValue.match(/[1-9]/)[0] })
             }
             else if (newValue && !isValidInput(newValue)) {
               event.preventDefault()
             }
             else {
-              handleChange(newValue)
+              this.setState({ value: newValue })
             }
           },
-          onKeyUp: event => resetCaretIfPastEnd(value, event),
-          onClick: event => resetCaretIfPastEnd(value, event),
+          onBlur: event => this.handleChangeInHexWei(event.target.value.split(' ')[0]),
+          onKeyUp: event => resetCaretIfPastEnd(value || initValueToRender, event),
+          onClick: event => resetCaretIfPastEnd(value || initValueToRender, event),
         }),
 
       ]),
