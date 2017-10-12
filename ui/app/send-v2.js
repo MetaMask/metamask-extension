@@ -105,6 +105,7 @@ SendTransactionScreen.prototype.render = function () {
     selectedToken,
     showCustomizeGasModal,
     selectedAccount,
+    setSelectedAddress,
     primaryCurrency = 'ETH',
     gasLimit,
     gasPrice,
@@ -150,7 +151,7 @@ SendTransactionScreen.prototype.render = function () {
             dropdownOpen,
             accounts,
             selectedAccount,
-            setFromField: () => console.log('Set From Field'),
+            onSelect: address => setSelectedAddress(address),
             openDropdown: () => this.setState({ dropdownOpen: true }),
             closeDropdown: () => this.setState({ dropdownOpen: false }),
             conversionRate,
@@ -235,9 +236,43 @@ SendTransactionScreen.prototype.render = function () {
       // Buttons underneath card
       h('div.send-v2__footer', [
         h('button.send-v2__cancel-btn', {}, 'Cancel'),
-        h('button.send-v2__next-btn', {}, 'Next'),
+        h('button.send-v2__next-btn', {
+          onClick: event => this.onSubmit(event),
+        }, 'Next'),
       ]),
     ])
 
   )
+}
+
+SendTransactionScreen.prototype.onSubmit = function (event) {
+  event.preventDefault()
+  const {
+    to,
+    amount,
+  } = this.state
+  const {
+    gasLimit: gas,
+    gasPrice,
+    signTokenTx,
+    signTx,
+    selectedToken,
+    selectedAccount: { address: from },
+  } = this.props
+
+  const txParams = {
+    from,
+    value: '0',
+    gas,
+    gasPrice,
+  }
+
+  if (!selectedToken) {
+    txParams.value = amount
+    txParams.to = to
+  }
+
+  selectedToken
+    ? signTokenTx(selectedToken.address, to, amount, txParams)
+    : signTx(txParams)
 }

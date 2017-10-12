@@ -19,7 +19,14 @@ FromDropdown.prototype.getListItemIcon = function (currentAccount, selectedAccou
     : null
 }
 
-FromDropdown.prototype.renderDropdown = function (accounts, selectedAccount, closeDropdown) {
+FromDropdown.prototype.renderDropdown = function () {
+  const {
+    accounts,
+    selectedAccount,
+    closeDropdown,
+    onSelect,
+  } = this.props
+
   return h('div', {}, [
 
     h('div.send-v2__from-dropdown__close-area', {
@@ -30,7 +37,10 @@ FromDropdown.prototype.renderDropdown = function (accounts, selectedAccount, clo
 
       ...accounts.map(account => h(AccountListItem, {
         account, 
-        handleClick: () => console.log('Select identity'), 
+        handleClick: () => {
+          onSelect(account.address)
+          closeDropdown()
+        }, 
         icon: this.getListItemIcon(account, selectedAccount),
       }))
 
@@ -43,7 +53,6 @@ FromDropdown.prototype.render = function () {
   const {
     accounts,
     selectedAccount,
-    setFromField,
     openDropdown,
     closeDropdown,
     dropdownOpen,
@@ -57,7 +66,7 @@ FromDropdown.prototype.render = function () {
       icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } })
     }),
 
-    dropdownOpen && this.renderDropdown(accounts, selectedAccount, closeDropdown),
+    dropdownOpen && this.renderDropdown(),
 
   ])
     

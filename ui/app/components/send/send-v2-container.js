@@ -62,5 +62,10 @@ function mapDispatchToProps (dispatch) {
     estimateGas: params => dispatch(actions.estimateGas(params)),
     getGasPrice: () => dispatch(actions.getGasPrice()),
     updateTokenExchangeRate: token => dispatch(actions.updateTokenExchangeRate(token)),
+    signTokenTx: (tokenAddress, toAddress, amount, txData) => (
+      dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
+    ),
+    signTx: txParams => dispatch(actions.signTx(txParams)),
+    setSelectedAddress: address => dispatch(actions.setSelectedAddress(address))
   }
 }
