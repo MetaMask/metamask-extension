@@ -12,12 +12,6 @@ function InputNumber () {
   this.setValue = this.setValue.bind(this)
 }
 
-InputNumber.prototype.componentWillMount = function () {
-  const { value = 0 } = this.props
-
-  this.setState({ value: Number(value) })
-}
-
 InputNumber.prototype.setValue = function (newValue) {
   const { fixed, min = -1, max = Infinity, onChange } = this.props
 
@@ -30,23 +24,22 @@ InputNumber.prototype.setValue = function (newValue) {
 
 InputNumber.prototype.render = function () {
   const { unitLabel, step = 1, placeholder, value = 0 } = this.props
-  const valueAsNum = Number(value)
 
   return h('div.customize-gas-input-wrapper', {}, [
     h('input.customize-gas-input', {
       placeholder,
       type: 'number',
-      value: valueAsNum,
+      value: value,
       onChange: (e) => this.setValue(e.target.value),
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
       h('i.fa.fa-angle-up', {
-        onClick: () => this.setValue(addCurrencies(valueAsNum, step)),
+        onClick: () => this.setValue(addCurrencies(value, step)),
       }),
       h('i.fa.fa-angle-down', {
         style: { cursor: 'pointer' },
-        onClick: () => this.setValue(addCurrencies(valueAsNum, step * -1)),
+        onClick: () => this.setValue(addCurrencies(value, step * -1)),
       }),
     ]),
   ])
