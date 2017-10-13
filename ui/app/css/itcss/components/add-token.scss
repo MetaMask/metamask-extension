@@ -4,7 +4,6 @@
   flex-flow: column nowrap;
   align-items: center;
   position: relative;
-  top: -36px;
   z-index: 12;
   font-family: 'DIN Next Light';
 
@@ -189,6 +188,7 @@
     border-radius: 10px;
     cursor: pointer;
     border: 2px solid transparent;
+    position: relative;
 
     &:hover {
       border: 2px solid rgba($malibu-blue, .5);
@@ -196,6 +196,11 @@
 
     &--selected {
       border: 2px solid $malibu-blue !important;
+    }
+
+    &--disabled {
+      opacity: .4;
+      pointer-events: none;
     }
   }
 
@@ -221,6 +226,14 @@
     box-shadow: 0 2px 4px 0 rgba($black, .24);
     margin-right: 12px;
     flex: 0 0 auto;
+  }
+
+  &__token-message {
+    position: absolute;
+    color: $caribbean-green;
+    font-size: 11px;
+    bottom: 0;
+    left: 85px;
   }
 
   &__confirmation-token-list {

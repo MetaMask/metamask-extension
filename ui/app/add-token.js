@@ -22,14 +22,17 @@ const ethUtil = require('ethereumjs-util')
 const abi = require('human-standard-token-abi')
 const Eth = require('ethjs-query')
 const EthContract = require('ethjs-contract')
+const R = require('ramda')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AddTokenScreen)
 
 function mapStateToProps (state) {
+  const { identities, tokens } = state.metamask
   return {
-    identities: state.metamask.identities,
+    identities,
+    tokens,
   }
 }
 
@@ -101,6 +104,15 @@ AddTokenScreen.prototype.tokenAddressDidChange = function (e) {
   }
 }
 
+AddTokenScreen.prototype.checkExistingAddresses = function (address) {
+  const tokensList = this.props.tokens
+  const matchesAddress = existingToken => {
+    return existingToken.address.toLowerCase() === address.toLowerCase()
+  }
+
+  return R.any(matchesAddress)(tokensList)
+}
+
 AddTokenScreen.prototype.validate = function () {
   const errors = {}
   const identitiesList = Object.keys(this.props.identities)
@@ -127,6 +139,11 @@ AddTokenScreen.prototype.validate = function () {
     const ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
       errors.customAddress = 'Personal address detected. Input the token contract address.'
+    }
+
+    const tokenAlreadyAdded = this.checkExistingAddresses(customAddress)
+    if (tokenAlreadyAdded) {
+      errors.customAddress = 'Token has already been added.'
     }
   } else if (
     Object.entries(selectedTokens)
@@ -217,12 +234,14 @@ AddTokenScreen.prototype.renderTokenList = function () {
   return Array(6).fill(undefined)
     .map((_, i) => {
       const { logo, symbol, name, address } = results[i] || {}
+      const tokenAlreadyAdded = this.checkExistingAddresses(address)
       return Boolean(logo || symbol || name) && (
         h('div.add-token__token-wrapper', {
-          className: classnames('add-token__token-wrapper', {
+          className: classnames({
             'add-token__token-wrapper--selected': selectedTokens[address],
+            'add-token__token-wrapper--disabled': tokenAlreadyAdded,
           }),
-          onClick: () => this.toggleToken(address, results[i]),
+          onClick: () => !tokenAlreadyAdded && this.toggleToken(address, results[i]),
         }, [
           h('div.add-token__token-icon', {
             style: {
@@ -233,6 +252,9 @@ AddTokenScreen.prototype.renderTokenList = function () {
             h('div.add-token__token-symbol', symbol),
             h('div.add-token__token-name', name),
           ]),
+          tokenAlreadyAdded && (
+            h('div.add-token__token-message', 'Already added')
+          ),
         ])
       )
     })
