@@ -472,7 +472,7 @@
     position: absolute;
     transform: rotate(45deg);
     left: 178px;
-    top: 71px;
+    top: 65px;
   }
 
   &__title {
@@ -512,7 +512,9 @@
     font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
-    margin-top: 16px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
   }
 
   &__from-dropdown {
@@ -550,7 +552,7 @@
     }
   }
 
-  &__to-autocomplete {
+  &__to-autocomplete, &__memo-text-area {
     &__input {
       height: 54px;
       width: 240px;
@@ -566,6 +568,12 @@
     }
   }
 
+  &__memo-text-area {
+    &__input {
+      padding: 6px 10px;
+    }
+  }
+
   &__footer {
     height: 92px;
     width: 100%;
@@ -573,8 +581,7 @@
     justify-content: space-evenly;
     align-items: center;
     border-top: 1px solid $alto;
-    position: absolute;
-    bottom: 0;
+    margin-top: 29px;
   }
 
   &__next-btn,

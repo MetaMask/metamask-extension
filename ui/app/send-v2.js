@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const FromDropdown = require('./components/send/from-dropdown')
 const ToAutoComplete = require('./components/send/to-autocomplete')
 const CurrencyDisplay = require('./components/send/currency-display')
+const MemoTextArea = require('./components/send/memo-textarea')
 
 module.exports = connect(mapStateToProps)(SendTransactionScreen)
 
@@ -49,7 +50,7 @@ function SendTransactionScreen () {
 SendTransactionScreen.prototype.render = function () {
   const { accounts, conversionRate } = this.props
   const { dropdownOpen, newTx } = this.state
-  const { to, amount, gas } = newTx
+  const { to, amount, gas, memo } = newTx
 
   return (
 
@@ -65,7 +66,7 @@ SendTransactionScreen.prototype.render = function () {
         h('div.send-v2__header-tip'),
 
       ]),
-
+      
       h('div.send-v2__title', 'Send Funds'),
 
       h('div.send-v2__copy', 'Only send ETH to an Ethereum address.'),
@@ -142,6 +143,24 @@ SendTransactionScreen.prototype.render = function () {
             convertedPrefix: '$',
             readOnly: true,
           }),          
+
+        ]),
+
+        h('div.send-v2__form-row', [
+
+          h('div.send-v2__form-label', 'Transaction Memo:'),
+
+          h(MemoTextArea, {
+            memo,
+            onChange: (event) => {
+              this.setState({
+                newTx: {
+                  ...this.state.newTx,
+                  memo: event.target.value,
+                },
+              })
+            },
+          }),
 
         ]),
 
