@@ -264,7 +264,7 @@
 .gas-tooltip-input-arrows {
   position: absolute;
   top: 0;
-  left: 178px;
+  right: 4px;
   width: 17px;
   height: 28px;
   border: 1px solid #dadada;
@@ -420,7 +420,16 @@
     }
   }
 
-  &__send-eth-icon {
+  &__send-header-icon-container {
+    z-index: 25;
+
+    @media screen and (max-width: $break-small) {
+      position: relative;
+      top: 0;
+    }
+  }
+
+  &__send-header-icon {
     border-radius: 50%;
     width: 48px;
     height: 48px;
@@ -428,11 +437,6 @@
     z-index: 25;
     padding: 4px;
     background-color: $white;
-
-    @media screen and (max-width: $break-small) {
-      position: relative;
-      top: 0;
-    }
   }
 
   &__send-arrow-icon {
@@ -472,7 +476,7 @@
     position: absolute;
     transform: rotate(45deg);
     left: 178px;
-    top: 71px;
+    top: 65px;
   }
 
   &__title {
@@ -512,7 +516,9 @@
     font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
-    margin-top: 16px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
   }
 
   &__from-dropdown {
@@ -550,7 +556,7 @@
     }
   }
 
-  &__to-autocomplete {
+  &__to-autocomplete, &__memo-text-area {
     &__input {
       height: 54px;
       width: 240px;
@@ -566,6 +572,32 @@
     }
   }
 
+  &__sliders-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+    border: 1px solid $curious-blue;
+    border-radius: 4px;
+    background-color: $white;
+    padding: 5px;
+    position: absolute;
+    right: 15px;
+    top: 14px;
+    cursor: pointer;
+  }
+
+  &__sliders-icon {
+    color: $curious-blue;
+  }
+
+  &__memo-text-area {
+    &__input {
+      padding: 6px 10px;
+    }
+  }
+
   &__footer {
     height: 92px;
     width: 100%;
@@ -573,8 +605,7 @@
     justify-content: space-evenly;
     align-items: center;
     border-top: 1px solid $alto;
-    position: absolute;
-    bottom: 0;
+    margin-top: 29px;
   }
 
   &__next-btn,
@@ -606,5 +637,156 @@
   &__cancel-btn {
     color: $dusty-gray;
     border-color: $dusty-gray;
+  }
+
+  &__customize-gas {
+    border: 1px solid #D8D8D8;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.14);
+    font-family: Roboto;
+    display: flex;
+    flex-flow: column;
+
+    @media screen and (max-width: $break-small) {
+      width: 355px;
+      height: 598px;
+    }
+
+    &__header {
+      height: 52px;
+      border-bottom: 1px solid $alto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 22px;
+    }
+
+    &__title {
+      margin-left: 19.25px;
+    }
+
+    &__close::after {
+      content: '\00D7';
+      font-size: 1.8em;
+      color: $dusty-gray;
+      font-family: sans-serif;
+      cursor: pointer;
+      margin-right: 19.25px;
+    }
+
+    &__body {
+      height: 248px;
+      display: flex;
+
+      @media screen and (max-width: $break-small) {
+        width: 355px;
+        height: 470px;
+        flex-flow: column;
+      }
+    }
+
+    &__footer {
+      height: 75px;
+      border-top: 1px solid $alto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 22px;
+    }
+
+    &__buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 181.75px;
+      margin-right: 21.25px;
+    }
+
+    &__revert, &__cancel, &__save {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    &__revert {
+      color: $silver-chalice;
+      font-size: 16px;
+      margin-left: 21.25px;
+    }
+
+    &__cancel, &__save {
+      height: 34.64px;
+      width: 85.74px;
+      border: 1px solid $dusty-gray;
+      border-radius: 2px;
+      font-family: 'DIN OT';
+      font-size: 12px;
+      color: $dusty-gray;
+    }
+  }
+
+  &__gas-modal-card {
+    width: 360px;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    padding-left: 20px;
+
+    &__title {
+      height: 26px;
+      width: 84px;
+      color: $tundora;
+      font-family: Roboto;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 26px;
+      margin-top: 17px;
+    }
+
+    &__copy {
+      height: 38px;
+      width: 314px;
+      color: $tundora;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 19px;
+      margin-top: 17px;
+    }
+
+    .customize-gas-input-wrapper {
+      margin-top: 17px;
+    }
+
+    .customize-gas-input {
+      height: 54px;
+      width: 315px;
+      border: 1px solid $geyser;
+      background-color: $white;
+      padding-left: 15px;
+    }
+
+    .gas-tooltip-input-arrows {
+      width: 32px;
+      height: 54px;
+      border-left: 1px solid #dadada;
+      font-size: 18px;
+      color: $tundora;
+      right: 0px;
+      padding: 1px 4px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
   }
 }

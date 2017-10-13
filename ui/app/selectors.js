@@ -5,14 +5,16 @@ const selectors = {
   getSelectedIdentity,
   getSelectedAccount,
   getSelectedToken,
+  getSelectedTokenExchangeRate,
   conversionRateSelector,
   transactionsSelector,
+  accountsWithSendEtherInfoSelector,
+  getCurrentAccountWithSendEtherInfo,
 }
 
 module.exports = selectors
 
 function getSelectedAddress (state) {
-  // TODO: accounts is not defined. Is it needed?
   const selectedAddress = state.metamask.selectedAddress || Object.keys(state.metamask.accounts)[0]
 
   return selectedAddress
@@ -40,8 +42,39 @@ function getSelectedToken (state) {
   return selectedToken || null
 }
 
+function getSelectedTokenExchangeRate (state) {
+  const tokenExchangeRates = state.metamask.tokenExchangeRates
+  const selectedToken = getSelectedToken(state) || {}
+  const { symbol = '' } = selectedToken
+  
+  const pair = `${symbol.toLowerCase()}_eth`
+  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
+
+  return tokenExchangeRate
+}
+
 function conversionRateSelector (state) {
   return state.metamask.conversionRate
+}
+
+function accountsWithSendEtherInfoSelector (state) {
+  const {
+    accounts,
+    identities,
+  } = state.metamask
+
+  const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
+    return Object.assign({}, account, identities[key])
+  })
+
+  return accountsWithSendEtherInfo
+}
+
+function getCurrentAccountWithSendEtherInfo (state) {
+  const currentAddress = getSelectedAddress(state)
+  const accounts = accountsWithSendEtherInfoSelector(state)
+
+  return accounts.find(({ address }) => address === currentAddress)
 }
 
 function transactionsSelector (state) {

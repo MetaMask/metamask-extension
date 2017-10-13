@@ -15,6 +15,7 @@ const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
+const CustomizeGasModal = require('../customize-gas-modal')
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -149,6 +150,31 @@ const MODALS = {
       width: '449px',
       // top: 'calc(33% + 45px)',
       top: '10%',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+  },
+
+  CUSTOMIZE_GAS: {
+    contents: [
+      h(CustomizeGasModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '355px',
+      height: '598px',
+      // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+      top: '5%',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+    },
+    laptopModalStyle: {
+      width: '720px',
+      height: '377px',
+      top: '80px',
       transform: 'none',
       left: '0',
       right: '0',

@@ -128,8 +128,19 @@ const conversionUtil = (value, {
   value: value || '0',
 });
 
-const addCurrencies = (a, b, { toNumericBase, numberOfDecimals }) => {
+const addCurrencies = (a, b, options = {}) => {
+  const { toNumericBase, numberOfDecimals } = options
   const value = (new BigNumber(a)).add(b);
+  return converter({
+    value,
+    toNumericBase,
+    numberOfDecimals,
+  })
+}
+
+const multiplyCurrencies = (a, b, options = {}) => {
+  const { toNumericBase, numberOfDecimals } = options
+  const value = (new BigNumber(a)).times(b);
   return converter({
     value,
     toNumericBase,
@@ -152,5 +163,6 @@ const conversionGreaterThan = (
 module.exports = {
   conversionUtil,
   addCurrencies,
+  multiplyCurrencies,
   conversionGreaterThan,
 }
