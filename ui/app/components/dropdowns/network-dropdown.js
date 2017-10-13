@@ -189,7 +189,7 @@ NetworkDropdown.prototype.render = function () {
       {
         key: 'default',
         closeMenu: () => this.props.hideNetworkDropdown(),
-        onClick: () => props.setDefaultRpcTarget(),
+        onClick: () => props.setRpcTarget('http://localhost:8545'),
         style: dropdownMenuItemStyle,
       },
       [
