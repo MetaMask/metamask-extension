@@ -1,0 +1,44 @@
+.account-menu {
+  position: fixed;
+  z-index: 100;
+  top: 58px;
+  width: 310px;
+
+  @media screen and (max-width: 575px) {
+    right: calc((100vw - 100%) / 2);
+  }
+
+  @media screen and (min-width: 576px) {
+    right: calc((100vw - 85vw) / 2);
+  }
+
+  @media screen and (min-width: 769px) {
+    right: calc((100vw - 80vw) / 2);
+  }
+
+  @media screen and (min-width: 1281px) {
+    right: calc((100vw - 65vw) / 2);
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__logout-button {
+    border: 1px solid $dusty-gray;
+    background-color: transparent;
+    color: $white;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 23px;
+    padding: 0 24px;
+  }
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+}

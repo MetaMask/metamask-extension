@@ -34,6 +34,7 @@ const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
+const AccountMenu = require('./components/account-menu')
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal
@@ -129,6 +130,8 @@ App.prototype.render = function () {
         provider: this.props.provider,
         frequentRpcList: this.props.frequentRpcList,
       }, []),
+
+      h(AccountMenu),
 
       h(Loading, {
         isLoading: isLoading || isLoadingNetwork,
@@ -344,7 +347,7 @@ App.prototype.renderPrimary = function () {
 
     case 'sendTransaction':
       log.debug('rendering send tx screen')
-      
+
       const SendComponentToRender = checkFeatureToggle('send-v2')
         ? SendTransactionScreen2
         : SendTransactionScreen
