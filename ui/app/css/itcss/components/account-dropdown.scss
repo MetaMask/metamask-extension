@@ -23,6 +23,16 @@
     margin-left: 8px;
     position: relative;
   }
+
+  &__account-balances {
+    height: auto;
+    border: none;
+    background-color: transparent;
+    color: #9b9b9b;
+    margin-left: 34px;
+    margin-top: 4px;
+    position: relative;
+  }
   
   &__account-name {
     font-size: 16px;
@@ -34,13 +44,22 @@
     right: 12px;
     top: 1px;
   }
+
+  &__account-primary-balance,
+  &__account-secondary-balance {
+    font-family: Roboto;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: 300;
+  }
+
   &__account-primary-balance {
-    margin-left: 34px;
-    margin-top: 4px;
+    color: $scorpion;
+    border: none;
+    outline: 0 !important;
   }
 
   &__account-secondary-balance {
-    margin-left: 34px;
     color: $dusty-gray;
   }
 }

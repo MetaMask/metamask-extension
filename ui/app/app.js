@@ -10,7 +10,7 @@ const NewKeyChainScreen = require('./new-keychain')
 // accounts
 const MainContainer = require('./main-container')
 const SendTransactionScreen = require('./send')
-const SendTransactionScreen2 = require('./send-v2.js')
+const SendTransactionScreen2 = require('./components/send/send-v2-container')
 const SendTokenScreen = require('./components/send-token')
 const ConfirmTxScreen = require('./conf-tx')
 // notice

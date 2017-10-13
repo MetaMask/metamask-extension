@@ -11,7 +11,7 @@ function ToAutoComplete () {
 }
 
 ToAutoComplete.prototype.render = function () {
-  const { to, identities, onChange } = this.props
+  const { to, accounts, onChange } = this.props
 
   return h('div.send-v2__to-autocomplete', [
 
@@ -32,7 +32,7 @@ ToAutoComplete.prototype.render = function () {
 
     h('datalist#addresses', [
       // Corresponds to the addresses owned.
-      ...Object.entries(identities).map(([key, { address, name }]) => {
+      ...Object.entries(accounts).map(([key, { address, name }]) => {
         return h('option', {
           value: address,
           label: name,

@@ -3,27 +3,34 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const Identicon = require('../identicon')
+const CurrencyDisplay = require('./currency-display')
+const { conversionRateSelector } = require('../../selectors')
 
 inherits(AccountListItem, Component)
 function AccountListItem () {
   Component.call(this)
 }
 
-module.exports = AccountListItem
+function mapStateToProps(state) {
+  return {
+    conversionRate: conversionRateSelector(state)
+  }
+}
+
+module.exports = connect(mapStateToProps)(AccountListItem)
 
 AccountListItem.prototype.render = function () {
   const {
     account, 
     handleClick, 
     icon = null,
+    conversionRate,
   } = this.props
 
-  const { identity, balancesToRender } = account
-  const { name, address } = identity
-  const { primary, secondary } = balancesToRender
+  const { name, address, balance } = account
 
   return h('div.account-list-item', {
-    onClick: () => handleClick(identity),
+    onClick: () => handleClick({ name, address, balance }),
   }, [
 
     h('div.account-list-item__top-row', {}, [
@@ -35,7 +42,7 @@ AccountListItem.prototype.render = function () {
           diameter: 18,
           className: 'account-list-item__identicon',
         },
-      ),  
+      ),
 
       h('div.account-list-item__account-name', {}, name),
 
@@ -43,9 +50,17 @@ AccountListItem.prototype.render = function () {
 
     ]),
 
-    h('div.account-list-item__account-primary-balance', {}, primary),
-
-    h('div.account-list-item__account-secondary-balance', {}, secondary),
+    h(CurrencyDisplay, {
+      primaryCurrency: 'ETH',
+      convertedCurrency: 'USD',
+      value: balance,
+      conversionRate,
+      convertedPrefix: '$',
+      readOnly: true,
+      className: 'account-list-item__account-balances',
+      primaryBalanceClassName: 'account-list-item__account-primary-balance',
+      convertedBalanceClassName: 'account-list-item__account-secondary-balance',
+    }, name),
 
   ])
 }
