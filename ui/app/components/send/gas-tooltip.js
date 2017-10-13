@@ -73,7 +73,7 @@ GasTooltip.prototype.render = function () {
           step: 1,
           min: 0,
           placeholder: '0',
-          initValue: gasPrice,
+          value: gasPrice,
           onChange: (newPrice) => this.updateGasPrice(newPrice),
         }),
         h('div.gas-tooltip-input-label', {
@@ -89,7 +89,7 @@ GasTooltip.prototype.render = function () {
           step: 1,
           min: 0,
           placeholder: '0',
-          initValue: gasLimit,
+          value: gasLimit,
           onChange: (newLimit) => this.updateGasLimit(newLimit),
         }),
       ]),

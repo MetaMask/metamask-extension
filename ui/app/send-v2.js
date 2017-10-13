@@ -5,8 +5,11 @@ const connect = require('react-redux').connect
 const FromDropdown = require('./components/send/from-dropdown')
 const ToAutoComplete = require('./components/send/to-autocomplete')
 const CurrencyDisplay = require('./components/send/currency-display')
+const MemoTextArea = require('./components/send/memo-textarea')
 
-module.exports = connect(mapStateToProps)(SendTransactionScreen)
+const { showModal } = require('./actions')
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(SendTransactionScreen)
 
 function mapStateToProps (state) {
   const mockAccounts = Array.from(new Array(5))
@@ -25,6 +28,12 @@ function mapStateToProps (state) {
   return {
     accounts: mockAccounts,
     conversionRate
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    showCustomizeGasModal: () => dispatch(showModal({ name: 'CUSTOMIZE_GAS' })),
   }
 }
 
@@ -47,9 +56,9 @@ function SendTransactionScreen () {
 }
 
 SendTransactionScreen.prototype.render = function () {
-  const { accounts, conversionRate } = this.props
+  const { accounts, conversionRate, showCustomizeGasModal } = this.props
   const { dropdownOpen, newTx } = this.state
-  const { to, amount, gas } = newTx
+  const { to, amount, gas, memo } = newTx
 
   return (
 
@@ -65,7 +74,7 @@ SendTransactionScreen.prototype.render = function () {
         h('div.send-v2__header-tip'),
 
       ]),
-
+      
       h('div.send-v2__title', 'Send Funds'),
 
       h('div.send-v2__copy', 'Only send ETH to an Ethereum address.'),
@@ -141,7 +150,31 @@ SendTransactionScreen.prototype.render = function () {
             conversionRate,
             convertedPrefix: '$',
             readOnly: true,
-          }),          
+          }),
+
+          h('div.send-v2__sliders-icon-container', {
+            onClick: showCustomizeGasModal,
+          }, [
+            h('i.fa.fa-sliders.send-v2__sliders-icon'),
+          ])          
+
+        ]),
+
+        h('div.send-v2__form-row', [
+
+          h('div.send-v2__form-label', 'Transaction Memo:'),
+
+          h(MemoTextArea, {
+            memo,
+            onChange: (event) => {
+              this.setState({
+                newTx: {
+                  ...this.state.newTx,
+                  memo: event.target.value,
+                },
+              })
+            },
+          }),
 
         ]),
 
