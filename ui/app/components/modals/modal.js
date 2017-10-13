@@ -15,7 +15,7 @@ const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
-const CustomizeGasModal = require('./customize-gas-modal')
+const CustomizeGasModal = require('../customize-gas-modal')
 
 const accountModalStyle = {
   mobileModalStyle: {

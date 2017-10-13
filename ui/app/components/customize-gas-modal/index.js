@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const GasModalCard = require('../send/gas-modal-card')
+const GasModalCard = require('./gas-modal-card')
 
 function mapStateToProps (state) {
   return {}
@@ -51,7 +51,7 @@ CustomizeGasModal.prototype.render = function () {
           min: 0.0,
           max: 5.0,
           step: 0.01,
-          onChange: value => this.setState({ gasPrice: value }),
+          onChange: gasPrice => this.setState({ gasPrice }),
           title: 'Gas Price',
           copy: 'We calculate the suggested gas prices based on network success rates.',
         }),
@@ -61,7 +61,7 @@ CustomizeGasModal.prototype.render = function () {
           min: 20000,
           max: 100000,
           step: 1,
-          onChange: value => this.setState({ gasLimit: value }),
+          onChange: gasLimit => this.setState({ gasLimit }),
           title: 'Gas Limit',
           copy: 'We calculate the suggested gas limit based on network success rates.',
         }),

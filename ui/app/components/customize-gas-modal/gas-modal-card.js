@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
-const GasSlider = require('../gas-slider.js')
+const GasSlider = require('./gas-slider.js')
 
 module.exports = GasModalCard
 
@@ -24,7 +24,7 @@ GasModalCard.prototype.render = function () {
     title,
     copy
   } = this.props
-  console.log(`value`, value);
+
   return h('div.send-v2__gas-modal-card', [
 
     h('div.send-v2__gas-modal-card__title', {}, title),
