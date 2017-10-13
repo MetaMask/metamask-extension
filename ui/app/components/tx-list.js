@@ -8,6 +8,7 @@ const TxListItem = require('./tx-list-item')
 const ShiftListItem = require('./shift-list-item')
 const { formatBalance, formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
+const classnames = require('classnames')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 
@@ -97,17 +98,22 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     address,
     transactionAmount,
     transactionHash,
-    className: '.tx-list-item.tx-list-clickable',
     conversionRate,
   }
 
-  if (transactionStatus === 'unapproved') {
+  const isUnapproved = transactionStatus === 'unapproved';
+
+  if (isUnapproved) {
     opts.onClick = () => showConfTxPage({id: transActionId})
-    opts.className += '.tx-list-pending-item-container'
     opts.transactionStatus = 'Not Started'
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }
+
+  opts.className = classnames('.tx-list-item', {
+    '.tx-list-pending-item-container': isUnapproved,
+    '.tx-list-clickable': Boolean(transactionHash) || isUnapproved,
+  })
 
   return h(TxListItem, opts)
 }
