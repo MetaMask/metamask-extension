@@ -141,7 +141,8 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
   const sameUserAndNetwork = oldAddress === newAddress && oldNet === newNet
   const shouldUpdateTokens = isLoading || missingInfo || sameUserAndNetwork
 
-  const tokensLengthUnchanged = tokens.length === newTokens.length
+  const oldTokensLength = tokens ? tokens.length : 0
+  const tokensLengthUnchanged = oldTokensLength === newTokens.length
 
   if (tokensLengthUnchanged && shouldUpdateTokens) return
 
