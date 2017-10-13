@@ -7,6 +7,7 @@ const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
+const copyToClipboard = require('copy-to-clipboard')
 
 function mapStateToProps (state) {
   return {
@@ -61,11 +62,12 @@ ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
         inputClass: 'private-key-password-display-textarea',
         textarea: true,
         value: plainKey,
+        onClick: () => copyToClipboard(plainKey),
       })
     : h('input.private-key-password-input', {
       type: 'password',
       placeholder: 'Type password',
-      onChange: event => this.setState({ password: event.target.value })
+      onChange: event => this.setState({ password: event.target.value }),
     })
 }
 
@@ -115,7 +117,7 @@ ExportPrivateKeyModal.prototype.render = function () {
       }),
 
       h('div.account-modal-divider'),
-      
+
       h('span.modal-body-title', 'Download Private Keys'),
 
       h('div.private-key-password', {}, [
@@ -132,6 +134,6 @@ ExportPrivateKeyModal.prototype.render = function () {
       ),
 
       this.renderButtons(privateKey, this.state.password, address, hideModal),
-      
+
   ])
 }

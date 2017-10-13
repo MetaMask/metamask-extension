@@ -15,6 +15,7 @@ ReadOnlyInput.prototype.render = function () {
     inputClass = '',
     value,
     textarea,
+    onClick,
   } = this.props
 
   const inputType = textarea ? 'textarea' : 'input'
@@ -25,6 +26,7 @@ ReadOnlyInput.prototype.render = function () {
       value,
       readOnly: true,
       onFocus: event => event.target.select(),
+      onClick,
     }),
   ])
 }
