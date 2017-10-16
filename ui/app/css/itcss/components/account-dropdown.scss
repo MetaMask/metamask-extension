@@ -4,7 +4,7 @@
 
 .account-dropdown-balance {
   color: $dusty-gray;
-  line-height: 19px;
+  margin-top: 5px;
 }
 
 .account-dropdown-edit-button {
@@ -33,7 +33,7 @@
     margin-top: 4px;
     position: relative;
   }
-  
+
   &__account-name {
     font-size: 16px;
     margin-left: 8px;
@@ -62,4 +62,24 @@
   &__account-secondary-balance {
     color: $dusty-gray;
   }
+}
+
+.account-detail {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.account-dropdown__loose-label {
+  z-index: 1;
+  font-size: 11px;
+  background: rgba(255, 0, 0, .8);
+  color: $white;
+  border-radius: 10px;
+  padding: 5px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
