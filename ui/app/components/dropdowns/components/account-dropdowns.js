@@ -51,17 +51,20 @@ class AccountDropdowns extends Component {
             {
               marginTop: index === 0 ? '5px' : '',
               fontSize: '24px',
-              width: '260px',
             },
             menuItemStyles,
           ),
         },
         [
-          h('div.flex-row.flex-center', {}, [
-
+          h('div.flex-row.flex-center', {
+            style: {
+              flexGrow: '1',
+              padding: '0 8px',
+            },
+          }, [
             h('span', {
               style: {
-                flex: '1 1 0',
+                flex: '0',
                 minWidth: '20px',
                 minHeight: '30px',
               },
@@ -78,47 +81,48 @@ class AccountDropdowns extends Component {
               Identicon,
               {
                 address: identity.address,
-                diameter: 24,
+                diameter: 25,
                 style: {
-                  flex: '1 1 auto',
+                  flex: '0',
                   marginLeft: '10px',
                 },
               },
             ),
 
-            h('span.flex-column', {
-              style: {
-                flex: '10 10 auto',
-                width: '175px',
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-                marginLeft: '10px',
-                position: 'relative',
-              },
-            }, [
-              this.indicateIfLoose(keyring),
-              h('span.account-dropdown-name', {
+            h('div.account-detail', {}, [
+              h('span.flex-column', {
                 style: {
-                  fontSize: '18px',
-                  maxWidth: '145px',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
+                  flex: '1 1 175px',
+                  alignItems: 'flex-start',
+                  justifyContent: 'center',
+                  marginLeft: '10px',
+                  position: 'relative',
                 },
-              }, identity.name || ''),
+              }, [
+                h('span.account-dropdown-name', {
+                  style: {
+                    fontSize: '18px',
+                    maxWidth: '145px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  },
+                }, identity.name || ''),
 
-              h('span.account-dropdown-balance', {
-                style: {
-                  fontSize: '14px',
-                  fontFamily: 'Avenir',
-                  fontWeight: 500,
-                },
-              }, formattedBalance),
+                h('span.account-dropdown-balance', {
+                  style: {
+                    fontSize: '14px',
+                    fontFamily: 'Avenir',
+                    fontWeight: 500,
+                  },
+                }, formattedBalance),
+              ]),
+              this.indicateIfLoose(keyring),
             ]),
 
-            h('span', {
+            h('span.flex-center', {
               style: {
-                flex: '3 3 auto',
+                flex: '0 0 auto',
               },
             }, [
               h('span.account-dropdown-edit-button', {
@@ -159,7 +163,16 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', 'LOOSE') : null
+      return isLoose
+        ? h('.account-dropdown__loose-label', [
+            h('span', {
+              style: {
+                lineHeight: '10px',
+              },
+            },
+            'LOOSE'),
+          ])
+        : null
     } catch (e) { return }
   }
 

@@ -129,7 +129,7 @@ WalletView.prototype.render = function () {
               top: '14px',
             },
             innerStyle: {
-              padding: '10px 16px',
+              padding: '10px',
             },
             useCssTransition: true,
             selected: selectedAddress,

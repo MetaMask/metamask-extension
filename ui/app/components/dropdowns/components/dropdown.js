@@ -20,7 +20,7 @@ class Dropdown extends Component {
 
     const innerStyleDefaults = extend({
       borderRadius: '4px',
-      padding: '8px 16px',
+      padding: '8px',
       background: 'rgba(0, 0, 0, 0.8)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     }, innerStyle)
