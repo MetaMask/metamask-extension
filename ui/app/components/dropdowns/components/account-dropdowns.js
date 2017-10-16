@@ -164,7 +164,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountSelector () {
-    const { actions, useCssTransition, innerStyle } = this.props
+    const { actions, useCssTransition, innerStyle, sidebarOpen } = this.props
     const { accountSelectorActive, menuItemStyles } = this.state
 
     return h(
@@ -223,7 +223,11 @@ class AccountDropdowns extends Component {
         h(
           DropdownMenuItem,
           {
-            closeMenu: () => {},
+            closeMenu: () => {
+              if (sidebarOpen) {
+                actions.hideSidebar()
+              }
+            },
             onClick: () => actions.showImportPage(),
             style: Object.assign(
               {},
@@ -457,6 +461,7 @@ const mapDispatchToProps = (dispatch) => {
 function mapStateToProps (state) {
   return {
     keyrings: state.metamask.keyrings,
+    sidebarOpen: state.appState.sidebarOpen,
   }
 }
 
