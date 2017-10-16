@@ -41,4 +41,11 @@ Divider.prototype.render = function () {
   return h('div.menu__divider')
 }
 
-module.exports = { Menu, Item, Divider }
+inherits(CloseArea, Component)
+function CloseArea () { Component.call(this) }
+
+CloseArea.prototype.render = function () {
+  return h('div.menu__close-area', { onClick: this.props.onClick })
+}
+
+module.exports = { Menu, Item, Divider, CloseArea }

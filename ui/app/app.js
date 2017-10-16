@@ -91,6 +91,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
+    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
   }
 }
 
@@ -256,10 +257,12 @@ App.prototype.renderAppBar = function () {
 
             ]),
 
-            h(Identicon, {
-              address: this.props.selectedAddress,
-              diameter: 32,
-            }),
+            h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
+              h(Identicon, {
+                address: this.props.selectedAddress,
+                diameter: 32,
+              }),
+            ]),
           ]),
         ]),
       ]),

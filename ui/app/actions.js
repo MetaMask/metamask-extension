@@ -201,6 +201,9 @@ var actions = {
 
   callBackgroundThenUpdate,
   forceUpdateMetamaskState,
+
+  TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
+  toggleAccountMenu,
 }
 
 module.exports = actions
@@ -1302,4 +1305,10 @@ function forceUpdateMetamaskState (dispatch) {
     }
     dispatch(actions.updateMetamaskState(newState))
   })
+}
+
+function toggleAccountMenu () {
+  return {
+    type: actions.TOGGLE_ACCOUNT_MENU,
+  }
 }

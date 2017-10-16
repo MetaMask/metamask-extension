@@ -10,6 +10,7 @@ function reduceMetamask (state, action) {
   var metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
+    isAccountMenuOpen: false,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
@@ -170,6 +171,11 @@ function reduceMetamask (state, action) {
           ...metamaskState.send,
           gasPrice: action.value,
         },
+      })
+
+    case actions.TOGGLE_ACCOUNT_MENU:
+      return extend(metamaskState, {
+        isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
       })
 
     default:

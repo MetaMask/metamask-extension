@@ -10,6 +10,8 @@
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    position: relative;
+    z-index: 200;
 
     &--clickable {
       cursor: pointer;
@@ -39,5 +41,14 @@
     background-color: $scorpion;
     width: 100%;
     height: 1px;
+  }
+
+  &__close-area {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
   }
 }

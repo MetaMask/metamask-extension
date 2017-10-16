@@ -20,6 +20,10 @@
     right: calc((100vw - 65vw) / 2);
   }
 
+  &__icon {
+    cursor: pointer;
+  }
+
   &__header {
     display: flex;
     flex-flow: row nowrap;
@@ -40,5 +44,14 @@
   img {
     width: 16px;
     height: 16px;
+  }
+
+  &__accounts {
+    display: flex;
+    flex-flow: column nowrap;
+    overflow-y: auto;
+    height: 272px;
+    position: relative;
+    z-index: 200;
   }
 }

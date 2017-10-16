@@ -136,7 +136,6 @@ WalletView.prototype.render = function () {
             selected: selectedAddress,
             network,
             identities,
-            enableAccountsSelector: true,
           }, []),
         ]),
 
