@@ -11,6 +11,7 @@ function PortDuplexStream (port) {
     objectMode: true,
   })
   this._port = port
+  this.timer
   port.onMessage.addListener(this._onMessage.bind(this))
   port.onDisconnect.addListener(this._onDisconnect.bind(this))
 }
@@ -30,6 +31,8 @@ PortDuplexStream.prototype._onMessage = function (msg) {
 PortDuplexStream.prototype._onDisconnect = function () {
   this.destroy()
 }
+
+
 
 // stream plumbing
 

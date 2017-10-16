@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Add timer for autolock when extension is closed for an extended period.
 
 - Fix bug where web3 API was sometimes injected after the page loaded.
 - Fix bug where imported accounts could not use new eth_signTypedData method.
