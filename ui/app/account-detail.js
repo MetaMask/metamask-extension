@@ -121,6 +121,7 @@ AccountDetailScreen.prototype.render = function () {
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           padding: '5px 0px',
+                          lineHeight: '25px',
                         },
                       }, [
                         identity && identity.name,
