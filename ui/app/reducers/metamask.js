@@ -24,6 +24,11 @@ function reduceMetamask (state, action) {
     send: {
       gasLimit: null,
       gasPrice: null,
+      gasTotal: null,
+      from: '',
+      to: '',
+      amount: '0x0',
+      memo: '',
     },
   }, state.metamask)
 
@@ -157,6 +162,7 @@ function reduceMetamask (state, action) {
         tokens: action.newTokens,
       })
 
+    // metamask.send
     case actions.UPDATE_GAS_LIMIT:
       return extend(metamaskState, {
         send: {
@@ -176,6 +182,46 @@ function reduceMetamask (state, action) {
     case actions.TOGGLE_ACCOUNT_MENU:
       return extend(metamaskState, {
         isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
+      })
+
+    case actions.UPDATE_GAS_TOTAL:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          gasTotal: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_FROM:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          from: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_TO:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          to: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_AMOUNT:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          amount: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_MEMO:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          memo: action.value,
+        },
       })
 
     default:

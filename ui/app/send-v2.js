@@ -12,6 +12,8 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const { showModal } = require('./actions')
 
+const { multiplyCurrencies } = require('./conversion-util')
+
 module.exports = SendTransactionScreen
 
 inherits(SendTransactionScreen, PersistentForm)
@@ -19,13 +21,6 @@ function SendTransactionScreen () {
   PersistentForm.call(this)
 
   this.state = {
-    from: '',
-    to: '',
-    gasPrice: null,
-    gasLimit: null,
-    amount: '0x0', 
-    txData: null,
-    memo: '',
     dropdownOpen: false,
   }
 
@@ -41,6 +36,7 @@ SendTransactionScreen.prototype.componentWillMount = function () {
     estimateGas,
     selectedAddress,
     data,
+    updateGasTotal,
   } = this.props
   const { symbol } = selectedToken || {}
 
@@ -58,13 +54,23 @@ SendTransactionScreen.prototype.componentWillMount = function () {
     Object.assign(estimateGasParams, { data })
   }
 
-  Promise.all([
-    getGasPrice(),
-    estimateGas({
-      from: selectedAddress,
-      gas: '746a528800',
-    }),
-  ])
+  Promise
+    .all([
+      getGasPrice(),
+      estimateGas({
+        from: selectedAddress,
+        gas: '746a528800',
+      }),
+    ])
+    .then(([gasPrice, gas]) => {
+
+      const newGasTotal = multiplyCurrencies(gas, gasPrice, {
+        toNumericBase: 'hex',
+        multiplicandBase: 16,
+        multiplierBase: 16,
+      })
+      updateGasTotal(newGasTotal)
+    })
 }
 
 SendTransactionScreen.prototype.renderHeaderIcon = function () {
@@ -122,10 +128,11 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
 SendTransactionScreen.prototype.renderFromRow = function () {
   const {
+    from,
     fromAccounts,
     conversionRate,
-    selectedAccount,
     setSelectedAddress,
+    updateSendFrom,
   } = this.props
 
   const { dropdownOpen } = this.state
@@ -137,8 +144,8 @@ SendTransactionScreen.prototype.renderFromRow = function () {
     h(FromDropdown, {
       dropdownOpen,
       accounts: fromAccounts,
-      selectedAccount,
-      onSelect: address => setSelectedAddress(address),
+      selectedAccount: from,
+      onSelect: updateSendFrom,
       openDropdown: () => this.setState({ dropdownOpen: true }),
       closeDropdown: () => this.setState({ dropdownOpen: false }),
       conversionRate,
@@ -148,12 +155,10 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 }
 
 SendTransactionScreen.prototype.handleToChange = function (event) {
+  const { updateSendTo } = this.props
   const to = event.target.value
 
-  this.setState({
-    ...this.state,
-    to,
-  })
+  updateSendTo(to)
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
@@ -174,25 +179,20 @@ SendTransactionScreen.prototype.renderToRow = function () {
 }
 
 SendTransactionScreen.prototype.handleAmountChange = function (value) {
+  const { updateSendAmount } = this.props
   const amount = value
 
-  this.setState({
-    ...this.state,
-    amount,
-  })
+  updateSendAmount(amount)
 }
 
 SendTransactionScreen.prototype.renderAmountRow = function () {
   const {
-    conversionRate,
-    tokenToUSDRate,
     selectedToken,
     primaryCurrency = 'ETH',
+    amountConversionRate,
   } = this.props
 
   const { amount } = this.state
-
-  const amountConversionRate = selectedToken ? tokenToUSDRate : conversionRate
 
   return h('div.send-v2__form-row', [
 
@@ -214,8 +214,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
   const {
     conversionRate,
     showCustomizeGasModal,
-    gasLimit,
-    gasPrice,
+    gasTotal,
   } = this.props
 
   return h('div.send-v2__form-row', [
@@ -223,8 +222,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
     h('div.send-v2__form-label', 'Gas fee:'),
 
     h(GasFeeDisplay, {
-      gasLimit,
-      gasPrice,
+      gasTotal,
       conversionRate,
       onClick: showCustomizeGasModal,
     }),
@@ -239,6 +237,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
 }
 
 SendTransactionScreen.prototype.renderMemoRow = function () {
+  const { updateSendMemo } = this.props
   const { memo } = this.state
 
   return h('div.send-v2__form-row', [
@@ -247,12 +246,7 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 
     h(MemoTextArea, {
       memo,
-      onChange: (event) => {
-        this.setState({
-          ...this.state,
-          memo: event.target.value,
-        })
-      },
+      onChange: (event) => updateSendMemo(event.target.value),
     }),
 
   ])
@@ -313,16 +307,14 @@ SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
+    from: {address: from},
     to,
     amount,
-  } = this.state
-  const {
     gasLimit: gas,
     gasPrice,
     signTokenTx,
     signTx,
     selectedToken,
-    selectedAccount: { address: from },
     toAccounts,
   } = this.props
 

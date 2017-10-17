@@ -15,6 +15,7 @@ const {
   getGasPrice,
   getGasLimit,
   getAddressBook,
+  getSendFrom,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -46,16 +47,15 @@ function mapStateToProps (state) {
   }
 
   return {
-    selectedAccount: getCurrentAccountWithSendEtherInfo(state),
+    ...state.metamask.send,
+    from: getSendFrom(state) || getCurrentAccountWithSendEtherInfo(state),
     fromAccounts,
     toAccounts: [...fromAccounts, ...getAddressBook(state)],
     conversionRate,
     selectedToken,
     primaryCurrency,
     data,
-    tokenToUSDRate,
-    gasPrice: getGasPrice(state),
-    gasLimit: getGasLimit(state),
+    amountConversionRate: selectedToken ? tokenToUSDRate : conversionRate,
   }
 }
 
@@ -71,5 +71,10 @@ function mapDispatchToProps (dispatch) {
     signTx: txParams => dispatch(actions.signTx(txParams)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
+    updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    updateSendFrom: newFrom => dispatch(actions.updateSendFrom(newFrom)),
+    updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),
+    updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
+    updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
   }
 }

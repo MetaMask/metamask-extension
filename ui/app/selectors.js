@@ -13,6 +13,7 @@ const selectors = {
   getGasPrice,
   getGasLimit,
   getAddressBook,
+  getSendFrom,
 }
 
 module.exports = selectors
@@ -106,4 +107,8 @@ function getGasPrice (state) {
 
 function getGasLimit (state) {
   return state.metamask.send.gasLimit
+}
+
+function getSendFrom (state) {
+  return state.metamask.send.from
 }

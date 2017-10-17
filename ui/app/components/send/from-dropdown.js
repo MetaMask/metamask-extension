@@ -38,7 +38,7 @@ FromDropdown.prototype.renderDropdown = function () {
       ...accounts.map(account => h(AccountListItem, {
         account, 
         handleClick: () => {
-          onSelect(account.address)
+          onSelect(account)
           closeDropdown()
         }, 
         icon: this.getListItemIcon(account, selectedAccount),
