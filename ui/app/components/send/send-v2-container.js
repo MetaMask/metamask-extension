@@ -76,5 +76,6 @@ function mapDispatchToProps (dispatch) {
     updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
+    updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
   }
 }

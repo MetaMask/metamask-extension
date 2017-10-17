@@ -11,7 +11,7 @@ function ToAutoComplete () {
 }
 
 ToAutoComplete.prototype.render = function () {
-  const { to, accounts, onChange } = this.props
+  const { to, accounts, onChange, inError } = this.props
 
   return h('div.send-v2__to-autocomplete', [
 
@@ -19,15 +19,15 @@ ToAutoComplete.prototype.render = function () {
       name: 'address',
       list: 'addresses',
       placeholder: 'Recipient Address',
+      className: inError ? `send-v2__error-border` : '', 
       value: to,
       onChange,
-      // onBlur: () => {
-      //   this.setErrorsFor('to')
-      // },
       onFocus: event => {
-        // this.clearErrorsFor('to')
         to && event.target.select()
       },
+      style: {
+        borderColor: inError ? 'red' : null,
+      }
     }),
 
     h('datalist#addresses', [

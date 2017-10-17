@@ -29,6 +29,7 @@ function reduceMetamask (state, action) {
       to: '',
       amount: '0x0',
       memo: '',
+      errors: {},
     },
   }, state.metamask)
 
@@ -221,6 +222,21 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           memo: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_ERRORS:
+      console.log(123, {
+        ...metamaskState.send.errors,
+        ...action.value,
+      })
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          errors: {
+            ...metamaskState.send.errors,
+            ...action.value,
+          }
         },
       })
 

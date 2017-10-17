@@ -497,6 +497,17 @@
     width: 287px;
   }
 
+  &__error {
+    font-size: 12px;
+    line-height: 12px;
+    left: 8px;
+    color: $red;
+  }
+
+  &__error-border {
+    color: $red;
+  }
+
   &__form {
     display: flex;
     flex-direction: column;

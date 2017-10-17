@@ -28,16 +28,12 @@ function resetCaretIfPastEnd (value, event) {
   }
 }
 
-CurrencyDisplay.prototype.handleChangeInHexWei = function (value) {
-  const { handleChange } = this.props
-
-  const valueInHexWei = conversionUtil(value, {
+function toHexWei (value) {
+  return conversionUtil(value, {
     fromNumericBase: 'dec',
     toNumericBase: 'hex',
     toDenomination: 'WEI',
   })
-
-  handleChange(valueInHexWei)
 }
 
 CurrencyDisplay.prototype.render = function () {
@@ -51,7 +47,10 @@ CurrencyDisplay.prototype.render = function () {
     convertedPrefix = '',
     placeholder = '0',
     readOnly = false,
+    inError = false,
     value: initValue,
+    handleChange,
+    validate,
   } = this.props
   const { value } = this.state
 
@@ -73,6 +72,9 @@ CurrencyDisplay.prototype.render = function () {
 
   return h('div', {
     className,
+    style: {
+      borderColor: inError ? 'red' : null,
+    },
   }, [
 
     h('div.currency-display__primary-row', [
@@ -100,8 +102,13 @@ CurrencyDisplay.prototype.render = function () {
               this.setState({ value: newValue })
             }
           },
-          onBlur: event => !readOnly && this.handleChangeInHexWei(event.target.value.split(' ')[0]),
-          onKeyUp: event => !readOnly && resetCaretIfPastEnd(value || initValueToRender, event),
+          onBlur: event => !readOnly && handleChange(toHexWei(event.target.value.split(' ')[0])),
+          onKeyUp: event => {
+            if (!readOnly) {
+              validate(toHexWei(value || initValueToRender))
+              resetCaretIfPastEnd(value || initValueToRender, event)
+            }
+          },
           onClick: event => !readOnly && resetCaretIfPastEnd(value || initValueToRender, event),
         }),
 
