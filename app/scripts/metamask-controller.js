@@ -336,8 +336,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // KeyringController
       setLocked: nodeify(keyringController.setLocked, keyringController),
-      createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
-      createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
+      createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
@@ -458,23 +458,16 @@ module.exports = class MetamaskController extends EventEmitter {
   // Vault Management
   //
 
-  createNewVaultAndKeychain (password, cb) {
-    this.keyringController.createNewVaultAndKeychain(password)
-    .then((vault) => {
-      this.selectFirstIdentity(vault)
-      this.preferencesController.setSelectedAddress(address)
-      cb(null, vault)
-    })
-    .catch(reason => cb(reason))
+  async createNewVaultAndKeychain (password, cb) {
+    const vault = await this.keyringController.createNewVaultAndKeychain(password)
+    this.selectFirstIdentity(vault)
+    return vault
   }
 
-  createNewVaultAndRestore (password, seed, cb) {
-    this.keyringController.createNewVaultAndRestore(password, seed)
-    .then((vault) => {
-      this.selectFirstIdentity(vault)
-      cb(null, vault)
-    })
-    .catch(reason => cb(reason))
+  async createNewVaultAndRestore (password, seed, cb) {
+    const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+    this.selectFirstIdentity(vault)
+    return vault
   }
 
   selectFirstIdentity (vault) {
