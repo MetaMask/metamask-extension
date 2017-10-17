@@ -157,14 +157,11 @@ const multiplyCurrencies = (a, b, options = {}) => {
 }
 
 const conversionGreaterThan = (
-  { value, fromNumericBase },
-  { value: compareToValue, fromNumericBase: compareToBase },
+  { ...firstProps },
+  { ...secondProps  },
 ) => {
-  const firstValue = converter({ value, fromNumericBase })
-  const secondValue = converter({
-    value: compareToValue,
-    fromNumericBase: compareToBase,
-  })
+  const firstValue = converter({ ...firstProps })
+  const secondValue = converter({ ...secondProps })
   return firstValue.gt(secondValue)
 }
 

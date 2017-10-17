@@ -12,7 +12,8 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const { showModal } = require('./actions')
 
-const { multiplyCurrencies } = require('./conversion-util')
+const { multiplyCurrencies, conversionGreaterThan } = require('./conversion-util')
+const { isValidAddress } = require('./util')
 
 module.exports = SendTransactionScreen
 
@@ -22,10 +23,15 @@ function SendTransactionScreen () {
 
   this.state = {
     dropdownOpen: false,
+    errors: {
+      to: null,
+      amount: null,
+    },
   }
 
   this.handleToChange = this.handleToChange.bind(this)
   this.handleAmountChange = this.handleAmountChange.bind(this)
+  this.validateAmount = this.validateAmount.bind(this)
 }
 
 SendTransactionScreen.prototype.componentWillMount = function () {
@@ -126,6 +132,16 @@ SendTransactionScreen.prototype.renderHeader = function () {
   ])
 }
 
+SendTransactionScreen.prototype.renderErrorMessage = function(errorType) {
+  const { errors } = this.props
+  console.log(`! errors`, errors);
+  const errorMessage = errors[errorType];
+  console.log(`errorMessage`, errorMessage);
+  return errorMessage
+    ? h('div.send-v2__error', [ errorMessage ] )
+    : null
+}
+
 SendTransactionScreen.prototype.renderFromRow = function () {
   const {
     from,
@@ -155,34 +171,93 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 }
 
 SendTransactionScreen.prototype.handleToChange = function (event) {
-  const { updateSendTo } = this.props
+  const { updateSendTo, updateSendErrors } = this.props
   const to = event.target.value
+  let toError = null
+
+  if (!to) {
+    toError = 'Required'
+  } else if (!isValidAddress(to)) {
+    toError = 'Recipient address is invalid.'
+  }
 
   updateSendTo(to)
+  updateSendErrors({ to: toError })
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
-  const { toAccounts } = this.props
+  const { toAccounts, errors } = this.props
   const { to } = this.state
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'To:'),
+    h('div.send-v2__form-label', [
+
+      'To:',
+
+      this.renderErrorMessage('to'),
+
+    ]),
 
     h(ToAutoComplete, {
       to,
       accounts: toAccounts,
       onChange: this.handleToChange,
+      inError: Boolean(errors.to),
     }),
 
   ])
 }
 
 SendTransactionScreen.prototype.handleAmountChange = function (value) {
-  const { updateSendAmount } = this.props
   const amount = value
+  const { updateSendAmount } = this.props
 
   updateSendAmount(amount)
+}
+
+SendTransactionScreen.prototype.validateAmount = function (value) {
+  const {
+    from: { balance },
+    updateSendErrors,
+    amountConversionRate,
+    conversionRate,
+    primaryCurrency,
+    toCurrency,
+    selectedToken
+  } = this.props
+  const amount = value
+
+  let amountError = null
+
+  const sufficientBalance = conversionGreaterThan(
+    {
+      value: balance,
+      fromNumericBase: 'hex',
+      fromCurrency: primaryCurrency,
+      conversionRate,
+    },
+    {
+      value: amount,
+      fromNumericBase: 'hex',
+      conversionRate: amountConversionRate,
+      fromCurrency: selectedToken || primaryCurrency,
+      conversionRate: amountConversionRate,
+    },
+  )
+  console.log(`sufficientBalance`, sufficientBalance);
+  const amountLessThanZero = conversionGreaterThan(
+    { value: 0, fromNumericBase: 'dec' },
+    { value: amount, fromNumericBase: 'hex' },
+  )
+
+  if (!sufficientBalance) {
+    amountError = 'Insufficient funds.'
+  } else if (amountLessThanZero) {
+    amountError = 'Can not send negative amounts of ETH.'
+  }
+
+  updateSendErrors({ amount: amountError })
 }
 
 SendTransactionScreen.prototype.renderAmountRow = function () {
@@ -190,22 +265,28 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     selectedToken,
     primaryCurrency = 'ETH',
     amountConversionRate,
+    errors,
   } = this.props
 
   const { amount } = this.state
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Amount:'),
+    h('div.send-v2__form-label', [
+      'Amount:',
+      this.renderErrorMessage('amount'),
+    ]),
 
     h(CurrencyDisplay, {
+      inError: Boolean(errors.amount),
       primaryCurrency,
       convertedCurrency: 'USD',
       value: amount,
       conversionRate: amountConversionRate,
       convertedPrefix: '$',
-      handleChange: this.handleAmountChange
-    }),        
+      handleChange: this.handleAmountChange,
+      validate: this.validateAmount,
+    }),
 
   ])
 }

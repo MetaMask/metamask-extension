@@ -140,6 +140,7 @@ var actions = {
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
+  UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
   updateGasLimit,
   updateGasPrice,
   updateGasTotal,
@@ -147,6 +148,7 @@ var actions = {
   updateSendTo,
   updateSendAmount,
   updateSendMemo,
+  updateSendErrors,
   setSelectedAddress,
   // app messages
   confirmSeedWords: confirmSeedWords,
@@ -550,6 +552,14 @@ function updateSendMemo (memo) {
   return {
     type: actions.UPDATE_SEND_MEMO,
     value: memo,
+  }
+}
+
+function updateSendErrors (error) {
+  console.log(`updateSendErrors error`, error);
+  return {
+    type: actions.UPDATE_SEND_ERRORS,
+    value: error,
   }
 }
 
