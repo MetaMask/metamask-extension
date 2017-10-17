@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug where web3 API was sometimes injected after the page loaded.
+- Fix bug where first account was sometimes not selected correctly after creating or restoring a vault.
 
 ## 3.11.0 2017-10-11
 
