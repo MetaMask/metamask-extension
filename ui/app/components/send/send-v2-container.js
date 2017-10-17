@@ -14,13 +14,15 @@ const {
   getSelectedAddress,
   getGasPrice,
   getGasLimit,
+  getAddressBook,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
 
 function mapStateToProps (state) {
-  const selectedAddress = getSelectedAddress(state);
-  const selectedToken = getSelectedToken(state);
+  const fromAccounts = accountsWithSendEtherInfoSelector(state)
+  const selectedAddress = getSelectedAddress(state)
+  const selectedToken = getSelectedToken(state)
   const tokenExchangeRates = state.metamask.tokenExchangeRates
   const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
   const conversionRate = conversionRateSelector(state)
@@ -45,7 +47,8 @@ function mapStateToProps (state) {
 
   return {
     selectedAccount: getCurrentAccountWithSendEtherInfo(state),
-    accounts: accountsWithSendEtherInfoSelector(state),
+    fromAccounts,
+    toAccounts: [...fromAccounts, ...getAddressBook(state)],
     conversionRate,
     selectedToken,
     primaryCurrency,
@@ -66,6 +69,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     signTx: txParams => dispatch(actions.signTx(txParams)),
-    setSelectedAddress: address => dispatch(actions.setSelectedAddress(address))
+    setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
+    addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
   }
 }
