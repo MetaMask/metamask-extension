@@ -1,9 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const CurrencyDisplay = require('./currency-display');
-
-const { multiplyCurrencies } = require('../../conversion-util')
+const CurrencyDisplay = require('./currency-display')
 
 module.exports = GasFeeDisplay
 
@@ -15,24 +13,17 @@ function GasFeeDisplay () {
 GasFeeDisplay.prototype.render = function () {
   const {
     conversionRate,
-    gasLimit,
-    gasPrice,
+    gasTotal,
     onClick,
   } = this.props
 
-  const readyToRender = Boolean(gasLimit && gasPrice)
-
   return h('div', [
 
-    readyToRender
+    gasTotal
       ? h(CurrencyDisplay, {
         primaryCurrency: 'ETH',
         convertedCurrency: 'USD',
-        value: multiplyCurrencies(gasLimit, gasPrice, {
-          toNumericBase: 'hex',
-          multiplicandBase: 16,
-          multiplierBase: 16,
-        }),
+        value: gasTotal,
         conversionRate,
         convertedPrefix: '$',
         readOnly: true,

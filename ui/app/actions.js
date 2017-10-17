@@ -135,8 +135,18 @@ var actions = {
   getGasPrice,
   UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
+  UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
+  UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
+  UPDATE_SEND_TO: 'UPDATE_SEND_TO',
+  UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
+  UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   updateGasLimit,
   updateGasPrice,
+  updateGasTotal,
+  updateSendFrom,
+  updateSendTo,
+  updateSendAmount,
+  updateSendMemo,
   setSelectedAddress,
   // app messages
   confirmSeedWords: confirmSeedWords,
@@ -507,6 +517,42 @@ function updateGasPrice (gasPrice) {
     value: gasPrice,
   }
 }
+
+function updateGasTotal (gasTotal) {
+  return {
+    type: actions.UPDATE_GAS_TOTAL,
+    value: gasTotal,
+  }
+}
+
+function updateSendFrom (from) {
+  return {
+    type: actions.UPDATE_SEND_FROM,
+    value: from,
+  }
+}
+
+function updateSendTo (to) {
+  return {
+    type: actions.UPDATE_SEND_TO,
+    value: to,
+  }
+}
+
+function updateSendAmount (amount) {
+  return {
+    type: actions.UPDATE_SEND_AMOUNT,
+    value: amount,
+  }
+}
+
+function updateSendMemo (memo) {
+  return {
+    type: actions.UPDATE_SEND_MEMO,
+    value: memo,
+  }
+}
+
 
 function sendTx (txData) {
   log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)

@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
 
-const { conversionUtil } = require('../../conversion-util')
+const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 const {
   getGasPrice,
@@ -26,6 +26,7 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => dispatch(actions.hideModal()),
     updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
+    updateGasTotal: newGasTotal => dispatch(actions.updateGasTotal(newGasTotal)),
   }
 }
 
@@ -46,10 +47,18 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit) {
     updateGasPrice,
     updateGasLimit,
     hideModal,
+    updateGasTotal
   } = this.props
+
+  const newGasTotal = multiplyCurrencies(gasLimit, gasPrice, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 16,
+  })
 
   updateGasPrice(gasPrice)
   updateGasLimit(gasLimit)
+  updateGasTotal(newGasTotal)
   hideModal()
 }
 
