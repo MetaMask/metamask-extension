@@ -12,6 +12,7 @@ const selectors = {
   getCurrentAccountWithSendEtherInfo,
   getGasPrice,
   getGasLimit,
+  getAddressBook,
 }
 
 module.exports = selectors
@@ -57,6 +58,10 @@ function getSelectedTokenExchangeRate (state) {
 
 function conversionRateSelector (state) {
   return state.metamask.conversionRate
+}
+
+function getAddressBook (state) {
+  return state.metamask.addressBook
 }
 
 function accountsWithSendEtherInfoSelector (state) {

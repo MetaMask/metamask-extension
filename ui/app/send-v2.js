@@ -122,7 +122,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
 SendTransactionScreen.prototype.renderFromRow = function () {
   const {
-    accounts,
+    fromAccounts,
     conversionRate,
     selectedAccount,
     setSelectedAddress,
@@ -136,7 +136,7 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 
     h(FromDropdown, {
       dropdownOpen,
-      accounts,
+      accounts: fromAccounts,
       selectedAccount,
       onSelect: address => setSelectedAddress(address),
       openDropdown: () => this.setState({ dropdownOpen: true }),
@@ -157,7 +157,7 @@ SendTransactionScreen.prototype.handleToChange = function (event) {
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
-  const { accounts } = this.props
+  const { toAccounts } = this.props
   const { to } = this.state
 
   return h('div.send-v2__form-row', [
@@ -166,7 +166,7 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     h(ToAutoComplete, {
       to,
-      accounts,
+      accounts: toAccounts,
       onChange: this.handleToChange,
     }),
 
@@ -302,6 +302,14 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
+SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
+  const { toAccounts, addToAddressBook } = this.props
+  if (!toAccounts.find(({ address }) => newAddress === address)) {
+    // TODO: nickname, i.e. addToAddressBook(recipient, nickname)
+    addToAddressBook(newAddress)
+  }
+}
+
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
@@ -315,7 +323,10 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     signTx,
     selectedToken,
     selectedAccount: { address: from },
+    toAccounts,
   } = this.props
+
+  this.addToAddressBookIfNew(to)
 
   const txParams = {
     from,
