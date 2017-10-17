@@ -336,7 +336,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // KeyringController
       setLocked: nodeify(keyringController.setLocked, keyringController),
-      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain, keyringController),
+      createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
       createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore, keyringController),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel, keyringController),
@@ -457,6 +457,17 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Vault Management
   //
+
+  createNewVaultAndKeychain (password, cb) {
+    this.keyringController.createNewVaultAndKeychain(password)
+    .then((vault) => {
+      const { identities } = vault
+      const address = Object.keys(identities)[0]
+      this.preferencesController.setSelectedAddress(address)
+      cb(null, vault)
+    })
+    .catch(reason => cb(reason))
+  }
 
   submitPassword (password, cb) {
     return this.keyringController.submitPassword(password)
