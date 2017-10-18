@@ -11,11 +11,21 @@ const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
-const { conversionUtil } = require('../../conversion-util')
+const {
+  conversionUtil,
+  multiplyCurrencies,
+  addCurrencies,
+} = require('../../conversion-util')
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+
+const {
+  getSelectedTokenExchangeRate,
+  getTokenExchangeRate,
+  getSelectedAddress,
+} = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendToken)
 
@@ -28,10 +38,8 @@ function mapStateToProps (state, ownProps) {
     identities,
   } = state.metamask
   const accounts = state.metamask.accounts
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const pair = `${symbol.toLowerCase()}_eth`
-  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
+  const selectedAddress = getSelectedAddress(state)
+  const tokenExchangeRate = getTokenExchangeRate(state, symbol)
 
   return {
     conversionRate,
@@ -86,17 +94,14 @@ ConfirmSendToken.prototype.getGasFee = function () {
   const txParams = txMeta.txParams || {}
   const { decimals } = token
 
-  // Gas
   const gas = txParams.gas
-  const gasBn = hexToBn(gas)
-
-  // Gas Price
   const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
-  const gasPriceBn = hexToBn(gasPrice)
-  const txFeeBn = gasBn.mul(gasPriceBn)
+  const gasTotal = multiplyCurrencies(gas, gasPrice, {
+    multiplicandBase: 16,
+    multiplierBase: 16,
+  })
 
-
-  const USD = conversionUtil(txFeeBn, {
+  const USD = conversionUtil(gasTotal, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
@@ -105,7 +110,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
     numberOfDecimals: 2,
     conversionRate,
   })
-  const ETH = conversionUtil(txFeeBn, {
+  const ETH = conversionUtil(gasTotal, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
@@ -114,12 +119,22 @@ ConfirmSendToken.prototype.getGasFee = function () {
     numberOfDecimals: 6,
     conversionRate,
   })
+  const tokenGas = multiplyCurrencies(gas, gasPrice, {
+    toNumericBase: 'dec',
+    multiplicandBase: 16,
+    multiplierBase: 16,
+    toCurrency: 'BAT',
+    conversionRate: tokenExchangeRate,
+    invertConversionRate: true,
+    fromDenomination: 'WEI',
+    numberOfDecimals: decimals || 4,
+  })
 
   return {
     fiat: +Number(USD).toFixed(2),
     eth: ETH,
     token: tokenExchangeRate
-      ? +(ETH * tokenExchangeRate).toFixed(decimals)
+      ? tokenGas
       : null,
   }
 }
@@ -196,6 +211,8 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, token: tokenGas } = this.getGasFee()
 
+  const tokenTotal = addCurrencies(tokenAmount, tokenGas || '0')
+
   return fiatAmount && fiatGas
     ? (
       h('section.flex-row.flex-center.confirm-screen-total-box ', [
@@ -206,7 +223,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `$${fiatAmount + fiatGas} USD`),
-          h('div.confirm-screen-row-detail', `${tokenAmount + tokenGas} ${symbol}`),
+          h('div.confirm-screen-row-detail', `${tokenTotal} ${symbol}`),
         ]),
       ])
     )

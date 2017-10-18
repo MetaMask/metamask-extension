@@ -147,16 +147,16 @@ const addCurrencies = (a, b, options = {}) => {
 
 const multiplyCurrencies = (a, b, options = {}) => {
   const {
-    toNumericBase,
-    numberOfDecimals,
     multiplicandBase,
     multiplierBase,
+    ...conversionOptions,
   } = options
+
   const value = (new BigNumber(a, multiplicandBase)).times(b, multiplierBase);
+
   return converter({
     value,
-    toNumericBase,
-    numberOfDecimals,
+    ...conversionOptions,
   })
 }
 
