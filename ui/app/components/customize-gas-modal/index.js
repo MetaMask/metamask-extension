@@ -5,6 +5,11 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
 
+const {
+  MIN_GAS_PRICE,
+  MIN_GAS_LIMIT,
+} = require('../send/send-constants')
+
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 const {
@@ -35,8 +40,8 @@ function CustomizeGasModal (props) {
   Component.call(this)
 
   this.state = {
-    gasPrice: props.gasPrice,
-    gasLimit: props.gasLimit,
+    gasPrice: props.gasPrice || MIN_GAS_PRICE,
+    gasLimit: props.gasLimit || MIN_GAS_LIMIT,
   }
 }
 
@@ -115,8 +120,8 @@ CustomizeGasModal.prototype.render = function () {
         
         h(GasModalCard, {
           value: convertedGasPrice,
-          min: 0,
-          max: 1000,
+          min: MIN_GAS_PRICE,
+          // max: 1000,
           step: 1,
           onChange: value => this.convertAndSetGasPrice(value),
           title: 'Gas Price',
@@ -125,8 +130,8 @@ CustomizeGasModal.prototype.render = function () {
 
         h(GasModalCard, {
           value: convertedGasLimit,
-          min: 20000,
-          max: 100000,
+          min: MIN_GAS_LIMIT,
+          // max: 100000,
           step: 1,
           onChange: value => this.convertAndSetGasLimit(value),
           title: 'Gas Limit',

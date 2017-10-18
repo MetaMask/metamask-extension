@@ -10,6 +10,8 @@ const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
+const { MIN_GAS_TOTAL } = require('./components/send/send-constants')
+
 const { showModal } = require('./actions')
 
 const {
@@ -135,9 +137,8 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
 SendTransactionScreen.prototype.renderErrorMessage = function(errorType) {
   const { errors } = this.props
-  console.log(`! errors`, errors);
   const errorMessage = errors[errorType];
-  console.log(`errorMessage`, errorMessage);
+
   return errorMessage
     ? h('div.send-v2__error', [ errorMessage ] )
     : null
@@ -309,7 +310,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
   const {
     conversionRate,
     showCustomizeGasModal,
-    gasTotal,
+    gasTotal = MIN_GAS_TOTAL,
   } = this.props
 
   return h('div.send-v2__form-row', [
