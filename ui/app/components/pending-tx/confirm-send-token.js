@@ -145,14 +145,14 @@ ConfirmSendToken.prototype.getData = function () {
   const { value } = params[0] || {}
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-
+  
   return {
     from: {
       address: txParams.from,
       name: identities[txParams.from].name,
     },
     to: {
-      address: txParams.to,
+      address: value,
       name: identities[value] ? identities[value].name : 'New Recipient',
     },
     memo: txParams.memo || '',
@@ -290,7 +290,7 @@ ConfirmSendToken.prototype.render = function () {
             h(
               Identicon,
               {
-                address: txParams.to,
+                address: toAddress,
                 diameter: 60,
               },
             ),
