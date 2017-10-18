@@ -37,6 +37,7 @@ AccountImportSubview.prototype.render = function () {
     h('div.flex-center', {
       style: {
         flexDirection: 'column',
+        marginTop: '32px',
       },
     }, [
       h('.section-title.flex-row.flex-center', [

@@ -13,6 +13,10 @@
     position: relative;
     z-index: 200;
 
+    @media screen and (max-width: 575px) {
+      padding: 14px;
+    }
+
     &--clickable {
       cursor: pointer;
 

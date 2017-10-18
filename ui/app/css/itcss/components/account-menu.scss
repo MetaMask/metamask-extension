@@ -39,6 +39,7 @@
     font-size: 12px;
     line-height: 23px;
     padding: 0 24px;
+    font-weight: 200;
   }
 
   img {
@@ -50,8 +51,68 @@
     display: flex;
     flex-flow: column nowrap;
     overflow-y: auto;
-    height: 272px;
+    max-height: 240px;
     position: relative;
     z-index: 200;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media screen and (max-width: 575px) {
+      max-height: 215px;
+    }
+
+    .keyring-label {
+      margin-top: 5px;
+    }
+  }
+
+  &__account {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 16px 14px;
+    flex: 0 0 auto;
+
+    @media screen and (max-width: 575px) {
+      padding: 12px 14px;
+    }
+  }
+
+  &__account-info {
+    flex: 1 0 auto;
+    display: flex;
+    flex-flow: column nowrap;
+    padding-top: 4px;
+  }
+
+  &__check-mark {
+    width: 14px;
+    flex: 0 0 auto;
+  }
+
+  .identicon {
+    margin: 0 12px 0 0;
+    flex: 0 0 auto;
+  }
+
+  &__name {
+    color: $white;
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 16px;
+  }
+
+  &__balance {
+    color: $dusty-gray;
+    font-size: 14px;
+    line-height: 19px;
+  }
+
+  &__action {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 200;
+    cursor: pointer;
   }
 }

@@ -30,7 +30,7 @@ ConfigScreen.prototype.render = function () {
   var warning = state.warning
 
   return (
-    h('.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', { style: { marginTop: '32px' } }, [
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [

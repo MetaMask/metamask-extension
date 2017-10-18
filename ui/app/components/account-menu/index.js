@@ -23,20 +23,50 @@ function mapStateToProps (state) {
   }
 }
 
-// identities, accounts, selected, menuItemStyles, actions, keyrings
-
 function mapDispatchToProps (dispatch) {
   return {
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+    showAccountDetail: address => {
+      dispatch(actions.showAccountDetail(address))
+      dispatch(actions.toggleAccountMenu())
+    },
+    lockMetamask: () => {
+      dispatch(actions.lockMetamask())
+      dispatch(actions.toggleAccountMenu())
+    },
+    showConfigPage: () => {
+      console.log('hihihih')
+      dispatch(actions.showConfigPage())
+      dispatch(actions.toggleAccountMenu())
+    },
+    showNewAccountModal: () => {
+      dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
+      dispatch(actions.toggleAccountMenu())
+    },
+    showImportPage: () => {
+      dispatch(actions.showImportPage())
+      dispatch(actions.toggleAccountMenu())
+    },
   }
 }
 
 AccountMenu.prototype.render = function () {
-  const { isAccountMenuOpen, toggleAccountMenu } = this.props
+  const {
+    isAccountMenuOpen,
+    toggleAccountMenu,
+    showNewAccountModal,
+    showImportPage,
+    lockMetamask,
+    showConfigPage,
+  } = this.props
 
+  console.log(showConfigPage)
   return h(Menu, { className: 'account-menu', isShowing: isAccountMenuOpen }, [
     h(CloseArea, { onClick: toggleAccountMenu }),
-    h(Item, { className: 'account-menu__header' }, [
+    h(Item, {
+      className: 'account-menu__header',
+      onClick: lockMetamask,
+    }, [
       'My Accounts',
       h('button.account-menu__logout-button', 'Log out'),
     ]),
@@ -44,23 +74,22 @@ AccountMenu.prototype.render = function () {
     h('div.account-menu__accounts', this.renderAccounts()),
     h(Divider),
     h(Item, {
-      onClick: true,
+      onClick: showNewAccountModal,
       icon: h('img', { src: 'images/plus-btn-white.svg' }),
       text: 'Create Account',
     }),
     h(Item, {
-      onClick: true,
+      onClick: showImportPage,
       icon: h('img', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),
     h(Divider),
     h(Item, {
-      onClick: true,
       icon: h('img', { src: 'images/mm-info-icon.svg' }),
       text: 'Info & Help',
     }),
     h(Item, {
-      onClick: true,
+      onClick: showConfigPage,
       icon: h('img', { src: 'images/settings.svg' }),
       text: 'Settings',
     }),
@@ -68,7 +97,13 @@ AccountMenu.prototype.render = function () {
 }
 
 AccountMenu.prototype.renderAccounts = function () {
-  const { identities, accounts, selected, actions, keyrings } = this.props
+  const {
+    identities,
+    accounts,
+    selected,
+    keyrings,
+    showAccountDetail,
+  } = this.props
 
   return Object.keys(identities).map((key, index) => {
     const identity = identities[key]
@@ -84,12 +119,8 @@ AccountMenu.prototype.renderAccounts = function () {
     })
 
     return h(
-      'div.account-menu__account',
-      {
-        onClick: () => {
-          this.props.actions.showAccountDetail(identity.address)
-        },
-      },
+      'div.account-menu__account.menu__item--clickable',
+      { onClick: () => showAccountDetail(identity.address) },
       [
         h('div.account-menu__check-mark', [
           isSelected ? h('i.fa.fa-check') : null,
@@ -104,44 +135,11 @@ AccountMenu.prototype.renderAccounts = function () {
         ),
 
         h('div.account-menu__account-info', [
-
-          this.indicateIfLoose(keyring),
-
-          h('div.account-menu__name', {
-            style: {
-              fontSize: '18px',
-              maxWidth: '145px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            },
-          }, identity.name || ''),
-
+          h('div.account-menu__name', identity.name || ''),
           h('div.account-menu__balance', formattedBalance),
         ]),
 
-        h('div.account-menu__action', {
-          onClick: () => {
-            actions.showEditAccountModal(identity)
-          },
-        }, 'Edit'),
-
-// =======
-//             },
-//           ),
-//           this.indicateIfLoose(keyring),
-//           h('span', {
-//             style: {
-//               marginLeft: '20px',
-//               fontSize: '24px',
-//               maxWidth: '145px',
-//               whiteSpace: 'nowrap',
-//               overflow: 'hidden',
-//               textOverflow: 'ellipsis',
-//             },
-//           }, identity.name || ''),
-//           h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, isSelected ? h('.check', '✓') : null),
-// >>>>>>> master:ui/app/components/account-dropdowns.js
+        this.indicateIfLoose(keyring),
       ],
     )
   })

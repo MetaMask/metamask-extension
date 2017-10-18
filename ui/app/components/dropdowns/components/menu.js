@@ -28,8 +28,8 @@ Item.prototype.render = function () {
   const textComponent = text ? h('div.menu__item__text', text) : null
 
   return children
-    ? h('div', { className: itemClassName }, children)
-    : h('div.menu__item', { className: itemClassName }, [ iconComponent, textComponent ]
+    ? h('div', { className: itemClassName, onClick }, children)
+    : h('div.menu__item', { className: itemClassName, onClick }, [ iconComponent, textComponent ]
       .filter(d => Boolean(d))
     )
 }

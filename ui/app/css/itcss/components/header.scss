@@ -58,6 +58,10 @@
   text-transform: uppercase;
   font-weight: 400;
   color: #22232c; // $shark
+
+  @media screen and (max-width: 575px) {
+    display: none;
+  }
 }
 
 h2.page-subtitle {
