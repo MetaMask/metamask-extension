@@ -123,13 +123,7 @@ module.exports = class MetamaskController extends EventEmitter {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
       }
-    })
-    this.keyringController.on('newAccount', (address) => {
-      this.preferencesController.setSelectedAddress(address)
-      this.accountTracker.addAccount(address)
-    })
-    this.keyringController.on('removedAccount', (address) => {
-      this.accountTracker.removeAccount(address)
+      this.accountTracker.syncWithAddresses(addresses)
     })
 
     // address book controller
@@ -459,29 +453,15 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   async createNewVaultAndKeychain (password, cb) {
-    this.forgetOldAccounts()
     const vault = await this.keyringController.createNewVaultAndKeychain(password)
     this.selectFirstIdentity(vault)
     return vault
   }
 
   async createNewVaultAndRestore (password, seed, cb) {
-    this.forgetOldAccounts()
     const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
     this.selectFirstIdentity(vault)
     return vault
-  }
-
-  forgetOldAccounts () {
-    const { accountTracker, balancesController } = this
-    let oldAccounts = []
-    try {
-      oldAccounts = Object.keys(accountTracker.store.getState().accounts)
-    } catch (e) {
-      log.warn('Could not load old accounts to forget', e)
-    }
-    oldAccounts.forEach(addr => accountTracker.removeAccount(addr))
-    balancesController.forgetAllBalances()
   }
 
   selectFirstIdentity (vault) {

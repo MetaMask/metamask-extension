@@ -25,22 +25,28 @@ class ComputedbalancesController {
     }
   }
 
-  forgetAllBalances () {
-    this.balances = {}
-  }
-
   _initBalanceUpdating () {
     const store = this.accountTracker.store.getState()
-    this.addAnyAccountsFromStore(store)
-    this.accountTracker.store.subscribe(this.addAnyAccountsFromStore.bind(this))
+    this.syncAllAccountsFromStore(store)
+    this.accountTracker.store.subscribe(this.syncAllAccountsFromStore.bind(this))
   }
 
-  addAnyAccountsFromStore(store) {
-    const balances = store.accounts
+  syncAllAccountsFromStore(store) {
+    const upstream = Object.keys(store.accounts)
+    const balances = Object.keys(this.balances)
+    .map(address => this.balances[address])
 
+    // Follow new addresses
     for (let address in balances) {
       this.trackAddressIfNotAlready(address)
     }
+
+    // Unfollow old ones
+    balances.forEach(({ address }) => {
+      if (!upstream.includes(address)) {
+        delete this.balances[address]
+      }
+    })
   }
 
   trackAddressIfNotAlready (address) {
