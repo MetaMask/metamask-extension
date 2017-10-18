@@ -473,7 +473,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   forgetOldAccounts () {
-    const { accountTracker } = this
+    const { accountTracker, balancesController } = this
     let oldAccounts = []
     try {
       oldAccounts = Object.keys(accountTracker.store.getState().accounts)
@@ -481,6 +481,7 @@ module.exports = class MetamaskController extends EventEmitter {
       log.warn('Could not load old accounts to forget', e)
     }
     oldAccounts.forEach(addr => accountTracker.removeAccount(addr))
+    balancesController.forgetAllBalances()
   }
 
   selectFirstIdentity (vault) {

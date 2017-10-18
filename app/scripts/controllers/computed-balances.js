@@ -25,6 +25,10 @@ class ComputedbalancesController {
     }
   }
 
+  forgetAllBalances () {
+    this.balances = {}
+  }
+
   _initBalanceUpdating () {
     const store = this.accountTracker.store.getState()
     this.addAnyAccountsFromStore(store)
