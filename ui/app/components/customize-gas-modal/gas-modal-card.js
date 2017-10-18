@@ -19,7 +19,7 @@ GasModalCard.prototype.render = function () {
     unitLabel,
     value,
     min,
-    max,
+    // max,
     step,
     title,
     copy
@@ -34,20 +34,20 @@ GasModalCard.prototype.render = function () {
     h(InputNumber, {
       unitLabel,
       step,
-      max,
+      // max,
       min,
       placeholder: '0',
       value,
       onChange,
     }),
 
-    h(GasSlider, {
-      value,
-      step,
-      max,
-      min,
-      onChange,
-    }),
+    // h(GasSlider, {
+    //   value,
+    //   step,
+    //   max,
+    //   min,
+    //   onChange,
+    // }),
     
   ])
     
