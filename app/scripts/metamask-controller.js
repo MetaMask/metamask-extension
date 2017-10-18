@@ -459,15 +459,28 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   async createNewVaultAndKeychain (password, cb) {
+    this.forgetOldAccounts()
     const vault = await this.keyringController.createNewVaultAndKeychain(password)
     this.selectFirstIdentity(vault)
     return vault
   }
 
   async createNewVaultAndRestore (password, seed, cb) {
+    this.forgetOldAccounts()
     const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
     this.selectFirstIdentity(vault)
     return vault
+  }
+
+  forgetOldAccounts () {
+    const { accountTracker } = this
+    let oldAccounts = []
+    try {
+      oldAccounts = Object.keys(accountTracker.store.getState().accounts)
+    } catch (e) {
+      log.warn('Could not load old accounts to forget', e)
+    }
+    oldAccounts.forEach(addr => accountTracker.removeAccount(addr))
   }
 
   selectFirstIdentity (vault) {
