@@ -55,6 +55,7 @@ NetworkDropdown.prototype.render = function () {
     fontFamily: 'DIN OT',
     fontSize: '16px',
     lineHeight: '20px',
+    padding: '12px 0',
   }
 
   return h(Dropdown, {
@@ -81,7 +82,7 @@ NetworkDropdown.prototype.render = function () {
       minWidth: '309px',
     },
     innerStyle: {
-      padding: '10px 8px',
+      padding: '18px 8px',
     },
   }, [
 
