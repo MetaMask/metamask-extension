@@ -3,9 +3,6 @@ const PASSWORD = 'password123'
 QUnit.module('first time usage')
 
 QUnit.test('render init screen', (assert) => {
-  // intercept reload attempts
-  window.onbeforeunload = () => true
-
   const done = assert.async()
   runFirstTimeUsageTest(assert).then(done).catch((err) => {
     assert.notOk(err, `Error was thrown: ${err.stack}`)

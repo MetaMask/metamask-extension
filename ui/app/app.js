@@ -319,7 +319,7 @@ App.prototype.renderNetworkDropdown = function () {
       [
         h('i.fa.fa-question-circle.fa-lg.menu-icon'),
         'Localhost 8545',
-        providerType === 'localhost' ? h('.check', '✓') : null,
+        activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
       ]
     ),
 
