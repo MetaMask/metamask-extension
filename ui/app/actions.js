@@ -118,6 +118,8 @@ var actions = {
   cancelMsg: cancelMsg,
   signPersonalMsg,
   cancelPersonalMsg,
+  signTypedMsg,
+  cancelTypedMsg,
   sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
@@ -462,6 +464,25 @@ function signPersonalMsg (msgData) {
   }
 }
 
+function signTypedMsg (msgData) {
+  log.debug('action - signTypedMsg')
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+
+    log.debug(`actions calling background.signTypedMessage`)
+    background.signTypedMessage(msgData, (err, newState) => {
+      log.debug('signTypedMessage called back')
+      dispatch(actions.updateMetamaskState(newState))
+      dispatch(actions.hideLoadingIndication())
+
+      if (err) log.error(err)
+      if (err) return dispatch(actions.displayWarning(err.message))
+
+      dispatch(actions.completedTx(msgData.metamaskId))
+    })
+  }
+}
+
 function signTx (txData) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
@@ -630,6 +651,12 @@ function cancelMsg (msgData) {
 function cancelPersonalMsg (msgData) {
   const id = msgData.id
   background.cancelPersonalMessage(id)
+  return actions.completedTx(id)
+}
+
+function cancelTypedMsg (msgData) {
+  const id = msgData.id
+  background.cancelTypedMessage(id)
   return actions.completedTx(id)
 }
 

@@ -124,7 +124,8 @@ function setupController (initState) {
     var unapprovedTxCount = controller.txController.getUnapprovedTxCount()
     var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
     var unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs
+    var unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
+    var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs
     if (count) {
       label = String(count)
     }

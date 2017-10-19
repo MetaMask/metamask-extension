@@ -59,9 +59,10 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
-      retryLimit: 3500, // Retry 3500 blocks, or about 1 day.
+      retryTimePeriod: 86400000, // Retry 3500 blocks, or about 1 day.
       publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
+      getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
 
     this.txStateManager.store.subscribe(() => this.emit('update:badge'))

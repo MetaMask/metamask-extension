@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const vreme = new (require('vreme'))()
-const explorerLink = require('../../lib/explorer-link')
+const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 

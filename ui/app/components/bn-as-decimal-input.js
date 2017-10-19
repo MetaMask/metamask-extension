@@ -31,7 +31,7 @@ BnAsDecimalInput.prototype.render = function () {
   const suffix = props.suffix
   const style = props.style
   const valueString = value.toString(10)
-  const newValue = this.downsize(valueString, scale, precision)
+  const newValue = this.downsize(valueString, scale)
 
   return (
     h('.flex-column', [
@@ -145,14 +145,17 @@ BnAsDecimalInput.prototype.constructWarning = function () {
 }
 
 
-BnAsDecimalInput.prototype.downsize = function (number, scale, precision) {
+BnAsDecimalInput.prototype.downsize = function (number, scale) {
   // if there is no scaling, simply return the number
   if (scale === 0) {
     return Number(number)
   } else {
     // if the scale is the same as the precision, account for this edge case.
-    var decimals = (scale === precision) ? -1 : scale - precision
-    return Number(number.slice(0, -scale) + '.' + number.slice(-scale, decimals))
+    var adjustedNumber = number
+    while (adjustedNumber.length < scale) {
+      adjustedNumber = '0' + adjustedNumber
+    }
+    return Number(adjustedNumber.slice(0, -scale) + '.' + adjustedNumber.slice(-scale))
   }
 }
 
