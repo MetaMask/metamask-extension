@@ -57,7 +57,7 @@ class AccountTracker extends EventEmitter {
     })
 
     toAdd.forEach(upstream => this.addAccount(upstream))
-    toRemove.forEach(local=> this.removeAccount(local))
+    toRemove.forEach(local => this.removeAccount(local))
     this._updateAccounts()
   }
 

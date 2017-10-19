@@ -1,6 +1,5 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
-const promiseToCallback = require('promise-to-callback')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
