@@ -132,12 +132,16 @@ const conversionUtil = (value, {
 });
 
 const addCurrencies = (a, b, options = {}) => {
-  const { toNumericBase, numberOfDecimals } = options
-  const value = (new BigNumber(a)).add(b);
+  const {
+    aBase,
+    bBase,
+    ...conversionOptions,
+  } = options
+  const value = (new BigNumber(a, aBase)).add(b, bBase);
+
   return converter({
     value,
-    toNumericBase,
-    numberOfDecimals,
+    ...conversionOptions,
   })
 }
 
