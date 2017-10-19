@@ -351,20 +351,22 @@ App.prototype.renderPrimary = function () {
     case 'sendTransaction':
       log.debug('rendering send tx screen')
 
-      const SendComponentToRender = checkFeatureToggle('send-v2')
-        ? SendTransactionScreen2
-        : SendTransactionScreen
+      // Going to leave this here until we are ready to delete SendTransactionScreen v1
+      // const SendComponentToRender = checkFeatureToggle('send-v2')
+      //   ? SendTransactionScreen2
+      //   : SendTransactionScreen
 
-      return h(SendComponentToRender, {key: 'send-transaction'})
+      return h(SendTransactionScreen2, {key: 'send-transaction'})
 
     case 'sendToken':
       log.debug('rendering send token screen')
 
-      const SendTokenComponentToRender = checkFeatureToggle('send-v2')
-        ? SendTransactionScreen2
-        : SendTokenScreen
+      // Going to leave this here until we are ready to delete SendTransactionScreen v1
+      // const SendTokenComponentToRender = checkFeatureToggle('send-v2')
+      //   ? SendTransactionScreen2
+      //   : SendTokenScreen
 
-      return h(SendTokenComponentToRender, {key: 'sendToken'})
+      return h(SendTransactionScreen2, {key: 'sendToken'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')
