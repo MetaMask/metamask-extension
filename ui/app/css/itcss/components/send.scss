@@ -414,7 +414,6 @@
 
     @media screen and (max-width: $break-small) {
       width: 100%;
-      overflow-y: auto;
       top: 0;
       box-shadow: none;
     }
@@ -457,6 +456,10 @@
     left: 199px;
     border-radius: 50%;
     z-index: 100;
+
+    @media screen and (max-width: $break-small) {
+      top: 36px;
+    }
   }
 
   &__header {
@@ -467,6 +470,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media screen and (max-width: $break-small) {
+      height: 59px;
+    }
   }
 
   &__header-tip {
@@ -477,6 +484,10 @@
     transform: rotate(45deg);
     left: 178px;
     top: 65px;
+
+    @media screen and (max-width: $break-small) {
+      top: 46px;
+    }
   }
 
   &__title {
@@ -509,17 +520,34 @@
   }
 
   &__form {
-    display: flex;
-    flex-direction: column;
     margin-top: 13px;
     width: 100%;
+
+    @media screen and (max-width: $break-small) {
+      margin-top: 0px;
+      height: 407px;
+      overflow-y: auto;
+    }
+  }
+
+  &__form-header, &__form-header-copy {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
   }
 
   &__form-row {
     margin: 14.5px 18px 0px;
-    display: flex;
     position: relative;
+    display: flex;
+    flex-flow: row;
+    flex: 1 0 auto;
     justify-content: space-between;
+  }
+
+  &__form-field {
+    flex: 1 1 auto;
   }
 
   &__form-label {
@@ -527,14 +555,12 @@
     font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
+    width: 88px;
   }
 
   &__from-dropdown {
     height: 73px;
-    width: 240px;
+    width: 100%;
     border: 1px solid $alto;
     border-radius: 4px;
     background-color: $white;
@@ -570,7 +596,7 @@
   &__to-autocomplete, &__memo-text-area {
     &__input {
       height: 54px;
-      width: 240px;
+      width: 100%;
       border: 1px solid $alto;
       border-radius: 4px;
       background-color: $white;
@@ -581,6 +607,10 @@
       line-height: 21px;
       font-weight: 300;
     }
+  }
+
+  &__gas-fee-display {
+    width: 100%;
   }
 
   &__sliders-icon-container {
@@ -616,7 +646,7 @@
     justify-content: space-evenly;
     align-items: center;
     border-top: 1px solid $alto;
-    margin-top: 29px;
+    background: $white;
   }
 
   &__next-btn,

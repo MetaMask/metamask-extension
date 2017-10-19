@@ -103,7 +103,7 @@ SendTransactionScreen.prototype.renderCopy = function () {
 
   const tokenText = selectedToken ? 'tokens' : 'ETH'
 
-  return h('div', [
+  return h('div.send-v2__form-header-copy', [
 
     h('div.send-v2__copy', `Only send ${tokenText} to an Ethereum address.`),
 
@@ -126,9 +126,6 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
     ]),
 
-    this.renderTitle(),
-
-    this.renderCopy(),
   ])
 }
 
@@ -157,15 +154,17 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 
     h('div.send-v2__form-label', 'From:'),
 
-    h(FromDropdown, {
-      dropdownOpen,
-      accounts: fromAccounts,
-      selectedAccount: from,
-      onSelect: updateSendFrom,
-      openDropdown: () => this.setState({ dropdownOpen: true }),
-      closeDropdown: () => this.setState({ dropdownOpen: false }),
-      conversionRate,
-    }),
+    h('div.send-v2__form-field', [
+      h(FromDropdown, {
+        dropdownOpen,
+        accounts: fromAccounts,
+        selectedAccount: from,
+        onSelect: updateSendFrom,
+        openDropdown: () => this.setState({ dropdownOpen: true }),
+        closeDropdown: () => this.setState({ dropdownOpen: false }),
+        conversionRate,
+      }),
+    ]),
 
   ])
 }
@@ -199,12 +198,14 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     ]),
 
-    h(ToAutoComplete, {
-      to,
-      accounts: toAccounts,
-      onChange: this.handleToChange,
-      inError: Boolean(errors.to),
-    }),
+    h('div.send-v2__form-field', [
+      h(ToAutoComplete, {
+        to,
+        accounts: toAccounts,
+        onChange: this.handleToChange,
+        inError: Boolean(errors.to),
+      }),
+    ]),
 
   ])
 }
@@ -245,7 +246,7 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
       conversionRate: amountConversionRate,
     },
   )
-  console.log(`sufficientBalance`, sufficientBalance);
+
   const amountLessThanZero = conversionGreaterThan(
     { value: 0, fromNumericBase: 'dec' },
     { value: amount, fromNumericBase: 'hex' },
@@ -277,16 +278,18 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
       this.renderErrorMessage('amount'),
     ]),
 
-    h(CurrencyDisplay, {
-      inError: Boolean(errors.amount),
-      primaryCurrency,
-      convertedCurrency: 'USD',
-      value: amount,
-      conversionRate: amountConversionRate,
-      convertedPrefix: '$',
-      handleChange: this.handleAmountChange,
-      validate: this.validateAmount,
-    }),
+    h('div.send-v2__form-field', [
+      h(CurrencyDisplay, {
+        inError: Boolean(errors.amount),
+        primaryCurrency,
+        convertedCurrency: 'USD',
+        value: amount,
+        conversionRate: amountConversionRate,
+        convertedPrefix: '$',
+        handleChange: this.handleAmountChange,
+        validate: this.validateAmount,
+      }),
+    ]),
 
   ])
 }
@@ -302,17 +305,21 @@ SendTransactionScreen.prototype.renderGasRow = function () {
 
     h('div.send-v2__form-label', 'Gas fee:'),
 
-    h(GasFeeDisplay, {
-      gasTotal,
-      conversionRate,
-      onClick: showCustomizeGasModal,
-    }),
+    h('div.send-v2__form-field', [
 
-    h('div.send-v2__sliders-icon-container', {
-      onClick: showCustomizeGasModal,
-    }, [
-      h('i.fa.fa-sliders.send-v2__sliders-icon'),
-    ])          
+      h(GasFeeDisplay, {
+        gasTotal,
+        conversionRate,
+        onClick: showCustomizeGasModal,
+      }),
+    
+      h('div.send-v2__sliders-icon-container', {
+        onClick: showCustomizeGasModal,
+      }, [
+        h('i.fa.fa-sliders.send-v2__sliders-icon'),
+      ]),
+
+    ]),          
 
   ])
 }
@@ -325,16 +332,26 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 
     h('div.send-v2__form-label', 'Transaction Memo:'),
 
-    h(MemoTextArea, {
-      memo,
-      onChange: (event) => updateSendMemo(event.target.value),
-    }),
+    h('div.send-v2__form-field', [
+      h(MemoTextArea, {
+        memo,
+        onChange: (event) => updateSendMemo(event.target.value),
+      })
+    ]),
 
   ])
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
   return h('div.send-v2__form', {}, [
+
+    h('div.sendV2__form-header', [
+
+      this.renderTitle(),
+
+      this.renderCopy(),
+
+    ]),
 
     this.renderFromRow(),
 
