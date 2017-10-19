@@ -96,7 +96,6 @@ module.exports = class MetamaskController extends EventEmitter {
     // key mgmt
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
-      accountTracker: this.accountTracker,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
