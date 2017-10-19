@@ -277,6 +277,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
   const {
     selectedToken,
     primaryCurrency = 'ETH',
+    convertedCurrency,
     amountConversionRate,
     errors,
   } = this.props
@@ -294,10 +295,9 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
       h(CurrencyDisplay, {
         inError: Boolean(errors.amount),
         primaryCurrency,
-        convertedCurrency: 'USD',
+        convertedCurrency,
         value: amount,
         conversionRate: amountConversionRate,
-        convertedPrefix: '$',
         handleChange: this.handleAmountChange,
         validate: this.validateAmount,
       }),
@@ -309,6 +309,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
 SendTransactionScreen.prototype.renderGasRow = function () {
   const {
     conversionRate,
+    convertedCurrency,
     showCustomizeGasModal,
     gasTotal = MIN_GAS_TOTAL,
   } = this.props
@@ -322,6 +323,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
       h(GasFeeDisplay, {
         gasTotal,
         conversionRate,
+        convertedCurrency,
         onClick: showCustomizeGasModal,
       }),
     

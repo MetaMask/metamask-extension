@@ -76,6 +76,7 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    currentCurrency: state.metamask.currentCurrency,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -96,7 +97,9 @@ function mapDispatchToProps (dispatch, ownProps) {
 }
 
 App.prototype.componentWillMount = function () {
-  this.props.setCurrentCurrencyToUSD()
+  if (!this.props.currentCurrency) {
+    this.props.setCurrentCurrencyToUSD()
+  }
 }
 
 App.prototype.render = function () {

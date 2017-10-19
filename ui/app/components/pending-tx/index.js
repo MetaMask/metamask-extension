@@ -36,7 +36,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
   }
@@ -57,8 +56,6 @@ function PendingTx () {
 PendingTx.prototype.componentWillMount = async function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-
-  this.props.setCurrentCurrencyToUSD()
 
   if (!txParams.to) {
     return this.setState({

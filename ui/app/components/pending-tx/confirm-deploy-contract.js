@@ -21,10 +21,12 @@ function mapStateToProps (state) {
   const {
     conversionRate,
     identities,
+    currentCurrency,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
   return {
+    currentCurrency,
     conversionRate,
     identities,
     selectedAddress,
@@ -124,15 +126,15 @@ ConfirmDeployContract.prototype.getData = function () {
 }
 
 ConfirmDeployContract.prototype.getAmount = function () {
-  const { conversionRate } = this.props
+  const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
-  const USD = conversionUtil(txParams.value, {
+  const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromCurrency: 'ETH',
-    toCurrency: 'USD',
+    toCurrency: currentCurrency,
     numberOfDecimals: 2,
     fromDenomination: 'WEI',
     conversionRate,
@@ -148,14 +150,14 @@ ConfirmDeployContract.prototype.getAmount = function () {
   })
 
   return {
-    fiat: Number(USD),
+    fiat: Number(FIAT),
     token: Number(ETH),
   }
 
 }
 
 ConfirmDeployContract.prototype.getGasFee = function () {
-  const { conversionRate } = this.props
+  const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -169,12 +171,12 @@ ConfirmDeployContract.prototype.getGasFee = function () {
 
   const txFeeBn = gasBn.mul(gasPriceBn)
 
-  const USD = conversionUtil(txFeeBn, {
+  const FIAT = conversionUtil(txFeeBn, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     fromCurrency: 'ETH',
-    toCurrency: 'USD',
+    toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
@@ -189,7 +191,7 @@ ConfirmDeployContract.prototype.getGasFee = function () {
   })
 
   return {
-    fiat: Number(USD),
+    fiat: Number(FIAT),
     eth: Number(ETH),
   }
 }
@@ -200,7 +202,7 @@ ConfirmDeployContract.prototype.renderGasFee = function () {
     h('section.flex-row.flex-center.confirm-screen-row', [
       h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
       h('div.confirm-screen-section-column', [
-        h('div.confirm-screen-row-info', `$${fiatGas} USD`),
+        h('div.confirm-screen-row-info', `${fiatGas} FIAT`),
 
         h(
           'div.confirm-screen-row-detail',
@@ -212,6 +214,7 @@ ConfirmDeployContract.prototype.renderGasFee = function () {
 }
 
 ConfirmDeployContract.prototype.renderHeroAmount = function () {
+  const { currentCurrency } = this.props
   const { fiat: fiatAmount } = this.getAmount()
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
@@ -219,8 +222,8 @@ ConfirmDeployContract.prototype.renderHeroAmount = function () {
 
   return (
     h('div.confirm-send-token__hero-amount-wrapper', [
-      h('h3.flex-center.confirm-screen-send-amount', `$${fiatAmount}`),
-      h('h3.flex-center.confirm-screen-send-amount-currency', 'USD'),
+      h('h3.flex-center.confirm-screen-send-amount', `${fiatAmount}`),
+      h('h3.flex-center.confirm-screen-send-amount-currency', currentCurrency.toUpperCase()),
       h('div.flex-center.confirm-memo-wrapper', [
         h('h3.confirm-screen-send-memo', memo),
       ]),
@@ -229,6 +232,7 @@ ConfirmDeployContract.prototype.renderHeroAmount = function () {
 }
 
 ConfirmDeployContract.prototype.renderTotalPlusGas = function () {
+  const { currentCurrency } = this.props
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, eth: ethGas } = this.getGasFee()
 
@@ -240,7 +244,7 @@ ConfirmDeployContract.prototype.renderTotalPlusGas = function () {
       ]),
 
       h('div.confirm-screen-section-column', [
-        h('div.confirm-screen-row-info', `$${fiatAmount + fiatGas} USD`),
+        h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency.toUpperCase()}`),
         h('div.confirm-screen-row-detail', `${tokenAmount + ethGas} ETH`),
       ]),
     ])

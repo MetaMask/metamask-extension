@@ -20,6 +20,7 @@ function mapStateToProps (state) {
   const {
     conversionRate,
     identities,
+    currentCurrency,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
@@ -27,6 +28,7 @@ function mapStateToProps (state) {
     conversionRate,
     identities,
     selectedAddress,
+    currentCurrency,
   }
 }
 
@@ -45,15 +47,15 @@ function ConfirmSendEther () {
 }
 
 ConfirmSendEther.prototype.getAmount = function () {
-  const { conversionRate } = this.props
+  const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  console.log(txParams)
-  const USD = conversionUtil(txParams.value, {
+  console.log(`conversionRate, currentCurrency`, conversionRate, currentCurrency);
+  const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromCurrency: 'ETH',
-    toCurrency: 'USD',
+    toCurrency: currentCurrency,
     numberOfDecimals: 2,
     fromDenomination: 'WEI',
     conversionRate,
@@ -69,14 +71,14 @@ ConfirmSendEther.prototype.getAmount = function () {
   })
 
   return {
-    USD,
+    FIAT,
     ETH,
   }
 
 }
 
 ConfirmSendEther.prototype.getGasFee = function () {
-  const { conversionRate } = this.props
+  const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -96,12 +98,12 @@ ConfirmSendEther.prototype.getGasFee = function () {
 
   const txFeeBn = gasBn.mul(gasPriceBn)
 
-  const USD = conversionUtil(txFeeBn, {
+  const FIAT = conversionUtil(txFeeBn, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     fromCurrency: 'ETH',
-    toCurrency: 'USD',
+    toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
@@ -116,7 +118,7 @@ ConfirmSendEther.prototype.getGasFee = function () {
   })
 
   return {
-    USD,
+    FIAT,
     ETH,
   }
 }
@@ -125,10 +127,10 @@ ConfirmSendEther.prototype.getData = function () {
   const { identities } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  const { USD: gasFeeInUSD, ETH: gasFeeInETH } = this.getGasFee()
-  const { USD: amountInUSD, ETH: amountInETH } = this.getAmount()
+  const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH } = this.getGasFee()
+  const { FIAT: amountInFIAT, ETH: amountInETH } = this.getAmount()
 
-  const totalInUSD = addCurrencies(gasFeeInUSD, amountInUSD, {
+  const totalInFIAT = addCurrencies(gasFeeInFIAT, amountInFIAT, {
     toNumericBase: 'dec',
     numberOfDecimals: 2,
   })
@@ -147,17 +149,17 @@ ConfirmSendEther.prototype.getData = function () {
       name: identities[txParams.to] ? identities[txParams.to].name : 'New Recipient',
     },
     memo: txParams.memo || '',
-    gasFeeInUSD,
+    gasFeeInFIAT,
     gasFeeInETH,
-    amountInUSD,
+    amountInFIAT,
     amountInETH,
-    totalInUSD,
+    totalInFIAT,
     totalInETH,
   }
 }
 
 ConfirmSendEther.prototype.render = function () {
-  const { backToAccountDetail, selectedAddress } = this.props
+  const { backToAccountDetail, selectedAddress, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -171,10 +173,10 @@ ConfirmSendEther.prototype.render = function () {
       name: toName,
     },
     memo,
-    gasFeeInUSD,
+    gasFeeInFIAT,
     gasFeeInETH,
-    amountInUSD,
-    totalInUSD,
+    amountInFIAT,
+    totalInFIAT,
     totalInETH,
   } = this.getData()
 
@@ -239,8 +241,8 @@ ConfirmSendEther.prototype.render = function () {
         //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
         // ]),
 
-        h('h3.flex-center.confirm-screen-send-amount', [`$${amountInUSD}`]),
-        h('h3.flex-center.confirm-screen-send-amount-currency', [ 'USD' ]),
+        h('h3.flex-center.confirm-screen-send-amount', [`$${amountInFIAT}`]),
+        h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
@@ -265,7 +267,7 @@ ConfirmSendEther.prototype.render = function () {
           h('section.flex-row.flex-center.confirm-screen-row', [
             h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `$${gasFeeInUSD} USD`),
+              h('div.confirm-screen-row-info', `${gasFeeInFIAT} ${currentCurrency.toUpperCase()}`),
 
               h('div.confirm-screen-row-detail', `${gasFeeInETH} ETH`),
             ]),
@@ -279,7 +281,7 @@ ConfirmSendEther.prototype.render = function () {
             ]),
 
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `$${totalInUSD} USD`),
+              h('div.confirm-screen-row-info', `${totalInFIAT} ${currentCurrency.toUpperCase()}`),
               h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
             ]),
           ]),

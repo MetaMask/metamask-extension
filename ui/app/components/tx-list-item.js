@@ -11,11 +11,14 @@ const Identicon = require('./identicon')
 
 const { conversionUtil } = require('../conversion-util')
 
+const { getCurrentCurrency } = require('../selectors')
+
 module.exports = connect(mapStateToProps)(TxListItem)
 
 function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
+    currentCurrency: getCurrentCurrency(state),
   }
 }
 
@@ -49,17 +52,18 @@ TxListItem.prototype.getSendEtherTotal = function () {
     transactionAmount,
     conversionRate,
     address,
+    currentCurrency,
   } = this.props
 
   if (!address) {
     return {}
   }
 
-  const totalInUSD = conversionUtil(transactionAmount, {
+  const totalInFiat = conversionUtil(transactionAmount, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromCurrency: 'ETH',
-    toCurrency: 'USD',
+    toCurrency: currentCurrency,
     fromDenomination: 'WEI',
     numberOfDecimals: 2,
     conversionRate,
@@ -76,7 +80,7 @@ TxListItem.prototype.getSendEtherTotal = function () {
 
   return {
     total: `${totalInETH} ETH`,
-    fiatTotal: `$${totalInUSD} USD`,
+    fiatTotal: `${totalInFiat} ${currentCurrency.toUpperCase()}`,
   }
 }
 
