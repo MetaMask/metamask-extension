@@ -17,6 +17,78 @@
   max-width: 35rem;
 }
 
+@media only screen and (max-width: 575px) {
+  .create-password,
+  .unique-image,
+  .tou,
+  .backup-phrase,
+  .import-account,
+  .buy-ether {
+    margin: 24px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: calc(100vw - 80px);
+  }
+
+  .create-password__title,
+  .unique-image__title,
+  .tou__title,
+  .backup-phrase__title,
+  .import-account__title,
+  .buy-ether__title,
+  .tou__title,
+  .backup-phrase__title {
+    width: initial !important;
+  }
+
+  .first-time-flow__input {
+    width: initial !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+    padding: 12px !important;
+  }
+
+  .tou__body {
+    margin: 0 !important;
+    padding: 16px 20px !important;
+    height: 30vh !important;
+    width: calc(100% - 48px) !important;
+  }
+
+  .backup-phrase__content-wrapper {
+    flex-flow: column nowrap;
+  }
+
+  .backup-phrase__body-text {
+    width: initial !important;
+  }
+
+  .backup-phrase__secret {
+    width: initial !important;
+    padding: 12px !important;
+  }
+
+  .backup-phrase__secret-words {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .backup-phrase__tips {
+    margin: 40px 0 !important;
+    width: initial !important; 
+  }
+
+  .backup-phrase__confirm-secret {
+    width: initial !important;
+    height: initial !important;
+    min-height: 190px;
+  }
+
+  .backup-phrase__confirm-seed-options {
+    width: initial !important;
+  }
+}
+
 .tou {
   max-width: 46rem;
 }
@@ -182,8 +254,7 @@
 .backup-phrase__back-button:hover,
 .import-account__back-button,
 .import-account__back-button:hover {
-  position: absolute;
-  top: 24px;
+  margin-bottom: 18px;
   color: #22232C;
   font-family: Montserrat Regular;
   font-size: 16px;
