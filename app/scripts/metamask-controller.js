@@ -117,8 +117,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
 
     // If only one account exists, make sure it is selected.
-    this.keyringController.store.subscribe((state) => {
-      const addresses = Object.keys(state.walletNicknames || {})
+    this.keyringController.memStore.subscribe((state) => {
+      const addresses = state.keyrings.reduce((res, keyring) => {
+        return res.concat(keyring.accounts)
+      }, [])
       if (addresses.length === 1) {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
@@ -314,7 +316,7 @@ module.exports = class MetamaskController extends EventEmitter {
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // vault management
-      submitPassword: this.submitPassword.bind(this),
+      submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -468,12 +470,6 @@ module.exports = class MetamaskController extends EventEmitter {
     const { identities } = vault
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
-  }
-
-  submitPassword (password, cb) {
-    return this.keyringController.submitPassword(password)
-    .then((newState) => { cb(null, newState) })
-    .catch((reason) => { cb(reason) })
   }
 
   //

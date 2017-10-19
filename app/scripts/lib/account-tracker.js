@@ -41,19 +41,24 @@ class AccountTracker extends EventEmitter {
   syncWithAddresses (addresses) {
     const accounts = this.store.getState().accounts
     const locals = Object.keys(accounts)
-    .map(account => accounts[account.address])
 
+    const toAdd = []
     addresses.forEach((upstream) => {
       if (!locals.includes(upstream)) {
-        this.addAccount(upstream)
+        toAdd.push(upstream)
       }
     })
 
+    const toRemove = []
     locals.forEach((local) => {
       if (!addresses.includes(local)) {
-        this.removeAccount(local)
+        toRemove.push(local)
       }
     })
+
+    toAdd.forEach(upstream => this.addAccount(upstream))
+    toRemove.forEach(local=> this.removeAccount(local))
+    this._updateAccounts()
   }
 
   addAccount (address) {
