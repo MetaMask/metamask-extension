@@ -35,7 +35,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.toggleAccountMenu())
     },
     showConfigPage: () => {
-      console.log('hihihih')
       dispatch(actions.showConfigPage())
       dispatch(actions.toggleAccountMenu())
     },
@@ -60,7 +59,6 @@ AccountMenu.prototype.render = function () {
     showConfigPage,
   } = this.props
 
-  console.log(showConfigPage)
   return h(Menu, { className: 'account-menu', isShowing: isAccountMenuOpen }, [
     h(CloseArea, { onClick: toggleAccountMenu }),
     h(Item, {
@@ -105,11 +103,12 @@ AccountMenu.prototype.renderAccounts = function () {
     showAccountDetail,
   } = this.props
 
+  console.log({ accounts })
   return Object.keys(identities).map((key, index) => {
     const identity = identities[key]
     const isSelected = identity.address === selected
 
-    const balanceValue = accounts[key].balance
+    const balanceValue = accounts[key] ? accounts[key].balance : ''
     const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
     const simpleAddress = identity.address.substring(2).toLowerCase()
 

@@ -47,7 +47,7 @@ WalletView.prototype.renderWalletBalance = function () {
     hideSidebar,
     sidebarOpen,
   } = this.props
-
+  console.log({ selectedAccount })
   const selectedClass = selectedTokenAddress
     ? ''
     : 'wallet-balance-wrapper--active'
@@ -63,7 +63,7 @@ WalletView.prototype.renderWalletBalance = function () {
       },
       [
         h(BalanceComponent, {
-          balanceValue: selectedAccount.balance,
+          balanceValue: selectedAccount ? selectedAccount.balance : '',
           style: {},
         }),
       ]

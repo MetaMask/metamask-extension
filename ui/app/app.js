@@ -207,7 +207,6 @@ App.prototype.renderAppBar = function () {
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
-  console.log(this.props)
   return (
 
     h('.full-width', {

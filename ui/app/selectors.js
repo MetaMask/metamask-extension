@@ -67,7 +67,7 @@ function getTokenExchangeRate (state, tokenSymbol) {
   return tokenExchangeRate
 }
 
-function conversionRateSelector (state) { 
+function conversionRateSelector (state) {
   return state.metamask.conversionRate
 }
 
@@ -102,7 +102,7 @@ function transactionsSelector (state) {
   const transactions = state.metamask.selectedAddressTxList || []
   const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
 
-  console.log({txsToRender, selectedTokenAddress})
+  // console.log({txsToRender, selectedTokenAddress})
   return selectedTokenAddress
     ? txsToRender
       .filter(({ txParams: { to } }) => to === selectedTokenAddress)

@@ -3406,7 +3406,7 @@ eth-ens-namehash@^1.0.2:
     idna-uts46 "^1.0.1"
     js-sha3 "^0.5.7"
 
-eth-hd-keyring@^1.1.1, eth-hd-keyring@^1.2.0:
+eth-hd-keyring@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-1.2.0.tgz#40bcc7ea877ef5c746f54c0c87a6b39ceb5edde3"
   dependencies:
@@ -3416,12 +3416,23 @@ eth-hd-keyring@^1.1.1, eth-hd-keyring@^1.2.0:
     ethereumjs-wallet "^0.6.0"
     events "^1.1.1"
 
-eth-json-rpc-filters@^1.2.1:
+eth-hd-keyring@^1.2.1:
   version "1.2.1"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-1.2.1.tgz#96e1714272a0f7d6d8efef7af8d764988f73ffc1"
+  resolved "https://registry.yarnpkg.com/eth-hd-keyring/-/eth-hd-keyring-1.2.1.tgz#15ab3919b4153a8497e14673e8e8039e5965131c"
+  dependencies:
+    bip39 "^2.2.0"
+    eth-sig-util "^1.3.0"
+    ethereumjs-util "^5.1.1"
+    ethereumjs-wallet "^0.6.0"
+    events "^1.1.1"
+
+eth-json-rpc-filters@^1.2.2:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-1.2.3.tgz#6ad6db134d1fc84c4d0b60f9faf19b70d300ae1e"
   dependencies:
     await-semaphore "^0.1.1"
     eth-json-rpc-middleware "^1.0.0"
+    json-rpc-engine "^3.4.0"
     lodash.flatmap "^4.5.0"
 
 eth-json-rpc-middleware@^1.0.0, eth-json-rpc-middleware@^1.2.7:
@@ -3439,9 +3450,9 @@ eth-json-rpc-middleware@^1.0.0, eth-json-rpc-middleware@^1.2.7:
     promise-to-callback "^1.0.0"
     tape "^4.6.3"
 
-eth-keyring-controller@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-2.1.0.tgz#46b2c1597d9471aab5e4f792dc109084ed196f2d"
+eth-keyring-controller@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-2.1.1.tgz#08129c8300f0ac6de9110e0b8d51292b5c6327e3"
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
@@ -3480,11 +3491,27 @@ eth-sig-util@^1.3.0:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
 
+eth-sig-util@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-1.4.0.tgz#ad42fd1d9c60fff19bdef7377b42fb38e92ee7e1"
+  dependencies:
+    ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
+    ethereumjs-util "^5.1.1"
+
 eth-simple-keyring@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-1.1.1.tgz#6dd75d7cc6edea7c788cf19ef9431c830cd961ae"
   dependencies:
     eth-sig-util "^1.1.0"
+    ethereumjs-util "^5.1.1"
+    ethereumjs-wallet "^0.6.0"
+    events "^1.1.1"
+
+eth-simple-keyring@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/eth-simple-keyring/-/eth-simple-keyring-1.2.0.tgz#b151d2c75877e2cddf94ae5feae78214cf198846"
+  dependencies:
+    eth-sig-util "^1.3.0"
     ethereumjs-util "^5.1.1"
     ethereumjs-wallet "^0.6.0"
     events "^1.1.1"
@@ -3512,14 +3539,7 @@ ethereum-ens-network-map@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/ethereum-ens-network-map/-/ethereum-ens-network-map-1.0.0.tgz#43cd7669ce950a789e151001118d4d65f210eeb7"
 
-ethereumjs-abi@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.4.tgz#9ba1bb056492d00c27279f6eccd4d58275912c1a"
-  dependencies:
-    bn.js "^4.10.0"
-    ethereumjs-util "^4.3.0"
-
-"ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
+ethereumjs-abi@^0.6.4, "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.4"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#ee6ded67235a98f3ef4ae2a338aee70a9f68fe20"
   dependencies:
@@ -3608,6 +3628,10 @@ ethereumjs-wallet@^0.6.0:
     scrypt.js "^0.2.0"
     utf8 "^2.1.1"
     uuid "^2.0.1"
+
+etherscan-link@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/etherscan-link/-/etherscan-link-1.0.2.tgz#c7b9142c4b59509b338a204b6328aea40dd3c64e"
 
 ethjs-abi@0.2.0:
   version "0.2.0"
@@ -3983,6 +4007,18 @@ faye-websocket@~0.7.2:
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.7.3.tgz#cc4074c7f4a4dfd03af54dd65c354b135132ce11"
   dependencies:
     websocket-driver ">=0.3.6"
+
+fbjs@^0.8.16:
+  version "0.8.16"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
+  dependencies:
+    core-js "^1.0.0"
+    isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.9"
 
 fbjs@^0.8.9:
   version "0.8.15"
@@ -5626,6 +5662,16 @@ json-rpc-engine@^3.2.0:
     babel-preset-env "^1.3.2"
     babelify "^7.3.0"
     json-rpc-error "^2.0.0"
+
+json-rpc-engine@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/json-rpc-engine/-/json-rpc-engine-3.4.0.tgz#8a1647a7f2cc7018f4802f41ec8208d281f78bfc"
+  dependencies:
+    async "^2.0.1"
+    babel-preset-env "^1.3.2"
+    babelify "^7.3.0"
+    json-rpc-error "^2.0.0"
+    promise-to-callback "^1.0.0"
 
 json-rpc-error@^2.0.0:
   version "2.0.0"
@@ -7746,6 +7792,14 @@ prop-types@^15.5.1, prop-types@^15.5.10, prop-types@^15.5.6, prop-types@^15.5.8:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
 
+prop-types@^15.5.7:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
 propagate@0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/propagate/-/propagate-0.4.0.tgz#f3fcca0a6fe06736a7ba572966069617c130b481"
@@ -8006,9 +8060,11 @@ react-select@^1.0.0-rc.2:
     prop-types "^15.5.8"
     react-input-autosize "^1.1.5"
 
-react-simple-file-input@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-simple-file-input/-/react-simple-file-input-1.0.0.tgz#0d5989b51b9bf2c25bb48a0c3fd7e73e413eaa48"
+react-simple-file-input@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-simple-file-input/-/react-simple-file-input-2.0.0.tgz#3686982ee26f50b22a69468e22aeeb2f392826c9"
+  dependencies:
+    prop-types "^15.5.7"
 
 react-test-renderer@^15.5.4:
   version "15.6.1"
@@ -10110,7 +10166,7 @@ weak@^1.0.0:
     bindings "^1.2.1"
     nan "^2.0.5"
 
-web3-provider-engine@^13.3.1:
+web3-provider-engine@^13.3.2:
   version "13.3.2"
   resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-13.3.2.tgz#a5954aa637f96f0dde5131bc20a6ce9e33e6fcd1"
   dependencies:
