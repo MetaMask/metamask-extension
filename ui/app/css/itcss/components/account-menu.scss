@@ -5,7 +5,7 @@
   width: 310px;
 
   @media screen and (max-width: 575px) {
-    right: calc((100vw - 100%) / 2);
+    right: calc(((100vw - 100%) / 2) + 8px);
   }
 
   @media screen and (min-width: 576px) {

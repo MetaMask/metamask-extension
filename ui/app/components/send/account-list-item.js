@@ -11,7 +11,7 @@ function AccountListItem () {
   Component.call(this)
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     conversionRate: conversionRateSelector(state),
     currentCurrency: getCurrentCurrency(state),
@@ -22,14 +22,14 @@ module.exports = connect(mapStateToProps)(AccountListItem)
 
 AccountListItem.prototype.render = function () {
   const {
-    account, 
-    handleClick, 
+    account,
+    handleClick,
     icon = null,
     conversionRate,
     currentCurrency,
   } = this.props
 
-  const { name, address, balance } = account
+  const { name, address, balance } = account || {}
 
   return h('div.account-list-item', {
     onClick: () => handleClick({ name, address, balance }),

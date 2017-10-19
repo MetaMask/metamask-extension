@@ -25,6 +25,17 @@ $wallet-view-bg: $wild-sand;
 .tx-view {
   flex: 63.5 0 66.5%;
   background: $tx-view-bg;
+
+  // No title on mobile
+  @media screen and (max-width: 575px) {
+    .identicon-wrapper {
+      display: none;
+    }
+
+    .account-name {
+      display: none;
+    }
+  }
 }
 
 // wallet view and sidebar
@@ -70,7 +81,7 @@ $wallet-view-bg: $wild-sand;
   background: rgb(250, 250, 250);
   z-index: $sidebar-z-index;
   position: fixed;
-  // top: 41px;
+  top: 57px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -80,7 +91,7 @@ $wallet-view-bg: $wild-sand;
   overflow-y: auto;
   box-shadow: rgba(0, 0, 0, .15) 2px 2px 4px;
   width: 85%;
-  height: 100%;
+  height: calc(100% - 57px);
 }
 
 .sidebar-overlay {
