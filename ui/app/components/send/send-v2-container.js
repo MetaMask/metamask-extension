@@ -16,6 +16,7 @@ const {
   getGasLimit,
   getAddressBook,
   getSendFrom,
+  getCurrentCurrency,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -30,7 +31,7 @@ function mapStateToProps (state) {
 
   let data;
   let primaryCurrency;
-  let tokenToUSDRate;
+  let tokenToFiatRate;
   if (selectedToken) {
     data = Array.prototype.map.call(
       abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
@@ -39,7 +40,7 @@ function mapStateToProps (state) {
 
     primaryCurrency = selectedToken.symbol
 
-    tokenToUSDRate = multiplyCurrencies(
+    tokenToFiatRate = multiplyCurrencies(
       conversionRate,
       selectedTokenExchangeRate,
       { toNumericBase: 'dec' }
@@ -54,8 +55,9 @@ function mapStateToProps (state) {
     conversionRate,
     selectedToken,
     primaryCurrency,
+    convertedCurrency: getCurrentCurrency(state),
     data,
-    amountConversionRate: selectedToken ? tokenToUSDRate : conversionRate,
+    amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
   }
 }
 

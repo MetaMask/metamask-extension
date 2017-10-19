@@ -15,6 +15,8 @@ GasFeeDisplay.prototype.render = function () {
     conversionRate,
     gasTotal,
     onClick,
+    primaryCurrency = 'ETH',
+    convertedCurrency,
   } = this.props
 
   return h('div.send-v2__gas-fee-display', [
@@ -22,7 +24,7 @@ GasFeeDisplay.prototype.render = function () {
     gasTotal
       ? h(CurrencyDisplay, {
         primaryCurrency: 'ETH',
-        convertedCurrency: 'USD',
+        convertedCurrency,
         value: gasTotal,
         conversionRate,
         convertedPrefix: '$',

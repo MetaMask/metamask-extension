@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const Identicon = require('../identicon')
 const CurrencyDisplay = require('./currency-display')
-const { conversionRateSelector } = require('../../selectors')
+const { conversionRateSelector, getCurrentCurrency } = require('../../selectors')
 
 inherits(AccountListItem, Component)
 function AccountListItem () {
@@ -13,7 +13,8 @@ function AccountListItem () {
 
 function mapStateToProps(state) {
   return {
-    conversionRate: conversionRateSelector(state)
+    conversionRate: conversionRateSelector(state),
+    currentCurrency: getCurrentCurrency(state),
   }
 }
 
@@ -25,6 +26,7 @@ AccountListItem.prototype.render = function () {
     handleClick, 
     icon = null,
     conversionRate,
+    currentCurrency,
   } = this.props
 
   const { name, address, balance } = account
@@ -52,10 +54,9 @@ AccountListItem.prototype.render = function () {
 
     h(CurrencyDisplay, {
       primaryCurrency: 'ETH',
-      convertedCurrency: 'USD',
+      convertedCurrency: currentCurrency,
       value: balance,
       conversionRate,
-      convertedPrefix: '$',
       readOnly: true,
       className: 'account-list-item__account-balances',
       primaryBalanceClassName: 'account-list-item__account-primary-balance',

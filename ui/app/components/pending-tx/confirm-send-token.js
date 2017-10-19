@@ -81,7 +81,7 @@ ConfirmSendToken.prototype.getAmount = function () {
 }
 
 ConfirmSendToken.prototype.getGasFee = function () {
-  const { conversionRate, tokenExchangeRate, token } = this.props
+  const { conversionRate, tokenExchangeRate, token, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
   const { decimals } = token
@@ -96,12 +96,12 @@ ConfirmSendToken.prototype.getGasFee = function () {
   const txFeeBn = gasBn.mul(gasPriceBn)
 
 
-  const USD = conversionUtil(txFeeBn, {
+  const FIAT = conversionUtil(txFeeBn, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     fromCurrency: 'ETH',
-    toCurrency: 'USD',
+    toCurrency: currentCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
@@ -116,7 +116,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
   })
 
   return {
-    fiat: +Number(USD).toFixed(2),
+    fiat: +Number(FIAT).toFixed(2),
     eth: ETH,
     token: tokenExchangeRate
       ? +(ETH * tokenExchangeRate).toFixed(decimals)
@@ -145,7 +145,7 @@ ConfirmSendToken.prototype.getData = function () {
 }
 
 ConfirmSendToken.prototype.renderHeroAmount = function () {
-  const { token: { symbol } } = this.props
+  const { token: { symbol }, currentCurrency } = this.props
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
@@ -154,8 +154,8 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
   return fiatAmount
     ? (
       h('div.confirm-send-token__hero-amount-wrapper', [
-        h('h3.flex-center.confirm-screen-send-amount', `$${fiatAmount}`),
-        h('h3.flex-center.confirm-screen-send-amount-currency', 'USD'),
+        h('h3.flex-center.confirm-screen-send-amount', `${fiatAmount}`),
+        h('h3.flex-center.confirm-screen-send-amount-currency', currentCurrency),
         h('div.flex-center.confirm-memo-wrapper', [
           h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
         ]),
@@ -173,14 +173,14 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
 }
 
 ConfirmSendToken.prototype.renderGasFee = function () {
-  const { token: { symbol } } = this.props
+  const { token: { symbol }, currentCurrency } = this.props
   const { fiat: fiatGas, token: tokenGas, eth: ethGas } = this.getGasFee()
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
       h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
       h('div.confirm-screen-section-column', [
-        h('div.confirm-screen-row-info', `$${fiatGas} USD`),
+        h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency}`),
 
         h(
           'div.confirm-screen-row-detail',
@@ -192,7 +192,7 @@ ConfirmSendToken.prototype.renderGasFee = function () {
 }
 
 ConfirmSendToken.prototype.renderTotalPlusGas = function () {
-  const { token: { symbol } } = this.props
+  const { token: { symbol }, currentCurrency } = this.props
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, token: tokenGas } = this.getGasFee()
 
@@ -205,7 +205,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
         ]),
 
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `$${fiatAmount + fiatGas} USD`),
+          h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency}`),
           h('div.confirm-screen-row-detail', `${tokenAmount + tokenGas} ${symbol}`),
         ]),
       ])
@@ -219,7 +219,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${tokenAmount} ${symbol}`),
-          h('div.confirm-screen-row-detail', `+ ${fiatGas} USD Gas`),
+          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} Gas`),
         ]),
       ])
     )

@@ -36,7 +36,7 @@ const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 
 // Individual Setters
 const convert = R.invoker(1, 'times')
-const round = R.invoker(2, 'toFormat')(R.__, BigNumber.ROUND_DOWN)
+const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
 const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
 
 // Setter Maps

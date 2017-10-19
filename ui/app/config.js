@@ -170,6 +170,7 @@ function currentConversionInformation (metamaskState, state) {
       },
       defaultValue: currentCurrency,
     }, infuraCurrencies.map((currency) => {
+      console.log(`currency`, currency);
       return h('option', {key: currency.quote.code, value: currency.quote.code}, `${currency.quote.code.toUpperCase()} - ${currency.quote.name}`)
     })
   ),
