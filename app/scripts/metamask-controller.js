@@ -324,7 +324,7 @@ module.exports = class MetamaskController extends EventEmitter {
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
 
       // primary HD keyring management
-      addNewAccount: this.addNewAccount.bind(this),
+      addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
@@ -490,10 +490,21 @@ module.exports = class MetamaskController extends EventEmitter {
   // Opinionated Keyring Management
   //
 
-  addNewAccount (cb) {
+  async addNewAccount (cb) {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-    promiseToCallback(this.keyringController.addNewAccount(primaryKeyring))(cb)
+    const keyringController = this.keyringController
+    const oldAccounts = await keyringController.getAccounts()
+    const keyState = await keyringController.addNewAccount(primaryKeyring)
+    const newAccounts = await keyringController.getAccounts()
+
+    newAccounts.forEach((address) => {
+      if (!oldAccounts.includes(address)) {
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
+
+    return keyState
   }
 
   // Adds the current vault's seed words to the UI's state tree.
