@@ -78,7 +78,7 @@ NetworkDropdown.prototype.render = function () {
     zIndex: 11,
     style: {
       position: 'absolute',
-      top: '38px',
+      top: '58px',
       minWidth: '309px',
     },
     innerStyle: {
