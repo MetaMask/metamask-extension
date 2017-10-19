@@ -12,7 +12,11 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const { showModal } = require('./actions')
 
-const { multiplyCurrencies, conversionGreaterThan } = require('./conversion-util')
+const {
+  multiplyCurrencies,
+  conversionGreaterThan,
+  addCurrencies,
+} = require('./conversion-util')
 const { isValidAddress } = require('./util')
 
 module.exports = SendTransactionScreen
@@ -225,11 +229,18 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
     conversionRate,
     primaryCurrency,
     toCurrency,
-    selectedToken
+    selectedToken,
+    gasTotal,
   } = this.props
   const amount = value
 
   let amountError = null
+
+  const totalAmount = addCurrencies(amount, gasTotal, {
+    aBase: 16,
+    bBase: 16,
+    toNumericBase: 'hex',
+  })
 
   const sufficientBalance = conversionGreaterThan(
     {
@@ -239,7 +250,7 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
       conversionRate,
     },
     {
-      value: amount,
+      value: totalAmount,
       fromNumericBase: 'hex',
       conversionRate: amountConversionRate,
       fromCurrency: selectedToken || primaryCurrency,
