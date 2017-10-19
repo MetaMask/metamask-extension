@@ -1,12 +1,11 @@
 const assert = require('assert')
 const EventEmitter = require('events')
+const createMetamaskProvider = require('web3-provider-engine/zero.js')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
-const createEthRpcClient = require('eth-rpc-client')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
-const createObjectProxy = require('../lib/obj-proxy.js')
 const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
 
@@ -18,8 +17,7 @@ module.exports = class NetworkController extends EventEmitter {
     this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
-    this.providerProxy = createObjectProxy()
-    this.blockTrackerProxy = createEventEmitterProxy()
+    this._proxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
   }
@@ -27,11 +25,12 @@ module.exports = class NetworkController extends EventEmitter {
   initializeProvider (_providerParams) {
     this._baseProviderParams = _providerParams
     const rpcUrl = this.getCurrentRpcAddress()
-    this._configureStandardClient({ rpcUrl })
-    this.blockTrackerProxy.on('block', this._logBlock.bind(this))
-    this.blockTrackerProxy.on('error', this.verifyNetwork.bind(this))
-    this.ethQuery = new EthQuery(this.providerProxy)
+    this._configureStandardProvider({ rpcUrl })
+    this._proxy.on('block', this._logBlock.bind(this))
+    this._proxy.on('error', this.verifyNetwork.bind(this))
+    this.ethQuery = new EthQuery(this._proxy)
     this.lookupNetwork()
+    return this._proxy
   }
 
   verifyNetwork () {
@@ -77,10 +76,8 @@ module.exports = class NetworkController extends EventEmitter {
     assert(type !== 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
     // skip if type already matches
     if (type === this.getProviderConfig().type) return
-    // lookup rpcTarget for typecreateMetamaskProvider
     const rpcTarget = this.getRpcAddressForType(type)
     assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
-    // update connectioncreateMetamaskProvider
     this.providerStore.updateState({ type, rpcTarget })
     this._switchNetwork({ rpcUrl: rpcTarget })
   }
@@ -100,29 +97,32 @@ module.exports = class NetworkController extends EventEmitter {
 
   _switchNetwork (providerParams) {
     this.setNetworkState('loading')
-    this._configureStandardClient(providerParams)
+    this._configureStandardProvider(providerParams)
     this.emit('networkDidChange')
   }
 
-  _configureStandardClient(_providerParams) {
+  _configureStandardProvider(_providerParams) {
     const providerParams = extend(this._baseProviderParams, _providerParams)
-    const client = createEthRpcClient(providerParams)
-    this._setClient(client)
+    const provider = createMetamaskProvider(providerParams)
+    this._setProvider(provider)
   }
 
-  _setClient (newClient) {
-    // teardown old client
-    const oldClient = this._currentClient
-    if (oldClient) {
-      oldClient.blockTracker.stop()
-      // asyncEventEmitter lacks a "removeAllListeners" method
-      // oldClient.blockTracker.removeAllListeners
-      oldClient.blockTracker._events = {}
+  _setProvider (provider) {
+    // collect old block tracker events
+    const oldProvider = this._provider
+    let blockTrackerHandlers
+    if (oldProvider) {
+      // capture old block handlers
+      blockTrackerHandlers = oldProvider._blockTracker.proxyEventHandlers
+      // tear down
+      oldProvider.removeAllListeners()
+      oldProvider.stop()
     }
+    // override block tracler
+    provider._blockTracker = createEventEmitterProxy(provider._blockTracker, blockTrackerHandlers)
     // set as new provider
-    this._currentClient = newClient
-    this.providerProxy.setTarget(newClient.provider)
-    this.blockTrackerProxy.setTarget(newClient.blockTracker)
+    this._provider = provider
+    this._proxy.setTarget(provider)
   }
 
   _logBlock (block) {
