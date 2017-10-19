@@ -17,7 +17,7 @@ GasFeeDisplay.prototype.render = function () {
     onClick,
   } = this.props
 
-  return h('div', [
+  return h('div.send-v2__gas-fee-display', [
 
     gasTotal
       ? h(CurrencyDisplay, {
