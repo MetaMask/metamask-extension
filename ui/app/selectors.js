@@ -6,6 +6,7 @@ const selectors = {
   getSelectedAccount,
   getSelectedToken,
   getSelectedTokenExchangeRate,
+  getTokenExchangeRate,
   conversionRateSelector,
   transactionsSelector,
   accountsWithSendEtherInfoSelector,
@@ -58,7 +59,15 @@ function getSelectedTokenExchangeRate (state) {
   return tokenExchangeRate
 }
 
-function conversionRateSelector (state) {
+function getTokenExchangeRate (state, tokenSymbol) {
+  const pair = `${tokenSymbol.toLowerCase()}_eth`
+  const tokenExchangeRates = state.metamask.tokenExchangeRates
+  const { rate: tokenExchangeRate = 0 } = tokenExchangeRates[pair] || {}
+
+  return tokenExchangeRate
+}
+
+function conversionRateSelector (state) { 
   return state.metamask.conversionRate
 }
 
