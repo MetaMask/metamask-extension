@@ -1,0 +1,110 @@
+.hero-balance {
+
+  @media screen and (max-width: $break-small) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: .3em .9em 0;
+    height: 80vh;
+    max-height: 225px;
+  }
+
+  @media screen and (min-width: $break-large) {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 2.8em 2.37em .8em;
+  }
+
+  .balance-container {
+    display: flex;
+    margin: 0;
+    justify-content: flex-start;
+    align-items: center;
+
+    @media screen and (max-width: $break-small) {
+      flex-direction: column;
+    }
+
+    @media screen and (min-width: $break-large) {
+      flex-direction: row;
+      flex-grow: 3;
+    }
+  }
+
+  .balance-display {
+
+    @media screen and (max-width: $break-small) {
+      text-align: center;
+
+      .token-amount {
+        font-size: 175%;
+        margin-top: 12.5%;
+      }
+
+      .fiat-amount {
+        font-size: 115%;
+        margin-top: 8.5%;
+        color: #a0a0a0;
+      }
+    }
+
+    @media screen and (min-width: $break-large) {
+      margin-left: 3%;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      .token-amount {
+        font-size: 135%;
+      }
+
+      .fiat-amount {
+        margin-top: .25%;
+        font-size: 105%;
+      }
+    }
+  }
+
+  .balance-icon {
+    border-radius: 25px;
+    width: 45px;
+    height: 45px;
+    border: 1px solid $alto;
+  }
+
+  .hero-balance-buttons {
+
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      height: 100px; // needed a round number to set the heights of the buttons inside
+    }
+
+    @media screen and (min-width: $break-large) {
+      flex-grow: 2;
+      justify-content: flex-end;
+    }
+
+    button.btn-clear {
+      background: $white;
+      border: 1px solid;
+      border-radius: 2px;
+      font-size: 12px;
+
+      @media screen and (max-width: $break-small) {
+        width: 23%;
+        height: 55%;
+        border-color: $black;
+      }
+
+      @media screen and (min-width: $break-large) {
+        border-color: $curious-blue;
+        color: $curious-blue;
+        padding: 0;
+        width: 85px;
+        height: 34px;
+      }
+    }
+  }
+}

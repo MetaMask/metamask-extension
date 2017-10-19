@@ -18,21 +18,35 @@ function IdenticonComponent () {
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
+  const { className = '', address } = props
   var diameter = props.diameter || this.defaultDiameter
-  return (
-    h('div', {
-      key: 'identicon-' + this.props.address,
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: diameter,
-        width: diameter,
-        borderRadius: diameter / 2,
-        overflow: 'hidden',
-      },
-    })
-  )
+
+  return address
+    ? (
+      h('div', {
+        className: `${className} identicon`,
+        key: 'identicon-' + address,
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: diameter,
+          width: diameter,
+          borderRadius: diameter / 2,
+          overflow: 'hidden',
+        },
+      })
+    )
+    : (
+      h('img.balance-icon', {
+        src: '../images/eth_logo.svg',
+        style: {
+          height: diameter,
+          width: diameter,
+          borderRadius: diameter / 2,
+        },
+      })
+    )
 }
 
 IdenticonComponent.prototype.componentDidMount = function () {

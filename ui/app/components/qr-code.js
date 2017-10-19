@@ -4,13 +4,13 @@ const qrCode = require('qrcode-npm').qrcode
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const isHexPrefixed = require('ethereumjs-util').isHexPrefixed
-const CopyButton = require('./copyButton')
+const ReadOnlyInput = require('./readonly-input')
 
 module.exports = connect(mapStateToProps)(QrCodeView)
 
 function mapStateToProps (state) {
   return {
-    Qr: state.appState.Qr,
+    // Qr code is not fetched from state. 'message' and 'data' props are passed instead.
     buyView: state.appState.buyView,
     warning: state.appState.warning,
   }
@@ -29,46 +29,29 @@ QrCodeView.prototype.render = function () {
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
-  return h('.main-container.flex-column', {
-    key: 'qr',
+  return h('.div.flex-column.flex-center', {
     style: {
-      justifyContent: 'center',
-      paddingBottom: '45px',
-      paddingLeft: '45px',
-      paddingRight: '45px',
-      alignItems: 'center',
     },
   }, [
     Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
 
     this.props.warning ? this.props.warning && h('span.error.flex-center', {
       style: {
-        textAlign: 'center',
-        width: '229px',
-        height: '82px',
       },
     },
     this.props.warning) : null,
 
-    h('#qr-container.flex-column', {
-      style: {
-        marginTop: '25px',
-        marginBottom: '15px',
-      },
+    h('.div.qr-wrapper', {
+      style: {},
       dangerouslySetInnerHTML: {
         __html: qrImage.createTableTag(4),
       },
     }),
-    h('.flex-row', [
-      h('h3.ellip-address', {
-        style: {
-          width: '247px',
-        },
-      }, Qr.data),
-      h(CopyButton, {
-        value: Qr.data,
-      }),
-    ]),
+    h(ReadOnlyInput, {
+      wrapperClass: 'ellip-address-wrapper',
+      inputClass: 'qr-ellip-address',
+      value: Qr.data,
+    }),
   ])
 }
 

@@ -148,6 +148,12 @@ function renderErrorOrWarning (transaction) {
   if (status === 'rejected') {
     return h('span.error', ' (Rejected)')
   }
+  if (transaction.err || transaction.warning) {
+    const { err, warning = {} } = transaction
+    const errFirst = !!((err && warning) || err)
+    const message = errFirst ? err.message : warning.message
+
+    errFirst ? err.message : warning.message
 
   // show error
   if (err) {

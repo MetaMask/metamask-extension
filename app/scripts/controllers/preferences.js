@@ -42,7 +42,18 @@ class PreferencesController {
     }
 
     this.store.updateState({ tokens })
-    return Promise.resolve()
+    return Promise.resolve(tokens)
+  }
+
+  removeToken (rawAddress) {
+    const address = normalizeAddress(rawAddress)
+
+    const tokens = this.store.getState().tokens
+
+    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
+
+    this.store.updateState({ tokens: updatedTokens })
+    return Promise.resolve(updatedTokens)
   }
 
   getTokens () {
