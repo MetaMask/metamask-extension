@@ -20,9 +20,10 @@ class ComputedbalancesController {
   }
 
   updateAllBalances () {
-    for (let address in this.accountTracker.store.getState().accounts) {
+    Object.keys(this.balances).forEach((balance) => {
+      const address = balance.address
       this.balances[address].updateBalance()
-    }
+    })
   }
 
   _initBalanceUpdating () {
