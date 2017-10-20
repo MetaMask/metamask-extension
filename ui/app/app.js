@@ -427,7 +427,7 @@ App.prototype.renderPrimary = function () {
       key: 'LostAccountsNotice',
       onConfirm: () => props.dispatch(actions.markAccountsFound()),
     })
-  } else if (!props.backedUp && !props.seedWords && props.isInitialized) {
+  } else if (!props.backedUp && !props.seedWords && props.isInitialized && props.isUnlocked) {
     log.debug('rendering reveal seed confirmation screen')
     return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
   }
