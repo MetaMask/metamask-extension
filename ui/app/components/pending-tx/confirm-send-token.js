@@ -36,6 +36,7 @@ function mapStateToProps (state, ownProps) {
   const {
     conversionRate,
     identities,
+    currentCurrency,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
@@ -47,6 +48,7 @@ function mapStateToProps (state, ownProps) {
     selectedAddress,
     tokenExchangeRate,
     tokenData: tokenData || {},
+    currentCurrency: currentCurrency.toUpperCase(),
   }
 }
 
@@ -101,7 +103,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
     multiplierBase: 16,
   })
 
-  const FIAT = conversionUtil(txFeeBn, {
+  const FIAT = conversionUtil(gasTotal, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
@@ -223,7 +225,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency}`),
-          h('div.confirm-screen-row-detail', `${tokenAmount + tokenGas} ${symbol}`),
+          h('div.confirm-screen-row-detail', `${tokenTotal} ${symbol}`),
         ]),
       ])
     )
