@@ -1,6 +1,5 @@
 const EventEmitter = require('events')
 const extend = require('xtend')
-const promiseToCallback = require('promise-to-callback')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
@@ -96,25 +95,20 @@ module.exports = class MetamaskController extends EventEmitter {
     // key mgmt
     this.keyringController = new KeyringController({
       initState: initState.KeyringController,
-      accountTracker: this.accountTracker,
       getNetwork: this.networkController.getNetworkState.bind(this.networkController),
       encryptor: opts.encryptor || undefined,
     })
 
     // If only one account exists, make sure it is selected.
-    this.keyringController.store.subscribe((state) => {
-      const addresses = Object.keys(state.walletNicknames || {})
+    this.keyringController.memStore.subscribe((state) => {
+      const addresses = state.keyrings.reduce((res, keyring) => {
+        return res.concat(keyring.accounts)
+      }, [])
       if (addresses.length === 1) {
         const address = addresses[0]
         this.preferencesController.setSelectedAddress(address)
       }
-    })
-    this.keyringController.on('newAccount', (address) => {
-      this.preferencesController.setSelectedAddress(address)
-      this.accountTracker.addAccount(address)
-    })
-    this.keyringController.on('removedAccount', (address) => {
-      this.accountTracker.removeAccount(address)
+      this.accountTracker.syncWithAddresses(addresses)
     })
 
     // address book controller
@@ -329,13 +323,13 @@ module.exports = class MetamaskController extends EventEmitter {
       createShapeShiftTx: this.createShapeShiftTx.bind(this),
 
       // primary HD keyring management
-      addNewAccount: this.addNewAccount.bind(this),
+      addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // vault management
-      submitPassword: this.submitPassword.bind(this),
+      submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
@@ -352,8 +346,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // KeyringController
       setLocked: nodeify(keyringController.setLocked, keyringController),
-      createNewVaultAndKeychain: nodeify(keyringController.createNewVaultAndKeychain, keyringController),
-      createNewVaultAndRestore: nodeify(keyringController.createNewVaultAndRestore, keyringController),
+      createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
+      createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
       addNewKeyring: nodeify(keyringController.addNewKeyring, keyringController),
       saveAccountLabel: nodeify(keyringController.saveAccountLabel, keyringController),
       exportAccount: nodeify(keyringController.exportAccount, keyringController),
@@ -474,20 +468,43 @@ module.exports = class MetamaskController extends EventEmitter {
   // Vault Management
   //
 
-  submitPassword (password, cb) {
-    return this.keyringController.submitPassword(password)
-    .then((newState) => { cb(null, newState) })
-    .catch((reason) => { cb(reason) })
+  async createNewVaultAndKeychain (password, cb) {
+    const vault = await this.keyringController.createNewVaultAndKeychain(password)
+    this.selectFirstIdentity(vault)
+    return vault
+  }
+
+  async createNewVaultAndRestore (password, seed, cb) {
+    const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+    this.selectFirstIdentity(vault)
+    return vault
+  }
+
+  selectFirstIdentity (vault) {
+    const { identities } = vault
+    const address = Object.keys(identities)[0]
+    this.preferencesController.setSelectedAddress(address)
   }
 
   //
   // Opinionated Keyring Management
   //
 
-  addNewAccount (cb) {
+  async addNewAccount (cb) {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-    promiseToCallback(this.keyringController.addNewAccount(primaryKeyring))(cb)
+    const keyringController = this.keyringController
+    const oldAccounts = await keyringController.getAccounts()
+    const keyState = await keyringController.addNewAccount(primaryKeyring)
+    const newAccounts = await keyringController.getAccounts()
+
+    newAccounts.forEach((address) => {
+      if (!oldAccounts.includes(address)) {
+        this.preferencesController.setSelectedAddress(address)
+      }
+    })
+
+    return keyState
   }
 
   // Adds the current vault's seed words to the UI's state tree.
