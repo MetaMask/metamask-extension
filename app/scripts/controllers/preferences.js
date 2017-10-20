@@ -9,6 +9,7 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       tokens: [],
+      backedUp: false,
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -20,6 +21,15 @@ class PreferencesController {
       this.store.updateState({ selectedAddress: address })
       resolve()
     })
+  }
+
+  getBackedUp () {
+    return this.store.getState().backedUp
+  }
+
+  setBackedUp (backedUp) {
+    this.store.updateState({ backedUp })
+    return Promise.resolve(true)
   }
 
   getSelectedAddress () {
