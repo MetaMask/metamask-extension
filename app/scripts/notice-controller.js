@@ -10,6 +10,7 @@ module.exports = class NoticeController extends EventEmitter {
     this.noticePoller = null
     const initState = extend({
       noticesList: [],
+      backedUp: false,
     }, opts.initState)
     this.store = new ObservableStore(initState)
     this.memStore = new ObservableStore({})
@@ -28,6 +29,15 @@ module.exports = class NoticeController extends EventEmitter {
   getLatestUnreadNotice () {
     const unreadNotices = this.getUnreadNotices()
     return unreadNotices[unreadNotices.length - 1]
+  }
+
+  getBackedUp () {
+    return this.store.getState().backedUp
+  }
+
+  setBackedUp (backedUp) {
+    this.store.updateState({ backedUp })
+    return Promise.resolve(true)
   }
 
   setNoticesList (noticesList) {
@@ -89,7 +99,8 @@ module.exports = class NoticeController extends EventEmitter {
   _updateMemstore () {
     const lastUnreadNotice = this.getLatestUnreadNotice()
     const noActiveNotices = !lastUnreadNotice
-    this.memStore.updateState({ lastUnreadNotice, noActiveNotices })
+    const backedUp = this.getBackedUp()
+    this.memStore.updateState({ lastUnreadNotice, noActiveNotices, backedUp })
   }
 
 }
