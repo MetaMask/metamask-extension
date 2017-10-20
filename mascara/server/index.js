@@ -17,7 +17,7 @@ function createMetamascaraServer () {
   const server = express()
   // ui window
   serveBundle(server, '/ui.js', uiBundle)
-  server.use(express.static(__dirname + '/../ui/'))
+  server.use(express.static(__dirname + '/../ui/', { setHeaders: (res) => res.set('X-Frame-Options', 'DENY') }))
   server.use(express.static(__dirname + '/../../dist/chrome'))
   // metamascara
   serveBundle(server, '/metamascara.js', metamascaraBundle)
