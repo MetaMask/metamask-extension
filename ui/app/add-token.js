@@ -105,6 +105,7 @@ AddTokenScreen.prototype.tokenAddressDidChange = function (e) {
 }
 
 AddTokenScreen.prototype.checkExistingAddresses = function (address) {
+  if (!address) return false
   const tokensList = this.props.tokens
   const matchesAddress = existingToken => {
     return existingToken.address.toLowerCase() === address.toLowerCase()
