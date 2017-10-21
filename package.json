@@ -29,6 +29,7 @@
     "test:mascara:build:background": "browserify mascara/src/background.js -o dist/mascara/background.js",
     "test:mascara:build:tests": "browserify test/integration/lib/first-time.js -o dist/mascara/tests.js",
     "lint": "gulp lint",
+    "lint:fix": "gulp lint:fix",
     "disc": "gulp disc --debug",
     "announce": "node development/announcer.js",
     "generateNotice": "node notices/notice-generator.js",
