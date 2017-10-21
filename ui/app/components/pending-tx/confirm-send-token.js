@@ -36,6 +36,7 @@ function mapStateToProps (state, ownProps) {
   const {
     conversionRate,
     identities,
+    currentCurrency,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
@@ -47,6 +48,7 @@ function mapStateToProps (state, ownProps) {
     selectedAddress,
     tokenExchangeRate,
     tokenData: tokenData || {},
+    currentCurrency: currentCurrency.toUpperCase(),
   }
 }
 
@@ -83,7 +85,9 @@ ConfirmSendToken.prototype.getAmount = function () {
     fiat: tokenExchangeRate
       ? +(sendTokenAmount * tokenExchangeRate * conversionRate).toFixed(2)
       : null,
-    token: +sendTokenAmount.toFixed(decimals),
+    token: typeof value === 'undefined'
+      ? 'Unknown'
+      : +sendTokenAmount.toFixed(decimals),
   }
 
 }
@@ -101,7 +105,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
     multiplierBase: 16,
   })
 
-  const FIAT = conversionUtil(txFeeBn, {
+  const FIAT = conversionUtil(gasTotal, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
@@ -211,8 +215,6 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, token: tokenGas } = this.getGasFee()
 
-  const tokenTotal = addCurrencies(tokenAmount, tokenGas || '0')
-
   return fiatAmount && fiatGas
     ? (
       h('section.flex-row.flex-center.confirm-screen-total-box ', [
@@ -223,7 +225,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency}`),
-          h('div.confirm-screen-row-detail', `${tokenAmount + tokenGas} ${symbol}`),
+          h('div.confirm-screen-row-detail', `${addCurrencies(tokenAmount, tokenGas || '0')} ${symbol}`),
         ]),
       ])
     )
@@ -319,7 +321,7 @@ ConfirmSendToken.prototype.render = function () {
             ]),
           ]),
 
-          h('section.flex-row.flex-center.confirm-screen-row', [
+          toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
             h('span.confirm-screen-label.confirm-screen-section-column', [ 'To' ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', toName),

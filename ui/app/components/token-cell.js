@@ -13,6 +13,7 @@ const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
+    currentCurrency: state.metamask.currentCurrency,
     selectedTokenAddress: state.metamask.selectedTokenAddress,
     userAddress: selectors.getSelectedAddress(state),
     tokenExchangeRates: state.metamask.tokenExchangeRates,
@@ -63,18 +64,19 @@ TokenCell.prototype.render = function () {
     ethToUSDRate,
     hideSidebar,
     sidebarOpen,
+    currentCurrency,
     // userAddress,
   } = props
   
   const pair = `${symbol.toLowerCase()}_eth`;
 
   let currentTokenToEthRate;
-  let currentTokenInUSD;
+  let currentTokenInFiat;
   let formattedUSD = ''
 
   if (tokenExchangeRates[pair]) {
     currentTokenToEthRate = tokenExchangeRates[pair].rate;
-    currentTokenInUSD = conversionUtil(string, {
+    currentTokenInFiat = conversionUtil(string, {
       fromNumericBase: 'dec',
       fromCurrency: symbol,
       toCurrency: 'USD',
@@ -82,7 +84,7 @@ TokenCell.prototype.render = function () {
       conversionRate: currentTokenToEthRate,
       ethToUSDRate,
     })
-    formattedUSD = `$${currentTokenInUSD} USD`;
+    formattedUSD = `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`;
   }
  
   return (

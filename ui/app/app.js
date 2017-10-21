@@ -137,8 +137,7 @@ App.prototype.render = function () {
 
       h(AccountMenu),
 
-      h(Loading, {
-        isLoading: isLoading || isLoadingNetwork,
+      (isLoading || isLoadingNetwork) && h(Loading, {
         loadingMessage: loadMessage,
       }),
 

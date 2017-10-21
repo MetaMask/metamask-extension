@@ -87,7 +87,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
           left: '49vw',
         },
       }, [
-        h(Loading, { isLoading }),
+        isLoading && h(Loading),
       ]),
 
       // account panel

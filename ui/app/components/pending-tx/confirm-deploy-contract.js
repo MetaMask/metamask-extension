@@ -195,14 +195,16 @@ ConfirmDeployContract.prototype.getGasFee = function () {
     eth: Number(ETH),
   }
 }
+
 ConfirmDeployContract.prototype.renderGasFee = function () {
+  const { currentCurrency } = this.props
   const { fiat: fiatGas, eth: ethGas } = this.getGasFee()
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
       h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
       h('div.confirm-screen-section-column', [
-        h('div.confirm-screen-row-info', `${fiatGas} FIAT`),
+        h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency.toUpperCase()}`),
 
         h(
           'div.confirm-screen-row-detail',

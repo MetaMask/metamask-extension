@@ -7,7 +7,9 @@ const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
 const TokenBalance = require('./components/token-balance')
 const Identicon = require('./components/identicon')
-const contractList = Object.entries(contractMap).map(([ _, tokenData]) => tokenData)
+const contractList = Object.entries(contractMap)
+  .map(([ _, tokenData]) => tokenData)
+  .filter(tokenData => Boolean(tokenData.erc20))
 const fuse = new Fuse(contractList, {
     shouldSort: true,
     threshold: 0.45,
@@ -105,6 +107,7 @@ AddTokenScreen.prototype.tokenAddressDidChange = function (e) {
 }
 
 AddTokenScreen.prototype.checkExistingAddresses = function (address) {
+  if (!address) return false
   const tokensList = this.props.tokens
   const matchesAddress = existingToken => {
     return existingToken.address.toLowerCase() === address.toLowerCase()

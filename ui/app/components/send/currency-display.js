@@ -36,6 +36,16 @@ function toHexWei (value) {
   })
 }
 
+CurrencyDisplay.prototype.getAmount = function (value) {
+  const { selectedToken } = this.props
+  const { decimals } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  const sendAmount = '0x' + Number(value * multiplier).toString(16)
+  return selectedToken
+    ? sendAmount
+    : toHexWei(value)
+}
+
 CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
@@ -102,7 +112,7 @@ CurrencyDisplay.prototype.render = function () {
               this.setState({ value: newValue })
             }
           },
-          onBlur: event => !readOnly && handleChange(toHexWei(event.target.value.split(' ')[0])),
+          onBlur: event => !readOnly && handleChange(this.getAmount(event.target.value.split(' ')[0])),
           onKeyUp: event => {
             if (!readOnly) {
               validate(toHexWei(value || initValueToRender))

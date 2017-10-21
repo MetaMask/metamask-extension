@@ -296,6 +296,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
         inError: Boolean(errors.amount),
         primaryCurrency,
         convertedCurrency,
+        selectedToken,
         value: amount,
         conversionRate: amountConversionRate,
         handleChange: this.handleAmountChange,
@@ -326,14 +327,14 @@ SendTransactionScreen.prototype.renderGasRow = function () {
         convertedCurrency,
         onClick: showCustomizeGasModal,
       }),
-    
+
       h('div.send-v2__sliders-icon-container', {
         onClick: showCustomizeGasModal,
       }, [
         h('i.fa.fa-sliders.send-v2__sliders-icon'),
       ]),
 
-    ]),          
+    ]),
 
   ])
 }
@@ -350,7 +351,7 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
       h(MemoTextArea, {
         memo,
         onChange: (event) => updateSendMemo(event.target.value),
-      })
+      }),
     ]),
 
   ])

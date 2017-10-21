@@ -84,7 +84,7 @@ ConfirmTxScreen.prototype.render = function () {
   */
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
-  if (unconfTxList.length === 0) return h(Loading, { isLoading: true })
+  if (unconfTxList.length === 0) return h(Loading)
 
   return currentTxView({
     // Properties
@@ -130,7 +130,7 @@ function currentTxView (opts) {
       return h(PendingTypedMsg, opts)
     }
   }
-  return h(Loading, { isLoading: true })
+  return h(Loading)
 }
 
 ConfirmTxScreen.prototype.buyEth = function (address, event) {
