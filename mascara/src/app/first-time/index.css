@@ -78,7 +78,8 @@
     width: initial !important; 
   }
 
-  .backup-phrase__confirm-secret {
+  .backup-phrase__confirm-secret,
+  .import-account__secret-phrase {
     width: initial !important;
     height: initial !important;
     min-height: 190px;
@@ -266,7 +267,8 @@ button.backup-phrase__reveal-button:hover {
   transform: scale(1);
 }
 
-.backup-phrase__confirm-secret {
+.backup-phrase__confirm-secret,
+.import-account__secret-phrase {
   height: 190px;
   width: 495px;
   border: 1px solid #CDCDCD;
@@ -274,6 +276,10 @@ button.backup-phrase__reveal-button:hover {
   background-color: #FFFFFF;
   margin: 25px 0 36px;
   padding: 17px;
+}
+
+.import-account__secret-phrase {
+  font-size: 16px;
 }
 
 .backup-phrase__confirm-seed-options {

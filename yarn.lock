@@ -3237,9 +3237,9 @@ eth-hd-keyring@^1.2.1:
     ethereumjs-wallet "^0.6.0"
     events "^1.1.1"
 
-eth-json-rpc-filters@^1.2.2:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-1.2.3.tgz#6ad6db134d1fc84c4d0b60f9faf19b70d300ae1e"
+eth-json-rpc-filters@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-filters/-/eth-json-rpc-filters-1.2.4.tgz#716109b1cf4d0ec01f30f848d65c60c34400e975"
   dependencies:
     await-semaphore "^0.1.1"
     eth-json-rpc-middleware "^1.0.0"
@@ -3261,9 +3261,9 @@ eth-json-rpc-middleware@^1.0.0, eth-json-rpc-middleware@^1.2.7:
     promise-to-callback "^1.0.0"
     tape "^4.6.3"
 
-eth-keyring-controller@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-2.1.1.tgz#08129c8300f0ac6de9110e0b8d51292b5c6327e3"
+eth-keyring-controller@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/eth-keyring-controller/-/eth-keyring-controller-2.1.2.tgz#1af179d8fd7ff470eb91e113a0fd3a440bd66bcc"
   dependencies:
     bip39 "^2.4.0"
     bluebird "^3.5.0"
@@ -7845,14 +7845,12 @@ samsam@1.x, samsam@^1.1.3:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/samsam/-/samsam-1.2.1.tgz#edd39093a3184370cb859243b2bdf255e7d8ea67"
 
-sandwich-expando@^1.0.5:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/sandwich-expando/-/sandwich-expando-1.1.1.tgz#83806fcca2375af8b6c30e6f52ed4f989debb165"
+sandwich-expando@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/sandwich-expando/-/sandwich-expando-1.1.3.tgz#6ba78d034c32f8bf5ab5934c214f8384614a88a5"
   dependencies:
     babel-preset-es2015 "^6.6.0"
     babelify "^7.3.0"
-    brfs "^1.4.3"
-    raphael "^2.2.0"
     react "^15.0.2"
     react-dom "^15.0.2"
     react-hyperscript "^2.4.0"

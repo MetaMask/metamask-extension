@@ -238,10 +238,20 @@ function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
-    background.createNewVaultAndRestore(password, seed, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.showAccountsPage())
+
+    return new Promise((resolve, reject) => {
+      background.createNewVaultAndRestore(password, seed, (err) => {
+
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.showAccountsPage())
+        resolve()
+      })
     })
   }
 }

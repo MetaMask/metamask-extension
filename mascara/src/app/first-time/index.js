@@ -5,7 +5,7 @@ import UniqueImageScreen from './unique-image-screen'
 import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
-import BuyEtherScreen from './buy-ether-screen'
+import ImportSeedPhraseScreen from './import-seed-phrase-screen'
 import {onboardingBuyEthView} from '../../../../ui/app/actions'
 
 class FirstTimeFlow extends Component {
@@ -27,6 +27,7 @@ class FirstTimeFlow extends Component {
   static SCREEN_TYPE = {
     CREATE_PASSWORD: 'create_password',
     IMPORT_ACCOUNT: 'import_account',
+    IMPORT_SEED_PHRASE: 'import_seed_phrase',
     UNIQUE_IMAGE: 'unique_image',
     NOTICE: 'notice',
     BACK_UP_PHRASE: 'back_up_phrase',
@@ -77,11 +78,19 @@ class FirstTimeFlow extends Component {
           <CreatePasswordScreen
             next={() => this.setScreenType(SCREEN_TYPE.UNIQUE_IMAGE)}
             goToImportAccount={() => this.setScreenType(SCREEN_TYPE.IMPORT_ACCOUNT)}
+            goToImportWithSeedPhrase={() => this.setScreenType(SCREEN_TYPE.IMPORT_SEED_PHRASE)}
           />
         )
       case SCREEN_TYPE.IMPORT_ACCOUNT:
         return (
           <ImportAccountScreen
+            back={() => this.setScreenType(SCREEN_TYPE.CREATE_PASSWORD)}
+            next={() => this.setScreenType(SCREEN_TYPE.NOTICE)}
+          />
+        )
+      case SCREEN_TYPE.IMPORT_SEED_PHRASE:
+        return (
+          <ImportSeedPhraseScreen
             back={() => this.setScreenType(SCREEN_TYPE.CREATE_PASSWORD)}
             next={() => this.setScreenType(SCREEN_TYPE.NOTICE)}
           />
