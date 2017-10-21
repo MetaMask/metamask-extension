@@ -356,7 +356,25 @@ function navigateToNewAccountScreen () {
 
 function addNewAccount () {
   log.debug(`background.addNewAccount`)
-  return callBackgroundThenUpdate(background.addNewAccount)
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
+    log.debug(`background.addNewAccount`)
+    background.addNewAccount((err) => {
+      if (err) return dispatch(actions.displayWarning(err.message))
+      log.debug(`background.getState`)
+      background.getState((err, newState) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          return dispatch(actions.displayWarning(err.message))
+        }
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch({
+          type: actions.SHOW_ACCOUNT_DETAIL,
+          value: newState.selectedAddress,
+        })
+      })
+    })
+  }
 }
 
 function showInfoPage () {
