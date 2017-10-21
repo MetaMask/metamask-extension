@@ -652,7 +652,8 @@
   }
 
   &__next-btn,
-  &__cancel-btn {
+  &__cancel-btn,
+  &__next-btn__disabled {
     width: 163px;
     text-align: center;
     height: 55px;
@@ -667,14 +668,15 @@
     border: 1px solid;
   }
 
+  &__next-btn,
+  &__next-btn__disabled {
+    color: $curious-blue;
+    border-color: $curious-blue;
+  }
+
   &__next-btn__disabled {
     opacity: .5;
     cursor: auto;
-  }
-
-  &__next-btn {
-    color: $curious-blue;
-    border-color: $curious-blue;
   }
 
   &__cancel-btn {

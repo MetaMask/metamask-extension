@@ -382,7 +382,14 @@ SendTransactionScreen.prototype.renderForm = function () {
 }
 
 SendTransactionScreen.prototype.renderFooter = function () {
-  const { goHome, clearSend } = this.props
+  const {
+    goHome,
+    clearSend,
+    errors: { amount: amountError, to: toError }
+  } = this.props
+  
+  const noErrors = amountError === null && toError === null
+  const errorClass = noErrors ? '' : '__disabled'
 
   return h('div.send-v2__footer', [
     h('button.send-v2__cancel-btn', {
@@ -391,8 +398,8 @@ SendTransactionScreen.prototype.renderFooter = function () {
         goHome()
       },
     }, 'Cancel'),
-    h('button.send-v2__next-btn', {
-      onClick: event => this.onSubmit(event),
+    h(`button.send-v2__next-btn${errorClass}`, {
+      onClick: event => noErrors && this.onSubmit(event),
     }, 'Next'),
   ])
 }
