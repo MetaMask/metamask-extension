@@ -80,5 +80,6 @@ function mapDispatchToProps (dispatch) {
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
+    clearSend: () => dispatch(actions.clearSend())
   }
 }

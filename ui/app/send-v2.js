@@ -382,11 +382,14 @@ SendTransactionScreen.prototype.renderForm = function () {
 }
 
 SendTransactionScreen.prototype.renderFooter = function () {
-  const { goHome } = this.props
+  const { goHome, clearSend } = this.props
 
   return h('div.send-v2__footer', [
     h('button.send-v2__cancel-btn', {
-      onClick: goHome,
+      onClick: () => {
+        clearSend()
+        goHome()
+      },
     }, 'Cancel'),
     h('button.send-v2__next-btn', {
       onClick: event => this.onSubmit(event),
@@ -429,6 +432,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     signTx,
     selectedToken,
     toAccounts,
+    clearSend,
   } = this.props
 
   this.addToAddressBookIfNew(to)
@@ -444,6 +448,8 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     txParams.value = amount
     txParams.to = to
   }
+
+  clearSend()
 
   selectedToken
     ? signTokenTx(selectedToken.address, to, amount, txParams)
