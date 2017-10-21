@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.11.1 2017-10-20
+
 - Fix bug where log filters were not populated correctly
 - Fix bug where web3 API was sometimes injected after the page loaded.
 - Fix bug where first account was sometimes not selected correctly after creating or restoring a vault.
