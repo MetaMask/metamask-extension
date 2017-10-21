@@ -101,7 +101,7 @@ module.exports = class NetworkController extends EventEmitter {
     this.emit('networkDidChange')
   }
 
-  _configureStandardProvider(_providerParams) {
+  _configureStandardProvider (_providerParams) {
     const providerParams = extend(this._baseProviderParams, _providerParams)
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)

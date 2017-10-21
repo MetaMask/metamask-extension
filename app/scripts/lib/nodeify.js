@@ -1,8 +1,8 @@
 const promiseToCallback = require('promise-to-callback')
-const noop = function(){}
+const noop = function () {}
 
 module.exports = function nodeify (fn, context) {
-  return function(){
+  return function () {
     const args = [].slice.call(arguments)
     const lastArg = args[args.length - 1]
     const lastArgIsCallback = typeof lastArg === 'function'
