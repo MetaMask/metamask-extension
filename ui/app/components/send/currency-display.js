@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('../identicon')
-const { conversionUtil } = require('../../conversion-util')
+const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 module.exports = CurrencyDisplay
 
@@ -40,7 +40,9 @@ CurrencyDisplay.prototype.getAmount = function (value) {
   const { selectedToken } = this.props
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
-  const sendAmount = '0x' + Number(value * multiplier).toString(16)
+
+  const sendAmount = multiplyCurrencies(value, multiplier, {toNumericBase: 'hex'})
+
   return selectedToken
     ? sendAmount
     : toHexWei(value)

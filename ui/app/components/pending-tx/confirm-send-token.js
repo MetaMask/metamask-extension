@@ -224,7 +224,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
         ]),
 
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency}`),
+          h('div.confirm-screen-row-info', `${addCurrencies(fiatAmount, fiatGas)} ${currentCurrency}`),
           h('div.confirm-screen-row-detail', `${addCurrencies(tokenAmount, tokenGas || '0')} ${symbol}`),
         ]),
       ])
