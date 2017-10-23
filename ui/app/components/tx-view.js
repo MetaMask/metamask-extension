@@ -73,7 +73,7 @@ TxView.prototype.renderButtons = function () {
           onClick: () => showModal({
             name: 'BUY',
           }),
-        }, 'BUY'),
+        }, 'DEPOSIT'),
 
         h('button.btn-clear', {
           style: {
