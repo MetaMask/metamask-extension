@@ -51,6 +51,10 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   lookupNetwork () {
+    // Prevent firing when provider is not defined.
+    if (!this.ethQuery || !this.ethQuery.sendAsync) {
+      return
+    }
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
       log.info('web3.getNetwork returned ' + network)

@@ -2,6 +2,13 @@
 
 ## Current Master
 
+- Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).
+
+## 3.11.2 2017-10-21
+
+- Fix bug where reject button would sometimes not work.
+- Fixed bug where sometimes MetaMask's connection to a page would be unreliable.
+
 ## 3.11.1 2017-10-20
 
 - Fix bug where log filters were not populated correctly
