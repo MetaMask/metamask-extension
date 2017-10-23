@@ -226,10 +226,6 @@ function reduceMetamask (state, action) {
       })
 
     case actions.UPDATE_SEND_ERRORS:
-      console.log(123, {
-        ...metamaskState.send.errors,
-        ...action.value,
-      })
       return extend(metamaskState, {
         send: {
           ...metamaskState.send,
@@ -237,6 +233,20 @@ function reduceMetamask (state, action) {
             ...metamaskState.send.errors,
             ...action.value,
           }
+        },
+      })
+
+    case actions.CLEAR_SEND:
+      return extend(metamaskState, {
+        send: {
+          gasLimit: null,
+          gasPrice: null,
+          gasTotal: null,
+          from: '',
+          to: '',
+          amount: '0x0',
+          memo: '',
+          errors: {},
         },
       })
 
