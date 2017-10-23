@@ -993,7 +993,7 @@ function setProviderType (type) {
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
     })
-    
+
   }
 }
 
