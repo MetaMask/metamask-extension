@@ -62,4 +62,11 @@
   &__account-secondary-balance {
     color: $dusty-gray;
   }
+
+  &__account-address {
+    margin-left: 35px;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
