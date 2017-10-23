@@ -22,7 +22,7 @@ const {
 const {
   isBalanceSufficient,
 } = require('./components/send/send-utils.js')
-const { isValidAddress } = require('./util')
+const { isValidAddress, encodeStringAsHex } = require('./util')
 
 module.exports = SendTransactionScreen
 
@@ -331,21 +331,22 @@ SendTransactionScreen.prototype.renderGasRow = function () {
 }
 
 SendTransactionScreen.prototype.renderMemoRow = function () {
-  const { updateSendMemo } = this.props
-  const { memo } = this.state
+  const { updateSendMemo, memo, selectedToken } = this.props
 
-  return h('div.send-v2__form-row', [
+  return !selectedToken
+    ? h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Transaction Memo:'),
+      h('div.send-v2__form-label', 'Transaction Memo:'),
 
-    h('div.send-v2__form-field', [
-      h(MemoTextArea, {
-        memo,
-        onChange: (event) => updateSendMemo(event.target.value),
-      }),
-    ]),
+      h('div.send-v2__form-field', [
+        h(MemoTextArea, {
+          memo,
+          onChange: (event) => updateSendMemo(event.target.value),
+        }),
+      ]),
 
-  ])
+    ])
+    : h('div.send-v2__form-row', { style: { height: '54px' } })
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
@@ -431,6 +432,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     selectedToken,
     toAccounts,
     clearSend,
+    memo,
   } = this.props
 
   this.addToAddressBookIfNew(to)
@@ -440,6 +442,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     value: '0',
     gas,
     gasPrice,
+    data: encodeStringAsHex(memo),
   }
 
   if (!selectedToken) {

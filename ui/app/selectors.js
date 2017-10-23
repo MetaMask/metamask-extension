@@ -22,6 +22,7 @@ const selectors = {
   getCurrentCurrency,
   getSendAmount,
   getSelectedTokenToFiatRate,
+  getSendMemo,
 }
 
 module.exports = selectors
@@ -131,6 +132,10 @@ function getSendFrom (state) {
 
 function getSendAmount (state) {
   return state.metamask.send.amount
+}
+
+function getSendMemo (state) {
+  return state.metamask.send.memo
 }
 
 function getCurrentCurrency (state) {

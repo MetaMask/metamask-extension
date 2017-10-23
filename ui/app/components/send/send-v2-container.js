@@ -18,6 +18,7 @@ const {
   getSendFrom,
   getCurrentCurrency,
   getSelectedTokenToFiatRate,
+  getSendMemo,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -54,6 +55,7 @@ function mapStateToProps (state) {
     convertedCurrency: getCurrentCurrency(state),
     data,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
+    memo: getSendMemo(state),
   }
 }
 
