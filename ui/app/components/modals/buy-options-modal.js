@@ -42,7 +42,7 @@ BuyOptions.prototype.render = function () {
         h('div.buy-modal-content-title', {
           style: {},
         }, 'Transfers'),
-        h('div', {}, 'How would you like to buy Ether?'),
+        h('div', {}, 'How would you like to deposit Ether?'),
       ]),
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
@@ -54,7 +54,7 @@ BuyOptions.prototype.render = function () {
           },
         }, [
           h('div.buy-modal-content-option-title', {}, 'Coinbase'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Buy with Fiat'),
+          h('div.buy-modal-content-option-subtitle', {}, 'Deposit with Fiat'),
         ]),
 
         // h('div.buy-modal-content-option', {}, [
