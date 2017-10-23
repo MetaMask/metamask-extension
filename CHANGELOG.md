@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).
+
 ## 3.11.2 2017-10-21
 
 - Fix bug where reject button would sometimes not work.
