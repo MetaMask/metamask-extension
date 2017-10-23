@@ -21,7 +21,7 @@ const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 const WalletView = require('./components/wallet-view')
 
 // other views
-const ConfigScreen = require('./config')
+const Settings = require('./settings')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
@@ -383,7 +383,7 @@ App.prototype.renderPrimary = function () {
 
     case 'config':
       log.debug('rendering config screen')
-      return h(ConfigScreen, {key: 'config'})
+      return h(Settings, {key: 'config'})
 
     case 'import-menu':
       log.debug('rendering import screen')
