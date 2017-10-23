@@ -594,6 +594,16 @@
     }
   }
 
+  &__to-autocomplete {
+    position: relative;
+
+    &__down-caret {
+      position: absolute;
+      top: 18px;
+      right: 12px;
+    }
+  }
+
   &__to-autocomplete, &__memo-text-area {
     &__input {
       height: 54px;

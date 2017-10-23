@@ -2,54 +2,126 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('../identicon')
+const AccountListItem = require('./account-list-item')
 
 module.exports = ToAutoComplete
 
 inherits(ToAutoComplete, Component)
 function ToAutoComplete () {
   Component.call(this)
+
+  this.state = { accountsToRender: [] }
+}
+
+ToAutoComplete.prototype.getListItemIcon = function (listItemAddress, toAddress) {
+  const listItemIcon = h(`i.fa.fa-check.fa-lg`, { style: { color: '#02c9b1' } })
+
+  return toAddress && listItemAddress === toAddress
+    ? listItemIcon
+    : null
+}
+
+ToAutoComplete.prototype.renderDropdown = function () {
+  const {
+    accounts,
+    closeDropdown,
+    onChange,
+    to,
+  } = this.props
+  const { accountsToRender } = this.state
+
+  return accountsToRender.length && h('div', {}, [
+
+    h('div.send-v2__from-dropdown__close-area', {
+      onClick: closeDropdown,
+    }),
+
+    h('div.send-v2__from-dropdown__list', {}, [
+
+      ...accountsToRender.map(account => h(AccountListItem, {
+        account, 
+        handleClick: () => {
+          onChange(account.address)
+          closeDropdown()
+        }, 
+        icon: this.getListItemIcon(account.address, to),
+        displayBalance: false,
+        displayAddress: true,
+      }))
+
+    ]),
+
+  ])
+}
+
+ToAutoComplete.prototype.handleInputEvent = function (event = {}, cb) {
+  const {
+    to,
+    accounts,
+    closeDropdown,
+    openDropdown,
+  } = this.props
+
+  const matchingAccounts = accounts.filter(({ address }) => address.match(to))
+
+  if (!to) {
+    this.setState({ accountsToRender: accounts })
+    openDropdown()
+  }
+  else if (matchingAccounts.length === 1 && matchingAccounts[0].address === to) {
+    this.setState({ accountsToRender: [] })
+    event.target && event.target.select()
+    closeDropdown()
+  }
+  else if (matchingAccounts.length) {
+    this.setState({ accountsToRender: matchingAccounts })
+    openDropdown()
+  }
+  else {
+    this.setState({ accountsToRender: [] })
+    event.target && event.target.select()
+    closeDropdown()
+  }
+  cb && cb(event.target.value)
+}
+
+ToAutoComplete.prototype.componentDidUpdate = function (nextProps, nextState) {
+  if (this.props.to !== nextProps.to) {
+    this.handleInputEvent()
+  }
 }
 
 ToAutoComplete.prototype.render = function () {
-  const { to, accounts, onChange, inError } = this.props
+  const {
+    to,
+    accounts,
+    openDropdown,
+    closeDropdown,
+    dropdownOpen,
+    onChange,
+    inError,
+  } = this.props
 
-  return h('div.send-v2__to-autocomplete', [
+  return h('div.to-autocomplete', {}, [
 
     h('input.send-v2__to-autocomplete__input', {
-      name: 'address',
-      list: 'addresses',
       placeholder: 'Recipient Address',
       className: inError ? `send-v2__error-border` : '', 
       value: to,
-      onChange,
-      onFocus: event => {
-        to && event.target.select()
-      },
+      onChange: event => onChange(event.target.value),
+      onFocus: event => this.handleInputEvent(event),
       style: {
         borderColor: inError ? 'red' : null,
       }
     }),
 
-    h('datalist#addresses', [
-      // Corresponds to the addresses owned.
-      ...Object.entries(accounts).map(([key, { address, name }]) => {
-        return h('option', {
-          value: address,
-          label: name,
-          key: address,
-        })
-      }),
-      // Corresponds to previously sent-to addresses.
-      // ...addressBook.map(({ address, name }) => {
-      //   return h('option', {
-      //     value: address,
-      //     label: name,
-      //     key: address,
-      //   })
-      // }),
-    ]),
+    !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {
+      style: { color: '#dedede' },
+      onClick: () => this.handleInputEvent(),
+    }),
+
+    dropdownOpen && this.renderDropdown(),
 
   ])
-    
 }
 

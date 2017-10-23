@@ -32,7 +32,8 @@ function SendTransactionScreen () {
   PersistentForm.call(this)
 
   this.state = {
-    dropdownOpen: false,
+    fromDropdownOpen: false,
+    toDropdownOpen: false,
     errors: {
       to: null,
       amount: null,
@@ -157,7 +158,7 @@ SendTransactionScreen.prototype.renderFromRow = function () {
     updateSendFrom,
   } = this.props
 
-  const { dropdownOpen } = this.state
+  const { fromDropdownOpen } = this.state
 
   return h('div.send-v2__form-row', [
 
@@ -165,12 +166,12 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 
     h('div.send-v2__form-field', [
       h(FromDropdown, {
-        dropdownOpen,
+        dropdownOpen: fromDropdownOpen,
         accounts: fromAccounts,
         selectedAccount: from,
         onSelect: updateSendFrom,
-        openDropdown: () => this.setState({ dropdownOpen: true }),
-        closeDropdown: () => this.setState({ dropdownOpen: false }),
+        openDropdown: () => this.setState({ fromDropdownOpen: true }),
+        closeDropdown: () => this.setState({ fromDropdownOpen: false }),
         conversionRate,
       }),
     ]),
@@ -178,9 +179,8 @@ SendTransactionScreen.prototype.renderFromRow = function () {
   ])
 }
 
-SendTransactionScreen.prototype.handleToChange = function (event) {
+SendTransactionScreen.prototype.handleToChange = function (to) {
   const { updateSendTo, updateSendErrors } = this.props
-  const to = event.target.value
   let toError = null
 
   if (!to) {
@@ -194,8 +194,9 @@ SendTransactionScreen.prototype.handleToChange = function (event) {
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
-  const { toAccounts, errors } = this.props
-  const { to } = this.state
+  const { toAccounts, errors, to } = this.props
+
+  const { toDropdownOpen } = this.state
 
   return h('div.send-v2__form-row', [
 
@@ -210,7 +211,10 @@ SendTransactionScreen.prototype.renderToRow = function () {
     h('div.send-v2__form-field', [
       h(ToAutoComplete, {
         to,
-        accounts: toAccounts,
+        accounts: Object.entries(toAccounts).map(([key, account]) => account),
+        dropdownOpen: toDropdownOpen,
+        openDropdown: () => this.setState({ toDropdownOpen: true }),
+        closeDropdown: () => this.setState({ toDropdownOpen: false }),
         onChange: this.handleToChange,
         inError: Boolean(errors.to),
       }),
