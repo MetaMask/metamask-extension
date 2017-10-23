@@ -45,6 +45,7 @@ $wallet-view-bg: $wild-sand;
   flex-direction: column;
   flex: 33.5 0 33.5%;
   background: $wallet-view-bg;
+  z-index: 200;
 
   @media screen and (min-width: 576px) {
     overflow-y: scroll;
