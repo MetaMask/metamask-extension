@@ -1,0 +1,135 @@
+.settings {
+  position: relative;
+  background: $white;
+  display: flex;
+  flex-flow: column nowrap;
+  height: auto;
+  overflow: auto;
+}
+
+.settings__header {
+  padding: 25px;
+}
+
+.settings__close-button::after {
+  content: '\00D7';
+  font-size: 40px;
+  color: $dusty-gray;
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  cursor: pointer;
+}
+
+.settings__error {
+  padding-bottom: 20px;
+  text-align: center;
+  color: $crimson;
+}
+
+.settings__content {
+  padding: 0 25px;
+}
+
+.settings__content-row {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 0 20px;
+
+  @media screen and (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+
+.settings__content-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 5px;
+  height: 71px;
+}
+
+.settings__content-item-col {
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (max-width: 575px) {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.settings__content-description {
+  font-size: 14px;
+  color: $dusty-gray;
+  padding-top: 5px;
+}
+
+.settings__input {
+  padding-left: 10px;
+  font-size: 14px;
+  height: 40px;
+}
+
+.settings__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: $dusty-gray;
+}
+
+.settings__input::-moz-placeholder {
+  font-weight: 100;
+  color: $dusty-gray;
+}
+
+.settings__input:-ms-input-placeholder {
+  font-weight: 100;
+  color: $dusty-gray;
+}
+
+.settings__input:-moz-placeholder {
+  font-weight: 100;
+  color: $dusty-gray;
+}
+
+.settings__provider-wrapper {
+  font-size: 16px;
+  border: 1px solid $alto;
+  border-radius: 2px;
+  padding: 15px;
+  background-color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.settings__provider-icon {
+  height: 10px;
+  width: 10px;
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.settings__rpc-save-button {
+  align-self: flex-end;
+  padding: 5px;
+  text-transform: uppercase;
+  color: $dusty-gray;
+  cursor: pointer;
+}
+
+.settings__clear-button {
+  font-size: 16px;
+  border: 1px solid $curious-blue;
+  color: $curious-blue;
+  border-radius: 2px;
+  padding: 18px;
+  background-color: $white;
+  text-transform: uppercase;
+}
+
+.settings__clear-button--red {
+  border: 1px solid $monzo;
+  color: $monzo;
+}
