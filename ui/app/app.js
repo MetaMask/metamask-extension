@@ -3,6 +3,9 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
+// mascara
+const MascaraFirstTime = require('../../mascara/src/app/first-time').default
+const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -43,6 +46,9 @@ function mapStateToProps (state) {
     accounts,
     address,
     keyrings,
+    isInitialized,
+    noActiveNotices,
+    seedWords,
   } = state.metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -56,6 +62,8 @@ function mapStateToProps (state) {
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
+    isMascara: state.metamask.isMascara,
+    isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
     seedWords: state.metamask.seedWords,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
@@ -98,10 +106,7 @@ App.prototype.render = function () {
       this.renderNetworkDropdown(),
       this.renderDropdown(),
 
-      h(Loading, {
-        isLoading: isLoading || isLoadingNetwork,
-        loadingMessage: loadMessage,
-      }),
+      this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // panel content
       h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
@@ -123,6 +128,17 @@ App.prototype.renderAppBar = function () {
   const props = this.props
   const state = this.state || {}
   const isNetworkMenuOpen = state.isNetworkMenuOpen || false
+  const {isMascara, isOnboarding} = props
+
+  // Do not render header if user is in mascara onboarding
+  if (isMascara && isOnboarding) {
+    return null
+  }
+
+  // Do not render header if user is in mascara buy ether
+  if (isMascara && props.currentView.name === 'buyEth') {
+    return null
+  }
 
   return (
 
@@ -388,6 +404,17 @@ App.prototype.renderDropdown = function () {
   ])
 }
 
+App.prototype.renderLoadingIndicator = function ({ isLoading, isLoadingNetwork, loadMessage }) {
+  const { isMascara } = this.props
+
+  return isMascara
+    ? null
+    : h(Loading, {
+      isLoading: isLoading || isLoadingNetwork,
+      loadingMessage: loadMessage,
+    })
+}
+
 App.prototype.renderBackButton = function (style, justArrow = false) {
   var props = this.props
   return (
@@ -410,6 +437,11 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
+  const {isMascara, isOnboarding} = props
+
+  if (isMascara && isOnboarding) {
+    return h(MascaraFirstTime)
+  }
 
   // notices
   if (!props.noActiveNotices) {
@@ -509,6 +541,10 @@ App.prototype.renderPrimary = function () {
     case 'buyEth':
       log.debug('rendering buy ether screen')
       return h(BuyView, {key: 'buyEthView'})
+
+    case 'onboardingBuyEth':
+      log.debug('rendering onboarding buy ether screen')
+      return h(MascaraBuyEtherScreen, {key: 'buyEthView'})
 
     case 'qr':
       log.debug('rendering show qr screen')

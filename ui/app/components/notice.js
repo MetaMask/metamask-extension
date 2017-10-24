@@ -117,6 +117,7 @@ Notice.prototype.render = function () {
 }
 
 Notice.prototype.componentDidMount = function () {
+  // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.setupListener(node)
   if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
@@ -125,6 +126,7 @@ Notice.prototype.componentDidMount = function () {
 }
 
 Notice.prototype.componentWillUnmount = function () {
+  // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.teardownListener(node)
 }

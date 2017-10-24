@@ -9,7 +9,7 @@ const etherBn = new BN(String(1e18))
 const ether = '0x' + etherBn.toString(16)
 
 describe('PendingBalanceCalculator', function () {
-  let balanceCalculator
+  let balanceCalculator, pendingTxs
 
   describe('#calculateMaxCost(tx)', function () {
     it('returns a BN for a given tx value', function () {

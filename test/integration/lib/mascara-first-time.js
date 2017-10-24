@@ -1,20 +1,8 @@
 const PASSWORD = 'password123'
-const runMascaraFirstTimeTest = require('./mascara-first-time')
+const reactTriggerChange = require('react-trigger-change')
 
-QUnit.module('first time usage')
-
-QUnit.test('render init screen', (assert) => {
-  const done = assert.async()
-  runFirstTimeUsageTest(assert).then(done).catch((err) => {
-    assert.notOk(err, `Error was thrown: ${err.stack}`)
-    done()
-  })
-})
-
-async function runFirstTimeUsageTest(assert, done) {
-  if (window.METAMASK_PLATFORM_TYPE === 'mascara') {
-    return runMascaraFirstTimeTest(assert, done)
-  }
+async function runFirstTimeUsageTest (assert, done) {
+  await timeout(4000)
 
   const app = $('#app-content')
 
@@ -39,25 +27,28 @@ async function runFirstTimeUsageTest(assert, done) {
   await timeout()
 
   // Scroll through terms
-  const title = app.find('h1').text()
-  assert.equal(title, 'MetaMask', 'title screen')
+  const title = app.find('.create-password__title').text()
+  assert.equal(title, 'Create Password', 'create password screen')
 
   // enter password
-  const pwBox = app.find('#password-box')[0]
-  const confBox = app.find('#password-box-confirm')[0]
+  const pwBox = app.find('.first-time-flow__input')[0]
+  const confBox = app.find('.first-time-flow__input')[1]
   pwBox.value = PASSWORD
   confBox.value = PASSWORD
+  reactTriggerChange(pwBox)
+  reactTriggerChange(confBox)
+
 
   await timeout()
 
-  // create vault
-  const createButton = app.find('button.primary')[0]
+  // Create Password
+  const createButton = app.find('button.first-time-flow__button')[0]
   createButton.click()
 
   await timeout(3000)
 
-  const created = app.find('h3')[0]
-  assert.equal(created.textContent, 'Vault Created', 'Vault created screen')
+  const created = app.find('.unique-image__title')[0]
+  assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
 
   // Agree button
   const button = app.find('button')[0]
@@ -66,8 +57,50 @@ async function runFirstTimeUsageTest(assert, done) {
 
   await timeout(1000)
 
-  const detail = app.find('.account-detail-section')[0]
-  assert.ok(detail, 'Account detail section loaded.')
+  // Privacy Screen
+  const detail = app.find('.tou__title')[0]
+  assert.equal(detail.textContent, 'Privacy Notice', 'privacy notice screen')
+  app.find('button').click()
+
+  await timeout(1000)
+
+
+  // terms of service screen
+  const tou = app.find('.tou__title')[0]
+  assert.equal(tou.textContent, 'Terms of Use', 'terms of use screen')
+  app.find('.tou__body').scrollTop(100000)
+  await timeout(1000)
+
+  app.find('.first-time-flow__button').click()
+  await timeout(1000)
+
+  // secret backup phrase
+  const seedTitle = app.find('.backup-phrase__title')[0]
+  assert.equal(seedTitle.textContent, 'Secret Backup Phrase', 'seed phrase screen')
+  app.find('.backup-phrase__reveal-button').click()
+
+  await timeout(1000)
+  const seedPhrase = app.find('.backup-phrase__secret-words').text().split(' ')
+  app.find('.first-time-flow__button').click()
+
+  const selectPhrase = text => {
+    const option = $('.backup-phrase__confirm-seed-option')
+      .filter((i, d) => d.textContent === text)[0]
+
+    $(option).click()
+  }
+
+  await timeout(1000)
+
+  seedPhrase.forEach(sp => selectPhrase(sp))
+  app.find('.first-time-flow__button').click()
+  await timeout(1000)
+
+  // Deposit Ether Screen
+  const buyEthTitle = app.find('.buy-ether__title')[0]
+  assert.equal(buyEthTitle.textContent, 'Deposit Ether', 'deposit ether screen')
+  app.find('.buy-ether__do-it-later').click()
+  await timeout(1000)
 
   const sandwich = app.find('.sandwich-expando')[0]
   sandwich.click()
@@ -124,6 +157,8 @@ async function runFirstTimeUsageTest(assert, done) {
   children2.length[3]
   assert.ok(children2, 'All network options present')
 }
+
+module.exports = runFirstTimeUsageTest
 
 function timeout (time) {
   return new Promise((resolve, reject) => {
