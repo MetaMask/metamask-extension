@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 import LoadingScreen from './loading-screen'
-import {createNewVaultAndRestore, hideWarning} from '../../../../ui/app/actions'
+import {createNewVaultAndRestore, hideWarning, displayWarning} from '../../../../ui/app/actions'
 
 class ImportSeedPhraseScreen extends Component {
   static propTypes = {
@@ -11,6 +11,7 @@ class ImportSeedPhraseScreen extends Component {
     createNewVaultAndRestore: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
+    displayWarning: PropTypes.func,
   };
 
   state = {
@@ -20,29 +21,29 @@ class ImportSeedPhraseScreen extends Component {
   }
 
   onClick = () => {
-    const { password, seedPhrase } = this.state
-    const { createNewVaultAndRestore, next } = this.props
-
-    createNewVaultAndRestore(password, seedPhrase)
-      .then(next)
-  }
-
-  isValid () {
-    const { seedPhrase, password, confirmPassword } = this.state
+    const { password, seedPhrase, confirmPassword } = this.state
+    const { createNewVaultAndRestore, next, displayWarning } = this.props
 
     if (seedPhrase.split(' ').length !== 12) {
-      return false
+      this.warning = 'Seed Phrases are 12 words long'
+      displayWarning(this.warning)
+      return
     }
 
     if (password.length < 8) {
-      return false
+      this.warning = 'Passwords require a mimimum length of 8'
+      displayWarning(this.warning)
+      return
     }
 
     if (password !== confirmPassword) {
-      return false
+      this.warning = 'Confirmed password does not match'
+      displayWarning(this.warning)
+      return
     }
-
-    return true
+    this.warning = null
+    createNewVaultAndRestore(password, seedPhrase)
+      .then(next)
   }
 
   render () {
@@ -70,6 +71,11 @@ class ImportSeedPhraseScreen extends Component {
             className="import-account__secret-phrase"
             onChange={e => this.setState({seedPhrase: e.target.value})}
           />
+          <span
+            className="error"
+          >
+            {this.props.warning}
+          </span>
           <input
             className="first-time-flow__input"
             type="password"
@@ -85,7 +91,6 @@ class ImportSeedPhraseScreen extends Component {
           <button
             className="first-time-flow__button"
             onClick={this.onClick}
-            disabled={!this.isValid()}
           >
             Import
           </button>
@@ -98,6 +103,7 @@ export default connect(
   ({ appState: { isLoading, warning } }) => ({ isLoading, warning }),
   dispatch => ({
     createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
+    displayWarning: (warning) => dispatch(displayWarning(warning)),
     hideWarning: () => dispatch(hideWarning()),
   })
 )(ImportSeedPhraseScreen)
