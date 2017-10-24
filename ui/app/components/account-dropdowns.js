@@ -297,6 +297,11 @@ AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
   selected: PropTypes.string,
   keyrings: PropTypes.array,
+  actions: PropTypes.objectOf(PropTypes.func),
+  network: PropTypes.string,
+  style: PropTypes.object,
+  enableAccountOptions: PropTypes.bool,
+  enableAccountsSelector: PropTypes.bool,
 }
 
 const mapDispatchToProps = (dispatch) => {

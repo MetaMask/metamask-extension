@@ -62,7 +62,8 @@ CreateVaultCompleteScreen.prototype.render = function () {
       }),
 
       h('button.primary', {
-        onClick: () => this.confirmSeedWords(),
+        onClick: () => this.confirmSeedWords()
+          .then(account => this.showAccountDetail(account)),
         style: {
           margin: '24px',
           fontSize: '0.9em',
@@ -82,5 +83,9 @@ CreateVaultCompleteScreen.prototype.render = function () {
 }
 
 CreateVaultCompleteScreen.prototype.confirmSeedWords = function () {
-  this.props.dispatch(actions.confirmSeedWords())
+  return this.props.dispatch(actions.confirmSeedWords())
+}
+
+CreateVaultCompleteScreen.prototype.showAccountDetail = function (account) {
+  return this.props.dispatch(actions.showAccountDetail(account))
 }

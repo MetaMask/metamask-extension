@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 2017,
@@ -10,9 +11,13 @@
       "arrowFunctions": true,
       "objectLiteralShorthandMethods": true,
       "objectLiteralShorthandProperties": true,
-      "templateStrings": true
+      "templateStrings": true,
+      "classes": true,
+      "jsx": true
     },
   },
+
+  "extends": ["plugin:react/recommended"],
 
   "env": {
     "es6": true,
@@ -23,7 +28,8 @@
 
   "plugins": [
     "mocha",
-    "chai"
+    "chai",
+    "react"
   ],
 
   "globals": {
@@ -51,7 +57,7 @@
     "generator-star-spacing": [2, { "before": true, "after": true }],
     "handle-callback-err": [1, "^(err|error)$" ],
     "indent": "off",
-    "jsx-quotes": [2, "prefer-single"],
+    "jsx-quotes": [2, "prefer-double"],
     "key-spacing": 1,
     "keyword-spacing": [2, { "before": true, "after": true }],
     "new-cap": [2, { "newIsCap": true, "capIsNew": false }],
