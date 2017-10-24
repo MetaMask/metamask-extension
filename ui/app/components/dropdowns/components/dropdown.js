@@ -65,6 +65,9 @@ Dropdown.propTypes = {
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
   style: PropTypes.object.isRequired,
+  onClickOutside: PropTypes.func,
+  innerStyle: PropTypes.object,
+  useCssTransition: PropTypes.bool,
 }
 
 class DropdownMenuItem extends Component {
@@ -100,6 +103,7 @@ DropdownMenuItem.propTypes = {
   closeMenu: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   children: PropTypes.node,
+  style: PropTypes.object,
 }
 
 module.exports = {

@@ -183,9 +183,12 @@ var actions = {
   showLoadingIndication: showLoadingIndication,
   hideLoadingIndication: hideLoadingIndication,
   // buy Eth with coinbase
+  onboardingBuyEthView,
+  ONBOARDING_BUY_ETH_VIEW: 'ONBOARDING_BUY_ETH_VIEW',
   BUY_ETH: 'BUY_ETH',
   buyEth: buyEth,
   buyEthView: buyEthView,
+  buyWithShapeShift,
   BUY_ETH_VIEW: 'BUY_ETH_VIEW',
   COINBASE_SUBVIEW: 'COINBASE_SUBVIEW',
   coinBaseSubview: coinBaseSubview,
@@ -270,14 +273,18 @@ function confirmSeedWords () {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.clearSeedWordCache`)
-    background.clearSeedWordCache((err, account) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
+    return new Promise((resolve, reject) => {
+      background.clearSeedWordCache((err, account) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
 
-      log.info('Seed word cache cleared. ' + account)
-      dispatch(actions.showAccountDetail(account))
+        log.info('Seed word cache cleared. ' + account)
+        dispatch(actions.showAccountsPage())
+        resolve(account)
+      })
     })
   }
 }
@@ -286,10 +293,20 @@ function createNewVaultAndRestore (password, seed) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndRestore`)
-    background.createNewVaultAndRestore(password, seed, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) return dispatch(actions.displayWarning(err.message))
-      dispatch(actions.showAccountsPage())
+
+    return new Promise((resolve, reject) => {
+      background.createNewVaultAndRestore(password, seed, (err) => {
+
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.showAccountsPage())
+        resolve()
+      })
     })
   }
 }
@@ -298,19 +315,26 @@ function createNewVaultAndKeychain (password) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndKeychain`)
-    background.createNewVaultAndKeychain(password, (err) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      log.debug(`background.placeSeedWords`)
-      background.placeSeedWords((err) => {
+
+    return new Promise((resolve, reject) => {
+      background.createNewVaultAndKeychain(password, (err) => {
         if (err) {
-          return dispatch(actions.displayWarning(err.message))
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
         }
-        dispatch(actions.hideLoadingIndication())
-        forceUpdateMetamaskState(dispatch)
+        log.debug(`background.placeSeedWords`)
+        background.placeSeedWords((err) => {
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+            return reject(err)
+          }
+          dispatch(actions.hideLoadingIndication())
+          forceUpdateMetamaskState(dispatch)
+          resolve()
+        })
       })
     })
+
   }
 }
 
@@ -354,18 +378,25 @@ function importNewAccount (strategy, args) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication('This may take a while, be patient.'))
     log.debug(`background.importAccountWithStrategy`)
-    background.importAccountWithStrategy(strategy, args, (err) => {
-      if (err) return dispatch(actions.displayWarning(err.message))
-      log.debug(`background.getState`)
-      background.getState((err, newState) => {
-        dispatch(actions.hideLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.importAccountWithStrategy(strategy, args, (err) => {
         if (err) {
-          return dispatch(actions.displayWarning(err.message))
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
         }
-        dispatch(actions.updateMetamaskState(newState))
-        dispatch({
-          type: actions.SHOW_ACCOUNT_DETAIL,
-          value: newState.selectedAddress,
+        log.debug(`background.getState`)
+        background.getState((err, newState) => {
+          dispatch(actions.hideLoadingIndication())
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+            return reject(err)
+          }
+          dispatch(actions.updateMetamaskState(newState))
+          dispatch({
+            type: actions.SHOW_ACCOUNT_DETAIL,
+            value: newState.selectedAddress,
+          })
+          resolve(newState)
         })
       })
     })
@@ -948,21 +979,23 @@ function goBackToInitView () {
 
 function markNoticeRead (notice) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     log.debug(`background.markNoticeRead`)
-    background.markNoticeRead(notice, (err, notice) => {
-      dispatch(this.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err))
-      }
-      if (notice) {
-        return dispatch(actions.showNotice(notice))
-      } else {
-        dispatch(this.clearNotices())
-        return {
-          type: actions.SHOW_ACCOUNTS_PAGE,
+    return new Promise((resolve, reject) => {
+      background.markNoticeRead(notice, (err, notice) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err))
+          return reject(err)
         }
-      }
+        if (notice) {
+          dispatch(actions.showNotice(notice))
+          resolve()
+        } else {
+          dispatch(actions.clearNotices())
+          resolve()
+        }
+      })
     })
   }
 }
@@ -1214,6 +1247,13 @@ function buyEth (opts) {
   }
 }
 
+function onboardingBuyEthView (address) {
+  return {
+    type: actions.ONBOARDING_BUY_ETH_VIEW,
+    value: address,
+  }
+}
+
 function buyEthView (address) {
   return {
     type: actions.BUY_ETH_VIEW,
@@ -1279,6 +1319,18 @@ function coinShiftRquest (data, marketData) {
   }
 }
 
+function buyWithShapeShift (data) {
+  return dispatch => new Promise((resolve, reject) => {
+    shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
+      if (response.error) {
+        return reject(response.error)
+      }
+      background.createShapeShiftTx(response.deposit, response.depositType)
+      return resolve(response)
+    })
+  })
+}
+
 function showQrView (data, message) {
   return {
     type: actions.SHOW_QR_VIEW,
@@ -1315,9 +1367,14 @@ function shapeShiftRequest (query, options, cb) {
   options.method ? method = options.method : method = 'GET'
 
   var requestListner = function (request) {
-    queryResponse = JSON.parse(this.responseText)
-    cb ? cb(queryResponse) : null
-    return queryResponse
+    try {
+      queryResponse = JSON.parse(this.responseText)
+      cb ? cb(queryResponse) : null
+      return queryResponse
+    } catch (e) {
+      cb ? cb({error: e}) : null
+      return e
+    }
   }
 
   var shapShiftReq = new XMLHttpRequest()
