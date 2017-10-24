@@ -31,6 +31,8 @@ BnAsDecimalInput.prototype.render = function () {
   const suffix = props.suffix
   const style = props.style
   const valueString = value.toString(10)
+  const newMin = min && this.downsize(min.toString(10), scale)
+  const newMax = max && this.downsize(max.toString(10), scale)
   const newValue = this.downsize(valueString, scale)
 
   return (
@@ -47,8 +49,8 @@ BnAsDecimalInput.prototype.render = function () {
           type: 'number',
           step: 'any',
           required: true,
-          min,
-          max,
+          min: newMin,
+          max: newMax,
           style: extend({
             display: 'block',
             textAlign: 'right',
@@ -128,15 +130,15 @@ BnAsDecimalInput.prototype.updateValidity = function (event) {
 }
 
 BnAsDecimalInput.prototype.constructWarning = function () {
-  const { name, min, max } = this.props
+  const { name, min, max, scale } = this.props
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${min} and less than or equal to ${max}.`
+    message += `must be greater than or equal to  ${this.downsize(min.toString(10), scale)} and less than or equal to ${this.downsize(max.toString(10), scale)}.`
   } else if (min) {
-    message += `must be greater than or equal to ${min}.`
+    message += `must be greater than or equal to ${this.downsize(min.toString(10), scale)}.`
   } else if (max) {
-    message += `must be less than or equal to ${max}.`
+    message += `must be less than or equal to ${this.downsize(max.toString(10), scale)}.`
   } else {
     message += 'Invalid input.'
   }
