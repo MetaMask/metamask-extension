@@ -350,7 +350,10 @@ AddTokenScreen.prototype.render = function () {
         h('div.add-token__footers', [
           h('div.add-token__add-custom', {
             onClick: () => this.setState({ isCollapsed: !isCollapsed }),
-          }, 'Add custom token'),
+          }, [
+            'Add custom token',
+            h(`i.fa.fa-angle-${isCollapsed ? 'down' : 'up'}`),
+          ]),
           this.renderCustomForm(),
         ]),
       ]),
