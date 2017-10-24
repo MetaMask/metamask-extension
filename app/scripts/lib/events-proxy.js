@@ -1,4 +1,4 @@
-module.exports = function createEventEmitterProxy(eventEmitter, listeners) {
+module.exports = function createEventEmitterProxy (eventEmitter, listeners) {
   let target = eventEmitter
   const eventHandlers = listeners || {}
   const proxy = new Proxy({}, {

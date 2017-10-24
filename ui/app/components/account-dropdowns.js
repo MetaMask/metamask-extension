@@ -161,8 +161,6 @@ class AccountDropdowns extends Component {
     )
   }
 
-
-
   renderAccountOptions () {
     const { actions } = this.props
     const { optionsMenuActive } = this.state
