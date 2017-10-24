@@ -208,7 +208,7 @@ class Settings extends Component {
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
         this.renderCurrentConversion(),
-        this.renderCurrentProvider(),
+        // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
