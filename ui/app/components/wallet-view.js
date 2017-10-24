@@ -112,8 +112,9 @@ WalletView.prototype.render = function () {
 
       h('div.wallet-view__keyring-label', isLoose ? 'IMPORTED' : ''),
 
-      h('div.flex-column.flex-center', {
+      h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },
+        onClick: showAccountDetailModal,
       }, [
         h(Identicon, {
           diameter: 54,
@@ -125,10 +126,11 @@ WalletView.prototype.render = function () {
         }, [
           selectedIdentity.name,
         ]),
+
+        h('button.wallet-view__details-button', 'DETAILS'),
       ]),
     ]),
 
-    h('button.wallet-view__details-button', { onClick: showAccountDetailModal }, 'DETAILS'),
 
     h('div.wallet-view__address', { onClick: () => copyToClipboard(selectedAddress) }, [
       `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,

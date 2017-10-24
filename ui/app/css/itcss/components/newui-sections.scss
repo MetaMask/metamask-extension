@@ -54,7 +54,12 @@ $wallet-view-bg: $wild-sand;
   }
 
   .wallet-view-account-details {
-    flex: 0 0 150px;
+    flex: 0 0 auto;
+  }
+
+  &__name-container {
+    flex: 0 0 auto;
+    cursor: pointer;
   }
 
   &__keyring-label {
@@ -244,6 +249,7 @@ $wallet-view-bg: $wild-sand;
   line-height: 20px;
   color: $scorpion;
   margin-top: 8px;
+  margin-bottom: 24px;
 }
 
 // account options dropdown
