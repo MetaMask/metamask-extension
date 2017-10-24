@@ -2,6 +2,7 @@ const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const classnames = require('classnames')
 
 const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
@@ -380,7 +381,6 @@ SendTransactionScreen.prototype.renderFooter = function () {
   } = this.props
 
   const noErrors = amountError === null && toError === null
-  const errorClass = noErrors ? '' : '__disabled'
 
   return h('div.send-v2__footer', [
     h('button.send-v2__cancel-btn', {
@@ -389,8 +389,13 @@ SendTransactionScreen.prototype.renderFooter = function () {
         goHome()
       },
     }, 'Cancel'),
-    h(`button.send-v2__next-btn${errorClass}`, {
-      onClick: event => noErrors && this.onSubmit(event),
+    h(`button`, {
+      className: classnames({
+        'send-v2__next-btn': noErrors,
+        'send-v2__next-btn__disabled': !noErrors,
+      }),
+      disabled: !noErrors,
+      onClick: event => this.onSubmit(event),
     }, 'Next'),
   ])
 }
