@@ -37,7 +37,7 @@
     overflow-y: auto;
     top: 0;
     box-shadow: none;
-    height: calc(100vh - 58px - 100px);
+    height: calc(100vh - 58px - 85px);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
@@ -271,6 +271,7 @@ section .confirm-screen-account-number,
   box-shadow: none;
   flex: 1 0 auto;
   font-weight: 300;
+  margin: 0 8px;
 }
 
 .btn-light.confirm-screen-cancel-button {
@@ -288,6 +289,7 @@ section .confirm-screen-account-number,
   cursor: pointer;
   flex: 1 0 auto;
   font-weight: 300;
+  margin: 0 8px;
 }
 
 #pending-tx-form {
@@ -296,7 +298,7 @@ section .confirm-screen-account-number,
   display: flex;
   flex-flow: row nowrap;
   background-color: $white;
-  padding: 19px 18px;
+  padding: 12px 18px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   width: 100%;
