@@ -36,6 +36,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
+    showAddTokenPage: () => dispatch(actions.showAddTokenPage()),
   }
 }
 
@@ -84,6 +85,7 @@ WalletView.prototype.render = function () {
     keyrings,
     showAccountDetailModal,
     hideSidebar,
+    showAddTokenPage,
   } = this.props
   // temporary logs + fake extra wallets
   // console.log('walletview, selectedAccount:', selectedAccount)
@@ -145,6 +147,9 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
+    h('button.wallet-view__add-token-button', {
+      onClick: showAddTokenPage,
+    }, 'Add Token'),
   ])
 }
 

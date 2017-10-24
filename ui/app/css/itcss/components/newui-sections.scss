@@ -107,6 +107,19 @@ $wallet-view-bg: $wild-sand;
       }
     }
   }
+
+  &__add-token-button {
+    color: $dusty-gray;
+    font-size: 14px;
+    line-height: 19px;
+    text-align: center;
+    margin: 36px auto 0;
+    border: 1px solid $dusty-gray;
+    border-radius: 2px;
+    font-weight: 300;
+    background: none;
+    padding: 9px 30px;
+  }
 }
 
 @media screen and (min-width: 576px) {
