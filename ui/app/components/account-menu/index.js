@@ -98,14 +98,14 @@ AccountMenu.prototype.renderAccounts = function () {
   const {
     identities,
     accounts,
-    selected,
+    selectedAddress,
     keyrings,
     showAccountDetail,
   } = this.props
 
   return Object.keys(identities).map((key, index) => {
     const identity = identities[key]
-    const isSelected = identity.address === selected
+    const isSelected = identity.address === selectedAddress
 
     const balanceValue = accounts[key] ? accounts[key].balance : ''
     const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
@@ -121,7 +121,7 @@ AccountMenu.prototype.renderAccounts = function () {
       { onClick: () => showAccountDetail(identity.address) },
       [
         h('div.account-menu__check-mark', [
-          isSelected ? h('i.fa.fa-check') : null,
+          isSelected ? h('div.account-menu__check-mark-icon') : null,
         ]),
 
         h(

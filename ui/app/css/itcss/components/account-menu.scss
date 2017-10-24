@@ -90,7 +90,18 @@
 
   &__check-mark {
     width: 14px;
+    margin-right: 12px;
     flex: 0 0 auto;
+  }
+
+  &__check-mark-icon {
+    background-image: url("images/check-white.svg");
+    height: 18px;
+    width: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin: 3px 0;
   }
 
   .identicon {
