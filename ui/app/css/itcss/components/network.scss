@@ -1,3 +1,12 @@
+.network-component--disabled {
+  border-color: transparent !important;
+  cursor: default;
+
+  .fa-caret-down {
+    opacity: 0;
+  }
+}
+
 .network-component.pointer {
   border: 1px solid $shark;
   border-radius: 82px;

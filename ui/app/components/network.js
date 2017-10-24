@@ -64,13 +64,18 @@ Network.prototype.render = function () {
   return (
     h('div.network-component.pointer', {
       className: classnames('network-component pointer', {
+        'network-component--disabled': this.props.disabled,
         'ethereum-network': providerName === 'mainnet',
         'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
         'kovan-test-network': providerName === 'kovan',
         'rinkeby-test-network': providerName === 'rinkeby',
       }),
       title: hoverText,
-      onClick: (event) => this.props.onClick(event),
+      onClick: (event) => {
+        if (!this.props.disabled) {
+          this.props.onClick(event)
+        }
+      },
     }, [
       (function () {
         switch (iconName) {
