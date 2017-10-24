@@ -154,7 +154,7 @@
     "babel-polyfill": "^6.23.0",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.7.2",
-    "babelify": "^7.2.0",
+    "babelify": "^8.0.0",
     "beefy": "^2.1.5",
     "brfs": "^1.4.3",
     "browserify": "^14.4.0",
