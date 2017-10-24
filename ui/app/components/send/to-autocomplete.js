@@ -62,25 +62,17 @@ ToAutoComplete.prototype.handleInputEvent = function (event = {}, cb) {
     openDropdown,
   } = this.props
 
-  const matchingAccounts = accounts.filter(({ address }) => address.match(to))
+  const matchingAccounts = accounts.filter(({ address }) => address.match(to || ''))
+  const matches = matchingAccounts.length
 
-  if (!to) {
-    this.setState({ accountsToRender: accounts })
-    openDropdown()
-  }
-  else if (matchingAccounts.length === 1 && matchingAccounts[0].address === to) {
+  if (!matches || matchingAccounts[0].address === to) {
     this.setState({ accountsToRender: [] })
     event.target && event.target.select()
     closeDropdown()
-  }
-  else if (matchingAccounts.length) {
-    this.setState({ accountsToRender: matchingAccounts })
-    openDropdown()
   }
   else {
-    this.setState({ accountsToRender: [] })
-    event.target && event.target.select()
-    closeDropdown()
+    this.setState({ accountsToRender: matchingAccounts })
+    openDropdown()
   }
   cb && cb(event.target.value)
 }
