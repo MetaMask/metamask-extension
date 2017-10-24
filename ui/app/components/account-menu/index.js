@@ -103,7 +103,6 @@ AccountMenu.prototype.renderAccounts = function () {
     showAccountDetail,
   } = this.props
 
-  console.log({ accounts })
   return Object.keys(identities).map((key, index) => {
     const identity = identities[key]
     const isSelected = identity.address === selected
