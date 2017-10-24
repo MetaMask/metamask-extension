@@ -32,13 +32,13 @@ class ComputedbalancesController {
     this.accountTracker.store.subscribe(this.syncAllAccountsFromStore.bind(this))
   }
 
-  syncAllAccountsFromStore(store) {
+  syncAllAccountsFromStore (store) {
     const upstream = Object.keys(store.accounts)
     const balances = Object.keys(this.balances)
     .map(address => this.balances[address])
 
     // Follow new addresses
-    for (let address in balances) {
+    for (const address in balances) {
       this.trackAddressIfNotAlready(address)
     }
 
@@ -58,14 +58,14 @@ class ComputedbalancesController {
   }
 
   trackAddress (address) {
-    let updater = new BalanceController({
+    const updater = new BalanceController({
       address,
       accountTracker: this.accountTracker,
       txController: this.txController,
       blockTracker: this.blockTracker,
     })
     updater.store.subscribe((accountBalance) => {
-      let newState = this.store.getState()
+      const newState = this.store.getState()
       newState.computedBalances[address] = accountBalance
       this.store.updateState(newState)
     })
