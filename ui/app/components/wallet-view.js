@@ -150,7 +150,10 @@ WalletView.prototype.render = function () {
     h(TokenList),
 
     h('button.wallet-view__add-token-button', {
-      onClick: showAddTokenPage,
+      onClick: () => {
+        showAddTokenPage()
+        hideSidebar()
+      },
     }, 'Add Token'),
   ])
 }
