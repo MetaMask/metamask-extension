@@ -20,14 +20,6 @@ function isValidInput (text) {
   return re.test(text)
 }
 
-function resetCaretIfPastEnd (value, event) {
-  const caretPosition = event.target.selectionStart
-
-  if (caretPosition > value.length) {
-    event.target.setSelectionRange(value.length, value.length)
-  }
-}
-
 function toHexWei (value) {
   return conversionUtil(value, {
     fromNumericBase: 'dec',
@@ -82,6 +74,8 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
   })
 
+  const inputSizeMultiplier = readOnly ? 1 : 1.2;
+
   return h('div', {
     className,
     style: {
@@ -95,34 +89,32 @@ CurrencyDisplay.prototype.render = function () {
 
         h('input', {
           className: primaryBalanceClassName,
-          value: `${value || initValueToRender} ${primaryCurrency}`,
-          placeholder: `${0} ${primaryCurrency}`,
+          value: `${value || initValueToRender}`,
+          placeholder: '0',
+          size: (value || initValueToRender).length * inputSizeMultiplier,
           readOnly,
           onChange: (event) => {
-            let newValue = event.target.value.split(' ')[0]
+            let newValue = event.target.value
 
             if (newValue === '') {
-              this.setState({ value: '0' })
+              newValue = '0'
             }
             else if (newValue.match(/^0[1-9]$/)) {
-              this.setState({ value: newValue.match(/[1-9]/)[0] })
+              newValue = newValue.match(/[1-9]/)[0]
             }
-            else if (newValue && !isValidInput(newValue)) {
+
+            if (newValue && !isValidInput(newValue)) {
               event.preventDefault()
             }
             else {
+              validate(this.getAmount(newValue))
               this.setState({ value: newValue })
             }
           },
-          onBlur: event => !readOnly && handleChange(this.getAmount(event.target.value.split(' ')[0])),
-          onKeyUp: event => {
-            if (!readOnly) {
-              validate(toHexWei(value || initValueToRender))
-              resetCaretIfPastEnd(value || initValueToRender, event)
-            }
-          },
-          onClick: event => !readOnly && resetCaretIfPastEnd(value || initValueToRender, event),
+          onBlur: event => !readOnly && handleChange(this.getAmount(event.target.value)),
         }),
+
+        h('span.currency-display__currency-symbol', primaryCurrency),
 
       ]),
 

@@ -203,6 +203,16 @@ App.prototype.renderSidebar = function () {
 }
 
 App.prototype.renderAppBar = function () {
+  const {
+    isUnlocked,
+    network,
+    provider,
+    networkDropdownOpen,
+    showNetworkDropdown,
+    hideNetworkDropdown,
+    currentView,
+  } = this.props
+
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
@@ -243,22 +253,21 @@ App.prototype.renderAppBar = function () {
             }, [
               // Network Indicator
               h(NetworkIndicator, {
-                network: this.props.network,
-                provider: this.props.provider,
+                network,
+                provider,
+                disabled: currentView.name === 'confTx',
                 onClick: (event) => {
                   event.preventDefault()
                   event.stopPropagation()
-                  if (this.props.networkDropdownOpen === false) {
-                    this.props.showNetworkDropdown()
-                  } else {
-                    this.props.hideNetworkDropdown()
-                  }
+                  return networkDropdownOpen === false
+                    ? showNetworkDropdown()
+                    : hideNetworkDropdown()
                 },
               }),
 
             ]),
 
-            h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
+            isUnlocked && h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
               h(Identicon, {
                 address: this.props.selectedAddress,
                 diameter: 32,

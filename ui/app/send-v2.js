@@ -2,6 +2,7 @@ const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const classnames = require('classnames')
 
 const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
@@ -19,6 +20,9 @@ const {
   conversionGreaterThan,
   addCurrencies,
 } = require('./conversion-util')
+const {
+  isBalanceSufficient,
+} = require('./components/send/send-utils.js')
 const { isValidAddress } = require('./util')
 
 module.exports = SendTransactionScreen
@@ -237,27 +241,15 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
 
   let amountError = null
 
-  const totalAmount = addCurrencies(amount, gasTotal, {
-    aBase: 16,
-    bBase: 16,
-    toNumericBase: 'hex',
+  const sufficientBalance = isBalanceSufficient({
+    amount,
+    gasTotal,
+    balance,
+    primaryCurrency,
+    selectedToken,
+    amountConversionRate,
+    conversionRate,
   })
-
-  const sufficientBalance = conversionGreaterThan(
-    {
-      value: balance,
-      fromNumericBase: 'hex',
-      fromCurrency: primaryCurrency,
-      conversionRate,
-    },
-    {
-      value: totalAmount,
-      fromNumericBase: 'hex',
-      conversionRate: amountConversionRate,
-      fromCurrency: selectedToken || primaryCurrency,
-      conversionRate: amountConversionRate,
-    },
-  )
 
   const amountLessThanZero = conversionGreaterThan(
     { value: 0, fromNumericBase: 'dec' },
@@ -399,7 +391,6 @@ SendTransactionScreen.prototype.renderFooter = function () {
       },
     }, 'Cancel'),
     h(`button.send-v2__next-btn${errorClass}`, {
-      onClick: event => noErrors && this.onSubmit(event),
     }, 'Next'),
   ])
 }

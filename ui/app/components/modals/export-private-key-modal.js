@@ -66,7 +66,6 @@ ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
       })
     : h('input.private-key-password-input', {
       type: 'password',
-      placeholder: 'Type password',
       onChange: event => this.setState({ password: event.target.value }),
     })
 }

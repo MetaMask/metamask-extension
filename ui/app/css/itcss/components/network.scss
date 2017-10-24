@@ -1,3 +1,12 @@
+.network-component--disabled {
+  border-color: transparent !important;
+  cursor: default;
+
+  .fa-caret-down {
+    opacity: 0;
+  }
+}
+
 .network-component.pointer {
   border: 1px solid $shark;
   border-radius: 82px;
@@ -40,7 +49,7 @@
 .dropdown-menu-item {
   .menu-icon-circle,
   .menu-icon-circle--active {
-    margin: 0 16px;
+    margin: 0 14px;
   }
 }
 
@@ -116,8 +125,8 @@
 
 .menu-icon-circle div,
 .menu-icon-circle--active div {
-  height: 17px;
-  width: 17px;
+  height: 12px;
+  width: 12px;
   border-radius: 17px;
 }
 

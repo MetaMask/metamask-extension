@@ -63,10 +63,11 @@ AccountMenu.prototype.render = function () {
     h(CloseArea, { onClick: toggleAccountMenu }),
     h(Item, {
       className: 'account-menu__header',
-      onClick: lockMetamask,
     }, [
       'My Accounts',
-      h('button.account-menu__logout-button', 'Log out'),
+      h('button.account-menu__logout-button', {
+        onClick: lockMetamask,
+      }, 'Log out'),
     ]),
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
@@ -98,15 +99,14 @@ AccountMenu.prototype.renderAccounts = function () {
   const {
     identities,
     accounts,
-    selected,
+    selectedAddress,
     keyrings,
     showAccountDetail,
   } = this.props
 
-  console.log({ accounts })
   return Object.keys(identities).map((key, index) => {
     const identity = identities[key]
-    const isSelected = identity.address === selected
+    const isSelected = identity.address === selectedAddress
 
     const balanceValue = accounts[key] ? accounts[key].balance : ''
     const formattedBalance = balanceValue ? formatBalance(balanceValue, 6) : '...'
@@ -122,7 +122,7 @@ AccountMenu.prototype.renderAccounts = function () {
       { onClick: () => showAccountDetail(identity.address) },
       [
         h('div.account-menu__check-mark', [
-          isSelected ? h('i.fa.fa-check') : null,
+          isSelected ? h('div.account-menu__check-mark-icon') : null,
         ]),
 
         h(
@@ -148,6 +148,6 @@ AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label', 'LOOSE') : null
+    return isLoose ? h('.keyring-label', 'IMPORTED') : null
   } catch (e) { return }
 }

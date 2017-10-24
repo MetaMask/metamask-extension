@@ -109,7 +109,18 @@
     cursor: pointer;
 
     &:hover {
-      background-color: $gallery;
+      background-color: rgba(0, 0, 0, .05);
+    }
+
+    &:active {
+      background-color: rgba(0, 0, 0, .1);
+    }
+
+    .fa {
+      position: absolute;
+      right: 24px;
+      font-size: 24px;
+      line-height: 24px;
     }
   }
 
