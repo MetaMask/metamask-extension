@@ -1,8 +1,8 @@
 const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
+const { fromAscii, toAscii } = require('ethjs-util')
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
 const vreme = new (require('vreme'))()
-
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
 const GWEI_FACTOR = new ethUtil.BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
@@ -56,6 +56,8 @@ module.exports = {
   exportAsFile: exportAsFile,
   isInvalidChecksumAddress,
   allNull,
+  encodeStringAsHex,
+  hexToAsciiString,
 }
 
 function valuesFor (obj) {
@@ -277,4 +279,12 @@ function exportAsFile (filename, data) {
 
 function allNull (obj) {
   return Object.entries(obj).every(([key, value]) => value === null)
+}
+
+function encodeStringAsHex (str) {
+  return ethUtil.addHexPrefix(fromAscii(str))
+}
+
+function hexToAsciiString (hex) {
+  return toAscii(hex)
 }

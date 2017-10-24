@@ -17,6 +17,8 @@ const {
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
+  getSelectedTokenToFiatRate,
+  getSendMemo,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -26,7 +28,6 @@ function mapStateToProps (state) {
   const selectedAddress = getSelectedAddress(state)
   const selectedToken = getSelectedToken(state)
   const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
   const conversionRate = conversionRateSelector(state)
 
   let data;
@@ -40,11 +41,7 @@ function mapStateToProps (state) {
 
     primaryCurrency = selectedToken.symbol
 
-    tokenToFiatRate = multiplyCurrencies(
-      conversionRate,
-      selectedTokenExchangeRate,
-      { toNumericBase: 'dec' }
-    )
+    tokenToFiatRate = getSelectedTokenToFiatRate(state)
   }
 
   return {
@@ -58,6 +55,7 @@ function mapStateToProps (state) {
     convertedCurrency: getCurrentCurrency(state),
     data,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
+    memo: getSendMemo(state),
   }
 }
 

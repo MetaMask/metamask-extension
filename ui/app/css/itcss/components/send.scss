@@ -652,7 +652,8 @@
   }
 
   &__next-btn,
-  &__cancel-btn {
+  &__cancel-btn,
+  &__next-btn__disabled {
     width: 163px;
     text-align: center;
     height: 55px;
@@ -667,14 +668,15 @@
     border: 1px solid;
   }
 
+  &__next-btn,
+  &__next-btn__disabled {
+    color: $curious-blue;
+    border-color: $curious-blue;
+  }
+
   &__next-btn__disabled {
     opacity: .5;
     cursor: auto;
-  }
-
-  &__next-btn {
-    color: $curious-blue;
-    border-color: $curious-blue;
   }
 
   &__cancel-btn {
@@ -736,6 +738,7 @@
       align-items: center;
       justify-content: space-between;
       font-size: 22px;
+      position: relative;
     }
 
     &__buttons {
@@ -745,7 +748,7 @@
       margin-right: 21.25px;
     }
 
-    &__revert, &__cancel, &__save {
+    &__revert, &__cancel, &__save, &__save__error {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -758,7 +761,7 @@
       margin-left: 21.25px;
     }
 
-    &__cancel, &__save {
+    &__cancel, &__save, &__save__error {
       height: 34.64px;
       width: 85.74px;
       border: 1px solid $dusty-gray;
@@ -766,6 +769,21 @@
       font-family: 'DIN OT';
       font-size: 12px;
       color: $dusty-gray;
+    }
+
+    &__save__error {
+      opacity: 0.5;
+      cursor: auto;
+    }
+
+    &__error-message {
+      display: block;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 12px;
+      line-height: 12px;
+      color: $red;
     }
   }
 

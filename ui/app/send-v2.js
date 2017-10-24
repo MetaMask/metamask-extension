@@ -19,7 +19,10 @@ const {
   conversionGreaterThan,
   addCurrencies,
 } = require('./conversion-util')
-const { isValidAddress } = require('./util')
+const {
+  isBalanceSufficient,
+} = require('./components/send/send-utils.js')
+const { isValidAddress, encodeStringAsHex } = require('./util')
 
 module.exports = SendTransactionScreen
 
@@ -237,27 +240,15 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
 
   let amountError = null
 
-  const totalAmount = addCurrencies(amount, gasTotal, {
-    aBase: 16,
-    bBase: 16,
-    toNumericBase: 'hex',
+  const sufficientBalance = isBalanceSufficient({
+    amount,
+    gasTotal,
+    balance,
+    primaryCurrency,
+    selectedToken,
+    amountConversionRate,
+    conversionRate,
   })
-
-  const sufficientBalance = conversionGreaterThan(
-    {
-      value: balance,
-      fromNumericBase: 'hex',
-      fromCurrency: primaryCurrency,
-      conversionRate,
-    },
-    {
-      value: totalAmount,
-      fromNumericBase: 'hex',
-      conversionRate: amountConversionRate,
-      fromCurrency: selectedToken || primaryCurrency,
-      conversionRate: amountConversionRate,
-    },
-  )
 
   const amountLessThanZero = conversionGreaterThan(
     { value: 0, fromNumericBase: 'dec' },
@@ -340,21 +331,22 @@ SendTransactionScreen.prototype.renderGasRow = function () {
 }
 
 SendTransactionScreen.prototype.renderMemoRow = function () {
-  const { updateSendMemo } = this.props
-  const { memo } = this.state
+  const { updateSendMemo, memo, selectedToken } = this.props
 
-  return h('div.send-v2__form-row', [
+  return !selectedToken
+    ? h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Transaction Memo:'),
+      h('div.send-v2__form-label', 'Transaction Memo:'),
 
-    h('div.send-v2__form-field', [
-      h(MemoTextArea, {
-        memo,
-        onChange: (event) => updateSendMemo(event.target.value),
-      }),
-    ]),
+      h('div.send-v2__form-field', [
+        h(MemoTextArea, {
+          memo,
+          onChange: (event) => updateSendMemo(event.target.value),
+        }),
+      ]),
 
-  ])
+    ])
+    : h('div.send-v2__form-row', { style: { height: '54px' } })
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
@@ -382,7 +374,14 @@ SendTransactionScreen.prototype.renderForm = function () {
 }
 
 SendTransactionScreen.prototype.renderFooter = function () {
-  const { goHome, clearSend } = this.props
+  const {
+    goHome,
+    clearSend,
+    errors: { amount: amountError, to: toError }
+  } = this.props
+
+  const noErrors = amountError === null && toError === null
+  const errorClass = noErrors ? '' : '__disabled'
 
   return h('div.send-v2__footer', [
     h('button.send-v2__cancel-btn', {
@@ -391,8 +390,8 @@ SendTransactionScreen.prototype.renderFooter = function () {
         goHome()
       },
     }, 'Cancel'),
-    h('button.send-v2__next-btn', {
-      onClick: event => this.onSubmit(event),
+    h(`button.send-v2__next-btn${errorClass}`, {
+      onClick: event => noErrors && this.onSubmit(event),
     }, 'Next'),
   ])
 }
@@ -433,6 +432,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     selectedToken,
     toAccounts,
     clearSend,
+    memo,
   } = this.props
 
   this.addToAddressBookIfNew(to)
@@ -442,6 +442,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     value: '0',
     gas,
     gasPrice,
+    data: encodeStringAsHex(memo),
   }
 
   if (!selectedToken) {

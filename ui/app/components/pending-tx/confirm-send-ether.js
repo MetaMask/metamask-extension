@@ -9,6 +9,7 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil, addCurrencies } = require('../../conversion-util')
+const { hexToAsciiString } = require('../../util') 
 
 const MIN_GAS_PRICE_GWEI_BN = new BN(1)
 const GWEI_FACTOR = new BN(1e9)
@@ -50,7 +51,7 @@ ConfirmSendEther.prototype.getAmount = function () {
   const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  console.log(`conversionRate, currentCurrency`, conversionRate, currentCurrency);
+
   const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
@@ -148,7 +149,7 @@ ConfirmSendEther.prototype.getData = function () {
       address: txParams.to,
       name: identities[txParams.to] ? identities[txParams.to].name : 'New Recipient',
     },
-    memo: txParams.memo || '',
+    memo: hexToAsciiString(txParams.data) || '',
     gasFeeInFIAT,
     gasFeeInETH,
     amountInFIAT,

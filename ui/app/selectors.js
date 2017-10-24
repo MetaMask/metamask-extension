@@ -1,5 +1,9 @@
 const valuesFor = require('./util').valuesFor
 
+const {
+  multiplyCurrencies,
+} = require('./conversion-util')
+
 const selectors = {
   getSelectedAddress,
   getSelectedIdentity,
@@ -16,6 +20,9 @@ const selectors = {
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
+  getSendAmount,
+  getSelectedTokenToFiatRate,
+  getSendMemo,
 }
 
 module.exports = selectors
@@ -123,6 +130,27 @@ function getSendFrom (state) {
   return state.metamask.send.from
 }
 
+function getSendAmount (state) {
+  return state.metamask.send.amount
+}
+
+function getSendMemo (state) {
+  return state.metamask.send.memo
+}
+
 function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
+}
+
+function getSelectedTokenToFiatRate (state) {
+  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
+  const conversionRate = conversionRateSelector(state)
+
+  const tokenToFiatRate = multiplyCurrencies(
+    conversionRate,
+    selectedTokenExchangeRate,
+    { toNumericBase: 'dec' }
+  )
+
+  return tokenToFiatRate
 }
