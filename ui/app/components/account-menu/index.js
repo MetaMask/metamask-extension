@@ -63,10 +63,11 @@ AccountMenu.prototype.render = function () {
     h(CloseArea, { onClick: toggleAccountMenu }),
     h(Item, {
       className: 'account-menu__header',
-      onClick: lockMetamask,
     }, [
       'My Accounts',
-      h('button.account-menu__logout-button', 'Log out'),
+      h('button.account-menu__logout-button', {
+        onClick: lockMetamask,
+      }, 'Log out'),
     ]),
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
