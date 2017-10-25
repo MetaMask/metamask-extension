@@ -218,7 +218,7 @@ CustomizeGasModal.prototype.render = function () {
           // max: 1000,
           step: 1,
           onChange: value => this.convertAndSetGasPrice(value),
-          title: 'Gas Price',
+          title: 'Gas Price (GWEI)',
           copy: 'We calculate the suggested gas prices based on network success rates.',
         }),
 
