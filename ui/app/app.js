@@ -448,7 +448,7 @@ App.prototype.renderPrimary = function () {
 
     case 'info':
       log.debug('rendering info screen')
-      return h(InfoScreen, {key: 'info'})
+      return h(Settings, {key: 'info', tab: 'info'})
 
     case 'buyEth':
       log.debug('rendering buy ether screen')

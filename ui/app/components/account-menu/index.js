@@ -46,6 +46,10 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showImportPage())
       dispatch(actions.toggleAccountMenu())
     },
+    showInfoPage: () => {
+      dispatch(actions.showInfoPage())
+      dispatch(actions.toggleAccountMenu())
+    },
   }
 }
 
@@ -57,6 +61,7 @@ AccountMenu.prototype.render = function () {
     showImportPage,
     lockMetamask,
     showConfigPage,
+    showInfoPage,
   } = this.props
 
   return h(Menu, { className: 'account-menu', isShowing: isAccountMenuOpen }, [
@@ -84,6 +89,7 @@ AccountMenu.prototype.render = function () {
     }),
     h(Divider),
     h(Item, {
+      onClick: showInfoPage,
       icon: h('img', { src: 'images/mm-info-icon.svg' }),
       text: 'Info & Help',
     }),
