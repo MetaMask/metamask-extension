@@ -75,7 +75,7 @@
   flex: 0 0 auto;
 
   @media screen and (max-width: $break-small) {
-    font-size: 22px;
+    font-size: 20px;
   }
 }
 
@@ -140,6 +140,14 @@
   color: $dusty-gray;
   text-align: center;
   height: 16px;
+}
+
+.confirm-send-ether,
+.confirm-send-token {
+  i.fa-arrow-right {
+    align-self: start;
+    margin: 24px 14px 0 !important;
+  }
 }
 
 .confirm-screen-identicons {

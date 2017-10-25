@@ -194,7 +194,7 @@ ConfirmSendEther.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.confirm-screen-container', {
+    h('div.confirm-screen-container.confirm-send-ether', {
       style: { minWidth: '355px' },
     }, [
       // Main Send token Card
