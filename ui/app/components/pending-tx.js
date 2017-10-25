@@ -175,7 +175,7 @@ PendingTx.prototype.render = function () {
                   precision: 0,
                   scale: 0,
                   // The hard lower limit for gas.
-                  min: MIN_GAS_LIMIT_BN.toString(10),
+                  min: MIN_GAS_LIMIT_BN,
                   max: safeGasLimit,
                   suffix: 'UNITS',
                   style: {
@@ -200,7 +200,7 @@ PendingTx.prototype.render = function () {
                   precision: 9,
                   scale: 9,
                   suffix: 'GWEI',
-                  min: MIN_GAS_PRICE_BN.toString(10),
+                  min: MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
                     top: '5px',
