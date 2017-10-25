@@ -57,7 +57,7 @@ PendingTx.prototype.render = function () {
   const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
-  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(10)
+  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
