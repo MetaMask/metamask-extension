@@ -43,6 +43,9 @@ function mapDispatchToProps (dispatch) {
 inherits(WalletView, Component)
 function WalletView () {
   Component.call(this)
+  this.state = {
+    hasCopied: false,
+  }
 }
 
 WalletView.prototype.renderWalletBalance = function () {
@@ -132,17 +135,16 @@ WalletView.prototype.render = function () {
     ]),
 
 
-    h('div.wallet-view__address', { onClick: () => copyToClipboard(selectedAddress) }, [
-      `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,
+    h('div.wallet-view__address', {
+      onClick: () => {
+        copyToClipboard(selectedAddress)
+        this.setState({ hasCopied: true })
+        setTimeout(() => this.setState({ hasCopied: false }), 3000)
+      },
+    }, [
+      this.state.hasCopied && 'Copied to Clipboard',
+      !this.state.hasCopied && `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,
       h('i.fa.fa-clipboard', { style: { marginLeft: '8px' } }),
-    ]),
-
-    // 'Wallet' - Title
-    // Not visible on mobile
-    h('div.flex-column.wallet-view-title-wrapper', [
-      h('span.wallet-view-title', [
-        'Wallet',
-      ]),
     ]),
 
     this.renderWalletBalance(),
