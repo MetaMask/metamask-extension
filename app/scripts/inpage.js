@@ -1,12 +1,17 @@
 /*global Web3*/
 cleanContextForImports()
 require('web3/dist/web3.min.js')
+const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 // const PingStream = require('ping-pong-stream/ping')
 // const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
+
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+window.log = log
+log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 
 
 //
@@ -28,9 +33,9 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
-  console.log('MetaMask - overrode web3.setProvider')
+  log.debug('MetaMask - overrode web3.setProvider')
 }
-console.log('MetaMask - injected web3')
+log.debug('MetaMask - injected web3')
 // export global web3, with usage-detection
 setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
@@ -65,4 +70,3 @@ function restoreContextAfterImports () {
     console.warn('MetaMask - global.define could not be overwritten.')
   }
 }
-
