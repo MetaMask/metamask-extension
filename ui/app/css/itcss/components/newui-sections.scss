@@ -43,7 +43,8 @@ $wallet-view-bg: $wild-sand;
 .wallet-view {
   display: flex;
   flex-direction: column;
-  flex: 33.5 0 33.5%;
+  flex: 33.5 1 33.5%;
+  width: 0;
   background: $wallet-view-bg;
   z-index: 200;
   position: relative;
@@ -60,6 +61,7 @@ $wallet-view-bg: $wild-sand;
   &__name-container {
     flex: 0 0 auto;
     cursor: pointer;
+    width: 100%;
   }
 
   &__keyring-label {
@@ -251,6 +253,12 @@ $wallet-view-bg: $wild-sand;
   color: $scorpion;
   margin-top: 8px;
   margin-bottom: 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  padding: 0 8px;
+  text-align: center;
 }
 
 // account options dropdown
