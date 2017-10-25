@@ -180,13 +180,19 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 }
 
 SendTransactionScreen.prototype.handleToChange = function (to) {
-  const { updateSendTo, updateSendErrors } = this.props
+  const {
+    updateSendTo,
+    updateSendErrors,
+    from: {address: from},
+  } = this.props
   let toError = null
 
   if (!to) {
     toError = 'Required'
   } else if (!isValidAddress(to)) {
-    toError = 'Recipient address is invalid.'
+    toError = 'Recipient address is invalid'
+  } else if (to === from) {
+    toError = 'From and To address cannot be the same'
   }
 
   updateSendTo(to)
