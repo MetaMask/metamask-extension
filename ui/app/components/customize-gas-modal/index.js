@@ -198,7 +198,7 @@ CustomizeGasModal.prototype.render = function () {
   })
 
   return h('div.send-v2__customize-gas', {}, [
-    h('div', {
+    h('div.send-v2__customize-gas__content', {
     }, [
       h('div.send-v2__customize-gas__header', {}, [
 
@@ -241,8 +241,9 @@ CustomizeGasModal.prototype.render = function () {
         ]),
         
         h('div.send-v2__customize-gas__revert', {
-          onClick: () => console.log('Revert'),
-        }, ['Revert']),
+          // onClick: () => console.log('Revert'),
+        }, ['']),
+        // }, ['Revert']),
 
         h('div.send-v2__customize-gas__buttons', [
           h('div.send-v2__customize-gas__cancel', {

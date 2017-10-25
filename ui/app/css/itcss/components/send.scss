@@ -274,6 +274,7 @@
   color: #9b9b9b;
   font-size: .8em;
   padding: 1px 4px;
+  cursor: pointer;
 }
 
 .token-gas {
@@ -474,6 +475,7 @@
 
     @media screen and (max-width: $break-small) {
       height: 59px;
+      width: 100vw;
     }
   }
 
@@ -484,10 +486,13 @@
     position: absolute;
     transform: rotate(45deg);
     left: 178px;
-    top: 65px;
+    top: 75px;
 
     @media screen and (max-width: $break-small) {
       top: 46px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
     }
   }
 
@@ -706,8 +711,8 @@
     flex-flow: column;
 
     @media screen and (max-width: $break-small) {
-      width: 355px;
-      height: 598px;
+      width: 100vw;
+      height: 100vh;
     }
 
     &__header {
@@ -717,6 +722,10 @@
       align-items: center;
       justify-content: space-between;
       font-size: 22px;
+
+      @media screen and (max-width: $break-small) {
+        flex: 0 0 auto;
+      }
     }
 
     &__title {
@@ -732,14 +741,19 @@
       margin-right: 19.25px;
     }
 
-    &__body {
-      height: 248px;
+    &__content {
       display: flex;
+      flex-flow: column nowrap;
+      height: 100%;
+    }
+
+    &__body {
+      display: flex;
+      margin-bottom: 24px;
 
       @media screen and (max-width: $break-small) {
-        width: 355px;
-        height: 470px;
         flex-flow: column;
+        flex: 1 1 auto;
       }
     }
 
@@ -751,6 +765,10 @@
       justify-content: space-between;
       font-size: 22px;
       position: relative;
+
+      @media screen and (max-width: $break-small) {
+        flex: 0 0 auto;
+      }
     }
 
     &__buttons {
