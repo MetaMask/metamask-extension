@@ -7,19 +7,6 @@
   z-index: 12;
   font-family: 'DIN Next Light';
 
-  @media screen and (max-width: $break-small) {
-    top: 0;
-    width: 100%;
-
-    &__wrapper {
-      box-shadow: none !important;
-    }
-
-    &__footers {
-      border-bottom: 1px solid $gallery;
-    }
-  }
-
   &__wrapper {
     background-color: $white;
     box-shadow: 0 2px 4px 0 rgba($black, .08);
@@ -191,7 +178,7 @@
     transition: 200ms ease-in-out;
     display: flex;
     flex-flow: row nowrap;
-    flex: 0 0 45%;
+    flex: 0 0 42.5%;
     align-items: center;
     padding: 12px;
     margin: 2.5%;
@@ -213,6 +200,10 @@
       opacity: .4;
       pointer-events: none;
     }
+  }
+
+  &__token-data {
+    align-self: flex-start;
   }
 
   &__token-name {
@@ -293,5 +284,34 @@
 
   &__confirmation-token-icon {
     margin-right: 18px;
+  }
+
+  @media screen and (max-width: $break-small) {
+    top: 0;
+    width: 100%;
+    overflow-y: auto;
+
+    &__wrapper {
+      box-shadow: none !important;
+    }
+
+    &__footers {
+      border-bottom: 1px solid $gallery;
+    }
+
+    &__token-icon {
+      width: 50px;
+      height: 50px;
+    }
+
+    &__token-symbol {
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    &__token-name {
+      font-size: 12px;
+      line-height: 16px;
+    }
   }
 }
