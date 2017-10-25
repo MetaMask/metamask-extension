@@ -15,6 +15,7 @@ const addressSummary = util.addressSummary
 const nameForAddress = require('../../lib/contract-namer')
 const BNInput = require('./bn-as-decimal-input')
 
+// corresponds with 0.1 GWEI
 const MIN_GAS_PRICE_BN = new BN('100000000')
 const MIN_GAS_LIMIT_BN = new BN('21000')
 
