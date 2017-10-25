@@ -131,8 +131,8 @@ BnAsDecimalInput.prototype.updateValidity = function (event) {
 
 BnAsDecimalInput.prototype.constructWarning = function () {
   const { name, min, max, scale } = this.props
-  const newMin = this.downsize(min.toString(10), scale)
-  const newMax = this.downsize(max.toString(10), scale)
+  const newMin = min && this.downsize(min.toString(10), scale)
+  const newMax = max && this.downsize(max.toString(10), scale)
   let message = name ? name + ' ' : ''
 
   if (min && max) {
