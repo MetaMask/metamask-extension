@@ -1,5 +1,6 @@
 const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+const ethUtil = require('ethereumjs-util')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -641,7 +642,7 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   return dispatch => {
     dispatch(actions.showLoadingIndication())
     const token = global.eth.contract(abi).at(tokenAddress)
-    token.transfer(toAddress, amount, txData)
+    token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
       .catch(err => {
         dispatch(actions.hideLoadingIndication())
         dispatch(actions.displayWarning(err.message))
