@@ -372,7 +372,7 @@ SendTransactionScreen.prototype.renderForm = function () {
 
     this.renderGasRow(),
 
-    this.renderMemoRow(),
+    // this.renderMemoRow(),
 
   ])
 }
@@ -381,9 +381,9 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const {
     goHome,
     clearSend,
-    errors: { amount: amountError, to: toError }
+    errors: { amount: amountError, to: toError },
   } = this.props
-  
+
   const noErrors = amountError === null && toError === null
   const errorClass = noErrors ? '' : '__disabled'
 
@@ -395,6 +395,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
       },
     }, 'Cancel'),
     h(`button.send-v2__next-btn${errorClass}`, {
+      onClick: event => this.onSubmit(event),
     }, 'Next'),
   ])
 }
@@ -435,7 +436,14 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     selectedToken,
     toAccounts,
     clearSend,
+    errors: { amount: amountError, to: toError },
   } = this.props
+
+  const noErrors = amountError === null && toError === null
+
+  if (!noErrors) {
+    return
+  }
 
   this.addToAddressBookIfNew(to)
 

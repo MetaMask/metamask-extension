@@ -400,7 +400,7 @@
 
 .send-v2 {
   &__container {
-    height: 701px;
+    // height: 701px;
     width: 380px;
     border-radius: 8px;
     background-color: $white;
@@ -416,6 +416,7 @@
       width: 100%;
       top: 0;
       box-shadow: none;
+      flex: 1 1 auto;
     }
   }
 
@@ -520,18 +521,20 @@
   }
 
   &__form {
-    margin-top: 13px;
+    margin: 13px 0;
     width: 100%;
 
     @media screen and (max-width: $break-small) {
-      margin-top: 0px;
+      padding: 13px 0;
+      margin: 0;
       height: 0;
       overflow-y: auto;
       flex: 1 1 auto;
     }
   }
 
-  &__form-header, &__form-header-copy {
+  &__form-header,
+  &__form-header-copy {
     width: 100%;
     display: flex;
     flex-flow: column;
