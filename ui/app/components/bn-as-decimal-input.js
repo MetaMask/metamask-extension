@@ -131,14 +131,16 @@ BnAsDecimalInput.prototype.updateValidity = function (event) {
 
 BnAsDecimalInput.prototype.constructWarning = function () {
   const { name, min, max, scale } = this.props
+  const newMin = this.downsize(min.toString(10), scale)
+  const newMax = this.downsize(max.toString(10), scale)
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${this.downsize(min.toString(10), scale)} and less than or equal to ${this.downsize(max.toString(10), scale)}.`
+    message += `must be greater than or equal to  ${newMin} and less than or equal to ${newMax}.`
   } else if (min) {
-    message += `must be greater than or equal to ${this.downsize(min.toString(10), scale)}.`
+    message += `must be greater than or equal to ${newMin}.`
   } else if (max) {
-    message += `must be less than or equal to ${this.downsize(max.toString(10), scale)}.`
+    message += `must be less than or equal to ${newMax}.`
   } else {
     message += 'Invalid input.'
   }
