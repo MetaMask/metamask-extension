@@ -58,10 +58,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-inherits(CustomizeGasModal, Component)
-function CustomizeGasModal (props) {
-  Component.call(this)
-
+function getOriginalState(props) {
   const gasPrice = props.gasPrice || MIN_GAS_PRICE_DEC
   const gasLimit = props.gasLimit || MIN_GAS_LIMIT_DEC
 
@@ -71,12 +68,19 @@ function CustomizeGasModal (props) {
     multiplierBase: 16,
   })
 
-  this.state = {
+  return {
     gasPrice,
     gasLimit,
     gasTotal,
     error: null,
   }
+}
+
+inherits(CustomizeGasModal, Component)
+function CustomizeGasModal (props) {
+  Component.call(this)
+
+  this.state = getOriginalState(props)
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(CustomizeGasModal)
@@ -93,6 +97,10 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
   updateGasLimit(gasLimit)
   updateGasTotal(gasTotal)
   hideModal()
+}
+
+CustomizeGasModal.prototype.revert = function () {
+  this.setState(getOriginalState(this.props))
 }
 
 CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
@@ -241,9 +249,8 @@ CustomizeGasModal.prototype.render = function () {
         ]),
         
         h('div.send-v2__customize-gas__revert', {
-          // onClick: () => console.log('Revert'),
-        }, ['']),
-        // }, ['Revert']),
+          onClick: () => this.revert(),
+        }, ['Revert']),
 
         h('div.send-v2__customize-gas__buttons', [
           h('div.send-v2__customize-gas__cancel', {
