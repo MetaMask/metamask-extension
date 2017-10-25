@@ -253,12 +253,14 @@ App.prototype.renderAppBar = function () {
       }, [
         h('div.app-header-contents', {}, [
           h('div.left-menu-wrapper', {
-            style: {},
+            onClick: () => {
+              props.dispatch(actions.backToAccountDetail(props.activeAddress))
+            },
           }, [
             // mini logo
-            h('img', {
-              height: 24,
-              width: 24,
+            h('img.metafox-icon', {
+              height: 29,
+              width: 29,
               src: '/images/icon-128.png',
             }),
 
