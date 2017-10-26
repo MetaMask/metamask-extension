@@ -26,7 +26,6 @@
 - Add support for new eth_signTypedData method per EIP 712.
 - Fix bug where some transactions would be shown as pending forever, even after successfully mined.
 - Fix bug where a transaction might be shown as pending forever if another tx with the same nonce was mined.
-- Add OS and browser version information to state log dump (for debugging purposes only).
 - Fix link to support article on token addresses.
 
 ## 3.10.9 2017-10-5
