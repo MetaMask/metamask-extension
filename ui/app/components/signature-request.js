@@ -4,6 +4,8 @@ const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
+const classnames = require('classnames')
+
 const PendingTxDetails = require('./pending-personal-msg-details')
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 const BinaryRenderer = require('./binary-renderer')
@@ -181,7 +183,12 @@ SignatureRequest.prototype.renderBody = function () {
 
     this.renderRequestInfo(),
 
-    h('div.request-signature__notice', [notice]),
+    h('div.request-signature__notice', {
+      className: classnames({
+        'request-signature__notice': type === 'personal_sign' || type === 'eth_signTypedData',
+        'request-signature__warning': type === 'eth_sign',
+      })
+    }, [notice]),
 
     h('div.request-signature__rows', [
 
