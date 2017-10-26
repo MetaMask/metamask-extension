@@ -156,20 +156,24 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
+  let notice = 'You are signing:'
 
   const { txData } = this.props
   const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
-    rows = [{ name: 'Message:', value: this.msgHexToText(data) }]
+    rows = [{ name: 'Message', value: this.msgHexToText(data) }]
   }
   else if (type === 'eth_signTypedData') {
     rows = data
   }
-  // given the warning in './pending-msg.js', eth_sign' has not been implemented on NewUI-flat at this time
-  // else if (type === 'eth_sign') {
-    // console.log('Not currently supported')
-  // }
+  else if (type === 'eth_sign') {
+    rows = [{ name: 'Message', value: data }]
+    notice = `Signing this message can have
+    dangerous side effects. Only sign messages from
+    sites you fully trust with your entire account.
+    This dangerous method will be removed in a future version. `
+  }
 
   return h('div.request-signature__body', {}, [
 
@@ -177,7 +181,7 @@ SignatureRequest.prototype.renderBody = function () {
 
     this.renderRequestInfo(),
 
-    h('div.request-signature__notice', ['You are signing:']),
+    h('div.request-signature__notice', [notice]),
 
     h('div.request-signature__rows', [
 
@@ -200,6 +204,8 @@ SignatureRequest.prototype.renderFooter = function () {
     signTypedMessage,
     cancelPersonalMessage,
     cancelTypedMessage,
+    signMessage,
+    cancelMessage,
   } = this.props
 
   const { txData } = this.props
@@ -214,6 +220,10 @@ SignatureRequest.prototype.renderFooter = function () {
   else if (type === 'eth_signTypedData') {
     cancel = cancelTypedMessage
     sign = signTypedMessage
+  }
+  else if (type === 'eth_sign') {
+    cancel = cancelMessage
+    sign = signMessage
   }
 
   return h('div.request-signature__footer', [
