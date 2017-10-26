@@ -1034,7 +1034,7 @@ function setProviderType (type) {
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
     })
-    
+
   }
 }
 
@@ -1213,14 +1213,22 @@ function saveAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.saveAccountLabel`)
-    background.saveAccountLabel(account, label, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      dispatch({
-        type: actions.SAVE_ACCOUNT_LABEL,
-        value: { account, label },
+
+    return new Promise((resolve, reject) => {
+      background.saveAccountLabel(account, label, (err) => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        dispatch({
+          type: actions.SAVE_ACCOUNT_LABEL,
+          value: { account, label },
+        })
+
+        resolve(account)
       })
     })
   }
