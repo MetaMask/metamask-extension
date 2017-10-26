@@ -22,7 +22,7 @@ function isBalanceSufficient({
     toNumericBase: 'hex',
   })
 
-  const balanceIsSufficient = conversionGreaterThan(
+  const balanceIsSufficient = conversionGTE(
     {
       value: balance,
       fromNumericBase: 'hex',

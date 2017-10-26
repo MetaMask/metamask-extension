@@ -2,6 +2,8 @@ const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 
+const ethUtil = require('ethereumjs-util')
+
 const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
 const ToAutoComplete = require('./components/send/to-autocomplete')
@@ -9,12 +11,17 @@ const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
-const { MIN_GAS_TOTAL } = require('./components/send/send-constants')
+const {
+  MIN_GAS_TOTAL,
+  MIN_GAS_PRICE_HEX,
+  MIN_GAS_LIMIT_HEX,
+} = require('./components/send/send-constants')
 const abi = require('human-standard-token-abi')
 
 const {
   multiplyCurrencies,
   conversionGreaterThan,
+  subtractCurrencies,
 } = require('./conversion-util')
 const {
   calcTokenAmount,
@@ -305,6 +312,30 @@ SendTransactionScreen.prototype.handleAmountChange = function (value) {
   updateSendAmount(amount)
 }
 
+SendTransactionScreen.prototype.setAmountToMax = function () {
+  const {
+    from: { balance },
+    gasTotal,
+    updateSendAmount,
+    updateSendErrors,
+    updateGasPrice,
+    updateGasLimit,
+    updateGasTotal,
+  } = this.props
+
+  const maxAmount = subtractCurrencies(
+    ethUtil.addHexPrefix(balance),
+    ethUtil.addHexPrefix(MIN_GAS_TOTAL),
+    { toNumericBase: 'hex' }
+  )
+
+  updateSendErrors({ amount: null })
+  updateGasPrice(MIN_GAS_PRICE_HEX)
+  updateGasLimit(MIN_GAS_LIMIT_HEX)
+  updateGasTotal(MIN_GAS_TOTAL)
+  updateSendAmount(maxAmount)
+}
+
 SendTransactionScreen.prototype.validateAmount = function (value) {
   const {
     from: { balance },
@@ -370,6 +401,12 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
+      !errors.amount && h('div.send-v2__amount-max', {
+        onClick: (event) => {
+          event.preventDefault()
+          this.setAmountToMax()
+        },
+      }, [ 'Max' ]),
     ]),
 
     h('div.send-v2__form-field', [

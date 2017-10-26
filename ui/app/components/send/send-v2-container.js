@@ -66,6 +66,8 @@ function mapDispatchToProps (dispatch) {
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
+    updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
     updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
     updateSendFrom: newFrom => dispatch(actions.updateSendFrom(newFrom)),
     updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),

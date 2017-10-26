@@ -145,6 +145,20 @@ const addCurrencies = (a, b, options = {}) => {
   })
 }
 
+const subtractCurrencies = (a, b, options = {}) => {
+  const {
+    aBase,
+    bBase,
+    ...conversionOptions,
+  } = options
+  const value = (new BigNumber(a, aBase)).minus(b, bBase);
+
+  return converter({
+    value,
+    ...conversionOptions,
+  })
+}
+
 const multiplyCurrencies = (a, b, options = {}) => {
   const {
     multiplicandBase,
@@ -203,4 +217,5 @@ module.exports = {
   conversionGTE,
   conversionLTE,
   toNegative,
+  subtractCurrencies,
 }
