@@ -1,5 +1,5 @@
 const extension = require('extensionizer')
-const height = 520
+const height = 610
 const width = 360
 
 
