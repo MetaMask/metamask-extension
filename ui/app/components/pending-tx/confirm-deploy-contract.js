@@ -10,9 +10,7 @@ const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
 
-const MIN_GAS_PRICE_GWEI_BN = new BN(1)
-const GWEI_FACTOR = new BN(1e9)
-const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmDeployContract)
@@ -166,7 +164,7 @@ ConfirmDeployContract.prototype.getGasFee = function () {
   const gasBn = hexToBn(gas)
 
   // Gas Price
-  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
+  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_HEX
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)

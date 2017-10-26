@@ -51,7 +51,7 @@ const toNormalizedDenomination = {
 }
 const toSpecifiedDenomination = {
   WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
-  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(),
+  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(1),
 }
 const baseChange = {
   hex: n => n.toString(16),
@@ -169,9 +169,34 @@ const conversionGreaterThan = (
   return firstValue.gt(secondValue)
 }
 
+const conversionGTE = (
+  { ...firstProps },
+  { ...secondProps  },
+) => {
+  const firstValue = converter({ ...firstProps })
+  const secondValue = converter({ ...secondProps })
+  return firstValue.greaterThanOrEqualTo(secondValue)
+}
+
+const conversionLTE = (
+  { ...firstProps },
+  { ...secondProps  },
+) => {
+  const firstValue = converter({ ...firstProps })
+  const secondValue = converter({ ...secondProps })
+  return firstValue.lessThanOrEqualTo(secondValue)
+}
+
+const toNegative = (n, options = {}) => {
+  return multiplyCurrencies(n, -1, options)
+}
+
 module.exports = {
   conversionUtil,
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
+  conversionGTE,
+  conversionLTE,
+  toNegative,
 }

@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
+const ethUtil = require('ethereumjs-util')
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
 
@@ -224,7 +225,7 @@ CustomizeGasModal.prototype.render = function () {
           value: convertedGasPrice,
           min: MIN_GAS_PRICE_GWEI,
           // max: 1000,
-          step: 1,
+          step: MIN_GAS_PRICE_GWEI,
           onChange: value => this.convertAndSetGasPrice(value),
           title: 'Gas Price (GWEI)',
           copy: 'We calculate the suggested gas prices based on network success rates.',
