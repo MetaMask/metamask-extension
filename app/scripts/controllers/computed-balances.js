@@ -20,23 +20,34 @@ class ComputedbalancesController {
   }
 
   updateAllBalances () {
-    for (let address in this.accountTracker.store.getState().accounts) {
+    Object.keys(this.balances).forEach((balance) => {
+      const address = balance.address
       this.balances[address].updateBalance()
-    }
+    })
   }
 
   _initBalanceUpdating () {
     const store = this.accountTracker.store.getState()
-    this.addAnyAccountsFromStore(store)
-    this.accountTracker.store.subscribe(this.addAnyAccountsFromStore.bind(this))
+    this.syncAllAccountsFromStore(store)
+    this.accountTracker.store.subscribe(this.syncAllAccountsFromStore.bind(this))
   }
 
-  addAnyAccountsFromStore(store) {
-    const balances = store.accounts
+  syncAllAccountsFromStore (store) {
+    const upstream = Object.keys(store.accounts)
+    const balances = Object.keys(this.balances)
+    .map(address => this.balances[address])
 
-    for (let address in balances) {
+    // Follow new addresses
+    for (const address in balances) {
       this.trackAddressIfNotAlready(address)
     }
+
+    // Unfollow old ones
+    balances.forEach(({ address }) => {
+      if (!upstream.includes(address)) {
+        delete this.balances[address]
+      }
+    })
   }
 
   trackAddressIfNotAlready (address) {
@@ -47,14 +58,14 @@ class ComputedbalancesController {
   }
 
   trackAddress (address) {
-    let updater = new BalanceController({
+    const updater = new BalanceController({
       address,
       accountTracker: this.accountTracker,
       txController: this.txController,
       blockTracker: this.blockTracker,
     })
     updater.store.subscribe((accountBalance) => {
-      let newState = this.store.getState()
+      const newState = this.store.getState()
       newState.computedBalances[address] = accountBalance
       this.store.updateState(newState)
     })

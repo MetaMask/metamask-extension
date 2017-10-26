@@ -9,7 +9,7 @@ module.exports = {
 }
 
 
-function migrateFromSnapshotsToDiffs(longHistory) {
+function migrateFromSnapshotsToDiffs (longHistory) {
   return (
     longHistory
     // convert non-initial history entries into diffs
@@ -20,19 +20,19 @@ function migrateFromSnapshotsToDiffs(longHistory) {
   )
 }
 
-function generateHistoryEntry(previousState, newState, note) {
+function generateHistoryEntry (previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState)
   // Add a note to the first op, since it breaks if we append it to the entry
   if (note && entry[0]) entry[0].note = note
   return entry
 }
 
-function replayHistory(_shortHistory) {
+function replayHistory (_shortHistory) {
   const shortHistory = clone(_shortHistory)
   return shortHistory.reduce((val, entry) => jsonDiffer.applyPatch(val, entry).newDocument)
 }
 
-function snapshotFromTxMeta(txMeta) {
+function snapshotFromTxMeta (txMeta) {
   // create txMeta snapshot for history
   const snapshot = clone(txMeta)
   // dont include previous history in this snapshot

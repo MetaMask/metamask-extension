@@ -235,7 +235,8 @@ app sections
 
 /* unlock */
 .error {
-  color: #E20202;
+  color: #f7861c;
+  margin-bottom: 9px;
 }
 
 .warning {

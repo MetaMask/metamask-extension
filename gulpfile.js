@@ -161,6 +161,13 @@ gulp.task('lint', function () {
     .pipe(eslint.failAfterError())
 });
 
+gulp.task('lint:fix', function () {
+  return gulp.src(['app/**/*.js', 'ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js'])
+    .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), {fix: true})))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
+});
+
 /*
 gulp.task('default', ['lint'], function () {
     // This will only run if the lint task is successful...
@@ -186,8 +193,13 @@ jsFiles.forEach((jsFile) => {
   gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
 })
 
-gulp.task('dev:js', gulp.parallel(...jsDevStrings))
-gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+// inpage must be built before all other scripts:
+const firstDevString = jsDevStrings.shift()
+gulp.task('dev:js', gulp.series(firstDevString, gulp.parallel(...jsDevStrings)))
+
+// inpage must be built before all other scripts:
+const firstBuildString = jsBuildStrings.shift()
+gulp.task('build:js',  gulp.series(firstBuildString, gulp.parallel(...jsBuildStrings)))
 
 // disc bundle analyzer tasks
 

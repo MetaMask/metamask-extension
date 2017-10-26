@@ -130,9 +130,9 @@ ShapeshiftForm.prototype.renderMain = function () {
         alignItems: 'flex-start',
       },
     }, [
-      this.props.warning
-        ? this.props.warning
-        && h('span.error.flex-center', {
+      this.props.warning ?
+        this.props.warning &&
+        h('span.error.flex-center', {
           style: {
             textAlign: 'center',
             width: '229px',

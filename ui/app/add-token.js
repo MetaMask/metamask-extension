@@ -73,7 +73,7 @@ AddTokenScreen.prototype.render = function () {
             }, [
               h('a', {
                 style: { fontWeight: 'bold', paddingRight: '10px'},
-                href: 'https://consensyssupport.happyfox.com/staff/kb/article/24-what-is-a-token-contract-address',
+                href: 'https://support.metamask.io/kb/article/24-what-is-a-token-contract-address',
                 target: '_blank',
               }, [
                 h('span', 'Token Contract Address  '),

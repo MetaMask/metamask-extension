@@ -2,10 +2,31 @@
 
 ## Current Master
 
-- Add new support for new eth_signTypedData method per EIP 712.
+## 3.12.0 2017-10-25
+
+- Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).
+- Lower minimum gas price to 0.1 GWEI.
+- Remove web3 injection message from production (thanks to @ChainsawBaby)
+
+## 3.11.2 2017-10-21
+
+- Fix bug where reject button would sometimes not work.
+- Fixed bug where sometimes MetaMask's connection to a page would be unreliable.
+
+## 3.11.1 2017-10-20
+
+- Fix bug where log filters were not populated correctly
+- Fix bug where web3 API was sometimes injected after the page loaded.
+- Fix bug where first account was sometimes not selected correctly after creating or restoring a vault.
+- Fix bug where imported accounts could not use new eth_signTypedData method.
+
+## 3.11.0 2017-10-11
+
+- Add support for new eth_signTypedData method per EIP 712.
 - Fix bug where some transactions would be shown as pending forever, even after successfully mined.
 - Fix bug where a transaction might be shown as pending forever if another tx with the same nonce was mined.
 - Add OS and browser version information to state log dump (for debugging purposes only).
+- Fix link to support article on token addresses.
 
 ## 3.10.9 2017-10-5
 

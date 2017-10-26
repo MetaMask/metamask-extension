@@ -5,7 +5,9 @@ const BN = require('ethereumjs-util').BN
 class BalanceController {
 
   constructor (opts = {}) {
+    this._validateParams(opts)
     const { address, accountTracker, txController, blockTracker } = opts
+
     this.address = address
     this.accountTracker = accountTracker
     this.txController = txController
@@ -63,6 +65,14 @@ class BalanceController {
       err: undefined,
     })
     return pending
+  }
+
+  _validateParams (opts) {
+    const { address, accountTracker, txController, blockTracker } = opts
+    if (!address || !accountTracker || !txController || !blockTracker) {
+      const error = 'Cannot construct a balance checker without address, accountTracker, txController, and blockTracker.'
+      throw new Error(error)
+    }
   }
 
 }

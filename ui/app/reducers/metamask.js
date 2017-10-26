@@ -1,5 +1,6 @@
 const extend = require('xtend')
 const actions = require('../actions')
+const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
 
 module.exports = reduceMetamask
 
@@ -10,6 +11,7 @@ function reduceMetamask (state, action) {
   var metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
+    isMascara: window.platform instanceof MetamascaraPlatform,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
@@ -17,6 +19,8 @@ function reduceMetamask (state, action) {
     lastUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
+    tokenExchangeRates: {},
+    coinOptions: {},
   }, state.metamask)
 
   switch (action.type) {
@@ -128,6 +132,25 @@ function reduceMetamask (state, action) {
         currentCurrency: action.value.currentCurrency,
         conversionRate: action.value.conversionRate,
         conversionDate: action.value.conversionDate,
+      })
+
+    case actions.PAIR_UPDATE:
+      const { value: { marketinfo: pairMarketInfo } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [pairMarketInfo.pair]: pairMarketInfo,
+        },
+      })
+
+    case actions.SHAPESHIFT_SUBVIEW:
+      const { value: { marketinfo, coinOptions } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [marketinfo.pair]: marketinfo,
+        },
+        coinOptions,
       })
 
     default:
