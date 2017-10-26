@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.12.0 2017-10-25
+
 - Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).
 - Lower minimum gas price to 0.1 GWEI.
 - Remove web3 injection message from production (thanks to @ChainsawBaby)
