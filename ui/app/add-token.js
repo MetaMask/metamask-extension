@@ -255,9 +255,9 @@ AddTokenScreen.prototype.renderTokenList = function () {
             h('div.add-token__token-symbol', symbol),
             h('div.add-token__token-name', name),
           ]),
-          tokenAlreadyAdded && (
-            h('div.add-token__token-message', 'Already added')
-          ),
+          // tokenAlreadyAdded && (
+          //   h('div.add-token__token-message', 'Already added')
+          // ),
         ])
       )
     })

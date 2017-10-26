@@ -265,6 +265,11 @@
 
   &__confirmation-title {
     padding: 30px 120px 12px;
+
+    @media screen and (max-width: $break-small) {
+      padding: 20px 0;
+      width: 100%;
+    }
   }
 
   &__confirmation-content {
@@ -274,7 +279,7 @@
   &__confirmation-token-list-item {
     display: flex;
     flex-flow: row nowrap;
-    padding: 0 120px;
+    margin: 0 auto;
     align-items: center;
   }
 
@@ -289,10 +294,14 @@
   @media screen and (max-width: $break-small) {
     top: 0;
     width: 100%;
-    overflow-y: auto;
+    overflow: hidden;
+    height: 100%;
 
     &__wrapper {
       box-shadow: none !important;
+      flex: 1 1 auto;
+      width: 100%;
+      overflow-y: auto;
     }
 
     &__footers {
@@ -312,6 +321,21 @@
     &__token-name {
       font-size: 12px;
       line-height: 16px;
+    }
+
+    &__buttons {
+      flex-flow: row nowrap;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 0;
+      margin: 0;
+      border-top: 1px solid $gallery;
+
+      button {
+        flex: 1 0 auto;
+        margin: 0 12px;
+      }
     }
   }
 }
