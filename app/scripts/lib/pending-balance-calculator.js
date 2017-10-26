@@ -13,7 +13,7 @@ class PendingBalanceCalculator {
     this.getNetworkBalance = getBalance
   }
 
-  async getBalance() {
+  async getBalance () {
     const results = await Promise.all([
       this.getNetworkBalance(),
       this.getPendingTransactions(),

@@ -97,6 +97,7 @@ MenuDroppoComponent.prototype.componentDidMount = function () {
   if (this && document.body) {
     this.globalClickHandler = this.globalClickOccurred.bind(this)
     document.body.addEventListener('click', this.globalClickHandler)
+    // eslint-disable-next-line react/no-find-dom-node
     var container = findDOMNode(this)
     this.container = container
   }
@@ -110,6 +111,7 @@ MenuDroppoComponent.prototype.componentWillUnmount = function () {
 
 MenuDroppoComponent.prototype.globalClickOccurred = function (event) {
   const target = event.target
+  // eslint-disable-next-line react/no-find-dom-node
   const container = findDOMNode(this)
 
   if (target !== container &&

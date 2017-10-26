@@ -1,4 +1,4 @@
-$wallet-balance-bg: $gallery;
+$wallet-balance-bg: #e7e7e7;
 $wallet-balance-breakpoint: 890px;
 $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$wallet-balance-breakpoint})";
 
@@ -20,6 +20,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   align-items: center;
   flex: 0 0 auto;
   cursor: pointer;
+  border-top: 1px solid $wallet-balance-bg;
 
   .balance-container {
     display: flex;

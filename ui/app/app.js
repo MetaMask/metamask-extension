@@ -4,6 +4,9 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const { checkFeatureToggle } = require('../lib/feature-toggle-utils')
 const actions = require('./actions')
+// mascara
+const MascaraFirstTime = require('../../mascara/src/app/first-time').default
+const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -21,7 +24,7 @@ const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 const WalletView = require('./components/wallet-view')
 
 // other views
-const ConfigScreen = require('./config')
+const Settings = require('./settings')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
 const InfoScreen = require('./info')
@@ -50,6 +53,9 @@ function mapStateToProps (state) {
     accounts,
     address,
     keyrings,
+    isInitialized,
+    noActiveNotices,
+    seedWords,
   } = state.metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -66,6 +72,8 @@ function mapStateToProps (state) {
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
+    isMascara: state.metamask.isMascara,
+    isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
     seedWords: state.metamask.seedWords,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
@@ -140,6 +148,8 @@ App.prototype.render = function () {
       (isLoading || isLoadingNetwork) && h(Loading, {
         loadingMessage: loadMessage,
       }),
+      
+      // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // content
       this.renderPrimary(),
@@ -203,9 +213,35 @@ App.prototype.renderSidebar = function () {
 }
 
 App.prototype.renderAppBar = function () {
+  const {
+    isUnlocked,
+    network,
+    provider,
+    networkDropdownOpen,
+    showNetworkDropdown,
+    hideNetworkDropdown,
+    currentView,
+  } = this.props
+
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
+
+  const props = this.props
+  const state = this.state || {}
+  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
+  const {isMascara, isOnboarding} = props
+
+  // Do not render header if user is in mascara onboarding
+  if (isMascara && isOnboarding) {
+    return null
+  }
+
+  // Do not render header if user is in mascara buy ether
+  if (isMascara && props.currentView.name === 'buyEth') {
+    return null
+  }
+
   return (
 
     h('.full-width', {
@@ -217,12 +253,14 @@ App.prototype.renderAppBar = function () {
       }, [
         h('div.app-header-contents', {}, [
           h('div.left-menu-wrapper', {
-            style: {},
+            onClick: () => {
+              props.dispatch(actions.backToAccountDetail(props.activeAddress))
+            },
           }, [
             // mini logo
-            h('img', {
-              height: 24,
-              width: 24,
+            h('img.metafox-icon', {
+              height: 29,
+              width: 29,
               src: '/images/icon-128.png',
             }),
 
@@ -243,22 +281,21 @@ App.prototype.renderAppBar = function () {
             }, [
               // Network Indicator
               h(NetworkIndicator, {
-                network: this.props.network,
-                provider: this.props.provider,
+                network,
+                provider,
+                disabled: currentView.name === 'confTx',
                 onClick: (event) => {
                   event.preventDefault()
                   event.stopPropagation()
-                  if (this.props.networkDropdownOpen === false) {
-                    this.props.showNetworkDropdown()
-                  } else {
-                    this.props.hideNetworkDropdown()
-                  }
+                  return networkDropdownOpen === false
+                    ? showNetworkDropdown()
+                    : hideNetworkDropdown()
                 },
               }),
 
             ]),
 
-            h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
+            isUnlocked && h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
               h(Identicon, {
                 address: this.props.selectedAddress,
                 diameter: 32,
@@ -272,6 +309,17 @@ App.prototype.renderAppBar = function () {
   )
 }
 
+
+App.prototype.renderLoadingIndicator = function ({ isLoading, isLoadingNetwork, loadMessage }) {
+  const { isMascara } = this.props
+
+  return isMascara
+    ? null
+    : h(Loading, {
+      isLoading: isLoading || isLoadingNetwork,
+      loadingMessage: loadMessage,
+    })
+}
 
 App.prototype.renderBackButton = function (style, justArrow = false) {
   var props = this.props
@@ -295,6 +343,11 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
+  const {isMascara, isOnboarding} = props
+
+  if (isMascara && isOnboarding) {
+    return h(MascaraFirstTime)
+  }
 
   // notices
   if (!props.noActiveNotices) {
@@ -383,7 +436,7 @@ App.prototype.renderPrimary = function () {
 
     case 'config':
       log.debug('rendering config screen')
-      return h(ConfigScreen, {key: 'config'})
+      return h(Settings, {key: 'config'})
 
     case 'import-menu':
       log.debug('rendering import screen')
@@ -395,11 +448,43 @@ App.prototype.renderPrimary = function () {
 
     case 'info':
       log.debug('rendering info screen')
-      return h(InfoScreen, {key: 'info'})
+      return h(Settings, {key: 'info', tab: 'info'})
 
     case 'buyEth':
       log.debug('rendering buy ether screen')
       return h(BuyView, {key: 'buyEthView'})
+
+    case 'onboardingBuyEth':
+      log.debug('rendering onboarding buy ether screen')
+      return h(MascaraBuyEtherScreen, {key: 'buyEthView'})
+
+    case 'qr':
+      log.debug('rendering show qr screen')
+      return h('div', {
+        style: {
+          position: 'absolute',
+          height: '100%',
+          top: '0px',
+          left: '0px',
+        },
+      }, [
+        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer.color-orange', {
+          onClick: () => props.dispatch(actions.backToAccountDetail(props.activeAddress)),
+          style: {
+            marginLeft: '10px',
+            marginTop: '50px',
+          },
+        }),
+        h('div', {
+          style: {
+            position: 'absolute',
+            left: '44px',
+            width: '285px',
+          },
+        }, [
+          h(QrView, {key: 'qr'}),
+        ]),
+      ])
 
     default:
       log.debug('rendering default, account detail screen')

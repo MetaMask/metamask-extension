@@ -1,5 +1,6 @@
 const extend = require('xtend')
 const actions = require('../actions')
+const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
 
 module.exports = reduceMetamask
 
@@ -11,6 +12,7 @@ function reduceMetamask (state, action) {
     isInitialized: false,
     isUnlocked: false,
     isAccountMenuOpen: false,
+    isMascara: window.platform instanceof MetamascaraPlatform,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
@@ -31,6 +33,7 @@ function reduceMetamask (state, action) {
       memo: '',
       errors: {},
     },
+    coinOptions: {},
   }, state.metamask)
 
   switch (action.type) {
@@ -150,7 +153,7 @@ function reduceMetamask (state, action) {
       })
 
     case actions.UPDATE_TOKEN_EXCHANGE_RATE:
-    const { payload: { pair, marketinfo } } = action
+      const { payload: { pair, marketinfo } } = action
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
@@ -226,10 +229,6 @@ function reduceMetamask (state, action) {
       })
 
     case actions.UPDATE_SEND_ERRORS:
-      console.log(123, {
-        ...metamaskState.send.errors,
-        ...action.value,
-      })
       return extend(metamaskState, {
         send: {
           ...metamaskState.send,
@@ -238,6 +237,39 @@ function reduceMetamask (state, action) {
             ...action.value,
           }
         },
+      })
+
+    case actions.CLEAR_SEND:
+      return extend(metamaskState, {
+        send: {
+          gasLimit: null,
+          gasPrice: null,
+          gasTotal: null,
+          from: '',
+          to: '',
+          amount: '0x0',
+          memo: '',
+          errors: {},
+        },
+      })
+
+    case actions.PAIR_UPDATE:
+      const { value: { marketinfo: pairMarketInfo } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [pairMarketInfo.pair]: pairMarketInfo,
+        },
+      })
+
+    case actions.SHAPESHIFT_SUBVIEW:
+      const { value: { marketinfo: ssMarketInfo, coinOptions } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [marketinfo.pair]: ssMarketInfo,
+        },
+        coinOptions,
       })
 
     default:

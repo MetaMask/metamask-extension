@@ -255,9 +255,9 @@ AddTokenScreen.prototype.renderTokenList = function () {
             h('div.add-token__token-symbol', symbol),
             h('div.add-token__token-name', name),
           ]),
-          tokenAlreadyAdded && (
-            h('div.add-token__token-message', 'Already added')
-          ),
+          // tokenAlreadyAdded && (
+          //   h('div.add-token__token-message', 'Already added')
+          // ),
         ])
       )
     })
@@ -350,7 +350,10 @@ AddTokenScreen.prototype.render = function () {
         h('div.add-token__footers', [
           h('div.add-token__add-custom', {
             onClick: () => this.setState({ isCollapsed: !isCollapsed }),
-          }, 'Add custom token'),
+          }, [
+            'Add custom token',
+            h(`i.fa.fa-angle-${isCollapsed ? 'down' : 'up'}`),
+          ]),
           this.renderCustomForm(),
         ]),
       ]),

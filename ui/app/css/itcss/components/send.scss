@@ -274,6 +274,7 @@
   color: #9b9b9b;
   font-size: .8em;
   padding: 1px 4px;
+  cursor: pointer;
 }
 
 .token-gas {
@@ -400,7 +401,7 @@
 
 .send-v2 {
   &__container {
-    height: 701px;
+    // height: 701px;
     width: 380px;
     border-radius: 8px;
     background-color: $white;
@@ -416,6 +417,7 @@
       width: 100%;
       top: 0;
       box-shadow: none;
+      flex: 1 1 auto;
     }
   }
 
@@ -473,6 +475,7 @@
 
     @media screen and (max-width: $break-small) {
       height: 59px;
+      width: 100vw;
     }
   }
 
@@ -483,10 +486,13 @@
     position: absolute;
     transform: rotate(45deg);
     left: 178px;
-    top: 65px;
+    top: 75px;
 
     @media screen and (max-width: $break-small) {
       top: 46px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
     }
   }
 
@@ -520,18 +526,20 @@
   }
 
   &__form {
-    margin-top: 13px;
+    margin: 13px 0;
     width: 100%;
 
     @media screen and (max-width: $break-small) {
-      margin-top: 0px;
+      padding: 13px 0;
+      margin: 0;
       height: 0;
       overflow-y: auto;
       flex: 1 1 auto;
     }
   }
 
-  &__form-header, &__form-header-copy {
+  &__form-header,
+  &__form-header-copy {
     width: 100%;
     display: flex;
     flex-flow: column;
@@ -594,6 +602,16 @@
     }
   }
 
+  &__to-autocomplete {
+    position: relative;
+
+    &__down-caret {
+      position: absolute;
+      top: 18px;
+      right: 12px;
+    }
+  }
+
   &__to-autocomplete, &__memo-text-area {
     &__input {
       height: 54px;
@@ -652,29 +670,30 @@
   }
 
   &__next-btn,
-  &__cancel-btn {
+  &__cancel-btn,
+  &__next-btn__disabled {
     width: 163px;
     text-align: center;
     height: 55px;
-    width: 163px;
     border-radius: 2px;
     background-color: $white;
     font-family: Roboto;
     font-size: 16px;
     font-weight: 300;
     line-height: 21px;
-    text-align: center;
     border: 1px solid;
+    margin: 0 4px;
+  }
+
+  &__next-btn,
+  &__next-btn__disabled {
+    color: $curious-blue;
+    border-color: $curious-blue;
   }
 
   &__next-btn__disabled {
     opacity: .5;
     cursor: auto;
-  }
-
-  &__next-btn {
-    color: $curious-blue;
-    border-color: $curious-blue;
   }
 
   &__cancel-btn {
@@ -692,8 +711,8 @@
     flex-flow: column;
 
     @media screen and (max-width: $break-small) {
-      width: 355px;
-      height: 598px;
+      width: 100vw;
+      height: 100vh;
     }
 
     &__header {
@@ -703,6 +722,10 @@
       align-items: center;
       justify-content: space-between;
       font-size: 22px;
+
+      @media screen and (max-width: $break-small) {
+        flex: 0 0 auto;
+      }
     }
 
     &__title {
@@ -718,14 +741,19 @@
       margin-right: 19.25px;
     }
 
-    &__body {
-      height: 248px;
+    &__content {
       display: flex;
+      flex-flow: column nowrap;
+      height: 100%;
+    }
+
+    &__body {
+      display: flex;
+      margin-bottom: 24px;
 
       @media screen and (max-width: $break-small) {
-        width: 355px;
-        height: 470px;
         flex-flow: column;
+        flex: 1 1 auto;
       }
     }
 
@@ -736,6 +764,11 @@
       align-items: center;
       justify-content: space-between;
       font-size: 22px;
+      position: relative;
+
+      @media screen and (max-width: $break-small) {
+        flex: 0 0 auto;
+      }
     }
 
     &__buttons {
@@ -745,7 +778,7 @@
       margin-right: 21.25px;
     }
 
-    &__revert, &__cancel, &__save {
+    &__revert, &__cancel, &__save, &__save__error {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -758,7 +791,7 @@
       margin-left: 21.25px;
     }
 
-    &__cancel, &__save {
+    &__cancel, &__save, &__save__error {
       height: 34.64px;
       width: 85.74px;
       border: 1px solid $dusty-gray;
@@ -766,6 +799,21 @@
       font-family: 'DIN OT';
       font-size: 12px;
       color: $dusty-gray;
+    }
+
+    &__save__error {
+      opacity: 0.5;
+      cursor: auto;
+    }
+
+    &__error-message {
+      display: block;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 12px;
+      line-height: 12px;
+      color: $red;
     }
   }
 
@@ -778,7 +826,6 @@
 
     &__title {
       height: 26px;
-      width: 84px;
       color: $tundora;
       font-family: Roboto;
       font-size: 20px;

@@ -224,7 +224,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
         ]),
 
         h('div.confirm-screen-section-column', [
-          h('div.confirm-screen-row-info', `${fiatAmount + fiatGas} ${currentCurrency}`),
+          h('div.confirm-screen-row-info', `${addCurrencies(fiatAmount, fiatGas)} ${currentCurrency}`),
           h('div.confirm-screen-row-detail', `${addCurrencies(tokenAmount, tokenGas || '0')} ${symbol}`),
         ]),
       ])
@@ -263,7 +263,7 @@ ConfirmSendToken.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.confirm-screen-container', {
+    h('div.confirm-screen-container.confirm-send-token', {
       style: { minWidth: '355px' },
     }, [
       // Main Send token Card

@@ -50,7 +50,7 @@ ConfirmSendEther.prototype.getAmount = function () {
   const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  console.log(`conversionRate, currentCurrency`, conversionRate, currentCurrency);
+
   const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
@@ -194,7 +194,7 @@ ConfirmSendEther.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.confirm-screen-container', {
+    h('div.confirm-screen-container.confirm-send-ether', {
       style: { minWidth: '355px' },
     }, [
       // Main Send token Card

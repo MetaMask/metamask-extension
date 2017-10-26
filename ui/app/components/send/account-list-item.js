@@ -27,6 +27,8 @@ AccountListItem.prototype.render = function () {
     icon = null,
     conversionRate,
     currentCurrency,
+    displayBalance = true,
+    displayAddress = false,
   } = this.props
 
   const { name, address, balance } = account || {}
@@ -46,13 +48,15 @@ AccountListItem.prototype.render = function () {
         },
       ),
 
-      h('div.account-list-item__account-name', {}, name),
+      h('div.account-list-item__account-name', {}, name || address),
 
       icon && h('div.account-list-item__icon', [icon]),
 
     ]),
 
-    h(CurrencyDisplay, {
+    displayAddress && name && h('div.account-list-item__account-address', address),
+
+    displayBalance && h(CurrencyDisplay, {
       primaryCurrency: 'ETH',
       convertedCurrency: currentCurrency,
       value: balance,

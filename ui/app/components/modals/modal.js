@@ -162,10 +162,9 @@ const MODALS = {
       h(CustomizeGasModal, {}, []),
     ],
     mobileModalStyle: {
-      width: '355px',
-      height: '598px',
-      // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-      top: '5%',
+      width: '100vw',
+      height: '100vh',
+      top: '0',
       transform: 'none',
       left: '0',
       right: '0',

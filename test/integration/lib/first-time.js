@@ -1,4 +1,5 @@
 const PASSWORD = 'password123'
+const runMascaraFirstTimeTest = require('./mascara-first-time')
 
 QUnit.module('first time usage')
 
@@ -11,9 +12,9 @@ QUnit.test('render init screen', (assert) => {
 })
 
 async function runFirstTimeUsageTest(assert, done) {
-  let waitTime = 0
-  if (window.METAMASK_PLATFORM_TYPE === 'mascara') waitTime = 4000
-  await timeout(waitTime)
+  if (window.METAMASK_PLATFORM_TYPE === 'mascara') {
+    return runMascaraFirstTimeTest(assert, done)
+  }
 
   const app = $('#app-content')
 
