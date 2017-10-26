@@ -29,11 +29,11 @@ QrCodeView.prototype.render = function () {
   const qrImage = qrCode(4, 'M')
   qrImage.addData(address)
   qrImage.make()
-  return h('.div.flex-column.flex-center', {
-    style: {
-    },
-  }, [
-    Array.isArray(Qr.message) ? h('.message-container', this.renderMultiMessage()) : h('.qr-header', Qr.message),
+
+  return h('.div.flex-column.flex-center', [
+    Array.isArray(Qr.message)
+      ? h('.message-container', this.renderMultiMessage())
+      : Qr.message && h('.qr-header', Qr.message),
 
     this.props.warning ? this.props.warning && h('span.error.flex-center', {
       style: {
