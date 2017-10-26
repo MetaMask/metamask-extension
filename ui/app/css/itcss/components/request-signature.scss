@@ -131,8 +131,8 @@
     margin-top: 20px;
   }
 
-  &__notice {
-    color: #9B9B9B;
+  &__notice,
+  &__warning {
     font-family: "Avenir Next";
     font-size: 14px;
     line-height: 19px;
@@ -140,6 +140,14 @@
     margin-top: 41px;
     margin-bottom: 11px;
     width: 100%;
+  }
+
+  &__notice {
+    color: $dusty-gray;
+  }
+
+  &__warning {
+    color: $crimson;
   }
 
   &__rows {
