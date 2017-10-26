@@ -37,11 +37,7 @@ MainContainer.prototype.render = function () {
         break
       case 'config':
         log.debug('rendering config screen from unlock screen.')
-        contents = {
-          component: Settings,
-          key: 'config',
-        }
-        break
+        return h(Settings, {key: 'config'})
       default:
         log.debug('rendering locked screen')
         contents = {

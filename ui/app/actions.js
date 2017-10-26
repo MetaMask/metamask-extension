@@ -808,9 +808,50 @@ function updateMetamaskState (newState) {
   }
 }
 
+const backgroundSetLocked = () => {
+  return new Promise((resolve, reject) => {
+    background.setLocked(error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function lockMetamask () {
   log.debug(`background.setLocked`)
-  return callBackgroundThenUpdate(background.setLocked)
+
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return backgroundSetLocked()
+      .then(() => updateMetamaskStateFromBackground())
+      .catch(error => {
+        dispatch(actions.displayWarning(error.message))
+        return Promise.reject(error)
+      })
+      .then(newState => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
+      .catch(() => dispatch({ type: actions.LOCK_METAMASK }))
+  }
 }
 
 function setCurrentAccountTab (newTabName) {
