@@ -1,4 +1,5 @@
 const extend = require('xtend')
+const copyToClipboard = require('copy-to-clipboard')
 
 //
 // Sub-Reducers take in the complete state and return their sub-state
@@ -57,9 +58,16 @@ window.logStateString = function (cb) {
   })
 }
 
-window.logState = function () {
-  return window.logStateString((result) => {
-    console.log(result)
+window.logState = function (toClipboard) {
+  return window.logStateString((err, result) => {
+    if (err) {
+      console.error(err.message)
+    } else if (toClipboard) {
+      copyToClipboard(result)
+      console.log('State log copied')
+    } else {
+      console.log(result)
+    }
   })
 }
 
