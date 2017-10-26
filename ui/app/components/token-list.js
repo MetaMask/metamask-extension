@@ -15,16 +15,6 @@ function mapStateToProps (state) {
   }
 }
 
-const defaultTokens = []
-const contracts = require('eth-contract-metadata')
-for (const address in contracts) {
-  const contract = contracts[address]
-  if (contract.erc20) {
-    contract.address = address
-    defaultTokens.push(contract)
-  }
-}
-
 module.exports = connect(mapStateToProps)(TokenList)
 
 inherits(TokenList, Component)
@@ -47,13 +37,13 @@ TokenList.prototype.render = function () {
 
   if (error) {
     log.error(error)
-    return h('.hotFix', {
+    return h('.token-list', {
       style: {
         padding: '80px',
       },
     }, [
       'We had trouble loading your token balances. You can view them ',
-      h('span.hotFix', {
+      h('span', {
         style: {
           color: 'rgba(247, 134, 28, 1)',
           cursor: 'pointer',
@@ -151,10 +141,7 @@ TokenList.prototype.componentDidUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
-  const heldTokens = tokens.filter(token => {
-    return token.balance !== '0' && token.string !== '0.000'
-  })
-  this.setState({ tokens: heldTokens, isLoading: false })
+  this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
@@ -162,15 +149,3 @@ TokenList.prototype.componentWillUnmount = function () {
   this.tracker.stop()
 }
 
-function uniqueMergeTokens (tokensA, tokensB = []) {
-  const uniqueAddresses = []
-  const result = []
-  tokensA.concat(tokensB).forEach((token) => {
-    const normal = normalizeAddress(token.address)
-    if (!uniqueAddresses.includes(normal)) {
-      uniqueAddresses.push(normal)
-      result.push(token)
-    }
-  })
-  return result
-}
