@@ -17,6 +17,10 @@
       top: 0;
       box-shadow: none;
     }
+
+    @media screen and (min-width: $break-large) {
+      max-height: 620px;
+    }
   }
 
   &__header {
@@ -27,6 +31,7 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
+    flex: 0 0 auto;
   }
 
   &__header-background {
@@ -105,6 +110,8 @@
     height: 100%;
     display: flex;
     flex-flow: column;
+    flex: 1 1 auto;
+    height: 0;
   }
 
   &__request-info {
@@ -142,13 +149,11 @@
     border-top: 1px solid $geyser;
     display: flex;
     flex-flow: column;
-    padding-right: 4px;
   }
 
   &__row {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid $geyser;
   }
 
   &__row-title {
@@ -167,21 +172,21 @@
     font-family: Roboto;
     font-size: 14px;
     line-height: 19px;
-    margin-top: 6px;
-    margin-bottom: 15px;
-    margin-left: 18px;
-    width: 95%;
+    width: 100%;
     overflow-wrap: break-word;
+    border-bottom: 1px solid #d2d8dd;
+    padding: 6px 18px 15px;
   }
 
   &__footer {
-    height: 108px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
     font-size: 22px;
     position: relative;
+    flex: 0 0 auto;
+    border-top: 1px solid $geyser;
 
     &__cancel-button,
     &__sign-button {
@@ -198,17 +203,20 @@
       border-radius: 2px;
       box-shadow: none;
       max-width: 162px;
+      margin: 12px;
     }
 
     &__cancel-button {
       background: none;
       border: 1px solid $dusty-gray;
+      margin-right: 6px;
     }
 
     &__sign-button {
       background-color: $caribbean-green;
       border-width: 0;
       color: $white;
+      margin-left: 6px;
     }
   }
 }
