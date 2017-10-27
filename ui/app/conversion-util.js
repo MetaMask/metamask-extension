@@ -13,7 +13,6 @@
 * @param {string} [options.fromDenomination = 'WEI'] The denomination of the passed value
 * @param {number} [options.numberOfDecimals] The desired number of in the result
 * @param {number} [options.conversionRate] The rate to use to make the fromCurrency -> toCurrency conversion
-* @param {number} [options.ethToUSDRate] If present, a second conversion - at ethToUSDRate - happens after conversionRate is applied.
 * @returns {(number | string | BN)}
 *
 * The utility passes value along with the options as a single object to the `converter` function.
@@ -38,6 +37,7 @@ const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 const convert = R.invoker(1, 'times')
 const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
 const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
+const decToBigNumberViaString = n => R.pipe(String, toBigNumber['dec'])
 
 // Setter Maps
 const toBigNumber = {
@@ -95,12 +95,12 @@ const whenPropApplySetterMap = (prop, setterMap) => whenPredSetWithPropAndSetter
 
 // Conversion utility function
 const converter = R.pipe(
+  whenPredSetCRWithPropAndSetter(R.prop('conversionRate'), 'conversionRate', decToBigNumberViaString),
   whenPredSetCRWithPropAndSetter(R.prop('invertConversionRate'), 'conversionRate', invertConversionRate),
   whenPropApplySetterMap('fromNumericBase', toBigNumber),
   whenPropApplySetterMap('fromDenomination', toNormalizedDenomination),
   whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
   whenPropApplySetterMap('toDenomination', toSpecifiedDenomination),
-  whenPredSetWithPropAndSetter(R.prop('ethToUSDRate'), 'ethToUSDRate', convert),
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPropApplySetterMap('toNumericBase', baseChange),
   R.view(R.lensProp('value'))
@@ -115,7 +115,6 @@ const conversionUtil = (value, {
   toDenomination,
   numberOfDecimals,
   conversionRate,
-  ethToUSDRate,
   invertConversionRate,
 }) => converter({
   fromCurrency,
@@ -126,7 +125,6 @@ const conversionUtil = (value, {
   toDenomination,
   numberOfDecimals,
   conversionRate,
-  ethToUSDRate,
   invertConversionRate,
   value: value || '0',
 });
@@ -152,7 +150,10 @@ const multiplyCurrencies = (a, b, options = {}) => {
     ...conversionOptions,
   } = options
 
-  const value = (new BigNumber(a, multiplicandBase)).times(b, multiplierBase);
+  const bigNumberA = new BigNumber(String(a), multiplicandBase)
+  const bigNumberB = new BigNumber(String(b), multiplierBase)
+
+  const value = bigNumberA.times(bigNumberB);
 
   return converter({
     value,

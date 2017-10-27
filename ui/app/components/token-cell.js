@@ -6,7 +6,7 @@ const Identicon = require('./identicon')
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
 const actions = require('../actions')
-const { conversionUtil } = require('../conversion-util')
+const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 
 const TokenMenuDropdown = require('./dropdowns/token-menu-dropdown.js')
 
@@ -17,7 +17,7 @@ function mapStateToProps (state) {
     selectedTokenAddress: state.metamask.selectedTokenAddress,
     userAddress: selectors.getSelectedAddress(state),
     tokenExchangeRates: state.metamask.tokenExchangeRates,
-    ethToUSDRate: state.metamask.conversionRate,
+    conversionRate: state.metamask.conversionRate,
     sidebarOpen: state.appState.sidebarOpen,
   }
 }
@@ -61,7 +61,7 @@ TokenCell.prototype.render = function () {
     setSelectedToken,
     selectedTokenAddress,
     tokenExchangeRates,
-    ethToUSDRate,
+    conversionRate,
     hideSidebar,
     sidebarOpen,
     currentCurrency,
@@ -70,22 +70,26 @@ TokenCell.prototype.render = function () {
   
   const pair = `${symbol.toLowerCase()}_eth`;
 
-  let currentTokenToEthRate;
+  let currentTokenToFiatRate;
   let currentTokenInFiat;
-  let formattedUSD = ''
+  let formattedFiat = ''
 
   if (tokenExchangeRates[pair]) {
-    currentTokenToEthRate = tokenExchangeRates[pair].rate;
+    currentTokenToFiatRate = multiplyCurrencies(
+      tokenExchangeRates[pair].rate,
+      conversionRate
+    )
     currentTokenInFiat = conversionUtil(string, {
       fromNumericBase: 'dec',
       fromCurrency: symbol,
-      toCurrency: 'USD',
+      toCurrency: currentCurrency.toUpperCase(),
       numberOfDecimals: 2,
-      conversionRate: currentTokenToEthRate,
-      ethToUSDRate,
+      conversionRate: currentTokenToFiatRate,
     })
-    formattedUSD = `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`;
+    formattedFiat = `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`;
   }
+
+  const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
  
   return (
     h('div.token-list-item', {
@@ -108,9 +112,9 @@ TokenCell.prototype.render = function () {
       h('h.token-list-item__balance-wrapper', null, [
         h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
-        h('div.token-list-item__fiat-amount', {
+        showFiat && h('div.token-list-item__fiat-amount', {
           style: {},
-        }, formattedUSD),
+        }, formattedFiat),
       ]),
 
       h('i.fa.fa-ellipsis-h.fa-lg.token-list-item__ellipsis.cursor-pointer', {

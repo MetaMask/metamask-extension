@@ -9,7 +9,7 @@ abiDecoder.addABI(abi)
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 
-const { conversionUtil } = require('../conversion-util')
+const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 
 const { getCurrentCurrency } = require('../selectors')
 
@@ -19,6 +19,7 @@ function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
     currentCurrency: getCurrentCurrency(state),
+    tokenExchangeRates: state.metamask.tokenExchangeRates,
   }
 }
 
@@ -88,6 +89,9 @@ TxListItem.prototype.getSendTokenTotal = function () {
   const {
     txParams = {},
     tokens,
+    conversionRate,
+    tokenExchangeRates,
+    currentCurrency,
   } = this.props
 
   const toAddress = txParams.to
@@ -95,12 +99,35 @@ TxListItem.prototype.getSendTokenTotal = function () {
   const { params = [] } = decodedData || {}
   const { value } = params[1] || {}
   const { decimals, symbol } = tokens.filter(({ address }) => address === toAddress)[0] || {}
-
   const multiplier = Math.pow(10, Number(decimals || 0))
   const total = Number(value / multiplier)
 
+  const pair = symbol && `${symbol.toLowerCase()}_eth`;
+  
+  let tokenToFiatRate
+  let totalInFiat
+
+  if (tokenExchangeRates[pair]) {
+    tokenToFiatRate = multiplyCurrencies(
+      tokenExchangeRates[pair].rate,
+      conversionRate
+    )
+
+    totalInFiat = conversionUtil(total, {
+      fromNumericBase: 'dec',
+      toNumericBase: 'dec',
+      fromCurrency: symbol,
+      toCurrency: currentCurrency,
+      numberOfDecimals: 2,
+      conversionRate: tokenToFiatRate,
+    })
+  }
+
+  const showFiat = Boolean(totalInFiat) && currentCurrency.toUpperCase() !== symbol
+
   return {
     total: `${total} ${symbol}`,
+    fiatTotal: showFiat && `${totalInFiat} ${currentCurrency.toUpperCase()}`,
   }
 }
 
@@ -182,7 +209,7 @@ TxListItem.prototype.render = function () {
             }),
           }, total),
 
-          h('span.tx-list-fiat-value', fiatTotal),
+          fiatTotal && h('span.tx-list-fiat-value', fiatTotal),
 
         ]),
       ]),
