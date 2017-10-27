@@ -21,9 +21,7 @@ const fuse = new Fuse(contractList, {
 })
 const actions = require('./actions')
 const ethUtil = require('ethereumjs-util')
-const abi = require('human-standard-token-abi')
-const Eth = require('ethjs-query')
-const EthContract = require('ethjs-contract')
+const { tokenInfoGetter } = require('./token-util')
 const R = require('ramda')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
@@ -63,11 +61,7 @@ function AddTokenScreen () {
 }
 
 AddTokenScreen.prototype.componentWillMount = function () {
-  if (typeof global.ethereumProvider === 'undefined') return
-
-  this.eth = new Eth(global.ethereumProvider)
-  this.contract = new EthContract(this.eth)
-  this.TokenContract = this.contract(abi)
+  this.tokenInfoGetter = tokenInfoGetter()
 }
 
 AddTokenScreen.prototype.toggleToken = function (address, token) {
@@ -164,18 +158,11 @@ AddTokenScreen.prototype.validate = function () {
 }
 
 AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address) {
-  const contract = this.TokenContract.at(address)
-
-  const results = await Promise.all([
-    contract.symbol(),
-    contract.decimals(),
-  ])
-
-  const [ symbol, decimals ] = results
+  const { symbol, decimals } = await this.tokenInfoGetter(address)
   if (symbol && decimals) {
     this.setState({
-      customSymbol: symbol[0],
-      customDecimals: decimals[0].toString(),
+      customSymbol: symbol,
+      customDecimals: decimals.toString(),
     })
   }
 }

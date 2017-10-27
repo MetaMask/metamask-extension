@@ -8,6 +8,7 @@ const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
+const contractMap = require('eth-contract-metadata')
 
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 
@@ -26,6 +27,24 @@ function mapStateToProps (state) {
 inherits(TxListItem, Component)
 function TxListItem () {
   Component.call(this)
+
+  this.state = {
+    total: null,
+    fiatTotal: null,
+  }
+}
+
+TxListItem.prototype.componentDidMount = async function () {
+  const { txParams = {} } = this.props
+
+  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+  const { name: txDataName } = decodedData || {}
+
+  const { total, fiatTotal } = txDataName === 'transfer'
+    ? await this.getSendTokenTotal()
+    : this.getSendEtherTotal()
+
+  this.setState({ total, fiatTotal })
 }
 
 TxListItem.prototype.getAddressText = function () {
@@ -85,7 +104,27 @@ TxListItem.prototype.getSendEtherTotal = function () {
   }
 }
 
-TxListItem.prototype.getSendTokenTotal = function () {
+TxListItem.prototype.getTokenInfo = async function () {
+  const { txParams = {}, tokenInfoGetter, tokens } = this.props
+  const toAddress = txParams.to
+
+  let decimals
+  let symbol
+
+  ({ decimals, symbol } = tokens.filter(({ address }) => address === toAddress)[0] || {})
+
+  if (!decimals && !symbol) {
+    ({ decimals, symbol } = contractMap[toAddress] || {})
+  }
+
+  if (!decimals && !symbol) {
+    ({ decimals, symbol } = await tokenInfoGetter(toAddress))
+  }
+
+  return { decimals, symbol }
+}
+
+TxListItem.prototype.getSendTokenTotal = async function () {
   const {
     txParams = {},
     tokens,
@@ -94,11 +133,10 @@ TxListItem.prototype.getSendTokenTotal = function () {
     currentCurrency,
   } = this.props
 
-  const toAddress = txParams.to
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { params = [] } = decodedData || {}
   const { value } = params[1] || {}
-  const { decimals, symbol } = tokens.filter(({ address }) => address === toAddress)[0] || {}
+  const { decimals, symbol } = await this.getTokenInfo()
   const multiplier = Math.pow(10, Number(decimals || 0))
   const total = Number(value / multiplier)
 
@@ -139,15 +177,8 @@ TxListItem.prototype.render = function () {
     dateString,
     address,
     className,
-    txParams = {},
   } = this.props
-
-  const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
-  const { name: txDataName } = decodedData || {}
-
-  const { total, fiatTotal } = txDataName === 'transfer'
-    ? this.getSendTokenTotal()
-    : this.getSendEtherTotal()
+  const { total, fiatTotal } = this.state
 
   return h(`div${className || ''}`, {
     key: transActionId,
