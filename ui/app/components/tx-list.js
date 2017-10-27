@@ -9,6 +9,7 @@ const ShiftListItem = require('./shift-list-item')
 const { formatBalance, formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
+const { tokenInfoGetter } = require('../token-util')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 
@@ -28,6 +29,10 @@ function mapDispatchToProps (dispatch) {
 inherits(TxList, Component)
 function TxList () {
   Component.call(this)
+}
+
+TxList.prototype.componentWillMount = function () {
+  this.tokenInfoGetter = tokenInfoGetter()
 }
 
 TxList.prototype.render = function () {
@@ -99,6 +104,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionAmount,
     transactionHash,
     conversionRate,
+    tokenInfoGetter: this.tokenInfoGetter,
   }
 
   const isUnapproved = transactionStatus === 'unapproved';
