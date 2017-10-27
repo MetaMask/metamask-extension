@@ -16,6 +16,8 @@ function mapStateToProps (state) {
   return {
     txsToRender: selectors.transactionsSelector(state),
     conversionRate: selectors.conversionRateSelector(state),
+    selectedAddress: selectors.getSelectedAddress(state),
+    currentNetwork: state.metamask.network,
   }
 }
 
@@ -32,7 +34,12 @@ function TxList () {
 
 TxList.prototype.render = function () {
 
-  const { txsToRender, showConfTxPage } = this.props
+  const {
+    txsToRender,
+    showConfTxPage,
+    selectedAddress,
+    currentNetwork,
+  } = this.props
 
   return h('div.flex-column.tx-list-container', {}, [
 
@@ -44,13 +51,19 @@ TxList.prototype.render = function () {
 
     this.renderTransaction(),
 
+    txsToRender.length > 20 && h('div.tx-list-see-more-wrapper', [
+      h('div.tx-list-see-more', {
+        onClick: () => this.view('address', selectedAddress, currentNetwork)
+      }, 'See more of your transactions on etherscan.')
+    ])
+      
   ])
 }
 
 TxList.prototype.renderTransaction = function () {
   const { txsToRender, conversionRate } = this.props
   return txsToRender.length
-    ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate))
+    ? txsToRender.slice(0, 20).map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate))
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
@@ -107,7 +120,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     opts.onClick = () => showConfTxPage({id: transActionId})
     opts.transactionStatus = 'Not Started'
   } else if (transactionHash) {
-    opts.onClick = () => this.view(transactionHash, transactionNetworkId)
+    opts.onClick = () => this.view('tx', transactionHash, transactionNetworkId)
   }
 
   opts.className = classnames('.tx-list-item', {
@@ -118,8 +131,8 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   return h(TxListItem, opts)
 }
 
-TxList.prototype.view = function (txHash, network) {
-  const url = etherscanLinkFor(txHash, network)
+TxList.prototype.view = function (type, hash, network) {
+  const url = etherscanLinkFor(type, hash, network)
   if (url) {
     navigateTo(url)
   }
@@ -129,7 +142,7 @@ function navigateTo (url) {
   global.platform.openWindow({ url })
 }
 
-function etherscanLinkFor (txHash, network) {
+function etherscanLinkFor (type, hash, network) {
   const prefix = prefixForNetwork(network)
-  return `https://${prefix}etherscan.io/tx/${txHash}`
+  return `https://${prefix}etherscan.io/${type}/${hash}`
 }
