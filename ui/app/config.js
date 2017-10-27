@@ -113,7 +113,13 @@ ConfigScreen.prototype.render = function () {
                 alignSelf: 'center',
               },
               onClick (event) {
-                exportAsFile('MetaMask State Logs', window.logState())
+                window.logStateString((err, result) => {
+                  if (err) {
+                    state.dispatch(actions.displayWarning('Error in retrieving state logs.'))
+                  } else {
+                    exportAsFile('MetaMask State Logs', result)
+                  }
+                })
               },
             }, 'Download State Logs'),
           ]),
