@@ -422,7 +422,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
         primaryCurrency,
         convertedCurrency,
         selectedToken,
-        value: amount,
+        value: amount || '0x0',
         conversionRate: amountConversionRate,
         handleChange: this.handleAmountChange,
         validate: this.validateAmount,
@@ -512,7 +512,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
     errors: { amount: amountError, to: toError },
   } = this.props
 
-  const noErrors = amountError === null && toError === null
+  const noErrors = !amountError && toError === null
   const errorClass = noErrors ? '' : '__disabled'
 
   return h('div.send-v2__footer', [
@@ -566,7 +566,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     errors: { amount: amountError, to: toError },
   } = this.props
 
-  const noErrors = amountError === null && toError === null
+  const noErrors = !amountError && toError === null
 
   if (!noErrors) {
     return
