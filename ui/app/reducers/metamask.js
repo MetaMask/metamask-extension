@@ -27,6 +27,7 @@ function reduceMetamask (state, action) {
       gasLimit: null,
       gasPrice: null,
       gasTotal: null,
+      tokenBalance: null,
       from: '',
       to: '',
       amount: '0x0',
@@ -193,6 +194,14 @@ function reduceMetamask (state, action) {
         send: {
           ...metamaskState.send,
           gasTotal: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_TOKEN_BALANCE:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          tokenBalance: action.value,
         },
       })
 

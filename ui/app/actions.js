@@ -140,6 +140,7 @@ var actions = {
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
   UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
+  UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
@@ -148,6 +149,7 @@ var actions = {
   updateGasLimit,
   updateGasPrice,
   updateGasTotal,
+  updateSendTokenBalance,
   updateSendFrom,
   updateSendTo,
   updateSendAmount,
@@ -581,6 +583,13 @@ function updateGasTotal (gasTotal) {
   return {
     type: actions.UPDATE_GAS_TOTAL,
     value: gasTotal,
+  }
+}
+
+function updateSendTokenBalance (tokenBalance) {
+  return {
+    type: actions.UPDATE_SEND_TOKEN_BALANCE,
+    value: tokenBalance,
   }
 }
 

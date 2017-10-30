@@ -13,6 +13,7 @@ const {
   getSendFrom,
   getCurrentCurrency,
   getSelectedTokenToFiatRate,
+  getSelectedTokenContract,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -48,6 +49,7 @@ function mapStateToProps (state) {
     convertedCurrency: getCurrentCurrency(state),
     data,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
+    tokenContract: getSelectedTokenContract(state),
   }
 }
 
@@ -64,6 +66,7 @@ function mapDispatchToProps (dispatch) {
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
     updateSendFrom: newFrom => dispatch(actions.updateSendFrom(newFrom)),
     updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),

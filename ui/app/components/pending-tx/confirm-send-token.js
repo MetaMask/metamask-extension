@@ -15,6 +15,9 @@ const {
   multiplyCurrencies,
   addCurrencies,
 } = require('../../conversion-util')
+const {
+  calcTokenAmount,
+} = require('../../token-util')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -73,8 +76,7 @@ ConfirmSendToken.prototype.getAmount = function () {
   const { params = [] } = tokenData
   const { value } = params[1] || {}
   const { decimals } = token
-  const multiplier = Math.pow(10, Number(decimals || 0))
-  const sendTokenAmount = Number(value / multiplier)
+  const sendTokenAmount = calcTokenAmount(value, decimals)
 
   return {
     fiat: tokenExchangeRate

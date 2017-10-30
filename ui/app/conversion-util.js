@@ -169,6 +169,7 @@ const conversionGreaterThan = (
 ) => {
   const firstValue = converter({ ...firstProps })
   const secondValue = converter({ ...secondProps })
+  
   return firstValue.gt(secondValue)
 }
 
