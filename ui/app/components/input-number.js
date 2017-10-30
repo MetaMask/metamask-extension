@@ -5,6 +5,7 @@ const {
   addCurrencies,
   conversionGTE,
   conversionLTE,
+  subtractCurrencies,
   toNegative,
 } = require('../conversion-util')
 
@@ -17,18 +18,24 @@ function InputNumber () {
   this.setValue = this.setValue.bind(this)
 }
 
+function isValidInput (text) {
+  const re = /^([1-9]\d*|0)(\.|\.\d*)?$/
+  return re.test(text)
+}
+
 InputNumber.prototype.setValue = function (newValue) {
+  if (newValue && !isValidInput(newValue)) return
   const { fixed, min = -1, max = Infinity, onChange } = this.props
 
-  newValue = Number(fixed ? newValue.toFixed(4) : newValue)
+  newValue = fixed ? newValue.toFixed(4) : newValue
 
   const newValueGreaterThanMin = conversionGTE(
-    { value: newValue, fromNumericBase: 'dec' },
+    { value: newValue || '0', fromNumericBase: 'dec' },
     { value: min, fromNumericBase: 'hex' },
   )
 
   const newValueLessThanMax = conversionLTE(
-    { value: newValue, fromNumericBase: 'dec' },
+    { value: newValue || '0', fromNumericBase: 'dec' },
     { value: max, fromNumericBase: 'hex' },
   )
   if (newValueGreaterThanMin && newValueLessThanMax) {
@@ -46,8 +53,8 @@ InputNumber.prototype.render = function () {
   return h('div.customize-gas-input-wrapper', {}, [
     h('input.customize-gas-input', {
       placeholder,
-      type: 'number',
       value,
+      step,
       onChange: (e) => this.setValue(e.target.value),
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
@@ -57,7 +64,7 @@ InputNumber.prototype.render = function () {
       }),
       h('i.fa.fa-angle-down', {
         style: { cursor: 'pointer' },
-        onClick: () => this.setValue(addCurrencies(value, toNegative(step))),
+        onClick: () => this.setValue(subtractCurrencies(value, step)),
       }),
     ]),
   ])

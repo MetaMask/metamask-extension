@@ -73,6 +73,8 @@ function getOriginalState (props) {
     gasLimit,
     gasTotal,
     error: null,
+    priceSigZeros: '',
+    priceSigDec: '',
   }
 }
 
@@ -167,7 +169,15 @@ CustomizeGasModal.prototype.convertAndSetGasLimit = function (newGasLimit) {
 }
 
 CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
-  const { gasLimit } = this.state
+  const { gasLimit, priceSigZeros } = this.state
+  const priceStrLength = newGasPrice.length
+  const sigZeros = String(newGasPrice).match(/^\d+[.]\d*?(0+)$/)
+  const sigDec = String(newGasPrice).match(/^\d+([.])0*$/)
+
+  this.setState({
+    priceSigZeros: sigZeros && sigZeros[1] || '',
+    priceSigDec: sigDec && sigDec[1] || '',
+  })
 
   const gasPrice = conversionUtil(newGasPrice, {
     fromNumericBase: 'dec',
@@ -189,14 +199,16 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
 
 CustomizeGasModal.prototype.render = function () {
   const { hideModal } = this.props
-  const { gasPrice, gasLimit, gasTotal, error } = this.state
+  const { gasPrice, gasLimit, gasTotal, error, priceSigZeros, priceSigDec } = this.state
 
-  const convertedGasPrice = conversionUtil(gasPrice, {
+  let convertedGasPrice = conversionUtil(gasPrice, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
   })
+
+  convertedGasPrice += convertedGasPrice.match(/[.]/) ? priceSigZeros : `${priceSigDec}${priceSigZeros}`
 
   const convertedGasLimit = conversionUtil(gasLimit, {
     fromNumericBase: 'hex',
@@ -222,7 +234,7 @@ CustomizeGasModal.prototype.render = function () {
           value: convertedGasPrice,
           min: MIN_GAS_PRICE_GWEI,
           // max: 1000,
-          step: MIN_GAS_PRICE_GWEI,
+          step: multiplyCurrencies(MIN_GAS_PRICE_GWEI, 10),
           onChange: value => this.convertAndSetGasPrice(value),
           title: 'Gas Price (GWEI)',
           copy: 'We calculate the suggested gas prices based on network success rates.',

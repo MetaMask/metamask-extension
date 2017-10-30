@@ -53,7 +53,7 @@ const toNormalizedDenomination = {
 }
 const toSpecifiedDenomination = {
   WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
-  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(1),
+  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
 }
 const baseChange = {
   hex: n => n.toString(16),
