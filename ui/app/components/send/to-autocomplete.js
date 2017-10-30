@@ -94,7 +94,7 @@ ToAutoComplete.prototype.render = function () {
     inError,
   } = this.props
 
-  return h('div.to-autocomplete', {}, [
+  return h('div.send-v2__to-autocomplete', {}, [
 
     h('input.send-v2__to-autocomplete__input', {
       placeholder: 'Recipient Address',
