@@ -321,18 +321,25 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     updateGasPrice,
     updateGasLimit,
     updateGasTotal,
+    tokenBalance,
+    selectedToken,
   } = this.props
+  const { decimals } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
 
-  const maxAmount = subtractCurrencies(
-    ethUtil.addHexPrefix(balance),
-    ethUtil.addHexPrefix(MIN_GAS_TOTAL),
-    { toNumericBase: 'hex' }
-  )
+  const maxAmount = selectedToken
+    ? multiplyCurrencies(tokenBalance, multiplier, {toNumericBase: 'hex'})
+    : subtractCurrencies(
+      ethUtil.addHexPrefix(balance),
+      ethUtil.addHexPrefix(gasTotal),
+      { toNumericBase: 'hex' }
+    )
 
   updateSendErrors({ amount: null })
   updateGasPrice(MIN_GAS_PRICE_HEX)
   updateGasLimit(MIN_GAS_LIMIT_HEX)
   updateGasTotal(MIN_GAS_TOTAL)
+
   updateSendAmount(maxAmount)
 }
 
