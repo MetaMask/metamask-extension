@@ -11,6 +11,7 @@ function reduceMetamask (state, action) {
   var metamaskState = extend({
     isInitialized: false,
     isUnlocked: false,
+    isAccountMenuOpen: false,
     isMascara: window.platform instanceof MetamascaraPlatform,
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
@@ -19,7 +20,19 @@ function reduceMetamask (state, action) {
     lastUnreadNotice: undefined,
     frequentRpcList: [],
     addressBook: [],
+    selectedTokenAddress: null,
     tokenExchangeRates: {},
+    tokens: [],
+    send: {
+      gasLimit: null,
+      gasPrice: null,
+      gasTotal: null,
+      from: '',
+      to: '',
+      amount: '0x0',
+      memo: '',
+      errors: {},
+    },
     coinOptions: {},
   }, state.metamask)
 
@@ -119,6 +132,11 @@ function reduceMetamask (state, action) {
       delete newState.seedWords
       return newState
 
+    case actions.SET_SELECTED_TOKEN:
+      return extend(metamaskState, {
+        selectedTokenAddress: action.value,
+      })
+
     case actions.SAVE_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
@@ -134,6 +152,107 @@ function reduceMetamask (state, action) {
         conversionDate: action.value.conversionDate,
       })
 
+    case actions.UPDATE_TOKEN_EXCHANGE_RATE:
+      const { payload: { pair, marketinfo } } = action
+      return extend(metamaskState, {
+        tokenExchangeRates: {
+          ...metamaskState.tokenExchangeRates,
+          [pair]: marketinfo,
+        },
+      })
+
+    case actions.UPDATE_TOKENS:
+      return extend(metamaskState, {
+        tokens: action.newTokens,
+      })
+
+    // metamask.send
+    case actions.UPDATE_GAS_LIMIT:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          gasLimit: action.value,
+        },
+      })
+
+    case actions.UPDATE_GAS_PRICE:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          gasPrice: action.value,
+        },
+      })
+
+    case actions.TOGGLE_ACCOUNT_MENU:
+      return extend(metamaskState, {
+        isAccountMenuOpen: !metamaskState.isAccountMenuOpen,
+      })
+
+    case actions.UPDATE_GAS_TOTAL:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          gasTotal: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_FROM:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          from: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_TO:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          to: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_AMOUNT:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          amount: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_MEMO:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          memo: action.value,
+        },
+      })
+
+    case actions.UPDATE_SEND_ERRORS:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          errors: {
+            ...metamaskState.send.errors,
+            ...action.value,
+          }
+        },
+      })
+
+    case actions.CLEAR_SEND:
+      return extend(metamaskState, {
+        send: {
+          gasLimit: null,
+          gasPrice: null,
+          gasTotal: null,
+          from: '',
+          to: '',
+          amount: '0x0',
+          memo: '',
+          errors: {},
+        },
+      })
+
     case actions.PAIR_UPDATE:
       const { value: { marketinfo: pairMarketInfo } } = action
       return extend(metamaskState, {
@@ -144,11 +263,11 @@ function reduceMetamask (state, action) {
       })
 
     case actions.SHAPESHIFT_SUBVIEW:
-      const { value: { marketinfo, coinOptions } } = action
+      const { value: { marketinfo: ssMarketInfo, coinOptions } } = action
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
-          [marketinfo.pair]: marketinfo,
+          [marketinfo.pair]: ssMarketInfo,
         },
         coinOptions,
       })

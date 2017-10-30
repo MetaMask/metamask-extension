@@ -34,8 +34,10 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div', {
+    h('div.flex-center', {
       style: {
+        flexDirection: 'column',
+        marginTop: '32px',
       },
     }, [
       h('.section-title.flex-row.flex-center', [
@@ -48,7 +50,8 @@ AccountImportSubview.prototype.render = function () {
       ]),
       h('div', {
         style: {
-          padding: '10px',
+          padding: '10px 0',
+          width: '260px',
           color: 'rgb(174, 174, 174)',
         },
       }, [

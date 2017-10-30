@@ -1,0 +1,132 @@
+.account-menu {
+  position: fixed;
+  z-index: 100;
+  top: 58px;
+  width: 310px;
+
+  @media screen and (max-width: 575px) {
+    right: calc(((100vw - 100%) / 2) + 8px);
+  }
+
+  @media screen and (min-width: 576px) {
+    right: calc((100vw - 85vw) / 2);
+  }
+
+  @media screen and (min-width: 769px) {
+    right: calc((100vw - 80vw) / 2);
+  }
+
+  @media screen and (min-width: 1281px) {
+    right: calc((100vw - 65vw) / 2);
+  }
+
+  &__icon {
+    margin-left: 20px;
+    cursor: pointer;
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__logout-button {
+    border: 1px solid $dusty-gray;
+    background-color: transparent;
+    color: $white;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 23px;
+    padding: 0 24px;
+    font-weight: 200;
+  }
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+
+  &__accounts {
+    display: flex;
+    flex-flow: column nowrap;
+    overflow-y: auto;
+    max-height: 240px;
+    position: relative;
+    z-index: 200;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media screen and (max-width: 575px) {
+      max-height: 215px;
+    }
+
+    .keyring-label {
+      margin-top: 5px;
+      background-color: $black;
+      color: $dusty-gray;
+    }
+  }
+
+  &__account {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 16px 14px;
+    flex: 0 0 auto;
+
+    @media screen and (max-width: 575px) {
+      padding: 12px 14px;
+    }
+  }
+
+  &__account-info {
+    flex: 1 0 auto;
+    display: flex;
+    flex-flow: column nowrap;
+    padding-top: 4px;
+  }
+
+  &__check-mark {
+    width: 14px;
+    margin-right: 12px;
+    flex: 0 0 auto;
+  }
+
+  &__check-mark-icon {
+    background-image: url("images/check-white.svg");
+    height: 18px;
+    width: 18px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin: 3px 0;
+  }
+
+  .identicon {
+    margin: 0 12px 0 0;
+    flex: 0 0 auto;
+  }
+
+  &__name {
+    color: $white;
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 16px;
+  }
+
+  &__balance {
+    color: $dusty-gray;
+    font-size: 14px;
+    line-height: 19px;
+  }
+
+  &__action {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 200;
+    cursor: pointer;
+  }
+}

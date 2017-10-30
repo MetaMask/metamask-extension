@@ -1,8 +1,10 @@
-const Component = require('react').Component
+const { Component } = require('react')
 const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const formatBalance = require('../util').formatBalance
-const generateBalanceObject = require('../util').generateBalanceObject
+const { inherits } = require('util')
+const {
+  formatBalance,
+  generateBalanceObject,
+} = require('../util')
 const Tooltip = require('./tooltip.js')
 const FiatValue = require('./fiat-value.js')
 
@@ -14,11 +16,10 @@ function EthBalanceComponent () {
 }
 
 EthBalanceComponent.prototype.render = function () {
-  var props = this.props
-  let { value } = props
-  const { style, width } = props
-  var needsParse = this.props.needsParse !== undefined ? this.props.needsParse : true
-  value = value ? formatBalance(value, 6, needsParse) : '...'
+  const props = this.props
+  const { value, style, width, needsParse = true } = props
+
+  const formattedValue = value ? formatBalance(value, 6, needsParse) : '...'
 
   return (
 
@@ -30,60 +31,66 @@ EthBalanceComponent.prototype.render = function () {
           display: 'inline',
           width,
         },
-      }, this.renderBalance(value)),
+      }, this.renderBalance(formattedValue)),
     ])
 
   )
 }
 EthBalanceComponent.prototype.renderBalance = function (value) {
-  var props = this.props
-  const { conversionRate, shorten, incoming, currentCurrency } = props
   if (value === 'None') return value
   if (value === '...') return value
-  var balanceObj = generateBalanceObject(value, shorten ? 1 : 3)
-  var balance
-  var splitBalance = value.split(' ')
-  var ethNumber = splitBalance[0]
-  var ethSuffix = splitBalance[1]
-  const showFiat = 'showFiat' in props ? props.showFiat : true
 
-  if (shorten) {
-    balance = balanceObj.shortBalance
-  } else {
-    balance = balanceObj.balance
+  const {
+    conversionRate,
+    shorten,
+    incoming,
+    currentCurrency,
+    hideTooltip,
+    styleOveride,
+    showFiat = true,
+  } = this.props
+  const { fontSize, color, fontFamily, lineHeight } = styleOveride
+
+  const { shortBalance, balance, label } = generateBalanceObject(value, shorten ? 1 : 3)
+  const balanceToRender = shorten ? shortBalance : balance
+
+  const [ethNumber, ethSuffix] = value.split(' ')
+  const containerProps = hideTooltip ? {} : {
+    position: 'bottom',
+    title: `${ethNumber} ${ethSuffix}`,
   }
 
-  var label = balanceObj.label
-
   return (
-    h(Tooltip, {
-      position: 'bottom',
-      title: `${ethNumber} ${ethSuffix}`,
-    }, h('div.flex-column', [
-      h('.flex-row', {
-        style: {
-          alignItems: 'flex-end',
-          lineHeight: '13px',
-          fontFamily: 'Montserrat Light',
-          textRendering: 'geometricPrecision',
-        },
-      }, [
-        h('div', {
+    h(hideTooltip ? 'div' : Tooltip,
+      containerProps,
+      h('div.flex-column', [
+        h('.flex-row', {
           style: {
-            width: '100%',
-            textAlign: 'right',
+            alignItems: 'flex-end',
+            lineHeight: lineHeight || '13px',
+            fontFamily: fontFamily || 'Montserrat Light',
+            textRendering: 'geometricPrecision',
           },
-        }, incoming ? `+${balance}` : balance),
-        h('div', {
-          style: {
-            color: ' #AEAEAE',
-            fontSize: '12px',
-            marginLeft: '5px',
-          },
-        }, label),
-      ]),
+        }, [
+          h('div', {
+            style: {
+              width: '100%',
+              textAlign: 'right',
+              fontSize: fontSize || 'inherit',
+              color: color || 'inherit',
+            },
+          }, incoming ? `+${balanceToRender}` : balanceToRender),
+          h('div', {
+            style: {
+              color: color || '#AEAEAE',
+              fontSize: fontSize || '12px',
+              marginLeft: '5px',
+            },
+          }, label),
+        ]),
 
-      showFiat ? h(FiatValue, { value: props.value, conversionRate, currentCurrency }) : null,
-    ]))
+        showFiat ? h(FiatValue, { value: this.props.value, conversionRate, currentCurrency }) : null,
+      ])
+    )
   )
 }

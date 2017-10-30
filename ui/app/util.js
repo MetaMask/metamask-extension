@@ -1,4 +1,16 @@
+const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
+const hexToBn = require('../../app/scripts/lib/hex-to-bn')
+const vreme = new (require('vreme'))()
+
+const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
+const GWEI_FACTOR = new ethUtil.BN(1e9)
+const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+
+// formatData :: ( date: <Unix Timestamp> ) -> String
+function formatDate (date) {
+  return vreme.format(new Date(date), 'March 16 2014 14:30')
+}
 
 var valueTable = {
   wei: '1000000000000000000',
@@ -36,8 +48,14 @@ module.exports = {
   valueTable: valueTable,
   bnTable: bnTable,
   isHex: isHex,
+  formatDate,
+  bnMultiplyByFraction,
+  getTxFeeBn,
+  shortenBalance,
+  getContractAtAddress,
   exportAsFile: exportAsFile,
   isInvalidChecksumAddress,
+  allNull,
 }
 
 function valuesFor (obj) {
@@ -224,6 +242,24 @@ function isHex (str) {
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
 }
 
+function bnMultiplyByFraction (targetBN, numerator, denominator) {
+  const numBN = new ethUtil.BN(numerator)
+  const denomBN = new ethUtil.BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
+}
+
+function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
+  const gasBn = hexToBn(gas)
+  const gasPriceBn = hexToBn(gasPrice)
+  const txFeeBn = gasBn.mul(gasPriceBn)
+
+  return txFeeBn.toString(16)
+}
+
+function getContractAtAddress (tokenAddress) {
+  return global.eth.contract(abi).at(tokenAddress)
+}
+
 function exportAsFile (filename, data) {
   // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
   const blob = new Blob([data], {type: 'text/csv'})
@@ -237,4 +273,8 @@ function exportAsFile (filename, data) {
     elem.click()
     document.body.removeChild(elem)
   }
+}
+
+function allNull (obj) {
+  return Object.entries(obj).every(([key, value]) => value === null)
 }

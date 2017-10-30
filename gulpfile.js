@@ -19,9 +19,15 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
+var sass = require('gulp-sass')
+var autoprefixer = require('gulp-autoprefixer')
+var gulpStylelint = require('gulp-stylelint')
+var stylefmt = require('gulp-stylefmt')
+
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
+
 
 // browser reload
 
@@ -183,6 +189,37 @@ const jsFiles = [
   'popup',
 ]
 
+// scss compilation and autoprefixing tasks
+
+gulp.task('build:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'))
+})
+gulp.task('watch:scss', function() {
+  gulp.watch(['ui/app/css/**/*.scss'], gulp.series(['build:scss']))
+})
+
+gulp.task('lint-scss', function() {
+  return gulp
+    .src('ui/app/css/itcss/**/*.scss')
+    .pipe(gulpStylelint({
+      reporters: [
+        {formatter: 'string', console: true}
+      ],
+      fix: true,
+    }));
+});
+
+gulp.task('fmt-scss', function () {
+  return gulp.src('ui/app/css/itcss/**/*.scss')
+    .pipe(stylefmt())
+    .pipe(gulp.dest('ui/app/css/itcss'));
+});
+
 // bundle tasks
 
 var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
@@ -226,9 +263,9 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 
 // high level tasks
 
-gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
 
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
+gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
 gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators
@@ -256,7 +293,7 @@ function zipTask(target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
     .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'));
+    .pipe(gulp.dest('builds'))
   }
 }
 

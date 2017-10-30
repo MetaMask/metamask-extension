@@ -1,10 +1,27 @@
+const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+const ethUtil = require('ethereumjs-util')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // modal state
+  MODAL_OPEN: 'UI_MODAL_OPEN',
+  MODAL_CLOSE: 'UI_MODAL_CLOSE',
+  showModal: showModal,
+  hideModal: hideModal,
+  // sidebar state
+  SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
+  SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
+  showSidebar: showSidebar,
+  hideSidebar: hideSidebar,
+  // network dropdown open
+  NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
+  NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
+  showNetworkDropdown: showNetworkDropdown,
+  hideNetworkDropdown: hideNetworkDropdown,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -68,6 +85,8 @@ var actions = {
   hideWarning: hideWarning,
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
+  SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
+  setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -78,6 +97,8 @@ var actions = {
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
+  SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
+  showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
@@ -86,6 +107,7 @@ var actions = {
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
+  exportAccountComplete,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
   // tx conf screen
@@ -99,7 +121,9 @@ var actions = {
   cancelPersonalMsg,
   signTypedMsg,
   cancelTypedMsg,
+  sendTx: sendTx,
   signTx: signTx,
+  signTokenTx: signTokenTx,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -109,6 +133,28 @@ var actions = {
   cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
+  // send screen
+  estimateGas,
+  getGasPrice,
+  UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
+  UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
+  UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
+  UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
+  UPDATE_SEND_TO: 'UPDATE_SEND_TO',
+  UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
+  UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
+  UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  CLEAR_SEND: 'CLEAR_SEND',
+  updateGasLimit,
+  updateGasPrice,
+  updateGasTotal,
+  updateSendFrom,
+  updateSendTo,
+  updateSendAmount,
+  updateSendMemo,
+  updateSendErrors,
+  clearSend,
+  setSelectedAddress,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -125,8 +171,13 @@ var actions = {
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
   addToken,
+  addTokens,
+  removeToken,
+  updateTokens,
+  UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
+  updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -144,6 +195,8 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
+  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
+  updateTokenExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -168,6 +221,9 @@ var actions = {
 
   callBackgroundThenUpdate,
   forceUpdateMetamaskState,
+
+  TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
+  toggleAccountMenu,
 }
 
 module.exports = actions
@@ -356,7 +412,24 @@ function navigateToNewAccountScreen () {
 
 function addNewAccount () {
   log.debug(`background.addNewAccount`)
-  return callBackgroundThenUpdate(background.addNewAccount)
+  return (dispatch, getState) => {
+    const oldIdentities = getState().metamask.identities
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.addNewAccount((err, { identities: newIdentities}) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        const newAccountAddress = Object.keys(newIdentities).find(address => !oldIdentities[address])
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(newAccountAddress)
+      })
+    });
+  }
 }
 
 function showInfoPage () {
@@ -367,16 +440,16 @@ function showInfoPage () {
 
 function setCurrentCurrency (currencyCode) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         log.error(err.stack)
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
-        type: this.SET_CURRENT_FIAT,
+        type: actions.SET_CURRENT_FIAT,
         value: {
           currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
@@ -449,10 +522,132 @@ function signTx (txData) {
     dispatch(actions.showLoadingIndication())
     global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) dispatch(actions.displayWarning(err.message))
-      dispatch(this.goHome())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.hideWarning())
     })
-    dispatch(actions.showConfTxPage())
+    dispatch(actions.showConfTxPage({}))
+  }
+}
+
+function estimateGas (params = {}) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.estimateGas(params, (err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        dispatch(actions.updateGasLimit(data))
+        return resolve(data)
+      })
+    })
+  }
+}
+
+function updateGasLimit (gasLimit) {
+  return {
+    type: actions.UPDATE_GAS_LIMIT,
+    value: gasLimit,
+  }
+}
+
+function getGasPrice () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.gasPrice((err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        dispatch(actions.updateGasPrice(data))
+        return resolve(data)
+      })
+    })
+  }
+}
+
+function updateGasPrice (gasPrice) {
+  return {
+    type: actions.UPDATE_GAS_PRICE,
+    value: gasPrice,
+  }
+}
+
+function updateGasTotal (gasTotal) {
+  return {
+    type: actions.UPDATE_GAS_TOTAL,
+    value: gasTotal,
+  }
+}
+
+function updateSendFrom (from) {
+  return {
+    type: actions.UPDATE_SEND_FROM,
+    value: from,
+  }
+}
+
+function updateSendTo (to) {
+  return {
+    type: actions.UPDATE_SEND_TO,
+    value: to,
+  }
+}
+
+function updateSendAmount (amount) {
+  return {
+    type: actions.UPDATE_SEND_AMOUNT,
+    value: amount,
+  }
+}
+
+function updateSendMemo (memo) {
+  return {
+    type: actions.UPDATE_SEND_MEMO,
+    value: memo,
+  }
+}
+
+function updateSendErrors (error) {
+  return {
+    type: actions.UPDATE_SEND_ERRORS,
+    value: error,
+  }
+}
+
+function clearSend () {
+  return {
+    type: actions.CLEAR_SEND
+  }
+}
+
+
+function sendTx (txData) {
+  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
+  return (dispatch) => {
+    log.debug(`actions calling background.approveTransaction`)
+    background.approveTransaction(txData.id, (err) => {
+      if (err) {
+        dispatch(actions.txError(err))
+        return log.error(err.message)
+      }
+      dispatch(actions.completedTx(txData.id))
+    })
+  }
+}
+
+function signTokenTx (tokenAddress, toAddress, amount, txData) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    const token = global.eth.contract(abi).at(tokenAddress)
+    token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
+      .catch(err => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.displayWarning(err.message))
+      })
+    dispatch(actions.showConfTxPage({}))
   }
 }
 
@@ -613,14 +808,75 @@ function updateMetamaskState (newState) {
   }
 }
 
+const backgroundSetLocked = () => {
+  return new Promise((resolve, reject) => {
+    background.setLocked(error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function lockMetamask () {
   log.debug(`background.setLocked`)
-  return callBackgroundThenUpdate(background.setLocked)
+
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return backgroundSetLocked()
+      .then(() => updateMetamaskStateFromBackground())
+      .catch(error => {
+        dispatch(actions.displayWarning(error.message))
+        return Promise.reject(error)
+      })
+      .then(newState => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
+      .catch(() => dispatch({ type: actions.LOCK_METAMASK }))
+  }
 }
 
 function setCurrentAccountTab (newTabName) {
   log.debug(`background.setCurrentAccountTab: ${newTabName}`)
   return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
+}
+
+function setSelectedToken (tokenAddress) {
+  return {
+    type: actions.SET_SELECTED_TOKEN,
+    value: tokenAddress || null,
+  }
+}
+
+function setSelectedAddress (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setSelectedAddress`)
+    background.setSelectedAddress(address, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+  }
 }
 
 function showAccountDetail (address) {
@@ -636,6 +892,7 @@ function showAccountDetail (address) {
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
+      dispatch(actions.setSelectedToken())
     })
   }
 }
@@ -653,10 +910,11 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage (transForward = true) {
+function showConfTxPage ({transForward = true, id}) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
-    transForward: transForward,
+    transForward,
+    id,
   }
 }
 
@@ -686,25 +944,68 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddTokenPage (transitionForward = true) {
+function showAddTokenPage () {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
-    value: transitionForward,
   }
 }
 
 function addToken (address, symbol, decimals) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addToken(address, symbol, decimals, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      setTimeout(() => {
-        dispatch(actions.goHome())
-      }, 250)
+    return new Promise((resolve, reject) => {
+      background.addToken(address, symbol, decimals, (err, tokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateTokens(tokens))
+        resolve(tokens)
+      })
     })
+  }
+}
+
+function removeToken (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeToken(address, (err, tokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateTokens(tokens))
+        resolve(tokens)
+      })
+    })
+  }
+}
+
+function addTokens (tokens) {
+  return dispatch => {
+    if (Array.isArray(tokens)) {
+      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
+        dispatch(addToken(address, symbol, decimals))
+      )))
+    } else {
+      return Promise.all(
+        Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addToken(address, symbol, decimals))
+        ))
+      )
+    }
+  }
+}
+
+function updateTokens(newTokens) {
+  return {
+    type: actions.UPDATE_TOKENS,
+    newTokens
   }
 }
 
@@ -771,11 +1072,17 @@ function setProviderType (type) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.updateProviderType(type))
+      dispatch(actions.setSelectedToken())
     })
-    return {
-      type: actions.SET_PROVIDER_TYPE,
-      value: type,
-    }
+
+  }
+}
+
+function updateProviderType(type) {
+  return {
+    type: actions.SET_PROVIDER_TYPE,
+    value: type,
   }
 }
 
@@ -792,7 +1099,7 @@ function setRpcTarget (newRpc) {
 }
 
 // Calls the addressBookController to add a new address.
-function addToAddressBook (recipient, nickname) {
+function addToAddressBook (recipient, nickname = '') {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
     background.setAddressBook(recipient, nickname, (err, result) => {
@@ -803,6 +1110,54 @@ function addToAddressBook (recipient, nickname) {
     })
   }
 }
+
+function useEtherscanProvider () {
+  log.debug(`background.useEtherscanProvider`)
+  background.useEtherscanProvider()
+  return {
+    type: actions.USE_ETHERSCAN_PROVIDER,
+  }
+}
+
+function showNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_OPEN,
+  }
+}
+
+function hideNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_CLOSE,
+  }
+}
+
+
+function showModal (payload) {
+  return {
+    type: actions.MODAL_OPEN,
+    payload,
+  }
+}
+
+function hideModal (payload) {
+  return {
+    type: actions.MODAL_CLOSE,
+    payload,
+  }
+}
+
+function showSidebar () {
+  return {
+    type: actions.SIDEBAR_OPEN,
+  }
+}
+
+function hideSidebar () {
+  return {
+    type: actions.SIDEBAR_CLOSE,
+  }
+}
+
 
 function showLoadingIndication (message) {
   return {
@@ -855,24 +1210,36 @@ function exportAccount (password, address) {
     dispatch(self.showLoadingIndication())
 
     log.debug(`background.submitPassword`)
-    background.submitPassword(password, function (err) {
-      if (err) {
-        log.error('Error in submiting password.')
-        dispatch(self.hideLoadingIndication())
-        return dispatch(self.displayWarning('Incorrect Password.'))
-      }
-      log.debug(`background.exportAccount`)
-      background.exportAccount(address, function (err, result) {
-        dispatch(self.hideLoadingIndication())
-
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, function (err) {
         if (err) {
-          log.error(err)
-          return dispatch(self.displayWarning('Had a problem exporting the account.'))
+          log.error('Error in submiting password.')
+          dispatch(self.hideLoadingIndication())
+          dispatch(self.displayWarning('Incorrect Password.'))
+          return reject(err)
         }
+        log.debug(`background.exportAccount`)
+        return background.exportAccount(address, function (err, result) {
+          dispatch(self.hideLoadingIndication())
 
-        dispatch(self.showPrivateKey(result))
+          if (err) {
+            log.error(err)
+            dispatch(self.displayWarning('Had a problem exporting the account.'))
+            return reject(err)
+          }
+
+          dispatch(self.exportAccountComplete())
+
+          return resolve(result)
+        })
       })
     })
+  }
+}
+
+function exportAccountComplete() {
+  return {
+    type: actions.EXPORT_ACCOUNT,
   }
 }
 
@@ -887,14 +1254,22 @@ function saveAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.saveAccountLabel`)
-    background.saveAccountLabel(account, label, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      dispatch({
-        type: actions.SAVE_ACCOUNT_LABEL,
-        value: { account, label },
+
+    return new Promise((resolve, reject) => {
+      background.saveAccountLabel(account, label, (err) => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        dispatch({
+          type: actions.SAVE_ACCOUNT_LABEL,
+          value: { account, label },
+        })
+
+        resolve(account)
       })
     })
   }
@@ -903,6 +1278,12 @@ function saveAccountLabel (account, label) {
 function showSendPage () {
   return {
     type: actions.SHOW_SEND_PAGE,
+  }
+}
+
+function showSendTokenPage () {
+  return {
+    type: actions.SHOW_SEND_TOKEN_PAGE,
   }
 }
 
@@ -1022,7 +1403,10 @@ function reshowQrCode (data, coin) {
       ]
 
       dispatch(actions.hideLoadingIndication())
-      return dispatch(actions.showQrView(data, message))
+      return dispatch(actions.showModal({
+        name: 'SHAPESHIFT_DEPOSIT_TX',
+        Qr: { data, message },
+      }))
     })
   }
 }
@@ -1053,6 +1437,28 @@ function shapeShiftRequest (query, options, cb) {
     return shapShiftReq.send(jsonObj)
   } else {
     return shapShiftReq.send()
+  }
+}
+
+function updateTokenExchangeRate (token = '') {
+  const pair = `${token.toLowerCase()}_eth`
+
+  return dispatch => {
+    if (!token) {
+      return
+    }
+
+    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
+      if (!marketinfo.error) {
+        dispatch({
+          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
+          payload: {
+            pair,
+            marketinfo,
+          },
+        })
+      }
+    })
   }
 }
 
@@ -1096,4 +1502,10 @@ function forceUpdateMetamaskState (dispatch) {
     }
     dispatch(actions.updateMetamaskState(newState))
   })
+}
+
+function toggleAccountMenu () {
+  return {
+    type: actions.TOGGLE_ACCOUNT_MENU,
+  }
 }
