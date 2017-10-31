@@ -122,6 +122,7 @@ function reduceApp (state, action) {
           name: 'import-menu',
         },
         transForward: true,
+        warning: null,
       })
 
     case actions.SHOW_INFO_PAGE:
