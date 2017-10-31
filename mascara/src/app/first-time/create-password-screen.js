@@ -68,11 +68,11 @@ class CreatePasswordScreen extends Component {
               />
               <div className="info">
                 MetaMask is a bridge that allows you to visit the distributed web
-                of tomorrow in your browser today. It allows you to run Ethereum dApps right in
+                of tomorrow in your browser today. It allows you to run Ethereum Apps right in
                 your browser without running a full Ethereum node but still gives
                 you the option to if you want to bring your own.
 
-                MetaMask includes a secure identity vault stored loacly on your machine,
+                MetaMask includes a secure identity vault stored locally on your machine,
                 providing a user interface to manage your identities on different sites
                 and sign blockchain transactions
               </div>
