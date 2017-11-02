@@ -6,7 +6,6 @@ const classnames = require('classnames')
 const abi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(abi)
-const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const Identicon = require('./identicon')
 const contractMap = require('eth-contract-metadata')
 
@@ -127,7 +126,6 @@ TxListItem.prototype.getTokenInfo = async function () {
 TxListItem.prototype.getSendTokenTotal = async function () {
   const {
     txParams = {},
-    tokens,
     conversionRate,
     tokenExchangeRates,
     currentCurrency,

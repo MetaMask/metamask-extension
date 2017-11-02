@@ -3,17 +3,12 @@ const actions = require('../../actions')
 const abi = require('ethereumjs-abi')
 const SendEther = require('../../send-v2')
 
-const { multiplyCurrencies } = require('../../conversion-util')
-
 const {
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
   conversionRateSelector,
   getSelectedToken,
-  getSelectedTokenExchangeRate,
   getSelectedAddress,
-  getGasPrice,
-  getGasLimit,
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
@@ -26,7 +21,6 @@ function mapStateToProps (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
   const selectedAddress = getSelectedAddress(state)
   const selectedToken = getSelectedToken(state)
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
   const conversionRate = conversionRateSelector(state)
 
   let data;

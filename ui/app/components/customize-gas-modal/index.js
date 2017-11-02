@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const ethUtil = require('ethereumjs-util')
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
 
@@ -191,7 +190,7 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
 }
 
 CustomizeGasModal.prototype.render = function () {
-  const { hideModal, conversionRate } = this.props
+  const { hideModal } = this.props
   const { gasPrice, gasLimit, gasTotal, error } = this.state
 
   const convertedGasPrice = conversionUtil(gasPrice, {

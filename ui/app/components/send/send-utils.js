@@ -27,7 +27,6 @@ function isBalanceSufficient({
       fromNumericBase: 'hex',
       conversionRate: amountConversionRate,
       fromCurrency: selectedToken || primaryCurrency,
-      conversionRate: amountConversionRate,
     },
   )
 

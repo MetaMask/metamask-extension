@@ -114,7 +114,7 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
-  const { txParams, msgParams, type } = txData
+  const { txParams, msgParams } = txData
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')

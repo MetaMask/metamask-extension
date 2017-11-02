@@ -6,9 +6,7 @@ const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
 
-const PendingTxDetails = require('./pending-personal-msg-details')
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
-const BinaryRenderer = require('./binary-renderer')
 
 const actions = require('../actions')
 const { conversionUtil } = require('../conversion-util')
@@ -135,8 +133,6 @@ SignatureRequest.prototype.renderRequestIcon = function () {
 }
 
 SignatureRequest.prototype.renderRequestInfo = function () {
-  const { requester } = this.props
-
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
@@ -206,7 +202,6 @@ SignatureRequest.prototype.renderBody = function () {
 
 SignatureRequest.prototype.renderFooter = function () {
   const {
-    goHome,
     signPersonalMessage,
     signTypedMessage,
     cancelPersonalMessage,

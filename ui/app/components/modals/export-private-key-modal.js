@@ -92,7 +92,6 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
 ExportPrivateKeyModal.prototype.render = function () {
   const {
     selectedIdentity,
-    network,
     warning,
     showAccountDetailModal,
     hideModal,

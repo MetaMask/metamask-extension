@@ -23,7 +23,7 @@ GasFeeDisplay.prototype.render = function () {
 
     gasTotal
       ? h(CurrencyDisplay, {
-        primaryCurrency: 'ETH',
+        primaryCurrency,
         convertedCurrency,
         value: gasTotal,
         conversionRate,

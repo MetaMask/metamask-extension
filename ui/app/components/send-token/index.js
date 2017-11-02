@@ -144,7 +144,6 @@ SendTokenScreen.prototype.validate = function () {
 }
 
 SendTokenScreen.prototype.setErrorsFor = function (field) {
-  const { balance, selectedToken } = this.props
   const { errors: previousErrors } = this.state
 
   const {

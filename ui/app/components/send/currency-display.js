@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 module.exports = CurrencyDisplay
@@ -48,8 +47,6 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
     primaryCurrency,
     convertedCurrency,
-    convertedPrefix = '',
-    placeholder = '0',
     readOnly = false,
     inError = false,
     value: initValue,

@@ -22,6 +22,8 @@
 */
 
 const BigNumber = require('bignumber.js')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const R = require('ramda')
 const { stripHexPrefix } = require('ethereumjs-util')
 
@@ -133,7 +135,7 @@ const addCurrencies = (a, b, options = {}) => {
   const {
     aBase,
     bBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
   const value = (new BigNumber(a, aBase)).add(b, bBase);
 
@@ -147,7 +149,7 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const {
     multiplicandBase,
     multiplierBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
 
   const bigNumberA = new BigNumber(String(a), multiplicandBase)
@@ -157,7 +159,7 @@ const multiplyCurrencies = (a, b, options = {}) => {
 
   return converter({
     value,
-    ...conversionOptions,
+    ...conversionOptions
   })
 }
 

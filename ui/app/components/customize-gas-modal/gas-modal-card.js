@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
-const GasSlider = require('./gas-slider.js')
+// const GasSlider = require('./gas-slider.js')
 
 module.exports = GasModalCard
 
@@ -13,8 +13,7 @@ function GasModalCard () {
 
 GasModalCard.prototype.render = function () {
   const {
-    memo,
-    identities,
+    // memo,
     onChange,
     unitLabel,
     value,

@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
 const AccountListItem = require('./account-list-item')
 
 module.exports = FromDropdown
@@ -51,10 +50,8 @@ FromDropdown.prototype.renderDropdown = function () {
 
 FromDropdown.prototype.render = function () {
   const {
-    accounts,
     selectedAccount,
     openDropdown,
-    closeDropdown,
     dropdownOpen,
   } = this.props
 

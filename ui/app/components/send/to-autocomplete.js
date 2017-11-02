@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
 const AccountListItem = require('./account-list-item')
 
 module.exports = ToAutoComplete
@@ -23,7 +22,6 @@ ToAutoComplete.prototype.getListItemIcon = function (listItemAddress, toAddress)
 
 ToAutoComplete.prototype.renderDropdown = function () {
   const {
-    accounts,
     closeDropdown,
     onChange,
     to,
@@ -86,9 +84,6 @@ ToAutoComplete.prototype.componentDidUpdate = function (nextProps, nextState) {
 ToAutoComplete.prototype.render = function () {
   const {
     to,
-    accounts,
-    openDropdown,
-    closeDropdown,
     dropdownOpen,
     onChange,
     inError,

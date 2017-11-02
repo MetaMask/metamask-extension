@@ -224,6 +224,8 @@ var actions = {
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
   toggleAccountMenu,
+
+  useEtherscanProvider,
 }
 
 module.exports = actions
