@@ -142,7 +142,7 @@ function formatDate (date) {
 }
 
 function renderErrorOrWarning (transaction) {
-  const { status, err, warning } = transaction
+  const { status } = transaction
 
   // show rejected
   if (status === 'rejected') {
@@ -151,31 +151,31 @@ function renderErrorOrWarning (transaction) {
   if (transaction.err || transaction.warning) {
     const { err, warning = {} } = transaction
     const errFirst = !!((err && warning) || err)
-    const message = errFirst ? err.message : warning.message
 
     errFirst ? err.message : warning.message
 
-  // show error
-  if (err) {
-    const message = err.message || ''
-    return (
-        h(Tooltip, {
-          title: message,
-          position: 'bottom',
-        }, [
-          h(`span.error`, ` (Failed)`),
-        ])
-    )
-  }
+    // show error
+    if (err) {
+      const message = err.message || ''
+      return (
+          h(Tooltip, {
+            title: message,
+            position: 'bottom',
+          }, [
+            h(`span.error`, ` (Failed)`),
+          ])
+      )
+    }
 
-  // show warning
-  if (warning) {
-    const message = warning.message
-    return h(Tooltip, {
-      title: message,
-      position: 'bottom',
-    }, [
-      h(`span.warning`, ` (Warning)`),
-    ])
+    // show warning
+    if (warning) {
+      const message = warning.message
+      return h(Tooltip, {
+        title: message,
+        position: 'bottom',
+      }, [
+        h(`span.warning`, ` (Warning)`),
+      ])
+    }
   }
 }

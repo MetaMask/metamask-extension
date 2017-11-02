@@ -4,9 +4,9 @@ const inherits = require('util').inherits
 const Identicon = require('./identicon')
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
-const PendingTxDetails = require('./pending-personal-msg-details')
+const classnames = require('classnames')
+
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
-const BinaryRenderer = require('./binary-renderer')
 
 const actions = require('../actions')
 const { conversionUtil } = require('../conversion-util')
@@ -27,13 +27,13 @@ function mapStateToProps (state) {
     requester: null,
     requesterAddress: null,
     accounts: accountsWithSendEtherInfoSelector(state),
-    conversionRate: conversionRateSelector(state)
+    conversionRate: conversionRateSelector(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome())
+    goHome: () => dispatch(actions.goHome()),
   }
 }
 
@@ -84,7 +84,7 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
       dropdownOpen: accountDropdownOpen,
       openDropdown: () => this.setState({ accountDropdownOpen: true }),
       closeDropdown: () => this.setState({ accountDropdownOpen: false }),
-    })
+    }),
 
   ])
 }
@@ -113,7 +113,7 @@ SignatureRequest.prototype.renderAccountInfo = function () {
   return h('div.request-signature__account-info', [
 
     this.renderAccountDropdown(),
-    
+
     this.renderRequestIcon(),
 
     this.renderBalance(),
@@ -128,18 +128,16 @@ SignatureRequest.prototype.renderRequestIcon = function () {
     h(Identicon, {
       diameter: 40,
       address: requesterAddress,
-    })
+    }),
   ])
 }
 
 SignatureRequest.prototype.renderRequestInfo = function () {
-  const { requester } = this.props
-
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
       `Your signature is being requested`,
-    ])
+    ]),
 
   ])
 }
@@ -163,11 +161,9 @@ SignatureRequest.prototype.renderBody = function () {
 
   if (type === 'personal_sign') {
     rows = [{ name: 'Message', value: this.msgHexToText(data) }]
-  }
-  else if (type === 'eth_signTypedData') {
+  } else if (type === 'eth_signTypedData') {
     rows = data
-  }
-  else if (type === 'eth_sign') {
+  } else if (type === 'eth_sign') {
     rows = [{ name: 'Message', value: data }]
     notice = `Signing this message can have
     dangerous side effects. Only sign messages from
@@ -181,13 +177,18 @@ SignatureRequest.prototype.renderBody = function () {
 
     this.renderRequestInfo(),
 
-    h('div.request-signature__notice', [notice]),
+    h('div.request-signature__notice', {
+      className: classnames({
+        'request-signature__notice': type === 'personal_sign' || type === 'eth_signTypedData',
+        'request-signature__warning': type === 'eth_sign',
+      }),
+    }, [notice]),
 
     h('div.request-signature__rows', [
 
       ...rows.map(({ name, value }) => {
         return h('div.request-signature__row', [
-          h('div.request-signature__row-title', [`${name}:`]), 
+          h('div.request-signature__row-title', [`${name}:`]),
           h('div.request-signature__row-value', value),
         ])
       }),
@@ -199,7 +200,6 @@ SignatureRequest.prototype.renderBody = function () {
 
 SignatureRequest.prototype.renderFooter = function () {
   const {
-    goHome,
     signPersonalMessage,
     signTypedMessage,
     cancelPersonalMessage,
@@ -216,12 +216,10 @@ SignatureRequest.prototype.renderFooter = function () {
   if (type === 'personal_sign') {
     cancel = cancelPersonalMessage
     sign = signPersonalMessage
-  }
-  else if (type === 'eth_signTypedData') {
+  } else if (type === 'eth_signTypedData') {
     cancel = cancelTypedMessage
     sign = signTypedMessage
-  }
-  else if (type === 'eth_sign') {
+  } else if (type === 'eth_sign') {
     cancel = cancelMessage
     sign = signMessage
   }

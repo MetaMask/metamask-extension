@@ -2,7 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const { checkFeatureToggle } = require('../lib/feature-toggle-utils')
 const actions = require('./actions')
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
@@ -12,9 +11,7 @@ const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
 // accounts
 const MainContainer = require('./main-container')
-const SendTransactionScreen = require('./send')
 const SendTransactionScreen2 = require('./components/send/send-v2-container')
-const SendTokenScreen = require('./components/send-token')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
@@ -27,7 +24,6 @@ const WalletView = require('./components/wallet-view')
 const Settings = require('./settings')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
-const InfoScreen = require('./info')
 const Loading = require('./components/loading')
 const NetworkIndicator = require('./components/network')
 const Identicon = require('./components/identicon')
@@ -38,6 +34,7 @@ const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation
 const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
 const NetworkDropdown = require('./components/dropdowns/network-dropdown')
 const AccountMenu = require('./components/account-menu')
+const QrView = require('./components/qr-code')
 
 // Global Modals
 const Modal = require('./components/modals/index').Modal
@@ -148,7 +145,7 @@ App.prototype.render = function () {
       (isLoading || isLoadingNetwork) && h(Loading, {
         loadingMessage: loadMessage,
       }),
-      
+
       // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // content
@@ -228,8 +225,6 @@ App.prototype.renderAppBar = function () {
   }
 
   const props = this.props
-  const state = this.state || {}
-  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
   const {isMascara, isOnboarding} = props
 
   // Do not render header if user is in mascara onboarding

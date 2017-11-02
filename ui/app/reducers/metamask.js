@@ -235,7 +235,7 @@ function reduceMetamask (state, action) {
           errors: {
             ...metamaskState.send.errors,
             ...action.value,
-          }
+          },
         },
       })
 

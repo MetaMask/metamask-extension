@@ -35,6 +35,6 @@ ShapeshiftDepositTxModal.prototype.render = function () {
   }, [
     h('div', {}, [
       h(QrView, {key: 'qr', Qr}),
-    ])
+    ]),
   ])
 }

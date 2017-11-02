@@ -1,4 +1,5 @@
-const { Component, PropTypes } = require('react')
+const { Component } = require('react')
+const PropTypes = require('react').PropTypes
 const h = require('react-hyperscript')
 const classnames = require('classnames')
 const R = require('ramda')

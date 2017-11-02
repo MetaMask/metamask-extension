@@ -1,5 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
+const PropTypes = require('react').PropTypes
 const classnames = require('classnames')
 
 class TabBar extends Component {
@@ -35,6 +36,12 @@ class TabBar extends Component {
       ])
     )
   }
+}
+
+TabBar.propTypes = {
+  defaultTab: PropTypes.string,
+  tabs: PropTypes.array,
+  tabSelected: PropTypes.func,
 }
 
 module.exports = TabBar
