@@ -102,14 +102,12 @@ async function runFirstTimeUsageTest (assert, done) {
   app.find('.buy-ether__do-it-later').click()
   await timeout(1000)
 
-  const sandwich = app.find('.sandwich-expando')[0]
-  sandwich.click()
+  const menu = app.find('.account-menu__icon')[0]
+  menu.click()
 
   await timeout()
 
-  const menu = app.find('.menu-droppo')[0]
-  const children = menu.children
-  const lock = children[children.length - 2]
+  const lock = app.find('.account-menu__logout-button')[0]
   assert.ok(lock, 'Lock menu item found')
   lock.click()
 
@@ -123,31 +121,25 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await timeout(1000)
 
-  const detail2 = app.find('.account-detail-section')[0]
+  const detail2 = app.find('.wallet-view')[0]
   assert.ok(detail2, 'Account detail section loaded again.')
 
   await timeout()
 
   // open account settings dropdown
-  const qrButton = app.find('.fa.fa-ellipsis-h')[0]
+  const qrButton = app.find('.wallet-view__details-button')[0]
   qrButton.click()
 
   await timeout(1000)
 
-  // qr code item
-  const qrButton2 = app.find('.dropdown-menu-item')[1]
-  qrButton2.click()
-
-  await timeout(1000)
-
-  const qrHeader = app.find('.qr-header')[0]
-  const qrContainer = app.find('#qr-container')[0]
+  const qrHeader = app.find('.editable-label__value')[0]
+  const qrContainer = app.find('.qr-wrapper')[0]
   assert.equal(qrHeader.textContent, 'Account 1', 'Should show account label.')
   assert.ok(qrContainer, 'QR Container found')
 
   await timeout()
 
-  const networkMenu = app.find('.network-indicator')[0]
+  const networkMenu = app.find('.network-component')[0]
   networkMenu.click()
 
   await timeout()
