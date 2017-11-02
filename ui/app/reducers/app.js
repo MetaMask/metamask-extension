@@ -44,7 +44,7 @@ function reduceApp (state, action) {
       },
       previousModalState: {
         name: null,
-      }
+      },
     },
     sidebarOpen: false,
     networkDropdownOpen: false,
@@ -100,7 +100,7 @@ function reduceApp (state, action) {
           state.appState.modal,
           { open: false },
           { modalState: { name: null } },
-          { previousModalState: appState.modal.modalState}, 
+          { previousModalState: appState.modal.modalState},
         ),
       })
 

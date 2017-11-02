@@ -22,6 +22,8 @@
 */
 
 const BigNumber = require('bignumber.js')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const R = require('ramda')
 const { stripHexPrefix } = require('ethereumjs-util')
 
@@ -104,7 +106,7 @@ const converter = R.pipe(
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPropApplySetterMap('toNumericBase', baseChange),
   R.view(R.lensProp('value'))
-);
+)
 
 const conversionUtil = (value, {
   fromCurrency = null,
@@ -127,15 +129,15 @@ const conversionUtil = (value, {
   conversionRate,
   invertConversionRate,
   value: value || '0',
-});
+})
 
 const addCurrencies = (a, b, options = {}) => {
   const {
     aBase,
     bBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
-  const value = (new BigNumber(a, aBase)).add(b, bBase);
+  const value = (new BigNumber(a, aBase)).add(b, bBase)
 
   return converter({
     value,
@@ -147,13 +149,13 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const {
     multiplicandBase,
     multiplierBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
 
   const bigNumberA = new BigNumber(String(a), multiplicandBase)
   const bigNumberB = new BigNumber(String(b), multiplierBase)
 
-  const value = bigNumberA.times(bigNumberB);
+  const value = bigNumberA.times(bigNumberB)
 
   return converter({
     value,
@@ -163,7 +165,7 @@ const multiplyCurrencies = (a, b, options = {}) => {
 
 const conversionGreaterThan = (
   { ...firstProps },
-  { ...secondProps  },
+  { ...secondProps },
 ) => {
   const firstValue = converter({ ...firstProps })
   const secondValue = converter({ ...secondProps })
@@ -172,7 +174,7 @@ const conversionGreaterThan = (
 
 const conversionGTE = (
   { ...firstProps },
-  { ...secondProps  },
+  { ...secondProps },
 ) => {
   const firstValue = converter({ ...firstProps })
   const secondValue = converter({ ...secondProps })
@@ -181,7 +183,7 @@ const conversionGTE = (
 
 const conversionLTE = (
   { ...firstProps },
-  { ...secondProps  },
+  { ...secondProps },
 ) => {
   const firstValue = converter({ ...firstProps })
   const secondValue = converter({ ...secondProps })

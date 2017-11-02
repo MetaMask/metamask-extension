@@ -67,11 +67,11 @@ TokenCell.prototype.render = function () {
     currentCurrency,
     // userAddress,
   } = props
-  
-  const pair = `${symbol.toLowerCase()}_eth`;
 
-  let currentTokenToFiatRate;
-  let currentTokenInFiat;
+  const pair = `${symbol.toLowerCase()}_eth`
+
+  let currentTokenToFiatRate
+  let currentTokenInFiat
   let formattedFiat = ''
 
   if (tokenExchangeRates[pair]) {
@@ -86,11 +86,11 @@ TokenCell.prototype.render = function () {
       numberOfDecimals: 2,
       conversionRate: currentTokenToFiatRate,
     })
-    formattedFiat = `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`;
+    formattedFiat = `${currentTokenInFiat} ${currentCurrency.toUpperCase()}`
   }
 
   const showFiat = Boolean(currentTokenInFiat) && currentCurrency.toUpperCase() !== symbol
- 
+
   return (
     h('div.token-list-item', {
       className: `token-list-item ${selectedTokenAddress === address ? 'token-list-item--active' : ''}`,

@@ -1,5 +1,4 @@
 const ethUtil = require('ethereumjs-util')
-const Identicon = require('../identicon')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 const MIN_GAS_PRICE_HEX = (100000000).toString(16)

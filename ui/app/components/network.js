@@ -1,6 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const classnames = require('classnames');
+const classnames = require('classnames')
 const inherits = require('util').inherits
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
 
