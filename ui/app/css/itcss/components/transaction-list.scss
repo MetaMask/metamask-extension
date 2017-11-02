@@ -199,6 +199,17 @@
   }
 }
 
+.tx-list-see-more-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.tx-list-see-more {
+  color: $curious-blue;
+  cursor: pointer;
+}
+
 .tx-list-item {
   border-top: 1px solid rgb(231, 231, 231);
   flex: 0 0 auto;
