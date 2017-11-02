@@ -21,7 +21,7 @@ GasModalCard.prototype.render = function () {
     // max,
     step,
     title,
-    copy
+    copy,
   } = this.props
 
   return h('div.send-v2__gas-modal-card', [
@@ -47,8 +47,8 @@ GasModalCard.prototype.render = function () {
     //   min,
     //   onChange,
     // }),
-    
+
   ])
-    
+
 }
 

@@ -148,11 +148,11 @@ SendTokenScreen.prototype.setErrorsFor = function (field) {
 
   const {
     isValid,
-    errors: newErrors
+    errors: newErrors,
   } = this.validate()
 
   const nextErrors = Object.assign({}, previousErrors, {
-    [field]: newErrors[field] || null
+    [field]: newErrors[field] || null,
   })
 
   if (!isValid) {
@@ -166,7 +166,7 @@ SendTokenScreen.prototype.setErrorsFor = function (field) {
 SendTokenScreen.prototype.clearErrorsFor = function (field) {
   const { errors: previousErrors } = this.state
   const nextErrors = Object.assign({}, previousErrors, {
-    [field]: null
+    [field]: null,
   })
 
   this.setState({
@@ -428,7 +428,7 @@ SendTokenScreen.prototype.render = function () {
       this.renderAmountInput(),
       this.renderGasInput(),
       this.renderMemoInput(),
-      warning && h('div.send-screen-input-wrapper--error', {}, 
+      warning && h('div.send-screen-input-wrapper--error', {},
         h('div.send-screen-input-wrapper__error-message', [
           warning,
         ])

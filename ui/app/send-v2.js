@@ -94,7 +94,7 @@ SendTransactionScreen.prototype.renderHeaderIcon = function () {
         diameter: 40,
         address: selectedToken.address,
       })
-      : h('img.send-v2__send-header-icon', { src: '../images/eth_logo.svg' })
+      : h('img.send-v2__send-header-icon', { src: '../images/eth_logo.svg' }),
   ])
 }
 
@@ -135,12 +135,12 @@ SendTransactionScreen.prototype.renderHeader = function () {
   ])
 }
 
-SendTransactionScreen.prototype.renderErrorMessage = function(errorType) {
+SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
   const { errors } = this.props
-  const errorMessage = errors[errorType];
+  const errorMessage = errors[errorType]
 
   return errorMessage
-    ? h('div.send-v2__error', [ errorMessage ] )
+    ? h('div.send-v2__error', [ errorMessage ])
     : null
 }
 

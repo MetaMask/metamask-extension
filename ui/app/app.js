@@ -145,7 +145,7 @@ App.prototype.render = function () {
       (isLoading || isLoadingNetwork) && h(Loading, {
         loadingMessage: loadMessage,
       }),
-      
+
       // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
       // content

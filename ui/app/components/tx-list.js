@@ -22,7 +22,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id }))
+    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id })),
   }
 }
 
@@ -103,7 +103,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     tokenInfoGetter: this.tokenInfoGetter,
   }
 
-  const isUnapproved = transactionStatus === 'unapproved';
+  const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
     opts.onClick = () => showConfTxPage({id: transActionId})

@@ -144,7 +144,7 @@ ConfirmSendToken.prototype.getData = function () {
   const { value } = params[0] || {}
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  
+
   return {
     from: {
       address: txParams.from,

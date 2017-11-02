@@ -430,7 +430,7 @@ function addNewAccount () {
         forceUpdateMetamaskState(dispatch)
         return resolve(newAccountAddress)
       })
-    });
+    })
   }
 }
 
@@ -621,7 +621,7 @@ function updateSendErrors (error) {
 
 function clearSend () {
   return {
-    type: actions.CLEAR_SEND
+    type: actions.CLEAR_SEND,
   }
 }
 
@@ -1004,10 +1004,10 @@ function addTokens (tokens) {
   }
 }
 
-function updateTokens(newTokens) {
+function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
-    newTokens
+    newTokens,
   }
 }
 
@@ -1081,7 +1081,7 @@ function setProviderType (type) {
   }
 }
 
-function updateProviderType(type) {
+function updateProviderType (type) {
   return {
     type: actions.SET_PROVIDER_TYPE,
     value: type,
@@ -1239,7 +1239,7 @@ function exportAccount (password, address) {
   }
 }
 
-function exportAccountComplete() {
+function exportAccountComplete () {
   return {
     type: actions.EXPORT_ACCOUNT,
   }

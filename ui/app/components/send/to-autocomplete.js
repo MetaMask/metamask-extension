@@ -37,15 +37,15 @@ ToAutoComplete.prototype.renderDropdown = function () {
     h('div.send-v2__from-dropdown__list', {}, [
 
       ...accountsToRender.map(account => h(AccountListItem, {
-        account, 
+        account,
         handleClick: () => {
           onChange(account.address)
           closeDropdown()
-        }, 
+        },
         icon: this.getListItemIcon(account.address, to),
         displayBalance: false,
         displayAddress: true,
-      }))
+      })),
 
     ]),
 
@@ -67,8 +67,7 @@ ToAutoComplete.prototype.handleInputEvent = function (event = {}, cb) {
     this.setState({ accountsToRender: [] })
     event.target && event.target.select()
     closeDropdown()
-  }
-  else {
+  } else {
     this.setState({ accountsToRender: matchingAccounts })
     openDropdown()
   }
@@ -93,13 +92,13 @@ ToAutoComplete.prototype.render = function () {
 
     h('input.send-v2__to-autocomplete__input', {
       placeholder: 'Recipient Address',
-      className: inError ? `send-v2__error-border` : '', 
+      className: inError ? `send-v2__error-border` : '',
       value: to,
       onChange: event => onChange(event.target.value),
       onFocus: event => this.handleInputEvent(event),
       style: {
         borderColor: inError ? 'red' : null,
-      }
+      },
     }),
 
     !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {

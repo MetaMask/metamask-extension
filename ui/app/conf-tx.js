@@ -121,7 +121,7 @@ function currentTxView (opts) {
     return h(PendingTx, opts)
   } else if (msgParams) {
     log.debug('msgParams detected, rendering pending msg')
-    
+
     return h(SignatureRequest, opts)
 
     // if (type === 'eth_sign') {

@@ -30,8 +30,8 @@ EthFeeDisplay.prototype.render = function () {
       color: '#5d5d5d',
       fontSize: '16px',
       fontFamily: 'DIN OT',
-      lineHeight: '22.4px'
-    }
+      lineHeight: '22.4px',
+    },
   })
 }
 

@@ -37,13 +37,13 @@ AccountDropdownMini.prototype.renderDropdown = function () {
       ...accounts.map(account => h(AccountListItem, {
         account,
         displayBalance: false,
-        displayAddress: false, 
+        displayAddress: false,
         handleClick: () => {
           onSelect(account)
           closeDropdown()
-        }, 
+        },
         icon: this.getListItemIcon(account, selectedAccount),
-      }))
+      })),
 
     ]),
 
@@ -64,12 +64,12 @@ AccountDropdownMini.prototype.render = function () {
       handleClick: openDropdown,
       displayBalance: false,
       displayAddress: false,
-      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } })
+      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } }),
     }),
 
     dropdownOpen && this.renderDropdown(),
 
   ])
-    
+
 }
 

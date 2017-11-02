@@ -23,9 +23,9 @@ function mapStateToProps (state) {
   const selectedToken = getSelectedToken(state)
   const conversionRate = conversionRateSelector(state)
 
-  let data;
-  let primaryCurrency;
-  let tokenToFiatRate;
+  let data
+  let primaryCurrency
+  let tokenToFiatRate
   if (selectedToken) {
     data = Array.prototype.map.call(
       abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
@@ -70,6 +70,6 @@ function mapDispatchToProps (dispatch) {
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
-    clearSend: () => dispatch(actions.clearSend())
+    clearSend: () => dispatch(actions.clearSend()),
   }
 }

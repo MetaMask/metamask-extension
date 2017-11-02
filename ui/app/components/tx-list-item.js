@@ -138,8 +138,8 @@ TxListItem.prototype.getSendTokenTotal = async function () {
   const multiplier = Math.pow(10, Number(decimals || 0))
   const total = Number(value / multiplier)
 
-  const pair = symbol && `${symbol.toLowerCase()}_eth`;
-  
+  const pair = symbol && `${symbol.toLowerCase()}_eth`
+
   let tokenToFiatRate
   let totalInFiat
 
@@ -242,6 +242,6 @@ TxListItem.prototype.render = function () {
 
         ]),
       ]),
-    ]) // holding on icon from design
+    ]), // holding on icon from design
   ])
 }

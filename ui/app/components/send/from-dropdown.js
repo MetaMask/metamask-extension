@@ -35,13 +35,13 @@ FromDropdown.prototype.renderDropdown = function () {
     h('div.send-v2__from-dropdown__list', {}, [
 
       ...accounts.map(account => h(AccountListItem, {
-        account, 
+        account,
         handleClick: () => {
           onSelect(account)
           closeDropdown()
-        }, 
+        },
         icon: this.getListItemIcon(account, selectedAccount),
-      }))
+      })),
 
     ]),
 
@@ -60,12 +60,12 @@ FromDropdown.prototype.render = function () {
     h(AccountListItem, {
       account: selectedAccount,
       handleClick: openDropdown,
-      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } })
+      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } }),
     }),
 
     dropdownOpen && this.renderDropdown(),
 
   ])
-    
+
 }
 
