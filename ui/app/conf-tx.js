@@ -114,14 +114,14 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
-  const { txParams, msgParams, type } = txData
+  const { txParams, msgParams } = txData
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
   } else if (msgParams) {
     log.debug('msgParams detected, rendering pending msg')
-    
+
     return h(SignatureRequest, opts)
 
     // if (type === 'eth_sign') {

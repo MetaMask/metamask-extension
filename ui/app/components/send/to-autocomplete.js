@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
 const AccountListItem = require('./account-list-item')
 
 module.exports = ToAutoComplete
@@ -23,7 +22,6 @@ ToAutoComplete.prototype.getListItemIcon = function (listItemAddress, toAddress)
 
 ToAutoComplete.prototype.renderDropdown = function () {
   const {
-    accounts,
     closeDropdown,
     onChange,
     to,
@@ -39,15 +37,15 @@ ToAutoComplete.prototype.renderDropdown = function () {
     h('div.send-v2__from-dropdown__list', {}, [
 
       ...accountsToRender.map(account => h(AccountListItem, {
-        account, 
+        account,
         handleClick: () => {
           onChange(account.address)
           closeDropdown()
-        }, 
+        },
         icon: this.getListItemIcon(account.address, to),
         displayBalance: false,
         displayAddress: true,
-      }))
+      })),
 
     ]),
 
@@ -69,8 +67,7 @@ ToAutoComplete.prototype.handleInputEvent = function (event = {}, cb) {
     this.setState({ accountsToRender: [] })
     event.target && event.target.select()
     closeDropdown()
-  }
-  else {
+  } else {
     this.setState({ accountsToRender: matchingAccounts })
     openDropdown()
   }
@@ -86,9 +83,6 @@ ToAutoComplete.prototype.componentDidUpdate = function (nextProps, nextState) {
 ToAutoComplete.prototype.render = function () {
   const {
     to,
-    accounts,
-    openDropdown,
-    closeDropdown,
     dropdownOpen,
     onChange,
     inError,
@@ -98,13 +92,13 @@ ToAutoComplete.prototype.render = function () {
 
     h('input.send-v2__to-autocomplete__input', {
       placeholder: 'Recipient Address',
-      className: inError ? `send-v2__error-border` : '', 
+      className: inError ? `send-v2__error-border` : '',
       value: to,
       onChange: event => onChange(event.target.value),
       onFocus: event => this.handleInputEvent(event),
       style: {
         borderColor: inError ? 'red' : null,
-      }
+      },
     }),
 
     !to && h(`i.fa.fa-caret-down.fa-lg.send-v2__to-autocomplete__down-caret`, {

@@ -425,6 +425,21 @@ AccountDropdowns.propTypes = {
   identities: PropTypes.objectOf(PropTypes.object),
   selected: PropTypes.string,
   keyrings: PropTypes.array,
+  accounts: PropTypes.object,
+  menuItemStyles: PropTypes.object,
+  actions: PropTypes.object,
+  // actions.showAccountDetail: ,
+  useCssTransition: PropTypes.bool,
+  innerStyle: PropTypes.object,
+  sidebarOpen: PropTypes.bool,
+  dropdownWrapperStyle: PropTypes.string,
+  // actions.showAccountDetailModal: ,
+  network: PropTypes.number,
+  // actions.showExportPrivateKeyModal: ,
+  style: PropTypes.object,
+  enableAccountsSelector: PropTypes.bool,
+  enableAccountOption: PropTypes.bool,
+  enableAccountOptions: PropTypes.bool,
 }
 
 const mapDispatchToProps = (dispatch) => {

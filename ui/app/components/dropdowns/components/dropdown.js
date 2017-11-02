@@ -68,6 +68,7 @@ Dropdown.propTypes = {
   onClickOutside: PropTypes.func,
   innerStyle: PropTypes.object,
   useCssTransition: PropTypes.bool,
+  containerClassName: PropTypes.string,
 }
 
 class DropdownMenuItem extends Component {

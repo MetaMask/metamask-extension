@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 module.exports = CurrencyDisplay
@@ -48,8 +47,6 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
     primaryCurrency,
     convertedCurrency,
-    convertedPrefix = '',
-    placeholder = '0',
     readOnly = false,
     inError = false,
     value: initValue,
@@ -74,7 +71,7 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
   })
 
-  const inputSizeMultiplier = readOnly ? 1 : 1.2;
+  const inputSizeMultiplier = readOnly ? 1 : 1.2
 
   return h('div', {
     className,
@@ -98,15 +95,13 @@ CurrencyDisplay.prototype.render = function () {
 
             if (newValue === '') {
               newValue = '0'
-            }
-            else if (newValue.match(/^0[1-9]$/)) {
+            } else if (newValue.match(/^0[1-9]$/)) {
               newValue = newValue.match(/[1-9]/)[0]
             }
 
             if (newValue && !isValidInput(newValue)) {
               event.preventDefault()
-            }
-            else {
+            } else {
               validate(this.getAmount(newValue))
               this.setState({ value: newValue })
             }
@@ -125,6 +120,6 @@ CurrencyDisplay.prototype.render = function () {
     }, `${convertedValue} ${convertedCurrency.toUpperCase()}`),
 
   ])
-    
+
 }
 

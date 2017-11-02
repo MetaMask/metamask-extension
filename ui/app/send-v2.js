@@ -1,8 +1,6 @@
 const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const classnames = require('classnames')
 
 const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
@@ -13,12 +11,9 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const { MIN_GAS_TOTAL } = require('./components/send/send-constants')
 
-const { showModal } = require('./actions')
-
 const {
   multiplyCurrencies,
   conversionGreaterThan,
-  addCurrencies,
 } = require('./conversion-util')
 const {
   isBalanceSufficient,
@@ -99,7 +94,7 @@ SendTransactionScreen.prototype.renderHeaderIcon = function () {
         diameter: 40,
         address: selectedToken.address,
       })
-      : h('img.send-v2__send-header-icon', { src: '../images/eth_logo.svg' })
+      : h('img.send-v2__send-header-icon', { src: '../images/eth_logo.svg' }),
   ])
 }
 
@@ -140,12 +135,12 @@ SendTransactionScreen.prototype.renderHeader = function () {
   ])
 }
 
-SendTransactionScreen.prototype.renderErrorMessage = function(errorType) {
+SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
   const { errors } = this.props
-  const errorMessage = errors[errorType];
+  const errorMessage = errors[errorType]
 
   return errorMessage
-    ? h('div.send-v2__error', [ errorMessage ] )
+    ? h('div.send-v2__error', [ errorMessage ])
     : null
 }
 
@@ -154,7 +149,6 @@ SendTransactionScreen.prototype.renderFromRow = function () {
     from,
     fromAccounts,
     conversionRate,
-    setSelectedAddress,
     updateSendFrom,
   } = this.props
 
@@ -243,7 +237,6 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
     amountConversionRate,
     conversionRate,
     primaryCurrency,
-    toCurrency,
     selectedToken,
     gasTotal,
   } = this.props
@@ -440,7 +433,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     signTokenTx,
     signTx,
     selectedToken,
-    toAccounts,
     clearSend,
     errors: { amount: amountError, to: toError },
   } = this.props

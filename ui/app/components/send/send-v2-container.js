@@ -3,17 +3,12 @@ const actions = require('../../actions')
 const abi = require('ethereumjs-abi')
 const SendEther = require('../../send-v2')
 
-const { multiplyCurrencies } = require('../../conversion-util')
-
 const {
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
   conversionRateSelector,
   getSelectedToken,
-  getSelectedTokenExchangeRate,
   getSelectedAddress,
-  getGasPrice,
-  getGasLimit,
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
@@ -26,12 +21,11 @@ function mapStateToProps (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
   const selectedAddress = getSelectedAddress(state)
   const selectedToken = getSelectedToken(state)
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
   const conversionRate = conversionRateSelector(state)
 
-  let data;
-  let primaryCurrency;
-  let tokenToFiatRate;
+  let data
+  let primaryCurrency
+  let tokenToFiatRate
   if (selectedToken) {
     data = Array.prototype.map.call(
       abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
@@ -76,6 +70,6 @@ function mapDispatchToProps (dispatch) {
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
-    clearSend: () => dispatch(actions.clearSend())
+    clearSend: () => dispatch(actions.clearSend()),
   }
 }

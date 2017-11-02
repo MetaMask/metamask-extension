@@ -6,7 +6,7 @@ const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
 const selectors = require('../selectors')
 const TxListItem = require('./tx-list-item')
 const ShiftListItem = require('./shift-list-item')
-const { formatBalance, formatDate } = require('../util')
+const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
@@ -22,7 +22,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id }))
+    showConfTxPage: ({ id }) => dispatch(showConfTxPage({ id })),
   }
 }
 
@@ -36,9 +36,6 @@ TxList.prototype.componentWillMount = function () {
 }
 
 TxList.prototype.render = function () {
-
-  const { txsToRender, showConfTxPage } = this.props
-
   return h('div.flex-column.tx-list-container', {}, [
 
     h('div.flex-row.tx-list-header-wrapper', [
@@ -98,7 +95,6 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     txParams: transaction.txParams,
     transactionStatus,
     transActionId,
-    key: transActionId,
     dateString,
     address,
     transactionAmount,
@@ -107,7 +103,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     tokenInfoGetter: this.tokenInfoGetter,
   }
 
-  const isUnapproved = transactionStatus === 'unapproved';
+  const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
     opts.onClick = () => showConfTxPage({id: transActionId})
