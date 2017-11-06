@@ -133,7 +133,7 @@ module.exports = class TransactionController extends EventEmitter {
   async newUnapprovedTransaction (txParams) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const txMeta = await this.addUnapprovedTransaction(txParams)
-    this.emit('newUnaprovedTx', txMeta)
+    this.emit('newUnapprovedTx', txMeta)
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${txMeta.id}:finished`, (completedTx) => {
