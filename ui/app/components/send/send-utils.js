@@ -1,6 +1,5 @@
 const {
   addCurrencies,
-  conversionGreaterThan,
   conversionUtil,
   conversionGTE,
 } = require('../../conversion-util')

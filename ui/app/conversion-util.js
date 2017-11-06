@@ -149,7 +149,7 @@ const subtractCurrencies = (a, b, options = {}) => {
   const {
     aBase,
     bBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
   const value = (new BigNumber(a, aBase)).minus(b, bBase);
 

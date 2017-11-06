@@ -169,8 +169,7 @@ CustomizeGasModal.prototype.convertAndSetGasLimit = function (newGasLimit) {
 }
 
 CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
-  const { gasLimit, priceSigZeros } = this.state
-  const priceStrLength = newGasPrice.length
+  const { gasLimit } = this.state
   const sigZeros = String(newGasPrice).match(/^\d+[.]\d*?(0+)$/)
   const sigDec = String(newGasPrice).match(/^\d+([.])0*$/)
 

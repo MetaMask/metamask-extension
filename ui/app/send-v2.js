@@ -16,7 +16,6 @@ const {
   MIN_GAS_PRICE_HEX,
   MIN_GAS_LIMIT_HEX,
 } = require('./components/send/send-constants')
-const abi = require('human-standard-token-abi')
 
 const {
   multiplyCurrencies,
@@ -92,11 +91,10 @@ SendTransactionScreen.prototype.componentWillMount = function () {
     selectedAddress,
     data,
     updateGasTotal,
-    updateSendTokenBalance,
     from,
     tokenContract,
   } = this.props
-  const { symbol, decimals } = selectedToken || {}
+  const { symbol } = selectedToken || {}
 
   if (symbol) {
     updateTokenExchangeRate(symbol)
@@ -209,13 +207,9 @@ SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
 
 SendTransactionScreen.prototype.handleFromChange = async function (newFrom) {
   const {
-    from,
     updateSendFrom,
-    updateSendTokenBalance,
     tokenContract,
-    selectedToken,
   } = this.props
-  const { decimals } = selectedToken || {}
 
   if (tokenContract) {
     const usersToken = await tokenContract.balanceOf(newFrom.address)
@@ -229,9 +223,6 @@ SendTransactionScreen.prototype.renderFromRow = function () {
     from,
     fromAccounts,
     conversionRate,
-    updateSendFrom,
-    updateSendTokenBalance,
-    tokenContract,
   } = this.props
 
   const { fromDropdownOpen } = this.state
