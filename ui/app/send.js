@@ -272,6 +272,10 @@ SendTransactionScreen.prototype.onSubmit = function () {
     return this.props.dispatch(actions.displayWarning(message))
   }
 
+  if(this.props.address==recipient){
+    alert("Warning the Recipient Address is same as Sender Address")
+  }
+
   if (!isHex(ethUtil.stripHexPrefix(txData)) && txData) {
     message = 'Transaction data must be hex string.'
     return this.props.dispatch(actions.displayWarning(message))
