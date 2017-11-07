@@ -300,6 +300,7 @@ SendTransactionScreen.prototype.handleAmountChange = function (value) {
   const amount = value
   const { updateSendAmount } = this.props
 
+  this.validateAmount(amount)
   updateSendAmount(amount)
 }
 
@@ -330,7 +331,6 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
   updateGasPrice(MIN_GAS_PRICE_HEX)
   updateGasLimit(MIN_GAS_LIMIT_HEX)
   updateGasTotal(MIN_GAS_TOTAL)
-
   updateSendAmount(maxAmount)
 }
 
@@ -393,9 +393,8 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     errors,
     amount,
   } = this.props
-
   return h('div.send-v2__form-row', [
-
+    
     h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
@@ -416,7 +415,6 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
         value: amount || '0x0',
         conversionRate: amountConversionRate,
         handleChange: this.handleAmountChange,
-        validate: this.validateAmount,
       }),
     ]),
 
