@@ -224,6 +224,8 @@ var actions = {
 
   TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
   toggleAccountMenu,
+
+  useEtherscanProvider,
 }
 
 module.exports = actions
@@ -428,7 +430,7 @@ function addNewAccount () {
         forceUpdateMetamaskState(dispatch)
         return resolve(newAccountAddress)
       })
-    });
+    })
   }
 }
 
@@ -619,7 +621,7 @@ function updateSendErrors (error) {
 
 function clearSend () {
   return {
-    type: actions.CLEAR_SEND
+    type: actions.CLEAR_SEND,
   }
 }
 
@@ -808,9 +810,50 @@ function updateMetamaskState (newState) {
   }
 }
 
+const backgroundSetLocked = () => {
+  return new Promise((resolve, reject) => {
+    background.setLocked(error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function lockMetamask () {
   log.debug(`background.setLocked`)
-  return callBackgroundThenUpdate(background.setLocked)
+
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return backgroundSetLocked()
+      .then(() => updateMetamaskStateFromBackground())
+      .catch(error => {
+        dispatch(actions.displayWarning(error.message))
+        return Promise.reject(error)
+      })
+      .then(newState => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
+      .catch(() => dispatch({ type: actions.LOCK_METAMASK }))
+  }
 }
 
 function setCurrentAccountTab (newTabName) {
@@ -961,10 +1004,10 @@ function addTokens (tokens) {
   }
 }
 
-function updateTokens(newTokens) {
+function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
-    newTokens
+    newTokens,
   }
 }
 
@@ -1038,7 +1081,7 @@ function setProviderType (type) {
   }
 }
 
-function updateProviderType(type) {
+function updateProviderType (type) {
   return {
     type: actions.SET_PROVIDER_TYPE,
     value: type,
@@ -1196,7 +1239,7 @@ function exportAccount (password, address) {
   }
 }
 
-function exportAccountComplete() {
+function exportAccountComplete () {
   return {
     type: actions.EXPORT_ACCOUNT,
   }

@@ -1,7 +1,12 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const { addCurrencies } = require('../conversion-util')
+const {
+  addCurrencies,
+  conversionGTE,
+  conversionLTE,
+  toNegative,
+} = require('../conversion-util')
 
 module.exports = InputNumber
 
@@ -17,8 +22,21 @@ InputNumber.prototype.setValue = function (newValue) {
 
   newValue = Number(fixed ? newValue.toFixed(4) : newValue)
 
-  if (newValue >= min && newValue <= max) {
+  const newValueGreaterThanMin = conversionGTE(
+    { value: newValue, fromNumericBase: 'dec' },
+    { value: min, fromNumericBase: 'hex' },
+  )
+
+  const newValueLessThanMax = conversionLTE(
+    { value: newValue, fromNumericBase: 'dec' },
+    { value: max, fromNumericBase: 'hex' },
+  )
+  if (newValueGreaterThanMin && newValueLessThanMax) {
     onChange(newValue)
+  } else if (!newValueGreaterThanMin) {
+    onChange(min)
+  } else if (!newValueLessThanMax) {
+    onChange(max)
   }
 }
 
@@ -29,7 +47,7 @@ InputNumber.prototype.render = function () {
     h('input.customize-gas-input', {
       placeholder,
       type: 'number',
-      value: value,
+      value,
       onChange: (e) => this.setValue(e.target.value),
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
@@ -39,7 +57,7 @@ InputNumber.prototype.render = function () {
       }),
       h('i.fa.fa-angle-down', {
         style: { cursor: 'pointer' },
-        onClick: () => this.setValue(addCurrencies(value, step * -1)),
+        onClick: () => this.setValue(addCurrencies(value, toNegative(step))),
       }),
     ]),
   ])

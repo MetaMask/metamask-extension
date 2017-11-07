@@ -23,21 +23,20 @@ GasFeeDisplay.prototype.render = function () {
 
     gasTotal
       ? h(CurrencyDisplay, {
-        primaryCurrency: 'ETH',
+        primaryCurrency,
         convertedCurrency,
         value: gasTotal,
         conversionRate,
         convertedPrefix: '$',
         readOnly: true,
       })
-      : h('div.currency-display', 'Loading...')
-    ,
+      : h('div.currency-display', 'Loading...'),
 
     h('div.send-v2__sliders-icon-container', {
       onClick,
     }, [
       h('i.fa.fa-sliders.send-v2__sliders-icon'),
-    ])
+    ]),
 
   ])
 }

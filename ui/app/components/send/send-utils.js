@@ -1,6 +1,6 @@
 const { addCurrencies, conversionGreaterThan } = require('../../conversion-util')
 
-function isBalanceSufficient({
+function isBalanceSufficient ({
   amount,
   gasTotal,
   balance,
@@ -27,7 +27,6 @@ function isBalanceSufficient({
       fromNumericBase: 'hex',
       conversionRate: amountConversionRate,
       fromCurrency: selectedToken || primaryCurrency,
-      conversionRate: amountConversionRate,
     },
   )
 

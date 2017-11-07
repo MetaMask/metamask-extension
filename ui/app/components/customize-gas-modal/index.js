@@ -58,7 +58,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function getOriginalState(props) {
+function getOriginalState (props) {
   const gasPrice = props.gasPrice || MIN_GAS_PRICE_DEC
   const gasLimit = props.gasLimit || MIN_GAS_LIMIT_DEC
 
@@ -90,7 +90,7 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateGasPrice,
     updateGasLimit,
     hideModal,
-    updateGasTotal
+    updateGasTotal,
   } = this.props
 
   updateGasPrice(gasPrice)
@@ -126,9 +126,9 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   })
 
   if (!balanceIsSufficient) {
-    error = 'Insufficient balance for current gas total' 
+    error = 'Insufficient balance for current gas total'
   }
-  
+
   const gasLimitTooLow = gasLimit && conversionGreaterThan(
     {
       value: MIN_GAS_LIMIT_DEC,
@@ -142,7 +142,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   )
 
   if (gasLimitTooLow) {
-    error = 'Gas limit must be at least 21000' 
+    error = 'Gas limit must be at least 21000'
   }
 
   this.setState({ error })
@@ -190,7 +190,7 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
 }
 
 CustomizeGasModal.prototype.render = function () {
-  const { hideModal, conversionRate } = this.props
+  const { hideModal } = this.props
   const { gasPrice, gasLimit, gasTotal, error } = this.state
 
   const convertedGasPrice = conversionUtil(gasPrice, {
@@ -219,12 +219,12 @@ CustomizeGasModal.prototype.render = function () {
       ]),
 
       h('div.send-v2__customize-gas__body', {}, [
-        
+
         h(GasModalCard, {
           value: convertedGasPrice,
           min: MIN_GAS_PRICE_GWEI,
           // max: 1000,
-          step: 1,
+          step: MIN_GAS_PRICE_GWEI,
           onChange: value => this.convertAndSetGasPrice(value),
           title: 'Gas Price (GWEI)',
           copy: 'We calculate the suggested gas prices based on network success rates.',
@@ -247,7 +247,7 @@ CustomizeGasModal.prototype.render = function () {
         error && h('div.send-v2__customize-gas__error-message', [
           error,
         ]),
-        
+
         h('div.send-v2__customize-gas__revert', {
           onClick: () => this.revert(),
         }, ['Revert']),
@@ -260,7 +260,7 @@ CustomizeGasModal.prototype.render = function () {
           h(`div.send-v2__customize-gas__save${error ? '__error' : ''}`, {
             onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
           }, ['SAVE']),
-        ])
+        ]),
 
       ]),
 

@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
-const normalizeAddress = require('eth-sig-util').normalize
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
 
@@ -38,6 +37,7 @@ function TokenList () {
 }
 
 TokenList.prototype.render = function () {
+  const { userAddress } = this.props
   const state = this.state
   const { tokens, isLoading, error } = state
 
@@ -162,15 +162,15 @@ TokenList.prototype.componentWillUnmount = function () {
   this.tracker.stop()
 }
 
-function uniqueMergeTokens (tokensA, tokensB = []) {
-  const uniqueAddresses = []
-  const result = []
-  tokensA.concat(tokensB).forEach((token) => {
-    const normal = normalizeAddress(token.address)
-    if (!uniqueAddresses.includes(normal)) {
-      uniqueAddresses.push(normal)
-      result.push(token)
-    }
-  })
-  return result
-}
+// function uniqueMergeTokens (tokensA, tokensB = []) {
+//   const uniqueAddresses = []
+//   const result = []
+//   tokensA.concat(tokensB).forEach((token) => {
+//     const normal = normalizeAddress(token.address)
+//     if (!uniqueAddresses.includes(normal)) {
+//       uniqueAddresses.push(normal)
+//       result.push(token)
+//     }
+//   })
+//   return result
+// }

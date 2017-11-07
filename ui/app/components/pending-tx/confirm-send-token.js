@@ -10,19 +10,15 @@ const clone = require('clone')
 const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
-const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const {
   conversionUtil,
   multiplyCurrencies,
   addCurrencies,
 } = require('../../conversion-util')
 
-const MIN_GAS_PRICE_GWEI_BN = new BN(1)
-const GWEI_FACTOR = new BN(1e9)
-const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
 const {
-  getSelectedTokenExchangeRate,
   getTokenExchangeRate,
   getSelectedAddress,
 } = require('../../selectors')
@@ -38,7 +34,6 @@ function mapStateToProps (state, ownProps) {
     identities,
     currentCurrency,
   } = state.metamask
-  const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
   const tokenExchangeRate = getTokenExchangeRate(state, symbol)
 
@@ -99,7 +94,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
   const { decimals } = token
 
   const gas = txParams.gas
-  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
+  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_HEX
   const gasTotal = multiplyCurrencies(gas, gasPrice, {
     multiplicandBase: 16,
     multiplierBase: 16,
@@ -149,7 +144,7 @@ ConfirmSendToken.prototype.getData = function () {
   const { value } = params[0] || {}
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  
+
   return {
     from: {
       address: txParams.from,
@@ -247,7 +242,6 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 ConfirmSendToken.prototype.render = function () {
   const { backToAccountDetail, selectedAddress } = this.props
   const txMeta = this.gatherTxMeta()
-  const txParams = txMeta.txParams || {}
 
   const {
     from: {
