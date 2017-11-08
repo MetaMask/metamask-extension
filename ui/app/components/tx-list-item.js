@@ -10,6 +10,7 @@ const Identicon = require('./identicon')
 const contractMap = require('eth-contract-metadata')
 
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
+const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
 
@@ -135,8 +136,7 @@ TxListItem.prototype.getSendTokenTotal = async function () {
   const { params = [] } = decodedData || {}
   const { value } = params[1] || {}
   const { decimals, symbol } = await this.getTokenInfo()
-  const multiplier = Math.pow(10, Number(decimals || 0))
-  const total = Number(value / multiplier)
+  const total = calcTokenAmount(value, decimals)
 
   const pair = symbol && `${symbol.toLowerCase()}_eth`
 

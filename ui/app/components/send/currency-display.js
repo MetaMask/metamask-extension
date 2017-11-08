@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const CurrencyInput = require('../currency-input')
 const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 module.exports = CurrencyDisplay
@@ -8,10 +9,6 @@ module.exports = CurrencyDisplay
 inherits(CurrencyDisplay, Component)
 function CurrencyDisplay () {
   Component.call(this)
-
-  this.state = {
-    value: null,
-  }
 }
 
 function isValidInput (text) {
@@ -49,13 +46,11 @@ CurrencyDisplay.prototype.render = function () {
     convertedCurrency,
     readOnly = false,
     inError = false,
-    value: initValue,
+    value,
     handleChange,
-    validate,
   } = this.props
-  const { value } = this.state
 
-  const initValueToRender = conversionUtil(initValue, {
+  const valueToRender = conversionUtil(value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
@@ -63,7 +58,7 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
   })
 
-  const convertedValue = conversionUtil(value || initValueToRender, {
+  const convertedValue = conversionUtil(valueToRender, {
     fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
     toCurrency: convertedCurrency,
@@ -84,29 +79,14 @@ CurrencyDisplay.prototype.render = function () {
 
       h('div.currency-display__input-wrapper', [
 
-        h('input', {
+        h(CurrencyInput, {
           className: primaryBalanceClassName,
-          value: `${value || initValueToRender}`,
+          value: `${valueToRender}`,
           placeholder: '0',
-          size: (value || initValueToRender).length * inputSizeMultiplier,
           readOnly,
-          onChange: (event) => {
-            let newValue = event.target.value
-
-            if (newValue === '') {
-              newValue = '0'
-            } else if (newValue.match(/^0[1-9]$/)) {
-              newValue = newValue.match(/[1-9]/)[0]
-            }
-
-            if (newValue && !isValidInput(newValue)) {
-              event.preventDefault()
-            } else {
-              validate(this.getAmount(newValue))
-              this.setState({ value: newValue })
-            }
+          onInputChange: newValue => {
+            handleChange(this.getAmount(newValue))
           },
-          onBlur: event => !readOnly && handleChange(this.getAmount(event.target.value)),
         }),
 
         h('span.currency-display__currency-symbol', primaryCurrency),

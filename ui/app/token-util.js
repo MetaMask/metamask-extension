@@ -31,6 +31,15 @@ const tokenInfoGetter = function () {
   }
 }
 
+function calcTokenAmount (value, decimals) {
+  const multiplier = Math.pow(10, Number(decimals || 0))
+  const amount = Number(value / multiplier)
+
+  return amount
+}
+
+
 module.exports = {
   tokenInfoGetter,
+  calcTokenAmount,
 }
