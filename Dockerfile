@@ -16,7 +16,7 @@ COPY ./ /www/
 # RUN npm test
 
 # build app
-RUN npm run dist && gulp build:scss
+RUN npm run dist
 
 # start server
 CMD node mascara/example/server.js
