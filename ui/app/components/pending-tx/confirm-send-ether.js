@@ -40,16 +40,15 @@ function mapDispatchToProps (dispatch) {
       const {
         gas: gasLimit,
         gasPrice,
-        from,
         to,
-        value: amount
+        value: amount,
       } = txParams
       dispatch(actions.editTx(id))
-      dispatch(actions.updateGasLimit(gasLimit)),
-      dispatch(actions.updateGasPrice(gasPrice)),
-      dispatch(actions.updateSendTo(to)),
-      dispatch(actions.updateSendAmount(amount)),
-      dispatch(actions.updateSendErrors({ to: null, amount: null })),
+      dispatch(actions.updateGasLimit(gasLimit))
+      dispatch(actions.updateGasPrice(gasPrice))
+      dispatch(actions.updateSendTo(to))
+      dispatch(actions.updateSendAmount(amount))
+      dispatch(actions.updateSendErrors({ to: null, amount: null }))
       dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
@@ -176,7 +175,7 @@ ConfirmSendEther.prototype.getData = function () {
 }
 
 ConfirmSendEther.prototype.render = function () {
-  const { editTransaction, selectedAddress, currentCurrency, clearSend } = this.props
+  const { editTransaction, currentCurrency, clearSend } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -441,7 +440,7 @@ ConfirmSendEther.prototype.getFormEl = function () {
 ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
-  let txData = clone(state.txData) || clone(props.txData)
+  const txData = clone(state.txData) || clone(props.txData)
 
   if (props.send.editingTransactionId) {
     const {
@@ -450,7 +449,7 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
         amount: value,
         gasLimit: gas,
         gasPrice,
-      }
+      },
     } = props
     const { txParams: { from, to } } = txData
     txData.txParams = {

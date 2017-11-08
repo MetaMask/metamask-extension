@@ -111,7 +111,7 @@ SendTransactionScreen.prototype.componentWillMount = function () {
       .all([
         getGasPrice(),
         estimateGas(estimateGasParams),
-        tokenContract && tokenContract.balanceOf(from.address)
+        tokenContract && tokenContract.balanceOf(from.address),
       ])
       .then(([gasPrice, gas, usersToken]) => {
 
@@ -565,9 +565,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     gasPrice,
     signTokenTx,
     signTx,
-    updateAndApproveTx,
     selectedToken,
-    toAccounts,
     editingTransactionId,
     errors: { amount: amountError, to: toError },
     backToConfirmScreen,
