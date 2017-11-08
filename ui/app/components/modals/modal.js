@@ -189,7 +189,7 @@ const MODALS = {
 }
 
 const BACKDROPSTYLE = {
-  backgroundColor: 'rgba(245, 245, 245, 0.85)',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
 }
 
 function mapStateToProps (state) {
