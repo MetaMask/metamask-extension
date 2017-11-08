@@ -11,11 +11,6 @@ function CurrencyDisplay () {
   Component.call(this)
 }
 
-function isValidInput (text) {
-  const re = /^([1-9]\d*|0)(\.|\.\d*)?$/
-  return re.test(text)
-}
-
 function toHexWei (value) {
   return conversionUtil(value, {
     fromNumericBase: 'dec',
@@ -68,7 +63,6 @@ CurrencyDisplay.prototype.render = function () {
     convertedCurrency,
     readOnly = false,
     inError = false,
-    value,
     handleChange,
   } = this.props
 
@@ -81,8 +75,6 @@ CurrencyDisplay.prototype.render = function () {
     numberOfDecimals: 2,
     conversionRate,
   })
-
-  const inputSizeMultiplier = readOnly ? 1 : 1.2
 
   return h('div', {
     className,
