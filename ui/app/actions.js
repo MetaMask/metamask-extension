@@ -115,6 +115,7 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
+  EDIT_TX: 'EDIT_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   signPersonalMsg,
@@ -129,10 +130,13 @@ var actions = {
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
+  editTx,
   previousTx: previousTx,
   cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
+  updateTransactionParams,
+  UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   // send screen
   estimateGas,
   getGasPrice,
@@ -668,6 +672,8 @@ function updateAndApproveTx (txData) {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      dispatch(actions.clearSend())
       if (err) {
         dispatch(actions.txError(err))
         dispatch(actions.goHome())
@@ -682,6 +688,14 @@ function completedTx (id) {
   return {
     type: actions.COMPLETED_TX,
     value: id,
+  }
+}
+
+function updateTransactionParams (id, txParams) {
+  return {
+    type: actions.UPDATE_TRANSACTION_PARAMS,
+    id,
+    value: txParams,
   }
 }
 
@@ -945,6 +959,13 @@ function viewPendingTx (txId) {
 function previousTx () {
   return {
     type: actions.PREVIOUS_TX,
+  }
+}
+
+function editTx (txId) {
+  return {
+    type: actions.EDIT_TX,
+    value: txId,
   }
 }
 

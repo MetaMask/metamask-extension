@@ -19,6 +19,7 @@ function mapStateToProps (state) {
     conversionRate,
     identities,
     currentCurrency,
+    send,
   } = state.metamask
   const accounts = state.metamask.accounts
   const selectedAddress = state.metamask.selectedAddress || Object.keys(accounts)[0]
@@ -27,12 +28,30 @@ function mapStateToProps (state) {
     identities,
     selectedAddress,
     currentCurrency,
+    send,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
+    clearSend: () => dispatch(actions.clearSend()),
+    editTransaction: txMeta => {
+      const { id, txParams } = txMeta
+      const {
+        gas: gasLimit,
+        gasPrice,
+        from,
+        to,
+        value: amount
+      } = txParams
+      dispatch(actions.editTx(id))
+      dispatch(actions.updateGasLimit(gasLimit)),
+      dispatch(actions.updateGasPrice(gasPrice)),
+      dispatch(actions.updateSendTo(to)),
+      dispatch(actions.updateSendAmount(amount)),
+      dispatch(actions.updateSendErrors({ to: null, amount: null })),
+      dispatch(actions.showSendPage())
+    },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
   }
 }
@@ -157,7 +176,7 @@ ConfirmSendEther.prototype.getData = function () {
 }
 
 ConfirmSendEther.prototype.render = function () {
-  const { backToAccountDetail, selectedAddress, currentCurrency } = this.props
+  const { editTransaction, selectedAddress, currentCurrency, clearSend } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -199,8 +218,8 @@ ConfirmSendEther.prototype.render = function () {
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
           h('button.confirm-screen-back-button', {
-            onClick: () => backToAccountDetail(selectedAddress),
-          }, 'BACK'),
+            onClick: () => editTransaction(txMeta),
+          }, 'EDIT'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
           h('div.confirm-screen-header-tip'),
         ]),
@@ -371,7 +390,10 @@ ConfirmSendEther.prototype.render = function () {
       }, [
         // Cancel Button
         h('div.cancel.btn-light.confirm-screen-cancel-button', {
-          onClick: (event) => this.cancel(event, txMeta),
+          onClick: (event) => {
+            clearSend()
+            this.cancel(event, txMeta)
+          },
         }, 'CANCEL'),
 
         // Accept Button
@@ -419,7 +441,27 @@ ConfirmSendEther.prototype.getFormEl = function () {
 ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
-  const txData = clone(state.txData) || clone(props.txData)
+  let txData = clone(state.txData) || clone(props.txData)
+
+  if (props.send.editingTransactionId) {
+    const {
+      send: {
+        memo,
+        amount: value,
+        gasLimit: gas,
+        gasPrice,
+      }
+    } = props
+    const { txParams: { from, to } } = txData
+    txData.txParams = {
+      from: ethUtil.addHexPrefix(from),
+      to: ethUtil.addHexPrefix(to),
+      memo: memo && ethUtil.addHexPrefix(memo),
+      value: ethUtil.addHexPrefix(value),
+      gas: ethUtil.addHexPrefix(gas),
+      gasPrice: ethUtil.addHexPrefix(gasPrice),
+    }
+  }
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

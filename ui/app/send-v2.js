@@ -93,6 +93,9 @@ SendTransactionScreen.prototype.componentWillMount = function () {
     updateGasTotal,
     from,
     tokenContract,
+    editingTransactionId,
+    gasPrice,
+    gasLimit,
   } = this.props
   const { symbol } = selectedToken || {}
 
@@ -102,22 +105,32 @@ SendTransactionScreen.prototype.componentWillMount = function () {
 
   const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
 
-  Promise
-    .all([
-      getGasPrice(),
-      estimateGas(estimateGasParams),
-      tokenContract && tokenContract.balanceOf(from.address),
-    ])
-    .then(([gasPrice, gas, usersToken]) => {
+  let newGasTotal
+  if (!editingTransactionId) {
+    Promise
+      .all([
+        getGasPrice(),
+        estimateGas(estimateGasParams),
+        tokenContract && tokenContract.balanceOf(from.address)
+      ])
+      .then(([gasPrice, gas, usersToken]) => {
 
-      const newGasTotal = multiplyCurrencies(gas, gasPrice, {
-        toNumericBase: 'hex',
-        multiplicandBase: 16,
-        multiplierBase: 16,
+        const newGasTotal = multiplyCurrencies(gas, gasPrice, {
+          toNumericBase: 'hex',
+          multiplicandBase: 16,
+          multiplierBase: 16,
+        })
+        updateGasTotal(newGasTotal)
+        this.updateSendTokenBalance(usersToken)
       })
-      updateGasTotal(newGasTotal)
-      this.updateSendTokenBalance(usersToken)
+  } else {
+    newGasTotal = multiplyCurrencies(gasLimit, gasPrice, {
+      toNumericBase: 'hex',
+      multiplicandBase: 16,
+      multiplierBase: 16,
     })
+    updateGasTotal(newGasTotal)
+  }
 }
 
 SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
@@ -394,6 +407,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     errors,
     amount,
   } = this.props
+
   return h('div.send-v2__form-row', [
 
     h('div.send-v2__form-label', [
@@ -551,9 +565,12 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     gasPrice,
     signTokenTx,
     signTx,
+    updateAndApproveTx,
     selectedToken,
-    clearSend,
+    toAccounts,
+    editingTransactionId,
     errors: { amount: amountError, to: toError },
+    backToConfirmScreen,
   } = this.props
 
   const noErrors = !amountError && toError === null
@@ -563,6 +580,11 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   }
 
   this.addToAddressBookIfNew(to)
+
+  if (editingTransactionId) {
+    backToConfirmScreen(editingTransactionId)
+    return
+  }
 
   const txParams = {
     from,
@@ -575,8 +597,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     txParams.value = amount
     txParams.to = to
   }
-
-  clearSend()
 
   selectedToken
     ? signTokenTx(selectedToken.address, to, amount, txParams)
