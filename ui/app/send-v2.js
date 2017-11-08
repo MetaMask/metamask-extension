@@ -328,9 +328,11 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     )
 
   updateSendErrors({ amount: null })
-  updateGasPrice(MIN_GAS_PRICE_HEX)
-  updateGasLimit(MIN_GAS_LIMIT_HEX)
-  updateGasTotal(MIN_GAS_TOTAL)
+  if (!selectedToken) {
+    updateGasPrice(MIN_GAS_PRICE_HEX)
+    updateGasLimit(MIN_GAS_LIMIT_HEX)
+    updateGasTotal(MIN_GAS_TOTAL)
+  }
   updateSendAmount(maxAmount)
 }
 

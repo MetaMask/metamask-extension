@@ -36,6 +36,28 @@ CurrencyDisplay.prototype.getAmount = function (value) {
     : toHexWei(value)
 }
 
+CurrencyDisplay.prototype.getValueToRender = function () {
+  const { selectedToken, conversionRate, value } = this.props
+
+  const { decimals, symbol } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+
+  return selectedToken
+    ? conversionUtil(value, {
+      fromNumericBase: 'hex',
+      toCurrency: symbol,
+      conversionRate: multiplier,
+      invertConversionRate: true,
+    })
+    : conversionUtil(value, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromDenomination: 'WEI',
+      numberOfDecimals: 6,
+      conversionRate,
+    })
+}
+
 CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
@@ -50,13 +72,7 @@ CurrencyDisplay.prototype.render = function () {
     handleChange,
   } = this.props
 
-  const valueToRender = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    numberOfDecimals: 6,
-    conversionRate,
-  })
+  const valueToRender = this.getValueToRender()
 
   const convertedValue = conversionUtil(valueToRender, {
     fromNumericBase: 'dec',
