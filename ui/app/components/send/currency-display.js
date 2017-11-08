@@ -11,11 +11,6 @@ function CurrencyDisplay () {
   Component.call(this)
 }
 
-function isValidInput (text) {
-  const re = /^([1-9]\d*|0)(\.|\.\d*)?$/
-  return re.test(text)
-}
-
 function toHexWei (value) {
   return conversionUtil(value, {
     fromNumericBase: 'dec',
@@ -36,6 +31,28 @@ CurrencyDisplay.prototype.getAmount = function (value) {
     : toHexWei(value)
 }
 
+CurrencyDisplay.prototype.getValueToRender = function () {
+  const { selectedToken, conversionRate, value } = this.props
+
+  const { decimals, symbol } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+
+  return selectedToken
+    ? conversionUtil(value, {
+      fromNumericBase: 'hex',
+      toCurrency: symbol,
+      conversionRate: multiplier,
+      invertConversionRate: true,
+    })
+    : conversionUtil(value, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromDenomination: 'WEI',
+      numberOfDecimals: 6,
+      conversionRate,
+    })
+}
+
 CurrencyDisplay.prototype.render = function () {
   const {
     className = 'currency-display',
@@ -46,17 +63,10 @@ CurrencyDisplay.prototype.render = function () {
     convertedCurrency,
     readOnly = false,
     inError = false,
-    value,
     handleChange,
   } = this.props
 
-  const valueToRender = conversionUtil(value, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    numberOfDecimals: 6,
-    conversionRate,
-  })
+  const valueToRender = this.getValueToRender()
 
   const convertedValue = conversionUtil(valueToRender, {
     fromNumericBase: 'dec',
@@ -65,8 +75,6 @@ CurrencyDisplay.prototype.render = function () {
     numberOfDecimals: 2,
     conversionRate,
   })
-
-  const inputSizeMultiplier = readOnly ? 1 : 1.2
 
   return h('div', {
     className,

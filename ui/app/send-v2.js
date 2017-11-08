@@ -307,7 +307,6 @@ SendTransactionScreen.prototype.handleAmountChange = function (value) {
 SendTransactionScreen.prototype.setAmountToMax = function () {
   const {
     from: { balance },
-    gasTotal,
     updateSendAmount,
     updateSendErrors,
     updateGasPrice,
@@ -323,14 +322,16 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     ? multiplyCurrencies(tokenBalance, multiplier, {toNumericBase: 'hex'})
     : subtractCurrencies(
       ethUtil.addHexPrefix(balance),
-      ethUtil.addHexPrefix(gasTotal),
+      ethUtil.addHexPrefix(MIN_GAS_TOTAL),
       { toNumericBase: 'hex' }
     )
 
   updateSendErrors({ amount: null })
-  updateGasPrice(MIN_GAS_PRICE_HEX)
-  updateGasLimit(MIN_GAS_LIMIT_HEX)
-  updateGasTotal(MIN_GAS_TOTAL)
+  if (!selectedToken) {
+    updateGasPrice(MIN_GAS_PRICE_HEX)
+    updateGasLimit(MIN_GAS_LIMIT_HEX)
+    updateGasTotal(MIN_GAS_TOTAL)
+  }
   updateSendAmount(maxAmount)
 }
 
