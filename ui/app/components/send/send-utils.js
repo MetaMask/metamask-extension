@@ -7,7 +7,7 @@ const {
   calcTokenAmount,
 } = require('../../token-util')
 
-function isBalanceSufficient({
+function isBalanceSufficient ({
   amount = '0x0',
   gasTotal = '0x0',
   balance,
@@ -39,7 +39,7 @@ function isBalanceSufficient({
   return balanceIsSufficient
 }
 
-function isTokenBalanceSufficient({
+function isTokenBalanceSufficient ({
   amount = '0x0',
   tokenBalance,
   decimals,

@@ -150,9 +150,9 @@ function reduceMetamask (state, action) {
     case actions.SAVE_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
-      var id = {}
+      const id = {}
       id[account] = extend(metamaskState.identities[account], { name })
-      var identities = extend(metamaskState.identities, id)
+      const identities = extend(metamaskState.identities, id)
       return extend(metamaskState, { identities })
 
     case actions.SET_CURRENT_FIAT:
@@ -272,10 +272,10 @@ function reduceMetamask (state, action) {
       })
 
     case actions.UPDATE_TRANSACTION_PARAMS:
-      const { id, value } = action
+      const { id: txId, value } = action
       let { selectedAddressTxList } = metamaskState
       selectedAddressTxList = selectedAddressTxList.map(tx => {
-        if (tx.id === id) {
+        if (tx.id === txId) {
           tx.txParams = value
         }
         return tx

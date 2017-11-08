@@ -40,7 +40,7 @@ function sanitizeDecimal (val) {
 //  sanitizeValue('.200') -> '0.200'
 //  sanitizeValue('a.b.1.c,89.123') -> '0.189123'
 function sanitizeValue (value) {
-  let [,integer, point, decimal] = (/([^.]*)([.]?)([^.]*)/).exec(value)
+  let [, integer, point, decimal] = (/([^.]*)([.]?)([^.]*)/).exec(value)
 
   integer = sanitizeInteger(integer) || '0'
   decimal = sanitizeDecimal(decimal)
