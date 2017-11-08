@@ -33,6 +33,7 @@ function reduceMetamask (state, action) {
       amount: '0x0',
       memo: '',
       errors: {},
+      editingTransactionId: null,
     },
     coinOptions: {},
   }, state.metamask)
@@ -107,6 +108,14 @@ function reduceMetamask (state, action) {
         }
       }
       return newState
+
+    case actions.EDIT_TX:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          editingTransactionId: action.value,
+        },
+      })
 
     case actions.SHOW_NEW_VAULT_SEED:
       return extend(metamaskState, {
@@ -260,6 +269,20 @@ function reduceMetamask (state, action) {
           memo: '',
           errors: {},
         },
+      })
+
+    case actions.UPDATE_TRANSACTION_PARAMS:
+      const { id, value } = action
+      let { selectedAddressTxList } = metamaskState
+      selectedAddressTxList = selectedAddressTxList.map(tx => {
+        if (tx.id === id) {
+          tx.txParams = value
+        }
+        return tx
+      })
+
+      return extend(metamaskState, {
+        selectedAddressTxList,
       })
 
     case actions.PAIR_UPDATE:

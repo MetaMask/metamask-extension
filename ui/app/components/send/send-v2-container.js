@@ -63,6 +63,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     signTx: txParams => dispatch(actions.signTx(txParams)),
+    updateAndApproveTx: txParams => dispatch(actions.updateAndApproveTx(txParams)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
@@ -76,5 +77,6 @@ function mapDispatchToProps (dispatch) {
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
     clearSend: () => dispatch(actions.clearSend()),
+    backToConfirmScreen: editingTransactionId => dispatch(actions.showConfTxPage({ id: editingTransactionId })),
   }
 }
