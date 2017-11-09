@@ -106,7 +106,7 @@ SendTransactionScreen.prototype.componentWillMount = function () {
     .all([
       getGasPrice(),
       estimateGas(estimateGasParams),
-      tokenContract && tokenContract.balanceOf(from.address)
+      tokenContract && tokenContract.balanceOf(from.address),
     ])
     .then(([gasPrice, gas, usersToken]) => {
 
@@ -352,7 +352,7 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   let amountError = null
 
   const sufficientBalance = isBalanceSufficient({
-    amount: selectedToken ?  '0x0' : amount,
+    amount: selectedToken ? '0x0' : amount,
     gasTotal,
     balance,
     primaryCurrency,
@@ -395,7 +395,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     amount,
   } = this.props
   return h('div.send-v2__form-row', [
-    
+
     h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
