@@ -76,7 +76,6 @@ SendTransactionScreen.prototype.updateSendTokenBalance = function (usersToken) {
     updateSendTokenBalance,
   } = this.props
   const { decimals } = selectedToken || {}
-
   const tokenBalance = calcTokenAmount(usersToken.balance.toString(), decimals)
 
   updateSendTokenBalance(tokenBalance)
@@ -105,13 +104,14 @@ SendTransactionScreen.prototype.componentWillMount = function () {
 
   const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
 
+  const tokenBalancePromise = tokenContract && tokenContract.balanceOf(from.address)
   let newGasTotal
   if (!editingTransactionId) {
     Promise
       .all([
         getGasPrice(),
         estimateGas(estimateGasParams),
-        tokenContract && tokenContract.balanceOf(from.address),
+        tokenBalancePromise,
       ])
       .then(([gasPrice, gas, usersToken]) => {
 
@@ -130,6 +130,8 @@ SendTransactionScreen.prototype.componentWillMount = function () {
       multiplierBase: 16,
     })
     updateGasTotal(newGasTotal)
+    tokenBalancePromise && tokenBalancePromise.then(
+      usersToken => this.updateSendTokenBalance(usersToken))
   }
 }
 
@@ -363,7 +365,6 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   const amount = value
 
   let amountError = null
-
   const sufficientBalance = isBalanceSufficient({
     amount: selectedToken ? '0x0' : amount,
     gasTotal,
