@@ -10,20 +10,7 @@ class LoadingIndicator extends Component {
 
   render () {
     return (
-      h('.full-flex-height', {
-        style: {
-          left: '0px',
-          zIndex: 50,
-          position: 'absolute',
-          flexDirection: 'column',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
-          width: '100%',
-          background: 'rgba(255, 255, 255, 0.8)',
-        },
-      }, [
+      h('.full-flex-height.loading-overlay', {}, [
         h('img', {
           src: 'images/loading.svg',
         }),

@@ -75,11 +75,12 @@ NetworkDropdown.prototype.render = function () {
       }
     },
     containerClassName: 'network-droppo',
-    zIndex: 11,
+    zIndex: 55,
     style: {
       position: 'absolute',
       top: '58px',
       minWidth: '309px',
+      zIndex: '55px',
     },
     innerStyle: {
       padding: '18px 8px',
