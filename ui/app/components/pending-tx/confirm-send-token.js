@@ -77,13 +77,16 @@ function mapDispatchToProps (dispatch, ownProps) {
         gasPrice,
         to,
       } = txParams
-      dispatch(actions.editTx(id))
-      dispatch(actions.updateGasLimit(gasLimit))
-      dispatch(actions.updateGasPrice(gasPrice))
-      dispatch(actions.updateSendTo(to))
-      dispatch(actions.updateSendAmount(amount))
-      dispatch(actions.updateSendErrors({ to: null, amount: null }))
       dispatch(actions.setSelectedToken(address))
+      dispatch(actions.updateSend({
+        gasLimit,
+        gasPrice,
+        gasTotal: null,
+        to,
+        amount,
+        errors: { to: null, amount: null },
+        editingTransactionId: id,
+      }))
       dispatch(actions.showSendTokenPage())
     },
   }

@@ -257,17 +257,27 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_SEND:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          ...action.value,
+        },
+      })
+
     case actions.CLEAR_SEND:
       return extend(metamaskState, {
         send: {
           gasLimit: null,
           gasPrice: null,
           gasTotal: null,
+          tokenBalance: null,
           from: '',
           to: '',
           amount: '0x0',
           memo: '',
           errors: {},
+          editingTransactionId: null,
         },
       })
 
