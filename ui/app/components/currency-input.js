@@ -76,6 +76,7 @@ CurrencyInput.prototype.render = function () {
     className,
     placeholder,
     readOnly,
+    inputRef,
   } = this.props
 
   const inputSizeMultiplier = readOnly ? 1 : 1.2
@@ -89,5 +90,6 @@ CurrencyInput.prototype.render = function () {
     size: valueToRender.length * inputSizeMultiplier,
     readOnly,
     onChange: e => this.handleChange(e.target.value),
+    ref: inputRef, 
   })
 }
