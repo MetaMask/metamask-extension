@@ -22,6 +22,7 @@ module.exports = connect(mapStateToProps)(AccountListItem)
 
 AccountListItem.prototype.render = function () {
   const {
+    className,
     account,
     handleClick,
     icon = null,
@@ -34,6 +35,7 @@ AccountListItem.prototype.render = function () {
   const { name, address, balance } = account || {}
 
   return h('div.account-list-item', {
+    className,
     onClick: () => handleClick({ name, address, balance }),
   }, [
 

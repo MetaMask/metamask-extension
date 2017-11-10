@@ -38,6 +38,7 @@ ToAutoComplete.prototype.renderDropdown = function () {
 
       ...accountsToRender.map(account => h(AccountListItem, {
         account,
+        className: 'account-list-item__dropdown',
         handleClick: () => {
           onChange(account.address)
           closeDropdown()
