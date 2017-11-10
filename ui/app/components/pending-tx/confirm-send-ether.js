@@ -43,12 +43,15 @@ function mapDispatchToProps (dispatch) {
         to,
         value: amount,
       } = txParams
-      dispatch(actions.editTx(id))
-      dispatch(actions.updateGasLimit(gasLimit))
-      dispatch(actions.updateGasPrice(gasPrice))
-      dispatch(actions.updateSendTo(to))
-      dispatch(actions.updateSendAmount(amount))
-      dispatch(actions.updateSendErrors({ to: null, amount: null }))
+      dispatch(actions.updateSend({
+        gasLimit,
+        gasPrice,
+        gasTotal: null,
+        to,
+        amount,
+        errors: { to: null, amount: null },
+        editingTransactionId: id,
+      }))
       dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),

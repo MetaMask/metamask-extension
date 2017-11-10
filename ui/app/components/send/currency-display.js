@@ -97,7 +97,7 @@ CurrencyDisplay.prototype.render = function () {
           onInputChange: newValue => {
             handleChange(this.getAmount(newValue))
           },
-          inputRef: input => { this.currencyInput = input; },
+          inputRef: input => { this.currencyInput = input },
         }),
 
         h('span.currency-display__currency-symbol', primaryCurrency),
