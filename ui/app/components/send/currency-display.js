@@ -81,6 +81,7 @@ CurrencyDisplay.prototype.render = function () {
     style: {
       borderColor: inError ? 'red' : null,
     },
+    onClick: () => this.currencyInput.focus(),
   }, [
 
     h('div.currency-display__primary-row', [
@@ -95,6 +96,7 @@ CurrencyDisplay.prototype.render = function () {
           onInputChange: newValue => {
             handleChange(this.getAmount(newValue))
           },
+          inputRef: input => { this.currencyInput = input; },
         }),
 
         h('span.currency-display__currency-symbol', primaryCurrency),
