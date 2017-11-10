@@ -68,13 +68,14 @@ CurrencyDisplay.prototype.render = function () {
 
   const valueToRender = this.getValueToRender()
 
-  const convertedValue = conversionUtil(valueToRender, {
+  let convertedValue = conversionUtil(valueToRender, {
     fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
+  convertedValue = Number(convertedValue).toFixed(2)
 
   return h('div', {
     className,
