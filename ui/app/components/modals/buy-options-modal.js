@@ -45,7 +45,7 @@ BuyOptions.prototype.renderModalContentOption = function (title, header, onClick
 
 BuyOptions.prototype.render = function () {
   const { network, toCoinbase, address, toFaucet } = this.props
-  const networkIsTest = ['3', '4', '42'].find(n => n === network)
+  const isTestNetwork = ['3', '4', '42'].find(n => n === network)
   const networkName = networkNames[network]
 
   return h('div', {}, [
@@ -62,7 +62,7 @@ BuyOptions.prototype.render = function () {
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
-        networkIsTest
+        isTestNetwork
           ? this.renderModalContentOption(networkName, 'Test Faucet', () => toFaucet(network))
           : this.renderModalContentOption('Coinbase', 'Deposit with Fiat', () => toCoinbase(address)),
 
