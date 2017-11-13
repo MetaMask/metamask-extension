@@ -12,9 +12,9 @@ class LoadingIndicator extends Component {
     return (
       h('.full-flex-height', {
         style: {
-          left: '0px',
-          zIndex: 50,
           position: 'absolute',
+          left: '0px',
+          zIndex: 19,
           flexDirection: 'column',
           display: 'flex',
           justifyContent: 'center',

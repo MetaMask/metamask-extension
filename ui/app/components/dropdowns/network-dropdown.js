@@ -75,7 +75,7 @@ NetworkDropdown.prototype.render = function () {
       }
     },
     containerClassName: 'network-droppo',
-    zIndex: 11,
+    zIndex: 20,
     style: {
       position: 'absolute',
       top: '58px',
