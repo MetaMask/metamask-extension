@@ -1,31 +1,14 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
-const { conversionUtil } = require('../../conversion-util')
+const CurrencyInput = require('../currency-input')
+const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 module.exports = CurrencyDisplay
 
 inherits(CurrencyDisplay, Component)
 function CurrencyDisplay () {
   Component.call(this)
-
-  this.state = {
-    value: null,
-  }
-}
-
-function isValidInput (text) {
-  const re = /^([1-9]\d*|0)(\.|\.\d*)?$/
-  return re.test(text)
-}
-
-function resetCaretIfPastEnd (value, event) {
-  const caretPosition = event.target.selectionStart
-
-  if (caretPosition > value.length) {
-    event.target.setSelectionRange(value.length, value.length)
-  }
 }
 
 function toHexWei (value) {
@@ -40,10 +23,34 @@ CurrencyDisplay.prototype.getAmount = function (value) {
   const { selectedToken } = this.props
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
-  const sendAmount = '0x' + Number(value * multiplier).toString(16)
+
+  const sendAmount = multiplyCurrencies(value, multiplier, {toNumericBase: 'hex'})
+
   return selectedToken
     ? sendAmount
     : toHexWei(value)
+}
+
+CurrencyDisplay.prototype.getValueToRender = function () {
+  const { selectedToken, conversionRate, value } = this.props
+
+  const { decimals, symbol } = selectedToken || {}
+  const multiplier = Math.pow(10, Number(decimals || 0))
+
+  return selectedToken
+    ? conversionUtil(value, {
+      fromNumericBase: 'hex',
+      toCurrency: symbol,
+      conversionRate: multiplier,
+      invertConversionRate: true,
+    })
+    : conversionUtil(value, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+      fromDenomination: 'WEI',
+      numberOfDecimals: 6,
+      conversionRate,
+    })
 }
 
 CurrencyDisplay.prototype.render = function () {
@@ -54,73 +61,46 @@ CurrencyDisplay.prototype.render = function () {
     conversionRate,
     primaryCurrency,
     convertedCurrency,
-    convertedPrefix = '',
-    placeholder = '0',
     readOnly = false,
     inError = false,
-    value: initValue,
     handleChange,
-    validate,
   } = this.props
-  const { value } = this.state
 
-  const initValueToRender = conversionUtil(initValue, {
-    fromNumericBase: 'hex',
-    toNumericBase: 'dec',
-    fromDenomination: 'WEI',
-    numberOfDecimals: 6,
-    conversionRate,
-  })
+  const valueToRender = this.getValueToRender()
 
-  const convertedValue = conversionUtil(value || initValueToRender, {
+  let convertedValue = conversionUtil(valueToRender, {
     fromNumericBase: 'dec',
     fromCurrency: primaryCurrency,
     toCurrency: convertedCurrency,
     numberOfDecimals: 2,
     conversionRate,
   })
+  convertedValue = Number(convertedValue).toFixed(2)
 
   return h('div', {
     className,
     style: {
       borderColor: inError ? 'red' : null,
     },
+    onClick: () => this.currencyInput.focus(),
   }, [
 
     h('div.currency-display__primary-row', [
 
       h('div.currency-display__input-wrapper', [
 
-        h('input', {
+        h(CurrencyInput, {
           className: primaryBalanceClassName,
-          value: `${value || initValueToRender} ${primaryCurrency}`,
-          placeholder: `${0} ${primaryCurrency}`,
+          value: `${valueToRender}`,
+          placeholder: '0',
           readOnly,
-          onChange: (event) => {
-            let newValue = event.target.value.split(' ')[0]
-
-            if (newValue === '') {
-              this.setState({ value: '0' })
-            }
-            else if (newValue.match(/^0[1-9]$/)) {
-              this.setState({ value: newValue.match(/[1-9]/)[0] })
-            }
-            else if (newValue && !isValidInput(newValue)) {
-              event.preventDefault()
-            }
-            else {
-              this.setState({ value: newValue })
-            }
+          onInputChange: newValue => {
+            handleChange(this.getAmount(newValue))
           },
-          onBlur: event => !readOnly && handleChange(this.getAmount(event.target.value.split(' ')[0])),
-          onKeyUp: event => {
-            if (!readOnly) {
-              validate(toHexWei(value || initValueToRender))
-              resetCaretIfPastEnd(value || initValueToRender, event)
-            }
-          },
-          onClick: event => !readOnly && resetCaretIfPastEnd(value || initValueToRender, event),
+          inputRef: input => { this.currencyInput = input; },
         }),
+
+        h('span.currency-display__currency-symbol', primaryCurrency),
 
       ]),
 
@@ -131,6 +111,6 @@ CurrencyDisplay.prototype.render = function () {
     }, `${convertedValue} ${convertedCurrency.toUpperCase()}`),
 
   ])
-    
+
 }
 

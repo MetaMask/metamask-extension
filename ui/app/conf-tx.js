@@ -6,9 +6,10 @@ const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 
 const PendingTx = require('./components/pending-tx')
-const PendingMsg = require('./components/pending-msg')
-const PendingPersonalMsg = require('./components/pending-personal-msg')
-const PendingTypedMsg = require('./components/pending-typed-msg')
+const SignatureRequest = require('./components/signature-request')
+// const PendingMsg = require('./components/pending-msg')
+// const PendingPersonalMsg = require('./components/pending-personal-msg')
+// const PendingTypedMsg = require('./components/pending-typed-msg')
 const Loading = require('./components/loading')
 
 // const contentDivider = h('div', {
@@ -102,8 +103,10 @@ ConfirmTxScreen.prototype.render = function () {
     cancelTransaction: this.cancelTransaction.bind(this, txData),
     signMessage: this.signMessage.bind(this, txData),
     signPersonalMessage: this.signPersonalMessage.bind(this, txData),
+    signTypedMessage: this.signTypedMessage.bind(this, txData),
     cancelMessage: this.cancelMessage.bind(this, txData),
     cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
+    cancelTypedMessage: this.cancelTypedMessage.bind(this, txData),
   })
 
 }
@@ -111,7 +114,7 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
-  const { txParams, msgParams, type } = txData
+  const { txParams, msgParams } = txData
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
@@ -119,16 +122,18 @@ function currentTxView (opts) {
   } else if (msgParams) {
     log.debug('msgParams detected, rendering pending msg')
 
-    if (type === 'eth_sign') {
-      log.debug('rendering eth_sign message')
-      return h(PendingMsg, opts)
-    } else if (type === 'personal_sign') {
-      log.debug('rendering personal_sign message')
-      return h(PendingPersonalMsg, opts)
-    } else if (type === 'eth_signTypedData') {
-      log.debug('rendering eth_signTypedData message')
-      return h(PendingTypedMsg, opts)
-    }
+    return h(SignatureRequest, opts)
+
+    // if (type === 'eth_sign') {
+    //   log.debug('rendering eth_sign message')
+    //   return h(PendingMsg, opts)
+    // } else if (type === 'personal_sign') {
+    //   log.debug('rendering personal_sign message')
+    // return h(PendingPersonalMsg, opts)
+    // } else if (type === 'eth_signTypedData') {
+    //   log.debug('rendering eth_signTypedData message')
+    //   return h(PendingTypedMsg, opts)
+    // }
   }
   return h(Loading)
 }

@@ -162,10 +162,9 @@ const MODALS = {
       h(CustomizeGasModal, {}, []),
     ],
     mobileModalStyle: {
-      width: '355px',
-      height: '598px',
-      // top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
-      top: '5%',
+      width: '100vw',
+      height: '100vh',
+      top: '0',
       transform: 'none',
       left: '0',
       right: '0',
@@ -190,7 +189,7 @@ const MODALS = {
 }
 
 const BACKDROPSTYLE = {
-  backgroundColor: 'rgba(245, 245, 245, 0.85)',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
 }
 
 function mapStateToProps (state) {
@@ -221,7 +220,7 @@ Modal.prototype.render = function () {
 
   const children = modal.contents
   const modalStyle = modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle']
-  const contentStyle = modal.contentStyle || {};
+  const contentStyle = modal.contentStyle || {}
 
   return h(FadeModal,
     {

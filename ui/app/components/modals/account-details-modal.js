@@ -4,9 +4,10 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
-const { getSelectedIdentity, getSelectedAddress } = require('../../selectors')
+const { getSelectedIdentity } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
+const EditableLabel = require('../editable-label')
 
 function mapStateToProps (state) {
   return {
@@ -23,6 +24,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
     },
     hideModal: () => dispatch(actions.hideModal()),
+    saveAccountLabel: (address, label) => dispatch(actions.saveAccountLabel(address, label)),
   }
 }
 
@@ -41,14 +43,19 @@ AccountDetailsModal.prototype.render = function () {
     selectedIdentity,
     network,
     showExportPrivateKeyModal,
-    hideModal,
+    saveAccountLabel,
   } = this.props
   const { name, address } = selectedIdentity
 
   return h(AccountModalContainer, {}, [
+      h(EditableLabel, {
+        className: 'account-modal__name',
+        defaultValue: name,
+        onSubmit: label => saveAccountLabel(address, label),
+      }),
+
       h(QrView, {
         Qr: {
-          message: name,
           data: address,
         },
       }),
@@ -57,14 +64,12 @@ AccountDetailsModal.prototype.render = function () {
 
       h('button.btn-clear', {
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
-      }, [ 'View account on Etherscan' ]),
+      }, 'View account on Etherscan'),
 
       // Holding on redesign for Export Private Key functionality
       h('button.btn-clear', {
-        onClick: () => {
-          showExportPrivateKeyModal()
-        },
-      }, [ 'Export private key' ]),
-      
+        onClick: () => showExportPrivateKeyModal(),
+      }, 'Export private key'),
+
   ])
 }

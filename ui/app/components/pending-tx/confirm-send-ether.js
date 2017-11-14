@@ -10,9 +10,7 @@ const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil, addCurrencies } = require('../../conversion-util')
 
-const MIN_GAS_PRICE_GWEI_BN = new BN(1)
-const GWEI_FACTOR = new BN(1e9)
-const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendEther)
 
@@ -50,7 +48,7 @@ ConfirmSendEther.prototype.getAmount = function () {
   const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  console.log(`conversionRate, currentCurrency`, conversionRate, currentCurrency);
+
   const FIAT = conversionUtil(txParams.value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',
@@ -93,7 +91,7 @@ ConfirmSendEther.prototype.getGasFee = function () {
 //   const safeGasLimit = safeGasLimitBN.toString(10)
 
   // Gas Price
-  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_BN.toString(16)
+  const gasPrice = txParams.gasPrice || MIN_GAS_PRICE_HEX
   const gasPriceBn = hexToBn(gasPrice)
 
   const txFeeBn = gasBn.mul(gasPriceBn)
@@ -194,7 +192,7 @@ ConfirmSendEther.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.confirm-screen-container', {
+    h('div.confirm-screen-container.confirm-send-ether', {
       style: { minWidth: '355px' },
     }, [
       // Main Send token Card

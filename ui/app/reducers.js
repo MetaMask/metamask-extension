@@ -42,7 +42,7 @@ function rootReducer (state, action) {
 }
 
 window.logState = function () {
-  let state = window.METAMASK_CACHED_LOG_STATE
+  const state = window.METAMASK_CACHED_LOG_STATE
   let version
   try {
     version = global.platform.getVersion()
@@ -50,7 +50,7 @@ window.logState = function () {
     version = 'unable to load version.'
   }
   state.version = version
-  let stateString = JSON.stringify(state, removeSeedWords, 2)
+  const stateString = JSON.stringify(state, removeSeedWords, 2)
   return stateString
 }
 

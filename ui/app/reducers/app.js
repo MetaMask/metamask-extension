@@ -44,7 +44,7 @@ function reduceApp (state, action) {
       },
       previousModalState: {
         name: null,
-      }
+      },
     },
     sidebarOpen: false,
     networkDropdownOpen: false,
@@ -100,7 +100,7 @@ function reduceApp (state, action) {
           state.appState.modal,
           { open: false },
           { modalState: { name: null } },
-          { previousModalState: appState.modal.modalState}, 
+          { previousModalState: appState.modal.modalState},
         ),
       })
 
@@ -555,6 +555,16 @@ function reduceApp (state, action) {
             shapeshift: false,
           },
         },
+      })
+
+    case actions.ONBOARDING_BUY_ETH_VIEW:
+      return extend(appState, {
+        transForward: true,
+        currentView: {
+          name: 'onboardingBuyEth',
+          context: appState.currentView.name,
+        },
+        identity: state.metamask.identities[action.value],
       })
 
     case actions.COINBASE_SUBVIEW:

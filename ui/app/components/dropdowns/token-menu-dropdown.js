@@ -10,7 +10,7 @@ function mapDispatchToProps (dispatch) {
   return {
     showHideTokenConfirmationModal: (token) => {
       dispatch(actions.showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
-    }
+    },
   }
 }
 
@@ -36,14 +36,14 @@ TokenMenuDropdown.prototype.render = function () {
     }),
     h('div.token-menu-dropdown__container', {}, [
       h('div.token-menu-dropdown__options', {}, [
-        
+
         h('div.token-menu-dropdown__option', {
           onClick: (e) => {
             e.stopPropagation()
             showHideTokenConfirmationModal(this.props.token)
             this.props.onClose()
           },
-        }, 'Hide Token')
+        }, 'Hide Token'),
 
       ]),
     ]),

@@ -73,7 +73,7 @@ TxView.prototype.renderButtons = function () {
           onClick: () => showModal({
             name: 'BUY',
           }),
-        }, 'BUY'),
+        }, 'DEPOSIT'),
 
         h('button.btn-clear', {
           style: {
@@ -109,14 +109,15 @@ TxView.prototype.render = function () {
         margin: '1em 0.9em',
         alignItems: 'center',
       },
-      onClick: () => {
-        this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
-      },
     }, [
 
       h('div.fa.fa-bars', {
         style: {
           fontSize: '1.3em',
+          cursor: 'pointer',
+        },
+        onClick: () => {
+          this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
         },
       }, []),
 

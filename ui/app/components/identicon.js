@@ -55,6 +55,7 @@ IdenticonComponent.prototype.componentDidMount = function () {
 
   if (!address) return
 
+  // eslint-disable-next-line react/no-find-dom-node
   var container = findDOMNode(this)
 
   var diameter = props.diameter || this.defaultDiameter
@@ -70,6 +71,7 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
 
   if (!address) return
 
+  // eslint-disable-next-line react/no-find-dom-node
   var container = findDOMNode(this)
 
   var children = container.children

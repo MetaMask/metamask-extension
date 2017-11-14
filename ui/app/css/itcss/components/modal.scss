@@ -57,6 +57,7 @@
     border-radius: 6px;
     border: 1px solid $black;
     padding: 0% 7%;
+    justify-content: center;
 
     div.buy-modal-content-option-title {
       font-size: 20px;
@@ -293,6 +294,11 @@
   font-size: 18px;
 }
 
+.account-modal__name {
+  margin-top: 9px;
+  font-size: 20px;
+}
+
 .private-key-password {
   display: flex;
   flex-direction: column;
@@ -372,6 +378,7 @@
   resize: none;
   padding: 9px 13px 8px;
   text-transform: uppercase;
+  font-weight: 300;
 }
 
 

@@ -17,6 +17,10 @@ function PrivateKeyImportView () {
   Component.call(this)
 }
 
+PrivateKeyImportView.prototype.componentWillUnmount = function () {
+  this.props.dispatch(actions.displayWarning(null))
+}
+
 PrivateKeyImportView.prototype.render = function () {
   const { error } = this.props
 

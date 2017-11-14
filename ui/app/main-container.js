@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
-const ConfigScreen = require('./config')
+const Settings = require('./settings')
 const UnlockScreen = require('./unlock')
 
 module.exports = MainContainer
@@ -37,11 +37,7 @@ MainContainer.prototype.render = function () {
         break
       case 'config':
         log.debug('rendering config screen from unlock screen.')
-        contents = {
-          component: ConfigScreen,
-          key: 'config',
-        }
-        break
+        return h(Settings, {key: 'config'})
       default:
         log.debug('rendering locked screen')
         contents = {

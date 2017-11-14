@@ -1,4 +1,9 @@
 const valuesFor = require('./util').valuesFor
+const abi = require('human-standard-token-abi')
+
+const {
+  multiplyCurrencies,
+} = require('./conversion-util')
 
 const selectors = {
   getSelectedAddress,
@@ -16,6 +21,9 @@ const selectors = {
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
+  getSendAmount,
+  getSelectedTokenToFiatRate,
+  getSelectedTokenContract,
 }
 
 module.exports = selectors
@@ -123,6 +131,30 @@ function getSendFrom (state) {
   return state.metamask.send.from
 }
 
+function getSendAmount (state) {
+  return state.metamask.send.amount
+}
+
 function getCurrentCurrency (state) {
   return state.metamask.currentCurrency
+}
+
+function getSelectedTokenToFiatRate (state) {
+  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
+  const conversionRate = conversionRateSelector(state)
+
+  const tokenToFiatRate = multiplyCurrencies(
+    conversionRate,
+    selectedTokenExchangeRate,
+    { toNumericBase: 'dec' }
+  )
+
+  return tokenToFiatRate
+}
+
+function getSelectedTokenContract (state) {
+  const selectedToken = getSelectedToken(state)
+  return selectedToken
+    ? global.eth.contract(abi).at(selectedToken.address)
+    : null
 }

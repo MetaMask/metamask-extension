@@ -13,7 +13,6 @@
 * @param {string} [options.fromDenomination = 'WEI'] The denomination of the passed value
 * @param {number} [options.numberOfDecimals] The desired number of in the result
 * @param {number} [options.conversionRate] The rate to use to make the fromCurrency -> toCurrency conversion
-* @param {number} [options.ethToUSDRate] If present, a second conversion - at ethToUSDRate - happens after conversionRate is applied.
 * @returns {(number | string | BN)}
 *
 * The utility passes value along with the options as a single object to the `converter` function.
@@ -23,6 +22,8 @@
 */
 
 const BigNumber = require('bignumber.js')
+const ethUtil = require('ethereumjs-util')
+const BN = ethUtil.BN
 const R = require('ramda')
 const { stripHexPrefix } = require('ethereumjs-util')
 
@@ -36,8 +37,9 @@ const BIG_NUMBER_GWEI_MULTIPLIER = new BigNumber('1000000000')
 
 // Individual Setters
 const convert = R.invoker(1, 'times')
-const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_DOWN)
+const round = R.invoker(2, 'round')(R.__, BigNumber.ROUND_HALF_DOWN)
 const invertConversionRate = conversionRate => () => new BigNumber(1.0).div(conversionRate)
+const decToBigNumberViaString = n => R.pipe(String, toBigNumber['dec'])
 
 // Setter Maps
 const toBigNumber = {
@@ -51,7 +53,7 @@ const toNormalizedDenomination = {
 }
 const toSpecifiedDenomination = {
   WEI: bigNumber => bigNumber.times(BIG_NUMBER_WEI_MULTIPLIER).round(),
-  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(),
+  GWEI: bigNumber => bigNumber.times(BIG_NUMBER_GWEI_MULTIPLIER).round(9),
 }
 const baseChange = {
   hex: n => n.toString(16),
@@ -95,16 +97,16 @@ const whenPropApplySetterMap = (prop, setterMap) => whenPredSetWithPropAndSetter
 
 // Conversion utility function
 const converter = R.pipe(
+  whenPredSetCRWithPropAndSetter(R.prop('conversionRate'), 'conversionRate', decToBigNumberViaString),
   whenPredSetCRWithPropAndSetter(R.prop('invertConversionRate'), 'conversionRate', invertConversionRate),
   whenPropApplySetterMap('fromNumericBase', toBigNumber),
   whenPropApplySetterMap('fromDenomination', toNormalizedDenomination),
   whenPredSetWithPropAndSetter(fromAndToCurrencyPropsNotEqual, 'conversionRate', convert),
   whenPropApplySetterMap('toDenomination', toSpecifiedDenomination),
-  whenPredSetWithPropAndSetter(R.prop('ethToUSDRate'), 'ethToUSDRate', convert),
   whenPredSetWithPropAndSetter(R.prop('numberOfDecimals'), 'numberOfDecimals', round),
   whenPropApplySetterMap('toNumericBase', baseChange),
   R.view(R.lensProp('value'))
-);
+)
 
 const conversionUtil = (value, {
   fromCurrency = null,
@@ -115,7 +117,6 @@ const conversionUtil = (value, {
   toDenomination,
   numberOfDecimals,
   conversionRate,
-  ethToUSDRate,
   invertConversionRate,
 }) => converter({
   fromCurrency,
@@ -126,18 +127,31 @@ const conversionUtil = (value, {
   toDenomination,
   numberOfDecimals,
   conversionRate,
-  ethToUSDRate,
   invertConversionRate,
   value: value || '0',
-});
+})
 
 const addCurrencies = (a, b, options = {}) => {
   const {
     aBase,
     bBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
-  const value = (new BigNumber(a, aBase)).add(b, bBase);
+  const value = (new BigNumber(a, aBase)).add(b, bBase)
+
+  return converter({
+    value,
+    ...conversionOptions,
+  })
+}
+
+const subtractCurrencies = (a, b, options = {}) => {
+  const {
+    aBase,
+    bBase,
+    ...conversionOptions
+  } = options
+  const value = (new BigNumber(a, aBase)).minus(b, bBase)
 
   return converter({
     value,
@@ -149,10 +163,13 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const {
     multiplicandBase,
     multiplierBase,
-    ...conversionOptions,
+    ...conversionOptions
   } = options
 
-  const value = (new BigNumber(a, multiplicandBase)).times(b, multiplierBase);
+  const bigNumberA = new BigNumber(String(a), multiplicandBase)
+  const bigNumberB = new BigNumber(String(b), multiplierBase)
+
+  const value = bigNumberA.times(bigNumberB)
 
   return converter({
     value,
@@ -162,11 +179,34 @@ const multiplyCurrencies = (a, b, options = {}) => {
 
 const conversionGreaterThan = (
   { ...firstProps },
-  { ...secondProps  },
+  { ...secondProps },
 ) => {
   const firstValue = converter({ ...firstProps })
   const secondValue = converter({ ...secondProps })
+
   return firstValue.gt(secondValue)
+}
+
+const conversionGTE = (
+  { ...firstProps },
+  { ...secondProps },
+) => {
+  const firstValue = converter({ ...firstProps })
+  const secondValue = converter({ ...secondProps })
+  return firstValue.greaterThanOrEqualTo(secondValue)
+}
+
+const conversionLTE = (
+  { ...firstProps },
+  { ...secondProps },
+) => {
+  const firstValue = converter({ ...firstProps })
+  const secondValue = converter({ ...secondProps })
+  return firstValue.lessThanOrEqualTo(secondValue)
+}
+
+const toNegative = (n, options = {}) => {
+  return multiplyCurrencies(n, -1, options)
 }
 
 module.exports = {
@@ -174,4 +214,8 @@ module.exports = {
   addCurrencies,
   multiplyCurrencies,
   conversionGreaterThan,
+  conversionGTE,
+  conversionLTE,
+  toNegative,
+  subtractCurrencies,
 }

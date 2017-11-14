@@ -3,20 +3,17 @@ const actions = require('../../actions')
 const abi = require('ethereumjs-abi')
 const SendEther = require('../../send-v2')
 
-const { multiplyCurrencies } = require('../../conversion-util')
-
 const {
   accountsWithSendEtherInfoSelector,
   getCurrentAccountWithSendEtherInfo,
   conversionRateSelector,
   getSelectedToken,
-  getSelectedTokenExchangeRate,
   getSelectedAddress,
-  getGasPrice,
-  getGasLimit,
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
+  getSelectedTokenToFiatRate,
+  getSelectedTokenContract,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -25,13 +22,11 @@ function mapStateToProps (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
   const selectedAddress = getSelectedAddress(state)
   const selectedToken = getSelectedToken(state)
-  const tokenExchangeRates = state.metamask.tokenExchangeRates
-  const selectedTokenExchangeRate = getSelectedTokenExchangeRate(state)
   const conversionRate = conversionRateSelector(state)
 
-  let data;
-  let primaryCurrency;
-  let tokenToFiatRate;
+  let data
+  let primaryCurrency
+  let tokenToFiatRate
   if (selectedToken) {
     data = Array.prototype.map.call(
       abi.rawEncode(['address', 'uint256'], [selectedAddress, '0x0']),
@@ -40,11 +35,7 @@ function mapStateToProps (state) {
 
     primaryCurrency = selectedToken.symbol
 
-    tokenToFiatRate = multiplyCurrencies(
-      conversionRate,
-      selectedTokenExchangeRate,
-      { toNumericBase: 'dec' }
-    )
+    tokenToFiatRate = getSelectedTokenToFiatRate(state)
   }
 
   return {
@@ -58,6 +49,7 @@ function mapStateToProps (state) {
     convertedCurrency: getCurrentCurrency(state),
     data,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
+    tokenContract: getSelectedTokenContract(state),
   }
 }
 
@@ -74,11 +66,15 @@ function mapDispatchToProps (dispatch) {
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
+    updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
+    updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
     updateSendFrom: newFrom => dispatch(actions.updateSendFrom(newFrom)),
     updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
+    clearSend: () => dispatch(actions.clearSend()),
   }
 }

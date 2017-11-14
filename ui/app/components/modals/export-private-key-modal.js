@@ -66,7 +66,6 @@ ExportPrivateKeyModal.prototype.renderPasswordInput = function (privateKey) {
       })
     : h('input.private-key-password-input', {
       type: 'password',
-      placeholder: 'Type password',
       onChange: event => this.setState({ password: event.target.value }),
     })
 }
@@ -84,7 +83,7 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
 
     (privateKey
       ? this.renderButton('btn-clear', () => hideModal(), 'Done')
-      : this.renderButton('btn-clear', () => this.exportAccountAndGetPrivateKey(this.state.password, address), 'Download')
+      : this.renderButton('btn-clear', () => this.exportAccountAndGetPrivateKey(this.state.password, address), 'Show')
     ),
 
   ])
@@ -93,7 +92,6 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
 ExportPrivateKeyModal.prototype.render = function () {
   const {
     selectedIdentity,
-    network,
     warning,
     showAccountDetailModal,
     hideModal,
@@ -118,7 +116,7 @@ ExportPrivateKeyModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('span.modal-body-title', 'Download Private Keys'),
+      h('span.modal-body-title', 'Show Private Keys'),
 
       h('div.private-key-password', {}, [
         this.renderPasswordLabel(privateKey),

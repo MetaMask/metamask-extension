@@ -1,7 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const Identicon = require('../identicon')
 const AccountListItem = require('./account-list-item')
 
 module.exports = FromDropdown
@@ -36,13 +35,14 @@ FromDropdown.prototype.renderDropdown = function () {
     h('div.send-v2__from-dropdown__list', {}, [
 
       ...accounts.map(account => h(AccountListItem, {
-        account, 
+        className: 'account-list-item__dropdown',
+        account,
         handleClick: () => {
           onSelect(account)
           closeDropdown()
-        }, 
+        },
         icon: this.getListItemIcon(account, selectedAccount),
-      }))
+      })),
 
     ]),
 
@@ -51,10 +51,8 @@ FromDropdown.prototype.renderDropdown = function () {
 
 FromDropdown.prototype.render = function () {
   const {
-    accounts,
     selectedAccount,
     openDropdown,
-    closeDropdown,
     dropdownOpen,
   } = this.props
 
@@ -63,12 +61,12 @@ FromDropdown.prototype.render = function () {
     h(AccountListItem, {
       account: selectedAccount,
       handleClick: openDropdown,
-      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } })
+      icon: h(`i.fa.fa-caret-down.fa-lg`, { style: { color: '#dedede' } }),
     }),
 
     dropdownOpen && this.renderDropdown(),
 
   ])
-    
+
 }
 

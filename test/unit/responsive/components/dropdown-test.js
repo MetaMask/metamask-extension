@@ -1,40 +1,45 @@
-var assert = require('assert');
+const assert = require('assert');
 
-const additions = require('react-testutils-additions');
 const h = require('react-hyperscript');
-const ReactTestUtils = require('react-addons-test-utils');
 const sinon = require('sinon');
 const path = require('path');
-const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'dropdown.js')).Dropdown;
-const DropdownMenuItem = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'dropdown.js')).DropdownMenuItem;
+const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'dropdowns', 'index.js')).Dropdown;
+
+const { createMockStore } = require('redux-test-utils')
+const shallowWithStore = require('../../../lib/shallow-with-store')
+
+const mockState = {
+  metamask: {
+  }
+}
 
 describe('Dropdown components', function () {
   let onClickOutside;
   let closeMenu;
   let onClick;
 
-  let dropdownComponentProps;
-  const renderer = ReactTestUtils.createRenderer()
+  let dropdownComponentProps = {
+    isOpen: true,
+    zIndex: 11,
+    onClickOutside,
+    style: {
+      position: 'absolute',
+      right: 0,
+      top: '36px',
+    },
+    innerStyle: {},
+  }
+
+  let dropdownComponent
+  let store
+  let component
   beforeEach(function () {
     onClickOutside = sinon.spy();
     closeMenu = sinon.spy();
     onClick = sinon.spy();
 
-    dropdownComponentProps = {
-      isOpen: true,
-      zIndex: 11,
-      onClickOutside,
-      style: {
-        position: 'absolute',
-        right: 0,
-        top: '36px',
-      },
-      innerStyle: {},
-    }
-  });
-
-  it('can render two items', function () {
-    const dropdownComponent = h(
+    store = createMockStore(mockState)
+    component = shallowWithStore(h(
       Dropdown,
       dropdownComponentProps,
       [
@@ -42,74 +47,35 @@ describe('Dropdown components', function () {
           .drop-menu-item:hover { background:rgb(235, 235, 235); }
           .drop-menu-item i { margin: 11px; }
         `),
-        h(DropdownMenuItem, {
+        h('li', {
           closeMenu,
           onClick,
         }, 'Item 1'),
-        h(DropdownMenuItem, {
+        h('li', {
           closeMenu,
           onClick,
         }, 'Item 2'),
       ]
-    )
+    ), store)
+    dropdownComponent = component.dive()
+  })
 
-    const component = additions.renderIntoDocument(dropdownComponent);
-    renderer.render(dropdownComponent);
-    const items = additions.find(component, 'li');
+  it('can render two items', function () {
+    const items = dropdownComponent.find('li');
     assert.equal(items.length, 2);
   });
 
   it('closes when item clicked', function() {
-    const dropdownComponent = h(
-      Dropdown,
-      dropdownComponentProps,
-      [
-        h('style', `
-          .drop-menu-item:hover { background:rgb(235, 235, 235); }
-          .drop-menu-item i { margin: 11px; }
-        `),
-        h(DropdownMenuItem, {
-          closeMenu,
-          onClick,
-        }, 'Item 1'),
-        h(DropdownMenuItem, {
-          closeMenu,
-          onClick,
-        }, 'Item 2'),
-      ]
-    )
-    const component = additions.renderIntoDocument(dropdownComponent);
-    renderer.render(dropdownComponent);
-    const items = additions.find(component, 'li');
-    const node = items[0];
-    ReactTestUtils.Simulate.click(node);
-    assert.equal(closeMenu.calledOnce, true);
+    const items = dropdownComponent.find('li');
+    const node = items.at(0);
+    node.simulate('click');
+    assert.equal(node.props().closeMenu, closeMenu);
   });
 
   it('invokes click handler when item clicked', function() {
-    const dropdownComponent = h(
-      Dropdown,
-      dropdownComponentProps,
-      [
-        h('style', `
-          .drop-menu-item:hover { background:rgb(235, 235, 235); }
-          .drop-menu-item i { margin: 11px; }
-        `),
-        h(DropdownMenuItem, {
-          closeMenu,
-          onClick,
-        }, 'Item 1'),
-        h(DropdownMenuItem, {
-          closeMenu,
-          onClick,
-        }, 'Item 2'),
-      ]
-    )
-    const component = additions.renderIntoDocument(dropdownComponent);
-    renderer.render(dropdownComponent);
-    const items = additions.find(component, 'li');
-    const node = items[0];
-    ReactTestUtils.Simulate.click(node);
+    const items = dropdownComponent.find('li');
+    const node = items.at(0);
+    node.simulate('click');
     assert.equal(onClick.calledOnce, true);
   });
 });
