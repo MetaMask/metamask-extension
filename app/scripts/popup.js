@@ -12,6 +12,7 @@ const notificationManager = new NotificationManager()
 global.platform = new ExtensionPlatform()
 
 // inject css
+console.log(`MetaMaskUiCss`, MetaMaskUiCss);
 const css = MetaMaskUiCss()
 injectCss(css)
 

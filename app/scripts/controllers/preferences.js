@@ -10,6 +10,7 @@ class PreferencesController {
       currentAccountTab: 'history',
       tokens: [],
       useBlockie: false,
+      featureFlags: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -99,6 +100,22 @@ class PreferencesController {
 
   getFrequentRpcList () {
     return this.store.getState().frequentRpcList
+  }
+
+  setFeatureFlag (feature, activated) {
+    const currentFeatureFlags = this.store.getState().featureFlags
+    const updatedFeatureFlags = {
+      ...currentFeatureFlags,
+      [feature]: activated,
+    }
+
+    this.store.updateState({ featureFlags: updatedFeatureFlags })
+    console.log(`!!! updatedFeatureFlags`, updatedFeatureFlags);
+    return Promise.resolve(updatedFeatureFlags)
+  }
+
+  getFeatureFlags () {
+    return this.store.getState().featureFlags
   }
   //
   // PRIVATE METHODS

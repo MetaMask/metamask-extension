@@ -237,6 +237,11 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
+  
+  // Feature Flags
+  setFeatureFlag,
+  updateFeatureFlags,
+  UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 }
 
 module.exports = actions
@@ -1503,6 +1508,30 @@ function updateTokenExchangeRate (token = '') {
         })
       }
     })
+  }
+}
+
+function setFeatureFlag (feature, activated) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.setFeatureFlag(feature, activated, (err, updatedFeatureFlags) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
+        resolve(updatedFeatureFlags)
+      })
+    })
+  }
+}
+
+function updateFeatureFlags (updatedFeatureFlags) {
+  return {
+    type: actions.UPDATE_FEATURE_FLAGS,
+    value: updatedFeatureFlags,
   }
 }
 
