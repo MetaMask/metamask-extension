@@ -311,7 +311,7 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
-          [marketinfo.pair]: ssMarketInfo,
+          [ssMarketInfo.pair]: ssMarketInfo,
         },
         coinOptions,
       })

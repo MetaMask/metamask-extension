@@ -993,9 +993,10 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddTokenPage () {
+function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
+    value: transitionForward,
   }
 }
 
@@ -1277,7 +1278,8 @@ function exportAccount (password, address) {
             return reject(err)
           }
 
-          dispatch(self.exportAccountComplete())
+          // dispatch(self.exportAccountComplete())
+          dispatch(self.showPrivateKey(result))
 
           return resolve(result)
         })
@@ -1444,7 +1446,7 @@ function reshowQrCode (data, coin) {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
-
+        
       var message = [
         `Deposit your ${coin} to the address bellow:`,
         `Deposit Limit: ${mktResponse.limit}`,
@@ -1452,10 +1454,11 @@ function reshowQrCode (data, coin) {
       ]
 
       dispatch(actions.hideLoadingIndication())
-      return dispatch(actions.showModal({
-        name: 'SHAPESHIFT_DEPOSIT_TX',
-        Qr: { data, message },
-      }))
+      return dispatch(actions.showQrView(data, message))
+      // return dispatch(actions.showModal({
+      //   name: 'SHAPESHIFT_DEPOSIT_TX',
+      //   Qr: { data, message },
+      // }))
     })
   }
 }
