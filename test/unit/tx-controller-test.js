@@ -118,8 +118,8 @@ describe('Transaction Controller', function () {
       stub.restore()
     })
 
-    it('should emit newUnaprovedTx event and pass txMeta as the first argument', function (done) {
-      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+    it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         assert(txMetaFromEmit, 'txMeta is falsey')
         assert.equal(txMetaFromEmit.id, 1, 'the right txMeta was passed')
         done()
@@ -129,7 +129,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should resolve when finished and status is submitted and resolve with the hash', function (done) {
-      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.setTxHash(txMetaFromEmit.id, '0x0')
           txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id)
@@ -145,7 +145,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should reject when finished and status is rejected', function (done) {
-      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id)
         }, 10)
