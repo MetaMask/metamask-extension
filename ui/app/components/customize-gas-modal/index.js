@@ -117,7 +117,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   let error = null
 
   const balanceIsSufficient = isBalanceSufficient({
-    amount,
+    amount: selectedToken ? '0' : amount,
     gasTotal,
     balance,
     selectedToken,
