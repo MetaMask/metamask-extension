@@ -75,6 +75,7 @@ AccountImportSubview.prototype.render = function () {
             }
           }),
           onChange: (opt) => {
+            props.dispatch(actions.showImportPage())
             this.setState({ type: opt.value })
           },
         }),
