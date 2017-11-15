@@ -8379,6 +8379,10 @@ redux-logger@^3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
+redux-test-utils@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/redux-test-utils/-/redux-test-utils-0.1.3.tgz#0d89100f100f86c7c7214976eaece88e7e45bf74"
+
 redux-thunk@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"

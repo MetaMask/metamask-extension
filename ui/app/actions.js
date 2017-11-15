@@ -115,6 +115,7 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
+  EDIT_TX: 'EDIT_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   signPersonalMsg,
@@ -129,10 +130,13 @@ var actions = {
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
+  editTx,
   previousTx: previousTx,
   cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
+  updateTransactionParams,
+  UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
   // send screen
   estimateGas,
   getGasPrice,
@@ -140,19 +144,23 @@ var actions = {
   UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
   UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
   UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
+  UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
   UPDATE_SEND_TO: 'UPDATE_SEND_TO',
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
   updateGasLimit,
   updateGasPrice,
   updateGasTotal,
+  updateSendTokenBalance,
   updateSendFrom,
   updateSendTo,
   updateSendAmount,
   updateSendMemo,
   updateSendErrors,
+  updateSend,
   clearSend,
   setSelectedAddress,
   // app messages
@@ -584,6 +592,13 @@ function updateGasTotal (gasTotal) {
   }
 }
 
+function updateSendTokenBalance (tokenBalance) {
+  return {
+    type: actions.UPDATE_SEND_TOKEN_BALANCE,
+    value: tokenBalance,
+  }
+}
+
 function updateSendFrom (from) {
   return {
     type: actions.UPDATE_SEND_FROM,
@@ -616,6 +631,13 @@ function updateSendErrors (error) {
   return {
     type: actions.UPDATE_SEND_ERRORS,
     value: error,
+  }
+}
+
+function updateSend (newSend) {
+  return {
+    type: actions.UPDATE_SEND,
+    value: newSend,
   }
 }
 
@@ -659,6 +681,8 @@ function updateAndApproveTx (txData) {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      dispatch(actions.clearSend())
       if (err) {
         dispatch(actions.txError(err))
         dispatch(actions.goHome())
@@ -673,6 +697,14 @@ function completedTx (id) {
   return {
     type: actions.COMPLETED_TX,
     value: id,
+  }
+}
+
+function updateTransactionParams (id, txParams) {
+  return {
+    type: actions.UPDATE_TRANSACTION_PARAMS,
+    id,
+    value: txParams,
   }
 }
 
@@ -936,6 +968,13 @@ function viewPendingTx (txId) {
 function previousTx () {
   return {
     type: actions.PREVIOUS_TX,
+  }
+}
+
+function editTx (txId) {
+  return {
+    type: actions.EDIT_TX,
+    value: txId,
   }
 }
 

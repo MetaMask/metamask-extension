@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const networkNames = require('../../../../app/scripts/config.js').networkNames
 
 function mapStateToProps (state) {
   return {
@@ -22,6 +23,7 @@ function mapDispatchToProps (dispatch) {
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
+    toFaucet: network => dispatch(actions.buyEth({ network })),
   }
 }
 
@@ -32,7 +34,20 @@ function BuyOptions () {
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
 
+BuyOptions.prototype.renderModalContentOption = function (title, header, onClick) {
+  return h('div.buy-modal-content-option', {
+    onClick,
+  }, [
+    h('div.buy-modal-content-option-title', {}, title),
+    h('div.buy-modal-content-option-subtitle', {}, header),
+  ])
+}
+
 BuyOptions.prototype.render = function () {
+  const { network, toCoinbase, address, toFaucet } = this.props
+  const isTestNetwork = ['3', '4', '42'].find(n => n === network)
+  const networkName = networkNames[network]
+
   return h('div', {}, [
     h('div.buy-modal-content.transfers-subview', {
     }, [
@@ -47,27 +62,20 @@ BuyOptions.prototype.render = function () {
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
-        h('div.buy-modal-content-option', {
-          onClick: () => {
-            const { toCoinbase, address } = this.props
-            toCoinbase(address)
-          },
-        }, [
-          h('div.buy-modal-content-option-title', {}, 'Coinbase'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Deposit with Fiat'),
-        ]),
+        isTestNetwork
+          ? this.renderModalContentOption(networkName, 'Test Faucet', () => toFaucet(network))
+          : this.renderModalContentOption('Coinbase', 'Deposit with Fiat', () => toCoinbase(address)),
 
         // h('div.buy-modal-content-option', {}, [
         //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
         //   h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
         // ]),
 
-        h('div.buy-modal-content-option', {
-          onClick: () => this.goToAccountDetailsModal(),
-        }, [
-          h('div.buy-modal-content-option-title', {}, 'Direct Deposit'),
-          h('div.buy-modal-content-option-subtitle', {}, 'Deposit from another account'),
-        ]),
+        this.renderModalContentOption(
+          'Direct Deposit',
+          'Deposit from another account',
+          () => this.goToAccountDetailsModal()
+        ),
 
       ]),
 

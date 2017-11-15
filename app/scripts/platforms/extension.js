@@ -17,6 +17,15 @@ class ExtensionPlatform {
     return extension.runtime.getManifest().version
   }
 
+  getPlatformInfo (cb) {
+    try {
+      extension.runtime.getPlatformInfo((platform) => {
+        cb(null, platform)
+      })
+    } catch (e) {
+      cb(e)
+    }
+  }
 }
 
 module.exports = ExtensionPlatform

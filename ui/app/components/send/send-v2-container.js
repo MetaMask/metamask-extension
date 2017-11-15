@@ -13,6 +13,7 @@ const {
   getSendFrom,
   getCurrentCurrency,
   getSelectedTokenToFiatRate,
+  getSelectedTokenContract,
 } = require('../../selectors')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
@@ -48,6 +49,7 @@ function mapStateToProps (state) {
     convertedCurrency: getCurrentCurrency(state),
     data,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
+    tokenContract: getSelectedTokenContract(state),
   }
 }
 
@@ -61,9 +63,13 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.signTokenTx(tokenAddress, toAddress, amount, txData))
     ),
     signTx: txParams => dispatch(actions.signTx(txParams)),
+    updateAndApproveTx: txParams => dispatch(actions.updateAndApproveTx(txParams)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
+    updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
+    updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
+    updateSendTokenBalance: tokenBalance => dispatch(actions.updateSendTokenBalance(tokenBalance)),
     updateSendFrom: newFrom => dispatch(actions.updateSendFrom(newFrom)),
     updateSendTo: newTo => dispatch(actions.updateSendTo(newTo)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
@@ -71,5 +77,6 @@ function mapDispatchToProps (dispatch) {
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
     clearSend: () => dispatch(actions.clearSend()),
+    backToConfirmScreen: editingTransactionId => dispatch(actions.showConfTxPage({ id: editingTransactionId })),
   }
 }

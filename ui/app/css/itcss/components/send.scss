@@ -577,6 +577,7 @@
     line-height: 16px;
     font-size: 12px;
     color: $tundora;
+    position: relative;
 
     &__close-area {
       position: fixed;
@@ -591,7 +592,7 @@
       z-index: 1050;
       position: absolute;
       height: 220px;
-      width: 240px;
+      width: 100%;
       border: 1px solid $geyser;
       border-radius: 4px;
       background-color: $white;
@@ -626,6 +627,15 @@
       line-height: 21px;
       font-weight: 300;
     }
+  }
+
+  &__amount-max {
+    color: $curious-blue;
+    font-family: Roboto;
+    font-size: 12px;
+    left: 8px;
+    border: none;
+    cursor: pointer;
   }
 
   &__gas-fee-display {

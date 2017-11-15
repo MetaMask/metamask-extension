@@ -31,7 +31,7 @@ class Dropdown extends Component {
         containerClassName,
         useCssTransition,
         isOpen,
-        zIndex: 30,
+        zIndex: 55,
         onClickOutside,
         style,
         innerStyle: innerStyleDefaults,

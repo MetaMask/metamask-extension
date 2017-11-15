@@ -27,11 +27,13 @@ function reduceMetamask (state, action) {
       gasLimit: null,
       gasPrice: null,
       gasTotal: null,
+      tokenBalance: null,
       from: '',
       to: '',
       amount: '0x0',
       memo: '',
       errors: {},
+      editingTransactionId: null,
     },
     coinOptions: {},
   }, state.metamask)
@@ -107,6 +109,14 @@ function reduceMetamask (state, action) {
       }
       return newState
 
+    case actions.EDIT_TX:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          editingTransactionId: action.value,
+        },
+      })
+
     case actions.SHOW_NEW_VAULT_SEED:
       return extend(metamaskState, {
         isUnlocked: true,
@@ -140,9 +150,9 @@ function reduceMetamask (state, action) {
     case actions.SAVE_ACCOUNT_LABEL:
       const account = action.value.account
       const name = action.value.label
-      var id = {}
+      const id = {}
       id[account] = extend(metamaskState.identities[account], { name })
-      var identities = extend(metamaskState.identities, id)
+      const identities = extend(metamaskState.identities, id)
       return extend(metamaskState, { identities })
 
     case actions.SET_CURRENT_FIAT:
@@ -196,6 +206,14 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_SEND_TOKEN_BALANCE:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          tokenBalance: action.value,
+        },
+      })
+
     case actions.UPDATE_SEND_FROM:
       return extend(metamaskState, {
         send: {
@@ -239,18 +257,42 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_SEND:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          ...action.value,
+        },
+      })
+
     case actions.CLEAR_SEND:
       return extend(metamaskState, {
         send: {
           gasLimit: null,
           gasPrice: null,
           gasTotal: null,
+          tokenBalance: null,
           from: '',
           to: '',
           amount: '0x0',
           memo: '',
           errors: {},
+          editingTransactionId: null,
         },
+      })
+
+    case actions.UPDATE_TRANSACTION_PARAMS:
+      const { id: txId, value } = action
+      let { selectedAddressTxList } = metamaskState
+      selectedAddressTxList = selectedAddressTxList.map(tx => {
+        if (tx.id === txId) {
+          tx.txParams = value
+        }
+        return tx
+      })
+
+      return extend(metamaskState, {
+        selectedAddressTxList,
       })
 
     case actions.PAIR_UPDATE:

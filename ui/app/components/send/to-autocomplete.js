@@ -38,6 +38,7 @@ ToAutoComplete.prototype.renderDropdown = function () {
 
       ...accountsToRender.map(account => h(AccountListItem, {
         account,
+        className: 'account-list-item__dropdown',
         handleClick: () => {
           onChange(account.address)
           closeDropdown()
@@ -88,7 +89,7 @@ ToAutoComplete.prototype.render = function () {
     inError,
   } = this.props
 
-  return h('div.to-autocomplete', {}, [
+  return h('div.send-v2__to-autocomplete', {}, [
 
     h('input.send-v2__to-autocomplete__input', {
       placeholder: 'Recipient Address',

@@ -69,4 +69,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &__dropdown {
+    &:hover {
+      background: rgba($alto, .2);
+      cursor: pointer;
+
+      input {
+        background: rgba($alto, .1);
+      }
+    }
+  }
 }

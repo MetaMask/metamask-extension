@@ -1,4 +1,5 @@
 const valuesFor = require('./util').valuesFor
+const abi = require('human-standard-token-abi')
 
 const {
   multiplyCurrencies,
@@ -22,6 +23,7 @@ const selectors = {
   getCurrentCurrency,
   getSendAmount,
   getSelectedTokenToFiatRate,
+  getSelectedTokenContract,
 }
 
 module.exports = selectors
@@ -148,4 +150,11 @@ function getSelectedTokenToFiatRate (state) {
   )
 
   return tokenToFiatRate
+}
+
+function getSelectedTokenContract (state) {
+  const selectedToken = getSelectedToken(state)
+  return selectedToken
+    ? global.eth.contract(abi).at(selectedToken.address)
+    : null
 }

@@ -35,6 +35,7 @@ FromDropdown.prototype.renderDropdown = function () {
     h('div.send-v2__from-dropdown__list', {}, [
 
       ...accounts.map(account => h(AccountListItem, {
+        className: 'account-list-item__dropdown',
         account,
         handleClick: () => {
           onSelect(account)

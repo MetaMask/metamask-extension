@@ -1,4 +1,5 @@
 const extend = require('xtend')
+const copyToClipboard = require('copy-to-clipboard')
 
 //
 // Sub-Reducers take in the complete state and return their sub-state
@@ -41,17 +42,33 @@ function rootReducer (state, action) {
   return state
 }
 
-window.logState = function () {
+window.logStateString = function (cb) {
   const state = window.METAMASK_CACHED_LOG_STATE
-  let version
-  try {
-    version = global.platform.getVersion()
-  } catch (e) {
-    version = 'unable to load version.'
-  }
-  state.version = version
-  const stateString = JSON.stringify(state, removeSeedWords, 2)
-  return stateString
+  const version = global.platform.getVersion()
+  const browser = window.navigator.userAgent
+  return global.platform.getPlatformInfo((err, platform) => {
+    if (err) {
+      return cb(err)
+    }
+    state.version = version
+    state.platform = platform
+    state.browser = browser
+    const stateString = JSON.stringify(state, removeSeedWords, 2)
+    return cb(null, stateString)
+  })
+}
+
+window.logState = function (toClipboard) {
+  return window.logStateString((err, result) => {
+    if (err) {
+      console.error(err.message)
+    } else if (toClipboard) {
+      copyToClipboard(result)
+      console.log('State log copied')
+    } else {
+      console.log(result)
+    }
+  })
 }
 
 function removeSeedWords (key, value) {
