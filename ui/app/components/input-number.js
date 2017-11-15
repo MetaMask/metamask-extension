@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const CurrencyInput = require('./currency-input')
 const {
   addCurrencies,
   conversionGTE,
@@ -50,11 +51,13 @@ InputNumber.prototype.render = function () {
   const { unitLabel, step = 1, placeholder, value = 0 } = this.props
 
   return h('div.customize-gas-input-wrapper', {}, [
-    h('input.customize-gas-input', {
-      placeholder,
+    h(CurrencyInput, {
+      className: 'customize-gas-input',
       value,
-      step,
-      onChange: (e) => this.setValue(e.target.value),
+      placeholder,
+      onInputChange: newValue => {
+        this.setValue(newValue)
+      },
     }),
     h('span.gas-tooltip-input-detail', {}, [unitLabel]),
     h('div.gas-tooltip-input-arrows', {}, [
