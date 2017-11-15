@@ -1,5 +1,5 @@
 const extend = require('xtend')
-const actions = require('../actions')
+const actions = require('../../../ui/app/actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
 
 module.exports = reduceMetamask

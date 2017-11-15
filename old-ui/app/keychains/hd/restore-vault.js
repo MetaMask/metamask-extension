@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('../../actions')
+const actions = require('../../../../ui/app/actions')
 
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
 

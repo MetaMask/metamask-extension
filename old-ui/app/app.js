@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('./actions')
+const actions = require('../../ui/app/actions')
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
@@ -556,6 +556,7 @@ App.prototype.renderPrimary = function () {
 
     case 'qr':
       log.debug('rendering show qr screen')
+      console.log(`QrView`, QrView);
       return h('div', {
         style: {
           position: 'absolute',

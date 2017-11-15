@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const exportAsFile = require('../util').exportAsFile
 const copyToClipboard = require('copy-to-clipboard')
-const actions = require('../actions')
+const actions = require('../../../ui/app/actions')
 const ethUtil = require('ethereumjs-util')
 const connect = require('react-redux').connect
 

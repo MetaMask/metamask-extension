@@ -1,5 +1,5 @@
 const extend = require('xtend')
-const actions = require('../actions')
+const actions = require('../../../ui/app/actions')
 const txHelper = require('../../lib/tx-helper')
 
 module.exports = reduceApp

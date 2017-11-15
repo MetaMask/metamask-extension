@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const actions = require('../../actions')
+const actions = require('../../../../ui/app/actions')
 const exportAsFile = require('../../util').exportAsFile
 
 module.exports = connect(mapStateToProps)(CreateVaultCompleteScreen)

@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const actions = require('../actions')
+const actions = require('../../../ui/app/actions')
 const clone = require('clone')
 
 const ethUtil = require('ethereumjs-util')

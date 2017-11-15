@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
-const actions = require('../actions')
+const actions = require('../../../ui/app/actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
 const Loading = require('./loading')
@@ -247,6 +247,7 @@ BuyButtonSubview.prototype.backButtonContext = function () {
   if (this.props.context === 'confTx') {
     this.props.dispatch(actions.showConfTxPage(false))
   } else {
+    console.log(`actions.goHome`, actions.goHome);
     this.props.dispatch(actions.goHome())
   }
 }
