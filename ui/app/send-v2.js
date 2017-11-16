@@ -13,8 +13,6 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const {
   MIN_GAS_TOTAL,
-  MIN_GAS_PRICE_HEX,
-  MIN_GAS_LIMIT_HEX,
 } = require('./components/send/send-constants')
 
 const {
@@ -313,8 +311,9 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
 SendTransactionScreen.prototype.handleAmountChange = function (value) {
   const amount = value
-  const { updateSendAmount } = this.props
+  const { updateSendAmount, setMaxModeTo } = this.props
 
+  setMaxModeTo(false)
   this.validateAmount(amount)
   updateSendAmount(amount)
 }
@@ -324,11 +323,9 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     from: { balance },
     updateSendAmount,
     updateSendErrors,
-    updateGasPrice,
-    updateGasLimit,
-    updateGasTotal,
     tokenBalance,
     selectedToken,
+    gasTotal,
   } = this.props
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
@@ -337,16 +334,12 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     ? multiplyCurrencies(tokenBalance, multiplier, {toNumericBase: 'hex'})
     : subtractCurrencies(
       ethUtil.addHexPrefix(balance),
-      ethUtil.addHexPrefix(MIN_GAS_TOTAL),
+      ethUtil.addHexPrefix(gasTotal),
       { toNumericBase: 'hex' }
     )
 
   updateSendErrors({ amount: null })
-  if (!selectedToken) {
-    updateGasPrice(MIN_GAS_PRICE_HEX)
-    updateGasLimit(MIN_GAS_LIMIT_HEX)
-    updateGasTotal(MIN_GAS_TOTAL)
-  }
+
   updateSendAmount(maxAmount)
 }
 
@@ -407,19 +400,22 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     amountConversionRate,
     errors,
     amount,
+    setMaxModeTo,
+    maxModeOn,
   } = this.props
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', [
+     h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
       !errors.amount && h('div.send-v2__amount-max', {
         onClick: (event) => {
           event.preventDefault()
+          setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ 'Max' ]),
+      }, [ !maxModeOn ? 'Max' : '' ]),
     ]),
 
     h('div.send-v2__form-field', [

@@ -33,6 +33,7 @@ function reduceMetamask (state, action) {
       amount: '0x0',
       memo: '',
       errors: {},
+      maxModeOn: false,
       editingTransactionId: null,
     },
     coinOptions: {},
@@ -255,6 +256,14 @@ function reduceMetamask (state, action) {
             ...metamaskState.send.errors,
             ...action.value,
           },
+        },
+      })
+
+    case actions.UPDATE_MAX_MODE:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          maxModeOn: action.value,
         },
       })
 

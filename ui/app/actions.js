@@ -149,6 +149,7 @@ var actions = {
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
   updateGasLimit,
@@ -160,6 +161,7 @@ var actions = {
   updateSendAmount,
   updateSendMemo,
   updateSendErrors,
+  setMaxModeTo,
   updateSend,
   clearSend,
   setSelectedAddress,
@@ -634,6 +636,13 @@ function updateSendErrors (error) {
   return {
     type: actions.UPDATE_SEND_ERRORS,
     value: error,
+  }
+}
+
+function setMaxModeTo (bool) {
+  return {
+    type: actions.UPDATE_MAX_MODE,
+    value: bool,
   }
 }
 
