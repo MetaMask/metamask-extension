@@ -150,7 +150,7 @@ App.prototype.render = function () {
 
         // content
         this.renderPrimary(),
-      ])
+      ]),
     ])
   )
 }
@@ -274,7 +274,7 @@ App.prototype.renderAppBar = function () {
               onClick: () => {
                 props.dispatch(actions.setFeatureFlag('betaUI', false))
               },
-            }, 'Leave Beta')
+            }, 'Leave Beta'),
 
           ]),
 

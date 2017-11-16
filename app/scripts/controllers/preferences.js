@@ -110,7 +110,7 @@ class PreferencesController {
     }
 
     this.store.updateState({ featureFlags: updatedFeatureFlags })
-    console.log(`!!! updatedFeatureFlags`, updatedFeatureFlags);
+
     return Promise.resolve(updatedFeatureFlags)
   }
 
