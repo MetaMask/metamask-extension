@@ -5,6 +5,8 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
 
+const ethUtil = require('ethereumjs-util')
+
 const {
   MIN_GAS_PRICE_DEC,
   MIN_GAS_LIMIT_DEC,
@@ -19,6 +21,7 @@ const {
   conversionUtil,
   multiplyCurrencies,
   conversionGreaterThan,
+  subtractCurrencies,
 } = require('../../conversion-util')
 
 const {
@@ -30,6 +33,7 @@ const {
   getSendFrom,
   getCurrentAccountWithSendEtherInfo,
   getSelectedTokenToFiatRate,
+  getSendMaxModeState,
 } = require('../../selectors')
 
 function mapStateToProps (state) {
@@ -42,6 +46,7 @@ function mapStateToProps (state) {
     gasLimit: getGasLimit(state),
     conversionRate,
     amount: getSendAmount(state),
+    maxModeOn: getSendMaxModeState(state),
     balance: currentAccount.balance,
     primaryCurrency: selectedToken && selectedToken.symbol,
     selectedToken,
@@ -55,6 +60,7 @@ function mapDispatchToProps (dispatch) {
     updateGasPrice: newGasPrice => dispatch(actions.updateGasPrice(newGasPrice)),
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
     updateGasTotal: newGasTotal => dispatch(actions.updateGasTotal(newGasTotal)),
+    updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
   }
 }
 
@@ -93,7 +99,20 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateGasLimit,
     hideModal,
     updateGasTotal,
+    maxModeOn,
+    selectedToken,
+    balance,
+    updateSendAmount,
   } = this.props
+
+  if (maxModeOn && !selectedToken) {
+    const maxAmount = subtractCurrencies(
+      ethUtil.addHexPrefix(balance),
+      ethUtil.addHexPrefix(gasTotal),
+      { toNumericBase: 'hex' }
+    )
+    updateSendAmount(maxAmount)
+  }
 
   updateGasPrice(gasPrice)
   updateGasLimit(gasLimit)
@@ -112,12 +131,13 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
     selectedToken,
     amountConversionRate,
     conversionRate,
+    maxModeOn,
   } = this.props
 
   let error = null
 
   const balanceIsSufficient = isBalanceSufficient({
-    amount: selectedToken ? '0' : amount,
+    amount: selectedToken || maxModeOn ? '0' : amount,
     gasTotal,
     balance,
     selectedToken,
