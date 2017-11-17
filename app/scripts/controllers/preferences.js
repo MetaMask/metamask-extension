@@ -8,6 +8,7 @@ class PreferencesController {
     const initState = extend({
       frequentRpcList: [],
       currentAccountTab: 'history',
+      defaultGasPrice: opts.defaultPrice || '0x174876e800',
       tokens: [],
     }, opts.initState)
     this.store = new ObservableStore(initState)
