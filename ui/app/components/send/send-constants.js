@@ -3,8 +3,8 @@ const { conversionUtil, multiplyCurrencies } = require('../../conversion-util')
 
 const MIN_GAS_PRICE_HEX = (100000000).toString(16)
 const MIN_GAS_PRICE_DEC = '100000000'
-const MIN_GAS_LIMIT_HEX = (21000).toString(16)
-const MIN_GAS_LIMIT_DEC = 21000
+const MIN_GAS_LIMIT_DEC = '21000'
+const MIN_GAS_LIMIT_HEX = (parseInt(MIN_GAS_LIMIT_DEC)).toString(16)
 
 const MIN_GAS_PRICE_GWEI = ethUtil.addHexPrefix(conversionUtil(MIN_GAS_PRICE_HEX, {
   fromDenomination: 'WEI',
