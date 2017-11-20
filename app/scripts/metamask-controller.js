@@ -31,12 +31,14 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
+
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
@@ -48,6 +50,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // observable state store
     this.store = new ObservableStore(initState)
+
+    // lock to ensure only one vault created at once
+    this.createVaultMutex = new Mutex()
 
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
@@ -467,15 +472,34 @@ module.exports = class MetamaskController extends EventEmitter {
   // Vault Management
   //
 
-  async createNewVaultAndKeychain (password, cb) {
-    const vault = await this.keyringController.createNewVaultAndKeychain(password)
-    this.selectFirstIdentity(vault)
+  async createNewVaultAndKeychain (password) {
+    const release = await this.createVaultMutex.acquire()
+    let vault
+
+    try {
+      const accounts = await this.keyringController.getAccounts()
+
+      if (accounts.length > 0) {
+        vault = await this.keyringController.fullUpdate()
+
+      } else {
+        let vault = await this.keyringController.createNewVaultAndKeychain(password)
+        this.selectFirstIdentity(vault)
+      }
+      release()
+    } catch (err) {
+      release()
+      throw err
+    }
+
     return vault
   }
 
-  async createNewVaultAndRestore (password, seed, cb) {
+  async createNewVaultAndRestore (password, seed) {
+    const release = await this.createVaultMutex.acquire()
     const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
     this.selectFirstIdentity(vault)
+    release()
     return vault
   }
 
