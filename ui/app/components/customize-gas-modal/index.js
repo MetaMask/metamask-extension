@@ -244,7 +244,7 @@ CustomizeGasModal.prototype.render = function () {
           min: 1,
           // max: 100000,
           step: 1,
-          onChange: value => this.convertAndSetGasLimit(String(value)),
+          onChange: value => this.convertAndSetGasLimit(value),
           title: 'Gas Limit',
           copy: 'We calculate the suggested gas limit based on network success rates.',
         }),
