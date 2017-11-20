@@ -27,6 +27,24 @@ describe('MetaMaskController', function () {
 
   describe('Metamask Controller', function () {
     assert(metamaskController)
+
+    describe('#createNewVaultAndKeychain', function () {
+      it('can only create new vault on keyringController once', async function () {
+
+        const selectStub = sinon.stub(metamaskController, 'selectFirstIdentity')
+
+        const expectation = sinon.mock(metamaskController.keyringController)
+          .expects('createNewVaultAndKeychain').once()
+
+        const password = 'a-fake-password'
+
+        const first = await metamaskController.createNewVaultAndKeychain(password)
+        const second = await metamaskController.createNewVaultAndKeychain(password)
+
+        expectation.verify()
+        selectStub.reset()
+      })
+    })
   })
 })
 
