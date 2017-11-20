@@ -12,6 +12,7 @@ function createMetamascaraServer () {
   const metamascaraBundle = createBundle(path.join(__dirname, '/../src/mascara.js'))
   const proxyBundle = createBundle(path.join(__dirname, '/../src/proxy.js'))
   const uiBundle = createBundle(path.join(__dirname, '/../src/ui.js'))
+  const widgetBundle = createBundle(path.join(__dirname, '/../src/widget.js'))
   const backgroundBuild = createBundle(path.join(__dirname, '/../src/background.js'))
 
   // serve bundles
@@ -23,8 +24,10 @@ function createMetamascaraServer () {
   // metamascara
   serveBundle(server, '/metamascara.js', metamascaraBundle)
   // proxy
+  serveBundle(server, '/proxy/widget.js', widgetBundle)
   serveBundle(server, '/proxy/proxy.js', proxyBundle)
   server.use('/proxy/', express.static(path.join(__dirname, '/../proxy')))
+  // server.use('/proxy/widget.html', express.static(path.join(__dirname, '/../proxy/widget.html')))
   // background
   serveBundle(server, '/background.js', backgroundBuild)
 

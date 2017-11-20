@@ -104,6 +104,10 @@ async function setupController (initState, client) {
       // communication with popup
       controller.setupTrustedCommunication(connectionStream, 'MetaMask')
       global.metamaskPopupIsOpen = true
+    } else if (context === 'publicConfig') {
+      const mux = setupMultiplex(connectionStream)
+    // connect features
+      controller.setupPublicConfig(mux.createStream('publicConfig'))
     } else {
       // communication with page
       setupUntrustedCommunication(connectionStream, context)

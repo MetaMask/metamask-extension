@@ -48,7 +48,6 @@ background.on('ready', async (sw) => {
     background.removeListener('updatefound', connectApp)
     await timeout(1000)
     await connectApp(sw)
-    console.log('hello from cb ready event!')
   } catch (e) {
     console.error(e)
   }
