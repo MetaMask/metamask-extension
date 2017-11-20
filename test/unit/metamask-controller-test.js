@@ -13,12 +13,10 @@ describe('MetaMaskController', function () {
     platform: {},
     encryptor: {
       encrypt: function(password, object) {
-        console.log('encrypting ', object)
         this.object = object
         return Promise.resolve()
       },
       decrypt: function () {
-        console.log('decrypting')
         return Promise.resolve(this.object)
       }
     },
@@ -55,11 +53,7 @@ describe('MetaMaskController', function () {
         const password = 'a-fake-password'
 
         const first = await metamaskController.createNewVaultAndKeychain(password)
-        console.log('FIRST ONE RETURNED:')
-        console.dir(first)
         const second = await metamaskController.createNewVaultAndKeychain(password)
-        console.log('SECOND ONE RETURNED:')
-        console.dir(second)
 
         assert(metamaskController.keyringController.createNewVaultAndKeychain.calledOnce)
 
