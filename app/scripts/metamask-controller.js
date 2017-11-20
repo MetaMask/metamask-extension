@@ -31,12 +31,17 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
+
+    this.createVaultRequestStart = []
+    this.createVaultRequestEnd = []
+    this.createVaultMutex = new Mutex()
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
@@ -467,15 +472,45 @@ module.exports = class MetamaskController extends EventEmitter {
   // Vault Management
   //
 
-  async createNewVaultAndKeychain (password, cb) {
+  async createNewVaultAndKeychain (password) {
+    const release = await this.createVaultMutex.acquire()
+    this.createVaultRequestStart.push(performance.now())
+    this.createVaultRequestEnd.push(0);
+    const idx = this.createVaultRequestStart.length - 1;
+    if(idx === 1) {
+      await this.sleep(8000)
+    }
     const vault = await this.keyringController.createNewVaultAndKeychain(password)
+    if(idx === 0) {
+      //await this.sleep(3000)
+    }
+    console.log({
+      "idx": idx,
+      "when": "before",
+      "obj": vault
+    });
     this.selectFirstIdentity(vault)
+    console.log({
+      "idx": idx,
+      "when": "after",
+      "obj": vault
+    });
+    this.createVaultRequestEnd[idx] = performance.now()
+    console.log(this.createVaultRequestStart)
+    console.log(this.createVaultRequestEnd)
+    release()
     return vault
   }
 
-  async createNewVaultAndRestore (password, seed, cb) {
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async createNewVaultAndRestore (password, seed) {
+    const release = await this.createVaultMutex.acquire()
     const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
     this.selectFirstIdentity(vault)
+    release()
     return vault
   }
 
