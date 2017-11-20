@@ -39,9 +39,6 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
 
-    this.createVaultRequestStart = []
-    this.createVaultRequestEnd = []
-    this.createVaultMutex = new Mutex()
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
@@ -53,6 +50,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // observable state store
     this.store = new ObservableStore(initState)
+
+    // lock to ensure only one vault created at once
+    this.createVaultMutex = new Mutex()
 
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
@@ -474,36 +474,25 @@ module.exports = class MetamaskController extends EventEmitter {
 
   async createNewVaultAndKeychain (password) {
     const release = await this.createVaultMutex.acquire()
-    this.createVaultRequestStart.push(performance.now())
-    this.createVaultRequestEnd.push(0);
-    const idx = this.createVaultRequestStart.length - 1;
-    if(idx === 1) {
-      await this.sleep(8000)
-    }
-    const vault = await this.keyringController.createNewVaultAndKeychain(password)
-    if(idx === 0) {
-      //await this.sleep(3000)
-    }
-    console.log({
-      "idx": idx,
-      "when": "before",
-      "obj": vault
-    });
-    this.selectFirstIdentity(vault)
-    console.log({
-      "idx": idx,
-      "when": "after",
-      "obj": vault
-    });
-    this.createVaultRequestEnd[idx] = performance.now()
-    console.log(this.createVaultRequestStart)
-    console.log(this.createVaultRequestEnd)
-    release()
-    return vault
-  }
+    let vault
 
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    try {
+      const accounts = await this.keyringController.getAccounts()
+
+      if (accounts.length > 0) {
+        vault = await this.keyringController.fullUpdate()
+
+      } else {
+        let vault = await this.keyringController.createNewVaultAndKeychain(password)
+        this.selectFirstIdentity(vault)
+      }
+      release()
+    } catch (err) {
+      release()
+      throw err
+    }
+
+    return vault
   }
 
   async createNewVaultAndRestore (password, seed) {
