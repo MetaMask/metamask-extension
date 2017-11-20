@@ -2,27 +2,21 @@ const pump = require('pump')
 const injectCss = require('inject-css')
 const ObjectMultiplex = require('obj-multiplex')
 const LocalStorageStore = require('obs-store')
-const StreamProvider = require('web3-stream-provider')
-const EthQuery = require('ethjs-query')
 const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
 const SwStream = require('sw-stream/lib/sw-stream.js')
 const MetaMaskUiCss = require('../../ui/css')
-const startPopup = require('../../app/scripts/popup-core')
+const startUi = require('./app/widget/default.js')
 
 var css = MetaMaskUiCss()
 injectCss(css)
-const container = document.getElementById('app-content')
 
+const container = document.getElementById('container')
 var name = 'widget'
 window.METAMASK_UI_TYPE = name
 
 const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
-
 const background = new SWcontroller({
   fileName: '/background.js',
-  letBeIdle: false,
-  intervalDelay,
-  wakeUpInterval: 20000,
 })
 // Setup listener for when the service worker is read
 
@@ -33,6 +27,8 @@ background.on('ready', async (sw) => {
       context: 'publicConfig',
     })
     const publicConfigStore = createPublicConfigStore(connectionStream)
+
+    startUi(container, publicConfigStore)
 
   } catch(e) { console.error(e) }
 })
