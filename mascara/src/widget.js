@@ -13,7 +13,7 @@ const container = document.getElementById('container')
 var name = 'widget'
 window.METAMASK_UI_TYPE = name
 
-const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
+// const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
 const background = new SWcontroller({
   fileName: '/background.js',
 })
@@ -42,7 +42,7 @@ function createPublicConfigStore (connectionStream) {
     connectionStream,
     mux,
     connectionStream,
-    (err) => logStreamDisconnectWarning('MetaMask', err)
+    // (err) => logStreamDisconnectWarning('MetaMask', err)
   )
 
   // subscribe to metamask public config (one-way)
@@ -50,7 +50,7 @@ function createPublicConfigStore (connectionStream) {
   pump(
     mux.createStream('publicConfig'),
     publicConfigStore,
-    (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
+    // (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
   )
   return publicConfigStore
 }
