@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900');
+
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
+
+@font-face {
+  font-family: 'Montserrat Regular';
+  src: url('/fonts/Montserrat/Montserrat-Regular.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-size: 'small';
+}
+
+@font-face {
+  font-family: 'Montserrat Bold';
+  src: url('/fonts/Montserrat/Montserrat-Bold.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat Light';
+  src: url('/fonts/Montserrat/Montserrat-Light.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-Light.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat UltraLight';
+  src: url('/fonts/Montserrat/Montserrat-UltraLight.woff') format('woff');
+  src: url('/fonts/Montserrat/Montserrat-UltraLight.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN OT';
+  src: url('/fonts/DIN_OT/DINOT-2.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN OT Light';
+  src: url('/fonts/DIN_OT/DINOT-2.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN NEXT';
+  src: url('/fonts/DIN NEXT/DIN NEXT W01 Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN NEXT Light';
+  src: url('/fonts/DIN NEXT/DIN NEXT W10 Light.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('/fonts/Lato/Lato-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+html,
+body {
+  font-family: Roboto, Arial;
+  color: #4d4d4d;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.app {
+  border: 0;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  max-height: 5rem;
+  background-color: #fff;
+  box-shadow: #808080 0 0 1rem;
+  opacity: .9;
+  width: 17rem;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.authenticated__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.authenticated__header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  line-height: initial;
+  font-size: .8rem;
+  padding: .4rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.authenticated__header--metamask {
+  font-weight: 400;
+  margin-left: .4rem;
+  margin-right: 1rem;
+}
+
+.authenticated__header--subheader {
+  font-weight: 300;
+}
+
+.authenticated__content {
+  font-size: 1.3rem;
+  font-weight: 300;
+  padding: .5rem;
+}
+
+.authenticated__account-icon {
+  height: 2rem;
+  width: 2rem;
+  background-color: #808080;
+  border-radius: 2rem;
+  margin-right: .7rem;
+}
+
+.authenticated__network-icon {
+  height: .5rem;
+  width: .5rem;
+  border-radius: .5rem;
+  background-color: #808080;
+}
+
+.unauthenticated__container {
+  padding: 1rem;
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: 5rem;
+}
+
+.unauthenticated__right-section {
+  margin-left: 1rem;
+}
+
+.unauthenticated__header {
+  font-size: 1.2rem;
+  margin-top: .2rem;
+  font-weight: 400;
+}
+
+.unauthenticated__subheader {
+  font-size: .8rem;
+  font-weight: 300;
+}
+
+.widget-logo--mini {
+  width: 1.1rem;
+}
+
+.widget-logo--small {
+  width: 2.3rem;
+}
+
+.widget-logo--full {
+  width: 3rem;
+}
+
+@media screen and (max-device-width: 575px) {
+  .app {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 5rem;
+  }
+
+  .authenticated__container {
+    margin-top: 1rem;
+    align-items: center;
+  }
+}

@@ -4,11 +4,10 @@ const ObjectMultiplex = require('obj-multiplex')
 const LocalStorageStore = require('obs-store')
 const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
 const SwStream = require('sw-stream/lib/sw-stream.js')
-const MetaMaskUiCss = require('../../ui/css')
 const startUi = require('./app/widget/default.js')
+const widgetCss = require('./css')
 
-var css = MetaMaskUiCss()
-injectCss(css)
+injectCss(widgetCss())
 
 const container = document.getElementById('container')
 var name = 'widget'
@@ -30,7 +29,9 @@ background.on('ready', async (sw) => {
 
     startUi(container, publicConfigStore)
 
-  } catch(e) { console.error(e) }
+  } catch (e) {
+    console.error(e)
+  }
 })
 
 background.startWorker()

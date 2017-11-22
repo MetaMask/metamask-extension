@@ -1,15 +1,31 @@
-module.exports = setupDefaultWidget
+const { render } = require('react-dom')
+const App = require('./App')
+const h = require('react-hyperscript')
 
 function setupDefaultWidget (container, publicConfigStore) {
-  const selectedAddressContainer = document.createElement('div')
-  let selectedAddress = publicConfigStore.getState().selectedAddress || 'Login or Sign up'
+  const rootElement = container.querySelector('#app')
+  const renderProps = renderWithProps(App, rootElement)
+  const props = {
+    selectedAddress: publicConfigStore.getState().selectedAddress,
+  }
 
-  publicConfigStore.subscribe((state) => {
-    if (state.selectedAddress === selectedAddress) return
-    selectedAddress = state.selectedAddress || 'Login or Sign up'
-    selectedAddressContainer.innerText = selectedAddress
+  renderProps(props)
+
+  publicConfigStore.subscribe(state => {
+    if (state.selectedAddress === props.selectedAddress) {
+      return
+    }
+
+    props.selectedAddress = state.selectedAddress
+    renderProps(Object.assign({}, props))
   })
-
-  selectedAddressContainer.innerText = selectedAddress
-  container.appendChild(selectedAddressContainer)
 }
+
+const renderWithProps = (Component, element) => props => {
+  render(
+    h(Component, props),
+    element
+  )
+}
+
+module.exports = setupDefaultWidget
