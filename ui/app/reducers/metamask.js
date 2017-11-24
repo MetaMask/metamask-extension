@@ -36,6 +36,7 @@ function reduceMetamask (state, action) {
       editingTransactionId: null,
     },
     coinOptions: {},
+    useBlockie: false,
   }, state.metamask)
 
   switch (action.type) {
@@ -312,6 +313,11 @@ function reduceMetamask (state, action) {
           [marketinfo.pair]: ssMarketInfo,
         },
         coinOptions,
+      })
+
+    case actions.TOGGLE_USE_BLOCKIE:
+      return extend(metamaskState, {
+        useBlockie: !metamaskState.useBlockie,
       })
 
     default:

@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const isNode = require('detect-node')
 const findDOMNode = require('react-dom').findDOMNode
 const jazzicon = require('jazzicon')
+const blockies = require('blockies')
 const iconFactoryGen = require('../../lib/icon-factory')
 const iconFactory = iconFactoryGen(jazzicon)
 
@@ -18,7 +19,7 @@ function IdenticonComponent () {
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
-  const { className = '', address } = props
+  const { className = '', address, useBlockie } = props
   var diameter = props.diameter || this.defaultDiameter
 
   return address

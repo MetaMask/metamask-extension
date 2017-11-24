@@ -8,6 +8,7 @@ const validUrl = require('valid-url')
 const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
+import Switch from 'react-toggle-switch'
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -48,6 +49,26 @@ class Settings extends Component {
         defaultTab: activeTab,
         tabSelected: key => this.setState({ activeTab: key }),
       }),
+    ])
+  }
+
+  renderBlockieOptIn () {
+    const { metamask: { useBlockie }, toggleUseBlockie } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', 'Use Blockie Identicon'),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+
+          h(Switch, {
+            on: useBlockie,
+            onClick: event => toggleUseBlockie(),
+          }),
+
+        ]),
+      ]),
     ])
   }
 
@@ -214,6 +235,7 @@ class Settings extends Component {
     return (
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
+        this.renderBlockieOptIn(),
         this.renderCurrentConversion(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
@@ -335,6 +357,7 @@ class Settings extends Component {
 Settings.propTypes = {
   tab: PropTypes.string,
   metamask: PropTypes.object,
+  useBlockie: PropTypes.bool,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
@@ -347,6 +370,7 @@ const mapStateToProps = state => {
   return {
     metamask: state.metamask,
     warning: state.appState.warning,
+    useBlockie: state.useBlockie,
   }
 }
 
@@ -357,6 +381,7 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
+    toggleUseBlockie: () => dispatch(actions.toggleUseBlockie()),
   }
 }
 

@@ -14,6 +14,14 @@ class PreferencesController {
   }
 // PUBLIC METHODS
 
+  toggleUseBlockie () {
+    this.store.updateState({ useBlockie: !this.useBlockie() })
+  }
+
+  getUseBlockie () {
+    return this.store.getState().useBlockie
+  }
+
   setSelectedAddress (_address) {
     return new Promise((resolve, reject) => {
       const address = normalizeAddress(_address)

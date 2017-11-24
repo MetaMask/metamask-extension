@@ -234,6 +234,9 @@ var actions = {
   toggleAccountMenu,
 
   useEtherscanProvider,
+
+  TOGGLE_USE_BLOCKIE: 'TOGGLE_USE_BLOCKIE',
+  toggleUseBlockie,
 }
 
 module.exports = actions
@@ -1548,5 +1551,11 @@ function forceUpdateMetamaskState (dispatch) {
 function toggleAccountMenu () {
   return {
     type: actions.TOGGLE_ACCOUNT_MENU,
+  }
+}
+
+function toggleUseBlockie () {
+  return {
+    type: actions.TOGGLE_USE_BLOCKIE,
   }
 }
