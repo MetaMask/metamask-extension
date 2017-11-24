@@ -315,10 +315,10 @@ function reduceMetamask (state, action) {
         coinOptions,
       })
 
-    case actions.TOGGLE_USE_BLOCKIE:
-      return extend(metamaskState, {
-        useBlockie: !metamaskState.useBlockie,
-      })
+    case actions.SET_USE_BLOCKIE:
+          return extend(metamaskState, {
+            useBlockie: action.value
+          })
 
     default:
       return metamaskState

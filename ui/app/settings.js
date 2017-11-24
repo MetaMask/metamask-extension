@@ -8,7 +8,7 @@ const validUrl = require('valid-url')
 const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
-import Switch from 'react-toggle-switch'
+const ToggleButton = require('react-toggle-button')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -53,7 +53,7 @@ class Settings extends Component {
   }
 
   renderBlockieOptIn () {
-    const { metamask: { useBlockie }, toggleUseBlockie } = this.props
+    const { metamask: { useBlockie }, setUseBlockie } = this.props
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
@@ -61,12 +61,12 @@ class Settings extends Component {
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
-
-          h(Switch, {
-            on: useBlockie,
-            onClick: event => toggleUseBlockie(),
+          h(ToggleButton, {
+            value: useBlockie,
+            onToggle: (value) => setUseBlockie(!value),
+            activeLabel: '',
+            inactiveLabel: '',
           }),
-
         ]),
       ]),
     ])
@@ -357,7 +357,7 @@ class Settings extends Component {
 Settings.propTypes = {
   tab: PropTypes.string,
   metamask: PropTypes.object,
-  useBlockie: PropTypes.bool,
+  setUseBlockie: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
@@ -370,7 +370,6 @@ const mapStateToProps = state => {
   return {
     metamask: state.metamask,
     warning: state.appState.warning,
-    useBlockie: state.useBlockie,
   }
 }
 
@@ -381,7 +380,7 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
-    toggleUseBlockie: () => dispatch(actions.toggleUseBlockie()),
+    setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
   }
 }
 

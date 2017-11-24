@@ -14,8 +14,8 @@ class PreferencesController {
   }
 // PUBLIC METHODS
 
-  toggleUseBlockie () {
-    this.store.updateState({ useBlockie: !this.useBlockie() })
+  setUseBlockie (val) {
+    this.store.updateState({ useBlockie: val })
   }
 
   getUseBlockie () {
