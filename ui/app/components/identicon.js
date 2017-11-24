@@ -1,20 +1,27 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
 const isNode = require('detect-node')
 const findDOMNode = require('react-dom').findDOMNode
 const jazzicon = require('jazzicon')
-const blockies = require('blockies')
+const BlockiesIdenticon = require('./blockies/blockies-component')
 const iconFactoryGen = require('../../lib/icon-factory')
 const iconFactory = iconFactoryGen(jazzicon)
 
-module.exports = IdenticonComponent
+module.exports = connect(mapStateToProps)(IdenticonComponent)
 
 inherits(IdenticonComponent, Component)
 function IdenticonComponent () {
   Component.call(this)
 
   this.defaultDiameter = 46
+}
+
+function mapStateToProps (state) {
+  return {
+    useBlockie: state.metamask.useBlockie
+  }
 }
 
 IdenticonComponent.prototype.render = function () {
@@ -24,19 +31,23 @@ IdenticonComponent.prototype.render = function () {
 
   return address
     ? (
-      h('div', {
-        className: `${className} identicon`,
-        key: 'identicon-' + address,
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: diameter,
-          width: diameter,
-          borderRadius: diameter / 2,
-          overflow: 'hidden',
-        },
-      })
+      useBlockie
+        ? h(BlockiesIdenticon, {
+          seed: address,
+        })
+        : h('div', {
+          className: `${className} identicon`,
+          key: 'identicon-' + address,
+          style: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: diameter,
+            width: diameter,
+            borderRadius: diameter / 2,
+            overflow: 'hidden',
+          },
+        })
     )
     : (
       h('img.balance-icon', {
