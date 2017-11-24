@@ -32,9 +32,22 @@ IdenticonComponent.prototype.render = function () {
   return address
     ? (
       useBlockie
-        ? h(BlockiesIdenticon, {
-          seed: address,
-        })
+        ? h('div', {
+            className: `${className} identicon`,
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: diameter,
+              width: diameter,
+              borderRadius: diameter / 2,
+              overflow: 'hidden',
+            },
+          }, [
+            h(BlockiesIdenticon, {
+              seed: address
+            })
+          ])
         : h('div', {
           className: `${className} identicon`,
           key: 'identicon-' + address,
