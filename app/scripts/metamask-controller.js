@@ -775,7 +775,7 @@ module.exports = class MetamaskController extends EventEmitter {
     return rpcTarget
   }
 
-  setUseBlockie(val, cb) {
+  setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
       cb(null)
