@@ -67,10 +67,11 @@ IdenticonComponent.prototype.componentDidMount = function () {
     // eslint-disable-next-line react/no-find-dom-node
     var container = findDOMNode(this)
 
+    const diameter = props.diameter || this.defaultDiameter
+
     if (useBlockie) {
       _generateBlockie(container, address)
     } else {
-      const diameter = props.diameter || this.defaultDiameter
       _generateJazzicon(container, address, diameter)
     }
   }
@@ -91,18 +92,21 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
       container.removeChild(children[i])
     }
 
+    const diameter = props.diameter || this.defaultDiameter
+
     if (useBlockie) {
-      _generateBlockie(container, address)
+      _generateBlockie(container, address, diameter)
     } else {
-      const diameter = props.diameter || this.defaultDiameter
       _generateJazzicon(container, address, diameter)
     }
   }
 }
 
-function _generateBlockie(container, address) {
+function _generateBlockie(container, address, diameter) {
   const img = new Image()
   img.src = toDataUrl(address)
+  const dia = !diameter || diameter < 50 ? 50 : diameter
+  img.height, img.width = dia * 1.25
   container.appendChild(img)
 }
 

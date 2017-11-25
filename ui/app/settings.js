@@ -57,7 +57,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', 'Use Blockie Identicon'),
+        h('span', 'Use Blockies Identicon'),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
