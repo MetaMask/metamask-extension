@@ -20,7 +20,7 @@ function IdenticonComponent () {
 
 function mapStateToProps (state) {
   return {
-    useBlockie: state.metamask.useBlockie
+    useBlockie: state.metamask.useBlockie,
   }
 }
 
@@ -102,15 +102,16 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
   }
 }
 
-function _generateBlockie(container, address, diameter) {
+function _generateBlockie (container, address, diameter) {
   const img = new Image()
   img.src = toDataUrl(address)
   const dia = !diameter || diameter < 50 ? 50 : diameter
-  img.height, img.width = dia * 1.25
+  img.height = dia * 1.25
+  img.width = dia * 1.25
   container.appendChild(img)
 }
 
-function _generateJazzicon(container, address, diameter) {
+function _generateJazzicon (container, address, diameter) {
   const img = iconFactory.iconForAddress(address, diameter)
   container.appendChild(img)
 }

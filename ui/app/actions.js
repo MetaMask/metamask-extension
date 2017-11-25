@@ -1566,7 +1566,7 @@ function setUseBlockie (val) {
     })
     dispatch({
       type: actions.SET_USE_BLOCKIE,
-      value: val
+      value: val,
     })
   }
 }

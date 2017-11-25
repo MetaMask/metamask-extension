@@ -317,7 +317,7 @@ function reduceMetamask (state, action) {
 
     case actions.SET_USE_BLOCKIE:
           return extend(metamaskState, {
-            useBlockie: action.value
+            useBlockie: action.value,
           })
 
     default:
