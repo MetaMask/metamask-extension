@@ -4,7 +4,7 @@ const PendingTx = require('../../../ui/app/components/pending-tx')
 const ethUtil = require('ethereumjs-util')
 
 const { createMockStore } = require('redux-test-utils')
-const shallowWithStore = require('../../lib/shallow-with-store')
+const { shallowWithStore } = require('../../lib/shallow-with-store')
 
 const identities = { abc: {}, def: {} }
 const mockState = {
