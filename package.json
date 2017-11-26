@@ -224,7 +224,7 @@
     "open": "0.0.5",
     "prompt": "^1.0.0",
     "qs": "^6.2.0",
-    "qunit": "^1.0.0",
+    "qunitjs": "^2.4.1",
     "react-addons-test-utils": "^15.5.1",
     "react-test-renderer": "^15.5.4",
     "react-testutils-additions": "^15.2.0",
