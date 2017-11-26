@@ -94,7 +94,7 @@
     "ethjs": "^0.2.8",
     "ethjs-contract": "^0.1.9",
     "ethjs-ens": "^2.0.0",
-    "ethjs-query": "^0.2.9",
+    "ethjs-query": "^0.3.1",
     "express": "^4.15.5",
     "extension-link-enabler": "^1.0.0",
     "extensionizer": "^1.0.0",
