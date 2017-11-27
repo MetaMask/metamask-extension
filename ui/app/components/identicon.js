@@ -33,7 +33,7 @@ IdenticonComponent.prototype.render = function () {
     ? (
       h('div', {
         className: `${className} identicon`,
-        key: useBlockie ? 'blockie' : 'identicon-' + address,
+        key: 'identicon-' + address,
         style: {
           display: 'flex',
           alignItems: 'center',
@@ -70,7 +70,7 @@ IdenticonComponent.prototype.componentDidMount = function () {
     const diameter = props.diameter || this.defaultDiameter
 
     if (useBlockie) {
-      _generateBlockie(container, address)
+      _generateBlockie(container, address, diameter)
     } else {
       _generateJazzicon(container, address, diameter)
     }

@@ -9,6 +9,7 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       tokens: [],
+      useBlockie: false,
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
