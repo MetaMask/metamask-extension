@@ -455,13 +455,11 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   setupPublicConfig (outStream) {
-    pump(
-      this.publicConfigStore,
-      outStream,
-      (err) => {
-        if (err) log.error(err)
-      }
-    )
+    this.publicConfigStore.pipe(outStream)
+
+    outStream.on('finish', () => {
+      this.publicConfigStore.unpipe(outStream)
+    })
   }
 
   privateSendUpdate () {
