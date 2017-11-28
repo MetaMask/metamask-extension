@@ -45,7 +45,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
-    opts.initState.firstTimeInfo.version = '4.5.0'
 
     // platform-specific api
     this.platform = opts.platform
