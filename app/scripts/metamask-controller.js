@@ -151,6 +151,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,
       version,
+      firstVersion: initState.firstTimeInfo.version,
     })
     this.noticeController.updateNoticesList()
     // to be uncommented when retrieving notices from a remote server.

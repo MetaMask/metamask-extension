@@ -9,7 +9,7 @@ module.exports = class NoticeController extends EventEmitter {
   constructor (opts) {
     super()
     this.noticePoller = null
-    this.version = opts.version
+    this.firstVersion = opts.firstVersion
     const initState = extend({
       noticesList: [],
     }, opts.initState)
@@ -57,6 +57,9 @@ module.exports = class NoticeController extends EventEmitter {
       const newNotices = hardNotices.filter((newNotice) => {
         if ('version' in newNotice) {
           return semver.satisfies(this.version, newNotice.version)
+        }
+        if ('firstVersion' in newNotice) {
+          return semver.satisfies(this.firstVersion, newNotice.firstVersion)
         }
         return true
       })
