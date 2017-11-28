@@ -1,6 +1,5 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
-const BalanceController = require('./balance')
 
 class RecentBlocksController {
 
