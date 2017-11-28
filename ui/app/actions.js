@@ -234,6 +234,9 @@ var actions = {
   toggleAccountMenu,
 
   useEtherscanProvider,
+
+  SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
+  setUseBlockie,
 }
 
 module.exports = actions
@@ -1548,5 +1551,22 @@ function forceUpdateMetamaskState (dispatch) {
 function toggleAccountMenu () {
   return {
     type: actions.TOGGLE_ACCOUNT_MENU,
+  }
+}
+
+function setUseBlockie (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseBlockie`)
+    background.setUseBlockie(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_BLOCKIE,
+      value: val,
+    })
   }
 }

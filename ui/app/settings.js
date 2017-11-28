@@ -8,6 +8,7 @@ const validUrl = require('valid-url')
 const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
+const ToggleButton = require('react-toggle-button')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -48,6 +49,26 @@ class Settings extends Component {
         defaultTab: activeTab,
         tabSelected: key => this.setState({ activeTab: key }),
       }),
+    ])
+  }
+
+  renderBlockieOptIn () {
+    const { metamask: { useBlockie }, setUseBlockie } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', 'Use Blockies Identicon'),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(ToggleButton, {
+            value: useBlockie,
+            onToggle: (value) => setUseBlockie(!value),
+            activeLabel: '',
+            inactiveLabel: '',
+          }),
+        ]),
+      ]),
     ])
   }
 
@@ -214,6 +235,7 @@ class Settings extends Component {
     return (
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
+        this.renderBlockieOptIn(),
         this.renderCurrentConversion(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
@@ -335,6 +357,7 @@ class Settings extends Component {
 Settings.propTypes = {
   tab: PropTypes.string,
   metamask: PropTypes.object,
+  setUseBlockie: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
@@ -357,6 +380,7 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
+    setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
   }
 }
 

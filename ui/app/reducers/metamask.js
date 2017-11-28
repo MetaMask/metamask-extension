@@ -36,6 +36,7 @@ function reduceMetamask (state, action) {
       editingTransactionId: null,
     },
     coinOptions: {},
+    useBlockie: false,
   }, state.metamask)
 
   switch (action.type) {
@@ -313,6 +314,11 @@ function reduceMetamask (state, action) {
         },
         coinOptions,
       })
+
+    case actions.SET_USE_BLOCKIE:
+          return extend(metamaskState, {
+            useBlockie: action.value,
+          })
 
     default:
       return metamaskState

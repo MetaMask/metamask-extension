@@ -9,10 +9,19 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       tokens: [],
+      useBlockie: false,
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
 // PUBLIC METHODS
+
+  setUseBlockie (val) {
+    this.store.updateState({ useBlockie: val })
+  }
+
+  getUseBlockie () {
+    return this.store.getState().useBlockie
+  }
 
   setSelectedAddress (_address) {
     return new Promise((resolve, reject) => {
