@@ -1,4 +1,5 @@
 const EventEmitter = require('events').EventEmitter
+const semver = require('semver')
 const extend = require('xtend')
 const ObservableStore = require('obs-store')
 const hardCodedNotices = require('../../notices/notices.json')
@@ -8,6 +9,7 @@ module.exports = class NoticeController extends EventEmitter {
   constructor (opts) {
     super()
     this.noticePoller = null
+    this.version = opts.version
     const initState = extend({
       noticesList: [],
     }, opts.initState)
@@ -51,7 +53,13 @@ module.exports = class NoticeController extends EventEmitter {
   }
 
   updateNoticesList () {
-    return this._retrieveNoticeData().then((newNotices) => {
+    return this._retrieveNoticeData().then((hardNotices) => {
+      const newNotices = hardNotices.filter((newNotice) => {
+        if ('version' in newNotice) {
+          return semver.satisfies(this.version, newNotice.version)
+        }
+        return true
+      })
       var oldNotices = this.getNoticesList()
       var combinedNotices = this._mergeNotices(oldNotices, newNotices)
       return Promise.resolve(this.setNoticesList(combinedNotices))
