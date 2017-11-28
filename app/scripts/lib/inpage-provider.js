@@ -3,6 +3,7 @@ const RpcEngine = require('json-rpc-engine')
 const createIdRemapMiddleware = require('json-rpc-engine/src/idRemapMiddleware')
 const createStreamMiddleware = require('json-rpc-middleware-stream')
 const LocalStorageStore = require('obs-store')
+const asStream = require('obs-store/lib/asStream')
 const ObjectMultiplex = require('obj-multiplex')
 
 module.exports = MetamaskInpageProvider
@@ -21,9 +22,10 @@ function MetamaskInpageProvider (connectionStream) {
 
   // subscribe to metamask public config (one-way)
   self.publicConfigStore = new LocalStorageStore({ storageKey: 'MetaMask-Config' })
+
   pump(
     mux.createStream('publicConfig'),
-    self.publicConfigStore,
+    asStream(self.publicConfigStore),
     (err) => logStreamDisconnectWarning('MetaMask PublicConfigStore', err)
   )
 

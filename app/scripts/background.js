@@ -1,10 +1,11 @@
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
-const pipe = require('pump')
+const pump = require('pump')
 const log = require('loglevel')
 const extension = require('extensionizer')
 const LocalStorageStore = require('obs-store/lib/localStorage')
 const storeTransform = require('obs-store/lib/transform')
+const asStream = require('obs-store/lib/asStream')
 const ExtensionPlatform = require('./platforms/extension')
 const Migrator = require('./lib/migrator/')
 const migrations = require('./migrations/')
@@ -72,10 +73,10 @@ function setupController (initState) {
   global.metamaskController = controller
 
   // setup state persistence
-  pipe(
-    controller.store,
+  pump(
+    asStream(controller.store),
     storeTransform(versionifyData),
-    diskStore
+    asStream(diskStore)
   )
 
   function versionifyData (state) {
