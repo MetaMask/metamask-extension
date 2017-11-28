@@ -486,7 +486,7 @@ module.exports = class MetamaskController extends EventEmitter {
         vault = await this.keyringController.fullUpdate()
 
       } else {
-        let vault = await this.keyringController.createNewVaultAndKeychain(password)
+        vault = await this.keyringController.createNewVaultAndKeychain(password)
         this.selectFirstIdentity(vault)
       }
       release()
