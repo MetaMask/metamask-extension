@@ -74,6 +74,7 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    backedUp: state.metamask.backedUp,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -458,6 +459,9 @@ App.prototype.renderPrimary = function () {
       key: 'LostAccountsNotice',
       onConfirm: () => props.dispatch(actions.markAccountsFound()),
     })
+  } else if (!props.backedUp && !props.seedWords && props.isInitialized && props.isUnlocked) {
+    log.debug('rendering reveal seed confirmation screen')
+    return h(RevealSeedConfirmation, {key: 'reveal-seed-conf'})
   }
 
   if (props.seedWords) {
