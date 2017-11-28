@@ -3,6 +3,7 @@
 ## Current Master
 
 - Detect when multiple web3 extensions are active, and provide useful error.
+- Detect when provider changes from under MetaMask and reset provider state.
 
 ## 3.12.0 2017-10-25
 
