@@ -26,7 +26,7 @@ function mapStateToProps (state) {
 
 IdenticonComponent.prototype.render = function () {
   var props = this.props
-  const { className = '', address, useBlockie } = props
+  const { className = '', address } = props
   var diameter = props.diameter || this.defaultDiameter
 
   return address
