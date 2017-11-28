@@ -4,7 +4,7 @@ const createMetamaskProvider = require('web3-provider-engine/zero.js')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
-const EthQuery = require('eth-query')
+const Eth = require('ethjs')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
 const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
@@ -19,7 +19,12 @@ module.exports = class NetworkController extends EventEmitter {
     this.store = new ComposedStore({ provider: this.providerStore, network: this.networkStore })
     this._proxy = createEventEmitterProxy()
 
+    this.lookupNetwork = this.lookupNetwork.bind(this)
+
+    this.on('userChangedNetwork', () => this.emit('networkDidChange'))
     this.on('networkDidChange', this.lookupNetwork)
+
+    setInterval(() => this.detectProviderChange(), 6000)
   }
 
   initializeProvider (_providerParams) {
@@ -28,7 +33,7 @@ module.exports = class NetworkController extends EventEmitter {
     this._configureStandardProvider({ rpcUrl })
     this._proxy.on('block', this._logBlock.bind(this))
     this._proxy.on('error', this.verifyNetwork.bind(this))
-    this.ethQuery = new EthQuery(this._proxy)
+    this.eth = new Eth(this._proxy)
     this.lookupNetwork()
     return this._proxy
   }
@@ -50,16 +55,21 @@ module.exports = class NetworkController extends EventEmitter {
     return this.getNetworkState() === 'loading'
   }
 
-  lookupNetwork () {
+  async lookupNetwork () {
     // Prevent firing when provider is not defined.
-    if (!this.ethQuery || !this.ethQuery.sendAsync) {
+    if (!this.eth) {
       return
     }
-    this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) return this.setNetworkState('loading')
-      log.info('web3.getNetwork returned ' + network)
-      this.setNetworkState(network)
-    })
+
+    let network
+    try {
+      network = await this.eth.net_version()
+    } catch (err) {
+      return this.setNetworkState('loading')
+    }
+
+    this.setNetworkState(network)
+    log.info('web3.getNetwork returned ' + network)
   }
 
   setRpcTarget (rpcUrl) {
@@ -68,6 +78,7 @@ module.exports = class NetworkController extends EventEmitter {
       rpcTarget: rpcUrl,
     })
     this._switchNetwork({ rpcUrl })
+    this.emit('userChangedNetwork')
   }
 
   getCurrentRpcAddress () {
@@ -84,6 +95,7 @@ module.exports = class NetworkController extends EventEmitter {
     assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
     this.providerStore.updateState({ type, rpcTarget })
     this._switchNetwork({ rpcUrl: rpcTarget })
+    this.emit('userChangedNetwork')
   }
 
   getProviderConfig () {
@@ -93,6 +105,54 @@ module.exports = class NetworkController extends EventEmitter {
   getRpcAddressForType (type, provider = this.getProviderConfig()) {
     if (RPC_ADDRESS_LIST[type]) return RPC_ADDRESS_LIST[type]
     return provider && provider.rpcTarget ? provider.rpcTarget : DEFAULT_RPC
+  }
+
+  // Sometimes the provider is changed without notice.
+  // This method is used for detecting that the provider is not the same
+  // as one that was known before.
+  async detectProviderChange () {
+    // After recent blocks controller is added
+    if (!('recentBlocks' in this) || !('txController' in this)) {
+      return
+    }
+
+    const { recentBlocks, eth } = this
+    const blocks = recentBlocks.store.getState().recentBlocks
+    const oldestTx = this.txController.getOldestTx()
+
+    // Doesn't work if we don't have some history
+    if (blocks.length < 3) {
+      return
+    }
+
+    const earliest = blocks[0]
+    const middle = blocks[Math.round(blocks.length / 2)]
+
+    try {
+
+      let [ earlyCheck, middleCheck, syncing, checkTx ] = await Promise.all([
+        eth.getBlockByHash(earliest.hash, false),
+        eth.getBlockByHash(middle.hash, false),
+        eth.syncing(),
+        oldestTx ? eth.getTransactionByHash(oldestTx.hash) : undefined,
+      ])
+
+      const earlyMatch = earliest && earlyCheck && earliest.hash === earlyCheck.hash
+      const middleMatch = middle && middleCheck && middle.hash === middleCheck.hash
+      const txMatch = typeof oldestTx === 'undefined' ||
+        (oldestTx && checkTx && oldestTx.hash === checkTx.hash)
+
+      if ((!earlyMatch ||
+           !middleMatch ||
+           !txMatch) && !syncing) {
+        this.emit('providerWasRemotelyChanged')
+      }
+    } catch (e) {
+      // Here is where TestRPC is failing to return `null` as reported
+      // in this issue:
+      // https://github.com/ethereumjs/testrpc/issues/429
+      log.error('Problem fetching proof of network change', e)
+    }
   }
 
   //
@@ -134,3 +194,4 @@ module.exports = class NetworkController extends EventEmitter {
     this.verifyNetwork()
   }
 }
+

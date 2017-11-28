@@ -246,6 +246,19 @@ module.exports = class TransactionController extends EventEmitter {
     this.txStateManager.updateTx(txMeta, 'transactions#setTxHash')
   }
 
+  clearTxs () {
+    this.store.putState({ transactions: [] })
+  }
+
+  getOldestTx () {
+    const txs = this.txStateManager.getFilteredTxList({
+      status: 'confirmed',
+      err: undefined,
+    })
+
+    return txs.length > 0 ? txs[0] : undefined
+  }
+
 //
 //           PRIVATE METHODS
 //
