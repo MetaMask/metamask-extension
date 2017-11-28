@@ -4,6 +4,7 @@
 
 - Fix bug where a user could be shown two different seed phrases.
 - Detect when multiple web3 extensions are active, and provide useful error.
+- Adds notice about seed phrase backup.
 
 ## 3.12.0 2017-10-25
 
