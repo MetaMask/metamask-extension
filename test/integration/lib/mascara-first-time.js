@@ -51,7 +51,7 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
 
   // Agree button
-  const button = app.find('button')[0]
+  let button = app.find('button')[0]
   assert.ok(button, 'button present')
   button.click()
 
@@ -59,7 +59,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   // Skip notices:
   let detail = app.find('.tou__title')[0]
-  let button = app.find('button')
+  button = app.find('button')
   if (button.html() === 'Accept') {
     app.find('button').click()
     await timeout(1000)
