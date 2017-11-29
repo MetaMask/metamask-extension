@@ -6,23 +6,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   const app = $('#app-content')
 
-  // recurse notices
-  while (true) {
-    const button = app.find('button')
-    if (button.html() === 'Accept') {
-      // still notices to accept
-      const termsPage = app.find('.markdown')[0]
-      termsPage.scrollTop = termsPage.scrollHeight
-      await timeout()
-      console.log('Clearing notice')
-      button.click()
-      await timeout()
-    } else {
-      // exit loop
-      console.log('No more notices...')
-      break
-    }
-  }
+  await skipNotices(app)
 
   await timeout()
 
@@ -51,28 +35,13 @@ async function runFirstTimeUsageTest (assert, done) {
   assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
 
   // Agree button
-  const button = app.find('button')[0]
+  let button = app.find('button')[0]
   assert.ok(button, 'button present')
   button.click()
 
   await timeout(1000)
 
-  // Privacy Screen
-  const detail = app.find('.tou__title')[0]
-  assert.equal(detail.textContent, 'Privacy Notice', 'privacy notice screen')
-  app.find('button').click()
-
-  await timeout(1000)
-
-
-  // terms of service screen
-  const tou = app.find('.tou__title')[0]
-  assert.equal(tou.textContent, 'Terms of Use', 'terms of use screen')
-  app.find('.tou__body').scrollTop(100000)
-  await timeout(1000)
-
-  app.find('.first-time-flow__button').click()
-  await timeout(1000)
+  await skipNotices(app)
 
   // secret backup phrase
   const seedTitle = app.find('.backup-phrase__title')[0]
@@ -164,4 +133,24 @@ function timeout (time) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, time || 1500)
   })
+}
+
+async function skipNotices (app) {
+  while (true) {
+    const button = app.find('button')
+    if (button && button.html() === 'Accept') {
+      // still notices to accept
+      const termsPage = app.find('.markdown')[0]
+      if (!termsPage) {
+        break
+      }
+      termsPage.scrollTop = termsPage.scrollHeight
+      await timeout()
+      button.click()
+      await timeout()
+    } else {
+      console.log('No more notices...')
+      break
+    }
+  }
 }

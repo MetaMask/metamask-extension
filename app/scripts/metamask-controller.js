@@ -45,6 +45,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.opts = opts
     const initState = opts.initState || {}
+    this.recordFirstTimeInfo(initState)
 
     // platform-specific api
     this.platform = opts.platform
@@ -150,6 +151,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // notices
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,
+      version,
+      firstVersion: initState.firstTimeInfo.version,
     })
     this.noticeController.updateNoticesList()
     // to be uncommented when retrieving notices from a remote server.
@@ -484,7 +487,7 @@ module.exports = class MetamaskController extends EventEmitter {
         vault = await this.keyringController.fullUpdate()
 
       } else {
-        let vault = await this.keyringController.createNewVaultAndKeychain(password)
+        vault = await this.keyringController.createNewVaultAndKeychain(password)
         this.selectFirstIdentity(vault)
       }
       release()
@@ -796,6 +799,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  recordFirstTimeInfo (initState) {
+    if (!('firstTimeInfo' in initState)) {
+      initState.firstTimeInfo = {
+        version,
+        date: Date.now(),
+      }
+    }
   }
 
 }
