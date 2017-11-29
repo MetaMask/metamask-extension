@@ -9,7 +9,7 @@ async function runFirstTimeUsageTest (assert, done) {
   // recurse notices
   while (true) {
     const button = app.find('button')
-    if (button.html() === 'Accept') {
+    if (button && button.html() === 'Accept') {
       // still notices to accept
       const termsPage = app.find('.markdown')[0]
       termsPage.scrollTop = termsPage.scrollHeight
@@ -59,8 +59,8 @@ async function runFirstTimeUsageTest (assert, done) {
 
   // Skip notices:
   let detail = app.find('.tou__title')[0]
-  button = app.find('button')
-  if (button.html() === 'Accept') {
+  button = app.find('button')[0]
+  if (button && button.html() === 'Accept') {
     app.find('button').click()
     await timeout(1000)
     button = app.find('button')
