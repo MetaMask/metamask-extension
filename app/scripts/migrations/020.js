@@ -2,8 +2,9 @@ const version = 20
 
 /*
 
-This migration sets transactions as failed
-whos nonce is too high
+This migration ensures previous installations
+get a `firstTimeInfo` key on the metamask state,
+so that we can version notices in the future.
 
 */
 
