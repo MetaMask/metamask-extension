@@ -3,6 +3,7 @@ const extend = require('xtend')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
@@ -456,7 +457,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupPublicConfig (outStream) {
     pump(
-      this.publicConfigStore,
+      asStream(this.publicConfigStore),
       outStream,
       (err) => {
         if (err) log.error(err)
