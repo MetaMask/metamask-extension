@@ -142,7 +142,6 @@ async function skipNotices (app) {
       // still notices to accept
       const termsPage = app.find('.markdown')[0]
       if (!termsPage) {
-        debugger
         break
       }
       termsPage.scrollTop = termsPage.scrollHeight
