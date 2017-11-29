@@ -6,7 +6,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   const app = $('#app-content')
 
-  await skipNotices()
+  await skipNotices(app)
 
   await timeout()
 
@@ -41,7 +41,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await timeout(1000)
 
-  await skipNotices()
+  await skipNotices(app)
 
   // secret backup phrase
   const seedTitle = app.find('.backup-phrase__title')[0]
@@ -135,7 +135,7 @@ function timeout (time) {
   })
 }
 
-async function skipNotices () {
+async function skipNotices (app) {
   while (true) {
     const button = app.find('button')
     if (button && button.html() === 'Accept') {
