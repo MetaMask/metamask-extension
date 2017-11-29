@@ -5,8 +5,8 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
-const TokenBalance = require('./components/token-balance')
-const Identicon = require('./components/identicon')
+const TokenBalance = require('../../components/token-balance')
+const Identicon = require('../../components/identicon')
 const contractList = Object.entries(contractMap)
   .map(([ _, tokenData]) => tokenData)
   .filter(tokenData => Boolean(tokenData.erc20))
@@ -19,10 +19,12 @@ const fuse = new Fuse(contractList, {
     minMatchCharLength: 1,
     keys: ['address', 'name', 'symbol'],
 })
-const actions = require('./actions')
+// const actions = require('./actions')
+const actions = require('../../actions')
 const ethUtil = require('ethereumjs-util')
-const { tokenInfoGetter } = require('./token-util')
+const { tokenInfoGetter } = require('../../token-util')
 const R = require('ramda')
+const { DEFAULT_ROUTE } = require('../../routes')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -258,7 +260,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     selectedTokens,
   } = this.state
 
-  const { addTokens, goHome } = this.props
+  const { addTokens, history } = this.props
 
   const customToken = {
     address,
@@ -296,7 +298,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
       ]),
       h('div.add-token__buttons', [
         h('button.btn-secondary', {
-          onClick: () => addTokens(tokens).then(goHome),
+          onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
         }, 'Add Tokens'),
         h('button.btn-tertiary', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
@@ -308,7 +310,7 @@ AddTokenScreen.prototype.renderConfirmation = function () {
 
 AddTokenScreen.prototype.render = function () {
   const { isCollapsed, errors, isShowingConfirmation } = this.state
-  const { goHome } = this.props
+  const { history } = this.props
 
   return isShowingConfirmation
     ? this.renderConfirmation()
@@ -349,7 +351,7 @@ AddTokenScreen.prototype.render = function () {
           onClick: this.onNext,
         }, 'Next'),
         h('button.btn-tertiary', {
-          onClick: goHome,
+          onClick: () => history.goBack(),
         }, 'Cancel'),
       ]),
     ])

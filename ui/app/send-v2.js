@@ -30,6 +30,7 @@ const {
   isTokenBalanceSufficient,
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
+const { CONFIRM_TRANSACTION_ROUTE } = require('./routes')
 
 module.exports = SendTransactionScreen
 
@@ -512,9 +513,9 @@ SendTransactionScreen.prototype.renderForm = function () {
 
 SendTransactionScreen.prototype.renderFooter = function () {
   const {
-    goHome,
     clearSend,
     errors: { amount: amountError, to: toError },
+    history,
   } = this.props
 
   const noErrors = !amountError && toError === null
@@ -524,7 +525,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
     h('button.send-v2__cancel-btn', {
       onClick: () => {
         clearSend()
-        goHome()
+        history.goBack()
       },
     }, 'Cancel'),
     h(`button.send-v2__next-btn${errorClass}`, {
@@ -559,7 +560,7 @@ SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
-    from: {address: from},
+    from: { address: from },
     to,
     amount,
     gasLimit: gas,
@@ -582,6 +583,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
 
   if (editingTransactionId) {
     backToConfirmScreen(editingTransactionId)
+    this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
     return
   }
 
@@ -600,4 +602,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   selectedToken
     ? signTokenTx(selectedToken.address, to, amount, txParams)
     : signTx(txParams)
+
+  this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
 }

@@ -71,8 +71,8 @@ AccountDetailScreen.prototype.tabSections = function () {
         { content: 'Sent', key: 'history' },
         { content: 'Tokens', key: 'tokens' },
       ],
-      defaultTab: currentAccountTab || 'history',
-      tabSelected: (key) => {
+      selectedTab: currentAccountTab || 'history',
+      onSelect: key => {
         this.props.dispatch(actions.setCurrentAccountTab(key))
       },
     }),

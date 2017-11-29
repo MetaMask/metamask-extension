@@ -2,6 +2,8 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 
@@ -11,17 +13,12 @@ const SignatureRequest = require('./components/signature-request')
 // const PendingPersonalMsg = require('./components/pending-personal-msg')
 // const PendingTypedMsg = require('./components/pending-typed-msg')
 const Loading = require('./components/loading')
+const { DEFAULT_ROUTE } = require('./routes')
 
-// const contentDivider = h('div', {
-//   style: {
-//     marginLeft: '16px',
-//     marginRight: '16px',
-//     height:'1px',
-//     background:'#E7E7E7',
-//   },
-// })
-
-module.exports = connect(mapStateToProps)(ConfirmTxScreen)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(ConfirmTxScreen)
 
 function mapStateToProps (state) {
   return {
@@ -46,6 +43,20 @@ function mapStateToProps (state) {
 inherits(ConfirmTxScreen, Component)
 function ConfirmTxScreen () {
   Component.call(this)
+}
+
+ConfirmTxScreen.prototype.componentWillMount = function () {
+  const { unapprovedTxs = {} } = this.props
+  if (Object.keys(unapprovedTxs).length === 0) {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
+}
+
+ConfirmTxScreen.prototype.componentWillReceiveProps = function (nextProps) {
+  const { unapprovedTxs = {} } = nextProps
+  if (Object.keys(unapprovedTxs).length === 0) {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
 }
 
 ConfirmTxScreen.prototype.render = function () {
@@ -146,6 +157,7 @@ ConfirmTxScreen.prototype.buyEth = function (address, event) {
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   this.stopPropagation(event)
   this.props.dispatch(actions.updateAndApproveTx(txData))
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {

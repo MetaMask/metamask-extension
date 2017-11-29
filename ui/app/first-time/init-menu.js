@@ -1,179 +1,191 @@
-const inherits = require('util').inherits
-const EventEmitter = require('events').EventEmitter
-const Component = require('react').Component
-const connect = require('react-redux').connect
+const { EventEmitter } = require('events')
+const { Component } = require('react')
+const { connect } = require('react-redux')
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
 const getCaretCoordinates = require('textarea-caret')
+const { RESTORE_VAULT_ROUTE, DEFAULT_ROUTE } = require('../routes')
 
-module.exports = connect(mapStateToProps)(InitializeMenuScreen)
+class InitializeMenuScreen extends Component {
+  constructor (props) {
+    super(props)
 
-inherits(InitializeMenuScreen, Component)
-function InitializeMenuScreen () {
-  Component.call(this)
-  this.animationEventEmitter = new EventEmitter()
-}
-
-function mapStateToProps (state) {
-  return {
-    // state from plugin
-    currentView: state.appState.currentView,
-    warning: state.appState.warning,
+    this.animationEventEmitter = new EventEmitter()
+    this.state = {
+      warning: null,
+    }
   }
-}
 
-InitializeMenuScreen.prototype.render = function () {
-  var state = this.props
-
-  switch (state.currentView.name) {
-
-    default:
-      return this.renderMenu(state)
-
+  componentWillMount () {
+    const { isInitialized, isUnlocked, history } = this.props
+    if (isInitialized || isUnlocked) {
+      history.push(DEFAULT_ROUTE)
+    }
   }
-}
 
-// InitializeMenuScreen.prototype.componentDidMount = function(){
-//   document.getElementById('password-box').focus()
-// }
+  componentDidMount () {
+    document.getElementById('password-box').focus()
+  }
 
-InitializeMenuScreen.prototype.renderMenu = function (state) {
-  return (
+  render () {
+    const { history } = this.props
+    const { warning } = this.state
 
-    h('.initialize-screen.flex-column.flex-center.flex-grow', [
+    return (
+      h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h(Mascot, {
-        animationEventEmitter: this.animationEventEmitter,
-      }),
+        h(Mascot, {
+          animationEventEmitter: this.animationEventEmitter,
+        }),
 
-      h('h1', {
-        style: {
-          fontSize: '1.3em',
-          textTransform: 'uppercase',
-          color: '#7F8082',
-          marginBottom: 10,
-        },
-      }, 'MetaMask'),
-
-
-      h('div', [
-        h('h3', {
+        h('h1', {
           style: {
-            fontSize: '0.8em',
+            fontSize: '1.3em',
+            textTransform: 'uppercase',
             color: '#7F8082',
-            display: 'inline',
+            marginBottom: 10,
           },
-        }, 'Encrypt your new DEN'),
+        }, 'MetaMask'),
 
-        h(Tooltip, {
-          title: 'Your DEN is your password-encrypted storage within MetaMask.',
-        }, [
-          h('i.fa.fa-question-circle.pointer', {
+
+        h('div', [
+          h('h3', {
             style: {
-              fontSize: '18px',
-              position: 'relative',
-              color: 'rgb(247, 134, 28)',
-              top: '2px',
-              marginLeft: '4px',
+              fontSize: '0.8em',
+              color: '#7F8082',
+              display: 'inline',
             },
-          }),
+          }, 'Encrypt your new DEN'),
+
+          h(Tooltip, {
+            title: 'Your DEN is your password-encrypted storage within MetaMask.',
+          }, [
+            h('i.fa.fa-question-circle.pointer', {
+              style: {
+                fontSize: '18px',
+                position: 'relative',
+                color: 'rgb(247, 134, 28)',
+                top: '2px',
+                marginLeft: '4px',
+              },
+            }),
+          ]),
         ]),
-      ]),
 
-      h('span.in-progress-notification', state.warning),
+        h('span.error.in-progress-notification', warning),
 
-      // password
-      h('input.large-input.letter-spacey', {
-        type: 'password',
-        id: 'password-box',
-        placeholder: 'New Password (min 8 chars)',
-        onInput: this.inputChanged.bind(this),
-        style: {
-          width: 260,
-          marginTop: 12,
-        },
-      }),
-
-      // confirm password
-      h('input.large-input.letter-spacey', {
-        type: 'password',
-        id: 'password-box-confirm',
-        placeholder: 'Confirm Password',
-        onKeyPress: this.createVaultOnEnter.bind(this),
-        onInput: this.inputChanged.bind(this),
-        style: {
-          width: 260,
-          marginTop: 16,
-        },
-      }),
-
-
-      h('button.primary', {
-        onClick: this.createNewVaultAndKeychain.bind(this),
-        style: {
-          margin: 12,
-        },
-      }, 'Create'),
-
-      h('.flex-row.flex-center.flex-grow', [
-        h('p.pointer', {
-          onClick: this.showRestoreVault.bind(this),
+        // password
+        h('input.large-input.letter-spacey', {
+          type: 'password',
+          id: 'password-box',
+          placeholder: 'New Password (min 8 chars)',
+          onInput: this.inputChanged.bind(this),
           style: {
-            fontSize: '0.8em',
-            color: 'rgb(247, 134, 28)',
-            textDecoration: 'underline',
+            width: 260,
+            marginTop: 12,
           },
-        }, 'Import Existing DEN'),
-      ]),
+        }),
 
-    ])
-  )
-}
+        // confirm password
+        h('input.large-input.letter-spacey', {
+          type: 'password',
+          id: 'password-box-confirm',
+          placeholder: 'Confirm Password',
+          onKeyPress: this.createVaultOnEnter.bind(this),
+          onInput: this.inputChanged.bind(this),
+          style: {
+            width: 260,
+            marginTop: 16,
+          },
+        }),
 
-InitializeMenuScreen.prototype.createVaultOnEnter = function (event) {
-  if (event.key === 'Enter') {
-    event.preventDefault()
-    this.createNewVaultAndKeychain()
+
+        h('button.primary', {
+          onClick: this.createNewVaultAndKeychain.bind(this),
+          style: {
+            margin: 12,
+          },
+        }, 'Create'),
+
+        h('.flex-row.flex-center.flex-grow', [
+          h('p.pointer', {
+            onClick: () => history.push(RESTORE_VAULT_ROUTE),
+            style: {
+              fontSize: '0.8em',
+              color: 'rgb(247, 134, 28)',
+              textDecoration: 'underline',
+            },
+          }, 'Import Existing DEN'),
+        ]),
+
+      ])
+    )
+  }
+
+  createVaultOnEnter (event) {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      this.createNewVaultAndKeychain()
+    }
+  }
+
+  createNewVaultAndKeychain () {
+    const { history } = this.props
+    var passwordBox = document.getElementById('password-box')
+    var password = passwordBox.value
+    var passwordConfirmBox = document.getElementById('password-box-confirm')
+    var passwordConfirm = passwordConfirmBox.value
+
+    this.setState({ warning: null })
+
+    if (password.length < 8) {
+      this.setState({ warning: 'password not long enough' })
+      return
+    }
+    if (password !== passwordConfirm) {
+      this.setState({ warning: 'passwords don\'t match' })
+      return
+    }
+
+    this.props.createNewVaultAndKeychain(password)
+      .then(() => history.push(DEFAULT_ROUTE))
+  }
+
+  inputChanged (event) {
+    // tell mascot to look at page action
+    var element = event.target
+    var boundingRect = element.getBoundingClientRect()
+    var coordinates = getCaretCoordinates(element, element.selectionEnd)
+    this.animationEventEmitter.emit('point', {
+      x: boundingRect.left + coordinates.left - element.scrollLeft,
+      y: boundingRect.top + coordinates.top - element.scrollTop,
+    })
   }
 }
 
-InitializeMenuScreen.prototype.componentDidMount = function () {
-  document.getElementById('password-box').focus()
+InitializeMenuScreen.propTypes = {
+  history: PropTypes.object,
+  isInitialized: PropTypes.bool,
+  isUnlocked: PropTypes.bool,
+  createNewVaultAndKeychain: PropTypes.func,
 }
 
-InitializeMenuScreen.prototype.showRestoreVault = function () {
-  this.props.dispatch(actions.showRestoreVault())
-}
+const mapStateToProps = state => {
+  const { metamask: { isInitialized, isUnlocked } } = state
 
-InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
-  var passwordBox = document.getElementById('password-box')
-  var password = passwordBox.value
-  var passwordConfirmBox = document.getElementById('password-box-confirm')
-  var passwordConfirm = passwordConfirmBox.value
-
-  if (password.length < 8) {
-    this.warning = 'password not long enough'
-    this.props.dispatch(actions.displayWarning(this.warning))
-    return
+  return {
+    isInitialized,
+    isUnlocked,
   }
-  if (password !== passwordConfirm) {
-    this.warning = 'passwords don\'t match'
-    this.props.dispatch(actions.displayWarning(this.warning))
-    return
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    createNewVaultAndKeychain: password => dispatch(actions.createNewVaultAndKeychain(password)),
   }
-
-  this.props.dispatch(actions.createNewVaultAndKeychain(password))
 }
 
-InitializeMenuScreen.prototype.inputChanged = function (event) {
-  // tell mascot to look at page action
-  var element = event.target
-  var boundingRect = element.getBoundingClientRect()
-  var coordinates = getCaretCoordinates(element, element.selectionEnd)
-  this.animationEventEmitter.emit('point', {
-    x: boundingRect.left + coordinates.left - element.scrollLeft,
-    y: boundingRect.top + coordinates.top - element.scrollTop,
-  })
-}
+module.exports = connect(mapStateToProps, mapDispatchToProps)(InitializeMenuScreen)

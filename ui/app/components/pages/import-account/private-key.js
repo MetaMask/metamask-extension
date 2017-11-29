@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const actions = require('../../actions')
+const actions = require('../../../actions')
 
 module.exports = connect(mapStateToProps)(PrivateKeyImportView)
 
