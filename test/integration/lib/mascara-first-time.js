@@ -63,6 +63,7 @@ async function runFirstTimeUsageTest (assert, done) {
   if (button.html() === 'Accept') {
     app.find('button').click()
     await timeout(1000)
+    button = app.find('button')
   }
 
   // secret backup phrase
