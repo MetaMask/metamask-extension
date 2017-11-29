@@ -141,14 +141,15 @@ async function skipNotices (app) {
     if (button && button.html() === 'Accept') {
       // still notices to accept
       const termsPage = app.find('.markdown')[0]
+      if (!termsPage) {
+        debugger
+        break
+      }
       termsPage.scrollTop = termsPage.scrollHeight
       await timeout()
-      console.log('Clearing notice')
       button.click()
       await timeout()
     } else {
-      console.dir(button)
-      // exit loop
       console.log('No more notices...')
       break
     }
