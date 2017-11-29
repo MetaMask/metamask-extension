@@ -6,23 +6,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   const app = $('#app-content')
 
-  // recurse notices
-  while (true) {
-    const button = app.find('button')
-    if (button && button.html() === 'Accept') {
-      // still notices to accept
-      const termsPage = app.find('.markdown')[0]
-      termsPage.scrollTop = termsPage.scrollHeight
-      await timeout()
-      console.log('Clearing notice')
-      button.click()
-      await timeout()
-    } else {
-      // exit loop
-      console.log('No more notices...')
-      break
-    }
-  }
+  skipNotices()
 
   await timeout()
 
@@ -57,14 +41,7 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await timeout(1000)
 
-  // Skip notices:
-  let detail = app.find('.tou__title')[0]
-  button = app.find('button')[0]
-  if (button && button.html() === 'Accept') {
-    app.find('button').click()
-    await timeout(1000)
-    button = app.find('button')
-  }
+  skipNotices()
 
   // secret backup phrase
   const seedTitle = app.find('.backup-phrase__title')[0]
@@ -156,4 +133,24 @@ function timeout (time) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, time || 1500)
   })
+}
+
+function skipNotices () {
+  while (true) {
+    const button = app.find('button')
+    if (button && button.html() === 'Accept') {
+      // still notices to accept
+      const termsPage = app.find('.markdown')[0]
+      termsPage.scrollTop = termsPage.scrollHeight
+      await timeout()
+      console.log('Clearing notice')
+      button.click()
+      await timeout()
+    } else {
+      console.dir(button)
+      // exit loop
+      console.log('No more notices...')
+      break
+    }
+  }
 }
