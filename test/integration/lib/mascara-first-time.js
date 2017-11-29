@@ -57,8 +57,14 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await timeout(1000)
 
+  // Skip things before Privacy:
+  let detail = app.find('.tou__title')[0]
+  while (detail !== 'Privacy Notice') {
+    app.find('button').click()
+    await timeout(1000)
+  }
+
   // Privacy Screen
-  const detail = app.find('.tou__title')[0]
   assert.equal(detail.textContent, 'Privacy Notice', 'privacy notice screen')
   app.find('button').click()
 
