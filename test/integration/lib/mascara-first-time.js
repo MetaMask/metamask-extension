@@ -57,28 +57,13 @@ async function runFirstTimeUsageTest (assert, done) {
 
   await timeout(1000)
 
-  // Skip things before Privacy:
+  // Skip notices:
   let detail = app.find('.tou__title')[0]
-  while (detail !== 'Privacy Notice') {
+  let button = app.find('button')
+  if (button.html() === 'Accept') {
     app.find('button').click()
     await timeout(1000)
   }
-
-  // Privacy Screen
-  assert.equal(detail.textContent, 'Privacy Notice', 'privacy notice screen')
-  app.find('button').click()
-
-  await timeout(1000)
-
-
-  // terms of service screen
-  const tou = app.find('.tou__title')[0]
-  assert.equal(tou.textContent, 'Terms of Use', 'terms of use screen')
-  app.find('.tou__body').scrollTop(100000)
-  await timeout(1000)
-
-  app.find('.first-time-flow__button').click()
-  await timeout(1000)
 
   // secret backup phrase
   const seedTitle = app.find('.backup-phrase__title')[0]
