@@ -145,6 +145,7 @@
     "react-hyperscript": "^3.0.0",
     "react-markdown": "^3.0.0",
     "react-redux": "^5.0.5",
+    "react-router-dom": "^4.2.2",
     "react-select": "^1.0.0",
     "react-simple-file-input": "^2.0.0",
     "react-toggle-button": "^2.2.0",

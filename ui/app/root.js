@@ -1,22 +1,28 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
-const Provider = require('react-redux').Provider
+const { Component } = require('react')
+const PropTypes = require('prop-types')
+const { Provider } = require('react-redux')
 const h = require('react-hyperscript')
 const SelectedApp = require('./select-app')
+const { HashRouter } = require('react-router-dom')
+
+class Root extends Component {
+  render () {
+    const { store } = this.props
+
+    return (
+      h(Provider, { store }, [
+        h(HashRouter, {
+          hashType: 'noslash',
+        }, [
+          h(SelectedApp),
+        ]),
+      ])
+    )
+  }
+}
+
+Root.propTypes = {
+  store: PropTypes.object,
+}
 
 module.exports = Root
-
-inherits(Root, Component)
-function Root () { Component.call(this) }
-
-Root.prototype.render = function () {
-  return (
-
-    h(Provider, {
-      store: this.props.store,
-    }, [
-      h(SelectedApp),
-    ])
-
-  )
-}
