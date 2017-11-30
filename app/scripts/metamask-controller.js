@@ -3,6 +3,7 @@ const extend = require('xtend')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
@@ -32,6 +33,7 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -39,16 +41,21 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
 
+
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
     this.opts = opts
     const initState = opts.initState || {}
+    this.recordFirstTimeInfo(initState)
 
     // platform-specific api
     this.platform = opts.platform
 
     // observable state store
     this.store = new ObservableStore(initState)
+
+    // lock to ensure only one vault created at once
+    this.createVaultMutex = new Mutex()
 
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
@@ -159,6 +166,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // notices
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,
+      version,
+      firstVersion: initState.firstTimeInfo.version,
     })
     this.noticeController.updateNoticesList()
     // to be uncommented when retrieving notices from a remote server.
@@ -472,7 +481,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupPublicConfig (outStream) {
     pump(
-      this.publicConfigStore,
+      asStream(this.publicConfigStore),
       outStream,
       (err) => {
         if (err) log.error(err)
@@ -488,15 +497,34 @@ module.exports = class MetamaskController extends EventEmitter {
   // Vault Management
   //
 
-  async createNewVaultAndKeychain (password, cb) {
-    const vault = await this.keyringController.createNewVaultAndKeychain(password)
-    this.selectFirstIdentity(vault)
+  async createNewVaultAndKeychain (password) {
+    const release = await this.createVaultMutex.acquire()
+    let vault
+
+    try {
+      const accounts = await this.keyringController.getAccounts()
+
+      if (accounts.length > 0) {
+        vault = await this.keyringController.fullUpdate()
+
+      } else {
+        vault = await this.keyringController.createNewVaultAndKeychain(password)
+        this.selectFirstIdentity(vault)
+      }
+      release()
+    } catch (err) {
+      release()
+      throw err
+    }
+
     return vault
   }
 
-  async createNewVaultAndRestore (password, seed, cb) {
+  async createNewVaultAndRestore (password, seed) {
+    const release = await this.createVaultMutex.acquire()
     const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
     this.selectFirstIdentity(vault)
+    release()
     return vault
   }
 
@@ -792,6 +820,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  recordFirstTimeInfo (initState) {
+    if (!('firstTimeInfo' in initState)) {
+      initState.firstTimeInfo = {
+        version,
+        date: Date.now(),
+      }
+    }
   }
 
 }

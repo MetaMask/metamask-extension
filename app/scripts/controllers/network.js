@@ -58,7 +58,7 @@ module.exports = class NetworkController extends EventEmitter {
   async lookupNetwork () {
     // Prevent firing when provider is not defined.
     if (!this.eth) {
-      return
+      return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
 
     let network

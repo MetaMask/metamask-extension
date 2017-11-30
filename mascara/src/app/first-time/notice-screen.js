@@ -64,7 +64,7 @@ class NoticeScreen extends Component {
         <Identicon address={address} diameter={70} />
         <div className="tou__title">{title}</div>
         <Markdown
-          className="tou__body"
+          className="tou__body markdown"
           source={body}
           skipHtml
         />
