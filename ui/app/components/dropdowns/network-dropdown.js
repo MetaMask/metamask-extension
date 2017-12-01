@@ -6,6 +6,16 @@ const actions = require('../../actions')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
+const R = require('ramda')
+
+// classes from nodes of the toggle element.
+const notToggleElementClassnames = [
+  'menu-icon',
+  'network-name',
+  'network-indicator',
+  'network-caret',
+  'network-component',
+]
 
 function mapStateToProps (state) {
   return {
@@ -32,8 +42,8 @@ function mapDispatchToProps (dispatch) {
     showConfigPage: () => {
       dispatch(actions.showConfigPage())
     },
-    showNetworkDropdown: () => { dispatch(actions.showNetworkDropdown()) },
-    hideNetworkDropdown: () => { dispatch(actions.hideNetworkDropdown()) },
+    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
+    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
   }
 }
 
@@ -59,18 +69,13 @@ NetworkDropdown.prototype.render = function () {
   }
 
   return h(Dropdown, {
-    useCssTransition: true,
     isOpen,
     onClickOutside: (event) => {
       const { classList } = event.target
-      const isNotToggleElement = [
-        classList.contains('menu-icon'),
-        classList.contains('network-name'),
-        classList.contains('network-indicator'),
-      ].filter(bool => bool).length === 0
-      // classes from three constituent nodes of the toggle element
+      const isInClassList = className => classList.contains(className)
+      const notToggleElementIndex = R.findIndex(isInClassList)(notToggleElementClassnames)
 
-      if (isNotToggleElement) {
+      if (notToggleElementIndex === -1) {
         this.props.hideNetworkDropdown()
       }
     },
