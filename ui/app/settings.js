@@ -229,6 +229,26 @@ class Settings extends Component {
     )
   }
 
+  renderOldUI () {
+    const { setFeatureFlagToBeta } = this.props
+
+    return (
+      h('div.settings__content-row', [
+        h('div.settings__content-item', 'Use old UI'),
+        h('div.settings__content-item', [
+          h('div.settings__content-item-col', [
+            h('button.settings__clear-button.settings__clear-button--red', {
+              onClick (event) {
+                event.preventDefault()
+                setFeatureFlagToBeta()
+              },
+            }, 'Use old UI'),
+          ]),
+        ]),
+      ])
+    )
+  }
+
   renderSettingsContent () {
     const { warning } = this.props
 
@@ -241,10 +261,11 @@ class Settings extends Component {
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
+        this.renderOldUI(),
       ])
     )
   }
-
+  
   renderLogo () {
     return (
       h('div.settings__info-logo-wrapper', [
@@ -362,6 +383,7 @@ Settings.propTypes = {
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
+  setFeatureFlagToBeta: PropTypes.func,
   warning: PropTypes.string,
   goHome: PropTypes.func,
 }
@@ -381,6 +403,7 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    setFeatureFlagToBeta: () => dispatch(actions.setFeatureFlag('betaUI', false)),
   }
 }
 

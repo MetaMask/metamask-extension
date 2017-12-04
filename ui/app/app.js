@@ -269,13 +269,6 @@ App.prototype.renderAppBar = function () {
               },
             }, 'MetaMask'),
 
-            h('span', {
-              style: {},
-              onClick: () => {
-                props.dispatch(actions.setFeatureFlag('betaUI', false))
-              },
-            }, 'Leave Beta'),
-
           ]),
 
           h('div.header__right-actions', [
