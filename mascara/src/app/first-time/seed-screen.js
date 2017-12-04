@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import classnames from 'classnames'
-import shuffle from 'lodash.shuffle'
-import {compose, onlyUpdateForPropTypes} from 'recompose'
+import { compose, onlyUpdateForPropTypes } from 'recompose'
 import Identicon from '../../../../ui/app/components/identicon'
-import {confirmSeedWords} from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
-import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import { DEFAULT_ROUTE, CONFIRM_SEED_ROUTE } from '../../../../ui/app/routes'
 
 const LockIcon = props => (
   <svg
@@ -44,7 +42,6 @@ class BackupPhraseScreen extends Component {
     isLoading: PropTypes.bool.isRequired,
     address: PropTypes.string.isRequired,
     seedWords: PropTypes.string,
-    confirmSeedWords: PropTypes.func.isRequired,
     history: PropTypes.object,
   };
 
@@ -52,19 +49,10 @@ class BackupPhraseScreen extends Component {
     seedWords: '',
   }
 
-  static PAGE = {
-    SECRET: 'secret',
-    CONFIRM: 'confirm',
-  }
-
   constructor (props) {
-    const {seedWords} = props
     super(props)
     this.state = {
       isShowingSecret: false,
-      page: BackupPhraseScreen.PAGE.SECRET,
-      selectedSeeds: [],
-      shuffledSeeds: seedWords && shuffle(seedWords.split(' ')),
     }
   }
 
@@ -102,6 +90,7 @@ class BackupPhraseScreen extends Component {
 
   renderSecretScreen () {
     const { isShowingSecret } = this.state
+    const { history } = this.props
 
     return (
       <div className="backup-phrase__content-wrapper">
@@ -116,10 +105,7 @@ class BackupPhraseScreen extends Component {
           {this.renderSecretWordsContainer()}
           <button
             className="first-time-flow__button"
-            onClick={() => isShowingSecret && this.setState({
-              isShowingSecret: false,
-              page: BackupPhraseScreen.PAGE.CONFIRM,
-            })}
+            onClick={() => isShowingSecret && history.push(CONFIRM_SEED_ROUTE)}
             disabled={!isShowingSecret}
           >
             Next
@@ -142,99 +128,6 @@ class BackupPhraseScreen extends Component {
     )
   }
 
-  renderConfirmationScreen () {
-    const { seedWords, confirmSeedWords, history } = this.props
-    const { selectedSeeds, shuffledSeeds } = this.state
-    const isValid = seedWords === selectedSeeds.map(([_, seed]) => seed).join(' ')
-
-    return (
-      <div className="backup-phrase__content-wrapper">
-        <div>
-          <div className="backup-phrase__title">Confirm your Secret Backup Phrase</div>
-          <div className="backup-phrase__body-text">
-            Please select each phrase in order to make sure it is correct.
-          </div>
-          <div className="backup-phrase__confirm-secret">
-            {selectedSeeds.map(([_, word], i) => (
-              <button
-                key={i}
-                className="backup-phrase__confirm-seed-option"
-              >
-                {word}
-              </button>
-            ))}
-          </div>
-          <div className="backup-phrase__confirm-seed-options">
-            {shuffledSeeds.map((word, i) => {
-              const isSelected = selectedSeeds
-                .filter(([index, seed]) => seed === word && index === i)
-                .length
-
-              return (
-                <button
-                  key={i}
-                  className={classnames('backup-phrase__confirm-seed-option', {
-                    'backup-phrase__confirm-seed-option--selected': isSelected,
-                  })}
-                  onClick={() => {
-                    if (!isSelected) {
-                      this.setState({
-                        selectedSeeds: [...selectedSeeds, [i, word]],
-                      })
-                    } else {
-                      this.setState({
-                        selectedSeeds: selectedSeeds
-                          .filter(([index, seed]) => !(seed === word && index === i)),
-                      })
-                    }
-                  }}
-                >
-                  {word}
-                </button>
-              )
-            })}
-          </div>
-          <button
-            className="first-time-flow__button"
-            onClick={() => isValid && confirmSeedWords().then(() => history.push(DEFAULT_ROUTE))}
-            disabled={!isValid}
-          >
-            Confirm
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  renderBack () {
-    return this.state.page === BackupPhraseScreen.PAGE.CONFIRM
-      ? (
-        <a
-          className="backup-phrase__back-button"
-          onClick={e => {
-            e.preventDefault()
-            this.setState({
-              page: BackupPhraseScreen.PAGE.SECRET,
-            })
-          }}
-          href="#"
-        >
-          {`< Back`}
-        </a>
-      )
-      : null
-  }
-
-  renderContent () {
-    switch (this.state.page) {
-      case BackupPhraseScreen.PAGE.CONFIRM:
-        return this.renderConfirmationScreen()
-      case BackupPhraseScreen.PAGE.SECRET:
-      default:
-        return this.renderSecretScreen()
-    }
-  }
-
   render () {
     return (
       <div className="first-time-flow">
@@ -243,9 +136,8 @@ class BackupPhraseScreen extends Component {
           ? <LoadingScreen loadingMessage="Creating your new account" />
           : (
             <div className="backup-phrase">
-              {this.renderBack()}
               <Identicon address={this.props.address} diameter={70} />
-              {this.renderContent()}
+              {this.renderSecretScreen()}
             </div>
           )
       }
@@ -261,9 +153,6 @@ export default compose(
       seedWords,
       isLoading,
       address: selectedAddress,
-    }),
-    dispatch => ({
-      confirmSeedWords: () => dispatch(confirmSeedWords()),
     })
   )
 )(BackupPhraseScreen)

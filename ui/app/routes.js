@@ -2,7 +2,8 @@ const DEFAULT_ROUTE = '/'
 const UNLOCK_ROUTE = '/unlock'
 const SETTINGS_ROUTE = '/settings'
 const INFO_ROUTE = '/settings/info'
-const REVEAL_SEED_ROUTE = '/reveal-seed-confirm'
+const REVEAL_SEED_ROUTE = '/seed'
+const CONFIRM_SEED_ROUTE = '/confirm-seed'
 const RESTORE_VAULT_ROUTE = '/restore-vault'
 const ADD_TOKEN_ROUTE = '/add-token'
 const IMPORT_ACCOUNT_ROUTE = '/import-account'
@@ -17,6 +18,7 @@ module.exports = {
   SETTINGS_ROUTE,
   INFO_ROUTE,
   REVEAL_SEED_ROUTE,
+  CONFIRM_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
