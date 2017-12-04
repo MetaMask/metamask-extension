@@ -1,26 +1,26 @@
 const { connect } = require('react-redux')
 const PropTypes = require('prop-types')
-const { Redirect, Route } = require('react-router-dom')
+const { Redirect } = require('react-router-dom')
 const h = require('react-hyperscript')
-const { UNLOCK_ROUTE, INITIALIZE_MENU_ROUTE } = require('../../routes')
+const MetamaskRoute = require('./metamask-route')
+const { UNLOCK_ROUTE, INITIALIZE_ROUTE } = require('../../routes')
 
 const Authenticated = ({ component: Component, isUnlocked, isInitialized, ...props }) => {
-
-  const render = props => {
+  const component = renderProps => {
     switch (true) {
       case isUnlocked:
-        return h(Component, { ...props })
+        return h(Component, { ...renderProps })
       case !isInitialized:
-        return h(Redirect, { to: { pathname: INITIALIZE_MENU_ROUTE } })
+        return h(Redirect, { to: { pathname: INITIALIZE_ROUTE } })
       default:
         return h(Redirect, { to: { pathname: UNLOCK_ROUTE } })
     }
   }
 
   return (
-    h(Route, {
+    h(MetamaskRoute, {
       ...props,
-      render,
+      component,
     })
   )
 }

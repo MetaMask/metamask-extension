@@ -53,7 +53,6 @@ class Notice extends Component {
   render () {
     const { notice = {} } = this.props
     const { title, date, body } = notice
-    // const state = this.state || { disclaimerDisabled: true }
     const { disclaimerDisabled } = this.state
 
     return (
@@ -156,21 +155,6 @@ class Notice extends Component {
 const mapStateToProps = state => {
   const { metamask } = state
   const { noActiveNotices, lastUnreadNotice, lostAccounts } = metamask
-  // if (!props.noActiveNotices) {
-  //   log.debug('rendering notice screen for unread notices.')
-  //   return h(NoticeScreen, {
-  //     notice: props.lastUnreadNotice,
-  //     key: 'NoticeScreen',
-  //     onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
-  //   })
-  // } else if (props.lostAccounts && props.lostAccounts.length > 0) {
-  //   log.debug('rendering notice screen for lost accounts view.')
-  //   return h(NoticeScreen, {
-  //     notice: generateLostAccountsNotice(props.lostAccounts),
-  //     key: 'LostAccountsNotice',
-  //     onConfirm: () => props.dispatch(actions.markAccountsFound()),
-  //   })
-  // }
 
   return {
     noActiveNotices,
