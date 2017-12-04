@@ -117,7 +117,7 @@ ConfigScreen.prototype.render = function () {
                   if (err) {
                     state.dispatch(actions.displayWarning('Error in retrieving state logs.'))
                   } else {
-                    exportAsFile('MetaMask State Logs', result)
+                    exportAsFile('MetaMask State Logs.json', result)
                   }
                 })
               },
