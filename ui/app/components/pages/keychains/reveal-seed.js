@@ -8,7 +8,10 @@ const { DEFAULT_ROUTE } = require('../../../routes')
 
 class RevealSeedPage extends Component {
   componentDidMount () {
-    document.getElementById('password-box').focus()
+    const passwordBox = document.getElementById('password-box')
+    if (passwordBox) {
+      passwordBox.focus()
+    }
   }
 
   checkConfirmation (event) {

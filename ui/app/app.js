@@ -5,8 +5,10 @@ const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 // mascara
-const MascaraFirstTime = require('../../mascara/src/app/first-time').default
+const MascaraCreatePassword = require('../../mascara/src/app/first-time/create-password-screen').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
+const MascaraNoticeScreen = require('../../mascara/src/app/first-time/notice-screen').default
+const MascaraBackupPhraseScreen = require('../../mascara/src/app/first-time/backup-phrase-screen').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -22,6 +24,8 @@ const WalletView = require('./components/wallet-view')
 
 // other views
 const Authenticated = require('./components/pages/authenticated')
+const Unauthenticated = require('./components/pages/unauthenticated')
+const MetamaskRoute = require('./components/pages/metamask-route')
 const Settings = require('./components/pages/settings')
 const UnlockPage = require('./components/pages/unauthenticated/unlock')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
@@ -53,7 +57,7 @@ const {
   IMPORT_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
-  INITIALIZE_MENU_ROUTE,
+  INITIALIZE_ROUTE,
   NOTICE_ROUTE,
 } = require('./routes')
 
@@ -65,7 +69,7 @@ class App extends Component {
   }
 
   componentWillMount () {
-    const { currentCurrency, setCurrentCurrency } = this.props
+    const { currentCurrency, setCurrentCurrencyToUSD } = this.props
 
     if (!currentCurrency) {
       setCurrentCurrencyToUSD()
@@ -77,14 +81,29 @@ class App extends Component {
 
     return (
       h(Switch, [
-        h(Route, { path: INITIALIZE_MENU_ROUTE, exact, component: InitializeMenuScreen }),
-        h(Route, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
-        h(Route, { path: SETTINGS_ROUTE, component: Settings }),
-        h(Route, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
-        h(Route, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
+        h(MetamaskRoute, {
+          path: INITIALIZE_ROUTE,
+          exact,
+          component: InitializeMenuScreen,
+          mascaraComponent: MascaraCreatePassword,
+        }),
+        h(MetamaskRoute, {
+          path: REVEAL_SEED_ROUTE,
+          exact,
+          component: RevealSeedPage,
+          mascaraComponent: MascaraBackupPhraseScreen,
+        }),
+        h(Unauthenticated, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
+        h(Unauthenticated, { path: SETTINGS_ROUTE, component: Settings }),
+        h(Unauthenticated, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
+        h(Unauthenticated, {
+          path: NOTICE_ROUTE,
+          exact,
+          component: NoticeScreen,
+          mascaraComponent: MascaraNoticeScreen,
+        }),
         h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, exact, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen2 }),
-        h(Authenticated, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedPage }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: IMPORT_ACCOUNT_ROUTE, exact, component: ImportAccountPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: this.renderPrimary }),
@@ -327,10 +346,17 @@ class App extends Component {
       currentView,
       activeAddress,
       unapprovedTxs = {},
+      seedWords,
     } = this.props
 
-    if (isMascara && isOnboarding) {
-      return h(MascaraFirstTime)
+    // seed words
+    if (seedWords) {
+      log.debug('rendering seed words')
+      return h(Redirect, {
+        to: {
+          pathname: REVEAL_SEED_ROUTE,
+        },
+      })
     }
 
     // notices

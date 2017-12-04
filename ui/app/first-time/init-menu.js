@@ -35,7 +35,7 @@ class InitializeMenuScreen extends Component {
     const { warning } = this.state
 
     return (
-      h('.initialize-screen.flex-column.flex-center.flex-grow', [
+      h('.initialize-screen.flex-column.flex-center', [
 
         h(Mascot, {
           animationEventEmitter: this.animationEventEmitter,

@@ -1,5 +1,6 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
 import {compose, onlyUpdateForPropTypes} from 'recompose'
@@ -7,6 +8,7 @@ import Identicon from '../../../../ui/app/components/identicon'
 import {confirmSeedWords} from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
+import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
 
 const LockIcon = props => (
   <svg
@@ -35,27 +37,27 @@ const LockIcon = props => (
       />
     </g>
   </svg>
-);
+)
 
 class BackupPhraseScreen extends Component {
   static propTypes = {
     isLoading: PropTypes.bool.isRequired,
     address: PropTypes.string.isRequired,
-    seedWords: PropTypes.string.isRequired,
-    next: PropTypes.func.isRequired,
+    seedWords: PropTypes.string,
     confirmSeedWords: PropTypes.func.isRequired,
+    history: PropTypes.object,
   };
 
   static defaultProps = {
-    seedWords: ''
-  };
+    seedWords: '',
+  }
 
   static PAGE = {
     SECRET: 'secret',
-    CONFIRM: 'confirm'
-  };
+    CONFIRM: 'confirm',
+  }
 
-  constructor(props) {
+  constructor (props) {
     const {seedWords} = props
     super(props)
     this.state = {
@@ -66,13 +68,20 @@ class BackupPhraseScreen extends Component {
     }
   }
 
+  componentWillMount () {
+    const { seedWords, history } = this.props
+    if (!seedWords) {
+      history.push(DEFAULT_ROUTE)
+    }
+  }
+
   renderSecretWordsContainer () {
     const { isShowingSecret } = this.state
 
     return (
       <div className="backup-phrase__secret">
         <div className={classnames('backup-phrase__secret-words', {
-          'backup-phrase__secret-words--hidden': !isShowingSecret
+          'backup-phrase__secret-words--hidden': !isShowingSecret,
         })}>
           {this.props.seedWords}
         </div>
@@ -88,10 +97,10 @@ class BackupPhraseScreen extends Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 
-  renderSecretScreen() {
+  renderSecretScreen () {
     const { isShowingSecret } = this.state
 
     return (
@@ -109,7 +118,7 @@ class BackupPhraseScreen extends Component {
             className="first-time-flow__button"
             onClick={() => isShowingSecret && this.setState({
               isShowingSecret: false,
-              page: BackupPhraseScreen.PAGE.CONFIRM
+              page: BackupPhraseScreen.PAGE.CONFIRM,
             })}
             disabled={!isShowingSecret}
           >
@@ -133,9 +142,9 @@ class BackupPhraseScreen extends Component {
     )
   }
 
-  renderConfirmationScreen() {
-    const { seedWords, confirmSeedWords, next } = this.props;
-    const { selectedSeeds, shuffledSeeds } = this.state;
+  renderConfirmationScreen () {
+    const { seedWords, confirmSeedWords, history } = this.props
+    const { selectedSeeds, shuffledSeeds } = this.state
     const isValid = seedWords === selectedSeeds.map(([_, seed]) => seed).join(' ')
 
     return (
@@ -165,17 +174,17 @@ class BackupPhraseScreen extends Component {
                 <button
                   key={i}
                   className={classnames('backup-phrase__confirm-seed-option', {
-                    'backup-phrase__confirm-seed-option--selected': isSelected
+                    'backup-phrase__confirm-seed-option--selected': isSelected,
                   })}
                   onClick={() => {
                     if (!isSelected) {
                       this.setState({
-                        selectedSeeds: [...selectedSeeds, [i, word]]
+                        selectedSeeds: [...selectedSeeds, [i, word]],
                       })
                     } else {
                       this.setState({
                         selectedSeeds: selectedSeeds
-                          .filter(([index, seed]) => !(seed === word && index === i))
+                          .filter(([index, seed]) => !(seed === word && index === i)),
                       })
                     }
                   }}
@@ -187,14 +196,14 @@ class BackupPhraseScreen extends Component {
           </div>
           <button
             className="first-time-flow__button"
-            onClick={() => isValid && confirmSeedWords().then(next)}
+            onClick={() => isValid && confirmSeedWords().then(() => history.push(DEFAULT_ROUTE))}
             disabled={!isValid}
           >
             Confirm
           </button>
         </div>
       </div>
-    ) 
+    )
   }
 
   renderBack () {
@@ -205,7 +214,7 @@ class BackupPhraseScreen extends Component {
           onClick={e => {
             e.preventDefault()
             this.setState({
-              page: BackupPhraseScreen.PAGE.SECRET
+              page: BackupPhraseScreen.PAGE.SECRET,
             })
           }}
           href="#"
@@ -227,15 +236,21 @@ class BackupPhraseScreen extends Component {
   }
 
   render () {
-    return this.props.isLoading
-      ? <LoadingScreen loadingMessage="Creating your new account" />
-      : (
-        <div className="backup-phrase">
-          {this.renderBack()}
-          <Identicon address={this.props.address} diameter={70} />
-          {this.renderContent()}
-        </div>
-      )
+    return (
+      <div className="first-time-flow">
+      {
+        this.props.isLoading
+          ? <LoadingScreen loadingMessage="Creating your new account" />
+          : (
+            <div className="backup-phrase">
+              {this.renderBack()}
+              <Identicon address={this.props.address} diameter={70} />
+              {this.renderContent()}
+            </div>
+          )
+      }
+      </div>
+    )
   }
 }
 

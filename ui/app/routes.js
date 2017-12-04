@@ -8,7 +8,7 @@ const ADD_TOKEN_ROUTE = '/add-token'
 const IMPORT_ACCOUNT_ROUTE = '/import-account'
 const SEND_ROUTE = '/send'
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
-const INITIALIZE_MENU_ROUTE = '/initialize-menu'
+const INITIALIZE_ROUTE = '/initialize'
 const NOTICE_ROUTE = '/notice'
 
 module.exports = {
@@ -22,6 +22,6 @@ module.exports = {
   IMPORT_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
-  INITIALIZE_MENU_ROUTE,
+  INITIALIZE_ROUTE,
   NOTICE_ROUTE,
 }
