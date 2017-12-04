@@ -12,10 +12,10 @@ import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
 
 class ConfirmSeedScreen extends Component {
   static propTypes = {
-    isLoading: PropTypes.bool.isRequired,
-    address: PropTypes.string.isRequired,
+    isLoading: PropTypes.bool,
+    address: PropTypes.string,
     seedWords: PropTypes.string,
-    confirmSeedWords: PropTypes.func.isRequired,
+    confirmSeedWords: PropTypes.func,
     history: PropTypes.object,
   };
 
@@ -28,7 +28,7 @@ class ConfirmSeedScreen extends Component {
     const { seedWords } = props
     this.state = {
       selectedSeeds: [],
-      shuffledSeeds: seedWords && shuffle(seedWords.split(' ')),
+      shuffledSeeds: seedWords && shuffle(seedWords.split(' ')) || [],
     }
   }
 
