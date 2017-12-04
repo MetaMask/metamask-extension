@@ -2,13 +2,13 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const { connect } = require('react-redux')
 const h = require('react-hyperscript')
-const { Redirect, withRouter } = require('react-router-dom')
+const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const { tryUnlockMetamask, forgotPassword } = require('../../../actions')
+const { tryUnlockMetamask, forgotPassword } = require('../../actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
-const Mascot = require('../../mascot')
-const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../../routes')
+const Mascot = require('../mascot')
+const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../routes')
 
 class UnlockScreen extends Component {
   constructor (props) {
@@ -19,6 +19,14 @@ class UnlockScreen extends Component {
     }
 
     this.animationEventEmitter = new EventEmitter()
+  }
+
+  componentWillMount () {
+    const { isUnlocked, history } = this.props
+
+    if (isUnlocked) {
+      history.push(DEFAULT_ROUTE)
+    }
   }
 
   componentDidMount () {
@@ -69,17 +77,7 @@ class UnlockScreen extends Component {
 
   render () {
     const { error } = this.state
-    const { isUnlocked, history } = this.props
-
-    if (isUnlocked) {
-      return (
-        h(Redirect, {
-          to: {
-            pathname: DEFAULT_ROUTE,
-          },
-        })
-      )
-    }
+    const { history } = this.props
 
     return (
       h('.unlock-page.main-container', [

@@ -24,10 +24,10 @@ const WalletView = require('./components/wallet-view')
 
 // other views
 const Authenticated = require('./components/pages/authenticated')
-const Unauthenticated = require('./components/pages/unauthenticated')
+const Initialized = require('./components/pages/initialized')
 const MetamaskRoute = require('./components/pages/metamask-route')
 const Settings = require('./components/pages/settings')
-const UnlockPage = require('./components/pages/unauthenticated/unlock')
+const UnlockPage = require('./components/pages/unlock')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
 const RevealSeedPage = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
@@ -88,21 +88,21 @@ class App extends Component {
           component: InitializeMenuScreen,
           mascaraComponent: MascaraCreatePassword,
         }),
-        h(MetamaskRoute, {
+        h(Initialized, {
           path: REVEAL_SEED_ROUTE,
           exact,
           component: RevealSeedPage,
           mascaraComponent: MascaraSeedScreen,
         }),
-        h(MetamaskRoute, {
+        h(Initialized, {
           path: CONFIRM_SEED_ROUTE,
           exact,
           mascaraComponent: MascaraConfirmSeedScreen,
         }),
-        h(Unauthenticated, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
-        h(Unauthenticated, { path: SETTINGS_ROUTE, component: Settings }),
-        h(Unauthenticated, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
-        h(Unauthenticated, {
+        h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
+        h(Initialized, { path: SETTINGS_ROUTE, component: Settings }),
+        h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
+        h(Initialized, {
           path: NOTICE_ROUTE,
           exact,
           component: NoticeScreen,

@@ -5,28 +5,20 @@ const h = require('react-hyperscript')
 const MetamaskRoute = require('./metamask-route')
 const { UNLOCK_ROUTE, INITIALIZE_ROUTE } = require('../../routes')
 
-const Authenticated = ({ component: Component, isUnlocked, isInitialized, ...props }) => {
-  const component = renderProps => {
-    switch (true) {
-      case isUnlocked:
-        return h(Component, { ...renderProps })
-      case !isInitialized:
-        return h(Redirect, { to: { pathname: INITIALIZE_ROUTE } })
-      default:
-        return h(Redirect, { to: { pathname: UNLOCK_ROUTE } })
-    }
-  }
+const Authenticated = props => {
+  const { isUnlocked, isInitialized } = props
 
-  return (
-    h(MetamaskRoute, {
-      ...props,
-      component,
-    })
-  )
+  switch (true) {
+    case isUnlocked && isInitialized:
+      return h(MetamaskRoute, { ...props })
+    case !isInitialized:
+      return h(Redirect, { to: { pathname: INITIALIZE_ROUTE } })
+    default:
+      return h(Redirect, { to: { pathname: UNLOCK_ROUTE } })
+  }
 }
 
 Authenticated.propTypes = {
-  component: PropTypes.func,
   isUnlocked: PropTypes.bool,
   isInitialized: PropTypes.bool,
 }
