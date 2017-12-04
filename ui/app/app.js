@@ -9,7 +9,8 @@ const actions = require('./actions')
 const MascaraCreatePassword = require('../../mascara/src/app/first-time/create-password-screen').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 const MascaraNoticeScreen = require('../../mascara/src/app/first-time/notice-screen').default
-const MascaraBackupPhraseScreen = require('../../mascara/src/app/first-time/backup-phrase-screen').default
+const MascaraSeedScreen = require('../../mascara/src/app/first-time/seed-screen').default
+const MascaraConfirmSeedScreen = require('../../mascara/src/app/first-time/confirm-seed-screen').default
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
@@ -51,6 +52,7 @@ const {
   UNLOCK_ROUTE,
   SETTINGS_ROUTE,
   REVEAL_SEED_ROUTE,
+  CONFIRM_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
@@ -90,7 +92,12 @@ class App extends Component {
           path: REVEAL_SEED_ROUTE,
           exact,
           component: RevealSeedPage,
-          mascaraComponent: MascaraBackupPhraseScreen,
+          mascaraComponent: MascaraSeedScreen,
+        }),
+        h(MetamaskRoute, {
+          path: CONFIRM_SEED_ROUTE,
+          exact,
+          mascaraComponent: MascaraConfirmSeedScreen,
         }),
         h(Unauthenticated, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
         h(Unauthenticated, { path: SETTINGS_ROUTE, component: Settings }),
