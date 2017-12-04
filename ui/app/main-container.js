@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
-const UnlockScreen = require('./components/pages/unauthenticated/unlock')
 
 module.exports = MainContainer
 

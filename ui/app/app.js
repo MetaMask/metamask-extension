@@ -1,6 +1,7 @@
 const { Component } = require('react')
+const PropTypes = require('prop-types')
 const { connect } = require('react-redux')
-const { Switch, Route, Redirect, withRouter } = require('react-router-dom')
+const { Switch, Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
@@ -16,8 +17,6 @@ const NewKeyChainScreen = require('./new-keychain')
 const MainContainer = require('./main-container')
 const SendTransactionScreen2 = require('./components/send/send-v2-container')
 const ConfirmTxScreen = require('./conf-tx')
-// notice
-const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
 
 // slideout menu
 const WalletView = require('./components/wallet-view')
@@ -112,9 +111,15 @@ class App extends Component {
   }
 
   render () {
-    var props = this.props
-    const { isLoading, loadingMessage, network } = props
-    const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
+    const {
+      isLoading,
+      loadingMessage,
+      network,
+      provider,
+      frequentRpcList,
+      currentView,
+    } = this.props
+    const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
       `Connecting to ${this.getNetworkName()}` : null
     log.debug('Main ui render function')
@@ -139,8 +144,8 @@ class App extends Component {
 
         // network dropdown
         h(NetworkDropdown, {
-          provider: this.props.provider,
-          frequentRpcList: this.props.frequentRpcList,
+          provider,
+          frequentRpcList,
         }, []),
 
         h(AccountMenu),
@@ -153,7 +158,6 @@ class App extends Component {
 
         // content
         this.renderRoutes(),
-        // this.renderPrimary(),
       ])
     )
   }
@@ -337,8 +341,6 @@ class App extends Component {
   renderPrimary () {
     log.debug('rendering primary')
     const {
-      isMascara,
-      isOnboarding,
       noActiveNotices,
       lostAccounts,
       isInitialized,
@@ -556,6 +558,36 @@ class App extends Component {
 
     return name
   }
+}
+
+App.propTypes = {
+  currentCurrency: PropTypes.string,
+  setCurrentCurrencyToUSD: PropTypes.func,
+  isLoading: PropTypes.bool,
+  loadingMessage: PropTypes.string,
+  network: PropTypes.string,
+  provider: PropTypes.object,
+  frequentRpcList: PropTypes.array,
+  currentView: PropTypes.object,
+  sidebarOpen: PropTypes.bool,
+  hideSidebar: PropTypes.func,
+  isMascara: PropTypes.bool,
+  isOnboarding: PropTypes.bool,
+  isUnlocked: PropTypes.bool,
+  networkDropdownOpen: PropTypes.bool,
+  showNetworkDropdown: PropTypes.func,
+  hideNetworkDropdown: PropTypes.func,
+  history: PropTypes.object,
+  dispatch: PropTypes.func,
+  toggleAccountMenu: PropTypes.func,
+  selectedAddress: PropTypes.string,
+  noActiveNotices: PropTypes.bool,
+  lostAccounts: PropTypes.array,
+  isInitialized: PropTypes.bool,
+  forgottenPassword: PropTypes.bool,
+  activeAddress: PropTypes.string,
+  unapprovedTxs: PropTypes.object,
+  seedWords: PropTypes.string,
 }
 
 function mapStateToProps (state) {

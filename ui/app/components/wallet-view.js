@@ -94,7 +94,6 @@ WalletView.prototype.render = function () {
     keyrings,
     showAccountDetailModal,
     hideSidebar,
-    showAddTokenPage,
     history,
   } = this.props
   // temporary logs + fake extra wallets
