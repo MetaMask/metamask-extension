@@ -8,7 +8,6 @@ const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 
 const PendingTx = require('./components/pending-tx')
-const SignatureRequest = require('./components/signature-request')
 // const PendingMsg = require('./components/pending-msg')
 // const PendingPersonalMsg = require('./components/pending-personal-msg')
 // const PendingTypedMsg = require('./components/pending-typed-msg')
@@ -21,6 +20,12 @@ module.exports = compose(
 )(ConfirmTxScreen)
 
 function mapStateToProps (state) {
+  const { metamask } = state
+  const {
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+  } = metamask
+
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
@@ -37,6 +42,8 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     computedBalances: state.metamask.computedBalances,
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
   }
 }
 
@@ -125,27 +132,13 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
-  const { txParams, msgParams } = txData
+  const { txParams } = txData
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
-  } else if (msgParams) {
-    log.debug('msgParams detected, rendering pending msg')
-
-    return h(SignatureRequest, opts)
-
-    // if (type === 'eth_sign') {
-    //   log.debug('rendering eth_sign message')
-    //   return h(PendingMsg, opts)
-    // } else if (type === 'personal_sign') {
-    //   log.debug('rendering personal_sign message')
-    // return h(PendingPersonalMsg, opts)
-    // } else if (type === 'eth_signTypedData') {
-    //   log.debug('rendering eth_signTypedData message')
-    //   return h(PendingTypedMsg, opts)
-    // }
   }
+
   return h(Loading)
 }
 

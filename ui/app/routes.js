@@ -11,6 +11,7 @@ const SEND_ROUTE = '/send'
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
 const INITIALIZE_ROUTE = '/initialize'
 const NOTICE_ROUTE = '/notice'
+const SIGNATURE_REQUEST_ROUTE = '/signature-request'
 
 module.exports = {
   DEFAULT_ROUTE,
@@ -26,4 +27,5 @@ module.exports = {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   NOTICE_ROUTE,
+  SIGNATURE_REQUEST_ROUTE,
 }
