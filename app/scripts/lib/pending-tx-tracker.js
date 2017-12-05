@@ -65,7 +65,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   }
 
 
-  resubmitPendingTxs () {
+  resubmitPendingTxs (block) {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
@@ -101,12 +101,24 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     }))
   }
 
-  async _resubmitTx (txMeta) {
+  async _resubmitTx (txMeta, latestBlockNumber) {
+    if (!txMeta.firstRetryBlockNumber) {
+      this.emit('tx:block-update', txMeta, latestBlockNumber)
+    }
+
     if (Date.now() > txMeta.time + this.retryTimePeriod) {
       const hours = (this.retryTimePeriod / 3.6e+6).toFixed(1)
       const err = new Error(`Gave up submitting after ${hours} hours.`)
       return this.emit('tx:failed', txMeta.id, err)
     }
+
+    const firstRetryBlockNumber = txMeta.firstRetryBlockNumber
+    const txBlockDistance = Number.parseInt(latestBlockNumber, 16) - Number.parseInt(firstRetryBlockNumber, 16)
+
+    const retryCount = txMeta.retryCount || 0
+
+    // Exponential backoff to limit retries at publishing
+    if (txBlockDistance <= Math.pow(2, retryCount) - 1) return
 
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) return
