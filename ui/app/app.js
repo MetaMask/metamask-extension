@@ -33,6 +33,7 @@ const RevealSeedPage = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
 const ImportAccountPage = require('./components/pages/import-account')
 const NoticeScreen = require('./components/pages/notice')
+const SignatureRequestPage = require('./components/pages/signature-request')
 
 const Loading = require('./components/loading')
 const NetworkIndicator = require('./components/network')
@@ -60,6 +61,7 @@ const {
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
   NOTICE_ROUTE,
+  SIGNATURE_REQUEST_ROUTE,
 } = require('./routes')
 
 class App extends Component {
@@ -112,6 +114,7 @@ class App extends Component {
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen2 }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
         h(Authenticated, { path: IMPORT_ACCOUNT_ROUTE, exact, component: ImportAccountPage }),
+        h(Authenticated, { path: SIGNATURE_REQUEST_ROUTE, exact, component: SignatureRequestPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: this.renderPrimary }),
       ])
     )
@@ -356,6 +359,9 @@ class App extends Component {
       activeAddress,
       unapprovedTxs = {},
       seedWords,
+      unapprovedMsgCount = 0,
+      unapprovedPersonalMsgCount = 0,
+      unapprovedTypedMessagesCount = 0,
     } = this.props
 
     // seed words
@@ -382,6 +388,15 @@ class App extends Component {
       return h(Redirect, {
         to: {
           pathname: CONFIRM_TRANSACTION_ROUTE,
+        },
+      })
+    }
+
+    // unapproved messages
+    if (unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
+      return h(Redirect, {
+        to: {
+          pathname: SIGNATURE_REQUEST_ROUTE,
         },
       })
     }
@@ -595,6 +610,9 @@ App.propTypes = {
   activeAddress: PropTypes.string,
   unapprovedTxs: PropTypes.object,
   seedWords: PropTypes.string,
+  unapprovedMsgCount: PropTypes.number,
+  unapprovedPersonalMsgCount: PropTypes.number,
+  unapprovedTypedMessagesCount: PropTypes.number,
 }
 
 function mapStateToProps (state) {
@@ -617,6 +635,9 @@ function mapStateToProps (state) {
     unapprovedTxs,
     lastUnreadNotice,
     lostAccounts,
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
   } = metamask
   const selected = address || Object.keys(accounts)[0]
 
@@ -637,7 +658,9 @@ function mapStateToProps (state) {
     isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
     seedWords: state.metamask.seedWords,
     unapprovedTxs,
-    unapprovedMsgs: state.metamask.unapprovedMsgs,
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
