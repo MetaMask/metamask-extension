@@ -705,3 +705,50 @@ div.message-container > div:first-child {
 .pop-hover:hover {
     transform: scale(1.1);
 }
+
+//Notification Modal
+
+.notification-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border: 1px solid #dedede;
+  box-shadow: 0 0 2px 2px #dedede;
+  font-family: Roboto;
+}
+
+.notification-modal-header {
+  background: #f6f6f6;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 22px;
+  color: #1b344d;
+  height: 79px;
+}
+
+.notification-modal-message {
+  padding: 20px;
+}
+
+.notification-modal-message {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 17px;
+  color: #1b344d;
+}
+
+.modal-close-x::after {
+  content: '\00D7';
+  font-size: 2em;
+  color: #9b9b9b;
+  position: absolute;
+  top: 25px;
+  right: 17.5px;
+  font-family: sans-serif;
+  cursor: pointer;
+}

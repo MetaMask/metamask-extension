@@ -228,7 +228,7 @@ class Settings extends Component {
       ])
     )
   }
-
+  
   renderOldUI () {
     const { setFeatureFlagToBeta } = this.props
 
@@ -237,7 +237,7 @@ class Settings extends Component {
         h('div.settings__content-item', 'Use old UI'),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.settings__clear-button.settings__clear-button--red', {
+            h('button.settings__clear-button.settings__clear-button--orange', {
               onClick (event) {
                 event.preventDefault()
                 setFeatureFlagToBeta()

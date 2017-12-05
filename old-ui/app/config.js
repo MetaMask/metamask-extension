@@ -8,7 +8,7 @@ const infuraCurrencies = require('./infura-conversion.json').objects.sort((a, b)
     })
 const validUrl = require('valid-url')
 const exportAsFile = require('./util').exportAsFile
-
+const Modal = require('../../ui/app/components/modals/index').Modal
 
 module.exports = connect(mapStateToProps)(ConfigScreen)
 
@@ -31,6 +31,8 @@ ConfigScreen.prototype.render = function () {
 
   return (
     h('.flex-column.flex-grow', [
+
+      h(Modal, {}, []),
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
