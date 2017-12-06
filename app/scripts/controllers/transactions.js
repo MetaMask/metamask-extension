@@ -75,7 +75,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber
-        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:retry')
+        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:block-update')
       }
     })
     this.pendingTxTracker.on('tx:retry', (txMeta) => {
