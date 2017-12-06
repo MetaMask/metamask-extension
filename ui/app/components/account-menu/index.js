@@ -1,13 +1,19 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
+const { SETTINGS_ROUTE, INFO_ROUTE, IMPORT_ACCOUNT_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(AccountMenu)
 
 inherits(AccountMenu, Component)
 function AccountMenu () { Component.call(this) }
@@ -19,7 +25,6 @@ function mapStateToProps (state) {
     keyrings: state.metamask.keyrings,
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
-
   }
 }
 
@@ -35,20 +40,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.displayWarning(null))
       dispatch(actions.toggleAccountMenu())
     },
-    showConfigPage: () => {
-      dispatch(actions.showConfigPage())
-      dispatch(actions.toggleAccountMenu())
-    },
     showNewAccountModal: () => {
       dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
-      dispatch(actions.toggleAccountMenu())
-    },
-    showImportPage: () => {
-      dispatch(actions.showImportPage())
-      dispatch(actions.toggleAccountMenu())
-    },
-    showInfoPage: () => {
-      dispatch(actions.showInfoPage())
       dispatch(actions.toggleAccountMenu())
     },
   }
@@ -59,10 +52,8 @@ AccountMenu.prototype.render = function () {
     isAccountMenuOpen,
     toggleAccountMenu,
     showNewAccountModal,
-    showImportPage,
     lockMetamask,
-    showConfigPage,
-    showInfoPage,
+    history,
   } = this.props
 
   return h(Menu, { className: 'account-menu', isShowing: isAccountMenuOpen }, [
@@ -72,7 +63,10 @@ AccountMenu.prototype.render = function () {
     }, [
       'My Accounts',
       h('button.account-menu__logout-button', {
-        onClick: lockMetamask,
+        onClick: () => {
+          lockMetamask()
+          history.push(DEFAULT_ROUTE)
+        },
       }, 'Log out'),
     ]),
     h(Divider),
@@ -84,18 +78,27 @@ AccountMenu.prototype.render = function () {
       text: 'Create Account',
     }),
     h(Item, {
-      onClick: showImportPage,
+      onClick: () => {
+        toggleAccountMenu()
+        history.push(IMPORT_ACCOUNT_ROUTE)
+      },
       icon: h('img', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),
     h(Divider),
     h(Item, {
-      onClick: showInfoPage,
+      onClick: () => {
+        toggleAccountMenu()
+        history.push(INFO_ROUTE)
+      },
       icon: h('img', { src: 'images/mm-info-icon.svg' }),
       text: 'Info & Help',
     }),
     h(Item, {
-      onClick: showConfigPage,
+      onClick: () => {
+        toggleAccountMenu()
+        history.push(SETTINGS_ROUTE)
+      },
       icon: h('img', { src: 'images/settings.svg' }),
       text: 'Settings',
     }),
