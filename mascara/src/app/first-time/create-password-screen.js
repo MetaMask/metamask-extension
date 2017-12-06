@@ -11,11 +11,20 @@ class CreatePasswordScreen extends Component {
     isLoading: PropTypes.bool.isRequired,
     createAccount: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    isInitialized: PropTypes.bool,
+    isUnlocked: PropTypes.bool,
   }
 
   state = {
     password: '',
     confirmPassword: '',
+  }
+
+  componentWillMount () {
+    const { isInitialized, isUnlocked, history } = this.props
+    if (isInitialized || isUnlocked) {
+      history.push(DEFAULT_ROUTE)
+    }
   }
 
   isValid () {
@@ -107,8 +116,18 @@ class CreatePasswordScreen extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  const { metamask: { isInitialized, isUnlocked }, appState: { isLoading } } = state
+
+  return {
+    isLoading,
+    isInitialized,
+    isUnlocked,
+  }
+}
+
 export default connect(
-  ({ appState: { isLoading } }) => ({ isLoading }),
+  mapStateToProps,
   dispatch => ({
     createAccount: password => dispatch(createNewVaultAndKeychain(password)),
   })
