@@ -69,7 +69,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     const pending = this.getPendingTransactions()
     // only try resubmitting if their are transactions to resubmit
     if (!pending.length) return
-    pending.forEach((txMeta) => this._resubmitTx(txMeta).catch((err) => {
+    pending.forEach((txMeta) => this._resubmitTx(txMeta, block.number).catch((err) => {
       /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
