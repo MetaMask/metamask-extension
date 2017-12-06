@@ -273,24 +273,70 @@ describe('PendingTransactionTracker', function () {
     })
   })
   describe('#_resubmitTx', function () {
-    it('should publishing the transaction', function (done) {
-    const enoughBalance = '0x100000'
-    pendingTxTracker.getBalance = (address) => {
-      assert.equal(address, txMeta.txParams.from, 'Should pass the address')
-      return enoughBalance
-    }
-    pendingTxTracker.publishTransaction = async (rawTx) => {
-      assert.equal(rawTx, txMeta.rawTx, 'Should pass the rawTx')
-    }
+    const mockFirstRetryBlockNumber = '0x1'
+    let txMetaToTestExponentialBackoff
 
-    // Stubbing out current account state:
-    // Adding the fake tx:
-    pendingTxTracker._resubmitTx(txMeta)
-    .then(() => done())
-    .catch((err) => {
-     assert.ifError(err, 'should not throw an error')
-     done(err)
+    beforeEach(() => {
+      pendingTxTracker.getBalance = (address) => {
+        assert.equal(address, txMeta.txParams.from, 'Should pass the address')
+        return enoughBalance
+      }
+      pendingTxTracker.publishTransaction = async (rawTx) => {
+        assert.equal(rawTx, txMeta.rawTx, 'Should pass the rawTx')
+      }
+      sinon.spy(pendingTxTracker, 'publishTransaction')
+
+      txMetaToTestExponentialBackoff = Object.assign({}, txMeta, {
+        retryCount: 4,
+        firstRetryBlockNumber: mockFirstRetryBlockNumber,
+      })
     })
-  })
+
+    afterEach(() => {
+      pendingTxTracker.publishTransaction.reset()
+    })
+
+    it('should publish the transaction', function (done) {
+      const enoughBalance = '0x100000'
+
+      // Stubbing out current account state:
+      // Adding the fake tx:
+      pendingTxTracker._resubmitTx(txMeta)
+      .then(() => done())
+      .catch((err) => {
+       assert.ifError(err, 'should not throw an error')
+       done(err)
+      })
+
+      assert.equal(pendingTxTracker.publishTransaction.callCount, 1, 'Should call publish transaction')
+    })
+
+    it('should not publish the transaction if the limit of retries has been exceeded', function (done) {
+      const enoughBalance = '0x100000'
+      const mockLatestBlockNumber = '0x5'
+
+      pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
+      .then(() => done())
+      .catch((err) => {
+       assert.ifError(err, 'should not throw an error')
+       done(err)
+      })
+
+      assert.equal(pendingTxTracker.publishTransaction.callCount, 0, 'Should NOT call publish transaction')
+    })
+
+    it('should publish the transaction if the number of blocks since last retry exceeds the last set limit', function (done) {
+      const enoughBalance = '0x100000'
+      const mockLatestBlockNumber = '0x11'
+      
+      pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
+      .then(() => done())
+      .catch((err) => {
+       assert.ifError(err, 'should not throw an error')
+       done(err)
+      })
+
+      assert.equal(pendingTxTracker.publishTransaction.callCount, 1, 'Should call publish transaction')
+    })
  })
 })
