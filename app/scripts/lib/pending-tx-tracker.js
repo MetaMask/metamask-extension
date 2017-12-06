@@ -112,7 +112,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       return this.emit('tx:failed', txMeta.id, err)
     }
 
-    const firstRetryBlockNumber = txMeta.firstRetryBlockNumber
+    const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber
     const txBlockDistance = Number.parseInt(latestBlockNumber, 16) - Number.parseInt(firstRetryBlockNumber, 16)
 
     const retryCount = txMeta.retryCount || 0
