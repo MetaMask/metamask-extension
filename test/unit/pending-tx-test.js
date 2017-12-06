@@ -206,6 +206,7 @@ describe('PendingTransactionTracker', function () {
   })
 
   describe('#resubmitPendingTxs', function () {
+    const blockStub = { number: '0x0' };
     beforeEach(function () {
     const txMeta2 = txMeta3 = txMeta
     txList = [txMeta, txMeta2, txMeta3].map((tx) => {
@@ -223,7 +224,7 @@ describe('PendingTransactionTracker', function () {
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
-      pendingTxTracker.resubmitPendingTxs()
+      pendingTxTracker.resubmitPendingTxs(blockStub)
     })
     it('should not emit \'tx:failed\' if the txMeta throws a known txError', function (done) {
       knownErrors =[
@@ -250,7 +251,7 @@ describe('PendingTransactionTracker', function () {
       .then((txCompletedList) => done())
       .catch(done)
 
-      pendingTxTracker.resubmitPendingTxs()
+      pendingTxTracker.resubmitPendingTxs(blockStub)
     })
     it('should emit \'tx:warning\' if it encountered a real error', function (done) {
       pendingTxTracker.once('tx:warning', (txMeta, err) => {
@@ -268,7 +269,7 @@ describe('PendingTransactionTracker', function () {
       .then((txCompletedList) => done())
       .catch(done)
 
-      pendingTxTracker.resubmitPendingTxs()
+      pendingTxTracker.resubmitPendingTxs(blockStub)
     })
   })
   describe('#_resubmitTx', function () {
