@@ -209,6 +209,10 @@ module.exports = class TransactionController extends EventEmitter {
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
       const nonce = txMeta.nonceSpecified ? txMeta.txParams.nonce : nonceLock.nextNonce
+      if (nonce > nonceLock.nextNonce) {
+        const message = `Specified nonce may not be larger than account's next valid nonce.`
+        throw new Error(message)
+      }
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
