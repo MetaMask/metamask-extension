@@ -168,6 +168,7 @@ var actions = {
 
   callBackgroundThenUpdate,
   forceUpdateMetamaskState,
+  retryTransaction,
 }
 
 module.exports = actions
@@ -757,6 +758,19 @@ function clearNotices () {
 function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
+}
+
+function retryTransaction (txId) {
+  log.debug(`background.retryTransaction`)
+  return (dispatch) => {
+    background.retryTransaction(txId, (err, newState) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch(actions.updateMetamaskState(newState))
+      dispatch(actions.viewPendingTx(txId))
+    })
+  }
 }
 
 //

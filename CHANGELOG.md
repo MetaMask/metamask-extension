@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 3.13.0 2017-12-7
+
+- Allow resubmitting transactions that are taking long to complete.
+
 ## 3.12.1 2017-11-29
 
 - Fix bug where a user could be shown two different seed phrases.
