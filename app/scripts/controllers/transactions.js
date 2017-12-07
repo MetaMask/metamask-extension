@@ -177,6 +177,7 @@ module.exports = class TransactionController extends EventEmitter {
     const txParams = txMeta.txParams
     // ensure value
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
+    txMeta.nonceSpecified = Boolean(txParams.nonce)
     const gasPrice = txParams.gasPrice || await this.query.gasPrice()
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
@@ -207,7 +208,8 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonceLock.nextNonce.toString(16))
+      const nonce = txMeta.nonceSpecified ? txMeta.txParams.nonce : nonceLock.nextNonce
+      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')
