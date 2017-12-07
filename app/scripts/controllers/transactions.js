@@ -138,18 +138,20 @@ module.exports = class TransactionController extends EventEmitter {
 
   async newUnapprovedTransaction (txParams) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const txMeta = await this.addUnapprovedTransaction(txParams)
-    this.emit('newUnapprovedTx', txMeta)
+    const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    this.emit('newUnapprovedTx', initialTxMeta)
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
-      this.txStateManager.once(`${txMeta.id}:finished`, (completedTx) => {
-        switch (completedTx.status) {
+      this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
+        switch (finishedTxMeta.status) {
           case 'submitted':
-            return resolve(completedTx.hash)
+            return resolve(finishedTxMeta.hash)
           case 'rejected':
             return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+          case 'failed':
+            return reject(new Error(finishedTxMeta.err.message))
           default:
-            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
+            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
         }
       })
     })
