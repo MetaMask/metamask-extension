@@ -43,7 +43,9 @@ PendingTx.prototype.render = function () {
   let forceGasMin
   if (lastGasPrice) {
     const stripped = ethUtil.stripHexPrefix(lastGasPrice)
-    forceGasMin = new BN(stripped, 16).add(MIN_GAS_PRICE_BN)
+    const lastGas = new BN(stripped, 16)
+    const priceBump = lastGas.divn('10')
+    forceGasMin = lastGas.add(priceBump)
   }
 
   // Account Details
