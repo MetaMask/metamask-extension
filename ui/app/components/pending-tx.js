@@ -38,6 +38,14 @@ PendingTx.prototype.render = function () {
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
+  // Allow retry txs
+  const { lastGasPrice } = txMeta
+  let forceGasMin
+  if (lastGasPrice) {
+    const stripped = ethUtil.stripHexPrefix(lastGasPrice)
+    forceGasMin = new BN(stripped, 16).add(MIN_GAS_PRICE_BN)
+  }
+
   // Account Details
   const address = txParams.from || props.selectedAddress
   const identity = props.identities[address] || { address: address }
@@ -199,7 +207,7 @@ PendingTx.prototype.render = function () {
                   precision: 9,
                   scale: 9,
                   suffix: 'GWEI',
-                  min: MIN_GAS_PRICE_BN,
+                  min: forceGasMin || MIN_GAS_PRICE_BN,
                   style: {
                     position: 'relative',
                     top: '5px',
