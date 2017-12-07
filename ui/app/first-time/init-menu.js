@@ -8,6 +8,8 @@ const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
 const getCaretCoordinates = require('textarea-caret')
 
+let isSubmitting = false
+
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 
 inherits(InitializeMenuScreen, Component)
@@ -164,7 +166,10 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
     return
   }
 
-  this.props.dispatch(actions.createNewVaultAndKeychain(password))
+  if (!isSubmitting) {
+    isSubmitting = true
+    this.props.dispatch(actions.createNewVaultAndKeychain(password))
+  }
 }
 
 InitializeMenuScreen.prototype.inputChanged = function (event) {

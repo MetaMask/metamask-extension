@@ -25,6 +25,7 @@ const selectors = {
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
   autoAddToBetaUI,
+  getSendMaxModeState,
 }
 
 module.exports = selectors
@@ -134,6 +135,10 @@ function getSendFrom (state) {
 
 function getSendAmount (state) {
   return state.metamask.send.amount
+}
+
+function getSendMaxModeState (state) {
+  return state.metamask.send.maxModeOn
 }
 
 function getCurrentCurrency (state) {
