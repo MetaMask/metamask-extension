@@ -184,6 +184,13 @@ module.exports = class TransactionController extends EventEmitter {
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
 
+  async retryTransaction (txId) {
+    this.txStateManager.setTxStatusUnapproved(txId)
+    const txMeta = this.txStateManager.getTx(txId)
+    txMeta.lastGasPrice = txMeta.txParams.gasPrice
+    this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
+  }
+
   async updateAndApproveTransaction (txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
     await this.approveTransaction(txMeta.id)
