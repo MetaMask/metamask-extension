@@ -120,15 +120,15 @@ TransactionListItem.prototype.render = function () {
           this.resubmit()
         },
         style: {
-          height: '30px',
-          borderRadius: '30px',
+          height: '22px',
+          borderRadius: '22px',
           color: '#F9881B',
-          padding: '0 25px',
+          padding: '0 20px',
           backgroundColor: '#FFE3C9',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          fontSize: '9px',
+          fontSize: '8px',
           cursor: 'pointer',
         },
       }, [
