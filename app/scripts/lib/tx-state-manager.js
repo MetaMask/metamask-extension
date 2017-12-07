@@ -240,7 +240,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
     txMeta.status = status
     this.emit(`${txMeta.id}:${status}`, txId)
     this.emit(`tx:status-update`, txId, status)
-    if (status === 'submitted' || status === 'rejected') {
+    if (['submitted', 'rejected', 'failed'].includes(status)) {
       this.emit(`${txMeta.id}:finished`, txMeta)
     }
     this.updateTx(txMeta, `txStateManager: setting status to ${status}`)
