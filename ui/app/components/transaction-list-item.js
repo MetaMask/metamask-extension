@@ -46,7 +46,7 @@ TransactionListItem.prototype.render = function () {
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   return (
-    h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
+    h('.transaction-list-item.flex-column', {
       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)
@@ -58,48 +58,83 @@ TransactionListItem.prototype.render = function () {
       },
       style: {
         padding: '20px 0',
+        alignItems: 'center',
       },
     }, [
-
-      h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
-      ]),
-
-      h(Tooltip, {
-        title: 'Transaction Number',
-        position: 'right',
+      h(`.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
+        style: {
+          width: '100%',
+        },
       }, [
-        h('span', {
+        h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        ]),
+
+        h(Tooltip, {
+          title: 'Transaction Number',
+          position: 'right',
+        }, [
+          h('span', {
+            style: {
+              display: 'flex',
+              cursor: 'normal',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10px',
+            },
+          }, nonce),
+        ]),
+
+        h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
+          domainField(txParams),
+          h('div', date),
+          recipientField(txParams, transaction, isTx, isMsg),
+        ]),
+
+        // Places a copy button if tx is successful, else places a placeholder empty div.
+        transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
+
+        isTx ? h(EthBalance, {
+          value: txParams.value,
+          conversionRate,
+          currentCurrency,
+          width: '55px',
+          shorten: true,
+          showFiat: false,
+          style: {fontSize: '15px'},
+        }) : h('.flex-column'),
+      ]),
+
+      transaction.status === 'submitted' && h('.transition-list-item__retry', {
+        onClick: event => {
+          event.stopPropagation()
+          this.resubmit()
+        },
+        style: {
+          height: '30px',
+          borderRadius: '30px',
+          color: '#F9881B',
+          padding: '0 25px',
+          backgroundColor: '#FFE3C9',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: '9px',
+          cursor: 'pointer',
+        },
+      }, [
+        h('div', {
           style: {
-            display: 'flex',
-            cursor: 'normal',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '10px',
+            paddingRight: '2px',
           },
-        }, nonce),
+        }, 'Taking too long?'),
+        h('div', {
+          style: {
+            textDecoration: 'underline',
+          },
+        }, 'Retry with a higher gas price here'),
       ]),
-
-      h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
-        domainField(txParams),
-        h('div', date),
-        recipientField(txParams, transaction, isTx, isMsg),
-      ]),
-
-      // Places a copy button if tx is successful, else places a placeholder empty div.
-      transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
-
-      isTx ? h(EthBalance, {
-        value: txParams.value,
-        conversionRate,
-        currentCurrency,
-        width: '55px',
-        shorten: true,
-        showFiat: false,
-        style: {fontSize: '15px'},
-      }) : h('.flex-column'),
-
     ])
   )
 }
