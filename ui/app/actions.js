@@ -149,6 +149,7 @@ var actions = {
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
   updateGasLimit,
@@ -160,6 +161,7 @@ var actions = {
   updateSendAmount,
   updateSendMemo,
   updateSendErrors,
+  setMaxModeTo,
   updateSend,
   clearSend,
   setSelectedAddress,
@@ -237,6 +239,11 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
+  
+  // Feature Flags
+  setFeatureFlag,
+  updateFeatureFlags,
+  UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 }
 
 module.exports = actions
@@ -637,6 +644,13 @@ function updateSendErrors (error) {
   }
 }
 
+function setMaxModeTo (bool) {
+  return {
+    type: actions.UPDATE_MAX_MODE,
+    value: bool,
+  }
+}
+
 function updateSend (newSend) {
   return {
     type: actions.UPDATE_SEND,
@@ -988,9 +1002,10 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddTokenPage () {
+function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
+    value: transitionForward,
   }
 }
 
@@ -1272,7 +1287,8 @@ function exportAccount (password, address) {
             return reject(err)
           }
 
-          dispatch(self.exportAccountComplete())
+          // dispatch(self.exportAccountComplete())
+          dispatch(self.showPrivateKey(result))
 
           return resolve(result)
         })
@@ -1439,7 +1455,7 @@ function reshowQrCode (data, coin) {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
-
+        
       var message = [
         `Deposit your ${coin} to the address bellow:`,
         `Deposit Limit: ${mktResponse.limit}`,
@@ -1447,10 +1463,11 @@ function reshowQrCode (data, coin) {
       ]
 
       dispatch(actions.hideLoadingIndication())
-      return dispatch(actions.showModal({
-        name: 'SHAPESHIFT_DEPOSIT_TX',
-        Qr: { data, message },
-      }))
+      return dispatch(actions.showQrView(data, message))
+      // return dispatch(actions.showModal({
+      //   name: 'SHAPESHIFT_DEPOSIT_TX',
+      //   Qr: { data, message },
+      // }))
     })
   }
 }
@@ -1503,6 +1520,34 @@ function updateTokenExchangeRate (token = '') {
         })
       }
     })
+  }
+}
+
+function setFeatureFlag (feature, activated) {
+  const notificationType = activated
+    ? 'BETA_UI_NOTIFICATION_MODAL'
+    : 'OLD_UI_NOTIFICATION_MODAL'
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.setFeatureFlag(feature, activated, (err, updatedFeatureFlags) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
+        dispatch(actions.showModal({ name: notificationType }))
+        resolve(updatedFeatureFlags)
+      })
+    })
+  }
+}
+
+function updateFeatureFlags (updatedFeatureFlags) {
+  return {
+    type: actions.UPDATE_FEATURE_FLAGS,
+    value: updatedFeatureFlags,
   }
 }
 

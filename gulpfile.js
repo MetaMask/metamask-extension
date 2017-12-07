@@ -126,11 +126,17 @@ gulp.task('manifest:production', function() {
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
+    './dist/opera/manifest.json',
   ],{base: './dist/'})
+
+  // Exclude chromereload script in production:
   .pipe(gulpif(!debug,jsoneditor(function(json) {
-    json.background.scripts = ["scripts/background.js"]
+    json.background.scripts = json.background.scripts.filter((script) => {
+      return !script.includes('chromereload')
+    })
     return json
   })))
+
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 

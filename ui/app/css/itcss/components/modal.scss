@@ -563,3 +563,39 @@
     }
   }
 }
+
+//Notification Modal
+
+.notification-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border: 1px solid $alto;
+  box-shadow: 0 0 2px 2px $alto;
+  font-family: Roboto;
+}
+
+.notification-modal-header {
+  background: $wild-sand;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 22px;
+  color: $nile-blue;
+  height: 79px;
+}
+
+.notification-modal-message {
+  padding: 20px;
+}
+
+.notification-modal-message {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 17px;
+  color: $nile-blue;
+}

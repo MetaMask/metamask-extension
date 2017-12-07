@@ -16,6 +16,7 @@ const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
+const NotifcationModal = require('./notification-modal')
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -122,6 +123,42 @@ const MODALS = {
   HIDE_TOKEN_CONFIRMATION: {
     contents: [
       h(HideTokenConfirmationModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
+  BETA_UI_NOTIFICATION_MODAL: {
+    contents: [
+      h(NotifcationModal, {
+        header: 'Welcome to the New UI (Beta)',
+        message: `You are now using the new Metamask UI. Take a look around, try out new features like sending tokens,
+        and let us know if you have any issues.`,
+      }),
+    ],
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
+  OLD_UI_NOTIFICATION_MODAL: {
+    contents: [
+      h(NotifcationModal, {
+        header: 'Old UI',
+        message: `You have returned to the old UI. You can switch back to the New UI through the option in the top
+        right dropdown menu.`,
+      }),
     ],
     mobileModalStyle: {
       width: '95%',
