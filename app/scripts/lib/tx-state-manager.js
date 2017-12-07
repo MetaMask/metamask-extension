@@ -187,6 +187,10 @@ module.exports = class TransactionStateManger extends EventEmitter {
     this._setTxStatus(txId, 'rejected')
   }
 
+  // should update the status of the tx to 'unapproved'.
+  setTxStatusUnapproved (txId) {
+    this._setTxStatus(txId, 'unapproved')
+  }
   // should update the status of the tx to 'approved'.
   setTxStatusApproved (txId) {
     this._setTxStatus(txId, 'approved')

@@ -9,6 +9,7 @@ const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
+const actions = require('../actions')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -21,6 +22,7 @@ function TransactionListItem () {
 
 TransactionListItem.prototype.render = function () {
   const { transaction, network, conversionRate, currentCurrency } = this.props
+  const { status } = transaction
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }
@@ -32,7 +34,7 @@ TransactionListItem.prototype.render = function () {
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
-  var isPending = transaction.status === 'unapproved'
+  var isPending = status === 'unapproved'
   let txParams
   if (isTx) {
     txParams = transaction.txParams
@@ -97,8 +99,14 @@ TransactionListItem.prototype.render = function () {
         showFiat: false,
         style: {fontSize: '15px'},
       }) : h('.flex-column'),
+
     ])
   )
+}
+
+TransactionListItem.prototype.resubmit = function () {
+  const { transaction } = this.props
+  this.props.dispatch(actions.resubmitTx(transaction.id))
 }
 
 function domainField (txParams) {
