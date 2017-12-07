@@ -763,11 +763,11 @@ function markAccountsFound () {
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
   return (dispatch) => {
-    background.retryTransaction(txId, (err) => {
+    background.retryTransaction(txId, (err, newState) => {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-      forceUpdateMetamaskState(dispatch)
+      dispatch(actions.updateMetamaskState(newState))
       dispatch(actions.viewPendingTx(txId))
     })
   }
