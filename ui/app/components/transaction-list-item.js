@@ -28,6 +28,12 @@ function TransactionListItem () {
   Component.call(this)
 }
 
+TransactionListItem.prototype.showRetryButton = function () {
+  const { transaction = {} } = this.props
+  const { status, time } = transaction
+  return status === 'submitted' && Date.now() - time > 30000
+}
+
 TransactionListItem.prototype.render = function () {
   const { transaction, network, conversionRate, currentCurrency } = this.props
   const { status } = transaction
@@ -114,7 +120,7 @@ TransactionListItem.prototype.render = function () {
         }) : h('.flex-column'),
       ]),
 
-      transaction.status === 'submitted' && h('.transition-list-item__retry', {
+      this.showRetryButton() && h('.transition-list-item__retry.grow-on-hover', {
         onClick: event => {
           event.stopPropagation()
           this.resubmit()
