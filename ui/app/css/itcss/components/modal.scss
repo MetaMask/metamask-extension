@@ -676,6 +676,7 @@
       min-height: 360px;
       flex-flow: column;
       justify-content: center;
+      padding-top: 45px;
     }
 
     &__logo {
@@ -702,7 +703,7 @@
       border-radius: 50%;
       width: 68px;
       height: 68px;
-      border: 3px solid $cape-cod;
+      border: 3px solid $tundora;
       z-index: 25;
       padding: 4px;
       background-color: #fff;
@@ -714,7 +715,7 @@
 
     &__description {
       color: $cape-cod;
-      flex: 1;
+      flex: 0.5 1 auto;
 
       @media screen and (min-width: 575px) {
         min-width: 315px;

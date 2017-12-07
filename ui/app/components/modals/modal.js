@@ -80,13 +80,13 @@ const MODALS = {
     ],
     mobileModalStyle: {
       width: '100%',
-      minHeight: '91%',
+      height: '100%',
       transform: 'none',
       left: '0',
       right: '0',
       margin: '0 auto',
       boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
-      top: '8%',
+      top: '0',
       display: 'flex',
     },
     laptopModalStyle: {

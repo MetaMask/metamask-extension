@@ -106,7 +106,7 @@ DepositEtherModal.prototype.render = function () {
 
         isTestNetwork
           ? this.renderRow(
-            h('i.fa.fa-arrow-left.fa-2x'),
+            h('i.fa.fa-tint.fa-2x'),
             FAUCET_ROW_TITLE,
             facuetRowText(networkName),
             'Get Ether',
