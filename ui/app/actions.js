@@ -760,9 +760,9 @@ function markAccountsFound () {
   return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
-function retryTransaction () {
+function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
-  return callBackgroundThenUpdate(background.retryTransaction)
+  return callBackgroundThenUpdate(background.retryTransaction, txId)
 }
 
 //
