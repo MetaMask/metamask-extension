@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
@@ -13,7 +14,14 @@ const actions = require('../actions')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
-module.exports = TransactionListItem
+
+const mapDispatchToProps = dispatch => {
+  return {
+    retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
+  }
+}
+
+module.exports = connect(null, mapDispatchToProps)(TransactionListItem)
 
 inherits(TransactionListItem, Component)
 function TransactionListItem () {
@@ -141,7 +149,7 @@ TransactionListItem.prototype.render = function () {
 
 TransactionListItem.prototype.resubmit = function () {
   const { transaction } = this.props
-  this.props.dispatch(actions.resubmitTx(transaction.id))
+  this.props.retryTransaction(transaction.id)
 }
 
 function domainField (txParams) {
