@@ -44,6 +44,7 @@ function mapStateToProps (state) {
     computedBalances: state.metamask.computedBalances,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    send: state.metamask.send,
   }
 }
 
@@ -53,15 +54,18 @@ function ConfirmTxScreen () {
 }
 
 ConfirmTxScreen.prototype.componentWillMount = function () {
-  const { unapprovedTxs = {} } = this.props
-  if (Object.keys(unapprovedTxs).length === 0) {
+  const { unapprovedTxs = {}, send } = this.props
+  const { to } = send
+  if (Object.keys(unapprovedTxs).length === 0 && !to) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
 
 ConfirmTxScreen.prototype.componentWillReceiveProps = function (nextProps) {
+  const { send } = this.props
+  const { to } = send
   const { unapprovedTxs = {} } = nextProps
-  if (Object.keys(unapprovedTxs).length === 0) {
+  if (Object.keys(unapprovedTxs).length === 0 && !to) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
