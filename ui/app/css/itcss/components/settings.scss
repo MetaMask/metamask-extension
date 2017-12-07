@@ -145,6 +145,11 @@
   color: $monzo;
 }
 
+.settings__clear-button--orange {
+  border: 1px solid rgba(247, 134, 28, 1);
+  color: rgba(247, 134, 28, 1);
+}
+
 .settings__info-logo-wrapper {
   height: 80px;
   margin-bottom: 20px;

@@ -24,6 +24,7 @@ const selectors = {
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
+  autoAddToBetaUI,
   getSendMaxModeState,
 }
 
@@ -162,4 +163,21 @@ function getSelectedTokenContract (state) {
   return selectedToken
     ? global.eth.contract(abi).at(selectedToken.address)
     : null
+}
+
+function autoAddToBetaUI (state) {
+  const autoAddTransactionThreshold = 12
+  const autoAddAccountsThreshold = 2
+  const autoAddTokensThreshold = 1
+
+  const numberOfTransactions = state.metamask.selectedAddressTxList.length
+  const numberOfAccounts = Object.keys(state.metamask.accounts).length
+  const numberOfTokensAdded = state.metamask.tokens.length
+
+  const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
+    (numberOfAccounts > autoAddAccountsThreshold) &&
+    (numberOfTokensAdded > autoAddTokensThreshold)
+  const userIsNotInBeta = !state.metamask.featureFlags.betaUI
+  
+  return userIsNotInBeta && userPassesThreshold
 }

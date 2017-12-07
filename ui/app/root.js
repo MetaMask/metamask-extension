@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const Provider = require('react-redux').Provider
 const h = require('react-hyperscript')
-const App = require('./app')
+const SelectedApp = require('./select-app')
 
 module.exports = Root
 
@@ -15,7 +15,7 @@ Root.prototype.render = function () {
     h(Provider, {
       store: this.props.store,
     }, [
-      h(App),
+      h(SelectedApp),
     ])
 
   )

@@ -38,6 +38,7 @@ function reduceMetamask (state, action) {
     },
     coinOptions: {},
     useBlockie: false,
+    featureFlags: {},
   }, state.metamask)
 
   switch (action.type) {
@@ -319,7 +320,7 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
-          [marketinfo.pair]: ssMarketInfo,
+          [ssMarketInfo.pair]: ssMarketInfo,
         },
         coinOptions,
       })
@@ -328,6 +329,11 @@ function reduceMetamask (state, action) {
           return extend(metamaskState, {
             useBlockie: action.value,
           })
+
+    case actions.UPDATE_FEATURE_FLAGS:
+      return extend(metamaskState, {
+        featureFlags: action.value,
+      })
 
     default:
       return metamaskState

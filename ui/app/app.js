@@ -116,40 +116,41 @@ App.prototype.render = function () {
   log.debug('Main ui render function')
 
   return (
+    h('.new-ui', [
+      h('.flex-column.full-height', {
+        style: {
+          overflowX: 'hidden',
+          position: 'relative',
+          alignItems: 'center',
+        },
+      }, [
 
-    h('.flex-column.full-height', {
-      style: {
-        overflowX: 'hidden',
-        position: 'relative',
-        alignItems: 'center',
-      },
-    }, [
+        // global modal
+        h(Modal, {}, []),
 
-      // global modal
-      h(Modal, {}, []),
+        // app bar
+        this.renderAppBar(),
 
-      // app bar
-      this.renderAppBar(),
+        // sidebar
+        this.renderSidebar(),
 
-      // sidebar
-      this.renderSidebar(),
+        // network dropdown
+        h(NetworkDropdown, {
+          provider: this.props.provider,
+          frequentRpcList: this.props.frequentRpcList,
+        }, []),
 
-      // network dropdown
-      h(NetworkDropdown, {
-        provider: this.props.provider,
-        frequentRpcList: this.props.frequentRpcList,
-      }, []),
+        h(AccountMenu),
 
-      h(AccountMenu),
+        (isLoading || isLoadingNetwork) && h(Loading, {
+          loadingMessage: loadMessage,
+        }),
 
-      (isLoading || isLoadingNetwork) && h(Loading, {
-        loadingMessage: loadMessage,
-      }),
+        // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
 
-      // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
-
-      // content
-      this.renderPrimary(),
+        // content
+        this.renderPrimary(),
+      ]),
     ])
   )
 }
