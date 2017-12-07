@@ -39,7 +39,7 @@ Network.prototype.render = function () {
         },
         src: 'images/loading.svg',
       }),
-      h('i.fa.fa-caret-down'),
+      h('i.fa.fa-caret-down.network-caret'),
     ])
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
@@ -63,7 +63,7 @@ Network.prototype.render = function () {
 
   return (
     h('div.network-component.pointer', {
-      className: classnames('network-component pointer', {
+      className: classnames({
         'network-component--disabled': this.props.disabled,
         'ethereum-network': providerName === 'mainnet',
         'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
@@ -90,7 +90,7 @@ Network.prototype.render = function () {
                   color: '#039396',
                 }},
               'Main Network'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              h('i.fa.fa-caret-down.fa-lg.network-caret'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
@@ -103,7 +103,7 @@ Network.prototype.render = function () {
                   color: '#ff6666',
                 }},
               'Ropsten Test Net'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              h('i.fa.fa-caret-down.fa-lg.network-caret'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
@@ -116,7 +116,7 @@ Network.prototype.render = function () {
                   color: '#690496',
                 }},
               'Kovan Test Net'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              h('i.fa.fa-caret-down.fa-lg.network-caret'),
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
@@ -129,7 +129,7 @@ Network.prototype.render = function () {
                   color: '#e7a218',
                 }},
               'Rinkeby Test Net'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              h('i.fa.fa-caret-down.fa-lg.network-caret'),
             ])
           default:
             return h('.network-indicator', [
@@ -145,7 +145,7 @@ Network.prototype.render = function () {
                   color: '#AEAEAE',
                 }},
               'Private Network'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              h('i.fa.fa-caret-down.fa-lg.network-caret'),
             ])
         }
       })(),
