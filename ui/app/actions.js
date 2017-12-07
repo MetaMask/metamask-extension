@@ -762,7 +762,15 @@ function markAccountsFound () {
 
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
-  return callBackgroundThenUpdate(background.retryTransaction, txId)
+  return (dispatch) => {
+    background.retryTransaction(txId, (err) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      forceUpdateMetamaskState(dispatch)
+      dispatch(actions.viewPendingTx(txId))
+    })
+  }
 }
 
 //
