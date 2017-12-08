@@ -4,6 +4,14 @@
 
 - Detect when provider changes from under MetaMask and reset provider state.
 
+## 3.13.1 2017-12-7
+
+- Allow Dapps to specify a transaction nonce, allowing dapps to propose resubmit and force-cancel transactions.
+
+## 3.13.0 2017-12-7
+
+- Allow resubmitting transactions that are taking long to complete.
+
 ## 3.12.1 2017-11-29
 
 - Fix bug where a user could be shown two different seed phrases.

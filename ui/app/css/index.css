@@ -108,6 +108,10 @@ button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
   transform: scale(0.95);
 }
 
+.grow-on-hover:hover {
+  transform: scale(1.05);
+}
+
 a {
   text-decoration: none;
   color: inherit;
