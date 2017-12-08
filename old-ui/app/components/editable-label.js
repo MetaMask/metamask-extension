@@ -29,6 +29,7 @@ EditableLabel.prototype.render = function () {
     ])
   } else {
     return h('div.name-label', {
+      style: props.nameLabelStyle,
       onClick: (event) => {
         const nameAttribute = event.target.getAttribute('name')
         // checks for class to handle smaller CTA above the account name

@@ -78,10 +78,9 @@ AccountDetailScreen.prototype.render = function () {
               address: selected,
             }),
           ]),
-          h('flex-column', {
+          h('div.flex-column', {
             style: {
               lineHeight: '10px',
-              marginLeft: '15px',
               width: '100%',
             },
           }, [
@@ -89,6 +88,9 @@ AccountDetailScreen.prototype.render = function () {
               textValue: identity ? identity.name : '',
               state: {
                 isEditingLabel: false,
+              },
+              nameLabelStyle: {
+                marginLeft: '15px',
               },
               saveText: (text) => {
                 props.dispatch(actions.saveAccountLabel(selected, text))
@@ -102,7 +104,7 @@ AccountDetailScreen.prototype.render = function () {
                 {
                   style: {
                     display: 'flex',
-                    justifyContent: 'flex-start',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                   },
                 },
@@ -132,8 +134,6 @@ AccountDetailScreen.prototype.render = function () {
                     AccountDropdowns,
                     {
                       style: {
-                        marginRight: '8px',
-                        marginLeft: 'auto',
                         cursor: 'pointer',
                       },
                       selected,
@@ -147,7 +147,6 @@ AccountDetailScreen.prototype.render = function () {
             ]),
             h('.flex-row', {
               style: {
-                width: '15em',
                 justifyContent: 'space-between',
                 alignItems: 'baseline',
               },
@@ -164,6 +163,7 @@ AccountDetailScreen.prototype.render = function () {
                   fontSize: '13px',
                   fontFamily: 'Montserrat Light',
                   textRendering: 'geometricPrecision',
+                  marginTop: '15px',
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },
@@ -191,20 +191,21 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
-          h('.flex-grow'),
+          h('div', {}, [
 
-          h('button', {
-            onClick: () => props.dispatch(actions.buyEthView(selected)),
-            style: { marginRight: '10px' },
-          }, 'BUY'),
+            h('button', {
+              onClick: () => props.dispatch(actions.buyEthView(selected)),
+              style: { marginRight: '10px' },
+            }, 'BUY'),
 
-          h('button', {
-            onClick: () => props.dispatch(actions.showSendPage()),
-            style: {
-              marginBottom: '20px',
-              marginRight: '8px',
-            },
-          }, 'SEND'),
+            h('button', {
+              onClick: () => props.dispatch(actions.showSendPage()),
+              style: {
+                marginBottom: '20px',
+              },
+            }, 'SEND'),
+
+          ]),
 
         ]),
       ]),
