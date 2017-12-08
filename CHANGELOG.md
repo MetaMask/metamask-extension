@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Detect when provider changes from under MetaMask and reset provider state.
+
 ## 3.13.1 2017-12-7
 
 - Allow Dapps to specify a transaction nonce, allowing dapps to propose resubmit and force-cancel transactions.
