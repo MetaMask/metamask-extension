@@ -56,6 +56,8 @@ TransactionListItem.prototype.render = function () {
       },
       style: {
         padding: '20px 0',
+        display: 'flex',
+        justifyContent: 'space-between',
       },
     }, [
 
@@ -74,12 +76,11 @@ TransactionListItem.prototype.render = function () {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '10px',
           },
         }, nonce),
       ]),
 
-      h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
+      h('.flex-column', {style: {width: '150px', overflow: 'hidden'}}, [
         domainField(txParams),
         h('div', date),
         recipientField(txParams, transaction, isTx, isMsg),
@@ -92,7 +93,6 @@ TransactionListItem.prototype.render = function () {
         value: txParams.value,
         conversionRate,
         currentCurrency,
-        width: '55px',
         shorten: true,
         showFiat: false,
         style: {fontSize: '15px'},
