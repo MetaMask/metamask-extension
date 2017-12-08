@@ -268,7 +268,6 @@ class AccountDropdowns extends Component {
           'i.fa.fa-ellipsis-h',
           {
             style: {
-              marginRight: '0.5em',
               fontSize: '1.8em',
             },
             onClick: (event) => {
