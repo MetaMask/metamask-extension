@@ -61,7 +61,6 @@ input:focus, textarea:focus {
 
 #app-content {
   overflow-x: hidden;
-  min-width: 357px;
   height: 100%;
   display: flex;
   flex-direction: column;

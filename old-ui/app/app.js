@@ -93,32 +93,30 @@ App.prototype.render = function () {
   log.debug('Main ui render function')
 
   return (
-    h('.old-ui', [
-      h('.flex-column.full-height', {
+    h('.flex-column.full-height', {
+      style: {
+        // Windows was showing a vertical scroll bar:
+        overflow: 'hidden',
+        position: 'relative',
+        alignItems: 'center',
+      },
+    }, [
+
+      // app bar
+      this.renderAppBar(),
+      this.renderNetworkDropdown(),
+      this.renderDropdown(),
+
+      this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
+
+      // panel content
+      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
         style: {
-          // Windows was showing a vertical scroll bar:
-          overflow: 'hidden',
-          position: 'relative',
-          alignItems: 'center',
+          width: '100%',
         },
       }, [
-
-        // app bar
-        this.renderAppBar(),
-        this.renderNetworkDropdown(),
-        this.renderDropdown(),
-
-        this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
-
-        // panel content
-        h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
-          style: {
-            width: '100%',
-          },
-        }, [
-          this.renderPrimary(),
-        ]),
-      ])
+        this.renderPrimary(),
+      ]),
     ])
   )
 }
