@@ -3,6 +3,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
+const isMobileBrowser = require('../../lib/is-mobile-browser')
 const actions = require('../actions')
 const selectors = require('../selectors')
 
@@ -140,9 +141,9 @@ TxView.prototype.render = function () {
         identity.name,
       ]),
 
-      h('div.open-in-browser', {
+      !isMobileBrowser() && h('div.open-in-browser', {
         onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/open.svg' })])
+      }, [h('img', { src: 'images/open.svg' })]),
 
     ]),
 

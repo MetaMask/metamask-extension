@@ -41,7 +41,6 @@ SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
 
 SelectedApp.prototype.render = function () {
   const { betaUI } = this.props
-  const { autoAdd } = this.state 
   const Selected = betaUI ? App : OldApp
   return h(Selected)
 }
