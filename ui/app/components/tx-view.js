@@ -107,6 +107,7 @@ TxView.prototype.render = function () {
     h('div.flex-row.phone-visible', {
       style: {
         margin: '1em 0.9em',
+        justifyContent: 'space-between',
         alignItems: 'center',
       },
     }, [
@@ -138,6 +139,10 @@ TxView.prototype.render = function () {
       }, [
         identity.name,
       ]),
+
+      h('div.open-in-browser', {
+        onClick: () => global.platform.openExtensionInBrowser(),
+      }, [h('img', { src: 'images/open.svg' })])
 
     ]),
 
