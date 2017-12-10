@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.13.2 2017-12-9
+
 - Reduce new block polling interval to 8000 ms, to ease server load.
 
 ## 3.13.1 2017-12-7
