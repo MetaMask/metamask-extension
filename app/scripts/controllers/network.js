@@ -106,7 +106,11 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureStandardProvider (_providerParams) {
-    const providerParams = extend(this._baseProviderParams, _providerParams)
+    const providerParams = extend(this._baseProviderParams, _providerParams, {
+      engineParams: {
+        pollingInterval: 8000,
+      },
+    })
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
   }
