@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Reduce new block polling interval to 8000 ms, to ease server load.
+
 ## 3.13.1 2017-12-7
 
 - Allow Dapps to specify a transaction nonce, allowing dapps to propose resubmit and force-cancel transactions.
