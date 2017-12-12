@@ -89,9 +89,6 @@ AccountDetailScreen.prototype.render = function () {
               state: {
                 isEditingLabel: false,
               },
-              nameLabelStyle: {
-                marginLeft: '15px',
-              },
               saveText: (text) => {
                 props.dispatch(actions.saveAccountLabel(selected, text))
               },
