@@ -438,6 +438,10 @@ input.large-input {
   flex-wrap: wrap;
   overflow-y: auto;
   flex-direction: inherit;
+
+  .name-label {
+    margin-left: 15px;
+  }
 }
 
 .grow-tenx {
