@@ -15,6 +15,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
 function mapStateToProps (state) {
   const sidebarOpen = state.appState.sidebarOpen
+  const isMascara = state.appState.isMascara
 
   const identities = state.metamask.identities
   const accounts = state.metamask.accounts
@@ -141,7 +142,7 @@ TxView.prototype.render = function () {
         identity.name,
       ]),
 
-      !isMobileBrowser() && h('div.open-in-browser', {
+      !isMascara && h('div.open-in-browser', {
         onClick: () => global.platform.openExtensionInBrowser(),
       }, [h('img', { src: 'images/open.svg' })]),
 
