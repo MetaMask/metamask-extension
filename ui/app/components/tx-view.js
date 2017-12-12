@@ -3,7 +3,6 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
-const isMobileBrowser = require('../../lib/is-mobile-browser')
 const actions = require('../actions')
 const selectors = require('../selectors')
 
@@ -33,6 +32,7 @@ function mapStateToProps (state) {
     selectedToken: selectors.getSelectedToken(state),
     identity,
     network,
+    isMascara,
   }
 }
 
@@ -100,7 +100,7 @@ TxView.prototype.renderButtons = function () {
 }
 
 TxView.prototype.render = function () {
-  const { selectedAddress, identity, network } = this.props
+  const { selectedAddress, identity, network, isMascara } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
