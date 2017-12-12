@@ -162,6 +162,7 @@ AccountDetailScreen.prototype.render = function () {
                   textRendering: 'geometricPrecision',
                   marginTop: '15px',
                   marginBottom: '15px',
+                  marginLeft: '15px',
                   color: '#AEAEAE',
                 },
               }, checksumAddress),
