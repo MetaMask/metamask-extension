@@ -67,15 +67,15 @@ function mapDispatchToProps (dispatch, ownProps) {
       const { txParams, id } = txMeta
       const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
       const { params = [] } = tokenData
-      const { value } = params[1] || {}
-      const amount = conversionUtil(value, {
+      const { value: to } = params[0] || {}
+      const { value: tokenAmountInDec } = params[1] || {}
+      const tokenAmountInHex = conversionUtil(tokenAmountInDec, {
         fromNumericBase: 'dec',
         toNumericBase: 'hex',
       })
       const {
         gas: gasLimit,
         gasPrice,
-        to,
       } = txParams
       dispatch(actions.setSelectedToken(address))
       dispatch(actions.updateSend({
@@ -83,7 +83,7 @@ function mapDispatchToProps (dispatch, ownProps) {
         gasPrice,
         gasTotal: null,
         to,
-        amount,
+        amount: tokenAmountInHex,
         errors: { to: null, amount: null },
         editingTransactionId: id,
       }))
@@ -446,10 +446,11 @@ ConfirmSendToken.prototype.gatherTxMeta = function () {
         amount,
         gasLimit: gas,
         gasPrice,
+        to,
       },
     } = props
 
-    const { txParams: { from, to } } = txData
+    const { txParams: { from, to: tokenAddress } } = txData
 
     const tokenParams = {
       from: ethUtil.addHexPrefix(from),
@@ -465,7 +466,7 @@ ConfirmSendToken.prototype.gatherTxMeta = function () {
 
     txData.txParams = {
       ...tokenParams,
-      to: ethUtil.addHexPrefix(to),
+      to: ethUtil.addHexPrefix(tokenAddress),
       memo: memo && ethUtil.addHexPrefix(memo),
       data,
     }
