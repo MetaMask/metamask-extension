@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Show tokens that are held that have no balance.
+
 ## 3.13.2 2017-12-9
 
 - Reduce new block polling interval to 8000 ms, to ease server load.
