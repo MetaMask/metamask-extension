@@ -96,7 +96,7 @@ Notice.prototype.render = function () {
         },
       }, [
         h(ReactMarkdown, {
-          className: 'notice-box',
+          className: 'notice-box markdown',
           source: body,
           skipHtml: true,
         }),
