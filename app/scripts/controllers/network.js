@@ -1,7 +1,6 @@
 const assert = require('assert')
 const EventEmitter = require('events')
 const createMetamaskProvider = require('web3-provider-engine/zero.js')
-const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
@@ -9,7 +8,6 @@ const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
 const RPC_ADDRESS_LIST = require('../config.js').network
 const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
-const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
 
 module.exports = class NetworkController extends EventEmitter {
 
@@ -26,13 +24,8 @@ module.exports = class NetworkController extends EventEmitter {
 
   initializeProvider (_providerParams) {
     this._baseProviderParams = _providerParams
-    const { type, rpcTarget } = this.providerStore.getState()
-    // map rpcTarget to rpcUrl
-    const opts = {
-      type,
-      rpcUrl: rpcTarget,
-    }
-    this._configureProvider(opts)
+    const rpcUrl = this.getCurrentRpcAddress()
+    this._configureStandardProvider({ rpcUrl })
     this._proxy.on('block', this._logBlock.bind(this))
     this._proxy.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this._proxy)
@@ -90,7 +83,7 @@ module.exports = class NetworkController extends EventEmitter {
     const rpcTarget = this.getRpcAddressForType(type)
     assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
     this.providerStore.updateState({ type, rpcTarget })
-    this._switchNetwork({ type })
+    this._switchNetwork({ rpcUrl: rpcTarget })
   }
 
   getProviderConfig () {
@@ -106,50 +99,14 @@ module.exports = class NetworkController extends EventEmitter {
   // Private
   //
 
-  _switchNetwork (opts) {
+  _switchNetwork (providerParams) {
     this.setNetworkState('loading')
-    this._configureProvider(opts)
+    this._configureStandardProvider(providerParams)
     this.emit('networkDidChange')
   }
 
-  _configureProvider (opts) {
-    // type-based rpc endpoints
-    const { type } = opts
-    if (type) {
-      // type-based infura rpc endpoints
-      const isInfura = INFURA_PROVIDER_TYPES.includes(type)
-      opts.rpcUrl = this.getRpcAddressForType(type)
-      if (isInfura) {
-        this._configureInfuraProvider(opts)
-      // other type-based rpc endpoints
-      } else {
-        this._configureStandardProvider(opts)
-      }
-    // url-based rpc endpoints
-    } else {
-      this._configureStandardProvider(opts)
-    }
-  }
-
-  _configureInfuraProvider (opts) {
-    console.log('_configureInfuraProvider', opts)
-    const blockTrackerProvider = createInfuraProvider({
-      network: opts.type,
-    })
-    const providerParams = extend(this._baseProviderParams, {
-      rpcUrl: opts.rpcUrl,
-      engineParams: {
-        pollingInterval: 8000,
-        blockTrackerProvider,
-      },
-    })
-    const provider = createMetamaskProvider(providerParams)
-    this._setProvider(provider)
-  }
-
-  _configureStandardProvider ({ rpcUrl }) {
-    const providerParams = extend(this._baseProviderParams, {
-      rpcUrl,
+  _configureStandardProvider (_providerParams) {
+    const providerParams = extend(this._baseProviderParams, _providerParams, {
       engineParams: {
         pollingInterval: 8000,
       },
