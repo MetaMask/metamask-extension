@@ -2,7 +2,10 @@
 
 ## Current Master
 
+## 3.13.3 2017-12-14
+
 - Show tokens that are held that have no balance.
+- Reduce load on Infura by using a new block polling endpoint.
 
 ## 3.13.2 2017-12-9
 
