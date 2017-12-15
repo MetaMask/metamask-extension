@@ -22,7 +22,11 @@ module.exports = class txProvideUtil {
     try {
       estimatedGasHex = await this.estimateTxGas(txMeta, block.gasLimit)
     } catch (err) {
-      if (err.message.includes('Transaction execution error.')) {
+      const simulationFailed = (
+        err.message.includes('Transaction execution error.') ||
+        err.message.includes('gas required exceeds allowance or always failing transaction')
+      )
+      if ( simulationFailed ) {
         txMeta.simulationFails = true
         return txMeta
       }
