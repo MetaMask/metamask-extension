@@ -132,7 +132,7 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureInfuraProvider (opts) {
-    console.log('_configureInfuraProvider', opts)
+    log.info('_configureInfuraProvider', opts)
     const blockTrackerProvider = createInfuraProvider({
       network: opts.type,
     })
