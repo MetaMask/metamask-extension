@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug that prevented updating custom token details.
+
 ## 3.13.3 2017-12-14
 
 - Show tokens that are held that have no balance.
