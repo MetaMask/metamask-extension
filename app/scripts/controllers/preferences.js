@@ -26,23 +26,23 @@ class PreferencesController {
     return this.store.getState().selectedAddress
   }
 
-  addToken (rawAddress, symbol, decimals) {
+  async addToken (rawAddress, symbol, decimals) {
     const address = normalizeAddress(rawAddress)
     const newEntry = { address, symbol, decimals }
 
     const tokens = this.store.getState().tokens
-    const previousIndex = tokens.find((token, index) => {
+    const previousEntry = tokens.find((token, index) => {
       return token.address === address
     })
+    const previousIndex = tokens.indexOf(previousEntry)
 
-    if (previousIndex) {
+    if (previousEntry) {
       tokens[previousIndex] = newEntry
     } else {
       tokens.push(newEntry)
     }
 
     this.store.updateState({ tokens })
-    return Promise.resolve()
   }
 
   getTokens () {
