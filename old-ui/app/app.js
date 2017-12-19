@@ -405,7 +405,7 @@ App.prototype.renderDropdown = function () {
 
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.setFeatureFlag('betaUI', true)) },
+      onClick: () => { this.props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL')) },
     }, 'Try Beta!'),
   ])
 }

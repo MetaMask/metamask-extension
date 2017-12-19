@@ -1523,10 +1523,7 @@ function updateTokenExchangeRate (token = '') {
   }
 }
 
-function setFeatureFlag (feature, activated) {
-  const notificationType = activated
-    ? 'BETA_UI_NOTIFICATION_MODAL'
-    : 'OLD_UI_NOTIFICATION_MODAL'
+function setFeatureFlag (feature, activated, notificationType) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
@@ -1537,7 +1534,7 @@ function setFeatureFlag (feature, activated) {
           reject(err)
         }
         dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
-        dispatch(actions.showModal({ name: notificationType }))
+        notificationType && dispatch(actions.showModal({ name: notificationType }))
         resolve(updatedFeatureFlags)
       })
     })
