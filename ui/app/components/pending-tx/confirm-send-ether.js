@@ -55,6 +55,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
+    updateAndCancelTx: txMeta => dispatch(actions.updateAndCancelTx(txMeta)),
   }
 }
 
@@ -421,7 +422,13 @@ ConfirmSendEther.prototype.onSubmit = function (event) {
 
 ConfirmSendEther.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
-  this.props.cancelTransaction(txMeta)
+  const { send, updateAndCancelTx, cancelTransaction } = this.props
+  
+  if (send.editingTransactionId) {
+    updateAndCancelTx(txMeta)
+  } else {
+    cancelTransaction(txMeta)
+  }
 }
 
 ConfirmSendEther.prototype.checkValidity = function () {

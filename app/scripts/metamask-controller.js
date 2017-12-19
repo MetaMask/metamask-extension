@@ -366,6 +366,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
+      updateAndCancelTransaction: nodeify(txController.updateAndCancelTransaction, txController),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),

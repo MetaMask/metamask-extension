@@ -89,6 +89,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       }))
       dispatch(actions.showSendTokenPage())
     },
+    updateAndCancelTx: txMeta => dispatch(actions.updateAndCancelTx(txMeta)),
   }
 }
 
@@ -415,7 +416,13 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
 
 ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
-  this.props.cancelTransaction(txMeta)
+  const { send, updateAndCancelTx, cancelTransaction } = this.props
+  
+  if (send.editingTransactionId) {
+    updateAndCancelTx(txMeta)
+  } else {
+    cancelTransaction(txMeta)
+  }
 }
 
 ConfirmSendToken.prototype.checkValidity = function () {

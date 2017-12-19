@@ -189,6 +189,11 @@ module.exports = class TransactionController extends EventEmitter {
     await this.approveTransaction(txMeta.id)
   }
 
+  async updateAndCancelTransaction (txMeta) {
+    this.txStateManager.updateTx(txMeta, 'confTx: user rejected transaction')
+    await this.cancelTransaction(txMeta.id)
+  }
+
   async approveTransaction (txId) {
     let nonceLock
     try {
