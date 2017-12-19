@@ -23,8 +23,15 @@ class RecentBlocksController {
   }
 
   processBlock (newBlock) {
+    const block = extend(newBlock, {
+      gasPrices: newBlock.transactions.map((tx) => {
+        return tx.gasPrice
+      }),
+    })
+    delete block.transactions
+
     const state = this.store.getState()
-    state.recentBlocks.push(newBlock)
+    state.recentBlocks.push(block)
 
     while (state.recentBlocks.length > this.historyLength) {
       state.recentBlocks.shift()
