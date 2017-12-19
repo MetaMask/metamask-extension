@@ -1,25 +1,21 @@
 const assert = require('assert')
 const NetworkController = require('../../app/scripts/controllers/network')
+const { createStubedProvider } = require('../stub/provider')
 
 describe('# Network Controller', function () {
-  let networkController
-  const networkControllerProviderInit = {
-    getAccounts: () => {},
-  }
+  let networkController, providerResultStub, provider
 
   beforeEach(function () {
+    providerResultStub = {}
+    provider = createStubedProvider(providerResultStub)
     networkController = new NetworkController({
-      provider: {
-        type: 'rinkeby',
-      },
+      provider,
     })
 
-    networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
   })
   describe('network', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
-        networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
         const proxy = networkController._proxy
         proxy.setTarget({ test: true, on: () => {} })
         assert.ok(proxy.test)
@@ -65,20 +61,3 @@ describe('# Network Controller', function () {
     })
   })
 })
-
-function dummyProviderConstructor() {
-  return {
-    // provider
-    sendAsync: noop,
-    // block tracker
-    _blockTracker: {},
-    start: noop,
-    stop: noop,
-    on: noop,
-    addListener: noop,
-    once: noop,
-    removeAllListeners: noop,
-  }
-}
-
-function noop() {}
