@@ -138,18 +138,20 @@ module.exports = class TransactionController extends EventEmitter {
 
   async newUnapprovedTransaction (txParams) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
-    const txMeta = await this.addUnapprovedTransaction(txParams)
-    this.emit('newUnapprovedTx', txMeta)
+    const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    this.emit('newUnapprovedTx', initialTxMeta)
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
-      this.txStateManager.once(`${txMeta.id}:finished`, (completedTx) => {
-        switch (completedTx.status) {
+      this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
+        switch (finishedTxMeta.status) {
           case 'submitted':
-            return resolve(completedTx.hash)
+            return resolve(finishedTxMeta.hash)
           case 'rejected':
             return reject(new Error('MetaMask Tx Signature: User denied transaction signature.'))
+          case 'failed':
+            return reject(new Error(finishedTxMeta.err.message))
           default:
-            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(completedTx.txParams)}`))
+            return reject(new Error(`MetaMask Tx Signature: Unknown problem: ${JSON.stringify(finishedTxMeta.txParams)}`))
         }
       })
     })
@@ -177,11 +179,19 @@ module.exports = class TransactionController extends EventEmitter {
     const txParams = txMeta.txParams
     // ensure value
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
+    txMeta.nonceSpecified = Boolean(txParams.nonce)
     const gasPrice = txParams.gasPrice || await this.query.gasPrice()
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta)
+  }
+
+  async retryTransaction (txId) {
+    this.txStateManager.setTxStatusUnapproved(txId)
+    const txMeta = this.txStateManager.getTx(txId)
+    txMeta.lastGasPrice = txMeta.txParams.gasPrice
+    this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
   }
 
   async updateAndApproveTransaction (txMeta) {
@@ -200,7 +210,12 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonceLock.nextNonce.toString(16))
+      const nonce = txMeta.nonceSpecified ? txMeta.txParams.nonce : nonceLock.nextNonce
+      if (nonce > nonceLock.nextNonce) {
+        const message = `Specified nonce may not be larger than account's next valid nonce.`
+        throw new Error(message)
+      }
+      txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
       this.txStateManager.updateTx(txMeta, 'transactions#approveTransaction')

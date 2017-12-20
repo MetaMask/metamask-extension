@@ -40,7 +40,7 @@ CoinbaseForm.prototype.render = function () {
       }, 'Continue to Coinbase'),
 
       h('button.btn-red', {
-        onClick: () => props.dispatch(actions.backTobuyView(props.accounts.address)),
+        onClick: () => props.dispatch(actions.goHome()),
       }, 'Cancel'),
     ]),
   ])
