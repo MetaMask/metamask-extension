@@ -28,27 +28,33 @@ function mapDispatchToProps (dispatch) {
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     showAccountDetail: address => {
       dispatch(actions.showAccountDetail(address))
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
     lockMetamask: () => {
       dispatch(actions.lockMetamask())
       dispatch(actions.displayWarning(null))
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
     showConfigPage: () => {
       dispatch(actions.showConfigPage())
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
     showNewAccountModal: () => {
       dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
     showImportPage: () => {
       dispatch(actions.showImportPage())
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
     showInfoPage: () => {
       dispatch(actions.showInfoPage())
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
   }
