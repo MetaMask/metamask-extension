@@ -115,7 +115,7 @@ function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
   const { txParams, msgParams } = txData
-  console.log(`22222 currentTxView txData`, txData);
+
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)

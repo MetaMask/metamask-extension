@@ -79,7 +79,6 @@ function mapDispatchToProps (dispatch) {
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
     goHome: () => dispatch(actions.goHome()),
     clearSend: () => dispatch(actions.clearSend()),
-    backToConfirmScreen: editingTransactionId => dispatch(actions.showConfTxPage({ id: editingTransactionId })),
     setMaxModeTo: bool => dispatch(actions.setMaxModeTo(bool)),
   }
 }

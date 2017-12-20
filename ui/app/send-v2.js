@@ -608,8 +608,6 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     selectedToken,
     editingTransactionId,
     errors: { amount: amountError, to: toError },
-    backToConfirmScreen,
-    unapprovedTxs,
   } = this.props
 
   const noErrors = !amountError && toError === null

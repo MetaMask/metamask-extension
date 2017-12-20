@@ -2,7 +2,6 @@ const Component = require('react').Component
 const { connect } = require('react-redux')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const ethAbi = require('ethereumjs-abi')
 const tokenAbi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(tokenAbi)
@@ -415,7 +414,7 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
 
 ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
-  const { send, cancelTransaction } = this.props
+  const { cancelTransaction } = this.props
   
   cancelTransaction(txMeta)
 }
