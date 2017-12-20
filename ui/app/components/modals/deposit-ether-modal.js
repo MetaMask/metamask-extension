@@ -122,15 +122,15 @@ DepositEtherModal.prototype.render = function () {
             () => toCoinbase(address)
           ),
 
-        !isTestNetwork && this.renderRow(
-          h('img.deposit-ether-modal__buy-row__shapeshift-logo', {
-            src: '../../../images/shapeshift logo.png',
-          }),
-          SHAPESHIFT_ROW_TITLE,
-          SHAPESHIFT_ROW_TEXT,
-          'Continue to Shapeshift',
-          () => {}
-        ),
+        // !isTestNetwork && this.renderRow(
+        //   h('img.deposit-ether-modal__buy-row__shapeshift-logo', {
+        //     src: '../../../images/shapeshift logo.png',
+        //   }),
+        //   SHAPESHIFT_ROW_TITLE,
+        //   SHAPESHIFT_ROW_TEXT,
+        //   'Continue to Shapeshift',
+        //   () => {}
+        // ),
 
       ]),
     // ]),
