@@ -125,8 +125,8 @@ var actions = {
   sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
+  updateTransaction,
   updateAndApproveTx,
-  updateAndCancelTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
   txError: txError,
@@ -693,29 +693,28 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   }
 }
 
-function updateAndApproveTx (txData) {
-  log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
+function updateTransaction (txData) {
+  log.info('actions: updateTx: ' + JSON.stringify(txData))
   return (dispatch) => {
-    log.debug(`actions calling background.updateAndApproveTx`)
-    background.updateAndApproveTransaction(txData, (err) => {
+    log.debug(`actions calling background.updateTx`)
+    background.updateTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
-      dispatch(actions.clearSend())
       if (err) {
         dispatch(actions.txError(err))
         dispatch(actions.goHome())
         return log.error(err.message)
       }
-      dispatch(actions.completedTx(txData.id))
+      dispatch(actions.showConfTxPage({ id: txData.id }))
     })
   }
 }
 
-function updateAndCancelTx (txData) {
-  log.info('actions: updateAndCancelTx: ' + JSON.stringify(txData))
+function updateAndApproveTx (txData) {
+  log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
-    log.debug(`actions calling background.updateAndCancelTx`)
-    background.updateAndCancelTransaction(txData, (err) => {
+    log.debug(`actions calling background.updateAndApproveTx`)
+    background.updateAndApproveTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
       dispatch(actions.clearSend())
@@ -773,6 +772,7 @@ function cancelTx (txData) {
   return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     background.cancelTransaction(txData.id, () => {
+      dispatch(actions.clearSend())
       dispatch(actions.completedTx(txData.id))
     })
   }

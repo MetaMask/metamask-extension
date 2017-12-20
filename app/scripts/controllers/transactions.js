@@ -184,14 +184,13 @@ module.exports = class TransactionController extends EventEmitter {
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
 
+  async updateTransaction (txMeta) {
+    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
+  }
+
   async updateAndApproveTransaction (txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
     await this.approveTransaction(txMeta.id)
-  }
-
-  async updateAndCancelTransaction (txMeta) {
-    this.txStateManager.updateTx(txMeta, 'confTx: user rejected transaction')
-    await this.cancelTransaction(txMeta.id)
   }
 
   async approveTransaction (txId) {
