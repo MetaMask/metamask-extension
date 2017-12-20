@@ -14,6 +14,7 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const {
   MIN_GAS_TOTAL,
+  TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./components/send/send-constants')
 
 const {
@@ -574,7 +575,7 @@ SendTransactionScreen.prototype.getEditedTx = function () {
   }
 
   if (selectedToken) {
-    const data = '0xa9059cbb' + Array.prototype.map.call(
+    const data = TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
       ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
       x => ('00' + x.toString(16)).slice(-2)
     ).join('')
