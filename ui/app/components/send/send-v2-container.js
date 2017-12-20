@@ -50,6 +50,7 @@ function mapStateToProps (state) {
     data,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
     tokenContract: getSelectedTokenContract(state),
+    unapprovedTxs: state.metamask.unapprovedTxs,
   }
 }
 
@@ -64,6 +65,7 @@ function mapDispatchToProps (dispatch) {
     ),
     signTx: txParams => dispatch(actions.signTx(txParams)),
     updateAndApproveTx: txParams => dispatch(actions.updateAndApproveTx(txParams)),
+    updateTx: txData => dispatch(actions.updateTransaction(txData)),
     setSelectedAddress: address => dispatch(actions.setSelectedAddress(address)),
     addToAddressBook: address => dispatch(actions.addToAddressBook(address)),
     updateGasTotal: newTotal => dispatch(actions.updateGasTotal(newTotal)),
