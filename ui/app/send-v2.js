@@ -566,12 +566,13 @@ SendTransactionScreen.prototype.getEditedTx = function () {
     unapprovedTxs,
   } = this.props
 
-  const editingTx = unapprovedTxs[editingTransactionId]
-
-  editingTx.txParams = {
-    from: ethUtil.addHexPrefix(from),
-    gas: ethUtil.addHexPrefix(gas),
-    gasPrice: ethUtil.addHexPrefix(gasPrice),
+  const editingTx = {
+    ...unapprovedTxs[editingTransactionId],
+    txParams: {
+      from: ethUtil.addHexPrefix(from),
+      gas: ethUtil.addHexPrefix(gas),
+      gasPrice: ethUtil.addHexPrefix(gasPrice),
+    }
   }
 
   if (selectedToken) {
