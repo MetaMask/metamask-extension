@@ -12,35 +12,40 @@ function mapStateToProps (state) {
 		betaUI: state.metamask.featureFlags.betaUI,
 		autoAdd: autoAddToBetaUI(state),
 		isUnlocked: state.metamask.isUnlocked,
+		isMascara: state.metamask.isMascara,
 	}
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    setFeatureFlagToBeta: () => dispatch(setFeatureFlag('betaUI', true)),
+    setFeatureFlagWithModal: () => dispatch(setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL')),
+    setFeatureFlagWithoutModal: () => dispatch(setFeatureFlag('betaUI', true)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SelectedApp)
 
 inherits(SelectedApp, Component)
 function SelectedApp () {
-	this.state = {
-		autoAdd: false,
-	}
 	Component.call(this)
 }
 
 SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
-	const { isUnlocked, setFeatureFlagToBeta } = this.props
+	const {
+		isUnlocked,
+		setFeatureFlagWithModal,
+		setFeatureFlagWithoutModal,
+		isMascara,
+	} = this.props
 
-	if (!isUnlocked && nextProps.isUnlocked && nextProps.autoAdd) {
-		this.setState({ autoAdd: nextProps.autoAdd })
-		setFeatureFlagToBeta()
+	if (isMascara) {
+		setFeatureFlagWithoutModal()
+	} else if (!isUnlocked && nextProps.isUnlocked && (nextProps.autoAdd)) {
+		setFeatureFlagWithModal()
 	}
 }
 
 SelectedApp.prototype.render = function () {
-  const { betaUI } = this.props
-  const Selected = betaUI ? App : OldApp
+  const { betaUI, isMascara } = this.props
+  const Selected = betaUI || isMascara ? App : OldApp
   return h(Selected)
 }

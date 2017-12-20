@@ -250,7 +250,7 @@ class Settings extends Component {
   }
 
   renderSettingsContent () {
-    const { warning } = this.props
+    const { warning, isMascara } = this.props
 
     return (
       h('div.settings__content', [
@@ -261,7 +261,7 @@ class Settings extends Component {
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
-        this.renderOldUI(),
+        !isMascara && this.renderOldUI(),
       ])
     )
   }
@@ -386,12 +386,14 @@ Settings.propTypes = {
   setFeatureFlagToBeta: PropTypes.func,
   warning: PropTypes.string,
   goHome: PropTypes.func,
+  isMascara: PropTypes.bool,
 }
 
 const mapStateToProps = state => {
   return {
     metamask: state.metamask,
     warning: state.appState.warning,
+    isMascara: state.metamask.isMascara,
   }
 }
 
@@ -403,7 +405,7 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
-    setFeatureFlagToBeta: () => dispatch(actions.setFeatureFlag('betaUI', false)),
+    setFeatureFlagToBeta: () => dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL')),
   }
 }
 
