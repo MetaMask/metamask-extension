@@ -18,26 +18,29 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setFeatureFlagToBeta: notificationModal => dispatch(setFeatureFlag('betaUI', true, notificationModal)),
+    setFeatureFlagWithModal: () => dispatch(setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL')),
+    setFeatureFlagWithoutModal: () => dispatch(setFeatureFlag('betaUI', true)),
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SelectedApp)
 
 inherits(SelectedApp, Component)
 function SelectedApp () {
-	this.state = {
-		autoAdd: false,
-	}
 	Component.call(this)
 }
 
 SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
-	const { isUnlocked, setFeatureFlagToBeta, isMascara } = this.props
-	const notificationModal = isMascara ? null : 'BETA_UI_NOTIFICATION_MODAL'
+	const {
+		isUnlocked,
+		setFeatureFlagWithModal,
+		setFeatureFlagWithoutModal,
+		isMascara,
+	} = this.props
 
-	if (!isUnlocked && nextProps.isUnlocked && (nextProps.autoAdd || isMascara)) {
-		this.setState({ autoAdd: nextProps.autoAdd })
-		setFeatureFlagToBeta(notificationModal)
+	if (isMascara) {
+		setFeatureFlagWithoutModal()
+	} else if (!isUnlocked && nextProps.isUnlocked && (nextProps.autoAdd)) {
+		setFeatureFlagWithModal()
 	}
 }
 
