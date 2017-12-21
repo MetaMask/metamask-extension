@@ -13,6 +13,7 @@ function mapStateToProps (state) {
 		autoAdd: autoAddToBetaUI(state),
 		isUnlocked: state.metamask.isUnlocked,
 		isMascara: state.metamask.isMascara,
+		firstTime: Object.keys(state.metamask.identities).length === 0,
 	}
 }
 
@@ -35,9 +36,10 @@ SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
 		setFeatureFlagWithModal,
 		setFeatureFlagWithoutModal,
 		isMascara,
+		firstTime,
 	} = this.props
 
-	if (isMascara) {
+	if (isMascara || firstTime) {
 		setFeatureFlagWithoutModal()
 	} else if (!isUnlocked && nextProps.isUnlocked && (nextProps.autoAdd)) {
 		setFeatureFlagWithModal()
@@ -45,7 +47,8 @@ SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
 }
 
 SelectedApp.prototype.render = function () {
-  const { betaUI, isMascara } = this.props
-  const Selected = betaUI || isMascara ? App : OldApp
+  const { betaUI, isMascara, firstTime } = this.props
+
+  const Selected = betaUI || isMascara || firstTime ? App : OldApp
   return h(Selected)
 }

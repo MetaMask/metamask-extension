@@ -8,7 +8,6 @@ global.log = require('loglevel')
 
 module.exports = launchMetamaskUi
 
-
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
 function launchMetamaskUi (opts, cb) {

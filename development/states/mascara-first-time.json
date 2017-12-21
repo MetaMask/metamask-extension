@@ -1,5 +1,7 @@
+
 {
   "metamask": {
+    "isMascara": true,
     "isInitialized": false,
     "isUnlocked": false,
     "rpcTarget": "https://rawtestrpc.metamask.io/",
