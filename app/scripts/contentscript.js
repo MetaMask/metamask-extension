@@ -96,7 +96,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 }
 
 function shouldInjectWeb3 () {
-  return doctypeCheck() || suffixCheck()
+  return doctypeCheck() && suffixCheck() && documentElementCheck()
 }
 
 function doctypeCheck () {
@@ -104,7 +104,7 @@ function doctypeCheck () {
   if (doctype) {
     return doctype.name === 'html'
   } else {
-    return false
+    return true
   }
 }
 
@@ -117,6 +117,14 @@ function suffixCheck () {
     if (currentRegex.test(currentUrl)) {
       return false
     }
+  }
+  return true
+}
+
+function documentElementCheck () {
+  var documentElement = document.documentElement.nodeName
+  if (documentElement) {
+    return documentElement.toLowerCase() === 'html'
   }
   return true
 }

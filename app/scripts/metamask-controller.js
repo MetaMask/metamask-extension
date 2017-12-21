@@ -23,6 +23,7 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
+const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
@@ -90,6 +91,10 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
+
+    this.recentBlocksController = new RecentBlocksController({
+      blockTracker: this.blockTracker,
+    })
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
@@ -196,25 +201,30 @@ module.exports = class MetamaskController extends EventEmitter {
     this.blacklistController.store.subscribe((state) => {
       this.store.updateState({ BlacklistController: state })
     })
+    this.recentBlocksController.store.subscribe((state) => {
+      this.store.updateState({ RecentBlocks: state })
+    })
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
     })
 
     // manual mem state subscriptions
-    this.networkController.store.subscribe(this.sendUpdate.bind(this))
-    this.accountTracker.store.subscribe(this.sendUpdate.bind(this))
-    this.txController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.balancesController.store.subscribe(this.sendUpdate.bind(this))
-    this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.typedMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
-    this.addressBookController.store.subscribe(this.sendUpdate.bind(this))
-    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
-    this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
-    this.infuraController.store.subscribe(this.sendUpdate.bind(this))
+    const sendUpdate = this.sendUpdate.bind(this)
+    this.networkController.store.subscribe(sendUpdate)
+    this.accountTracker.store.subscribe(sendUpdate)
+    this.txController.memStore.subscribe(sendUpdate)
+    this.balancesController.store.subscribe(sendUpdate)
+    this.messageManager.memStore.subscribe(sendUpdate)
+    this.personalMessageManager.memStore.subscribe(sendUpdate)
+    this.typedMessageManager.memStore.subscribe(sendUpdate)
+    this.keyringController.memStore.subscribe(sendUpdate)
+    this.preferencesController.store.subscribe(sendUpdate)
+    this.recentBlocksController.store.subscribe(sendUpdate)
+    this.addressBookController.store.subscribe(sendUpdate)
+    this.currencyController.store.subscribe(sendUpdate)
+    this.noticeController.memStore.subscribe(sendUpdate)
+    this.shapeshiftController.store.subscribe(sendUpdate)
+    this.infuraController.store.subscribe(sendUpdate)
   }
 
   //
@@ -298,6 +308,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.currencyController.store.getState(),
       this.noticeController.memStore.getState(),
       this.infuraController.store.getState(),
+      this.recentBlocksController.store.getState(),
       // config manager
       this.configManager.getConfig(),
       this.shapeshiftController.store.getState(),
@@ -367,6 +378,7 @@ module.exports = class MetamaskController extends EventEmitter {
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
       updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
+      retryTransaction: nodeify(this.retryTransaction, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -577,6 +589,14 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
+  //
+
+  async retryTransaction (txId, cb) {
+    await this.txController.retryTransaction(txId)
+    const state = await this.getState()
+    return state
+  }
+
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)
