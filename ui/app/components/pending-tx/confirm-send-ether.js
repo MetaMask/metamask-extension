@@ -421,7 +421,9 @@ ConfirmSendEther.prototype.onSubmit = function (event) {
 
 ConfirmSendEther.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
-  this.props.cancelTransaction(txMeta)
+  const { cancelTransaction } = this.props
+  
+  cancelTransaction(txMeta)
 }
 
 ConfirmSendEther.prototype.checkValidity = function () {
@@ -444,26 +446,6 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
-
-  if (props.send.editingTransactionId) {
-    const {
-      send: {
-        memo,
-        amount: value,
-        gasLimit: gas,
-        gasPrice,
-      },
-    } = props
-    const { txParams: { from, to } } = txData
-    txData.txParams = {
-      from: ethUtil.addHexPrefix(from),
-      to: ethUtil.addHexPrefix(to),
-      memo: memo && ethUtil.addHexPrefix(memo),
-      value: ethUtil.addHexPrefix(value),
-      gas: ethUtil.addHexPrefix(gas),
-      gasPrice: ethUtil.addHexPrefix(gasPrice),
-    }
-  }
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

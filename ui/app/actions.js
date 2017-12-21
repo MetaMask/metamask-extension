@@ -125,6 +125,7 @@ var actions = {
   sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
+  updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -694,6 +695,23 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   }
 }
 
+function updateTransaction (txData) {
+  log.info('actions: updateTx: ' + JSON.stringify(txData))
+  return (dispatch) => {
+    log.debug(`actions calling background.updateTx`)
+    background.updateTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      if (err) {
+        dispatch(actions.txError(err))
+        dispatch(actions.goHome())
+        return log.error(err.message)
+      }
+      dispatch(actions.showConfTxPage({ id: txData.id }))
+    })
+  }
+}
+
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
@@ -756,6 +774,7 @@ function cancelTx (txData) {
   return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     background.cancelTransaction(txData.id, () => {
+      dispatch(actions.clearSend())
       dispatch(actions.completedTx(txData.id))
     })
   }
