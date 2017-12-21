@@ -3,6 +3,7 @@
 ## Current Master
 
 - Throw an error if a application tries to submit a tx whose value is a decimal, and inform that it should be in wei.
+- Fix bug that prevented updating custom token details.
 
 ## 3.13.3 2017-12-14
 
