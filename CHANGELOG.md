@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug that prevented updating custom token details.
+- No longer mark long-pending transactions as failed, since we now have button to retry with higher gas.
 
 ## 3.13.3 2017-12-14
 
