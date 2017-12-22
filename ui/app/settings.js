@@ -9,6 +9,7 @@ const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -228,7 +229,7 @@ class Settings extends Component {
       ])
     )
   }
-  
+
   renderOldUI () {
     const { setFeatureFlagToBeta } = this.props
 
@@ -265,7 +266,7 @@ class Settings extends Component {
       ])
     )
   }
-  
+
   renderLogo () {
     return (
       h('div.settings__info-logo-wrapper', [
@@ -405,7 +406,10 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
-    setFeatureFlagToBeta: () => dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL')),
+    setFeatureFlagToBeta: () => {
+      return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+        .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+    },
   }
 }
 

@@ -240,12 +240,17 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
-  
+
   // Feature Flags
   setFeatureFlag,
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
-  
+
+  // Network
+  setNetworkEndpoints,
+  updateNetworkEndpointType,
+  UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
+
   retryTransaction,
 }
 
@@ -1489,7 +1494,7 @@ function reshowQrCode (data, coin) {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
-        
+
       var message = [
         `Deposit your ${coin} to the address bellow:`,
         `Deposit Limit: ${mktResponse.limit}`,
@@ -1565,7 +1570,7 @@ function setFeatureFlag (feature, activated, notificationType) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
         notificationType && dispatch(actions.showModal({ name: notificationType }))
@@ -1644,5 +1649,29 @@ function setUseBlockie (val) {
       type: actions.SET_USE_BLOCKIE,
       value: val,
     })
+  }
+}
+
+function setNetworkEndpoints (networkEndpointType) {
+  return dispatch => {
+    log.debug('background.setNetworkEndpoints')
+    return new Promise((resolve, reject) => {
+      background.setNetworkEndpoints(networkEndpointType, err => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
+        resolve(networkEndpointType)
+      })
+    })
+  }
+}
+
+function updateNetworkEndpointType (networkEndpointType) {
+  return {
+    type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
+    value: networkEndpointType,
   }
 }

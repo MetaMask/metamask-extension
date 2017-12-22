@@ -5,7 +5,8 @@ const h = require('react-hyperscript')
 const App = require('./app')
 const OldApp = require('../../old-ui/app/app')
 const { autoAddToBetaUI } = require('./selectors')
-const { setFeatureFlag } = require('./actions')
+const { setFeatureFlag, setNetworkEndpoints } = require('./actions')
+const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 function mapStateToProps (state) {
 	return {
@@ -19,8 +20,14 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    setFeatureFlagWithModal: () => dispatch(setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL')),
-    setFeatureFlagWithoutModal: () => dispatch(setFeatureFlag('betaUI', true)),
+    setFeatureFlagWithModal: () => {
+      return dispatch(setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+        .then(() => dispatch(setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
+    },
+    setFeatureFlagWithoutModal: () => {
+      return dispatch(setFeatureFlag('betaUI', true))
+        .then(() => dispatch(setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
+    },
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SelectedApp)
