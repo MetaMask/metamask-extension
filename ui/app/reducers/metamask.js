@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 module.exports = reduceMetamask
 
@@ -33,9 +34,13 @@ function reduceMetamask (state, action) {
       amount: '0x0',
       memo: '',
       errors: {},
+      maxModeOn: false,
       editingTransactionId: null,
     },
     coinOptions: {},
+    useBlockie: false,
+    featureFlags: {},
+    networkEndpointType: OLD_UI_NETWORK_TYPE,
   }, state.metamask)
 
   switch (action.type) {
@@ -257,6 +262,14 @@ function reduceMetamask (state, action) {
         },
       })
 
+    case actions.UPDATE_MAX_MODE:
+      return extend(metamaskState, {
+        send: {
+          ...metamaskState.send,
+          maxModeOn: action.value,
+        },
+      })
+
     case actions.UPDATE_SEND:
       return extend(metamaskState, {
         send: {
@@ -309,9 +322,24 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         tokenExchangeRates: {
           ...metamaskState.tokenExchangeRates,
-          [marketinfo.pair]: ssMarketInfo,
+          [ssMarketInfo.pair]: ssMarketInfo,
         },
         coinOptions,
+      })
+
+    case actions.SET_USE_BLOCKIE:
+          return extend(metamaskState, {
+            useBlockie: action.value,
+          })
+
+    case actions.UPDATE_FEATURE_FLAGS:
+      return extend(metamaskState, {
+        featureFlags: action.value,
+      })
+
+    case actions.UPDATE_NETWORK_ENDPOINT_TYPE:
+      return extend(metamaskState, {
+        networkEndpointType: action.value,
       })
 
     default:

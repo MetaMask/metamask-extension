@@ -8,6 +8,8 @@ const validUrl = require('valid-url')
 const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
+const ToggleButton = require('react-toggle-button')
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -48,6 +50,26 @@ class Settings extends Component {
         defaultTab: activeTab,
         tabSelected: key => this.setState({ activeTab: key }),
       }),
+    ])
+  }
+
+  renderBlockieOptIn () {
+    const { metamask: { useBlockie }, setUseBlockie } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', 'Use Blockies Identicon'),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(ToggleButton, {
+            value: useBlockie,
+            onToggle: (value) => setUseBlockie(!value),
+            activeLabel: '',
+            inactiveLabel: '',
+          }),
+        ]),
+      ]),
     ])
   }
 
@@ -208,17 +230,39 @@ class Settings extends Component {
     )
   }
 
+  renderOldUI () {
+    const { setFeatureFlagToBeta } = this.props
+
+    return (
+      h('div.settings__content-row', [
+        h('div.settings__content-item', 'Use old UI'),
+        h('div.settings__content-item', [
+          h('div.settings__content-item-col', [
+            h('button.settings__clear-button.settings__clear-button--orange', {
+              onClick (event) {
+                event.preventDefault()
+                setFeatureFlagToBeta()
+              },
+            }, 'Use old UI'),
+          ]),
+        ]),
+      ])
+    )
+  }
+
   renderSettingsContent () {
-    const { warning } = this.props
+    const { warning, isMascara } = this.props
 
     return (
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
+        this.renderBlockieOptIn(),
         this.renderCurrentConversion(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
+        !isMascara && this.renderOldUI(),
       ])
     )
   }
@@ -335,18 +379,22 @@ class Settings extends Component {
 Settings.propTypes = {
   tab: PropTypes.string,
   metamask: PropTypes.object,
+  setUseBlockie: PropTypes.func,
   setCurrentCurrency: PropTypes.func,
   setRpcTarget: PropTypes.func,
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
+  setFeatureFlagToBeta: PropTypes.func,
   warning: PropTypes.string,
   goHome: PropTypes.func,
+  isMascara: PropTypes.bool,
 }
 
 const mapStateToProps = state => {
   return {
     metamask: state.metamask,
     warning: state.appState.warning,
+    isMascara: state.metamask.isMascara,
   }
 }
 
@@ -357,6 +405,11 @@ const mapDispatchToProps = dispatch => {
     setRpcTarget: newRpc => dispatch(actions.setRpcTarget(newRpc)),
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
+    setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    setFeatureFlagToBeta: () => {
+      return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+        .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+    },
   }
 }
 

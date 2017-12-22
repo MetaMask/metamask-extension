@@ -6,7 +6,7 @@ const path = require('path');
 const Dropdown = require(path.join(__dirname, '..', '..', '..', '..', 'ui', 'app', 'components', 'dropdowns', 'index.js')).Dropdown;
 
 const { createMockStore } = require('redux-test-utils')
-const shallowWithStore = require('../../../lib/shallow-with-store')
+const { mountWithStore } = require('../../../lib/shallow-with-store')
 
 const mockState = {
   metamask: {
@@ -39,7 +39,7 @@ describe('Dropdown components', function () {
     onClick = sinon.spy();
 
     store = createMockStore(mockState)
-    component = shallowWithStore(h(
+    component = mountWithStore(h(
       Dropdown,
       dropdownComponentProps,
       [
@@ -57,7 +57,7 @@ describe('Dropdown components', function () {
         }, 'Item 2'),
       ]
     ), store)
-    dropdownComponent = component.dive()
+    dropdownComponent = component
   })
 
   it('can render two items', function () {

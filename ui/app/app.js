@@ -116,7 +116,6 @@ App.prototype.render = function () {
   log.debug('Main ui render function')
 
   return (
-
     h('.flex-column.full-height', {
       style: {
         overflowX: 'hidden',

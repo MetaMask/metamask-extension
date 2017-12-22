@@ -14,6 +14,7 @@ module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
 
 function mapStateToProps (state) {
   const sidebarOpen = state.appState.sidebarOpen
+  const isMascara = state.appState.isMascara
 
   const identities = state.metamask.identities
   const accounts = state.metamask.accounts
@@ -31,6 +32,7 @@ function mapStateToProps (state) {
     selectedToken: selectors.getSelectedToken(state),
     identity,
     network,
+    isMascara,
   }
 }
 
@@ -98,7 +100,7 @@ TxView.prototype.renderButtons = function () {
 }
 
 TxView.prototype.render = function () {
-  const { selectedAddress, identity, network } = this.props
+  const { selectedAddress, identity, network, isMascara } = this.props
 
   return h('div.tx-view.flex-column', {
     style: {},
@@ -107,6 +109,7 @@ TxView.prototype.render = function () {
     h('div.flex-row.phone-visible', {
       style: {
         margin: '1em 0.9em',
+        justifyContent: 'space-between',
         alignItems: 'center',
       },
     }, [
@@ -138,6 +141,10 @@ TxView.prototype.render = function () {
       }, [
         identity.name,
       ]),
+
+      !isMascara && h('div.open-in-browser', {
+        onClick: () => global.platform.openExtensionInBrowser(),
+      }, [h('img', { src: 'images/open.svg' })]),
 
     ]),
 

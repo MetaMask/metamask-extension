@@ -2,6 +2,7 @@ const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
 
+const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 
 const Identicon = require('./components/identicon')
@@ -13,8 +14,7 @@ const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const {
   MIN_GAS_TOTAL,
-  MIN_GAS_PRICE_HEX,
-  MIN_GAS_LIMIT_HEX,
+  TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./components/send/send-constants')
 
 const {
@@ -313,8 +313,9 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
 SendTransactionScreen.prototype.handleAmountChange = function (value) {
   const amount = value
-  const { updateSendAmount } = this.props
+  const { updateSendAmount, setMaxModeTo } = this.props
 
+  setMaxModeTo(false)
   this.validateAmount(amount)
   updateSendAmount(amount)
 }
@@ -324,11 +325,9 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     from: { balance },
     updateSendAmount,
     updateSendErrors,
-    updateGasPrice,
-    updateGasLimit,
-    updateGasTotal,
     tokenBalance,
     selectedToken,
+    gasTotal,
   } = this.props
   const { decimals } = selectedToken || {}
   const multiplier = Math.pow(10, Number(decimals || 0))
@@ -337,16 +336,12 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
     ? multiplyCurrencies(tokenBalance, multiplier, {toNumericBase: 'hex'})
     : subtractCurrencies(
       ethUtil.addHexPrefix(balance),
-      ethUtil.addHexPrefix(MIN_GAS_TOTAL),
+      ethUtil.addHexPrefix(gasTotal),
       { toNumericBase: 'hex' }
     )
 
   updateSendErrors({ amount: null })
-  if (!selectedToken) {
-    updateGasPrice(MIN_GAS_PRICE_HEX)
-    updateGasLimit(MIN_GAS_LIMIT_HEX)
-    updateGasTotal(MIN_GAS_TOTAL)
-  }
+
   updateSendAmount(maxAmount)
 }
 
@@ -407,19 +402,22 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     amountConversionRate,
     errors,
     amount,
+    setMaxModeTo,
+    maxModeOn,
   } = this.props
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', [
+     h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
       !errors.amount && h('div.send-v2__amount-max', {
         onClick: (event) => {
           event.preventDefault()
+          setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ 'Max' ]),
+      }, [ !maxModeOn ? 'Max' : '' ]),
     ]),
 
     h('div.send-v2__form-field', [
@@ -556,6 +554,48 @@ SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
   }
 }
 
+SendTransactionScreen.prototype.getEditedTx = function () {
+  const {
+    from: {address: from},
+    to,
+    amount,
+    gasLimit: gas,
+    gasPrice,
+    selectedToken,
+    editingTransactionId,
+    unapprovedTxs,
+  } = this.props
+
+  const editingTx = {
+    ...unapprovedTxs[editingTransactionId],
+    txParams: {
+      from: ethUtil.addHexPrefix(from),
+      gas: ethUtil.addHexPrefix(gas),
+      gasPrice: ethUtil.addHexPrefix(gasPrice),
+    },
+  }
+
+  if (selectedToken) {
+    const data = TOKEN_TRANSFER_FUNCTION_SIGNATURE + Array.prototype.map.call(
+      ethAbi.rawEncode(['address', 'uint256'], [to, ethUtil.addHexPrefix(amount)]),
+      x => ('00' + x.toString(16)).slice(-2)
+    ).join('')
+
+    Object.assign(editingTx.txParams, {
+      value: ethUtil.addHexPrefix('0'),
+      to: ethUtil.addHexPrefix(selectedToken.address),
+      data,
+    })
+  } else {
+    Object.assign(editingTx.txParams, {
+      value: ethUtil.addHexPrefix(amount),
+      to: ethUtil.addHexPrefix(to),
+    })
+  }
+
+  return editingTx
+}
+
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
@@ -566,10 +606,10 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     gasPrice,
     signTokenTx,
     signTx,
+    updateTx,
     selectedToken,
     editingTransactionId,
     errors: { amount: amountError, to: toError },
-    backToConfirmScreen,
   } = this.props
 
   const noErrors = !amountError && toError === null
@@ -581,23 +621,25 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   this.addToAddressBookIfNew(to)
 
   if (editingTransactionId) {
-    backToConfirmScreen(editingTransactionId)
-    return
-  }
+    const editedTx = this.getEditedTx()
 
-  const txParams = {
-    from,
-    value: '0',
-    gas,
-    gasPrice,
-  }
+    updateTx(editedTx)
+  } else {
 
-  if (!selectedToken) {
-    txParams.value = amount
-    txParams.to = to
-  }
+    const txParams = {
+      from,
+      value: '0',
+      gas,
+      gasPrice,
+    }
 
-  selectedToken
-    ? signTokenTx(selectedToken.address, to, amount, txParams)
-    : signTx(txParams)
+    if (!selectedToken) {
+      txParams.value = amount
+      txParams.to = to
+    }
+
+    selectedToken
+      ? signTokenTx(selectedToken.address, to, amount, txParams)
+      : signTx(txParams)
+  }
 }

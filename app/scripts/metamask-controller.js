@@ -3,6 +3,7 @@ const extend = require('xtend')
 const pump = require('pump')
 const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
+const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
 const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
@@ -22,6 +23,7 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const InfuraController = require('./controllers/infura')
 const BlacklistController = require('./controllers/blacklist')
+const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
 const TypedMessageManager = require('./lib/typed-message-manager')
@@ -31,6 +33,7 @@ const ConfigManager = require('./lib/config-manager')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
+const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
 
 module.exports = class MetamaskController extends EventEmitter {
@@ -38,16 +41,21 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
 
+
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
     this.opts = opts
     const initState = opts.initState || {}
+    this.recordFirstTimeInfo(initState)
 
     // platform-specific api
     this.platform = opts.platform
 
     // observable state store
     this.store = new ObservableStore(initState)
+
+    // lock to ensure only one vault created at once
+    this.createVaultMutex = new Mutex()
 
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
@@ -83,6 +91,10 @@ module.exports = class MetamaskController extends EventEmitter {
     // rpc provider
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
+
+    this.recentBlocksController = new RecentBlocksController({
+      blockTracker: this.blockTracker,
+    })
 
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
@@ -144,6 +156,8 @@ module.exports = class MetamaskController extends EventEmitter {
     // notices
     this.noticeController = new NoticeController({
       initState: initState.NoticeController,
+      version,
+      firstVersion: initState.firstTimeInfo.version,
     })
     this.noticeController.updateNoticesList()
     // to be uncommented when retrieving notices from a remote server.
@@ -187,25 +201,30 @@ module.exports = class MetamaskController extends EventEmitter {
     this.blacklistController.store.subscribe((state) => {
       this.store.updateState({ BlacklistController: state })
     })
+    this.recentBlocksController.store.subscribe((state) => {
+      this.store.updateState({ RecentBlocks: state })
+    })
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
     })
 
     // manual mem state subscriptions
-    this.networkController.store.subscribe(this.sendUpdate.bind(this))
-    this.accountTracker.store.subscribe(this.sendUpdate.bind(this))
-    this.txController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.balancesController.store.subscribe(this.sendUpdate.bind(this))
-    this.messageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.personalMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.typedMessageManager.memStore.subscribe(this.sendUpdate.bind(this))
-    this.keyringController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.preferencesController.store.subscribe(this.sendUpdate.bind(this))
-    this.addressBookController.store.subscribe(this.sendUpdate.bind(this))
-    this.currencyController.store.subscribe(this.sendUpdate.bind(this))
-    this.noticeController.memStore.subscribe(this.sendUpdate.bind(this))
-    this.shapeshiftController.store.subscribe(this.sendUpdate.bind(this))
-    this.infuraController.store.subscribe(this.sendUpdate.bind(this))
+    const sendUpdate = this.sendUpdate.bind(this)
+    this.networkController.store.subscribe(sendUpdate)
+    this.accountTracker.store.subscribe(sendUpdate)
+    this.txController.memStore.subscribe(sendUpdate)
+    this.balancesController.store.subscribe(sendUpdate)
+    this.messageManager.memStore.subscribe(sendUpdate)
+    this.personalMessageManager.memStore.subscribe(sendUpdate)
+    this.typedMessageManager.memStore.subscribe(sendUpdate)
+    this.keyringController.memStore.subscribe(sendUpdate)
+    this.preferencesController.store.subscribe(sendUpdate)
+    this.recentBlocksController.store.subscribe(sendUpdate)
+    this.addressBookController.store.subscribe(sendUpdate)
+    this.currencyController.store.subscribe(sendUpdate)
+    this.noticeController.memStore.subscribe(sendUpdate)
+    this.shapeshiftController.store.subscribe(sendUpdate)
+    this.infuraController.store.subscribe(sendUpdate)
   }
 
   //
@@ -289,6 +308,7 @@ module.exports = class MetamaskController extends EventEmitter {
       this.currencyController.store.getState(),
       this.noticeController.memStore.getState(),
       this.infuraController.store.getState(),
+      this.recentBlocksController.store.getState(),
       // config manager
       this.configManager.getConfig(),
       this.shapeshiftController.store.getState(),
@@ -315,6 +335,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setUseBlockie: this.setUseBlockie.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
 
       // coinbase
@@ -332,6 +353,7 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
+      setNetworkEndpoints: nodeify(networkController.setNetworkEndpoints, networkController),
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
@@ -340,6 +362,7 @@ module.exports = class MetamaskController extends EventEmitter {
       addToken: nodeify(preferencesController.addToken, preferencesController),
       removeToken: nodeify(preferencesController.removeToken, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -354,7 +377,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
+      updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
+      retryTransaction: nodeify(this.retryTransaction, this),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),
@@ -452,7 +477,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   setupPublicConfig (outStream) {
     pump(
-      this.publicConfigStore,
+      asStream(this.publicConfigStore),
       outStream,
       (err) => {
         if (err) log.error(err)
@@ -468,15 +493,34 @@ module.exports = class MetamaskController extends EventEmitter {
   // Vault Management
   //
 
-  async createNewVaultAndKeychain (password, cb) {
-    const vault = await this.keyringController.createNewVaultAndKeychain(password)
-    this.selectFirstIdentity(vault)
+  async createNewVaultAndKeychain (password) {
+    const release = await this.createVaultMutex.acquire()
+    let vault
+
+    try {
+      const accounts = await this.keyringController.getAccounts()
+
+      if (accounts.length > 0) {
+        vault = await this.keyringController.fullUpdate()
+
+      } else {
+        vault = await this.keyringController.createNewVaultAndKeychain(password)
+        this.selectFirstIdentity(vault)
+      }
+      release()
+    } catch (err) {
+      release()
+      throw err
+    }
+
     return vault
   }
 
-  async createNewVaultAndRestore (password, seed, cb) {
+  async createNewVaultAndRestore (password, seed) {
+    const release = await this.createVaultMutex.acquire()
     const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
     this.selectFirstIdentity(vault)
+    release()
     return vault
   }
 
@@ -546,6 +590,14 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Identity Management
   //
+  //
+
+  async retryTransaction (txId, cb) {
+    await this.txController.retryTransaction(txId)
+    const state = await this.getState()
+    return state
+  }
+
 
   newUnsignedMessage (msgParams, cb) {
     const msgId = this.messageManager.addUnapprovedMessage(msgParams)
@@ -772,6 +824,24 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  setUseBlockie (val, cb) {
+    try {
+      this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  recordFirstTimeInfo (initState) {
+    if (!('firstTimeInfo' in initState)) {
+      initState.firstTimeInfo = {
+        version,
+        date: Date.now(),
+      }
+    }
   }
 
 }

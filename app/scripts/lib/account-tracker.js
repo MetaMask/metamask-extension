@@ -117,8 +117,6 @@ class AccountTracker extends EventEmitter {
     const query = this._query
     async.parallel({
       balance: query.getBalance.bind(query, address),
-      nonce: query.getTransactionCount.bind(query, address),
-      code: query.getCode.bind(query, address),
     }, cb)
   }
 

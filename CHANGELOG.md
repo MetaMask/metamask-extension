@@ -2,6 +2,32 @@
 
 ## Current Master
 
+- Fix bug that prevented updating custom token details.
+- No longer mark long-pending transactions as failed, since we now have button to retry with higher gas.
+
+## 3.13.3 2017-12-14
+
+- Show tokens that are held that have no balance.
+- Reduce load on Infura by using a new block polling endpoint.
+
+## 3.13.2 2017-12-9
+
+- Reduce new block polling interval to 8000 ms, to ease server load.
+
+## 3.13.1 2017-12-7
+
+- Allow Dapps to specify a transaction nonce, allowing dapps to propose resubmit and force-cancel transactions.
+
+## 3.13.0 2017-12-7
+
+- Allow resubmitting transactions that are taking long to complete.
+
+## 3.12.1 2017-11-29
+
+- Fix bug where a user could be shown two different seed phrases.
+- Detect when multiple web3 extensions are active, and provide useful error.
+- Adds notice about seed phrase backup.
+
 ## 3.12.0 2017-10-25
 
 - Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).

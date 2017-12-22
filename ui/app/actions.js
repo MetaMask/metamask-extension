@@ -125,6 +125,7 @@ var actions = {
   sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
+  updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -149,6 +150,7 @@ var actions = {
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
   updateGasLimit,
@@ -160,6 +162,7 @@ var actions = {
   updateSendAmount,
   updateSendMemo,
   updateSendErrors,
+  setMaxModeTo,
   updateSend,
   clearSend,
   setSelectedAddress,
@@ -234,6 +237,21 @@ var actions = {
   toggleAccountMenu,
 
   useEtherscanProvider,
+
+  SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
+  setUseBlockie,
+
+  // Feature Flags
+  setFeatureFlag,
+  updateFeatureFlags,
+  UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
+
+  // Network
+  setNetworkEndpoints,
+  updateNetworkEndpointType,
+  UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
+
+  retryTransaction,
 }
 
 module.exports = actions
@@ -634,6 +652,13 @@ function updateSendErrors (error) {
   }
 }
 
+function setMaxModeTo (bool) {
+  return {
+    type: actions.UPDATE_MAX_MODE,
+    value: bool,
+  }
+}
+
 function updateSend (newSend) {
   return {
     type: actions.UPDATE_SEND,
@@ -672,6 +697,23 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
         dispatch(actions.displayWarning(err.message))
       })
     dispatch(actions.showConfTxPage({}))
+  }
+}
+
+function updateTransaction (txData) {
+  log.info('actions: updateTx: ' + JSON.stringify(txData))
+  return (dispatch) => {
+    log.debug(`actions calling background.updateTx`)
+    background.updateTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      if (err) {
+        dispatch(actions.txError(err))
+        dispatch(actions.goHome())
+        return log.error(err.message)
+      }
+      dispatch(actions.showConfTxPage({ id: txData.id }))
+    })
   }
 }
 
@@ -737,6 +779,7 @@ function cancelTx (txData) {
   return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     background.cancelTransaction(txData.id, () => {
+      dispatch(actions.clearSend())
       dispatch(actions.completedTx(txData.id))
     })
   }
@@ -985,9 +1028,10 @@ function showConfigPage (transitionForward = true) {
   }
 }
 
-function showAddTokenPage () {
+function showAddTokenPage (transitionForward = true) {
   return {
     type: actions.SHOW_ADD_TOKEN_PAGE,
+    value: transitionForward,
   }
 }
 
@@ -1099,6 +1143,19 @@ function clearNotices () {
 function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
+}
+
+function retryTransaction (txId) {
+  log.debug(`background.retryTransaction`)
+  return (dispatch) => {
+    background.retryTransaction(txId, (err, newState) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch(actions.updateMetamaskState(newState))
+      dispatch(actions.viewPendingTx(txId))
+    })
+  }
 }
 
 //
@@ -1269,7 +1326,8 @@ function exportAccount (password, address) {
             return reject(err)
           }
 
-          dispatch(self.exportAccountComplete())
+          // dispatch(self.exportAccountComplete())
+          dispatch(self.showPrivateKey(result))
 
           return resolve(result)
         })
@@ -1444,10 +1502,11 @@ function reshowQrCode (data, coin) {
       ]
 
       dispatch(actions.hideLoadingIndication())
-      return dispatch(actions.showModal({
-        name: 'SHAPESHIFT_DEPOSIT_TX',
-        Qr: { data, message },
-      }))
+      return dispatch(actions.showQrView(data, message))
+      // return dispatch(actions.showModal({
+      //   name: 'SHAPESHIFT_DEPOSIT_TX',
+      //   Qr: { data, message },
+      // }))
     })
   }
 }
@@ -1503,6 +1562,31 @@ function updateTokenExchangeRate (token = '') {
   }
 }
 
+function setFeatureFlag (feature, activated, notificationType) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.setFeatureFlag(feature, activated, (err, updatedFeatureFlags) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
+        notificationType && dispatch(actions.showModal({ name: notificationType }))
+        resolve(updatedFeatureFlags)
+      })
+    })
+  }
+}
+
+function updateFeatureFlags (updatedFeatureFlags) {
+  return {
+    type: actions.UPDATE_FEATURE_FLAGS,
+    value: updatedFeatureFlags,
+  }
+}
+
 // Call Background Then Update
 //
 // A function generator for a common pattern wherein:
@@ -1548,5 +1632,46 @@ function forceUpdateMetamaskState (dispatch) {
 function toggleAccountMenu () {
   return {
     type: actions.TOGGLE_ACCOUNT_MENU,
+  }
+}
+
+function setUseBlockie (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseBlockie`)
+    background.setUseBlockie(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_BLOCKIE,
+      value: val,
+    })
+  }
+}
+
+function setNetworkEndpoints (networkEndpointType) {
+  return dispatch => {
+    log.debug('background.setNetworkEndpoints')
+    return new Promise((resolve, reject) => {
+      background.setNetworkEndpoints(networkEndpointType, err => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
+        resolve(networkEndpointType)
+      })
+    })
+  }
+}
+
+function updateNetworkEndpointType (networkEndpointType) {
+  return {
+    type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
+    value: networkEndpointType,
   }
 }

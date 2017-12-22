@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>open</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Mobile-screens" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MetaMascara-Mobile---structured" transform="translate(-329.000000, -93.000000)">
+            <g id="open" transform="translate(330.000000, 94.000000)">
+                <path d="M26,13 C26,20.1799 20.1799,26 13,26 C5.8201,26 0,20.1799 0,13 C0,5.8201 5.8201,0 13,0 C20.1799,0 26,5.8201 26,13 Z" id="Stroke-3" stroke="#4A4A4A"></path>
+                <path d="M6,17 C6,17 7.78735344,10.8360387 13.7616996,10.8360387 L13.7616996,8 L19,12.3733433 L13.7616996,17 L13.7616996,14.1639613 C13.7616996,14.1639613 9.54083576,13.4629933 6,17" id="Fill-5" fill="#4A4A4A"></path>
+            </g>
+        </g>
+    </g>
+</svg>
