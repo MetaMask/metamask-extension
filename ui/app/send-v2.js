@@ -572,7 +572,7 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       from: ethUtil.addHexPrefix(from),
       gas: ethUtil.addHexPrefix(gas),
       gasPrice: ethUtil.addHexPrefix(gasPrice),
-    }
+    },
   }
 
   if (selectedToken) {
