@@ -162,7 +162,7 @@ class AccountDropdowns extends Component {
   }
 
   renderAccountOptions () {
-    const { actions } = this.props
+    const { actions, network } = this.props
     const { optionsMenuActive } = this.state
 
     return h(
@@ -187,12 +187,12 @@ class AccountDropdowns extends Component {
           {
             closeMenu: () => {},
             onClick: () => {
-              const { selected, network } = this.props
-              const url = genAccountLink(selected, network)
+              const { selected } = this.props
+              const url = network === '99' ? `https://core-explorer.poa.network/account/${selected}` : genAccountLink(selected, network)
               global.platform.openWindow({ url })
             },
           },
-          'View account on Etherscan',
+          network === '99' ? 'View account on explorer' : 'View account on Etherscan',
         ),
         h(
           DropdownMenuItem,

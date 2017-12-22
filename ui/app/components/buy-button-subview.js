@@ -169,6 +169,23 @@ BuyButtonSubview.prototype.primarySubview = function () {
       ])
     )
 
+    case '99':
+      return (
+        h('div.flex-column', {
+          style: {
+            alignItems: 'center',
+            margin: '20px 50px',
+          },
+        }, [
+          h('button.text-transform-uppercase', {
+            onClick: () => this.props.dispatch(actions.buyEth({ network })),
+            style: {
+              marginTop: '15px',
+            },
+          }, 'POA Network'),
+      ])
+    )
+
     default:
       return (
         h('h2.error', 'Unknown network ID')

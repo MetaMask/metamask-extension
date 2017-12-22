@@ -102,24 +102,32 @@ function parseBalance (balance) {
 
 // Takes wei hex, returns an object with three properties.
 // Its "formatted" property is what we generally use to render values.
-function formatBalance (balance, decimalsToKeep, needsParse = true) {
+function formatBalance (balance, decimalsToKeep, needsParse = true, network = null) {
   var parsed = needsParse ? parseBalance(balance) : balance.split('.')
   var beforeDecimal = parsed[0]
   var afterDecimal = parsed[1]
   var formatted = 'None'
+  var suffix = 'ETH'
+
+  switch (network) {
+    case '99':
+      suffix = 'POA'
+      break
+  }
+
   if (decimalsToKeep === undefined) {
     if (beforeDecimal === '0') {
       if (afterDecimal !== '0') {
         var sigFigs = afterDecimal.match(/^0*(.{2})/) // default: grabs 2 most significant digits
         if (sigFigs) { afterDecimal = sigFigs[0] }
-        formatted = '0.' + afterDecimal + ' ETH'
+        formatted = '0.' + afterDecimal + ' ' + suffix
       }
     } else {
-      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ' ETH'
+      formatted = beforeDecimal + '.' + afterDecimal.slice(0, 3) + ' ' + suffix
     }
   } else {
     afterDecimal += Array(decimalsToKeep).join('0')
-    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ' ETH'
+    formatted = beforeDecimal + '.' + afterDecimal.slice(0, decimalsToKeep) + ' ' + suffix
   }
   return formatted
 }

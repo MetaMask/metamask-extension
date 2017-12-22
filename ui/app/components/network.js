@@ -54,6 +54,9 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = 'Rinkeby Test Network'
     iconName = 'rinkeby-test-network'
+  } else if (providerName === 'poa') {
+    hoverText = 'POA Network'
+    iconName = 'poa-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
@@ -104,6 +107,16 @@ Network.prototype.render = function () {
                   color: '#e7a218',
                 }},
               'Rinkeby Test Net'),
+              h('i.fa.fa-caret-down.fa-lg'),
+            ])
+          case 'poa-network':
+            return h('.network-indicator', [
+              h('.menu-icon.blue-triangle'),
+              h('.network-name', {
+                style: {
+                  color: '#676f8a',
+                }},
+              'POA Network'),
               h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:

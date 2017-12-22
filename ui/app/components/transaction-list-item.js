@@ -44,7 +44,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 99
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -67,7 +67,7 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        var url = explorerLink(transaction.hash, parseInt(network))
+        var url = parseInt(network) === 99 ? `https://core-explorer.poa.network/tx/${transaction.hash}` : explorerLink(transaction.hash, parseInt(network))
         global.platform.openWindow({ url })
       },
       style: {
@@ -116,6 +116,7 @@ TransactionListItem.prototype.render = function () {
           width: '55px',
           shorten: true,
           showFiat: false,
+          network: network,
           style: {fontSize: '15px'},
         }) : h('.flex-column'),
       ]),

@@ -195,6 +195,12 @@ hr.horizontal-line {
   background: #EBB33F;
 }
 
+div.blue-triangle {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 12px solid #3ab9fe;
+}
+
 .pending-dot {
   background: red;
   left: 14px;

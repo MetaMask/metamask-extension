@@ -102,6 +102,7 @@ ConfirmTxScreen.prototype.render = function () {
         selectedAddress: props.selectedAddress,
         accounts: props.accounts,
         identities: props.identities,
+        network: props.network,
         conversionRate,
         currentCurrency,
         blockGasLimit,
