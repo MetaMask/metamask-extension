@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 module.exports = reduceMetamask
 
@@ -39,6 +40,7 @@ function reduceMetamask (state, action) {
     coinOptions: {},
     useBlockie: false,
     featureFlags: {},
+    networkEndpointType: OLD_UI_NETWORK_TYPE,
   }, state.metamask)
 
   switch (action.type) {
@@ -333,6 +335,11 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_FEATURE_FLAGS:
       return extend(metamaskState, {
         featureFlags: action.value,
+      })
+
+    case actions.UPDATE_NETWORK_ENDPOINT_TYPE:
+      return extend(metamaskState, {
+        networkEndpointType: action.value,
       })
 
     default:

@@ -353,6 +353,7 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
+      setNetworkEndpoints: nodeify(networkController.setNetworkEndpoints, networkController),
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
