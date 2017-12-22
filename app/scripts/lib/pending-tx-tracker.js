@@ -23,7 +23,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
     // default is one day
-    this.retryTimePeriod = config.retryTimePeriod || 86400000
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
@@ -104,12 +103,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   async _resubmitTx (txMeta, latestBlockNumber) {
     if (!txMeta.firstRetryBlockNumber) {
       this.emit('tx:block-update', txMeta, latestBlockNumber)
-    }
-
-    if (Date.now() > txMeta.time + this.retryTimePeriod) {
-      const hours = (this.retryTimePeriod / 3.6e+6).toFixed(1)
-      const err = new Error(`Gave up submitting after ${hours} hours.`)
-      return this.emit('tx:failed', txMeta.id, err)
     }
 
     const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber
