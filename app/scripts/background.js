@@ -4,6 +4,7 @@ const pump = require('pump')
 const log = require('loglevel')
 const extension = require('extensionizer')
 const LocalStorageStore = require('obs-store/lib/localStorage')
+const ExtensionStore = require('./lib/extension-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
 const ExtensionPlatform = require('./platforms/extension')
@@ -28,6 +29,7 @@ let popupIsOpen = false
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
+const extensionStore = new ExtensionStore()
 
 // initialization flow
 initialize().catch(log.error)
@@ -45,8 +47,12 @@ async function initialize () {
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
+  // fetch from extension store
+  const extensionData = await extensionStore.fetch() // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
   // read from disk
   let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
+  // merge extension and versioned data
+  versionedData = { ...versionedData, ...extensionData }
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   // write to disk
@@ -76,6 +82,7 @@ function setupController (initState) {
   pump(
     asStream(controller.store),
     storeTransform(versionifyData),
+    storeTransform(syncDataWithExtension),
     asStream(diskStore)
   )
 
@@ -83,6 +90,11 @@ function setupController (initState) {
     const versionedData = diskStore.getState()
     versionedData.data = state
     return versionedData
+  }
+
+  function syncDataWithExtension(state) {
+    extensionStore.sync(state) // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+    return state
   }
 
   //
