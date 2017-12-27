@@ -332,7 +332,7 @@ App.prototype.renderNetworkDropdown = function () {
           fontSize: '18px',
         },
       },
-      [ 
+      [
         h('.blue-triangle.menu-icon'),
         'POA Network',
         providerType === 'poa' ? h('.check', '✓') : null,

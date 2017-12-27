@@ -198,7 +198,7 @@ AccountDetailScreen.prototype.render = function () {
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: { marginRight: '10px' },
-            disabled:  network === '99',
+            disabled: network === '99',
           }, 'BUY'),
 
           h('button', {

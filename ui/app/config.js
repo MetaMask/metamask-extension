@@ -211,7 +211,7 @@ function currentProviderDisplay (metamaskState) {
     case 'poa':
       title = 'Current Network'
       value = 'POA Network'
-
+      break
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget

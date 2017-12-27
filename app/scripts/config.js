@@ -20,6 +20,6 @@ module.exports = {
     3: 'Ropsten',
     4: 'Rinkeby',
     42: 'Kovan',
-    99: 'POA'
+    99: 'POA',
   },
 }
