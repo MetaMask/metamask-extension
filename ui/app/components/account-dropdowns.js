@@ -2,7 +2,7 @@ const Component = require('react').Component
 const PropTypes = require('react').PropTypes
 const h = require('react-hyperscript')
 const actions = require('../actions')
-const genAccountLink = require('etherscan-link').createAccountLink
+const {createAccountLink} = require('./create-link')
 const connect = require('react-redux').connect
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
@@ -19,6 +19,18 @@ class AccountDropdowns extends Component {
     }
     this.accountSelectorToggleClassName = 'accounts-selector'
     this.optionsMenuToggleClassName = 'fa-ellipsis-h'
+  }
+
+  generateLabel(chainId) {
+    switch (chainId) {
+      case '1':
+      case '3':
+      case '4':
+      case '42':
+        return 'View account on Etherscan'
+      case '99':
+        return 'View account on explorer'
+    }
   }
 
   renderAccounts () {
@@ -188,11 +200,11 @@ class AccountDropdowns extends Component {
             closeMenu: () => {},
             onClick: () => {
               const { selected } = this.props
-              const url = network === '99' ? `https://core-explorer.poa.network/account/${selected}` : genAccountLink(selected, network)
+              const url = createAccountLink(selected, network)
               global.platform.openWindow({ url })
             },
           },
-          network === '99' ? 'View account on explorer' : 'View account on Etherscan',
+          this.generateLabel(network),
         ),
         h(
           DropdownMenuItem,

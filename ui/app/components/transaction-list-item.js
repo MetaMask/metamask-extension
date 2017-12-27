@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const explorerLink = require('etherscan-link').createExplorerLink
+const {createExplorerLink} = require('./create-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
@@ -67,7 +67,7 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        var url = parseInt(network) === 99 ? `https://core-explorer.poa.network/tx/${transaction.hash}` : explorerLink(transaction.hash, parseInt(network))
+        const url = createExplorerLink(transaction.hash, network)
         global.platform.openWindow({ url })
       },
       style: {
