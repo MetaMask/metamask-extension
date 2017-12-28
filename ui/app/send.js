@@ -247,6 +247,12 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
+
+  if (isNaN(input)) {
+    message = 'Invalid ether value.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
