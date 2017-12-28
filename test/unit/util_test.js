@@ -201,6 +201,12 @@ describe('util', function () {
         var output = util.normalizeEthStringToWei(input)
         assert.equal(output.toString(10), ethInWei)
       })
+
+      it('should account for overflow numbers gracefully by dropping extra precision.', function () {
+        var input = '1.11111111111111111111'
+        var output = util.normalizeEthStringToWei(input)
+        assert.equal(output.toString(10), '1111111111111111111')
+      })
     })
 
     describe('#normalizeNumberToWei', function () {
