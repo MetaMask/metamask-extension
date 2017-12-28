@@ -328,7 +328,7 @@ describe('PendingTransactionTracker', function () {
     it('should publish the transaction if the number of blocks since last retry exceeds the last set limit', function (done) {
       const enoughBalance = '0x100000'
       const mockLatestBlockNumber = '0x11'
-      
+
       pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
       .then(() => done())
       .catch((err) => {
@@ -338,5 +338,64 @@ describe('PendingTransactionTracker', function () {
 
       assert.equal(pendingTxTracker.publishTransaction.callCount, 1, 'Should call publish transaction')
     })
- })
+  })
+
+  describe('#_checkIfNonceIsTaken', function () {
+    beforeEach ( function () {
+      let confirmedTxList = [{
+        id: 1,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: 'confirmed',
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+        rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+      }, {
+        id: 2,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: 'confirmed',
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x2',
+          value: '0xfffff',
+        },
+        rawTx: '0xf86c808504a817c800827b0d940c62bb85faa3311a998d3aba8098c1235c564966880de0b6b3a7640000802aa08ff665feb887a25d4099e40e11f0fef93ee9608f404bd3f853dd9e84ed3317a6a02ec9d3d1d6e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+      }]
+      pendingTxTracker.getCompletedTransactions = (address) => {
+        if (!address) throw new Error('unless behavior has changed #_checkIfNonceIsTaken needs a filtered list of transactions to see if the nonce is taken')
+        return confirmedTxList
+      }
+    })
+
+    it('should return false', function (done) {
+      pendingTxTracker._checkIfNonceIsTaken({
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x3',
+          value: '0xfffff',
+        },
+      })
+      .then((taken) => {
+        assert.ok(!taken)
+        done()
+      })
+      .catch(done)
+    })
+
+    it('should return true', function (done) {
+      pendingTxTracker._checkIfNonceIsTaken({
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x2',
+          value: '0xfffff',
+        },
+      }).then((taken) => {
+        assert.ok(taken)
+        done()
+      })
+      .catch(done)
+    })
+  })
 })
