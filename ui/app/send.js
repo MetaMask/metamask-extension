@@ -247,16 +247,26 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const recipient = state.recipient || document.querySelector('input[name="address"]').value.replace(/^[.\s]+|[.\s]+$/g, '')
   const nickname = state.nickname || ' '
   const input = document.querySelector('input[name="amount"]').value
+  const parts = input.split('')
 
-  if (isNaN(input)) {
+  let message
+
+  if (isNaN(input) || input === '') {
     message = 'Invalid ether value.'
     return this.props.dispatch(actions.displayWarning(message))
+  }
+
+  if (parts[1]) {
+    var decimal = parts[1]
+    if (decimal.length > 18) {
+      message = 'Ether amount is too precise.'
+      return this.props.dispatch(actions.displayWarning(message))
+    }
   }
 
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
-  let message
 
   if (value.gt(balance)) {
     message = 'Insufficient funds.'
