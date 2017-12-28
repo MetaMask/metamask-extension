@@ -369,7 +369,7 @@ describe('PendingTransactionTracker', function () {
       }
     })
 
-    it('should return false', function (done) {
+    it('should return false if nonce has not been taken', function (done) {
       pendingTxTracker._checkIfNonceIsTaken({
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -384,7 +384,7 @@ describe('PendingTransactionTracker', function () {
       .catch(done)
     })
 
-    it('should return true', function (done) {
+    it('should return true if nonce has been taken', function (done) {
       pendingTxTracker._checkIfNonceIsTaken({
         txParams: {
           from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
