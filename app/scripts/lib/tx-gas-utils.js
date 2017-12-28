@@ -26,7 +26,7 @@ module.exports = class txProvideUtil {
         err.message.includes('Transaction execution error.') ||
         err.message.includes('gas required exceeds allowance or always failing transaction')
       )
-      if ( simulationFailed ) {
+      if (simulationFailed) {
         txMeta.simulationFails = true
         return txMeta
       }
