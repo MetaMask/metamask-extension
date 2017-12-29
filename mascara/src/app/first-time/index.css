@@ -75,7 +75,7 @@
 
   .backup-phrase__tips {
     margin: 40px 0 !important;
-    width: initial !important; 
+    width: initial !important;
   }
 
   .backup-phrase__confirm-secret,
@@ -337,7 +337,7 @@ button.backup-phrase__confirm-seed-option:hover {
   padding: 14px 21px;
   appearance: none;
   -webkit-appearance: none;
-  -moz-appearance: none; 
+  -moz-appearance: none;
   cursor: pointer;
 }
 
@@ -540,10 +540,10 @@ button.backup-phrase__confirm-seed-option:hover {
   text-transform: uppercase;
   margin: 35px 0 14px;
   transition: 200ms ease-in-out;
+  background-color: rgba(247, 134, 28, 0.9);
 }
 
 button.first-time-flow__button[disabled] {
-  background-color: rgba(247, 134, 28, 0.9);
   opacity: .6;
 }
 
