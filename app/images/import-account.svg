@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>import-account</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="MetaMascara-v2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="account-dropdown-top-bar-IXD" transform="translate(-25.000000, -718.000000)">
+            <g id="Group-6" transform="translate(4.000000, 646.000000)">
+                <g id="import-account" transform="translate(21.000000, 72.000000)">
+                    <rect id="Rectangle-49" fill="#FFFFFF" x="0" y="13.1721326" width="14.4893459" height="1.08397642"></rect>
+                    <rect id="Rectangle" fill="#FFFFFF" x="6.5860663" y="0" width="1.08397642" height="10.5377061"></rect>
+                    <polyline id="Path-12" stroke="#FFFFFF" points="2.63442652 6.5860663 7.24467293 10.5377061 11.8549193 6.5860663"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
