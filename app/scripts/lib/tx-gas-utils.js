@@ -81,8 +81,15 @@ module.exports = class txProvideUtil {
   }
 
   async validateTxParams (txParams) {
-    if (('value' in txParams) && txParams.value.indexOf('-') === 0) {
-      throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+    if ('value' in txParams) {
+      const value = txParams.value.toString()
+      if (value.includes('-')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
+      }
+
+      if (value.includes('.')) {
+        throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
+      }
     }
   }
 }
