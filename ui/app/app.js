@@ -494,7 +494,7 @@ App.prototype.renderPrimary = function () {
     }
   }
 
-  //Show seed words screen
+  // show seed words screen
   if (props.seedWords) {
     log.debug('rendering seed words')
     return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
