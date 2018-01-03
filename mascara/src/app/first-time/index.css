@@ -571,10 +571,10 @@ button.backup-phrase__confirm-seed-option:hover {
   text-transform: uppercase;
   margin: 35px 0 14px;
   transition: 200ms ease-in-out;
+  background-color: rgba(247, 134, 28, 0.9);
 }
 
 button.first-time-flow__button[disabled] {
-  background-color: rgba(247, 134, 28, 0.9);
   opacity: .6;
 }
 
