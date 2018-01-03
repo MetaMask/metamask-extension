@@ -178,7 +178,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   }
 
   async _checkIfNonceIsTaken (txMeta) {
-    const completed = this.getCompletedTransactions()
+    const address = txMeta.txParams.from
+    const completed = this.getCompletedTransactions(address)
     const sameNonce = completed.filter((otherMeta) => {
       return otherMeta.txParams.nonce === txMeta.txParams.nonce
     })

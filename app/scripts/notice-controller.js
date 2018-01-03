@@ -77,7 +77,7 @@ module.exports = class NoticeController extends EventEmitter {
     return uniqBy(oldNotices.concat(newNotices), 'id')
   }
 
-  _filterNotices(notices) {
+  _filterNotices (notices) {
     return notices.filter((newNotice) => {
       if ('version' in newNotice) {
         const satisfied = semver.satisfies(this.version, newNotice.version)
