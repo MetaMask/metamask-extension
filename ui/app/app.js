@@ -360,11 +360,6 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  if (props.seedWords) {
-    log.debug('rendering seed words')
-    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
-  }
-
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
     // show current view
@@ -387,6 +382,12 @@ App.prototype.renderPrimary = function () {
       currentViewName: props.currentView.name,
       isUnlocked: props.isUnlocked,
     })
+  }
+
+  // show seed words screen
+  if (props.seedWords) {
+    log.debug('rendering seed words')
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show current view
