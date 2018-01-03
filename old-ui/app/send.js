@@ -267,7 +267,6 @@ SendTransactionScreen.prototype.onSubmit = function () {
   const value = util.normalizeEthStringToWei(input)
   const txData = document.querySelector('input[name="txData"]').value
   const balance = this.props.balance
-  let message
 
   if (value.gt(balance)) {
     message = 'Insufficient funds.'
