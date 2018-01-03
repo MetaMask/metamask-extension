@@ -14,6 +14,10 @@ const handleDisabledSyncAndResolve = (resolve, toResolve) => {
 }
 
 module.exports = class ExtensionStore {
+  constructor() {
+    this.isSupported = !!(extension.storage.sync)
+    this.isEnabled = true // TODO: get value from user settings
+  }
   async fetch() {
     return new Promise((resolve) => {
       extension.storage.sync.get(KEYS_TO_SYNC, (data) => {

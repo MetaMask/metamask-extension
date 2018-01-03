@@ -50,8 +50,12 @@ async function loadStateFromPersistence () {
   // read from disk
   let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
   // fetch from extension store and merge in data
-  const extensionData = await extensionStore.fetch() // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
-  versionedData = { ...versionedData, ...extensionData }
+
+  if (extensionStore.isSupported && extensionStore.isEnabled) {
+    const extensionData = await extensionStore.fetch() // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+    versionedData = { ...versionedData, ...extensionData }
+  }
+
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
   // write to disk
@@ -92,7 +96,9 @@ function setupController (initState) {
   }
 
   function syncDataWithExtension(state) {
-    extensionStore.sync(state) // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+    if (extensionStore.isSupported && extensionStore.isEnabled) {
+      extensionStore.sync(state) // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+    }
     return state
   }
 
