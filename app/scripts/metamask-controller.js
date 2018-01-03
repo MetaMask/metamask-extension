@@ -335,6 +335,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setUseBlockie: this.setUseBlockie.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
 
       // coinbase
@@ -352,13 +353,16 @@ module.exports = class MetamaskController extends EventEmitter {
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
+      setNetworkEndpoints: nodeify(networkController.setNetworkEndpoints, networkController),
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
+      removeToken: nodeify(preferencesController.removeToken, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -373,6 +377,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
+      updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
 
@@ -819,6 +824,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  setUseBlockie (val, cb) {
+    try {
+      this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
   }
 
   recordFirstTimeInfo (initState) {

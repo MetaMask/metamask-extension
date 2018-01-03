@@ -1,5 +1,6 @@
 const injectCss = require('inject-css')
-const MetaMaskUiCss = require('../../ui/css')
+const OldMetaMaskUiCss = require('../../old-ui/css')
+const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('./lib/port-stream.js')
 const isPopupOrNotification = require('./lib/is-popup-or-notification')
@@ -10,10 +11,6 @@ const notificationManager = new NotificationManager()
 
 // create platform global
 global.platform = new ExtensionPlatform()
-
-// inject css
-const css = MetaMaskUiCss()
-injectCss(css)
 
 // identify window type (popup, notification)
 const windowType = isPopupOrNotification()
@@ -28,8 +25,21 @@ const connectionStream = new PortStream(extensionPort)
 const container = document.getElementById('app-content')
 startPopup({ container, connectionStream }, (err, store) => {
   if (err) return displayCriticalError(err)
+
+  let betaUIState = store.getState().metamask.featureFlags.betaUI
+  let css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+  let deleteInjectedCss = injectCss(css)
+  let newBetaUIState
+
   store.subscribe(() => {
     const state = store.getState()
+    newBetaUIState = state.metamask.featureFlags.betaUI
+    if (newBetaUIState !== betaUIState) {
+      deleteInjectedCss()
+      betaUIState = newBetaUIState
+      css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+      deleteInjectedCss = injectCss(css)
+    }
     if (state.appState.shouldClose) notificationManager.closePopup()
   })
 })
