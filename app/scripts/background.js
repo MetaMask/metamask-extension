@@ -47,11 +47,10 @@ async function initialize () {
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
-  // fetch from extension store
-  const extensionData = await extensionStore.fetch() // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
   // read from disk
   let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
-  // merge extension and versioned data
+  // fetch from extension store and merge in data
+  const extensionData = await extensionStore.fetch() // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
   versionedData = { ...versionedData, ...extensionData }
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
