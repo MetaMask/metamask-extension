@@ -169,7 +169,7 @@
     "babelify": "^8.0.0",
     "beefy": "^2.1.5",
     "brfs": "^1.4.3",
-    "browserify": "^14.4.0",
+    "browserify": "^15.0.0",
     "chai": "^4.1.0",
     "coveralls": "^3.0.0",
     "deep-freeze-strict": "^1.1.1",
