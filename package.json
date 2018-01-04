@@ -200,7 +200,6 @@
     "fs-promise": "^2.0.3",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-babel": "^7.0.0",
-    "gulp-gzip": "^1.4.0",
     "gulp-if": "^2.0.1",
     "gulp-json-editor": "^2.2.1",
     "gulp-livereload": "^3.8.1",
