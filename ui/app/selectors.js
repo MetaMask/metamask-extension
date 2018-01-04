@@ -107,12 +107,22 @@ function getCurrentAccountWithSendEtherInfo (state) {
 
 function transactionsSelector (state) {
   const { network, selectedTokenAddress } = state.metamask
+
   const unapprovedMsgs = valuesFor(state.metamask.unapprovedMsgs)
+  const unapprovedPersonalMsgs = valuesFor(state.metamask.unapprovedPersonalMsgs)
+  const unapprovedTypedMessages = valuesFor(state.metamask.unapprovedTypedMessages)
+  const allMessages = [
+    ...unapprovedMsgs,
+    ...unapprovedPersonalMsgs,
+    ...unapprovedTypedMessages,
+  ]
+
   const shapeShiftTxList = (network === '1') ? state.metamask.shapeShiftTxList : undefined
   const transactions = state.metamask.selectedAddressTxList || []
-  const txsToRender = !shapeShiftTxList ? transactions.concat(unapprovedMsgs) : transactions.concat(unapprovedMsgs, shapeShiftTxList)
+  const txsToRender = !shapeShiftTxList
+    ? transactions.concat(allMessages)
+    : transactions.concat(allMessages, shapeShiftTxList)
 
-  // console.log({txsToRender, selectedTokenAddress})
   return selectedTokenAddress
     ? txsToRender
       .filter(({ txParams: { to } }) => to === selectedTokenAddress)

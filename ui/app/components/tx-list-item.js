@@ -51,19 +51,21 @@ TxListItem.prototype.getAddressText = function () {
   const {
     address,
     txParams = {},
+    isMsg,
   } = this.props
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { name: txDataName, params = [] } = decodedData || {}
   const { value } = params[0] || {}
 
-  switch (txDataName) {
-    case 'transfer':
-      return `${value.slice(0, 10)}...${value.slice(-4)}`
-    default:
-      return address
-        ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : 'Contract Published'
+  if (txDataName === 'transfer') {
+    return `${value.slice(0, 10)}...${value.slice(-4)}`
+  } else if (isMsg) {
+    return 'Signature Requested'
+  } else if (address) {
+    return `${address.slice(0, 10)}...${address.slice(-4)}`
+  } else {
+    return 'Contract Published'
   }
 }
 
