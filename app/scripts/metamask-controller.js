@@ -513,10 +513,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
   async createNewVaultAndRestore (password, seed) {
     const release = await this.createVaultMutex.acquire()
-    const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
-    this.selectFirstIdentity(vault)
-    release()
-    return vault
+    try {
+      const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+      this.selectFirstIdentity(vault)
+      release()
+      return vault
+    } catch (err) {
+      release()
+      throw err
+    }
   }
 
   selectFirstIdentity (vault) {

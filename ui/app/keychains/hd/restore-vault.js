@@ -149,4 +149,8 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   this.warning = null
   this.props.dispatch(actions.displayWarning(this.warning))
   this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
+  .catch((err) => {
+    log.error(err.message)
+  })
+
 }
