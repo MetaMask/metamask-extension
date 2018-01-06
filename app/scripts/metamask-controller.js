@@ -489,9 +489,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   getGasPrice () {
     const { recentBlocksController } = this
-    console.dir(recentBlocksController)
     const { recentBlocks } = recentBlocksController.store.getState()
-    console.dir(recentBlocks)
     const lowestPrices = recentBlocks.map((block) => {
       return block.transactions
       .sort((a, b) => {
@@ -499,7 +497,6 @@ module.exports = class MetamaskController extends EventEmitter {
       })[0]
     })
     .map(number => number.div(GWEI_BN).toNumber())
-    console.dir({ lowestPrices })
     return percentile(50, lowestPrices)
   }
 
