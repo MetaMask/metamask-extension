@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Improve gas price suggestion to be closer to the lowest that will be accepted.
 - Throw an error if a application tries to submit a tx whose value is a decimal, and inform that it should be in wei.
 - Fix bug that prevented updating custom token details.
 - No longer mark long-pending transactions as failed, since we now have button to retry with higher gas.
