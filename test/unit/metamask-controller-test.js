@@ -55,8 +55,10 @@ describe('MetaMaskController', function () {
             getState: () => {
               return {
                 recentBlocks: [
-                  { transactions: [ new BN('50000000000'), new BN('100000000000') ] },
-                  { transactions: [ new BN('60000000000'), new BN('100000000000') ] },
+                  { gasPrices: [ '0x3b9aca00', '0x174876e800'] },
+                  { gasPrices: [ '0x3b9aca00', '0x174876e800'] },
+                  { gasPrices: [ '0x174876e800', '0x174876e800' ]},
+                  { gasPrices: [ '0x174876e800', '0x174876e800' ]},
                 ]
               }
             }
@@ -64,7 +66,7 @@ describe('MetaMaskController', function () {
         }
 
         const gasPrice = metamaskController.getGasPrice()
-        assert.equal(gasPrice, 50, 'accurately estimates 50th percentile accepted gas price')
+        assert.equal(gasPrice, '0x3b9aca00', 'accurately estimates 50th percentile accepted gas price')
 
         metamaskController.recentBlocksController = realRecentBlocksController
       })

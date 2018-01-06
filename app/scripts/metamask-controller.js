@@ -491,13 +491,20 @@ module.exports = class MetamaskController extends EventEmitter {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
     const lowestPrices = recentBlocks.map((block) => {
-      return block.transactions
+      if (!block.gasPrices) {
+        return new BN(0)
+      }
+      return block.gasPrices
+      .map(hexPrefix => hexPrefix.substr(2))
+      .map(hex => new BN(hex, 16))
       .sort((a, b) => {
         return a.gt(b) ? 1 : -1
       })[0]
     })
     .map(number => number.div(GWEI_BN).toNumber())
-    return percentile(50, lowestPrices)
+    const percentileNum = percentile(50, lowestPrices)
+    const percentileNumBn = new BN(percentileNum)
+    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
 
   //
