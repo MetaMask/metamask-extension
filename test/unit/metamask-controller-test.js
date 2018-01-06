@@ -3,6 +3,8 @@ const sinon = require('sinon')
 const clone = require('clone')
 const MetaMaskController = require('../../app/scripts/metamask-controller')
 const firstTimeState = require('../../app/scripts/first-time-state')
+const BN = require('ethereumjs-util').BN
+const GWEI_BN = new BN('1000000000')
 
 describe('MetaMaskController', function () {
   const noop = () => {}
@@ -43,6 +45,29 @@ describe('MetaMaskController', function () {
 
     afterEach(function () {
       metamaskController.keyringController.createNewVaultAndKeychain.restore()
+    })
+
+    describe('#getGasPrice', function () {
+      it('gives the 50th percentile lowest accepted gas price from recentBlocksController', async function () {
+        const realRecentBlocksController = metamaskController.recentBlocksController
+        metamaskController.recentBlocksController = {
+          store: {
+            getState: () => {
+              return {
+                recentBlocks: [
+                  { transactions: [ new BN('50000000000'), new BN('100000000000') ] },
+                  { transactions: [ new BN('60000000000'), new BN('100000000000') ] },
+                ]
+              }
+            }
+          }
+        }
+
+        const gasPrice = metamaskController.getGasPrice()
+        assert.equal(gasPrice, 50, 'accurately estimates 50th percentile accepted gas price')
+
+        metamaskController.recentBlocksController = realRecentBlocksController
+      })
     })
 
     describe('#createNewVaultAndKeychain', function () {
