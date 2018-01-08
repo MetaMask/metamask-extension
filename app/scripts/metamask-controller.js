@@ -490,6 +490,12 @@ module.exports = class MetamaskController extends EventEmitter {
   getGasPrice () {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
+
+    // Return 1 gwei if no blocks have been observed:
+    if (recentBlocks.length === 0) {
+      return '0x' + GWEI_BN.toString(16)
+    }
+
     const lowestPrices = recentBlocks.map((block) => {
       if (!block.gasPrices) {
         return new BN(0)
