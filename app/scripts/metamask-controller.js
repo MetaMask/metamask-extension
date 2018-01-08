@@ -35,12 +35,14 @@ const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
 const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
+const BN = require('ethereumjs-util').BN
+const GWEI_BN = new BN('1000000000')
+const percentile = require('percentile')
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
@@ -139,6 +141,7 @@ module.exports = class MetamaskController extends EventEmitter {
       provider: this.provider,
       blockTracker: this.blockTracker,
       ethQuery: this.ethQuery,
+      getGasPrice: this.getGasPrice.bind(this),
     })
     this.txController.on('newUnapprovedTx', opts.showUnapprovedTx.bind(opts))
 
@@ -482,6 +485,26 @@ module.exports = class MetamaskController extends EventEmitter {
 
   privateSendUpdate () {
     this.emit('update', this.getState())
+  }
+
+  getGasPrice () {
+    const { recentBlocksController } = this
+    const { recentBlocks } = recentBlocksController.store.getState()
+    const lowestPrices = recentBlocks.map((block) => {
+      if (!block.gasPrices) {
+        return new BN(0)
+      }
+      return block.gasPrices
+      .map(hexPrefix => hexPrefix.substr(2))
+      .map(hex => new BN(hex, 16))
+      .sort((a, b) => {
+        return a.gt(b) ? 1 : -1
+      })[0]
+    })
+    .map(number => number.div(GWEI_BN).toNumber())
+    const percentileNum = percentile(50, lowestPrices)
+    const percentileNumBn = new BN(percentileNum)
+    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
 
   //

@@ -32,6 +32,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
+    this.getGasPrice = opts.getGasPrice
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
@@ -179,7 +180,8 @@ module.exports = class TransactionController extends EventEmitter {
     // ensure value
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     txMeta.nonceSpecified = Boolean(txParams.nonce)
-    const gasPrice = txParams.gasPrice || await this.query.gasPrice()
+    const gasPrice = txParams.gasPrice || this.getGasPrice ? this.getGasPrice()
+      : await this.query.gasPrice()
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
     // set gasLimit
