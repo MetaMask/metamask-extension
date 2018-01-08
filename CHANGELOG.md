@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Remove recipient field if application initializes a tx with an empty string, or 0x, and tx data. Throw an error with the same condition, but without tx data.
 - Throw an error if a application tries to submit a tx whose value is a decimal, and inform that it should be in wei.
 - Fix bug that prevented updating custom token details.
 - No longer mark long-pending transactions as failed, since we now have button to retry with higher gas.
