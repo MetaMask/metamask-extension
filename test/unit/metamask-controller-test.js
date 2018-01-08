@@ -41,10 +41,12 @@ describe('MetaMaskController', function () {
 
     beforeEach(function () {
       sinon.spy(metamaskController.keyringController, 'createNewVaultAndKeychain')
+      sinon.spy(metamaskController.keyringController, 'createNewVaultAndRestore')
     })
 
     afterEach(function () {
       metamaskController.keyringController.createNewVaultAndKeychain.restore()
+      metamaskController.keyringController.createNewVaultAndRestore.restore()
     })
 
     describe('#getGasPrice', function () {
@@ -74,8 +76,8 @@ describe('MetaMaskController', function () {
 
     describe('#createNewVaultAndKeychain', function () {
       it('can only create new vault on keyringController once', async function () {
-
         const selectStub = sinon.stub(metamaskController, 'selectFirstIdentity')
+
 
         const password = 'a-fake-password'
 
@@ -87,6 +89,22 @@ describe('MetaMaskController', function () {
         selectStub.reset()
       })
     })
+
+    describe('#createNewVaultAndRestore', function () {
+      it('should be able to call newVaultAndRestore despite a mistake.', async function () {
+        // const selectStub = sinon.stub(metamaskController, 'selectFirstIdentity')
+
+        const password = 'what-what-what'
+        const wrongSeed = 'debris dizzy just program just float decrease vacant alarm reduce speak stadiu'
+        const rightSeed = 'debris dizzy just program just float decrease vacant alarm reduce speak stadium'
+          const first = await metamaskController.createNewVaultAndRestore(password, wrongSeed)
+            .catch((e) => {
+              return
+            })
+          const second = await metamaskController.createNewVaultAndRestore(password, rightSeed)
+
+        assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
+      })
+    })
   })
 })
-
