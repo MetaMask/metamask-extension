@@ -57,3 +57,4 @@ class BlacklistController {
 }
 
 module.exports = BlacklistController
+
