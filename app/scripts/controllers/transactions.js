@@ -180,8 +180,10 @@ module.exports = class TransactionController extends EventEmitter {
     // ensure value
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     txMeta.nonceSpecified = Boolean(txParams.nonce)
-    const gasPrice = txParams.gasPrice || this.getGasPrice ? this.getGasPrice()
-      : await this.query.gasPrice()
+    let gasPrice = txParams.gasPrice
+    if (!gasPrice) {
+      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+    }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
     // set gasLimit
