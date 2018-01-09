@@ -9,33 +9,37 @@ const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ethe
 // init
 const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
-// unlock
-const UnlockScreen = require('./unlock')
 // accounts
-const AccountDetailScreen = require('./account-detail')
-const SendTransactionScreen = require('./send')
+const MainContainer = require('./main-container')
+const SendTransactionScreen2 = require('./components/send/send-v2-container')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
+
+// slideout menu
+const WalletView = require('./components/wallet-view')
+
 // other views
-const ConfigScreen = require('./config')
+const Settings = require('./settings')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
-const InfoScreen = require('./info')
 const Loading = require('./components/loading')
-const SandwichExpando = require('sandwich-expando')
-const Dropdown = require('./components/dropdown').Dropdown
-const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkIndicator = require('./components/network')
+const Identicon = require('./components/identicon')
 const BuyView = require('./components/buy-button-subview')
-const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
-const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+const NetworkDropdown = require('./components/dropdowns/network-dropdown')
+const AccountMenu = require('./components/account-menu')
+const QrView = require('./components/qr-code')
 
-module.exports = connect(mapStateToProps)(App)
+// Global Modals
+const Modal = require('./components/modals/index').Modal
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
 inherits(App, Component)
 function App () { Component.call(this) }
@@ -54,11 +58,14 @@ function mapStateToProps (state) {
 
   return {
     // state from plugin
+    networkDropdownOpen: state.appState.networkDropdownOpen,
+    sidebarOpen: state.appState.sidebarOpen,
     isLoading: state.appState.isLoading,
     loadingMessage: state.appState.loadingMessage,
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
+    selectedAddress: state.metamask.selectedAddress,
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
@@ -74,6 +81,7 @@ function mapStateToProps (state) {
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    currentCurrency: state.metamask.currentCurrency,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -82,52 +90,140 @@ function mapStateToProps (state) {
   }
 }
 
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    dispatch,
+    hideSidebar: () => dispatch(actions.hideSidebar()),
+    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
+    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
+    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+  }
+}
+
+App.prototype.componentWillMount = function () {
+  if (!this.props.currentCurrency) {
+    this.props.setCurrentCurrencyToUSD()
+  }
+}
+
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward, network } = props
+  const { isLoading, loadingMessage, network } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
   log.debug('Main ui render function')
 
   return (
-
     h('.flex-column.full-height', {
       style: {
-        // Windows was showing a vertical scroll bar:
-        overflow: 'hidden',
+        overflowX: 'hidden',
         position: 'relative',
         alignItems: 'center',
       },
     }, [
 
+      // global modal
+      h(Modal, {}, []),
+
       // app bar
       this.renderAppBar(),
-      this.renderNetworkDropdown(),
-      this.renderDropdown(),
 
-      this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
+      // sidebar
+      this.renderSidebar(),
 
-      // panel content
-      h('.app-primary' + (transForward ? '.from-right' : '.from-left'), {
-        style: {
-          width: '100%',
-        },
-      }, [
-        this.renderPrimary(),
-      ]),
+      // network dropdown
+      h(NetworkDropdown, {
+        provider: this.props.provider,
+        frequentRpcList: this.props.frequentRpcList,
+      }, []),
+
+      h(AccountMenu),
+
+      (isLoading || isLoadingNetwork) && h(Loading, {
+        loadingMessage: loadMessage,
+      }),
+
+      // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
+
+      // content
+      this.renderPrimary(),
     ])
   )
 }
 
+App.prototype.renderGlobalModal = function () {
+  return h(Modal, {
+    ref: 'modalRef',
+  }, [
+    // h(BuyOptions, {}, []),
+  ])
+}
+
+App.prototype.renderSidebar = function () {
+
+  return h('div', {
+  }, [
+    h('style', `
+      .sidebar-enter {
+        transition: transform 300ms ease-in-out;
+        transform: translateX(-100%);
+      }
+      .sidebar-enter.sidebar-enter-active {
+        transition: transform 300ms ease-in-out;
+        transform: translateX(0%);
+      }
+      .sidebar-leave {
+        transition: transform 200ms ease-out;
+        transform: translateX(0%);
+      }
+      .sidebar-leave.sidebar-leave-active {
+        transition: transform 200ms ease-out;
+        transform: translateX(-100%);
+      }
+    `),
+
+    h(ReactCSSTransitionGroup, {
+      transitionName: 'sidebar',
+      transitionEnterTimeout: 300,
+      transitionLeaveTimeout: 200,
+    }, [
+      // A second instance of Walletview is used for non-mobile viewports
+      this.props.sidebarOpen ? h(WalletView, {
+        responsiveDisplayClassname: '.sidebar',
+        style: {},
+      }) : undefined,
+
+    ]),
+
+    // overlay
+    // TODO: add onClick for overlay to close sidebar
+    this.props.sidebarOpen ? h('div.sidebar-overlay', {
+      style: {},
+      onClick: () => {
+        this.props.hideSidebar()
+      },
+    }, []) : undefined,
+  ])
+}
+
 App.prototype.renderAppBar = function () {
+  const {
+    isUnlocked,
+    network,
+    provider,
+    networkDropdownOpen,
+    showNetworkDropdown,
+    hideNetworkDropdown,
+    currentView,
+  } = this.props
+
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
 
   const props = this.props
-  const state = this.state || {}
-  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
   const {isMascara, isOnboarding} = props
 
   // Do not render header if user is in mascara onboarding
@@ -143,266 +239,70 @@ App.prototype.renderAppBar = function () {
   return (
 
     h('.full-width', {
-      height: '38px',
+      style: {},
     }, [
 
       h('.app-header.flex-row.flex-space-between', {
-        style: {
-          alignItems: 'center',
-          visibility: props.isUnlocked ? 'visible' : 'none',
-          background: props.isUnlocked ? 'white' : 'none',
-          height: '38px',
-          position: 'relative',
-          zIndex: 12,
-        },
+        style: {},
       }, [
-
-        h('div.left-menu-section', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          },
-        }, [
-
-          // mini logo
-          h('img', {
-            height: 24,
-            width: 24,
-            src: '/images/icon-128.png',
-          }),
-
-          h(NetworkIndicator, {
-            network: this.props.network,
-            provider: this.props.provider,
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
-            },
-          }),
-        ]),
-
-        props.isUnlocked && h('div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          },
-        }, [
-
-          props.isUnlocked && h(AccountDropdowns, {
-            style: {},
-            enableAccountsSelector: true,
-            identities: this.props.identities,
-            selected: this.props.currentView.context,
-            network: this.props.network,
-            keyrings: this.props.keyrings,
-          }, []),
-
-          // hamburger
-          props.isUnlocked && h(SandwichExpando, {
-            className: 'sandwich-expando',
-            width: 16,
-            barHeight: 2,
-            padding: 0,
-            isOpen: state.isMainMenuOpen,
-            color: 'rgb(247,146,30)',
+        h('div.app-header-contents', {}, [
+          h('div.left-menu-wrapper', {
             onClick: () => {
-              this.setState({
-                isMainMenuOpen: !state.isMainMenuOpen,
-              })
+              props.dispatch(actions.backToAccountDetail(props.activeAddress))
             },
-          }),
+          }, [
+            // mini logo
+            h('img.metafox-icon', {
+              height: 29,
+              width: 29,
+              src: '/images/icon-128.png',
+            }),
+
+            // metamask name
+            h('h1', {
+              style: {
+                position: 'relative',
+                paddingLeft: '9px',
+                color: '#5B5D67',
+              },
+            }, 'MetaMask'),
+
+          ]),
+
+          h('div.header__right-actions', [
+            h('div.network-component-wrapper', {
+              style: {},
+            }, [
+              // Network Indicator
+              h(NetworkIndicator, {
+                network,
+                provider,
+                disabled: currentView.name === 'confTx',
+                onClick: (event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  return networkDropdownOpen === false
+                    ? showNetworkDropdown()
+                    : hideNetworkDropdown()
+                },
+              }),
+
+            ]),
+
+            isUnlocked && h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
+              h(Identicon, {
+                address: this.props.selectedAddress,
+                diameter: 32,
+              }),
+            ]),
+          ]),
         ]),
       ]),
+
     ])
   )
 }
 
-App.prototype.renderNetworkDropdown = function () {
-  const props = this.props
-  const { provider: { type: providerType, rpcTarget: activeNetwork } } = props
-  const rpcList = props.frequentRpcList
-  const state = this.state || {}
-  const isOpen = state.isNetworkMenuOpen
-
-  return h(Dropdown, {
-    useCssTransition: true,
-    isOpen,
-    onClickOutside: (event) => {
-      const { classList } = event.target
-      const isNotToggleElement = [
-        classList.contains('menu-icon'),
-        classList.contains('network-name'),
-        classList.contains('network-indicator'),
-      ].filter(bool => bool).length === 0
-      // classes from three constituent nodes of the toggle element
-
-      if (isNotToggleElement) {
-        this.setState({ isNetworkMenuOpen: false })
-      }
-    },
-    zIndex: 11,
-    style: {
-      position: 'absolute',
-      left: '2px',
-      top: '36px',
-    },
-    innerStyle: {
-      padding: '2px 16px 2px 0px',
-    },
-  }, [
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'main',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('mainnet')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.diamond'),
-        'Main Ethereum Network',
-        providerType === 'mainnet' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'ropsten',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('ropsten')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.red-dot'),
-        'Ropsten Test Network',
-        providerType === 'ropsten' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'kovan',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('kovan')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.hollow-diamond'),
-        'Kovan Test Network',
-        providerType === 'kovan' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'rinkeby',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('rinkeby')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('.menu-icon.golden-square'),
-        'Rinkeby Test Network',
-        providerType === 'rinkeby' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    h(
-      DropdownMenuItem,
-      {
-        key: 'default',
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => props.dispatch(actions.setProviderType('localhost')),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-        'Localhost 8545',
-        activeNetwork === 'http://localhost:8545' ? h('.check', '✓') : null,
-      ]
-    ),
-
-    this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
-
-    h(
-      DropdownMenuItem,
-      {
-        closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
-        onClick: () => this.props.dispatch(actions.showConfigPage()),
-        style: {
-          fontSize: '18px',
-        },
-      },
-      [
-        h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-        'Custom RPC',
-        activeNetwork === 'custom' ? h('.check', '✓') : null,
-      ]
-    ),
-
-  ])
-}
-
-App.prototype.renderDropdown = function () {
-  const state = this.state || {}
-  const isOpen = state.isMainMenuOpen
-
-  return h(Dropdown, {
-    useCssTransition: true,
-    isOpen: isOpen,
-    zIndex: 11,
-    onClickOutside: (event) => {
-      const classList = event.target.classList
-      const parentClassList = event.target.parentElement.classList
-
-      const isToggleElement = classList.contains('sandwich-expando') ||
-        parentClassList.contains('sandwich-expando')
-
-      if (isOpen && !isToggleElement) {
-        this.setState({ isMainMenuOpen: false })
-      }
-    },
-    style: {
-      position: 'absolute',
-      right: '2px',
-      top: '38px',
-    },
-    innerStyle: {},
-  }, [
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.showConfigPage()) },
-    }, 'Settings'),
-
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.lockMetamask()) },
-    }, 'Lock'),
-
-    h(DropdownMenuItem, {
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.showInfoPage()) },
-    }, 'Info/Help'),
-  ])
-}
 
 App.prototype.renderLoadingIndicator = function ({ isLoading, isLoadingNetwork, loadMessage }) {
   const { isMascara } = this.props
@@ -478,20 +378,10 @@ App.prototype.renderPrimary = function () {
 
   // show unlock screen
   if (!props.isUnlocked) {
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      case 'config':
-        log.debug('rendering config screen from unlock screen.')
-        return h(ConfigScreen, {key: 'config'})
-
-      default:
-        log.debug('rendering locked screen')
-        return h(UnlockScreen, {key: 'locked'})
-    }
+    return h(MainContainer, {
+      currentViewName: props.currentView.name,
+      isUnlocked: props.isUnlocked,
+    })
   }
 
   // show seed words screen
@@ -504,12 +394,28 @@ App.prototype.renderPrimary = function () {
   switch (props.currentView.name) {
 
     case 'accountDetail':
-      log.debug('rendering account detail screen')
-      return h(AccountDetailScreen, {key: 'account-detail'})
+      log.debug('rendering main container')
+      return h(MainContainer, {key: 'account-detail'})
 
     case 'sendTransaction':
       log.debug('rendering send tx screen')
-      return h(SendTransactionScreen, {key: 'send-transaction'})
+
+      // Going to leave this here until we are ready to delete SendTransactionScreen v1
+      // const SendComponentToRender = checkFeatureToggle('send-v2')
+      //   ? SendTransactionScreen2
+      //   : SendTransactionScreen
+
+      return h(SendTransactionScreen2, {key: 'send-transaction'})
+
+    case 'sendToken':
+      log.debug('rendering send token screen')
+
+      // Going to leave this here until we are ready to delete SendTransactionScreen v1
+      // const SendTokenComponentToRender = checkFeatureToggle('send-v2')
+      //   ? SendTransactionScreen2
+      //   : SendTokenScreen
+
+      return h(SendTransactionScreen2, {key: 'sendToken'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')
@@ -525,7 +431,7 @@ App.prototype.renderPrimary = function () {
 
     case 'config':
       log.debug('rendering config screen')
-      return h(ConfigScreen, {key: 'config'})
+      return h(Settings, {key: 'config'})
 
     case 'import-menu':
       log.debug('rendering import screen')
@@ -537,7 +443,7 @@ App.prototype.renderPrimary = function () {
 
     case 'info':
       log.debug('rendering info screen')
-      return h(InfoScreen, {key: 'info'})
+      return h(Settings, {key: 'info', tab: 'info'})
 
     case 'buyEth':
       log.debug('rendering buy ether screen')
@@ -577,7 +483,7 @@ App.prototype.renderPrimary = function () {
 
     default:
       log.debug('rendering default, account detail screen')
-      return h(AccountDetailScreen, {key: 'account-detail'})
+      return h(MainContainer, {key: 'account-detail'})
   }
 }
 
@@ -590,40 +496,6 @@ App.prototype.toggleMetamaskActive = function () {
   } else {
     // currently active: deactivate
     this.props.dispatch(actions.lockMetamask(false))
-  }
-}
-
-App.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type } = provider
-  const props = this.props
-
-  if (type !== 'rpc') return null
-
-  // Concatenate long URLs
-  let label = rpcTarget
-  if (rpcTarget.length > 31) {
-    label = label.substr(0, 34) + '...'
-  }
-
-  switch (rpcTarget) {
-
-    case 'http://localhost:8545':
-      return null
-
-    default:
-      return h(
-        DropdownMenuItem,
-        {
-          key: rpcTarget,
-          onClick: () => props.dispatch(actions.setRpcTarget(rpcTarget)),
-          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        },
-        [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          label,
-          h('.check', '✓'),
-        ]
-      )
   }
 }
 
@@ -646,29 +518,4 @@ App.prototype.getNetworkName = function () {
   }
 
   return name
-}
-
-App.prototype.renderCommonRpc = function (rpcList, provider) {
-  const props = this.props
-  const rpcTarget = provider.rpcTarget
-
-  return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
-      return null
-    } else {
-      return h(
-        DropdownMenuItem,
-        {
-          key: `common${rpc}`,
-          closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-          onClick: () => props.dispatch(actions.setRpcTarget(rpc)),
-        },
-        [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          rpc,
-          rpcTarget === rpc ? h('.check', '✓') : null,
-        ]
-      )
-    }
-  })
 }
