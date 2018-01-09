@@ -679,6 +679,29 @@
       padding-top: 45px;
     }
 
+    &__back {
+      position: absolute;
+      top: 10px;
+      left: 0px;
+    }
+
+    &__shapeshift-buy {
+      padding-top: 25px;
+      position: relative;
+      @media screen and (max-width: 575px) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1;
+        padding-bottom: 25px;
+        flex-flow: column;
+        justify-content: center;
+        padding-top: 20px;
+        min-height: 240px;
+        border: none;
+      }
+    }
+
     &__logo {
       display: flex;
       justify-content: center;
@@ -747,7 +770,7 @@
     border-bottom: 0px;
   }
 
-  &__deposit-button {
+  &__deposit-button, .shapeshift-form__shapeshift-buy-btn {
     height: 54px;
     width: 257px;
     border: 1px solid $curious-blue;
@@ -758,4 +781,62 @@
     color: $curious-blue;
     background-color: $white;
   }
+
+  .shapeshift-form-wrapper {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 28px;
+    flex: 1 0 auto;
+
+    .shapeshift-form {
+      width: auto;
+
+      &__caret {
+        width: auto;
+        flex: 1;
+      }
+    }
+  }
+
+  .shapeshift-form__shapeshift-buy-btn {
+    margin-top: 10px;
+  }
+}
+
+//Notification Modal
+
+.notification-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border: 1px solid $alto;
+  box-shadow: 0 0 2px 2px $alto;
+  font-family: Roboto;
+}
+
+.notification-modal-header {
+  background: $wild-sand;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 22px;
+  color: $nile-blue;
+  height: 79px;
+}
+
+.notification-modal-message {
+  padding: 20px;
+}
+
+.notification-modal-message {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 17px;
+  color: $nile-blue;
 }
