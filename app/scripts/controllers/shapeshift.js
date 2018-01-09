@@ -77,7 +77,7 @@ class ShapeshiftController {
     this.updateState({ shapeShiftTxList })
   }
 
-  createShapeShiftTx (depositAddress, depositType) {
+  createShapeShiftTx (depositAddress, depositType, receivingAddress) {
     const state = this.store.getState()
     let { shapeShiftTxList } = state
 
@@ -87,6 +87,7 @@ class ShapeshiftController {
       key: 'shapeshift',
       time: new Date().getTime(),
       response: {},
+      receivingAddress,
     }
 
     if (!shapeShiftTxList) {
