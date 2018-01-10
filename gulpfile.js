@@ -19,6 +19,8 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
+var asyncEach = require('async/each')
+var exec = require('child_process').exec
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
@@ -153,6 +155,18 @@ gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
 
+// record deps
+
+gulp.task('deps', function (cb) {
+  exec('npm ls', (err, stdoutOutput, stderrOutput) => {
+    if (err) return cb(err)
+    const browsers = ['firefox','chrome','edge','opera']
+    asyncEach(browsers, (target, done) => {
+      fs.writeFile(`./dist/${target}/deps.txt`, stdoutOutput, done)
+    }, cb)
+  })
+})
+
 // lint js
 
 gulp.task('lint', function () {
@@ -234,7 +248,7 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 
 gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
 
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
+gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy', 'deps')))
 gulp.task('dist', gulp.series('build', 'zip'))
 
 // task generators
