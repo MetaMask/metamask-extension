@@ -169,13 +169,30 @@ function reduceApp (state, action) {
       })
 
     case actions.SHOW_IMPORT_PAGE:
-
       return extend(appState, {
         currentView: {
           name: 'import-menu',
         },
         transForward: true,
         warning: null,
+      })
+
+    case actions.SHOW_NEW_ACCOUNT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'new-account-page',
+          context: action.formToSelect,
+        },
+        transForward: true,
+        warning: null,
+      })
+
+    case actions.SET_NEW_ACCOUNT_FORM:
+      return extend(appState, {
+        currentView: {
+          name: appState.currentView.name,
+          context: action.formToSelect,
+        },
       })
 
     case actions.SHOW_INFO_PAGE:

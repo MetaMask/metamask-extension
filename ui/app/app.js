@@ -24,6 +24,7 @@ const WalletView = require('./components/wallet-view')
 const Settings = require('./settings')
 const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
+const NewAccount = require('./accounts/new-account')
 const Loading = require('./components/loading')
 const NetworkIndicator = require('./components/network')
 const Identicon = require('./components/identicon')
@@ -436,6 +437,10 @@ App.prototype.renderPrimary = function () {
     case 'import-menu':
       log.debug('rendering import screen')
       return h(Import, {key: 'import-menu'})
+
+    case 'new-account-page':
+      log.debug('rendering new account screen')
+      return h(NewAccount, {key: 'new-account'})
 
     case 'reveal-seed-conf':
       log.debug('rendering reveal seed confirmation screen')

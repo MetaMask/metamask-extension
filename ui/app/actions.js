@@ -50,12 +50,16 @@ var actions = {
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
+  SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
+  SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
   showImportPage,
+  showNewAccountPage,
+  setNewAccountForm,
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
@@ -826,6 +830,20 @@ function showInitializeMenu () {
 function showImportPage () {
   return {
     type: actions.SHOW_IMPORT_PAGE,
+  }
+}
+
+function showNewAccountPage (formToSelect) {
+  return {
+    type: actions.SHOW_NEW_ACCOUNT_PAGE,
+    formToSelect,
+  }
+}
+
+function setNewAccountForm (formToSelect) {
+  return {
+    type: actions.SET_NEW_ACCOUNT_FORM,
+    formToSelect,
   }
 }
 

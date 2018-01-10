@@ -2,7 +2,6 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const actions = require('../../actions')
 import Select from 'react-select'
 
 // Subviews
@@ -34,37 +33,14 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div.flex-center', {
-      style: {
-        flexDirection: 'column',
-        marginTop: '32px',
-      },
-    }, [
-      h('.section-title.flex-row.flex-center', [
-        h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
-          onClick: (event) => {
-            props.dispatch(actions.goHome())
-          },
-        }),
-        h('h2.page-subtitle', 'Import Accounts'),
-      ]),
-      h('div', {
-        style: {
-          padding: '10px 0',
-          width: '260px',
-          color: 'rgb(174, 174, 174)',
-        },
-      }, [
+    h('div.new-account-import-form', [
 
-        h('h3', { style: { padding: '3px' } }, 'SELECT TYPE'),
+      h('div.new-account-import-form__select-section', [
 
-        h('style', `
-          .has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select-value-label {
-            color: rgb(174,174,174);
-          }
-        `),
+        h('div.new-account-import-form__select-label', 'SELECT TYPE'),
 
         h(Select, {
+          className: 'new-account-import-form__select',
           name: 'import-type-select',
           clearable: false,
           value: type || menuItems[0],
@@ -75,10 +51,10 @@ AccountImportSubview.prototype.render = function () {
             }
           }),
           onChange: (opt) => {
-            props.dispatch(actions.showImportPage())
             this.setState({ type: opt.value })
           },
         }),
+
       ]),
 
       this.renderImportView(),
