@@ -925,9 +925,13 @@ function lockMetamask () {
       })
       .then(newState => {
         dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
         dispatch({ type: actions.LOCK_METAMASK })
       })
-      .catch(() => dispatch({ type: actions.LOCK_METAMASK }))
+      .catch(() => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
   }
 }
 
