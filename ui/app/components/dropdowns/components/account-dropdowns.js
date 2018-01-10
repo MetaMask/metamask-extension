@@ -199,7 +199,7 @@ class AccountDropdowns extends Component {
               {},
               menuItemStyles,
             ),
-            onClick: () => actions.showNewAccountModal(),
+            onClick: () => actions.showNewAccountPageCreateForm(),
           },
           [
             h(
@@ -228,7 +228,7 @@ class AccountDropdowns extends Component {
                 actions.hideSidebar()
               }
             },
-            onClick: () => actions.showImportPage(),
+            onClick: () => actions.showNewAccountPageImportForm(),
             style: Object.assign(
               {},
               menuItemStyles,
@@ -457,9 +457,7 @@ const mapDispatchToProps = (dispatch) => {
           identity,
         }))
       },
-      showNewAccountModal: () => {
-        dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
-      },
+      showNewAccountPageCreateForm: () => dispatch(actions.showNewAccountPage({ form: 'CREATE' })),
       showExportPrivateKeyModal: () => {
         dispatch(actions.showModal({ name: 'EXPORT_PRIVATE_KEY' }))
       },
@@ -467,7 +465,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actions.showAddTokenPage())
       },
       addNewAccount: () => dispatch(actions.addNewAccount()),
-      showImportPage: () => dispatch(actions.showImportPage()),
+      showNewAccountPageImportForm: () => dispatch(actions.showNewAccountPage({ form: 'IMPORT' })),
       showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
     },
   }

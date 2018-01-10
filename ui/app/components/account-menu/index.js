@@ -42,13 +42,8 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
-    showNewAccountModal: () => {
-      dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
-      dispatch(actions.hideSidebar())
-      dispatch(actions.toggleAccountMenu())
-    },
-    showImportPage: () => {
-      dispatch(actions.showImportPage())
+    showNewAccountPage: (formToSelect) => {
+      dispatch(actions.showNewAccountPage(formToSelect))
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
@@ -64,8 +59,7 @@ AccountMenu.prototype.render = function () {
   const {
     isAccountMenuOpen,
     toggleAccountMenu,
-    showNewAccountModal,
-    showImportPage,
+    showNewAccountPage,
     lockMetamask,
     showConfigPage,
     showInfoPage,
@@ -85,12 +79,12 @@ AccountMenu.prototype.render = function () {
     h('div.account-menu__accounts', this.renderAccounts()),
     h(Divider),
     h(Item, {
-      onClick: showNewAccountModal,
+      onClick: () => showNewAccountPage('CREATE'),
       icon: h('img', { src: 'images/plus-btn-white.svg' }),
       text: 'Create Account',
     }),
     h(Item, {
-      onClick: showImportPage,
+      onClick: () => showNewAccountPage('IMPORT'),
       icon: h('img', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),
