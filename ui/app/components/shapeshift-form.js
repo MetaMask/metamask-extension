@@ -6,6 +6,7 @@ const classnames = require('classnames')
 const { qrcode } = require('qrcode-npm')
 const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions')
 const { isValidAddress } = require('../util')
+const SimpleDropdown = require('./dropdowns/simple-dropdown')
 
 function mapStateToProps (state) {
   const {
@@ -180,17 +181,14 @@ ShapeshiftForm.prototype.render = function () {
 
               h('div.shapeshift-form__selector-label', 'Deposit'),
 
-              h('select.shapeshift-form__selector-input', {
-                value: this.state.depositCoin,
-                onChange: this.onCoinChange,
-              }, [
-                ...Object.entries(coinOptions).map(([coin]) =>
-                  h('option', {
-                    key: coin,
-                    value: coin.toLowerCase(),
-                  }, coin),
-                ),
-              ]),
+              h(SimpleDropdown, {
+                selectedOption: this.state.depositCoin,
+                onSelect: this.onCoinChange,
+                options: Object.entries(coinOptions).map(([coin]) => ({
+                  value: coin.toLowerCase(),
+                  displayValue: coin,
+                }))
+              }),
 
             ]),
 
