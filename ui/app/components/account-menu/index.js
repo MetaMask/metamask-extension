@@ -33,7 +33,7 @@ function mapDispatchToProps (dispatch) {
     },
     lockMetamask: () => {
       dispatch(actions.lockMetamask())
-      dispatch(actions.displayWarning(null))
+      dispatch(actions.hideWarning())
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
