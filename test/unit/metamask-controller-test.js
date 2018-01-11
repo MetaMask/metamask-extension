@@ -72,6 +72,25 @@ describe('MetaMaskController', function () {
 
         metamaskController.recentBlocksController = realRecentBlocksController
       })
+
+      it('gives the 1 gwei price if no blocks have been seen.', async function () {
+        const realRecentBlocksController = metamaskController.recentBlocksController
+        metamaskController.recentBlocksController = {
+          store: {
+            getState: () => {
+              return {
+                recentBlocks: []
+              }
+            }
+          }
+        }
+
+        const gasPrice = metamaskController.getGasPrice()
+        assert.equal(gasPrice, '0x' + GWEI_BN.toString(16), 'defaults to 1 gwei')
+
+        metamaskController.recentBlocksController = realRecentBlocksController
+      })
+
     })
 
     describe('#createNewVaultAndKeychain', function () {

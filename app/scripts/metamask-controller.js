@@ -490,9 +490,15 @@ module.exports = class MetamaskController extends EventEmitter {
   getGasPrice () {
     const { recentBlocksController } = this
     const { recentBlocks } = recentBlocksController.store.getState()
+
+    // Return 1 gwei if no blocks have been observed:
+    if (recentBlocks.length === 0) {
+      return '0x' + GWEI_BN.toString(16)
+    }
+
     const lowestPrices = recentBlocks.map((block) => {
-      if (!block.gasPrices) {
-        return new BN(0)
+      if (!block.gasPrices || block.gasPrices.length < 1) {
+        return GWEI_BN
       }
       return block.gasPrices
       .map(hexPrefix => hexPrefix.substr(2))
@@ -502,6 +508,7 @@ module.exports = class MetamaskController extends EventEmitter {
       })[0]
     })
     .map(number => number.div(GWEI_BN).toNumber())
+
     const percentileNum = percentile(50, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
