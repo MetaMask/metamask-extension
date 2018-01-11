@@ -439,6 +439,7 @@ input.large-input {
 /* account detail screen */
 
 .account-detail-section {
+  height: 500px;
   display: flex;
   flex-wrap: wrap;
   overflow-y: auto;
