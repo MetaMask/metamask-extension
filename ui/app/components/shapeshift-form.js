@@ -187,7 +187,7 @@ ShapeshiftForm.prototype.render = function () {
                 options: Object.entries(coinOptions).map(([coin]) => ({
                   value: coin.toLowerCase(),
                   displayValue: coin,
-                }))
+                })),
               }),
 
             ]),
