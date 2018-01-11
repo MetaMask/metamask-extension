@@ -16,7 +16,7 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    margin: 2.8em 2.37em .8em;
+    margin: 2.3em 2.37em .8em;
   }
 
   .balance-container {
@@ -42,8 +42,9 @@
       text-align: center;
 
       .token-amount {
-        font-size: 175%;
-        margin-top: 12.5%;
+        font-size: 1.75rem;
+        margin-top: 1rem;
+        font-weight: 400;
       }
 
       .fiat-amount {
@@ -54,12 +55,13 @@
     }
 
     @media screen and (min-width: $break-large) {
-      margin-left: 3%;
+      margin-left: .8em;
       justify-content: flex-start;
       align-items: flex-start;
 
       .token-amount {
-        font-size: 135%;
+        font-size: 1.5rem;
+        font-weight: 400;
       }
 
       .fiat-amount {
@@ -67,13 +69,6 @@
         font-size: 105%;
       }
     }
-  }
-
-  .balance-icon {
-    border-radius: 25px;
-    width: 45px;
-    height: 45px;
-    border: 1px solid $alto;
   }
 
   .hero-balance-buttons {
@@ -111,4 +106,15 @@
       }
     }
   }
+}
+
+.hero-balance-button {
+  text-align: center;
+  padding: .9rem 1rem;
+  color: $white;
+  background: $curious-blue;
+  border-radius: 2px;
+  font-size: .85rem;
+  width: 6rem;
+  font-weight: 300;
 }

@@ -253,19 +253,13 @@ App.prototype.renderAppBar = function () {
           }, [
             // mini logo
             h('img.metafox-icon', {
-              height: 29,
-              width: 29,
-              src: '/images/icon-128.png',
+              height: 42,
+              width: 42,
+              src: '/images/metamask-fox.svg',
             }),
 
             // metamask name
-            h('h1', {
-              style: {
-                position: 'relative',
-                paddingLeft: '9px',
-                color: '#5B5D67',
-              },
-            }, 'MetaMask'),
+            h('h1', 'MetaMask'),
 
           ]),
 

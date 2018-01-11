@@ -4,7 +4,7 @@
 
 // Component Colors
 $tx-view-bg: $white;
-$wallet-view-bg: $wild-sand;
+$wallet-view-bg: $alabaster;
 
 // Main container
 .main-container {
@@ -47,7 +47,7 @@ $wallet-view-bg: $wild-sand;
 .wallet-view {
   display: flex;
   flex-direction: column;
-  flex: 33.5 1 33.5%;
+  flex: 32 1 32%;
   width: 0;
   background: $wallet-view-bg;
   z-index: 200;
@@ -69,22 +69,21 @@ $wallet-view-bg: $wild-sand;
   }
 
   &__keyring-label {
-    height: 40px;
+    height: 50px;
     color: $dusty-gray;
     font-family: Roboto;
     font-size: 10px;
-    line-height: 40px;
     text-align: right;
-    padding: 0 20px;
+    padding: 17px 20px 0;
+    box-sizing: border-box;
   }
 
   &__details-button {
     color: $curious-blue;
     font-size: 10px;
-    line-height: 13px;
     text-align: center;
     border: 1px solid $curious-blue;
-    border-radius: 10.5px;
+    border-radius: 17px;
     background-color: transparent;
     margin: 0 auto;
     padding: 4px 12px;
@@ -121,12 +120,12 @@ $wallet-view-bg: $wild-sand;
 
   &__add-token-button {
     flex: 0 0 auto;
-    color: $dusty-gray;
+    color: $curious-blue;
     font-size: 14px;
     line-height: 19px;
     text-align: center;
     margin: 36px auto;
-    border: 1px solid $dusty-gray;
+    border: 1px solid $curious-blue;
     border-radius: 2px;
     font-weight: 300;
     background: none;
@@ -199,7 +198,7 @@ $wallet-view-bg: $wild-sand;
 
   .main-container {
     // margin-top: 6.9vh;
-    width: 85%;
+    width: 85vw;
     height: 90vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
@@ -208,7 +207,7 @@ $wallet-view-bg: $wild-sand;
 @media screen and (min-width: 769px) {
   .main-container {
     // margin-top: 6.9vh;
-    width: 80%;
+    width: 80vw;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
@@ -217,7 +216,7 @@ $wallet-view-bg: $wild-sand;
 @media screen and (min-width: 1281px) {
   .main-container {
     // margin-top: 6.9vh;
-    width: 65%;
+    width: 62vw;
     height: 82vh;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
   }
@@ -252,11 +251,11 @@ $wallet-view-bg: $wild-sand;
 // wallet view
 .account-name {
   font-size: 24px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 20px;
-  color: $scorpion;
+  color: $black;
   margin-top: 8px;
-  margin-bottom: 24px;
+  margin-bottom: .9rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

@@ -32,13 +32,9 @@
 }
 
 @media screen and (min-width: $break-large) {
-  .tx-list-header-wrapper {
-    flex: 0 0 55px;
-  }
-
   .tx-list-header {
     font-size: 16px;
-    margin: 1.5em 2.37em;
+    margin: 1.1em 2.37em .8em;
   }
 
   .tx-list-container::-webkit-scrollbar {

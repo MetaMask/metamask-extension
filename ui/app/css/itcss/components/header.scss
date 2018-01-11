@@ -53,7 +53,7 @@
   }
 
   @media screen and (min-width: 1281px) {
-    width: 65vw;
+    width: 62vw;
   }
 }
 
@@ -61,8 +61,10 @@
   font-family: Roboto;
   text-transform: uppercase;
   font-weight: 400;
-  color: #22232c; // $shark
-  line-height: 29px;
+  font-size: 1.1rem;
+  position: relative;
+  padding-left: 15px;
+  color: #5b5d67;
 
   @media screen and (max-width: 575px) {
     display: none;

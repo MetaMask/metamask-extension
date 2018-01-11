@@ -40,7 +40,7 @@ BalanceComponent.prototype.render = function () {
     //   style: {},
     // }),
     h(Identicon, {
-      diameter: 45,
+      diameter: 50,
       address: token && token.address,
       network,
     }),
