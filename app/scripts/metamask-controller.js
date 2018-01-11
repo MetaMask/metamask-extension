@@ -94,12 +94,14 @@ module.exports = class MetamaskController extends EventEmitter {
     this.provider = this.initializeProvider()
     this.blockTracker = this.provider._blockTracker
 
-    this.recentBlocksController = new RecentBlocksController({
-      blockTracker: this.blockTracker,
-    })
-
     // eth data query tools
     this.ethQuery = new EthQuery(this.provider)
+
+    this.recentBlocksController = new RecentBlocksController({
+      blockTracker: this.blockTracker,
+      ethQuery: this.ethQuery,
+    })
+
     // account tracker watches balances, nonces, and any code at their address.
     this.accountTracker = new AccountTracker({
       provider: this.provider,
