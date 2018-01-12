@@ -37,6 +37,7 @@
   }
 
   .balance-display {
+    color: $black;
 
     @media screen and (max-width: $break-small) {
       text-align: center;
@@ -44,7 +45,6 @@
       .token-amount {
         font-size: 1.75rem;
         margin-top: 1rem;
-        font-weight: 400;
       }
 
       .fiat-amount {
@@ -61,7 +61,6 @@
 
       .token-amount {
         font-size: 1.5rem;
-        font-weight: 400;
       }
 
       .fiat-amount {
@@ -84,37 +83,9 @@
       flex-grow: 2;
       justify-content: flex-end;
     }
-
-    button.btn-clear {
-      background: $white;
-      border: 1px solid;
-      border-radius: 2px;
-      font-size: 12px;
-
-      @media screen and (max-width: $break-small) {
-        border-color: $curious-blue;
-        color: $curious-blue;
-        height: 36px;
-      }
-
-      @media screen and (min-width: $break-large) {
-        border-color: $curious-blue;
-        color: $curious-blue;
-        padding: 0;
-        width: 85px;
-        height: 34px;
-      }
-    }
   }
 }
 
 .hero-balance-button {
-  text-align: center;
-  padding: .9rem 1rem;
-  color: $white;
-  background: $curious-blue;
-  border-radius: 2px;
-  font-size: .85rem;
   width: 6rem;
-  font-weight: 300;
 }

@@ -13,7 +13,6 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
   &__token-balance {
     font-size: 1.5rem;
-    font-weight: 400;
 
     @media #{$wallet-balance-breakpoint-range} {
       font-size: 105%;

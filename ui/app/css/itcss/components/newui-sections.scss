@@ -79,10 +79,7 @@ $wallet-view-bg: $alabaster;
   }
 
   &__details-button {
-    color: $curious-blue;
     font-size: 10px;
-    text-align: center;
-    border: 1px solid $curious-blue;
     border-radius: 17px;
     background-color: transparent;
     margin: 0 auto;
@@ -120,16 +117,14 @@ $wallet-view-bg: $alabaster;
 
   &__add-token-button {
     flex: 0 0 auto;
-    color: $curious-blue;
-    font-size: 14px;
-    line-height: 19px;
-    text-align: center;
     margin: 36px auto;
-    border: 1px solid $curious-blue;
-    border-radius: 2px;
-    font-weight: 300;
     background: none;
-    padding: 9px 30px;
+    padding: .7rem 2rem;
+    transition: border-color .3s ease;
+
+    &:hover {
+      border-color: $curious-blue;
+    }
   }
 }
 
@@ -238,20 +233,12 @@ $wallet-view-bg: $alabaster;
     overflow-y: auto;
     background-color: $white;
   }
-
-  button.btn-clear {
-    width: 93px;
-    height: 50px;
-    font-size: .7em;
-    background: $white;
-    border: 1px solid;
-  }
 }
 
 // wallet view
 .account-name {
   font-size: 24px;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 20px;
   color: $black;
   margin-top: 8px;

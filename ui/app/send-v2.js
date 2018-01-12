@@ -519,13 +519,14 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const errorClass = noErrors ? '' : '__disabled'
 
   return h('div.send-v2__footer', [
-    h('button.send-v2__cancel-btn', {
+    h('button.btn-cancel.send-v2__cancel-btn', {
       onClick: () => {
         clearSend()
         goHome()
       },
     }, 'Cancel'),
-    h(`button.send-v2__next-btn${errorClass}`, {
+    h('button.btn-clear.send-v2__next-btn', {
+      disabled: !noErrors,
       onClick: event => this.onSubmit(event),
     }, 'Next'),
   ])

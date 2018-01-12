@@ -102,15 +102,10 @@
 
 .confirm-screen-back-button {
   background: transparent;
-  border: 1px solid $curious-blue;
   left: 24px;
   position: absolute;
-  text-align: center;
-  color: $curious-blue;
-  padding: 6px 13px 7px 12px;
-  border-radius: 2px;
-  height: 30px;
-  width: 54px;
+  padding: 6px 12px;
+  font-size: .7rem;
 
   @media screen and (max-width: $break-small) {
     margin-right: 12px;
