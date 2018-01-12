@@ -62,12 +62,12 @@ AccountDetailsModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('button.btn-clear', {
+      h('button.btn-clear.account-modal__button', {
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
       }, 'View account on Etherscan'),
 
       // Holding on redesign for Export Private Key functionality
-      h('button.btn-clear', {
+      h('button.btn-clear.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
       }, 'Export private key'),
 

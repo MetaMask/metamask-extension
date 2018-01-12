@@ -314,7 +314,7 @@ ConfirmSendToken.prototype.render = function () {
       // Main Send token Card
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
-          h('button.confirm-screen-back-button', {
+          h('button.btn-clear.confirm-screen-back-button', {
             onClick: () => editTransaction(txMeta),
           }, 'EDIT'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
@@ -415,7 +415,7 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
 ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
   const { cancelTransaction } = this.props
-  
+
   cancelTransaction(txMeta)
 }
 

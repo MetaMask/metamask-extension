@@ -8,41 +8,25 @@
 }
 
 .network-component.pointer {
-  border: 1px solid $shark;
+  border: 2px solid $silver;
   border-radius: 82px;
-  padding: 6px;
+  padding: 3px;
   flex: 0 0 auto;
 
-  &.ethereum-network {
-    border-color: rgb(3, 135, 137);
-
-    .menu-icon-circle div {
-      background-color: rgba(3, 135, 137, .7) !important;
-    }
+  &.ethereum-network .menu-icon-circle div {
+    background-color: rgba(3, 135, 137, .7) !important;
   }
 
-  &.ropsten-test-network {
-    border-color: rgb(233, 21, 80);
-
-    .menu-icon-circle div {
-      background-color: rgba(233, 21, 80, .7) !important;
-    }
+  &.ropsten-test-network .menu-icon-circle div {
+    background-color: rgba(233, 21, 80, .7) !important;
   }
 
-  &.kovan-test-network {
-    border-color: rgb(105, 4, 150);
-
-    .menu-icon-circle div {
-      background-color: rgba(105, 4, 150, .7) !important;
-    }
+  &.kovan-test-network .menu-icon-circle div {
+    background-color: rgba(105, 4, 150, .7) !important;
   }
 
-  &.rinkeby-test-network {
-    border-color: rgb(235, 179, 63);
-
-    .menu-icon-circle div {
-      background-color: rgba(235, 179, 63, .7) !important;
-    }
+  &.rinkeby-test-network .menu-icon-circle div {
+    background-color: rgba(235, 179, 63, .7) !important;
   }
 }
 
@@ -66,11 +50,12 @@
 }
 
 .network-name {
-  line-height: 15px;
   padding: 0 4px;
   font-family: Roboto;
   font-size: 12px;
   flex: 1 0 auto;
+  color: $tundora;
+  font-weight: 500;
 }
 
 .network-droppo {
@@ -167,3 +152,6 @@
   line-height: 18px;
 }
 
+.network-caret {
+  margin: 0 8px 2px;
+}

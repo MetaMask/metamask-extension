@@ -79,11 +79,15 @@ ExportPrivateKeyModal.prototype.renderButton = function (className, onClick, lab
 
 ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, address, hideModal) {
   return h('div.export-private-key-buttons', {}, [
-    !privateKey && this.renderButton('btn-clear btn-cancel', () => hideModal(), 'Cancel'),
+    !privateKey && this.renderButton(
+      'btn-cancel export-private-key__button export-private-key__button--cancel',
+      () => hideModal(),
+      'Cancel'
+    ),
 
     (privateKey
-      ? this.renderButton('btn-clear', () => hideModal(), 'Done')
-      : this.renderButton('btn-clear', () => this.exportAccountAndGetPrivateKey(this.state.password, address), 'Show')
+      ? this.renderButton('btn-clear export-private-key__button', () => hideModal(), 'Done')
+      : this.renderButton('btn-clear export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), 'Confirm')
     ),
 
   ])
