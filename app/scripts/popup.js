@@ -26,8 +26,13 @@ const container = document.getElementById('app-content')
 startPopup({ container, connectionStream }, (err, store) => {
   if (err) return displayCriticalError(err)
 
-  let betaUIState = store.getState().metamask.featureFlags.betaUI
-  let css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+  const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
+  const firstTime = Object.keys(identities).length === 0
+  let betaUIState = featureFlags.betaUI
+
+  const useBetaCss = isMascara || firstTime || betaUIState
+
+  let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
   let deleteInjectedCss = injectCss(css)
   let newBetaUIState
 

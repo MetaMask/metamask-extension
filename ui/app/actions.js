@@ -925,9 +925,13 @@ function lockMetamask () {
       })
       .then(newState => {
         dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
         dispatch({ type: actions.LOCK_METAMASK })
       })
-      .catch(() => dispatch({ type: actions.LOCK_METAMASK }))
+      .catch(() => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
   }
 }
 
@@ -1434,7 +1438,6 @@ function pairUpdate (coin) {
 
 function shapeShiftSubview (network) {
   var pair = 'btc_eth'
-
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
@@ -1460,7 +1463,7 @@ function coinShiftRquest (data, marketData) {
       dispatch(actions.hideLoadingIndication())
       if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
-        Deposit your ${response.depositType} to the address bellow:`
+        Deposit your ${response.depositType} to the address below:`
       log.debug(`background.createShapeShiftTx`)
       background.createShapeShiftTx(response.deposit, response.depositType)
       dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
@@ -1496,7 +1499,7 @@ function reshowQrCode (data, coin) {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [
-        `Deposit your ${coin} to the address bellow:`,
+        `Deposit your ${coin} to the address below:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
       ]

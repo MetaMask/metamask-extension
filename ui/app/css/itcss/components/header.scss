@@ -17,7 +17,16 @@
   @media screen and (min-width: 576px) {
     height: 75px;
     justify-content: center;
+  }
 
+  .metafox-icon {
+    cursor: pointer;
+  }
+}
+
+.app-header--initialized {
+
+  @media screen and (min-width: 576px) {
     &::after {
       content: '';
       position: absolute;
@@ -26,10 +35,6 @@
       background: $gallery;
       bottom: -32px;
     }
-  }
-
-  .metafox-icon {
-    cursor: pointer;
   }
 }
 

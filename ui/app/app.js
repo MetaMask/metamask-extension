@@ -3,6 +3,8 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
+const classnames = require('classnames')
+
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
@@ -243,7 +245,9 @@ App.prototype.renderAppBar = function () {
     }, [
 
       h('.app-header.flex-row.flex-space-between', {
-        style: {},
+        className: classnames({
+          'app-header--initialized': !isOnboarding,
+        }),
       }, [
         h('div.app-header-contents', {}, [
           h('div.left-menu-wrapper', {

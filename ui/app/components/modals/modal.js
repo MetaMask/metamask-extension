@@ -9,6 +9,7 @@ const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-n
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
+const DepositEtherModal = require('./deposit-ether-modal')
 const AccountDetailsModal = require('./account-details-modal')
 const EditAccountNameModal = require('./edit-account-name-modal')
 const ExportPrivateKeyModal = require('./export-private-key-modal')
@@ -70,6 +71,37 @@ const MODALS = {
       margin: '0 auto',
       boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
       transform: 'none',
+    },
+  },
+
+  DEPOSIT_ETHER: {
+    contents: [
+      h(DepositEtherModal, {}, []),
+    ],
+    mobileModalStyle: {
+      width: '100%',
+      height: '100%',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      boxShadow: '0 0 7px 0 rgba(0,0,0,0.08)',
+      top: '0',
+      display: 'flex',
+    },
+    laptopModalStyle: {
+      width: '900px',
+      maxWidth: '900px',
+      top: 'calc(10% + 10px)',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
+      boxShadow: '0 0 6px 0 rgba(0,0,0,0.3)',
+      borderRadius: '8px',
+      transform: 'none',
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 
