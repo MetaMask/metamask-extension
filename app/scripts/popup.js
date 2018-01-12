@@ -30,7 +30,9 @@ startPopup({ container, connectionStream }, (err, store) => {
   const firstTime = Object.keys(identities).length === 0
   let betaUIState = featureFlags.betaUI
 
-  const useBetaCss = isMascara || firstTime || betaUIState
+  // Code commented out until we begin auto adding users to NewUI
+  // const useBetaCss = isMascara || firstTime || betaUIState
+  const useBetaCss = isMascara || betaUIState
 
   let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
   let deleteInjectedCss = injectCss(css)
