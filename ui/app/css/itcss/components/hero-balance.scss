@@ -37,7 +37,9 @@
   }
 
   .balance-display {
-    color: $black;
+    .token-amount {
+      color: $black;
+    }
 
     @media screen and (max-width: $break-small) {
       text-align: center;
