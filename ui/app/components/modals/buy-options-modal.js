@@ -69,7 +69,7 @@ BuyOptions.prototype.render = function () {
         // h('div.buy-modal-content-option', {}, [
         //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
         //   h('div.buy-modal-content-option-subtitle', {}, 'Trade any digital asset for any other'),
-        // ]),
+        // ]),,
 
         this.renderModalContentOption(
           'Direct Deposit',

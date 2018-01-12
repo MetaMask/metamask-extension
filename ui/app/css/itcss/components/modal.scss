@@ -599,3 +599,255 @@
   font-size: 17px;
   color: $nile-blue;
 }
+
+// Deposit Ether Modal
+.deposit-ether-modal {
+  border-radius: 8px;
+  font-family: Roboto;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  &__header {
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+    background-color: $mid-gray;
+    display: flex;
+    position: relative;
+    padding: 25px;
+    flex-flow: column;
+    align-items: flex-start;
+
+    &__title {
+      color: $white;
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    &__description {
+      color: $white;
+      font-size: 16px;
+      line-height: 22px;
+      margin-top: 10px;
+    }
+
+    &__close::after {
+      content: '\00D7';
+      font-size: 2em;
+      color: $white;
+      position: absolute;
+      top: 20.8px;
+      right: 28px;
+      cursor: pointer;
+    }
+  }
+
+  &__buy-rows {
+    width: 100%;
+    padding: 33px;
+    padding-top: 0px;
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1;
+    overflow-y: auto;
+
+    @media screen and (max-width: 575px) {
+      height: 0;
+    }
+  }
+
+  &__buy-row {
+    border-bottom: 1px solid $alto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    padding-bottom: 25px;
+    padding-top: 25px;
+
+    @media screen and (max-width: 575px) {
+      min-height: 360px;
+      flex-flow: column;
+      justify-content: center;
+      padding-top: 45px;
+    }
+
+    &__back {
+      position: absolute;
+      top: 10px;
+      left: 0px;
+    }
+
+    &__shapeshift-buy {
+      padding-top: 25px;
+      position: relative;
+      @media screen and (max-width: 575px) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1;
+        padding-bottom: 25px;
+        flex-flow: column;
+        justify-content: center;
+        padding-top: 20px;
+        min-height: 240px;
+        border: none;
+      }
+    }
+
+    &__logo {
+      display: flex;
+      justify-content: center;
+      flex: 0.3 1 auto;
+
+      @media screen and (min-width: 575px) {
+        min-width: 215px;
+      }
+    }
+
+    &__coinbase-logo {
+      height: 40px;
+      width: 180px;
+    }
+
+    &__shapeshift-logo {
+      height: 60px;
+      width: 174px;
+    }
+
+    &__eth-logo {
+      border-radius: 50%;
+      width: 68px;
+      height: 68px;
+      border: 3px solid $tundora;
+      z-index: 25;
+      padding: 4px;
+      background-color: #fff;
+    }
+
+    &__right {
+      display: flex;
+    }
+
+    &__description {
+      color: $cape-cod;
+      flex: 0.5 1 auto;
+
+      @media screen and (min-width: 575px) {
+        min-width: 315px;
+      }
+
+      &__title {
+        font-size: 20px;
+        line-height: 30px;
+      }
+
+      &__text {
+        font-size: 14px;
+        line-height: 22px;
+        margin-top: 7px;
+      }
+    }
+
+    &__button {
+      display: flex;
+      justify-content: flex-end;
+
+      @media screen and (min-width: 575px) {
+        min-width: 300px;
+      }
+    }
+  }
+
+  &__buy-row:last-of-type {
+    border-bottom: 0px;
+  }
+
+  &__deposit-button, .shapeshift-form__shapeshift-buy-btn {
+    height: 54px;
+    width: 257px;
+    border: 1px solid $curious-blue;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    color: $curious-blue;
+    background-color: $white;
+  }
+
+  .shapeshift-form-wrapper {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 28px;
+    flex: 1 0 auto;
+
+    .shapeshift-form {
+      width: auto;
+
+      &__caret {
+        width: auto;
+        flex: 1;
+      }
+    }
+  }
+
+  .shapeshift-form__shapeshift-buy-btn {
+    margin-top: 10px;
+  }
+
+  .simple-dropdown {
+    color: #5B5D67;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 21px;
+    border: 1px solid #D8D8D8;
+    background-color: #FFFFFF;
+    text-align: center;
+    width: 100%;
+    height: 45px;
+    line-height: 44px;
+    font-family: Montserrat Light;
+  }
+
+  .simple-dropdown__selected {
+    text-align: center;
+  }
+}
+
+//Notification Modal
+
+.notification-modal-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border: 1px solid $alto;
+  box-shadow: 0 0 2px 2px $alto;
+  font-family: Roboto;
+}
+
+.notification-modal-header {
+  background: $wild-sand;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 22px;
+  color: $nile-blue;
+  height: 79px;
+}
+
+.notification-modal-message {
+  padding: 20px;
+}
+
+.notification-modal-message {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 17px;
+  color: $nile-blue;
+}

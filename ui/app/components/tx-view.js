@@ -73,7 +73,7 @@ TxView.prototype.renderButtons = function () {
             textAlign: 'center',
           },
           onClick: () => showModal({
-            name: 'BUY',
+            name: 'DEPOSIT_ETHER',
           }),
         }, 'DEPOSIT'),
 

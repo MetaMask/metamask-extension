@@ -58,6 +58,7 @@ function reduceApp (state, action) {
     isLoading: false,
     // Used to display error text
     warning: null,
+    buyView: {},
   }, state.appState)
 
   switch (action.type) {
@@ -591,8 +592,8 @@ function reduceApp (state, action) {
             marketinfo: action.value.marketinfo,
             coinOptions: action.value.coinOptions,
           },
-          buyAddress: appState.buyView.buyAddress,
-          amount: appState.buyView.amount,
+          buyAddress: action.value.buyAddress || appState.buyView.buyAddress,
+          amount: appState.buyView.amount || 0,
         },
       })
 
