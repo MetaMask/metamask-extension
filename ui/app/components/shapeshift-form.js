@@ -141,7 +141,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
   return h('div.shapeshift-form', {}, [
 
     h('div.shapeshift-form__deposit-instruction', [
-      'Deposit your BTC to the address bellow:',
+      'Deposit your BTC to the address below:',
     ]),
 
     h('div', depositAddress),
