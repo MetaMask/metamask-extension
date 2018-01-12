@@ -80,8 +80,14 @@
 
     .Select-control,
     .Select-control:hover {
+      height: 100%;
       border: none;
       box-shadow: none;
+
+      .Select-value {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 
@@ -108,6 +114,10 @@
     border-radius: 4px;
     background-color: $white;
     margin-top: 16px;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
+    padding: 0px 20px;
   }
 
   &__json {
@@ -144,6 +154,7 @@
     font-size: 16px;
     line-height: 21px;
     margin-top: 15px;
+    padding: 0px 20px;
   }
 
   &__buttons {

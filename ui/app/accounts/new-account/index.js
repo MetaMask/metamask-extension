@@ -17,7 +17,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    // Is this supposed to be used somewhere?
     displayForm: form => dispatch(actions.setNewAccountForm(form)),
     showQrView: (selected, identity) => dispatch(actions.showQrView(selected, identity)),
     showExportPrivateKeyModal: () => {
