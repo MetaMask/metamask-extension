@@ -1,13 +1,14 @@
 const ObservableStore = require('obs-store')
 const extend = require('xtend')
 const BN = require('ethereumjs-util').BN
+const EthQuery = require('eth-query')
 
 class RecentBlocksController {
 
   constructor (opts = {}) {
-    const { blockTracker, ethQuery } = opts
+    const { blockTracker, provider } = opts
     this.blockTracker = blockTracker
-    this.ethQuery = ethQuery
+    this.ethQuery = new EthQuery(provider)
     this.historyLength = opts.historyLength || 40
 
     const initState = extend({
