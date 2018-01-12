@@ -1432,7 +1432,7 @@ function pairUpdate (coin) {
   }
 }
 
-function shapeShiftSubview (network, selectedAddress) {
+function shapeShiftSubview (network) {
   var pair = 'btc_eth'
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
@@ -1445,7 +1445,6 @@ function shapeShiftSubview (network, selectedAddress) {
           value: {
             marketinfo: mktResponse,
             coinOptions: response,
-            buyAddress: selectedAddress,
           },
         })
       })
@@ -1468,13 +1467,13 @@ function coinShiftRquest (data, marketData) {
   }
 }
 
-function buyWithShapeShift (data, receivingAddress) {
+function buyWithShapeShift (data) {
   return dispatch => new Promise((resolve, reject) => {
     shapeShiftRequest('shift', { method: 'POST', data}, (response) => {
       if (response.error) {
         return reject(response.error)
       }
-      background.createShapeShiftTx(response.deposit, response.depositType, receivingAddress)
+      background.createShapeShiftTx(response.deposit, response.depositType)
       return resolve(response)
     })
   })

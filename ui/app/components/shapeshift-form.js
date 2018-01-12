@@ -14,6 +14,7 @@ function mapStateToProps (state) {
     tokenExchangeRates,
     selectedAddress,
   } = state.metamask
+  
   return {
     coinOptions,
     tokenExchangeRates,
@@ -23,9 +24,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    shapeShiftSubview: selectedAddress => dispatch(shapeShiftSubview(null, selectedAddress)),
+    shapeShiftSubview: () => dispatch(shapeShiftSubview()),
     pairUpdate: coin => dispatch(pairUpdate(coin)),
-    buyWithShapeShift: (data, selectedAddress) => dispatch(buyWithShapeShift(data, selectedAddress)),
+    buyWithShapeShift: data => dispatch(buyWithShapeShift(data)),
   }
 }
 
@@ -47,9 +48,7 @@ function ShapeshiftForm () {
 }
 
 ShapeshiftForm.prototype.componentWillMount = function () {
-  const { selectedAddress } = this.props
-
-  this.props.shapeShiftSubview(selectedAddress)
+  this.props.shapeShiftSubview()
 }
 
 ShapeshiftForm.prototype.onCoinChange = function (e) {
@@ -85,7 +84,7 @@ ShapeshiftForm.prototype.onBuyWithShapeShift = function () {
   }
 
   if (isValidAddress(withdrawal)) {
-    buyWithShapeShift(data, withdrawal)
+    buyWithShapeShift(data)
       .then(d => this.setState({
         showQrCode: true,
         depositAddress: d.deposit,

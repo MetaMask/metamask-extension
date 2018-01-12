@@ -814,8 +814,8 @@ module.exports = class MetamaskController extends EventEmitter {
     if (url) this.platform.openWindow({ url })
   }
 
-  createShapeShiftTx (depositAddress, depositType, receivingAddress) {
-    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType, receivingAddress)
+  createShapeShiftTx (depositAddress, depositType) {
+    this.shapeshiftController.createShapeShiftTx(depositAddress, depositType)
   }
 
   // network
