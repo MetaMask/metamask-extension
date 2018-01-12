@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const createBundle = require('./util').createBundle
 const serveBundle = require('./util').serveBundle
+const compression = require('compression')
 
 module.exports = createMetamascaraServer
 
@@ -16,6 +17,8 @@ function createMetamascaraServer () {
 
   // serve bundles
   const server = express()
+  server.use(compression())
+
   // ui window
   serveBundle(server, '/ui.js', uiBundle)
   server.use(express.static(path.join(__dirname, '/../ui/'), { setHeaders: (res) => res.set('X-Frame-Options', 'DENY') }))

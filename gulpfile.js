@@ -23,6 +23,8 @@ var sass = require('gulp-sass')
 var autoprefixer = require('gulp-autoprefixer')
 var gulpStylelint = require('gulp-stylelint')
 var stylefmt = require('gulp-stylefmt')
+var uglify = require('gulp-uglify')
+var babel = require('gulp-babel')
 
 
 var disableDebugTools = gutil.env.disableDebugTools
@@ -375,6 +377,11 @@ function bundleTask(opts) {
       // sourcemaps
       // loads map from browserify file
       .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
+      // Minification
+      .pipe(babel({
+        presets: ['env']
+      }))
+      .pipe(uglify())
       // writes .map file
       .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles
