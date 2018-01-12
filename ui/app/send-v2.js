@@ -516,7 +516,6 @@ SendTransactionScreen.prototype.renderFooter = function () {
   } = this.props
 
   const noErrors = !amountError && toError === null
-  const errorClass = noErrors ? '' : '__disabled'
 
   return h('div.send-v2__footer', [
     h('button.btn-cancel.send-v2__cancel-btn', {
