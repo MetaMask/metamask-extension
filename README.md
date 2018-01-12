@@ -4,7 +4,7 @@
 
 ## Support
 
-If you're a user seeking support, [here is our support site](http://metamask.helpscoutdocs.com/).
+If you're a user seeking support, [here is our support site](https://metamask.helpscoutdocs.com/).
 
 ## Developing Compatible Dapps
 
