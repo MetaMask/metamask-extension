@@ -78,7 +78,7 @@
     "eth-keyring-controller": "^2.1.2",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
-    "eth-sig-util": "^1.4.0",
+    "eth-sig-util": "^1.4.2",
     "eth-simple-keyring": "^1.2.0",
     "eth-token-tracker": "^1.1.4",
     "ethereumjs-tx": "^1.3.0",
