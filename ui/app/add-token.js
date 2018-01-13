@@ -345,12 +345,12 @@ AddTokenScreen.prototype.render = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-secondary', {
-          onClick: this.onNext,
-        }, 'Next'),
-        h('button.btn-tertiary', {
+        h('button.btn-cancel.add-token__button', {
           onClick: goHome,
         }, 'Cancel'),
+        h('button.btn-clear.add-token__button', {
+          onClick: this.onNext,
+        }, 'Next'),
       ]),
     ])
   )
