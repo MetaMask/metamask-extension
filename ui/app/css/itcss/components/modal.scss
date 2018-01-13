@@ -495,10 +495,9 @@
 
 .hide-token-confirmation {
   min-height: 250.72px;
-  width: 374.49px;
   border-radius: 4px;
-  background-color: #FFFFFF;
-  box-shadow: 0 1px 7px 0 rgba(0,0,0,0.5);
+  background-color: $white;
+  box-shadow: 0 1px 7px 0 rgba(0, 0, 0, .5);
 
   &__container {
     padding: 24px 27px 21px;
@@ -508,7 +507,7 @@
   }
 
   &__identicon {
-    margin-bottom: 10px
+    margin-bottom: 10px;
   }
 
   &__symbol {
@@ -547,20 +546,11 @@
     justify-content: center;
     margin-top: 15px;
     width: 100%;
+  }
 
-    button {
-      height: 44px;
-      width: 113px;
-      border: 1px solid $scorpion;
-      border-radius: 2px;
-      color: $tundora;
-      font-family: Roboto;
-      font-size: 14px;
-      line-height: 20px;
-      text-align: center;
-      margin-left: 4px;
-      margin-right: 4px;
-    }
+  &__button {
+    width: 141px;
+    margin: 0 5px;
   }
 }
 
