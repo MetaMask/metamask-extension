@@ -63,11 +63,11 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   height: 55px;
   width: 191px;
   border-radius: 4px;
-  background-color: rgba(0,0,0,0.82);
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5);
-  position: fixed;
-  margin-top: 20px;
-  margin-left: 105px;
+  background-color: rgba(0, 0, 0, .82);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .5);
+  position: absolute;
+  top: 60px;
+  right: 25px;
   z-index: 2000;
 
   &__close-area {
