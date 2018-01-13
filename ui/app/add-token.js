@@ -295,12 +295,12 @@ AddTokenScreen.prototype.renderConfirmation = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-secondary', {
-          onClick: () => addTokens(tokens).then(goHome),
-        }, 'Add Tokens'),
-        h('button.btn-tertiary', {
+        h('button.btn-cancel.add-token__button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
         }, 'Back'),
+        h('button.btn-clear.add-token__button', {
+          onClick: () => addTokens(tokens).then(goHome),
+        }, 'Add Tokens'),
       ]),
     ])
   )
