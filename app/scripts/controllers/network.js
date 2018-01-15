@@ -1,6 +1,7 @@
 const assert = require('assert')
 const EventEmitter = require('events')
 const createMetamaskProvider = require('web3-provider-engine/zero.js')
+const SubproviderFromProvider = require('web3-provider-engine/subproviders/web3.js')
 const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
@@ -133,15 +134,17 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider (opts) {
     log.info('_configureInfuraProvider', opts)
-    const blockTrackerProvider = createInfuraProvider({
+    const infuraProvider = createInfuraProvider({
       network: opts.type,
     })
+    const infuraSubprovider = new SubproviderFromProvider(infuraProvider)
     const providerParams = extend(this._baseProviderParams, {
       rpcUrl: opts.rpcUrl,
       engineParams: {
         pollingInterval: 8000,
-        blockTrackerProvider,
+        blockTrackerProvider: infuraProvider,
       },
+      dataSubprovider: infuraSubprovider,
     })
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
