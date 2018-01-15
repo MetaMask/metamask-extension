@@ -3,7 +3,7 @@
 ## Current Master
 
 - Add an extra px to address for Firefox clipping.
-- Adjust max height for account detail section for Firefox.
+- Fix Firefox scrollbar.
 
 ## 3.13.4 2018-1-9
 
