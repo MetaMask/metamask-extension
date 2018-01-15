@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
+
 ## 3.13.4 2018-1-9
 
 - Remove recipient field if application initializes a tx with an empty string, or 0x, and tx data. Throw an error with the same condition, but without tx data.
