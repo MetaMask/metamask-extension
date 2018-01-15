@@ -256,13 +256,13 @@ class Settings extends Component {
     return (
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
-        this.renderBlockieOptIn(),
         this.renderCurrentConversion(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
         !isMascara && this.renderOldUI(),
+        this.renderBlockieOptIn(),
       ])
     )
   }
