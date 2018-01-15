@@ -50,10 +50,18 @@ function sanitizeValue (value) {
 
 CurrencyInput.prototype.handleChange = function (newValue) {
   const { onInputChange } = this.props
+  const { value } = this.state
 
-  this.setState({ value: sanitizeValue(newValue) })
+  let parsedValue = newValue
+  const newValueLastIndex = newValue.length - 1
 
-  onInputChange(sanitizeValue(newValue))
+  if (value === '0' && newValue[newValueLastIndex] === '0') {
+    parsedValue = parsedValue.slice(0, newValueLastIndex)
+  }
+
+  const sanitizedValue = sanitizeValue(parsedValue)
+  this.setState({ value: sanitizedValue })
+  onInputChange(sanitizedValue)
 }
 
 // If state.value === props.value plus a decimal point, or at least one
@@ -90,6 +98,6 @@ CurrencyInput.prototype.render = function () {
     size: valueToRender.length * inputSizeMultiplier,
     readOnly,
     onChange: e => this.handleChange(e.target.value),
-    ref: inputRef, 
+    ref: inputRef,
   })
 }
