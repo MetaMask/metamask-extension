@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Add an extra px to address for Firefox clipping.
+- Adjust max height for account detail section for Firefox.
+
 ## 3.13.4 2018-1-9
 
 - Remove recipient field if application initializes a tx with an empty string, or 0x, and tx data. Throw an error with the same condition, but without tx data.
