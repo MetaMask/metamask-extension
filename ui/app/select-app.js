@@ -42,7 +42,7 @@ SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
   const {
     // isUnlocked,
     // setFeatureFlagWithModal,
-    // setFeatureFlagWithoutModal,
+    setFeatureFlagWithoutModal,
     isMascara,
     // firstTime,
   } = this.props
@@ -60,7 +60,7 @@ SelectedApp.prototype.render = function () {
   // Code commented out until we begin auto adding users to NewUI
   // const { betaUI, isMascara, firstTime } = this.props
   // const Selected = betaUI || isMascara || firstTime ? App : OldApp
-  
+
   const { betaUI, isMascara } = this.props
   const Selected = betaUI || isMascara ? App : OldApp
 

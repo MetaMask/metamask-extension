@@ -26,8 +26,10 @@ const container = document.getElementById('app-content')
 startPopup({ container, connectionStream }, (err, store) => {
   if (err) return displayCriticalError(err)
 
-  const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
-  const firstTime = Object.keys(identities).length === 0
+  // Code commented out until we begin auto adding users to NewUI
+  // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
+  // const firstTime = Object.keys(identities).length === 0
+  const { isMascara, featureFlags = {} } = store.getState().metamask
   let betaUIState = featureFlags.betaUI
 
   // Code commented out until we begin auto adding users to NewUI
