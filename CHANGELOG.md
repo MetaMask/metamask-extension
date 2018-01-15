@@ -3,6 +3,8 @@
 ## Current Master
 
 - Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
+- Fix bug that prevented eth_signTypedData from signing bytes.
+- Further improve gas price estimation.
 
 ## 3.13.4 2018-1-9
 
