@@ -2,13 +2,15 @@
   position: relative;
   align-items: center;
   font-family: Roboto;
-  flex: 0 0 auto;
+  flex: 1 0 auto;
   flex-flow: column nowrap;
   box-shadow: 0 2px 4px 0 rgba($black, .08);
   border-radius: 8px;
+  display: flex;
 
   @media screen and (max-width: 575px) {
     width: 100%;
+    box-shadow: initial;
   }
 
   @media screen and (min-width: 576px) {
@@ -272,8 +274,8 @@ section .confirm-screen-account-number,
 }
 
 .confirm-screen-confirm-button {
-  height: 62px;
-  border-radius: 2px;
+  height: 50px;
+  border-radius: 4px;
   background-color: #02c9b1;
   font-size: 16px;
   color: $white;
@@ -285,11 +287,11 @@ section .confirm-screen-account-number,
   box-shadow: none;
   flex: 1 0 auto;
   font-weight: 300;
-  margin: 0 8px;
+  margin: 0 5px;
 }
 
 .btn-light.confirm-screen-cancel-button {
-  height: 62px;
+  height: 50px;
   background: none;
   border: none;
   opacity: 1;
@@ -298,12 +300,11 @@ section .confirm-screen-account-number,
   padding-top: 15px;
   padding-bottom: 15px;
   font-size: 16px;
-  line-height: 32px;
   box-shadow: none;
   cursor: pointer;
   flex: 1 0 auto;
   font-weight: 300;
-  margin: 0 8px;
+  margin: 0 5px;
 }
 
 #pending-tx-form {
@@ -312,7 +313,7 @@ section .confirm-screen-account-number,
   display: flex;
   flex-flow: row nowrap;
   background-color: $white;
-  padding: 12px 18px;
+  padding: 12px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   width: 100%;
