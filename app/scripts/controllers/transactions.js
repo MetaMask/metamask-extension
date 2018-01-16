@@ -171,9 +171,14 @@ module.exports = class TransactionController extends EventEmitter {
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
-    await this.addTxDefaults(txMeta)
+    try {
+      await this.addTxDefaults(txMeta)
+      txMeta.loadingDefaults = false
+    } catch (err) {
+      txMeta.loadingDefaults = false
+      return this.txStateManager.setTxStatusFailed(txMeta.id, err)
+    }
 
-    txMeta.loadingDefaults = false
     // save txMeta
     this.txStateManager.updateTx(txMeta)
     return txMeta

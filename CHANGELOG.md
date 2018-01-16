@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Mark transactions as failed when gas estimation fails for unknown reasons.
 - Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
 - Add an extra px to address for Firefox clipping.
 - Fix Firefox scrollbar.
