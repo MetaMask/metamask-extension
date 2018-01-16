@@ -2,6 +2,13 @@
 
 ## Current Master
 
+- Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
+- Add an extra px to address for Firefox clipping.
+- Fix Firefox scrollbar.
+- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
+- Fix bug that prevented eth_signTypedData from signing bytes.
+- Further improve gas price estimation.
+
 ## 3.13.4 2018-1-9
 
 - Remove recipient field if application initializes a tx with an empty string, or 0x, and tx data. Throw an error with the same condition, but without tx data.

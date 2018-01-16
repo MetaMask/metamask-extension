@@ -395,7 +395,7 @@ App.prototype.renderDropdown = function () {
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => { this.props.dispatch(actions.lockMetamask()) },
-    }, 'Lock'),
+    }, 'Log Out'),
 
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),

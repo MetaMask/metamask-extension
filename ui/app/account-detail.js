@@ -161,6 +161,7 @@ AccountDetailScreen.prototype.render = function () {
                   textOverflow: 'ellipsis',
                   paddingTop: '3px',
                   width: '5em',
+                  height: '15px',
                   fontSize: '13px',
                   fontFamily: 'Montserrat Light',
                   textRendering: 'geometricPrecision',
