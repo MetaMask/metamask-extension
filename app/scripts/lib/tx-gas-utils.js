@@ -53,7 +53,7 @@ module.exports = class txProvideUtil {
     const code = await this.query.getCode(recipient)
     if (hasRecipient && (!code || code === '0x')) {
       txParams.gas = SIMPLE_GAS_COST
-      txMeta.gasLimitSpecified = true // Prevents buffer addition
+      txMeta.simpleSend = true // Prevents buffer addition
       return SIMPLE_GAS_COST
     }
 
@@ -72,7 +72,7 @@ module.exports = class txProvideUtil {
 
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
-    if (txMeta.gasLimitSpecified) {
+    if (txMeta.gasLimitSpecified || txMeta.simpleSend) {
       txMeta.estimatedGas = txParams.gas
       return
     }
