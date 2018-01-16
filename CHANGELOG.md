@@ -4,6 +4,8 @@
 
 - Add an extra px to address for Firefox clipping.
 - Fix Firefox scrollbar.
+- Fix bug that prevented eth_signTypedData from signing bytes.
+- Further improve gas price estimation.
 
 ## 3.13.4 2018-1-9
 
