@@ -4,6 +4,7 @@
 
 - Add an extra px to address for Firefox clipping.
 - Fix Firefox scrollbar.
+- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
 - Fix bug that prevented eth_signTypedData from signing bytes.
 - Further improve gas price estimation.
 
