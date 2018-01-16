@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 3.13.5 2018-1-16
+
 - Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
 - Add an extra px to address for Firefox clipping.
 - Fix Firefox scrollbar.
