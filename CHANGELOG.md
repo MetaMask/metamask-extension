@@ -3,6 +3,7 @@
 ## Current Master
 
 - Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
+- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
 - Fix bug that prevented eth_signTypedData from signing bytes.
 - Further improve gas price estimation.
 
