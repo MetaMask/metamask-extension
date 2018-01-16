@@ -441,7 +441,9 @@ input.large-input {
 .account-detail-section {
   display: flex;
   flex-wrap: wrap;
+  overflow-x: hidden;
   overflow-y: auto;
+  max-height: 465px;
   flex-direction: inherit;
 }
 
