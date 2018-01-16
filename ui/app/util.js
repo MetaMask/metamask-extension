@@ -56,6 +56,7 @@ module.exports = {
   exportAsFile: exportAsFile,
   isInvalidChecksumAddress,
   allNull,
+  getTokenAddressFromTokenObject,
 }
 
 function valuesFor (obj) {
@@ -280,4 +281,8 @@ function exportAsFile (filename, data) {
 
 function allNull (obj) {
   return Object.entries(obj).every(([key, value]) => value === null)
+}
+
+function getTokenAddressFromTokenObject (token) {
+  return Object.values(token)[0].address.toLowerCase()
 }

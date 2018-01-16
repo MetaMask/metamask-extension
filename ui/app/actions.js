@@ -1,5 +1,6 @@
 const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
 
 var actions = {
@@ -1094,10 +1095,12 @@ function removeToken (address) {
 function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
         dispatch(addToken(address, symbol, decimals))
       )))
     } else {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
         .entries(tokens)
