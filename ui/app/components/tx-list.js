@@ -36,16 +36,15 @@ TxList.prototype.componentWillMount = function () {
 }
 
 TxList.prototype.render = function () {
-  return h('div.flex-column.tx-list-container', {}, [
-
+  return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
         h('div', 'transactions'),
       ]),
     ]),
-
-    this.renderTransaction(),
-
+    h('div.flex-column.tx-list-container', {}, [
+      this.renderTransaction(),
+    ]),
   ])
 }
 
