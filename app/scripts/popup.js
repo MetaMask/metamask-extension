@@ -7,13 +7,14 @@ const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
-const Raven = require('./vendor/raven.min.js')
-
-// Setup raven / sentry remote error reporting
-Raven.config('https://3567c198f8a8412082d32655da2961d0@sentry.io/273505').install()
+const setupRaven = require('./setupRaven')
 
 // create platform global
 global.platform = new ExtensionPlatform()
+
+// setup sentry error reporting
+const release = global.platform.getVersion()
+setupRaven({ release })
 
 // inject css
 const css = MetaMaskUiCss()

@@ -12,11 +12,8 @@ const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const firstTimeState = require  ('./first-time-state')
-const Raven = require('./vendor/raven.min.js')
-
-// Setup raven / sentry remote error reporting
-Raven.config('https://3567c198f8a8412082d32655da2961d0@sentry.io/273505').install()
+const firstTimeState = require('./first-time-state')
+const setupRaven = require('./setupRaven')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -27,6 +24,10 @@ log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 const platform = new ExtensionPlatform()
 const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
+
+// setup sentry error reporting
+const release = platform.getVersion()
+setupRaven({ release })
 
 let popupIsOpen = false
 
