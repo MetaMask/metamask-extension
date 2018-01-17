@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "이더리움 계좌 관리",
+    "description": "The description of the application"
+  }
+}

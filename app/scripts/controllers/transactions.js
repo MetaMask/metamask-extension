@@ -32,6 +32,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.provider = opts.provider
     this.blockTracker = opts.blockTracker
     this.signEthTx = opts.signTransaction
+    this.getGasPrice = opts.getGasPrice
 
     this.memStore = new ObservableStore({})
     this.query = new EthQuery(this.provider)
@@ -138,7 +139,6 @@ module.exports = class TransactionController extends EventEmitter {
   async newUnapprovedTransaction (txParams) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
-    this.emit('newUnapprovedTx', initialTxMeta)
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
@@ -166,11 +166,16 @@ module.exports = class TransactionController extends EventEmitter {
       status: 'unapproved',
       metamaskNetworkId: this.getNetwork(),
       txParams: txParams,
+      loadingDefaults: true,
     }
+    this.addTx(txMeta)
+    this.emit('newUnapprovedTx', txMeta)
     // add default tx params
     await this.addTxDefaults(txMeta)
+
+    txMeta.loadingDefaults = false
     // save txMeta
-    this.addTx(txMeta)
+    this.txStateManager.updateTx(txMeta)
     return txMeta
   }
 
@@ -179,7 +184,10 @@ module.exports = class TransactionController extends EventEmitter {
     // ensure value
     txMeta.gasPriceSpecified = Boolean(txParams.gasPrice)
     txMeta.nonceSpecified = Boolean(txParams.nonce)
-    const gasPrice = txParams.gasPrice || await this.query.gasPrice()
+    let gasPrice = txParams.gasPrice
+    if (!gasPrice) {
+      gasPrice = this.getGasPrice ? this.getGasPrice() : await this.query.gasPrice()
+    }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
     // set gasLimit

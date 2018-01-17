@@ -5,7 +5,6 @@ const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
-const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
 const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
@@ -35,12 +34,14 @@ const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
 const Mutex = require('await-semaphore').Mutex
 const version = require('../manifest.json').version
+const BN = require('ethereumjs-util').BN
+const GWEI_BN = new BN('1000000000')
+const percentile = require('percentile')
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
-
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
@@ -94,10 +95,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
+      provider: this.provider,
     })
 
-    // eth data query tools
-    this.ethQuery = new EthQuery(this.provider)
     // account tracker watches balances, nonces, and any code at their address.
     this.accountTracker = new AccountTracker({
       provider: this.provider,
@@ -138,7 +138,7 @@ module.exports = class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      ethQuery: this.ethQuery,
+      getGasPrice: this.getGasPrice.bind(this),
     })
     this.txController.on('newUnapprovedTx', opts.showUnapprovedTx.bind(opts))
 
@@ -489,6 +489,33 @@ module.exports = class MetamaskController extends EventEmitter {
     this.emit('update', this.getState())
   }
 
+  getGasPrice () {
+    const { recentBlocksController } = this
+    const { recentBlocks } = recentBlocksController.store.getState()
+
+    // Return 1 gwei if no blocks have been observed:
+    if (recentBlocks.length === 0) {
+      return '0x' + GWEI_BN.toString(16)
+    }
+
+    const lowestPrices = recentBlocks.map((block) => {
+      if (!block.gasPrices || block.gasPrices.length < 1) {
+        return GWEI_BN
+      }
+      return block.gasPrices
+      .map(hexPrefix => hexPrefix.substr(2))
+      .map(hex => new BN(hex, 16))
+      .sort((a, b) => {
+        return a.gt(b) ? 1 : -1
+      })[0]
+    })
+    .map(number => number.div(GWEI_BN).toNumber())
+
+    const percentileNum = percentile(50, lowestPrices)
+    const percentileNumBn = new BN(percentileNum)
+    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+  }
+
   //
   // Vault Management
   //
@@ -518,10 +545,15 @@ module.exports = class MetamaskController extends EventEmitter {
 
   async createNewVaultAndRestore (password, seed) {
     const release = await this.createVaultMutex.acquire()
-    const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
-    this.selectFirstIdentity(vault)
-    release()
-    return vault
+    try {
+      const vault = await this.keyringController.createNewVaultAndRestore(password, seed)
+      this.selectFirstIdentity(vault)
+      release()
+      return vault
+    } catch (err) {
+      release()
+      throw err
+    }
   }
 
   selectFirstIdentity (vault) {

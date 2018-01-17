@@ -103,9 +103,9 @@ InfoScreen.prototype.render = function () {
             [
               h('div.fa.fa-support', [
                 h('a.info', {
-                  href: 'https://support.metamask.io',
+                  href: 'https://metamask.helpscoutdocs.com/',
                   target: '_blank',
-                }, 'Visit our Support Center'),
+                }, 'Visit our Knowledge Base'),
               ]),
 
               h('div', [
@@ -138,8 +138,7 @@ InfoScreen.prototype.render = function () {
               h('div.fa.fa-envelope', [
                 h('a.info', {
                   target: '_blank',
-                  style: { width: '85vw' },
-                  href: 'mailto:help@metamask.io?subject=Feedback',
+                  href: 'mailto:support@metamask.io?subject=MetaMask Support',
                 }, 'Email us!'),
               ]),
             ]),

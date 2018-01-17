@@ -397,7 +397,7 @@ App.prototype.renderDropdown = function () {
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => { this.props.dispatch(actions.lockMetamask()) },
-    }, 'Lock'),
+    }, 'Log Out'),
 
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
@@ -470,11 +470,6 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  if (props.seedWords) {
-    log.debug('rendering seed words')
-    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
-  }
-
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
     // show current view
@@ -507,6 +502,12 @@ App.prototype.renderPrimary = function () {
         log.debug('rendering locked screen')
         return h(UnlockScreen, {key: 'locked'})
     }
+  }
+
+  // show seed words screen
+  if (props.seedWords) {
+    log.debug('rendering seed words')
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show current view

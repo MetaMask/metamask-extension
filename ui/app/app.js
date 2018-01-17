@@ -302,7 +302,6 @@ App.prototype.renderAppBar = function () {
   )
 }
 
-
 App.prototype.renderLoadingIndicator = function ({ isLoading, isLoadingNetwork, loadMessage }) {
   const { isMascara } = this.props
 
