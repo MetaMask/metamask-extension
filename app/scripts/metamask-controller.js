@@ -62,17 +62,19 @@ module.exports = class MetamaskController extends EventEmitter {
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
 
-    if (this.platform.onLine) this.platform.onLine(() => {
-      // start the provider up
-      if (this.provider) {
-        this.provider.stop()
-        this.provider.start()
-      }
-      // look up the network
-      this.networkController.lookupNetwork(() => {
-        this.emit('update', this.getState())
+    if (this.platform.onLine) {
+      this.platform.onLine(() => {
+        // start the provider up
+        if (this.provider) {
+          this.provider.stop()
+          this.provider.start()
+        }
+        // look up the network
+        this.networkController.lookupNetwork(() => {
+          this.emit('update', this.getState())
+        })
       })
-    })
+    }
     // config manager
     this.configManager = new ConfigManager({
       store: this.store,
