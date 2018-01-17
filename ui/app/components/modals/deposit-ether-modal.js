@@ -62,6 +62,7 @@ DepositEtherModal.prototype.renderRow = function ({
   hideButton,
   hideTitle,
   onBackClick,
+  showBackButton,
 }) {
   if (hide) {
     return null
@@ -71,7 +72,7 @@ DepositEtherModal.prototype.renderRow = function ({
       className: className || 'deposit-ether-modal__buy-row',
     }, [
 
-    h('div.deposit-ether-modal__buy-row__back', {
+    onBackClick && showBackButton && h('div.deposit-ether-modal__buy-row__back', {
       onClick: onBackClick,
     }, [
 
@@ -167,6 +168,7 @@ DepositEtherModal.prototype.render = function () {
         hideButton: buyingWithShapeshift,
         hideTitle: buyingWithShapeshift,
         onBackClick: () => this.setState({ buyingWithShapeshift: false }),
+        showBackButton: this.state.buyingWithShapeshift,
         className: buyingWithShapeshift && 'deposit-ether-modal__buy-row__shapeshift-buy',
       }),
 
