@@ -3,6 +3,7 @@ const Component = require('react').Component
 const classnames = require('classnames')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const R = require('ramda');
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
 const TokenBalance = require('./components/token-balance')
@@ -17,12 +18,14 @@ const fuse = new Fuse(contractList, {
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
-    keys: ['address', 'name', 'symbol'],
+    keys: [
+      { name: 'name', weight: 0.5 },
+      { name: 'symbol', weight: 0.5 },
+    ],
 })
 const actions = require('./actions')
 const ethUtil = require('ethereumjs-util')
 const { tokenInfoGetter } = require('./token-util')
-const R = require('ramda')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -217,9 +220,11 @@ AddTokenScreen.prototype.renderCustomForm = function () {
 
 AddTokenScreen.prototype.renderTokenList = function () {
   const { searchQuery = '', selectedTokens } = this.state
-  const results = searchQuery
-    ? fuse.search(searchQuery) || []
-    : contractList
+  const fuseSearchResult = fuse.search(searchQuery)
+  const addressSearchResult = contractList.filter(token => {
+    return token.address.toLowerCase() === searchQuery.toLowerCase()
+  })
+  const results = [...addressSearchResult, ...fuseSearchResult]
 
   return Array(6).fill(undefined)
     .map((_, i) => {
