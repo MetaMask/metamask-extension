@@ -61,10 +61,12 @@ module.exports = class MetamaskController extends EventEmitter {
     // network store
     this.networkController = new NetworkController(initState.NetworkController)
 
+    // setup onLine lister for restarting the provider
     if (this.platform.onLine) {
       this.platform.onLine(() => {
-        // start the provider up
+        // guard against premature firring of the event listener
         if (this.provider) {
+          // start the provider up
           this.provider.stop()
           this.provider.start()
         }
@@ -104,7 +106,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // rpc provider
     this.provider = this.initializeProvider()
-    // stop the provider if offline
+
     this.blockTracker = this.provider._blockTracker
 
     this.recentBlocksController = new RecentBlocksController({
