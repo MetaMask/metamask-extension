@@ -12,12 +12,11 @@ const migrations = require('./migrations/')
 const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
-const firstTimeState = require('./first-time-state')
+const firstTimeState = require  ('./first-time-state')
+const Raven = require('./vendor/raven.min.js')
 
-// raven / sentry error catching START
-const Raven = require('./raven.min.js')
-Raven.config('https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496').install()
-// raven / sentry error catching END
+// Setup raven / sentry remote error reporting
+Raven.config('https://3567c198f8a8412082d32655da2961d0@sentry.io/273505').install()
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
