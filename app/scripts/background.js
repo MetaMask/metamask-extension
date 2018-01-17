@@ -14,6 +14,11 @@ const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const firstTimeState = require('./first-time-state')
 
+// raven / sentry error catching START
+const Raven = require('./raven.min.js')
+Raven.config('https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496').install()
+// raven / sentry error catching END
+
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
 
