@@ -5,7 +5,6 @@ const Dnode = require('dnode')
 const ObservableStore = require('obs-store')
 const asStream = require('obs-store/lib/asStream')
 const AccountTracker = require('./lib/account-tracker')
-const EthQuery = require('eth-query')
 const RpcEngine = require('json-rpc-engine')
 const debounce = require('debounce')
 const createEngineStream = require('json-rpc-middleware-stream/engineStream')
@@ -110,10 +109,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
+      provider: this.provider,
     })
 
-    // eth data query tools
-    this.ethQuery = new EthQuery(this.provider)
     // account tracker watches balances, nonces, and any code at their address.
     this.accountTracker = new AccountTracker({
       provider: this.provider,
@@ -154,7 +152,6 @@ module.exports = class MetamaskController extends EventEmitter {
       signTransaction: this.keyringController.signTransaction.bind(this.keyringController),
       provider: this.provider,
       blockTracker: this.blockTracker,
-      ethQuery: this.ethQuery,
       getGasPrice: this.getGasPrice.bind(this),
     })
     this.txController.on('newUnapprovedTx', opts.showUnapprovedTx.bind(opts))

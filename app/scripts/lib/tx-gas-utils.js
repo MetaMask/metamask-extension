@@ -4,6 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('./util')
+const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /*
 tx-utils are utility methods for Transaction manager
@@ -37,14 +38,30 @@ module.exports = class txProvideUtil {
 
   async estimateTxGas (txMeta, blockGasLimitHex) {
     const txParams = txMeta.txParams
+
     // check if gasLimit is already specified
     txMeta.gasLimitSpecified = Boolean(txParams.gas)
-    // if not, fallback to block gasLimit
-    if (!txMeta.gasLimitSpecified) {
-      const blockGasLimitBN = hexToBn(blockGasLimitHex)
-      const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
-      txParams.gas = bnToHex(saferGasLimitBN)
+
+    // if it is, use that value
+    if (txMeta.gasLimitSpecified) {
+      return txParams.gas
     }
+
+    // if recipient has no code, gas is 21k max:
+    const recipient = txParams.to
+    const hasRecipient = Boolean(recipient)
+    const code = await this.query.getCode(recipient)
+    if (hasRecipient && (!code || code === '0x')) {
+      txParams.gas = SIMPLE_GAS_COST
+      txMeta.simpleSend = true // Prevents buffer addition
+      return SIMPLE_GAS_COST
+    }
+
+    // if not, fall back to block gasLimit
+    const blockGasLimitBN = hexToBn(blockGasLimitHex)
+    const saferGasLimitBN = BnMultiplyByFraction(blockGasLimitBN, 19, 20)
+    txParams.gas = bnToHex(saferGasLimitBN)
+
     // run tx
     return await this.query.estimateGas(txParams)
   }
@@ -55,7 +72,7 @@ module.exports = class txProvideUtil {
 
     // if gasLimit was specified and doesnt OOG,
     // use original specified amount
-    if (txMeta.gasLimitSpecified) {
+    if (txMeta.gasLimitSpecified || txMeta.simpleSend) {
       txMeta.estimatedGas = txParams.gas
       return
     }
