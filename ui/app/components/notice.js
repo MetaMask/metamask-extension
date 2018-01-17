@@ -102,7 +102,7 @@ Notice.prototype.render = function () {
         }),
       ]),
 
-      h('button', {
+      h('button.primary', {
         disabled,
         onClick: () => {
           this.setState({disclaimerDisabled: true})

@@ -76,7 +76,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Buy Eth'),
+        }, 'Deposit Eth'),
       ]),
 
       // loading indication
@@ -87,7 +87,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
           left: '49vw',
         },
       }, [
-        h(Loading, { isLoading }),
+        isLoading && h(Loading),
       ]),
 
       // account panel
@@ -245,7 +245,7 @@ BuyButtonSubview.prototype.navigateTo = function (url) {
 
 BuyButtonSubview.prototype.backButtonContext = function () {
   if (this.props.context === 'confTx') {
-    this.props.dispatch(actions.showConfTxPage(false))
+    this.props.dispatch(actions.showConfTxPage({transForward: false}))
   } else {
     this.props.dispatch(actions.goHome())
   }

@@ -201,6 +201,10 @@ module.exports = class TransactionController extends EventEmitter {
     this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
   }
 
+  async updateTransaction (txMeta) {
+    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
+  }
+
   async updateAndApproveTransaction (txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
     await this.approveTransaction(txMeta.id)

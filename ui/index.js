@@ -4,10 +4,11 @@ const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
+const { OLD_UI_NETWORK_TYPE, BETA_UI_NETWORK_TYPE } = require('../app/scripts/config').enums
+
 global.log = require('loglevel')
 
 module.exports = launchMetamaskUi
-
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -36,10 +37,17 @@ function startApp (metamaskState, accountManager, opts) {
     networkVersion: opts.networkVersion,
   })
 
+  const useBetaUi = metamaskState.featureFlags.betaUI
+  const networkEndpointType = useBetaUi ? BETA_UI_NETWORK_TYPE : OLD_UI_NETWORK_TYPE
+  store.dispatch(actions.setNetworkEndpoints(networkEndpointType))
+
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(metamaskState.unapprovedTxs, metamaskState.unapprovedMsgs, metamaskState.unapprovedPersonalMsgs, metamaskState.unapprovedTypedMessages, metamaskState.network)
-  if (unapprovedTxsAll.length > 0) {
-    store.dispatch(actions.showConfTxPage())
+  const numberOfUnapprivedTx = unapprovedTxsAll.length
+  if (numberOfUnapprivedTx > 0) {
+    store.dispatch(actions.showConfTxPage({
+      id: unapprovedTxsAll[numberOfUnapprivedTx - 1].id,
+    }))
   }
 
   accountManager.on('update', function (metamaskState) {

@@ -16,6 +16,7 @@ module.exports = connect(mapStateToProps)(ShiftListItem)
 
 function mapStateToProps (state) {
   return {
+    selectedAddress: state.metamask.selectedAddress,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
   }
@@ -28,36 +29,39 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
+  const { selectedAddress, receivingAddress } = this.props
   return (
-    h('.transaction-list-item.flex-row', {
-      style: {
-        paddingTop: '20px',
-        paddingBottom: '20px',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-      },
-    }, [
-      h('div', {
+    selectedAddress === receivingAddress
+      ? h('div.tx-list-item.tx-list-clickable', {
         style: {
-          width: '0px',
-          position: 'relative',
-          bottom: '19px',
+          paddingTop: '20px',
+          paddingBottom: '20px',
+          justifyContent: 'space-around',
+          alignItems: 'center',
         },
       }, [
-        h('img', {
-          src: 'https://info.shapeshift.io/sites/default/files/logo.png',
+        h('div', {
           style: {
-            height: '35px',
-            width: '132px',
-            position: 'absolute',
-            clip: 'rect(0px,23px,34px,0px)',
+            width: '0px',
+            position: 'relative',
+            bottom: '19px',
           },
-        }),
-      ]),
+        }, [
+          h('img', {
+            src: 'https://info.shapeshift.io/sites/default/files/logo.png',
+            style: {
+              height: '35px',
+              width: '132px',
+              position: 'absolute',
+              clip: 'rect(0px,23px,34px,0px)',
+            },
+          }),
+        ]),
 
-      this.renderInfo(),
-      this.renderUtilComponents(),
-    ])
+        this.renderInfo(),
+        this.renderUtilComponents(),
+      ])
+      : null
   )
 }
 
