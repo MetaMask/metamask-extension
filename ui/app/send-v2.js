@@ -85,6 +85,20 @@ SendTransactionScreen.prototype.componentWillMount = function () {
   const {
     updateTokenExchangeRate,
     selectedToken = {},
+  } = this.props
+
+  const { symbol } = selectedToken || {}
+
+  if (symbol) {
+    updateTokenExchangeRate(symbol)
+  }
+
+  this.updateGas()
+}
+
+SendTransactionScreen.prototype.updateGas = function () {
+  const {
+    selectedToken = {},
     getGasPrice,
     estimateGas,
     selectedAddress,
@@ -96,17 +110,16 @@ SendTransactionScreen.prototype.componentWillMount = function () {
     gasPrice,
     gasLimit,
   } = this.props
+
   const { symbol } = selectedToken || {}
 
-  if (symbol) {
-    updateTokenExchangeRate(symbol)
-  }
+  const tokenBalancePromise = tokenContract
+    ? tokenContract.balanceOf(from.address)
+    : Promise.resolve()
 
-  const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
-
-  const tokenBalancePromise = tokenContract && tokenContract.balanceOf(from.address)
-  let newGasTotal
   if (!editingTransactionId) {
+    const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
+
     Promise
       .all([
         getGasPrice(),
@@ -114,25 +127,24 @@ SendTransactionScreen.prototype.componentWillMount = function () {
         tokenBalancePromise,
       ])
       .then(([gasPrice, gas, usersToken]) => {
-
-        const newGasTotal = multiplyCurrencies(gas, gasPrice, {
-          toNumericBase: 'hex',
-          multiplicandBase: 16,
-          multiplierBase: 16,
-        })
+        const newGasTotal = this.getGasTotal(gas, gasPrice)
         updateGasTotal(newGasTotal)
         this.updateSendTokenBalance(usersToken)
       })
   } else {
-    newGasTotal = multiplyCurrencies(gasLimit, gasPrice, {
-      toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 16,
-    })
+    const newGasTotal = this.getGasTotal(gasLimit, gasPrice)
     updateGasTotal(newGasTotal)
-    tokenBalancePromise && tokenBalancePromise.then(
-      usersToken => this.updateSendTokenBalance(usersToken))
+    tokenBalancePromise
+      .then(usersToken => this.updateSendTokenBalance(usersToken))
   }
+}
+
+SendTransactionScreen.prototype.getGasTotal = function (gasLimit, gasPrice) {
+  return multiplyCurrencies(gasLimit, gasPrice, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 16,
+  })
 }
 
 SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
@@ -142,11 +154,14 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
     tokenBalance,
     amount,
     selectedToken,
+    network,
   } = this.props
+
   const {
     from: { balance: prevBalance },
     gasTotal: prevGasTotal,
     tokenBalance: prevTokenBalance,
+    network: prevNetwork,
   } = prevProps
 
   const notFirstRender = [prevBalance, prevGasTotal].every(n => n !== null)
@@ -156,8 +171,14 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
   const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
   const amountValidationChange = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
-  if (notFirstRender && amountValidationChange) {
-    this.validateAmount(amount)
+  if (notFirstRender) {
+    if (amountValidationChange) {
+      this.validateAmount(amount)
+    }
+
+    if (network !== prevNetwork && network !== 'loading') {
+      this.updateGas()
+    }
   }
 }
 

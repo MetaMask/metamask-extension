@@ -51,6 +51,7 @@ function mapStateToProps (state) {
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
     tokenContract: getSelectedTokenContract(state),
     unapprovedTxs: state.metamask.unapprovedTxs,
+    network: state.metamask.network,
   }
 }
 
