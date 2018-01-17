@@ -52,6 +52,8 @@ module.exports = class TransactionController extends EventEmitter {
       .then((txMeta) => {
         txMeta.loadingDefaults = false
         this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
+      }).catch((error) => {
+        this.txStateManager.setTxStatusFailed(tx.id, error)
       })
     })
 
