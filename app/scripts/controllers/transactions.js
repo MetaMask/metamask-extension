@@ -57,6 +57,14 @@ module.exports = class TransactionController extends EventEmitter {
       })
     })
 
+    this.txStateManager.getFilteredTxList({
+      status: 'approved',
+    }).forEach((txMeta) => {
+      const txSignError = new Error('Transaction was interrupted during signing process')
+      this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
+    })
+
+
     this.store = this.txStateManager.store
     this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
     this.nonceTracker = new NonceTracker({
