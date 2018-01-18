@@ -2,7 +2,10 @@ const assert = require('assert')
 const EventEmitter = require('events')
 const createMetamaskProvider = require('web3-provider-engine/zero.js')
 const SubproviderFromProvider = require('web3-provider-engine/subproviders/web3.js')
-const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
+const RpcEngine = require('json-rpc-engine')
+const createVmMiddleware = require('eth-json-rpc-middleware/vm')
+const providerFromEngine = require('eth-json-rpc-middleware/providerFromEngine')
+const createInfuraMiddleware = require('eth-json-rpc-infura')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
@@ -134,17 +137,25 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider (opts) {
     log.info('_configureInfuraProvider', opts)
-    const infuraProvider = createInfuraProvider({
+
+    const engine = new RpcEngine()
+    const jsonRpcEngineProvider = providerFromEngine(engine)
+
+    engine.push(createVmMiddleware({
+      provider: jsonRpcEngineProvider,
+    }))
+    engine.push(createInfuraMiddleware({
       network: opts.type,
-    })
-    const infuraSubprovider = new SubproviderFromProvider(infuraProvider)
+    }))
+
+    const jsonRpcEngineSubprovider = new SubproviderFromProvider(jsonRpcEngineProvider)
     const providerParams = extend(this._baseProviderParams, {
       rpcUrl: opts.rpcUrl,
       engineParams: {
         pollingInterval: 8000,
-        blockTrackerProvider: infuraProvider,
+        blockTrackerProvider: provider,
       },
-      dataSubprovider: infuraSubprovider,
+      dataSubprovider: jsonRpcEngineSubprovider,
     })
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
