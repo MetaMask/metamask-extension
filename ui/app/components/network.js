@@ -22,7 +22,7 @@ Network.prototype.render = function () {
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
-    return h('span.pointer', {
+    return h('span.pointer.network-indicator', {
       style: {
         display: 'flex',
         alignItems: 'center',
