@@ -234,11 +234,7 @@ TxListItem.prototype.render = function () {
           style: {},
         }, [
 
-          h('span', {
-            className: classnames('tx-list-value', {
-              'tx-list-value--confirmed': transactionStatus === 'confirmed',
-            }),
-          }, total),
+          h('span.tx-list-value', total),
 
           showFiatTotal && h('span.tx-list-fiat-value', fiatTotal),
 
