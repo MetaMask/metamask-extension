@@ -100,7 +100,7 @@ TxView.prototype.render = function () {
 
     h('div.flex-row.phone-visible', {
       style: {
-        margin: '1em 0.9em',
+        margin: '1.5em 1.2em 0',
         justifyContent: 'space-between',
         alignItems: 'center',
       },
@@ -136,7 +136,7 @@ TxView.prototype.render = function () {
 
       !isMascara && h('div.open-in-browser', {
         onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/open.svg' })]),
+      }, [h('img', { src: 'images/popout.svg' })]),
 
     ]),
 
