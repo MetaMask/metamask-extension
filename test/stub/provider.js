@@ -1,12 +1,12 @@
 const JsonRpcEngine = require('json-rpc-engine')
 const scaffoldMiddleware = require('eth-json-rpc-middleware/scaffold')
+const TestBlockchain = require('eth-block-tracker/test/util/testBlockMiddleware')
 
 module.exports = {
   createEngineForTestData,
   providerFromEngine,
   scaffoldMiddleware,
-  createEthJsQueryStub,
-  createStubedProvider,
+  createTestProviderTools,
 }
 
 
@@ -19,20 +19,13 @@ function providerFromEngine (engine) {
   return provider
 }
 
-function createEthJsQueryStub (stubProvider) {
-  return new Proxy({}, {
-    get: (obj, method) => {
-      return (...params) => {
-        return new Promise((resolve, reject) => {
-          stubProvider.sendAsync({ method: `eth_${method}`, params }, (err, res) => err ? reject(err) : resolve(res.result))
-        })
-      }
-    },
-  })
-}
-
-function createStubedProvider (resultStub) {
+function createTestProviderTools (opts = {}) {
   const engine = createEngineForTestData()
-  engine.push(scaffoldMiddleware(resultStub))
-  return providerFromEngine(engine)
+  const testBlockchain = new TestBlockchain()
+  // handle provided hooks
+  engine.push(scaffoldMiddleware(opts.scaffold || {}))
+  // handle block tracker methods
+  engine.push(testBlockchain.createMiddleware())
+  const provider = providerFromEngine(engine)
+  return { provider, engine, testBlockchain }
 }
