@@ -652,11 +652,11 @@
     border: 1px solid $curious-blue;
     border-radius: 4px;
     background-color: $white;
-    padding: 5px;
     position: absolute;
     right: 15px;
     top: 14px;
     cursor: pointer;
+    font-size: 1em;
   }
 
   &__sliders-icon {

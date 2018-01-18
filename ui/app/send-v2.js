@@ -13,7 +13,6 @@ const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
 
 const {
-  MIN_GAS_TOTAL,
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./components/send/send-constants')
 
@@ -116,6 +115,8 @@ SendTransactionScreen.prototype.updateGas = function () {
   const tokenBalancePromise = tokenContract
     ? tokenContract.balanceOf(from.address)
     : Promise.resolve()
+  tokenBalancePromise
+      .then(usersToken => this.updateSendTokenBalance(usersToken))
 
   if (!editingTransactionId) {
     const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
@@ -124,18 +125,14 @@ SendTransactionScreen.prototype.updateGas = function () {
       .all([
         getGasPrice(),
         estimateGas(estimateGasParams),
-        tokenBalancePromise,
       ])
-      .then(([gasPrice, gas, usersToken]) => {
+      .then(([gasPrice, gas]) => {
         const newGasTotal = this.getGasTotal(gas, gasPrice)
         updateGasTotal(newGasTotal)
-        this.updateSendTokenBalance(usersToken)
       })
   } else {
     const newGasTotal = this.getGasTotal(gasLimit, gasPrice)
     updateGasTotal(newGasTotal)
-    tokenBalancePromise
-      .then(usersToken => this.updateSendTokenBalance(usersToken))
   }
 }
 
@@ -164,14 +161,14 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
     network: prevNetwork,
   } = prevProps
 
-  const notFirstRender = [prevBalance, prevGasTotal].every(n => n !== null)
+  const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
 
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
   const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
   const amountValidationChange = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
-  if (notFirstRender) {
+  if (!uninitialized) {
     if (amountValidationChange) {
       this.validateAmount(amount)
     }
@@ -381,14 +378,19 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   const amount = value
 
   let amountError = null
-  const sufficientBalance = isBalanceSufficient({
-    amount: selectedToken ? '0x0' : amount,
-    gasTotal,
-    balance,
-    primaryCurrency,
-    amountConversionRate,
-    conversionRate,
-  })
+
+  let sufficientBalance = true
+
+  if (gasTotal) {
+    sufficientBalance = isBalanceSufficient({
+      amount: selectedToken ? '0x0' : amount,
+      gasTotal,
+      balance,
+      primaryCurrency,
+      amountConversionRate,
+      conversionRate,
+    })
+  }
 
   let sufficientTokens
   if (selectedToken) {
@@ -404,7 +406,7 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
     { value: amount, fromNumericBase: 'hex' },
   )
 
-  if (!sufficientBalance) {
+  if (conversionRate && !sufficientBalance) {
     amountError = 'Insufficient funds.'
   } else if (selectedToken && !sufficientTokens) {
     amountError = 'Insufficient tokens.'
@@ -461,7 +463,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
     conversionRate,
     convertedCurrency,
     showCustomizeGasModal,
-    gasTotal = MIN_GAS_TOTAL,
+    gasTotal,
   } = this.props
 
   return h('div.send-v2__form-row', [
@@ -476,12 +478,6 @@ SendTransactionScreen.prototype.renderGasRow = function () {
         convertedCurrency,
         onClick: showCustomizeGasModal,
       }),
-
-      h('div.send-v2__sliders-icon-container', {
-        onClick: showCustomizeGasModal,
-      }, [
-        h('i.fa.fa-sliders.send-v2__sliders-icon'),
-      ]),
 
     ]),
 
@@ -533,6 +529,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const {
     goHome,
     clearSend,
+    gasTotal,
     errors: { amount: amountError, to: toError },
   } = this.props
 
@@ -546,7 +543,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
       },
     }, 'Cancel'),
     h('button.btn-clear.send-v2__next-btn', {
-      disabled: !noErrors,
+      disabled: !noErrors || !gasTotal,
       onClick: event => this.onSubmit(event),
     }, 'Next'),
   ])
