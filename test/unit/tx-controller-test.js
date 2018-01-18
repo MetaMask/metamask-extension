@@ -6,7 +6,7 @@ const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxGasUtils = require('../../app/scripts/lib/tx-gas-utils')
-const { createStubbedProvider } = require('../stub/provider')
+const { createTestProviderTools } = require('../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
@@ -15,11 +15,18 @@ const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f3
 
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub
+  let txController, provider, providerResultStub, testBlockchain
 
   beforeEach(function () {
-    providerResultStub = {}
-    provider = createStubbedProvider(providerResultStub)
+    providerResultStub = {
+      // 1 gwei
+      eth_gasPrice: '0x0de0b6b3a7640000',
+      // by default, all accounts are external accounts (not contracts)
+      eth_getCode: '0x',
+    }
+    const providerTools = createTestProviderTools({ scaffold: providerResultStub })
+    provider = providerTools.provider
+    testBlockchain = providerTools.testBlockchain
 
     txController = new TransactionController({
       provider,
@@ -153,15 +160,6 @@ describe('Transaction Controller', function () {
   })
 
   describe('#addUnapprovedTransaction', function () {
-    let addTxDefaults
-    beforeEach(() => {
-      addTxDefaults = txController.addTxDefaults
-      txController.addTxDefaults = function addTxDefaultsStub () { return Promise.resolve() }
-
-    })
-    afterEach(() => {
-      txController.addTxDefaults = addTxDefaults
-    })
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
       txController.addUnapprovedTransaction({})

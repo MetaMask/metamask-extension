@@ -1,12 +1,12 @@
 const assert = require('assert')
 const TxGasUtils = require('../../app/scripts/lib/tx-gas-utils')
-const { createStubbedProvider } = require('../stub/provider')
+const { createTestProviderTools } = require('../stub/provider')
 
 describe('Tx Gas Util', function () {
   let txGasUtil, provider, providerResultStub
   beforeEach(function () {
     providerResultStub = {}
-    provider = createStubbedProvider(providerResultStub)
+    provider = createTestProviderTools({ scaffold: providerResultStub }).provider
     txGasUtil = new TxGasUtils({
       provider,
     })
