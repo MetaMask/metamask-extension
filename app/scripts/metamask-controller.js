@@ -62,17 +62,17 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController = new NetworkController(initState.NetworkController)
 
     // setup onLine lister for restarting the provider
-    if (this.platform.onLine) {
-      this.platform.onLine(() => {
+    if (this.platform.addOnLineListener) {
+      this.platform.addOnLineListener(() => {
         // guard against premature firring of the event listener
         if (this.provider) {
-          // start the provider up
+          // start the block tracker up
           this.provider.stop()
           this.provider.start()
         }
         // look up the network
         this.networkController.lookupNetwork(() => {
-          this.emit('update', this.getState())
+          this.sendUpdate()
         })
       })
     }

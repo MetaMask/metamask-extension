@@ -31,7 +31,7 @@ class ExtensionPlatform {
     return navigator.onLine
   }
 
-  onLine (cb) {
+  addOnLineListener (cb) {
     window.addEventListener('online', cb)
   }
 }
