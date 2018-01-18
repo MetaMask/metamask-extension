@@ -15,7 +15,7 @@ describe('Metamask popup page', function () {
     driver = buildWebDriver(extPath)
     await driver.get('chrome://extensions-frame')
     const elems = await driver.findElements(By.xpath(
-      '//*[@id="jepnlelaaflcpibhckpebdcijgfdfleo"]'
+      '//*[@id="fmmjaglpijbgopejlfapbkhhbnaagbpj"]'
     ))
     const extensionId = await elems[0].getAttribute('id')
     await driver.get(`chrome-extension://${extensionId}/popup.html`)

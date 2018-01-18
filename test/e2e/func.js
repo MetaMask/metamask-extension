@@ -1,3 +1,4 @@
+require('chromedriver')
 const webdriver = require('selenium-webdriver')
 
 exports.delay = function delay (time) {
