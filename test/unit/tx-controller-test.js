@@ -217,7 +217,7 @@ describe('Transaction Controller', function () {
       var sample = {
         value: '0x01',
       }
-      txController.txProviderUtils.validateTxParams(sample).then(() => {
+      txController.txGasUtil.validateTxParams(sample).then(() => {
         done()
       }).catch(done)
     })
@@ -226,7 +226,7 @@ describe('Transaction Controller', function () {
       var sample = {
         value: '-0x01',
       }
-      txController.txProviderUtils.validateTxParams(sample)
+      txController.txGasUtil.validateTxParams(sample)
       .then(() => done('expected to thrown on negativity values but didn\'t'))
       .catch((err) => {
         assert.ok(err, 'error')
