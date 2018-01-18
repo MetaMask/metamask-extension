@@ -5,7 +5,7 @@ module.exports = {
   createEngineForTestData,
   providerFromEngine,
   scaffoldMiddleware,
-  createStubedProvider,
+  createStubbedProvider,
 }
 
 
@@ -18,7 +18,7 @@ function providerFromEngine (engine) {
   return provider
 }
 
-function createStubedProvider (resultStub) {
+function createStubbedProvider (resultStub) {
   const engine = createEngineForTestData()
   engine.push(scaffoldMiddleware(resultStub))
   return providerFromEngine(engine)

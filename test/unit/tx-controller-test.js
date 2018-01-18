@@ -6,7 +6,7 @@ const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxGasUtils = require('../../app/scripts/lib/tx-gas-utils')
-const { createStubedProvider } = require('../stub/provider')
+const { createStubbedProvider } = require('../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
@@ -19,7 +19,7 @@ describe('Transaction Controller', function () {
 
   beforeEach(function () {
     providerResultStub = {}
-    provider = createStubedProvider(providerResultStub)
+    provider = createStubbedProvider(providerResultStub)
 
     txController = new TransactionController({
       provider,

@@ -3,7 +3,7 @@ const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
 const clone = require('clone')
-const { createStubedProvider } = require('../stub/provider')
+const { createStubbedProvider } = require('../stub/provider')
 const PendingTransactionTracker = require('../../app/scripts/lib/pending-tx-tracker')
 const MockTxGen = require('../lib/mock-tx-gen')
 const sinon = require('sinon')
@@ -39,7 +39,7 @@ describe('PendingTransactionTracker', function () {
       txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d'},
     }
     providerResultStub = {}
-    provider = createStubedProvider(providerResultStub)
+    provider = createStubbedProvider(providerResultStub)
 
     pendingTxTracker = new PendingTransactionTracker({
       provider,
