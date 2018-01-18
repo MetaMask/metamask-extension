@@ -24,7 +24,7 @@ function createEthJsQueryStub (stubProvider) {
     get: (obj, method) => {
       return (...params) => {
         return new Promise((resolve, reject) => {
-          stubProvider.sendAsync({ method: `eth_${method}`, params }, (err, ress) => resolve(ress.result))
+          stubProvider.sendAsync({ method: `eth_${method}`, params }, (err, res) => err ? reject(err) : resolve(res.result))
         })
       }
     },
