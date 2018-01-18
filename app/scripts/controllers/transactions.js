@@ -60,7 +60,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.txStateManager.getFilteredTxList({
       status: 'approved',
     }).forEach((txMeta) => {
-      const txSignError = new Error('Transaction was interrupted during signing process')
+      const txSignError = new Error('Transaction found as "approved" during boot - possibly stuck during signing')
       this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
     })
 
