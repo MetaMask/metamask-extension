@@ -1,11 +1,12 @@
 const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
+const EthjsQuery = require('ethjs-query')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxGasUtils = require('../../app/scripts/lib/tx-gas-utils')
-const { createStubedProvider, createEthJsQueryStub } = require('../stub/provider')
+const { createStubedProvider } = require('../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
@@ -30,10 +31,7 @@ describe('Transaction Controller', function () {
         resolve()
       }),
     })
-    txController.query = createEthJsQueryStub(provider)
-    txController.txGasUtil.query = createEthJsQueryStub(provider)
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
-    txController.txProviderUtils = new TxGasUtils(txController.provider)
   })
 
   describe('#getState', function () {

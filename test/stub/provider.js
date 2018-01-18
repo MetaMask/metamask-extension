@@ -5,7 +5,6 @@ module.exports = {
   createEngineForTestData,
   providerFromEngine,
   scaffoldMiddleware,
-  createEthJsQueryStub,
   createStubedProvider,
 }
 
@@ -17,18 +16,6 @@ function createEngineForTestData () {
 function providerFromEngine (engine) {
   const provider = { sendAsync: engine.handle.bind(engine) }
   return provider
-}
-
-function createEthJsQueryStub (stubProvider) {
-  return new Proxy({}, {
-    get: (obj, method) => {
-      return (...params) => {
-        return new Promise((resolve, reject) => {
-          stubProvider.sendAsync({ method: `eth_${method}`, params }, (err, ress) => resolve(ress.result))
-        })
-      }
-    },
-  })
 }
 
 function createStubedProvider (resultStub) {
