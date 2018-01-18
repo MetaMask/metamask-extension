@@ -32,6 +32,7 @@ module.exports = class TxGasUtil {
         txMeta.simulationFails = true
         return txMeta
       }
+      throw err
     }
     this.setTxGas(txMeta, block.gasLimit, estimatedGasHex)
     return txMeta

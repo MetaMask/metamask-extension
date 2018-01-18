@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Mark transactions as failed when gas estimation fails for unknown reasons.
+
 ## 3.13.5 2018-1-16
 
 - Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.

@@ -195,12 +195,13 @@ module.exports = class TransactionController extends EventEmitter {
     // add default tx params
     try {
       await this.addTxDefaults(txMeta)
-    } catch (error) {
-      console.log(error)
-      this.txStateManager.setTxStatusFailed(txMeta.id, error)
-      throw error
+      txMeta.loadingDefaults = false
+    } catch (err) {
+      txMeta.loadingDefaults = false
+      this.txStateManager.setTxStatusFailed(txMeta.id, err)
+      throw err
     }
-    txMeta.loadingDefaults = false
+
     // save txMeta
     this.txStateManager.updateTx(txMeta)
 
