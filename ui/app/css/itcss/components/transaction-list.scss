@@ -73,7 +73,7 @@
   }
 
   @media screen and (min-width: $break-large) {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
 }
 
@@ -91,21 +91,13 @@
 }
 
 .tx-list-date-wrapper {
+  margin-top: 6px;
   flex: 1 1 auto;
-
-  @media screen and (max-width: $break-small) {
-    margin-top: 6px;
-  }
-
-  @media screen and (min-width: $break-large) {
-    margin-top: 12px;
-  }
 }
 
 .tx-list-content-wrapper {
   align-items: stretch;
   margin-bottom: 4px;
-  margin-top: 2px;
   flex: 1 0 auto;
   width: 100%;
   display: flex;
@@ -115,7 +107,7 @@
     font-size: 12px;
 
     .tx-list-status {
-      font-size: 14px !important;
+      font-size: 12px !important;
     }
 
     .tx-list-account {
@@ -129,7 +121,7 @@
 
     .tx-list-fiat-value {
       font-size: 12px;
-      line-height: 16px;
+      line-height: 22px;
     }
   }
 }
@@ -259,6 +251,8 @@
 }
 
 .tx-list-fiat-value {
+  font-size: 12px;
+  line-height: initial;
   text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
