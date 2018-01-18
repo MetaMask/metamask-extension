@@ -40,6 +40,8 @@ $wallet-view-bg: $alabaster;
 
 .open-in-browser {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 
 // wallet view and sidebar
