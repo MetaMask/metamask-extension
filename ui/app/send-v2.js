@@ -161,14 +161,14 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
     network: prevNetwork,
   } = prevProps
 
-  const unitialized = [prevBalance, prevGasTotal].every(n => n === null)
+  const uninitialized = [prevBalance, prevGasTotal].every(n => n === null)
 
   const balanceHasChanged = balance !== prevBalance
   const gasTotalHasChange = gasTotal !== prevGasTotal
   const tokenBalanceHasChanged = selectedToken && tokenBalance !== prevTokenBalance
   const amountValidationChange = balanceHasChanged || gasTotalHasChange || tokenBalanceHasChanged
 
-  if (!unitialized) {
+  if (!uninitialized) {
     if (amountValidationChange) {
       this.validateAmount(amount)
     }
