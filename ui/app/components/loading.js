@@ -11,7 +11,7 @@ function LoadingIndicator () {
 }
 
 LoadingIndicator.prototype.render = function () {
-  const { isLoading, loadingMessage } = this.props
+  const { isLoading, loadingMessage, canBypass, bypass } = this.props
 
   return (
     isLoading ? h('.full-flex-height', {
@@ -28,6 +28,16 @@ LoadingIndicator.prototype.render = function () {
         background: 'rgba(255, 255, 255, 0.8)',
       },
     }, [
+      canBypass ? h( 'i.fa.fa-close.cursor-pointer.close-loading', {
+        style: {
+          position: 'absolute',
+          top: '1px',
+          right: '15px',
+          color: '#AEAEAE',
+        },
+        onClick: bypass,
+      }) : null,
+
       h('img', {
         src: 'images/loading.svg',
       }),
