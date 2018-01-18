@@ -70,6 +70,7 @@
     "ensnare": "^1.0.0",
     "eslint-plugin-react": "^7.4.0",
     "eth-bin-to-ops": "^1.0.1",
+    "eth-block-tracker": "^2.3.0",
     "eth-contract-metadata": "^1.1.4",
     "eth-json-rpc-filters": "^1.2.5",
     "eth-json-rpc-infura": "^2.0.5",
