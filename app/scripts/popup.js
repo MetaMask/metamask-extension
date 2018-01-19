@@ -8,9 +8,18 @@ const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
+const setupRaven = require('./setupRaven')
 
 // create platform global
 global.platform = new ExtensionPlatform()
+
+// setup sentry error reporting
+const release = global.platform.getVersion()
+setupRaven({ release })
+
+// inject css
+// const css = MetaMaskUiCss()
+// injectCss(css)
 
 // identify window type (popup, notification)
 const windowType = isPopupOrNotification()

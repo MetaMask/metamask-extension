@@ -43,6 +43,28 @@ module.exports = class TransactionController extends EventEmitter {
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
     })
+
+    this.txStateManager.getFilteredTxList({
+      status: 'unapproved',
+      loadingDefaults: true,
+    }).forEach((tx) => {
+      this.addTxDefaults(tx)
+      .then((txMeta) => {
+        txMeta.loadingDefaults = false
+        this.txStateManager.updateTx(txMeta, 'transactions: gas estimation for tx on boot')
+      }).catch((error) => {
+        this.txStateManager.setTxStatusFailed(tx.id, error)
+      })
+    })
+
+    this.txStateManager.getFilteredTxList({
+      status: 'approved',
+    }).forEach((txMeta) => {
+      const txSignError = new Error('Transaction found as "approved" during boot - possibly stuck during signing')
+      this.txStateManager.setTxStatusFailed(txMeta.id, txSignError)
+    })
+
+
     this.store = this.txStateManager.store
     this.txStateManager.on('tx:status-update', this.emit.bind(this, 'tx:status-update'))
     this.nonceTracker = new NonceTracker({
@@ -171,11 +193,17 @@ module.exports = class TransactionController extends EventEmitter {
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
-    await this.addTxDefaults(txMeta)
-
+    try {
+      await this.addTxDefaults(txMeta)
+    } catch (error) {
+      console.log(error)
+      this.txStateManager.setTxStatusFailed(txMeta.id, error)
+      throw error
+    }
     txMeta.loadingDefaults = false
     // save txMeta
     this.txStateManager.updateTx(txMeta)
+
     return txMeta
   }
 
