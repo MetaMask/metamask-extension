@@ -333,6 +333,8 @@ class Settings extends Component {
   }
 
   renderInfoContent () {
+    const version = global.platform.getVersion()
+
     return (
       h('div.settings__content', [
         h('div.settings__content-row', [
@@ -340,7 +342,7 @@ class Settings extends Component {
             this.renderLogo(),
             h('div.settings__info-item', [
               h('div.settings__info-version-header', 'MetaMask Version'),
-              h('div.settings__info-version-number', '4.0.0'),
+              h('div.settings__info-version-number', version),
             ]),
             h('div.settings__info-item', [
               h(
