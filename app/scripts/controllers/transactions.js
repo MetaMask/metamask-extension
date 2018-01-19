@@ -8,6 +8,7 @@ const TxGasUtil = require('../lib/tx-gas-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
+const extend = require('xtend')
 
 /*
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -178,7 +179,7 @@ module.exports = class TransactionController extends EventEmitter {
     })
   }
 
-  async addUnapprovedTransaction (txParams) {
+  async addUnapprovedTransaction (txParams, lastGasPrice = false) {
     // validate
     await this.txGasUtil.validateTxParams(txParams)
     // construct txMeta
@@ -190,6 +191,11 @@ module.exports = class TransactionController extends EventEmitter {
       txParams: txParams,
       loadingDefaults: true,
     }
+
+    if (lastGasPrice) {
+      txMeta.lastGasPrice = lastGasPrice
+    }
+
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
@@ -223,10 +229,10 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   async retryTransaction (txId) {
-    this.txStateManager.setTxStatusUnapproved(txId)
-    const txMeta = this.txStateManager.getTx(txId)
-    txMeta.lastGasPrice = txMeta.txParams.gasPrice
-    this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
+    const oldTxMeta = this.txStateManager.getTx(txId)
+    const txParams = extend(oldTxMeta.txParams, {})
+    const lastGasPrice = txParams.gasPrice
+    return this.addUnapprovedTransaction(txParams, lastGasPrice)
   }
 
   async updateAndApproveTransaction (txMeta) {

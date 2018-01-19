@@ -620,9 +620,9 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
+    const txMeta = await this.txController.retryTransaction(txId)
     const state = await this.getState()
-    return state
+    return { txMeta, state }
   }
 
 
