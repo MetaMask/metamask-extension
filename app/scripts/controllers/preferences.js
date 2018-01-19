@@ -9,10 +9,20 @@ class PreferencesController {
       frequentRpcList: [],
       currentAccountTab: 'history',
       tokens: [],
+      useBlockie: false,
+      featureFlags: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
 // PUBLIC METHODS
+
+  setUseBlockie (val) {
+    this.store.updateState({ useBlockie: val })
+  }
+
+  getUseBlockie () {
+    return this.store.getState().useBlockie
+  }
 
   setSelectedAddress (_address) {
     return new Promise((resolve, reject) => {
@@ -43,6 +53,17 @@ class PreferencesController {
     }
 
     this.store.updateState({ tokens })
+
+    return Promise.resolve(tokens)
+  }
+
+  removeToken (rawAddress) {
+    const tokens = this.store.getState().tokens
+
+    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
+
+    this.store.updateState({ tokens: updatedTokens })
+    return Promise.resolve(updatedTokens)
   }
 
   getTokens () {
@@ -81,6 +102,22 @@ class PreferencesController {
 
   getFrequentRpcList () {
     return this.store.getState().frequentRpcList
+  }
+
+  setFeatureFlag (feature, activated) {
+    const currentFeatureFlags = this.store.getState().featureFlags
+    const updatedFeatureFlags = {
+      ...currentFeatureFlags,
+      [feature]: activated,
+    }
+
+    this.store.updateState({ featureFlags: updatedFeatureFlags })
+
+    return Promise.resolve(updatedFeatureFlags)
+  }
+
+  getFeatureFlags () {
+    return this.store.getState().featureFlags
   }
   //
   // PRIVATE METHODS

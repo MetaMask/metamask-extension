@@ -23,7 +23,9 @@ function createBundle (entryPoint) {
     cache: {},
     packageCache: {},
     plugin: [watchify],
-  }).transform('babelify')
+  })
+    .transform('babelify')
+    .transform('uglifyify', { global: true })
 
   bundler.on('update', bundle)
   bundle()

@@ -1,10 +1,28 @@
+const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+const { getTokenAddressFromTokenObject } = require('./util')
+const ethUtil = require('ethereumjs-util')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
 
   GO_HOME: 'GO_HOME',
   goHome: goHome,
+  // modal state
+  MODAL_OPEN: 'UI_MODAL_OPEN',
+  MODAL_CLOSE: 'UI_MODAL_CLOSE',
+  showModal: showModal,
+  hideModal: hideModal,
+  // sidebar state
+  SIDEBAR_OPEN: 'UI_SIDEBAR_OPEN',
+  SIDEBAR_CLOSE: 'UI_SIDEBAR_CLOSE',
+  showSidebar: showSidebar,
+  hideSidebar: hideSidebar,
+  // network dropdown open
+  NETWORK_DROPDOWN_OPEN: 'UI_NETWORK_DROPDOWN_OPEN',
+  NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
+  showNetworkDropdown: showNetworkDropdown,
+  hideNetworkDropdown: hideNetworkDropdown,
   // menu state
   getNetworkStatus: 'getNetworkStatus',
   // transition state
@@ -33,12 +51,16 @@ var actions = {
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
+  SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
+  SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
   showImportPage,
+  showNewAccountPage,
+  setNewAccountForm,
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
@@ -68,6 +90,8 @@ var actions = {
   hideWarning: hideWarning,
   // accounts screen
   SET_SELECTED_ACCOUNT: 'SET_SELECTED_ACCOUNT',
+  SET_SELECTED_TOKEN: 'SET_SELECTED_TOKEN',
+  setSelectedToken,
   SHOW_ACCOUNT_DETAIL: 'SHOW_ACCOUNT_DETAIL',
   SHOW_ACCOUNTS_PAGE: 'SHOW_ACCOUNTS_PAGE',
   SHOW_CONF_TX_PAGE: 'SHOW_CONF_TX_PAGE',
@@ -78,6 +102,8 @@ var actions = {
   // account detail screen
   SHOW_SEND_PAGE: 'SHOW_SEND_PAGE',
   showSendPage: showSendPage,
+  SHOW_SEND_TOKEN_PAGE: 'SHOW_SEND_TOKEN_PAGE',
+  showSendTokenPage,
   ADD_TO_ADDRESS_BOOK: 'ADD_TO_ADDRESS_BOOK',
   addToAddressBook: addToAddressBook,
   REQUEST_ACCOUNT_EXPORT: 'REQUEST_ACCOUNT_EXPORT',
@@ -86,6 +112,7 @@ var actions = {
   exportAccount: exportAccount,
   SHOW_PRIVATE_KEY: 'SHOW_PRIVATE_KEY',
   showPrivateKey: showPrivateKey,
+  exportAccountComplete,
   SAVE_ACCOUNT_LABEL: 'SAVE_ACCOUNT_LABEL',
   saveAccountLabel: saveAccountLabel,
   // tx conf screen
@@ -93,22 +120,57 @@ var actions = {
   TRANSACTION_ERROR: 'TRANSACTION_ERROR',
   NEXT_TX: 'NEXT_TX',
   PREVIOUS_TX: 'PREV_TX',
+  EDIT_TX: 'EDIT_TX',
   signMsg: signMsg,
   cancelMsg: cancelMsg,
   signPersonalMsg,
   cancelPersonalMsg,
   signTypedMsg,
   cancelTypedMsg,
+  sendTx: sendTx,
   signTx: signTx,
+  signTokenTx: signTokenTx,
+  updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
   txError: txError,
   nextTx: nextTx,
+  editTx,
   previousTx: previousTx,
   cancelAllTx: cancelAllTx,
   viewPendingTx: viewPendingTx,
   VIEW_PENDING_TX: 'VIEW_PENDING_TX',
+  updateTransactionParams,
+  UPDATE_TRANSACTION_PARAMS: 'UPDATE_TRANSACTION_PARAMS',
+  // send screen
+  estimateGas,
+  getGasPrice,
+  UPDATE_GAS_LIMIT: 'UPDATE_GAS_LIMIT',
+  UPDATE_GAS_PRICE: 'UPDATE_GAS_PRICE',
+  UPDATE_GAS_TOTAL: 'UPDATE_GAS_TOTAL',
+  UPDATE_SEND_FROM: 'UPDATE_SEND_FROM',
+  UPDATE_SEND_TOKEN_BALANCE: 'UPDATE_SEND_TOKEN_BALANCE',
+  UPDATE_SEND_TO: 'UPDATE_SEND_TO',
+  UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
+  UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
+  UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
+  UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
+  UPDATE_SEND: 'UPDATE_SEND',
+  CLEAR_SEND: 'CLEAR_SEND',
+  updateGasLimit,
+  updateGasPrice,
+  updateGasTotal,
+  updateSendTokenBalance,
+  updateSendFrom,
+  updateSendTo,
+  updateSendAmount,
+  updateSendMemo,
+  updateSendErrors,
+  setMaxModeTo,
+  updateSend,
+  clearSend,
+  setSelectedAddress,
   // app messages
   confirmSeedWords: confirmSeedWords,
   showAccountDetail: showAccountDetail,
@@ -125,8 +187,13 @@ var actions = {
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   showAddTokenPage,
   addToken,
+  addTokens,
+  removeToken,
+  updateTokens,
+  UPDATE_TOKENS: 'UPDATE_TOKENS',
   setRpcTarget: setRpcTarget,
   setProviderType: setProviderType,
+  updateProviderType,
   // loading overlay
   SHOW_LOADING: 'SHOW_LOADING_INDICATION',
   HIDE_LOADING: 'HIDE_LOADING_INDICATION',
@@ -144,6 +211,8 @@ var actions = {
   coinBaseSubview: coinBaseSubview,
   SHAPESHIFT_SUBVIEW: 'SHAPESHIFT_SUBVIEW',
   shapeShiftSubview: shapeShiftSubview,
+  UPDATE_TOKEN_EXCHANGE_RATE: 'UPDATE_TOKEN_EXCHANGE_RATE',
+  updateTokenExchangeRate,
   PAIR_UPDATE: 'PAIR_UPDATE',
   pairUpdate: pairUpdate,
   coinShiftRquest: coinShiftRquest,
@@ -168,6 +237,25 @@ var actions = {
 
   callBackgroundThenUpdate,
   forceUpdateMetamaskState,
+
+  TOGGLE_ACCOUNT_MENU: 'TOGGLE_ACCOUNT_MENU',
+  toggleAccountMenu,
+
+  useEtherscanProvider,
+
+  SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
+  setUseBlockie,
+
+  // Feature Flags
+  setFeatureFlag,
+  updateFeatureFlags,
+  UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
+
+  // Network
+  setNetworkEndpoints,
+  updateNetworkEndpointType,
+  UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
+
   retryTransaction,
 }
 
@@ -357,7 +445,24 @@ function navigateToNewAccountScreen () {
 
 function addNewAccount () {
   log.debug(`background.addNewAccount`)
-  return callBackgroundThenUpdate(background.addNewAccount)
+  return (dispatch, getState) => {
+    const oldIdentities = getState().metamask.identities
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.addNewAccount((err, { identities: newIdentities}) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        const newAccountAddress = Object.keys(newIdentities).find(address => !oldIdentities[address])
+
+        dispatch(actions.hideLoadingIndication())
+
+        forceUpdateMetamaskState(dispatch)
+        return resolve(newAccountAddress)
+      })
+    })
+  }
 }
 
 function showInfoPage () {
@@ -368,16 +473,16 @@ function showInfoPage () {
 
 function setCurrentCurrency (currencyCode) {
   return (dispatch) => {
-    dispatch(this.showLoadingIndication())
+    dispatch(actions.showLoadingIndication())
     log.debug(`background.setCurrentCurrency`)
     background.setCurrentCurrency(currencyCode, (err, data) => {
-      dispatch(this.hideLoadingIndication())
+      dispatch(actions.hideLoadingIndication())
       if (err) {
         log.error(err.stack)
         return dispatch(actions.displayWarning(err.message))
       }
       dispatch({
-        type: this.SET_CURRENT_FIAT,
+        type: actions.SET_CURRENT_FIAT,
         value: {
           currentCurrency: data.currentCurrency,
           conversionRate: data.conversionRate,
@@ -450,10 +555,170 @@ function signTx (txData) {
     dispatch(actions.showLoadingIndication())
     global.ethQuery.sendTransaction(txData, (err, data) => {
       dispatch(actions.hideLoadingIndication())
-      if (err) dispatch(actions.displayWarning(err.message))
-      dispatch(this.goHome())
+      if (err) return dispatch(actions.displayWarning(err.message))
+      dispatch(actions.hideWarning())
     })
-    dispatch(actions.showConfTxPage())
+    dispatch(actions.showConfTxPage({}))
+  }
+}
+
+function estimateGas (params = {}) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.estimateGas(params, (err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        dispatch(actions.updateGasLimit(data))
+        return resolve(data)
+      })
+    })
+  }
+}
+
+function updateGasLimit (gasLimit) {
+  return {
+    type: actions.UPDATE_GAS_LIMIT,
+    value: gasLimit,
+  }
+}
+
+function getGasPrice () {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      global.ethQuery.gasPrice((err, data) => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.hideWarning())
+        dispatch(actions.updateGasPrice(data))
+        return resolve(data)
+      })
+    })
+  }
+}
+
+function updateGasPrice (gasPrice) {
+  return {
+    type: actions.UPDATE_GAS_PRICE,
+    value: gasPrice,
+  }
+}
+
+function updateGasTotal (gasTotal) {
+  return {
+    type: actions.UPDATE_GAS_TOTAL,
+    value: gasTotal,
+  }
+}
+
+function updateSendTokenBalance (tokenBalance) {
+  return {
+    type: actions.UPDATE_SEND_TOKEN_BALANCE,
+    value: tokenBalance,
+  }
+}
+
+function updateSendFrom (from) {
+  return {
+    type: actions.UPDATE_SEND_FROM,
+    value: from,
+  }
+}
+
+function updateSendTo (to) {
+  return {
+    type: actions.UPDATE_SEND_TO,
+    value: to,
+  }
+}
+
+function updateSendAmount (amount) {
+  return {
+    type: actions.UPDATE_SEND_AMOUNT,
+    value: amount,
+  }
+}
+
+function updateSendMemo (memo) {
+  return {
+    type: actions.UPDATE_SEND_MEMO,
+    value: memo,
+  }
+}
+
+function updateSendErrors (error) {
+  return {
+    type: actions.UPDATE_SEND_ERRORS,
+    value: error,
+  }
+}
+
+function setMaxModeTo (bool) {
+  return {
+    type: actions.UPDATE_MAX_MODE,
+    value: bool,
+  }
+}
+
+function updateSend (newSend) {
+  return {
+    type: actions.UPDATE_SEND,
+    value: newSend,
+  }
+}
+
+function clearSend () {
+  return {
+    type: actions.CLEAR_SEND,
+  }
+}
+
+
+function sendTx (txData) {
+  log.info(`actions - sendTx: ${JSON.stringify(txData.txParams)}`)
+  return (dispatch) => {
+    log.debug(`actions calling background.approveTransaction`)
+    background.approveTransaction(txData.id, (err) => {
+      if (err) {
+        dispatch(actions.txError(err))
+        return log.error(err.message)
+      }
+      dispatch(actions.completedTx(txData.id))
+    })
+  }
+}
+
+function signTokenTx (tokenAddress, toAddress, amount, txData) {
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+    const token = global.eth.contract(abi).at(tokenAddress)
+    token.transfer(toAddress, ethUtil.addHexPrefix(amount), txData)
+      .catch(err => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch(actions.displayWarning(err.message))
+      })
+    dispatch(actions.showConfTxPage({}))
+  }
+}
+
+function updateTransaction (txData) {
+  log.info('actions: updateTx: ' + JSON.stringify(txData))
+  return (dispatch) => {
+    log.debug(`actions calling background.updateTx`)
+    background.updateTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      if (err) {
+        dispatch(actions.txError(err))
+        dispatch(actions.goHome())
+        return log.error(err.message)
+      }
+      dispatch(actions.showConfTxPage({ id: txData.id }))
+    })
   }
 }
 
@@ -463,6 +728,8 @@ function updateAndApproveTx (txData) {
     log.debug(`actions calling background.updateAndApproveTx`)
     background.updateAndApproveTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      dispatch(actions.clearSend())
       if (err) {
         dispatch(actions.txError(err))
         dispatch(actions.goHome())
@@ -477,6 +744,14 @@ function completedTx (id) {
   return {
     type: actions.COMPLETED_TX,
     value: id,
+  }
+}
+
+function updateTransactionParams (id, txParams) {
+  return {
+    type: actions.UPDATE_TRANSACTION_PARAMS,
+    id,
+    value: txParams,
   }
 }
 
@@ -509,6 +784,7 @@ function cancelTx (txData) {
   return (dispatch) => {
     log.debug(`background.cancelTransaction`)
     background.cancelTransaction(txData.id, () => {
+      dispatch(actions.clearSend())
       dispatch(actions.completedTx(txData.id))
     })
   }
@@ -555,6 +831,20 @@ function showInitializeMenu () {
 function showImportPage () {
   return {
     type: actions.SHOW_IMPORT_PAGE,
+  }
+}
+
+function showNewAccountPage (formToSelect) {
+  return {
+    type: actions.SHOW_NEW_ACCOUNT_PAGE,
+    formToSelect,
+  }
+}
+
+function setNewAccountForm (formToSelect) {
+  return {
+    type: actions.SET_NEW_ACCOUNT_FORM,
+    formToSelect,
   }
 }
 
@@ -614,14 +904,79 @@ function updateMetamaskState (newState) {
   }
 }
 
+const backgroundSetLocked = () => {
+  return new Promise((resolve, reject) => {
+    background.setLocked(error => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+const updateMetamaskStateFromBackground = () => {
+  log.debug(`background.getState`)
+
+  return new Promise((resolve, reject) => {
+    background.getState((error, newState) => {
+      if (error) {
+        return reject(error)
+      }
+
+      resolve(newState)
+    })
+  })
+}
+
 function lockMetamask () {
   log.debug(`background.setLocked`)
-  return callBackgroundThenUpdate(background.setLocked)
+
+  return dispatch => {
+    dispatch(actions.showLoadingIndication())
+
+    return backgroundSetLocked()
+      .then(() => updateMetamaskStateFromBackground())
+      .catch(error => {
+        dispatch(actions.displayWarning(error.message))
+        return Promise.reject(error)
+      })
+      .then(newState => {
+        dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
+      .catch(() => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
+  }
 }
 
 function setCurrentAccountTab (newTabName) {
   log.debug(`background.setCurrentAccountTab: ${newTabName}`)
   return callBackgroundThenUpdateNoSpinner(background.setCurrentAccountTab, newTabName)
+}
+
+function setSelectedToken (tokenAddress) {
+  return {
+    type: actions.SET_SELECTED_TOKEN,
+    value: tokenAddress || null,
+  }
+}
+
+function setSelectedAddress (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setSelectedAddress`)
+    background.setSelectedAddress(address, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+  }
 }
 
 function showAccountDetail (address) {
@@ -637,6 +992,7 @@ function showAccountDetail (address) {
         type: actions.SHOW_ACCOUNT_DETAIL,
         value: address,
       })
+      dispatch(actions.setSelectedToken())
     })
   }
 }
@@ -654,10 +1010,11 @@ function showAccountsPage () {
   }
 }
 
-function showConfTxPage (transForward = true) {
+function showConfTxPage ({transForward = true, id}) {
   return {
     type: actions.SHOW_CONF_TX_PAGE,
-    transForward: transForward,
+    transForward,
+    id,
   }
 }
 
@@ -680,6 +1037,13 @@ function previousTx () {
   }
 }
 
+function editTx (txId) {
+  return {
+    type: actions.EDIT_TX,
+    value: txId,
+  }
+}
+
 function showConfigPage (transitionForward = true) {
   return {
     type: actions.SHOW_CONFIG_PAGE,
@@ -697,15 +1061,61 @@ function showAddTokenPage (transitionForward = true) {
 function addToken (address, symbol, decimals) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    background.addToken(address, symbol, decimals, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      setTimeout(() => {
-        dispatch(actions.goHome())
-      }, 250)
+    return new Promise((resolve, reject) => {
+      background.addToken(address, symbol, decimals, (err, tokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateTokens(tokens))
+        resolve(tokens)
+      })
     })
+  }
+}
+
+function removeToken (address) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.removeToken(address, (err, tokens) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+        dispatch(actions.updateTokens(tokens))
+        resolve(tokens)
+      })
+    })
+  }
+}
+
+function addTokens (tokens) {
+  return dispatch => {
+    if (Array.isArray(tokens)) {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
+      return Promise.all(tokens.map(({ address, symbol, decimals }) => (
+        dispatch(addToken(address, symbol, decimals))
+      )))
+    } else {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
+      return Promise.all(
+        Object
+        .entries(tokens)
+        .map(([_, { address, symbol, decimals }]) => (
+          dispatch(addToken(address, symbol, decimals))
+        ))
+      )
+    }
+  }
+}
+
+function updateTokens (newTokens) {
+  return {
+    type: actions.UPDATE_TOKENS,
+    newTokens,
   }
 }
 
@@ -785,11 +1195,17 @@ function setProviderType (type) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.updateProviderType(type))
+      dispatch(actions.setSelectedToken())
     })
-    return {
-      type: actions.SET_PROVIDER_TYPE,
-      value: type,
-    }
+
+  }
+}
+
+function updateProviderType (type) {
+  return {
+    type: actions.SET_PROVIDER_TYPE,
+    value: type,
   }
 }
 
@@ -806,7 +1222,7 @@ function setRpcTarget (newRpc) {
 }
 
 // Calls the addressBookController to add a new address.
-function addToAddressBook (recipient, nickname) {
+function addToAddressBook (recipient, nickname = '') {
   log.debug(`background.addToAddressBook`)
   return (dispatch) => {
     background.setAddressBook(recipient, nickname, (err, result) => {
@@ -817,6 +1233,54 @@ function addToAddressBook (recipient, nickname) {
     })
   }
 }
+
+function useEtherscanProvider () {
+  log.debug(`background.useEtherscanProvider`)
+  background.useEtherscanProvider()
+  return {
+    type: actions.USE_ETHERSCAN_PROVIDER,
+  }
+}
+
+function showNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_OPEN,
+  }
+}
+
+function hideNetworkDropdown () {
+  return {
+    type: actions.NETWORK_DROPDOWN_CLOSE,
+  }
+}
+
+
+function showModal (payload) {
+  return {
+    type: actions.MODAL_OPEN,
+    payload,
+  }
+}
+
+function hideModal (payload) {
+  return {
+    type: actions.MODAL_CLOSE,
+    payload,
+  }
+}
+
+function showSidebar () {
+  return {
+    type: actions.SIDEBAR_OPEN,
+  }
+}
+
+function hideSidebar () {
+  return {
+    type: actions.SIDEBAR_CLOSE,
+  }
+}
+
 
 function showLoadingIndication (message) {
   return {
@@ -869,24 +1333,37 @@ function exportAccount (password, address) {
     dispatch(self.showLoadingIndication())
 
     log.debug(`background.submitPassword`)
-    background.submitPassword(password, function (err) {
-      if (err) {
-        log.error('Error in submiting password.')
-        dispatch(self.hideLoadingIndication())
-        return dispatch(self.displayWarning('Incorrect Password.'))
-      }
-      log.debug(`background.exportAccount`)
-      background.exportAccount(address, function (err, result) {
-        dispatch(self.hideLoadingIndication())
-
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, function (err) {
         if (err) {
-          log.error(err)
-          return dispatch(self.displayWarning('Had a problem exporting the account.'))
+          log.error('Error in submiting password.')
+          dispatch(self.hideLoadingIndication())
+          dispatch(self.displayWarning('Incorrect Password.'))
+          return reject(err)
         }
+        log.debug(`background.exportAccount`)
+        return background.exportAccount(address, function (err, result) {
+          dispatch(self.hideLoadingIndication())
 
-        dispatch(self.showPrivateKey(result))
+          if (err) {
+            log.error(err)
+            dispatch(self.displayWarning('Had a problem exporting the account.'))
+            return reject(err)
+          }
+
+          // dispatch(self.exportAccountComplete())
+          dispatch(self.showPrivateKey(result))
+
+          return resolve(result)
+        })
       })
     })
+  }
+}
+
+function exportAccountComplete () {
+  return {
+    type: actions.EXPORT_ACCOUNT,
   }
 }
 
@@ -901,14 +1378,22 @@ function saveAccountLabel (account, label) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.saveAccountLabel`)
-    background.saveAccountLabel(account, label, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      dispatch({
-        type: actions.SAVE_ACCOUNT_LABEL,
-        value: { account, label },
+
+    return new Promise((resolve, reject) => {
+      background.saveAccountLabel(account, label, (err) => {
+        dispatch(actions.hideLoadingIndication())
+
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          reject(err)
+        }
+
+        dispatch({
+          type: actions.SAVE_ACCOUNT_LABEL,
+          value: { account, label },
+        })
+
+        resolve(account)
       })
     })
   }
@@ -917,6 +1402,12 @@ function saveAccountLabel (account, label) {
 function showSendPage () {
   return {
     type: actions.SHOW_SEND_PAGE,
+  }
+}
+
+function showSendTokenPage () {
+  return {
+    type: actions.SHOW_SEND_TOKEN_PAGE,
   }
 }
 
@@ -968,7 +1459,6 @@ function pairUpdate (coin) {
 
 function shapeShiftSubview (network) {
   var pair = 'btc_eth'
-
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
@@ -994,7 +1484,7 @@ function coinShiftRquest (data, marketData) {
       dispatch(actions.hideLoadingIndication())
       if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
-        Deposit your ${response.depositType} to the address bellow:`
+        Deposit your ${response.depositType} to the address below:`
       log.debug(`background.createShapeShiftTx`)
       background.createShapeShiftTx(response.deposit, response.depositType)
       dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
@@ -1030,13 +1520,17 @@ function reshowQrCode (data, coin) {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
 
       var message = [
-        `Deposit your ${coin} to the address bellow:`,
+        `Deposit your ${coin} to the address below:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
       ]
 
       dispatch(actions.hideLoadingIndication())
       return dispatch(actions.showQrView(data, message))
+      // return dispatch(actions.showModal({
+      //   name: 'SHAPESHIFT_DEPOSIT_TX',
+      //   Qr: { data, message },
+      // }))
     })
   }
 }
@@ -1067,6 +1561,53 @@ function shapeShiftRequest (query, options, cb) {
     return shapShiftReq.send(jsonObj)
   } else {
     return shapShiftReq.send()
+  }
+}
+
+function updateTokenExchangeRate (token = '') {
+  const pair = `${token.toLowerCase()}_eth`
+
+  return dispatch => {
+    if (!token) {
+      return
+    }
+
+    shapeShiftRequest('marketinfo', { pair }, marketinfo => {
+      if (!marketinfo.error) {
+        dispatch({
+          type: actions.UPDATE_TOKEN_EXCHANGE_RATE,
+          payload: {
+            pair,
+            marketinfo,
+          },
+        })
+      }
+    })
+  }
+}
+
+function setFeatureFlag (feature, activated, notificationType) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return new Promise((resolve, reject) => {
+      background.setFeatureFlag(feature, activated, (err, updatedFeatureFlags) => {
+        dispatch(actions.hideLoadingIndication())
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+        dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
+        notificationType && dispatch(actions.showModal({ name: notificationType }))
+        resolve(updatedFeatureFlags)
+      })
+    })
+  }
+}
+
+function updateFeatureFlags (updatedFeatureFlags) {
+  return {
+    type: actions.UPDATE_FEATURE_FLAGS,
+    value: updatedFeatureFlags,
   }
 }
 
@@ -1110,4 +1651,51 @@ function forceUpdateMetamaskState (dispatch) {
     }
     dispatch(actions.updateMetamaskState(newState))
   })
+}
+
+function toggleAccountMenu () {
+  return {
+    type: actions.TOGGLE_ACCOUNT_MENU,
+  }
+}
+
+function setUseBlockie (val) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.setUseBlockie`)
+    background.setUseBlockie(val, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+    })
+    dispatch({
+      type: actions.SET_USE_BLOCKIE,
+      value: val,
+    })
+  }
+}
+
+function setNetworkEndpoints (networkEndpointType) {
+  return dispatch => {
+    log.debug('background.setNetworkEndpoints')
+    return new Promise((resolve, reject) => {
+      background.setNetworkEndpoints(networkEndpointType, err => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
+        resolve(networkEndpointType)
+      })
+    })
+  }
+}
+
+function updateNetworkEndpointType (networkEndpointType) {
+  return {
+    type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
+    value: networkEndpointType,
+  }
 }
