@@ -118,7 +118,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       // ignore resubmit warnings, return early
       if (isKnownTx) return
       // encountered real error - transition to error state
-      txMeta.warning = {
+      txMeta.err = {
         error: errorMessage,
         message: 'There was an error when resubmitting this transaction.',
       }
