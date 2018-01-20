@@ -30,8 +30,9 @@ function TransactionListItem () {
 
 TransactionListItem.prototype.showRetryButton = function () {
   const { transaction = {} } = this.props
-  const { status, time } = transaction
-  return status === 'submitted' && Date.now() - time > 30000
+  const { status, submitTime, time } = transaction
+  const earliest = submitTime || time
+  return status === 'submitted' && ((Date.now() - earliest) > 30000)
 }
 
 TransactionListItem.prototype.render = function () {

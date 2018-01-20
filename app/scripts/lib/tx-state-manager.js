@@ -208,6 +208,23 @@ module.exports = class TransactionStateManger extends EventEmitter {
 
   // should update the status of the tx to 'confirmed'.
   setTxStatusConfirmed (txId) {
+    const tx = this.getTx(txId)
+
+    // Clear any warnings:
+    tx.warning = undefined
+    this.updateTx(tx)
+
+    // Mark same-nonces as failed:
+    this.getTxList()
+    .filter(txMeta => txMeta.txParams.nonce === tx.txParams.nonce)
+    .filter(txMeta => txMeta.id !== tx.id)
+    .forEach((txMeta) => {
+      txMeta.err = {
+        message: 'Another transaction with this nonce was mined.',
+      }
+      this._setTxStatus(txMeta.id, 'failed')
+    })
+
     this._setTxStatus(txId, 'confirmed')
   }
 

@@ -63,12 +63,38 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     if (diff > 1) this._checkPendingTxs()
   }
 
-
   resubmitPendingTxs (block) {
-    const pending = this.getPendingTransactions()
-    // only try resubmitting if their are transactions to resubmit
-    if (!pending.length) return
-    pending.forEach((txMeta) => this._resubmitTx(txMeta, block.number).catch((err) => {
+    const pending = this.getPendingTransactions() || []
+    pending.forEach((txMeta) => this.submitTx(txMeta, block.number))
+  }
+
+  async submitTx (txMeta, latestBlockNumber) {
+    try {
+      if (!txMeta.firstRetryBlockNumber) {
+        this.emit('tx:block-update', txMeta, latestBlockNumber)
+      }
+
+      // If we have a latest block, enforce exponential backoff to limit retries:
+      if (latestBlockNumber) {
+        const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber
+        const txBlockDistance = Number.parseInt(latestBlockNumber, 16) - Number.parseInt(firstRetryBlockNumber, 16)
+
+        const retryCount = txMeta.retryCount || 0
+
+        if (txBlockDistance <= Math.pow(2, retryCount) - 1) return
+      }
+
+      // Only auto-submit already-signed txs:
+      if (!('rawTx' in txMeta)) return
+
+      const rawTx = txMeta.rawTx
+      const txHash = await this.publishTransaction(rawTx)
+
+      // Increment successful tries:
+      this.emit('tx:retry', txMeta)
+      return txHash
+
+    } catch (err) {
       /*
       Dont marked as failed if the error is a "known" transaction warning
       "there is already a transaction with the same sender-nonce
@@ -96,32 +122,9 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
         error: errorMessage,
         message: 'There was an error when resubmitting this transaction.',
       }
-      this.emit('tx:warning', txMeta, err)
-    }))
-  }
-
-  async _resubmitTx (txMeta, latestBlockNumber) {
-    if (!txMeta.firstRetryBlockNumber) {
-      this.emit('tx:block-update', txMeta, latestBlockNumber)
+      this.emit('tx:failed', txMeta, err)
+      throw err
     }
-
-    const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber
-    const txBlockDistance = Number.parseInt(latestBlockNumber, 16) - Number.parseInt(firstRetryBlockNumber, 16)
-
-    const retryCount = txMeta.retryCount || 0
-
-    // Exponential backoff to limit retries at publishing
-    if (txBlockDistance <= Math.pow(2, retryCount) - 1) return
-
-    // Only auto-submit already-signed txs:
-    if (!('rawTx' in txMeta)) return
-
-    const rawTx = txMeta.rawTx
-    const txHash = await this.publishTransaction(rawTx)
-
-    // Increment successful tries:
-    this.emit('tx:retry', txMeta)
-    return txHash
   }
 
   async _checkPendingTx (txMeta) {
@@ -171,8 +174,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     try {
       await Promise.all(signedTxList.map((txMeta) => this._checkPendingTx(txMeta)))
     } catch (err) {
-      console.error('PendingTransactionWatcher - Error updating pending transactions')
-      console.error(err)
+      log.error('PendingTransactionWatcher - Error updating pending transactions')
+      log.error(err)
     }
     nonceGlobalLock.releaseLock()
   }
