@@ -73,7 +73,7 @@
     "eth-block-tracker": "^2.3.0",
     "eth-contract-metadata": "^1.1.4",
     "eth-json-rpc-filters": "^1.2.5",
-    "eth-json-rpc-infura": "^2.0.7",
+    "eth-json-rpc-infura": "^2.0.11",
     "eth-keyring-controller": "^2.1.4",
     "eth-phishing-detect": "^1.1.4",
     "eth-query": "^2.1.2",
@@ -150,7 +150,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "^0.20.1",
-    "web3-provider-engine": "^13.5.0",
+    "web3-provider-engine": "^13.5.6",
     "web3-stream-provider": "^3.0.1",
     "xtend": "^4.0.1"
   },
