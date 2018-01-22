@@ -2,7 +2,14 @@
 
 ## Current Master
 
+## 3.13.7 2018-1-22
+
 - Add ability to bypass gas estimation loading indicator.
+- Re-add changes from 3.13.4
+
+## 3.13.6 2017-1-18
+
+- Roll back changes to 3.13.4 to fix some issues with the new Infura REST provider.
 
 ## 3.13.5 2018-1-16
 
