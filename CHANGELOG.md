@@ -3,6 +3,7 @@
 ## Current Master
 
 - Add ability to bypass gas estimation loading indicator.
+- Forward failed transactions to Sentry error reporting service
 
 ## 3.13.5 2018-1-16
 
