@@ -108,7 +108,6 @@ ConfirmTxScreen.prototype.render = function () {
     cancelPersonalMessage: this.cancelPersonalMessage.bind(this, txData),
     cancelTypedMessage: this.cancelTypedMessage.bind(this, txData),
   })
-
 }
 
 function currentTxView (opts) {
