@@ -21,4 +21,6 @@ function setupRaven(opts) {
   Raven.config(ravenTarget, {
     release,
   }).install()
+
+  return Raven
 }
