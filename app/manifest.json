@@ -60,6 +60,7 @@
     "http://localhost:8545/",
     "https://*.infura.io/"
     ],
+  "unlimitedStorage": true,
   "web_accessible_resources": [
     "scripts/inpage.js"
   ],
