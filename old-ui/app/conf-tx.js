@@ -62,8 +62,12 @@ ConfirmTxScreen.prototype.render = function () {
     h('.flex-column.flex-grow', [
 
       h(LoadingIndicator, {
-        isLoading: txData.loadingDefaults,
+        isLoading: this.state ? !this.state.bypassLoadingScreen : txData.loadingDefaults,
         loadingMessage: 'Estimating transaction cost…',
+        canBypass: true,
+        bypass: () => {
+          this.setState({bypassLoadingScreen: true})
+        },
       }),
 
       // subtitle and nav
