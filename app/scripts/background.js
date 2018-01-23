@@ -27,7 +27,7 @@ global.METAMASK_NOTIFIER = notificationManager
 
 // setup sentry error reporting
 const release = platform.getVersion()
-setupRaven({ release })
+const raven = setupRaven({ release })
 
 let popupIsOpen = false
 
@@ -76,6 +76,16 @@ function setupController (initState) {
     platform,
   })
   global.metamaskController = controller
+
+  // report failed transactions to Sentry
+  controller.txController.on(`tx:status-update`, (txId, status) => {
+    if (status !== 'failed') return
+    const txMeta = controller.txController.txStateManager.getTx(txId)
+    raven.captureMessage('Transaction Failed', {
+      // "extra" key is required by Sentry
+      extra: txMeta,
+    })
+  })
 
   // setup state persistence
   pump(

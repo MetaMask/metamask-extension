@@ -23,6 +23,7 @@ const states = require('./development/states')
 const Selector = require('./development/selector')
 const MetamaskController = require('./app/scripts/metamask-controller')
 const firstTimeState = require('./app/scripts/first-time-state')
+const ExtensionPlatform = require('./app/scripts/platforms/extension')
 const extension = require('./development/mockExtension')
 const noop = function () {}
 
@@ -67,6 +68,7 @@ const controller = new MetamaskController({
   initState: firstTimeState,
 })
 global.metamaskController = controller
+global.platform = new ExtensionPlatform
 
 //
 // User Interface

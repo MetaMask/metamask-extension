@@ -342,7 +342,7 @@ class Settings extends Component {
             this.renderLogo(),
             h('div.settings__info-item', [
               h('div.settings__info-version-header', 'MetaMask Version'),
-              h('div.settings__info-version-number', version),
+              h('div.settings__info-version-number', `${version}`),
             ]),
             h('div.settings__info-item', [
               h(
