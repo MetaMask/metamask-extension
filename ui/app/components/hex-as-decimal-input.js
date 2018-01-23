@@ -132,7 +132,7 @@ HexAsDecimalInput.prototype.constructWarning = function () {
   } else if (max) {
     message += `must be less than or equal to ${max}.`
   } else {
-    message += 'Invalid input.'
+    message += t('invalidInput')
   }
 
   return message

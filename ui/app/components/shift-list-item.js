@@ -141,7 +141,7 @@ ShiftListItem.prototype.renderInfo = function () {
             width: '100%',
           },
         }, `${props.depositType} to ETH via ShapeShift`),
-        h('div', 'No deposits received'),
+        h('div', t('noDeposits')),
         h('div', {
           style: {
             fontSize: 'x-small',
@@ -164,7 +164,7 @@ ShiftListItem.prototype.renderInfo = function () {
             width: '100%',
           },
         }, `${props.depositType} to ETH via ShapeShift`),
-        h('div', 'Conversion in progress'),
+        h('div', t('conversionProgress')),
         h('div', {
           style: {
             fontSize: 'x-small',
@@ -189,7 +189,7 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, 'From ShapeShift'),
+        }, t('fromShapeShift')),
         h('div', formatDate(props.time)),
         h('div', {
           style: {
@@ -201,7 +201,7 @@ ShiftListItem.prototype.renderInfo = function () {
       ])
 
     case 'failed':
-      return h('span.error', '(Failed)')
+      return h('span.error', '(' + t('failed') + ')')
     default:
       return ''
   }

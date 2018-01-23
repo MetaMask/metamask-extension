@@ -33,7 +33,7 @@ Network.prototype.render = function () {
       onClick: (event) => this.props.onClick(event),
     }, [
       h('img', {
-        title: 'Attempting to connect to blockchain.',
+        title: t('attemptingConnect'),
         style: {
           width: '27px',
         },
@@ -41,22 +41,22 @@ Network.prototype.render = function () {
       }),
     ])
   } else if (providerName === 'mainnet') {
-    hoverText = 'Main Ethereum Network'
+    hoverText = t('mainnet')
     iconName = 'ethereum-network'
   } else if (providerName === 'ropsten') {
-    hoverText = 'Ropsten Test Network'
+    hoverText = t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 3) {
-    hoverText = 'Ropsten Test Network'
+    hoverText = t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (providerName === 'kovan') {
-    hoverText = 'Kovan Test Network'
+    hoverText = t('kovan')
     iconName = 'kovan-test-network'
   } else if (providerName === 'rinkeby') {
-    hoverText = 'Rinkeby Test Network'
+    hoverText = t('rinkeby')
     iconName = 'rinkeby-test-network'
   } else {
-    hoverText = 'Unknown Private Network'
+    hoverText = t('unknownNetwork')
     iconName = 'unknown-private-network'
   }
 
@@ -84,7 +84,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#038789', // $blue-lagoon
                 nonSelectBackgroundColor: '#15afb2',
               }),
-              h('.network-name', 'Main Network'),
+              h('.network-name', t('mainnet')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'ropsten-test-network':
@@ -93,7 +93,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#e91550', // $crimson
                 nonSelectBackgroundColor: '#ec2c50',
               }),
-              h('.network-name', 'Ropsten Test Net'),
+              h('.network-name', t('ropsten')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'kovan-test-network':
@@ -102,7 +102,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#690496', // $purple
                 nonSelectBackgroundColor: '#b039f3',
               }),
-              h('.network-name', 'Kovan Test Net'),
+              h('.network-name', t('kovan')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'rinkeby-test-network':
@@ -111,7 +111,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#ebb33f', // $tulip-tree
                 nonSelectBackgroundColor: '#ecb23e',
               }),
-              h('.network-name', 'Rinkeby Test Net'),
+              h('.network-name', t('rinkeby')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           default:
@@ -123,7 +123,7 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name', 'Private Network'),
+              h('.network-name', t('privateNetwork')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
         }

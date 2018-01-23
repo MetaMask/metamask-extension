@@ -78,10 +78,9 @@ TransactionList.prototype.render = function () {
             style: {
               marginTop: '50px',
             },
-          }, 'No transaction history.'),
+          }, t('noTransactionHistory')),
         ]),
       ]),
     ])
   )
 }
-

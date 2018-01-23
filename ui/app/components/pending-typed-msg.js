@@ -26,7 +26,7 @@ PendingMsg.prototype.render = function () {
           fontWeight: 'bold',
           textAlign: 'center',
         },
-      }, 'Sign Message'),
+      }, t('signMessage')),
 
       // message details
       h(PendingTxDetails, state),
@@ -35,10 +35,10 @@ PendingMsg.prototype.render = function () {
       h('.flex-row.flex-space-around', [
         h('button', {
           onClick: state.cancelTypedMessage,
-        }, 'Cancel'),
+        }, t('cancelButton')),
         h('button', {
           onClick: state.signTypedMessage,
-        }, 'Sign'),
+        }, t('signButton')),
       ]),
     ])
 

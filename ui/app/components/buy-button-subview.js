@@ -76,7 +76,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Deposit Eth'),
+        }, t('depositEth')),
       ]),
 
       // loading indication
@@ -118,7 +118,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Select Service'),
+        }, t('selectService')),
       ]),
 
     ])
@@ -164,14 +164,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, 'Borrow With Dharma (Beta)')
+            }, t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', 'Unknown network ID')
+        h('h2.error', t('unknownNetworkId'))
       )
 
   }

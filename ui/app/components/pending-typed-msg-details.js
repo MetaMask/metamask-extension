@@ -45,7 +45,7 @@ PendingMsgDetails.prototype.render = function () {
           height: '260px',
         },
       }, [
-        h('label.font-small', { style: { display: 'block' } }, 'YOU ARE SIGNING'),
+        h('label.font-small', { style: { display: 'block' } }, t('youSignCaps')),
         h(TypedMessageRenderer, {
           value: data,
           style: {

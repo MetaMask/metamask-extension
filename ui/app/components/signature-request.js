@@ -54,7 +54,7 @@ SignatureRequest.prototype.renderHeader = function () {
 
     h('div.request-signature__header-background'),
 
-    h('div.request-signature__header__text', 'Signature Request'),
+    h('div.request-signature__header__text', t('sigRequest')),
 
     h('div.request-signature__header__tip-container', [
       h('div.request-signature__header__tip'),
@@ -75,7 +75,7 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
 
   return h('div.request-signature__account', [
 
-    h('div.request-signature__account-text', ['Account:']),
+    h('div.request-signature__account-text', [t('account')]),
 
     h(AccountDropdownMini, {
       selectedAccount,
@@ -102,7 +102,7 @@ SignatureRequest.prototype.renderBalance = function () {
 
   return h('div.request-signature__balance', [
 
-    h('div.request-signature__balance-text', ['Balance:']),
+    h('div.request-signature__balance-text', [t('balance')]),
 
     h('div.request-signature__balance-value', `${balanceInEther} ETH`),
 
@@ -136,7 +136,7 @@ SignatureRequest.prototype.renderRequestInfo = function () {
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
-      `Your signature is being requested`,
+      t('yourSigRequested'),
     ]),
 
   ])
@@ -154,21 +154,18 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
-  let notice = 'You are signing:'
+  let notice = t('youSign')
 
   const { txData } = this.props
   const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
-    rows = [{ name: 'Message', value: this.msgHexToText(data) }]
+    rows = [{ name: t('message'), value: this.msgHexToText(data) }]
   } else if (type === 'eth_signTypedData') {
     rows = data
   } else if (type === 'eth_sign') {
-    rows = [{ name: 'Message', value: data }]
-    notice = `Signing this message can have
-    dangerous side effects. Only sign messages from
-    sites you fully trust with your entire account.
-    This dangerous method will be removed in a future version. `
+    rows = [{ name: t('message'), value: data }]
+    notice = t('signNotice')
   }
 
   return h('div.request-signature__body', {}, [
@@ -227,10 +224,10 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.request-signature__footer__cancel-button', {
       onClick: cancel,
-    }, 'CANCEL'),
+    }, t('cancelButton')),
     h('button.request-signature__footer__sign-button', {
       onClick: sign,
-    }, 'SIGN'),
+    }, t('signButton')),
   ])
 }
 
@@ -250,4 +247,3 @@ SignatureRequest.prototype.render = function () {
   )
 
 }
-

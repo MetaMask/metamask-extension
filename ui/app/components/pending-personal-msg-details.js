@@ -45,7 +45,7 @@ PendingMsgDetails.prototype.render = function () {
           height: '260px',
         },
       }, [
-        h('label.font-small', { style: { display: 'block' } }, 'MESSAGE'),
+        h('label.font-small', { style: { display: 'block' } }, t('messageCaps')),
         h(BinaryRenderer, {
           value: data,
           style: {
@@ -57,4 +57,3 @@ PendingMsgDetails.prototype.render = function () {
     ])
   )
 }
-

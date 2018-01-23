@@ -22,7 +22,7 @@ CopyButton.prototype.render = function () {
   const value = props.value
   const copied = state.copied
 
-  const message = copied ? 'Copied' : props.title || ' Copy '
+  const message = copied ? t('copiedButton') : props.title || t('copyButton')
 
   return h('.copy-button', {
     style: {

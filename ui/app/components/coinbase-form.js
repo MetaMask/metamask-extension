@@ -37,11 +37,11 @@ CoinbaseForm.prototype.render = function () {
     }, [
       h('button.btn-green', {
         onClick: this.toCoinbase.bind(this),
-      }, 'Continue to Coinbase'),
+      }, t('continueToCoinbase')),
 
       h('button.btn-red', {
         onClick: () => props.dispatch(actions.goHome()),
-      }, 'Cancel'),
+      }, t('cancel')),
     ]),
   ])
 }

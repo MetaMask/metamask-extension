@@ -72,21 +72,21 @@ TxView.prototype.renderButtons = function () {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
-        }, 'DEPOSIT'),
+        }, t('depositButton')),
 
         h('button.btn-clear.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
           onClick: showSendPage,
-        }, 'SEND'),
+        }, t('sendButton')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-clear.hero-balance-button', {
           onClick: showSendTokenPage,
-        }, 'SEND'),
+        }, t('sendButton')),
       ])
     )
 }

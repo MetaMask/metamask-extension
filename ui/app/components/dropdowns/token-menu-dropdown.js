@@ -43,7 +43,7 @@ TokenMenuDropdown.prototype.render = function () {
             showHideTokenConfirmationModal(this.props.token)
             this.props.onClose()
           },
-        }, 'Hide Token'),
+        }, t('hideToken')),
 
       ]),
     ]),

@@ -22,7 +22,7 @@ Copyable.prototype.render = function () {
   const { copied } = state
 
   return h(Tooltip, {
-    title: copied ? 'Copied!' : 'Copy',
+    title: copied ? t('copiedExclamation') : t('copy'),
     position: 'bottom',
   }, h('span', {
     style: {
