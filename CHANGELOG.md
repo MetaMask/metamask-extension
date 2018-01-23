@@ -5,6 +5,7 @@
 ## 3.13.7 2018-1-22
 
 - Add ability to bypass gas estimation loading indicator.
+- Forward failed transactions to Sentry error reporting service
 - Re-add changes from 3.13.5
 
 ## 3.13.6 2017-1-18
