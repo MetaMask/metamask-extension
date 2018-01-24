@@ -35,6 +35,7 @@ let popupIsOpen = false
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 const localStore = new LocalStore()
+let versionedData
 
 // initialization flow
 initialize().catch(log.error)
@@ -53,7 +54,7 @@ async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
   // read from disk
-  let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
+  versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
   // fetch from extension store and merge in data
 
   if (localStore.isSupported) {
@@ -64,13 +65,24 @@ async function loadStateFromPersistence () {
       log.error('error fetching state from local store:', err)
     }
 
-    versionedData = Object.keys(localData).length > 0 ? localData : versionedData
+    console.log('Comparing localdata and versionedData')
+    console.dir({ localData })
+
+    if (Object.keys(localData).length > 0) {
+      console.log('using the local store data')
+      versionedData = localData
+    }
   }
 
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
+
   // write to disk
-  diskStore.putState(versionedData)
+  localStore.set(versionedData)
+  .catch((reason) => {
+    log.error('Problem saving migrated data', versionedData)
+  })
+
   // return just the data
   return versionedData.data
 }
@@ -107,11 +119,9 @@ function setupController (initState) {
     asStream(controller.store),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
-    asStream(diskStore)
   )
 
   function versionifyData (state) {
-    const versionedData = diskStore.getState()
     versionedData.data = state
     return versionedData
   }
@@ -119,6 +129,7 @@ function setupController (initState) {
   function syncDataWithExtension(state) {
     if (localStore.isSupported) {
       try {
+        console.log('persisting state', state)
         localStore.set(state)
       } catch (err) {
         log.error('error setting state in local store:', err)
