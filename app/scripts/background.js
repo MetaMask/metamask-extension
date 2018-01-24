@@ -4,7 +4,7 @@ const pump = require('pump')
 const log = require('loglevel')
 const extension = require('extensionizer')
 const LocalStorageStore = require('obs-store/lib/localStorage')
-const ExtensionStore = require('./lib/extension-store')
+const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
 const ExtensionPlatform = require('./platforms/extension')
@@ -29,7 +29,7 @@ let popupIsOpen = false
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
-const extensionStore = new ExtensionStore()
+const localStore = new LocalStore()
 
 // initialization flow
 initialize().catch(log.error)
@@ -51,9 +51,10 @@ async function loadStateFromPersistence () {
   let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
   // fetch from extension store and merge in data
 
-  if (extensionStore.isSupported && extensionStore.isEnabled) {
-    const extensionData = await extensionStore.fetch() // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
-    versionedData = { ...versionedData, ...extensionData }
+  if (localStore.isSupported) {
+    const localData = await localStore.get()
+   // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+    versionedData = localData || versionedData
   }
 
   // migrate data
@@ -96,8 +97,8 @@ function setupController (initState) {
   }
 
   function syncDataWithExtension(state) {
-    if (extensionStore.isSupported && extensionStore.isEnabled) {
-      extensionStore.sync(state) // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+    if (localStore.isSupported) {
+      localStore.set(state) // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
     }
     return state
   }
