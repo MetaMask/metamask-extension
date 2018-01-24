@@ -12,12 +12,12 @@ module.exports = class ExtensionStore {
       log.error('Storage local API not available.')
     }
   }
-  async get() {
+  get() {
     return new Promise((resolve) => {
       extension.storage.local.get(STORAGE_KEY, resolve)
     })
   }
-  async set(state) {
+  set(state) {
     return new Promise((resolve) => {
       extension.storage.local.set(state, resolve)
     })
