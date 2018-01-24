@@ -3,7 +3,6 @@
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/local
 
 const extension = require('extensionizer')
-const STORAGE_KEY = 'metamask-config'
 
 module.exports = class ExtensionStore {
   constructor() {
@@ -14,7 +13,7 @@ module.exports = class ExtensionStore {
   }
   get() {
     return new Promise((resolve) => {
-      extension.storage.local.get(STORAGE_KEY, resolve)
+      extension.storage.local.get(null, resolve)
     })
   }
   set(state) {
