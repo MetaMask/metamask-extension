@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug that could cause MetaMask to lose all of its local data.
+
 ## 3.13.7 2018-1-22
 
 - Add ability to bypass gas estimation loading indicator.
