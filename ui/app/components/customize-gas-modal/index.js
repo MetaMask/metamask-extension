@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const t = require('../../../i18n')
 const GasModalCard = require('./gas-modal-card')
 
 const ethUtil = require('ethereumjs-util')

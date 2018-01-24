@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
 const ShapeshiftForm = require('../shapeshift-form')
+const t = require('../../../i18n')
 
 const DIRECT_DEPOSIT_ROW_TITLE = t('directDepositEther')
 const DIRECT_DEPOSIT_ROW_TEXT = t('directDepositEtherExplainer')

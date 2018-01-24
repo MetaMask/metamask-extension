@@ -6,16 +6,10 @@ const h = require('react-hyperscript')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
+const t = require('../../i18n')
 const getCaretCoordinates = require('textarea-caret')
 
 let isSubmitting = false
-
-let t = chrome.i18n.getMessage || (function() {
-  let msg = require('../../../app/_locales/en/messages.json');
-  return (function(key) {
-    return msg[key].message;
-  });
-})();
 
 module.exports = connect(mapStateToProps)(InitializeMenuScreen)
 

@@ -6,6 +6,7 @@ const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
 const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
+const t = require('../../../i18n')
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')

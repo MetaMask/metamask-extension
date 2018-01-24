@@ -10,6 +10,7 @@ const Identicon = require('../../identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const { formatBalance } = require('../../../util')
+const t = require('../../../../i18n')
 
 class AccountDropdowns extends Component {
   constructor (props) {
