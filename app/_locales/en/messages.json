@@ -1,71 +1,224 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
+  "accept": {
+    "message": "Accept"
+  },
+  "account": {
+    "message": "Account:"
+  },
+  "accDetails": {
+    "message": "Account Details"
+  },
+  "accountName": {
+    "message": "Account Name"
+  },
+  "address": {
+    "message": "Address"
+  },
+  "addToken": {
+    "message": "Add Token"
+  },
+  "amountPlusGas": {
+    "message": "Amount + Gas"
   },
   "appDescription": {
     "message": "Ethereum Identity Management",
     "description": "The description of the application"
   },
-  "encryptNewDen": {
-    "message": "Encrypt your new DEN"
+  "appName": {
+    "message": "MetaMask",
+    "description": "The name of the application"
   },
-  "denExplainer": {
-    "message": "Your DEN is your password-encrypted storage within MetaMask."
+  "attemptingConnect": {
+    "message": "Attempting to connect to blockchain."
   },
-  "importDen": {
-    "message": "Import Existing DEN"
+  "available": {
+    "message": "Available"
   },
-  "createDen": {
-    "message": "Create"
+  "back": {
+    "message": "Back"
   },
-  "newPassword": {
-    "message": "New Password (min 8 chars)"
+  "balance": {
+    "message": "Balance:"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Insufficient balance for current gas total"
+  },
+  "borrowDharma": {
+    "message": "Borrow With Dharma (Beta)"
+  },
+  "buyButton": {
+    "message": "Buy"
+  },
+  "buyCoinbase": {
+    "message": "Buy on Coinbase"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "cancelCaps": {
+    "message": "CANCEL"
+  },
+  "clickCopy": {
+    "message": "Click to Copy"
+  },
+  "confirm": {
+    "message": "Confirm"
+  },
+  "confirmCaps": {
+    "message": "CONFIRM"
+  },
+  "confirmContract": {
+    "message": "Confirm Contract"
   },
   "confirmPassword": {
     "message": "Confirm Password"
   },
-  "passwordMismatch": {
-    "message": "passwords don't match"
+  "confirmPasswordSmall": {
+    "message": "confirm password"
   },
-  "passwordShort": {
-    "message": "password not long enough"
+  "continueToCoinbase": {
+    "message": "Continue to Coinbase"
   },
-  "myAccounts": {
-    "message": "My Accounts"
+  "contractPublished": {
+    "message": "Contract Published"
   },
-  "logout": {
-    "message": "Log out"
+  "conversionProgress": {
+    "message": "Conversion in progress"
+  },
+  "copiedButton": {
+    "message": "Copied"
+  },
+  "copiedClipboard": {
+    "message": "Copied to Clipboard"
+  },
+  "copiedExclamation": {
+    "message": "Copied!"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "copyAddress": {
+    "message": "Copy Address to clipboard"
+  },
+  "copyButton": {
+    "message": " Copy "
+  },
+  "copyPrivateKey": {
+    "message": "This is your private key (click to copy)"
   },
   "createAccount": {
     "message": "Create Account"
   },
-  "importAccount": {
-    "message": "Import Account"
+  "createCaps": {
+    "message": "CREATE"
   },
-  "account": {
-    "message": "Account:"
+  "createDen": {
+    "message": "Create"
   },
-  "infoHelp": {
-    "message": "Info & Help"
+  "customGas": {
+    "message": "Customize Gas"
   },
-  "settings": {
-    "message": "Settings"
+  "customize": {
+    "message": "Customize"
   },
-  "importedCaps": {
-    "message": "IMPORTED"
+  "customRPC": {
+    "message": "Custom RPC"
   },
-  "saveButton": {
-    "message": "SAVE"
+  "defaultNetwork": {
+    "message": "The default network for Ether transactions is Main Net."
   },
-  "cancelButton": {
-    "message": "CANCEL"
+  "denExplainer": {
+    "message": "Your DEN is your password-encrypted storage within MetaMask."
   },
-  "signButton": {
-    "message": "SIGN"
+  "deposit": {
+    "message": "Deposit"
   },
-  "revert": {
-    "message": "Revert"
+  "depositBTC": {
+    "message": "Deposit your BTC to the address below:"
+  },
+  "depositButton": {
+    "message": "DEPOSIT"
+  },
+  "depositEth": {
+    "message": "Deposit Eth"
+  },
+  "depositEther": {
+    "message": "Deposit Ether"
+  },
+  "depositFiat": {
+    "message": "Deposit with Fiat"
+  },
+  "depositFromAccount": {
+    "message": "Deposit from another account"
+  },
+  "depositShapeShift": {
+    "message": "Deposit with ShapeShift"
+  },
+  "depositShapeShiftExplainer": {
+    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+  },
+  "detailsCaps": {
+    "message": "DETAILS"
+  },
+  "directDeposit": {
+    "message": "Direct Deposit"
+  },
+  "directDepositEther": {
+    "message": "Directly Deposit Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "done": {
+    "message": "Done"
+  },
+  "editAccountName": {
+    "message": "Edit Account Name"
+  },
+  "editCaps": {
+    "message": "EDIT"
+  },
+  "encryptNewDen": {
+    "message": "Encrypt your new DEN"
+  },
+  "enterPassword": {
+    "message": "Enter password"
+  },
+  "etherscanView": {
+    "message": "View account on Etherscan"
+  },
+  "exchangeRate": {
+    "message": "Exchange Rate"
+  },
+  "exportPrivateKey": {
+    "message": "Export Private Key"
+  },
+  "exportPrivateKeyLower": {
+    "message": "Export private key"
+  },
+  "exportPrivateKeyWarning": {
+    "message": "Export private keys at your own risk."
+  },
+  "failed": {
+    "message": "Failed"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!"
+  },
+  "from": {
+    "message": "From"
+  },
+  "fromShapeShift": {
+    "message": "From ShapeShift"
+  },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
+  "gasFeeSpecific": {
+    "message": "Gas fee:"
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -73,103 +226,331 @@
   "gasLimitCalculation": {
     "message": "We calculate the suggested gas limit based on network success rates."
   },
+  "gasLimitRequired": {
+    "message": "Gas Limit Required"
+  },
+  "gasLimitTooLow": {
+    "message": "Gas limit must be at least 21000"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
   "gasPriceCalculation": {
     "message": "We calculate the suggested gas prices based on network success rates."
   },
-  "customGas": {
-    "message": "Customize Gas"
+  "gasPriceRequired": {
+    "message": "Gas Price Required"
   },
-  "balanceIsInsufficientGas": {
-    "message": "Insufficient balance for current gas total"
+  "getEther": {
+    "message": "Get Ether"
   },
-  "gasLimitTooLow": {
-    "message": "Gas limit must be at least 21000"
+  "here": {
+    "message": "here"
   },
-  "editButton": {
-    "message": "Edit"
+  "hideCaps": {
+    "message": "HIDE"
+  },
+  "hideToken": {
+    "message": "Hide Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "howToDeposit": {
+    "message": "How would you like to deposit Ether?"
+  },
+  "import": {
+    "message": "Import"
+  },
+  "importAccount": {
+    "message": "Import Account"
+  },
+  "importAnAccount": {
+    "message": "Import an account"
+  },
+  "importCaps": {
+    "message": "IMPORT"
+  },
+  "importDen": {
+    "message": "Import Existing DEN"
+  },
+  "importedCaps": {
+    "message": "IMPORTED"
+  },
+  "infoHelp": {
+    "message": "Info & Help"
+  },
+  "invalidAddress": {
+    "message": "Invalid address"
+  },
+  "invalidGasParams": {
+    "message": "Invalid Gas Parameters"
+  },
+  "invalidInput": {
+    "message": "Invalid input."
+  },
+  "invalidRequest": {
+    "message": "Invalid Request"
+  },
+  "kovan": {
+    "message": "Kovan Test Network"
+  },
+  "limit": {
+    "message": "Limit"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading Tokens..."
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "logout": {
+    "message": "Log out"
   },
   "looseCaps": {
     "message": "LOOSE"
   },
-  "addToken": "Add Token",
-  "exportPrivateKey": "Export Private Key",
-  "copyAddress": "Copy Address to clipboard",
-  "etherscanView": "View account on Etherscan",
-  "qrCode": "Show QR Code",
-  "accDetails": "Account Details",
-  "networks": "Networks",
-  "defaultNetwork": "The default network for Ether transactions is Main Net.",
-  "mainnet": "Main Ethereum Network",
-  "unknownNetwork": "Unknown Private Network",
-  "rinkeby": "Rinkeby Test Network",
-  "kovan": "Kovan Test Network",
-  "ropsten": "Ropsten Test Network",
-  "localhost": "Localhost 8545",
-  "customRPC": "Custom RPC",
-  "hideToken": "Hide Token",
-  "copiedClipboard": "Copied to Clipboard",
-  "detailsCaps": "DETAILS",
-  "sendButton": "SEND",
-  "depositButton": "DEPOSIT",
-  "notStarted": "Not Started",
-  "noTransactions": "No Transactions",
-  "contractPublished": "Contract Published",
-  "noTransactionHistory": "No transaction history.",
-  "warning": "Warning",
-  "failed": "Failed",
-  "rejected": "Rejected",
-  "sigRequested": "Signature Requested",
-  "yourSigRequested": "Your signature is being requested",
-  "balance": "Balance:",
-  "retryWithMoreGas": "Retry with a higher gas price here",
-  "takesTooLong": "Taking too long?",
-  "transactionNumber": "Transaction Number",
-  "loadingTokens": "Loading Tokens...",
-  "troubleTokenBalances": "We had trouble loading your token balances. You can view them ",
-  "here": "here",
-  "message": "Message",
-  "signNotice": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. ",
-  "youSign": "You are signing:",
-  "conversionProgress": "Conversion in progress",
-  "noDeposits": "No deposits received",
-  "fromShapeShift": "From ShapeShift",
-  "invalidRequest": "Invalid Request",
-  "status": "Status",
-  "limit": "Limit",
-  "exchangeRate": "Exchange Rate",
-  "min": "Minimum",
-  "available": "Available",
-  "unavailable": "Unavailable",
-  "depositBTC": "Deposit your BTC to the address below:",
-  "deposit": "Deposit",
-  "receive": "Receive",
-  "refundAddress": "Your Refund Address",
-  "buyButton": "Buy",
-  "signMessage": "Sign Message",
-  "youSignCaps": "YOU ARE SIGNING",
-  "messageCaps": "MESSAGE",
-  "readMore": "Read more here.",
-  "cancel": "Cancel",
-  "sign": "Sign",
-  "accept": "Accept",
-  "attemptingConnect": "Attempting to connect to blockchain.",
-  "privateNetwork": "Private Network",
-  "invalidInput": "Invalid input.",
-  "noAddressForName": "No address has been set for this name.",
-  "clickCopy": "Click to Copy",
-  "copyButton": " Copy ",
-  "copiedButton": "Copied",
-  "copy": "Copy",
-  "copiedExclamation": "Copied!",
-  "continueToCoinbase": "Continue to Coinbase",
-  "depositEth": "Deposit Eth",
-  "selectService": "Select Service",
-  "unknownNetworkId": "Unknown network ID",
-  "borrowDharma": "Borrow With Dharma (Beta)",
-  "exportPrivateKeyWarning": "Export private keys at your own risk.",
-  "confirmPasswordSmall": "confirm password",
-  "submit": "Submit",
+  "mainnet": {
+    "message": "Main Ethereum Network"
+  },
+  "message": {
+    "message": "Message"
+  },
+  "messageCaps": {
+    "message": "MESSAGE"
+  },
+  "min": {
+    "message": "Minimum"
+  },
+  "myAccounts": {
+    "message": "My Accounts"
+  },
+  "needEtherInWallet": {
+    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  },
+  "needImportFile": {
+    "message": "You must select a file to import."
+  },
+  "needImportPassword": {
+    "message": "You must enter a password for the selected file."
+  },
+  "networks": {
+    "message": "Networks"
+  },
+  "newAccount": {
+    "message": "New Account"
+  },
+  "newContract": {
+    "message": "New Contract"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newRecipient": {
+    "message": "New Recipient"
+  },
+  "next": {
+    "message": "Next"
+  },
+  "noAddressForName": {
+    "message": "No address has been set for this name."
+  },
+  "noDeposits": {
+    "message": "No deposits received"
+  },
+  "noTransactionHistory": {
+    "message": "No transaction history."
+  },
+  "noTransactions": {
+    "message": "No Transactions"
+  },
+  "notStarted": {
+    "message": "Not Started"
+  },
+  "oldUI": {
+    "message": "Old UI"
+  },
+  "oldUIMessage": {
+    "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
+  },
+  "or": {
+    "message": "or"
+  },
+  "passwordMismatch": {
+    "message": "passwords don't match"
+  },
+  "passwordShort": {
+    "message": "password not long enough"
+  },
+  "pastePrivateKey": {
+    "message": "Paste your private key string here:"
+  },
+  "pasteSeed": {
+    "message": "Paste your seed phrase here!"
+  },
+  "privateKeyWarning": {
+    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+  },
+  "privateNetwork": {
+    "message": "Private Network"
+  },
+  "qrCode": {
+    "message": "Show QR Code"
+  },
+  "readdToken": {
+    "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
+  },
+  "readMore": {
+    "message": "Read more here."
+  },
+  "receive": {
+    "message": "Receive"
+  },
+  "recipientAddress": {
+    "message": "Recipient Address"
+  },
+  "refundAddress": {
+    "message": "Your Refund Address"
+  },
+  "rejected": {
+    "message": "Rejected"
+  },
+  "required": {
+    "message": "Required"
+  },
+  "retryWithMoreGas": {
+    "message": "Retry with a higher gas price here"
+  },
+  "revert": {
+    "message": "Revert"
+  },
+  "rinkeby": {
+    "message": "Rinkeby Test Network"
+  },
+  "ropsten": {
+    "message": "Ropsten Test Network"
+  },
+  "sampleAccountName": {
+    "message": "E.g. My new account"
+  },
+  "saveCaps": {
+    "message": "SAVE"
+  },
+  "selectService": {
+    "message": "Select Service"
+  },
+  "sendButton": {
+    "message": "SEND"
+  },
+  "sendTokens": {
+    "message": "Send Tokens"
+  },
+  "sendTokensAnywhere": {
+    "message": "Send Tokens to anyone with an Ethereum account"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "shapeshiftBuy": {
+    "message": "Buy with Shapeshift"
+  },
+  "showPrivateKeys": {
+    "message": "Show Private Keys"
+  },
+  "sign": {
+    "message": "Sign"
+  },
+  "signCaps": {
+    "message": "SIGN"
+  },
+  "signMessage": {
+    "message": "Sign Message"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequested": {
+    "message": "Signature Requested"
+  },
+  "status": {
+    "message": "Status"
+  },
+  "submit": {
+    "message": "Submit"
+  },
+  "takesTooLong": {
+    "message": "Taking too long?"
+  },
+  "testFaucet": {
+    "message": "Test Faucet"
+  },
+  "to": {
+    "message": "To"
+  },
+  "tokenBalance": {
+    "message": "Your Token Balance is:"
+  },
+  "toSpecific": {
+    "message": "To:"
+  },
+  "total": {
+    "message": "Total"
+  },
+  "transactionMemo": {
+    "message": "Transaction memo (optional)"
+  },
+  "transactionNumber": {
+    "message": "Transaction Number"
+  },
+  "transfers": {
+    "message": "Transfers"
+  },
+  "troubleTokenBalances": {
+    "message": "We had trouble loading your token balances. You can view them "
+  },
+  "typePassword": {
+    "message": "Type Your Password"
+  },
+  "uiWelcome": {
+    "message": "Welcome to the New UI (Beta)"
+  },
+  "uiWelcomeMessage": {
+    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+  },
+  "unavailable": {
+    "message": "Unavailable"
+  },
+  "unknown": {
+    "message": "Unknown"
+  },
+  "unknownNetwork": {
+    "message": "Unknown Private Network"
+  },
+  "unknownNetworkId": {
+    "message": "Unknown network ID"
+  },
+  "usedByClients": {
+    "message": "Used by a variety of different clients"
+  },
+  "viewAccount": {
+    "message": "View Account"
+  },
+  "warning": {
+    "message": "Warning"
+  },
+  "whatsThis": {
+    "message": "What's this?"
+  },
+  "yourSigRequested": {
+    "message": "Your signature is being requested"
+  },
+  "youSign": {
+    "message": "You are signing:"
+  },
+  "youSignCaps": {
+    "message": "YOU ARE SIGNING"
+  }
 }

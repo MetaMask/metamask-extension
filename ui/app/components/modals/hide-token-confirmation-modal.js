@@ -41,7 +41,7 @@ HideTokenConfirmationModal.prototype.render = function () {
     h('div.hide-token-confirmation__container', {
     }, [
       h('div.hide-token-confirmation__title', {}, [
-        'Hide Token?',
+        t('hideTokenPrompt'),
       ]),
 
       h(Identicon, {
@@ -54,19 +54,19 @@ HideTokenConfirmationModal.prototype.render = function () {
       h('div.hide-token-confirmation__symbol', {}, symbol),
 
       h('div.hide-token-confirmation__copy', {}, [
-        'You can add this token back in the future by going go to “Add token” in your accounts options menu.',
+        t('readdToken'),
       ]),
 
       h('div.hide-token-confirmation__buttons', {}, [
         h('button.btn-cancel.hide-token-confirmation__button', {
           onClick: () => hideModal(),
         }, [
-          'CANCEL',
+          t('cancelCaps'),
         ]),
         h('button.btn-clear.hide-token-confirmation__button', {
           onClick: () => hideToken(address),
         }, [
-          'HIDE',
+          t('hideCaps'),
         ]),
       ]),
     ]),

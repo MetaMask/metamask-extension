@@ -129,7 +129,7 @@ class AccountDropdowns extends Component {
                   actions.showEditAccountModal(identity)
                 },
               }, [
-                t('editButton'),
+                t('editCaps'),
               ]),
             ]),
 

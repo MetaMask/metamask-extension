@@ -64,12 +64,12 @@ AccountDetailsModal.prototype.render = function () {
 
       h('button.btn-clear.account-modal__button', {
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
-      }, 'View account on Etherscan'),
+      }, t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
       h('button.btn-clear.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
-      }, 'Export private key'),
+      }, t('exportPrivateKeyLower')),
 
   ])
 }

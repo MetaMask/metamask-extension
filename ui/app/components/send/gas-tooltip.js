@@ -81,7 +81,7 @@ GasTooltip.prototype.render = function () {
             'marginTop': '81px',
           },
         }, [
-          h('span.gas-tooltip-label', {}, ['Gas Limit']),
+          h('span.gas-tooltip-label', {}, [t('gasLimit')]),
           h('i.fa.fa-info-circle'),
         ]),
         h(InputNumber, {
@@ -97,4 +97,3 @@ GasTooltip.prototype.render = function () {
     ]),
   ])
 }
-

@@ -32,7 +32,7 @@ PrivateKeyImportView.prototype.render = function () {
 
   return (
     h('div.new-account-import-form__private-key', [
-      h('span.new-account-create-form__instruction', 'Paste your private key string here:'),
+      h('span.new-account-create-form__instruction', t('pastePrivateKey')),
 
       h('input.new-account-import-form__input-password', {
         type: 'password',
@@ -45,13 +45,13 @@ PrivateKeyImportView.prototype.render = function () {
         h('button.new-account-create-form__button-cancel', {
           onClick: () => goHome(),
         }, [
-          'CANCEL',
+          t('cancelCaps'),
         ]),
 
         h('button.new-account-create-form__button-create', {
           onClick: () => this.createNewKeychain(),
         }, [
-          'IMPORT',
+          t('importCaps'),
         ]),
 
       ]),

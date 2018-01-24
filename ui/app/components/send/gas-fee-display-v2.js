@@ -30,7 +30,7 @@ GasFeeDisplay.prototype.render = function () {
         convertedPrefix: '$',
         readOnly: true,
       })
-      : h('div.currency-display', 'Loading...'),
+      : h('div.currency-display', t('loading')),
 
     h('button.send-v2__sliders-icon-container', {
       onClick,
@@ -41,4 +41,3 @@ GasFeeDisplay.prototype.render = function () {
 
   ])
 }
-

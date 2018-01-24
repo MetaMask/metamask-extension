@@ -26,8 +26,8 @@ JsonImportSubview.prototype.render = function () {
   return (
     h('div.new-account-import-form__json', [
 
-      h('p', 'Used by a variety of different clients'),
-      h('a.warning', { href: HELP_LINK, target: '_blank' }, 'File import not working? Click here!'),
+      h('p', t('usedByClients')),
+      h('a.warning', { href: HELP_LINK, target: '_blank' }, t('fileImportFail')),
 
       h(FileInput, {
         readAs: 'text',
@@ -42,7 +42,7 @@ JsonImportSubview.prototype.render = function () {
 
       h('input.new-account-import-form__input-password', {
         type: 'password',
-        placeholder: 'Enter password',
+        placeholder: t('enterPassword'),
         id: 'json-password-box',
         onKeyPress: this.createKeyringOnEnter.bind(this),
       }),
@@ -52,13 +52,13 @@ JsonImportSubview.prototype.render = function () {
         h('button.new-account-create-form__button-cancel', {
           onClick: () => this.props.goHome(),
         }, [
-          'CANCEL',
+          t('cancelCaps'),
         ]),
 
         h('button.new-account-create-form__button-create', {
           onClick: () => this.createNewKeychain.bind(this),
         }, [
-          'IMPORT',
+          t('importCaps'),
         ]),
 
       ]),
@@ -84,7 +84,7 @@ JsonImportSubview.prototype.createNewKeychain = function () {
   const { fileContents } = state
 
   if (!fileContents) {
-    const message = 'You must select a file to import.'
+    const message = t('needImportFile')
     return this.props.dispatch(actions.displayWarning(message))
   }
 
@@ -92,7 +92,7 @@ JsonImportSubview.prototype.createNewKeychain = function () {
   const password = passwordInput.value
 
   if (!password) {
-    const message = 'You must enter a password for the selected file.'
+    const message = t('needImportPassword')
     return this.props.dispatch(actions.displayWarning(message))
   }
 

@@ -35,10 +35,10 @@ PendingMsg.prototype.render = function () {
       h('.flex-row.flex-space-around', [
         h('button', {
           onClick: state.cancelTypedMessage,
-        }, t('cancelButton')),
+        }, t('cancelCaps')),
         h('button', {
           onClick: state.signTypedMessage,
-        }, t('signButton')),
+        }, t('signCaps')),
       ]),
     ])
 

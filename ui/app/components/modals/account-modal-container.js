@@ -59,7 +59,7 @@ AccountModalContainer.prototype.render = function () {
 
         h('i.fa.fa-angle-left.fa-lg'),
 
-        h('span.account-modal-back__text', ' Back'),
+        h('span.account-modal-back__text', ' ' + t('back')),
 
       ]),
 

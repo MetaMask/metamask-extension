@@ -92,7 +92,7 @@ ToAutoComplete.prototype.render = function () {
   return h('div.send-v2__to-autocomplete', {}, [
 
     h('input.send-v2__to-autocomplete__input', {
-      placeholder: 'Recipient Address',
+      placeholder: t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
       value: to,
       onChange: event => onChange(event.target.value),
@@ -111,4 +111,3 @@ ToAutoComplete.prototype.render = function () {
 
   ])
 }
-

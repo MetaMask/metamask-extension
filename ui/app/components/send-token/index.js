@@ -126,14 +126,14 @@ SendTokenScreen.prototype.validate = function () {
   const amount = Number(stringAmount)
 
   const errors = {
-    to: !to ? 'Required' : null,
-    amount: !amount ? 'Required' : null,
-    gasPrice: !gasPrice ? 'Gas Price Required' : null,
-    gasLimit: !gasLimit ? 'Gas Limit Required' : null,
+    to: !to ? t('required') : null,
+    amount: !amount ? t('required') : null,
+    gasPrice: !gasPrice ? t('gasPriceRequired') : null,
+    gasLimit: !gasLimit ? t('gasLimitRequired') : null,
   }
 
   if (to && !isValidAddress(to)) {
-    errors.to = 'Invalid address'
+    errors.to = t('invalidAddress')
   }
 
   const isValid = Object.entries(errors).every(([key, value]) => value === null)
@@ -233,11 +233,11 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
       'send-screen-input-wrapper--error': errorMessage,
     }),
   }, [
-    h('div', ['To:']),
+    h('div', [t('toSpecific')]),
     h('input.large-input.send-screen-input', {
       name: 'address',
       list: 'addresses',
-      placeholder: 'Address',
+      placeholder: t('address'),
       value: to,
       onChange: e => this.setState({
         to: e.target.value,
@@ -355,8 +355,8 @@ SendTokenScreen.prototype.renderGasInput = function () {
     }),
 
     h('div.send-screen-gas-labels', {}, [
-      h('span', [ h('i.fa.fa-bolt'), 'Gas fee:']),
-      h('span', ['What\'s this?']),
+      h('span', [ h('i.fa.fa-bolt'), t('gasFeeSpecific')]),
+      h('span', [t('whatsThis')]),
     ]),
     h('div.large-input.send-screen-gas-input', [
       h(GasFeeDisplay, {
@@ -370,7 +370,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
       h(
         'div.send-screen-gas-input-customize',
         { onClick: () => this.setState({ isGasTooltipOpen: !isGasTooltipOpen }) },
-        ['Customize']
+        [t('customize')]
       ),
     ]),
     h('div.send-screen-input-wrapper__error-message', [
@@ -381,7 +381,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
 
 SendTokenScreen.prototype.renderMemoInput = function () {
   return h('div.send-screen-input-wrapper', [
-    h('div', {}, ['Transaction memo (optional)']),
+    h('div', {}, [t('transactionMemo')]),
     h(
       'input.large-input.send-screen-input',
       { onChange: e => this.setState({ memo: e.target.value }) }
@@ -397,10 +397,10 @@ SendTokenScreen.prototype.renderButtons = function () {
     h('button.send-token__button-next.btn-secondary', {
       className: !isValid && 'send-screen__send-button__disabled',
       onClick: () => isValid && this.submit(),
-    }, ['Next']),
+    }, [t('next')]),
     h('button.send-token__button-cancel.btn-tertiary', {
       onClick: () => backToAccountDetail(selectedAddress),
-    }, ['Cancel']),
+    }, [t('cancel')]),
   ])
 }
 
@@ -417,9 +417,9 @@ SendTokenScreen.prototype.render = function () {
         diameter: 75,
         address: selectedTokenAddress,
       }),
-      h('div.send-token__title', ['Send Tokens']),
-      h('div.send-token__description', ['Send Tokens to anyone with an Ethereum account']),
-      h('div.send-token__balance-text', ['Your Token Balance is:']),
+      h('div.send-token__title', [t('sendTokens')]),
+      h('div.send-token__description', [t('sendTokensAnywhere')]),
+      h('div.send-token__balance-text', [t('tokenBalance')]),
       h('div.send-token__token-balance', [
         h(TokenBalance, { token: selectedToken, balanceOnly: true }),
       ]),

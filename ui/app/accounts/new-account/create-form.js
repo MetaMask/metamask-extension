@@ -21,13 +21,13 @@ class NewAccountCreateForm extends Component {
     return h('div.new-account-create-form', [
 
       h('div.new-account-create-form__input-label', {}, [
-        'Account Name',
+        t('accountName'),
       ]),
 
       h('div.new-account-create-form__input-wrapper', {}, [
         h('input.new-account-create-form__input', {
           value: this.state.newAccountName,
-          placeholder: 'E.g. My new account',
+          placeholder: t('sampleAccountName'),
           onChange: event => this.setState({ newAccountName: event.target.value }),
         }, []),
       ]),
@@ -37,13 +37,13 @@ class NewAccountCreateForm extends Component {
         h('button.new-account-create-form__button-cancel', {
           onClick: () => this.props.goHome(),
         }, [
-          'CANCEL',
+          t('cancelCaps'),
         ]),
 
         h('button.new-account-create-form__button-create', {
           onClick: () => this.props.createAccount(newAccountName),
         }, [
-          'CREATE',
+          t('createCaps'),
         ]),
 
       ]),

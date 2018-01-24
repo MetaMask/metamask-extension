@@ -224,10 +224,10 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.request-signature__footer__cancel-button', {
       onClick: cancel,
-    }, t('cancelButton')),
+    }, t('cancelCaps')),
     h('button.request-signature__footer__sign-button', {
       onClick: sign,
-    }, t('signButton')),
+    }, t('signCaps')),
   ])
 }
 

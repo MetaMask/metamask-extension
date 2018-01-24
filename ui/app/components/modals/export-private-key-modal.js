@@ -48,8 +48,8 @@ ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (passwo
 
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
   return h('span.private-key-password-label', privateKey
-    ? 'This is your private key (click to copy)'
-    : 'Type Your Password'
+    ? t('copyPrivateKey')
+    : t('typePassword')
   )
 }
 
@@ -86,8 +86,8 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
     ),
 
     (privateKey
-      ? this.renderButton('btn-clear export-private-key__button', () => hideModal(), 'Done')
-      : this.renderButton('btn-clear export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), 'Confirm')
+      ? this.renderButton('btn-clear export-private-key__button', () => hideModal(), t('done'))
+      : this.renderButton('btn-clear export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), t('confirm'))
     ),
 
   ])
@@ -120,7 +120,7 @@ ExportPrivateKeyModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('span.modal-body-title', 'Show Private Keys'),
+      h('span.modal-body-title', t('showPrivateKeys')),
 
       h('div.private-key-password', {}, [
         this.renderPasswordLabel(privateKey),
@@ -130,10 +130,7 @@ ExportPrivateKeyModal.prototype.render = function () {
         !warning ? null : h('span.private-key-password-error', warning),
       ]),
 
-      h('div.private-key-password-warning', `Warning: Never disclose this key.
-        Anyone with your private keys can take steal any assets held in your
-        account.`
-      ),
+      h('div.private-key-password-warning', t('privateKeyWarning')),
 
       this.renderButtons(privateKey, this.state.password, address, hideModal),
 

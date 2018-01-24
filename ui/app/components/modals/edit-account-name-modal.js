@@ -50,7 +50,7 @@ EditAccountNameModal.prototype.render = function () {
       ]),
 
       h('div.edit-account-name-modal-title', {
-      }, ['Edit Account Name']),
+      }, [t('editAccountName')]),
 
       h('input.edit-account-name-modal-input', {
         placeholder: identity.name,
@@ -69,7 +69,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        'SAVE',
+        t('saveCaps'),
       ]),
 
     ]),

@@ -20,11 +20,10 @@ SeedImportSubview.prototype.render = function () {
       style: {
       },
     }, [
-      `Paste your seed phrase here!`,
+      t('pasteSeed'),
       h('textarea'),
       h('br'),
-      h('button', 'Submit'),
+      h('button', t('submit')),
     ])
   )
 }
-

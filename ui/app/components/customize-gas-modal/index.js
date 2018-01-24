@@ -284,11 +284,11 @@ CustomizeGasModal.prototype.render = function () {
         h('div.send-v2__customize-gas__buttons', [
           h('div.send-v2__customize-gas__cancel', {
             onClick: this.props.hideModal,
-          }, [t('cancelButton')]),
+          }, [t('cancelCaps')]),
 
           h(`div.send-v2__customize-gas__save${error ? '__error' : ''}`, {
             onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
-          }, [t('saveButton')]),
+          }, [t('saveCaps')]),
         ]),
 
       ]),
