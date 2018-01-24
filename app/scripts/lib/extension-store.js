@@ -15,12 +15,12 @@ const handleDisabledSyncAndResolve = (resolve, toResolve) => {
 
 module.exports = class ExtensionStore {
   constructor() {
-    this.isSupported = !!(extension.storage.sync)
+    this.isSupported = !!(extension.storage && extension.storage.sync)
     this.isEnabled = true // TODO: get value from user settings
   }
   async fetch() {
     return new Promise((resolve) => {
-      extension.storage.sync.get(KEYS_TO_SYNC, (data) => {
+      extension.storage && extension.storage.sync.get(KEYS_TO_SYNC, (data) => {
         handleDisabledSyncAndResolve(resolve, data)
       })
     })
@@ -31,7 +31,7 @@ module.exports = class ExtensionStore {
       return result
     }, {})
     return new Promise((resolve) => {
-      extension.storage.sync.set(dataToSync, () => {
+      extension.storage && extension.storage.sync.set(dataToSync, () => {
         handleDisabledSyncAndResolve(resolve)
       })
     })

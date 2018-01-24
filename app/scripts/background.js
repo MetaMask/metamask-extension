@@ -57,7 +57,13 @@ async function loadStateFromPersistence () {
   // fetch from extension store and merge in data
 
   if (localStore.isSupported) {
-    const localData = await localStore.get()
+    let localData
+    try {
+      localData = await localStore.get()
+    } catch (err) {
+      log.error('error fetching state from local store:', err)
+    }
+
    // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
     versionedData = Object.keys(localData).length > 0 ? localData : versionedData
   }
@@ -113,7 +119,11 @@ function setupController (initState) {
 
   function syncDataWithExtension(state) {
     if (localStore.isSupported) {
-      localStore.set(state) // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
+      try {
+        localStore.set(state)
+      } catch (err) {
+        log.error('error setting state in local store:', err)
+      }
     }
     return state
   }
