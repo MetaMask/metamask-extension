@@ -64,7 +64,6 @@ async function loadStateFromPersistence () {
       log.error('error fetching state from local store:', err)
     }
 
-   // TODO: handle possible exceptions (https://developer.chrome.com/apps/runtime#property-lastError)
     versionedData = Object.keys(localData).length > 0 ? localData : versionedData
   }
 
