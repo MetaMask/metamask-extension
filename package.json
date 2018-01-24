@@ -212,7 +212,7 @@
     "react-testutils-additions": "^15.2.0",
     "sinon": "^4.0.0",
     "tape": "^4.5.1",
-    "testem": "^1.10.3",
+    "testem": "^2.0.0",
     "uglifyify": "^4.0.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
