@@ -43,6 +43,8 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
 
+    this.defaultMaxListeners = 20
+
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
     this.opts = opts
