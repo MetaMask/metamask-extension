@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-msg-details')
+const t = require('../../i18n')
 
 module.exports = PendingMsg
 

@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
+const t = require('../../i18n')
 
 module.exports = Network
 

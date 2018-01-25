@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
 const TypedMessageRenderer = require('./typed-message-renderer')
+const t = require('../../i18n')
 
 module.exports = PendingMsgDetails
 

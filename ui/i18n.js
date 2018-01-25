@@ -12,7 +12,7 @@ if ((chrome && chrome.i18n && chrome.i18n.getMessage) ||
   let msg = require('../app/_locales/en/messages.json');
   getMessage = function(key) {
     return msg[key].message;
-  });
+  };
 }
 
 module.exports = getMessage;

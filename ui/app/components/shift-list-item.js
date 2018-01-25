@@ -6,6 +6,7 @@ const vreme = new (require('vreme'))()
 const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
+const t = require('../../i18n')
 
 const CopyButton = require('./copyButton')
 const EthBalance = require('./eth-balance')

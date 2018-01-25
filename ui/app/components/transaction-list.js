@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const TransactionListItem = require('./transaction-list-item')
+const t = require('../../i18n')
 
 module.exports = TransactionList
 

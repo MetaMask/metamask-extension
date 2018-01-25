@@ -7,6 +7,7 @@ const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
 const { isValidAddress, allNull } = require('../../util')
+const t = require('../../../i18n')
 
 // const BalanceComponent = require('./balance-component')
 const Identicon = require('../identicon')

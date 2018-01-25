@@ -5,6 +5,7 @@ const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const actions = require('../actions')
 const selectors = require('../selectors')
+const t = require('../../i18n')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')

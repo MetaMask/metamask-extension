@@ -9,6 +9,7 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 

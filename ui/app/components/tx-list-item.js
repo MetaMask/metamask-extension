@@ -13,6 +13,7 @@ const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(TxListItem)
 

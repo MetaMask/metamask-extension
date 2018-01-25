@@ -9,6 +9,7 @@ const classnames = require('classnames')
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
 const actions = require('../actions')
+const t = require('../../i18n')
 const { conversionUtil } = require('../conversion-util')
 
 const {

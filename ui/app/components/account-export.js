@@ -6,6 +6,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
 const connect = require('react-redux').connect
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(ExportAccountView)
 

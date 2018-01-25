@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 
 const Tooltip = require('./tooltip')
 const copyToClipboard = require('copy-to-clipboard')
+const t = require('../../i18n')
 
 module.exports = Copyable
 

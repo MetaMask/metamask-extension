@@ -10,6 +10,7 @@ const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 

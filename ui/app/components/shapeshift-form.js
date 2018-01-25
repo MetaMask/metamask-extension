@@ -7,6 +7,7 @@ const { qrcode } = require('qrcode-npm')
 const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions')
 const { isValidAddress } = require('../util')
 const SimpleDropdown = require('./dropdowns/simple-dropdown')
+const t = require('../../i18n')
 
 function mapStateToProps (state) {
   const {

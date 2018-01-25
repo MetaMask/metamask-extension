@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const t = require('../../i18n')
 
 const AccountPanel = require('./account-panel')
 const BinaryRenderer = require('./binary-renderer')

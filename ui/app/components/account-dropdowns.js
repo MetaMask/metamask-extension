@@ -9,6 +9,7 @@ const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
+const t = require('../../i18n')
 
 class AccountDropdowns extends Component {
   constructor (props) {

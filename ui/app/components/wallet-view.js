@@ -9,6 +9,7 @@ const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
 
