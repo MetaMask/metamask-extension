@@ -1,6 +1,7 @@
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
+const debounce = require('debounce-stream')
 const log = require('loglevel')
 const extension = require('extensionizer')
 const LocalStorageStore = require('obs-store/lib/localStorage')
@@ -65,11 +66,7 @@ async function loadStateFromPersistence () {
       log.error('error fetching state from local store:', err)
     }
 
-    console.log('Comparing localdata and versionedData')
-    console.dir({ localData })
-
     if (Object.keys(localData).length > 0) {
-      console.log('using the local store data')
       versionedData = localData
     }
   }
@@ -117,8 +114,12 @@ function setupController (initState) {
   // setup state persistence
   pump(
     asStream(controller.store),
+    debounce(200),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
+    (error) => {
+      log.error('pump hit error', error)
+    }
   )
 
   function versionifyData (state) {
@@ -126,15 +127,14 @@ function setupController (initState) {
     return versionedData
   }
 
-  function syncDataWithExtension(state) {
+  async function syncDataWithExtension(state) {
     if (localStore.isSupported) {
       try {
-        console.log('persisting state', state)
-        localStore.set(state)
+        await localStore.set(state)
       } catch (err) {
         log.error('error setting state in local store:', err)
       }
-    }
+    } else { log.error('local store not supported') }
     return state
   }
 
