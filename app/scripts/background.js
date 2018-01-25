@@ -114,7 +114,7 @@ function setupController (initState) {
   // setup state persistence
   pump(
     asStream(controller.store),
-    debounce(200),
+    debounce(1000),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
     (error) => {
