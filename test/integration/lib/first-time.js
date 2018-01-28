@@ -41,7 +41,7 @@ async function runFirstTimeUsageTest(assert, done) {
   // Scroll through terms
   const title = app.find('h1').text()
   // TODO Find where Metamask is getting added twice in the title
-  assert.equal(title, 'MetaMaskMetaMask', 'title screen')
+  assert.equal(title, 'MetaMask', 'title screen')
 
   // enter password
   const pwBox = app.find('#password-box')[0]
