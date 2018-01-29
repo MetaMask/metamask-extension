@@ -2,6 +2,9 @@
 
 ## Current Master
 
+## 3.13.8 2018-1-29
+
+- Fix provider for Kovan network.
 - Bump limit for EventEmitter listeners before warning.
 
 ## 3.13.7 2018-1-22
