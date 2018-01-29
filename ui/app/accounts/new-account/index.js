@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const t = require('../../../i18n')
 const { getCurrentViewContext } = require('../../selectors')
 const classnames = require('classnames')
 
@@ -42,10 +43,10 @@ AccountDetailsModal.prototype.render = function () {
   const { displayedForm, displayForm } = this.props
 
   return h('div.new-account', {}, [
-    
+
     h('div.new-account__header', [
 
-      h('div.new-account__title', 'New Account'),
+      h('div.new-account__title', t('newAccount')),
 
       h('div.new-account__tabs', [
 
@@ -55,7 +56,7 @@ AccountDetailsModal.prototype.render = function () {
             'new-account__tabs__unselected cursor-pointer': displayedForm !== 'CREATE',
           }),
           onClick: () => displayForm('CREATE'),
-        }, 'Create'),
+        }, t('createDen')),
 
         h('div.new-account__tabs__tab', {
           className: classnames('new-account__tabs__tab', {
@@ -63,7 +64,7 @@ AccountDetailsModal.prototype.render = function () {
             'new-account__tabs__unselected cursor-pointer': displayedForm !== 'IMPORT',
           }),
           onClick: () => displayForm('IMPORT'),
-        }, 'Import'),
+        }, t('import')),
 
       ]),
 

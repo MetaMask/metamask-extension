@@ -5,6 +5,7 @@ const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
 const actions = require('../actions')
 const selectors = require('../selectors')
+const t = require('../../i18n')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
@@ -72,21 +73,21 @@ TxView.prototype.renderButtons = function () {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
-        }, 'DEPOSIT'),
+        }, t('depositButton')),
 
         h('button.btn-clear.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
           onClick: showSendPage,
-        }, 'SEND'),
+        }, t('sendButton')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-clear.hero-balance-button', {
           onClick: showSendTokenPage,
-        }, 'SEND'),
+        }, t('sendButton')),
       ])
     )
 }

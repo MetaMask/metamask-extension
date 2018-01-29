@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-msg-details')
+const t = require('../../i18n')
 
 module.exports = PendingMsg
 
@@ -29,17 +30,14 @@ PendingMsg.prototype.render = function () {
           fontWeight: 'bold',
           textAlign: 'center',
         },
-      }, 'Sign Message'),
+      }, t('signMessage')),
 
       h('.error', {
         style: {
           margin: '10px',
         },
       }, [
-        `Signing this message can have
-        dangerous side effects. Only sign messages from
-        sites you fully trust with your entire account.
-        This dangerous method will be removed in a future version. `,
+        t('signNotice'),
         h('a', {
           href: 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527',
           style: { color: 'rgb(247, 134, 28)' },
@@ -48,7 +46,7 @@ PendingMsg.prototype.render = function () {
             const url = 'https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527'
             global.platform.openWindow({ url })
           },
-        }, 'Read more here.'),
+        }, t('readMore')),
       ]),
 
       // message details
@@ -58,13 +56,12 @@ PendingMsg.prototype.render = function () {
       h('.flex-row.flex-space-around', [
         h('button', {
           onClick: state.cancelMessage,
-        }, 'Cancel'),
+        }, t('cancel')),
         h('button', {
           onClick: state.signMessage,
-        }, 'Sign'),
+        }, t('sign')),
       ]),
     ])
 
   )
 }
-

@@ -9,6 +9,7 @@ const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
+const t = require('../../i18n')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -79,7 +80,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', 'LOOSE') : null
+      return isLoose ? h('.keyring-label', t('looseCaps')) : null
     } catch (e) { return }
   }
 
@@ -129,7 +130,7 @@ class AccountDropdowns extends Component {
                 diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, 'Create Account'),
+            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, t('createAccount')),
           ],
         ),
         h(
@@ -192,7 +193,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
           },
-          'View account on Etherscan',
+          t('etherscanView'),
         ),
         h(
           DropdownMenuItem,
@@ -204,7 +205,7 @@ class AccountDropdowns extends Component {
               actions.showQrView(selected, identity ? identity.name : '')
             },
           },
-          'Show QR Code',
+          t('qrCode'),
         ),
         h(
           DropdownMenuItem,
@@ -216,7 +217,7 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
           },
-          'Copy Address to clipboard',
+          t('copyAddress'),
         ),
         h(
           DropdownMenuItem,
@@ -226,7 +227,7 @@ class AccountDropdowns extends Component {
               actions.requestAccountExport()
             },
           },
-          'Export Private Key',
+          t('exportPrivateKey'),
         ),
       ]
     )

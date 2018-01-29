@@ -11,6 +11,7 @@ const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
 const actions = require('../actions')
+const t = require('../../i18n')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -85,7 +86,7 @@ TransactionListItem.prototype.render = function () {
         ]),
 
         h(Tooltip, {
-          title: 'Transaction Number',
+          title: t('transactionNumber'),
           position: 'right',
         }, [
           h('span', {
@@ -142,12 +143,12 @@ TransactionListItem.prototype.render = function () {
           style: {
             paddingRight: '2px',
           },
-        }, 'Taking too long?'),
+        }, t('takesTooLong')),
         h('div', {
           style: {
             textDecoration: 'underline',
           },
-        }, 'Retry with a higher gas price here'),
+        }, t('retryWithMoreGas')),
       ]),
     ])
   )
@@ -176,11 +177,11 @@ function recipientField (txParams, transaction, isTx, isMsg) {
   let message
 
   if (isMsg) {
-    message = 'Signature Requested'
+    message = t('sigRequested')
   } else if (txParams.to) {
     message = addressSummary(txParams.to)
   } else {
-    message = 'Contract Published'
+    message = t('contractPublished')
   }
 
   return h('div', {
@@ -203,7 +204,7 @@ function renderErrorOrWarning (transaction) {
 
   // show rejected
   if (status === 'rejected') {
-    return h('span.error', ' (Rejected)')
+    return h('span.error', ' (' + t('rejected') + ')')
   }
   if (transaction.err || transaction.warning) {
     const { err, warning = {} } = transaction
@@ -219,7 +220,7 @@ function renderErrorOrWarning (transaction) {
             title: message,
             position: 'bottom',
           }, [
-            h(`span.error`, ` (Failed)`),
+            h(`span.error`, ` (` + t('failed') + `)`),
           ])
       )
     }
@@ -231,7 +232,7 @@ function renderErrorOrWarning (transaction) {
         title: message,
         position: 'bottom',
       }, [
-        h(`span.warning`, ` (Warning)`),
+        h(`span.warning`, ` (` + t('warning') + `)`),
       ])
     }
   }

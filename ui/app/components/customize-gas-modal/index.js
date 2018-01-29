@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const t = require('../../../i18n')
 const GasModalCard = require('./gas-modal-card')
 
 const ethUtil = require('ethereumjs-util')
@@ -146,7 +147,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   })
 
   if (!balanceIsSufficient) {
-    error = 'Insufficient balance for current gas total'
+    error = t('balanceIsInsufficientGas')
   }
 
   const gasLimitTooLow = gasLimit && conversionGreaterThan(
@@ -162,7 +163,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   )
 
   if (gasLimitTooLow) {
-    error = 'Gas limit must be at least 21000'
+    error = t('gasLimitTooLow')
   }
 
   this.setState({ error })
@@ -239,7 +240,7 @@ CustomizeGasModal.prototype.render = function () {
     }, [
       h('div.send-v2__customize-gas__header', {}, [
 
-        h('div.send-v2__customize-gas__title', 'Customize Gas'),
+        h('div.send-v2__customize-gas__title', t('customGas')),
 
         h('div.send-v2__customize-gas__close', {
           onClick: hideModal,
@@ -255,8 +256,8 @@ CustomizeGasModal.prototype.render = function () {
           // max: 1000,
           step: multiplyCurrencies(MIN_GAS_PRICE_GWEI, 10),
           onChange: value => this.convertAndSetGasPrice(value),
-          title: 'Gas Price (GWEI)',
-          copy: 'We calculate the suggested gas prices based on network success rates.',
+          title: t('gasPrice'),
+          copy: t('gasPriceCalculation'),
         }),
 
         h(GasModalCard, {
@@ -265,8 +266,8 @@ CustomizeGasModal.prototype.render = function () {
           // max: 100000,
           step: 1,
           onChange: value => this.convertAndSetGasLimit(value),
-          title: 'Gas Limit',
-          copy: 'We calculate the suggested gas limit based on network success rates.',
+          title: t('gasLimit'),
+          copy: t('gasLimitCalculation'),
         }),
 
       ]),
@@ -279,16 +280,16 @@ CustomizeGasModal.prototype.render = function () {
 
         h('div.send-v2__customize-gas__revert', {
           onClick: () => this.revert(),
-        }, ['Revert']),
+        }, [t('revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
           h('div.send-v2__customize-gas__cancel', {
             onClick: this.props.hideModal,
-          }, ['CANCEL']),
+          }, [t('cancelCaps')]),
 
           h(`div.send-v2__customize-gas__save${error ? '__error' : ''}`, {
             onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
-          }, ['SAVE']),
+          }, [t('saveCaps')]),
         ]),
 
       ]),

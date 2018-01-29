@@ -9,6 +9,7 @@ const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
 
@@ -113,7 +114,7 @@ WalletView.prototype.render = function () {
         onClick: hideSidebar,
       }),
 
-      h('div.wallet-view__keyring-label', isLoose ? 'IMPORTED' : ''),
+      h('div.wallet-view__keyring-label', isLoose ? t('importedCaps') : ''),
 
       h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },
@@ -130,7 +131,7 @@ WalletView.prototype.render = function () {
           selectedIdentity.name,
         ]),
 
-        h('button.btn-clear.wallet-view__details-button', 'DETAILS'),
+        h('button.btn-clear.wallet-view__details-button', t('detailsCaps')),
       ]),
     ]),
 
@@ -142,7 +143,7 @@ WalletView.prototype.render = function () {
         setTimeout(() => this.setState({ hasCopied: false }), 3000)
       },
     }, [
-      this.state.hasCopied && 'Copied to Clipboard',
+      this.state.hasCopied && t('copiedClipboard'),
       !this.state.hasCopied && `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,
       h('i.fa.fa-clipboard', { style: { marginLeft: '8px' } }),
     ]),
@@ -156,7 +157,7 @@ WalletView.prototype.render = function () {
         showAddTokenPage()
         hideSidebar()
       },
-    }, 'Add Token'),
+    }, t('addToken')),
   ])
 }
 

@@ -6,6 +6,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
 const connect = require('react-redux').connect
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(ExportAccountView)
 
@@ -35,7 +36,7 @@ ExportAccountView.prototype.render = function () {
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    const warning = `Export private keys at your own risk.`
+    const warning = t('exportPrivateKeyWarning')
     return (
       h('div', {
         style: {
@@ -53,7 +54,7 @@ ExportAccountView.prototype.render = function () {
             h('p.error', warning),
             h('input#exportAccount.sizing-input', {
               type: 'password',
-              placeholder: 'confirm password',
+              placeholder: t('confirmPasswordSmall'),
               onKeyPress: this.onExportKeyPress.bind(this),
               style: {
                 position: 'relative',
@@ -74,10 +75,10 @@ ExportAccountView.prototype.render = function () {
                 style: {
                   marginRight: '10px',
                 },
-              }, 'Submit'),
+              }, t('submit')),
               h('button', {
                 onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-              }, 'Cancel'),
+              }, t('cancel')),
             ]),
           (this.props.warning) && (
           h('span.error', {

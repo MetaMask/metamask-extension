@@ -10,6 +10,7 @@ const Identicon = require('../../identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const { formatBalance } = require('../../../util')
+const t = require('../../../../i18n')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -129,7 +130,7 @@ class AccountDropdowns extends Component {
                   actions.showEditAccountModal(identity)
                 },
               }, [
-                'Edit',
+                t('editCaps'),
               ]),
             ]),
 
@@ -159,7 +160,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', 'LOOSE') : null
+      return isLoose ? h('.keyring-label', t('looseCaps')) : null
     } catch (e) { return }
   }
 
@@ -217,7 +218,7 @@ class AccountDropdowns extends Component {
                 fontSize: '16px',
                 lineHeight: '23px',
               },
-            }, 'Create Account'),
+            }, t('createAccount')),
           ],
         ),
         h(
@@ -251,7 +252,7 @@ class AccountDropdowns extends Component {
                 fontSize: '16px',
                 lineHeight: '23px',
               },
-            }, 'Import Account'),
+            }, t('importAccount')),
           ]
         ),
       ]
@@ -302,7 +303,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          'Account Details',
+          t('accDetails'),
         ),
         h(
           DropdownMenuItem,
@@ -318,7 +319,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          'View account on Etherscan',
+          t('etherscanView'),
         ),
         h(
           DropdownMenuItem,
@@ -334,7 +335,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          'Copy Address to clipboard',
+          t('copyAddress'),
         ),
         h(
           DropdownMenuItem,
@@ -346,7 +347,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          'Export Private Key',
+          t('exportPrivateKey'),
         ),
         h(
           DropdownMenuItem,
@@ -361,7 +362,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          'Add Token',
+          t('addToken'),
         ),
 
       ]
@@ -479,4 +480,3 @@ function mapStateToProps (state) {
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDropdowns)
-

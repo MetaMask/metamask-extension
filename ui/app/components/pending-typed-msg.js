@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const PendingTxDetails = require('./pending-typed-msg-details')
+const t = require('../../i18n')
 
 module.exports = PendingMsg
 
@@ -26,7 +27,7 @@ PendingMsg.prototype.render = function () {
           fontWeight: 'bold',
           textAlign: 'center',
         },
-      }, 'Sign Message'),
+      }, t('signMessage')),
 
       // message details
       h(PendingTxDetails, state),
@@ -35,10 +36,10 @@ PendingMsg.prototype.render = function () {
       h('.flex-row.flex-space-around', [
         h('button', {
           onClick: state.cancelTypedMessage,
-        }, 'Cancel'),
+        }, t('cancelCaps')),
         h('button', {
           onClick: state.signTypedMessage,
-        }, 'Sign'),
+        }, t('signCaps')),
       ]),
     ])
 
