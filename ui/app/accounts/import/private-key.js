@@ -32,13 +32,18 @@ PrivateKeyImportView.prototype.render = function () {
 
   return (
     h('div.new-account-import-form__private-key', [
-      h('span.new-account-create-form__instruction', 'Paste your private key string here:'),
 
-      h('input.new-account-import-form__input-password', {
-        type: 'password',
-        id: 'private-key-box',
-        onKeyPress: () => this.createKeyringOnEnter(),
-      }),
+      h('div.new-account-import-form__private-key-password-container', [
+
+        h('span.new-account-import-form__instruction', 'Paste your private key string here:'),
+
+        h('input.new-account-import-form__input-password', {
+          type: 'password',
+          id: 'private-key-box',
+          onKeyPress: () => this.createKeyringOnEnter(),
+        }),
+
+      ]),
 
       h('div.new-account-create-form__buttons', {}, [
 

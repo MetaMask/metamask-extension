@@ -55,11 +55,16 @@
 }
 
 .new-account-import-form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
   &__select-section {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     margin-top: 29px;
+    width: 100%;
   }
 
   &__select-label {
@@ -91,19 +96,25 @@
     }
   }
 
+  &__private-key-password-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+  }
+
   &__instruction {
     color: $scorpion;
     font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
     align-self: flex-start;
-    margin-left: 30px;
   }
 
   &__private-key {
     display: flex;
     flex-flow: column;
-    align-items: center;
+    align-items: flex-start;
     margin-top: 34px;
   }
 
