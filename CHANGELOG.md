@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Bump limit for EventEmitter listeners before warning.
+
 ## 3.13.7 2018-1-22
 
 - Add ability to bypass gas estimation loading indicator.
