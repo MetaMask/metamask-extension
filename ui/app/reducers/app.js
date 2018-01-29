@@ -484,6 +484,11 @@ function reduceApp (state, action) {
         warning: action.value || 'Incorrect password. Try again.',
       })
 
+    case actions.UNLOCK_SUCCEEDED:
+      return extend(appState, {
+        warning: '',
+      })
+
     case actions.SHOW_LOADING:
       return extend(appState, {
         isLoading: true,

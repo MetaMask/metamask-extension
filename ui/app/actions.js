@@ -55,6 +55,7 @@ var actions = {
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
+  unlockSucceeded,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
@@ -78,6 +79,7 @@ var actions = {
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
+  UNLOCK_SUCCEEDED: 'UNLOCK_SUCCEEDED',
   UNLOCK_METAMASK: 'UNLOCK_METAMASK',
   LOCK_METAMASK: 'LOCK_METAMASK',
   tryUnlockMetamask: tryUnlockMetamask,
@@ -284,6 +286,7 @@ function tryUnlockMetamask (password) {
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
+        dispatch(actions.unlockSucceeded())
         dispatch(actions.transitionForward())
         forceUpdateMetamaskState(dispatch)
       }
@@ -886,6 +889,13 @@ function unlockInProgress () {
 function unlockFailed (message) {
   return {
     type: actions.UNLOCK_FAILED,
+    value: message,
+  }
+}
+
+function unlockSucceeded (message) {
+  return {
+    type: actions.UNLOCK_SUCCEEDED,
     value: message,
   }
 }
