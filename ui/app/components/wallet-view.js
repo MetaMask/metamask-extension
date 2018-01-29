@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
+const Tooltip = require('./tooltip.js')
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
@@ -134,17 +135,20 @@ WalletView.prototype.render = function () {
       ]),
     ]),
 
-
-    h('div.wallet-view__address', {
-      onClick: () => {
-        copyToClipboard(selectedAddress)
-        this.setState({ hasCopied: true })
-        setTimeout(() => this.setState({ hasCopied: false }), 3000)
-      },
+    h(Tooltip, {
+      position: 'bottom',
+      title: this.state.hasCopied ? 'Copied to Clipboard' : 'Click to copy.',
     }, [
-      this.state.hasCopied && 'Copied to Clipboard',
-      !this.state.hasCopied && `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,
-      h('i.fa.fa-clipboard', { style: { marginLeft: '8px' } }),
+      h('div.wallet-view__address', {
+        onClick: () => {
+          copyToClipboard(selectedAddress)
+          this.setState({ hasCopied: true })
+          setTimeout(() => this.setState({ hasCopied: false }), 3000)
+        },
+      }, [
+        `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,
+        h('i.fa.fa-clipboard', { style: { marginLeft: '8px' } }),
+      ]),
     ]),
 
     this.renderWalletBalance(),
