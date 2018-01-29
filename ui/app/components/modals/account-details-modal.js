@@ -70,7 +70,7 @@ AccountDetailsModal.prototype.render = function () {
       // Holding on redesign for Export Private Key functionality
       h('button.btn-clear.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
-      }, t('exportPrivateKeyLower')),
+      }, t('exportPrivateKey')),
 
   ])
 }

@@ -392,15 +392,15 @@ ConfirmSendEther.prototype.render = function () {
         onSubmit: this.onSubmit,
       }, [
         // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button', {
+        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
           onClick: (event) => {
             clearSend()
             this.cancel(event, txMeta)
           },
-        }, t('cancelCaps')),
+        }, t('cancel')),
 
         // Accept Button
-        h('button.confirm-screen-confirm-button', [t('confirmCaps')]),
+        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
       ]),
     ])
   )

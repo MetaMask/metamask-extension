@@ -12,7 +12,7 @@ class NewAccountModal extends Component {
     const newAccountNumber = numberOfExistingAccounts + 1
 
     this.state = {
-      newAccountName: `Account ${newAccountNumber}`,
+      newAccountName: `${t('account')} ${newAccountNumber}`,
     }
   }
 
@@ -53,11 +53,11 @@ class NewAccountModal extends Component {
           },
         }, t('importAnAccount')),
 
-        h('div.new-account-modal-content.button', {}, [
+        h('div.new-account-modal-content.button.allcaps', {}, [
           h('button.btn-clear', {
             onClick: () => this.props.createAccount(newAccountName),
           }, [
-            t('saveCaps'),
+            t('save'),
           ]),
         ]),
       ]),

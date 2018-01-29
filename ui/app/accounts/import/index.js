@@ -2,6 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const t = require('../../../i18n')
 import Select from 'react-select'
 
 // Subviews
@@ -9,8 +10,8 @@ const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
 const menuItems = [
-  'Private Key',
-  'JSON File',
+  t('privateKey'),
+  t('jsonFile'),
 ]
 
 module.exports = connect(mapStateToProps)(AccountImportSubview)
@@ -70,9 +71,9 @@ AccountImportSubview.prototype.renderImportView = function () {
   const current = type || menuItems[0]
 
   switch (current) {
-    case 'Private Key':
+    case t('privateKey'):
       return h(PrivateKeyImportView)
-    case 'JSON File':
+    case t('jsonFile'):
       return h(JsonImportView)
     default:
       return h(JsonImportView)

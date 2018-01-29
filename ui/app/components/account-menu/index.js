@@ -156,6 +156,6 @@ AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label', t('importedCaps')) : null
+    return isLoose ? h('.keyring-label.allcaps', t('imported')) : null
   } catch (e) { return }
 }

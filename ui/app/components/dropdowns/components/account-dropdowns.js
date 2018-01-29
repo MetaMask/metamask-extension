@@ -122,7 +122,7 @@ class AccountDropdowns extends Component {
                 flex: '3 3 auto',
               },
             }, [
-              h('span.account-dropdown-edit-button', {
+              h('span.account-dropdown-edit-button.allcaps', {
                 style: {
                   fontSize: '16px',
                 },
@@ -130,7 +130,7 @@ class AccountDropdowns extends Component {
                   actions.showEditAccountModal(identity)
                 },
               }, [
-                t('editCaps'),
+                t('edit'),
               ]),
             ]),
 
@@ -160,7 +160,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', t('looseCaps')) : null
+      return isLoose ? h('.keyring-label.allcaps', t('loose')) : null
     } catch (e) { return }
   }
 
@@ -303,7 +303,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          t('accDetails'),
+          t('accountDetails'),
         ),
         h(
           DropdownMenuItem,

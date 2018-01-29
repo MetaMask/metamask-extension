@@ -283,13 +283,13 @@ CustomizeGasModal.prototype.render = function () {
         }, [t('revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
-          h('div.send-v2__customize-gas__cancel', {
+          h('div.send-v2__customize-gas__cancel.allcaps', {
             onClick: this.props.hideModal,
-          }, [t('cancelCaps')]),
+          }, [t('cancel')]),
 
-          h(`div.send-v2__customize-gas__save${error ? '__error' : ''}`, {
+          h(`div.send-v2__customize-gas__save${error ? '__error' : ''}.allcaps`, {
             onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
-          }, [t('saveCaps')]),
+          }, [t('save')]),
         ]),
 
       ]),

@@ -234,7 +234,7 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
       'send-screen-input-wrapper--error': errorMessage,
     }),
   }, [
-    h('div', [t('toSpecific')]),
+    h('div', [t('to') + ':']),
     h('input.large-input.send-screen-input', {
       name: 'address',
       list: 'addresses',
@@ -291,7 +291,7 @@ SendTokenScreen.prototype.renderAmountInput = function () {
     }),
   }, [
     h('div.send-screen-amount-labels', [
-      h('span', ['Amount']),
+      h('span', [t('amount')]),
       h(CurrencyToggle, {
         currentCurrency: tokenExchangeRate ? selectedCurrency : 'USD',
         currencies: tokenExchangeRate ? [ symbol, 'USD' ] : [],
@@ -356,7 +356,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
     }),
 
     h('div.send-screen-gas-labels', {}, [
-      h('span', [ h('i.fa.fa-bolt'), t('gasFeeSpecific')]),
+      h('span', [ h('i.fa.fa-bolt'), t('gasFee') + ':']),
       h('span', [t('whatsThis')]),
     ]),
     h('div.large-input.send-screen-gas-input', [

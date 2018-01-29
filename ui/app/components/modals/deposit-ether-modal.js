@@ -14,7 +14,9 @@ const COINBASE_ROW_TEXT = t('buyCoinbaseExplainer')
 const SHAPESHIFT_ROW_TITLE = t('depositShapeShift')
 const SHAPESHIFT_ROW_TEXT = t('depositShapeShiftExplainer')
 const FAUCET_ROW_TITLE = t('testFaucet')
-const facuetRowText = networkName => `Get Ether from a faucet for the ${networkName}`
+const facuetRowText = (networkName) => {
+  return t('getEtherFromFaucet', [networkName])
+}
 
 function mapStateToProps (state) {
   return {

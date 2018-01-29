@@ -50,16 +50,16 @@ JsonImportSubview.prototype.render = function () {
 
       h('div.new-account-create-form__buttons', {}, [
 
-        h('button.new-account-create-form__button-cancel', {
+        h('button.new-account-create-form__button-cancel.allcaps', {
           onClick: () => this.props.goHome(),
         }, [
-          t('cancelCaps'),
+          t('cancel'),
         ]),
 
-        h('button.new-account-create-form__button-create', {
+        h('button.new-account-create-form__button-create.allcaps', {
           onClick: () => this.createNewKeychain.bind(this),
         }, [
-          t('importCaps'),
+          t('import'),
         ]),
 
       ]),

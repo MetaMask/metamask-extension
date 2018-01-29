@@ -286,7 +286,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${tokenAmount} ${symbol}`),
-          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} Gas`),
+          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} ${t('gas')}`),
         ]),
       ])
     )
@@ -315,10 +315,10 @@ ConfirmSendToken.prototype.render = function () {
       // Main Send token Card
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
-          h('button.btn-clear.confirm-screen-back-button', {
+          h('button.btn-clear.confirm-screen-back-button.allcaps', {
             onClick: () => editTransaction(txMeta),
-          }, t('editCaps')),
-          h('div.confirm-screen-title', 'Confirm Transaction'),
+          }, t('edit')),
+          h('div.confirm-screen-title', t('confirmTransaction')),
           h('div.confirm-screen-header-tip'),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
@@ -386,12 +386,12 @@ ConfirmSendToken.prototype.render = function () {
         onSubmit: this.onSubmit,
       }, [
         // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button', {
+        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
           onClick: (event) => this.cancel(event, txMeta),
-        }, t('cancelCaps')),
+        }, t('cancel')),
 
         // Accept Button
-        h('button.confirm-screen-confirm-button', [t('confirmCaps')]),
+        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
       ]),
 
 

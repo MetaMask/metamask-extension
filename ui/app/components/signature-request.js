@@ -76,7 +76,7 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
 
   return h('div.request-signature__account', [
 
-    h('div.request-signature__account-text', [t('account')]),
+    h('div.request-signature__account-text', [t('account') + ':']),
 
     h(AccountDropdownMini, {
       selectedAccount,
@@ -155,7 +155,7 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
-  let notice = t('youSign')
+  let notice = t('youSign') + ':'
 
   const { txData } = this.props
   const { type, msgParams: { data } } = txData
@@ -225,10 +225,10 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.request-signature__footer__cancel-button', {
       onClick: cancel,
-    }, t('cancelCaps')),
+    }, t('cancel')),
     h('button.request-signature__footer__sign-button', {
       onClick: sign,
-    }, t('signCaps')),
+    }, t('sign')),
   ])
 }
 

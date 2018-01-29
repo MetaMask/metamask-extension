@@ -80,7 +80,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', t('looseCaps')) : null
+      return isLoose ? h('.keyring-label.allcaps', t('loose')) : null
     } catch (e) { return }
   }
 
@@ -155,7 +155,7 @@ class AccountDropdowns extends Component {
                 fontSize: '24px',
                 marginBottom: '5px',
               },
-            }, 'Import Account'),
+            }, t('importAccount')),
           ]
         ),
       ]
@@ -205,7 +205,7 @@ class AccountDropdowns extends Component {
               actions.showQrView(selected, identity ? identity.name : '')
             },
           },
-          t('qrCode'),
+          t('showQRCode'),
         ),
         h(
           DropdownMenuItem,

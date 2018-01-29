@@ -3,9 +3,9 @@
     "message": "Accept"
   },
   "account": {
-    "message": "Account:"
+    "message": "Account"
   },
-  "accDetails": {
+  "accountDetails": {
     "message": "Account Details"
   },
   "accountName": {
@@ -17,11 +17,14 @@
   "addToken": {
     "message": "Add Token"
   },
+  "amount": {
+    "message": "Amount"
+  },
   "amountPlusGas": {
     "message": "Amount + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Identity Management",
+    "message": "Ethereum Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
@@ -43,10 +46,14 @@
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
   },
+  "betweenMinAndMax": {
+    "message": "must be greater than or equal to $1 and less than or equal to $2.",
+    "description": "helper for inputting hex as decimal input"
+  },
   "borrowDharma": {
     "message": "Borrow With Dharma (Beta)"
   },
-  "buyButton": {
+  "buy": {
     "message": "Buy"
   },
   "buyCoinbase": {
@@ -58,17 +65,11 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelCaps": {
-    "message": "CANCEL"
-  },
   "clickCopy": {
     "message": "Click to Copy"
   },
   "confirm": {
     "message": "Confirm"
-  },
-  "confirmCaps": {
-    "message": "CONFIRM"
   },
   "confirmContract": {
     "message": "Confirm Contract"
@@ -76,8 +77,8 @@
   "confirmPassword": {
     "message": "Confirm Password"
   },
-  "confirmPasswordSmall": {
-    "message": "confirm password"
+  "confirmTransaction": {
+    "message": "Confirm Transaction"
   },
   "continueToCoinbase": {
     "message": "Continue to Coinbase"
@@ -109,14 +110,18 @@
   "copyPrivateKey": {
     "message": "This is your private key (click to copy)"
   },
+  "create": {
+    "message": "Create"
+  },
   "createAccount": {
     "message": "Create Account"
   },
-  "createCaps": {
-    "message": "CREATE"
-  },
   "createDen": {
     "message": "Create"
+  },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type (cryptocurrencies)"
   },
   "customGas": {
     "message": "Customize Gas"
@@ -139,9 +144,6 @@
   "depositBTC": {
     "message": "Deposit your BTC to the address below:"
   },
-  "depositButton": {
-    "message": "DEPOSIT"
-  },
   "depositEth": {
     "message": "Deposit Eth"
   },
@@ -160,8 +162,8 @@
   "depositShapeShiftExplainer": {
     "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
   },
-  "detailsCaps": {
-    "message": "DETAILS"
+  "details": {
+    "message": "Details"
   },
   "directDeposit": {
     "message": "Direct Deposit"
@@ -175,11 +177,11 @@
   "done": {
     "message": "Done"
   },
+  "edit": {
+    "message": "Edit"
+  },
   "editAccountName": {
     "message": "Edit Account Name"
-  },
-  "editCaps": {
-    "message": "EDIT"
   },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
@@ -196,17 +198,19 @@
   "exportPrivateKey": {
     "message": "Export Private Key"
   },
-  "exportPrivateKeyLower": {
-    "message": "Export private key"
-  },
   "exportPrivateKeyWarning": {
     "message": "Export private keys at your own risk."
   },
   "failed": {
     "message": "Failed"
   },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
   "fileImportFail": {
-    "message": "File import not working? Click here!"
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
   },
   "from": {
     "message": "From"
@@ -214,11 +218,12 @@
   "fromShapeShift": {
     "message": "From ShapeShift"
   },
+  "gas": {
+    "message": "Gas",
+    "description": "Short indication of gas cost"
+  },
   "gasFee": {
     "message": "Gas Fee"
-  },
-  "gasFeeSpecific": {
-    "message": "Gas fee:"
   },
   "gasLimit": {
     "message": "Gas Limit"
@@ -244,11 +249,20 @@
   "getEther": {
     "message": "Get Ether"
   },
-  "here": {
-    "message": "here"
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
   },
-  "hideCaps": {
-    "message": "HIDE"
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "here": {
+    "message": "here",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Hide"
   },
   "hideToken": {
     "message": "Hide Token"
@@ -260,7 +274,8 @@
     "message": "How would you like to deposit Ether?"
   },
   "import": {
-    "message": "Import"
+    "message": "Import",
+    "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Import Account"
@@ -268,14 +283,12 @@
   "importAnAccount": {
     "message": "Import an account"
   },
-  "importCaps": {
-    "message": "IMPORT"
-  },
   "importDen": {
     "message": "Import Existing DEN"
   },
-  "importedCaps": {
-    "message": "IMPORTED"
+  "imported": {
+    "message": "Imported",
+    "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
     "message": "Info & Help"
@@ -292,8 +305,16 @@
   "invalidRequest": {
     "message": "Invalid Request"
   },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
   "kovan": {
     "message": "Kovan Test Network"
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
   },
   "limit": {
     "message": "Limit"
@@ -310,17 +331,14 @@
   "logout": {
     "message": "Log out"
   },
-  "looseCaps": {
-    "message": "LOOSE"
+  "loose": {
+    "message": "Loose"
   },
   "mainnet": {
     "message": "Main Ethereum Network"
   },
   "message": {
     "message": "Message"
-  },
-  "messageCaps": {
-    "message": "MESSAGE"
   },
   "min": {
     "message": "Minimum"
@@ -332,10 +350,12 @@
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
   "needImportFile": {
-    "message": "You must select a file to import."
+    "message": "You must select a file to import.",
+    "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
-    "message": "You must enter a password for the selected file."
+    "message": "You must enter a password for the selected file.",
+    "description": "Password and file needed to import an account"
   },
   "networks": {
     "message": "Networks"
@@ -377,19 +397,27 @@
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
   },
   "or": {
-    "message": "or"
+    "message": "or",
+    "description": "choice between creating or importing a new account"
   },
   "passwordMismatch": {
-    "message": "passwords don't match"
+    "message": "passwords don't match",
+    "description": "in password creation process, the two new password fields did not match"
   },
   "passwordShort": {
-    "message": "password not long enough"
+    "message": "password not long enough",
+    "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
-    "message": "Paste your private key string here:"
+    "message": "Paste your private key string here:",
+    "description": "For importing an account from a private key"
   },
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
+  },
+  "privateKey": {
+    "message": "Private Key",
+    "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
@@ -434,16 +462,21 @@
     "message": "Ropsten Test Network"
   },
   "sampleAccountName": {
-    "message": "E.g. My new account"
+    "message": "E.g. My new account",
+    "description": "Help user understand concept of adding a human-readable name to their account"
   },
-  "saveCaps": {
-    "message": "SAVE"
+  "save": {
+    "message": "Save"
+  },
+  "saveAsFile": {
+    "message": "Save as File",
+    "description": "Account export process"
   },
   "selectService": {
     "message": "Select Service"
   },
-  "sendButton": {
-    "message": "SEND"
+  "send": {
+    "message": "Send"
   },
   "sendTokens": {
     "message": "Send Tokens"
@@ -460,11 +493,11 @@
   "showPrivateKeys": {
     "message": "Show Private Keys"
   },
+  "showQRCode": {
+    "message": "Show QR Code"
+  },
   "sign": {
     "message": "Sign"
-  },
-  "signCaps": {
-    "message": "SIGN"
   },
   "signMessage": {
     "message": "Sign Message"
@@ -490,11 +523,12 @@
   "to": {
     "message": "To"
   },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
   "tokenBalance": {
     "message": "Your Token Balance is:"
-  },
-  "toSpecific": {
-    "message": "To:"
   },
   "total": {
     "message": "Total"
@@ -509,7 +543,8 @@
     "message": "Transfers"
   },
   "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them "
+    "message": "We had trouble loading your token balances. You can view them ",
+    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "Type Your Password"
@@ -532,6 +567,10 @@
   "unknownNetworkId": {
     "message": "Unknown network ID"
   },
+  "usaOnly": {
+    "message": "USA only",
+    "description": "Using this exchange is limited to people inside the USA"
+  },
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
@@ -548,9 +587,6 @@
     "message": "Your signature is being requested"
   },
   "youSign": {
-    "message": "You are signing:"
-  },
-  "youSignCaps": {
-    "message": "YOU ARE SIGNING"
+    "message": "You are signing"
   }
 }

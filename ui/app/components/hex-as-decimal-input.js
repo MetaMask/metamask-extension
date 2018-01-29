@@ -127,11 +127,11 @@ HexAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${min} and less than or equal to ${max}.`
+    message += t('betweenMinAndMax', [min, max])
   } else if (min) {
-    message += `must be greater than or equal to ${min}.`
+    message += t('greaterThanMin', [min])
   } else if (max) {
-    message += `must be less than or equal to ${max}.`
+    message += t('lessThanMax', [max])
   } else {
     message += t('invalidInput')
   }

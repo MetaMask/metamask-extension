@@ -61,7 +61,7 @@ EditAccountNameModal.prototype.render = function () {
         value: this.state.inputText,
       }, []),
 
-      h('button.btn-clear.edit-account-name-modal-save-button', {
+      h('button.btn-clear.edit-account-name-modal-save-button.allcaps', {
         onClick: () => {
           if (this.state.inputText.length !== 0) {
             saveAccountLabel(identity.address, this.state.inputText)
@@ -70,7 +70,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        t('saveCaps'),
+        t('save'),
       ]),
 
     ]),

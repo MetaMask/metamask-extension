@@ -56,7 +56,7 @@ ConfirmDeployContract.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
     this.setState({ submitting: false })
   }
 }
@@ -272,9 +272,9 @@ ConfirmDeployContract.prototype.render = function () {
       // Main Send token Card
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
-          h('button.confirm-screen-back-button', {
+          h('button.confirm-screen-back-button.allcaps', {
             onClick: () => backToAccountDetail(selectedAddress),
-          }, 'BACK'),
+          }, t('back')),
           h('div.confirm-screen-title', t('confirmContract')),
           h('div.confirm-screen-header-tip'),
         ]),
@@ -336,12 +336,12 @@ ConfirmDeployContract.prototype.render = function () {
         onSubmit: this.onSubmit,
       }, [
         // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button', {
+        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
           onClick: (event) => this.cancel(event, txMeta),
-        }, t('cancelCaps')),
+        }, t('cancel')),
 
         // Accept Button
-        h('button.confirm-screen-confirm-button', [t('confirmCaps')]),
+        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
 
       ]),
     ])

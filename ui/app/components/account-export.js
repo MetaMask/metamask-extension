@@ -54,7 +54,7 @@ ExportAccountView.prototype.render = function () {
             h('p.error', warning),
             h('input#exportAccount.sizing-input', {
               type: 'password',
-              placeholder: t('confirmPasswordSmall'),
+              placeholder: t('confirmPassword').toLowerCase(),
               onKeyPress: this.onExportKeyPress.bind(this),
               style: {
                 position: 'relative',
@@ -99,7 +99,7 @@ ExportAccountView.prototype.render = function () {
         margin: '0 20px',
       },
     }, [
-      h('label', 'Your private key (click to copy):'),
+      h('label', t('copyPrivateKey') + ':'),
       h('p.error.cursor-pointer', {
         style: {
           textOverflow: 'ellipsis',
@@ -113,13 +113,13 @@ ExportAccountView.prototype.render = function () {
       }, plainKey),
       h('button', {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-      }, 'Done'),
+      }, t('done')),
       h('button', {
         style: {
           marginLeft: '10px',
         },
         onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
-      }, 'Save as File'),
+      }, t('saveAsFile')),
     ])
   }
 }

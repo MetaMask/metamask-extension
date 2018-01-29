@@ -237,7 +237,7 @@ ShapeshiftForm.prototype.render = function () {
         className: btnClass,
         disabled: !token,
         onClick: () => this.onBuyWithShapeShift(),
-      }, [t('buyButton')]),
+      }, [t('buy')]),
 
     ])
 }

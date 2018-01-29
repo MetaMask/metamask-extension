@@ -114,7 +114,7 @@ WalletView.prototype.render = function () {
         onClick: hideSidebar,
       }),
 
-      h('div.wallet-view__keyring-label', isLoose ? t('importedCaps') : ''),
+      h('div.wallet-view__keyring-label.allcaps', isLoose ? t('imported') : ''),
 
       h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },
@@ -131,7 +131,7 @@ WalletView.prototype.render = function () {
           selectedIdentity.name,
         ]),
 
-        h('button.btn-clear.wallet-view__details-button', t('detailsCaps')),
+        h('button.btn-clear.wallet-view__details-button.allcaps', t('details')),
       ]),
     ]),
 

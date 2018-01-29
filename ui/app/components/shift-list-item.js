@@ -81,7 +81,7 @@ ShiftListItem.prototype.renderUtilComponents = function () {
           value: this.props.depositAddress,
         }),
         h(Tooltip, {
-          title: 'QR Code',
+          title: t('qrCode'),
         }, [
           h('i.fa.fa-qrcode.pointer.pop-hover', {
             onClick: () => props.dispatch(actions.reshowQrCode(props.depositAddress, props.depositType)),
@@ -141,7 +141,7 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, `${props.depositType} to ETH via ShapeShift`),
+        }, t('toETHviaShapeShift', [props.depositType])),
         h('div', t('noDeposits')),
         h('div', {
           style: {
@@ -164,7 +164,7 @@ ShiftListItem.prototype.renderInfo = function () {
             color: '#ABA9AA',
             width: '100%',
           },
-        }, `${props.depositType} to ETH via ShapeShift`),
+        }, t('toETHviaShapeShift', [props.depositType])),
         h('div', t('conversionProgress')),
         h('div', {
           style: {
