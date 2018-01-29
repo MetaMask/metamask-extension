@@ -184,7 +184,7 @@
     "gulp-replace": "^0.6.1",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-util": "^3.0.7",
-    "gulp-watch": "^4.3.5",
+    "gulp-watch": "^5.0.0",
     "gulp-zip": "^4.0.0",
     "gulp-eslint": "^4.0.0",
     "isomorphic-fetch": "^2.2.1",
