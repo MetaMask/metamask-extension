@@ -186,8 +186,13 @@ AddTokenScreen.prototype.validateInputs = function () {
   const state = this.state
   const identitiesList = Object.keys(this.props.identities)
   const { address, symbol, decimals } = state
-  const standardAddress = ethUtil.addHexPrefix(address).toLowerCase()
 
+  if (!address) {
+    msg += 'Must enter a valid token address.'
+    return this.setState({ warning: msg })
+  }
+
+  const standardAddress = ethUtil.addHexPrefix(address).toLowerCase()
   const validAddress = ethUtil.isValidAddress(address)
   if (!validAddress) {
     msg += 'Address is invalid. '
@@ -201,7 +206,7 @@ AddTokenScreen.prototype.validateInputs = function () {
   const symbolLen = symbol.trim().length
   const validSymbol = symbolLen > 0 && symbolLen < 10
   if (!validSymbol) {
-    msg += 'Symbol must be between 0 and 10 characters.'
+    msg += 'Symbol must be between 0 and 10 characters. '
   }
 
   const ownAddress = identitiesList.includes(standardAddress)
