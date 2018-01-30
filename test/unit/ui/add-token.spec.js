@@ -1,11 +1,10 @@
-const React = require('react')
 const assert = require('assert')
 const { createMockStore } = require('redux-test-utils')
 const h = require('react-hyperscript')
-const { shallowWithStore, mountWithStore } = require('../../lib/shallow-with-store')
+const { shallowWithStore } = require('../../lib/shallow-with-store')
 const AddTokenScreen = require('../../../ui/app/add-token')
 
-describe.only('Add Token Screen', function () {
+describe('Add Token Screen', function () {
   let addTokenComponent, store, component
   const mockState = {
     metamask: {
