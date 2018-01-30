@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add warning for importing some kinds of files.
+
 ## 3.13.8 2018-1-29
 
 - Fix provider for Kovan network.
