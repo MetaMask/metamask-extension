@@ -3,6 +3,7 @@
 ## Current Master
 
 - Remove BlacklistController from disk state
+- Add warning for importing some kinds of files.
 
 ## 3.13.8 2018-1-29
 
