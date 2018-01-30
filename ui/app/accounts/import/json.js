@@ -81,6 +81,12 @@ JsonImportSubview.prototype.createKeyringOnEnter = function (event) {
 
 JsonImportSubview.prototype.createNewKeychain = function () {
   const state = this.state
+
+  if (!state) {
+    const message = 'You must select a valid file to import.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
   const { fileContents } = state
 
   if (!fileContents) {
