@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Remove BlacklistController from disk state
+
 ## 3.13.8 2018-1-29
 
 - Fix provider for Kovan network.
