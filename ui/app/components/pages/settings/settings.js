@@ -11,6 +11,7 @@ const { exportAsFile } = require('../../../util')
 const SimpleDropdown = require('../../dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -230,18 +231,18 @@ class Settings extends Component {
   }
 
   render () {
-    const { warning } = this.props
+    const { warning, isMascara } = this.props
 
     return (
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
-        this.renderBlockieOptIn(),
         this.renderCurrentConversion(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
         this.renderSeedWords(),
-        this.renderOldUI(),
+        !isMascara && this.renderOldUI(),
+        this.renderBlockieOptIn(),
       ])
     )
   }
@@ -257,12 +258,14 @@ Settings.propTypes = {
   setFeatureFlagToBeta: PropTypes.func,
   warning: PropTypes.string,
   history: PropTypes.object,
+  isMascara: PropTypes.bool,
 }
 
 const mapStateToProps = state => {
   return {
     metamask: state.metamask,
     warning: state.appState.warning,
+    isMascara: state.metamask.isMascara,
   }
 }
 
@@ -273,7 +276,10 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
-    setFeatureFlagToBeta: () => dispatch(actions.setFeatureFlag('betaUI', false)),
+    setFeatureFlagToBeta: () => {
+      return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+        .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+    },
   }
 }
 

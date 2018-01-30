@@ -52,7 +52,10 @@ class RestoreVaultPage extends PersistentForm {
     // submit
     this.props.createNewVaultAndRestore(password, seed)
       .then(() => history.push(DEFAULT_ROUTE))
-      .catch(({ message }) => this.setState({ error: message }))
+      .catch(({ message }) => {
+        this.setState({ error: message })
+        log.error(message)
+      })
   }
 
   render () {

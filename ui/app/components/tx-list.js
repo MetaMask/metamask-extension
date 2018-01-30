@@ -42,23 +42,22 @@ TxList.prototype.componentWillMount = function () {
 }
 
 TxList.prototype.render = function () {
-  return h('div.flex-column.tx-list-container', {}, [
-
+  return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
         h('div', 'transactions'),
       ]),
     ]),
-
-    this.renderTransaction(),
-
+    h('div.flex-column.tx-list-container', {}, [
+      this.renderTransaction(),
+    ]),
   ])
 }
 
 TxList.prototype.renderTransaction = function () {
   const { txsToRender, conversionRate } = this.props
   return txsToRender.length
-    ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate))
+    ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate, i))
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
@@ -67,12 +66,16 @@ TxList.prototype.renderTransaction = function () {
 }
 
 // TODO: Consider moving TxListItem into a separate component
-TxList.prototype.renderTransactionListItem = function (transaction, conversionRate) {
+TxList.prototype.renderTransactionListItem = function (transaction, conversionRate, index) {
   // console.log({transaction})
   // refer to transaction-list.js:line 58
 
   if (transaction.key === 'shapeshift') {
-    return h(ShiftListItem, transaction)
+    return h('div', {
+      key: `shapeshift${index}`,
+    }, [
+      h(ShiftListItem, transaction),
+    ])
   }
 
   const props = {

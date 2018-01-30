@@ -5,6 +5,8 @@ const { Switch, Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
+const classnames = require('classnames')
+
 // mascara
 const MascaraCreatePassword = require('../../mascara/src/app/first-time/create-password-screen').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
@@ -234,14 +236,14 @@ class App extends Component {
       showNetworkDropdown,
       hideNetworkDropdown,
       currentView,
-      isMascara,
-      isOnboarding,
-      history,
     } = this.props
 
     if (window.METAMASK_UI_TYPE === 'notification') {
       return null
     }
+
+    const props = this.props
+    const {isMascara, isOnboarding} = props
 
     // Do not render header if user is in mascara onboarding
     if (isMascara && isOnboarding) {
@@ -249,7 +251,7 @@ class App extends Component {
     }
 
     // Do not render header if user is in mascara buy ether
-    if (isMascara && currentView.name === 'buyEth') {
+    if (isMascara && props.currentView.name === 'buyEth') {
       return null
     }
 
@@ -260,7 +262,9 @@ class App extends Component {
       }, [
 
         h('.app-header.flex-row.flex-space-between', {
-          style: {},
+          className: classnames({
+            'app-header--initialized': !isOnboarding,
+          }),
         }, [
           h('div.app-header-contents', {}, [
             h('div.left-menu-wrapper', {
@@ -268,19 +272,13 @@ class App extends Component {
             }, [
               // mini logo
               h('img.metafox-icon', {
-                height: 29,
-                width: 29,
-                src: '/images/icon-128.png',
+                height: 42,
+                width: 42,
+                src: '/images/metamask-fox.svg',
               }),
 
               // metamask name
-              h('h1', {
-                style: {
-                  position: 'relative',
-                  paddingLeft: '9px',
-                  color: '#5B5D67',
-                },
-              }, 'MetaMask'),
+              h('h1', 'MetaMask'),
 
             ]),
 
@@ -313,6 +311,7 @@ class App extends Component {
             ]),
           ]),
         ]),
+
       ])
     )
   }

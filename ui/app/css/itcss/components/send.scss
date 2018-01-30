@@ -526,8 +526,9 @@
   }
 
   &__form {
-    margin: 13px 0;
+    padding: 13px 0;
     width: 100%;
+    overflow-y: auto;
 
     @media screen and (max-width: $break-small) {
       padding: 13px 0;
@@ -587,7 +588,7 @@
       width: 100%;
       height: 100%;
     }
-    
+
     &__list {
       z-index: 1050;
       position: absolute;
@@ -651,11 +652,11 @@
     border: 1px solid $curious-blue;
     border-radius: 4px;
     background-color: $white;
-    padding: 5px;
     position: absolute;
     right: 15px;
     top: 14px;
     cursor: pointer;
+    font-size: 1em;
   }
 
   &__sliders-icon {
@@ -677,38 +678,13 @@
     border-top: 1px solid $alto;
     background: $white;
     padding: 0 12px;
+    flex-shrink: 0;
   }
 
   &__next-btn,
-  &__cancel-btn,
-  &__next-btn__disabled {
-    width: 163px;
-    text-align: center;
-    height: 55px;
-    border-radius: 2px;
-    background-color: $white;
-    font-family: Roboto;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 21px;
-    border: 1px solid;
-    margin: 0 4px;
-  }
-
-  &__next-btn,
-  &__next-btn__disabled {
-    color: $curious-blue;
-    border-color: $curious-blue;
-  }
-
-  &__next-btn__disabled {
-    opacity: .5;
-    cursor: auto;
-  }
-
   &__cancel-btn {
-    color: $dusty-gray;
-    border-color: $dusty-gray;
+    width: 163px;
+    margin: 0 4px;
   }
 
   &__customize-gas {

@@ -136,7 +136,7 @@ WalletView.prototype.render = function () {
           selectedIdentity.name,
         ]),
 
-        h('button.wallet-view__details-button', 'DETAILS'),
+        h('button.btn-clear.wallet-view__details-button', 'DETAILS'),
       ]),
     ]),
 
@@ -157,7 +157,7 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h('button.wallet-view__add-token-button', {
+    h('button.btn-clear.wallet-view__add-token-button', {
       onClick: () => history.push(ADD_TOKEN_ROUTE),
     }, 'Add Token'),
   ])

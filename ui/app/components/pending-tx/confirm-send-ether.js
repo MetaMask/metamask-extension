@@ -231,8 +231,8 @@ ConfirmSendEther.prototype.render = function () {
       // Main Send token Card
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
-          h('button.confirm-screen-back-button', {
-            onClick: () => this.editTransaction(txMeta),
+          h('button.btn-clear.confirm-screen-back-button', {
+            onClick: () => editTransaction(txMeta),
           }, 'EDIT'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
           h('div.confirm-screen-header-tip'),
@@ -433,7 +433,9 @@ ConfirmSendEther.prototype.onSubmit = function (event) {
 
 ConfirmSendEther.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
-  this.props.cancelTransaction(txMeta)
+  const { cancelTransaction } = this.props
+
+  cancelTransaction(txMeta)
     .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
@@ -457,26 +459,6 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
-
-  if (props.send.editingTransactionId) {
-    const {
-      send: {
-        memo,
-        amount: value,
-        gasLimit: gas,
-        gasPrice,
-      },
-    } = props
-    const { txParams: { from, to } } = txData
-    txData.txParams = {
-      from: ethUtil.addHexPrefix(from),
-      to: ethUtil.addHexPrefix(to),
-      memo: memo && ethUtil.addHexPrefix(memo),
-      value: ethUtil.addHexPrefix(value),
-      gas: ethUtil.addHexPrefix(gas),
-      gasPrice: ethUtil.addHexPrefix(gasPrice),
-    }
-  }
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

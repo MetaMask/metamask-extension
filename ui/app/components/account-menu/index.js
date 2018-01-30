@@ -33,15 +33,28 @@ function mapDispatchToProps (dispatch) {
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     showAccountDetail: address => {
       dispatch(actions.showAccountDetail(address))
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
     lockMetamask: () => {
       dispatch(actions.lockMetamask())
-      dispatch(actions.displayWarning(null))
+      dispatch(actions.hideWarning())
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
-    showNewAccountModal: () => {
-      dispatch(actions.showModal({ name: 'NEW_ACCOUNT' }))
+    showConfigPage: () => {
+      dispatch(actions.showConfigPage())
+      dispatch(actions.hideSidebar())
+      dispatch(actions.toggleAccountMenu())
+    },
+    showNewAccountPage: (formToSelect) => {
+      dispatch(actions.showNewAccountPage(formToSelect))
+      dispatch(actions.hideSidebar())
+      dispatch(actions.toggleAccountMenu())
+    },
+    showInfoPage: () => {
+      dispatch(actions.showInfoPage())
+      dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
   }
@@ -51,7 +64,7 @@ AccountMenu.prototype.render = function () {
   const {
     isAccountMenuOpen,
     toggleAccountMenu,
-    showNewAccountModal,
+    showNewAccountPage,
     lockMetamask,
     history,
   } = this.props
@@ -73,15 +86,12 @@ AccountMenu.prototype.render = function () {
     h('div.account-menu__accounts', this.renderAccounts()),
     h(Divider),
     h(Item, {
-      onClick: showNewAccountModal,
+      onClick: () => showNewAccountPage('CREATE'),
       icon: h('img', { src: 'images/plus-btn-white.svg' }),
       text: 'Create Account',
     }),
     h(Item, {
-      onClick: () => {
-        toggleAccountMenu()
-        history.push(IMPORT_ACCOUNT_ROUTE)
-      },
+      onClick: () => showNewAccountPage('IMPORT'),
       icon: h('img', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),

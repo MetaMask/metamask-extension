@@ -58,6 +58,7 @@ function reduceApp (state, action) {
     isLoading: false,
     // Used to display error text
     warning: null,
+    buyView: {},
   }, state.appState)
 
   switch (action.type) {
@@ -169,13 +170,30 @@ function reduceApp (state, action) {
       })
 
     case actions.SHOW_IMPORT_PAGE:
-
       return extend(appState, {
         currentView: {
           name: 'import-menu',
         },
         transForward: true,
         warning: null,
+      })
+
+    case actions.SHOW_NEW_ACCOUNT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'new-account-page',
+          context: action.formToSelect,
+        },
+        transForward: true,
+        warning: null,
+      })
+
+    case actions.SET_NEW_ACCOUNT_FORM:
+      return extend(appState, {
+        currentView: {
+          name: appState.currentView.name,
+          context: action.formToSelect,
+        },
       })
 
     case actions.SHOW_INFO_PAGE:
@@ -371,7 +389,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'confTx',
-          context: action.id ? indexForPending(state, action.id) : indexForLastPending(state),
+          context: action.id ? indexForPending(state, action.id) : 0,
         },
         transForward: action.transForward,
         warning: null,
@@ -391,36 +409,36 @@ function reduceApp (state, action) {
 
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
-      // const otherUnconfActions = getUnconfActionList(state)
-      // .filter(tx => tx.id !== action.value)
-      // const hasOtherUnconfActions = otherUnconfActions.length > 0
+      const otherUnconfActions = getUnconfActionList(state)
+        .filter(tx => tx.id !== action.value)
+      const hasOtherUnconfActions = otherUnconfActions.length > 0
 
-      // if (hasOtherUnconfActions) {
-      //   log.debug('reducer detected txs - rendering confTx view')
-      //   return extend(appState, {
-      //     transForward: false,
-      //     currentView: {
-      //       name: 'confTx',
-      //       context: 0,
-      //     },
-      //     warning: null,
-      //   })
-      // } else {
-      log.debug('attempting to close popup')
-      return extend(appState, {
-        // indicate notification should close
-        shouldClose: true,
-        transForward: false,
-        warning: null,
-        currentView: {
-          name: 'accountDetail',
-          context: state.metamask.selectedAddress,
-        },
-        accountDetail: {
-          subview: 'transactions',
-        },
-      })
-      // }
+      if (hasOtherUnconfActions) {
+        log.debug('reducer detected txs - rendering confTx view')
+        return extend(appState, {
+          transForward: false,
+          currentView: {
+            name: 'confTx',
+            context: 0,
+          },
+          warning: null,
+        })
+      } else {
+        log.debug('attempting to close popup')
+        return extend(appState, {
+          // indicate notification should close
+          shouldClose: true,
+          transForward: false,
+          warning: null,
+          currentView: {
+            name: 'accountDetail',
+            context: state.metamask.selectedAddress,
+          },
+          accountDetail: {
+            subview: 'transactions',
+          },
+        })
+      }
 
     case actions.NEXT_TX:
       return extend(appState, {
@@ -591,8 +609,8 @@ function reduceApp (state, action) {
             marketinfo: action.value.marketinfo,
             coinOptions: action.value.coinOptions,
           },
-          buyAddress: appState.buyView.buyAddress,
-          amount: appState.buyView.amount,
+          buyAddress: action.value.buyAddress || appState.buyView.buyAddress,
+          amount: appState.buyView.amount || 0,
         },
       })
 
@@ -661,6 +679,6 @@ function indexForPending (state, txId) {
   return index
 }
 
-function indexForLastPending (state) {
-  return getUnconfActionList(state).length
-}
+// function indexForLastPending (state) {
+//   return getUnconfActionList(state).length
+// }

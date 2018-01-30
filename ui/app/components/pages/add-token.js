@@ -3,6 +3,7 @@ const Component = require('react').Component
 const classnames = require('classnames')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const R = require('ramda')
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
 const TokenBalance = require('../../components/token-balance')
@@ -17,7 +18,10 @@ const fuse = new Fuse(contractList, {
     distance: 100,
     maxPatternLength: 32,
     minMatchCharLength: 1,
-    keys: ['address', 'name', 'symbol'],
+    keys: [
+      { name: 'name', weight: 0.5 },
+      { name: 'symbol', weight: 0.5 },
+    ],
 })
 // const actions = require('./actions')
 const actions = require('../../actions')
@@ -219,9 +223,11 @@ AddTokenScreen.prototype.renderCustomForm = function () {
 
 AddTokenScreen.prototype.renderTokenList = function () {
   const { searchQuery = '', selectedTokens } = this.state
-  const results = searchQuery
-    ? fuse.search(searchQuery) || []
-    : contractList
+  const fuseSearchResult = fuse.search(searchQuery)
+  const addressSearchResult = contractList.filter(token => {
+    return token.address.toLowerCase() === searchQuery.toLowerCase()
+  })
+  const results = [...addressSearchResult, ...fuseSearchResult]
 
   return Array(6).fill(undefined)
     .map((_, i) => {
@@ -297,12 +303,12 @@ AddTokenScreen.prototype.renderConfirmation = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-secondary', {
-          onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
-        }, 'Add Tokens'),
-        h('button.btn-tertiary', {
+        h('button.btn-cancel.add-token__button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
         }, 'Back'),
+        h('button.btn-clear.add-token__button', {
+          onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
+        }, 'Add Tokens'),
       ]),
     ])
   )
@@ -347,12 +353,12 @@ AddTokenScreen.prototype.render = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-secondary', {
-          onClick: this.onNext,
-        }, 'Next'),
-        h('button.btn-tertiary', {
+        h('button.btn-cancel.add-token__button', {
           onClick: () => history.goBack(),
         }, 'Cancel'),
+        h('button.btn-clear.add-token__button', {
+          onClick: this.onNext,
+        }, 'Next'),
       ]),
     ])
   )

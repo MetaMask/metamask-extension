@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
 const NetworkIndicator = require('./components/network')
+const LoadingIndicator = require('./components/loading')
 const txHelper = require('../lib/tx-helper')
 const isPopupOrNotification = require('../../app/scripts/lib/is-popup-or-notification')
 
@@ -59,6 +60,11 @@ ConfirmTxScreen.prototype.render = function () {
   return (
 
     h('.flex-column.flex-grow', [
+
+      h(LoadingIndicator, {
+        isLoading: txData.loadingDefaults,
+        loadingMessage: 'Estimating transaction cost…',
+      }),
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [

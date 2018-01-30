@@ -6,9 +6,43 @@
   background-color: #02c9b1; // TODO: reusable color in colors.css
 }
 
-button.btn-clear {
+.btn-clear {
   background: $white;
-  border: 1px solid;
+  text-align: center;
+  padding: .8rem 1rem;
+  color: $curious-blue;
+  border: 2px solid $spindle;
+  border-radius: 4px;
+  font-size: .85rem;
+  font-weight: 400;
+  transition: border-color .3s ease;
+
+  &:hover {
+    border-color: $curious-blue;
+  }
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: .5;
+    pointer-events: none;
+  }
+}
+
+.btn-cancel {
+  background: $white;
+  text-align: center;
+  padding: .9rem 1rem;
+  color: $scorpion;
+  border: 2px solid $dusty-gray;
+  border-radius: 4px;
+  font-size: .85rem;
+  font-weight: 400;
+  transition: border-color .3s ease;
+
+  &:hover {
+    border-color: $scorpion;
+  }
 }
 
 // No longer used in flat design, remove when modal buttons done

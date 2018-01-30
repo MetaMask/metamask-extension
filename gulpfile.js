@@ -19,10 +19,14 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
+var asyncEach = require('async/each')
+var exec = require('child_process').exec
 var sass = require('gulp-sass')
 var autoprefixer = require('gulp-autoprefixer')
 var gulpStylelint = require('gulp-stylelint')
 var stylefmt = require('gulp-stylefmt')
+var uglify = require('gulp-uglify-es').default
+var babel = require('gulp-babel')
 
 
 var disableDebugTools = gutil.env.disableDebugTools
@@ -159,6 +163,18 @@ gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
 
+// record deps
+
+gulp.task('deps', function (cb) {
+  exec('npm ls', (err, stdoutOutput, stderrOutput) => {
+    if (err) return cb(err)
+    const browsers = ['firefox','chrome','edge','opera']
+    asyncEach(browsers, (target, done) => {
+      fs.writeFile(`./dist/${target}/deps.txt`, stdoutOutput, done)
+    }, cb)
+  })
+})
+
 // lint js
 
 gulp.task('lint', function () {
@@ -232,8 +248,18 @@ var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
 var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`dev:js:${jsFile}`,   bundleTask({ watch: true,  label: jsFile, filename: `${jsFile}.js` }))
-  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`dev:js:${jsFile}`,   bundleTask({
+    watch: true,
+    label: jsFile,
+    filename: `${jsFile}.js`,
+    isBuild: false
+  }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({
+    watch: false,
+    label: jsFile,
+    filename: `${jsFile}.js`,
+    isBuild: true
+  }))
 })
 
 // inpage must be built before all other scripts:
@@ -267,12 +293,18 @@ gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
+// set env var for production
+gulp.task('apply-prod-environment', function(done) {
+    process.env.NODE_ENV = 'production'
+    done()
+});
+
 // high level tasks
 
 gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
 
-gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
-gulp.task('dist', gulp.series('build', 'zip'))
+gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy', 'deps')))
+gulp.task('dist', gulp.series('apply-prod-environment', 'build', 'zip'))
 
 // task generators
 
@@ -365,7 +397,6 @@ function bundleTask(opts) {
           throw err
         }
       })
-
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
@@ -375,6 +406,8 @@ function bundleTask(opts) {
       // sourcemaps
       // loads map from browserify file
       .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
+      // Minification
+      .pipe(gulpif(opts.isBuild, uglify()))
       // writes .map file
       .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles

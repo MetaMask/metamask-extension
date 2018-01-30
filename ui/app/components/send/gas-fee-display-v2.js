@@ -32,8 +32,9 @@ GasFeeDisplay.prototype.render = function () {
       })
       : h('div.currency-display', 'Loading...'),
 
-    h('div.send-v2__sliders-icon-container', {
+    h('button.send-v2__sliders-icon-container', {
       onClick,
+      disabled: !gasTotal,
     }, [
       h('i.fa.fa-sliders.send-v2__sliders-icon'),
     ]),

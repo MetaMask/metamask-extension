@@ -74,18 +74,14 @@ TxView.prototype.renderButtons = function () {
   return !selectedToken
     ? (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear', {
-          style: {
-            textAlign: 'center',
-          },
+        h('button.btn-clear.hero-balance-button', {
           onClick: () => showModal({
-            name: 'BUY',
+            name: 'DEPOSIT_ETHER',
           }),
         }, 'DEPOSIT'),
 
-        h('button.btn-clear', {
+        h('button.btn-clear.hero-balance-button', {
           style: {
-            textAlign: 'center',
             marginLeft: '0.8em',
           },
           onClick: () => history.push(SEND_ROUTE),
@@ -94,11 +90,7 @@ TxView.prototype.renderButtons = function () {
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear', {
-          style: {
-            textAlign: 'center',
-            marginLeft: '0.8em',
-          },
+        h('button.btn-clear.hero-balance-button', {
           onClick: () => history.push(SEND_ROUTE),
         }, 'SEND'),
       ])
@@ -114,7 +106,7 @@ TxView.prototype.render = function () {
 
     h('div.flex-row.phone-visible', {
       style: {
-        margin: '1em 0.9em',
+        margin: '1.5em 1.2em 0',
         justifyContent: 'space-between',
         alignItems: 'center',
       },
@@ -150,7 +142,7 @@ TxView.prototype.render = function () {
 
       !isMascara && h('div.open-in-browser', {
         onClick: () => global.platform.openExtensionInBrowser(),
-      }, [h('img', { src: 'images/open.svg' })]),
+      }, [h('img', { src: 'images/popout.svg' })]),
 
     ]),
 

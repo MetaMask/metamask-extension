@@ -1,10 +1,10 @@
-# MetaMask Plugin
+# MetaMask Browser Extension
 [![Build Status](https://circleci.com/gh/MetaMask/metamask-extension.svg?style=shield&circle-token=a1ddcf3cd38e29267f254c9c59d556d513e3a1fd)](https://circleci.com/gh/MetaMask/metamask-extension) [![Coverage Status](https://coveralls.io/repos/github/MetaMask/metamask-extension/badge.svg?branch=master)](https://coveralls.io/github/MetaMask/metamask-extension?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/MetaMask/metamask-extension.svg)](https://greenkeeper.io/) [![Stories in Ready](https://badge.waffle.io/MetaMask/metamask-extension.png?label=in%20progress&title=waffle.io)](http://waffle.io/MetaMask/metamask-extension)
 
 
 ## Support
 
-If you're a user seeking support, [here is our support site](http://metamask.consensyssupport.happyfox.com).
+If you're a user seeking support, [here is our support site](https://metamask.helpscoutdocs.com/).
 
 ## Developing Compatible Dapps
 

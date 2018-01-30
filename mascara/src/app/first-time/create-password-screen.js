@@ -5,6 +5,8 @@ import { createNewVaultAndKeychain } from '../../../../ui/app/actions'
 import LoadingScreen from './loading-screen'
 import Breadcrumbs from './breadcrumbs'
 import { DEFAULT_ROUTE, IMPORT_ACCOUNT_ROUTE } from '../../../../ui/app/routes'
+import EventEmitter from 'events'
+import Mascot from '../../../../ui/app/components/mascot'
 
 class CreatePasswordScreen extends Component {
   static propTypes = {
@@ -18,6 +20,11 @@ class CreatePasswordScreen extends Component {
   state = {
     password: '',
     confirmPassword: '',
+  }
+
+  constructor () {
+    super()
+    this.animationEventEmitter = new EventEmitter()
   }
 
   componentWillMount () {
@@ -56,12 +63,25 @@ class CreatePasswordScreen extends Component {
   render () {
     const { isLoading } = this.props
 
-    return (
-      <div className="first-time-flow">
-      {
-        isLoading
-          ? <LoadingScreen loadingMessage="Creating your new account" />
-          : (
+    return isLoading
+      ? <LoadingScreen loadingMessage="Creating your new account" />
+      : (
+        <div>
+          <h2 className="alpha-warning">Warning This is Experimental software and is a Developer BETA </h2>
+          <div className="first-view-main">
+            <div className="mascara-info">
+              <Mascot
+                animationEventEmitter={this.animationEventEmitter}
+                width="225"
+                height="225"
+              />
+              <div className="info">
+                MetaMask is a secure identity vault for Ethereum.
+              </div>
+              <div className="info">
+                It allows you to hold ether & tokens, and interact with decentralized applications.
+              </div>
+            </div>
             <div className="create-password">
               <div className="create-password__title">
                 Create Password
@@ -109,10 +129,9 @@ class CreatePasswordScreen extends Component {
               { */ }
               <Breadcrumbs total={3} currentIndex={0} />
             </div>
-          )
-      }
-      </div>
-    )
+          </div>
+        </div>
+      )
   }
 }
 

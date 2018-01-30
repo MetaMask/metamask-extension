@@ -40,7 +40,7 @@ BalanceComponent.prototype.render = function () {
     //   style: {},
     // }),
     h(Identicon, {
-      diameter: 45,
+      diameter: 50,
       address: token && token.address,
       network,
     }),
@@ -94,7 +94,8 @@ BalanceComponent.prototype.renderFiatValue = function (formattedBalance) {
 }
 
 BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatSuffix, fiatPrefix) {
-  if (fiatDisplayNumber === 'N/A') return null
+  const shouldNotRenderFiat = fiatDisplayNumber === 'N/A' || Number(fiatDisplayNumber) === 0
+  if (shouldNotRenderFiat) return null
 
   return h('div.fiat-amount', {
     style: {},

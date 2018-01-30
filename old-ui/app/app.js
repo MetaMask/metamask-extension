@@ -34,6 +34,7 @@ const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AccountDropdowns = require('./components/account-dropdowns').AccountDropdowns
+const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 module.exports = connect(mapStateToProps)(App)
 
@@ -396,7 +397,7 @@ App.prototype.renderDropdown = function () {
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
       onClick: () => { this.props.dispatch(actions.lockMetamask()) },
-    }, 'Lock'),
+    }, 'Log Out'),
 
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
@@ -405,7 +406,10 @@ App.prototype.renderDropdown = function () {
 
     h(DropdownMenuItem, {
       closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      onClick: () => { this.props.dispatch(actions.setFeatureFlag('betaUI', true)) },
+      onClick: () => {
+        this.props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+          .then(() => this.props.dispatch(actions.setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
+      },
     }, 'Try Beta!'),
   ])
 }
@@ -466,11 +470,6 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  if (props.seedWords) {
-    log.debug('rendering seed words')
-    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
-  }
-
   // show initialize screen
   if (!props.isInitialized || props.forgottenPassword) {
     // show current view
@@ -503,6 +502,12 @@ App.prototype.renderPrimary = function () {
         log.debug('rendering locked screen')
         return h(UnlockScreen, {key: 'locked'})
     }
+  }
+
+  // show seed words screen
+  if (props.seedWords) {
+    log.debug('rendering seed words')
+    return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
   // show current view

@@ -1,5 +1,6 @@
 const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
+const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
 
 var actions = {
@@ -50,12 +51,16 @@ var actions = {
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
   SHOW_IMPORT_PAGE: 'SHOW_IMPORT_PAGE',
+  SHOW_NEW_ACCOUNT_PAGE: 'SHOW_NEW_ACCOUNT_PAGE',
+  SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
   showImportPage,
+  showNewAccountPage,
+  setNewAccountForm,
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
@@ -125,6 +130,7 @@ var actions = {
   sendTx: sendTx,
   signTx: signTx,
   signTokenTx: signTokenTx,
+  updateTransaction,
   updateAndApproveTx,
   cancelTx: cancelTx,
   completedTx: completedTx,
@@ -239,11 +245,18 @@ var actions = {
 
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
-  
+
   // Feature Flags
   setFeatureFlag,
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
+
+  // Network
+  setNetworkEndpoints,
+  updateNetworkEndpointType,
+  UPDATE_NETWORK_ENDPOINT_TYPE: 'UPDATE_NETWORK_ENDPOINT_TYPE',
+
+  retryTransaction,
 }
 
 module.exports = actions
@@ -714,6 +727,23 @@ function signTokenTx (tokenAddress, toAddress, amount, txData) {
   }
 }
 
+function updateTransaction (txData) {
+  log.info('actions: updateTx: ' + JSON.stringify(txData))
+  return (dispatch) => {
+    log.debug(`actions calling background.updateTx`)
+    background.updateTransaction(txData, (err) => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
+      if (err) {
+        dispatch(actions.txError(err))
+        dispatch(actions.goHome())
+        return log.error(err.message)
+      }
+      dispatch(actions.showConfTxPage({ id: txData.id }))
+    })
+  }
+}
+
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
@@ -829,6 +859,7 @@ function cancelTx (txData) {
     log.debug(`background.cancelTransaction`)
     return new Promise((resolve, reject) => {
       background.cancelTransaction(txData.id, () => {
+        dispatch(actions.clearSend())
         dispatch(actions.completedTx(txData.id))
         resolve(txData)
       })
@@ -877,6 +908,20 @@ function showInitializeMenu () {
 function showImportPage () {
   return {
     type: actions.SHOW_IMPORT_PAGE,
+  }
+}
+
+function showNewAccountPage (formToSelect) {
+  return {
+    type: actions.SHOW_NEW_ACCOUNT_PAGE,
+    formToSelect,
+  }
+}
+
+function setNewAccountForm (formToSelect) {
+  return {
+    type: actions.SET_NEW_ACCOUNT_FORM,
+    formToSelect,
   }
 }
 
@@ -976,9 +1021,13 @@ function lockMetamask () {
       })
       .then(newState => {
         dispatch(actions.updateMetamaskState(newState))
+        dispatch(actions.hideLoadingIndication())
         dispatch({ type: actions.LOCK_METAMASK })
       })
-      .catch(() => dispatch({ type: actions.LOCK_METAMASK }))
+      .catch(() => {
+        dispatch(actions.hideLoadingIndication())
+        dispatch({ type: actions.LOCK_METAMASK })
+      })
   }
 }
 
@@ -1123,10 +1172,12 @@ function removeToken (address) {
 function addTokens (tokens) {
   return dispatch => {
     if (Array.isArray(tokens)) {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens[0])))
       return Promise.all(tokens.map(({ address, symbol, decimals }) => (
         dispatch(addToken(address, symbol, decimals))
       )))
     } else {
+      dispatch(actions.setSelectedToken(getTokenAddressFromTokenObject(tokens)))
       return Promise.all(
         Object
         .entries(tokens)
@@ -1194,6 +1245,19 @@ function clearNotices () {
 function markAccountsFound () {
   log.debug(`background.markAccountsFound`)
   return callBackgroundThenUpdate(background.markAccountsFound)
+}
+
+function retryTransaction (txId) {
+  log.debug(`background.retryTransaction`)
+  return (dispatch) => {
+    background.retryTransaction(txId, (err, newState) => {
+      if (err) {
+        return dispatch(actions.displayWarning(err.message))
+      }
+      dispatch(actions.updateMetamaskState(newState))
+      dispatch(actions.viewPendingTx(txId))
+    })
+  }
 }
 
 //
@@ -1472,7 +1536,6 @@ function pairUpdate (coin) {
 
 function shapeShiftSubview (network) {
   var pair = 'btc_eth'
-
   return (dispatch) => {
     dispatch(actions.showSubLoadingIndication())
     shapeShiftRequest('marketinfo', {pair}, (mktResponse) => {
@@ -1498,7 +1561,7 @@ function coinShiftRquest (data, marketData) {
       dispatch(actions.hideLoadingIndication())
       if (response.error) return dispatch(actions.displayWarning(response.error))
       var message = `
-        Deposit your ${response.depositType} to the address bellow:`
+        Deposit your ${response.depositType} to the address below:`
       log.debug(`background.createShapeShiftTx`)
       background.createShapeShiftTx(response.deposit, response.depositType)
       dispatch(actions.showQrView(response.deposit, [message].concat(marketData)))
@@ -1532,9 +1595,9 @@ function reshowQrCode (data, coin) {
     dispatch(actions.showLoadingIndication())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
-        
+
       var message = [
-        `Deposit your ${coin} to the address bellow:`,
+        `Deposit your ${coin} to the address below:`,
         `Deposit Limit: ${mktResponse.limit}`,
         `Deposit Minimum:${mktResponse.minimum}`,
       ]
@@ -1600,10 +1663,7 @@ function updateTokenExchangeRate (token = '') {
   }
 }
 
-function setFeatureFlag (feature, activated) {
-  const notificationType = activated
-    ? 'BETA_UI_NOTIFICATION_MODAL'
-    : 'OLD_UI_NOTIFICATION_MODAL'
+function setFeatureFlag (feature, activated, notificationType) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     return new Promise((resolve, reject) => {
@@ -1611,10 +1671,10 @@ function setFeatureFlag (feature, activated) {
         dispatch(actions.hideLoadingIndication())
         if (err) {
           dispatch(actions.displayWarning(err.message))
-          reject(err)
+          return reject(err)
         }
         dispatch(actions.updateFeatureFlags(updatedFeatureFlags))
-        dispatch(actions.showModal({ name: notificationType }))
+        notificationType && dispatch(actions.showModal({ name: notificationType }))
         resolve(updatedFeatureFlags)
       })
     })
@@ -1696,5 +1756,29 @@ function setUseBlockie (val) {
       type: actions.SET_USE_BLOCKIE,
       value: val,
     })
+  }
+}
+
+function setNetworkEndpoints (networkEndpointType) {
+  return dispatch => {
+    log.debug('background.setNetworkEndpoints')
+    return new Promise((resolve, reject) => {
+      background.setNetworkEndpoints(networkEndpointType, err => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        dispatch(actions.updateNetworkEndpointType(networkEndpointType))
+        resolve(networkEndpointType)
+      })
+    })
+  }
+}
+
+function updateNetworkEndpointType (networkEndpointType) {
+  return {
+    type: actions.UPDATE_NETWORK_ENDPOINT_TYPE,
+    value: networkEndpointType,
   }
 }

@@ -94,6 +94,7 @@
     padding: 12px 0;
     font-weight: 600;
     cursor: pointer;
+    position: relative;
 
     &:hover {
       background-color: rgba(0, 0, 0, .05);
@@ -164,9 +165,18 @@
 
   &__buttons {
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: row nowrap;
     margin: 30px 0 51px;
     flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__button {
+    flex: 1 0 141px;
+    margin: 0 12px;
+    padding: 10px 22px;
+    height: 54px;
   }
 
   &__token-icons-container {
@@ -324,18 +334,10 @@
     }
 
     &__buttons {
-      flex-flow: row nowrap;
-      width: 100%;
-      align-items: center;
-      justify-content: center;
       padding: 12px 0;
       margin: 0;
       border-top: 1px solid $gallery;
-
-      button {
-        flex: 1 0 auto;
-        margin: 0 12px;
-      }
+      width: 100%;
     }
   }
 }

@@ -5,42 +5,64 @@ const h = require('react-hyperscript')
 const App = require('./app')
 const OldApp = require('../../old-ui/app/app')
 const { autoAddToBetaUI } = require('./selectors')
-const { setFeatureFlag } = require('./actions')
+const { setFeatureFlag, setNetworkEndpoints } = require('./actions')
+const { BETA_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 function mapStateToProps (state) {
-	return {
-		betaUI: state.metamask.featureFlags.betaUI,
-		autoAdd: autoAddToBetaUI(state),
-		isUnlocked: state.metamask.isUnlocked,
-	}
+  return {
+    betaUI: state.metamask.featureFlags.betaUI,
+    autoAdd: autoAddToBetaUI(state),
+    isUnlocked: state.metamask.isUnlocked,
+    isMascara: state.metamask.isMascara,
+    firstTime: Object.keys(state.metamask.identities).length === 0,
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    setFeatureFlagToBeta: () => dispatch(setFeatureFlag('betaUI', true)),
+    setFeatureFlagWithModal: () => {
+      return dispatch(setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+        .then(() => dispatch(setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
+    },
+    setFeatureFlagWithoutModal: () => {
+      return dispatch(setFeatureFlag('betaUI', true))
+        .then(() => dispatch(setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
+    },
   }
 }
 module.exports = connect(mapStateToProps, mapDispatchToProps)(SelectedApp)
 
 inherits(SelectedApp, Component)
 function SelectedApp () {
-	this.state = {
-		autoAdd: false,
-	}
-	Component.call(this)
+  Component.call(this)
 }
 
 SelectedApp.prototype.componentWillReceiveProps = function (nextProps) {
-	const { isUnlocked, setFeatureFlagToBeta } = this.props
+  // Code commented out until we begin auto adding users to NewUI
+  const {
+    // isUnlocked,
+    // setFeatureFlagWithModal,
+    setFeatureFlagWithoutModal,
+    isMascara,
+    // firstTime,
+  } = this.props
 
-	if (!isUnlocked && nextProps.isUnlocked && nextProps.autoAdd) {
-		this.setState({ autoAdd: nextProps.autoAdd })
-		setFeatureFlagToBeta()
-	}
+  // if (isMascara || firstTime) {
+  if (isMascara) {
+    setFeatureFlagWithoutModal()
+  }
+  // } else if (!isUnlocked && nextProps.isUnlocked && (nextProps.autoAdd)) {
+  //   setFeatureFlagWithModal()
+  // }
 }
 
 SelectedApp.prototype.render = function () {
-  const { betaUI } = this.props
-  const Selected = betaUI ? App : OldApp
+  // Code commented out until we begin auto adding users to NewUI
+  // const { betaUI, isMascara, firstTime } = this.props
+  // const Selected = betaUI || isMascara || firstTime ? App : OldApp
+
+  const { betaUI, isMascara } = this.props
+  const Selected = betaUI || isMascara ? App : OldApp
+
   return h(Selected)
 }

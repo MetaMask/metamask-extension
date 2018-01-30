@@ -6,6 +6,10 @@
   }
 }
 
+.tx-list-header-wrapper {
+  flex: 0 0 auto;
+}
+
 .tx-list-header {
   text-transform: capitalize;
 }
@@ -32,13 +36,9 @@
 }
 
 @media screen and (min-width: $break-large) {
-  .tx-list-header-wrapper {
-    flex: 0 0 55px;
-  }
-
   .tx-list-header {
     font-size: 16px;
-    margin: 1.5em 2.37em;
+    margin: 1.1em 2.37em .8em;
   }
 
   .tx-list-container::-webkit-scrollbar {
@@ -73,7 +73,7 @@
   }
 
   @media screen and (min-width: $break-large) {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
 }
 
@@ -91,21 +91,13 @@
 }
 
 .tx-list-date-wrapper {
+  margin-top: 6px;
   flex: 1 1 auto;
-
-  @media screen and (max-width: $break-small) {
-    margin-top: 6px;
-  }
-
-  @media screen and (min-width: $break-large) {
-    margin-top: 12px;
-  }
 }
 
 .tx-list-content-wrapper {
   align-items: stretch;
   margin-bottom: 4px;
-  margin-top: 2px;
   flex: 1 0 auto;
   width: 100%;
   display: flex;
@@ -115,7 +107,7 @@
     font-size: 12px;
 
     .tx-list-status {
-      font-size: 14px !important;
+      font-size: 12px !important;
     }
 
     .tx-list-account {
@@ -129,7 +121,7 @@
 
     .tx-list-fiat-value {
       font-size: 12px;
-      line-height: 16px;
+      line-height: 22px;
     }
   }
 }
@@ -210,7 +202,7 @@
   }
 
   @media screen and (min-width: $break-large) {
-    margin: 0 2.37em;
+    padding: 0 2.37em;
   }
 
   &:last-of-type {
@@ -259,6 +251,8 @@
 }
 
 .tx-list-fiat-value {
+  font-size: 12px;
+  line-height: initial;
   text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;

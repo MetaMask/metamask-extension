@@ -21,6 +21,7 @@ html, body {
   background: #F7F7F7;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 html {
@@ -105,6 +106,10 @@ button:not([disabled]):hover, input[type="submit"]:not([disabled]):hover {
 }
 button:not([disabled]):active, input[type="submit"]:not([disabled]):active {
   transform: scale(0.95);
+}
+
+.grow-on-hover:hover {
+  transform: scale(1.05);
 }
 
 a {
@@ -436,12 +441,14 @@ input.large-input {
 .account-detail-section {
   display: flex;
   flex-wrap: wrap;
+  overflow-x: hidden;
   overflow-y: auto;
+  max-height: 465px;
   flex-direction: inherit;
+}
 
-  .name-label {
-    margin-left: 15px;
-  }
+.account-detail-section .name-label {
+  margin-left: 15px;
 }
 
 .grow-tenx {

@@ -23,7 +23,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     this.query = new EthQuery(config.provider)
     this.nonceTracker = config.nonceTracker
     // default is one day
-    this.retryTimePeriod = config.retryTimePeriod || 86400000
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
     this.publishTransaction = config.publishTransaction
@@ -106,12 +105,6 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:block-update', txMeta, latestBlockNumber)
     }
 
-    if (Date.now() > txMeta.time + this.retryTimePeriod) {
-      const hours = (this.retryTimePeriod / 3.6e+6).toFixed(1)
-      const err = new Error(`Gave up submitting after ${hours} hours.`)
-      return this.emit('tx:failed', txMeta.id, err)
-    }
-
     const firstRetryBlockNumber = txMeta.firstRetryBlockNumber || latestBlockNumber
     const txBlockDistance = Number.parseInt(latestBlockNumber, 16) - Number.parseInt(firstRetryBlockNumber, 16)
 
@@ -185,7 +178,8 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
   }
 
   async _checkIfNonceIsTaken (txMeta) {
-    const completed = this.getCompletedTransactions()
+    const address = txMeta.txParams.from
+    const completed = this.getCompletedTransactions(address)
     const sameNonce = completed.filter((otherMeta) => {
       return otherMeta.txParams.nonce === txMeta.txParams.nonce
     })

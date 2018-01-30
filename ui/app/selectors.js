@@ -26,6 +26,7 @@ const selectors = {
   getSelectedTokenContract,
   autoAddToBetaUI,
   getSendMaxModeState,
+  getCurrentViewContext,
 }
 
 module.exports = selectors
@@ -180,4 +181,9 @@ function autoAddToBetaUI (state) {
   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
   
   return userIsNotInBeta && userPassesThreshold
+}
+
+function getCurrentViewContext (state) {
+  const { currentView = {} } = state.appState
+  return currentView.context 
 }

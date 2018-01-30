@@ -170,6 +170,7 @@ TxListItem.prototype.getSendTokenTotal = async function () {
 TxListItem.prototype.render = function () {
   const {
     transactionStatus,
+    transactionAmount,
     onClick,
     transActionId,
     dateString,
@@ -177,6 +178,7 @@ TxListItem.prototype.render = function () {
     className,
   } = this.props
   const { total, fiatTotal } = this.state
+  const showFiatTotal = transactionAmount !== '0x0' && fiatTotal
 
   return h(`div${className || ''}`, {
     key: transActionId,
@@ -232,13 +234,9 @@ TxListItem.prototype.render = function () {
           style: {},
         }, [
 
-          h('span', {
-            className: classnames('tx-list-value', {
-              'tx-list-value--confirmed': transactionStatus === 'confirmed',
-            }),
-          }, total),
+          h('span.tx-list-value', total),
 
-          fiatTotal && h('span.tx-list-fiat-value', fiatTotal),
+          showFiatTotal && h('span.tx-list-fiat-value', fiatTotal),
 
         ]),
       ]),

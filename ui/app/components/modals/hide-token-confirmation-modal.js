@@ -58,12 +58,12 @@ HideTokenConfirmationModal.prototype.render = function () {
       ]),
 
       h('div.hide-token-confirmation__buttons', {}, [
-        h('button.btn-clear', {
+        h('button.btn-cancel.hide-token-confirmation__button', {
           onClick: () => hideModal(),
         }, [
           'CANCEL',
         ]),
-        h('button.btn-clear', {
+        h('button.btn-clear.hide-token-confirmation__button', {
           onClick: () => hideToken(address),
         }, [
           'HIDE',

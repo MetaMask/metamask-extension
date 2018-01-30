@@ -78,9 +78,10 @@ AccountDetailScreen.prototype.render = function () {
               address: selected,
             }),
           ]),
-          h('div.flex-column', {
+          h('flex-column', {
             style: {
               lineHeight: '10px',
+              marginLeft: '15px',
               width: '100%',
             },
           }, [
@@ -101,7 +102,7 @@ AccountDetailScreen.prototype.render = function () {
                 {
                   style: {
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
                   },
                 },
@@ -131,6 +132,8 @@ AccountDetailScreen.prototype.render = function () {
                     AccountDropdowns,
                     {
                       style: {
+                        marginRight: '8px',
+                        marginLeft: 'auto',
                         cursor: 'pointer',
                       },
                       selected,
@@ -144,6 +147,7 @@ AccountDetailScreen.prototype.render = function () {
             ]),
             h('.flex-row', {
               style: {
+                width: '15em',
                 justifyContent: 'space-between',
                 alignItems: 'baseline',
               },
@@ -157,10 +161,10 @@ AccountDetailScreen.prototype.render = function () {
                   textOverflow: 'ellipsis',
                   paddingTop: '3px',
                   width: '5em',
+                  height: '15px',
                   fontSize: '13px',
                   fontFamily: 'Montserrat Light',
                   textRendering: 'geometricPrecision',
-                  marginTop: '15px',
                   marginBottom: '15px',
                   color: '#AEAEAE',
                 },
@@ -188,21 +192,20 @@ AccountDetailScreen.prototype.render = function () {
             },
           }),
 
-          h('div', {}, [
+          h('.flex-grow'),
 
-            h('button', {
-              onClick: () => props.dispatch(actions.buyEthView(selected)),
-              style: { marginRight: '10px' },
-            }, 'BUY'),
+          h('button', {
+            onClick: () => props.dispatch(actions.buyEthView(selected)),
+            style: { marginRight: '10px' },
+          }, 'BUY'),
 
-            h('button', {
-              onClick: () => props.dispatch(actions.showSendPage()),
-              style: {
-                marginBottom: '20px',
-              },
-            }, 'SEND'),
-
-          ]),
+          h('button', {
+            onClick: () => props.dispatch(actions.showSendPage()),
+            style: {
+              marginBottom: '20px',
+              marginRight: '8px',
+            },
+          }, 'SEND'),
 
         ]),
       ]),
