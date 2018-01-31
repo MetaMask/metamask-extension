@@ -221,6 +221,17 @@ module.exports = class TransactionStateManger extends EventEmitter {
     this._setTxStatus(txId, 'failed')
   }
 
+  wipeTransactions (address) {
+    // network only tx
+    const txs = this.getFullTxList()
+    const network = this.getNetwork()
+
+    // Filter out the ones from the current account and network
+    const otherAccountTxs = txs.filter((txMeta) => !(txMeta.txParams.from === address && txMeta.metamaskNetworkId === network))
+
+    // Update state
+    this._saveTxList(otherAccountTxs)
+  }
 //
 //           PRIVATE METHODS
 //

@@ -47,12 +47,14 @@ var actions = {
   addNewAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
+  resetAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeed: requestRevealSeed,
+
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -306,6 +308,20 @@ function requestRevealSeed (password) {
       })
     })
   }
+}
+
+function resetAccount () {
+    return (dispatch) => {
+        background.resetAccount((err, account) => {
+            dispatch(actions.hideLoadingIndication())
+            if (err) {
+                dispatch(actions.displayWarning(err.message))
+            }
+
+            log.info('Transaction history reset for ' + account)
+            dispatch(actions.showAccountsPage())
+        })
+    }
 }
 
 function addNewKeyring (type, opts) {
