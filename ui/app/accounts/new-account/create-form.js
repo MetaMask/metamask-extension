@@ -5,20 +5,21 @@ const { connect } = require('react-redux')
 const actions = require('../../actions')
 
 class NewAccountCreateForm extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
+
+    const { numberOfExistingAccounts = 0 } = props
+    const newAccountNumber = numberOfExistingAccounts + 1
 
     this.state = {
       newAccountName: '',
+      defaultAccountName: `Account ${newAccountNumber}`,
     }
   }
 
   render () {
-    const { newAccountName } = this.state
-    const { numberOfExistingAccounts = 0 } = this.props
-    const newAccountNumber = numberOfExistingAccounts + 1
-
-    const defaultAccountName = `Account ${newAccountNumber}`
+    const { newAccountName, defaultAccountName } = this.state
+    
 
     return h('div.new-account-create-form', [
 
@@ -28,7 +29,7 @@ class NewAccountCreateForm extends Component {
 
       h('div.new-account-create-form__input-wrapper', {}, [
         h('input.new-account-create-form__input', {
-          value: this.state.newAccountName,
+          value: newAccountName,
           placeholder: defaultAccountName,
           onChange: event => this.setState({ newAccountName: event.target.value }),
         }, []),
