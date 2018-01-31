@@ -151,7 +151,6 @@ WalletView.prototype.render = function () {
           this.setState({ hasCopied: true })
           setTimeout(() => this.setState({ hasCopied: false }), 3000)
         },
-        tabIndex: 0,
         onMouseDown: () => {
           this.setState({ copyToClipboardPressed: true })
         },
