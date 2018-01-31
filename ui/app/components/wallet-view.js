@@ -2,9 +2,10 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const classnames = require('classnames')
 const Identicon = require('./identicon')
 // const AccountDropdowns = require('./dropdowns/index.js').AccountDropdowns
-const Tooltip = require('./tooltip.js')
+const Tooltip = require('./tooltip-v2.js')
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
@@ -46,6 +47,7 @@ function WalletView () {
   Component.call(this)
   this.state = {
     hasCopied: false,
+    copyToClipboardPressed: false,
   }
 }
 
@@ -137,13 +139,24 @@ WalletView.prototype.render = function () {
 
     h(Tooltip, {
       position: 'bottom',
-      title: this.state.hasCopied ? 'Copied to Clipboard' : 'Click to copy.',
+      title: this.state.hasCopied ? 'Copied!' : 'Copy to clipboard',
+      wrapperClassName: 'wallet-view__tooltip',
     }, [
-      h('div.wallet-view__address', {
+      h('button.wallet-view__address', {
+        className: classnames({
+          'wallet-view__address__pressed': this.state.copyToClipboardPressed,
+        }),
         onClick: () => {
           copyToClipboard(selectedAddress)
           this.setState({ hasCopied: true })
           setTimeout(() => this.setState({ hasCopied: false }), 3000)
+        },
+        tabIndex: 0,
+        onMouseDown: () => {
+          this.setState({ copyToClipboardPressed: true })
+        },
+        onMouseUp: () => {
+          this.setState({ copyToClipboardPressed: false })
         },
       }, [
         `${selectedAddress.slice(0, 4)}...${selectedAddress.slice(-4)}`,
