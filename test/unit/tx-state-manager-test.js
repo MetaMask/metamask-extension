@@ -238,4 +238,53 @@ describe('TransactionStateManger', function () {
       assert.equal(txStateManager.getFilteredTxList(filterParams).length, 5, `getFilteredTxList - ${JSON.stringify(filterParams)}`)
     })
   })
+
+  describe('#wipeTransactions', function () {
+    
+    const specificAddress = '0xaa';
+
+    it('should remove only the transactions from a specific address', function () {
+      
+      const txMetas = [
+        { id: 0, status: 'unapproved', txParams: { from: specificAddress, to: '0xbb' }, metamaskNetworkId: currentNetworkId },
+        { id: 1, status: 'confirmed', txParams: { from: '0xbb', to: specificAddress }, metamaskNetworkId: currentNetworkId },
+        { id: 2, status: 'confirmed', txParams: { from: '0xcc', to: specificAddress }, metamaskNetworkId: currentNetworkId },
+      ]
+      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
+
+      txStateManager.wipeTransactions(specificAddress)
+
+      const transactionsFromCurrentAddress = txStateManager.getTxList().filter((txMeta) => txMeta.txParams.from === specificAddress)
+      const transactionsFromOtherAddresses = txStateManager.getTxList().filter((txMeta) => txMeta.txParams.from !== specificAddress)
+
+      assert.equal(transactionsFromCurrentAddress.length, 0);
+      assert.equal(transactionsFromOtherAddresses.length, 2);
+
+
+    })
+
+    it('should not remove the transactions from other networks', function () {
+      
+      const txMetas = [
+        { id: 0, status: 'unapproved', txParams: { from: specificAddress, to: '0xbb' }, metamaskNetworkId: currentNetworkId },
+        { id: 1, status: 'confirmed', txParams: { from: specificAddress, to: specificAddress }, metamaskNetworkId: otherNetworkId  },
+        { id: 2, status: 'confirmed', txParams: { from: specificAddress, to: specificAddress }, metamaskNetworkId: otherNetworkId },
+      ]
+      
+      txMetas.forEach((txMeta) => txStateManager.addTx(txMeta, noop))
+
+      txStateManager.wipeTransactions(specificAddress)
+
+      const txsFromCurrentNetworkAndAddress = txStateManager.getTxList().filter((txMeta) => txMeta.txParams.from === specificAddress)
+      const txFromOtherNetworks= txStateManager.getFullTxList().filter((txMeta) => txMeta.metamaskNetworkId === otherNetworkId)
+
+      console.log('NETWORK TX LIST: ', txStateManager.getTxList());
+      console.log('FULL TX LIST: ', txStateManager.getFullTxList());
+
+      assert.equal(txsFromCurrentNetworkAndAddress.length, 0);
+      assert.equal(txFromOtherNetworks.length, 2);
+
+
+    })
+  })
 })
