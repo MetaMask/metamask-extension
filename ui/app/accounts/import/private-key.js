@@ -45,7 +45,7 @@ PrivateKeyImportView.prototype.render = function () {
 
       ]),
 
-      h('div.new-account-create-form__buttons', {}, [
+      h('div.new-account-import-form__buttons', {}, [
 
         h('button.new-account-create-form__button-cancel', {
           onClick: () => goHome(),

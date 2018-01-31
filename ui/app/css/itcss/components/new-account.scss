@@ -58,10 +58,11 @@
   display: flex;
   flex-flow: column;
   align-items: center;
+  padding: 0 30px;
 
   &__select-section {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     margin-top: 29px;
     width: 100%;
@@ -136,6 +137,13 @@
     flex-flow: column;
     align-items: center;
     margin-top: 29px;
+  }
+
+  &__buttons {
+    margin-top: 39px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
   }
 }
 
