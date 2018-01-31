@@ -605,10 +605,10 @@ module.exports = class MetamaskController extends EventEmitter {
     cb(null, this.preferencesController.getSelectedAddress())
   }
 
-  
-  resetAccount(cb){
-    this.txController.wipeTransactions();
-    cb(null, this.preferencesController.getSelectedAddress())
+  resetAccount (cb) {
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+    this.txController.wipeTransactions(selectedAddress)
+    cb(null, selectedAddress)
   }
 
 
