@@ -10,6 +10,7 @@
 
 - Fix provider for Kovan network.
 - Bump limit for EventEmitter listeners before warning.
+- Display Error when empty string is entered as a token address.
 
 ## 3.13.7 2018-1-22
 
