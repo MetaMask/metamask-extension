@@ -221,6 +221,10 @@ module.exports = class TransactionStateManger extends EventEmitter {
     this._setTxStatus(txId, 'failed')
   }
 
+  wipeTransactions(){
+  	this._saveTxList([]);
+  }
+
 //
 //           PRIVATE METHODS
 //

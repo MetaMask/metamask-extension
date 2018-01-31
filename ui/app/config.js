@@ -55,6 +55,7 @@ ConfigScreen.prototype.render = function () {
         h('.flex-space-around', {
           style: {
             padding: '20px',
+            overflow: 'auto',
           },
         }, [
 
@@ -140,6 +141,24 @@ ConfigScreen.prototype.render = function () {
                 state.dispatch(actions.revealSeedConfirmation())
               },
             }, 'Reveal Seed Words'),
+          ]),
+
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.resetAccount())
+              },
+            }, 'Reset Account'),
           ]),
 
         ]),

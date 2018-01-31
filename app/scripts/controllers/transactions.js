@@ -152,6 +152,10 @@ module.exports = class TransactionController extends EventEmitter {
     }
   }
 
+  wipeTransactions(){
+    this.txStateManager.wipeTransactions();
+  }
+
   // Adds a tx to the txlist
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)

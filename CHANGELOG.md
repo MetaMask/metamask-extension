@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add a "reset account" feature to Settings
 - Add warning for importing some kinds of files.
 
 ## 3.13.8 2018-1-29
