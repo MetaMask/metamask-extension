@@ -9,6 +9,7 @@ describe('wallet2 is migrated successfully with out the BlacklistController', ()
     .then((migratedData) => {
       assert.equal(migratedData.meta.version, 21)
       assert(!migratedData.data.BlacklistController)
+      assert(!migratedData.data.RecentBlocks)
       done()
     }).catch(done)
   })

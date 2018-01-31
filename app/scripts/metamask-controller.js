@@ -198,9 +198,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
     })
-    this.recentBlocksController.store.subscribe((state) => {
-      this.store.updateState({ RecentBlocks: state })
-    })
+
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
     })
