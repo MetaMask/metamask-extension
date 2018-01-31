@@ -86,9 +86,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
-    this.blacklistController = new BlacklistController({
-      initState: initState.BlacklistController,
-    })
+    this.blacklistController = new BlacklistController()
     this.blacklistController.scheduleUpdates()
 
     // rpc provider
@@ -200,12 +198,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
     })
-    this.blacklistController.store.subscribe((state) => {
-      this.store.updateState({ BlacklistController: state })
-    })
-    this.recentBlocksController.store.subscribe((state) => {
-      this.store.updateState({ RecentBlocks: state })
-    })
+
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
     })

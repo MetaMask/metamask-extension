@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Removed unneeded data from storage
 - Add a "reset account" feature to Settings
 - Add warning for importing some kinds of files.
 
