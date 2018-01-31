@@ -341,6 +341,7 @@ module.exports = class MetamaskController extends EventEmitter {
       addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
+      resetAccount: this.resetAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // vault management
@@ -596,6 +597,13 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
+
+  resetAccount (cb) {
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+    this.txController.wipeTransactions(selectedAddress)
+    cb(null, selectedAddress)
+  }
+
 
   importAccountWithStrategy (strategy, args, cb) {
     accountImporter.importAccount(strategy, args)
