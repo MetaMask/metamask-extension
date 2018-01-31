@@ -226,7 +226,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
     const txs = this.getTxList()
 
     // Filter out the ones from the current account
-    const otherAccountTxs = txs.filter((txMeta) => txMeta.from !== address)
+    const otherAccountTxs = txs.filter((txMeta) => txMeta.txParams.from !== address)
 
     // Update state
     this._saveTxList(otherAccountTxs)
