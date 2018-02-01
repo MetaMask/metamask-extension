@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 3.14.1 2018-2-1
+
+- Further fix scrolling for Firefox.
+
 ## 3.14.0 2018-2-1
 
 - Removed unneeded data from storage
