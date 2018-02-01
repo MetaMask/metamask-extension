@@ -53,11 +53,6 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.hideSidebar())
       dispatch(actions.toggleAccountMenu())
     },
-    showNewAccountPage: (formToSelect) => {
-      dispatch(actions.showNewAccountPage(formToSelect))
-      dispatch(actions.hideSidebar())
-      dispatch(actions.toggleAccountMenu())
-    },
     showInfoPage: () => {
       dispatch(actions.showInfoPage())
       dispatch(actions.hideSidebar())
@@ -70,7 +65,6 @@ AccountMenu.prototype.render = function () {
   const {
     isAccountMenuOpen,
     toggleAccountMenu,
-    showNewAccountPage,
     lockMetamask,
     history,
   } = this.props

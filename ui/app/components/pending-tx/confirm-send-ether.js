@@ -232,7 +232,7 @@ ConfirmSendEther.prototype.render = function () {
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
           h('button.btn-clear.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+            onClick: () => this.editTransaction(txMeta),
           }, 'EDIT'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
           h('div.confirm-screen-header-tip'),

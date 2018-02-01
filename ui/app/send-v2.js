@@ -659,7 +659,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     selectedToken
       ? signTokenTx(selectedToken.address, to, amount, txParams)
       : signTx(txParams)
-
-    this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
   }
+
+  this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
 }
