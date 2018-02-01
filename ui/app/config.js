@@ -30,7 +30,12 @@ ConfigScreen.prototype.render = function () {
   var warning = state.warning
 
   return (
-    h('.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', {
+      style:{
+        maxHeight: '465px',
+        overflowY: 'auto',
+      },
+    }, [
 
       // subtitle and nav
       h('.section-title.flex-row.flex-center', [
