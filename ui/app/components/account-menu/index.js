@@ -8,7 +8,13 @@ const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
-const { SETTINGS_ROUTE, INFO_ROUTE, IMPORT_ACCOUNT_ROUTE, DEFAULT_ROUTE } = require('../../routes')
+const {
+  SETTINGS_ROUTE,
+  INFO_ROUTE,
+  NEW_ACCOUNT_ROUTE,
+  IMPORT_ACCOUNT_ROUTE,
+  DEFAULT_ROUTE,
+} = require('../../routes')
 
 module.exports = compose(
   withRouter,
@@ -86,12 +92,18 @@ AccountMenu.prototype.render = function () {
     h('div.account-menu__accounts', this.renderAccounts()),
     h(Divider),
     h(Item, {
-      onClick: () => showNewAccountPage('CREATE'),
+      onClick: () => {
+        toggleAccountMenu()
+        history.push(NEW_ACCOUNT_ROUTE)
+      },
       icon: h('img', { src: 'images/plus-btn-white.svg' }),
       text: 'Create Account',
     }),
     h(Item, {
-      onClick: () => showNewAccountPage('IMPORT'),
+      onClick: () => {
+        toggleAccountMenu()
+        history.push(IMPORT_ACCOUNT_ROUTE)
+      },
       icon: h('img', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),

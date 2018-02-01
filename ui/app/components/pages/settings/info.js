@@ -100,7 +100,6 @@ Info.propTypes = {
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
   warning: PropTypes.string,
-  goHome: PropTypes.func,
   location: PropTypes.object,
   history: PropTypes.object,
 }

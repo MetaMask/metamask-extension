@@ -11,7 +11,7 @@ const { exportAsFile } = require('../../../util')
 const SimpleDropdown = require('../../dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
-const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const { OLD_UI_NETWORK_TYPE } = require('../../../../../app/scripts/config').enums
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {

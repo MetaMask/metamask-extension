@@ -33,7 +33,7 @@ const UnlockPage = require('./components/pages/unlock')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
 const RevealSeedPage = require('./components/pages/keychains/reveal-seed')
 const AddTokenPage = require('./components/pages/add-token')
-const ImportAccountPage = require('./components/pages/import-account')
+const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
 const SignatureRequestPage = require('./components/pages/signature-request')
 
@@ -58,7 +58,7 @@ const {
   CONFIRM_SEED_ROUTE,
   RESTORE_VAULT_ROUTE,
   ADD_TOKEN_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
+  NEW_ACCOUNT_ROUTE,
   SEND_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   INITIALIZE_ROUTE,
@@ -115,7 +115,7 @@ class App extends Component {
         h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, exact, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen2 }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
-        h(Authenticated, { path: IMPORT_ACCOUNT_ROUTE, exact, component: ImportAccountPage }),
+        h(Authenticated, { path: NEW_ACCOUNT_ROUTE, component: CreateAccountPage }),
         h(Authenticated, { path: SIGNATURE_REQUEST_ROUTE, exact, component: SignatureRequestPage }),
         h(Authenticated, { path: DEFAULT_ROUTE, exact, component: this.renderPrimary }),
       ])

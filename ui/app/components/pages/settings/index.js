@@ -5,7 +5,7 @@ const h = require('react-hyperscript')
 const TabBar = require('../../tab-bar')
 const Settings = require('./settings')
 const Info = require('./info')
-const { SETTINGS_ROUTE, INFO_ROUTE } = require('../../../routes')
+const { DEFAULT_ROUTE, SETTINGS_ROUTE, INFO_ROUTE } = require('../../../routes')
 
 class Config extends Component {
   renderTabs () {
@@ -30,7 +30,7 @@ class Config extends Component {
       h('.main-container.settings', {}, [
         h('.settings__header', [
           h('div.settings__close-button', {
-            onClick: () => history.push('/'),
+            onClick: () => history.push(DEFAULT_ROUTE),
           }),
           this.renderTabs(),
         ]),

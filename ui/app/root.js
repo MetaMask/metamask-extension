@@ -3,7 +3,6 @@ const PropTypes = require('prop-types')
 const { Provider } = require('react-redux')
 const h = require('react-hyperscript')
 const SelectedApp = require('./select-app')
-const { HashRouter } = require('react-router-dom')
 
 class Root extends Component {
   render () {
@@ -11,11 +10,7 @@ class Root extends Component {
 
     return (
       h(Provider, { store }, [
-        h(HashRouter, {
-          hashType: 'noslash',
-        }, [
-          h(SelectedApp),
-        ]),
+        h(SelectedApp),
       ])
     )
   }

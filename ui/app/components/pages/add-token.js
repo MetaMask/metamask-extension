@@ -27,7 +27,6 @@ const fuse = new Fuse(contractList, {
 const actions = require('../../actions')
 const ethUtil = require('ethereumjs-util')
 const { tokenInfoGetter } = require('../../token-util')
-const R = require('ramda')
 const { DEFAULT_ROUTE } = require('../../routes')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
