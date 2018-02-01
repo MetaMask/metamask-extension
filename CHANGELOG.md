@@ -7,6 +7,7 @@
 - Removed unneeded data from storage
 - Add a "reset account" feature to Settings
 - Add warning for importing some kinds of files.
+- Scrollable Setting view for Firefox.
 
 ## 3.13.8 2018-1-29
 
