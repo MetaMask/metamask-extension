@@ -89,6 +89,12 @@ $wallet-view-bg: $alabaster;
     flex: 0 0 auto;
   }
 
+  &__tooltip {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+
   &__address {
     border-radius: 3px;
     background-color: $alto;
@@ -96,10 +102,13 @@ $wallet-view-bg: $alabaster;
     font-size: 14px;
     line-height: 12px;
     padding: 4px 12px;
-    margin: 24px auto;
     font-weight: 300;
     cursor: pointer;
     flex: 0 0 auto;
+
+    &__pressed {
+      background-color: $manatee,
+    }
   }
 
   &__sidebar-close {

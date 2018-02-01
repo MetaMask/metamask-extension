@@ -43,7 +43,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goHome: () => dispatch(actions.goHome()),
     addTokens: tokens => dispatch(actions.addTokens(tokens)),
   }
 }

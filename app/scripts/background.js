@@ -13,6 +13,7 @@ const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const firstTimeState = require('./first-time-state')
+const setupRaven = require('./setupRaven')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -23,6 +24,10 @@ log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 const platform = new ExtensionPlatform()
 const notificationManager = new NotificationManager()
 global.METAMASK_NOTIFIER = notificationManager
+
+// setup sentry error reporting
+const release = platform.getVersion()
+const raven = setupRaven({ release })
 
 let popupIsOpen = false
 
@@ -71,6 +76,16 @@ function setupController (initState) {
     platform,
   })
   global.metamaskController = controller
+
+  // report failed transactions to Sentry
+  controller.txController.on(`tx:status-update`, (txId, status) => {
+    if (status !== 'failed') return
+    const txMeta = controller.txController.txStateManager.getTx(txId)
+    raven.captureMessage('Transaction Failed', {
+      // "extra" key is required by Sentry
+      extra: txMeta,
+    })
+  })
 
   // setup state persistence
   pump(

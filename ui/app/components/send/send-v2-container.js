@@ -83,7 +83,6 @@ function mapDispatchToProps (dispatch) {
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
-    goHome: () => dispatch(actions.goHome()),
     clearSend: () => dispatch(actions.clearSend()),
     setMaxModeTo: bool => dispatch(actions.setMaxModeTo(bool)),
   }

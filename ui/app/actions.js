@@ -55,6 +55,7 @@ var actions = {
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
+  unlockSucceeded,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
@@ -78,6 +79,7 @@ var actions = {
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
+  UNLOCK_SUCCEEDED: 'UNLOCK_SUCCEEDED',
   UNLOCK_METAMASK: 'UNLOCK_METAMASK',
   LOCK_METAMASK: 'LOCK_METAMASK',
   tryUnlockMetamask: tryUnlockMetamask,
@@ -281,12 +283,14 @@ function tryUnlockMetamask (password) {
     log.debug(`background.submitPassword`)
 
     return new Promise((resolve, reject) => {
-      background.submitPassword(password, err => {
+      background.submitPassword(password, (err) => {
         dispatch(actions.hideLoadingIndication())
 
         if (err) {
+          dispatch(actions.unlockFailed(err.message))
           reject(err)
         } else {
+          dispatch(actions.unlockSucceeded())
           dispatch(actions.transitionForward())
           return forceUpdateMetamaskState(dispatch).then(resolve)
         }
@@ -963,6 +967,13 @@ function unlockInProgress () {
 function unlockFailed (message) {
   return {
     type: actions.UNLOCK_FAILED,
+    value: message,
+  }
+}
+
+function unlockSucceeded (message) {
+  return {
+    type: actions.UNLOCK_SUCCEEDED,
     value: message,
   }
 }
