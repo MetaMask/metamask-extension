@@ -67,27 +67,37 @@ class ImportSeedPhraseScreen extends Component {
           <div className="import-account__selector-label">
             Enter your secret twelve word phrase here to restore your vault.
           </div>
-          <textarea
-            className="import-account__secret-phrase"
-            onChange={e => this.setState({seedPhrase: e.target.value})}
-          />
+          <div className="import-account__input-wrapper">
+            <label className="import-account__input-label">Wallet Seed</label>
+            <textarea
+              className="import-account__secret-phrase"
+              onChange={e => this.setState({seedPhrase: e.target.value})}
+              placeholder="Separate each word with a single space"
+            />
+          </div>
           <span
             className="error"
           >
             {this.props.warning}
           </span>
-          <input
-            className="first-time-flow__input"
-            type="password"
-            placeholder="New Password (min 8 characters)"
-            onChange={e => this.setState({password: e.target.value})}
-          />
-          <input
-            className="first-time-flow__input create-password__confirm-input"
-            type="password"
-            placeholder="Confirm Password"
-            onChange={e => this.setState({confirmPassword: e.target.value})}
-          />
+          <div className="import-account__input-wrapper">
+            <label className="import-account__input-label">New Password</label>
+            <input
+              className="first-time-flow__input"
+              type="password"
+              placeholder="New Password (min 8 characters)"
+              onChange={e => this.setState({password: e.target.value})}
+            />
+          </div>
+          <div className="import-account__input-wrapper">
+            <label className="import-account__input-label">Confirm Password</label>
+            <input
+              className="first-time-flow__input"
+              type="password"
+              placeholder="Confirm Password"
+              onChange={e => this.setState({confirmPassword: e.target.value})}
+            />
+          </div>
           <button
             className="first-time-flow__button"
             onClick={this.onClick}
