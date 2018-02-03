@@ -50,7 +50,7 @@ AccountImportSubview.prototype.render = function () {
           padding: '5px 15px 0px 15px',
         },
       }, [
-        h('span', 'Imported Accounts will not associated with the seed phrase. Learn more about imported accounts '),
+        h('span', 'Imported accounts will not associate with the seed phrase. Learn more about imported accounts '),
         h('span', {
           style: {
             color: 'rgba(247, 134, 28, 1)',
