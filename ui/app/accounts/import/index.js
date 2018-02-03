@@ -34,10 +34,7 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div', {
-      style: {
-      },
-    }, [
+    h('div', [
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
