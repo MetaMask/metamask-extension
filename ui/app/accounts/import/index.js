@@ -46,6 +46,27 @@ AccountImportSubview.prototype.render = function () {
         }),
         h('h2.page-subtitle', 'Import Accounts'),
       ]),
+      h('.error', {
+        style: {
+          display: 'inline-block',
+          alignItems: 'center',
+          padding: '5px 15px 0px 15px',
+        },
+      }, [
+        h('span', 'Imported Accounts will not associated with the seed phrase. Learn more about imported accounts '),
+        h('span', {
+          style: {
+            color: 'rgba(247, 134, 28, 1)',
+            cursor: 'pointer',
+            textDecoration: 'underline',
+          },
+          onClick: () => {
+            global.platform.openWindow({
+              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
+            })
+          },
+        }, 'here.'),
+      ]),
       h('div', {
         style: {
           padding: '10px',
