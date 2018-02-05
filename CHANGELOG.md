@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Add Import Account message
+- Change Loose label to Imported
+
 ## 3.14.1 2018-2-1
 
 - Further fix scrolling for Firefox.
