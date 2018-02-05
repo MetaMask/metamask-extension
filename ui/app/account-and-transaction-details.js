@@ -13,12 +13,7 @@ function AccountAndTransactionDetails () {
 }
 
 AccountAndTransactionDetails.prototype.render = function () {
-  return h('div', {
-    style: {
-      display: 'flex',
-      flex: '1 0 auto',
-    },
-  }, [
+  return h('div.account-and-transaction-details', [
     // wallet
     h(WalletView, {
       style: {
