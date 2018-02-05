@@ -2,9 +2,16 @@
 
 ## Current Master
 
+## 3.14.1 2018-2-1
+
+- Further fix scrolling for Firefox.
+
+## 3.14.0 2018-2-1
+
 - Removed unneeded data from storage
 - Add a "reset account" feature to Settings
 - Add warning for importing some kinds of files.
+- Scrollable Setting view for Firefox.
 
 ## 3.13.8 2018-1-29
 
