@@ -111,7 +111,7 @@ TokenCell.prototype.render = function () {
         network,
       }),
 
-      h('div.token-list-item__balance-wrapper', null, [
+      h('div.token-list-item__balance-ellipsis', null, [
         h('div.token-list-item__balance-wrapper', null, [
           h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
