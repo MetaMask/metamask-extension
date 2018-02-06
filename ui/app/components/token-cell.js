@@ -111,9 +111,10 @@ TokenCell.prototype.render = function () {
         network,
       }),
 
-      h('div.token-list-item__balance-ellipsis', [
+      h('div.token-list-item__balance-wrapper', null, [
+        h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
-        h('h.token-list-item__balance-wrapper', null, [
+        h('div.token-list-item__balance-wrapper', null, [
           h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
           showFiat && h('div.token-list-item__fiat-amount', {
@@ -129,7 +130,7 @@ TokenCell.prototype.render = function () {
         }),
 
       ]),
-      
+
 
       tokenMenuOpen && h(TokenMenuDropdown, {
         onClose: () => this.setState({ tokenMenuOpen: false }),
