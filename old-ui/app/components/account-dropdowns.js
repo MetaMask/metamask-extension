@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../../ui/app/actions')
 const genAccountLink = require('etherscan-link').createAccountLink

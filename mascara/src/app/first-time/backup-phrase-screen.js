@@ -1,5 +1,6 @@
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
 import {compose, onlyUpdateForPropTypes} from 'recompose'
@@ -194,7 +195,7 @@ class BackupPhraseScreen extends Component {
           </button>
         </div>
       </div>
-    ) 
+    )
   }
 
   renderBack () {
