@@ -75,7 +75,7 @@ UnlockScreen.prototype.render = function () {
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
           onClick: () => {
-            this.props.dispatch(actions.markPasswordForgotten(true))
+            this.props.dispatch(actions.markPasswordForgotten())
             global.platform.openExtensionInBrowser()
           },
           style: {
