@@ -51,7 +51,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   &__balance-ellipsis {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    width: 100%;
   }
 
   &__ellipsis {
