@@ -74,7 +74,10 @@ UnlockScreen.prototype.render = function () {
 
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
-          onClick: () => this.props.dispatch(actions.forgotPassword()),
+          onClick: () => {
+            this.props.dispatch(actions.markPasswordForgotten(true))
+            global.platform.openExtensionInBrowser()
+          },
           style: {
             fontSize: '0.8em',
             color: 'rgb(247, 134, 28)',
