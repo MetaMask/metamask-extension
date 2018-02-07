@@ -30,7 +30,12 @@ ConfigScreen.prototype.render = function () {
   var warning = state.warning
 
   return (
-    h('.flex-column.flex-grow', [
+    h('.flex-column.flex-grow', {
+      style:{
+        maxHeight: '465px',
+        overflowY: 'auto',
+      },
+    }, [
 
       h(Modal, {}, []),
 
@@ -57,6 +62,7 @@ ConfigScreen.prototype.render = function () {
         h('.flex-space-around', {
           style: {
             padding: '20px',
+            overflow: 'auto',
           },
         }, [
 
@@ -144,6 +150,40 @@ ConfigScreen.prototype.render = function () {
             }, 'Reveal Seed Words'),
           ]),
 
+          h('hr.horizontal-line'),
+
+          h('div', {
+            style: {
+              marginTop: '20px',
+            },
+          }, [
+
+            h('p', {
+              style: {
+                fontFamily: 'Montserrat Light',
+                fontSize: '13px',
+              },
+            }, [
+              'Resetting is for developer use only. ',
+              h('a', {
+                href: 'http://metamask.helpscoutdocs.com/article/36-resetting-an-account',
+                target: '_blank',
+                onClick (event) { this.navigateTo(event.target.href) },
+              }, 'Read more.'),
+            ]),
+            h('br'),
+
+            h('button', {
+              style: {
+                alignSelf: 'center',
+              },
+              onClick (event) {
+                event.preventDefault()
+                state.dispatch(actions.resetAccount())
+              },
+            }, 'Reset Account'),
+          ]),
+
         ]),
       ]),
     ])
@@ -219,4 +259,8 @@ function currentProviderDisplay (metamaskState) {
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
     h('span', value),
   ])
+}
+
+ConfigScreen.prototype.navigateTo = function (url) {
+  global.platform.openWindow({ url })
 }
