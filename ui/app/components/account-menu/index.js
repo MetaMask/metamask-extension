@@ -80,23 +80,23 @@ AccountMenu.prototype.render = function () {
     h(Divider),
     h(Item, {
       onClick: () => showNewAccountPage('CREATE'),
-      icon: h('img', { src: 'images/plus-btn-white.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
       text: 'Create Account',
     }),
     h(Item, {
       onClick: () => showNewAccountPage('IMPORT'),
-      icon: h('img', { src: 'images/import-account.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),
     h(Divider),
     h(Item, {
       onClick: showInfoPage,
-      icon: h('img', { src: 'images/mm-info-icon.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/mm-info-icon.svg' }),
       text: 'Info & Help',
     }),
     h(Item, {
       onClick: showConfigPage,
-      icon: h('img', { src: 'images/settings.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
       text: 'Settings',
     }),
   ])
