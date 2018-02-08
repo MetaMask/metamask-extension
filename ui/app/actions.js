@@ -47,6 +47,8 @@ var actions = {
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
+  markPasswordForgotten,
+  unMarkPasswordForgotten,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
@@ -816,6 +818,28 @@ function showCreateVault () {
 function showRestoreVault () {
   return {
     type: actions.SHOW_RESTORE_VAULT,
+  }
+}
+
+function markPasswordForgotten () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return background.markPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
+function unMarkPasswordForgotten () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return background.unMarkPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
   }
 }
 

@@ -80,7 +80,7 @@ function mapStateToProps (state) {
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
-    forgottenPassword: state.appState.forgottenPassword,
+    forgottenPassword: state.metamask.forgottenPassword,
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
@@ -358,20 +358,12 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  // show initialize screen
-  if (!props.isInitialized || props.forgottenPassword) {
-    // show current view
-    log.debug('rendering an initialize screen')
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      default:
-        log.debug('rendering menu screen')
-        return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-    }
+  if (props.isInitialized && props.forgottenPassword) {
+    log.debug('rendering restore vault screen')
+    return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+  } else if (!props.isInitialized) {
+    log.debug('rendering menu screen')
+    return h(InitializeMenuScreen, {key: 'menuScreenInit'})
   }
 
   // show unlock screen
