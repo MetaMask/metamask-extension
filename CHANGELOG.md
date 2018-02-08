@@ -2,6 +2,23 @@
 
 ## Current Master
 
+## 3.14.1 2018-2-1
+
+- Further fix scrolling for Firefox.
+
+## 3.14.0 2018-2-1
+
+- Removed unneeded data from storage
+- Add a "reset account" feature to Settings
+- Add warning for importing some kinds of files.
+- Scrollable Setting view for Firefox.
+
+## 3.13.8 2018-1-29
+
+- Fix provider for Kovan network.
+- Bump limit for EventEmitter listeners before warning.
+- Display Error when empty string is entered as a token address.
+
 ## 3.13.7 2018-1-22
 
 - Add ability to bypass gas estimation loading indicator.
