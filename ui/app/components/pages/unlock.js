@@ -4,11 +4,11 @@ const { connect } = require('react-redux')
 const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const { tryUnlockMetamask, forgotPassword } = require('../../actions')
+const { tryUnlockMetamask, forgotPassword, markPasswordForgotten } = require('../../actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 const Mascot = require('../mascot')
-const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../routes')
+const { DEFAULT_ROUTE } = require('../../routes')
 
 class UnlockScreen extends Component {
   constructor (props) {
@@ -77,7 +77,7 @@ class UnlockScreen extends Component {
 
   render () {
     const { error } = this.state
-    const { history } = this.props
+    const { markPasswordForgotten } = this.props
 
     return (
       h('.unlock-page.main-container', [
@@ -128,7 +128,10 @@ class UnlockScreen extends Component {
 
             h('.flex-row.flex-center.flex-grow', [
               h('p.pointer', {
-                onClick: () => history.push(RESTORE_VAULT_ROUTE),
+                onClick: () => {
+                  markPasswordForgotten()
+                  global.platform.openExtensionInBrowser()
+                },
                 style: {
                   fontSize: '0.8em',
                   color: 'rgb(247, 134, 28)',
@@ -146,6 +149,7 @@ class UnlockScreen extends Component {
 UnlockScreen.propTypes = {
   forgotPassword: PropTypes.func,
   tryUnlockMetamask: PropTypes.func,
+  markPasswordForgotten: PropTypes.func,
   history: PropTypes.object,
   isUnlocked: PropTypes.bool,
 }
@@ -161,6 +165,7 @@ const mapDispatchToProps = dispatch => {
   return {
     forgotPassword: () => dispatch(forgotPassword()),
     tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
+    markPasswordForgotten: () => dispatch(markPasswordForgotten()),
   }
 }
 

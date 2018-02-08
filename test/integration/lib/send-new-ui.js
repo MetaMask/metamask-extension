@@ -30,16 +30,10 @@ async function runSendFlowTest(assert, done) {
 
   await timeout(1000)
 
-  const sendContainer = $('.send-v2__container')
-  assert.ok(sendContainer[0], 'send container renders')
+  const sendTitle = $('.page-container__title')
+  assert.equal(sendTitle[0].textContent, 'Send ETH', 'Send screen title is correct')
 
-  const sendHeader = $('.send-v2__send-header-icon')
-  assert.ok(sendHeader[0], 'send screen has a header icon')
-
-  const sendTitle = $('.send-v2__title')
-  assert.equal(sendTitle[0].textContent, 'Send Funds', 'Send screen title is correct')
-
-  const sendCopy = $('.send-v2__copy')
+  const sendCopy = $('.page-container__subtitle')
   assert.equal(sendCopy[0].textContent, 'Only send ETH to an Ethereum address.', 'Send screen has copy')
 
   const sendFromField = $('.send-v2__form-field')
@@ -120,7 +114,7 @@ async function runSendFlowTest(assert, done) {
 
   const customizeGasModal = $('.send-v2__customize-gas')
   assert.ok(customizeGasModal[0], 'should render the customize gas modal')
-  
+
   const customizeGasPriceInput = $('.send-v2__gas-modal-card').first().find('input')
   customizeGasPriceInput.val(50)
   reactTriggerChange(customizeGasPriceInput[0])
@@ -146,7 +140,8 @@ async function runSendFlowTest(assert, done) {
     'send gas field should show customized gas total converted to USD'
   )
 
-  const sendButton = $('.send-v2__next-btn')
+  const sendButton = $('button.btn-clear.page-container__footer-button')
+  assert.equal(sendButton[0].textContent, 'Next', 'next button rendered')
   sendButton[0].click()
 
   await timeout(2000)
@@ -200,7 +195,8 @@ async function runSendFlowTest(assert, done) {
 
   await timeout()
 
-  const sendButtonInEdit = $('.send-v2__next-btn')
+  const sendButtonInEdit = $('.btn-clear.page-container__footer-button')
+  assert.equal(sendButtonInEdit[0].textContent, 'Next', 'next button in edit rendered')
   sendButtonInEdit[0].click()
 
   await timeout()

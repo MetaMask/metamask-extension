@@ -90,7 +90,7 @@ AccountMenu.prototype.render = function () {
         toggleAccountMenu()
         history.push(NEW_ACCOUNT_ROUTE)
       },
-      icon: h('img', { src: 'images/plus-btn-white.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
       text: 'Create Account',
     }),
     h(Item, {
@@ -98,7 +98,7 @@ AccountMenu.prototype.render = function () {
         toggleAccountMenu()
         history.push(IMPORT_ACCOUNT_ROUTE)
       },
-      icon: h('img', { src: 'images/import-account.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
       text: 'Import Account',
     }),
     h(Divider),
@@ -107,7 +107,7 @@ AccountMenu.prototype.render = function () {
         toggleAccountMenu()
         history.push(INFO_ROUTE)
       },
-      icon: h('img', { src: 'images/mm-info-icon.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/mm-info-icon.svg' }),
       text: 'Info & Help',
     }),
     h(Item, {
@@ -115,7 +115,7 @@ AccountMenu.prototype.render = function () {
         toggleAccountMenu()
         history.push(SETTINGS_ROUTE)
       },
-      icon: h('img', { src: 'images/settings.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
       text: 'Settings',
     }),
   ])

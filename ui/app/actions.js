@@ -47,6 +47,8 @@ var actions = {
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
+  markPasswordForgotten,
+  unMarkPasswordForgotten,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
@@ -70,12 +72,14 @@ var actions = {
   addNewAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
+  resetAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeed: requestRevealSeed,
+
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
@@ -402,6 +406,20 @@ function requestRevealSeed (password) {
       })
     })
   }
+}
+
+function resetAccount () {
+    return (dispatch) => {
+        background.resetAccount((err, account) => {
+            dispatch(actions.hideLoadingIndication())
+            if (err) {
+                dispatch(actions.displayWarning(err.message))
+            }
+
+            log.info('Transaction history reset for ' + account)
+            dispatch(actions.showAccountsPage())
+        })
+    }
 }
 
 function addNewKeyring (type, opts) {
@@ -894,6 +912,28 @@ function showCreateVault () {
 function showRestoreVault () {
   return {
     type: actions.SHOW_RESTORE_VAULT,
+  }
+}
+
+function markPasswordForgotten () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return background.markPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
+function unMarkPasswordForgotten () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return background.unMarkPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
   }
 }
 

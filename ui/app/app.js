@@ -352,7 +352,6 @@ class App extends Component {
     const {
       noActiveNotices,
       lostAccounts,
-      isInitialized,
       forgottenPassword,
       currentView,
       activeAddress,
@@ -369,6 +368,15 @@ class App extends Component {
       return h(Redirect, {
         to: {
           pathname: REVEAL_SEED_ROUTE,
+        },
+      })
+    }
+
+    if (forgottenPassword) {
+      log.debug('rendering restore vault screen')
+      return h(Redirect, {
+        to: {
+          pathname: RESTORE_VAULT_ROUTE,
         },
       })
     }
@@ -422,20 +430,20 @@ class App extends Component {
     // }
 
     // show initialize screen
-    if (!isInitialized || forgottenPassword) {
-      // show current view
-      log.debug('rendering an initialize screen')
-      // switch (props.currentView.name) {
+    // if (!isInitialized || forgottenPassword) {
+    //   // show current view
+    //   log.debug('rendering an initialize screen')
+    //   // switch (props.currentView.name) {
 
-        // case 'restoreVault':
-        //   log.debug('rendering restore vault screen')
-        //   return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+    //     // case 'restoreVault':
+    //     //   log.debug('rendering restore vault screen')
+    //     //   return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
 
-      //   default:
-      //     log.debug('rendering menu screen')
-      //     return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-      // }
-    }
+    //   //   default:
+    //   //     log.debug('rendering menu screen')
+    //   //     return h(InitializeMenuScreen, {key: 'menuScreenInit'})
+    //   // }
+    // }
 
     // // show unlock screen
     // if (!props.isUnlocked) {
