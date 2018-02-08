@@ -43,6 +43,8 @@ module.exports = class MetamaskController extends EventEmitter {
   constructor (opts) {
     super()
 
+    this.defaultMaxListeners = 20
+
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
     this.opts = opts
@@ -84,9 +86,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
-    this.blacklistController = new BlacklistController({
-      initState: initState.BlacklistController,
-    })
+    this.blacklistController = new BlacklistController()
     this.blacklistController.scheduleUpdates()
 
     // rpc provider
@@ -198,12 +198,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
     })
-    this.blacklistController.store.subscribe((state) => {
-      this.store.updateState({ BlacklistController: state })
-    })
-    this.recentBlocksController.store.subscribe((state) => {
-      this.store.updateState({ RecentBlocks: state })
-    })
+
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
     })
@@ -350,6 +345,7 @@ module.exports = class MetamaskController extends EventEmitter {
       addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
+      resetAccount: this.resetAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // vault management
@@ -609,6 +605,13 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
+
+  resetAccount (cb) {
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+    this.txController.wipeTransactions(selectedAddress)
+    cb(null, selectedAddress)
+  }
+
 
   importAccountWithStrategy (strategy, args, cb) {
     accountImporter.importAccount(strategy, args)
