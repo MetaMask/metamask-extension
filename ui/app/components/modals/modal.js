@@ -18,6 +18,7 @@ const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
+const ConfirmResetAccount = require('./notification-modals/confirm-reset-account')
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -198,6 +199,18 @@ const MODALS = {
     },
     laptopModalStyle: {
       width: '449px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
+  CONFIRM_RESET_ACCOUNT: {
+    contents: h(ConfirmResetAccount),
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '473px',
       top: 'calc(33% + 45px)',
     },
   },
