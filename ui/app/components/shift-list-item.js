@@ -29,40 +29,35 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
-  const { selectedAddress, receivingAddress } = this.props
-  return (
-    selectedAddress === receivingAddress
-      ? h('div.tx-list-item.tx-list-clickable', {
+  return h('div.tx-list-item.tx-list-clickable', {
+    style: {
+      paddingTop: '20px',
+      paddingBottom: '20px',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+    },
+  }, [
+    h('div', {
+      style: {
+        width: '0px',
+        position: 'relative',
+        bottom: '19px',
+      },
+    }, [
+      h('img', {
+        src: 'https://info.shapeshift.io/sites/default/files/logo.png',
         style: {
-          paddingTop: '20px',
-          paddingBottom: '20px',
-          justifyContent: 'space-around',
-          alignItems: 'center',
+          height: '35px',
+          width: '132px',
+          position: 'absolute',
+          clip: 'rect(0px,23px,34px,0px)',
         },
-      }, [
-        h('div', {
-          style: {
-            width: '0px',
-            position: 'relative',
-            bottom: '19px',
-          },
-        }, [
-          h('img', {
-            src: 'https://info.shapeshift.io/sites/default/files/logo.png',
-            style: {
-              height: '35px',
-              width: '132px',
-              position: 'absolute',
-              clip: 'rect(0px,23px,34px,0px)',
-            },
-          }),
-        ]),
+      }),
+    ]),
 
-        this.renderInfo(),
-        this.renderUtilComponents(),
-      ])
-      : null
-  )
+    this.renderInfo(),
+    this.renderUtilComponents(),
+  ])
 }
 
 function formatDate (date) {
