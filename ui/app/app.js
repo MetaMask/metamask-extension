@@ -268,7 +268,7 @@ class App extends Component {
         }, [
           h('div.app-header-contents', {}, [
             h('div.left-menu-wrapper', {
-              onClick: () => history.push(DEFAULT_ROUTE),
+              onClick: () => props.history.push(DEFAULT_ROUTE),
             }, [
               // mini logo
               h('img.metafox-icon', {
