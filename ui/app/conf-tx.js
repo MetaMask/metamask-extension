@@ -2,28 +2,30 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 
 const PendingTx = require('./components/pending-tx')
-const SignatureRequest = require('./components/signature-request')
 // const PendingMsg = require('./components/pending-msg')
 // const PendingPersonalMsg = require('./components/pending-personal-msg')
 // const PendingTypedMsg = require('./components/pending-typed-msg')
 const Loading = require('./components/loading')
+const { DEFAULT_ROUTE } = require('./routes')
 
-// const contentDivider = h('div', {
-//   style: {
-//     marginLeft: '16px',
-//     marginRight: '16px',
-//     height:'1px',
-//     background:'#E7E7E7',
-//   },
-// })
-
-module.exports = connect(mapStateToProps)(ConfirmTxScreen)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(ConfirmTxScreen)
 
 function mapStateToProps (state) {
+  const { metamask } = state
+  const {
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+  } = metamask
+
   return {
     identities: state.metamask.identities,
     accounts: state.metamask.accounts,
@@ -40,12 +42,32 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     computedBalances: state.metamask.computedBalances,
+    unapprovedMsgCount,
+    unapprovedPersonalMsgCount,
+    send: state.metamask.send,
   }
 }
 
 inherits(ConfirmTxScreen, Component)
 function ConfirmTxScreen () {
   Component.call(this)
+}
+
+ConfirmTxScreen.prototype.componentWillMount = function () {
+  const { unapprovedTxs = {}, send } = this.props
+  const { to } = send
+  if (Object.keys(unapprovedTxs).length === 0 && !to) {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
+}
+
+ConfirmTxScreen.prototype.componentWillReceiveProps = function (nextProps) {
+  const { send } = this.props
+  const { to } = send
+  const { unapprovedTxs = {} } = nextProps
+  if (Object.keys(unapprovedTxs).length === 0 && !to) {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
 }
 
 ConfirmTxScreen.prototype.render = function () {
@@ -113,27 +135,13 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
-  const { txParams, msgParams } = txData
+  const { txParams } = txData
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
-  } else if (msgParams) {
-    log.debug('msgParams detected, rendering pending msg')
-
-    return h(SignatureRequest, opts)
-
-    // if (type === 'eth_sign') {
-    //   log.debug('rendering eth_sign message')
-    //   return h(PendingMsg, opts)
-    // } else if (type === 'personal_sign') {
-    //   log.debug('rendering personal_sign message')
-    // return h(PendingPersonalMsg, opts)
-    // } else if (type === 'eth_signTypedData') {
-    //   log.debug('rendering eth_signTypedData message')
-    //   return h(PendingTypedMsg, opts)
-    // }
   }
+
   return h(Loading)
 }
 
@@ -145,6 +153,7 @@ ConfirmTxScreen.prototype.buyEth = function (address, event) {
 ConfirmTxScreen.prototype.sendTransaction = function (txData, event) {
   this.stopPropagation(event)
   this.props.dispatch(actions.updateAndApproveTx(txData))
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmTxScreen.prototype.cancelTransaction = function (txData, event) {

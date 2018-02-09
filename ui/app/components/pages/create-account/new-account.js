@@ -2,7 +2,8 @@ const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const { connect } = require('react-redux')
-const actions = require('../../actions')
+const actions = require('../../../actions')
+const { DEFAULT_ROUTE } = require('../../../routes')
 
 class NewAccountCreateForm extends Component {
   constructor (props) {
@@ -19,7 +20,7 @@ class NewAccountCreateForm extends Component {
 
   render () {
     const { newAccountName, defaultAccountName } = this.state
-    
+    const { history, createAccount } = this.props
 
     return h('div.new-account-create-form', [
 
@@ -38,13 +39,16 @@ class NewAccountCreateForm extends Component {
       h('div.new-account-create-form__buttons', {}, [
 
         h('button.new-account-create-form__button-cancel', {
-          onClick: () => this.props.goHome(),
+          onClick: () => history.push(DEFAULT_ROUTE),
         }, [
           'CANCEL',
         ]),
 
         h('button.new-account-create-form__button-create', {
-          onClick: () => this.props.createAccount(newAccountName || defaultAccountName),
+          onClick: () => {
+            createAccount(newAccountName || defaultAccountName)
+              .then(() => history.push(DEFAULT_ROUTE))
+          },
         }, [
           'CREATE',
         ]),
@@ -59,8 +63,8 @@ NewAccountCreateForm.propTypes = {
   hideModal: PropTypes.func,
   showImportPage: PropTypes.func,
   createAccount: PropTypes.func,
-  goHome: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
+  history: PropTypes.object,
 }
 
 const mapStateToProps = state => {
@@ -76,23 +80,17 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    toCoinbase: (address) => {
-      dispatch(actions.buyEth({ network: '1', address, amount: 0 }))
-    },
-    hideModal: () => {
-      dispatch(actions.hideModal())
-    },
-    createAccount: (newAccountName) => {
-      dispatch(actions.addNewAccount())
-        .then((newAccountAddress) => {
+    toCoinbase: address => dispatch(actions.buyEth({ network: '1', address, amount: 0 })),
+    hideModal: () => dispatch(actions.hideModal()),
+    createAccount: newAccountName => {
+      return dispatch(actions.addNewAccount())
+        .then(newAccountAddress => {
           if (newAccountName) {
             dispatch(actions.saveAccountLabel(newAccountAddress, newAccountName))
           }
-          dispatch(actions.goHome())
         })
     },
     showImportPage: () => dispatch(actions.showImportPage()),
-    goHome: () => dispatch(actions.goHome()),
   }
 }
 

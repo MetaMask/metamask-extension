@@ -1,5 +1,7 @@
 const Component = require('react').Component
 const { connect } = require('react-redux')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const tokenAbi = require('human-standard-token-abi')
@@ -26,8 +28,12 @@ const {
   getSelectedAddress,
   getSelectedTokenContract,
 } = require('../../selectors')
+const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendToken)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmSendToken)
 
 function mapStateToProps (state, ownProps) {
   const { token: { symbol }, txData } = ownProps
@@ -96,6 +102,12 @@ function ConfirmSendToken () {
   Component.call(this)
   this.state = {}
   this.onSubmit = this.onSubmit.bind(this)
+}
+
+ConfirmSendToken.prototype.editTransaction = function (txMeta) {
+  const { editTransaction, history } = this.props
+  editTransaction(txMeta)
+  history.push(SEND_ROUTE)
 }
 
 ConfirmSendToken.prototype.componentWillMount = function () {
@@ -315,7 +327,7 @@ ConfirmSendToken.prototype.render = function () {
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
           h('button.btn-clear.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+            onClick: () => this.editTransaction(txMeta),
           }, 'EDIT'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
           h('div.confirm-screen-header-tip'),
@@ -417,6 +429,7 @@ ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   const { cancelTransaction } = this.props
 
   cancelTransaction(txMeta)
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmSendToken.prototype.checkValidity = function () {

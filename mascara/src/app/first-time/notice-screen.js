@@ -1,10 +1,12 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Markdown from 'react-markdown'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import debounce from 'lodash.debounce'
-import {markNoticeRead} from '../../../../ui/app/actions'
+import { markNoticeRead } from '../../../../ui/app/actions'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
+import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
 
 class NoticeScreen extends Component {
   static propTypes = {
@@ -12,70 +14,77 @@ class NoticeScreen extends Component {
     lastUnreadNotice: PropTypes.shape({
       title: PropTypes.string,
       date: PropTypes.string,
-      body: PropTypes.string
+      body: PropTypes.string,
     }),
-    next: PropTypes.func.isRequired
+    location: PropTypes.shape({
+      state: PropTypes.shape({
+        next: PropTypes.func.isRequired,
+      }),
+    }),
+    markNoticeRead: PropTypes.func,
+    history: PropTypes.object,
   };
 
   static defaultProps = {
-    lastUnreadNotice: {}
+    lastUnreadNotice: {},
   };
 
   state = {
     atBottom: false,
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.onScroll()
   }
 
   acceptTerms = () => {
-    const { markNoticeRead, lastUnreadNotice, next } = this.props;
-    const defer = markNoticeRead(lastUnreadNotice)
-      .then(() => this.setState({ atBottom: false }))
-
-    if ((/terms/gi).test(lastUnreadNotice.title)) {
-      defer.then(next)
-    }
+    const { markNoticeRead, lastUnreadNotice, history } = this.props
+    markNoticeRead(lastUnreadNotice)
+      .then(() => {
+        history.push(DEFAULT_ROUTE)
+        this.setState({ atBottom: false })
+      })
   }
 
   onScroll = debounce(() => {
     if (this.state.atBottom) return
 
     const target = document.querySelector('.tou__body')
-    const {scrollTop, offsetHeight, scrollHeight} = target;
-    const atBottom = scrollTop + offsetHeight >= scrollHeight;
+    const {scrollTop, offsetHeight, scrollHeight} = target
+    const atBottom = scrollTop + offsetHeight >= scrollHeight
 
     this.setState({atBottom: atBottom})
   }, 25)
 
-  render() {
+  render () {
     const {
       address,
-      lastUnreadNotice: { title, body }
-    } = this.props;
+      lastUnreadNotice: { title, body },
+    } = this.props
     const { atBottom } = this.state
 
     return (
-      <div
-        className="tou"
-        onScroll={this.onScroll}
-      >
-        <Identicon address={address} diameter={70} />
-        <div className="tou__title">{title}</div>
-        <Markdown
-          className="tou__body markdown"
-          source={body}
-          skipHtml
-        />
-        <button
-          className="first-time-flow__button"
-          onClick={atBottom && this.acceptTerms}
-          disabled={!atBottom}
+      <div className="first-time-flow">
+        <div
+          className="tou"
+          onScroll={this.onScroll}
         >
-          Accept
-        </button>
-        <Breadcrumbs total={3} currentIndex={2} />
+          <Identicon address={address} diameter={70} />
+          <div className="tou__title">{title}</div>
+          <Markdown
+            className="tou__body markdown"
+            source={body}
+            skipHtml
+          />
+          <button
+            className="first-time-flow__button"
+            onClick={atBottom && this.acceptTerms}
+            disabled={!atBottom}
+          >
+            Accept
+          </button>
+          <Breadcrumbs total={3} currentIndex={2} />
+        </div>
       </div>
     )
   }
@@ -84,9 +93,9 @@ class NoticeScreen extends Component {
 export default connect(
   ({ metamask: { selectedAddress, lastUnreadNotice } }) => ({
     lastUnreadNotice,
-    address: selectedAddress
+    address: selectedAddress,
   }),
   dispatch => ({
-    markNoticeRead: notice => dispatch(markNoticeRead(notice))
+    markNoticeRead: notice => dispatch(markNoticeRead(notice)),
   })
 )(NoticeScreen)

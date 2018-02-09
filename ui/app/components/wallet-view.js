@@ -1,6 +1,8 @@
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const Identicon = require('./identicon')
@@ -11,8 +13,12 @@ const actions = require('../actions')
 const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
+const { ADD_TOKEN_ROUTE } = require('../routes')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(WalletView)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(WalletView)
 
 function mapStateToProps (state) {
 
@@ -91,7 +97,7 @@ WalletView.prototype.render = function () {
     keyrings,
     showAccountDetailModal,
     hideSidebar,
-    showAddTokenPage,
+    history,
   } = this.props
   // temporary logs + fake extra wallets
   // console.log('walletview, selectedAccount:', selectedAccount)
@@ -168,10 +174,7 @@ WalletView.prototype.render = function () {
     h(TokenList),
 
     h('button.btn-clear.wallet-view__add-token-button', {
-      onClick: () => {
-        showAddTokenPage()
-        hideSidebar()
-      },
+      onClick: () => history.push(ADD_TOKEN_ROUTE),
     }, 'Add Token'),
   ])
 }

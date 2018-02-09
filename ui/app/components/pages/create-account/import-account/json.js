@@ -1,13 +1,19 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const actions = require('../../actions')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
+const { connect } = require('react-redux')
+const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
+const { DEFAULT_ROUTE } = require('../../../../routes')
 
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 
-module.exports = connect(mapStateToProps)(JsonImportSubview)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps)
+)(JsonImportSubview)
 
 function mapStateToProps (state) {
   return {
@@ -50,7 +56,7 @@ JsonImportSubview.prototype.render = function () {
       h('div.new-account-create-form__buttons', {}, [
 
         h('button.new-account-create-form__button-cancel', {
-          onClick: () => this.props.goHome(),
+          onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, [
           'CANCEL',
         ]),

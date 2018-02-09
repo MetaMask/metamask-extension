@@ -2,6 +2,8 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const abi = require('ethereumjs-abi')
 const SendEther = require('../../send-v2')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 
 const {
   accountsWithSendEtherInfoSelector,
@@ -16,7 +18,10 @@ const {
   getSelectedTokenContract,
 } = require('../../selectors')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SendEther)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(SendEther)
 
 function mapStateToProps (state) {
   const fromAccounts = accountsWithSendEtherInfoSelector(state)
@@ -78,7 +83,6 @@ function mapDispatchToProps (dispatch) {
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
     updateSendMemo: newMemo => dispatch(actions.updateSendMemo(newMemo)),
     updateSendErrors: newError => dispatch(actions.updateSendErrors(newError)),
-    goHome: () => dispatch(actions.goHome()),
     clearSend: () => dispatch(actions.clearSend()),
     setMaxModeTo: bool => dispatch(actions.setMaxModeTo(bool)),
   }

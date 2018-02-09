@@ -1,5 +1,7 @@
 const Component = require('react').Component
 const { connect } = require('react-redux')
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../actions')
@@ -11,8 +13,12 @@ const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil, addCurrencies } = require('../../conversion-util')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
+const { SEND_ROUTE, DEFAULT_ROUTE } = require('../../routes')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendEther)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(ConfirmSendEther)
 
 function mapStateToProps (state) {
   const {
@@ -43,6 +49,7 @@ function mapDispatchToProps (dispatch) {
         to,
         value: amount,
       } = txParams
+
       dispatch(actions.updateSend({
         gasLimit,
         gasPrice,
@@ -52,7 +59,6 @@ function mapDispatchToProps (dispatch) {
         errors: { to: null, amount: null },
         editingTransactionId: id,
       }))
-      dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
   }
@@ -177,8 +183,14 @@ ConfirmSendEther.prototype.getData = function () {
   }
 }
 
+ConfirmSendEther.prototype.editTransaction = function (txMeta) {
+  const { editTransaction, history } = this.props
+  editTransaction(txMeta)
+  history.push(SEND_ROUTE)
+}
+
 ConfirmSendEther.prototype.render = function () {
-  const { editTransaction, currentCurrency, clearSend } = this.props
+  const { currentCurrency, clearSend } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -220,7 +232,7 @@ ConfirmSendEther.prototype.render = function () {
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
           h('button.btn-clear.confirm-screen-back-button', {
-            onClick: () => editTransaction(txMeta),
+            onClick: () => this.editTransaction(txMeta),
           }, 'EDIT'),
           h('div.confirm-screen-title', 'Confirm Transaction'),
           h('div.confirm-screen-header-tip'),
@@ -424,6 +436,7 @@ ConfirmSendEther.prototype.cancel = function (event, txMeta) {
   const { cancelTransaction } = this.props
 
   cancelTransaction(txMeta)
+    .then(() => this.props.history.push(DEFAULT_ROUTE))
 }
 
 ConfirmSendEther.prototype.checkValidity = function () {

@@ -3,14 +3,20 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
+const { withRouter } = require('react-router-dom')
+const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
+const { SEND_ROUTE } = require('../routes')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
 const Identicon = require('./identicon')
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(TxView)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(TxView)
 
 function mapStateToProps (state) {
   const sidebarOpen = state.appState.sidebarOpen
@@ -63,7 +69,7 @@ TxView.prototype.renderHeroBalance = function () {
 }
 
 TxView.prototype.renderButtons = function () {
-  const {selectedToken, showModal, showSendPage, showSendTokenPage } = this.props
+  const {selectedToken, showModal, history } = this.props
 
   return !selectedToken
     ? (
@@ -78,14 +84,14 @@ TxView.prototype.renderButtons = function () {
           style: {
             marginLeft: '0.8em',
           },
-          onClick: showSendPage,
+          onClick: () => history.push(SEND_ROUTE),
         }, 'SEND'),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-clear.hero-balance-button', {
-          onClick: showSendTokenPage,
+          onClick: () => history.push(SEND_ROUTE),
         }, 'SEND'),
       ])
     )
