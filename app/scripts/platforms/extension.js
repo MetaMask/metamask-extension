@@ -22,6 +22,22 @@ class ExtensionPlatform {
     this.openWindow({ url: extensionURL })
   }
 
+  isInBrowser () {
+    return new Promise((resolve, reject) => {
+      try {
+        extension.tabs.getCurrent(currentTab => {
+          if (currentTab) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        })
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
   getPlatformInfo (cb) {
     try {
       extension.runtime.getPlatformInfo((platform) => {

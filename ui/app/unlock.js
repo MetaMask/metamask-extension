@@ -77,7 +77,12 @@ UnlockScreen.prototype.render = function () {
         h('p.pointer', {
           onClick: () => {
             this.props.dispatch(actions.markPasswordForgotten())
-            global.platform.openExtensionInBrowser()
+            global.platform.isInBrowser()
+              .then((isInBrowser) => {
+                if (!isInBrowser) {
+                  global.platform.openExtensionInBrowser()
+                }
+              })
           },
           style: {
             fontSize: '0.8em',
