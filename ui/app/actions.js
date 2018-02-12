@@ -257,6 +257,9 @@ var actions = {
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 
+  setMouseUserState,
+  SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
+
   // Network
   setNetworkEndpoints,
   updateNetworkEndpointType,
@@ -1658,6 +1661,13 @@ function updateFeatureFlags (updatedFeatureFlags) {
   return {
     type: actions.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
+  }
+}
+
+function setMouseUserState (isMouseUser) {
+  return {
+    type: actions.SET_MOUSE_USER_STATE,
+    value: isMouseUser,
   }
 }
 
