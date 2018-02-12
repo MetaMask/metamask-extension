@@ -59,6 +59,7 @@ function reduceApp (state, action) {
     // Used to display error text
     warning: null,
     buyView: {},
+    isMouseUser: false,
   }, state.appState)
 
   switch (action.type) {
@@ -658,6 +659,12 @@ function reduceApp (state, action) {
           data: action.value.data,
         },
       })
+
+    case actions.SET_MOUSE_USER_STATE:
+      return extend(appState, {
+        isMouseUser: action.value,
+      })
+
     default:
       return appState
   }
