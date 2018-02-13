@@ -179,7 +179,7 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
 }
 
 SendTransactionScreen.prototype.renderHeader = function () {
-  const { selectedToken } = this.props
+  const { selectedToken, clearSend, goHome } = this.props
   const tokenText = selectedToken ? 'tokens' : 'ETH'
 
   return h('div.page-container__header', [
@@ -188,10 +188,13 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
     h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
 
-    h(
-      'div.page-container__subtitle',
-      'Sending to a different crytpocurrency that is not Ethereum may result in permanent loss.'
-    ),
+    h('div.page-container__header-close', {
+      onClick: () => {
+        clearSend()
+        goHome()
+      },
+    }),
+
   ])
 }
 

@@ -82,8 +82,20 @@ input.large-input {
     display: flex;
     flex-flow: column;
     border-bottom: 1px solid $geyser;
-    padding: 1.6rem 1rem;
+    padding: 1.15rem 0.95rem;
     flex: 0 0 auto;
+    background: $alabaster;
+    position: relative;
+  }
+
+  &__header-close::after {
+    content: '\00D7';
+    font-size: 40px;
+    color: $tundora;
+    position: absolute;
+    top: 21.5px;
+    right: 28.5px;
+    cursor: pointer;
   }
 
   &__footer {
@@ -93,6 +105,11 @@ input.large-input {
     border-top: 1px solid $geyser;
     padding: 1.6rem;
     flex: 0 0 auto;
+
+    .btn-clear,
+    .btn-cancel {
+      font-size: 1rem;
+    }
   }
 
   &__footer-button {
@@ -101,6 +118,7 @@ input.large-input {
     font-size: 1rem;
     text-transform: uppercase;
     margin-right: 1rem;
+    border-radius: 2px;
 
     &:last-of-type {
       margin-right: 0;
@@ -108,7 +126,7 @@ input.large-input {
   }
 
   &__title {
-    color: $tundora;
+    color: $black;
     font-family: Roboto;
     font-size: 2rem;
     font-weight: 500;
@@ -119,6 +137,7 @@ input.large-input {
     padding-top: .5rem;
     line-height: initial;
     font-size: .9rem;
+    color: $gray;
   }
 
   &__tabs {
