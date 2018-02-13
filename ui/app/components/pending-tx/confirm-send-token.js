@@ -308,17 +308,15 @@ ConfirmSendToken.prototype.render = function () {
   this.inputs = []
 
   return (
-    h('div.confirm-screen-container.confirm-send-token', {
-      style: { minWidth: '355px' },
-    }, [
+    h('div.confirm-screen-container.confirm-send-token', [
       // Main Send token Card
-      h('div.confirm-screen-wrapper.flex-column.flex-grow', [
-        h('h3.flex-center.confirm-screen-header', [
-          h('button.btn-clear.confirm-screen-back-button', {
+      h('div.page-container', [
+        h('div.page-container__header', [
+          h('button.confirm-screen-back-button', {
             onClick: () => editTransaction(txMeta),
-          }, 'EDIT'),
-          h('div.confirm-screen-title', 'Confirm Transaction'),
-          h('div.confirm-screen-header-tip'),
+          }, 'Edit'),
+          h('div.page-container__title', 'Confirm'),
+          h('div.page-container__subtitle', `Please review your transaction.`),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
           h('div.confirm-screen-account-wrapper', [

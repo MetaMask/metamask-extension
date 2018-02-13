@@ -103,15 +103,13 @@
 }
 
 .confirm-screen-back-button {
-  background: transparent;
-  left: 24px;
+  color: $curious-blue;
+  font-family: Roboto;
+  font-size: 1rem;
   position: absolute;
-  padding: 6px 12px;
-  font-size: .7rem;
-
-  @media screen and (max-width: $break-small) {
-    margin-right: 12px;
-  }
+  top: 38px;
+  right: 38px;
+  background: none;
 }
 
 .confirm-screen-account-wrapper {
