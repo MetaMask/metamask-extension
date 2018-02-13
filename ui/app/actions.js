@@ -47,6 +47,8 @@ var actions = {
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
+  markPasswordForgotten,
+  unMarkPasswordForgotten,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
@@ -55,6 +57,7 @@ var actions = {
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
+  unlockSucceeded,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
@@ -80,6 +83,7 @@ var actions = {
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
+  UNLOCK_SUCCEEDED: 'UNLOCK_SUCCEEDED',
   UNLOCK_METAMASK: 'UNLOCK_METAMASK',
   LOCK_METAMASK: 'LOCK_METAMASK',
   tryUnlockMetamask: tryUnlockMetamask,
@@ -253,6 +257,9 @@ var actions = {
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 
+  setMouseUserState,
+  SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
+
   // Network
   setNetworkEndpoints,
   updateNetworkEndpointType,
@@ -286,6 +293,7 @@ function tryUnlockMetamask (password) {
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
+        dispatch(actions.unlockSucceeded())
         dispatch(actions.transitionForward())
         forceUpdateMetamaskState(dispatch)
       }
@@ -832,6 +840,28 @@ function showRestoreVault () {
   }
 }
 
+function markPasswordForgotten () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return background.markPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
+function unMarkPasswordForgotten () {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    return background.unMarkPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
 function forgotPassword () {
   return {
     type: actions.FORGOT_PASSWORD,
@@ -902,6 +932,13 @@ function unlockInProgress () {
 function unlockFailed (message) {
   return {
     type: actions.UNLOCK_FAILED,
+    value: message,
+  }
+}
+
+function unlockSucceeded (message) {
+  return {
+    type: actions.UNLOCK_SUCCEEDED,
     value: message,
   }
 }
@@ -1624,6 +1661,13 @@ function updateFeatureFlags (updatedFeatureFlags) {
   return {
     type: actions.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
+  }
+}
+
+function setMouseUserState (isMouseUser) {
+  return {
+    type: actions.SET_MOUSE_USER_STATE,
+    value: isMouseUser,
   }
 }
 

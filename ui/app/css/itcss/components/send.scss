@@ -533,7 +533,6 @@
     @media screen and (max-width: $break-small) {
       padding: 13px 0;
       margin: 0;
-      height: 0;
       overflow-y: auto;
       flex: 1 1 auto;
     }
@@ -558,6 +557,25 @@
 
   &__form-field {
     flex: 1 1 auto;
+
+    .currency-display {
+      color: $tundora;
+
+      &__currency-symbol {
+        color: $tundora;
+      }
+
+      &__converted-value,
+      &__converted-currency {
+        color: $tundora;
+      }
+    }
+
+    .account-list-item {
+      &__account-secondary-balance {
+        color: $tundora;
+      }
+    }
   }
 
   &__form-label {
@@ -566,6 +584,7 @@
     font-size: 16px;
     line-height: 22px;
     width: 88px;
+    font-weight: 400;
   }
 
   &__from-dropdown {
@@ -621,7 +640,7 @@
       border: 1px solid $alto;
       border-radius: 4px;
       background-color: $white;
-      color: $dusty-gray;
+      color: $tundora;
       padding: 10px;
       font-family: Roboto;
       font-size: 16px;

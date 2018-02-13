@@ -5,7 +5,6 @@ const h = require('react-hyperscript')
 const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 
-const Identicon = require('./components/identicon')
 const FromDropdown = require('./components/send/from-dropdown')
 const ToAutoComplete = require('./components/send/to-autocomplete')
 const CurrencyDisplay = require('./components/send/currency-display')
@@ -179,52 +178,22 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
   }
 }
 
-SendTransactionScreen.prototype.renderHeaderIcon = function () {
-  const { selectedToken } = this.props
-
-  return h('div.send-v2__send-header-icon-container', [
-    selectedToken
-      ? h(Identicon, {
-        diameter: 40,
-        address: selectedToken.address,
-      })
-      : h('img.send-v2__send-header-icon', { src: '../images/eth_logo.svg' }),
-  ])
-}
-
-SendTransactionScreen.prototype.renderTitle = function () {
-  const { selectedToken } = this.props
-
-  return h('div.send-v2__title', [selectedToken ? 'Send Tokens' : 'Send Funds'])
-}
-
-SendTransactionScreen.prototype.renderCopy = function () {
-  const { selectedToken } = this.props
-
+SendTransactionScreen.prototype.renderHeader = function () {
+  const { selectedToken, clearSend, goHome } = this.props
   const tokenText = selectedToken ? 'tokens' : 'ETH'
 
-  return h('div.send-v2__form-header-copy', [
+  return h('div.page-container__header', [
 
-    h('div.send-v2__copy', `Only send ${tokenText} to an Ethereum address.`),
+    h('div.page-container__title', selectedToken ? 'Send Tokens' : 'Send ETH'),
 
-    h('div.send-v2__copy', 'Sending to a different crytpocurrency that is not Ethereum may result in permanent loss.'),
+    h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
 
-  ])
-}
-
-SendTransactionScreen.prototype.renderHeader = function () {
-  return h('div', [
-    h('div.send-v2__header', {}, [
-
-      this.renderHeaderIcon(),
-
-      h('div.send-v2__arrow-background', [
-        h('i.fa.fa-lg.fa-arrow-circle-right.send-v2__send-arrow-icon'),
-      ]),
-
-      h('div.send-v2__header-tip'),
-
-    ]),
+    h('div.page-container__header-close', {
+      onClick: () => {
+        clearSend()
+        goHome()
+      },
+    }),
 
   ])
 }
@@ -504,14 +473,6 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 SendTransactionScreen.prototype.renderForm = function () {
   return h('div.send-v2__form', {}, [
 
-    h('div.sendV2__form-header', [
-
-      this.renderTitle(),
-
-      this.renderCopy(),
-
-    ]),
-
     this.renderFromRow(),
 
     this.renderToRow(),
@@ -535,14 +496,14 @@ SendTransactionScreen.prototype.renderFooter = function () {
 
   const noErrors = !amountError && toError === null
 
-  return h('div.send-v2__footer', [
-    h('button.btn-cancel.send-v2__cancel-btn', {
+  return h('div.page-container__footer', [
+    h('button.btn-cancel.page-container__footer-button', {
       onClick: () => {
         clearSend()
         goHome()
       },
     }, 'Cancel'),
-    h('button.btn-clear.send-v2__next-btn', {
+    h('button.btn-clear.page-container__footer-button', {
       disabled: !noErrors || !gasTotal,
       onClick: event => this.onSubmit(event),
     }, 'Next'),
@@ -552,7 +513,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
 SendTransactionScreen.prototype.render = function () {
   return (
 
-    h('div.send-v2__container', [
+    h('div.page-container', [
 
       this.renderHeader(),
 

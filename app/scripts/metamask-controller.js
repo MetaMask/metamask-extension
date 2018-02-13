@@ -310,6 +310,7 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         lostAccounts: this.configManager.getLostAccounts(),
         seedWords: this.configManager.getSeedWords(),
+        forgottenPassword: this.configManager.getPasswordForgotten(),
       }
     )
   }
@@ -332,6 +333,8 @@ module.exports = class MetamaskController extends EventEmitter {
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
+      markPasswordForgotten: this.markPasswordForgotten.bind(this),
+      unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
 
       // coinbase
       buyEth: this.buyEth.bind(this),
@@ -792,6 +795,18 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setLostAccounts([])
     this.sendUpdate()
     cb(null, this.getState())
+  }
+
+  markPasswordForgotten(cb) {
+    this.configManager.setPasswordForgotten(true)
+    this.sendUpdate()
+    cb()
+  }
+
+  unMarkPasswordForgotten(cb) {
+    this.configManager.setPasswordForgotten(false)
+    this.sendUpdate()
+    cb()
   }
 
   restoreOldVaultAccounts (migratorOutput) {

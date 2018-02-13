@@ -456,11 +456,31 @@ App.prototype.renderPrimary = function () {
   // notices
   if (!props.noActiveNotices) {
     log.debug('rendering notice screen for unread notices.')
-    return h(NoticeScreen, {
-      notice: props.lastUnreadNotice,
-      key: 'NoticeScreen',
-      onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
-    })
+    return h('div', [
+
+      h(NoticeScreen, {
+        notice: props.lastUnreadNotice,
+        key: 'NoticeScreen',
+        onConfirm: () => props.dispatch(actions.markNoticeRead(props.lastUnreadNotice)),
+      }),
+
+      !props.isInitialized && h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: () => {
+            global.platform.openExtensionInBrowser()
+            props.dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
+              .then(() => props.dispatch(actions.setNetworkEndpoints(BETA_UI_NETWORK_TYPE)))
+          },
+          style: {
+            fontSize: '0.8em',
+            color: '#aeaeae',
+            textDecoration: 'underline',
+            marginTop: '32px',
+          },
+        }, 'Try Beta Version'),
+      ]),
+
+    ])
   } else if (props.lostAccounts && props.lostAccounts.length > 0) {
     log.debug('rendering notice screen for lost accounts view.')
     return h(NoticeScreen, {

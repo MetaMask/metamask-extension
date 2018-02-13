@@ -116,7 +116,7 @@ function transactionsSelector (state) {
   // console.log({txsToRender, selectedTokenAddress})
   return selectedTokenAddress
     ? txsToRender
-      .filter(({ txParams: { to } }) => to === selectedTokenAddress)
+      .filter(({ txParams }) => txParams && txParams.to === selectedTokenAddress)
       .sort((a, b) => b.time - a.time)
     : txsToRender
       .sort((a, b) => b.time - a.time)
@@ -179,11 +179,11 @@ function autoAddToBetaUI (state) {
     (numberOfAccounts > autoAddAccountsThreshold) &&
     (numberOfTokensAdded > autoAddTokensThreshold)
   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-  
+
   return userIsNotInBeta && userPassesThreshold
 }
 
 function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
-  return currentView.context 
+  return currentView.context
 }

@@ -250,6 +250,24 @@ class Settings extends Component {
     )
   }
 
+  renderResetAccount () {
+    const { showResetAccountConfirmationModal } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', 'Reset Account'),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h('button.settings__clear-button.settings__clear-button--orange', {
+            onClick (event) {
+              event.preventDefault()
+              showResetAccountConfirmationModal()
+            },
+          }, 'Reset Account'),
+        ]),
+      ]),
+    ])
+  }
+
   renderSettingsContent () {
     const { warning, isMascara } = this.props
 
@@ -262,6 +280,7 @@ class Settings extends Component {
         this.renderStateLogs(),
         this.renderSeedWords(),
         !isMascara && this.renderOldUI(),
+        this.renderResetAccount(),
         this.renderBlockieOptIn(),
       ])
     )
@@ -387,6 +406,7 @@ Settings.propTypes = {
   displayWarning: PropTypes.func,
   revealSeedConfirmation: PropTypes.func,
   setFeatureFlagToBeta: PropTypes.func,
+  showResetAccountConfirmationModal: PropTypes.func,
   warning: PropTypes.string,
   goHome: PropTypes.func,
   isMascara: PropTypes.bool,
@@ -411,6 +431,9 @@ const mapDispatchToProps = dispatch => {
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
         .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+    },
+    showResetAccountConfirmationModal: () => {
+      return dispatch(actions.showModal({ name: 'CONFIRM_RESET_ACCOUNT' }))
     },
   }
 }

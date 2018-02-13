@@ -80,11 +80,12 @@ function mapStateToProps (state) {
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
-    forgottenPassword: state.appState.forgottenPassword,
+    forgottenPassword: state.metamask.forgottenPassword,
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     currentCurrency: state.metamask.currentCurrency,
+    isMouseUser: state.appState.isMouseUser,  
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -101,6 +102,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
   }
 }
 
@@ -112,7 +114,13 @@ App.prototype.componentWillMount = function () {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, network } = props
+  const {
+    isLoading,
+    loadingMessage,
+    network,
+    isMouseUser,
+    setMouseUserState,
+  } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
@@ -120,10 +128,18 @@ App.prototype.render = function () {
 
   return (
     h('.flex-column.full-height', {
+      className: classnames({ 'mouse-user-styles': isMouseUser }),
       style: {
         overflowX: 'hidden',
         position: 'relative',
         alignItems: 'center',
+      },
+      tabIndex: '0',
+      onClick: () => setMouseUserState(true),
+      onKeyDown: (e) => {
+        if (e.keyCode === 9) {
+          setMouseUserState(false)
+        }
       },
     }, [
 
@@ -358,20 +374,12 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  // show initialize screen
-  if (!props.isInitialized || props.forgottenPassword) {
-    // show current view
-    log.debug('rendering an initialize screen')
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      default:
-        log.debug('rendering menu screen')
-        return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-    }
+  if (props.isInitialized && props.forgottenPassword) {
+    log.debug('rendering restore vault screen')
+    return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+  } else if (!props.isInitialized) {
+    log.debug('rendering menu screen')
+    return h(InitializeMenuScreen, {key: 'menuScreenInit'})
   }
 
   // show unlock screen
