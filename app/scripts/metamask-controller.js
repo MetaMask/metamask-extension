@@ -444,7 +444,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({
       provider: this.provider,
-      blockTracker: this.blockTracker,
+      blockTracker: this.provider._blockTracker,
     })
 
     engine.push(createOriginMiddleware({ origin }))
