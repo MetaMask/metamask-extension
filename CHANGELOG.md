@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where log subscriptions would break when switching network.
+
 ## 3.14.1 2018-2-1
 
 - Further fix scrolling for Firefox.
