@@ -842,7 +842,6 @@ function showRestoreVault () {
 
 function markPasswordForgotten () {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
     return background.markPasswordForgotten(() => {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.forgotPassword())
@@ -853,7 +852,6 @@ function markPasswordForgotten () {
 
 function unMarkPasswordForgotten () {
   return (dispatch) => {
-    dispatch(actions.showLoadingIndication())
     return background.unMarkPasswordForgotten(() => {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.forgotPassword())

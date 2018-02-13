@@ -6,6 +6,7 @@ const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const environmentType = require('../../app/scripts/lib/environment-type')
 
 const Mascot = require('./components/mascot')
 
@@ -77,7 +78,9 @@ UnlockScreen.prototype.render = function () {
         h('p.pointer', {
           onClick: () => {
             this.props.dispatch(actions.markPasswordForgotten())
-            global.platform.openExtensionInBrowser()
+            if (environmentType() === 'popup') {
+              global.platform.openExtensionInBrowser()
+            }
           },
           style: {
             fontSize: '0.8em',
