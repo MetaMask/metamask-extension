@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 const Mascot = require('./components/mascot')
 
@@ -85,6 +86,22 @@ UnlockScreen.prototype.render = function () {
           },
         }, 'Restore from seed phrase'),
       ]),
+
+      h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: () => {
+            this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+              .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+          },
+          style: {
+            fontSize: '0.8em',
+            color: '#aeaeae',
+            textDecoration: 'underline',
+            marginTop: '32px',
+          },
+        }, 'Use classic interface'),
+      ]),
+      
     ])
   )
 }
