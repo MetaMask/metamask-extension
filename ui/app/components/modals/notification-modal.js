@@ -9,25 +9,46 @@ class NotificationModal extends Component {
     const {
       header,
       message,
+      showCancelButton = false,
+      showConfirmButton = false,
+      hideModal,
+      onConfirm,
     } = this.props
 
+    const showButtons = showCancelButton || showConfirmButton
+
     return h('div', [
-      h('div.notification-modal-wrapper', {
+      h('div.notification-modal__wrapper', {
       }, [
 
-        h('div.notification-modal-header', {}, [
+        h('div.notification-modal__header', {}, [
           header,
         ]),
 
-        h('div.notification-modal-message-wrapper', {}, [
-          h('div.notification-modal-message', {}, [
+        h('div.notification-modal__message-wrapper', {}, [
+          h('div.notification-modal__message', {}, [
             message,
           ]),
         ]),
 
         h('div.modal-close-x', {
-          onClick: this.props.hideModal,
+          onClick: hideModal,
         }),
+
+        showButtons && h('div.notification-modal__buttons', [
+
+          showCancelButton && h('div.btn-cancel.notification-modal__buttons__btn', {
+            onClick: hideModal,
+          }, 'Cancel'),
+
+          showConfirmButton && h('div.btn-clear.notification-modal__buttons__btn', {
+            onClick: () => {
+              onConfirm()
+              hideModal()
+            },
+          }, 'Confirm'),
+
+        ]),
 
       ]),
     ])
@@ -37,7 +58,10 @@ class NotificationModal extends Component {
 NotificationModal.propTypes = {
   hideModal: PropTypes.func,
   header: PropTypes.string,
-  message: PropTypes.string,
+  message: PropTypes.node,
+  showCancelButton: PropTypes.bool,
+  showConfirmButton: PropTypes.bool,
+  onConfirm: PropTypes.func,
 }
 
 const mapDispatchToProps = dispatch => {
