@@ -4,7 +4,7 @@
   border: 1px solid $alto;
   border-radius: 4px;
   background-color: $white;
-  color: $dusty-gray;
+  color: $scorpion;
   font-family: Roboto;
   font-size: 16px;
   font-weight: 300;
@@ -52,5 +52,6 @@
 
   &__currency-symbol {
     margin-top: 1px;
+    color: $scorpion;
   }
 }
