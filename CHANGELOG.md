@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug where log subscriptions would break when switching network.
+- Add MetaMask light client [testing container](https://github.com/MetaMask/mesh-testing)
 
 ## 3.14.1 2018-2-1
 
