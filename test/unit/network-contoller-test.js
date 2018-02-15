@@ -2,28 +2,37 @@ const assert = require('assert')
 const nock = require('nock')
 const NetworkController = require('../../app/scripts/controllers/network')
 
+const { createTestProviderTools } = require('../stub/provider')
+const providerResultStub = {}
+const provider = createTestProviderTools({ scaffold: providerResultStub }).provider
+
 describe('# Network Controller', function () {
   let networkController
+  const noop = () => {}
   const networkControllerProviderInit = {
     getAccounts: () => {},
   }
 
   beforeEach(function () {
+
     nock('https://api.infura.io')
       .get('/*/')
-      .reply(200, {})
+      .reply(200)
+
+    nock('https://rinkeby.infura.io')
+      .post('/metamask')
+      .reply(200)
+
     networkController = new NetworkController({
-      provider: {
-        type: 'rinkeby',
-      },
+      provider,
     })
 
-    networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
+    networkController.initializeProvider(networkControllerProviderInit, provider)
   })
   describe('network', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {
-        networkController.initializeProvider(networkControllerProviderInit, dummyProviderConstructor)
+        networkController.initializeProvider(networkControllerProviderInit, provider)
         const proxy = networkController._proxy
         proxy.setTarget({ test: true, on: () => {} })
         assert.ok(proxy.test)
@@ -69,20 +78,3 @@ describe('# Network Controller', function () {
     })
   })
 })
-
-function dummyProviderConstructor() {
-  return {
-    // provider
-    sendAsync: noop,
-    // block tracker
-    _blockTracker: {},
-    start: noop,
-    stop: noop,
-    on: noop,
-    addListener: noop,
-    once: noop,
-    removeAllListeners: noop,
-  }
-}
-
-function noop() {}
