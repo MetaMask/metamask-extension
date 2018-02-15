@@ -2,7 +2,10 @@
 
 ## Current Master
 
+## 3.14.2 2018-2-15
+
 - Fix bug where log subscriptions would break when switching network.
+- Fix bug where storage values were cached across blocks.
 - Add MetaMask light client [testing container](https://github.com/MetaMask/mesh-testing)
 
 ## 3.14.1 2018-2-1
