@@ -4,12 +4,13 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
+const environmentType = require('../../app/scripts/lib/environment-type')
 
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
-const InitializeMenuScreen = require('./first-time/init-menu')
+const InitializeMenuScreen = MascaraFirstTime
 const NewKeyChainScreen = require('./new-keychain')
 // accounts
 const MainContainer = require('./main-container')
@@ -85,7 +86,8 @@ function mapStateToProps (state) {
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     currentCurrency: state.metamask.currentCurrency,
-    isMouseUser: state.appState.isMouseUser,  
+    isMouseUser: state.appState.isMouseUser,
+    betaUI: state.metamask.featureFlags.betaUI,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -351,9 +353,9 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
-  const {isMascara, isOnboarding} = props
+  const {isMascara, isOnboarding, betaUI} = props
 
-  if (isMascara && isOnboarding) {
+  if ((isMascara || betaUI) && isOnboarding && environmentType() === 'responsive') {
     return h(MascaraFirstTime)
   }
 
