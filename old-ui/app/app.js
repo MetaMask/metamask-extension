@@ -197,7 +197,7 @@ App.prototype.renderAppBar = function () {
             style: {},
             enableAccountsSelector: true,
             identities: this.props.identities,
-            selected: this.props.currentView.context,
+            selected: this.props.selected,
             network: this.props.network,
             keyrings: this.props.keyrings,
           }, []),
@@ -579,7 +579,6 @@ App.prototype.renderPrimary = function () {
 
     case 'qr':
       log.debug('rendering show qr screen')
-      console.log(`QrView`, QrView);
       return h('div', {
         style: {
           position: 'absolute',
