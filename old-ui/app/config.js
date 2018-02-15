@@ -32,7 +32,7 @@ ConfigScreen.prototype.render = function () {
   return (
     h('.flex-column.flex-grow', {
       style:{
-        maxHeight: '465px',
+        maxHeight: '585px',
         overflowY: 'auto',
       },
     }, [
