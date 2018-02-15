@@ -1,4 +1,5 @@
 const assert = require('assert')
+const nock = require('nock')
 const NetworkController = require('../../app/scripts/controllers/network')
 
 describe('# Network Controller', function () {
@@ -8,6 +9,9 @@ describe('# Network Controller', function () {
   }
 
   beforeEach(function () {
+    nock('https://api.infura.io')
+      .get('/*/')
+      .reply(200, {})
     networkController = new NetworkController({
       provider: {
         type: 'rinkeby',
