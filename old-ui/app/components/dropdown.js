@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const MenuDroppo = require('./menu-droppo')
 const extend = require('xtend')

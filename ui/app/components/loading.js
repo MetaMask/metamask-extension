@@ -1,6 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
-const PropTypes = require('react').PropTypes
+const PropTypes = require('prop-types')
 
 class LoadingIndicator extends Component {
   renderMessage () {
