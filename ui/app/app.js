@@ -9,6 +9,7 @@ const classnames = require('classnames')
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
+const OldUIInitializeMenuScreen = require('./first-time/init-menu')
 const InitializeMenuScreen = MascaraFirstTime
 const NewKeyChainScreen = require('./new-keychain')
 // accounts
@@ -381,7 +382,9 @@ App.prototype.renderPrimary = function () {
     return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
   } else if (!props.isInitialized) {
     log.debug('rendering menu screen')
-    return h(InitializeMenuScreen, {key: 'menuScreenInit'})
+    return props.isPopup
+      ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})
+      : h(InitializeMenuScreen, {key: 'menuScreenInit'})
   }
 
   // show unlock screen
