@@ -285,7 +285,7 @@ app sections
 }
 
 .unlock-screen #metamask-mascot-container {
-  margin-top: 24px;
+  margin-top: 80px;
 }
 
 .unlock-screen h1 {
@@ -443,7 +443,7 @@ input.large-input {
   flex-wrap: wrap;
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 465px;
+  max-height: 585px;
   flex-direction: inherit;
 }
 
