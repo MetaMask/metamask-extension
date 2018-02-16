@@ -22,7 +22,6 @@ async function runFirstTimeUsageTest(assert, done) {
   reactTriggerChange(selectState[0])
 
   await timeout(2000)
-
   const app = $('#app-content')
 
   // recurse notices
@@ -46,7 +45,7 @@ async function runFirstTimeUsageTest(assert, done) {
   await timeout()
 
   // Scroll through terms
-  const title = app.find('h1')[1]
+  const title = app.find('h1')[0]
   assert.equal(title.textContent, 'MetaMask', 'title screen')
 
   // enter password

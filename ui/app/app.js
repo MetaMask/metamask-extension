@@ -4,7 +4,6 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
-const environmentType = require('../../app/scripts/lib/environment-type')
 
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
@@ -75,6 +74,7 @@ function mapStateToProps (state) {
     transForward: state.appState.transForward,
     isMascara: state.metamask.isMascara,
     isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
+    isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
@@ -355,7 +355,7 @@ App.prototype.renderPrimary = function () {
   var props = this.props
   const {isMascara, isOnboarding, betaUI} = props
 
-  if ((isMascara || betaUI) && isOnboarding && environmentType() === 'responsive') {
+  if ((isMascara || betaUI) && isOnboarding && !props.isPopup) {
     return h(MascaraFirstTime)
   }
 
