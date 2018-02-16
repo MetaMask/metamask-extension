@@ -8,7 +8,7 @@
     "frequentRpcList": [],
     "unapprovedTxs": {},
     "currentCurrency": "USD",
-    "featureFlags": {"betaUI": true},
+    "featureFlags": {"betaUI": false},
     "conversionRate": 12.7527416,
     "conversionDate": 1487624341,
     "noActiveNotices": false,
