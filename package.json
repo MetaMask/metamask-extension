@@ -233,6 +233,7 @@
     "nyc": "^11.0.3",
     "open": "0.0.5",
     "prompt": "^1.0.0",
+    "prop-types": "^15.6.0",
     "qs": "^6.2.0",
     "qunitjs": "^2.4.1",
     "react-addons-test-utils": "^15.5.1",
