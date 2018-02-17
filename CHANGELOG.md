@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Add Import Account message
+- Change Loose label to Imported
+
 ## 3.14.2 2018-2-15
 
 - Fix bug where log subscriptions would break when switching network.

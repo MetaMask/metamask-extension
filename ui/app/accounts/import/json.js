@@ -40,8 +40,8 @@ JsonImportSubview.prototype.render = function () {
         readAs: 'text',
         onLoad: this.onLoad.bind(this),
         style: {
-          margin: '20px 0px 12px 20px',
-          fontSize: '15px',
+          width: 260,
+          marginTop: 12,
         },
       }),
 

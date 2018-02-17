@@ -34,10 +34,7 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div', {
-      style: {
-      },
-    }, [
+    h('div', [
       h('.section-title.flex-row.flex-center', [
         h('i.fa.fa-arrow-left.fa-lg.cursor-pointer', {
           onClick: (event) => {
@@ -45,6 +42,27 @@ AccountImportSubview.prototype.render = function () {
           },
         }),
         h('h2.page-subtitle', 'Import Accounts'),
+      ]),
+      h('.error', {
+        style: {
+          display: 'inline-block',
+          alignItems: 'center',
+          padding: '5px 15px 0px 15px',
+        },
+      }, [
+        h('span', 'Imported accounts will not associate with the seed phrase. Learn more about imported accounts '),
+        h('span', {
+          style: {
+            color: 'rgba(247, 134, 28, 1)',
+            cursor: 'pointer',
+            textDecoration: 'underline',
+          },
+          onClick: () => {
+            global.platform.openWindow({
+              url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
+            })
+          },
+        }, 'here.'),
       ]),
       h('div', {
         style: {
