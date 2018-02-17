@@ -32,7 +32,7 @@ function PendingTx () {
 
 PendingTx.prototype.render = function () {
   const props = this.props
-  const { currentCurrency, blockGasLimit } = props
+  const { network, currentCurrency, blockGasLimit } = props
 
   const conversionRate = props.conversionRate
   const txMeta = this.gatherTxMeta()
@@ -136,6 +136,8 @@ PendingTx.prototype.render = function () {
                   currentCurrency,
                   inline: true,
                   labelColor: '#F7861C',
+                  network: network,
+                  showFiat: parseInt(network) !== 99,
                 }),
               ]),
             ]),
@@ -171,7 +173,7 @@ PendingTx.prototype.render = function () {
             // in the way that gas and gasLimit currently are.
             h('.row', [
               h('.cell.label', 'Amount'),
-              h(EthBalance, { value: txParams.value, currentCurrency, conversionRate }),
+              h(EthBalance, { value: txParams.value, currentCurrency, conversionRate, network: network, showFiat: parseInt(network) !== 99 }),
             ]),
 
             // Gas Limit (customizable)
@@ -224,7 +226,7 @@ PendingTx.prototype.render = function () {
             // Max Transaction Fee (calculated)
             h('.cell.row', [
               h('.cell.label', 'Max Transaction Fee'),
-              h(EthBalance, { value: txFeeBn.toString(16), currentCurrency, conversionRate }),
+              h(EthBalance, { value: txFeeBn.toString(16), currentCurrency, conversionRate, network: network, showFiat: parseInt(network) !== 99 }),
             ]),
 
             h('.cell.row', {
@@ -248,6 +250,8 @@ PendingTx.prototype.render = function () {
                   inline: true,
                   labelColor: 'black',
                   fontSize: '16px',
+                  network: network,
+                  showFiat: parseInt(network) !== 99,
                 }),
               ]),
             ]),

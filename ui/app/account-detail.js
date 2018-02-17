@@ -186,6 +186,8 @@ AccountDetailScreen.prototype.render = function () {
             value: account && account.balance,
             conversionRate,
             currentCurrency,
+            network: network,
+            showFiat: parseInt(network) !== 99,
             style: {
               lineHeight: '7px',
               marginTop: '10px',
@@ -197,6 +199,7 @@ AccountDetailScreen.prototype.render = function () {
           h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: { marginRight: '10px' },
+            disabled: network === '99',
           }, 'BUY'),
 
           h('button', {

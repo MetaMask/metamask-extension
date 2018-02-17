@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
-const explorerLink = require('etherscan-link').createExplorerLink
+const {createExplorerLink} = require('./create-link')
 const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
@@ -44,7 +44,7 @@ TransactionListItem.prototype.render = function () {
 
   let isLinkable = false
   const numericNet = parseInt(network)
-  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42
+  isLinkable = numericNet === 1 || numericNet === 3 || numericNet === 4 || numericNet === 42 || numericNet === 99
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
@@ -67,7 +67,7 @@ TransactionListItem.prototype.render = function () {
         }
         event.stopPropagation()
         if (!transaction.hash || !isLinkable) return
-        var url = explorerLink(transaction.hash, parseInt(network))
+        const url = createExplorerLink(transaction.hash, network)
         global.platform.openWindow({ url })
       },
       style: {
@@ -116,6 +116,7 @@ TransactionListItem.prototype.render = function () {
           width: '55px',
           shorten: true,
           showFiat: false,
+          network: network,
           style: {fontSize: '15px'},
         }) : h('.flex-column'),
       ]),
