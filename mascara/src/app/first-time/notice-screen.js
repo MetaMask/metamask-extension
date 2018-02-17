@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Markdown from 'react-markdown'
 import {connect} from 'react-redux'
 import debounce from 'lodash.debounce'
@@ -12,25 +13,26 @@ class NoticeScreen extends Component {
     lastUnreadNotice: PropTypes.shape({
       title: PropTypes.string,
       date: PropTypes.string,
-      body: PropTypes.string
+      body: PropTypes.string,
     }),
-    next: PropTypes.func.isRequired
+    next: PropTypes.func.isRequired,
+    markNoticeRead: PropTypes.func,
   };
 
   static defaultProps = {
-    lastUnreadNotice: {}
+    lastUnreadNotice: {},
   };
 
   state = {
     atBottom: false,
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.onScroll()
   }
 
   acceptTerms = () => {
-    const { markNoticeRead, lastUnreadNotice, next } = this.props;
+    const { markNoticeRead, lastUnreadNotice, next } = this.props
     const defer = markNoticeRead(lastUnreadNotice)
       .then(() => this.setState({ atBottom: false }))
 
@@ -43,17 +45,17 @@ class NoticeScreen extends Component {
     if (this.state.atBottom) return
 
     const target = document.querySelector('.tou__body')
-    const {scrollTop, offsetHeight, scrollHeight} = target;
-    const atBottom = scrollTop + offsetHeight >= scrollHeight;
+    const {scrollTop, offsetHeight, scrollHeight} = target
+    const atBottom = scrollTop + offsetHeight >= scrollHeight
 
     this.setState({atBottom: atBottom})
   }, 25)
 
-  render() {
+  render () {
     const {
       address,
-      lastUnreadNotice: { title, body }
-    } = this.props;
+      lastUnreadNotice: { title, body },
+    } = this.props
     const { atBottom } = this.state
 
     return (
@@ -84,9 +86,9 @@ class NoticeScreen extends Component {
 export default connect(
   ({ metamask: { selectedAddress, lastUnreadNotice } }) => ({
     lastUnreadNotice,
-    address: selectedAddress
+    address: selectedAddress,
   }),
   dispatch => ({
-    markNoticeRead: notice => dispatch(markNoticeRead(notice))
+    markNoticeRead: notice => dispatch(markNoticeRead(notice)),
   })
 )(NoticeScreen)

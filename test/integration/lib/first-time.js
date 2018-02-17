@@ -1,3 +1,4 @@
+const reactTriggerChange = require('react-trigger-change')
 const PASSWORD = 'password123'
 const runMascaraFirstTimeTest = require('./mascara-first-time')
 
@@ -16,6 +17,11 @@ async function runFirstTimeUsageTest(assert, done) {
     return runMascaraFirstTimeTest(assert, done)
   }
 
+  const selectState = $('select')
+  selectState.val('first time')
+  reactTriggerChange(selectState[0])
+
+  await timeout(2000)
   const app = $('#app-content')
 
   // recurse notices
@@ -39,8 +45,8 @@ async function runFirstTimeUsageTest(assert, done) {
   await timeout()
 
   // Scroll through terms
-  const title = app.find('h1').text()
-  assert.equal(title, 'MetaMask', 'title screen')
+  const title = app.find('h1')[0]
+  assert.equal(title.textContent, 'MetaMask', 'title screen')
 
   // enter password
   const pwBox = app.find('#password-box')[0]
@@ -76,9 +82,9 @@ async function runFirstTimeUsageTest(assert, done) {
 
   const menu = app.find('.menu-droppo')[0]
   const children = menu.children
-  const lock = children[children.length - 2]
-  assert.ok(lock, 'Lock menu item found')
-  lock.click()
+  const logout = children[2]
+  assert.ok(logout, 'Lock menu item found')
+  logout.click()
 
   await timeout(1000)
 
