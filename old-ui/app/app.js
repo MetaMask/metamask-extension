@@ -456,7 +456,11 @@ App.prototype.renderPrimary = function () {
   // notices
   if (!props.noActiveNotices) {
     log.debug('rendering notice screen for unread notices.')
-    return h('div', [
+    return h('div', {
+      style: {
+        width: '360px',
+      },
+    }, [
 
       h(NoticeScreen, {
         notice: props.lastUnreadNotice,
