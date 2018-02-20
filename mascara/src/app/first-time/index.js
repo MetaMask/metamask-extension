@@ -7,7 +7,7 @@ import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
 import ImportSeedPhraseScreen from './import-seed-phrase-screen'
-const Loading = require('../../../../ui/app//components/loading')
+const Loading = require('../../../../ui/app/components/loading')
 import {
   onboardingBuyEthView,
   unMarkPasswordForgotten,
@@ -86,10 +86,11 @@ class FirstTimeFlow extends Component {
       restoreCreatePasswordScreen,
       forgottenPassword,
       isLoading,
+      leaveImportSeedScreenState,
     } = this.props
 
     if (isLoading) {
-      return h(Loading)
+      return (<Loading />)
     }
 
     switch (this.state.screenType) {
@@ -112,7 +113,7 @@ class FirstTimeFlow extends Component {
         return (
           <ImportSeedPhraseScreen
             back={() => {
-              leaveImportSeedSreenState()
+              leaveImportSeedScreenState()
               this.setScreenType(SCREEN_TYPE.CREATE_PASSWORD)
             }}
             next={() => {
@@ -175,7 +176,7 @@ export default connect(
     isLoading,
   }),
   dispatch => ({
-    leaveImportSeedSreenState: () => dispatch(unMarkPasswordForgotten()),
+    leaveImportSeedScreenState: () => dispatch(unMarkPasswordForgotten()),
     goToBuyEtherView: address => dispatch(onboardingBuyEthView(address)),
   })
 )(FirstTimeFlow)

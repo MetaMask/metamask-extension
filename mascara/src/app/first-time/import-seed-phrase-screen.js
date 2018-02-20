@@ -29,7 +29,7 @@ class ImportSeedPhraseScreen extends Component {
 
   onClick = () => {
     const { password, seedPhrase, confirmPassword } = this.state
-    const { createNewVaultAndRestore, next, displayWarning, leaveImportSeedSreenState } = this.props
+    const { createNewVaultAndRestore, next, displayWarning, leaveImportSeedScreenState } = this.props
 
     if (seedPhrase.split(' ').length !== 12) {
       this.warning = 'Seed Phrases are 12 words long'
@@ -49,7 +49,7 @@ class ImportSeedPhraseScreen extends Component {
       return
     }
     this.warning = null
-    leaveImportSeedSreenState()
+    leaveImportSeedScreenState()
     createNewVaultAndRestore(password, seedPhrase)
       .then(next)
   }
@@ -120,7 +120,7 @@ class ImportSeedPhraseScreen extends Component {
 export default connect(
   ({ appState: { isLoading, warning } }) => ({ isLoading, warning }),
   dispatch => ({
-    leaveImportSeedSreenState: () => {
+    leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten())
     },
     createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
