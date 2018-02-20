@@ -89,9 +89,10 @@ class FirstTimeFlow extends Component {
       leaveImportSeedScreenState,
     } = this.props
 
-    if (isLoading) {
-      return (<Loading />)
-    }
+    // Disable until testing bug resolved
+    // if (isLoading) {
+    //   return (<Loading />)
+    // }
 
     switch (this.state.screenType) {
       case SCREEN_TYPE.CREATE_PASSWORD:
