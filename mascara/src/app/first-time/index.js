@@ -7,7 +7,11 @@ import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
 import ImportSeedPhraseScreen from './import-seed-phrase-screen'
-import {onboardingBuyEthView} from '../../../../ui/app/actions'
+const Loading = require('../../../../ui/app//components/loading')
+import {
+  onboardingBuyEthView,
+  unMarkPasswordForgotten,
+} from '../../../../ui/app/actions'
 
 class FirstTimeFlow extends Component {
 
@@ -33,6 +37,7 @@ class FirstTimeFlow extends Component {
     NOTICE: 'notice',
     BACK_UP_PHRASE: 'back_up_phrase',
     CONFIRM_BACK_UP_PHRASE: 'confirm_back_up_phrase',
+    LOADING: 'loading',
   };
 
   constructor (props) {
@@ -51,11 +56,15 @@ class FirstTimeFlow extends Component {
       isInitialized,
       seedWords,
       noActiveNotices,
+      forgottenPassword,
     } = this.props
     const {SCREEN_TYPE} = FirstTimeFlow
 
     // return SCREEN_TYPE.NOTICE
 
+    if (forgottenPassword) {
+      return SCREEN_TYPE.IMPORT_SEED_PHRASE
+    }
     if (!isInitialized) {
       return SCREEN_TYPE.CREATE_PASSWORD
     }
@@ -71,7 +80,17 @@ class FirstTimeFlow extends Component {
 
   renderScreen () {
     const {SCREEN_TYPE} = FirstTimeFlow
-    const {goToBuyEtherView, address} = this.props
+    const {
+      goToBuyEtherView,
+      address,
+      restoreCreatePasswordScreen,
+      forgottenPassword,
+      isLoading,
+    } = this.props
+
+    if (isLoading) {
+      return h(Loading)
+    }
 
     switch (this.state.screenType) {
       case SCREEN_TYPE.CREATE_PASSWORD:
@@ -92,8 +111,14 @@ class FirstTimeFlow extends Component {
       case SCREEN_TYPE.IMPORT_SEED_PHRASE:
         return (
           <ImportSeedPhraseScreen
-            back={() => this.setScreenType(SCREEN_TYPE.CREATE_PASSWORD)}
-            next={() => this.setScreenType(SCREEN_TYPE.NOTICE)}
+            back={() => {
+              leaveImportSeedSreenState()
+              this.setScreenType(SCREEN_TYPE.CREATE_PASSWORD)
+            }}
+            next={() => {
+              const newScreenType = forgottenPassword ? null : SCREEN_TYPE.NOTICE
+              this.setScreenType(newScreenType)
+            }}
           />
         )
       case SCREEN_TYPE.UNIQUE_IMAGE:
@@ -130,13 +155,27 @@ class FirstTimeFlow extends Component {
 }
 
 export default connect(
-  ({ metamask: { isInitialized, seedWords, noActiveNotices, selectedAddress } }) => ({
+  ({
+    metamask: {
+      isInitialized,
+      seedWords,
+      noActiveNotices,
+      selectedAddress,
+      forgottenPassword,
+    },
+    appState: {
+      isLoading,
+    }
+  }) => ({
     isInitialized,
     seedWords,
     noActiveNotices,
     address: selectedAddress,
+    forgottenPassword,
+    isLoading,
   }),
   dispatch => ({
+    leaveImportSeedSreenState: () => dispatch(unMarkPasswordForgotten()),
     goToBuyEtherView: address => dispatch(onboardingBuyEthView(address)),
   })
 )(FirstTimeFlow)
