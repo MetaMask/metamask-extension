@@ -7,7 +7,6 @@ import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './backup-phrase-screen'
 import ImportAccountScreen from './import-account-screen'
 import ImportSeedPhraseScreen from './import-seed-phrase-screen'
-const Loading = require('../../../../ui/app/components/loading')
 import {
   onboardingBuyEthView,
   unMarkPasswordForgotten,
@@ -85,14 +84,8 @@ class FirstTimeFlow extends Component {
       address,
       restoreCreatePasswordScreen,
       forgottenPassword,
-      isLoading,
       leaveImportSeedScreenState,
     } = this.props
-
-    // Disable until testing bug resolved
-    // if (isLoading) {
-    //   return (<Loading />)
-    // }
 
     switch (this.state.screenType) {
       case SCREEN_TYPE.CREATE_PASSWORD:
@@ -164,9 +157,6 @@ export default connect(
       noActiveNotices,
       selectedAddress,
       forgottenPassword,
-    },
-    appState: {
-      isLoading,
     }
   }) => ({
     isInitialized,
@@ -174,7 +164,6 @@ export default connect(
     noActiveNotices,
     address: selectedAddress,
     forgottenPassword,
-    isLoading,
   }),
   dispatch => ({
     leaveImportSeedScreenState: () => dispatch(unMarkPasswordForgotten()),

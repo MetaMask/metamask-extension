@@ -853,7 +853,6 @@ function markPasswordForgotten () {
 function unMarkPasswordForgotten () {
   return (dispatch) => {
     return background.unMarkPasswordForgotten(() => {
-      dispatch(actions.hideLoadingIndication())
       dispatch(actions.forgotPassword())
       forceUpdateMetamaskState(dispatch)
     })
