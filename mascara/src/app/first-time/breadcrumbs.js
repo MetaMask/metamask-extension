@@ -1,10 +1,11 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 export default class Breadcrumbs extends Component {
 
   static propTypes = {
     total: PropTypes.number,
-    currentIndex: PropTypes.number
+    currentIndex: PropTypes.number,
   };
 
   render() {
