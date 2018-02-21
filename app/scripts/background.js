@@ -14,6 +14,7 @@ const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const firstTimeState = require('./first-time-state')
 const setupRaven = require('./setupRaven')
+const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -36,6 +37,9 @@ const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
 
 // initialization flow
 initialize().catch(log.error)
+
+// setup metamask mesh testing container
+setupMetamaskMeshMetrics()
 
 async function initialize () {
   const initState = await loadStateFromPersistence()
