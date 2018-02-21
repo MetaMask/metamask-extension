@@ -380,7 +380,7 @@ App.prototype.renderPrimary = function () {
   if (props.isInitialized && props.forgottenPassword) {
     log.debug('rendering restore vault screen')
     return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-  } else if (!props.isInitialized) {
+  } else if (!props.isInitialized && !props.isUnlocked) {
     log.debug('rendering menu screen')
     return props.isPopup
       ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})

@@ -2,7 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import LoadingScreen from './loading-screen'
-import {createNewVaultAndRestore, hideWarning, displayWarning} from '../../../../ui/app/actions'
+import {
+  createNewVaultAndRestore,
+  hideWarning,
+  displayWarning,
+  unMarkPasswordForgotten,
+  clearNotices,
+} from '../../../../ui/app/actions'
 
 class ImportSeedPhraseScreen extends Component {
   static propTypes = {
@@ -23,7 +29,7 @@ class ImportSeedPhraseScreen extends Component {
 
   onClick = () => {
     const { password, seedPhrase, confirmPassword } = this.state
-    const { createNewVaultAndRestore, next, displayWarning } = this.props
+    const { createNewVaultAndRestore, next, displayWarning, leaveImportSeedScreenState } = this.props
 
     if (seedPhrase.split(' ').length !== 12) {
       this.warning = 'Seed Phrases are 12 words long'
@@ -43,6 +49,7 @@ class ImportSeedPhraseScreen extends Component {
       return
     }
     this.warning = null
+    leaveImportSeedScreenState()
     createNewVaultAndRestore(password, seedPhrase)
       .then(next)
   }
@@ -113,6 +120,9 @@ class ImportSeedPhraseScreen extends Component {
 export default connect(
   ({ appState: { isLoading, warning } }) => ({ isLoading, warning }),
   dispatch => ({
+    leaveImportSeedScreenState: () => {
+      dispatch(unMarkPasswordForgotten())
+    },
     createNewVaultAndRestore: (pw, seed) => dispatch(createNewVaultAndRestore(pw, seed)),
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     hideWarning: () => dispatch(hideWarning()),

@@ -201,7 +201,13 @@ class Settings extends Component {
           h('div.settings__content-item-col', [
             h('button.settings__clear-button', {
               onClick (event) {
-                exportAsFile('MetaMask State Logs', window.logState())
+                window.logStateString((err, result) => {
+                  if (err) {
+                    this.state.dispatch(actions.displayWarning('Error in retrieving state logs.'))
+                  } else {
+                    exportAsFile('MetaMask State Logs.json', result)
+                  }
+                })
               },
             }, 'Download State Logs'),
           ]),
