@@ -6,6 +6,7 @@ import debounce from 'lodash.debounce'
 import {markNoticeRead} from '../../../../ui/app/actions'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
+import LoadingScreen from './loading-screen'
 
 class NoticeScreen extends Component {
   static propTypes = {
@@ -55,36 +56,39 @@ class NoticeScreen extends Component {
     const {
       address,
       lastUnreadNotice: { title, body },
+      isLoading,
     } = this.props
     const { atBottom } = this.state
 
     return (
-      <div
-        className="tou"
-        onScroll={this.onScroll}
-      >
-        <Identicon address={address} diameter={70} />
-        <div className="tou__title">{title}</div>
-        <Markdown
-          className="tou__body markdown"
-          source={body}
-          skipHtml
-        />
-        <button
-          className="first-time-flow__button"
-          onClick={atBottom && this.acceptTerms}
-          disabled={!atBottom}
+      isLoading
+        ? <LoadingScreen />
+        : <div
+          className="tou"
+          onScroll={this.onScroll}
         >
-          Accept
-        </button>
-        <Breadcrumbs total={3} currentIndex={2} />
-      </div>
+          <Identicon address={address} diameter={70} />
+          <div className="tou__title">{title}</div>
+          <Markdown
+            className="tou__body markdown"
+            source={body}
+            skipHtml
+          />
+          <button
+            className="first-time-flow__button"
+            onClick={atBottom && this.acceptTerms}
+            disabled={!atBottom}
+          >
+            Accept
+          </button>
+          <Breadcrumbs total={3} currentIndex={2} />
+        </div>
     )
   }
 }
 
 export default connect(
-  ({ metamask: { selectedAddress, lastUnreadNotice } }) => ({
+  ({ metamask: { selectedAddress, lastUnreadNotice }, appState: { isLoading } }) => ({
     lastUnreadNotice,
     address: selectedAddress,
   }),
