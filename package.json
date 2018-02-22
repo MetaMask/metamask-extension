@@ -51,6 +51,7 @@
     ]
   },
   "dependencies": {
+    "asmcrypto.js": "0.22.0",
     "async": "^2.5.0",
     "await-semaphore": "^0.1.1",
     "babel-runtime": "^6.23.0",
