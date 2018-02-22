@@ -21,9 +21,17 @@ var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
 var asyncEach = require('async/each')
 var exec = require('child_process').exec
+var sass = require('gulp-sass')
+var autoprefixer = require('gulp-autoprefixer')
+var gulpStylelint = require('gulp-stylelint')
+var stylefmt = require('gulp-stylefmt')
+var uglify = require('gulp-uglify-es').default
+var babel = require('gulp-babel')
+
 
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
+
 
 // browser reload
 
@@ -203,14 +211,55 @@ const jsFiles = [
   'popup',
 ]
 
+// scss compilation and autoprefixing tasks
+
+gulp.task('build:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'))
+})
+gulp.task('watch:scss', function() {
+  gulp.watch(['ui/app/css/**/*.scss'], gulp.series(['build:scss']))
+})
+
+gulp.task('lint-scss', function() {
+  return gulp
+    .src('ui/app/css/itcss/**/*.scss')
+    .pipe(gulpStylelint({
+      reporters: [
+        {formatter: 'string', console: true}
+      ],
+      fix: true,
+    }));
+});
+
+gulp.task('fmt-scss', function () {
+  return gulp.src('ui/app/css/itcss/**/*.scss')
+    .pipe(stylefmt())
+    .pipe(gulp.dest('ui/app/css/itcss'));
+});
+
 // bundle tasks
 
 var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
 var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`dev:js:${jsFile}`,   bundleTask({ watch: true,  label: jsFile, filename: `${jsFile}.js` }))
-  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`dev:js:${jsFile}`,   bundleTask({
+    watch: true,
+    label: jsFile,
+    filename: `${jsFile}.js`,
+    isBuild: false
+  }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({
+    watch: false,
+    label: jsFile,
+    filename: `${jsFile}.js`,
+    isBuild: true
+  }))
 })
 
 // inpage must be built before all other scripts:
@@ -244,12 +293,18 @@ gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
+// set env var for production
+gulp.task('apply-prod-environment', function(done) {
+    process.env.NODE_ENV = 'production'
+    done()
+});
+
 // high level tasks
 
-gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
 
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
-gulp.task('dist', gulp.series('build', 'zip'))
+gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
+gulp.task('dist', gulp.series('apply-prod-environment', 'build', 'zip'))
 
 // task generators
 
@@ -276,7 +331,7 @@ function zipTask(target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
     .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'));
+    .pipe(gulp.dest('builds'))
   }
 }
 
@@ -342,7 +397,6 @@ function bundleTask(opts) {
           throw err
         }
       })
-
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
@@ -352,6 +406,8 @@ function bundleTask(opts) {
       // sourcemaps
       // loads map from browserify file
       .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
+      // Minification
+      .pipe(gulpif(opts.isBuild, uglify()))
       // writes .map file
       .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles

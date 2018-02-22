@@ -7,6 +7,8 @@ const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
 const getCaretCoordinates = require('textarea-caret')
+const environmentType = require('../../../app/scripts/lib/environment-type')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 let isSubmitting = false
 
@@ -130,6 +132,18 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         }, 'Import Existing DEN'),
       ]),
 
+      h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: this.showOldUI.bind(this),
+          style: {
+            fontSize: '0.8em',
+            color: '#aeaeae',
+            textDecoration: 'underline',
+            marginTop: '32px',
+          },
+        }, 'Use classic interface'),
+      ]),
+
     ])
   )
 }
@@ -146,7 +160,15 @@ InitializeMenuScreen.prototype.componentDidMount = function () {
 }
 
 InitializeMenuScreen.prototype.showRestoreVault = function () {
-  this.props.dispatch(actions.showRestoreVault())
+  this.props.dispatch(actions.markPasswordForgotten())
+  if (environmentType() === 'popup') {
+    global.platform.openExtensionInBrowser()
+  }
+}
+
+InitializeMenuScreen.prototype.showOldUI = function () {
+  this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+    .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
 }
 
 InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {

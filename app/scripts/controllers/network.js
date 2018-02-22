@@ -8,14 +8,19 @@ const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
-const RPC_ADDRESS_LIST = require('../config.js').network
-const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
+const networkConfig = require('../config.js')
+const { OLD_UI_NETWORK_TYPE, DEFAULT_RPC } = networkConfig.enums
 const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
 
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (config) {
     super()
+
+    this._networkEndpointVersion = OLD_UI_NETWORK_TYPE
+    this._networkEndpoints = this.getNetworkEndpoints(OLD_UI_NETWORK_TYPE)
+    this._defaultRpc = this._networkEndpoints[DEFAULT_RPC]
+
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
     this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
@@ -23,6 +28,23 @@ module.exports = class NetworkController extends EventEmitter {
     this._proxy = createEventEmitterProxy()
 
     this.on('networkDidChange', this.lookupNetwork)
+  }
+
+  async setNetworkEndpoints (version) {
+    if (version === this._networkEndpointVersion) {
+      return
+    }
+
+    this._networkEndpointVersion = version
+    this._networkEndpoints = this.getNetworkEndpoints(version)
+    this._defaultRpc = this._networkEndpoints[DEFAULT_RPC]
+    const { type } = this.getProviderConfig()
+
+    return this.setProviderType(type, true)
+  }
+
+  getNetworkEndpoints (version = OLD_UI_NETWORK_TYPE) {
+    return networkConfig[version]
   }
 
   initializeProvider (_providerParams) {
@@ -84,10 +106,13 @@ module.exports = class NetworkController extends EventEmitter {
     return this.getRpcAddressForType(provider.type)
   }
 
-  async setProviderType (type) {
+  async setProviderType (type, forceUpdate = false) {
     assert(type !== 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
     // skip if type already matches
-    if (type === this.getProviderConfig().type) return
+    if (type === this.getProviderConfig().type && !forceUpdate) {
+      return
+    }
+
     const rpcTarget = this.getRpcAddressForType(type)
     assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
     this.providerStore.updateState({ type, rpcTarget })
@@ -99,8 +124,11 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   getRpcAddressForType (type, provider = this.getProviderConfig()) {
-    if (RPC_ADDRESS_LIST[type]) return RPC_ADDRESS_LIST[type]
-    return provider && provider.rpcTarget ? provider.rpcTarget : DEFAULT_RPC
+    if (this._networkEndpoints[type]) {
+      return this._networkEndpoints[type]
+    }
+
+    return provider && provider.rpcTarget ? provider.rpcTarget : this._defaultRpc
   }
 
   //

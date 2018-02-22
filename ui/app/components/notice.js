@@ -102,11 +102,10 @@ Notice.prototype.render = function () {
         }),
       ]),
 
-      h('button', {
+      h('button.primary', {
         disabled,
         onClick: () => {
-          this.setState({disclaimerDisabled: true})
-          onConfirm()
+          this.setState({disclaimerDisabled: true}, () => onConfirm())
         },
         style: {
           marginTop: '18px',

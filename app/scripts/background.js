@@ -38,6 +38,7 @@ const isIE = !!document.documentMode
 const isEdge = !isIE && !!window.StyleMedia
 
 let popupIsOpen = false
+let openMetamaskTabsIDs = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
@@ -125,9 +126,15 @@ function setupController (initState) {
       popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
       controller.setupTrustedCommunication(portStream, 'MetaMask')
       // record popup as closed
+      if (remotePort.sender.url.match(/home.html$/)) {
+        openMetamaskTabsIDs[remotePort.sender.tab.id] = true
+      }
       if (remotePort.name === 'popup') {
         endOfStream(portStream, () => {
           popupIsOpen = false
+          if (remotePort.sender.url.match(/home.html$/)) {
+            openMetamaskTabsIDs[remotePort.sender.tab.id] = false
+          }
         })
       }
     } else {
@@ -170,7 +177,10 @@ function setupController (initState) {
 
 // popup trigger
 function triggerUi () {
-  if (!popupIsOpen) notificationManager.showPopup()
+  extension.tabs.query({ active: true }, (tabs) => {
+    const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
+    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup()
+  })
 }
 
 // On first install, open a window to MetaMask website to how-it-works.
