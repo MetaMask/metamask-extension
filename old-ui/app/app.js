@@ -45,14 +45,14 @@ function mapStateToProps (state) {
   const {
     identities,
     accounts,
-    address,
+    selectedAddress,
     keyrings,
     isInitialized,
     noActiveNotices,
     seedWords,
     featureFlags,
   } = state.metamask
-  const selected = address || Object.keys(accounts)[0]
+  const selected = selectedAddress || Object.keys(accounts)[0]
 
   return {
     // state from plugin
