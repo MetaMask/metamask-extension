@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.0.0 2018-2-22
+
+- Introduce new MetaMask user interface.
+
 ## 3.14.2 2018-2-15
 
 - Fix bug where log subscriptions would break when switching network.
