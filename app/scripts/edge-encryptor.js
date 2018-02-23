@@ -6,7 +6,7 @@ class EdgeEncryptor {
     encrypt (password, dataObject) {
 
         var salt = this._generateSalt()
-        return this.keyFromPassword(password, salt)
+        return this._keyFromPassword(password, salt)
             .then(function (key) {
 
                 var data = JSON.stringify(dataObject)
@@ -29,7 +29,7 @@ class EdgeEncryptor {
 
         const payload = JSON.parse(text)
         const salt = payload.salt
-        return this.keyFromPassword(password, salt)
+        return this._keyFromPassword(password, salt)
             .then(function (key) {
                 const encryptedData = Unibabel.base64ToBuffer(payload.data)
                 const vector = Unibabel.base64ToBuffer(payload.iv)
@@ -48,7 +48,7 @@ class EdgeEncryptor {
             })
     }
 
-    keyFromPassword (password, salt) {
+    _keyFromPassword (password, salt) {
 
         var passBuffer = Unibabel.utf8ToBuffer(password)
         var saltBuffer = Unibabel.base64ToBuffer(salt)
