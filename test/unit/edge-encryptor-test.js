@@ -43,7 +43,7 @@ describe('EdgeEncryptor', function () {
         })
     })
 
-    it('should not return the same twice.', function () {
+    it('should not return the same twice.', function (done) {
 
       const encryptPromises = []
       encryptPromises.push(edgeEncryptor.encrypt(password, data))
@@ -54,6 +54,7 @@ describe('EdgeEncryptor', function () {
         assert.notEqual(encryptedData[0], encryptedData[1])
         assert.notEqual(encryptedData[0].length, 0)
         assert.notEqual(encryptedData[1].length, 0)
+        done()
       })
     })    
   })
