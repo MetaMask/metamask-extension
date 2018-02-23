@@ -5,25 +5,38 @@ const EdgeEncryptor = require('../../app/scripts/edge-encryptor')
 var password = 'passw0rd1'
 var data = 'some random data'
 
-// polyfill fetch
 global.crypto = global.crypto || {
-  getRandomValues (array) {
+  getRandomValues: function (array) {
     for (let i = 0; i < array.length; i++) {
-      array[i] = Math.random() * 100;
+      array[i] = Math.random() * 100
     }
+    return array
   }
 }
 
 describe('EdgeEncryptor', function () {
-  const edgeEncryptor = new EdgeEncryptor()
 
+  const edgeEncryptor = new EdgeEncryptor()
   describe('encrypt', function () {
 
-    it('should encrypt the data.', function () {
+    it('should encrypt the data.', function (done) {
       edgeEncryptor.encrypt(password, data)
         .then(function (encryptedData) {
           assert.notEqual(data, encryptedData)
           assert.notEqual(encryptedData.length, 0)
+          done()
+        }).catch(function (err) {
+          done(err)
+        })
+    })
+
+    it('should return proper format.', function (done) {
+      edgeEncryptor.encrypt(password, data)
+        .then(function (encryptedData) {
+          let encryptedObject = JSON.parse(encryptedData)
+          assert.ok(encryptedObject.data, 'there is no data')
+          assert.ok(encryptedObject.iv && encryptedObject.iv.length != 0, 'there is no iv')
+          assert.ok(encryptedObject.salt && encryptedObject.salt.length != 0, 'there is no salt')
           done()
         }).catch(function (err) {
           done(err)
@@ -46,13 +59,14 @@ describe('EdgeEncryptor', function () {
   })
 
   describe('decrypt', function () {
-    it('should be able to decrypt the encrypted data.', function () {
+    it('should be able to decrypt the encrypted data.', function (done) {
 
       edgeEncryptor.encrypt(password, data)
         .then(function (encryptedData) {
           edgeEncryptor.decrypt(password, encryptedData)
           .then(function (decryptedData) {
             assert.equal(decryptedData, data)
+            done()
           })
           .catch(function (err) {
             done(err)
