@@ -76,5 +76,25 @@ describe('EdgeEncryptor', function () {
           done(err)
         })
     })
+
+    it('cannot decrypt the encrypted data with wrong password.', function (done) {
+
+      edgeEncryptor.encrypt(password, data)
+        .then(function (encryptedData) {
+          edgeEncryptor.decrypt('wrong password', encryptedData)
+          .then(function (decryptedData) {
+            assert.fail('could decrypt with wrong password')
+            done()
+          })
+          .catch(function (err) {
+            assert.ok(err instanceof Error)
+            assert.equal(err.message, 'Incorrect password')
+            done()
+          })
+        })
+        .catch(function (err) {
+          done(err)
+        })
+    })
   })
 })
