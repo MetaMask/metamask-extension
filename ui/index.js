@@ -25,6 +25,7 @@ function launchMetamaskUi (opts, cb) {
 
 function startApp (metamaskState, accountManager, opts) {
   // parse opts
+  if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
   const store = configureStore({
 
     // metamaskState represents the cross-tab state
