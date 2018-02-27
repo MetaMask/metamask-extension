@@ -2,6 +2,9 @@
 
 ## Current Master
 
+- Change Loose label to Imported.
+- Add Imported Account disclaimer.
+
 ## 4.1.0 2018-2-27
 
 - Report failed txs to Sentry with more specific message
