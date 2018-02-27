@@ -4,6 +4,8 @@
   width: 100vw;
   background-color: #FFF;
   overflow: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .alpha-warning {
@@ -23,7 +25,6 @@
   display: flex;
   flex-flow: column;
   margin-top: 70px;
-  margin-right: 10vw;
   width: 35vw;
   max-width: 550px;
 }
@@ -46,6 +47,10 @@
   flex-flow: column nowrap;
   margin: 67px 0 50px 146px;
   max-width: 35rem;
+}
+
+.create-password {
+  margin: 67px 0 50px 0px;
 }
 
 .import-account {
