@@ -59,7 +59,7 @@ class CreatePasswordScreen extends Component {
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
         <div>
-          <h2 className="alpha-warning">Warning: This is Experimental software and is a Developer BETA</h2>
+          <h2 className="alpha-warning">Please be aware that this version is still in under development.</h2>
           <div className="first-view-main">
             <div className="mascara-info">
               <Mascot
