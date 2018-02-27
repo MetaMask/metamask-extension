@@ -4,9 +4,9 @@
 
 ## 4.1.0 2018-2-27
 
-- Sentry report failed tx with more specific message
-- Fix feature flags being undefined
-- Standardized license
+- Report failed txs to Sentry with more specific message
+- Fix internal feature flags being sometimes undefined
+- Standardized license to MIT
 
 ## 4.0.0 2018-2-22
 
