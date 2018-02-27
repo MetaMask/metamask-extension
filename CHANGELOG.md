@@ -2,6 +2,16 @@
 
 ## Current Master
 
+## 4.1.0 2018-2-27
+
+- Report failed txs to Sentry with more specific message
+- Fix internal feature flags being sometimes undefined
+- Standardized license to MIT
+
+## 4.0.0 2018-2-22
+
+- Introduce new MetaMask user interface.
+
 ## 3.14.2 2018-2-15
 
 - Fix bug where log subscriptions would break when switching network.
