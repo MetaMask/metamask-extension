@@ -1,5 +1,5 @@
 const extension = require('extensionizer')
-const height = 520
+const height = 620
 const width = 360
 
 
@@ -23,9 +23,6 @@ class NotificationManager {
           type: 'popup',
           width,
           height,
-        })
-        .catch((reason) => {
-          log.error('failed to create poupup', reason)
         })
       }
     })

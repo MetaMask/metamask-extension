@@ -1,18 +1,17 @@
-var jsdom = require('mocha-jsdom')
+// var jsdom = require('mocha-jsdom')
 var assert = require('assert')
 var freeze = require('deep-freeze-strict')
 var path = require('path')
 
 var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..',  '..', 'ui', 'app', 'reducers.js'))
+var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'reducers.js'))
 
-describe('SET_SELECTED_ACCOUNT', function() {
-
-  it('sets the state.appState.activeAddress property of the state to the action.value', function() {
+describe('SET_SELECTED_ACCOUNT', function () {
+  it('sets the state.appState.activeAddress property of the state to the action.value', function () {
     var initialState = {
       appState: {
         activeAddress: 'foo',
-      }
+      },
     }
     freeze(initialState)
 
@@ -24,15 +23,15 @@ describe('SET_SELECTED_ACCOUNT', function() {
 
     var resultingState = reducers(initialState, action)
     assert.equal(resultingState.appState.activeAddress, action.value)
-  });
-});
+  })
+})
 
-describe('SHOW_ACCOUNT_DETAIL', function() {
-  it('updates metamask state', function() {
+describe('SHOW_ACCOUNT_DETAIL', function () {
+  it('updates metamask state', function () {
     var initialState = {
       metamask: {
-        selectedAddress: 'foo'
-      }
+        selectedAddress: 'foo',
+      },
     }
     freeze(initialState)
 

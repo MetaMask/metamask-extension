@@ -5,6 +5,8 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
+const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const environmentType = require('../../app/scripts/lib/environment-type')
 
 const Mascot = require('./components/mascot')
 
@@ -26,7 +28,11 @@ UnlockScreen.prototype.render = function () {
   const state = this.props
   const warning = state.warning
   return (
-    h('.flex-column', [
+    h('.flex-column', {
+      style: {
+        width: 'inherit',
+      },
+    }, [
       h('.unlock-screen.flex-column.flex-center.flex-grow', [
 
         h(Mascot, {
@@ -46,7 +52,7 @@ UnlockScreen.prototype.render = function () {
           id: 'password-box',
           placeholder: 'enter password',
           style: {
-
+            background: 'white',
           },
           onKeyPress: this.onKeyPress.bind(this),
           onInput: this.inputChanged.bind(this),
@@ -70,14 +76,35 @@ UnlockScreen.prototype.render = function () {
 
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
-          onClick: () => this.props.dispatch(actions.forgotPassword()),
+          onClick: () => {
+            this.props.dispatch(actions.markPasswordForgotten())
+            if (environmentType() === 'popup') {
+              global.platform.openExtensionInBrowser()
+            }
+          },
           style: {
             fontSize: '0.8em',
             color: 'rgb(247, 134, 28)',
             textDecoration: 'underline',
           },
-        }, 'I forgot my password.'),
+        }, 'Restore from seed phrase'),
       ]),
+
+      h('.flex-row.flex-center.flex-grow', [
+        h('p.pointer', {
+          onClick: () => {
+            this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+              .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+          },
+          style: {
+            fontSize: '0.8em',
+            color: '#aeaeae',
+            textDecoration: 'underline',
+            marginTop: '32px',
+          },
+        }, 'Use classic interface'),
+      ]),
+      
     ])
   )
 }

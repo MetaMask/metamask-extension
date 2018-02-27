@@ -19,7 +19,11 @@ Notice.prototype.render = function () {
   const disabled = state.disclaimerDisabled
 
   return (
-    h('.flex-column.flex-center.flex-grow', [
+    h('.flex-column.flex-center.flex-grow', {
+      style: {
+        width: '100%',
+      },
+    }, [
       h('h3.flex-center.text-transform-uppercase.terms-header', {
         style: {
           background: '#EBEBEB',
@@ -98,28 +102,30 @@ Notice.prototype.render = function () {
         }),
       ]),
 
-      h('button', {
+      h('button.primary', {
         disabled,
         onClick: () => {
-          this.setState({disclaimerDisabled: true})
-          onConfirm()
+          this.setState({disclaimerDisabled: true}, () => onConfirm())
         },
         style: {
           marginTop: '18px',
         },
-      }, 'Continue'),
+      }, 'Accept'),
     ])
   )
 }
 
 Notice.prototype.componentDidMount = function () {
+  // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.setupListener(node)
-  if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) { this.setState({disclaimerDisabled: false}) }
-
+  if (document.getElementsByClassName('notice-box')[0].clientHeight < 310) {
+    this.setState({disclaimerDisabled: false})
+  }
 }
 
 Notice.prototype.componentWillUnmount = function () {
+  // eslint-disable-next-line react/no-find-dom-node
   var node = findDOMNode(this)
   linker.teardownListener(node)
 }

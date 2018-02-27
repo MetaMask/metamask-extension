@@ -7,13 +7,22 @@ class PreferencesController {
   constructor (opts = {}) {
     const initState = extend({
       frequentRpcList: [],
+      currentAccountTab: 'history',
+      tokens: [],
+      useBlockie: false,
+      featureFlags: {},
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
+// PUBLIC METHODS
 
-  //
-  // PUBLIC METHODS
-  //
+  setUseBlockie (val) {
+    this.store.updateState({ useBlockie: val })
+  }
+
+  getUseBlockie () {
+    return this.store.getState().useBlockie
+  }
 
   setSelectedAddress (_address) {
     return new Promise((resolve, reject) => {
@@ -23,8 +32,42 @@ class PreferencesController {
     })
   }
 
-  getSelectedAddress (_address) {
+  getSelectedAddress () {
     return this.store.getState().selectedAddress
+  }
+
+  async addToken (rawAddress, symbol, decimals) {
+    const address = normalizeAddress(rawAddress)
+    const newEntry = { address, symbol, decimals }
+
+    const tokens = this.store.getState().tokens
+    const previousEntry = tokens.find((token, index) => {
+      return token.address === address
+    })
+    const previousIndex = tokens.indexOf(previousEntry)
+
+    if (previousEntry) {
+      tokens[previousIndex] = newEntry
+    } else {
+      tokens.push(newEntry)
+    }
+
+    this.store.updateState({ tokens })
+
+    return Promise.resolve(tokens)
+  }
+
+  removeToken (rawAddress) {
+    const tokens = this.store.getState().tokens
+
+    const updatedTokens = tokens.filter(token => token.address !== rawAddress)
+
+    this.store.updateState({ tokens: updatedTokens })
+    return Promise.resolve(updatedTokens)
+  }
+
+  getTokens () {
+    return this.store.getState().tokens
   }
 
   updateFrequentRpcList (_url) {
@@ -35,9 +78,16 @@ class PreferencesController {
       })
   }
 
+  setCurrentAccountTab (currentAccountTab) {
+    return new Promise((resolve, reject) => {
+      this.store.updateState({ currentAccountTab })
+      resolve()
+    })
+  }
+
   addToFrequentRpcList (_url) {
-    let rpcList = this.getFrequentRpcList()
-    let index = rpcList.findIndex((element) => { return element === _url })
+    const rpcList = this.getFrequentRpcList()
+    const index = rpcList.findIndex((element) => { return element === _url })
     if (index !== -1) {
       rpcList.splice(index, 1)
     }
@@ -54,12 +104,24 @@ class PreferencesController {
     return this.store.getState().frequentRpcList
   }
 
+  setFeatureFlag (feature, activated) {
+    const currentFeatureFlags = this.store.getState().featureFlags
+    const updatedFeatureFlags = {
+      ...currentFeatureFlags,
+      [feature]: activated,
+    }
+
+    this.store.updateState({ featureFlags: updatedFeatureFlags })
+
+    return Promise.resolve(updatedFeatureFlags)
+  }
+
+  getFeatureFlags () {
+    return this.store.getState().featureFlags
+  }
   //
   // PRIVATE METHODS
   //
-
-
-
 }
 
 module.exports = PreferencesController

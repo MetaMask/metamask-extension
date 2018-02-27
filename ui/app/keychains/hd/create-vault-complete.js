@@ -3,6 +3,7 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../actions')
+const exportAsFile = require('../../util').exportAsFile
 
 module.exports = connect(mapStateToProps)(CreateVaultCompleteScreen)
 
@@ -20,7 +21,7 @@ function mapStateToProps (state) {
 
 CreateVaultCompleteScreen.prototype.render = function () {
   var state = this.props
-  var seed = state.seed || state.cachedSeed
+  var seed = state.seed || state.cachedSeed || ''
 
   return (
 
@@ -47,14 +48,12 @@ CreateVaultCompleteScreen.prototype.render = function () {
 
       h('div', {
         style: {
-          width: '360px',
-          height: '78px',
           fontSize: '1em',
           marginTop: '10px',
           textAlign: 'center',
         },
       }, [
-        h('span.error', 'These 12 words can restore all of your MetaMask accounts for this vault.\nSave them somewhere safe and secret.'),
+        h('span.error', 'These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret.'),
       ]),
 
       h('textarea.twelve-word-phrase', {
@@ -63,16 +62,30 @@ CreateVaultCompleteScreen.prototype.render = function () {
       }),
 
       h('button.primary', {
-        onClick: () => this.confirmSeedWords(),
+        onClick: () => this.confirmSeedWords()
+          .then(account => this.showAccountDetail(account)),
         style: {
           margin: '24px',
           fontSize: '0.9em',
+          marginBottom: '10px',
         },
       }, 'I\'ve copied it somewhere safe'),
+
+      h('button.primary', {
+        onClick: () => exportAsFile(`MetaMask Seed Words`, seed),
+        style: {
+          margin: '10px',
+          fontSize: '0.9em',
+        },
+      }, 'Save Seed Words As File'),
     ])
   )
 }
 
 CreateVaultCompleteScreen.prototype.confirmSeedWords = function () {
-  this.props.dispatch(actions.confirmSeedWords())
+  return this.props.dispatch(actions.confirmSeedWords())
+}
+
+CreateVaultCompleteScreen.prototype.showAccountDetail = function (account) {
+  return this.props.dispatch(actions.showAccountDetail(account))
 }

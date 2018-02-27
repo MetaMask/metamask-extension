@@ -1,14 +1,13 @@
-var jsdom = require('mocha-jsdom')
+// var jsdom = require('mocha-jsdom')
 var assert = require('assert')
 var freeze = require('deep-freeze-strict')
 var path = require('path')
 
 var actions = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'actions.js'))
-var reducers = require(path.join(__dirname, '..', '..',  '..', 'ui', 'app', 'reducers.js'))
+var reducers = require(path.join(__dirname, '..', '..', '..', 'ui', 'app', 'reducers.js'))
 
-describe('action DISPLAY_WARNING', function() {
-
-  it('sets appState.warning to provided value', function() {
+describe('action DISPLAY_WARNING', function () {
+  it('sets appState.warning to provided value', function () {
     var initialState = {
       appState: {},
     }
@@ -20,5 +19,5 @@ describe('action DISPLAY_WARNING', function() {
     const resultingState = reducers(initialState, action)
 
     assert.equal(resultingState.appState.warning, warningText, 'warning text set')
-  });
-});
+  })
+})

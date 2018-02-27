@@ -8,7 +8,7 @@ class CurrencyController {
 
   constructor (opts = {}) {
     const initState = extend({
-      currentCurrency: 'USD',
+      currentCurrency: 'usd',
       conversionRate: 0,
       conversionDate: 'N/A',
     }, opts.initState)
@@ -45,15 +45,17 @@ class CurrencyController {
 
   updateConversionRate () {
     const currentCurrency = this.getCurrentCurrency()
-    return fetch(`https://www.cryptonator.com/api/ticker/eth-${currentCurrency}`)
+    return fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
     .then(response => response.json())
     .then((parsedResponse) => {
-      this.setConversionRate(Number(parsedResponse.ticker.price))
+      this.setConversionRate(Number(parsedResponse.bid))
       this.setConversionDate(Number(parsedResponse.timestamp))
     }).catch((err) => {
-      console.warn('MetaMask - Failed to query currency conversion.')
-      this.setConversionRate(0)
-      this.setConversionDate('N/A')
+      if (err) {
+        console.warn('MetaMask - Failed to query currency conversion.')
+        this.setConversionRate(0)
+        this.setConversionDate('N/A')
+      }
     })
   }
 

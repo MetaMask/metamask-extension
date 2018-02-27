@@ -5,7 +5,7 @@ const createId = require('./random-id')
 const hexRe = /^[0-9A-Fa-f]+$/g
 
 
-module.exports = class PersonalMessageManager extends EventEmitter{
+module.exports = class PersonalMessageManager extends EventEmitter {
   constructor (opts) {
     super()
     this.memStore = new ObservableStore({
@@ -108,7 +108,7 @@ module.exports = class PersonalMessageManager extends EventEmitter{
     this.emit('updateBadge')
   }
 
-  normalizeMsgData(data) {
+  normalizeMsgData (data) {
     try {
       const stripped = ethUtil.stripHexPrefix(data)
       if (stripped.match(hexRe)) {

@@ -1,4 +1,16 @@
+const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
+const hexToBn = require('../../app/scripts/lib/hex-to-bn')
+const vreme = new (require('vreme'))()
+
+const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
+const GWEI_FACTOR = new ethUtil.BN(1e9)
+const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
+
+// formatData :: ( date: <Unix Timestamp> ) -> String
+function formatDate (date) {
+  return vreme.format(new Date(date), 'March 16 2014 14:30')
+}
 
 var valueTable = {
   wei: '1000000000000000000',
@@ -36,6 +48,15 @@ module.exports = {
   valueTable: valueTable,
   bnTable: bnTable,
   isHex: isHex,
+  formatDate,
+  bnMultiplyByFraction,
+  getTxFeeBn,
+  shortenBalance,
+  getContractAtAddress,
+  exportAsFile: exportAsFile,
+  isInvalidChecksumAddress,
+  allNull,
+  getTokenAddressFromTokenObject,
 }
 
 function valuesFor (obj) {
@@ -61,7 +82,14 @@ function miniAddressSummary (address) {
 
 function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
+  if (address === '0x0000000000000000000000000000000000000000') return false
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
+}
+
+function isInvalidChecksumAddress (address) {
+  var prefixed = ethUtil.addHexPrefix(address)
+  if (address === '0x0000000000000000000000000000000000000000') return false
+  return !isAllOneCase(prefixed) && !ethUtil.isValidChecksumAddress(prefixed) && ethUtil.isValidAddress(prefixed)
 }
 
 function isAllOneCase (address) {
@@ -184,6 +212,9 @@ function normalizeEthStringToWei (str) {
     while (decimal.length < 18) {
       decimal += '0'
     }
+    if (decimal.length > 18) {
+      decimal = decimal.slice(0, 18)
+    }
     const decimalBN = new ethUtil.BN(decimal, 10)
     eth = eth.add(decimalBN)
   }
@@ -213,4 +244,45 @@ function readableDate (ms) {
 
 function isHex (str) {
   return Boolean(str.match(/^(0x)?[0-9a-fA-F]+$/))
+}
+
+function bnMultiplyByFraction (targetBN, numerator, denominator) {
+  const numBN = new ethUtil.BN(numerator)
+  const denomBN = new ethUtil.BN(denominator)
+  return targetBN.mul(numBN).div(denomBN)
+}
+
+function getTxFeeBn (gas, gasPrice = MIN_GAS_PRICE_BN.toString(16), blockGasLimit) {
+  const gasBn = hexToBn(gas)
+  const gasPriceBn = hexToBn(gasPrice)
+  const txFeeBn = gasBn.mul(gasPriceBn)
+
+  return txFeeBn.toString(16)
+}
+
+function getContractAtAddress (tokenAddress) {
+  return global.eth.contract(abi).at(tokenAddress)
+}
+
+function exportAsFile (filename, data) {
+  // source: https://stackoverflow.com/a/33542499 by Ludovic Feltz
+  const blob = new Blob([data], {type: 'text/csv'})
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, filename)
+  } else {
+    const elem = window.document.createElement('a')
+    elem.href = window.URL.createObjectURL(blob)
+    elem.download = filename
+    document.body.appendChild(elem)
+    elem.click()
+    document.body.removeChild(elem)
+  }
+}
+
+function allNull (obj) {
+  return Object.entries(obj).every(([key, value]) => value === null)
+}
+
+function getTokenAddressFromTokenObject (token) {
+  return Object.values(token)[0].address.toLowerCase()
 }

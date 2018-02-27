@@ -1,50 +1,30 @@
-const inherits = require('util').inherits
-const Component = require('react').Component
+const { Component } = require('react')
 const h = require('react-hyperscript')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+const PropTypes = require('prop-types')
 
+class LoadingIndicator extends Component {
+  renderMessage () {
+    const { loadingMessage } = this.props
+    return loadingMessage && h('span', loadingMessage)
+  }
 
-inherits(LoadingIndicator, Component)
-module.exports = LoadingIndicator
-
-function LoadingIndicator () {
-  Component.call(this)
-}
-
-LoadingIndicator.prototype.render = function () {
-  const { isLoading, loadingMessage } = this.props
-
-  return (
-    h(ReactCSSTransitionGroup, {
-      className: 'css-transition-group',
-      transitionName: 'loader',
-      transitionEnterTimeout: 150,
-      transitionLeaveTimeout: 150,
-    }, [
-
-      isLoading ? h('div', {
-        style: {
-          zIndex: 10,
-          position: 'absolute',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
-          width: '100%',
-          background: 'rgba(255, 255, 255, 0.5)',
-        },
-      }, [
+  render () {
+    return (
+      h('.full-flex-height.loading-overlay', {}, [
         h('img', {
           src: 'images/loading.svg',
         }),
 
-        showMessageIfAny(loadingMessage),
-      ]) : null,
-    ])
-  )
+        h('br'),
+
+        this.renderMessage(),
+      ])
+    )
+  }
 }
 
-function showMessageIfAny (loadingMessage) {
-  if (!loadingMessage) return null
-  return h('span', loadingMessage)
+LoadingIndicator.propTypes = {
+  loadingMessage: PropTypes.string,
 }
+
+module.exports = LoadingIndicator

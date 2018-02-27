@@ -1,12 +1,17 @@
 /*global Web3*/
 cleanContextForImports()
 require('web3/dist/web3.min.js')
+const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 // const PingStream = require('ping-pong-stream/ping')
 // const endOfStream = require('end-of-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('./lib/inpage-provider.js')
 restoreContextAfterImports()
+
+const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+window.log = log
+log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
 
 
 //
@@ -26,31 +31,23 @@ var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 // setup web3
 //
 
+if (typeof window.web3 !== 'undefined') {
+  throw new Error(`MetaMask detected another web3.
+     MetaMask will not work reliably with another web3 extension.
+     This usually happens if you have two MetaMasks installed,
+     or MetaMask and another web3 extension. Please remove one
+     and try again.`)
+}
 var web3 = new Web3(inpageProvider)
 web3.setProvider = function () {
-  console.log('MetaMask - overrode web3.setProvider')
+  log.debug('MetaMask - overrode web3.setProvider')
 }
-console.log('MetaMask - injected web3')
-// export global web3, with usage-detection reload fn
-var triggerReload = setupDappAutoReload(web3)
-
-// listen for reset requests from metamask
-var reloadStream = inpageProvider.multiStream.createStream('reload')
-reloadStream.once('data', triggerReload)
-
-// setup ping timeout autoreload
-// LocalMessageDuplexStream does not self-close, so reload if pingStream fails
-// var pingChannel = inpageProvider.multiStream.createStream('pingpong')
-// var pingStream = new PingStream({ objectMode: true })
-// wait for first successful reponse
-
-// disable pingStream until https://github.com/MetaMask/metamask-plugin/issues/746 is resolved more gracefully
-// metamaskStream.once('data', function(){
-//   pingStream.pipe(pingChannel).pipe(pingStream)
-// })
-// endOfStream(pingStream, triggerReload)
+log.debug('MetaMask - injected web3')
+// export global web3, with usage-detection
+setupDappAutoReload(web3, inpageProvider.publicConfigStore)
 
 // set web3 defaultAccount
+
 inpageProvider.publicConfigStore.subscribe(function (state) {
   web3.eth.defaultAccount = state.selectedAddress
 })

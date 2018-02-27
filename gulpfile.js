@@ -19,9 +19,19 @@ var manifest = require('./app/manifest.json')
 var gulpif = require('gulp-if')
 var replace = require('gulp-replace')
 var mkdirp = require('mkdirp')
+var asyncEach = require('async/each')
+var exec = require('child_process').exec
+var sass = require('gulp-sass')
+var autoprefixer = require('gulp-autoprefixer')
+var gulpStylelint = require('gulp-stylelint')
+var stylefmt = require('gulp-stylefmt')
+var uglify = require('gulp-uglify-es').default
+var babel = require('gulp-babel')
 
-var disableLiveReload = gutil.env.disableLiveReload
+
+var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
+
 
 // browser reload
 
@@ -50,6 +60,15 @@ gulp.task('copy:images', copyTask({
     './dist/chrome/images',
     './dist/edge/images',
     './dist/opera/images',
+  ],
+}))
+gulp.task('copy:contractImages', copyTask({
+  source: './node_modules/eth-contract-metadata/images/',
+  destinations: [
+    './dist/firefox/images/contract',
+    './dist/chrome/images/contract',
+    './dist/edge/images/contract',
+    './dist/opera/images/contract',
   ],
 }))
 gulp.task('copy:fonts', copyTask({
@@ -111,11 +130,17 @@ gulp.task('manifest:production', function() {
     './dist/firefox/manifest.json',
     './dist/chrome/manifest.json',
     './dist/edge/manifest.json',
+    './dist/opera/manifest.json',
   ],{base: './dist/'})
-  .pipe(gulpif(disableLiveReload,jsoneditor(function(json) {
-    json.background.scripts = ["scripts/background.js"]
+
+  // Exclude chromereload script in production:
+  .pipe(gulpif(!debug,jsoneditor(function(json) {
+    json.background.scripts = json.background.scripts.filter((script) => {
+      return !script.includes('chromereload')
+    })
     return json
   })))
+
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
@@ -127,8 +152,9 @@ const staticFiles = [
 ]
 
 var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
+copyStrings.push('copy:contractImages')
 
-if (!disableLiveReload) {
+if (debug) {
   copyStrings.push('copy:reload')
 }
 
@@ -137,17 +163,36 @@ gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
 
+// record deps
+
+gulp.task('deps', function (cb) {
+  exec('npm ls', (err, stdoutOutput, stderrOutput) => {
+    if (err) return cb(err)
+    const browsers = ['firefox','chrome','edge','opera']
+    asyncEach(browsers, (target, done) => {
+      fs.writeFile(`./dist/${target}/deps.txt`, stdoutOutput, done)
+    }, cb)
+  })
+})
+
 // lint js
 
 gulp.task('lint', function () {
   // Ignoring node_modules, dist/firefox, and docs folders:
-  return gulp.src(['app/**/*.js', 'ui/**/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js'])
+  return gulp.src(['app/**/*.js', '!app/scripts/vendor/**/*.js', 'ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js'])
     .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
     // eslint.format() outputs the lint results to the console.
     // Alternatively use eslint.formatEach() (see Docs).
     .pipe(eslint.format())
     // To have the process exit with an error code (1) on
     // lint error, return the stream and pipe to failAfterError last.
+    .pipe(eslint.failAfterError())
+});
+
+gulp.task('lint:fix', function () {
+  return gulp.src(['app/**/*.js', 'ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js'])
+    .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), {fix: true})))
+    .pipe(eslint.format())
     .pipe(eslint.failAfterError())
 });
 
@@ -166,23 +211,69 @@ const jsFiles = [
   'popup',
 ]
 
+// scss compilation and autoprefixing tasks
+
+gulp.task('build:scss', function () {
+  return gulp.src('ui/app/css/index.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(autoprefixer())
+    .pipe(gulp.dest('ui/app/css/output'))
+})
+gulp.task('watch:scss', function() {
+  gulp.watch(['ui/app/css/**/*.scss'], gulp.series(['build:scss']))
+})
+
+gulp.task('lint-scss', function() {
+  return gulp
+    .src('ui/app/css/itcss/**/*.scss')
+    .pipe(gulpStylelint({
+      reporters: [
+        {formatter: 'string', console: true}
+      ],
+      fix: true,
+    }));
+});
+
+gulp.task('fmt-scss', function () {
+  return gulp.src('ui/app/css/itcss/**/*.scss')
+    .pipe(stylefmt())
+    .pipe(gulp.dest('ui/app/css/itcss'));
+});
+
 // bundle tasks
 
 var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
 var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`dev:js:${jsFile}`,   bundleTask({ watch: true,  label: jsFile, filename: `${jsFile}.js` }))
-  gulp.task(`build:js:${jsFile}`, bundleTask({ watch: false, label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`dev:js:${jsFile}`,   bundleTask({
+    watch: true,
+    label: jsFile,
+    filename: `${jsFile}.js`,
+    isBuild: false
+  }))
+  gulp.task(`build:js:${jsFile}`, bundleTask({
+    watch: false,
+    label: jsFile,
+    filename: `${jsFile}.js`,
+    isBuild: true
+  }))
 })
 
-gulp.task('dev:js', gulp.parallel(...jsDevStrings))
-gulp.task('build:js',  gulp.parallel(...jsBuildStrings))
+// inpage must be built before all other scripts:
+const firstDevString = jsDevStrings.shift()
+gulp.task('dev:js', gulp.series(firstDevString, gulp.parallel(...jsDevStrings)))
+
+// inpage must be built before all other scripts:
+const firstBuildString = jsBuildStrings.shift()
+gulp.task('build:js',  gulp.series(firstBuildString, gulp.parallel(...jsBuildStrings)))
 
 // disc bundle analyzer tasks
 
 jsFiles.forEach((jsFile) => {
-  gulp.task(`disc:${jsFile}`,   bundleTask({ label: jsFile, filename: `${jsFile}.js` }))
+  gulp.task(`disc:${jsFile}`,   discTask({ label: jsFile, filename: `${jsFile}.js` }))
 })
 
 gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
@@ -202,12 +293,18 @@ gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
+// set env var for production
+gulp.task('apply-prod-environment', function(done) {
+    process.env.NODE_ENV = 'production'
+    done()
+});
+
 // high level tasks
 
-gulp.task('dev', gulp.series('dev:js', 'copy', gulp.parallel('copy:watch', 'dev:reload')))
+gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
 
-gulp.task('build', gulp.series('clean', gulp.parallel('build:js', 'copy')))
-gulp.task('dist', gulp.series('build', 'zip'))
+gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
+gulp.task('dist', gulp.series('apply-prod-environment', 'build', 'zip'))
 
 // task generators
 
@@ -224,7 +321,7 @@ function copyTask(opts){
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(gulpif(!disableLiveReload,livereload()))
+    stream.pipe(gulpif(debug,livereload()))
 
     return stream
   }
@@ -234,30 +331,31 @@ function zipTask(target) {
   return () => {
     return gulp.src(`dist/${target}/**`)
     .pipe(zip(`metamask-${target}-${manifest.version}.zip`))
-    .pipe(gulp.dest('builds'));
+    .pipe(gulp.dest('builds'))
   }
 }
 
-function generateBundler(opts) {
-  var browserifyOpts = assign({}, watchify.args, {
+function generateBundler(opts, performBundle) {
+  const browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
     plugin: 'browserify-derequire',
     debug: debug,
     fullPaths: debug,
   })
 
-  return browserify(browserifyOpts)
-}
-
-function discTask(opts) {
-  let bundler = generateBundler(opts)
+  let bundler = browserify(browserifyOpts)
 
   if (opts.watch) {
     bundler = watchify(bundler)
-    // on any dep update, runs the bundler
+    // on any file update, re-runs the bundler
     bundler.on('update', performBundle)
   }
 
+  return bundler
+}
+
+function discTask(opts) {
+  const bundler = generateBundler(opts, performBundle)
   // output build logs to terminal
   bundler.on('log', gutil.log)
 
@@ -279,14 +377,7 @@ function discTask(opts) {
 
 
 function bundleTask(opts) {
-  let bundler = generateBundler(opts)
-
-  if (opts.watch) {
-    bundler = watchify(bundler)
-    // on any file update, re-runs the bundler
-    bundler.on('update', performBundle)
-  }
-
+  const bundler = generateBundler(opts, performBundle)
   // output build logs to terminal
   bundler.on('log', gutil.log)
 
@@ -296,8 +387,16 @@ function bundleTask(opts) {
     return (
 
       bundler.bundle()
-      // log errors if they happen
-      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+
+      // handle errors
+      .on('error', (err) => {
+        beep()
+        if (opts.watch) {
+          console.warn(err.stack)
+        } else {
+          throw err
+        }
+      })
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
@@ -306,17 +405,23 @@ function bundleTask(opts) {
       .pipe(buffer())
       // sourcemaps
       // loads map from browserify file
-      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
+      // Minification
+      .pipe(gulpif(opts.isBuild, uglify()))
       // writes .map file
-      .pipe(sourcemaps.write('./'))
+      .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
       .pipe(gulp.dest('./dist/edge/scripts'))
       .pipe(gulp.dest('./dist/opera/scripts'))
       // finally, trigger live reload
-      .pipe(gulpif(!disableLiveReload, livereload()))
+      .pipe(gulpif(debug, livereload()))
 
     )
   }
+}
+
+function beep () {
+  process.stdout.write('\x07')
 }

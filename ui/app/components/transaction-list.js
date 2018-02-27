@@ -13,7 +13,7 @@ function TransactionList () {
 }
 
 TransactionList.prototype.render = function () {
-  const { transactions, network, unapprovedMsgs } = this.props
+  const { transactions, network, unapprovedMsgs, conversionRate } = this.props
 
   var shapeShiftTxList
   if (network === '1') {
@@ -24,7 +24,11 @@ TransactionList.prototype.render = function () {
 
   return (
 
-    h('section.transaction-list', [
+    h('section.transaction-list.full-flex-height', {
+      style: {
+        justifyContent: 'center',
+      },
+    }, [
 
       h('style', `
         .transaction-list .transaction-list-item:not(:last-of-type) {
@@ -36,21 +40,10 @@ TransactionList.prototype.render = function () {
         }
       `),
 
-      h('h3.flex-center.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          paddingTop: '4px',
-          paddingBottom: '4px',
-        },
-      }, [
-        'History',
-      ]),
-
       h('.tx-list', {
         style: {
           overflowY: 'auto',
-          height: '300px',
+          height: '100%',
           padding: '0 20px',
           textAlign: 'center',
         },
@@ -69,18 +62,23 @@ TransactionList.prototype.render = function () {
             }
             return h(TransactionListItem, {
               transaction, i, network, key,
+              conversionRate,
               showTx: (txId) => {
                 this.props.viewPendingTx(txId)
               },
             })
           })
-        : h('.flex-center', {
+        : h('.flex-center.full-flex-height', {
           style: {
             flexDirection: 'column',
-            height: '100%',
+            justifyContent: 'center',
           },
         }, [
-          'No transaction history.',
+          h('p', {
+            style: {
+              marginTop: '50px',
+            },
+          }, 'No transaction history.'),
         ]),
       ]),
     ])

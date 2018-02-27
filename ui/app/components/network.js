@@ -1,6 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const classnames = require('classnames')
 const inherits = require('util').inherits
+const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
 
 module.exports = Network
 
@@ -22,19 +24,26 @@ Network.prototype.render = function () {
   let iconName, hoverText
 
   if (networkNumber === 'loading') {
-    return h('img.network-indicator', {
-      title: 'Attempting to connect to blockchain.',
-      onClick: (event) => this.props.onClick(event),
+    return h('span.pointer.network-indicator', {
       style: {
-        width: '27px',
-        marginRight: '-27px',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'row',
       },
-      src: 'images/loading.svg',
-    })
+      onClick: (event) => this.props.onClick(event),
+    }, [
+      h('img', {
+        title: 'Attempting to connect to blockchain.',
+        style: {
+          width: '27px',
+        },
+        src: 'images/loading.svg',
+      }),
+    ])
   } else if (providerName === 'mainnet') {
     hoverText = 'Main Ethereum Network'
     iconName = 'ethereum-network'
-  } else if (providerName === 'testnet') {
+  } else if (providerName === 'ropsten') {
     hoverText = 'Ropsten Test Network'
     iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 3) {
@@ -43,44 +52,67 @@ Network.prototype.render = function () {
   } else if (providerName === 'kovan') {
     hoverText = 'Kovan Test Network'
     iconName = 'kovan-test-network'
+  } else if (providerName === 'rinkeby') {
+    hoverText = 'Rinkeby Test Network'
+    iconName = 'rinkeby-test-network'
   } else {
     hoverText = 'Unknown Private Network'
     iconName = 'unknown-private-network'
   }
 
   return (
-    h('#network_component.pointer', {
+    h('div.network-component.pointer', {
+      className: classnames({
+        'network-component--disabled': this.props.disabled,
+        'ethereum-network': providerName === 'mainnet',
+        'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
+        'kovan-test-network': providerName === 'kovan',
+        'rinkeby-test-network': providerName === 'rinkeby',
+      }),
       title: hoverText,
-      onClick: (event) => this.props.onClick(event),
+      onClick: (event) => {
+        if (!this.props.disabled) {
+          this.props.onClick(event)
+        }
+      },
     }, [
       (function () {
         switch (iconName) {
           case 'ethereum-network':
             return h('.network-indicator', [
-              h('.menu-icon.diamond'),
-              h('.network-name', {
-                style: {
-                  color: '#039396',
-                }},
-              'Ethereum Main Net'),
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#038789', // $blue-lagoon
+                nonSelectBackgroundColor: '#15afb2',
+              }),
+              h('.network-name', 'Main Network'),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.red-dot'),
-              h('.network-name', {
-                style: {
-                  color: '#ff6666',
-                }},
-              'Ropsten Test Net'),
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#e91550', // $crimson
+                nonSelectBackgroundColor: '#ec2c50',
+              }),
+              h('.network-name', 'Ropsten Test Net'),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
-              h('.menu-icon.hollow-diamond'),
-              h('.network-name', {
-                style: {
-                  color: '#690496',
-                }},
-              'Kovan Test Net'),
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#690496', // $purple
+                nonSelectBackgroundColor: '#b039f3',
+              }),
+              h('.network-name', 'Kovan Test Net'),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
+            ])
+          case 'rinkeby-test-network':
+            return h('.network-indicator', [
+              h(NetworkDropdownIcon, {
+                backgroundColor: '#ebb33f', // $tulip-tree
+                nonSelectBackgroundColor: '#ecb23e',
+              }),
+              h('.network-name', 'Rinkeby Test Net'),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           default:
             return h('.network-indicator', [
@@ -91,11 +123,8 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name', {
-                style: {
-                  color: '#AEAEAE',
-                }},
-              'Private Network'),
+              h('.network-name', 'Private Network'),
+              h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
         }
       })(),

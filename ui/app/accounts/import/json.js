@@ -5,6 +5,8 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const FileInput = require('react-simple-file-input').default
 
+const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
+
 module.exports = connect(mapStateToProps)(JsonImportSubview)
 
 function mapStateToProps (state) {
@@ -22,43 +24,44 @@ JsonImportSubview.prototype.render = function () {
   const { error } = this.props
 
   return (
-    h('div', {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '5px 15px 0px 15px',
-      },
-    }, [
+    h('div.new-account-import-form__json', [
 
       h('p', 'Used by a variety of different clients'),
+      h('a.warning', { href: HELP_LINK, target: '_blank' }, 'File import not working? Click here!'),
 
       h(FileInput, {
         readAs: 'text',
         onLoad: this.onLoad.bind(this),
         style: {
-          margin: '20px 0px 12px 20px',
+          margin: '20px 0px 12px 34%',
           fontSize: '15px',
+          display: 'flex',
+          justifyContent: 'center',
         },
       }),
 
-      h('input.large-input.letter-spacey', {
+      h('input.new-account-import-form__input-password', {
         type: 'password',
         placeholder: 'Enter password',
         id: 'json-password-box',
         onKeyPress: this.createKeyringOnEnter.bind(this),
-        style: {
-          width: 260,
-          marginTop: 12,
-        },
       }),
 
-      h('button.primary', {
-        onClick: this.createNewKeychain.bind(this),
-        style: {
-          margin: 12,
-        },
-      }, 'Import'),
+      h('div.new-account-create-form__buttons', {}, [
+
+        h('button.new-account-create-form__button-cancel', {
+          onClick: () => this.props.goHome(),
+        }, [
+          'CANCEL',
+        ]),
+
+        h('button.new-account-create-form__button-create', {
+          onClick: () => this.createNewKeychain.bind(this),
+        }, [
+          'IMPORT',
+        ]),
+
+      ]),
 
       error ? h('span.error', error) : null,
     ])
@@ -78,6 +81,12 @@ JsonImportSubview.prototype.createKeyringOnEnter = function (event) {
 
 JsonImportSubview.prototype.createNewKeychain = function () {
   const state = this.state
+
+  if (!state) {
+    const message = 'You must select a valid file to import.'
+    return this.props.dispatch(actions.displayWarning(message))
+  }
+
   const { fileContents } = state
 
   if (!fileContents) {

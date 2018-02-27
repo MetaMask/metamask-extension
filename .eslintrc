@@ -1,7 +1,8 @@
 {
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6,
+    "ecmaVersion": 2017,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "impliedStrict": true,
@@ -10,17 +11,25 @@
       "arrowFunctions": true,
       "objectLiteralShorthandMethods": true,
       "objectLiteralShorthandProperties": true,
-      "templateStrings": true
+      "templateStrings": true,
+      "classes": true,
+      "jsx": true
     },
   },
+
+  "extends": ["plugin:react/recommended"],
 
   "env": {
     "es6": true,
     "node": true,
-    "browser": true
+    "browser": true,
+    "mocha" : true
   },
 
   "plugins": [
+    "mocha",
+    "chai",
+    "react"
   ],
 
   "globals": {
@@ -47,8 +56,8 @@
     "eqeqeq": [2, "allow-null"],
     "generator-star-spacing": [2, { "before": true, "after": true }],
     "handle-callback-err": [1, "^(err|error)$" ],
-    "indent": [2, 2, { "SwitchCase": 1 }],
-    "jsx-quotes": [2, "prefer-single"],
+    "indent": "off",
+    "jsx-quotes": [2, "prefer-double"],
     "key-spacing": 1,
     "keyword-spacing": [2, { "before": true, "after": true }],
     "new-cap": [2, { "newIsCap": true, "capIsNew": false }],
@@ -130,7 +139,7 @@
     "no-with": 2,
     "one-var": [2, { "initialized": "never" }],
     "operator-linebreak": [1, "after", { "overrides": { "?": "ignore", ":": "ignore" } }],
-    "padded-blocks": [1, "never"],
+    "padded-blocks": "off",
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
     "semi": [2, "never"],
     "semi-spacing": [2, { "before": false, "after": true }],

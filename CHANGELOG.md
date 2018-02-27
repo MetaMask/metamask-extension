@@ -2,8 +2,405 @@
 
 ## Current Master
 
+## 4.1.0 2018-2-27
+
+- Report failed txs to Sentry with more specific message
+- Fix internal feature flags being sometimes undefined
+- Standardized license to MIT
+
+## 4.0.0 2018-2-22
+
+- Introduce new MetaMask user interface.
+
+## 3.14.2 2018-2-15
+
+- Fix bug where log subscriptions would break when switching network.
+- Fix bug where storage values were cached across blocks.
+- Add MetaMask light client [testing container](https://github.com/MetaMask/mesh-testing)
+
+## 3.14.1 2018-2-1
+
+- Further fix scrolling for Firefox.
+
+## 3.14.0 2018-2-1
+
+- Removed unneeded data from storage
+- Add a "reset account" feature to Settings
+- Add warning for importing some kinds of files.
+- Scrollable Setting view for Firefox.
+
+## 3.13.8 2018-1-29
+
+- Fix provider for Kovan network.
+- Bump limit for EventEmitter listeners before warning.
+- Display Error when empty string is entered as a token address.
+
+## 3.13.7 2018-1-22
+
+- Add ability to bypass gas estimation loading indicator.
+- Forward failed transactions to Sentry error reporting service
+- Re-add changes from 3.13.5
+
+## 3.13.6 2017-1-18
+
+- Roll back changes to 3.13.4 to fix some issues with the new Infura REST provider.
+
+## 3.13.5 2018-1-16
+
+- Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
+- Add an extra px to address for Firefox clipping.
+- Fix Firefox scrollbar.
+- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
+- Fix bug that prevented eth_signTypedData from signing bytes.
+- Further improve gas price estimation.
+
+## 3.13.4 2018-1-9
+
+- Remove recipient field if application initializes a tx with an empty string, or 0x, and tx data. Throw an error with the same condition, but without tx data.
+- Improve gas price suggestion to be closer to the lowest that will be accepted.
+- Throw an error if a application tries to submit a tx whose value is a decimal, and inform that it should be in wei.
+- Fix bug that prevented updating custom token details.
+- No longer mark long-pending transactions as failed, since we now have button to retry with higher gas.
+- Fix rounding error when specifying an ether amount that has too much precision.
+- Fix bug where incorrectly inputting seed phrase would prevent any future attempts from succeeding.
+
+## 3.13.3 2017-12-14
+
+- Show tokens that are held that have no balance.
+- Reduce load on Infura by using a new block polling endpoint.
+
+## 3.13.2 2017-12-9
+
+- Reduce new block polling interval to 8000 ms, to ease server load.
+
+## 3.13.1 2017-12-7
+
+- Allow Dapps to specify a transaction nonce, allowing dapps to propose resubmit and force-cancel transactions.
+
+## 3.13.0 2017-12-7
+
+- Allow resubmitting transactions that are taking long to complete.
+
+## 3.12.1 2017-11-29
+
+- Fix bug where a user could be shown two different seed phrases.
+- Detect when multiple web3 extensions are active, and provide useful error.
+- Adds notice about seed phrase backup.
+
+## 3.12.0 2017-10-25
+
+- Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).
+- Lower minimum gas price to 0.1 GWEI.
+- Remove web3 injection message from production (thanks to @ChainsawBaby)
+- Add additional debugging info to our state logs, specifically OS version and browser version.
+
+## 3.11.2 2017-10-21
+
+- Fix bug where reject button would sometimes not work.
+- Fixed bug where sometimes MetaMask's connection to a page would be unreliable.
+
+## 3.11.1 2017-10-20
+
+- Fix bug where log filters were not populated correctly
+- Fix bug where web3 API was sometimes injected after the page loaded.
+- Fix bug where first account was sometimes not selected correctly after creating or restoring a vault.
+- Fix bug where imported accounts could not use new eth_signTypedData method.
+
+## 3.11.0 2017-10-11
+
+- Add support for new eth_signTypedData method per EIP 712.
+- Fix bug where some transactions would be shown as pending forever, even after successfully mined.
+- Fix bug where a transaction might be shown as pending forever if another tx with the same nonce was mined.
+- Fix link to support article on token addresses.
+
+## 3.10.9 2017-10-5
+
+- Only rebrodcast transactions for a day not a days worth of blocks
+- Remove Slack link from info page, since it is a big phishing target.
+- Stop computing balance based on pending transactions, to avoid edge case where users are unable to send transactions.
+
+## 3.10.8 2017-9-28
+
+- Fixed usage of new currency fetching API.
+
+## 3.10.7 2017-9-28
+
+- Fixed bug where sometimes the current account was not correctly set and exposed to web apps.
+- Added AUD, HKD, SGD, IDR, PHP to currency conversion list
+
+## 3.10.6 2017-9-27
+
+- Fix bug where newly created accounts were not selected.
+- Fix bug where selected account was not persisted between lockings.
+
+## 3.10.5 2017-9-27
+
+- Fix block gas limit estimation.
+
+## 3.10.4 2017-9-27
+
+- Fix bug that could mis-render token balances when very small. (Not actually included in 3.9.9)
+- Fix memory leak warning.
+- Fix bug where new event filters would not include historical events.
+
+## 3.10.3 2017-9-21
+
+- Fix bug where metamask-dapp connections are lost on rpc error
+- Fix bug that would sometimes display transactions as failed that could be successfully mined.
+
+## 3.10.2 2017-9-18
+
+rollback to 3.10.0 due to bug
+
+## 3.10.1 2017-9-18
+
+- Add ability to export private keys as a file.
+- Add ability to export seed words as a file.
+- Changed state logs to a file download than a clipboard copy.
+- Add specific error for failed recipient address checksum.
+- Fixed a long standing memory leak associated with filters installed by dapps
+- Fix link to support center.
+- Fixed tooltip icon locations to avoid overflow.
+- Warn users when a dapp proposes a high gas limit (90% of blockGasLimit or higher
+- Sort currencies by currency name (thanks to strelok1: https://github.com/strelok1).
+
+## 3.10.0 2017-9-11
+
+- Readded loose keyring label back into the account list.
+- Remove cryptonator from chrome permissions.
+- Add info on token contract addresses.
+- Add validation preventing users from inputting their own addresses as token tracking addresses.
+- Added button to reject all transactions (thanks to davidp94! https://github.com/davidp94)
+
+
+## 3.9.13 2017-9-8
+
+- Changed the way we initialize the inpage provider to fix a bug affecting some developers.
+
+## 3.9.12 2017-9-6
+
+- Fix bug that prevented Web3 1.0 compatibility
+- Make eth_sign deprecation warning less noisy
+- Add useful link to eth_sign deprecation warning.
+- Fix bug with network version serialization over synchronous RPC
+- Add MetaMask version to state logs.
+- Add the total amount of tokens when multiple tokens are added under the token list
+- Use HTTPS links for Etherscan.
+- Update Support center link to new one with HTTPS.
+- Make web3 deprecation notice more useful by linking to a descriptive article.
+
+## 3.9.11 2017-8-24
+
+- Fix nonce calculation bug that would sometimes generate very wrong nonces.
+- Give up resubmitting a transaction after 3500 blocks.
+
+## 3.9.10 2017-8-23
+
+- Improve nonce calculation, to prevent bug where people are unable to send transactions reliably.
+- Remove link to eth-tx-viz from identicons in tx history.
+
+## 3.9.9 2017-8-18
+
+- Fix bug where some transaction submission errors would show an empty screen.
+- Fix bug that could mis-render token balances when very small.
+- Fix formatting of eth_sign "Sign Message" view.
+- Add deprecation warning to eth_sign "Sign Message" view.
+
+## 3.9.8 2017-8-16
+
+- Reenable token list.
+- Remove default tokens.
+
+## 3.9.7 2017-8-15
+
+- hotfix - disable token list
+- Added a deprecation warning for web3 https://github.com/ethereum/mist/releases/tag/v0.9.0
+
+## 3.9.6 2017-8-09
+
+- Replace account screen with an account drop-down menu.
+- Replace account buttons with a new account-specific drop-down menu.
+
+## 3.9.5 2017-8-04
+
+- Improved phishing detection configuration update rate
+
+## 3.9.4 2017-8-03
+
+- Fixed bug that prevented transactions from being rejected.
+
+## 3.9.3 2017-8-03
+
+- Add support for EGO ujo token
+- Continuously update blacklist for known phishing sites in background.
+- Automatically detect suspicious URLs too similar to common phishing targets, and blacklist them.
+
+## 3.9.2 2017-7-26
+
+- Fix bugs that could sometimes result in failed transactions after switching networks.
+- Include stack traces in txMeta's to better understand the life cycle of transactions
+- Enhance blacklister functionality to include levenshtein logic. (credit to @sogoiii and @409H for their help!)
+
+## 3.9.1 2017-7-19
+
+- No longer automatically request 1 ropsten ether for the first account in a new vault.
+- Now redirects from known malicious sites faster.
+- Added a link to our new support page to the help screen.
+- Fixed bug where a new transaction would be shown over the current transaction, creating a possible timing attack against user confirmation.
+- Fixed bug in nonce tracker where an incorrect nonce would be calculated.
+- Lowered minimum gas price to 1 Gwei.
+
+## 3.9.0 2017-7-12
+
+- Now detects and blocks known phishing sites.
+
+## 3.8.6 2017-7-11
+
+- Make transaction resubmission more resilient.
+- No longer validate nonce client-side in retry loop.
+- Fix bug where insufficient balance error was sometimes shown on successful transactions.
+
+## 3.8.5 2017-7-7
+
+- Fix transaction resubmit logic to fail slightly less eagerly.
+
+## 3.8.4 2017-7-7
+
+- Improve transaction resubmit logic to fail more eagerly when a user would expect it to.
+
+## 3.8.3 2017-7-6
+
+- Re-enable default token list.
+- Add origin header to dapp-bound requests to allow providers to throttle sites.
+- Fix bug that could sometimes resubmit a transaction that had been stalled due to low balance after balance was restored.
+
+## 3.8.2 2017-7-3
+
+- No longer show network loading indication on config screen, to allow selecting custom RPCs.
+- Visually indicate that network spinner is a menu.
+- Indicate what network is being searched for when disconnected.
+
+## 3.8.1 2017-6-30
+
+- Temporarily disabled loading popular tokens by default to improve performance.
+- Remove SEND token button until a better token sending form can be built, due to some precision issues.
+- Fix precision bug in token balances.
+- Cache token symbol and precisions to reduce network load.
+- Transpile some newer JavaScript, restores compatibility with some older browsers.
+
+## 3.8.0 2017-6-28
+
+- No longer stop rebroadcasting transactions
+- Add list of popular tokens held to the account detail view.
+- Add ability to add Tokens to token list.
+- Add a warning to JSON file import.
+- Add "send" link to token list, which goes to TokenFactory.
+- Fix bug where slowly mined txs would sometimes be incorrectly marked as failed.
+- Fix bug where badge count did not reflect personal_sign pending messages.
+- Seed word confirmation wording is now scarier.
+- Fix error for invalid seed words.
+- Prevent users from submitting two duplicate transactions by disabling submit.
+- Allow Dapps to specify gas price as hex string.
+- Add button for copying state logs to clipboard.
+
+## 3.7.8 2017-6-12
+
+- Add an `ethereum:` prefix to the QR code address
+- The default network on installation is now MainNet
+- Fix currency API URL from cryptonator.
+- Update gasLimit params with every new block seen.
+- Fix ENS resolver symbol UI.
+
+## 3.7.7 2017-6-8
+
+- Fix bug where metamask would show old data after computer being asleep or disconnected from the internet.
+
+## 3.7.6 2017-6-5
+
+- Fix bug that prevented publishing contracts.
+
+## 3.7.5 2017-6-5
+
+- Prevent users from sending to the `0x0` address.
+- Provide useful errors when entering bad characters in ENS name.
+- Add ability to copy addresses from transaction confirmation view.
+
+## 3.7.4 2017-6-2
+
+- Fix bug with inflight cache that caused some block lookups to return bad values (affected OasisDex).
+- Fixed bug with gas limit calculation that would sometimes create unsubmittable gas limits.
+
+## 3.7.3 2017-6-1
+
+- Rebuilt to fix cache clearing bug.
+
+## 3.7.2 2017-5-31
+
+- Now when switching networks sites that use web3 will reload
+- Now when switching networks the extension does not restart
+- Cleanup decimal bugs in our gas inputs.
+- Fix bug where submit button was enabled for invalid gas inputs.
+- Now enforce 95% of block's gasLimit to protect users.
+- Removing provider-engine from the inpage provider. This fixes some error handling inconsistencies introduced in 3.7.0.
+- Added "inflight cache", which prevents identical requests from clogging up the network, dramatically improving ENS performance.
+- Fixed bug where filter subscriptions would sometimes fail to unsubscribe.
+- Some contracts will now display logos instead of jazzicons.
+- Some contracts will now have names displayed in the confirmation view.
+
+## 3.7.0 2017-5-23
+
+- Add Transaction Number (nonce) to transaction list.
+- Label the pending tx icon with a tooltip.
+- Fix bug where website filters would pile up and not deallocate when leaving a site.
+- Continually resubmit pending txs for a period of time to ensure successful broadcast.
+- ENS names will no longer resolve to their owner if no resolver is set. Resolvers must be explicitly set and configured.
+
+## 3.6.5 2017-5-17
+
+- Fix bug where edited gas parameters would not take effect.
+- Trim currency list.
+- Enable decimals in our gas prices.
+- Fix reset button.
+- Fix event filter bug introduced by newer versions of Geth.
+- Fix bug where decimals in gas inputs could result in strange values.
+
+## 3.6.4 2017-5-8
+
+- Fix main-net ENS resolution.
+
+## 3.6.3 2017-5-8
+
+- Fix bug that could stop newer versions of Geth from working with MetaMask.
+
+## 3.6.2 2017-5-8
+
+- Input gas price in Gwei.
+- Enforce Safe Gas Minimum recommended by EthGasStation.
+- Fix bug where block-tracker could stop polling for new blocks.
+- Reduce UI size by removing internal web3.
+- Fix bug where gas parameters would not properly update on adjustment.
+
+## 3.6.1 2017-4-30
+
+- Made fox less nosy.
+- Fix bug where error was reported in debugger console when Chrome opened a new window.
+
+## 3.6.0 2017-4-26
+
+- Add Rinkeby Test Network to our network list.
+
+## 3.5.4 2017-4-25
+
+- Fix occasional nonce tracking issue.
+- Fix bug where some events would not be emitted by web3.
+- Fix bug where an error would be thrown when composing signatures for networks with large ID values.
+
+## 3.5.3 2017-4-24
+
 - Popup new transactions in Firefox.
 - Fix transition issue from account detail screen.
+- Revise buy screen for more modularity.
+- Fixed some other small bugs.
 
 ## 3.5.2 2017-3-28
 
@@ -64,7 +461,7 @@
 
 - Add ability to import accounts in JSON file format (used by Mist, Geth, MyEtherWallet, and more!)
 - Fix unapproved messages not being included in extension badge.
-- Fix rendering bug where the Confirm transaction view would lets you approve transactions when the account has insufficient balance.
+- Fix rendering bug where the Confirm transaction view would let you approve transactions when the account has insufficient balance.
 
 ## 3.1.2 2017-1-24
 
@@ -87,8 +484,8 @@
 ## 3.0.0 2017-1-16
 
 - Fix seed word account generation (https://medium.com/metamask/metamask-3-migration-guide-914b79533cdd#.t4i1qmmsz).
-- Fix Bug where you see a empty transaction flash by on the confirm transaction view.
-- Create visible difference in transaction history between a approved but not yet included in a block transaction and a transaction who has been confirmed.
+- Fix Bug where you see an empty transaction flash by on the confirm transaction view.
+- Create visible difference in transaction history between an approved but not yet included in a block transaction and a transaction who has been confirmed.
 - Fix memory leak in RPC Cache
 - Override RPC commands eth_syncing and web3_clientVersion
 - Remove certain non-essential permissions from certain builds.
@@ -143,7 +540,7 @@
 
 - Fix bug where gas estimate would sometimes be very high.
 - Increased our gas estimate from 100k gas to 20% of estimate.
-- Fix github link on info page to point at current repository.
+- Fix GitHub link on info page to point at current repository.
 
 ## 2.13.6 2016-10-26
 
@@ -219,7 +616,7 @@ popup notification opens up.
 - Block negative values from transactions.
 - Fixed a memory leak.
 - MetaMask logo now renders as super lightweight SVG, improving compatibility and performance.
-- Now showing loading indication during vault unlocking, to clarify behavior for users who are experience slow unlocks.
+- Now showing loading indication during vault unlocking, to clarify behavior for users who are experiencing slow unlocks.
 - Now only initially creates one wallet when restoring a vault, to reduce some users' confusion.
 
 ## 2.10.2 2016-09-02
@@ -251,7 +648,7 @@ popup notification opens up.
 - Added info link on account screen that visits Etherscan.
 - Fixed bug where a message signing request would be lost if the vault was locked.
 - Added shortcut to open MetaMask (Ctrl+Alt+M or Cmd+Opt/Alt+M)
-- Prevent API calls in  tests.
+- Prevent API calls in tests.
 - Fixed bug where sign message confirmation would sometimes render blank.
 
 ## 2.9.0 2016-08-22

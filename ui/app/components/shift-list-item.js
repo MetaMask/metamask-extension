@@ -2,20 +2,24 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const vreme = new (require('vreme'))
-const explorerLink = require('../../lib/explorer-link')
+const vreme = new (require('vreme'))()
+const explorerLink = require('etherscan-link').createExplorerLink
 const actions = require('../actions')
 const addressSummary = require('../util').addressSummary
 
 const CopyButton = require('./copyButton')
-const EtherBalance = require('./eth-balance')
+const EthBalance = require('./eth-balance')
 const Tooltip = require('./tooltip')
 
 
 module.exports = connect(mapStateToProps)(ShiftListItem)
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    selectedAddress: state.metamask.selectedAddress,
+    conversionRate: state.metamask.conversionRate,
+    currentCurrency: state.metamask.currentCurrency,
+  }
 }
 
 inherits(ShiftListItem, Component)
@@ -25,37 +29,35 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
-  return (
-    h('.transaction-list-item.flex-row', {
+  return h('div.tx-list-item.tx-list-clickable', {
+    style: {
+      paddingTop: '20px',
+      paddingBottom: '20px',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+    },
+  }, [
+    h('div', {
       style: {
-        paddingTop: '20px',
-        paddingBottom: '20px',
-        justifyContent: 'space-around',
-        alignItems: 'center',
+        width: '0px',
+        position: 'relative',
+        bottom: '19px',
       },
     }, [
-      h('div', {
+      h('img', {
+        src: 'https://info.shapeshift.io/sites/default/files/logo.png',
         style: {
-          width: '0px',
-          position: 'relative',
-          bottom: '19px',
+          height: '35px',
+          width: '132px',
+          position: 'absolute',
+          clip: 'rect(0px,23px,34px,0px)',
         },
-      }, [
-        h('img', {
-          src: 'https://info.shapeshift.io/sites/default/files/logo.png',
-          style: {
-            height: '35px',
-            width: '132px',
-            position: 'absolute',
-            clip: 'rect(0px,23px,34px,0px)',
-          },
-        }),
-      ]),
+      }),
+    ]),
 
-      this.renderInfo(),
-      this.renderUtilComponents(),
-    ])
-  )
+    this.renderInfo(),
+    this.renderUtilComponents(),
+  ])
 }
 
 function formatDate (date) {
@@ -64,6 +66,7 @@ function formatDate (date) {
 
 ShiftListItem.prototype.renderUtilComponents = function () {
   var props = this.props
+  const { conversionRate, currentCurrency } = props
 
   switch (props.response.status) {
     case 'no_deposits':
@@ -94,8 +97,10 @@ ShiftListItem.prototype.renderUtilComponents = function () {
         h(CopyButton, {
           value: this.props.response.transaction,
         }),
-        h(EtherBalance, {
+        h(EthBalance, {
           value: `${props.response.outgoingCoin}`,
+          conversionRate,
+          currentCurrency,
           width: '55px',
           shorten: true,
           needsParse: false,

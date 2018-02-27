@@ -4,7 +4,7 @@ const ethUtil = require('ethereumjs-util')
 const createId = require('./random-id')
 
 
-module.exports = class MessageManager extends EventEmitter{
+module.exports = class MessageManager extends EventEmitter {
   constructor (opts) {
     super()
     this.memStore = new ObservableStore({
@@ -108,7 +108,7 @@ module.exports = class MessageManager extends EventEmitter{
 
 }
 
-function normalizeMsgData(data) {
+function normalizeMsgData (data) {
   if (data.slice(0, 2) === '0x') {
     // data is already hex
     return data

@@ -7,14 +7,14 @@ module.exports = {
 }
 
 
-function serveBundle(server, path, bundle){
-  server.get(path, function(req, res){
+function serveBundle (server, path, bundle) {
+  server.get(path, function (req, res) {
     res.setHeader('Content-Type', 'application/javascript; charset=UTF-8')
     res.send(bundle.latest)
   })
 }
 
-function createBundle(entryPoint){
+function createBundle (entryPoint) {
 
   var bundleContainer = {}
 
@@ -24,14 +24,16 @@ function createBundle(entryPoint){
     packageCache: {},
     plugin: [watchify],
   })
+    .transform('babelify')
+    .transform('uglifyify', { global: true })
 
   bundler.on('update', bundle)
   bundle()
 
   return bundleContainer
 
-  function bundle() {
-    bundler.bundle(function(err, result){
+  function bundle () {
+    bundler.bundle(function (err, result) {
       if (err) {
         console.log(`Bundle failed! (${entryPoint})`)
         console.error(err)

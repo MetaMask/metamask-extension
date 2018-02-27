@@ -1,24 +1,18 @@
-module.exports = function (promiseFn) {
+const promiseToCallback = require('promise-to-callback')
+const noop = function () {}
+
+module.exports = function nodeify (fn, context) {
   return function () {
-    var args = []
-    for (var i = 0; i < arguments.length - 1; i++) {
-      args.push(arguments[i])
+    const args = [].slice.call(arguments)
+    const lastArg = args[args.length - 1]
+    const lastArgIsCallback = typeof lastArg === 'function'
+    let callback
+    if (lastArgIsCallback) {
+      callback = lastArg
+      args.pop()
+    } else {
+      callback = noop
     }
-    var cb = arguments[arguments.length - 1]
-
-    const nodeified = promiseFn.apply(this, args)
-
-    if (!nodeified) {
-      const methodName = String(promiseFn).split('(')[0]
-      throw new Error(`The ${methodName} did not return a Promise, but was nodeified.`)
-    }
-    nodeified.then(function (result) {
-      cb(null, result)
-    })
-    .catch(function (reason) {
-      cb(reason)
-    })
-
-    return nodeified
+    promiseToCallback(fn.apply(context, args))(callback)
   }
 }

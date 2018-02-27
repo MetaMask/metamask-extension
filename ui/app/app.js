@@ -3,341 +3,333 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
-const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+const classnames = require('classnames')
+
+// mascara
+const MascaraFirstTime = require('../../mascara/src/app/first-time').default
+const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
-const InitializeMenuScreen = require('./first-time/init-menu')
+const OldUIInitializeMenuScreen = require('./first-time/init-menu')
+const InitializeMenuScreen = MascaraFirstTime
 const NewKeyChainScreen = require('./new-keychain')
-// unlock
-const UnlockScreen = require('./unlock')
 // accounts
-const AccountsScreen = require('./accounts')
-const AccountDetailScreen = require('./account-detail')
-const SendTransactionScreen = require('./send')
+const MainContainer = require('./main-container')
+const SendTransactionScreen2 = require('./components/send/send-v2-container')
 const ConfirmTxScreen = require('./conf-tx')
 // notice
 const NoticeScreen = require('./components/notice')
 const generateLostAccountsNotice = require('../lib/lost-accounts-notice')
+
+// slideout menu
+const WalletView = require('./components/wallet-view')
+
 // other views
-const ConfigScreen = require('./config')
+const Settings = require('./settings')
+const AddTokenScreen = require('./add-token')
 const Import = require('./accounts/import')
-const InfoScreen = require('./info')
-const LoadingIndicator = require('./components/loading')
-const SandwichExpando = require('sandwich-expando')
-const MenuDroppo = require('menu-droppo')
-const DropMenuItem = require('./components/drop-menu-item')
+const NewAccount = require('./accounts/new-account')
+const Loading = require('./components/loading')
 const NetworkIndicator = require('./components/network')
-const Tooltip = require('./components/tooltip')
+const Identicon = require('./components/identicon')
 const BuyView = require('./components/buy-button-subview')
-const QrView = require('./components/qr-code')
 const HDCreateVaultComplete = require('./keychains/hd/create-vault-complete')
 const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
+const ReactCSSTransitionGroup = require('react-addons-css-transition-group')
+const NetworkDropdown = require('./components/dropdowns/network-dropdown')
+const AccountMenu = require('./components/account-menu')
+const QrView = require('./components/qr-code')
 
-module.exports = connect(mapStateToProps)(App)
+// Global Modals
+const Modal = require('./components/modals/index').Modal
+
+module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
 
 inherits(App, Component)
 function App () { Component.call(this) }
 
 function mapStateToProps (state) {
+  const {
+    identities,
+    accounts,
+    address,
+    keyrings,
+    isInitialized,
+    noActiveNotices,
+    seedWords,
+  } = state.metamask
+  const selected = address || Object.keys(accounts)[0]
+
   return {
     // state from plugin
+    networkDropdownOpen: state.appState.networkDropdownOpen,
+    sidebarOpen: state.appState.sidebarOpen,
     isLoading: state.appState.isLoading,
     loadingMessage: state.appState.loadingMessage,
     noActiveNotices: state.metamask.noActiveNotices,
     isInitialized: state.metamask.isInitialized,
     isUnlocked: state.metamask.isUnlocked,
+    selectedAddress: state.metamask.selectedAddress,
     currentView: state.appState.currentView,
     activeAddress: state.appState.activeAddress,
     transForward: state.appState.transForward,
+    isMascara: state.metamask.isMascara,
+    isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
+    isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
-    forgottenPassword: state.appState.forgottenPassword,
+    forgottenPassword: state.metamask.forgottenPassword,
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
+    currentCurrency: state.metamask.currentCurrency,
+    isMouseUser: state.appState.isMouseUser,
+    betaUI: state.metamask.featureFlags.betaUI,
+
+    // state needed to get account dropdown temporarily rendering from app bar
+    identities,
+    selected,
+    keyrings,
+  }
+}
+
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    dispatch,
+    hideSidebar: () => dispatch(actions.hideSidebar()),
+    showNetworkDropdown: () => dispatch(actions.showNetworkDropdown()),
+    hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
+    setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
+    toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
+  }
+}
+
+App.prototype.componentWillMount = function () {
+  if (!this.props.currentCurrency) {
+    this.props.setCurrentCurrencyToUSD()
   }
 }
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, transForward } = props
+  const {
+    isLoading,
+    loadingMessage,
+    network,
+    isMouseUser,
+    setMouseUserState,
+  } = props
+  const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
+  const loadMessage = loadingMessage || isLoadingNetwork ?
+    `Connecting to ${this.getNetworkName()}` : null
   log.debug('Main ui render function')
 
   return (
-
-    h('.flex-column.flex-grow.full-height', {
+    h('.flex-column.full-height', {
+      className: classnames({ 'mouse-user-styles': isMouseUser }),
       style: {
-        // Windows was showing a vertical scroll bar:
-        overflow: 'hidden',
+        overflowX: 'hidden',
         position: 'relative',
+        alignItems: 'center',
+      },
+      tabIndex: '0',
+      onClick: () => setMouseUserState(true),
+      onKeyDown: (e) => {
+        if (e.keyCode === 9) {
+          setMouseUserState(false)
+        }
       },
     }, [
 
-      h(LoadingIndicator, { isLoading, loadingMessage }),
+      // global modal
+      h(Modal, {}, []),
 
       // app bar
       this.renderAppBar(),
-      this.renderNetworkDropdown(),
-      this.renderDropdown(),
 
-      // panel content
-      h('.app-primary.flex-grow' + (transForward ? '.from-right' : '.from-left'), {
-        style: {
-          height: '380px',
-          width: '360px',
-        },
-      }, [
-        h(ReactCSSTransitionGroup, {
-          className: 'css-transition-group',
-          transitionName: 'main',
-          transitionEnterTimeout: 300,
-          transitionLeaveTimeout: 300,
-        }, [
-          this.renderPrimary(),
-        ]),
-      ]),
+      // sidebar
+      this.renderSidebar(),
+
+      // network dropdown
+      h(NetworkDropdown, {
+        provider: this.props.provider,
+        frequentRpcList: this.props.frequentRpcList,
+      }, []),
+
+      h(AccountMenu),
+
+      (isLoading || isLoadingNetwork) && h(Loading, {
+        loadingMessage: loadMessage,
+      }),
+
+      // this.renderLoadingIndicator({ isLoading, isLoadingNetwork, loadMessage }),
+
+      // content
+      this.renderPrimary(),
     ])
   )
 }
 
+App.prototype.renderGlobalModal = function () {
+  return h(Modal, {
+    ref: 'modalRef',
+  }, [
+    // h(BuyOptions, {}, []),
+  ])
+}
+
+App.prototype.renderSidebar = function () {
+
+  return h('div', {
+  }, [
+    h('style', `
+      .sidebar-enter {
+        transition: transform 300ms ease-in-out;
+        transform: translateX(-100%);
+      }
+      .sidebar-enter.sidebar-enter-active {
+        transition: transform 300ms ease-in-out;
+        transform: translateX(0%);
+      }
+      .sidebar-leave {
+        transition: transform 200ms ease-out;
+        transform: translateX(0%);
+      }
+      .sidebar-leave.sidebar-leave-active {
+        transition: transform 200ms ease-out;
+        transform: translateX(-100%);
+      }
+    `),
+
+    h(ReactCSSTransitionGroup, {
+      transitionName: 'sidebar',
+      transitionEnterTimeout: 300,
+      transitionLeaveTimeout: 200,
+    }, [
+      // A second instance of Walletview is used for non-mobile viewports
+      this.props.sidebarOpen ? h(WalletView, {
+        responsiveDisplayClassname: '.sidebar',
+        style: {},
+      }) : undefined,
+
+    ]),
+
+    // overlay
+    // TODO: add onClick for overlay to close sidebar
+    this.props.sidebarOpen ? h('div.sidebar-overlay', {
+      style: {},
+      onClick: () => {
+        this.props.hideSidebar()
+      },
+    }, []) : undefined,
+  ])
+}
+
 App.prototype.renderAppBar = function () {
+  const {
+    isUnlocked,
+    network,
+    provider,
+    networkDropdownOpen,
+    showNetworkDropdown,
+    hideNetworkDropdown,
+    currentView,
+  } = this.props
+
   if (window.METAMASK_UI_TYPE === 'notification') {
     return null
   }
 
   const props = this.props
-  const state = this.state || {}
-  const isNetworkMenuOpen = state.isNetworkMenuOpen || false
+  const {isMascara, isOnboarding} = props
+
+  // Do not render header if user is in mascara onboarding
+  if (isMascara && isOnboarding) {
+    return null
+  }
+
+  // Do not render header if user is in mascara buy ether
+  if (isMascara && props.currentView.name === 'buyEth') {
+    return null
+  }
 
   return (
 
-    h('div', [
+    h('.full-width', {
+      style: {},
+    }, [
 
       h('.app-header.flex-row.flex-space-between', {
-        style: {
-          alignItems: 'center',
-          visibility: props.isUnlocked ? 'visible' : 'none',
-          background: props.isUnlocked ? 'white' : 'none',
-          height: '36px',
-          position: 'relative',
-          zIndex: 10,
-        },
+        className: classnames({
+          'app-header--initialized': !isOnboarding,
+        }),
       }, [
-
-        h('div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          },
-        }, [
-
-          // mini logo
-          h('img', {
-            height: 24,
-            width: 24,
-            src: '/images/icon-128.png',
-          }),
-
-          h('#network-spacer.flex-center', {
-            style: {
-              marginRight: '-72px',
+        h('div.app-header-contents', {}, [
+          h('div.left-menu-wrapper', {
+            onClick: () => {
+              props.dispatch(actions.backToAccountDetail(props.activeAddress))
             },
           }, [
-            h(NetworkIndicator, {
-              network: this.props.network,
-              provider: this.props.provider,
-              onClick: (event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                this.setState({ isNetworkMenuOpen: !isNetworkMenuOpen })
-              },
+            // mini logo
+            h('img.metafox-icon', {
+              height: 42,
+              width: 42,
+              src: '/images/metamask-fox.svg',
             }),
-          ]),
-        ]),
 
-        // metamask name
-        props.isUnlocked && h('h1', {
-          style: {
-            position: 'relative',
-            left: '9px',
-          },
-        }, 'MetaMask'),
+            // metamask name
+            h('h1', 'MetaMask'),
 
-        props.isUnlocked && h('div', {
-          style: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          },
-        }, [
-
-          // small accounts nav
-          props.isUnlocked && h(Tooltip, { title: 'Switch Accounts' }, [
-            h('img.cursor-pointer.color-orange', {
-              src: 'images/switch_acc.svg',
-              style: {
-                width: '23.5px',
-                marginRight: '8px',
-              },
-              onClick: (event) => {
-                event.stopPropagation()
-                this.props.dispatch(actions.showAccountsPage())
-              },
-            }),
           ]),
 
-          // hamburger
-          props.isUnlocked && h(SandwichExpando, {
-            width: 16,
-            barHeight: 2,
-            padding: 0,
-            isOpen: state.isMainMenuOpen,
-            color: 'rgb(247,146,30)',
-            onClick: (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              this.setState({ isMainMenuOpen: !state.isMainMenuOpen })
-            },
-          }),
+          h('div.header__right-actions', [
+            h('div.network-component-wrapper', {
+              style: {},
+            }, [
+              // Network Indicator
+              h(NetworkIndicator, {
+                network,
+                provider,
+                disabled: currentView.name === 'confTx',
+                onClick: (event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  return networkDropdownOpen === false
+                    ? showNetworkDropdown()
+                    : hideNetworkDropdown()
+                },
+              }),
+
+            ]),
+
+            isUnlocked && h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
+              h(Identicon, {
+                address: this.props.selectedAddress,
+                diameter: 32,
+              }),
+            ]),
+          ]),
         ]),
       ]),
+
     ])
   )
 }
 
-App.prototype.renderNetworkDropdown = function () {
-  const props = this.props
-  const rpcList = props.frequentRpcList
-  const state = this.state || {}
-  const isOpen = state.isNetworkMenuOpen
+App.prototype.renderLoadingIndicator = function ({ isLoading, isLoadingNetwork, loadMessage }) {
+  const { isMascara } = this.props
 
-  return h(MenuDroppo, {
-    isOpen,
-    onClickOutside: (event) => {
-      this.setState({ isNetworkMenuOpen: !isOpen })
-    },
-    zIndex: 1,
-    style: {
-      position: 'absolute',
-      left: 0,
-      top: '36px',
-    },
-    innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-    },
-  }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
-
-    h(DropMenuItem, {
-      label: 'Main Ethereum Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('mainnet')),
-      icon: h('.menu-icon.diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
-
-    h(DropMenuItem, {
-      label: 'Ropsten Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setProviderType('testnet')),
-      icon: h('.menu-icon.red-dot'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
-
-    h(DropMenuItem, {
-      label: 'Kovan Test Network',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false}),
-      action: () => props.dispatch(actions.setProviderType('kovan')),
-      icon: h('.menu-icon.hollow-diamond'),
-      activeNetworkRender: props.network,
-      provider: props.provider,
-    }),
-
-    h(DropMenuItem, {
-      label: 'Localhost 8545',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => props.dispatch(actions.setDefaultRpcTarget(rpcList)),
-      icon: h('i.fa.fa-question-circle.fa-lg'),
-      activeNetworkRender: props.provider.rpcTarget,
-    }),
-
-    this.renderCustomOption(props.provider),
-    this.renderCommonRpc(rpcList, props.provider),
-
-    h(DropMenuItem, {
-      label: 'Custom RPC',
-      closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-question-circle.fa-lg'),
-    }),
-
-  ])
-}
-
-App.prototype.renderDropdown = function () {
-  const state = this.state || {}
-  const isOpen = state.isMainMenuOpen
-
-  return h(MenuDroppo, {
-    isOpen: isOpen,
-    zIndex: 1,
-    onClickOutside: (event) => {
-      this.setState({ isMainMenuOpen: !isOpen })
-    },
-    style: {
-      position: 'absolute',
-      right: 0,
-      top: '36px',
-    },
-    innerStyle: {
-      background: 'white',
-      boxShadow: '1px 1px 2px rgba(0,0,0,0.1)',
-    },
-  }, [ // DROP MENU ITEMS
-    h('style', `
-      .drop-menu-item:hover { background:rgb(235, 235, 235); }
-      .drop-menu-item i { margin: 11px; }
-    `),
-
-    h(DropMenuItem, {
-      label: 'Settings',
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showConfigPage()),
-      icon: h('i.fa.fa-gear.fa-lg'),
-    }),
-
-    h(DropMenuItem, {
-      label: 'Import Account',
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showImportPage()),
-      icon: h('i.fa.fa-arrow-circle-o-up.fa-lg'),
-    }),
-
-    h(DropMenuItem, {
-      label: 'Lock',
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.lockMetamask()),
-      icon: h('i.fa.fa-lock.fa-lg'),
-    }),
-
-    h(DropMenuItem, {
-      label: 'Info',
-      closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-      action: () => this.props.dispatch(actions.showInfoPage()),
-      icon: h('i.fa.fa-question.fa-lg'),
-    }),
-  ])
+  return isMascara
+    ? null
+    : h(Loading, {
+      isLoading: isLoading || isLoadingNetwork,
+      loadingMessage: loadMessage,
+    })
 }
 
 App.prototype.renderBackButton = function (style, justArrow = false) {
@@ -362,6 +354,11 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
+  const {isMascara, isOnboarding, betaUI} = props
+
+  if ((isMascara || betaUI) && isOnboarding && !props.isPopup) {
+    return h(MascaraFirstTime)
+  }
 
   // notices
   if (!props.noActiveNotices) {
@@ -380,59 +377,56 @@ App.prototype.renderPrimary = function () {
     })
   }
 
+  if (props.isInitialized && props.forgottenPassword) {
+    log.debug('rendering restore vault screen')
+    return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+  } else if (!props.isInitialized && !props.isUnlocked) {
+    log.debug('rendering menu screen')
+    return props.isPopup
+      ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})
+      : h(InitializeMenuScreen, {key: 'menuScreenInit'})
+  }
+
+  // show unlock screen
+  if (!props.isUnlocked) {
+    return h(MainContainer, {
+      currentViewName: props.currentView.name,
+      isUnlocked: props.isUnlocked,
+    })
+  }
+
+  // show seed words screen
   if (props.seedWords) {
     log.debug('rendering seed words')
     return h(HDCreateVaultComplete, {key: 'HDCreateVaultComplete'})
   }
 
-  // show initialize screen
-  if (!props.isInitialized || props.forgottenPassword) {
-    // show current view
-    log.debug('rendering an initialize screen')
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      default:
-        log.debug('rendering menu screen')
-        return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-    }
-  }
-
-  // show unlock screen
-  if (!props.isUnlocked) {
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      case 'config':
-        log.debug('rendering config screen from unlock screen.')
-        return h(ConfigScreen, {key: 'config'})
-
-      default:
-        log.debug('rendering locked screen')
-        return h(UnlockScreen, {key: 'locked'})
-    }
-  }
-
   // show current view
   switch (props.currentView.name) {
 
-    case 'accounts':
-      log.debug('rendering accounts screen')
-      return h(AccountsScreen, {key: 'accounts'})
-
     case 'accountDetail':
-      log.debug('rendering account detail screen')
-      return h(AccountDetailScreen, {key: 'account-detail'})
+      log.debug('rendering main container')
+      return h(MainContainer, {key: 'account-detail'})
 
     case 'sendTransaction':
       log.debug('rendering send tx screen')
-      return h(SendTransactionScreen, {key: 'send-transaction'})
+
+      // Going to leave this here until we are ready to delete SendTransactionScreen v1
+      // const SendComponentToRender = checkFeatureToggle('send-v2')
+      //   ? SendTransactionScreen2
+      //   : SendTransactionScreen
+
+      return h(SendTransactionScreen2, {key: 'send-transaction'})
+
+    case 'sendToken':
+      log.debug('rendering send token screen')
+
+      // Going to leave this here until we are ready to delete SendTransactionScreen v1
+      // const SendTokenComponentToRender = checkFeatureToggle('send-v2')
+      //   ? SendTransactionScreen2
+      //   : SendTokenScreen
+
+      return h(SendTransactionScreen2, {key: 'sendToken'})
 
     case 'newKeychain':
       log.debug('rendering new keychain screen')
@@ -442,13 +436,21 @@ App.prototype.renderPrimary = function () {
       log.debug('rendering confirm tx screen')
       return h(ConfirmTxScreen, {key: 'confirm-tx'})
 
+    case 'add-token':
+      log.debug('rendering add-token screen from unlock screen.')
+      return h(AddTokenScreen, {key: 'add-token'})
+
     case 'config':
       log.debug('rendering config screen')
-      return h(ConfigScreen, {key: 'config'})
+      return h(Settings, {key: 'config'})
 
     case 'import-menu':
       log.debug('rendering import screen')
       return h(Import, {key: 'import-menu'})
+
+    case 'new-account-page':
+      log.debug('rendering new account screen')
+      return h(NewAccount, {key: 'new-account'})
 
     case 'reveal-seed-conf':
       log.debug('rendering reveal seed confirmation screen')
@@ -456,11 +458,15 @@ App.prototype.renderPrimary = function () {
 
     case 'info':
       log.debug('rendering info screen')
-      return h(InfoScreen, {key: 'info'})
+      return h(Settings, {key: 'info', tab: 'info'})
 
     case 'buyEth':
       log.debug('rendering buy ether screen')
       return h(BuyView, {key: 'buyEthView'})
+
+    case 'onboardingBuyEth':
+      log.debug('rendering onboarding buy ether screen')
+      return h(MascaraBuyEtherScreen, {key: 'buyEthView'})
 
     case 'qr':
       log.debug('rendering show qr screen')
@@ -492,7 +498,7 @@ App.prototype.renderPrimary = function () {
 
     default:
       log.debug('rendering default, account detail screen')
-      return h(AccountDetailScreen, {key: 'account-detail'})
+      return h(MainContainer, {key: 'account-detail'})
   }
 }
 
@@ -508,49 +514,23 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
-App.prototype.renderCustomOption = function (provider) {
-  const { rpcTarget, type } = provider
-  if (type !== 'rpc') return null
+App.prototype.getNetworkName = function () {
+  const { provider } = this.props
+  const providerName = provider.type
 
-  // Concatenate long URLs
-  let label = rpcTarget
-  if (rpcTarget.length > 31) {
-    label = label.substr(0, 34) + '...'
+  let name
+
+  if (providerName === 'mainnet') {
+    name = 'Main Ethereum Network'
+  } else if (providerName === 'ropsten') {
+    name = 'Ropsten Test Network'
+  } else if (providerName === 'kovan') {
+    name = 'Kovan Test Network'
+  } else if (providerName === 'rinkeby') {
+    name = 'Rinkeby Test Network'
+  } else {
+    name = 'Unknown Private Network'
   }
 
-  switch (rpcTarget) {
-
-    case 'http://localhost:8545':
-      return null
-
-    default:
-      return h(DropMenuItem, {
-        label,
-        key: rpcTarget,
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-        activeNetworkRender: 'custom',
-      })
-  }
-}
-
-App.prototype.renderCommonRpc = function (rpcList, provider) {
-  const { rpcTarget } = provider
-  const props = this.props
-
-  return rpcList.map((rpc) => {
-    if ((rpc === 'http://localhost:8545') || (rpc === rpcTarget)) {
-      return null
-    } else {
-      return h(DropMenuItem, {
-        label: rpc,
-        key: rpc,
-        closeMenu: () => this.setState({ isNetworkMenuOpen: false }),
-        action: () => props.dispatch(actions.setRpcTarget(rpc)),
-        icon: h('i.fa.fa-question-circle.fa-lg'),
-        activeNetworkRender: rpc,
-      })
-    }
-  })
-
+  return name
 }

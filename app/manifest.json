@@ -1,7 +1,7 @@
 {
   "name": "MetaMask",
   "short_name": "Metamask",
-  "version": "3.5.2",
+  "version": "4.1.0",
   "manifest_version": 2,
   "author": "https://metamask.io",
   "description": "Ethereum Browser Extension",
@@ -58,8 +58,8 @@
     "storage",
     "clipboardWrite",
     "http://localhost:8545/",
-    "https://www.cryptonator.com/"
-  ],
+    "https://*.infura.io/"
+    ],
   "web_accessible_resources": [
     "scripts/inpage.js"
   ],

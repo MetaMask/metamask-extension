@@ -4,7 +4,7 @@ const ethUtil = require('ethereumjs-util')
 
 const accountImporter = {
 
-  importAccount(strategy, args) {
+  importAccount (strategy, args) {
     try {
       const importer = this.strategies[strategy]
       const privateKeyHex = importer.apply(null, args)

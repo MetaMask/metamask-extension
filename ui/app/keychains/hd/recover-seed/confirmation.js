@@ -23,7 +23,9 @@ RevealSeedConfirmation.prototype.render = function () {
 
   return (
 
-    h('.initialize-screen.flex-column.flex-center.flex-grow', [
+    h('.initialize-screen.flex-column.flex-center.flex-grow', {
+      style: { maxWidth: '420px' },
+    }, [
 
       h('h3.flex-center.text-transform-uppercase', {
         style: {
@@ -61,7 +63,7 @@ RevealSeedConfirmation.prototype.render = function () {
           },
         }),
 
-        h('.flex-row.flex-space-between', {
+        h('.flex-row.flex-start', {
           style: {
             marginTop: 30,
             width: '50%',
@@ -74,6 +76,7 @@ RevealSeedConfirmation.prototype.render = function () {
 
           // submit
           h('button.primary', {
+            style: { marginLeft: '10px' },
             onClick: this.revealSeedWords.bind(this),
           }, 'OK'),
 

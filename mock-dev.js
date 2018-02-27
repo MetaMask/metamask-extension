@@ -20,9 +20,11 @@ const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
 const states = require('./development/states')
+const backGroundConnectionModifiers = require('./development/backGroundConnectionModifiers')
 const Selector = require('./development/selector')
 const MetamaskController = require('./app/scripts/metamask-controller')
 const firstTimeState = require('./app/scripts/first-time-state')
+const ExtensionPlatform = require('./app/scripts/platforms/extension')
 const extension = require('./development/mockExtension')
 const noop = function () {}
 
@@ -62,10 +64,12 @@ const controller = new MetamaskController({
   showUnconfirmedMessage: noop,
   unlockAccountMessage: noop,
   showUnapprovedTx: noop,
+  platform: {},
   // initial state
   initState: firstTimeState,
 })
 global.metamaskController = controller
+global.platform = new ExtensionPlatform
 
 //
 // User Interface
@@ -82,43 +86,61 @@ actions.update = function(stateName) {
   }
 }
 
+function modifyBackgroundConnection(backgroundConnectionModifier) {
+  const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
+  actions._setBackgroundConnection(modifiedBackgroundConnection)
+}
+
 var css = MetaMaskUiCss()
 injectCss(css)
-
-const container = document.querySelector('#app-content')
 
 // parse opts
 var store = configureStore(firstState)
 
 // start app
-render(
-  h('.super-dev-container', [
+startApp()
 
-    h('button', {
-      onClick: (ev) => {
-        ev.preventDefault()
-        store.dispatch(actions.update('terms'))
-      },
-      style: {
-        margin: '19px 19px 0px 19px',
-      },
-    }, 'Reset State'),
+function startApp(){
+  const body = document.body
+  const container = document.createElement('div')
+  container.id = 'test-container'
+  body.appendChild(container)
 
-    h(Selector, { actions, selectedKey: selectedView, states, store }),
+  render(
+    h('.super-dev-container', [
 
-    h('.mock-app-root', {
-      style: {
-        height: '500px',
-        width: '360px',
-        boxShadow: 'grey 0px 2px 9px',
-        margin: '20px',
-      },
-    }, [
-      h(Root, {
-       store: store,
+      h('button', {
+        onClick: (ev) => {
+          ev.preventDefault()
+          store.dispatch(actions.update('terms'))
+        },
+        style: {
+          margin: '19px 19px 0px 19px',
+        },
+      }, 'Reset State'),
+
+      h(Selector, {
+        actions,
+        selectedKey: selectedView,
+        states,
+        store,
+        modifyBackgroundConnection,
+        backGroundConnectionModifiers,
       }),
-    ]),
 
-  ]
-), container)
+      h('#app-content', {
+        style: {
+          height: '500px',
+          width: '360px',
+          boxShadow: 'grey 0px 2px 9px',
+          margin: '20px',
+        },
+      }, [
+        h(Root, {
+         store: store,
+        }),
+      ]),
 
+    ]
+  ), container)
+}

@@ -1,11 +1,12 @@
-const MetamaskConfig = require('../config.js')
 const ethUtil = require('ethereumjs-util')
 const normalize = require('eth-sig-util').normalize
+const MetamaskConfig = require('../config.js')
 
-const TESTNET_RPC = MetamaskConfig.network.testnet
+
 const MAINNET_RPC = MetamaskConfig.network.mainnet
-const MORDEN_RPC = MetamaskConfig.network.morden
+const ROPSTEN_RPC = MetamaskConfig.network.ropsten
 const KOVAN_RPC = MetamaskConfig.network.kovan
+const RINKEBY_RPC = MetamaskConfig.network.rinkeby
 
 /* The config-manager is a convenience object
  * wrapping a pojo-migrator.
@@ -33,42 +34,23 @@ ConfigManager.prototype.getConfig = function () {
   return data.config
 }
 
-ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'rpc',
-    rpcTarget: rpcUrl,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.setProviderType = function (type) {
-  var config = this.getConfig()
-  config.provider = {
-    type: type,
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.useEtherscanProvider = function () {
-  var config = this.getConfig()
-  config.provider = {
-    type: 'etherscan',
-  }
-  this.setConfig(config)
-}
-
-ConfigManager.prototype.getProvider = function () {
-  var config = this.getConfig()
-  return config.provider
-}
-
 ConfigManager.prototype.setData = function (data) {
   this.store.putState(data)
 }
 
 ConfigManager.prototype.getData = function () {
   return this.store.getState()
+}
+
+ConfigManager.prototype.setPasswordForgotten = function (passwordForgottenState) {
+  const data = this.getData()
+  data.forgottenPassword = passwordForgottenState
+  this.setData(data)
+}
+
+ConfigManager.prototype.getPasswordForgotten = function (passwordForgottenState) {
+  const data = this.getData()
+  return data.forgottenPassword
 }
 
 ConfigManager.prototype.setWallet = function (wallet) {
@@ -136,6 +118,35 @@ ConfigManager.prototype.getSeedWords = function () {
   var data = this.getData()
   return data.seedWords
 }
+ConfigManager.prototype.setRpcTarget = function (rpcUrl) {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'rpc',
+    rpcTarget: rpcUrl,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.setProviderType = function (type) {
+  var config = this.getConfig()
+  config.provider = {
+    type: type,
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.useEtherscanProvider = function () {
+  var config = this.getConfig()
+  config.provider = {
+    type: 'etherscan',
+  }
+  this.setConfig(config)
+}
+
+ConfigManager.prototype.getProvider = function () {
+  var config = this.getConfig()
+  return config.provider
+}
 
 ConfigManager.prototype.getCurrentRpcAddress = function () {
   var provider = this.getProvider()
@@ -145,17 +156,17 @@ ConfigManager.prototype.getCurrentRpcAddress = function () {
     case 'mainnet':
       return MAINNET_RPC
 
-    case 'testnet':
-      return TESTNET_RPC
-
-    case 'morden':
-      return MORDEN_RPC
+    case 'ropsten':
+      return ROPSTEN_RPC
 
     case 'kovan':
       return KOVAN_RPC
 
+    case 'rinkeby':
+      return RINKEBY_RPC
+
     default:
-      return provider && provider.rpcTarget ? provider.rpcTarget : TESTNET_RPC
+      return provider && provider.rpcTarget ? provider.rpcTarget : RINKEBY_RPC
   }
 }
 

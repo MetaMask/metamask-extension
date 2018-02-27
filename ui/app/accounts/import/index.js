@@ -33,26 +33,14 @@ AccountImportSubview.prototype.render = function () {
   const { type } = state
 
   return (
-    h('div', {
-      style: {
-      },
-    }, [
-      h('div', {
-        style: {
-          padding: '10px',
-          color: 'rgb(174, 174, 174)',
-        },
-      }, [
+    h('div.new-account-import-form', [
 
-        h('h3', { style: { padding: '3px' } }, 'SELECT TYPE'),
+      h('div.new-account-import-form__select-section', [
 
-        h('style', `
-          .has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select-value-label {
-            color: rgb(174,174,174);
-          }
-        `),
+        h('div.new-account-import-form__select-label', 'Select Type'),
 
         h(Select, {
+          className: 'new-account-import-form__select',
           name: 'import-type-select',
           clearable: false,
           value: type || menuItems[0],
@@ -66,6 +54,7 @@ AccountImportSubview.prototype.render = function () {
             this.setState({ type: opt.value })
           },
         }),
+
       ]),
 
       this.renderImportView(),
@@ -73,7 +62,7 @@ AccountImportSubview.prototype.render = function () {
   )
 }
 
-AccountImportSubview.prototype.renderImportView = function() {
+AccountImportSubview.prototype.renderImportView = function () {
   const props = this.props
   const state = this.state || {}
   const { type } = state

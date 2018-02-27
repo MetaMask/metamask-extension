@@ -1,7 +1,8 @@
 const EventEmitter = require('events').EventEmitter
 const async = require('async')
 const Dnode = require('dnode')
-const Web3 = require('web3')
+const Eth = require('ethjs')
+const EthQuery = require('eth-query')
 const launchMetamaskUi = require('../../ui')
 const StreamProvider = require('web3-stream-provider')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
@@ -16,7 +17,6 @@ function initializePopup ({ container, connectionStream }, cb) {
     (cb) => connectToAccountManager(connectionStream, cb),
     (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
   ], cb)
-
 }
 
 function connectToAccountManager (connectionStream, cb) {
@@ -33,7 +33,9 @@ function setupWeb3Connection (connectionStream) {
   providerStream.pipe(connectionStream).pipe(providerStream)
   connectionStream.on('error', console.error.bind(console))
   providerStream.on('error', console.error.bind(console))
-  global.web3 = new Web3(providerStream)
+  global.ethereumProvider = providerStream
+  global.ethQuery = new EthQuery(providerStream)
+  global.eth = new Eth(providerStream)
 }
 
 function setupControllerConnection (connectionStream, cb) {
