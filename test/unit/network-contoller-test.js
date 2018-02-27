@@ -10,7 +10,7 @@ describe('# Network Controller', function () {
   let networkController
   const noop = () => {}
   const networkControllerProviderInit = {
-    getAccounts: () => {},
+    getAccounts: noop,
   }
 
   beforeEach(function () {
