@@ -2,6 +2,12 @@
 
 ## Current Master
 
+## 4.1.0 2018-2-27
+
+- Sentry report failed tx with more specific message
+- Fix feature flags being undefined
+- Standardized license
+
 ## 4.0.0 2018-2-22
 
 - Introduce new MetaMask user interface.
