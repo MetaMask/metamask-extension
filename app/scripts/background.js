@@ -86,7 +86,8 @@ function setupController (initState) {
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
-    raven.captureMessage('Transaction Failed', {
+    const errorMessage = `Transaction Failed: ${txMeta.err.message}`
+    raven.captureMessage(errorMessage, {
       // "extra" key is required by Sentry
       extra: txMeta,
     })
