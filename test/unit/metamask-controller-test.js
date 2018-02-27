@@ -4,7 +4,7 @@ const clone = require('clone')
 const nock = require('nock')
 const MetaMaskController = require('../../app/scripts/metamask-controller')
 const blacklistJSON = require('../stub/blacklist')
-const firstTimeState = require('../stub/first-time-state')
+const firstTimeState = require('../../app/scripts/first-time-state')
 
 describe('MetaMaskController', function () {
   let metamaskController
@@ -18,9 +18,9 @@ describe('MetaMaskController', function () {
       .get('/v2/blacklist')
       .reply(200, blacklistJSON)
 
-    nock('https://rinkeby.infura.io')
+    nock('https://api.infura.io')
       .persist()
-      .post('/metamask')
+      .get(/.*/)
       .reply(200)
 
     metamaskController = new MetaMaskController({
