@@ -288,6 +288,8 @@ App.prototype.renderAppBar = function () {
             // metamask name
             h('h1', 'MetaMask'),
 
+            h('div.beta-label', 'BETA'),
+
           ]),
 
           h('div.header__right-actions', [
