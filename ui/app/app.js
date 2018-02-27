@@ -239,6 +239,9 @@ App.prototype.renderAppBar = function () {
     showNetworkDropdown,
     hideNetworkDropdown,
     currentView,
+    isInitialized,
+    betaUI,
+    isPopup,
   } = this.props
 
   if (window.METAMASK_UI_TYPE === 'notification') {
@@ -316,6 +319,9 @@ App.prototype.renderAppBar = function () {
           ]),
         ]),
       ]),
+
+      !isInitialized && !isPopup && betaUI && h('h2.alpha-warning',
+        'Please be aware that this version is still under development'),
 
     ])
   )
