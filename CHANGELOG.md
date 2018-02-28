@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix "Add Token" screen referencing missing token logo urls
+
 ## 4.1.0 2018-2-27
 
 - Report failed txs to Sentry with more specific message
