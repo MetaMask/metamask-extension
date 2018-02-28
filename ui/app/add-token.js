@@ -240,7 +240,7 @@ AddTokenScreen.prototype.renderTokenList = function () {
         }, [
           h('div.add-token__token-icon', {
             style: {
-              backgroundImage: `url(images/contract/${logo})`,
+              backgroundImage: logo && `url(images/contract/${logo})`,
             },
           }),
           h('div.add-token__token-data', [
