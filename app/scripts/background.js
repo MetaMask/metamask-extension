@@ -13,7 +13,7 @@ const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const firstTimeState = require('./first-time-state')
-const setupRaven = require('./setupRaven')
+const setupRaven = require('./lib/setupRaven')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 
 const STORAGE_KEY = 'metamask-config'
