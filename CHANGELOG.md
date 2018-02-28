@@ -2,7 +2,13 @@
 
 ## Current Master
 
+## 4.1.1 2018-2-28
+
 - Fix "Add Token" screen referencing missing token logo urls
+- Prevent user from switching network during signature request
+- Fix misleading language "Contract Published" -> "Contract Deployment"
+- Fix cancel button on "Buy Eth" screen
+- Improve new-ui onboarding flow style
 
 ## 4.1.0 2018-2-27
 
