@@ -243,7 +243,7 @@
     "react-testutils-additions": "^15.2.0",
     "redux-test-utils": "^0.2.2",
     "sinon": "^4.0.0",
-    "stylelint-config-standard": "^17.0.0",
+    "stylelint-config-standard": "^18.2.0",
     "tape": "^4.5.1",
     "testem": "^2.0.0",
     "uglifyify": "^4.0.2",
