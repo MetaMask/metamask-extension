@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Add retry transaction button back into classic ui.
+
 ## 4.1.2 2018-2-28
 
 - Actually includes all the fixes mentioned in 4.1.1 (sorry)
