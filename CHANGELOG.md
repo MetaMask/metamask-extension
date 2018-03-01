@@ -2,6 +2,10 @@
 
 ## Current Master
 
+## 4.1.2 2018-2-28
+
+- Actually includes all the fixes mentioned in 4.1.1 (sorry)
+
 ## 4.1.1 2018-2-28
 
 - Fix "Add Token" screen referencing missing token logo urls
