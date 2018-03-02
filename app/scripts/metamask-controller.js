@@ -599,9 +599,9 @@ module.exports = class MetamaskController extends EventEmitter {
           if (accounts.length < 1) {
             return cb(new Error('MetamaskController - No accounts found'))
           }
-          
+
           seedPhraseVerifier.verifyAccounts(accounts, seedWords)
-            .then(() => { 
+            .then(() => {
               this.configManager.setSeedWords(seedWords)
               cb(null, seedWords)
             })
