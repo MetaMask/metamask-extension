@@ -194,10 +194,7 @@ TokenList.prototype.componentWillUpdate = function (nextProps) {
 }
 
 TokenList.prototype.updateBalances = function (tokens) {
-  const heldTokens = tokens.filter(token => {
-    return token.balance !== '0' && token.string !== '0.000'
-  })
-  this.setState({ tokens: heldTokens, isLoading: false })
+  this.setState({ tokens, isLoading: false })
 }
 
 TokenList.prototype.componentWillUnmount = function () {
