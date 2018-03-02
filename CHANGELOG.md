@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Ensure MetaMask's inpage provider is named MetamaskInpageProvider to keep some sites from breaking.
+
 ## 4.1.2 2018-2-28
 
 - Actually includes all the fixes mentioned in 4.1.1 (sorry)
