@@ -22,7 +22,6 @@ describe('version bumper', function () {
     const expected = '5.0.0'
     assert.equal(result.version, expected, 'major bumps correctly')
     assert.equal(result.manifest.version, expected, 'major bumps correctly')
-    console.dir(result.changelog)
     assert.ok(result.changelog.includes(expected))
   })
 

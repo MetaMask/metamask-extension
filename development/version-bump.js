@@ -27,7 +27,6 @@ function newVersionFrom (manifest, bumpType) {
   const string = manifest.version
   let segments = string.split('.').map((str) => parseInt(str))
 
-  console.log('bump type is ' + bumpType)
   switch (bumpType) {
     case 'major':
       segments[0] += 1
