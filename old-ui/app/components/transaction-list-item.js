@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const connect = require('react-redux').connect
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
@@ -9,18 +10,33 @@ const CopyButton = require('./copyButton')
 const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
+const actions = require('../../../ui/app/actions')
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
-module.exports = TransactionListItem
+
+const mapDispatchToProps = dispatch => {
+  return {
+    retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
+  }
+}
+
+module.exports = connect(null, mapDispatchToProps)(TransactionListItem)
 
 inherits(TransactionListItem, Component)
 function TransactionListItem () {
   Component.call(this)
 }
 
+TransactionListItem.prototype.showRetryButton = function () {
+  const { transaction = {} } = this.props
+  const { status, time } = transaction
+  return status === 'submitted' && Date.now() - time > 30000
+}
+
 TransactionListItem.prototype.render = function () {
   const { transaction, network, conversionRate, currentCurrency } = this.props
+  const { status } = transaction
   if (transaction.key === 'shapeshift') {
     if (network === '1') return h(ShiftListItem, transaction)
   }
@@ -32,7 +48,7 @@ TransactionListItem.prototype.render = function () {
 
   var isMsg = ('msgParams' in transaction)
   var isTx = ('txParams' in transaction)
-  var isPending = transaction.status === 'unapproved'
+  var isPending = status === 'unapproved'
   let txParams
   if (isTx) {
     txParams = transaction.txParams
@@ -44,7 +60,7 @@ TransactionListItem.prototype.render = function () {
 
   const isClickable = ('hash' in transaction && isLinkable) || isPending
   return (
-    h(`.transaction-list-item.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
+    h('.transaction-list-item.flex-column', {
       onClick: (event) => {
         if (isPending) {
           this.props.showTx(transaction.id)
@@ -56,49 +72,90 @@ TransactionListItem.prototype.render = function () {
       },
       style: {
         padding: '20px 0',
-        display: 'flex',
-        justifyContent: 'space-between',
+        alignItems: 'center',
       },
     }, [
-
-      h('.identicon-wrapper.flex-column.flex-center.select-none', [
-        h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
-      ]),
-
-      h(Tooltip, {
-        title: 'Transaction Number',
-        position: 'right',
+      h(`.flex-row.flex-space-between${isClickable ? '.pointer' : ''}`, {
+        style: {
+          width: '100%',
+        },
       }, [
-        h('span', {
+        h('.identicon-wrapper.flex-column.flex-center.select-none', [
+          h(TransactionIcon, { txParams, transaction, isTx, isMsg }),
+        ]),
+
+        h(Tooltip, {
+          title: 'Transaction Number',
+          position: 'right',
+        }, [
+          h('span', {
+            style: {
+              display: 'flex',
+              cursor: 'normal',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10px',
+            },
+          }, nonce),
+        ]),
+
+        h('.flex-column', {style: {width: '200px', overflow: 'hidden'}}, [
+          domainField(txParams),
+          h('div', date),
+          recipientField(txParams, transaction, isTx, isMsg),
+        ]),
+
+        // Places a copy button if tx is successful, else places a placeholder empty div.
+        transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
+
+        isTx ? h(EthBalance, {
+          value: txParams.value,
+          conversionRate,
+          currentCurrency,
+          width: '55px',
+          shorten: true,
+          showFiat: false,
+          style: {fontSize: '15px'},
+        }) : h('.flex-column'),
+      ]),
+
+      this.showRetryButton() && h('.transition-list-item__retry.grow-on-hover', {
+        onClick: event => {
+          event.stopPropagation()
+          this.resubmit()
+        },
+        style: {
+          height: '22px',
+          borderRadius: '22px',
+          color: '#F9881B',
+          padding: '0 20px',
+          backgroundColor: '#FFE3C9',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: '8px',
+          cursor: 'pointer',
+        },
+      }, [
+        h('div', {
           style: {
-            display: 'flex',
-            cursor: 'normal',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
+            paddingRight: '2px',
           },
-        }, nonce),
+        }, 'Taking too long?'),
+        h('div', {
+          style: {
+            textDecoration: 'underline',
+          },
+        }, 'Retry with a higher gas price here'),
       ]),
-
-      h('.flex-column', {style: {width: '150px', overflow: 'hidden'}}, [
-        domainField(txParams),
-        h('div', date),
-        recipientField(txParams, transaction, isTx, isMsg),
-      ]),
-
-      // Places a copy button if tx is successful, else places a placeholder empty div.
-      transaction.hash ? h(CopyButton, { value: transaction.hash }) : h('div', {style: { display: 'flex', alignItems: 'center', width: '26px' }}),
-
-      isTx ? h(EthBalance, {
-        value: txParams.value,
-        conversionRate,
-        currentCurrency,
-        shorten: true,
-        showFiat: false,
-        style: {fontSize: '15px'},
-      }) : h('.flex-column'),
     ])
   )
+}
+
+TransactionListItem.prototype.resubmit = function () {
+  const { transaction } = this.props
+  this.props.retryTransaction(transaction.id)
 }
 
 function domainField (txParams) {
