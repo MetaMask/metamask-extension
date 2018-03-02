@@ -32,6 +32,7 @@
     "lint:fix": "gulp lint:fix",
     "disc": "gulp disc --debug",
     "announce": "node development/announcer.js",
+    "version:bump": "node development/run-version-bump.js",
     "generateNotice": "node notices/notice-generator.js",
     "deleteNotice": "node notices/notice-delete.js"
   },
