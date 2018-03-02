@@ -37,6 +37,7 @@ const version = require('../manifest.json').version
 const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
+const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -592,8 +593,23 @@ module.exports = class MetamaskController extends EventEmitter {
     primaryKeyring.serialize()
     .then((serialized) => {
       const seedWords = serialized.mnemonic
-      this.configManager.setSeedWords(seedWords)
-      cb(null, seedWords)
+
+      primaryKeyring.getAccounts()
+        .then((accounts) => {
+          if (accounts.length < 1) {
+            return cb(new Error('MetamaskController - No accounts found'))
+          }
+          
+          seedPhraseVerifier.verifyAccounts(accounts, seedWords)
+            .then(() => { 
+              this.configManager.setSeedWords(seedWords)
+              cb(null, seedWords)
+            })
+            .catch((err) => {
+              log.error(err)
+              cb(err)
+            })
+        })
     })
   }
 
