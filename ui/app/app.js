@@ -90,6 +90,7 @@ function mapStateToProps (state) {
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
+    Qr: state.appState.Qr,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -368,6 +369,7 @@ App.prototype.renderPrimary = function () {
     isOnboarding,
     betaUI,
     isRevealingSeedWords,
+    Qr,
   } = props
   const isMascaraOnboarding = isMascara && isOnboarding
   const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
@@ -508,7 +510,7 @@ App.prototype.renderPrimary = function () {
             width: '285px',
           },
         }, [
-          h(QrView, {key: 'qr'}),
+          h(QrView, {key: 'qr', Qr}),
         ]),
       ])
 
