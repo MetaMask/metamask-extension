@@ -35,17 +35,10 @@ AccountImportSubview.prototype.render = function () {
   return (
     h('div.new-account-import-form', [
 
-      h('.warning', {
-        style: {
-          display: 'inline-block',
-          alignItems: 'center',
-          padding: '15px 15px 0px 15px',
-        },
-      }, [
+      h('.new-account-import-disclaimer', [
         h('span', 'Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts '),
         h('span', {
           style: {
-            color: 'rgba(247, 134, 28, 1)',
             cursor: 'pointer',
             textDecoration: 'underline',
           },
@@ -54,7 +47,7 @@ AccountImportSubview.prototype.render = function () {
               url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
             })
           },
-        }, 'here.'),
+        }, 'here'),
       ]),
 
       h('div.new-account-import-form__select-section', [
