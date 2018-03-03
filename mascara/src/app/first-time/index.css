@@ -1,11 +1,11 @@
 
 .first-time-flow {
-  height: 100vh;
   width: 100vw;
-  background-color: #FFF;
+  background-color: #fff;
   overflow: auto;
   display: flex;
   justify-content: center;
+  flex: 1 0 auto;
 }
 
 .alpha-warning {
@@ -45,12 +45,12 @@
 .buy-ether {
   display: flex;
   flex-flow: column nowrap;
-  margin: 67px 0 50px 146px;
+  margin: 67px 0 50px;
   max-width: 35rem;
 }
 
 .create-password {
-  margin: 67px 0 50px 0px;
+  margin: 67px 0 50px;
 }
 
 .import-account {
