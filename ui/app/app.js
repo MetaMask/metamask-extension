@@ -89,6 +89,7 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,
+    isRevealingSeedWords: state.metamask.isRevealingSeedWords,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -362,9 +363,16 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
-  const {isMascara, isOnboarding, betaUI} = props
+  const {
+    isMascara,
+    isOnboarding,
+    betaUI,
+    isRevealingSeedWords,
+  } = props
+  const isMascaraOnboarding = isMascara && isOnboarding
+  const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
 
-  if ((isMascara || betaUI) && isOnboarding && !props.isPopup) {
+  if (isMascaraOnboarding || isBetaUIOnboarding) {
     return h(MascaraFirstTime)
   }
 
@@ -388,7 +396,7 @@ App.prototype.renderPrimary = function () {
   if (props.isInitialized && props.forgottenPassword) {
     log.debug('rendering restore vault screen')
     return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-  } else if (!props.isInitialized && !props.isUnlocked) {
+  } else if (!props.isInitialized && !props.isUnlocked && !isRevealingSeedWords) {
     log.debug('rendering menu screen')
     return props.isPopup
       ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})

@@ -43,12 +43,15 @@ function reduceMetamask (state, action) {
     useBlockie: false,
     featureFlags: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
+    isRevealingSeedWords: false,
   }, state.metamask)
 
   switch (action.type) {
 
     case actions.SHOW_ACCOUNTS_PAGE:
-      newState = extend(metamaskState)
+      newState = extend(metamaskState, {
+        isRevealingSeedWords: false,
+      })
       delete newState.seedWords
       return newState
 
@@ -124,10 +127,12 @@ function reduceMetamask (state, action) {
         },
       })
 
+
     case actions.SHOW_NEW_VAULT_SEED:
       return extend(metamaskState, {
         isUnlocked: true,
         isInitialized: false,
+        isRevealingSeedWords: true,
         seedWords: action.value,
       })
 
