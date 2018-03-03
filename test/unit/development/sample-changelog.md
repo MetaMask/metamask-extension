@@ -2,9 +2,6 @@
 
 ## Current Master
 
-- Change Loose label to Imported.
-- Add Imported Account disclaimer.
-
 ## 4.1.3 2018-2-28
 
 - Ensure MetaMask's inpage provider is named MetamaskInpageProvider to keep some sites from breaking.

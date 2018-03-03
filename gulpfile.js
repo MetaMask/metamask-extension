@@ -407,7 +407,9 @@ function bundleTask(opts) {
       // loads map from browserify file
       .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
       // Minification
-      .pipe(gulpif(opts.isBuild, uglify()))
+      .pipe(gulpif(opts.isBuild, uglify({
+        mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
+      })))
       // writes .map file
       .pipe(gulpif(debug, sourcemaps.write('./')))
       // write completed bundles

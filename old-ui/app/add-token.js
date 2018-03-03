@@ -156,6 +156,9 @@ AddTokenScreen.prototype.render = function () {
 
               const { address, symbol, decimals } = this.state
               this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
+                .then(() => {
+                  this.props.dispatch(actions.goHome())
+                })
             },
           }, 'Add'),
         ]),

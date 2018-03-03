@@ -76,6 +76,21 @@
   }
 }
 
+.beta-label {
+  font-family: Roboto;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 0.8rem;
+  padding-left: 9px;
+  color: $buttercup;
+  align-self: flex-start;
+  margin-top: 10px;
+
+  @media screen and (max-width: 575px) {
+    display: none;
+  }
+}
+
 h2.page-subtitle {
   text-transform: uppercase;
   color: #aeaeae;
