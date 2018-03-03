@@ -33,6 +33,50 @@ describe('SeedPhraseVerifier', function () {
       let result = await seedPhraseVerifier.verifyAccounts(createdAccounts, seedWords)
     })
 
+    it('should be able to verify created account (upper case) with seed words', async function () {
+
+      let keyringController = new KeyringController({
+        initState: clone(firstTimeState),
+        encryptor: mockEncryptor,
+      })
+      assert(keyringController)
+
+      let vault = await keyringController.createNewVaultAndKeychain(password)
+      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
+
+      let createdAccounts = await primaryKeyring.getAccounts()
+      assert.equal(createdAccounts.length, 1)
+      let upperCaseAccounts = [createdAccounts[0].toUpperCase()]
+
+      let serialized = await primaryKeyring.serialize()
+      let seedWords = serialized.mnemonic
+      assert.notEqual(seedWords.length, 0)
+    
+      let result = await seedPhraseVerifier.verifyAccounts(upperCaseAccounts, seedWords)
+    })
+
+    it('should be able to verify created account (lower case) with seed words', async function () {
+
+      let keyringController = new KeyringController({
+        initState: clone(firstTimeState),
+        encryptor: mockEncryptor,
+      })
+      assert(keyringController)
+
+      let vault = await keyringController.createNewVaultAndKeychain(password)
+      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
+
+      let createdAccounts = await primaryKeyring.getAccounts()
+      assert.equal(createdAccounts.length, 1)
+      let lowerCaseAccounts = [createdAccounts[0].toLowerCase()]
+
+      let serialized = await primaryKeyring.serialize()
+      let seedWords = serialized.mnemonic
+      assert.notEqual(seedWords.length, 0)
+    
+      let result = await seedPhraseVerifier.verifyAccounts(lowerCaseAccounts, seedWords)
+    })
+
     it('should return error with good but different seed words', async function () {
 
       let keyringController = new KeyringController({

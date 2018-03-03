@@ -30,7 +30,7 @@ const seedPhraseVerifier = {
           }
 
           for (let i = 0; i < restoredAccounts.length; i++) {
-            if (restoredAccounts[i] !== createdAccounts[i]) {
+            if (restoredAccounts[i].toLowerCase() !== createdAccounts[i].toLowerCase()) {
               return reject(new Error('Not identical accounts! Original: ' + createdAccounts[i] + ', Restored: ' + restoredAccounts[i]))
             }
           }
