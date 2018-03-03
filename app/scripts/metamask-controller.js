@@ -345,6 +345,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
+      verifySeedPhrase: this.verifySeedPhrase.bind(this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: this.resetAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
@@ -588,6 +589,19 @@ module.exports = class MetamaskController extends EventEmitter {
   // Used when creating a first vault, to allow confirmation.
   // Also used when revealing the seed words in the confirmation view.
   placeSeedWords (cb) {
+
+    this.verifySeedPhrase((err, seedWords) => {
+
+      if (err) {
+        return cb(err)
+      }
+      this.configManager.setSeedWords(seedWords)
+      return cb(null, seedWords)
+    })
+  }
+
+  verifySeedPhrase (cb) {
+
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
     primaryKeyring.serialize()
@@ -602,12 +616,11 @@ module.exports = class MetamaskController extends EventEmitter {
 
           seedPhraseVerifier.verifyAccounts(accounts, seedWords)
             .then(() => {
-              this.configManager.setSeedWords(seedWords)
-              cb(null, seedWords)
+              return cb(null, seedWords)
             })
             .catch((err) => {
               log.error(err)
-              cb(err)
+              return cb(err)
             })
         })
     })
