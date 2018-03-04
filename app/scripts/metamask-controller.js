@@ -600,6 +600,10 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
+  // Verifies the current vault's seed words if they can restore the
+  // accounts belonging to the current vault.
+  //
+  // Called when the first account is created and on unlocking the vault.
   verifySeedPhrase (cb) {
 
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]

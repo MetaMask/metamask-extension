@@ -2,6 +2,11 @@ const KeyringController = require('eth-keyring-controller')
 
 const seedPhraseVerifier = {
 
+  // Verifies if the seed words can restore the accounts.
+  //
+  // The seed words can recreate the primary keyring and the accounts belonging to it.
+  // The created accounts in the primary keyring are always the same.
+  // The keyring always creates the accounts in the same sequence.
   verifyAccounts (createdAccounts, seedWords) {
 
     return new Promise((resolve, reject) => {
