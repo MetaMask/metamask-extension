@@ -13,19 +13,22 @@ describe('SeedPhraseVerifier', function () {
     let hdKeyTree = 'HD Key Tree'
 
     let keyringController
-    beforeEach(function () {
+    let vault
+    let primaryKeyring
+
+    beforeEach(async function () {
       keyringController = new KeyringController({
         initState: clone(firstTimeState),
         encryptor: mockEncryptor,
       })
 
       assert(keyringController)
+
+      vault = await keyringController.createNewVaultAndKeychain(password)
+      primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
     })
 
     it('should be able to verify created account with seed words', async function () {
-
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
 
       let createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
@@ -39,11 +42,9 @@ describe('SeedPhraseVerifier', function () {
 
     it('should be able to verify created account (upper case) with seed words', async function () {
 
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
-
       let createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
+
       let upperCaseAccounts = [createdAccounts[0].toUpperCase()]
 
       let serialized = await primaryKeyring.serialize()
@@ -54,9 +55,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should be able to verify created account (lower case) with seed words', async function () {
-
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
 
       let createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
@@ -70,9 +68,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should return error with good but different seed words', async function () {
-
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
 
       let createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
@@ -90,9 +85,6 @@ describe('SeedPhraseVerifier', function () {
 
     it('should return error with undefined existing accounts', async function () {
 
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
-
       let createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
@@ -109,9 +101,6 @@ describe('SeedPhraseVerifier', function () {
 
     it('should return error with empty accounts array', async function () {
 
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
-
       let createdAccounts = await primaryKeyring.getAccounts()
       assert.equal(createdAccounts.length, 1)
 
@@ -127,10 +116,6 @@ describe('SeedPhraseVerifier', function () {
     })
 
     it('should be able to verify more than one created account with seed words', async function () {
-
-      let vault = await keyringController.createNewVaultAndKeychain(password)
-      
-      let primaryKeyring = keyringController.getKeyringsByType(hdKeyTree)[0]
 
       const keyState = await keyringController.addNewAccount(primaryKeyring)
       const keyState2 = await keyringController.addNewAccount(primaryKeyring)
