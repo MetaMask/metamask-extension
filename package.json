@@ -187,7 +187,7 @@
     "babelify": "^8.0.0",
     "beefy": "^2.1.5",
     "brfs": "^1.4.3",
-    "browserify": "^14.4.0",
+    "browserify": "^16.1.1",
     "chai": "^4.1.0",
     "compression": "^1.7.1",
     "coveralls": "^3.0.0",
