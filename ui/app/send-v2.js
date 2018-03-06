@@ -396,14 +396,15 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     amount,
     setMaxModeTo,
     maxModeOn,
+    gasTotal,
   } = this.props
 
   return h('div.send-v2__form-row', [
 
-     h('div.send-v2__form-label', [
+    h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
-      !errors.amount && h('div.send-v2__amount-max', {
+      !errors.amount && gasTotal && h('div.send-v2__amount-max', {
         onClick: (event) => {
           event.preventDefault()
           setMaxModeTo(true)
