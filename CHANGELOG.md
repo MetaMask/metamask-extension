@@ -4,11 +4,16 @@
 
 - Change Loose label to Imported.
 - Add Imported Account disclaimer.
+- Allow adding custom tokens to classic ui when balance is 0
+- Allow editing of symbol and decimal info when adding custom token in new-ui
+- NewUI shapeshift form can select all coins (not just BTC)
+- Add most of Microsoft Edge support.
 
 ## 4.1.3 2018-2-28
 
 - Ensure MetaMask's inpage provider is named MetamaskInpageProvider to keep some sites from breaking.
 - Add retry transaction button back into classic ui.
+- Add network dropdown styles to support long custom RPC urls
 
 ## 4.1.2 2018-2-28
 

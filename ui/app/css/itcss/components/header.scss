@@ -80,11 +80,10 @@
   font-family: Roboto;
   text-transform: uppercase;
   font-weight: 500;
-  font-size: 0.8rem;
-  padding-left: 9px;
+  font-size: .8rem;
   color: $buttercup;
-  align-self: flex-start;
-  margin-top: 10px;
+  margin-left: 5px;
+  line-height: initial;
 
   @media screen and (max-width: 575px) {
     display: none;
