@@ -4,7 +4,8 @@
 
 - Allow adding custom tokens to classic ui when balance is 0
 - Allow editing of symbol and decimal info when adding custom token in new-ui
-- NewUI shapeshift form can select all coins (not just BTC)
+- new-ui shapeshift form can select all coins (not just BTC)
+- Classic ui and new-ui shapeshift forms show when coins are not available on shapeshift
 
 ## 4.1.3 2018-2-28
 

@@ -1498,6 +1498,7 @@ function pairUpdate (coin) {
     dispatch(actions.hideWarning())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
+      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
       dispatch({
         type: actions.PAIR_UPDATE,
         value: {
