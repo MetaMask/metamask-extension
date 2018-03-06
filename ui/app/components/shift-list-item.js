@@ -16,6 +16,7 @@ module.exports = connect(mapStateToProps)(ShiftListItem)
 
 function mapStateToProps (state) {
   return {
+    selectedAddress: state.metamask.selectedAddress,
     conversionRate: state.metamask.conversionRate,
     currentCurrency: state.metamask.currentCurrency,
   }
@@ -28,37 +29,35 @@ function ShiftListItem () {
 }
 
 ShiftListItem.prototype.render = function () {
-  return (
-    h('.transaction-list-item.flex-row', {
+  return h('div.tx-list-item.tx-list-clickable', {
+    style: {
+      paddingTop: '20px',
+      paddingBottom: '20px',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+    },
+  }, [
+    h('div', {
       style: {
-        paddingTop: '20px',
-        paddingBottom: '20px',
-        justifyContent: 'space-around',
-        alignItems: 'center',
+        width: '0px',
+        position: 'relative',
+        bottom: '19px',
       },
     }, [
-      h('div', {
+      h('img', {
+        src: 'https://info.shapeshift.io/sites/default/files/logo.png',
         style: {
-          width: '0px',
-          position: 'relative',
-          bottom: '19px',
+          height: '35px',
+          width: '132px',
+          position: 'absolute',
+          clip: 'rect(0px,23px,34px,0px)',
         },
-      }, [
-        h('img', {
-          src: 'https://info.shapeshift.io/sites/default/files/logo.png',
-          style: {
-            height: '35px',
-            width: '132px',
-            position: 'absolute',
-            clip: 'rect(0px,23px,34px,0px)',
-          },
-        }),
-      ]),
+      }),
+    ]),
 
-      this.renderInfo(),
-      this.renderUtilComponents(),
-    ])
-  )
+    this.renderInfo(),
+    this.renderUtilComponents(),
+  ])
 }
 
 function formatDate (date) {

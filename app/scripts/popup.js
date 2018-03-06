@@ -1,5 +1,6 @@
 const injectCss = require('inject-css')
-const MetaMaskUiCss = require('../../ui/css')
+const OldMetaMaskUiCss = require('../../old-ui/css')
+const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('./lib/port-stream.js')
 const isPopupOrNotification = require('./lib/is-popup-or-notification')
@@ -7,7 +8,7 @@ const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
-const setupRaven = require('./setupRaven')
+const setupRaven = require('./lib/setupRaven')
 
 // create platform global
 global.platform = new ExtensionPlatform()
@@ -17,8 +18,8 @@ const release = global.platform.getVersion()
 setupRaven({ release })
 
 // inject css
-const css = MetaMaskUiCss()
-injectCss(css)
+// const css = MetaMaskUiCss()
+// injectCss(css)
 
 // identify window type (popup, notification)
 const windowType = isPopupOrNotification()
@@ -33,8 +34,30 @@ const connectionStream = new PortStream(extensionPort)
 const container = document.getElementById('app-content')
 startPopup({ container, connectionStream }, (err, store) => {
   if (err) return displayCriticalError(err)
+
+  // Code commented out until we begin auto adding users to NewUI
+  // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
+  // const firstTime = Object.keys(identities).length === 0
+  const { isMascara, featureFlags = {} } = store.getState().metamask
+  let betaUIState = featureFlags.betaUI
+
+  // Code commented out until we begin auto adding users to NewUI
+  // const useBetaCss = isMascara || firstTime || betaUIState
+  const useBetaCss = isMascara || betaUIState
+
+  let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+  let deleteInjectedCss = injectCss(css)
+  let newBetaUIState
+
   store.subscribe(() => {
     const state = store.getState()
+    newBetaUIState = state.metamask.featureFlags.betaUI
+    if (newBetaUIState !== betaUIState) {
+      deleteInjectedCss()
+      betaUIState = newBetaUIState
+      css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+      deleteInjectedCss = injectCss(css)
+    }
     if (state.appState.shouldClose) notificationManager.closePopup()
   })
 })

@@ -15,7 +15,11 @@ const PortStream = require('./lib/port-stream.js')
 const NotificationManager = require('./lib/notification-manager.js')
 const MetamaskController = require('./metamask-controller')
 const firstTimeState = require('./first-time-state')
-const setupRaven = require('./setupRaven')
+const setupRaven = require('./lib/setupRaven')
+const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
+const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
+const EdgeEncryptor = require('./edge-encryptor')
+
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -31,7 +35,14 @@ global.METAMASK_NOTIFIER = notificationManager
 const release = platform.getVersion()
 const raven = setupRaven({ release })
 
+// browser check if it is Edge - https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+// Internet Explorer 6-11
+const isIE = !!document.documentMode
+// Edge 20+
+const isEdge = !isIE && !!window.StyleMedia
+
 let popupIsOpen = false
+let openMetamaskTabsIDs = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
@@ -40,6 +51,9 @@ let versionedData
 
 // initialization flow
 initialize().catch(log.error)
+
+// setup metamask mesh testing container
+setupMetamaskMeshMetrics()
 
 async function initialize () {
   const initState = await loadStateFromPersistence()
@@ -98,6 +112,7 @@ function setupController (initState) {
     initState,
     // platform specific api
     platform,
+    encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
   global.metamaskController = controller
 
@@ -105,10 +120,7 @@ function setupController (initState) {
   controller.txController.on(`tx:status-update`, (txId, status) => {
     if (status !== 'failed') return
     const txMeta = controller.txController.txStateManager.getTx(txId)
-    raven.captureMessage('Transaction Failed', {
-      // "extra" key is required by Sentry
-      extra: txMeta,
-    })
+    reportFailedTxToSentry({ raven, txMeta })
   })
 
   // setup state persistence
@@ -151,9 +163,15 @@ function setupController (initState) {
       popupIsOpen = popupIsOpen || (remotePort.name === 'popup')
       controller.setupTrustedCommunication(portStream, 'MetaMask')
       // record popup as closed
+      if (remotePort.sender.url.match(/home.html$/)) {
+        openMetamaskTabsIDs[remotePort.sender.tab.id] = true
+      }
       if (remotePort.name === 'popup') {
         endOfStream(portStream, () => {
           popupIsOpen = false
+          if (remotePort.sender.url.match(/home.html$/)) {
+            openMetamaskTabsIDs[remotePort.sender.tab.id] = false
+          }
         })
       }
     } else {
@@ -196,7 +214,10 @@ function setupController (initState) {
 
 // popup trigger
 function triggerUi () {
-  if (!popupIsOpen) notificationManager.showPopup()
+  extension.tabs.query({ active: true }, (tabs) => {
+    const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
+    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup()
+  })
 }
 
 // On first install, open a window to MetaMask website to how-it-works.

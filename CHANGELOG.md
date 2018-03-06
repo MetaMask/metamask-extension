@@ -3,6 +3,60 @@
 ## Current Master
 
 - Fix bug that could cause MetaMask to lose all of its local data.
+- Allow adding custom tokens to classic ui when balance is 0
+- Allow editing of symbol and decimal info when adding custom token in new-ui
+- NewUI shapeshift form can select all coins (not just BTC)
+
+## 4.1.3 2018-2-28
+
+- Ensure MetaMask's inpage provider is named MetamaskInpageProvider to keep some sites from breaking.
+- Add retry transaction button back into classic ui.
+- Add network dropdown styles to support long custom RPC urls
+
+## 4.1.2 2018-2-28
+
+- Actually includes all the fixes mentioned in 4.1.1 (sorry)
+
+## 4.1.1 2018-2-28
+
+- Fix "Add Token" screen referencing missing token logo urls
+- Prevent user from switching network during signature request
+- Fix misleading language "Contract Published" -> "Contract Deployment"
+- Fix cancel button on "Buy Eth" screen
+- Improve new-ui onboarding flow style
+
+## 4.1.0 2018-2-27
+
+- Report failed txs to Sentry with more specific message
+- Fix internal feature flags being sometimes undefined
+- Standardized license to MIT
+
+## 4.0.0 2018-2-22
+
+- Introduce new MetaMask user interface.
+
+## 3.14.2 2018-2-15
+
+- Fix bug where log subscriptions would break when switching network.
+- Fix bug where storage values were cached across blocks.
+- Add MetaMask light client [testing container](https://github.com/MetaMask/mesh-testing)
+
+## 3.14.1 2018-2-1
+
+- Further fix scrolling for Firefox.
+
+## 3.14.0 2018-2-1
+
+- Removed unneeded data from storage
+- Add a "reset account" feature to Settings
+- Add warning for importing some kinds of files.
+- Scrollable Setting view for Firefox.
+
+## 3.13.8 2018-1-29
+
+- Fix provider for Kovan network.
+- Bump limit for EventEmitter listeners before warning.
+- Display Error when empty string is entered as a token address.
 
 ## 3.13.7 2018-1-22
 

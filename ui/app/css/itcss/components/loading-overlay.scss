@@ -1,0 +1,21 @@
+.loading-overlay {
+  left: 0px;
+  z-index: 50;
+  position: absolute;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+
+  @media screen and (max-width: 575px) {
+    margin-top: 56px;
+    height: calc(100% - 56px);
+  }
+
+  @media screen and (min-width: 576px) {
+    margin-top: 75px;
+    height: calc(100% - 75px);
+  }
+}

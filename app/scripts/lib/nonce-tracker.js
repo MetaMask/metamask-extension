@@ -56,7 +56,7 @@ class NonceTracker {
     const blockTracker = this._getBlockTracker()
     const currentBlock = blockTracker.getCurrentBlock()
     if (currentBlock) return currentBlock
-    return await Promise((reject, resolve) => {
+    return await new Promise((reject, resolve) => {
       blockTracker.once('latest', resolve)
     })
   }

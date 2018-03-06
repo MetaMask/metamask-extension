@@ -152,6 +152,10 @@ module.exports = class TransactionController extends EventEmitter {
     }
   }
 
+  wipeTransactions (address) {
+    this.txStateManager.wipeTransactions(address)
+  }
+
   // Adds a tx to the txlist
   addTx (txMeta) {
     this.txStateManager.addTx(txMeta)
@@ -227,6 +231,10 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.lastGasPrice = txMeta.txParams.gasPrice
     this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
+  }
+
+  async updateTransaction (txMeta) {
+    this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
   }
 
   async updateAndApproveTransaction (txMeta) {

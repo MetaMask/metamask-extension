@@ -107,6 +107,7 @@ RestoreVaultScreen.prototype.render = function () {
 }
 
 RestoreVaultScreen.prototype.showInitializeMenu = function () {
+  this.props.dispatch(actions.unMarkPasswordForgotten())
   if (this.props.forgottenPassword) {
     this.props.dispatch(actions.backToUnlockView())
   } else {
@@ -149,6 +150,9 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   this.warning = null
   this.props.dispatch(actions.displayWarning(this.warning))
   this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
+  .then(() => {
+    this.props.dispatch(actions.unMarkPasswordForgotten())
+  })
   .catch((err) => {
     log.error(err.message)
   })

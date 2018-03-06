@@ -6,6 +6,8 @@ app/bower_components
 test/bower_components
 package
 
+.idea
+
 temp
 .tmp
 .sass-cache
@@ -23,6 +25,9 @@ test/integration/bundle.js
 test/background.js
 test/bundle.js
 test/test-bundle.js
+
+#ignore css output and sourcemaps
+ui/app/css/output/
 
 notes.txt
 
