@@ -5,6 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
+const t = require('../i18n')
 
 const Mascot = require('./components/mascot')
 
@@ -43,7 +44,7 @@ UnlockScreen.prototype.render = function () {
             textTransform: 'uppercase',
             color: '#7F8082',
           },
-        }, 'MetaMask'),
+        }, t('appName')),
 
         h('input.large-input', {
           type: 'password',

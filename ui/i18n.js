@@ -3,18 +3,18 @@
 
 const chrome = chrome || null
 const browser = browser || null
-let getMessage = null
+const extension = require('extensionizer')
+let getMessage
 
-if ((chrome && chrome.i18n && chrome.i18n.getMessage) ||
-    (browser && browser.i18n && browser.i18n.getMessage)) {
-  getMessage = (chrome || browser).i18n.getMessage
+if (extension.i18n && extension.i18n.getMessage) {
+  getMessage = extension.i18n.getMessage
 } else {
   // fallback function
-  console.warn('browser.i18n API not available?')
+  log.warn('browser.i18n API not available, calling back to english.')
   const msg = require('../app/_locales/en/messages.json')
   getMessage = function (key, substitutions) {
     if (!msg[key]) {
-      console.error(key)
+      log.error(key)
       throw new Error(key)
     }
     let phrase = msg[key].message
@@ -28,4 +28,5 @@ if ((chrome && chrome.i18n && chrome.i18n.getMessage) ||
   }
 }
 
+window.h = getMessage
 module.exports = getMessage
