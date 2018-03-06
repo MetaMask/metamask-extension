@@ -418,6 +418,10 @@ button.backup-phrase__confirm-seed-option:hover {
   line-height: 23px;
 }
 
+.import-account__input-label__disabled {
+  opacity: 0.5;
+}
+
 .import-account__input {
   width: 325px !important;
 }
@@ -562,6 +566,10 @@ button.backup-phrase__confirm-seed-option:hover {
   padding: 15px;
   border: 1px solid #CDCDCD;
   background-color: #FFFFFF;
+}
+
+.first-time-flow__input__disabled {
+  opacity: 0.5;
 }
 
 .first-time-flow__input::placeholder {

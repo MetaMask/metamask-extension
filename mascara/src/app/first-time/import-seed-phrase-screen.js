@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import classnames from 'classnames'
 import {
   createNewVaultAndRestore,
   hideWarning,
@@ -25,8 +26,42 @@ class ImportSeedPhraseScreen extends Component {
     confirmPassword: '',
   }
 
+  parseSeedPhrase = (seedPhrase) => {
+    return seedPhrase
+      .match(/\w+/g)
+      .join(' ')
+  }
+
+  onChange = ({ seedPhrase, password, confirmPassword }) => {
+    const {
+      password: prevPassword,
+      confirmPassword: prevConfirmPassword,
+    } = this.state
+    const { displayWarning, hideWarning } = this.props
+
+    let warning = null
+
+    if (seedPhrase && this.parseSeedPhrase(seedPhrase).split(' ').length !== 12) {
+      warning = 'Seed Phrases are 12 words long'
+    } else if (password && password.length < 8) {
+      warning = 'Passwords require a mimimum length of 8'
+    } else if ((password || prevPassword) !== (confirmPassword || prevConfirmPassword)) {
+      warning = 'Confirmed password does not match'
+    }
+
+    if (warning) {
+      displayWarning(warning)
+    } else {
+      hideWarning()
+    }
+
+    seedPhrase && this.setState({ seedPhrase })
+    password && this.setState({ password })
+    confirmPassword && this.setState({ confirmPassword })
+  }
+
   onClick = () => {
-    const { password, seedPhrase, confirmPassword } = this.state
+    const { password, seedPhrase } = this.state
     const {
       createNewVaultAndRestore,
       next,
@@ -34,40 +69,15 @@ class ImportSeedPhraseScreen extends Component {
       leaveImportSeedScreenState,
     } = this.props
 
-    const parsedSeedPhrase = seedPhrase
-      .replace(/\r\n/g, ' ')
-      .split(' ')
-      .reduce((acc, base) => {
-        const trimmed = base.trim()
-        return trimmed === '' ? acc : `${acc} ${trimmed}`
-      }, '')
-      .slice(1)
-
-    if (parsedSeedPhrase.split(' ').length !== 12) {
-      this.warning = 'Seed Phrases are 12 words long'
-      displayWarning(this.warning)
-      return
-    }
-
-    if (password.length < 8) {
-      this.warning = 'Passwords require a mimimum length of 8'
-      displayWarning(this.warning)
-      return
-    }
-
-    if (password !== confirmPassword) {
-      this.warning = 'Confirmed password does not match'
-      displayWarning(this.warning)
-      return
-    }
-
-    this.warning = null
     leaveImportSeedScreenState()
-    createNewVaultAndRestore(password, parsedSeedPhrase)
+    createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
       .then(next)
   }
 
   render () {
+    const { seedPhrase, password, confirmPassword } = this.state
+    const { warning } = this.props
+    const importDisabled = warning || !seedPhrase || !password || !confirmPassword
     return (
       <div className="import-account">
         <a
@@ -90,7 +100,7 @@ class ImportSeedPhraseScreen extends Component {
           <label className="import-account__input-label">Wallet Seed</label>
           <textarea
             className="import-account__secret-phrase"
-            onChange={e => this.setState({seedPhrase: e.target.value})}
+            onChange={e => this.onChange({seedPhrase: e.target.value})}
             value={this.state.seedPhrase}
             placeholder="Separate each word with a single space"
           />
@@ -106,21 +116,30 @@ class ImportSeedPhraseScreen extends Component {
             className="first-time-flow__input"
             type="password"
             placeholder="New Password (min 8 characters)"
-            onChange={e => this.setState({password: e.target.value})}
+            onChange={e => this.onChange({password: e.target.value})}
           />
         </div>
         <div className="import-account__input-wrapper">
-          <label className="import-account__input-label">Confirm Password</label>
+          <label
+            className="import-account__input-label"
+            className={classnames('import-account__input-label', {
+              'import-account__input-label__disabled': password.length < 8,
+            })}
+          >Confirm Password</label>
           <input
-            className="first-time-flow__input"
+            className={classnames('first-time-flow__input', {
+              'first-time-flow__input__disabled': password.length < 8,
+            })}
             type="password"
             placeholder="Confirm Password"
-            onChange={e => this.setState({confirmPassword: e.target.value})}
+            onChange={e => this.onChange({confirmPassword: e.target.value})}
+            disabled={password.length < 8}
           />
         </div>
         <button
           className="first-time-flow__button"
-          onClick={this.onClick}
+          onClick={() => !importDisabled && this.onClick()}
+          disabled={importDisabled}
         >
           Import
         </button>
