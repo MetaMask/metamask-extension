@@ -345,7 +345,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
-      verifySeedPhrase: this.verifySeedPhrase.bind(this),
+      verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: this.resetAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
@@ -567,13 +567,17 @@ module.exports = class MetamaskController extends EventEmitter {
   // Opinionated Keyring Management
   //
 
-  async addNewAccount (cb) {
+  async addNewAccount () {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
     const keyringController = this.keyringController
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(primaryKeyring)
     const newAccounts = await keyringController.getAccounts()
+
+    await this.verifySeedPhrase()
 
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
@@ -590,44 +594,42 @@ module.exports = class MetamaskController extends EventEmitter {
   // Also used when revealing the seed words in the confirmation view.
   placeSeedWords (cb) {
 
-    this.verifySeedPhrase((err, seedWords) => {
-
-      if (err) {
+    this.verifySeedPhrase()
+      .then((seedWords) => {
+        this.configManager.setSeedWords(seedWords)
+        return cb(null, seedWords)
+      })
+      .catch((err) => {
         return cb(err)
-      }
-      this.configManager.setSeedWords(seedWords)
-      return cb(null, seedWords)
-    })
+      })
   }
 
   // Verifies the current vault's seed words if they can restore the
   // accounts belonging to the current vault.
   //
   // Called when the first account is created and on unlocking the vault.
-  verifySeedPhrase (cb) {
+  async verifySeedPhrase () {
 
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-    primaryKeyring.serialize()
-    .then((serialized) => {
-      const seedWords = serialized.mnemonic
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
 
-      primaryKeyring.getAccounts()
-        .then((accounts) => {
-          if (accounts.length < 1) {
-            return cb(new Error('MetamaskController - No accounts found'))
-          }
+    const serialized = await primaryKeyring.serialize()
+    const seedWords = serialized.mnemonic
 
-          seedPhraseVerifier.verifyAccounts(accounts, seedWords)
-            .then(() => {
-              return cb(null, seedWords)
-            })
-            .catch((err) => {
-              log.error(err)
-              return cb(err)
-            })
-        })
-    })
+    const accounts = await primaryKeyring.getAccounts()
+    if (accounts.length < 1) {
+      throw new Error('MetamaskController - No accounts found')
+    }
+
+    try {
+      await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
+      return seedWords
+    } catch (err) {
+      log.error(err.message)
+      throw err
+    }
   }
 
   // ClearSeedWordCache
