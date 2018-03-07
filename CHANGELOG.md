@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Replace "Unlock" wording with "Log In".
 - Allow adding custom tokens to classic ui when balance is 0
 - Allow editing of symbol and decimal info when adding custom token in new-ui
 - new-ui shapeshift form can select all coins (not just BTC)
