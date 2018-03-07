@@ -80,6 +80,7 @@ async function loadStateFromPersistence () {
       log.error('error fetching state from local store:', err)
     }
 
+    // If localStore is supported but has not been written to yet, ignore:
     if (Object.keys(localData).length > 0) {
       versionedData = localData
     }
