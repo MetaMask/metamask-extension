@@ -93,6 +93,9 @@ async function loadStateFromPersistence () {
   .catch((reason) => {
     log.error('Problem saving migrated data', versionedData)
   })
+  if (versionedData) {
+    diskStore.putState(versionedData)
+  }
 
   // return just the data
   return versionedData.data
@@ -129,6 +132,7 @@ function setupController (initState) {
     debounce(2000),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
+    asStream(diskStore),
     (error) => {
       log.error('pump hit error', error)
     }
@@ -139,14 +143,14 @@ function setupController (initState) {
     return versionedData
   }
 
-  async function syncDataWithExtension(state) {
+  function syncDataWithExtension(state) {
     if (localStore.isSupported) {
-      try {
-        await localStore.set(state)
-      } catch (err) {
+      localStore.set(state)
+      .catch((err) => {
         log.error('error setting state in local store:', err)
-      }
+      })
     } else { log.error('local store not supported') }
+
     return state
   }
 
