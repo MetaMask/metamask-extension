@@ -38,8 +38,6 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__private-key-password-container', [
 
-        h('span.new-account-import-form__instruction', 'Paste your private key string here:'),
-
         h('input.new-account-import-form__input-password', {
           type: 'password',
           id: 'private-key-box',

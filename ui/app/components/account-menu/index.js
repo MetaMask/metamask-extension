@@ -97,13 +97,6 @@ AccountMenu.prototype.render = function () {
     }),
     h(Item, {
       onClick: showConfigPage,
-      icon: h('img', { src: 'images/settings.svg' }),
-      text: t('settings'),
-      icon: h('img.account-menu__item-icon', { src: 'images/mm-info-icon.svg' }),
-      text: t('infoHelp'),
-    }),
-    h(Item, {
-      onClick: showConfigPage,
       icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
       text: t('settings'),
     }),
