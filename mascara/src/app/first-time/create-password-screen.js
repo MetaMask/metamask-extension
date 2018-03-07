@@ -60,7 +60,7 @@ class CreatePasswordScreen extends Component {
       : (
         <div>
           <div className="first-view-main">
-            <div className="mascara-info">
+            <div className="mascara-info first-view-phone-invisible">
               <Mascot
                 animationEventEmitter={this.animationEventEmitter}
                 width="225"

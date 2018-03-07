@@ -21,6 +21,24 @@
   justify-content: space-between;
 }
 
+@media screen and (min-width: 576px) {
+  .first-view-main {
+    width: 85vw;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .first-view-main {
+    width: 80vw;
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .first-view-main {
+    width: 62vw;
+  }
+}
+
 .mascara-info {
   display: flex;
   flex-flow: column;
@@ -79,6 +97,44 @@
   .tou__title,
   .backup-phrase__title {
     width: initial !important;
+  }
+
+  .alpha-warning {
+    line-height: 1em;
+    padding: 8px 12px;
+  }
+
+  .first-view-main {
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 12px;
+  }
+
+  .first-view-main .create-password {
+    margin-top: 0px;
+  }
+
+  .mascara-info {
+    margin-top: 0px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .mascara-info .info {
+    text-align: center;
+    font-size: 16px;
+    margin: 0 10px;
+    padding-left: 0px;
+  }
+
+  .mascara-info :first-child {
+    align-self: center;
+  }
+
+  .first-view-phone-invisible {
+    display: none;
   }
 
   .first-time-flow__input {

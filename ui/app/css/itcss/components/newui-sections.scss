@@ -290,27 +290,3 @@ $wallet-view-bg: $alabaster;
 .token-balance__amount {
   padding-right: 6px;
 }
-
-
-// first time
-.first-view-main {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-
-  @media screen and (max-width: 575px) {
-    height: 100%;
-  }
-
-  @media screen and (min-width: 576px) {
-    width: 85vw;
-  }
-
-  @media screen and (min-width: 769px) {
-    width: 80vw;
-  }
-
-  @media screen and (min-width: 1281px) {
-    width: 62vw;
-  }
-}
