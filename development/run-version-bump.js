@@ -7,12 +7,13 @@ const changelogPath = path.join(__dirname, '..', 'CHANGELOG.md')
 const manifestPath = path.join(__dirname, '..', 'app', 'manifest.json')
 const manifest = require('../app/manifest.json')
 const versionBump = require('./version-bump')
-
 const bumpType = normalizeType(process.argv[2])
 
+start().catch(console.error)
 
-readFile(changelogPath)
-.then(async (changeBuffer) => {
+async function start() {
+
+  const changeBuffer = await readFile(changelogPath)
   const changelog = changeBuffer.toString()
 
   const newData = await versionBump(bumpType, changelog, manifest)
@@ -22,10 +23,8 @@ readFile(changelogPath)
   await writeFile(changelogPath, newData.changelog)
   await writeFile(manifestPath, manifestString)
 
-  return newData.version
-})
-.then((version) => console.log(`Bumped ${bumpType} to version ${version}`))
-.catch(console.error)
+  console.log(`Bumped ${bumpType} to version ${newData.version}`)
+}
 
 
 function normalizeType (userInput) {
