@@ -547,38 +547,54 @@
 
 //Notification Modal
 
-.notification-modal-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  position: relative;
-  border: 1px solid $alto;
-  box-shadow: 0 0 2px 2px $alto;
-  font-family: Roboto;
-}
+.notification-modal {
 
-.notification-modal-header {
-  background: $wild-sand;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 30px;
-  font-size: 22px;
-  color: $nile-blue;
-  height: 79px;
-}
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    border: 1px solid $alto;
+    box-shadow: 0 0 2px 2px $alto;
+    font-family: Roboto;
+  }
 
-.notification-modal-message {
-  padding: 20px;
-}
+  &__header {
+    background: $wild-sand;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+    font-size: 22px;
+    color: $nile-blue;
+    height: 79px;
+  }
 
-.notification-modal-message {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  font-size: 17px;
-  color: $nile-blue;
+  &__message {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 17px;
+    color: $nile-blue;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 0px 42px;
+
+    &__btn {
+      cursor: pointer;
+    }
+  }
+
+  &__link {
+    color: $curious-blue;
+  }
 }
 
 // Deposit Ether Modal
@@ -770,6 +786,10 @@
       &__caret {
         width: auto;
         flex: 1;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: auto;
       }
     }
   }

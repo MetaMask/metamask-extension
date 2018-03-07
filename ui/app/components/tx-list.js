@@ -51,6 +51,7 @@ TxList.prototype.render = function () {
 
 TxList.prototype.renderTransaction = function () {
   const { txsToRender, conversionRate } = this.props
+
   return txsToRender.length
     ? txsToRender.map((transaction, i) => this.renderTransactionListItem(transaction, conversionRate, i))
     : [h(
@@ -66,11 +67,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   // refer to transaction-list.js:line 58
 
   if (transaction.key === 'shapeshift') {
-    return h('div', {
-      key: `shapeshift${index}`,
-    }, [
-      h(ShiftListItem, transaction),
-    ])
+    return h(ShiftListItem, { ...transaction, key: `shapeshift${index}` })
   }
 
   const props = {

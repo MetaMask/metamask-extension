@@ -46,6 +46,9 @@
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
   },
+  "beta": {
+    "message": "BETA"
+  },
   "betweenMinAndMax": {
     "message": "must be greater than or equal to $1 and less than or equal to $2.",
     "description": "helper for inputting hex as decimal input"
@@ -83,8 +86,8 @@
   "continueToCoinbase": {
     "message": "Continue to Coinbase"
   },
-  "contractPublished": {
-    "message": "Contract Published"
+  "contractDeployment": {
+    "message": "Contract Deployment"
   },
   "conversionProgress": {
     "message": "Conversion in progress"
@@ -101,8 +104,8 @@
   "copy": {
     "message": "Copy"
   },
-  "copyAddress": {
-    "message": "Copy Address to clipboard"
+  "copyToClipboard": {
+    "message": "Copy to clipboard"
   },
   "copyButton": {
     "message": " Copy "
@@ -143,6 +146,10 @@
   },
   "depositBTC": {
     "message": "Deposit your BTC to the address below:"
+  },
+  "depositCoin": {
+    "message": "Deposit your $1 to the address below",
+    "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
     "message": "Deposit Eth"
@@ -363,6 +370,10 @@
   "newAccount": {
     "message": "New Account"
   },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  }
   "newContract": {
     "message": "New Contract"
   },
@@ -414,6 +425,9 @@
   },
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
+  },
+  "pleaseReviewTransaction": {
+    "message": "Please review your transaction."
   },
   "privateKey": {
     "message": "Private Key",

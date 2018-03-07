@@ -64,7 +64,7 @@ TxListItem.prototype.getAddressText = function () {
     default:
       return address
         ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : t('contractPublished')
+        : t('contractDeployment')
   }
 }
 

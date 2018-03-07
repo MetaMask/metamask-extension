@@ -33,6 +33,9 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
+    hideWarning: () => {
+      dispatch(actions.hideWarning())
+    },
     showAccountDetailModal: () => {
       dispatch(actions.showModal({ name: 'ACCOUNT_DETAILS' }))
     },
@@ -119,6 +122,7 @@ DepositEtherModal.prototype.render = function () {
       h('div.deposit-ether-modal__header__close', {
         onClick: () => {
           this.setState({ buyingWithShapeshift: false })
+          this.props.hideWarning()
           this.props.hideModal()
         },
       }),
@@ -179,6 +183,7 @@ DepositEtherModal.prototype.render = function () {
 }
 
 DepositEtherModal.prototype.goToAccountDetailsModal = function () {
+  this.props.hideWarning()
   this.props.hideModal()
   this.props.showAccountDetailModal()
 }

@@ -19,6 +19,7 @@ const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
 const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
+const ConfirmResetAccount = require('./notification-modals/confirm-reset-account')
 
 const accountModalStyle = {
   mobileModalStyle: {
@@ -79,6 +80,7 @@ const MODALS = {
     contents: [
       h(DepositEtherModal, {}, []),
     ],
+    onHide: (props) => props.hideWarning(),
     mobileModalStyle: {
       width: '100%',
       height: '100%',
@@ -201,6 +203,18 @@ const MODALS = {
     },
   },
 
+  CONFIRM_RESET_ACCOUNT: {
+    contents: h(ConfirmResetAccount),
+    mobileModalStyle: {
+      width: '95%',
+      top: isPopupOrNotification() === 'popup' ? '52vh' : '36.5vh',
+    },
+    laptopModalStyle: {
+      width: '473px',
+      top: 'calc(33% + 45px)',
+    },
+  },
+
   NEW_ACCOUNT: {
     contents: [
       h(NewAccountModal, {}, []),
@@ -272,6 +286,10 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
+    hideWarning: () => {
+      dispatch(actions.hideWarning())
+    },
+
   }
 }
 
@@ -294,7 +312,12 @@ Modal.prototype.render = function () {
     {
       className: 'modal',
       keyboard: false,
-      onHide: () => { this.onHide() },
+      onHide: () => {
+        if (modal.onHide) {
+          modal.onHide(this.props)
+        }
+        this.onHide()
+      },
       ref: (ref) => {
         this.modalRef = ref
       },

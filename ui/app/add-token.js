@@ -52,13 +52,16 @@ function AddTokenScreen () {
     isShowingConfirmation: false,
     customAddress: '',
     customSymbol: '',
-    customDecimals: 0,
+    customDecimals: '',
     searchQuery: '',
     isCollapsed: true,
     selectedTokens: {},
     errors: {},
+    autoFilled: false,
   }
   this.tokenAddressDidChange = this.tokenAddressDidChange.bind(this)
+  this.tokenSymbolDidChange = this.tokenSymbolDidChange.bind(this)
+  this.tokenDecimalsDidChange = this.tokenDecimalsDidChange.bind(this)
   this.onNext = this.onNext.bind(this)
   Component.call(this)
 }
@@ -103,6 +106,16 @@ AddTokenScreen.prototype.tokenAddressDidChange = function (e) {
   }
 }
 
+AddTokenScreen.prototype.tokenSymbolDidChange = function (e) {
+  const customSymbol = e.target.value.trim()
+  this.setState({ customSymbol })
+}
+
+AddTokenScreen.prototype.tokenDecimalsDidChange = function (e) {
+  const customDecimals = e.target.value.trim()
+  this.setState({ customDecimals })
+}
+
 AddTokenScreen.prototype.checkExistingAddresses = function (address) {
   if (!address) return false
   const tokensList = this.props.tokens
@@ -125,7 +138,7 @@ AddTokenScreen.prototype.validate = function () {
       errors.customAddress = 'Address is invalid. '
     }
 
-    const validDecimals = customDecimals >= 0 && customDecimals < 36
+    const validDecimals = customDecimals !== null && customDecimals >= 0 && customDecimals < 36
     if (!validDecimals) {
       errors.customDecimals = 'Decimals must be at least 0, and not over 36.'
     }
@@ -166,12 +179,13 @@ AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address)
     this.setState({
       customSymbol: symbol,
       customDecimals: decimals.toString(),
+      autoFilled: true,
     })
   }
 }
 
 AddTokenScreen.prototype.renderCustomForm = function () {
-  const { customAddress, customSymbol, customDecimals, errors } = this.state
+  const { autoFilled, customAddress, customSymbol, customDecimals, errors } = this.state
 
   return !this.state.isCollapsed && (
     h('div.add-token__add-custom-form', [
@@ -196,8 +210,9 @@ AddTokenScreen.prototype.renderCustomForm = function () {
         h('div.add-token__add-custom-label', 'Token Symbol'),
         h('input.add-token__add-custom-input', {
           type: 'text',
+          onChange: this.tokenSymbolDidChange,
           value: customSymbol,
-          disabled: true,
+          disabled: autoFilled,
         }),
         h('div.add-token__add-custom-error-message', errors.customSymbol),
       ]),
@@ -209,8 +224,9 @@ AddTokenScreen.prototype.renderCustomForm = function () {
         h('div.add-token__add-custom-label', 'Decimals of Precision'),
         h('input.add-token__add-custom-input', {
           type: 'number',
+          onChange: this.tokenDecimalsDidChange,
           value: customDecimals,
-          disabled: true,
+          disabled: autoFilled,
         }),
         h('div.add-token__add-custom-error-message', errors.customDecimals),
       ]),
@@ -240,7 +256,7 @@ AddTokenScreen.prototype.renderTokenList = function () {
         }, [
           h('div.add-token__token-icon', {
             style: {
-              backgroundImage: `url(images/contract/${logo})`,
+              backgroundImage: logo && `url(images/contract/${logo})`,
             },
           }),
           h('div.add-token__token-data', [

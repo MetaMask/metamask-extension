@@ -2,7 +2,6 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountAndTransactionDetails = require('./account-and-transaction-details')
-const HDRestoreVaultScreen = require('./keychains/hd/restore-vault')
 const Settings = require('./settings')
 const UnlockScreen = require('./unlock')
 
@@ -28,13 +27,6 @@ MainContainer.prototype.render = function () {
 
   if (this.props.isUnlocked === false) {
     switch (this.props.currentViewName) {
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        contents = {
-          component: HDRestoreVaultScreen,
-          key: 'HDRestoreVaultScreen',
-        }
-        break
       case 'config':
         log.debug('rendering config screen from unlock screen.')
         return h(Settings, {key: 'config'})

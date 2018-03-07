@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../actions')
 const genAccountLink = require('etherscan-link').createAccountLink
@@ -174,7 +174,7 @@ class AccountDropdowns extends Component {
           minWidth: '180px',
         },
         isOpen: optionsMenuActive,
-        onClickOutside: () => {
+        onClickOutside: (event) => {
           const { classList } = event.target
           const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
           if (optionsMenuActive && isNotToggleElement) {

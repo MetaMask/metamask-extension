@@ -85,7 +85,7 @@ NetworkDropdown.prototype.render = function () {
     style: {
       position: 'absolute',
       top: '58px',
-      minWidth: '309px',
+      width: '309px',
       zIndex: '55px',
     },
     innerStyle: {
@@ -277,11 +277,21 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
           onClick: () => props.setRpcTarget(rpc),
+          style: {
+            fontFamily: 'DIN OT',
+            fontSize: '16px',
+            lineHeight: '20px',
+            padding: '12px 0',
+          },
         },
         [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          rpc,
-          rpcTarget === rpc ? h('.check', '✓') : null,
+          rpcTarget === rpc ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
+          h('span.network-name-item', {
+            style: {
+              color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
+            },
+          }, rpc),
         ]
       )
     }
@@ -293,12 +303,6 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
   const props = this.props
 
   if (type !== 'rpc') return null
-
-  // Concatenate long URLs
-  let label = rpcTarget
-  if (rpcTarget.length > 31) {
-    label = label.substr(0, 34) + '...'
-  }
 
   switch (rpcTarget) {
 
@@ -312,11 +316,21 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
           key: rpcTarget,
           onClick: () => props.setRpcTarget(rpcTarget),
           closeMenu: () => this.props.hideNetworkDropdown(),
+          style: {
+            fontFamily: 'DIN OT',
+            fontSize: '16px',
+            lineHeight: '20px',
+            padding: '12px 0',
+          },
         },
         [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          label,
-          h('.check', '✓'),
+          h('i.fa.fa-check'),
+          h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
+          h('span.network-name-item', {
+            style: {
+              color: '#ffffff',
+            },
+          }, rpcTarget),
         ]
       )
   }

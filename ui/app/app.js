@@ -10,7 +10,8 @@ const t = require('../i18n')
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 // init
-const InitializeMenuScreen = require('./first-time/init-menu')
+const OldUIInitializeMenuScreen = require('./first-time/init-menu')
+const InitializeMenuScreen = MascaraFirstTime
 const NewKeyChainScreen = require('./new-keychain')
 // accounts
 const MainContainer = require('./main-container')
@@ -75,17 +76,22 @@ function mapStateToProps (state) {
     transForward: state.appState.transForward,
     isMascara: state.metamask.isMascara,
     isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
+    isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
     unapprovedTxs: state.metamask.unapprovedTxs,
     unapprovedMsgs: state.metamask.unapprovedMsgs,
     menuOpen: state.appState.menuOpen,
     network: state.metamask.network,
     provider: state.metamask.provider,
-    forgottenPassword: state.appState.forgottenPassword,
+    forgottenPassword: state.metamask.forgottenPassword,
     lastUnreadNotice: state.metamask.lastUnreadNotice,
     lostAccounts: state.metamask.lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     currentCurrency: state.metamask.currentCurrency,
+    isMouseUser: state.appState.isMouseUser,
+    betaUI: state.metamask.featureFlags.betaUI,
+    isRevealingSeedWords: state.metamask.isRevealingSeedWords,
+    Qr: state.appState.Qr,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -102,6 +108,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
   }
 }
 
@@ -113,7 +120,13 @@ App.prototype.componentWillMount = function () {
 
 App.prototype.render = function () {
   var props = this.props
-  const { isLoading, loadingMessage, network } = props
+  const {
+    isLoading,
+    loadingMessage,
+    network,
+    isMouseUser,
+    setMouseUserState,
+  } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
     `Connecting to ${this.getNetworkName()}` : null
@@ -121,10 +134,18 @@ App.prototype.render = function () {
 
   return (
     h('.flex-column.full-height', {
+      className: classnames({ 'mouse-user-styles': isMouseUser }),
       style: {
         overflowX: 'hidden',
         position: 'relative',
         alignItems: 'center',
+      },
+      tabIndex: '0',
+      onClick: () => setMouseUserState(true),
+      onKeyDown: (e) => {
+        if (e.keyCode === 9) {
+          setMouseUserState(false)
+        }
       },
     }, [
 
@@ -221,6 +242,9 @@ App.prototype.renderAppBar = function () {
     showNetworkDropdown,
     hideNetworkDropdown,
     currentView,
+    isInitialized,
+    betaUI,
+    isPopup,
   } = this.props
 
   if (window.METAMASK_UI_TYPE === 'notification') {
@@ -265,8 +289,10 @@ App.prototype.renderAppBar = function () {
             }),
 
             // metamask name
-            h('h1', t('appName')),
-
+            h('.flex-row', [
+              h('h1', t('appName')),
+              h('div.beta-label', t('beta')),
+            ]),
           ]),
 
           h('div.header__right-actions', [
@@ -298,6 +324,9 @@ App.prototype.renderAppBar = function () {
           ]),
         ]),
       ]),
+
+      !isInitialized && !isPopup && betaUI && h('h2.alpha-warning',
+        'Please be aware that this version is still under development'),
 
     ])
   )
@@ -336,9 +365,17 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
-  const {isMascara, isOnboarding} = props
+  const {
+    isMascara,
+    isOnboarding,
+    betaUI,
+    isRevealingSeedWords,
+    Qr,
+  } = props
+  const isMascaraOnboarding = isMascara && isOnboarding
+  const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
 
-  if (isMascara && isOnboarding) {
+  if (isMascaraOnboarding || isBetaUIOnboarding) {
     return h(MascaraFirstTime)
   }
 
@@ -359,20 +396,14 @@ App.prototype.renderPrimary = function () {
     })
   }
 
-  // show initialize screen
-  if (!props.isInitialized || props.forgottenPassword) {
-    // show current view
-    log.debug('rendering an initialize screen')
-    switch (props.currentView.name) {
-
-      case 'restoreVault':
-        log.debug('rendering restore vault screen')
-        return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-
-      default:
-        log.debug('rendering menu screen')
-        return h(InitializeMenuScreen, {key: 'menuScreenInit'})
-    }
+  if (props.isInitialized && props.forgottenPassword) {
+    log.debug('rendering restore vault screen')
+    return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
+  } else if (!props.isInitialized && !props.isUnlocked && !isRevealingSeedWords) {
+    log.debug('rendering menu screen')
+    return props.isPopup
+      ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})
+      : h(InitializeMenuScreen, {key: 'menuScreenInit'})
   }
 
   // show unlock screen
@@ -480,7 +511,7 @@ App.prototype.renderPrimary = function () {
             width: '285px',
           },
         }, [
-          h(QrView, {key: 'qr'}),
+          h(QrView, {key: 'qr', Qr}),
         ]),
       ])
 

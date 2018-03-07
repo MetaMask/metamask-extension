@@ -1,3 +1,6 @@
+$sub-mid-size-breakpoint: 667px;
+$sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (max-width: #{$sub-mid-size-breakpoint})";
+
 /*
   NewUI Container Elements
  */
@@ -18,6 +21,12 @@ $wallet-view-bg: $alabaster;
 
 .main-container::-webkit-scrollbar {
   display: none;
+}
+
+//Account and transaction details
+.account-and-transaction-details {
+  display: flex;
+  flex: 1 0 auto;
 }
 
 // tx view
@@ -60,6 +69,10 @@ $wallet-view-bg: $alabaster;
     overflow-x: hidden;
   }
 
+  @media #{$sub-mid-size-breakpoint-range} {
+    min-width: 160px;
+  }
+
   .wallet-view-account-details {
     flex: 0 0 auto;
   }
@@ -89,6 +102,13 @@ $wallet-view-bg: $alabaster;
     flex: 0 0 auto;
   }
 
+  &__tooltip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+
   &__address {
     border-radius: 3px;
     background-color: $alto;
@@ -96,10 +116,13 @@ $wallet-view-bg: $alabaster;
     font-size: 14px;
     line-height: 12px;
     padding: 4px 12px;
-    margin: 24px auto;
     font-weight: 300;
     cursor: pointer;
     flex: 0 0 auto;
+
+    &__pressed {
+      background-color: $manatee,
+    }
   }
 
   &__sidebar-close {
@@ -266,4 +289,28 @@ $wallet-view-bg: $alabaster;
 
 .token-balance__amount {
   padding-right: 6px;
+}
+
+
+// first time
+.first-view-main {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+
+  @media screen and (max-width: 575px) {
+    height: 100%;
+  }
+
+  @media screen and (min-width: 576px) {
+    width: 85vw;
+  }
+
+  @media screen and (min-width: 769px) {
+    width: 80vw;
+  }
+
+  @media screen and (min-width: 1281px) {
+    width: 62vw;
+  }
 }

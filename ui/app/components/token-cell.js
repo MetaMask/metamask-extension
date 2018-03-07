@@ -111,20 +111,24 @@ TokenCell.prototype.render = function () {
         network,
       }),
 
-      h('h.token-list-item__balance-wrapper', null, [
-        h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
+      h('div.token-list-item__balance-ellipsis', null, [
+        h('div.token-list-item__balance-wrapper', null, [
+          h('h3.token-list-item__token-balance', `${string || 0} ${symbol}`),
 
-        showFiat && h('div.token-list-item__fiat-amount', {
-          style: {},
-        }, formattedFiat),
+          showFiat && h('div.token-list-item__fiat-amount', {
+            style: {},
+          }, formattedFiat),
+        ]),
+
+        h('i.fa.fa-ellipsis-h.fa-lg.token-list-item__ellipsis.cursor-pointer', {
+          onClick: (e) => {
+            e.stopPropagation()
+            this.setState({ tokenMenuOpen: true })
+          },
+        }),
+
       ]),
 
-      h('i.fa.fa-ellipsis-h.fa-lg.token-list-item__ellipsis.cursor-pointer', {
-        onClick: (e) => {
-          e.stopPropagation()
-          this.setState({ tokenMenuOpen: true })
-        },
-      }),
 
       tokenMenuOpen && h(TokenMenuDropdown, {
         onClose: () => this.setState({ tokenMenuOpen: false }),

@@ -71,6 +71,22 @@
         font-size: 105%;
       }
     }
+
+    @media #{$sub-mid-size-breakpoint-range} {
+      margin-left: .4em;
+      margin-right: .4em;
+      justify-content: flex-start;
+      align-items: flex-start;
+
+      .token-amount {
+        font-size: 1rem;
+      }
+
+      .fiat-amount {
+        margin-top: .25%;
+        font-size: 1rem;
+      }
+    }
   }
 
   .hero-balance-buttons {
@@ -91,4 +107,12 @@
 
 .hero-balance-button {
   width: 6rem;
+
+  @media #{$sub-mid-size-breakpoint-range} {
+    padding: 0.4rem;
+    width: 4rem;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+  }
 }

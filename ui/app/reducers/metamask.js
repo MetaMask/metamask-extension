@@ -1,6 +1,7 @@
 const extend = require('xtend')
 const actions = require('../actions')
 const MetamascaraPlatform = require('../../../app/scripts/platforms/window')
+const environmentType = require('../../../app/scripts/lib/environment-type')
 const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 module.exports = reduceMetamask
@@ -14,6 +15,7 @@ function reduceMetamask (state, action) {
     isUnlocked: false,
     isAccountMenuOpen: false,
     isMascara: window.platform instanceof MetamascaraPlatform,
+    isPopup: environmentType() === 'popup',
     rpcTarget: 'https://rawtestrpc.metamask.io/',
     identities: {},
     unapprovedTxs: {},
@@ -41,12 +43,15 @@ function reduceMetamask (state, action) {
     useBlockie: false,
     featureFlags: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
+    isRevealingSeedWords: false,
   }, state.metamask)
 
   switch (action.type) {
 
     case actions.SHOW_ACCOUNTS_PAGE:
-      newState = extend(metamaskState)
+      newState = extend(metamaskState, {
+        isRevealingSeedWords: false,
+      })
       delete newState.seedWords
       return newState
 
@@ -122,10 +127,12 @@ function reduceMetamask (state, action) {
         },
       })
 
+
     case actions.SHOW_NEW_VAULT_SEED:
       return extend(metamaskState, {
         isUnlocked: true,
         isInitialized: false,
+        isRevealingSeedWords: true,
         seedWords: action.value,
       })
 

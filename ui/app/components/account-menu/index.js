@@ -81,12 +81,12 @@ AccountMenu.prototype.render = function () {
     h(Divider),
     h(Item, {
       onClick: () => showNewAccountPage('CREATE'),
-      icon: h('img', { src: 'images/plus-btn-white.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
       text: t('createAccount'),
     }),
     h(Item, {
       onClick: () => showNewAccountPage('IMPORT'),
-      icon: h('img', { src: 'images/import-account.svg' }),
+      icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
       text: t('importAccount'),
     }),
     h(Divider),
@@ -98,6 +98,13 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       onClick: showConfigPage,
       icon: h('img', { src: 'images/settings.svg' }),
+      text: t('settings'),
+      icon: h('img.account-menu__item-icon', { src: 'images/mm-info-icon.svg' }),
+      text: t('infoHelp'),
+    }),
+    h(Item, {
+      onClick: showConfigPage,
+      icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
       text: t('settings'),
     }),
   ])

@@ -181,7 +181,7 @@ function recipientField (txParams, transaction, isTx, isMsg) {
   } else if (txParams.to) {
     message = addressSummary(txParams.to)
   } else {
-    message = t('contractPublished')
+    message = t('contractDeployment')
   }
 
   return h('div', {

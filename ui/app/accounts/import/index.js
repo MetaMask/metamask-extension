@@ -38,7 +38,7 @@ AccountImportSubview.prototype.render = function () {
 
       h('div.new-account-import-form__select-section', [
 
-        h('div.new-account-import-form__select-label', 'SELECT TYPE'),
+        h('div.new-account-import-form__select-label', 'Select Type'),
 
         h(Select, {
           className: 'new-account-import-form__select',

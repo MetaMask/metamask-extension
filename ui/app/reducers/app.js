@@ -59,6 +59,7 @@ function reduceApp (state, action) {
     // Used to display error text
     warning: null,
     buyView: {},
+    isMouseUser: false,
   }, state.appState)
 
   switch (action.type) {
@@ -139,10 +140,10 @@ function reduceApp (state, action) {
     case actions.FORGOT_PASSWORD:
       return extend(appState, {
         currentView: {
-          name: 'restoreVault',
+          name: action.value ? 'restoreVault' : 'accountDetail',
         },
         transForward: false,
-        forgottenPassword: true,
+        forgottenPassword: action.value,
       })
 
     case actions.SHOW_INIT_MENU:
@@ -484,6 +485,11 @@ function reduceApp (state, action) {
         warning: action.value || 'Incorrect password. Try again.',
       })
 
+    case actions.UNLOCK_SUCCEEDED:
+      return extend(appState, {
+        warning: '',
+      })
+
     case actions.SHOW_LOADING:
       return extend(appState, {
         isLoading: true,
@@ -653,6 +659,12 @@ function reduceApp (state, action) {
           data: action.value.data,
         },
       })
+
+    case actions.SET_MOUSE_USER_STATE:
+      return extend(appState, {
+        isMouseUser: action.value,
+      })
+
     default:
       return appState
   }

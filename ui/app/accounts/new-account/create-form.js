@@ -8,16 +8,19 @@ const t = require('../../../i18n')
 class NewAccountCreateForm extends Component {
   constructor (props) {
     super(props)
+
     const { numberOfExistingAccounts = 0 } = props
     const newAccountNumber = numberOfExistingAccounts + 1
 
     this.state = {
-      newAccountName: `Account ${newAccountNumber}`,
+      newAccountName: '',
+      defaultAccountName: t('newAccountNumberName', newAccountNumber),
     }
   }
 
   render () {
-    const { newAccountName } = this.state
+    const { newAccountName, defaultAccountName } = this.state
+    
 
     return h('div.new-account-create-form', [
 
@@ -27,8 +30,8 @@ class NewAccountCreateForm extends Component {
 
       h('div.new-account-create-form__input-wrapper', {}, [
         h('input.new-account-create-form__input', {
-          value: this.state.newAccountName,
-          placeholder: t('sampleAccountName'),
+          value: newAccountName,
+          placeholder: defaultAccountName,
           onChange: event => this.setState({ newAccountName: event.target.value }),
         }, []),
       ]),
@@ -42,7 +45,7 @@ class NewAccountCreateForm extends Component {
         ]),
 
         h('button.new-account-create-form__button-create.allcaps', {
-          onClick: () => this.props.createAccount(newAccountName),
+          onClick: () => this.props.createAccount(newAccountName || defaultAccountName),
         }, [
           t('create'),
         ]),

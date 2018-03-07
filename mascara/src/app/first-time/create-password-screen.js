@@ -1,6 +1,7 @@
 import EventEmitter from 'events'
-import React, {Component, PropTypes} from 'react'
-import {connect} from 'react-redux';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 import {createNewVaultAndKeychain} from '../../../../ui/app/actions'
 import LoadingScreen from './loading-screen'
 import Breadcrumbs from './breadcrumbs'
@@ -12,12 +13,12 @@ class CreatePasswordScreen extends Component {
     createAccount: PropTypes.func.isRequired,
     goToImportWithSeedPhrase: PropTypes.func.isRequired,
     goToImportAccount: PropTypes.func.isRequired,
-    next: PropTypes.func.isRequired
+    next: PropTypes.func.isRequired,
   }
 
   state = {
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   }
 
   constructor () {
@@ -25,40 +26,39 @@ class CreatePasswordScreen extends Component {
     this.animationEventEmitter = new EventEmitter()
   }
 
-  isValid() {
-    const {password, confirmPassword} = this.state;
+  isValid () {
+    const {password, confirmPassword} = this.state
 
     if (!password || !confirmPassword) {
-      return false;
+      return false
     }
 
     if (password.length < 8) {
-      return false;
+      return false
     }
 
-    return password === confirmPassword;
+    return password === confirmPassword
   }
 
   createAccount = () => {
     if (!this.isValid()) {
-      return;
+      return
     }
 
-    const {password} = this.state;
-    const {createAccount, next} = this.props;
+    const {password} = this.state
+    const {createAccount, next} = this.props
 
     createAccount(password)
-      .then(next);
+      .then(next)
   }
 
-  render() {
-    const { isLoading, goToImportAccount, goToImportWithSeedPhrase } = this.props
+  render () {
+    const { isLoading, goToImportWithSeedPhrase } = this.props
 
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
         <div>
-          <h2 className="alpha-warning">Warning This is Experemental software and is a Developer BETA </h2>
           <div className="first-view-main">
             <div className="mascara-info">
               <Mascot

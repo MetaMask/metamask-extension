@@ -47,6 +47,8 @@ var actions = {
   SHOW_RESTORE_VAULT: 'SHOW_RESTORE_VAULT',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   forgotPassword: forgotPassword,
+  markPasswordForgotten,
+  unMarkPasswordForgotten,
   SHOW_INIT_MENU: 'SHOW_INIT_MENU',
   SHOW_NEW_VAULT_SEED: 'SHOW_NEW_VAULT_SEED',
   SHOW_INFO_PAGE: 'SHOW_INFO_PAGE',
@@ -55,6 +57,7 @@ var actions = {
   SET_NEW_ACCOUNT_FORM: 'SET_NEW_ACCOUNT_FORM',
   unlockMetamask: unlockMetamask,
   unlockFailed: unlockFailed,
+  unlockSucceeded,
   showCreateVault: showCreateVault,
   showRestoreVault: showRestoreVault,
   showInitializeMenu: showInitializeMenu,
@@ -69,15 +72,18 @@ var actions = {
   addNewAccount,
   NEW_ACCOUNT_SCREEN: 'NEW_ACCOUNT_SCREEN',
   navigateToNewAccountScreen,
+  resetAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
   requestRevealSeed: requestRevealSeed,
+
   // unlock screen
   UNLOCK_IN_PROGRESS: 'UNLOCK_IN_PROGRESS',
   UNLOCK_FAILED: 'UNLOCK_FAILED',
+  UNLOCK_SUCCEEDED: 'UNLOCK_SUCCEEDED',
   UNLOCK_METAMASK: 'UNLOCK_METAMASK',
   LOCK_METAMASK: 'LOCK_METAMASK',
   tryUnlockMetamask: tryUnlockMetamask,
@@ -251,6 +257,9 @@ var actions = {
   updateFeatureFlags,
   UPDATE_FEATURE_FLAGS: 'UPDATE_FEATURE_FLAGS',
 
+  setMouseUserState,
+  SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
+
   // Network
   setNetworkEndpoints,
   updateNetworkEndpointType,
@@ -284,6 +293,7 @@ function tryUnlockMetamask (password) {
       if (err) {
         dispatch(actions.unlockFailed(err.message))
       } else {
+        dispatch(actions.unlockSucceeded())
         dispatch(actions.transitionForward())
         forceUpdateMetamaskState(dispatch)
       }
@@ -394,6 +404,20 @@ function requestRevealSeed (password) {
       })
     })
   }
+}
+
+function resetAccount () {
+    return (dispatch) => {
+        background.resetAccount((err, account) => {
+            dispatch(actions.hideLoadingIndication())
+            if (err) {
+                dispatch(actions.displayWarning(err.message))
+            }
+
+            log.info('Transaction history reset for ' + account)
+            dispatch(actions.showAccountsPage())
+        })
+    }
 }
 
 function addNewKeyring (type, opts) {
@@ -816,9 +840,29 @@ function showRestoreVault () {
   }
 }
 
-function forgotPassword () {
+function markPasswordForgotten () {
+  return (dispatch) => {
+    return background.markPasswordForgotten(() => {
+      dispatch(actions.hideLoadingIndication())
+      dispatch(actions.forgotPassword())
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
+function unMarkPasswordForgotten () {
+  return (dispatch) => {
+    return background.unMarkPasswordForgotten(() => {
+      dispatch(actions.forgotPassword(false))
+      forceUpdateMetamaskState(dispatch)
+    })
+  }
+}
+
+function forgotPassword (forgotPasswordState = true) {
   return {
     type: actions.FORGOT_PASSWORD,
+    value: forgotPasswordState,
   }
 }
 
@@ -886,6 +930,13 @@ function unlockInProgress () {
 function unlockFailed (message) {
   return {
     type: actions.UNLOCK_FAILED,
+    value: message,
+  }
+}
+
+function unlockSucceeded (message) {
+  return {
+    type: actions.UNLOCK_SUCCEEDED,
     value: message,
   }
 }
@@ -1447,6 +1498,7 @@ function pairUpdate (coin) {
     dispatch(actions.hideWarning())
     shapeShiftRequest('marketinfo', {pair: `${coin.toLowerCase()}_eth`}, (mktResponse) => {
       dispatch(actions.hideSubLoadingIndication())
+      if (mktResponse.error) return dispatch(actions.displayWarning(mktResponse.error))
       dispatch({
         type: actions.PAIR_UPDATE,
         value: {
@@ -1608,6 +1660,13 @@ function updateFeatureFlags (updatedFeatureFlags) {
   return {
     type: actions.UPDATE_FEATURE_FLAGS,
     value: updatedFeatureFlags,
+  }
+}
+
+function setMouseUserState (isMouseUser) {
+  return {
+    type: actions.SET_MOUSE_USER_STATE,
+    value: isMouseUser,
   }
 }
 

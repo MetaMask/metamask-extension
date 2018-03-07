@@ -15,11 +15,13 @@ function mapStateToProps (state) {
     tokenExchangeRates,
     selectedAddress,
   } = state.metamask
+  const { warning } = state.appState
 
   return {
     coinOptions,
     tokenExchangeRates,
     selectedAddress,
+    warning,
   }
 }
 
@@ -52,8 +54,7 @@ ShapeshiftForm.prototype.componentWillMount = function () {
   this.props.shapeShiftSubview()
 }
 
-ShapeshiftForm.prototype.onCoinChange = function (e) {
-  const coin = e.target.value
+ShapeshiftForm.prototype.onCoinChange = function (coin) {
   this.setState({
     depositCoin: coin,
     errorMessage: '',
@@ -134,7 +135,7 @@ ShapeshiftForm.prototype.renderMarketInfo = function () {
 }
 
 ShapeshiftForm.prototype.renderQrCode = function () {
-  const { depositAddress, isLoading } = this.state
+  const { depositAddress, isLoading, depositCoin } = this.state
   const qrImage = qrcode(4, 'M')
   qrImage.addData(depositAddress)
   qrImage.make()
@@ -142,7 +143,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
   return h('div.shapeshift-form', {}, [
 
     h('div.shapeshift-form__deposit-instruction', [
-      t('depositBTC'),
+      t('depositCoin', depositCoin.toUpperCase()),
     ]),
 
     h('div', depositAddress),
@@ -165,7 +166,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
 
 
 ShapeshiftForm.prototype.render = function () {
-  const { coinOptions, btnClass } = this.props
+  const { coinOptions, btnClass, warning } = this.props
   const { depositCoin, errorMessage, showQrCode, depositAddress } = this.state
   const coinPair = `${depositCoin}_eth`
   const { tokenExchangeRates } = this.props
@@ -183,7 +184,7 @@ ShapeshiftForm.prototype.render = function () {
 
               h(SimpleDropdown, {
                 selectedOption: this.state.depositCoin,
-                onSelect: this.onCoinChange,
+                onSelect: (coin) => this.onCoinChange(coin),
                 options: Object.entries(coinOptions).map(([coin]) => ({
                   value: coin.toLowerCase(),
                   displayValue: coin,
@@ -208,7 +209,9 @@ ShapeshiftForm.prototype.render = function () {
 
           ]),
 
-          h('div', {
+          warning && h('div.shapeshift-form__address-input-label', warning),
+
+          !warning && h('div', {
             className: classnames('shapeshift-form__address-input-wrapper', {
               'shapeshift-form__address-input-wrapper--error': errorMessage,
             }),
@@ -229,7 +232,7 @@ ShapeshiftForm.prototype.render = function () {
             h('divshapeshift-form__address-input-error-message', [errorMessage]),
           ]),
 
-          this.renderMarketInfo(),
+          !warning && this.renderMarketInfo(),
 
       ]),
 

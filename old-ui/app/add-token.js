@@ -25,7 +25,7 @@ inherits(AddTokenScreen, Component)
 function AddTokenScreen () {
   this.state = {
     warning: null,
-    address: null,
+    address: '',
     symbol: 'TOKEN',
     decimals: 18,
   }
@@ -156,6 +156,9 @@ AddTokenScreen.prototype.render = function () {
 
               const { address, symbol, decimals } = this.state
               this.props.dispatch(actions.addToken(address.trim(), symbol.trim(), decimals))
+                .then(() => {
+                  this.props.dispatch(actions.goHome())
+                })
             },
           }, 'Add'),
         ]),
@@ -190,7 +193,7 @@ AddTokenScreen.prototype.validateInputs = function () {
 
   const validAddress = ethUtil.isValidAddress(address)
   if (!validAddress) {
-    msg += 'Address is invalid. '
+    msg += 'Address is invalid.'
   }
 
   const validDecimals = decimals >= 0 && decimals < 36
