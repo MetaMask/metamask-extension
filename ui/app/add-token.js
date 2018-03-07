@@ -52,7 +52,7 @@ function AddTokenScreen () {
     isShowingConfirmation: false,
     customAddress: '',
     customSymbol: '',
-    customDecimals: null,
+    customDecimals: '',
     searchQuery: '',
     isCollapsed: true,
     selectedTokens: {},

@@ -14,11 +14,13 @@ function mapStateToProps (state) {
     tokenExchangeRates,
     selectedAddress,
   } = state.metamask
+  const { warning } = state.appState
   
   return {
     coinOptions,
     tokenExchangeRates,
     selectedAddress,
+    warning,
   }
 }
 
@@ -163,7 +165,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
 
 
 ShapeshiftForm.prototype.render = function () {
-  const { coinOptions, btnClass } = this.props
+  const { coinOptions, btnClass, warning } = this.props
   const { depositCoin, errorMessage, showQrCode, depositAddress } = this.state
   const coinPair = `${depositCoin}_eth`
   const { tokenExchangeRates } = this.props
@@ -206,7 +208,9 @@ ShapeshiftForm.prototype.render = function () {
 
           ]),
 
-          h('div', {
+          warning && h('div.shapeshift-form__address-input-label', warning),
+
+          !warning && h('div', {
             className: classnames('shapeshift-form__address-input-wrapper', {
               'shapeshift-form__address-input-wrapper--error': errorMessage,
             }),
@@ -227,7 +231,7 @@ ShapeshiftForm.prototype.render = function () {
             h('divshapeshift-form__address-input-error-message', [errorMessage]),
           ]),
 
-          this.renderMarketInfo(),
+          !warning && this.renderMarketInfo(),
 
       ]),
 
