@@ -284,27 +284,43 @@ function goHome () {
 // async actions
 
 function tryUnlockMetamask (password) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(actions.showLoadingIndication())
     dispatch(actions.unlockInProgress())
     log.debug(`background.submitPassword`)
-    background.submitPassword(password, (err) => {
-      dispatch(actions.hideLoadingIndication())
-      if (err) {
-        dispatch(actions.unlockFailed(err.message))
-      } else {
-        dispatch(actions.unlockSucceeded())
-        dispatch(actions.transitionForward())
-        forceUpdateMetamaskState(dispatch)
 
-        background.verifySeedPhrase((err) => {
-          if (err) {
-            dispatch(actions.displayWarning(err.message))
-          }
-        })
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, error => {
+        if (error) {
+          return reject(error)
+        }
 
-      }
+        resolve()
+      })
     })
+      .then(() => {
+        dispatch(actions.unlockSucceeded())
+        return forceUpdateMetamaskState(dispatch)
+      })
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          background.verifySeedPhrase(err => {
+            if (err) {
+              dispatch(actions.displayWarning(err.message))
+            }
+
+            resolve()
+          })
+        })
+      })
+      .then(() => {
+        dispatch(actions.transitionForward())
+        dispatch(actions.hideLoadingIndication())
+      })
+      .catch(err => {
+        dispatch(actions.unlockFailed(err.message))
+        dispatch(actions.hideLoadingIndication())
+      })
   }
 }
 
@@ -346,46 +362,53 @@ function createNewVaultAndRestore (password, seed) {
     log.debug(`background.createNewVaultAndRestore`)
 
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndRestore(password, seed, (err) => {
-
-        dispatch(actions.hideLoadingIndication())
-
+      background.createNewVaultAndRestore(password, seed, err => {
         if (err) {
-          dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
 
-        dispatch(actions.showAccountsPage())
         resolve()
       })
     })
+      .then(() => dispatch(actions.unMarkPasswordForgotten()))
+      .then(() => {
+        dispatch(actions.showAccountsPage())
+        dispatch(actions.hideLoadingIndication())
+      })
+      .catch(err => {
+        dispatch(actions.displayWarning(err.message))
+        dispatch(actions.hideLoadingIndication())
+      })
   }
 }
 
 function createNewVaultAndKeychain (password) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.createNewVaultAndKeychain`)
 
     return new Promise((resolve, reject) => {
-      background.createNewVaultAndKeychain(password, (err) => {
+      background.createNewVaultAndKeychain(password, err => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           return reject(err)
         }
+
         log.debug(`background.placeSeedWords`)
+
         background.placeSeedWords((err) => {
           if (err) {
             dispatch(actions.displayWarning(err.message))
             return reject(err)
           }
-          dispatch(actions.hideLoadingIndication())
-          forceUpdateMetamaskState(dispatch)
+
           resolve()
         })
       })
     })
-
+      .then(() => forceUpdateMetamaskState(dispatch))
+      .then(() => dispatch(actions.hideLoadingIndication()))
+      .catch(() => dispatch(actions.hideLoadingIndication()))
   }
 }
 
@@ -396,18 +419,27 @@ function revealSeedConfirmation () {
 }
 
 function requestRevealSeed (password) {
-  return (dispatch) => {
+  return dispatch => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.submitPassword`)
-    background.submitPassword(password, (err) => {
-      if (err) {
-        return dispatch(actions.displayWarning(err.message))
-      }
-      log.debug(`background.placeSeedWords`)
-      background.placeSeedWords((err, result) => {
-        if (err) return dispatch(actions.displayWarning(err.message))
-        dispatch(actions.hideLoadingIndication())
-        dispatch(actions.showNewVaultSeed(result))
+    return new Promise((resolve, reject) => {
+      background.submitPassword(password, err => {
+        if (err) {
+          dispatch(actions.displayWarning(err.message))
+          return reject(err)
+        }
+
+        log.debug(`background.placeSeedWords`)
+        background.placeSeedWords((err, result) => {
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+            return reject(err)
+          }
+
+          dispatch(actions.showNewVaultSeed(result))
+          dispatch(actions.hideLoadingIndication())
+          resolve()
+        })
       })
     })
   }
@@ -858,11 +890,14 @@ function markPasswordForgotten () {
 }
 
 function unMarkPasswordForgotten () {
-  return (dispatch) => {
-    return background.unMarkPasswordForgotten(() => {
-      dispatch(actions.forgotPassword(false))
-      forceUpdateMetamaskState(dispatch)
+  return dispatch => {
+    return new Promise(resolve => {
+      background.unMarkPasswordForgotten(() => {
+        dispatch(actions.forgotPassword(false))
+        resolve()
+      })
     })
+      .then(() => forceUpdateMetamaskState(dispatch))
   }
 }
 
@@ -1711,11 +1746,16 @@ function callBackgroundThenUpdate (method, ...args) {
 
 function forceUpdateMetamaskState (dispatch) {
   log.debug(`background.getState`)
-  background.getState((err, newState) => {
-    if (err) {
-      return dispatch(actions.displayWarning(err.message))
-    }
-    dispatch(actions.updateMetamaskState(newState))
+  return new Promise((resolve, reject) => {
+    background.getState((err, newState) => {
+      if (err) {
+        dispatch(actions.displayWarning(err.message))
+        return reject(err)
+      }
+
+      dispatch(actions.updateMetamaskState(newState))
+      resolve()
+    })
   })
 }
 
