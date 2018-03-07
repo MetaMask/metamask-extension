@@ -60,9 +60,7 @@ class NotificationManager {
 
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
-      return (win && win.type === 'popup' &&
-        win.height === height &&
-        win.width === width)
+      return (win && win.type === 'popup')
     }) : null
   }
 
