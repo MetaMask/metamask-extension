@@ -2,6 +2,12 @@
 
 ## Current Master
 
+- Change Loose label to Imported.
+- Add Imported Account disclaimer.
+- Allow adding custom tokens to classic ui when balance is 0
+- Allow editing of symbol and decimal info when adding custom token in new-ui
+- NewUI shapeshift form can select all coins (not just BTC)
+- Add most of Microsoft Edge support.
 - Replace "Unlock" wording with "Log In".
 - Allow adding custom tokens to classic ui when balance is 0
 - Allow editing of symbol and decimal info when adding custom token in new-ui
