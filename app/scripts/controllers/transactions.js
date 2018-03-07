@@ -8,6 +8,7 @@ const TxGasUtil = require('../lib/tx-gas-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const createId = require('../lib/random-id')
 const NonceTracker = require('../lib/nonce-tracker')
+const extend = require('xtend')
 
 /*
   Transaction Controller is an aggregate of sub-controllers and trackers
@@ -82,7 +83,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
-      publishTransaction: (rawTx) => this.query.sendRawTransaction(rawTx),
+      publishTransaction: (rawTx) => { return this.query.sendRawTransaction(rawTx) },
       getPendingTransactions: this.txStateManager.getPendingTransactions.bind(this.txStateManager),
       getCompletedTransactions: this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     })
@@ -97,6 +98,9 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
         txMeta.firstRetryBlockNumber = latestBlockNumber
+        if (txMeta.retryCount === 0) {
+          txMeta.submitTime = Date.now()
+        }
         this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:block-update')
       }
     })
@@ -182,7 +186,7 @@ module.exports = class TransactionController extends EventEmitter {
     })
   }
 
-  async addUnapprovedTransaction (txParams) {
+  async addUnapprovedTransaction (txParams, lastGasPrice = false) {
     // validate
     await this.txGasUtil.validateTxParams(txParams)
     // construct txMeta
@@ -194,13 +198,17 @@ module.exports = class TransactionController extends EventEmitter {
       txParams: txParams,
       loadingDefaults: true,
     }
+
+    if (lastGasPrice) {
+      txMeta.lastGasPrice = lastGasPrice
+    }
+
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
     try {
       await this.addTxDefaults(txMeta)
     } catch (error) {
-      console.log(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
       throw error
     }
@@ -227,10 +235,10 @@ module.exports = class TransactionController extends EventEmitter {
   }
 
   async retryTransaction (txId) {
-    this.txStateManager.setTxStatusUnapproved(txId)
-    const txMeta = this.txStateManager.getTx(txId)
-    txMeta.lastGasPrice = txMeta.txParams.gasPrice
-    this.txStateManager.updateTx(txMeta, 'retryTransaction: manual retry')
+    const oldTxMeta = this.txStateManager.getTx(txId)
+    const txParams = extend(oldTxMeta.txParams, {})
+    const lastGasPrice = txParams.gasPrice
+    return this.addUnapprovedTransaction(txParams, lastGasPrice)
   }
 
   async updateTransaction (txMeta) {
@@ -293,7 +301,7 @@ module.exports = class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTx(txId)
     txMeta.rawTx = rawTx
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
-    const txHash = await this.query.sendRawTransaction(rawTx)
+    const txHash = await this.pendingTxTracker.submitTx(txMeta)
     this.setTxHash(txId, txHash)
     this.txStateManager.setTxStatusSubmitted(txId)
   }

@@ -1224,12 +1224,13 @@ function markAccountsFound () {
 function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
   return (dispatch) => {
-    background.retryTransaction(txId, (err, newState) => {
+    background.retryTransaction(txId, (err, results) => {
+      const { state, txMeta } = results
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
-      dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.viewPendingTx(txId))
+      dispatch(actions.updateMetamaskState(state))
+      dispatch(actions.viewPendingTx(txMeta.id))
     })
   }
 }

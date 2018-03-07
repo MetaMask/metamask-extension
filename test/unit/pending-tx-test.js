@@ -219,9 +219,9 @@ describe('PendingTransactionTracker', function () {
     it('should return if no pending transactions', function () {
       pendingTxTracker.resubmitPendingTxs()
     })
-    it('should call #_resubmitTx for all pending tx\'s', function (done) {
+    it('should call #submitTx for all pending tx\'s', function (done) {
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async (tx) => { tx.resolve(tx) }
+      pendingTxTracker.submitTx = async (tx) => { tx.resolve(tx) }
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
@@ -244,7 +244,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.on('tx:failed', (_, err) => done(err))
 
       pendingTxTracker.getPendingTransactions = () => enoughForAllErrors
-      pendingTxTracker._resubmitTx = async (tx) => {
+      pendingTxTracker.submitTx = async (tx) => {
         tx.resolve()
         throw new Error(knownErrors.pop())
       }
@@ -254,8 +254,8 @@ describe('PendingTransactionTracker', function () {
 
       pendingTxTracker.resubmitPendingTxs(blockStub)
     })
-    it('should emit \'tx:warning\' if it encountered a real error', function (done) {
-      pendingTxTracker.once('tx:warning', (txMeta, err) => {
+    it('should emit \'tx:failed\' if it encountered a real error', function (done) {
+      pendingTxTracker.once('tx:failed', (txMeta, err) => {
         if (err.message === 'im some real error') {
           const matchingTx = txList.find(tx => tx.id === txMeta.id)
           matchingTx.resolve()
@@ -265,7 +265,7 @@ describe('PendingTransactionTracker', function () {
       })
 
       pendingTxTracker.getPendingTransactions = () => txList
-      pendingTxTracker._resubmitTx = async (tx) => { throw new TypeError('im some real error') }
+      pendingTxTracker.submitTx = async (tx) => { throw new TypeError('im some real error') }
       Promise.all(txList.map((tx) => tx.processed))
       .then((txCompletedList) => done())
       .catch(done)
@@ -273,7 +273,7 @@ describe('PendingTransactionTracker', function () {
       pendingTxTracker.resubmitPendingTxs(blockStub)
     })
   })
-  describe('#_resubmitTx', function () {
+  describe('#submitTx', function () {
     const mockFirstRetryBlockNumber = '0x1'
     let txMetaToTestExponentialBackoff
 
@@ -302,7 +302,7 @@ describe('PendingTransactionTracker', function () {
 
       // Stubbing out current account state:
       // Adding the fake tx:
-      pendingTxTracker._resubmitTx(txMeta)
+      pendingTxTracker.submitTx(txMeta)
       .then(() => done())
       .catch((err) => {
        assert.ifError(err, 'should not throw an error')
@@ -316,7 +316,7 @@ describe('PendingTransactionTracker', function () {
       const enoughBalance = '0x100000'
       const mockLatestBlockNumber = '0x5'
 
-      pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
+      pendingTxTracker.submitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
       .then(() => done())
       .catch((err) => {
        assert.ifError(err, 'should not throw an error')
@@ -330,7 +330,7 @@ describe('PendingTransactionTracker', function () {
       const enoughBalance = '0x100000'
       const mockLatestBlockNumber = '0x11'
 
-      pendingTxTracker._resubmitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
+      pendingTxTracker.submitTx(txMetaToTestExponentialBackoff, mockLatestBlockNumber)
       .then(() => done())
       .catch((err) => {
        assert.ifError(err, 'should not throw an error')
