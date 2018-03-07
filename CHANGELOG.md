@@ -3,9 +3,15 @@
 ## Current Master
 
 - Fix bug that could cause MetaMask to lose all of its local data.
+## 4.2.0 Tue Mar 06 2018
+
+- Replace "Loose" wording to "Imported".
+- Replace "Unlock" wording with "Log In".
+- Add Imported Account disclaimer.
 - Allow adding custom tokens to classic ui when balance is 0
 - Allow editing of symbol and decimal info when adding custom token in new-ui
 - NewUI shapeshift form can select all coins (not just BTC)
+- Add most of Microsoft Edge support.
 
 ## 4.1.3 2018-2-28
 

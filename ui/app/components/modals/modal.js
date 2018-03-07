@@ -79,6 +79,7 @@ const MODALS = {
     contents: [
       h(DepositEtherModal, {}, []),
     ],
+    onHide: (props) => props.hideWarning(),
     mobileModalStyle: {
       width: '100%',
       height: '100%',
@@ -286,6 +287,10 @@ function mapDispatchToProps (dispatch) {
     hideModal: () => {
       dispatch(actions.hideModal())
     },
+    hideWarning: () => {
+      dispatch(actions.hideWarning())
+    },
+
   }
 }
 
@@ -308,7 +313,12 @@ Modal.prototype.render = function () {
     {
       className: 'modal',
       keyboard: false,
-      onHide: () => { this.onHide() },
+      onHide: () => {
+        if (modal.onHide) {
+          modal.onHide(this.props)
+        }
+        this.onHide()
+      },
       ref: (ref) => {
         this.modalRef = ref
       },

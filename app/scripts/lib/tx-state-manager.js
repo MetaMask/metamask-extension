@@ -4,7 +4,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const txStateHistoryHelper = require('./tx-state-history-helper')
 
-module.exports = class TransactionStateManger extends EventEmitter {
+module.exports = class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 

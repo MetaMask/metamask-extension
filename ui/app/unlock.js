@@ -71,7 +71,7 @@ UnlockScreen.prototype.render = function () {
           style: {
             margin: 10,
           },
-        }, 'Unlock'),
+        }, 'Log In'),
       ]),
 
       h('.flex-row.flex-center.flex-grow', [
@@ -104,7 +104,7 @@ UnlockScreen.prototype.render = function () {
           },
         }, 'Use classic interface'),
       ]),
-      
+
     ])
   )
 }
