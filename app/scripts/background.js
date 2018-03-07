@@ -68,10 +68,10 @@ async function initialize () {
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
-  // read from disk
-  versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
-  // fetch from extension store and merge in data
 
+  // read from disk
+  // first from preferred, async API:
+  let localStoreData
   if (localStore.isSupported) {
     let localData
     try {
@@ -82,9 +82,13 @@ async function loadStateFromPersistence () {
 
     // If localStore is supported but has not been written to yet, ignore:
     if (Object.keys(localData).length > 0) {
-      versionedData = localData
+      localStoreData = localData
     }
   }
+
+  versionedData = localStoreData ||
+                  diskStore.getState() ||
+                  migrator.generateInitialState(firstTimeState)
 
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
