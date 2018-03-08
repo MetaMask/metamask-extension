@@ -296,6 +296,13 @@ function tryUnlockMetamask (password) {
         dispatch(actions.unlockSucceeded())
         dispatch(actions.transitionForward())
         forceUpdateMetamaskState(dispatch)
+
+        background.verifySeedPhrase((err) => {
+          if (err) {
+            dispatch(actions.displayWarning(err.message))
+          }
+        })
+
       }
     })
   }
