@@ -75,7 +75,7 @@ TxView.prototype.renderButtons = function () {
           }),
         }, t('deposit')),
 
-        h('button.btn-clear.hero-balance-button', {
+        h('button.btn-clear.hero-balance-button.allcaps', {
           style: {
             marginLeft: '0.8em',
           },
