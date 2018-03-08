@@ -317,7 +317,7 @@ module.exports = class TransactionController extends EventEmitter {
     if (!sameNonceTxs.length) return
     // mark all same nonce transactions as dropped and give i a replacedBy hash
     sameNonceTxs.forEach((otherTxMeta) => {
-      if (otherTxMeta === txId) return
+      if (otherTxMeta.id === txId) return
       otherTxMeta.replacedBy = txMeta.hash
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
       this.txStateManager.setTxStatusDropped(otherTxMeta.id)
