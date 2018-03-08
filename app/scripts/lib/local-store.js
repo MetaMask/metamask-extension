@@ -34,5 +34,5 @@ module.exports = class ExtensionStore {
 }
 
 function isEmpty(obj) {
-  return 0 === Object.keys(obj).length
+  return Object.keys(obj).length === 0
 }
