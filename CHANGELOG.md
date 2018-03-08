@@ -1,7 +1,9 @@
 # Changelog
 
 ## Current Master
+
 - Fix flashing to Log in screen after logging in or restoring from seed phrase.
+- Add support for `trace_transaction` - allows you to use the Remix debugger
 
 ## 4.2.0 Tue Mar 06 2018
 
