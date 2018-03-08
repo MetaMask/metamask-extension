@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import classnames from 'classnames'
 import {createNewVaultAndKeychain} from '../../../../ui/app/actions'
 import LoadingScreen from './loading-screen'
 import Breadcrumbs from './breadcrumbs'
@@ -14,6 +15,7 @@ class CreatePasswordScreen extends Component {
     goToImportWithSeedPhrase: PropTypes.func.isRequired,
     goToImportAccount: PropTypes.func.isRequired,
     next: PropTypes.func.isRequired,
+    isMascara: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -53,14 +55,17 @@ class CreatePasswordScreen extends Component {
   }
 
   render () {
-    const { isLoading, goToImportWithSeedPhrase } = this.props
-
+    const { isLoading, goToImportWithSeedPhrase, isMascara } = this.props
+    //
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
         <div>
-          <div className="first-view-main">
-            <div className="mascara-info first-view-phone-invisible">
+          <div className={classnames({
+            'first-view-main': !isMascara,
+            'first-view-main__mascara': isMascara,
+          })}>
+            {isMascara && <div className="mascara-info first-view-phone-invisible">
               <Mascot
                 animationEventEmitter={this.animationEventEmitter}
                 width="225"
@@ -72,7 +77,7 @@ class CreatePasswordScreen extends Component {
               <div className="info">
                 It allows you to hold ether & tokens, and interact with decentralized applications.
               </div>
-            </div>
+            </div>}
             <div className="create-password">
               <div className="create-password__title">
                 Create Password
@@ -127,7 +132,7 @@ class CreatePasswordScreen extends Component {
 }
 
 export default connect(
-  ({ appState: { isLoading } }) => ({ isLoading }),
+  ({ appState: { isLoading }, metamask: { isMascara } }) => ({ isLoading, isMascara }),
   dispatch => ({
     createAccount: password => dispatch(createNewVaultAndKeychain(password)),
   })

@@ -75,6 +75,8 @@ var actions = {
   resetAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
+  CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
+  closeWelcomeScreen,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
@@ -902,6 +904,12 @@ function showNewVaultSeed (seed) {
   return {
     type: actions.SHOW_NEW_VAULT_SEED,
     value: seed,
+  }
+}
+
+function closeWelcomeScreen () {
+  return {
+    type: actions.CLOSE_WELCOME_SCREEN,
   }
 }
 

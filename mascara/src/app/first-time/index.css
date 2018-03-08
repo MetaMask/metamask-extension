@@ -8,16 +8,27 @@
   flex: 1 0 auto;
 }
 
-.alpha-warning {
+.alpha-warning,
+.alpha-warning-welcome-screen {
   background: #f7861c;
   color: #fff;
   line-height: 2em;
   padding-left: 10vw;
 }
 
-.first-view-main {
+.alpha-warning-welcome-screen {
+  padding-left: 0;
+  text-align: center;
+}
+
+.first-view-main,
+.first-view-main__mascara {
   display: flex;
   flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.first-view-main__mascara {
   justify-content: space-between;
 }
 
@@ -99,7 +110,8 @@
     width: initial !important;
   }
 
-  .alpha-warning {
+  .alpha-warning,
+  .alpha-warning-welcome-screen {
     line-height: 1em;
     padding: 8px 12px;
   }
