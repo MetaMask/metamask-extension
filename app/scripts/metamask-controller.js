@@ -12,6 +12,7 @@ const createFilterMiddleware = require('eth-json-rpc-filters')
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
+const createTraceMiddleware = require('eth-json-rpc-middleware/trace-transaction')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
@@ -457,9 +458,15 @@ module.exports = class MetamaskController extends EventEmitter {
       blockTracker: this.provider._blockTracker,
     })
 
+    // create filter polyfill middleware
+    const traceMiddleware = createTraceMiddleware({
+      provider: this.provider,
+    })
+
     engine.push(createOriginMiddleware({ origin }))
     engine.push(createLoggerMiddleware({ origin }))
     engine.push(filterMiddleware)
+    engine.push(traceMiddleware)
     engine.push(createProviderMiddleware({ provider: this.provider }))
 
     // setup connection
