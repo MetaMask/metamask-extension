@@ -51,8 +51,7 @@ ShapeshiftForm.prototype.componentWillMount = function () {
   this.props.shapeShiftSubview()
 }
 
-ShapeshiftForm.prototype.onCoinChange = function (e) {
-  const coin = e.target.value
+ShapeshiftForm.prototype.onCoinChange = function (coin) {
   this.setState({
     depositCoin: coin,
     errorMessage: '',
@@ -133,7 +132,7 @@ ShapeshiftForm.prototype.renderMarketInfo = function () {
 }
 
 ShapeshiftForm.prototype.renderQrCode = function () {
-  const { depositAddress, isLoading } = this.state
+  const { depositAddress, isLoading, depositCoin } = this.state
   const qrImage = qrcode(4, 'M')
   qrImage.addData(depositAddress)
   qrImage.make()
@@ -141,7 +140,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
   return h('div.shapeshift-form', {}, [
 
     h('div.shapeshift-form__deposit-instruction', [
-      'Deposit your BTC to the address below:',
+      `Deposit your ${depositCoin.toUpperCase()} to the address below:`,
     ]),
 
     h('div', depositAddress),
@@ -182,7 +181,7 @@ ShapeshiftForm.prototype.render = function () {
 
               h(SimpleDropdown, {
                 selectedOption: this.state.depositCoin,
-                onSelect: this.onCoinChange,
+                onSelect: (coin) => this.onCoinChange(coin),
                 options: Object.entries(coinOptions).map(([coin]) => ({
                   value: coin.toLowerCase(),
                   displayValue: coin,

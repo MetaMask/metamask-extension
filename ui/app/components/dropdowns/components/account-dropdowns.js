@@ -281,7 +281,7 @@ class AccountDropdowns extends Component {
           dropdownWrapperStyle,
         ),
         isOpen: optionsMenuActive,
-        onClickOutside: () => {
+        onClickOutside: (event) => {
           const { classList } = event.target
           const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
           if (optionsMenuActive && isNotToggleElement) {

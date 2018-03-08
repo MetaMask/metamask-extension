@@ -89,6 +89,8 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
     betaUI: state.metamask.featureFlags.betaUI,
+    isRevealingSeedWords: state.metamask.isRevealingSeedWords,
+    Qr: state.appState.Qr,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -239,6 +241,9 @@ App.prototype.renderAppBar = function () {
     showNetworkDropdown,
     hideNetworkDropdown,
     currentView,
+    isInitialized,
+    betaUI,
+    isPopup,
   } = this.props
 
   if (window.METAMASK_UI_TYPE === 'notification') {
@@ -283,8 +288,10 @@ App.prototype.renderAppBar = function () {
             }),
 
             // metamask name
-            h('h1', 'MetaMask'),
-
+            h('.flex-row', [
+              h('h1', 'MetaMask'),
+              h('div.beta-label', 'BETA'),
+            ]),
           ]),
 
           h('div.header__right-actions', [
@@ -316,6 +323,9 @@ App.prototype.renderAppBar = function () {
           ]),
         ]),
       ]),
+
+      !isInitialized && !isPopup && betaUI && h('h2.alpha-warning',
+        'Please be aware that this version is still under development'),
 
     ])
   )
@@ -354,9 +364,17 @@ App.prototype.renderBackButton = function (style, justArrow = false) {
 App.prototype.renderPrimary = function () {
   log.debug('rendering primary')
   var props = this.props
-  const {isMascara, isOnboarding, betaUI} = props
+  const {
+    isMascara,
+    isOnboarding,
+    betaUI,
+    isRevealingSeedWords,
+    Qr,
+  } = props
+  const isMascaraOnboarding = isMascara && isOnboarding
+  const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
 
-  if ((isMascara || betaUI) && isOnboarding && !props.isPopup) {
+  if (isMascaraOnboarding || isBetaUIOnboarding) {
     return h(MascaraFirstTime)
   }
 
@@ -380,7 +398,7 @@ App.prototype.renderPrimary = function () {
   if (props.isInitialized && props.forgottenPassword) {
     log.debug('rendering restore vault screen')
     return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
-  } else if (!props.isInitialized && !props.isUnlocked) {
+  } else if (!props.isInitialized && !props.isUnlocked && !isRevealingSeedWords) {
     log.debug('rendering menu screen')
     return props.isPopup
       ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})
@@ -492,7 +510,7 @@ App.prototype.renderPrimary = function () {
             width: '285px',
           },
         }, [
-          h(QrView, {key: 'qr'}),
+          h(QrView, {key: 'qr', Qr}),
         ]),
       ])
 

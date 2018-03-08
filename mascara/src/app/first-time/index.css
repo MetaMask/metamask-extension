@@ -1,16 +1,18 @@
 
 .first-time-flow {
-  height: 100vh;
   width: 100vw;
-  background-color: #FFF;
+  background-color: #fff;
   overflow: auto;
+  display: flex;
+  justify-content: center;
+  flex: 1 0 auto;
 }
 
 .alpha-warning {
   background: #f7861c;
   color: #fff;
   line-height: 2em;
-  padding-left: 2em;
+  padding-left: 10vw;
 }
 
 .first-view-main {
@@ -23,7 +25,6 @@
   display: flex;
   flex-flow: column;
   margin-top: 70px;
-  margin-right: 10vw;
   width: 35vw;
   max-width: 550px;
 }
@@ -44,8 +45,12 @@
 .buy-ether {
   display: flex;
   flex-flow: column nowrap;
-  margin: 67px 0 50px 146px;
+  margin: 67px 0 50px;
   max-width: 35rem;
+}
+
+.create-password {
+  margin: 67px 0 50px;
 }
 
 .import-account {
@@ -413,6 +418,10 @@ button.backup-phrase__confirm-seed-option:hover {
   line-height: 23px;
 }
 
+.import-account__input-label__disabled {
+  opacity: 0.5;
+}
+
 .import-account__input {
   width: 325px !important;
 }
@@ -557,6 +566,10 @@ button.backup-phrase__confirm-seed-option:hover {
   padding: 15px;
   border: 1px solid #CDCDCD;
   background-color: #FFFFFF;
+}
+
+.first-time-flow__input__disabled {
+  opacity: 0.5;
 }
 
 .first-time-flow__input::placeholder {
