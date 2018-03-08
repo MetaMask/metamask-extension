@@ -91,21 +91,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.pendingTxTracker.on('tx:warning', (txMeta) => {
       this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:warning')
     })
-    this.pendingTxTracker.on('tx:confirmed', (txId) => {
-      this.txStateManager.setTxStatusConfirmed(txId)
-      // get the confirmed transactions nonce and from address
-      const txMeta = this.txStateManager.getTx(txId)
-      const { nonce, from } = txMeta.txParams
-      const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
-      if (!sameNonceTxs.length) return
-      // mark all same nonce transactions as dropped and give i a replacedBy hash
-      sameNonceTxs.forEach((otherTxMeta) => {
-        if (otherTxMeta === txId) return
-        otherTxMeta.replacedBy = txMeta.hash
-        this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
-        this.txStateManager.setTxStatusDropped(otherTxMeta.id)
-      })
-    })
+    this.pendingTxTracker.on('tx:confirmed', (txId) => this._markNonceDuplicatesDropped(txId))
     this.pendingTxTracker.on('tx:failed', this.txStateManager.setTxStatusFailed.bind(this.txStateManager))
     this.pendingTxTracker.on('tx:block-update', (txMeta, latestBlockNumber) => {
       if (!txMeta.firstRetryBlockNumber) {
@@ -238,7 +224,6 @@ module.exports = class TransactionController extends EventEmitter {
       txParams: originalTxMeta.txParams,
       lastGasPrice,
       loadingDefaults: false,
-      nonceSpecified: true,
     })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
@@ -264,11 +249,9 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      const nonce = txMeta.nonceSpecified ? txMeta.txParams.nonce : nonceLock.nextNonce
-      if (nonce > nonceLock.nextNonce) {
-        const message = `Specified nonce may not be larger than account's next valid nonce.`
-        throw new Error(message)
-      }
+      // if txMeta has lastGasPrice then it is a retry at same nonce with higher 
+      // gas price transaction and their for the nonce should not be calculated
+      const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
       // add nonce debugging information to txMeta
       txMeta.nonceDetails = nonceLock.nonceDetails
@@ -324,6 +307,22 @@ module.exports = class TransactionController extends EventEmitter {
 //
 //           PRIVATE METHODS
 //
+
+  _markNonceDuplicatesDropped (txId) {
+    this.txStateManager.setTxStatusConfirmed(txId)
+    // get the confirmed transactions nonce and from address
+    const txMeta = this.txStateManager.getTx(txId)
+    const { nonce, from } = txMeta.txParams
+    const sameNonceTxs = this.txStateManager.getFilteredTxList({nonce, from})
+    if (!sameNonceTxs.length) return
+    // mark all same nonce transactions as dropped and give i a replacedBy hash
+    sameNonceTxs.forEach((otherTxMeta) => {
+      if (otherTxMeta === txId) return
+      otherTxMeta.replacedBy = txMeta.hash
+      this.txStateManager.updateTx(txMeta, 'transactions/pending-tx-tracker#event: tx:confirmed reference to confirmed txHash with same nonce')
+      this.txStateManager.setTxStatusDropped(otherTxMeta.id)
+    })
+  }
 
   _updateMemstore () {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList()
