@@ -240,6 +240,15 @@ TxListItem.prototype.render = function () {
 
         ]),
       ]),
+
+      h('div.tx-list-item-retry-container', [
+
+        h('span.tx-list-item-retry-copy', 'Taking too long?'),
+
+        h('span.tx-list-item-retry-link', 'Increase the gas on your transaction'),
+        
+      ]),
+
     ]), // holding on icon from design
   ])
 }
