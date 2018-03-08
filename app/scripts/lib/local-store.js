@@ -3,6 +3,7 @@
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/local
 
 const extension = require('extensionizer')
+const { promisify } = require('util').promisify
 
 module.exports = class ExtensionStore {
   constructor() {
@@ -10,15 +11,28 @@ module.exports = class ExtensionStore {
     if (!this.isSupported) {
       log.error('Storage local API not available.')
     }
+    const local = extension.storage.local
+    this._get = promisify(local.get).bind(local)
+    this._set = promisify(local.set).bind(local)
   }
-  get() {
-    return new Promise((resolve) => {
-      extension.storage.local.get(null, resolve)
-    })
+
+  async get() {
+    if (!this.isSupported) return undefined
+    const result = await this._get()
+    // extension.storage.local always returns an obj
+    // if the object is empty, treat it as undefined
+    if (isEmpty(result)) {
+      return undefined
+    } else {
+      return result
+    }
   }
-  set(state) {
-    return new Promise((resolve) => {
-      extension.storage.local.set(state, resolve)
-    })
+
+  async set(state) {
+    return this._set(state)
   }
+}
+
+function isEmpty(obj) {
+  return 0 === Object.keys(obj).length
 }

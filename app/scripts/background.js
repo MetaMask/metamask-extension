@@ -71,36 +71,19 @@ async function loadStateFromPersistence () {
 
   // read from disk
   // first from preferred, async API:
-  let localStoreData
-  if (localStore.isSupported) {
-    let localData
-    try {
-      localData = await localStore.get()
-    } catch (err) {
-      log.error('error fetching state from local store:', err)
-    }
-
-    // If localStore is supported but has not been written to yet, ignore:
-    if (Object.keys(localData).length > 0) {
-      localStoreData = localData
-    }
-  }
-
-  versionedData = localStoreData ||
+  versionedData = (await localStore.get()) ||
                   diskStore.getState() ||
                   migrator.generateInitialState(firstTimeState)
 
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
+  if (!versionedData) {
+    throw new Error('MetaMask - migrator returned undefined')
+  }
 
   // write to disk
-  localStore.set(versionedData)
-  .catch((reason) => {
-    log.error('Problem saving migrated data', versionedData)
-  })
-  if (versionedData) {
-    diskStore.putState(versionedData)
-  }
+  if (localStore.isSupported) localStore.set(versionedData)
+  diskStore.putState(versionedData)
 
   // return just the data
   return versionedData.data
@@ -134,7 +117,7 @@ function setupController (initState) {
   // setup state persistence
   pump(
     asStream(controller.store),
-    debounce(2000),
+    debounce(1000),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
     asStream(diskStore),
@@ -154,8 +137,7 @@ function setupController (initState) {
       .catch((err) => {
         log.error('error setting state in local store:', err)
       })
-    } else { log.error('local store not supported') }
-
+    }
     return state
   }
 
