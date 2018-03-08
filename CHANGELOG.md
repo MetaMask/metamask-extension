@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Fix flashing to Log in screen after logging in or restoring from seed phrase.
 
 - Fix bug that could cause MetaMask to lose all of its local data.
 ## 4.2.0 Tue Mar 06 2018
