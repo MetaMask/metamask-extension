@@ -14,6 +14,7 @@
   justify-content: center;
   flex: 1 0 auto;
   font-weight: 400;
+  font-family: Roboto;
 }
 
 .alpha-warning {
@@ -592,6 +593,7 @@ button.backup-phrase__confirm-seed-option:hover {
   color: #FFFFFF;
   font-size: 20px;
   font-weight: 500;
+  font-family: Roboto;
   line-height: 26px;
   text-align: center;
   text-transform: uppercase;

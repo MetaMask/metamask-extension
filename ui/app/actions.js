@@ -749,7 +749,7 @@ function updateTransaction (txData) {
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
-    log.debug(`actions calling background.updateAndApproveTx`)
+    log.debug(`actions calling background.updateAndApproveTx.`)
     background.updateAndApproveTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
