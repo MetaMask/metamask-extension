@@ -9,7 +9,7 @@ class NotificationManager {
   // Public
   //
 
-  showPopup () {
+  showPopup (cb) {
     this._getPopup((err, popup) => {
       if (err) throw err
 
@@ -23,6 +23,9 @@ class NotificationManager {
           type: 'popup',
           width,
           height,
+        }, (win) => {
+          // naming of popup window and a popup in chrome extension sense is confusing
+          cb((win.type == 'popup'));
         })
       }
     })
