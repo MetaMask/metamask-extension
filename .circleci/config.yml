@@ -1,4 +1,18 @@
- version: 2
+version: 2
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
+
 jobs:
   build:
     # working_directory: ~/mern-starter
@@ -38,15 +52,3 @@ jobs:
       # - store_artifacts:
       #     path: coverage
       #     prefix: coverage
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
