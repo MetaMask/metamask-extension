@@ -9,6 +9,7 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil, addCurrencies } = require('../../conversion-util')
+const GasFeeDisplay = require('../send/gas-fee-display-v2')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -73,6 +74,18 @@ function mapDispatchToProps (dispatch) {
       dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
+    showCustomizeGasModal: (txMeta, sendGasLimit, sendGasPrice, sendGasTotal) => {
+      const { id, txParams } = txMeta
+      const { gas: txGasLimit, gasPrice: txGasPrice } = txParams
+
+      dispatch(actions.updateSend({
+        gasLimit: sendGasLimit || txGasLimit,
+        gasPrice: sendGasPrice || txGasPrice,
+        editingTransactionId: id,
+        gasTotal: sendGasTotal,
+      }))
+      dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
+    },
   }
 }
 
@@ -157,6 +170,7 @@ ConfirmSendEther.prototype.getGasFee = function () {
   return {
     FIAT,
     ETH,
+    gasFeeInHex: txFeeBn.toString(16),
   }
 }
 
@@ -164,7 +178,7 @@ ConfirmSendEther.prototype.getData = function () {
   const { identities } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
-  const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH } = this.getGasFee()
+  const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH, gasFeeInHex } = this.getGasFee()
   const { FIAT: amountInFIAT, ETH: amountInETH } = this.getAmount()
 
   const totalInFIAT = addCurrencies(gasFeeInFIAT, amountInFIAT, {
@@ -192,11 +206,20 @@ ConfirmSendEther.prototype.getData = function () {
     amountInETH,
     totalInFIAT,
     totalInETH,
+    gasFeeInHex,
   }
 }
 
 ConfirmSendEther.prototype.render = function () {
-  const { editTransaction, currentCurrency, clearSend } = this.props
+  const {
+    editTransaction,
+    currentCurrency,
+    clearSend,
+    conversionRate,
+    currentCurrency: convertedCurrency,
+    showCustomizeGasModal,
+    send: { gasTotal, gasLimit: sendGasLimit, gasPrice: sendGasPrice },
+  } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
 
@@ -212,10 +235,16 @@ ConfirmSendEther.prototype.render = function () {
     memo,
     gasFeeInFIAT,
     gasFeeInETH,
+    gasFeeInHex,
     amountInFIAT,
     totalInFIAT,
     totalInETH,
   } = this.getData()
+
+  const title = txMeta.lastGasPrice ? 'Overwrite Transaction' : 'Confirm'
+  const subtitle = txMeta.lastGasPrice
+    ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
+    : 'Please review your transaction.'
 
   // This is from the latest master
   // It handles some of the errors that we are not currently handling
@@ -235,11 +264,11 @@ ConfirmSendEther.prototype.render = function () {
       // Main Send token Card
       h('div.page-container', [
         h('div.page-container__header', [
-          h('button.confirm-screen-back-button', {
+          !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
             onClick: () => editTransaction(txMeta),
           }, 'Edit'),
-          h('div.page-container__title', 'Confirm'),
-          h('div.page-container__subtitle', `Please review your transaction.`),
+          h('div.page-container__title', title),
+          h('div.page-container__subtitle', subtitle),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
           h('div.confirm-screen-account-wrapper', [
@@ -302,9 +331,12 @@ ConfirmSendEther.prototype.render = function () {
           h('section.flex-row.flex-center.confirm-screen-row', [
             h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${gasFeeInFIAT} ${currentCurrency.toUpperCase()}`),
-
-              h('div.confirm-screen-row-detail', `${gasFeeInETH} ETH`),
+              h(GasFeeDisplay, {
+                gasTotal: gasTotal || gasFeeInHex,
+                conversionRate,
+                convertedCurrency,
+                onClick: () => showCustomizeGasModal(txMeta, sendGasLimit, sendGasPrice, gasTotal),
+              }),
             ]),
           ]),
 
