@@ -2,19 +2,23 @@ version: 2
 
 workflows:
   version: 2
-  build_and_test:
+  full_test:
     jobs:
       - prep-deps
       - test-lint:
           requires:
             - prep-deps
-      - test-coverage:
+      - test-unit:
           requires:
             - prep-deps
-      - test-integration:
+      - test-integration-mascara:
           requires:
             - prep-deps
-
+            - prep-scss
+      - test-integration-flat:
+          requires:
+            - prep-deps
+            - prep-scss
 
 jobs:
   prep-deps:
@@ -34,6 +38,26 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+  prep-scss:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Get Cache key
+          command: ls -laR ui/app/css/ > scss_checksum
+      - restore_cache:
+          key: scss-cache-{{ checksum "scss_checksum" }}
+      - run:
+          name: Build Scss
+          command: gulp build:scss
+      - save_cache:
+          key: scss-cache-{{ checksum "scss_checksum" }}
+          paths:
+            - ui/app/css/output
+
   test-lint:
     docker:
       - image: circleci/node:8-browsers
@@ -44,7 +68,8 @@ jobs:
       - run:
           name: Test
           command: npm run lint
-  test-coverage:
+
+  test-unit:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -54,13 +79,29 @@ jobs:
       - run:
           name: test:coverage
           command: npm run test:coverage
-  test-integration:
+
+  test-integration-flat:
     docker:
       - image: circleci/node:8-browsers
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
-          name: test:integration
-          command: npm run test:integration
+          name: test:integration:flat
+          command: npm run test:flat
+
+  test-integration-mascara:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: scss-cache-{{ checksum "scss_checksum" }}
+      - run:
+          name: test:integration:mascara
+          command: npm run test:mascara
