@@ -8,19 +8,11 @@ workflows:
       - test:
           requires:
             - build
-          filters:
-            branches:
-              only: master
-
 
 jobs:
   build:
-    # working_directory: ~/mern-starter
-    # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
       - image: circleci/node:8-browsers
-    # # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
-    #   - image: mongo:3.4.4
     steps:
       - checkout
       - run:
@@ -43,12 +35,3 @@ jobs:
       - run:
           name: Test
           command: npm test
-      # - run:
-      #     name: Generate code coverage
-      #     command: './node_modules/.bin/nyc report --reporter=text-lcov'
-      # - store_artifacts:
-      #     path: test-results.xml
-      #     prefix: tests
-      # - store_artifacts:
-      #     path: coverage
-      #     prefix: coverage
