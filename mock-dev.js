@@ -15,7 +15,6 @@
 const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const pipe = require('mississippi').pipe
 const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
