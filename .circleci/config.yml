@@ -6,8 +6,8 @@ workflows:
     jobs:
       - prep-deps
       - prep-scss:
-        requires:
-          - prep-deps
+          requires:
+            - prep-deps
       - test-lint:
           requires:
             - prep-deps
