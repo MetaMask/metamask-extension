@@ -68,7 +68,7 @@ jobs:
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
-          command: ls -laR ui/app/css/ > scss_checksum
+          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
       - run:
           name: Build for integration tests
           command: npm run test:integration:build
@@ -118,7 +118,7 @@ jobs:
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
-          command: ls -laR ui/app/css/ > scss_checksum
+          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
       - restore_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
@@ -144,7 +144,7 @@ jobs:
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
-          command: ls -laR ui/app/css/ > scss_checksum
+          command: find ui/app/css -type f -exec md5sum {} \; | sort -k 2 > scss_checksum
       - restore_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
