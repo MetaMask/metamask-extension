@@ -543,6 +543,7 @@ SendTransactionScreen.prototype.getEditedTx = function () {
     selectedToken,
     editingTransactionId,
     unapprovedTxs,
+    nonce,
   } = this.props
 
   const editingTx = {
@@ -552,6 +553,10 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       gas: ethUtil.addHexPrefix(gas),
       gasPrice: ethUtil.addHexPrefix(gasPrice),
     },
+  }
+
+  if (nonce) {
+    editingTx.txParams.nonce = ethUtil.addHexPrefix(nonce)
   }
 
   if (selectedToken) {

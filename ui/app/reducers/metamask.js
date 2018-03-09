@@ -38,6 +38,8 @@ function reduceMetamask (state, action) {
       errors: {},
       maxModeOn: false,
       editingTransactionId: null,
+      forceGasMin: null,
+      nonce: null,
     },
     coinOptions: {},
     useBlockie: false,
@@ -298,6 +300,8 @@ function reduceMetamask (state, action) {
           memo: '',
           errors: {},
           editingTransactionId: null,
+          forceGasMin: null,
+          nonce: null,
         },
       })
 

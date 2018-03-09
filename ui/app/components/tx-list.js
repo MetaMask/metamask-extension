@@ -74,9 +74,10 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     address: transaction.txParams.to,
     transactionStatus: transaction.status,
     transactionAmount: transaction.txParams.value,
-    transActionId: transaction.id,
+    transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
+    transactionTime: transaction.time,
   }
 
   const {
@@ -84,29 +85,31 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionStatus,
     transactionAmount,
     dateString,
-    transActionId,
+    transactionId,
     transactionHash,
     transactionNetworkId,
+    transactionTime,
   } = props
   const { showConfTxPage } = this.props
 
   const opts = {
-    key: transActionId || transactionHash,
+    key: transactionId || transactionHash,
     txParams: transaction.txParams,
     transactionStatus,
-    transActionId,
+    transactionId,
     dateString,
     address,
     transactionAmount,
     transactionHash,
     conversionRate,
     tokenInfoGetter: this.tokenInfoGetter,
+    transactionTime,
   }
 
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
-    opts.onClick = () => showConfTxPage({id: transActionId})
+    opts.onClick = () => showConfTxPage({id: transactionId})
     opts.transactionStatus = 'Not Started'
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)

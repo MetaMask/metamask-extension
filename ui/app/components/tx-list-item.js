@@ -9,18 +9,26 @@ abiDecoder.addABI(abi)
 const Identicon = require('./identicon')
 const contractMap = require('eth-contract-metadata')
 
+const actions = require('../actions')
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
 
-module.exports = connect(mapStateToProps)(TxListItem)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
 
 function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
     currentCurrency: getCurrentCurrency(state),
     tokenExchangeRates: state.metamask.tokenExchangeRates,
+    selectedAddressTxList: state.metamask.selectedAddressTxList,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
   }
 }
 
@@ -167,12 +175,32 @@ TxListItem.prototype.getSendTokenTotal = async function () {
   }
 }
 
+TxListItem.prototype.showRetryButton = function () {
+  const {
+    transactionStatus,
+    transactionTime,
+    selectedAddressTxList,
+    transactionId,
+    txParams,
+  } = this.props
+  const currentNonce = txParams.nonce
+  const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
+  const isLastWithNonce = currentNonceTxs[currentNonceTxs.length - 1].id === transactionId
+
+  return transactionStatus === 'submitted' && isLastWithNonce && Date.now() - transactionTime > 5000
+}
+
+TxListItem.prototype.resubmit = function () {
+  const { transactionId } = this.props
+  this.props.retryTransaction(transactionId)
+}
+
 TxListItem.prototype.render = function () {
   const {
     transactionStatus,
     transactionAmount,
     onClick,
-    transActionId,
+    transactionId,
     dateString,
     address,
     className,
@@ -181,8 +209,8 @@ TxListItem.prototype.render = function () {
   const showFiatTotal = transactionAmount !== '0x0' && fiatTotal
 
   return h(`div${className || ''}`, {
-    key: transActionId,
-    onClick: () => onClick && onClick(transActionId),
+    key: transactionId,
+    onClick: () => onClick && onClick(transactionId),
   }, [
     h(`div.flex-column.tx-list-item-wrapper`, {}, [
 
@@ -241,12 +269,17 @@ TxListItem.prototype.render = function () {
         ]),
       ]),
 
-      h('div.tx-list-item-retry-container', [
+      this.showRetryButton() && h('div.tx-list-item-retry-container', [
 
         h('span.tx-list-item-retry-copy', 'Taking too long?'),
 
-        h('span.tx-list-item-retry-link', 'Increase the gas on your transaction'),
-        
+        h('span.tx-list-item-retry-link', {
+          onClick: (event) => {
+            event.stopPropagation()
+            this.resubmit()
+          },
+        }, 'Increase the gas on your transaction'),
+
       ]),
 
     ]), // holding on icon from design

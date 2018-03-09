@@ -1228,8 +1228,10 @@ function retryTransaction (txId) {
       if (err) {
         return dispatch(actions.displayWarning(err.message))
       }
+      const { selectedAddressTxList } = newState
+      const { id: newTxId } =  selectedAddressTxList[selectedAddressTxList.length - 1]
       dispatch(actions.updateMetamaskState(newState))
-      dispatch(actions.viewPendingTx(txId))
+      dispatch(actions.viewPendingTx(newTxId))
     })
   }
 }

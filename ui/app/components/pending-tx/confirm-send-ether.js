@@ -36,13 +36,29 @@ function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(actions.clearSend()),
     editTransaction: txMeta => {
-      const { id, txParams } = txMeta
+      const { id, txParams, lastGasPrice } = txMeta
       const {
         gas: gasLimit,
         gasPrice,
         to,
         value: amount,
       } = txParams
+
+      let forceGasMin
+      let nonce
+      if (lastGasPrice) {
+        const stripped = ethUtil.stripHexPrefix(lastGasPrice)
+        forceGasMin = ethUtil.addHexPrefix(addCurrencies(stripped, MIN_GAS_PRICE_HEX, {
+          aBase: 16,
+          bBase: 16,
+          toNumericBase: 'hex',
+          fromDenomination: 'WEI',
+          toDenomination: 'GWEI',
+        }))
+
+        nonce = txParams.nonce
+      }
+
       dispatch(actions.updateSend({
         gasLimit,
         gasPrice,
@@ -51,6 +67,8 @@ function mapDispatchToProps (dispatch) {
         amount,
         errors: { to: null, amount: null },
         editingTransactionId: id,
+        forceGasMin,
+        nonce,
       }))
       dispatch(actions.showSendPage())
     },
