@@ -38,6 +38,10 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+      - run:
+          name: Install Firefox
+          command: sudo apt-get install firefox; firefox_cmd=`which firefox`; sudo rm -f $firefox_cmd; sudo ln -s `which firefox.ubuntu` $firefox_cmd
+
   prep-scss:
     docker:
       - image: circleci/node:8-browsers
@@ -49,8 +53,6 @@ jobs:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
           command: ls -laR ui/app/css/ > scss_checksum
-      - restore_cache:
-          key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
           name: Build for integration tests
           command: npm run test:integration:build
