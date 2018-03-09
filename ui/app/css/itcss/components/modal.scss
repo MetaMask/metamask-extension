@@ -787,6 +787,10 @@
         width: auto;
         flex: 1;
       }
+
+      @media screen and (max-width: 575px) {
+        width: auto;
+      }
     }
   }
 

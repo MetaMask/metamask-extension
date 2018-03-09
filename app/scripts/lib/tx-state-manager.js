@@ -16,7 +16,7 @@ const txStateHistoryHelper = require('./tx-state-history-helper')
   //    - `'failed'` the tx failed for some reason, included on tx data.
   //    - `'dropped'` the tx nonce was already used
 
-module.exports = class TransactionStateManger extends EventEmitter {
+module.exports = class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 

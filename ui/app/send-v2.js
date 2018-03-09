@@ -361,8 +361,9 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
     })
   }
 
+  const verifyTokenBalance = selectedToken && tokenBalance !== null
   let sufficientTokens
-  if (selectedToken) {
+  if (verifyTokenBalance) {
     sufficientTokens = isTokenBalanceSufficient({
       tokenBalance,
       amount,
@@ -377,7 +378,7 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
 
   if (conversionRate && !sufficientBalance) {
     amountError = 'Insufficient funds.'
-  } else if (selectedToken && !sufficientTokens) {
+  } else if (verifyTokenBalance && !sufficientTokens) {
     amountError = 'Insufficient tokens.'
   } else if (amountLessThanZero) {
     amountError = 'Can not send negative amounts of ETH.'
@@ -396,14 +397,15 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
     amount,
     setMaxModeTo,
     maxModeOn,
+    gasTotal,
   } = this.props
 
   return h('div.send-v2__form-row', [
 
-     h('div.send-v2__form-label', [
+    h('div.send-v2__form-label', [
       'Amount:',
       this.renderErrorMessage('amount'),
-      !errors.amount && h('div.send-v2__amount-max', {
+      !errors.amount && gasTotal && h('div.send-v2__amount-max', {
         onClick: (event) => {
           event.preventDefault()
           setMaxModeTo(true)
@@ -491,9 +493,12 @@ SendTransactionScreen.prototype.renderFooter = function () {
     goHome,
     clearSend,
     gasTotal,
+    tokenBalance,
+    selectedToken,
     errors: { amount: amountError, to: toError },
   } = this.props
 
+  const missingTokenBalance = selectedToken && !tokenBalance
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
@@ -504,7 +509,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
       },
     }, 'Cancel'),
     h('button.btn-clear.page-container__footer-button', {
-      disabled: !noErrors || !gasTotal,
+      disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
     }, 'Next'),
   ])

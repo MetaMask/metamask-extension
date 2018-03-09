@@ -132,8 +132,6 @@ function reduceMetamask (state, action) {
 
     case actions.SHOW_NEW_VAULT_SEED:
       return extend(metamaskState, {
-        isUnlocked: true,
-        isInitialized: false,
         isRevealingSeedWords: true,
         seedWords: action.value,
       })

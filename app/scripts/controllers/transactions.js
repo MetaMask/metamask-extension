@@ -3,7 +3,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
-const TransactionStateManger = require('../lib/tx-state-manager')
+const TransactionStateManager = require('../lib/tx-state-manager')
 const TxGasUtil = require('../lib/tx-gas-utils')
 const PendingTransactionTracker = require('../lib/pending-tx-tracker')
 const NonceTracker = require('../lib/nonce-tracker')
@@ -37,7 +37,7 @@ module.exports = class TransactionController extends EventEmitter {
     this.query = new EthQuery(this.provider)
     this.txGasUtil = new TxGasUtil(this.provider)
 
-    this.txStateManager = new TransactionStateManger({
+    this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
       getNetwork: this.getNetwork.bind(this),
