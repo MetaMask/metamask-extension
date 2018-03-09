@@ -54,8 +54,8 @@ jobs:
       - restore_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
-          name: Build Scss
-          command: gulp build:scss
+          name: Build for integration tests
+          command: test:integration:build
       - save_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
           paths:
