@@ -1,6 +1,5 @@
 npm-debug.log
 node_modules
-package-lock.json
 
 app/bower_components
 test/bower_components
