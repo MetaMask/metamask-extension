@@ -233,8 +233,6 @@ ConfirmSendEther.prototype.render = function () {
       name: toName,
     },
     memo,
-    gasFeeInFIAT,
-    gasFeeInETH,
     gasFeeInHex,
     amountInFIAT,
     totalInFIAT,

@@ -1271,7 +1271,7 @@ function retryTransaction (txId) {
         return dispatch(actions.displayWarning(err.message))
       }
       const { selectedAddressTxList } = newState
-      const { id: newTxId } =  selectedAddressTxList[selectedAddressTxList.length - 1]
+      const { id: newTxId } = selectedAddressTxList[selectedAddressTxList.length - 1]
       dispatch(actions.updateMetamaskState(newState))
       dispatch(actions.viewPendingTx(newTxId))
     })
