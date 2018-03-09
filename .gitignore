@@ -1,10 +1,11 @@
 npm-debug.log
 node_modules
-package-lock.json
 
 app/bower_components
 test/bower_components
 package
+
+.idea
 
 temp
 .tmp
@@ -23,6 +24,9 @@ test/integration/bundle.js
 test/background.js
 test/bundle.js
 test/test-bundle.js
+
+#ignore css output and sourcemaps
+ui/app/css/output/
 
 notes.txt
 

@@ -1,8 +1,40 @@
+
 .first-time-flow {
-  height: 100vh;
   width: 100vw;
-  background-color: #FFF;
+  background-color: #fff;
   overflow: auto;
+  display: flex;
+  justify-content: center;
+  flex: 1 0 auto;
+}
+
+.alpha-warning {
+  background: #f7861c;
+  color: #fff;
+  line-height: 2em;
+  padding-left: 10vw;
+}
+
+.first-view-main {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.mascara-info {
+  display: flex;
+  flex-flow: column;
+  margin-top: 70px;
+  width: 35vw;
+  max-width: 550px;
+}
+
+.mascara-info :first-child {
+  align-self: flex-end;
+}
+
+.info {
+  font-size: 19px;
 }
 
 .create-password,
@@ -13,8 +45,16 @@
 .buy-ether {
   display: flex;
   flex-flow: column nowrap;
-  margin: 67px 0 0 146px;
+  margin: 67px 0 50px;
   max-width: 35rem;
+}
+
+.create-password {
+  margin: 67px 0 50px;
+}
+
+.import-account {
+  max-width: initial;
 }
 
 @media only screen and (max-width: 575px) {
@@ -75,7 +115,7 @@
 
   .backup-phrase__tips {
     margin: 40px 0 !important;
-    width: initial !important; 
+    width: initial !important;
   }
 
   .backup-phrase__confirm-secret,
@@ -104,12 +144,14 @@
 .backup-phrase__title,
 .import-account__title,
 .buy-ether__title {
-  width: 280px;
   color: #1B344D;
   font-size: 40px;
-  font-weight: 500;
   line-height: 51px;
   margin-bottom: 24px;
+}
+
+.import-account__title {
+  margin-bottom: 10px;
 }
 
 .tou__title,
@@ -257,9 +299,7 @@
 .import-account__back-button:hover {
   margin-bottom: 18px;
   color: #22232C;
-  font-family: Montserrat Regular;
   font-size: 16px;
-  font-weight: 500;
   line-height: 21px;
 }
 
@@ -280,6 +320,12 @@ button.backup-phrase__reveal-button:hover {
 
 .import-account__secret-phrase {
   font-size: 16px;
+  margin: initial;
+}
+
+.import-account__secret-phrase::placeholder {
+  color: #9B9B9B;
+  font-weight: 200;
 }
 
 .backup-phrase__confirm-seed-options {
@@ -319,9 +365,7 @@ button.backup-phrase__confirm-seed-option:hover {
 
 .import-account__selector-label {
   color: #1B344D;
-  font-family: Montserrat Light;
-  font-size: 18px;
-  line-height: 23px;
+  font-size: 16px;
 }
 
 .import-account__dropdown {
@@ -337,7 +381,7 @@ button.backup-phrase__confirm-seed-option:hover {
   padding: 14px 21px;
   appearance: none;
   -webkit-appearance: none;
-  -moz-appearance: none; 
+  -moz-appearance: none;
   cursor: pointer;
 }
 
@@ -363,7 +407,6 @@ button.backup-phrase__confirm-seed-option:hover {
   margin-top: 10px;
   width: 422px;
   color: #FF001F;
-  font-family: Montserrat Light;
   font-size: 16px;
   line-height: 21px;
 }
@@ -371,10 +414,12 @@ button.backup-phrase__confirm-seed-option:hover {
 .import-account__input-label {
   margin-bottom: 9px;
   color: #1B344D;
-  font-family: Montserrat Light;
   font-size: 18px;
   line-height: 23px;
-  text-transform: uppercase;
+}
+
+.import-account__input-label__disabled {
+  opacity: 0.5;
 }
 
 .import-account__input {
@@ -518,9 +563,13 @@ button.backup-phrase__confirm-seed-option:hover {
   width: 350px;
   font-size: 18px;
   line-height: 24px;
-  padding: 15px 28px;
+  padding: 15px;
   border: 1px solid #CDCDCD;
   background-color: #FFFFFF;
+}
+
+.first-time-flow__input__disabled {
+  opacity: 0.5;
 }
 
 .first-time-flow__input::placeholder {
@@ -540,10 +589,10 @@ button.backup-phrase__confirm-seed-option:hover {
   text-transform: uppercase;
   margin: 35px 0 14px;
   transition: 200ms ease-in-out;
+  background-color: rgba(247, 134, 28, 0.9);
 }
 
 button.first-time-flow__button[disabled] {
-  background-color: rgba(247, 134, 28, 0.9);
   opacity: .6;
 }
 

@@ -7,7 +7,10 @@ WORKDIR /www/
 
 # install dependencies
 COPY ./package.json /www/package.json
-RUN npm install
+# RUN npm install -g node-gyp
+RUN npm install >> npm_log 2>> npm_err || true
+
+RUN cat npm_log && cat npm_err
 
 # copy over app dir
 COPY ./ /www/

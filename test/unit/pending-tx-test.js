@@ -3,7 +3,7 @@ const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
 const ObservableStore = require('obs-store')
 const clone = require('clone')
-const { createStubedProvider } = require('../stub/provider')
+const { createTestProviderTools } = require('../stub/provider')
 const PendingTransactionTracker = require('../../app/scripts/lib/pending-tx-tracker')
 const MockTxGen = require('../lib/mock-tx-gen')
 const sinon = require('sinon')
@@ -11,6 +11,7 @@ const noop = () => true
 const currentNetworkId = 42
 const otherNetworkId = 36
 const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f33003270ec03e', 'hex')
+
 
 describe('PendingTransactionTracker', function () {
   let pendingTxTracker, txMeta, txMetaNoHash, txMetaNoRawTx, providerResultStub,
@@ -39,7 +40,7 @@ describe('PendingTransactionTracker', function () {
       txParams: { from: '0x1678a085c290ebd122dc42cba69373b5953b831d'},
     }
     providerResultStub = {}
-    provider = createStubedProvider(providerResultStub)
+    provider = createTestProviderTools({ scaffold: providerResultStub }).provider
 
     pendingTxTracker = new PendingTransactionTracker({
       provider,

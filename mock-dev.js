@@ -15,14 +15,15 @@
 const extend = require('xtend')
 const render = require('react-dom').render
 const h = require('react-hyperscript')
-const pipe = require('mississippi').pipe
 const Root = require('./ui/app/root')
 const configureStore = require('./ui/app/store')
 const actions = require('./ui/app/actions')
 const states = require('./development/states')
+const backGroundConnectionModifiers = require('./development/backGroundConnectionModifiers')
 const Selector = require('./development/selector')
 const MetamaskController = require('./app/scripts/metamask-controller')
 const firstTimeState = require('./app/scripts/first-time-state')
+const ExtensionPlatform = require('./app/scripts/platforms/extension')
 const extension = require('./development/mockExtension')
 const noop = function () {}
 
@@ -67,6 +68,7 @@ const controller = new MetamaskController({
   initState: firstTimeState,
 })
 global.metamaskController = controller
+global.platform = new ExtensionPlatform
 
 //
 // User Interface
@@ -81,6 +83,11 @@ actions.update = function(stateName) {
     type: 'GLOBAL_FORCE_UPDATE',
     value: newState,
   }
+}
+
+function modifyBackgroundConnection(backgroundConnectionModifier) {
+  const modifiedBackgroundConnection = Object.assign({}, controller.getApi(), backgroundConnectionModifier)
+  actions._setBackgroundConnection(modifiedBackgroundConnection)
 }
 
 var css = MetaMaskUiCss()
@@ -111,7 +118,14 @@ function startApp(){
         },
       }, 'Reset State'),
 
-      h(Selector, { actions, selectedKey: selectedView, states, store }),
+      h(Selector, {
+        actions,
+        selectedKey: selectedView,
+        states,
+        store,
+        modifyBackgroundConnection,
+        backGroundConnectionModifiers,
+      }),
 
       h('#app-content', {
         style: {

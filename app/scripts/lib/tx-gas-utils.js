@@ -4,6 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('./util')
+const addHexPrefix = require('ethereumjs-util').addHexPrefix
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /*
@@ -12,7 +13,8 @@ its passed ethquery
 and used to do things like calculate gas of a tx.
 */
 
-module.exports = class txProvideUtil {
+module.exports = class TxGasUtil {
+
   constructor (provider) {
     this.query = new EthQuery(provider)
   }
@@ -67,7 +69,7 @@ module.exports = class txProvideUtil {
   }
 
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
-    txMeta.estimatedGas = estimatedGasHex
+    txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
     const txParams = txMeta.txParams
 
     // if gasLimit was specified and doesnt OOG,

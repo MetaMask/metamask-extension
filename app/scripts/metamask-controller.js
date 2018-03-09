@@ -37,11 +37,14 @@ const version = require('../manifest.json').version
 const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
+const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 
 module.exports = class MetamaskController extends EventEmitter {
 
   constructor (opts) {
     super()
+
+    this.defaultMaxListeners = 20
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
 
@@ -84,9 +87,7 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.infuraController.scheduleInfuraNetworkCheck()
 
-    this.blacklistController = new BlacklistController({
-      initState: initState.BlacklistController,
-    })
+    this.blacklistController = new BlacklistController()
     this.blacklistController.scheduleUpdates()
 
     // rpc provider
@@ -198,12 +199,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.store.subscribe((state) => {
       this.store.updateState({ NetworkController: state })
     })
-    this.blacklistController.store.subscribe((state) => {
-      this.store.updateState({ BlacklistController: state })
-    })
-    this.recentBlocksController.store.subscribe((state) => {
-      this.store.updateState({ RecentBlocks: state })
-    })
+
     this.infuraController.store.subscribe((state) => {
       this.store.updateState({ InfuraController: state })
     })
@@ -315,6 +311,7 @@ module.exports = class MetamaskController extends EventEmitter {
       {
         lostAccounts: this.configManager.getLostAccounts(),
         seedWords: this.configManager.getSeedWords(),
+        forgottenPassword: this.configManager.getPasswordForgotten(),
       }
     )
   }
@@ -335,7 +332,10 @@ module.exports = class MetamaskController extends EventEmitter {
       // etc
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
+      setUseBlockie: this.setUseBlockie.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
+      markPasswordForgotten: this.markPasswordForgotten.bind(this),
+      unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
 
       // coinbase
       buyEth: this.buyEth.bind(this),
@@ -345,20 +345,25 @@ module.exports = class MetamaskController extends EventEmitter {
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
+      verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
+      resetAccount: this.resetAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // vault management
       submitPassword: nodeify(keyringController.submitPassword, keyringController),
 
       // network management
+      setNetworkEndpoints: nodeify(networkController.setNetworkEndpoints, networkController),
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
 
       // PreferencesController
       setSelectedAddress: nodeify(preferencesController.setSelectedAddress, preferencesController),
       addToken: nodeify(preferencesController.addToken, preferencesController),
+      removeToken: nodeify(preferencesController.removeToken, preferencesController),
       setCurrentAccountTab: nodeify(preferencesController.setCurrentAccountTab, preferencesController),
+      setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
 
       // AddressController
       setAddressBook: nodeify(addressBookController.setAddressBook, addressBookController),
@@ -373,6 +378,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
       // txController
       cancelTransaction: nodeify(txController.cancelTransaction, txController),
+      updateTransaction: nodeify(txController.updateTransaction, txController),
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
 
@@ -448,7 +454,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({
       provider: this.provider,
-      blockTracker: this.blockTracker,
+      blockTracker: this.provider._blockTracker,
     })
 
     engine.push(createOriginMiddleware({ origin }))
@@ -561,13 +567,17 @@ module.exports = class MetamaskController extends EventEmitter {
   // Opinionated Keyring Management
   //
 
-  async addNewAccount (cb) {
+  async addNewAccount () {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
     const keyringController = this.keyringController
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(primaryKeyring)
     const newAccounts = await keyringController.getAccounts()
+
+    await this.verifySeedPhrase()
 
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
@@ -583,14 +593,43 @@ module.exports = class MetamaskController extends EventEmitter {
   // Used when creating a first vault, to allow confirmation.
   // Also used when revealing the seed words in the confirmation view.
   placeSeedWords (cb) {
+
+    this.verifySeedPhrase()
+      .then((seedWords) => {
+        this.configManager.setSeedWords(seedWords)
+        return cb(null, seedWords)
+      })
+      .catch((err) => {
+        return cb(err)
+      })
+  }
+
+  // Verifies the current vault's seed words if they can restore the
+  // accounts belonging to the current vault.
+  //
+  // Called when the first account is created and on unlocking the vault.
+  async verifySeedPhrase () {
+
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-    primaryKeyring.serialize()
-    .then((serialized) => {
-      const seedWords = serialized.mnemonic
-      this.configManager.setSeedWords(seedWords)
-      cb(null, seedWords)
-    })
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
+
+    const serialized = await primaryKeyring.serialize()
+    const seedWords = serialized.mnemonic
+
+    const accounts = await primaryKeyring.getAccounts()
+    if (accounts.length < 1) {
+      throw new Error('MetamaskController - No accounts found')
+    }
+
+    try {
+      await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
+      return seedWords
+    } catch (err) {
+      log.error(err.message)
+      throw err
+    }
   }
 
   // ClearSeedWordCache
@@ -601,6 +640,13 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
+
+  resetAccount (cb) {
+    const selectedAddress = this.preferencesController.getSelectedAddress()
+    this.txController.wipeTransactions(selectedAddress)
+    cb(null, selectedAddress)
+  }
+
 
   importAccountWithStrategy (strategy, args, cb) {
     accountImporter.importAccount(strategy, args)
@@ -786,6 +832,18 @@ module.exports = class MetamaskController extends EventEmitter {
     cb(null, this.getState())
   }
 
+  markPasswordForgotten(cb) {
+    this.configManager.setPasswordForgotten(true)
+    this.sendUpdate()
+    cb()
+  }
+
+  unMarkPasswordForgotten(cb) {
+    this.configManager.setPasswordForgotten(false)
+    this.sendUpdate()
+    cb()
+  }
+
   restoreOldVaultAccounts (migratorOutput) {
     const { serialized } = migratorOutput
     return this.keyringController.restoreKeyring(serialized)
@@ -851,6 +909,15 @@ module.exports = class MetamaskController extends EventEmitter {
     this.networkController.setRpcTarget(rpcTarget)
     await this.preferencesController.updateFrequentRpcList(rpcTarget)
     return rpcTarget
+  }
+
+  setUseBlockie (val, cb) {
+    try {
+      this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
   }
 
   recordFirstTimeInfo (initState) {

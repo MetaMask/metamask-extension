@@ -107,11 +107,15 @@ RestoreVaultScreen.prototype.render = function () {
 }
 
 RestoreVaultScreen.prototype.showInitializeMenu = function () {
-  if (this.props.forgottenPassword) {
-    this.props.dispatch(actions.backToUnlockView())
-  } else {
-    this.props.dispatch(actions.showInitializeMenu())
-  }
+  const { dispatch, forgottenPassword } = this.props
+  dispatch(actions.unMarkPasswordForgotten())
+    .then(() => {
+      if (forgottenPassword) {
+        dispatch(actions.backToUnlockView())
+      } else {
+        dispatch(actions.showInitializeMenu())
+      }
+    })
 }
 
 RestoreVaultScreen.prototype.createOnEnter = function (event) {
@@ -149,8 +153,5 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   this.warning = null
   this.props.dispatch(actions.displayWarning(this.warning))
   this.props.dispatch(actions.createNewVaultAndRestore(password, seed))
-  .catch((err) => {
-    log.error(err.message)
-  })
-
+    .catch(err => log.error(err.message))
 }
