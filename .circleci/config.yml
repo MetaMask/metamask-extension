@@ -4,27 +4,30 @@ workflows:
   version: 2
   full_test:
     jobs:
-      - prep-deps
+      - prep-deps-npm
+      - prep-deps-firefox
       - prep-scss:
           requires:
-            - prep-deps
+            - prep-deps-npm
       - test-lint:
           requires:
-            - prep-deps
+            - prep-deps-npm
       - test-unit:
           requires:
-            - prep-deps
+            - prep-deps-npm
       - test-integration-mascara:
           requires:
-            - prep-deps
+            - prep-deps-npm
+            - prep-deps-firefox
             - prep-scss
       - test-integration-flat:
           requires:
-            - prep-deps
+            - prep-deps-npm
+            - prep-deps-firefox
             - prep-scss
 
 jobs:
-  prep-deps:
+  prep-deps-npm:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -38,20 +41,21 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+
+  prep-deps-firefox:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
       - run:
-          name: Install Firefox
+          name: Download Firefox
           command: >
             wget https://ftp.mozilla.org/pub/firefox/releases/58.0/linux-x86_64/en-US/firefox-58.0.tar.bz2
             && tar xjf firefox-58.0.tar.bz2
-            && sudo rm -r /opt/firefox
-            && sudo mv firefox /opt/firefox58
-            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
-            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
       - save_cache:
           key: dependency-cache-firefox
           paths:
-            - /opt/
-            - /usr/bin
+            - firefox
 
 
   prep-scss:
@@ -102,6 +106,13 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-firefox
+      - run:
+          name: Install firefox
+          command: >
+            sudo rm -r /opt/firefox
+            && sudo mv firefox /opt/firefox58
+            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
+            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
@@ -121,6 +132,13 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-firefox
+      - run:
+          name: Install firefox
+          command: >
+            sudo rm -r /opt/firefox
+            && sudo mv firefox /opt/firefox58
+            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
+            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
