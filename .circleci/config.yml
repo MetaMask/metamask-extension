@@ -4,13 +4,20 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - test:
+      - prep-deps
+      - test-lint:
           requires:
-            - build
+            - prep-deps
+      - test-coverage:
+          requires:
+            - prep-deps
+      - test-integration:
+          requires:
+            - prep-deps
+
 
 jobs:
-  build:
+  prep-deps:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -27,7 +34,7 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-  test:
+  test-lint:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -36,4 +43,24 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Test
-          command: npm test
+          command: npm run lint
+  test-coverage:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: test:coverage
+          command: npm run test:coverage
+  test-integration:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: test:integration
+          command: npm run test:integration
