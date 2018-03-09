@@ -40,7 +40,19 @@ jobs:
             - node_modules
       - run:
           name: Install Firefox
-          command: sudo apt-get install firefox; firefox_cmd=`which firefox`; sudo rm -f $firefox_cmd; sudo ln -s `which firefox.ubuntu` $firefox_cmd
+          command: >
+            wget https://ftp.mozilla.org/pub/firefox/releases/58.0/linux-x86_64/en-US/firefox-58.0.tar.bz2
+            && tar xjf firefox-58.0.tar.bz2
+            && sudo rm -r /opt/firefox
+            && sudo mv firefox /opt/firefox58
+            && sudo mv /usr/bin/firefox /usr/bin/firefox-old
+            && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
+      - save_cache:
+          key: dependency-cache-firefox
+          paths:
+            - /opt/
+            - /usr/bin
+
 
   prep-scss:
     docker:
@@ -89,6 +101,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
+          key: dependency-cache-firefox
+      - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Scss Cache key
@@ -105,6 +119,8 @@ jobs:
       - image: circleci/node:8-browsers
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-firefox
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
