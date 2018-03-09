@@ -50,12 +50,13 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Get Cache key
+          # this allows us to checksum against a whole directory
           command: ls -laR ui/app/css/ > scss_checksum
       - restore_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
           name: Build for integration tests
-          command: test:integration:build
+          command: npm run test:integration:build
       - save_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
           paths:
