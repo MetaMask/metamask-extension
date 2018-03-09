@@ -49,7 +49,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: Get Cache key
+          name: Get Scss Cache key
           # this allows us to checksum against a whole directory
           command: ls -laR ui/app/css/ > scss_checksum
       - restore_cache:
@@ -91,6 +91,10 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Get Scss Cache key
+          # this allows us to checksum against a whole directory
+          command: ls -laR ui/app/css/ > scss_checksum
       - restore_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
@@ -104,6 +108,10 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Get Scss Cache key
+          # this allows us to checksum against a whole directory
+          command: ls -laR ui/app/css/ > scss_checksum
       - restore_cache:
           key: scss-cache-{{ checksum "scss_checksum" }}
       - run:
