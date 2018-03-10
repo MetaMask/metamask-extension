@@ -109,7 +109,7 @@ jobs:
 
   test-integration-flat-firefox:
     environment:
-      browsers: ["Firefox"]
+      browsers: '["Firefox"]'
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -137,7 +137,7 @@ jobs:
 
   test-integration-flat-chrome:
     environment:
-      browsers: ["Chrome"]
+      browsers: '["Chrome"]'
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -156,7 +156,7 @@ jobs:
 
   test-integration-mascara-firefox:
     environment:
-      browsers: ["Firefox"]
+      browsers: '["Firefox"]'
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -184,7 +184,7 @@ jobs:
 
   test-integration-mascara-chrome:
     environment:
-      browsers: ["Chrome"]
+      browsers: '["Chrome"]'
     docker:
       - image: circleci/node:8-browsers
     steps:
