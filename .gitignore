@@ -5,7 +5,9 @@ app/bower_components
 test/bower_components
 package
 
+# IDEs
 .idea
+.vscode
 
 temp
 .tmp
