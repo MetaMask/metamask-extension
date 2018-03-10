@@ -14,10 +14,8 @@ describe('Metamask popup page', function () {
     const extPath = path.resolve('dist/chrome')
     driver = buildWebDriver(extPath)
     await driver.get('chrome://extensions-frame')
-    const elems = await driver.findElements(By.xpath(
-      '//*[@id="fmmjaglpijbgopejlfapbkhhbnaagbpj"]'
-    ))
-    const extensionId = await elems[0].getAttribute('id')
+    const elems = await driver.findElements(By.className('extension-list-item-wrapper'))
+    const extensionId = await elems[1].getAttribute('id')
     await driver.get(`chrome-extension://${extensionId}/popup.html`)
     await delay(500)
   })
@@ -78,12 +76,12 @@ describe('Metamask popup page', function () {
     it('should accept password with length of eight', async () => {
       await delay(300)
       const passwordBox = await driver.findElement(By.id('password-box'))
-      const passwordBoxConfirm = driver.findElement(By.id('password-box-confirm'))
+      const passwordBoxConfirm = await driver.findElement(By.id('password-box-confirm'))
       const button = driver.findElement(By.css('button'))
 
-      passwordBox.sendKeys('12345678')
-      passwordBoxConfirm.sendKeys('12345678')
-      await delay(300)
+      passwordBox.sendKeys('123456789')
+      passwordBoxConfirm.sendKeys('123456789')
+      await delay(500)
       await button.click()
     })
 
@@ -103,7 +101,7 @@ describe('Metamask popup page', function () {
 
     it('should accept account password after lock', async () => {
       await delay(500)
-      await driver.findElement(By.id('password-box')).sendKeys('12345678')
+      await driver.findElement(By.id('password-box')).sendKeys('123456789')
       await driver.findElement(By.css('button')).click()
       await delay(500)
     })
