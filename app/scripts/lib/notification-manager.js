@@ -45,7 +45,6 @@ class NotificationManager {
   _getPopup (cb) {
     this._getWindows((err, windows) => {
       if (err) throw err
-      console.log(windows);
       cb(null, this._getPopupIn(windows))
     })
   }
@@ -64,7 +63,6 @@ class NotificationManager {
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
       // Returns notification popup
-      console.log(win);
       return (win && win.type === 'popup')
     }) : null
   }
