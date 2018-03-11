@@ -184,9 +184,7 @@ function setupController (initState) {
 function triggerUi () {
   extension.tabs.query({ active: true }, (tabs) => {
     const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
-    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup((notification) => {
-      notifcationIsOpen = notification;
-    });
+    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup();
     notifcationIsOpen = true;
   })
 }

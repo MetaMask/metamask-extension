@@ -9,29 +9,28 @@ class NotificationManager {
   // Public
   //
 
-  showPopup (cb) {
+  showPopup () {
     this._getPopup((err, popup) => {
       if (err) throw err
 
+      // Bring focus to chrome popup
       if (popup) {
-        // bring focus to existing popup
+        // bring focus to existing chrome popup
         extension.windows.update(popup.id, { focused: true })
       } else {
-        // create new popup
+        // create new notification popup
         extension.windows.create({
           url: 'notification.html',
           type: 'popup',
           width,
           height,
-        }, (win) => {
-          // naming of popup window and a popup in chrome extension sense is confusing
-          cb((win.type == 'popup'));
         })
       }
     })
   }
 
   closePopup () {
+    // closes notification popup
     this._getPopup((err, popup) => {
       if (err) throw err
       if (!popup) return
@@ -46,6 +45,7 @@ class NotificationManager {
   _getPopup (cb) {
     this._getWindows((err, windows) => {
       if (err) throw err
+      console.log(windows);
       cb(null, this._getPopupIn(windows))
     })
   }
@@ -63,6 +63,8 @@ class NotificationManager {
 
   _getPopupIn (windows) {
     return windows ? windows.find((win) => {
+      // Returns notification popup
+      console.log(win);
       return (win && win.type === 'popup')
     }) : null
   }
