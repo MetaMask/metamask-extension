@@ -1,11 +1,11 @@
 const assert = require('assert')
-const MessageManger = require('../../app/scripts/lib/message-manager')
+const MessageManager = require('../../app/scripts/lib/message-manager')
 
 describe('Message Manager', function () {
   let messageManager
 
   beforeEach(function () {
-    messageManager = new MessageManger()
+    messageManager = new MessageManager()
   })
 
   describe('#getMsgList', function () {

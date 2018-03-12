@@ -15,11 +15,8 @@ describe('# Network Controller', function () {
 
   beforeEach(function () {
 
-    nock('https://api.infura.io')
-      .get('/*/')
-      .reply(200)
-
     nock('https://rinkeby.infura.io')
+      .persist()
       .post('/metamask')
       .reply(200)
 
@@ -29,6 +26,11 @@ describe('# Network Controller', function () {
 
     networkController.initializeProvider(networkControllerProviderInit, provider)
   })
+
+  afterEach(function () {
+    nock.cleanAll()
+  })
+
   describe('network', function () {
     describe('#provider', function () {
       it('provider should be updatable without reassignment', function () {

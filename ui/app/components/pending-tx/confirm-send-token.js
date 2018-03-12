@@ -64,8 +64,8 @@ function mapDispatchToProps (dispatch, ownProps) {
     updateTokenExchangeRate: () => dispatch(actions.updateTokenExchangeRate(symbol)),
     editTransaction: txMeta => {
       const { token: { address } } = ownProps
-      const { txParams, id } = txMeta
-      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+      const { txParams = {}, id } = txMeta
+      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data) || {}
       const { params = [] } = tokenData
       const { value: to } = params[0] || {}
       const { value: tokenAmountInDec } = params[1] || {}
