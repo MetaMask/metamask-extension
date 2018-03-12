@@ -4,6 +4,8 @@
 const chrome = chrome || null
 const browser = browser || null
 const extension = require('extensionizer')
+var log = require('loglevel')
+window.log = log
 let getMessage
 
 if (extension.i18n && extension.i18n.getMessage) {
