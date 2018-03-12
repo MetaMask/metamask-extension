@@ -24,11 +24,11 @@ class JsonImportSubview extends Component {
     return (
       h('div.new-account-import-form__json', [
 
-        h('p', 'Used by a variety of different clients'),
+        h('p', t('usedByClients')),
         h('a.warning', {
           href: HELP_LINK,
           target: '_blank',
-        }, 'File import not working? Click here!'),
+        }, t('fileImportFail')),
 
         h(FileInput, {
           readAs: 'text',
@@ -43,7 +43,7 @@ class JsonImportSubview extends Component {
 
         h('input.new-account-import-form__input-password', {
           type: 'password',
-          placeholder: 'Enter password',
+          placeholder: t('enterPassword'),
           id: 'json-password-box',
           onKeyPress: this.createKeyringOnEnter.bind(this),
         }),
@@ -53,13 +53,13 @@ class JsonImportSubview extends Component {
           h('button.new-account-create-form__button-cancel', {
             onClick: () => this.props.goHome(),
           }, [
-            'CANCEL',
+            t('cancel'),
           ]),
 
           h('button.new-account-create-form__button-create', {
             onClick: () => this.createNewKeychain(),
           }, [
-            'IMPORT',
+            t('import'),
           ]),
 
         ]),
@@ -91,7 +91,7 @@ class JsonImportSubview extends Component {
     const { fileContents } = state
 
     if (!fileContents) {
-      const message = 'You must select a file to import.'
+      const message = t('needImportFile')
       return this.props.displayWarning(message)
     }
 
@@ -99,7 +99,7 @@ class JsonImportSubview extends Component {
     const password = passwordInput.value
 
     if (!password) {
-      const message = 'You must enter a password for the selected file.'
+      const message = t('needImportPassword')
       return this.props.displayWarning(message)
     }
     
