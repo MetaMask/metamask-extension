@@ -43,17 +43,15 @@ async function runSendFlowTest(assert, done) {
   let sendFromFieldItemAddress = await queryAsync($, '.account-list-item__account-name')
   assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 4', 'send from field shows correct account name')
 
-  await timeout()
   const sendFromFieldItem = await queryAsync($, '.account-list-item')
   sendFromFieldItem[0].click()
 
+  // this seems to fail if the firefox window is not in focus...
   const sendFromDropdownList = await queryAsync($, '.send-v2__from-dropdown__list')
   assert.equal(sendFromDropdownList.children().length, 4, 'send from dropdown shows all accounts')
-  console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! sendFromDropdownList.children()[1]`, sendFromDropdownList.children()[1]);
   sendFromDropdownList.children()[1].click()
 
   sendFromFieldItemAddress = await queryAsync($,   '.account-list-item__account-name')
-  console.log(`!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! sendFromFieldItemAddress[0]`, sendFromFieldItemAddress[0]);
   assert.equal(sendFromFieldItemAddress[0].textContent, 'Send Account 2', 'send from field dropdown changes account name')
 
   let sendToFieldInput = await queryAsync($, '.send-v2__to-autocomplete__input')
