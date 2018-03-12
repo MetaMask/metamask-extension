@@ -60,7 +60,7 @@ class CreatePasswordScreen extends Component {
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
-        <div>
+        <div className={classnames({ 'first-view-main-wrapper': !isMascara })}>
           <div className={classnames({
             'first-view-main': !isMascara,
             'first-view-main__mascara': isMascara,

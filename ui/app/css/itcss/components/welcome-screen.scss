@@ -10,6 +10,10 @@
     padding: 70px 0;
     background: $white;
 
+    @media screen and (max-width: 575px) {
+      padding: 0;
+    }
+
     &__info {
         display: flex;
         flex-flow: column;
@@ -20,6 +24,10 @@
         &__header {
             font-size: 1.65em;
             margin-bottom: 14px;
+
+            @media screen and (max-width: 575px) {
+              font-size: 1.5em;
+            }
         }
 
         &__copy {
@@ -27,6 +35,10 @@
             width: 400px;
             max-width: 90vw;
             text-align: center;
+
+            @media screen and (max-width: 575px) {
+              font-size: 0.9em;
+            }
         }
     }
 

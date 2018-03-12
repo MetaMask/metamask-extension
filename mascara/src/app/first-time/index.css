@@ -21,6 +21,12 @@
   text-align: center;
 }
 
+.first-view-main-wrapper {
+  display: flex;
+  width: 100%;
+  padding-left: 10vw;
+}
+
 .first-view-main,
 .first-view-main__mascara {
   display: flex;
@@ -32,15 +38,9 @@
   justify-content: space-between;
 }
 
-@media screen and (min-width: 576px) {
-  .first-view-main {
-    width: 85vw;
-  }
-}
-
-@media screen and (min-width: 769px) {
-  .first-view-main {
-    width: 80vw;
+@media screen and (max-width: 575px) {
+  .first-view-main-wrapper {
+    padding: 0;
   }
 }
 
