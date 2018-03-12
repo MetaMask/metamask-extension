@@ -519,6 +519,9 @@
   "signNotice": {
     "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
   },
+  "sigRequest": {
+    "message": "Signature Request"
+  },
   "sigRequested": {
     "message": "Signature Requested"
   },
