@@ -56,7 +56,7 @@ class CreatePasswordScreen extends Component {
 
   render () {
     const { isLoading, goToImportWithSeedPhrase, isMascara } = this.props
-    //
+
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (

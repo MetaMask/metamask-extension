@@ -298,7 +298,7 @@ App.prototype.renderAppBar = function () {
             ]),
           ]),
 
-          h('div.header__right-actions', [
+          betaUI && isInitialized && h('div.header__right-actions', [
             h('div.network-component-wrapper', {
               style: {},
             }, [
@@ -385,7 +385,7 @@ App.prototype.renderPrimary = function () {
   const isMascaraOnboarding = isMascara && isOnboarding
   const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
 
-  if (!welcomeScreenSeen && isBetaUIOnboarding && !isInitialized && !isUnlocked) {
+  if (!welcomeScreenSeen && betaUI && !isInitialized && !isUnlocked) {
     return h(WelcomeScreen)
   }
 

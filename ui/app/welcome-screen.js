@@ -11,8 +11,8 @@ class WelcomeScreen extends Component {
     closeWelcomeScreen: PropTypes.func.isRequired,
   }
 
-  constructor () {
-    super()
+  constructor(props) {
+    super(props)
     this.animationEventEmitter = new EventEmitter()
   }
 
@@ -21,7 +21,6 @@ class WelcomeScreen extends Component {
   }
 
   render () {
-    // t
     return h('div.welcome-screen', [
 
         h('div.welcome-screen__info', [
@@ -32,7 +31,7 @@ class WelcomeScreen extends Component {
             height: '225',
           }),
 
-          h('div.welcome-screen__info__header', 'Welcome to MetaMask Beta.'),
+          h('div.welcome-screen__info__header', 'Welcome to MetaMask Beta'),
 
           h('div.welcome-screen__info__copy', 'MetaMask is a secure identity vault for Ethereum.'),
 
