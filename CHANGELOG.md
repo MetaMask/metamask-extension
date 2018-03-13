@@ -2,7 +2,8 @@
 
 ## Current Master
 
-- MetaMask will now throw an error if the `to` field in txParams is not valid and also will make sure that the two field is not `null` mucking up metamask
+- Will now throw an error if the `to` field in txParams is not valid.
+- Will strip null values from the `to` field.
 - Fix flashing to Log in screen after logging in or restoring from seed phrase.
 - Increase tap areas for menu buttons on mobile
 - Change all fonts in new-ui onboarding to Roboto, size 400
