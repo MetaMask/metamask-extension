@@ -143,7 +143,7 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
 
   // true if the string has more than a space between words.
   if (seed.split('  ').length > 1) {
-    this.warning = 'there can only a space between words'
+    this.warning = 'there can only be a space between words'
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
