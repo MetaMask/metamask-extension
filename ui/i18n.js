@@ -30,5 +30,4 @@ if (extension.i18n && extension.i18n.getMessage) {
   }
 }
 
-window.h = getMessage
 module.exports = getMessage
