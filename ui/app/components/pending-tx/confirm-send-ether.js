@@ -243,7 +243,7 @@ ConfirmSendEther.prototype.render = function () {
     totalInETH,
   } = this.getData()
 
-  const title = txMeta.lastGasPrice ? 'Overwrite Transaction' : 'Confirm'
+  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : 'Confirm'
   const subtitle = txMeta.lastGasPrice
     ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
     : 'Please review your transaction.'

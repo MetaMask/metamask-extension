@@ -280,7 +280,7 @@ TxListItem.prototype.render = function () {
             event.stopPropagation()
             this.resubmit()
           },
-        }, 'Increase the gas on your transaction'),
+        }, 'Increase the gas price on your transaction'),
 
       ]),
 
