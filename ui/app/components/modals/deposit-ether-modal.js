@@ -115,7 +115,7 @@ DepositEtherModal.prototype.render = function () {
 
       h('div.page-container__title', [t('depositEther')]),
 
-      h'div.page-container__subtitle', [
+      h('div.page-container__subtitle', [
         t('needEtherInWallet'),
       ]),
 
