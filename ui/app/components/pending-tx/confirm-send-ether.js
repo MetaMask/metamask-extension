@@ -11,7 +11,7 @@ const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const {
   conversionUtil,
   addCurrencies,
-  multiplyCurrencies
+  multiplyCurrencies,
 } = require('../../conversion-util')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
 

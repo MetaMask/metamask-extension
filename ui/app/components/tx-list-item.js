@@ -178,18 +178,18 @@ TxListItem.prototype.getSendTokenTotal = async function () {
 TxListItem.prototype.showRetryButton = function () {
   const {
     transactionStatus,
-    transactionTime,
+    transactionSubmittedTime,
     selectedAddressTxList,
     transactionId,
     txParams,
   } = this.props
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
-  const currentStatusNonceTx = currentNonceTxs.filter(tx =>
-    tx.status !== 'rejected' && tx.status !== 'failed')
-  const isLastPassingWithNonce = currentStatusNonceTx[currentStatusNonceTx.length - 1].id === transactionId
+  const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => transactionStatus === 'submitted')
+  const isLastSubmittedTxWithCurrentNonce =
+    currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1].id === transactionId
 
-  return transactionStatus === 'submitted' && isLastPassingWithNonce && Date.now() - transactionTime > 30000
+  return isLastSubmittedTxWithCurrentNonce && Date.now() - transactionSubmittedTime > 30000
 }
 
 TxListItem.prototype.resubmit = function () {

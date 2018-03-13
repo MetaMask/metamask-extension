@@ -77,7 +77,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
-    transactionTime: transaction.time,
+    transactionSubmittedTime: transaction.transactionSubmittedTime,
   }
 
   const {
@@ -88,7 +88,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionId,
     transactionHash,
     transactionNetworkId,
-    transactionTime,
+    transactionSubmittedTime,
   } = props
   const { showConfTxPage } = this.props
 
@@ -103,7 +103,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionHash,
     conversionRate,
     tokenInfoGetter: this.tokenInfoGetter,
-    transactionTime,
+    transactionSubmittedTime,
   }
 
   const isUnapproved = transactionStatus === 'unapproved'
