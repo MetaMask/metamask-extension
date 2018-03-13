@@ -2,6 +2,7 @@
 
 ## Current Master
 - Fix flashing to Log in screen after logging in or restoring from seed phrase.
+- Add internationalization for Japanese, Spanish, Chinese, and Korean
 
 ## 4.2.0 Tue Mar 06 2018
 
