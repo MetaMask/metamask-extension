@@ -1,119 +1,95 @@
 const PASSWORD = 'password123'
 const reactTriggerChange = require('react-trigger-change')
+const {
+  timeout,
+  findAsync,
+  queryAsync,
+} = require('../../lib/util')
 
 async function runFirstTimeUsageTest (assert, done) {
   await timeout(4000)
 
-  const app = $('#app-content')
+  const app = await queryAsync($, '#app-content')
 
   await skipNotices(app)
 
-  await timeout()
-
   // Scroll through terms
-  const title = app.find('.create-password__title').text()
+  const title = (await findAsync(app, '.create-password__title')).text()
   assert.equal(title, 'Create Password', 'create password screen')
 
   // enter password
-  const pwBox = app.find('.first-time-flow__input')[0]
-  const confBox = app.find('.first-time-flow__input')[1]
+  const pwBox = (await findAsync(app, '.first-time-flow__input'))[0]
+  const confBox = (await findAsync(app, '.first-time-flow__input'))[1]
   pwBox.value = PASSWORD
   confBox.value = PASSWORD
   reactTriggerChange(pwBox)
   reactTriggerChange(confBox)
 
-
-  await timeout()
-
   // Create Password
-  const createButton = app.find('button.first-time-flow__button')[0]
+  const createButton = (await findAsync(app, 'button.first-time-flow__button'))[0]
   createButton.click()
 
-  await timeout(3000)
-
-  const created = app.find('.unique-image__title')[0]
+  const created = (await findAsync(app, '.unique-image__title'))[0]
   assert.equal(created.textContent, 'Your unique account image', 'unique image screen')
 
   // Agree button
-  let button = app.find('button')[0]
+  let button = (await findAsync(app, 'button'))[0]
   assert.ok(button, 'button present')
   button.click()
-
-  await timeout(1000)
 
   await skipNotices(app)
 
   // secret backup phrase
-  const seedTitle = app.find('.backup-phrase__title')[0]
+  const seedTitle = (await findAsync(app, '.backup-phrase__title'))[0]
   assert.equal(seedTitle.textContent, 'Secret Backup Phrase', 'seed phrase screen')
-  app.find('.backup-phrase__reveal-button').click()
+  ;(await findAsync(app, '.backup-phrase__reveal-button')).click()
+  const seedPhrase = (await findAsync(app, '.backup-phrase__secret-words')).text().split(' ')
+  ;(await findAsync(app, '.first-time-flow__button')).click()
 
-  await timeout(1000)
-  const seedPhrase = app.find('.backup-phrase__secret-words').text().split(' ')
-  app.find('.first-time-flow__button').click()
-
+  await timeout()
   const selectPhrase = text => {
     const option = $('.backup-phrase__confirm-seed-option')
       .filter((i, d) => d.textContent === text)[0]
-
     $(option).click()
   }
 
-  await timeout(1000)
-
   seedPhrase.forEach(sp => selectPhrase(sp))
-  app.find('.first-time-flow__button').click()
-  await timeout(1000)
+  ;(await findAsync(app, '.first-time-flow__button')).click()
 
   // Deposit Ether Screen
-  const buyEthTitle = app.find('.buy-ether__title')[0]
+  const buyEthTitle = (await findAsync(app, '.buy-ether__title'))[0]
   assert.equal(buyEthTitle.textContent, 'Deposit Ether', 'deposit ether screen')
-  app.find('.buy-ether__do-it-later').click()
-  await timeout(1000)
+  ;(await findAsync(app, '.buy-ether__do-it-later')).click()
 
-  const menu = app.find('.account-menu__icon')[0]
+  const menu = (await findAsync(app, '.account-menu__icon'))[0]
   menu.click()
 
-  await timeout()
-
-  const lock = app.find('.account-menu__logout-button')[0]
+  const lock = (await findAsync(app, '.account-menu__logout-button'))[0]
   assert.ok(lock, 'Lock menu item found')
   lock.click()
 
-  await timeout(1000)
-
-  const pwBox2 = app.find('#password-box')[0]
+  const pwBox2 = (await findAsync(app, '#password-box'))[0]
   pwBox2.value = PASSWORD
 
-  const createButton2 = app.find('button.primary')[0]
+  const createButton2 = (await findAsync(app, 'button.primary'))[0]
   createButton2.click()
 
-  await timeout(1000)
-
-  const detail2 = app.find('.wallet-view')[0]
+  const detail2 = (await findAsync(app, '.wallet-view'))[0]
   assert.ok(detail2, 'Account detail section loaded again.')
 
-  await timeout()
-
   // open account settings dropdown
-  const qrButton = app.find('.wallet-view__details-button')[0]
+  const qrButton = (await findAsync(app, '.wallet-view__details-button'))[0]
   qrButton.click()
 
-  await timeout(1000)
-
-  const qrHeader = app.find('.editable-label__value')[0]
-  const qrContainer = app.find('.qr-wrapper')[0]
+  const qrHeader = (await findAsync(app, '.editable-label__value'))[0]
+  const qrContainer = (await findAsync(app, '.qr-wrapper'))[0]
   assert.equal(qrHeader.textContent, 'Account 1', 'Should show account label.')
   assert.ok(qrContainer, 'QR Container found')
 
-  await timeout()
-
-  const networkMenu = app.find('.network-component')[0]
+  const networkMenu = (await findAsync(app, '.network-component'))[0]
   networkMenu.click()
 
-  await timeout()
-
-  const networkMenu2 = app.find('.network-indicator')[0]
+  const networkMenu2 = (await findAsync(app, '.network-indicator'))[0]
   const children2 = networkMenu2.children
   children2.length[3]
   assert.ok(children2, 'All network options present')
@@ -121,18 +97,12 @@ async function runFirstTimeUsageTest (assert, done) {
 
 module.exports = runFirstTimeUsageTest
 
-function timeout (time) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, time || 1500)
-  })
-}
-
 async function skipNotices (app) {
   while (true) {
-    const button = app.find('button')
+    const button = await findAsync(app, 'button')
     if (button && button.html() === 'Accept') {
       // still notices to accept
-      const termsPage = app.find('.markdown')[0]
+      const termsPage = (await findAsync(app, '.markdown'))[0]
       if (!termsPage) {
         break
       }
