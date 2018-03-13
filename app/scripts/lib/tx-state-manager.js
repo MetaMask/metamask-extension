@@ -214,7 +214,11 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
   // should update the status of the tx to 'submitted'.
+  // and add a time stamp for when it was called
   setTxStatusSubmitted (txId) {
+    const txMeta = this.getTx(txId)
+    txMeta.submittedTime = (new Date()).getTime()
+    this.updateTx(txMeta, 'txStateManager - add submitted time stamp')
     this._setTxStatus(txId, 'submitted')
   }
 
