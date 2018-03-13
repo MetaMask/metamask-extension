@@ -17,17 +17,46 @@
   font-family: Roboto;
 }
 
-.alpha-warning {
+.alpha-warning,
+.alpha-warning-welcome-screen {
   background: #f7861c;
   color: #fff;
   line-height: 2em;
   padding-left: 10vw;
 }
 
-.first-view-main {
+.alpha-warning-welcome-screen {
+  padding-left: 0;
+  text-align: center;
+}
+
+.first-view-main-wrapper {
+  display: flex;
+  width: 100%;
+  padding-left: 10vw;
+}
+
+.first-view-main,
+.first-view-main__mascara {
   display: flex;
   flex-direction: row-reverse;
+  justify-content: center;
+}
+
+.first-view-main__mascara {
   justify-content: space-between;
+}
+
+@media screen and (max-width: 575px) {
+  .first-view-main-wrapper {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .first-view-main {
+    width: 62vw;
+  }
 }
 
 .mascara-info {
@@ -88,6 +117,45 @@
   .tou__title,
   .backup-phrase__title {
     width: initial !important;
+  }
+
+  .alpha-warning,
+  .alpha-warning-welcome-screen {
+    line-height: 1em;
+    padding: 8px 12px;
+  }
+
+  .first-view-main {
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 12px;
+  }
+
+  .first-view-main .create-password {
+    margin-top: 0px;
+  }
+
+  .mascara-info {
+    margin-top: 0px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .mascara-info .info {
+    text-align: center;
+    font-size: 16px;
+    margin: 0 10px;
+    padding-left: 0px;
+  }
+
+  .mascara-info :first-child {
+    align-self: center;
+  }
+
+  .first-view-phone-invisible {
+    display: none;
   }
 
   .first-time-flow__input {
