@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Add ability for internationalization.
 - Will now throw an error if the `to` field in txParams is not valid.
 - Will strip null values from the `to` field.
 - Fix flashing to Log in screen after logging in or restoring from seed phrase.
@@ -10,7 +11,7 @@
 - Add a welcome screen to new-ui onboarding flow
 - Make new-ui create password screen responsive
 - Hide network dropdown before account is initialized
-- Add ability for internationalization.
+- Fix bug that could prevent MetaMask from saving the latest vault.
 
 ## 4.2.0 Tue Mar 06 2018
 
