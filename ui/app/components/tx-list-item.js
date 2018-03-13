@@ -253,6 +253,7 @@ TxListItem.prototype.render = function () {
               className: classnames('tx-list-status', {
                 'tx-list-status--rejected': transactionStatus === 'rejected',
                 'tx-list-status--failed': transactionStatus === 'failed',
+                'tx-list-status--dropped': transactionStatus === 'dropped',
               }),
             },
               transactionStatus,

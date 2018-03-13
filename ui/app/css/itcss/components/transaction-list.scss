@@ -236,6 +236,10 @@
   .tx-list-status--failed {
     color: $monzo;
   }
+
+  .tx-list-status--dropped {
+    opacity: 0.5;
+  }
 }
 
 .tx-list-item {
