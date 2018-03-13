@@ -7,7 +7,7 @@
 - Add a welcome screen to new-ui onboarding flow
 - Make new-ui create password screen responsive
 - Hide network dropdown before account is initialized
-- Add internationalization for Japanese, Spanish, Chinese, and Korean
+- Add ability for internationalization.
 
 ## 4.2.0 Tue Mar 06 2018
 
