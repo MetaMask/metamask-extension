@@ -144,6 +144,19 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   // check seed
   var seedBox = document.querySelector('textarea.twelve-word-phrase')
   var seed = seedBox.value.trim()
+
+  // true if the string has more than a space between words.
+  if (seed.split('  ').length > 1) {
+    this.warning = 'there can only a space between words'
+    this.props.dispatch(actions.displayWarning(this.warning))
+    return
+  }
+  // true if seed contains a character that is not between a-z or a space
+  if (!seed.match(/^[a-z ]+$/)) {
+    this.warning = 'seed words only have lowercase characters'
+    this.props.dispatch(actions.displayWarning(this.warning))
+    return
+  }
   if (seed.split(' ').length !== 12) {
     this.warning = 'seed phrases are 12 words long'
     this.props.dispatch(actions.displayWarning(this.warning))
