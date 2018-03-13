@@ -8,7 +8,11 @@ const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
-const { conversionUtil, addCurrencies } = require('../../conversion-util')
+const {
+  conversionUtil,
+  addCurrencies,
+  multiplyCurrencies
+} = require('../../conversion-util')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
@@ -37,28 +41,13 @@ function mapDispatchToProps (dispatch) {
   return {
     clearSend: () => dispatch(actions.clearSend()),
     editTransaction: txMeta => {
-      const { id, txParams, lastGasPrice } = txMeta
+      const { id, txParams } = txMeta
       const {
         gas: gasLimit,
         gasPrice,
         to,
         value: amount,
       } = txParams
-
-      let forceGasMin
-      let nonce
-      if (lastGasPrice) {
-        const stripped = ethUtil.stripHexPrefix(lastGasPrice)
-        forceGasMin = ethUtil.addHexPrefix(addCurrencies(stripped, MIN_GAS_PRICE_HEX, {
-          aBase: 16,
-          bBase: 16,
-          toNumericBase: 'hex',
-          fromDenomination: 'WEI',
-          toDenomination: 'GWEI',
-        }))
-
-        nonce = txParams.nonce
-      }
 
       dispatch(actions.updateSend({
         gasLimit,
@@ -68,21 +57,36 @@ function mapDispatchToProps (dispatch) {
         amount,
         errors: { to: null, amount: null },
         editingTransactionId: id,
-        forceGasMin,
-        nonce,
       }))
       dispatch(actions.showSendPage())
     },
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
     showCustomizeGasModal: (txMeta, sendGasLimit, sendGasPrice, sendGasTotal) => {
-      const { id, txParams } = txMeta
+      const { id, txParams, lastGasPrice } = txMeta
       const { gas: txGasLimit, gasPrice: txGasPrice } = txParams
+
+      let forceGasMin
+      let nonce
+      if (lastGasPrice) {
+        const stripped = ethUtil.stripHexPrefix(lastGasPrice)
+        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(stripped, 1.1, {
+          multiplicandBase: 16,
+          multiplierBase: 10,
+          toNumericBase: 'hex',
+          fromDenomination: 'WEI',
+          toDenomination: 'GWEI',
+        }))
+
+        nonce = txParams.nonce
+      }
 
       dispatch(actions.updateSend({
         gasLimit: sendGasLimit || txGasLimit,
         gasPrice: sendGasPrice || txGasPrice,
         editingTransactionId: id,
         gasTotal: sendGasTotal,
+        forceGasMin,
+        nonce,
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
@@ -492,6 +496,14 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
+
+  if (txData.lastGasPrice) {
+    const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+    const { gasPrice: txGasPrice, gas: txGasLimit } = txData.txParams
+
+    txData.txParams.gasPrice = sendGasPrice || txGasPrice
+    txData.txParams.gas = sendGasLimit || txGasLimit
+  }
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

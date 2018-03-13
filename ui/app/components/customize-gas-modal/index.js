@@ -117,9 +117,9 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateSendAmount(maxAmount)
   }
 
-  updateGasPrice(gasPrice)
-  updateGasLimit(gasLimit)
-  updateGasTotal(gasTotal)
+  updateGasPrice(ethUtil.addHexPrefix(gasPrice))
+  updateGasLimit(ethUtil.addHexPrefix(gasLimit))
+  updateGasTotal(ethUtil.addHexPrefix(gasTotal))
   hideModal()
 }
 
