@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const t = require('../../i18n')
 
 const AccountPanel = require('./account-panel')
 const BinaryRenderer = require('./binary-renderer')
@@ -45,7 +46,7 @@ PendingMsgDetails.prototype.render = function () {
           height: '260px',
         },
       }, [
-        h('label.font-small', { style: { display: 'block' } }, 'MESSAGE'),
+        h('label.font-small.allcaps', { style: { display: 'block' } }, t('message')),
         h(BinaryRenderer, {
           value: data,
           style: {
@@ -57,4 +58,3 @@ PendingMsgDetails.prototype.render = function () {
     ])
   )
 }
-

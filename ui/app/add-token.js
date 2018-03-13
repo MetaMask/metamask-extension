@@ -71,13 +71,17 @@ AddTokenScreen.prototype.componentWillMount = function () {
 }
 
 AddTokenScreen.prototype.toggleToken = function (address, token) {
-  const { selectedTokens, errors } = this.state
-  const { [address]: selectedToken } = selectedTokens
+  const { selectedTokens = {}, errors } = this.state
+  const selectedTokensCopy = { ...selectedTokens }
+
+  if (address in selectedTokensCopy) {
+    delete selectedTokensCopy[address]
+  } else {
+    selectedTokensCopy[address] = token
+  }
+
   this.setState({
-    selectedTokens: {
-      ...selectedTokens,
-      [address]: selectedToken ? null : token,
-    },
+    selectedTokens: selectedTokensCopy,
     errors: {
       ...errors,
       tokenSelector: null,

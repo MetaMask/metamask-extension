@@ -161,15 +161,14 @@
   display: flex;
   flex-flow: column;
   align-items: center;
+  padding: 30px 30px 0;
 
   &__input-label {
     color: $scorpion;
     font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
-    margin-top: 29px;
     align-self: flex-start;
-    margin-left: 30px;
   }
 
   &__input {
@@ -190,7 +189,7 @@
     margin-top: 39px;
     display: flex;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
 
   &__button-cancel,

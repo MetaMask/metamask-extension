@@ -75,6 +75,8 @@ var actions = {
   resetAccount,
   showNewVaultSeed: showNewVaultSeed,
   showInfoPage: showInfoPage,
+  CLOSE_WELCOME_SCREEN: 'CLOSE_WELCOME_SCREEN',
+  closeWelcomeScreen,
   // seed recovery actions
   REVEAL_SEED_CONFIRMATION: 'REVEAL_SEED_CONFIRMATION',
   revealSeedConfirmation: revealSeedConfirmation,
@@ -788,7 +790,7 @@ function updateTransaction (txData) {
 function updateAndApproveTx (txData) {
   log.info('actions: updateAndApproveTx: ' + JSON.stringify(txData))
   return (dispatch) => {
-    log.debug(`actions calling background.updateAndApproveTx`)
+    log.debug(`actions calling background.updateAndApproveTx.`)
     background.updateAndApproveTransaction(txData, (err) => {
       dispatch(actions.hideLoadingIndication())
       dispatch(actions.updateTransactionParams(txData.id, txData.txParams))
@@ -944,6 +946,12 @@ function showNewVaultSeed (seed) {
   return {
     type: actions.SHOW_NEW_VAULT_SEED,
     value: seed,
+  }
+}
+
+function closeWelcomeScreen () {
+  return {
+    type: actions.CLOSE_WELCOME_SCREEN,
   }
 }
 
