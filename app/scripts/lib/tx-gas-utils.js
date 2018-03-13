@@ -4,7 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('./util')
-const addHexPrefix = require('ethereumjs-util').addHexPrefix
+const {addHexPrefix, isValidAddress} = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /*
@@ -101,6 +101,12 @@ module.exports = class TxGasUtil {
 
   async validateTxParams (txParams) {
     this.validateRecipient(txParams)
+    if ('to' in txParams) {
+      if ( txParams.to === null ) delete txParams.to
+      else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
+        throw new Error(`Invalid transaction value of ${txParams.to} not a valid to address.`)
+      }
+    }
     if ('value' in txParams) {
       const value = txParams.value.toString()
       if (value.includes('-')) {
