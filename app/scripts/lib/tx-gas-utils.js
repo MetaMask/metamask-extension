@@ -4,7 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('./util')
-const {addHexPrefix, isValidAddress} = require('ethereumjs-util')
+const { addHexPrefix, isValidAddress } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /*
