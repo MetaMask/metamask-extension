@@ -16,7 +16,7 @@ const SHAPESHIFT_ROW_TITLE = 'Deposit with ShapeShift'
 const SHAPESHIFT_ROW_TEXT = `If you own other cryptocurrencies, you can trade and deposit Ether
 directly into your MetaMask wallet. No Account Needed.`
 const FAUCET_ROW_TITLE = 'Test Faucet'
-const facuetRowText = networkName => `Get Ether from a faucet for the ${networkName}`
+const faucetRowText = networkName => `Get Ether from a faucet for the ${networkName}`
 
 function mapStateToProps (state) {
   return {
@@ -83,7 +83,7 @@ DepositEtherModal.prototype.renderRow = function ({
 
     ]),
 
-    h('div.deposit-ether-modal__buy-row__logo', [logo]),
+    h('div.deposit-ether-modal__buy-row__logo-container', [logo]),
 
       h('div.deposit-ether-modal__buy-row__description', [
 
@@ -109,17 +109,17 @@ DepositEtherModal.prototype.render = function () {
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
   const networkName = networkNames[network]
 
-  return h('div.deposit-ether-modal', {}, [
+  return h('div.page-container.page-container--full-width', {}, [
 
-    h('div.deposit-ether-modal__header', [
+    h('div.page-container__header', [
 
-      h('div.deposit-ether-modal__header__title', ['Deposit Ether']),
+      h('div.page-container__title', 'Deposit Ether'),
 
-      h('div.deposit-ether-modal__header__description', [
+      h('div.page-container__subtitle', [
         'To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet.',
       ]),
 
-      h('div.deposit-ether-modal__header__close', {
+      h('div.page-container__header-close', {
         onClick: () => {
           this.setState({ buyingWithShapeshift: false })
           this.props.hideWarning()
@@ -129,54 +129,67 @@ DepositEtherModal.prototype.render = function () {
 
     ]),
 
-    h('div.deposit-ether-modal__buy-rows', [
+    h('.page-container__content', {}, [
 
-      this.renderRow({
-        logo: h('img.deposit-ether-modal__buy-row__eth-logo', { src: '../../../images/eth_logo.svg' }),
-        title: DIRECT_DEPOSIT_ROW_TITLE,
-        text: DIRECT_DEPOSIT_ROW_TEXT,
-        buttonLabel: 'View Account',
-        onButtonClick: () => this.goToAccountDetailsModal(),
-        hide: buyingWithShapeshift,
-      }),
+      h('div.deposit-ether-modal__buy-rows', [
 
-      this.renderRow({
-        logo: h('i.fa.fa-tint.fa-2x'),
-        title: FAUCET_ROW_TITLE,
-        text: facuetRowText(networkName),
-        buttonLabel: 'Get Ether',
-        onButtonClick: () => toFaucet(network),
-        hide: !isTestNetwork || buyingWithShapeshift,
-      }),
-
-      this.renderRow({
-        logo: h('img.deposit-ether-modal__buy-row__coinbase-logo', {
-          src: '../../../images/coinbase logo.png',
+        this.renderRow({
+          logo: h('div.deposit-ether-modal__logo', {
+            style: {
+              backgroundImage: 'url(\'../../../images/eth_logo.svg\')',
+            },
+          }),
+          title: DIRECT_DEPOSIT_ROW_TITLE,
+          text: DIRECT_DEPOSIT_ROW_TEXT,
+          buttonLabel: 'View Account Details',
+          onButtonClick: () => this.goToAccountDetailsModal(),
+          hide: buyingWithShapeshift,
         }),
-        title: COINBASE_ROW_TITLE,
-        text: COINBASE_ROW_TEXT,
-        buttonLabel: 'Continue to Coinbase',
-        onButtonClick: () => toCoinbase(address),
-        hide: isTestNetwork || buyingWithShapeshift,
-      }),
 
-      this.renderRow({
-        logo: h('img.deposit-ether-modal__buy-row__shapeshift-logo', {
-          src: '../../../images/shapeshift logo.png',
+        this.renderRow({
+          logo: h('i.fa.fa-tint.fa-3x.deposit-ether-modal__logo'),
+          title: FAUCET_ROW_TITLE,
+          text: faucetRowText(networkName),
+          buttonLabel: 'Continue to Test Faucet',
+          onButtonClick: () => toFaucet(network),
+          hide: !isTestNetwork || buyingWithShapeshift,
         }),
-        title: SHAPESHIFT_ROW_TITLE,
-        text: SHAPESHIFT_ROW_TEXT,
-        buttonLabel: 'Buy with Shapeshift',
-        onButtonClick: () => this.setState({ buyingWithShapeshift: true }),
-        hide: isTestNetwork,
-        hideButton: buyingWithShapeshift,
-        hideTitle: buyingWithShapeshift,
-        onBackClick: () => this.setState({ buyingWithShapeshift: false }),
-        showBackButton: this.state.buyingWithShapeshift,
-        className: buyingWithShapeshift && 'deposit-ether-modal__buy-row__shapeshift-buy',
-      }),
 
-      buyingWithShapeshift && h(ShapeshiftForm),
+        this.renderRow({
+          logo: h('div.deposit-ether-modal__logo', {
+            style: {
+              backgroundImage: 'url(\'../../../images/coinbase logo.png\')',
+              height: '40px',
+            },
+          }),
+          title: COINBASE_ROW_TITLE,
+          text: COINBASE_ROW_TEXT,
+          buttonLabel: 'Continue to Coinbase',
+          onButtonClick: () => toCoinbase(address),
+          hide: isTestNetwork || buyingWithShapeshift,
+        }),
+
+        this.renderRow({
+          logo: h('div.deposit-ether-modal__logo', {
+            style: {
+              backgroundImage: 'url(\'../../../images/shapeshift logo.png\')',
+            },
+          }),
+          title: SHAPESHIFT_ROW_TITLE,
+          text: SHAPESHIFT_ROW_TEXT,
+          buttonLabel: 'Continue to Shapeshift',
+          onButtonClick: () => this.setState({ buyingWithShapeshift: true }),
+          hide: isTestNetwork,
+          hideButton: buyingWithShapeshift,
+          hideTitle: buyingWithShapeshift,
+          onBackClick: () => this.setState({ buyingWithShapeshift: false }),
+          showBackButton: this.state.buyingWithShapeshift,
+          className: buyingWithShapeshift && 'deposit-ether-modal__buy-row__shapeshift-buy',
+        }),
+
+        buyingWithShapeshift && h(ShapeshiftForm),
+
+      ]),
 
     ]),
   ])
