@@ -1,10 +1,609 @@
 {
+  "accept": {
+    "message": "接收"
+  },
+  "account": {
+    "message": "账户"
+  },
+  "accountDetails": {
+    "message": "账户详情"
+  },
+  "accountName": {
+    "message": "账户名称"
+  },
+  "address": {
+    "message": "地址"
+  },
+  "addToken": {
+    "message": "添加代币"
+  },
+  "amount": {
+    "message": "数量"
+  },
+  "amountPlusGas": {
+    "message": "数量 + Gas"
+  },
+  "appDescription": {
+    "message": "以太坊浏览器插件",
+    "description": "The description of the application"
+  },
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
   },
-  "appDescription": {
-    "message": "以太坊身份管理",
-    "description": "The description of the application"
+  "attemptingConnect": {
+    "message": "正在尝试连接区块链."
+  },
+  "available": {
+    "message": "可用"
+  },
+  "back": {
+    "message": "返回"
+  },
+  "balance": {
+    "message": "余额:"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "当前余额不足支付Gas"
+  },
+  "beta": {
+    "message": "测试版"
+  },
+  "betweenMinAndMax": {
+    "message": "必须大于等于1美元并且小于等于2美元。",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "borrowDharma": {
+    "message": "Borrow With Dharma (Beta)"
+  },
+  "buy": {
+    "message": "购买"
+  },
+  "buyCoinbase": {
+    "message": "在Coinbase上购买"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "Coinbase是世界上最流行的买卖比特币，以太币和litecoin的方式。"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "clickCopy": {
+    "message": "点击复制"
+  },
+  "confirm": {
+    "message": "确认"
+  },
+  "confirmContract": {
+    "message": "确认合约"
+  },
+  "confirmPassword": {
+    "message": "确认密码"
+  },
+  "confirmTransaction": {
+    "message": "确认交易"
+  },
+  "continueToCoinbase": {
+    "message": "继续访问Coinbase"
+  },
+  "contractDeployment": {
+    "message": "合约部署"
+  },
+  "conversionProgress": {
+    "message": "正在进行转换"
+  },
+  "copiedButton": {
+    "message": "已复制"
+  },
+  "copiedClipboard": {
+    "message": "已复制到粘贴板"
+  },
+  "copiedExclamation": {
+    "message": "已复制!"
+  },
+  "copy": {
+    "message": "复制"
+  },
+  "copyToClipboard": {
+    "message": "复制到粘贴板"
+  },
+  "copyButton": {
+    "message": " 复制 "
+  },
+  "copyPrivateKey": {
+    "message": "这是你的私钥 (点击复制)"
+  },
+  "create": {
+    "message": "创建"
+  },
+  "createAccount": {
+    "message": "创建账户"
+  },
+  "createDen": {
+    "message": "创建"
+  },
+  "crypto": {
+    "message": "加密",
+    "description": "Exchange type (cryptocurrencies)"
+  },
+  "customGas": {
+    "message": "自定义 Gas"
+  },
+  "customize": {
+    "message": "自定义"
+  },
+  "customRPC": {
+    "message": "自定义 RPC"
+  },
+  "defaultNetwork": {
+    "message": "默认ETH转账网络为 Main Net."
+  },
+  "denExplainer": {
+    "message": "Your DEN is your password-encrypted storage within MetaMask."
+  },
+  "deposit": {
+    "message": "存款"
+  },
+  "depositBTC": {
+    "message": "Deposit your BTC to the address below:"
+  },
+  "depositCoin": {
+    "message": "Deposit your $1 to the address below",
+    "description": "Tells the user what coin they have selected to deposit with shapeshift"
+  },
+  "depositEth": {
+    "message": "存入 Eth"
+  },
+  "depositEther": {
+    "message": "存入 Ether"
+  },
+  "depositFiat": {
+    "message": "Deposit with Fiat"
+  },
+  "depositFromAccount": {
+    "message": "从其他账户存入"
+  },
+  "depositShapeShift": {
+    "message": "从ShapeShift存入"
+  },
+  "depositShapeShiftExplainer": {
+    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+  },
+  "details": {
+    "message": "详情"
+  },
+  "directDeposit": {
+    "message": "直接存入"
+  },
+  "directDepositEther": {
+    "message": "直接存入 Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "done": {
+    "message": "完成"
+  },
+  "edit": {
+    "message": "编辑"
+  },
+  "editAccountName": {
+    "message": "编辑账户名称"
+  },
+  "encryptNewDen": {
+    "message": "Encrypt your new DEN"
+  },
+  "enterPassword": {
+    "message": "请输入密码"
+  },
+  "etherscanView": {
+    "message": "View account on Etherscan"
+  },
+  "exchangeRate": {
+    "message": "Exchange Rate"
+  },
+  "exportPrivateKey": {
+    "message": "导出私钥"
+  },
+  "exportPrivateKeyWarning": {
+    "message": "导出私钥需要您自担风险"
+  },
+  "failed": {
+    "message": "失败"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "文件导入失败? 点击这里!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "来自"
+  },
+  "fromShapeShift": {
+    "message": "来自 ShapeShift"
+  },
+  "gas": {
+    "message": "Gas",
+    "description": "Short indication of gas cost"
+  },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
+  "gasLimit": {
+    "message": "Gas Limit"
+  },
+  "gasLimitCalculation": {
+    "message": "We calculate the suggested gas limit based on network success rates."
+  },
+  "gasLimitRequired": {
+    "message": "Gas Limit Required"
+  },
+  "gasLimitTooLow": {
+    "message": "Gas limit must be at least 21000"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "We calculate the suggested gas prices based on network success rates."
+  },
+  "gasPriceRequired": {
+    "message": "Gas Price Required"
+  },
+  "getEther": {
+    "message": "获取 Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "here": {
+    "message": "这里",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "隐藏"
+  },
+  "hideToken": {
+    "message": "Hide Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "howToDeposit": {
+    "message": "How would you like to deposit Ether?"
+  },
+  "import": {
+    "message": "Import",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Import Account"
+  },
+  "importAnAccount": {
+    "message": "Import an account"
+  },
+  "importDen": {
+    "message": "Import Existing DEN"
+  },
+  "imported": {
+    "message": "Imported",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "Info & Help"
+  },
+  "invalidAddress": {
+    "message": "Invalid address"
+  },
+  "invalidGasParams": {
+    "message": "Invalid Gas Parameters"
+  },
+  "invalidInput": {
+    "message": "Invalid input."
+  },
+  "invalidRequest": {
+    "message": "Invalid Request"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan Test Network"
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "limit": {
+    "message": "Limit"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "loadingTokens": {
+    "message": "Loading Tokens..."
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "logout": {
+    "message": "登出"
+  },
+  "loose": {
+    "message": "Loose"
+  },
+  "mainnet": {
+    "message": "以太坊正式网络"
+  },
+  "message": {
+    "message": "信息"
+  },
+  "min": {
+    "message": "Minimum"
+  },
+  "myAccounts": {
+    "message": "My Accounts"
+  },
+  "needEtherInWallet": {
+    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  },
+  "needImportFile": {
+    "message": "You must select a file to import.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "needImportPassword": {
+    "message": "You must enter a password for the selected file.",
+    "description": "Password and file needed to import an account"
+  },
+  "networks": {
+    "message": "Networks"
+  },
+  "newAccount": {
+    "message": "New Account"
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "New Contract"
+  },
+  "newPassword": {
+    "message": "New Password (min 8 chars)"
+  },
+  "newRecipient": {
+    "message": "New Recipient"
+  },
+  "next": {
+    "message": "Next"
+  },
+  "noAddressForName": {
+    "message": "No address has been set for this name."
+  },
+  "noDeposits": {
+    "message": "No deposits received"
+  },
+  "noTransactionHistory": {
+    "message": "No transaction history."
+  },
+  "noTransactions": {
+    "message": "No Transactions"
+  },
+  "notStarted": {
+    "message": "Not Started"
+  },
+  "oldUI": {
+    "message": "Old UI"
+  },
+  "oldUIMessage": {
+    "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
+  },
+  "or": {
+    "message": "or",
+    "description": "choice between creating or importing a new account"
+  },
+  "passwordMismatch": {
+    "message": "passwords don't match",
+    "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordShort": {
+    "message": "密码不够长",
+    "description": "in password creation process, the password is not long enough to be secure"
+  },
+  "pastePrivateKey": {
+    "message": "请粘贴您的私钥:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "请粘贴您的助记词!"
+  },
+  "pleaseReviewTransaction": {
+    "message": "Please review your transaction."
+  },
+  "privateKey": {
+    "message": "Private Key",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+  },
+  "privateNetwork": {
+    "message": "Private Network"
+  },
+  "qrCode": {
+    "message": "Show QR Code"
+  },
+  "readdToken": {
+    "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
+  },
+  "readMore": {
+    "message": "Read more here."
+  },
+  "receive": {
+    "message": "Receive"
+  },
+  "recipientAddress": {
+    "message": "Recipient Address"
+  },
+  "refundAddress": {
+    "message": "Your Refund Address"
+  },
+  "rejected": {
+    "message": "Rejected"
+  },
+  "required": {
+    "message": "Required"
+  },
+  "retryWithMoreGas": {
+    "message": "Retry with a higher gas price here"
+  },
+  "revert": {
+    "message": "Revert"
+  },
+  "rinkeby": {
+    "message": "Rinkeby 测试网络"
+  },
+  "ropsten": {
+    "message": "Ropsten 测试网络"
+  },
+  "sampleAccountName": {
+    "message": "例如. 我的账户",
+    "description": "Help user understand concept of adding a human-readable name to their account"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "saveAsFile": {
+    "message": "Save as File",
+    "description": "Account export process"
+  },
+  "selectService": {
+    "message": "Select Service"
+  },
+  "send": {
+    "message": "Send"
+  },
+  "sendTokens": {
+    "message": "Send Tokens"
+  },
+  "sendTokensAnywhere": {
+    "message": "Send Tokens to anyone with an Ethereum account"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "shapeshiftBuy": {
+    "message": "Buy with Shapeshift"
+  },
+  "showPrivateKeys": {
+    "message": "Show Private Keys"
+  },
+  "showQRCode": {
+    "message": "Show QR Code"
+  },
+  "sign": {
+    "message": "Sign"
+  },
+  "signMessage": {
+    "message": "Sign Message"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Signature Request"
+  },
+  "sigRequested": {
+    "message": "Signature Requested"
+  },
+  "status": {
+    "message": "状态"
+  },
+  "submit": {
+    "message": "提交"
+  },
+  "takesTooLong": {
+    "message": "花费太长时间?"
+  },
+  "testFaucet": {
+    "message": "Test Faucet"
+  },
+  "to": {
+    "message": "To"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "tokenBalance": {
+    "message": "Your Token Balance is:"
+  },
+  "total": {
+    "message": "总量"
+  },
+  "transactionMemo": {
+    "message": "Transaction memo (optional)"
+  },
+  "transactionNumber": {
+    "message": "Transaction Number"
+  },
+  "transfers": {
+    "message": "Transfers"
+  },
+  "troubleTokenBalances": {
+    "message": "We had trouble loading your token balances. You can view them ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "请输入密码"
+  },
+  "uiWelcome": {
+    "message": "Welcome to the New UI (Beta)"
+  },
+  "uiWelcomeMessage": {
+    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+  },
+  "unavailable": {
+    "message": "Unavailable"
+  },
+  "unknown": {
+    "message": "未知"
+  },
+  "unknownNetwork": {
+    "message": "未知私有网络"
+  },
+  "unknownNetworkId": {
+    "message": "未知网络ID"
+  },
+  "usaOnly": {
+    "message": "USA only",
+    "description": "Using this exchange is limited to people inside the USA"
+  },
+  "usedByClients": {
+    "message": "Used by a variety of different clients"
+  },
+  "viewAccount": {
+    "message": "View Account"
+  },
+  "warning": {
+    "message": "警告"
+  },
+  "whatsThis": {
+    "message": "这是什么?"
+  },
+  "yourSigRequested": {
+    "message": "Your signature is being requested"
+  },
+  "youSign": {
+    "message": "You are signing"
   }
 }
