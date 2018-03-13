@@ -37,6 +37,7 @@ const version = require('../manifest.json').version
 const BN = require('ethereumjs-util').BN
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
+const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 
 module.exports = class MetamaskController extends EventEmitter {
 
@@ -344,6 +345,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // primary HD keyring management
       addNewAccount: nodeify(this.addNewAccount, this),
       placeSeedWords: this.placeSeedWords.bind(this),
+      verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
       resetAccount: this.resetAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
@@ -565,13 +567,17 @@ module.exports = class MetamaskController extends EventEmitter {
   // Opinionated Keyring Management
   //
 
-  async addNewAccount (cb) {
+  async addNewAccount () {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
     const keyringController = this.keyringController
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(primaryKeyring)
     const newAccounts = await keyringController.getAccounts()
+
+    await this.verifySeedPhrase()
 
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
@@ -587,14 +593,43 @@ module.exports = class MetamaskController extends EventEmitter {
   // Used when creating a first vault, to allow confirmation.
   // Also used when revealing the seed words in the confirmation view.
   placeSeedWords (cb) {
+
+    this.verifySeedPhrase()
+      .then((seedWords) => {
+        this.configManager.setSeedWords(seedWords)
+        return cb(null, seedWords)
+      })
+      .catch((err) => {
+        return cb(err)
+      })
+  }
+
+  // Verifies the current vault's seed words if they can restore the
+  // accounts belonging to the current vault.
+  //
+  // Called when the first account is created and on unlocking the vault.
+  async verifySeedPhrase () {
+
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
-    if (!primaryKeyring) return cb(new Error('MetamaskController - No HD Key Tree found'))
-    primaryKeyring.serialize()
-    .then((serialized) => {
-      const seedWords = serialized.mnemonic
-      this.configManager.setSeedWords(seedWords)
-      cb(null, seedWords)
-    })
+    if (!primaryKeyring) {
+      throw new Error('MetamaskController - No HD Key Tree found')
+    }
+
+    const serialized = await primaryKeyring.serialize()
+    const seedWords = serialized.mnemonic
+
+    const accounts = await primaryKeyring.getAccounts()
+    if (accounts.length < 1) {
+      throw new Error('MetamaskController - No accounts found')
+    }
+
+    try {
+      await seedPhraseVerifier.verifyAccounts(accounts, seedWords)
+      return seedWords
+    } catch (err) {
+      log.error(err.message)
+      throw err
+    }
   }
 
   // ClearSeedWordCache
