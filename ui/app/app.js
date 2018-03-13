@@ -13,6 +13,8 @@ const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ethe
 const OldUIInitializeMenuScreen = require('./first-time/init-menu')
 const InitializeMenuScreen = MascaraFirstTime
 const NewKeyChainScreen = require('./new-keychain')
+const WelcomeScreen = require('./welcome-screen').default
+
 // accounts
 const MainContainer = require('./main-container')
 const SendTransactionScreen2 = require('./components/send/send-v2-container')
@@ -92,6 +94,7 @@ function mapStateToProps (state) {
     betaUI: state.metamask.featureFlags.betaUI,
     isRevealingSeedWords: state.metamask.isRevealingSeedWords,
     Qr: state.appState.Qr,
+    welcomeScreenSeen: state.metamask.welcomeScreenSeen,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -245,6 +248,7 @@ App.prototype.renderAppBar = function () {
     isInitialized,
     betaUI,
     isPopup,
+    welcomeScreenSeen,
   } = this.props
 
   if (window.METAMASK_UI_TYPE === 'notification') {
@@ -270,7 +274,7 @@ App.prototype.renderAppBar = function () {
       style: {},
     }, [
 
-      h('.app-header.flex-row.flex-space-between', {
+      (isInitialized || welcomeScreenSeen || isPopup || !betaUI) && h('.app-header.flex-row.flex-space-between', {
         className: classnames({
           'app-header--initialized': !isOnboarding,
         }),
@@ -295,7 +299,7 @@ App.prototype.renderAppBar = function () {
             ]),
           ]),
 
-          h('div.header__right-actions', [
+          betaUI && isInitialized && h('div.header__right-actions', [
             h('div.network-component-wrapper', {
               style: {},
             }, [
@@ -325,8 +329,12 @@ App.prototype.renderAppBar = function () {
         ]),
       ]),
 
-      !isInitialized && !isPopup && betaUI && h('h2.alpha-warning',
-        'Please be aware that this version is still under development'),
+      !isInitialized && !isPopup && betaUI && h('h2', {
+        className: classnames({
+          'alpha-warning': welcomeScreenSeen,
+          'alpha-warning-welcome-screen': !welcomeScreenSeen,
+        }),
+      }, 'Please be aware that this version is still under development'),
 
     ])
   )
@@ -370,10 +378,17 @@ App.prototype.renderPrimary = function () {
     isOnboarding,
     betaUI,
     isRevealingSeedWords,
+    welcomeScreenSeen,
     Qr,
+    isInitialized,
+    isUnlocked,
   } = props
   const isMascaraOnboarding = isMascara && isOnboarding
   const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
+
+  if (!welcomeScreenSeen && betaUI && !isInitialized && !isUnlocked) {
+    return h(WelcomeScreen)
+  }
 
   if (isMascaraOnboarding || isBetaUIOnboarding) {
     return h(MascaraFirstTime)

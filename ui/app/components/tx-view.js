@@ -101,9 +101,10 @@ TxView.prototype.render = function () {
 
     h('div.flex-row.phone-visible', {
       style: {
-        margin: '1.5em 1.2em 0',
         justifyContent: 'space-between',
         alignItems: 'center',
+        flex: '0 0 auto',
+        margin: '10px',
       },
     }, [
 
@@ -111,11 +112,10 @@ TxView.prototype.render = function () {
         style: {
           fontSize: '1.3em',
           cursor: 'pointer',
+          padding: '10px',
         },
-        onClick: () => {
-          this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
-        },
-      }, []),
+        onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
+      }),
 
       h('.identicon-wrapper.select-none', {
         style: {

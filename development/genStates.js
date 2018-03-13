@@ -1,18 +1,21 @@
 const fs = require('fs')
 const path = require('path')
+const { promisify } = require('util')
 
-const statesPath = path.join(__dirname, 'states')
-const stateNames = fs.readdirSync(statesPath)
+start().catch(console.error)
 
-const states = stateNames.reduce((result, stateFileName) => {
-  const statePath = path.join(__dirname, 'states', stateFileName)
-  const stateFile = fs.readFileSync(statePath).toString()
-  const state = JSON.parse(stateFile)
-  result[stateFileName.split('.')[0].replace(/-/g, ' ', 'g')] = state
-  return result
-}, {})
-
-const result = `module.exports = ${JSON.stringify(states)}`
-
-const statesJsonPath = path.join(__dirname, 'states.js')
-fs.writeFileSync(statesJsonPath, result)
+async function start () {
+  const statesPath = path.join(__dirname, 'states')
+  const stateFilesNames = await promisify(fs.readdir)(statesPath)
+  const states = {}
+  await Promise.all(stateFilesNames.map(async (stateFileName) => {
+    const stateFilePath = path.join(__dirname, 'states', stateFileName)
+    const stateFileContent = await promisify(fs.readFile)(stateFilePath, 'utf8')
+    const state = JSON.parse(stateFileContent)
+    const stateName = stateFileName.split('.')[0].replace(/-/g, ' ', 'g')
+    states[stateName] = state
+  }))
+  const generatedFileContent = `module.exports = ${JSON.stringify(states)}`
+  const generatedFilePath = path.join(__dirname, 'states.js')
+  await promisify(fs.writeFile)(generatedFilePath, generatedFileContent)
+}
