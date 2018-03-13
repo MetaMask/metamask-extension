@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- MetaMask will now throw an error if the `to` field in txParams is not valid and also will make sure that the two field is not `null` mucking up metamask
 - Allow adding custom tokens to classic ui when balance is 0
 - Allow editing of symbol and decimal info when adding custom token in new-ui
 - NewUI shapeshift form can select all coins (not just BTC)
