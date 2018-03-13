@@ -6,6 +6,7 @@ const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
 const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
+const t = require('../../../i18n')
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
@@ -173,9 +174,8 @@ const MODALS = {
   BETA_UI_NOTIFICATION_MODAL: {
     contents: [
       h(NotifcationModal, {
-        header: 'Welcome to the New UI (Beta)',
-        message: `You are now using the new Metamask UI. Take a look around, try out new features like sending tokens,
-        and let us know if you have any issues.`,
+        header: t('uiWelcome'),
+        message: t('uiWelcomeMessage'),
       }),
     ],
     mobileModalStyle: {
@@ -191,9 +191,8 @@ const MODALS = {
   OLD_UI_NOTIFICATION_MODAL: {
     contents: [
       h(NotifcationModal, {
-        header: 'Old UI',
-        message: `You have returned to the old UI. You can switch back to the New UI through the option in the top
-        right dropdown menu.`,
+        header: t('oldUI'),
+        message: t('oldUIMessage'),
       }),
     ],
     mobileModalStyle: {

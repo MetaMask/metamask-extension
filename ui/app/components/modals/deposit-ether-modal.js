@@ -5,18 +5,18 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
 const ShapeshiftForm = require('../shapeshift-form')
+const t = require('../../../i18n')
 
-const DIRECT_DEPOSIT_ROW_TITLE = 'Directly Deposit Ether'
-const DIRECT_DEPOSIT_ROW_TEXT = `If you already have some Ether, the quickest way to get Ether in
-your new wallet by direct deposit.`
-const COINBASE_ROW_TITLE = 'Buy on Coinbase'
-const COINBASE_ROW_TEXT = `Coinbase is the world’s most popular way to buy and sell bitcoin,
-ethereum, and litecoin.`
-const SHAPESHIFT_ROW_TITLE = 'Deposit with ShapeShift'
-const SHAPESHIFT_ROW_TEXT = `If you own other cryptocurrencies, you can trade and deposit Ether
-directly into your MetaMask wallet. No Account Needed.`
-const FAUCET_ROW_TITLE = 'Test Faucet'
-const faucetRowText = networkName => `Get Ether from a faucet for the ${networkName}`
+const DIRECT_DEPOSIT_ROW_TITLE = t('directDepositEther')
+const DIRECT_DEPOSIT_ROW_TEXT = t('directDepositEtherExplainer')
+const COINBASE_ROW_TITLE = t('buyCoinbase')
+const COINBASE_ROW_TEXT = t('buyCoinbaseExplainer')
+const SHAPESHIFT_ROW_TITLE = t('depositShapeShift')
+const SHAPESHIFT_ROW_TEXT = t('depositShapeShiftExplainer')
+const FAUCET_ROW_TITLE = t('testFaucet')
+const facuetRowText = (networkName) => {
+  return t('getEtherFromFaucet', [networkName])
+}
 
 function mapStateToProps (state) {
   return {
@@ -113,10 +113,10 @@ DepositEtherModal.prototype.render = function () {
 
     h('div.page-container__header', [
 
-      h('div.page-container__title', 'Deposit Ether'),
+      h('div.page-container__title', [t('depositEther')]),
 
       h('div.page-container__subtitle', [
-        'To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet.',
+        t('needEtherInWallet'),
       ]),
 
       h('div.page-container__header-close', {
@@ -128,29 +128,25 @@ DepositEtherModal.prototype.render = function () {
       }),
 
     ]),
-
+    
     h('.page-container__content', {}, [
-
+    
       h('div.deposit-ether-modal__buy-rows', [
 
         this.renderRow({
-          logo: h('div.deposit-ether-modal__logo', {
-            style: {
-              backgroundImage: 'url(\'../../../images/eth_logo.svg\')',
-            },
-          }),
+          logo: h('img.deposit-ether-modal__buy-row__eth-logo', { src: '../../../images/eth_logo.svg' }),
           title: DIRECT_DEPOSIT_ROW_TITLE,
           text: DIRECT_DEPOSIT_ROW_TEXT,
-          buttonLabel: 'View Account Details',
+          buttonLabel: t('viewAccount'),
           onButtonClick: () => this.goToAccountDetailsModal(),
           hide: buyingWithShapeshift,
         }),
 
         this.renderRow({
-          logo: h('i.fa.fa-tint.fa-3x.deposit-ether-modal__logo'),
+          logo: h('i.fa.fa-tint.fa-2x'),
           title: FAUCET_ROW_TITLE,
-          text: faucetRowText(networkName),
-          buttonLabel: 'Continue to Test Faucet',
+          text: facuetRowText(networkName),
+          buttonLabel: t('getEther'),
           onButtonClick: () => toFaucet(network),
           hide: !isTestNetwork || buyingWithShapeshift,
         }),
@@ -164,11 +160,11 @@ DepositEtherModal.prototype.render = function () {
           }),
           title: COINBASE_ROW_TITLE,
           text: COINBASE_ROW_TEXT,
-          buttonLabel: 'Continue to Coinbase',
+          buttonLabel: t('continueToCoinbase'),
           onButtonClick: () => toCoinbase(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
-
+        
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {
@@ -177,7 +173,7 @@ DepositEtherModal.prototype.render = function () {
           }),
           title: SHAPESHIFT_ROW_TITLE,
           text: SHAPESHIFT_ROW_TEXT,
-          buttonLabel: 'Continue to Shapeshift',
+          buttonLabel: t('shapeshiftBuy'),
           onButtonClick: () => this.setState({ buyingWithShapeshift: true }),
           hide: isTestNetwork,
           hideButton: buyingWithShapeshift,

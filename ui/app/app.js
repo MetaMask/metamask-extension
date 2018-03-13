@@ -4,6 +4,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
+const t = require('../i18n')
 
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
@@ -293,8 +294,8 @@ App.prototype.renderAppBar = function () {
 
             // metamask name
             h('.flex-row', [
-              h('h1', 'MetaMask'),
-              h('div.beta-label', 'BETA'),
+              h('h1', t('appName')),
+              h('div.beta-label', t('beta')),
             ]),
           ]),
 
