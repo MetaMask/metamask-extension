@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
+const t = require('../../../i18n')
 
 module.exports = GasTooltip
 
@@ -81,7 +82,7 @@ GasTooltip.prototype.render = function () {
             'marginTop': '81px',
           },
         }, [
-          h('span.gas-tooltip-label', {}, ['Gas Limit']),
+          h('span.gas-tooltip-label', {}, [t('gasLimit')]),
           h('i.fa.fa-info-circle'),
         ]),
         h(InputNumber, {
@@ -97,4 +98,3 @@ GasTooltip.prototype.render = function () {
     ]),
   ])
 }
-

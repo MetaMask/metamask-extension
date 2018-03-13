@@ -138,13 +138,17 @@ function reduceApp (state, action) {
       })
 
     case actions.FORGOT_PASSWORD:
-      return extend(appState, {
-        currentView: {
-          name: action.value ? 'restoreVault' : 'accountDetail',
-        },
-        transForward: false,
+      const newState = extend(appState, {
         forgottenPassword: action.value,
       })
+
+      if (action.value) {
+        newState.currentView = {
+          name: 'restoreVault',
+        }
+      }
+
+      return newState
 
     case actions.SHOW_INIT_MENU:
       return extend(appState, {

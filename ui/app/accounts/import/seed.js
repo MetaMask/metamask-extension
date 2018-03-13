@@ -2,6 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps)(SeedImportSubview)
 
@@ -20,11 +21,10 @@ SeedImportSubview.prototype.render = function () {
       style: {
       },
     }, [
-      `Paste your seed phrase here!`,
+      t('pasteSeed'),
       h('textarea'),
       h('br'),
-      h('button', 'Submit'),
+      h('button', t('submit')),
     ])
   )
 }
-

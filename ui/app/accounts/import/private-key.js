@@ -3,6 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../actions')
+const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(PrivateKeyImportView)
 
@@ -33,9 +34,9 @@ PrivateKeyImportView.prototype.render = function () {
   return (
     h('div.new-account-import-form__private-key', [
 
-      h('div.new-account-import-form__private-key-password-container', [
+      h('span.new-account-create-form__instruction', t('pastePrivateKey')),
 
-        h('span.new-account-import-form__instruction', 'Paste your private key string here:'),
+      h('div.new-account-import-form__private-key-password-container', [
 
         h('input.new-account-import-form__input-password', {
           type: 'password',
@@ -47,16 +48,16 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__buttons', {}, [
 
-        h('button.new-account-create-form__button-cancel', {
+        h('button.new-account-create-form__button-cancel.allcaps', {
           onClick: () => goHome(),
         }, [
-          'CANCEL',
+          t('cancel'),
         ]),
 
-        h('button.new-account-create-form__button-create', {
+        h('button.new-account-create-form__button-create.allcaps', {
           onClick: () => this.createNewKeychain(),
         }, [
-          'IMPORT',
+          t('import'),
         ]),
 
       ]),

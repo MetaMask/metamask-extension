@@ -9,6 +9,7 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
+const t = require('../../../i18n')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -55,7 +56,7 @@ ConfirmDeployContract.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
     this.setState({ submitting: false })
   }
 }
@@ -200,7 +201,7 @@ ConfirmDeployContract.prototype.renderGasFee = function () {
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
-      h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
+      h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
       h('div.confirm-screen-section-column', [
         h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency.toUpperCase()}`),
 
@@ -239,8 +240,8 @@ ConfirmDeployContract.prototype.renderTotalPlusGas = function () {
   return (
     h('section.flex-row.flex-center.confirm-screen-total-box ', [
       h('div.confirm-screen-section-column', [
-        h('span.confirm-screen-label', [ 'Total ' ]),
-        h('div.confirm-screen-total-box__subtitle', [ 'Amount + Gas' ]),
+        h('span.confirm-screen-label', [ t('total') + ' ' ]),
+        h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
       ]),
 
       h('div.confirm-screen-section-column', [
@@ -271,10 +272,10 @@ ConfirmDeployContract.prototype.render = function () {
       // Main Send token Card
       h('div.confirm-screen-wrapper.flex-column.flex-grow', [
         h('h3.flex-center.confirm-screen-header', [
-          h('button.confirm-screen-back-button', {
+          h('button.confirm-screen-back-button.allcaps', {
             onClick: () => backToAccountDetail(selectedAddress),
-          }, 'BACK'),
-          h('div.confirm-screen-title', 'Confirm Contract'),
+          }, t('back')),
+          h('div.confirm-screen-title', t('confirmContract')),
           h('div.confirm-screen-header-tip'),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
@@ -292,7 +293,7 @@ ConfirmDeployContract.prototype.render = function () {
           h('i.fa.fa-arrow-right.fa-lg'),
           h('div.confirm-screen-account-wrapper', [
             h('i.fa.fa-file-text-o'),
-            h('span.confirm-screen-account-name', 'New Contract'),
+            h('span.confirm-screen-account-name', t('newContract')),
             h('span.confirm-screen-account-number', ' '),
           ]),
         ]),
@@ -310,7 +311,7 @@ ConfirmDeployContract.prototype.render = function () {
 
         h('div.confirm-screen-rows', [
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ 'From' ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', fromName),
               h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -318,9 +319,9 @@ ConfirmDeployContract.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ 'To' ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
             h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', 'New Contract'),
+              h('div.confirm-screen-row-info', t('newContract')),
             ]),
           ]),
 
@@ -335,12 +336,12 @@ ConfirmDeployContract.prototype.render = function () {
         onSubmit: this.onSubmit,
       }, [
         // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button', {
+        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
           onClick: (event) => this.cancel(event, txMeta),
-        }, 'CANCEL'),
+        }, t('cancel')),
 
         // Accept Button
-        h('button.confirm-screen-confirm-button', ['CONFIRM']),
+        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
 
       ]),
     ])

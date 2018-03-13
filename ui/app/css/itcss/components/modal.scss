@@ -641,16 +641,25 @@
 
   &__buy-rows {
     width: 100%;
-    padding: 33px;
-    padding-top: 0px;
+    padding: 0 30px;
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
-    overflow-y: auto;
 
     @media screen and (max-width: 575px) {
       height: 0;
     }
+  }
+
+  &__logo {
+    height: 60px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__buy-row {
@@ -658,15 +667,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex: 1;
-    padding-bottom: 25px;
-    padding-top: 25px;
+    flex: 1 0 auto;
+    padding: 30px 0 20px;
+    min-height: 170px;
 
     @media screen and (max-width: 575px) {
-      min-height: 360px;
+      min-height: 270px;
       flex-flow: column;
-      justify-content: center;
-      padding-top: 45px;
+      justify-content: flex-start;
     }
 
     &__back {
@@ -692,30 +700,35 @@
       }
     }
 
-    &__logo {
+    &__logo-container {
       display: flex;
       justify-content: center;
-      flex: 0.3 1 auto;
+      flex: 0 0 auto;
+      padding: 0 20px;
 
-      @media screen and (min-width: 575px) {
-        min-width: 215px;
+      @media screen and (min-width: 576px) {
+        width: 12rem;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: 100%;
+        max-height: 6rem;
+        padding-bottom: 20px;
       }
     }
 
     &__coinbase-logo {
       height: 40px;
-      width: 180px;
     }
 
     &__shapeshift-logo {
       height: 60px;
-      width: 174px;
     }
 
     &__eth-logo {
       border-radius: 50%;
-      width: 68px;
       height: 68px;
+      width: 68px;
       border: 3px solid $tundora;
       z-index: 25;
       padding: 4px;
@@ -728,10 +741,11 @@
 
     &__description {
       color: $cape-cod;
-      flex: 0.5 1 auto;
+      padding-bottom: 20px;
+      align-self: flex-start;
 
       @media screen and (min-width: 575px) {
-        min-width: 315px;
+        width: 15rem;
       }
 
       &__title {
@@ -786,6 +800,10 @@
       &__caret {
         width: auto;
         flex: 1;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: auto;
       }
     }
   }

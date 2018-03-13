@@ -6,6 +6,7 @@ const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
+const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
 
@@ -70,10 +71,10 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       className: 'account-menu__header',
     }, [
-      'My Accounts',
+      t('myAccounts'),
       h('button.account-menu__logout-button', {
         onClick: lockMetamask,
-      }, 'Log out'),
+      }, t('logout')),
     ]),
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
@@ -81,23 +82,23 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       onClick: () => showNewAccountPage('CREATE'),
       icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
-      text: 'Create Account',
+      text: t('createAccount'),
     }),
     h(Item, {
       onClick: () => showNewAccountPage('IMPORT'),
       icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
-      text: 'Import Account',
+      text: t('importAccount'),
     }),
     h(Divider),
     h(Item, {
       onClick: showInfoPage,
-      icon: h('img.account-menu__item-icon', { src: 'images/mm-info-icon.svg' }),
-      text: 'Info & Help',
+      icon: h('img', { src: 'images/mm-info-icon.svg' }),
+      text: t('infoHelp'),
     }),
     h(Item, {
       onClick: showConfigPage,
       icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
-      text: 'Settings',
+      text: t('settings'),
     }),
   ])
 }
@@ -155,6 +156,6 @@ AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label', 'IMPORTED') : null
+    return isLoose ? h('.keyring-label.allcaps', t('imported')) : null
   } catch (e) { return }
 }

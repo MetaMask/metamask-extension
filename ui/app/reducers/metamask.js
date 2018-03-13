@@ -44,6 +44,7 @@ function reduceMetamask (state, action) {
     featureFlags: {},
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
+    welcomeScreenSeen: false,
   }, state.metamask)
 
   switch (action.type) {
@@ -130,8 +131,6 @@ function reduceMetamask (state, action) {
 
     case actions.SHOW_NEW_VAULT_SEED:
       return extend(metamaskState, {
-        isUnlocked: true,
-        isInitialized: false,
         isRevealingSeedWords: true,
         seedWords: action.value,
       })
@@ -347,6 +346,11 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_NETWORK_ENDPOINT_TYPE:
       return extend(metamaskState, {
         networkEndpointType: action.value,
+      })
+
+    case actions.CLOSE_WELCOME_SCREEN:
+      return extend(metamaskState, {
+        welcomeScreenSeen: true,
       })
 
     default:
