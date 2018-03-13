@@ -152,7 +152,7 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
     return
   }
   // true if seed contains a character that is not between a-z or a space
-  if(!seed.match(/^[a-z ]+$/)) {
+  if (!seed.match(/^[a-z ]+$/)) {
     this.warning = 'seed words only have lowercase characters'
     this.props.dispatch(actions.displayWarning(this.warning))
     return
