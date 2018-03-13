@@ -104,7 +104,7 @@ module.exports = class TxGasUtil {
     if ('to' in txParams) {
       if ( txParams.to === null ) delete txParams.to
       else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
-        throw new Error(`Invalid transaction value of ${txParams.to} not a valid to address.`)
+        throw new Error(`Invalid recipient address`)
       }
     }
     if ('value' in txParams) {
