@@ -101,12 +101,6 @@ module.exports = class TxGasUtil {
 
   async validateTxParams (txParams) {
     this.validateRecipient(txParams)
-    if ('to' in txParams) {
-      if ( txParams.to === null ) delete txParams.to
-      else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
-        throw new Error(`Invalid recipient address`)
-      }
-    }
     if ('value' in txParams) {
       const value = txParams.value.toString()
       if (value.includes('-')) {
@@ -119,12 +113,14 @@ module.exports = class TxGasUtil {
     }
   }
   validateRecipient (txParams) {
-    if (txParams.to === '0x') {
+    if (txParams.to === '0x' || txParams.to === null ) {
       if (txParams.data) {
         delete txParams.to
       } else {
         throw new Error('Invalid recipient address')
       }
+    } else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
+      throw new Error('Invalid recipient address')
     }
     return txParams
   }
