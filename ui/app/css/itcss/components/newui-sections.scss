@@ -51,6 +51,7 @@ $wallet-view-bg: $alabaster;
   cursor: pointer;
   display: flex;
   justify-content: center;
+  padding: 10px;
 }
 
 // wallet view and sidebar
@@ -289,4 +290,46 @@ $wallet-view-bg: $alabaster;
 
 .token-balance__amount {
   padding-right: 6px;
+}
+
+// first time
+.first-view-main {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+
+  @media screen and (max-width: 575px) {
+    height: 100%;
+  }
+
+  @media screen and (min-width: 576px) {
+    width: 85vw;
+  }
+
+  @media screen and (min-width: 769px) {
+    width: 80vw;
+  }
+
+  @media screen and (min-width: 1281px) {
+    width: 62vw;
+  }
+}
+
+.unlock-screen-container {
+  z-index: $main-container-z-index;
+  font-family: Roboto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 auto;
+  background: #f7f7f7;
+  width: 100%;
+}
+
+.unlock-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 auto;
 }

@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url('/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
 
 .first-time-flow {
   width: 100vw;
@@ -6,6 +13,8 @@
   display: flex;
   justify-content: center;
   flex: 1 0 auto;
+  font-weight: 400;
+  font-family: Roboto;
 }
 
 .alpha-warning,
@@ -248,11 +257,11 @@
   color: #1B344D;
   font-size: 16px;
   line-height: 23px;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .buy-ether__small-body-text {
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
   height: 14px;
   color: #757575;
   font-size: 12px;
@@ -280,7 +289,7 @@
   height: 334px;
   overflow-y: auto;
   color: #757575;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
   font-size: 12px;
   line-height: 15px;
   text-align: justify;
@@ -305,7 +314,7 @@
   color: #5B5D67;
   font-size: 16px;
   line-height: 23px;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .backup-phrase__secret {
@@ -323,7 +332,7 @@
 .backup-phrase__secret-words {
   width: 310px;
   color: #5B5D67;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 20px;
   line-height: 26px;
   text-align: center;
@@ -352,7 +361,7 @@
   background: none;
   box-shadow: none;
   color: #FFFFFF;
-  font-family: Montserrat Regular;
+  font-family: Roboto;
   font-size: 12px;
   font-weight: bold;
   line-height: 15px;
@@ -406,7 +415,7 @@ button.backup-phrase__reveal-button:hover {
 
 .backup-phrase__confirm-seed-option {
   color: #5B5D67;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 16px;
   line-height: 21px;
   background-color: #E7E7E7;
@@ -428,7 +437,7 @@ button.backup-phrase__confirm-seed-option:hover {
 .import-account__faq-link {
   font-size: 18px;
   line-height: 23px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
 }
 
 .import-account__selector-label {
@@ -443,7 +452,7 @@ button.backup-phrase__confirm-seed-option:hover {
   background-color: #FFFFFF;
   margin-top: 14px;
   color: #5B5D67;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
   padding: 14px 21px;
@@ -458,7 +467,7 @@ button.backup-phrase__confirm-seed-option:hover {
   font-size: 18px;
   line-height: 23px;
   margin-top: 21px;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .import-account__input-wrapper {
@@ -504,7 +513,7 @@ button.backup-phrase__confirm-seed-option:hover {
   border: 1px solid #1B344D;
   border-radius: 4px;
   color: #1B344D;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   display: flex;
   flex-flow: column nowrap;
@@ -521,7 +530,7 @@ button.backup-phrase__confirm-seed-option:hover {
 
 .import-account__file-name {
   color: #000000;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
   margin-left: 22px;
@@ -542,7 +551,7 @@ button.backup-phrase__confirm-seed-option:hover {
 
 .buy-ether__content-headline {
   color: #1B344D;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
 }
@@ -571,7 +580,7 @@ button.backup-phrase__confirm-seed-option:hover {
   align-items: center;
   padding: 20px 0;
   color: #9B9B9B;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 14px;
   line-height: 18px;
   cursor: pointer;
@@ -606,7 +615,7 @@ button.backup-phrase__confirm-seed-option:hover {
 .buy-ether__button-separator-text {
   font-size: 20px;
   line-height: 26px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   margin: 35px 0 14px 30px;
   display: flex;
   flex-flow: column nowrap;
@@ -618,7 +627,7 @@ button.backup-phrase__confirm-seed-option:hover {
   color: #1B344D !important;
   font-size: 14px !important;
   line-height: 18px !important;
-  font-family: Montserrat UltraLight !important;
+  font-family: Roboto;
 }
 
 .buy-ether__action-content-wrapper {
@@ -652,6 +661,7 @@ button.backup-phrase__confirm-seed-option:hover {
   color: #FFFFFF;
   font-size: 20px;
   font-weight: 500;
+  font-family: Roboto;
   line-height: 26px;
   text-align: center;
   text-transform: uppercase;
@@ -676,7 +686,7 @@ button.first-time-flow__button:hover {
   color: #1B344D;
   font-size: 20px;
   line-height: 26px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   text-align: center;
   margin: 35px 0 14px;
   background-color: transparent;
@@ -728,7 +738,7 @@ button.first-time-flow__button--tertiary:hover {
   font-size: 20px;
   line-height: 26px;
   text-align: center;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .icon {
@@ -776,7 +786,7 @@ button.first-time-flow__button--tertiary:hover {
 .shapeshift-form__deposit-instruction {
   color: #757575;
   color: rgba(0, 0, 0, 0.45);
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-weight: 300;
   line-height: 19px;
   padding-bottom: 6px;
@@ -793,7 +803,7 @@ button.first-time-flow__button--tertiary:hover {
   width: 100%;
   height: 45px;
   line-height: 44px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
 }
 
 .shapeshift-form__address-input-label {
@@ -802,7 +812,7 @@ button.first-time-flow__button--tertiary:hover {
   font-weight: 500;
   line-height: 18px;
   padding-bottom: 6px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
 }
 
 .shapeshift-form__address-input {
@@ -821,7 +831,7 @@ button.first-time-flow__button--tertiary:hover {
 
 .shapeshift-form__address-input-error-message {
   color: #FF001F;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 12px;
   height: 24px;
   line-height: 18px;
@@ -831,7 +841,7 @@ button.first-time-flow__button--tertiary:hover {
   display: flex;
   flex-flow: row wrap;
   color: #9B9B9B;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 10px;
   line-height: 16px;
 }
