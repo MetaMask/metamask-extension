@@ -51,6 +51,7 @@ $wallet-view-bg: $alabaster;
   cursor: pointer;
   display: flex;
   justify-content: center;
+  padding: 10px;
 }
 
 // wallet view and sidebar
@@ -313,4 +314,23 @@ $wallet-view-bg: $alabaster;
   @media screen and (min-width: 1281px) {
     width: 62vw;
   }
+}
+
+.unlock-screen-container {
+  z-index: $main-container-z-index;
+  font-family: Roboto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 auto;
+  background: #f7f7f7;
+  width: 100%;
+}
+
+.unlock-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 auto;
 }
