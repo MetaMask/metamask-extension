@@ -76,8 +76,6 @@ function mapDispatchToProps (dispatch) {
           fromDenomination: 'WEI',
           toDenomination: 'GWEI',
         }))
-
-        nonce = txParams.nonce
       }
 
       dispatch(actions.updateSend({
@@ -86,7 +84,6 @@ function mapDispatchToProps (dispatch) {
         editingTransactionId: id,
         gasTotal: sendGasTotal,
         forceGasMin,
-        nonce,
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },

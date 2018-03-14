@@ -39,7 +39,6 @@ function reduceMetamask (state, action) {
       maxModeOn: false,
       editingTransactionId: null,
       forceGasMin: null,
-      nonce: null,
     },
     coinOptions: {},
     useBlockie: false,
@@ -299,7 +298,6 @@ function reduceMetamask (state, action) {
           errors: {},
           editingTransactionId: null,
           forceGasMin: null,
-          nonce: null,
         },
       })
 
