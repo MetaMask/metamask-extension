@@ -190,7 +190,7 @@ TxListItem.prototype.showRetryButton = function () {
   const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
     && lastSubmittedTxWithCurrentNonce.id === transactionId
 
-  return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
+  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }
 
 TxListItem.prototype.resubmit = function () {
