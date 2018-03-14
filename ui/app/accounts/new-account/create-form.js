@@ -14,7 +14,7 @@ class NewAccountCreateForm extends Component {
 
     this.state = {
       newAccountName: '',
-      defaultAccountName: t('newAccountNumberName', newAccountNumber),
+      defaultAccountName: t('newAccountNumberName', [newAccountNumber]),
     }
   }
 

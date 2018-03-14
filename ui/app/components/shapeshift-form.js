@@ -143,7 +143,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
   return h('div.shapeshift-form', {}, [
 
     h('div.shapeshift-form__deposit-instruction', [
-      t('depositCoin', depositCoin.toUpperCase()),
+      t('depositCoin', [depositCoin.toUpperCase()]),
     ]),
 
     h('div', depositAddress),
