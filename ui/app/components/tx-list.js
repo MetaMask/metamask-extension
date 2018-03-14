@@ -77,7 +77,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
-    transactionSubmittedTime: transaction.transactionSubmittedTime,
+    transactionSubmittedTime: transaction.submittedTime,
   }
 
   const {
