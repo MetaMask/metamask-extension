@@ -28,6 +28,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    setSelectedToken: tokenAddress => dispatch(actions.setSelectedToken(tokenAddress)),
     retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
   }
 }
@@ -39,6 +40,7 @@ function TxListItem () {
   this.state = {
     total: null,
     fiatTotal: null,
+    isTokenTx: null,
   }
 }
 
@@ -47,12 +49,13 @@ TxListItem.prototype.componentDidMount = async function () {
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { name: txDataName } = decodedData || {}
+  const isTokenTx = txDataName === 'transfer'
 
-  const { total, fiatTotal } = txDataName === 'transfer'
+  const { total, fiatTotal } = isTokenTx
     ? await this.getSendTokenTotal()
     : this.getSendEtherTotal()
 
-  this.setState({ total, fiatTotal })
+  this.setState({ total, fiatTotal, isTokenTx  })
 }
 
 TxListItem.prototype.getAddressText = function () {
@@ -193,6 +196,10 @@ TxListItem.prototype.showRetryButton = function () {
   return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
 }
 
+TxListItem.prototype.setSelectedToken = function (tokenAddress) {
+  this.props.setSelectedToken(tokenAddress)
+}
+
 TxListItem.prototype.resubmit = function () {
   const { transactionId } = this.props
   this.props.retryTransaction(transactionId)
@@ -207,8 +214,9 @@ TxListItem.prototype.render = function () {
     dateString,
     address,
     className,
+    txParams,
   } = this.props
-  const { total, fiatTotal } = this.state
+  const { total, fiatTotal, isTokenTx } = this.state
   const showFiatTotal = transactionAmount !== '0x0' && fiatTotal
 
   return h(`div${className || ''}`, {
@@ -280,6 +288,9 @@ TxListItem.prototype.render = function () {
         h('span.tx-list-item-retry-link', {
           onClick: (event) => {
             event.stopPropagation()
+            if (isTokenTx) {
+              this.setSelectedToken(txParams.to)
+            }
             this.resubmit()
           },
         }, 'Increase the gas price on your transaction'),
