@@ -3,7 +3,7 @@
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/local
 
 const extension = require('extensionizer')
-const { promisify } = require('util').promisify
+const { promisify } = require('util')
 
 module.exports = class ExtensionStore {
   constructor() {
