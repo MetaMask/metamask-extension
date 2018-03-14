@@ -102,7 +102,6 @@ function mapDispatchToProps (dispatch, ownProps) {
       })
     
       let forceGasMin
-      let nonce
       if (lastGasPrice) {
         const stripped = ethUtil.stripHexPrefix(lastGasPrice)
         forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(stripped, 1.1, {
@@ -278,19 +277,13 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
 
 ConfirmSendToken.prototype.renderGasFee = function () {
   const {
-    token: { symbol },
     currentCurrency: convertedCurrency,
     conversionRate,
     send: { gasTotal, gasLimit: sendGasLimit, gasPrice: sendGasPrice },
     showCustomizeGasModal,
   } = this.props
   const txMeta = this.gatherTxMeta()
-  const {
-    fiat: fiatGas,
-    token: tokenGas,
-    eth: ethGas,
-    gasFeeInHex
-  } = this.getGasFee()
+  const { gasFeeInHex } = this.getGasFee()
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [

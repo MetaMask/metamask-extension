@@ -66,7 +66,6 @@ function mapDispatchToProps (dispatch) {
       const { gas: txGasLimit, gasPrice: txGasPrice } = txParams
 
       let forceGasMin
-      let nonce
       if (lastGasPrice) {
         const stripped = ethUtil.stripHexPrefix(lastGasPrice)
         forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(stripped, 1.1, {

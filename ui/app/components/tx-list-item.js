@@ -55,7 +55,7 @@ TxListItem.prototype.componentDidMount = async function () {
     ? await this.getSendTokenTotal()
     : this.getSendEtherTotal()
 
-  this.setState({ total, fiatTotal, isTokenTx  })
+  this.setState({ total, fiatTotal, isTokenTx })
 }
 
 TxListItem.prototype.getAddressText = function () {
@@ -180,7 +180,6 @@ TxListItem.prototype.getSendTokenTotal = async function () {
 
 TxListItem.prototype.showRetryButton = function () {
   const {
-    transactionStatus,
     transactionSubmittedTime,
     selectedAddressTxList,
     transactionId,
