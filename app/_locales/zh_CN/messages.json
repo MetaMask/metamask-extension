@@ -50,7 +50,7 @@
     "message": "测试版"
   },
   "betweenMinAndMax": {
-    "message": "必须大于等于1美元并且小于等于2美元。",
+    "message": "必须大于等于 $1 并且小于等于 $2 。",
     "description": "helper for inputting hex as decimal input"
   },
   "borrowDharma": {
