@@ -494,13 +494,11 @@ ConfirmSendEther.prototype.gatherTxMeta = function () {
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
 
-  if (txData.lastGasPrice) {
-    const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
-    const { gasPrice: txGasPrice, gas: txGasLimit } = txData.txParams
+  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const { gasPrice: txGasPrice, gas: txGasLimit } = txData.txParams
 
-    txData.txParams.gasPrice = sendGasPrice || txGasPrice
-    txData.txParams.gas = sendGasLimit || txGasLimit
-  }
+  txData.txParams.gasPrice = sendGasPrice || txGasPrice
+  txData.txParams.gas = sendGasLimit || txGasLimit
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData
