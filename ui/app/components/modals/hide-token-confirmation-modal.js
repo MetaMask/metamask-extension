@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const Identicon = require('../identicon')
+const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -41,7 +42,7 @@ HideTokenConfirmationModal.prototype.render = function () {
     h('div.hide-token-confirmation__container', {
     }, [
       h('div.hide-token-confirmation__title', {}, [
-        'Hide Token?',
+        t('hideTokenPrompt'),
       ]),
 
       h(Identicon, {
@@ -54,19 +55,19 @@ HideTokenConfirmationModal.prototype.render = function () {
       h('div.hide-token-confirmation__symbol', {}, symbol),
 
       h('div.hide-token-confirmation__copy', {}, [
-        'You can add this token back in the future by going go to “Add token” in your accounts options menu.',
+        t('readdToken'),
       ]),
 
       h('div.hide-token-confirmation__buttons', {}, [
-        h('button.btn-cancel.hide-token-confirmation__button', {
+        h('button.btn-cancel.hide-token-confirmation__button.allcaps', {
           onClick: () => hideModal(),
         }, [
-          'CANCEL',
+          t('cancel'),
         ]),
-        h('button.btn-clear.hide-token-confirmation__button', {
+        h('button.btn-clear.hide-token-confirmation__button.allcaps', {
           onClick: () => hideToken(address),
         }, [
-          'HIDE',
+          t('hide'),
         ]),
       ]),
     ]),

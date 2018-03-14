@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
 const TypedMessageRenderer = require('./typed-message-renderer')
+const t = require('../../i18n')
 
 module.exports = PendingMsgDetails
 
@@ -45,7 +46,7 @@ PendingMsgDetails.prototype.render = function () {
           height: '260px',
         },
       }, [
-        h('label.font-small', { style: { display: 'block' } }, 'YOU ARE SIGNING'),
+        h('label.font-small.allcaps', { style: { display: 'block' } }, t('youSign')),
         h(TypedMessageRenderer, {
           value: data,
           style: {

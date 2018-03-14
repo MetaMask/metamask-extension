@@ -3,6 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../actions')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(CoinbaseForm)
 
@@ -37,11 +38,11 @@ CoinbaseForm.prototype.render = function () {
     }, [
       h('button.btn-green', {
         onClick: this.toCoinbase.bind(this),
-      }, 'Continue to Coinbase'),
+      }, t('continueToCoinbase')),
 
       h('button.btn-red', {
         onClick: () => props.dispatch(actions.goHome()),
-      }, 'Cancel'),
+      }, t('cancel')),
     ]),
   ])
 }

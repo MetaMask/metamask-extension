@@ -1,9 +1,11 @@
 const urlUtil = require('url')
 const endOfStream = require('end-of-stream')
 const pump = require('pump')
+const debounce = require('debounce-stream')
 const log = require('loglevel')
 const extension = require('extensionizer')
 const LocalStorageStore = require('obs-store/lib/localStorage')
+const LocalStore = require('./lib/local-store')
 const storeTransform = require('obs-store/lib/transform')
 const asStream = require('obs-store/lib/asStream')
 const ExtensionPlatform = require('./platforms/extension')
@@ -44,6 +46,8 @@ let openMetamaskTabsIDs = {}
 
 // state persistence
 const diskStore = new LocalStorageStore({ storageKey: STORAGE_KEY })
+const localStore = new LocalStore()
+let versionedData
 
 // initialization flow
 initialize().catch(log.error)
@@ -64,12 +68,23 @@ async function initialize () {
 async function loadStateFromPersistence () {
   // migrations
   const migrator = new Migrator({ migrations })
+
   // read from disk
-  let versionedData = diskStore.getState() || migrator.generateInitialState(firstTimeState)
+  // first from preferred, async API:
+  versionedData = (await localStore.get()) ||
+                  diskStore.getState() ||
+                  migrator.generateInitialState(firstTimeState)
+
   // migrate data
   versionedData = await migrator.migrateData(versionedData)
+  if (!versionedData) {
+    throw new Error('MetaMask - migrator returned undefined')
+  }
+
   // write to disk
+  if (localStore.isSupported) localStore.set(versionedData)
   diskStore.putState(versionedData)
+
   // return just the data
   return versionedData.data
 }
@@ -102,14 +117,28 @@ function setupController (initState) {
   // setup state persistence
   pump(
     asStream(controller.store),
+    debounce(1000),
     storeTransform(versionifyData),
-    asStream(diskStore)
+    storeTransform(syncDataWithExtension),
+    asStream(diskStore),
+    (error) => {
+      log.error('pump hit error', error)
+    }
   )
 
   function versionifyData (state) {
-    const versionedData = diskStore.getState()
     versionedData.data = state
     return versionedData
+  }
+
+  function syncDataWithExtension(state) {
+    if (localStore.isSupported) {
+      localStore.set(state)
+      .catch((err) => {
+        log.error('error setting state in local store:', err)
+      })
+    }
+    return state
   }
 
   //

@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
+const t = require('../../i18n')
 
 const Tooltip = require('./tooltip')
 
@@ -22,7 +23,7 @@ CopyButton.prototype.render = function () {
   const value = props.value
   const copied = state.copied
 
-  const message = copied ? 'Copied' : props.title || ' Copy '
+  const message = copied ? t('copiedButton') : props.title || t('copyButton')
 
   return h('.copy-button', {
     style: {

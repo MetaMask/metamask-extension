@@ -6,6 +6,7 @@ const h = require('react-hyperscript')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
+const t = require('../../i18n')
 const getCaretCoordinates = require('textarea-caret')
 const environmentType = require('../../../app/scripts/lib/environment-type')
 const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
@@ -59,7 +60,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
           color: '#7F8082',
           marginBottom: 10,
         },
-      }, 'MetaMask'),
+      }, t('appName')),
 
 
       h('div', [
@@ -69,10 +70,10 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             color: '#7F8082',
             display: 'inline',
           },
-        }, 'Encrypt your new DEN'),
+        }, t('encryptNewDen')),
 
         h(Tooltip, {
-          title: 'Your DEN is your password-encrypted storage within MetaMask.',
+          title: t('denExplainer'),
         }, [
           h('i.fa.fa-question-circle.pointer', {
             style: {
@@ -92,7 +93,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box',
-        placeholder: 'New Password (min 8 chars)',
+        placeholder: t('newPassword'),
         onInput: this.inputChanged.bind(this),
         style: {
           width: 260,
@@ -104,7 +105,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box-confirm',
-        placeholder: 'Confirm Password',
+        placeholder: t('confirmPassword'),
         onKeyPress: this.createVaultOnEnter.bind(this),
         onInput: this.inputChanged.bind(this),
         style: {
@@ -119,7 +120,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
         style: {
           margin: 12,
         },
-      }, 'Create'),
+      }, t('createDen')),
 
       h('.flex-row.flex-center.flex-grow', [
         h('p.pointer', {
@@ -129,7 +130,7 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
             color: 'rgb(247, 134, 28)',
             textDecoration: 'underline',
           },
-        }, 'Import Existing DEN'),
+        }, t('importDen')),
       ]),
 
       h('.flex-row.flex-center.flex-grow', [
@@ -178,12 +179,12 @@ InitializeMenuScreen.prototype.createNewVaultAndKeychain = function () {
   var passwordConfirm = passwordConfirmBox.value
 
   if (password.length < 8) {
-    this.warning = 'password not long enough'
+    this.warning = t('passwordShort')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (password !== passwordConfirm) {
-    this.warning = 'passwords don\'t match'
+    this.warning = t('passwordMismatch')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
