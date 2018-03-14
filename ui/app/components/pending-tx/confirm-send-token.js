@@ -486,9 +486,24 @@ ConfirmSendToken.prototype.gatherTxMeta = function () {
   const txData = clone(state.txData) || clone(props.txData)
 
   const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
-  const { gasPrice: txGasPrice, gas: txGasLimit } = txData.txParams
+  const {
+    lastGasPrice,
+    txParams: {
+      gasPrice: txGasPrice,
+      gas: txGasLimit,
+    },
+  } = txData
 
-  txData.txParams.gasPrice = sendGasPrice || txGasPrice
+  let forceGasMin
+  if (lastGasPrice) {
+    forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    }))
+  }
+
+  txData.txParams.gasPrice = sendGasPrice || forceGasMin || txGasPrice
   txData.txParams.gas = sendGasLimit || txGasLimit
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
