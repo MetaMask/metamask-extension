@@ -6,6 +6,7 @@ const tokenAbi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(tokenAbi)
 const actions = require('../../actions')
+const t = require('../../../i18n')
 const clone = require('clone')
 const Identicon = require('../identicon')
 const GasFeeDisplay = require('../send/gas-fee-display-v2.js')
@@ -64,8 +65,8 @@ function mapDispatchToProps (dispatch, ownProps) {
     updateTokenExchangeRate: () => dispatch(actions.updateTokenExchangeRate(symbol)),
     editTransaction: txMeta => {
       const { token: { address } } = ownProps
-      const { txParams, id } = txMeta
-      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+      const { txParams = {}, id } = txMeta
+      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data) || {}
       const { params = [] } = tokenData
       const { value: to } = params[0] || {}
       const { value: tokenAmountInDec } = params[1] || {}
@@ -169,7 +170,7 @@ ConfirmSendToken.prototype.getAmount = function () {
       ? +(sendTokenAmount * tokenExchangeRate * conversionRate).toFixed(2)
       : null,
     token: typeof value === 'undefined'
-      ? 'Unknown'
+      ? t('unknown')
       : +sendTokenAmount.toFixed(decimals),
   }
 
@@ -241,7 +242,7 @@ ConfirmSendToken.prototype.getData = function () {
     },
     to: {
       address: value,
-      name: identities[value] ? identities[value].name : 'New Recipient',
+      name: identities[value] ? identities[value].name : t('newRecipient'),
     },
     memo: txParams.memo || '',
   }
@@ -287,7 +288,7 @@ ConfirmSendToken.prototype.renderGasFee = function () {
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
-      h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
+      h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
       h('div.confirm-screen-section-column', [
         h(GasFeeDisplay, {
           gasTotal: gasTotal || gasFeeInHex,
@@ -309,8 +310,8 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
     ? (
       h('section.flex-row.flex-center.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ 'Total ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ 'Amount + Gas' ]),
+          h('span.confirm-screen-label', [ t('total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
@@ -322,13 +323,13 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
     : (
       h('section.flex-row.flex-center.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ 'Total ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ 'Amount + Gas' ]),
+          h('span.confirm-screen-label', [ t('total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${tokenAmount} ${symbol}`),
-          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} Gas`),
+          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} ${t('gas')}`),
         ]),
       ])
     )
@@ -350,10 +351,10 @@ ConfirmSendToken.prototype.render = function () {
 
   this.inputs = []
 
-  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : 'Confirm'
+  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : t('confirm')
   const subtitle = txMeta.lastGasPrice
     ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
-    : 'Please review your transaction.'
+    : t('pleaseReviewTransaction')
 
   return (
     h('div.confirm-screen-container.confirm-send-token', [
@@ -362,7 +363,7 @@ ConfirmSendToken.prototype.render = function () {
         h('div.page-container__header', [
           !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
             onClick: () => editTransaction(txMeta),
-          }, 'Edit'),
+          }, t('edit')),
           h('div.page-container__title', title),
           h('div.page-container__subtitle', subtitle),
         ]),
@@ -405,7 +406,7 @@ ConfirmSendToken.prototype.render = function () {
 
         h('div.confirm-screen-rows', [
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ 'From' ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', fromName),
               h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -413,7 +414,7 @@ ConfirmSendToken.prototype.render = function () {
           ]),
 
           toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ 'To' ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', toName),
               h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
@@ -431,12 +432,12 @@ ConfirmSendToken.prototype.render = function () {
         onSubmit: this.onSubmit,
       }, [
         // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button', {
+        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
           onClick: (event) => this.cancel(event, txMeta),
-        }, 'CANCEL'),
+        }, t('cancel')),
 
         // Accept Button
-        h('button.confirm-screen-confirm-button', ['CONFIRM']),
+        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
       ]),
 
 
@@ -453,7 +454,7 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
     this.setState({ submitting: false })
   }
 }

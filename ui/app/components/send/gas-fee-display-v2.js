@@ -2,6 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyDisplay = require('./currency-display')
+const t = require('../../../i18n')
 
 module.exports = GasFeeDisplay
 
@@ -30,7 +31,7 @@ GasFeeDisplay.prototype.render = function () {
         convertedPrefix: '$',
         readOnly: true,
       })
-      : h('div.currency-display', 'Loading...'),
+      : h('div.currency-display', t('loading')),
 
     h('button.sliders-icon-container', {
       onClick,
@@ -41,4 +42,3 @@ GasFeeDisplay.prototype.render = function () {
 
   ])
 }
-

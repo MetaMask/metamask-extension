@@ -14,6 +14,7 @@ const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
 
@@ -74,7 +75,7 @@ TxListItem.prototype.getAddressText = function () {
     default:
       return address
         ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : 'Contract Deployment'
+        : t('contractDeployment')
   }
 }
 

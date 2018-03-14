@@ -10,6 +10,7 @@ const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 
@@ -56,7 +57,7 @@ TxList.prototype.renderTransaction = function () {
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
-        [ 'No Transactions' ],
+        [ t('noTransactions') ],
       )]
 }
 
@@ -110,7 +111,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   if (isUnapproved) {
     opts.onClick = () => showConfTxPage({id: transactionId})
-    opts.transactionStatus = 'Not Started'
+    opts.transactionStatus = t('Not Started')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }

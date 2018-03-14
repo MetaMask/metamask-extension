@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
+const t = require('../../i18n')
 
 module.exports = BnAsDecimalInput
 
@@ -136,13 +137,13 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${newMin} ${suffix} and less than or equal to ${newMax} ${suffix}.`
+    message += t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
   } else if (min) {
-    message += `must be greater than or equal to ${newMin} ${suffix}.`
+    message += t('greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
-    message += `must be less than or equal to ${newMax} ${suffix}.`
+    message += t('lessThanMax', [`${newMax} ${suffix}`])
   } else {
-    message += 'Invalid input.'
+    message += t('invalidInput')
   }
 
   return message

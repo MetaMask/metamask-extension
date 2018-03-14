@@ -8,6 +8,7 @@ const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+const t = require('../../i18n')
 
 
 module.exports = EnsInput
@@ -89,13 +90,13 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    if (address === ZERO_ADDRESS) throw new Error('No address has been set for this name.')
+    if (address === ZERO_ADDRESS) throw new Error(t('noAddressForName'))
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
         nickname: recipient.trim(),
-        hoverText: address + '\nClick to Copy',
+        hoverText: address + '\n' + t('clickCopy'),
         ensFailure: false,
       })
     }
