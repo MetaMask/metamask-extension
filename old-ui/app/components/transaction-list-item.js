@@ -208,6 +208,11 @@ function formatDate (date) {
 function renderErrorOrWarning (transaction) {
   const { status, err, warning } = transaction
 
+  // show dropped
+  if (status === 'dropped') {
+    return h('span.dropped', ' (Dropped)')
+  }
+
   // show rejected
   if (status === 'rejected') {
     return h('span.error', ' (Rejected)')
