@@ -454,7 +454,7 @@ ConfirmSendEther.prototype.render = function () {
 
 ConfirmSendEther.prototype.onSubmit = function (event) {
   event.preventDefault()
-  const txMeta = this.gatherTxMeta({ time: (new Date()).getTime() })
+  const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
   this.setState({ valid, submitting: true })
 
@@ -489,7 +489,7 @@ ConfirmSendEther.prototype.getFormEl = function () {
 }
 
 // After a customizable state value has been updated,
-ConfirmSendEther.prototype.gatherTxMeta = function (opts) {
+ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
@@ -503,7 +503,7 @@ ConfirmSendEther.prototype.gatherTxMeta = function (opts) {
   }
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
-  return Object.assign(txData, opts)
+  return txData
 }
 
 ConfirmSendEther.prototype.verifyGasParams = function () {
