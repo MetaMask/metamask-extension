@@ -3,7 +3,6 @@
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/local
 
 const extension = require('extensionizer')
-const { promisify } = require('util')
 
 module.exports = class ExtensionStore {
   constructor() {
@@ -12,8 +11,8 @@ module.exports = class ExtensionStore {
       log.error('Storage local API not available.')
     }
     const local = extension.storage.local
-    this._get = promisify(local.get).bind(local)
-    this._set = promisify(local.set).bind(local)
+    this._get = function() { return new Promise((resolve) => local.get(resolve)) }
+    this._set = function(state) { return new Promise((resolve) => local.set(state, resolve)) }
   }
 
   async get() {
