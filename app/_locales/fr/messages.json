@@ -24,7 +24,7 @@
     "message": "Montant + Gaz"
   },
   "appDescription": {
-    "message": "Ethereum navigateur extension",
+    "message": "Extension Ethereum pour navigateur",
     "description": "La description de l'application"
   },
   "appName": {
@@ -50,7 +50,7 @@
     "message": "BETA"
   },
   "betweenMinAndMax": {
-    "message": "doit être supérieur ou égal à 1 $ et inférieur ou égal à 2 $",
+    "message": "doit être supérieur ou égal à $1 et inférieur ou égal à $2",
     "description": "helper pour la saisie hexadécimale en entrée décimale"
   },
   "borrowDharma": {
@@ -145,11 +145,11 @@
     "message": "Dépôt"
   },
   "depositBTC": {
-    "message": "Déposez votre BTC à l'adresse ci-dessous:"
+    "message": "Déposez vos BTC à l'adresse ci-dessous:"
   },
   "depositCoin": {
     "message": "Déposez votre $1 à l'adresse ci-dessous",
-    "description": "Indique à l'utilisateur quelle pièce ils ont choisi de déposer avec shapeshift"
+    "description": "Indique à l'utilisateur quelle monnaie ils a choisi de déposer avec shapeshift"
   },
   "depositEth": {
     "message": "Dépôt Eth"
@@ -158,7 +158,7 @@
     "message": "Dépôt Ether"
   },
   "depositFiat": {
-    "message": "Dépôt avec Fiat"
+    "message": "Dépôt de monnaie-fiat"
   },
   "depositFromAccount": {
     "message": "Dépôt d'un autre compte"
@@ -167,10 +167,10 @@
     "message": "Déposez avec ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si vous possédez d'autres crypto-monnaies, vous pouvez échanger et déposer Ether directement dans votre portefeuille MetaMask. Aucun compte requis."
+    "message": "Si vous possédez d'autres crypto-monnaies, vous pouvez échanger et déposer de l'Ether directement dans votre portefeuille MetaMask. Aucun compte n'est requis."
   },
   "details": {
-    "message": "Détails du message"
+    "message": "Détails"
   },
   "directDeposit": {
     "message": "Dépôt direct"
@@ -179,7 +179,7 @@
     "message": "Dépôt direct d'Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille par dépôt direct."
+    "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
   },
   "done": {
     "message": "Fait"
@@ -220,7 +220,7 @@
     "description": "Aide l'utilisateur à importer son compte à partir d'un fichier JSON"
   },
   "from": {
-    "message": "message de"
+    "message": "de"
   },
   "fromShapeShift": {
     "message": "ShapeShift de"
@@ -420,7 +420,7 @@
     "description": "dans le processus de création de mot de passe, le mot de passe n'est pas assez long pour être sécurisé"
   },
   "pastePrivateKey": {
-    "message": "Collez votre seed phrase privée ici:",
+    "message": "Collez votre clé privée ici:",
     "description": "Pour l'importation d'un compte à partir d'une clé privée"
   },
   "pasteSeed": {
@@ -570,7 +570,7 @@
     "message": "Bienvenue dans la nouvelle interface utilisateur (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Vous utilisez maintenant la nouvelle interface utilisateur Metamask Jetez un coup d'oeil, essayez de nouvelles fonctionnalités comme l'envoi de jetons, et faites-nous savoir si vous avez des problèmes."
+    "message": "Vous utilisez maintenant la nouvelle interface utilisateur Metamask. Jetez un coup d'oeil, essayez de nouvelles fonctionnalités comme l'envoi de jetons, et faites-nous savoir si vous avez des problèmes."
   },
   "unavailable": {
     "message": "Indisponible"
