@@ -1,6 +1,6 @@
 const assert = require('assert')
 const versionBump = require('../../../development/version-bump')
-const { promisify } = require('util')
+const promisify = require('pify')
 const fs = require('fs')
 const readFile = promisify(fs.readFile)
 const path = require('path')
@@ -41,5 +41,3 @@ describe('version bumper', function () {
     assert.ok(result.changelog.includes(expected))
   })
 })
-
-
