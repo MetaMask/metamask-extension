@@ -28,7 +28,7 @@ module.exports = class ExtensionStore {
     return this._set(state)
   }
 
-  function _get() {
+  _get() {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.get(null, (result) => {
@@ -42,7 +42,7 @@ module.exports = class ExtensionStore {
     })
   }
 
-  function _set(obj) {
+  _set(obj) {
     const local = extension.storage.local
     return new Promise((resolve, reject) => {
       local.set(obj, () => {
