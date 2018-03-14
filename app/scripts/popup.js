@@ -1,3 +1,9 @@
+// setup i18n
+const Translator = require('../../ui/create-i18n')
+const translator = new Translator()
+global.translator = translator
+global.getMessage = translator.getMessage.bind(translator)
+
 const injectCss = require('inject-css')
 const OldMetaMaskUiCss = require('../../old-ui/css')
 const NewMetaMaskUiCss = require('../../ui/css')
@@ -10,68 +16,77 @@ const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 const setupRaven = require('./lib/setupRaven')
 
-// create platform global
-global.platform = new ExtensionPlatform()
+start().catch(log.error)
 
-// setup sentry error reporting
-const release = global.platform.getVersion()
-setupRaven({ release })
+async function start() {
 
-// inject css
-// const css = MetaMaskUiCss()
-// injectCss(css)
+  // create platform global
+  global.platform = new ExtensionPlatform()
 
-// identify window type (popup, notification)
-const windowType = isPopupOrNotification()
-global.METAMASK_UI_TYPE = windowType
-closePopupIfOpen(windowType)
+  // setup sentry error reporting
+  const release = global.platform.getVersion()
+  setupRaven({ release })
 
-// setup stream to background
-const extensionPort = extension.runtime.connect({ name: windowType })
-const connectionStream = new PortStream(extensionPort)
+  // Load translator
+  await translator.setLocale('ja')
 
-// start ui
-const container = document.getElementById('app-content')
-startPopup({ container, connectionStream }, (err, store) => {
-  if (err) return displayCriticalError(err)
+  // inject css
+  // const css = MetaMaskUiCss()
+  // injectCss(css)
 
-  // Code commented out until we begin auto adding users to NewUI
-  // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
-  // const firstTime = Object.keys(identities).length === 0
-  const { isMascara, featureFlags = {} } = store.getState().metamask
-  let betaUIState = featureFlags.betaUI
+  // identify window type (popup, notification)
+  const windowType = isPopupOrNotification()
+  global.METAMASK_UI_TYPE = windowType
+  closePopupIfOpen(windowType)
 
-  // Code commented out until we begin auto adding users to NewUI
-  // const useBetaCss = isMascara || firstTime || betaUIState
-  const useBetaCss = isMascara || betaUIState
+  // setup stream to background
+  const extensionPort = extension.runtime.connect({ name: windowType })
+  const connectionStream = new PortStream(extensionPort)
 
-  let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-  let deleteInjectedCss = injectCss(css)
-  let newBetaUIState
+  // start ui
+  const container = document.getElementById('app-content')
+  startPopup({ container, connectionStream }, (err, store) => {
+    if (err) return displayCriticalError(err)
 
-  store.subscribe(() => {
-    const state = store.getState()
-    newBetaUIState = state.metamask.featureFlags.betaUI
-    if (newBetaUIState !== betaUIState) {
-      deleteInjectedCss()
-      betaUIState = newBetaUIState
-      css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-      deleteInjectedCss = injectCss(css)
-    }
-    if (state.appState.shouldClose) notificationManager.closePopup()
+    // Code commented out until we begin auto adding users to NewUI
+    // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
+    // const firstTime = Object.keys(identities).length === 0
+    const { isMascara, featureFlags = {} } = store.getState().metamask
+    let betaUIState = featureFlags.betaUI
+
+    // Code commented out until we begin auto adding users to NewUI
+    // const useBetaCss = isMascara || firstTime || betaUIState
+    const useBetaCss = isMascara || betaUIState
+
+    let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+    let deleteInjectedCss = injectCss(css)
+    let newBetaUIState
+
+    store.subscribe(() => {
+      const state = store.getState()
+      newBetaUIState = state.metamask.featureFlags.betaUI
+      if (newBetaUIState !== betaUIState) {
+        deleteInjectedCss()
+        betaUIState = newBetaUIState
+        css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
+        deleteInjectedCss = injectCss(css)
+      }
+      if (state.appState.shouldClose) notificationManager.closePopup()
+    })
   })
-})
 
 
-function closePopupIfOpen (windowType) {
-  if (windowType !== 'notification') {
-    notificationManager.closePopup()
+  function closePopupIfOpen (windowType) {
+    if (windowType !== 'notification') {
+      notificationManager.closePopup()
+    }
   }
-}
 
-function displayCriticalError (err) {
-  container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
-  container.style.height = '80px'
-  log.error(err.stack)
-  throw err
+  function displayCriticalError (err) {
+    container.innerHTML = '<div class="critical-error">The MetaMask app failed to load: please open and close MetaMask again to restart.</div>'
+    container.style.height = '80px'
+    log.error(err.stack)
+    throw err
+  }
+
 }

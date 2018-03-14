@@ -4,7 +4,8 @@ const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const FileInput = require('react-simple-file-input').default
-const t = require('../../../i18n')
+const t = global.getMessage
+
 
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 
@@ -102,7 +103,7 @@ class JsonImportSubview extends Component {
       const message = t('needImportPassword')
       return this.props.displayWarning(message)
     }
-    
+
     this.props.importNewJsonAccount([ fileContents, password ])
   }
 }

@@ -8,7 +8,7 @@ const { getSelectedIdentity } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
-const t = require('../../../i18n')
+const t = global.getMessage
 
 function mapStateToProps (state) {
   return {

@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
-const t = require('../../i18n')
+const t = global.getMessage
 
 const Tooltip = require('./tooltip')
 

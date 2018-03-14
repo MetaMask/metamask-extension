@@ -5,15 +5,16 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
 const ShapeshiftForm = require('../shapeshift-form')
-const t = require('../../../i18n')
+const t = global.getMessage
 
-const DIRECT_DEPOSIT_ROW_TITLE = t('directDepositEther')
-const DIRECT_DEPOSIT_ROW_TEXT = t('directDepositEtherExplainer')
-const COINBASE_ROW_TITLE = t('buyCoinbase')
-const COINBASE_ROW_TEXT = t('buyCoinbaseExplainer')
-const SHAPESHIFT_ROW_TITLE = t('depositShapeShift')
-const SHAPESHIFT_ROW_TEXT = t('depositShapeShiftExplainer')
-const FAUCET_ROW_TITLE = t('testFaucet')
+let DIRECT_DEPOSIT_ROW_TITLE
+let DIRECT_DEPOSIT_ROW_TEXT
+let COINBASE_ROW_TITLE
+let COINBASE_ROW_TEXT
+let SHAPESHIFT_ROW_TITLE
+let SHAPESHIFT_ROW_TEXT
+let FAUCET_ROW_TITLE
+
 const facuetRowText = (networkName) => {
   return t('getEtherFromFaucet', [networkName])
 }
@@ -46,6 +47,15 @@ function mapDispatchToProps (dispatch) {
 inherits(DepositEtherModal, Component)
 function DepositEtherModal () {
   Component.call(this)
+
+  // need to set after i18n locale has loaded
+  DIRECT_DEPOSIT_ROW_TITLE = t('directDepositEther')
+  DIRECT_DEPOSIT_ROW_TEXT = t('directDepositEtherExplainer')
+  COINBASE_ROW_TITLE = t('buyCoinbase')
+  COINBASE_ROW_TEXT = t('buyCoinbaseExplainer')
+  SHAPESHIFT_ROW_TITLE = t('depositShapeShift')
+  SHAPESHIFT_ROW_TEXT = t('depositShapeShiftExplainer')
+  FAUCET_ROW_TITLE = t('testFaucet')
 
   this.state = {
     buyingWithShapeshift: false,
@@ -128,9 +138,9 @@ DepositEtherModal.prototype.render = function () {
       }),
 
     ]),
-    
+
     h('.page-container__content', {}, [
-    
+
       h('div.deposit-ether-modal__buy-rows', [
 
         this.renderRow({
@@ -164,7 +174,7 @@ DepositEtherModal.prototype.render = function () {
           onButtonClick: () => toCoinbase(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
-        
+
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {

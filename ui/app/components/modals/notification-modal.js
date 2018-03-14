@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../actions')
+const t = global.getMessage
 
 class NotificationModal extends Component {
   render () {
@@ -22,12 +23,12 @@ class NotificationModal extends Component {
       }, [
 
         h('div.notification-modal__header', {}, [
-          header,
+          t(header),
         ]),
 
         h('div.notification-modal__message-wrapper', {}, [
           h('div.notification-modal__message', {}, [
-            message,
+            t(message),
           ]),
         ]),
 

@@ -6,8 +6,9 @@ const actions = require('../../actions')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
-const t = require('../../../i18n')
 const R = require('ramda')
+const t = global.getMessage
+
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [

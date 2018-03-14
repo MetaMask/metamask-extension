@@ -4,7 +4,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
-const t = require('../i18n')
+const t = global.getMessage
 
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default

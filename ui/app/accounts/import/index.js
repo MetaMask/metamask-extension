@@ -2,23 +2,21 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const t = require('../../../i18n')
 import Select from 'react-select'
 
 // Subviews
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
-const menuItems = [
-  t('privateKey'),
-  t('jsonFile'),
-]
 
 module.exports = connect(mapStateToProps)(AccountImportSubview)
 
 function mapStateToProps (state) {
   return {
-    menuItems,
+    menuItems: [
+      t('privateKey'),
+      t('jsonFile'),
+    ],
   }
 }
 

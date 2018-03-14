@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../actions')
-const t = require('../../../i18n')
+const t = global.getMessage
 
 class NewAccountCreateForm extends Component {
   constructor (props) {
@@ -20,7 +20,7 @@ class NewAccountCreateForm extends Component {
 
   render () {
     const { newAccountName, defaultAccountName } = this.state
-    
+
 
     return h('div.new-account-create-form', [
 
