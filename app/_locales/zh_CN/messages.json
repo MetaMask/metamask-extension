@@ -281,11 +281,11 @@
     "message": "How would you like to deposit Ether?"
   },
   "import": {
-    "message": "Import",
+    "message": "导入",
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
-    "message": "Import Account"
+    "message": "导入账户"
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -301,7 +301,7 @@
     "message": "Info & Help"
   },
   "invalidAddress": {
-    "message": "Invalid address"
+    "message": "错误地址"
   },
   "invalidGasParams": {
     "message": "Invalid Gas Parameters"
@@ -313,24 +313,24 @@
     "message": "Invalid Request"
   },
   "jsonFile": {
-    "message": "JSON File",
+    "message": "JSON 文件",
     "description": "format for importing an account"
   },
   "kovan": {
-    "message": "Kovan Test Network"
+    "message": "Kovan 测试网络"
   },
   "lessThanMax": {
-    "message": "must be less than or equal to $1.",
+    "message": "必须小于等于 $1.",
     "description": "helper for inputting hex as decimal input"
   },
   "limit": {
     "message": "Limit"
   },
   "loading": {
-    "message": "Loading..."
+    "message": "加载..."
   },
   "loadingTokens": {
-    "message": "Loading Tokens..."
+    "message": "加载代币..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -348,16 +348,16 @@
     "message": "信息"
   },
   "min": {
-    "message": "Minimum"
+    "message": "最小"
   },
   "myAccounts": {
-    "message": "My Accounts"
+    "message": "我的账户"
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
   "needImportFile": {
-    "message": "You must select a file to import.",
+    "message": "你必须选择导入一个文件.",
     "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
@@ -365,20 +365,20 @@
     "description": "Password and file needed to import an account"
   },
   "networks": {
-    "message": "Networks"
+    "message": "网络"
   },
   "newAccount": {
-    "message": "New Account"
+    "message": "新账户"
   },
   "newAccountNumberName": {
-    "message": "Account $1",
+    "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
-    "message": "New Contract"
+    "message": "新合约"
   },
   "newPassword": {
-    "message": "New Password (min 8 chars)"
+    "message": "新密码(至少8个字符)"
   },
   "newRecipient": {
     "message": "New Recipient"
@@ -402,17 +402,17 @@
     "message": "Not Started"
   },
   "oldUI": {
-    "message": "Old UI"
+    "message": "旧 UI"
   },
   "oldUIMessage": {
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
   },
   "or": {
-    "message": "or",
+    "message": "或",
     "description": "choice between creating or importing a new account"
   },
   "passwordMismatch": {
-    "message": "passwords don't match",
+    "message": "密码不匹配",
     "description": "in password creation process, the two new password fields did not match"
   },
   "passwordShort": {
@@ -430,17 +430,17 @@
     "message": "Please review your transaction."
   },
   "privateKey": {
-    "message": "Private Key",
+    "message": "私钥",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
   },
   "privateNetwork": {
-    "message": "Private Network"
+    "message": "私有网络"
   },
   "qrCode": {
-    "message": "Show QR Code"
+    "message": "显示二维码"
   },
   "readdToken": {
     "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
@@ -449,7 +449,7 @@
     "message": "Read more here."
   },
   "receive": {
-    "message": "Receive"
+    "message": "接收"
   },
   "recipientAddress": {
     "message": "Recipient Address"
@@ -458,7 +458,7 @@
     "message": "Your Refund Address"
   },
   "rejected": {
-    "message": "Rejected"
+    "message": "拒绝"
   },
   "required": {
     "message": "Required"
@@ -480,20 +480,20 @@
     "description": "Help user understand concept of adding a human-readable name to their account"
   },
   "save": {
-    "message": "Save"
+    "message": "保存"
   },
   "saveAsFile": {
-    "message": "Save as File",
+    "message": "保存文件",
     "description": "Account export process"
   },
   "selectService": {
     "message": "Select Service"
   },
   "send": {
-    "message": "Send"
+    "message": "发送"
   },
   "sendTokens": {
-    "message": "Send Tokens"
+    "message": "发送 Tokens"
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
@@ -505,10 +505,10 @@
     "message": "Buy with Shapeshift"
   },
   "showPrivateKeys": {
-    "message": "Show Private Keys"
+    "message": "显示私钥"
   },
   "showQRCode": {
-    "message": "Show QR Code"
+    "message": "显示二维码"
   },
   "sign": {
     "message": "Sign"
