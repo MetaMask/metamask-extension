@@ -233,6 +233,7 @@ CustomizeGasModal.prototype.render = function () {
 
   convertedGasPrice += convertedGasPrice.match(/[.]/) ? priceSigZeros : `${priceSigDec}${priceSigZeros}`
 
+  let newGasPrice = gasPrice
   if (forceGasMin) {
     const convertedMinPrice = conversionUtil(forceGasMin, {
       fromNumericBase: 'hex',
@@ -241,6 +242,10 @@ CustomizeGasModal.prototype.render = function () {
     convertedGasPrice = conversionMax(
       { value: convertedMinPrice, fromNumericBase: 'dec' },
       { value: convertedGasPrice, fromNumericBase: 'dec' }
+    )
+    newGasPrice = conversionMax(
+      { value: gasPrice, fromNumericBase: 'hex' },
+      { value: forceGasMin, fromNumericBase: 'hex' }
     )
   }
 
@@ -302,7 +307,7 @@ CustomizeGasModal.prototype.render = function () {
           }, [t('cancel')]),
 
           h(`div.send-v2__customize-gas__save${error ? '__error' : ''}.allcaps`, {
-            onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
+            onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
           }, [t('save')]),
         ]),
 

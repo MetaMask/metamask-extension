@@ -104,13 +104,11 @@ function mapDispatchToProps (dispatch, ownProps) {
     
       let forceGasMin
       if (lastGasPrice) {
-        const stripped = ethUtil.stripHexPrefix(lastGasPrice)
-        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(stripped, 1.1, {
+        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
           multiplicandBase: 16,
           multiplierBase: 10,
           toNumericBase: 'hex',
           fromDenomination: 'WEI',
-          toDenomination: 'GWEI',
         }))
       }
 
