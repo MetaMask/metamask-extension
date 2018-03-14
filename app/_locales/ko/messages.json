@@ -1,10 +1,609 @@
 {
-  "appName": {
-    "message": "MetaMask",
-    "description": "The name of the application"
+  "accept": {
+    "message": "허용"
+  },
+  "account": {
+    "message": "계좌"
+  },
+  "accountDetails": {
+    "message": "계좌 상세보기"
+  },
+  "accountName": {
+    "message": "계좌 이름"
+  },
+  "address": {
+    "message": "주소"
+  },
+  "addToken": {
+    "message": "토큰 추가"
+  },
+  "amount": {
+    "message": "양"
+  },
+  "amountPlusGas": {
+    "message": "양 + 가스"
   },
   "appDescription": {
-    "message": "이더리움 계좌 관리",
-    "description": "The description of the application"
+    "message": "이더리움 브라우저 확장 프로그램",
+    "description": "어플리케이션 내용"
+  },
+  "appName": {
+    "message": "메타마스크",
+    "description": "어플리케이션 이름"
+  },
+  "attemptingConnect": {
+    "message": "블록체인에 접속 시도 중입니다."
+  },
+  "available": {
+    "message": "Available"
+  },
+  "back": {
+    "message": "뒤로"
+  },
+  "balance": {
+    "message": "잔액:"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "가스가 충분하지 않습니다."
+  },
+  "beta": {
+    "message": "베타"
+  },
+  "betweenMinAndMax": {
+    "message": "1 달러 이상 2 달러 이하여야 합니다.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "borrowDharma": {
+    "message": "Borrow With Dharma (Beta)"
+  },
+  "buy": {
+    "message": "구매"
+  },
+  "buyCoinbase": {
+    "message": "코인베이스에서 구매"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "코인베이스에서 비트코인, 이더리움, 라이트코인을 구매하실 수 있습니다."
+  },
+  "cancel": {
+    "message": "취소"
+  },
+  "clickCopy": {
+    "message": "클릭하여 복사"
+  },
+  "confirm": {
+    "message": "승인"
+  },
+  "confirmContract": {
+    "message": "컨트랙트 승인"
+  },
+  "confirmPassword": {
+    "message": "패스워드 승인"
+  },
+  "confirmTransaction": {
+    "message": "트랜잭션 승인"
+  },
+  "continueToCoinbase": {
+    "message": "코인베이스로 계속하기"
+  },
+  "contractDeployment": {
+    "message": "컨트랙트 배포"
+  },
+  "conversionProgress": {
+    "message": "Conversion in progress"
+  },
+  "copiedButton": {
+    "message": "복사되었습니다."
+  },
+  "copiedClipboard": {
+    "message": "클립보드에 복사되었습니다."
+  },
+  "copiedExclamation": {
+    "message": "복사되었습니다."
+  },
+  "copy": {
+    "message": "복사하기"
+  },
+  "copyToClipboard": {
+    "message": "클립보드에 복사"
+  },
+  "copyButton": {
+    "message": " 복사 "
+  },
+  "copyPrivateKey": {
+    "message": "비밀 키 (클릭하여 복사)"
+  },
+  "create": {
+    "message": "생성"
+  },
+  "createAccount": {
+    "message": "계좌 생성"
+  },
+  "createDen": {
+    "message": "생성"
+  },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Exchange type (cryptocurrencies)"
+  },
+  "customGas": {
+    "message": "가스 설정"
+  },
+  "customize": {
+    "message": "커스터마이즈"
+  },
+  "customRPC": {
+    "message": "Custom RPC"
+  },
+  "defaultNetwork": {
+    "message": "The default network for Ether transactions is Main Net."
+  },
+  "denExplainer": {
+    "message": "Your DEN is your password-encrypted storage within MetaMask."
+  },
+  "deposit": {
+    "message": "입금"
+  },
+  "depositBTC": {
+    "message": "아래 주소로 BTC를 입급해주세요."
+  },
+  "depositCoin": {
+    "message": "아래 주소로 1달러를 입금해주세요.",
+    "description": "Tells the user what coin they have selected to deposit with shapeshift"
+  },
+  "depositEth": {
+    "message": "이더리움 입금"
+  },
+  "depositEther": {
+    "message": "이더리움 입금"
+  },
+  "depositFiat": {
+    "message": "현금으로 입금하기"
+  },
+  "depositFromAccount": {
+    "message": "다른 주소에서 입금하기"
+  },
+  "depositShapeShift": {
+    "message": "ShapeShift를 통해 입금하기"
+  },
+  "depositShapeShiftExplainer": {
+    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+  },
+  "details": {
+    "message": "상세"
+  },
+  "directDeposit": {
+    "message": "즉시 입금"
+  },
+  "directDepositEther": {
+    "message": "이더리움 즉시 입금"
+  },
+  "directDepositEtherExplainer": {
+    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "done": {
+    "message": "완료"
+  },
+  "edit": {
+    "message": "수정"
+  },
+  "editAccountName": {
+    "message": "계좌명 수정"
+  },
+  "encryptNewDen": {
+    "message": "Encrypt your new DEN"
+  },
+  "enterPassword": {
+    "message": "패스워드를 입력해주세요."
+  },
+  "etherscanView": {
+    "message": "이더스캔에서 계좌보기"
+  },
+  "exchangeRate": {
+    "message": "Exchange Rate"
+  },
+  "exportPrivateKey": {
+    "message": "Export Private Key"
+  },
+  "exportPrivateKeyWarning": {
+    "message": "Export private keys at your own risk."
+  },
+  "failed": {
+    "message": "실패"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Exchange type"
+  },
+  "fileImportFail": {
+    "message": "File import not working? Click here!",
+    "description": "Helps user import their account from a JSON file"
+  },
+  "from": {
+    "message": "From"
+  },
+  "fromShapeShift": {
+    "message": "From ShapeShift"
+  },
+  "gas": {
+    "message": "Gas",
+    "description": "Short indication of gas cost"
+  },
+  "gasFee": {
+    "message": "가스 수수료"
+  },
+  "gasLimit": {
+    "message": "Gas Limit"
+  },
+  "gasLimitCalculation": {
+    "message": "We calculate the suggested gas limit based on network success rates."
+  },
+  "gasLimitRequired": {
+    "message": "Gas Limit Required"
+  },
+  "gasLimitTooLow": {
+    "message": "Gas limit must be at least 21000"
+  },
+  "gasPrice": {
+    "message": "Gas Price (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "We calculate the suggested gas prices based on network success rates."
+  },
+  "gasPriceRequired": {
+    "message": "Gas Price Required"
+  },
+  "getEther": {
+    "message": "이더리움 얻기"
+  },
+  "getEtherFromFaucet": {
+    "message": "Get Ether from a faucet for the $1",
+    "description": "Displays network name for Ether faucet"
+  },
+  "greaterThanMin": {
+    "message": "must be greater than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "here": {
+    "message": "here",
+    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "숨기기"
+  },
+  "hideToken": {
+    "message": "토큰 숨기기"
+  },
+  "hideTokenPrompt": {
+    "message": "Hide Token?"
+  },
+  "howToDeposit": {
+    "message": "How would you like to deposit Ether?"
+  },
+  "import": {
+    "message": "Import",
+    "description": "Button to import an account from a selected file"
+  },
+  "importAccount": {
+    "message": "Import Account"
+  },
+  "importAnAccount": {
+    "message": "Import an account"
+  },
+  "importDen": {
+    "message": "Import Existing DEN"
+  },
+  "imported": {
+    "message": "Imported",
+    "description": "status showing that an account has been fully loaded into the keyring"
+  },
+  "infoHelp": {
+    "message": "Info & Help"
+  },
+  "invalidAddress": {
+    "message": "Invalid address"
+  },
+  "invalidGasParams": {
+    "message": "Invalid Gas Parameters"
+  },
+  "invalidInput": {
+    "message": "Invalid input."
+  },
+  "invalidRequest": {
+    "message": "Invalid Request"
+  },
+  "jsonFile": {
+    "message": "JSON File",
+    "description": "format for importing an account"
+  },
+  "kovan": {
+    "message": "Kovan 테스트넷"
+  },
+  "lessThanMax": {
+    "message": "must be less than or equal to $1.",
+    "description": "helper for inputting hex as decimal input"
+  },
+  "limit": {
+    "message": "Limit"
+  },
+  "loading": {
+    "message": "로딩중..."
+  },
+  "loadingTokens": {
+    "message": "토큰 로딩중..."
+  },
+  "localhost": {
+    "message": "로컬호스트 8545"
+  },
+  "logout": {
+    "message": "로그아웃"
+  },
+  "loose": {
+    "message": "Loose"
+  },
+  "mainnet": {
+    "message": "이더리움 메인넷"
+  },
+  "message": {
+    "message": "메시지"
+  },
+  "min": {
+    "message": "최소"
+  },
+  "myAccounts": {
+    "message": "내 계좌"
+  },
+  "needEtherInWallet": {
+    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  },
+  "needImportFile": {
+    "message": "You must select a file to import.",
+    "description": "User is important an account and needs to add a file to continue"
+  },
+  "needImportPassword": {
+    "message": "You must enter a password for the selected file.",
+    "description": "Password and file needed to import an account"
+  },
+  "networks": {
+    "message": "Networks"
+  },
+  "newAccount": {
+    "message": "New Account"
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
+  },
+  "newContract": {
+    "message": "새 컨트랙트"
+  },
+  "newPassword": {
+    "message": "새 패스워드 (최소 8자 이상)"
+  },
+  "newRecipient": {
+    "message": "New Recipient"
+  },
+  "next": {
+    "message": "다음"
+  },
+  "noAddressForName": {
+    "message": "No address has been set for this name."
+  },
+  "noDeposits": {
+    "message": "No deposits received"
+  },
+  "noTransactionHistory": {
+    "message": "트랜잭션 기록이 없습니다."
+  },
+  "noTransactions": {
+    "message": "트랜잭션이 없습니다."
+  },
+  "notStarted": {
+    "message": "Not Started"
+  },
+  "oldUI": {
+    "message": "Old UI"
+  },
+  "oldUIMessage": {
+    "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
+  },
+  "or": {
+    "message": "or",
+    "description": "choice between creating or importing a new account"
+  },
+  "passwordMismatch": {
+    "message": "passwords don't match",
+    "description": "in password creation process, the two new password fields did not match"
+  },
+  "passwordShort": {
+    "message": "password not long enough",
+    "description": "in password creation process, the password is not long enough to be secure"
+  },
+  "pastePrivateKey": {
+    "message": "Paste your private key string here:",
+    "description": "For importing an account from a private key"
+  },
+  "pasteSeed": {
+    "message": "Paste your seed phrase here!"
+  },
+  "pleaseReviewTransaction": {
+    "message": "Please review your transaction."
+  },
+  "privateKey": {
+    "message": "Private Key",
+    "description": "select this type of file to use to import an account"
+  },
+  "privateKeyWarning": {
+    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+  },
+  "privateNetwork": {
+    "message": "Private Network"
+  },
+  "qrCode": {
+    "message": "QR 코드 보기"
+  },
+  "readdToken": {
+    "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
+  },
+  "readMore": {
+    "message": "더 읽기."
+  },
+  "receive": {
+    "message": "Receive"
+  },
+  "recipientAddress": {
+    "message": "Recipient Address"
+  },
+  "refundAddress": {
+    "message": "Your Refund Address"
+  },
+  "rejected": {
+    "message": "Rejected"
+  },
+  "required": {
+    "message": "Required"
+  },
+  "retryWithMoreGas": {
+    "message": "Retry with a higher gas price here"
+  },
+  "revert": {
+    "message": "Revert"
+  },
+  "rinkeby": {
+    "message": "Rinkeby 테스트넷"
+  },
+  "ropsten": {
+    "message": "Ropsten 테스트넷"
+  },
+  "sampleAccountName": {
+    "message": "E.g. My new account",
+    "description": "Help user understand concept of adding a human-readable name to their account"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "saveAsFile": {
+    "message": "Save as File",
+    "description": "Account export process"
+  },
+  "selectService": {
+    "message": "Select Service"
+  },
+  "send": {
+    "message": "전송"
+  },
+  "sendTokens": {
+    "message": "토큰 전송"
+  },
+  "sendTokensAnywhere": {
+    "message": "Send Tokens to anyone with an Ethereum account"
+  },
+  "settings": {
+    "message": "설정"
+  },
+  "shapeshiftBuy": {
+    "message": "Buy with Shapeshift"
+  },
+  "showPrivateKeys": {
+    "message": "Show Private Keys"
+  },
+  "showQRCode": {
+    "message": "QR코드 보기"
+  },
+  "sign": {
+    "message": "Sign"
+  },
+  "signMessage": {
+    "message": "Sign Message"
+  },
+  "signNotice": {
+    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+  },
+  "sigRequest": {
+    "message": "Signature Request"
+  },
+  "sigRequested": {
+    "message": "Signature Requested"
+  },
+  "status": {
+    "message": "Status"
+  },
+  "submit": {
+    "message": "Submit"
+  },
+  "takesTooLong": {
+    "message": "Taking too long?"
+  },
+  "testFaucet": {
+    "message": "Test Faucet"
+  },
+  "to": {
+    "message": "To"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 to ETH via ShapeShift",
+    "description": "system will fill in deposit type in start of message"
+  },
+  "tokenBalance": {
+    "message": "Your Token Balance is:"
+  },
+  "total": {
+    "message": "Total"
+  },
+  "transactionMemo": {
+    "message": "Transaction memo (optional)"
+  },
+  "transactionNumber": {
+    "message": "Transaction Number"
+  },
+  "transfers": {
+    "message": "Transfers"
+  },
+  "troubleTokenBalances": {
+    "message": "We had trouble loading your token balances. You can view them ",
+    "description": "Followed by a link (here) to view token balances"
+  },
+  "typePassword": {
+    "message": "Type Your Password"
+  },
+  "uiWelcome": {
+    "message": "Welcome to the New UI (Beta)"
+  },
+  "uiWelcomeMessage": {
+    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+  },
+  "unavailable": {
+    "message": "Unavailable"
+  },
+  "unknown": {
+    "message": "Unknown"
+  },
+  "unknownNetwork": {
+    "message": "Unknown Private Network"
+  },
+  "unknownNetworkId": {
+    "message": "Unknown network ID"
+  },
+  "usaOnly": {
+    "message": "USA only",
+    "description": "Using this exchange is limited to people inside the USA"
+  },
+  "usedByClients": {
+    "message": "Used by a variety of different clients"
+  },
+  "viewAccount": {
+    "message": "View Account"
+  },
+  "warning": {
+    "message": "Warning"
+  },
+  "whatsThis": {
+    "message": "What's this?"
+  },
+  "yourSigRequested": {
+    "message": "Your signature is being requested"
+  },
+  "youSign": {
+    "message": "You are signing"
   }
 }
