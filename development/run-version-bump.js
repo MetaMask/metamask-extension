@@ -1,4 +1,4 @@
-const { promisify } = require('util')
+const promisify = require('pify')
 const fs = require('fs')
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
