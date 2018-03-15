@@ -2,7 +2,147 @@
 
 ## Current Master
 
+- Add ability for internationalization.
+- Will now throw an error if the `to` field in txParams is not valid.
+- Will strip null values from the `to` field.
+- Fix flashing to Log in screen after logging in or restoring from seed phrase.
+- Increase tap areas for menu buttons on mobile
+- Change all fonts in new-ui onboarding to Roboto, size 400
+- Add a welcome screen to new-ui onboarding flow
+- Make new-ui create password screen responsive
+- Hide network dropdown before account is initialized
+- Fix bug that could prevent MetaMask from saving the latest vault.
+
+## 4.2.0 Tue Mar 06 2018
+
+- Replace "Loose" wording to "Imported".
+- Replace "Unlock" wording with "Log In".
+- Add Imported Account disclaimer.
+- Allow adding custom tokens to classic ui when balance is 0
+- Allow editing of symbol and decimal info when adding custom token in new-ui
+- NewUI shapeshift form can select all coins (not just BTC)
+- Add most of Microsoft Edge support.
+
+## 4.1.3 2018-2-28
+
+- Ensure MetaMask's inpage provider is named MetamaskInpageProvider to keep some sites from breaking.
+- Add retry transaction button back into classic ui.
+- Add network dropdown styles to support long custom RPC urls
+
+## 4.1.2 2018-2-28
+
+- Actually includes all the fixes mentioned in 4.1.1 (sorry)
+
+## 4.1.1 2018-2-28
+
+- Fix "Add Token" screen referencing missing token logo urls
+- Prevent user from switching network during signature request
+- Fix misleading language "Contract Published" -> "Contract Deployment"
+- Fix cancel button on "Buy Eth" screen
+- Improve new-ui onboarding flow style
+
+## 4.1.0 2018-2-27
+
+- Report failed txs to Sentry with more specific message
+- Fix internal feature flags being sometimes undefined
+- Standardized license to MIT
+
+## 4.0.0 2018-2-22
+
+- Introduce new MetaMask user interface.
+
+## 3.14.2 2018-2-15
+
+- Fix bug where log subscriptions would break when switching network.
+- Fix bug where storage values were cached across blocks.
+- Add MetaMask light client [testing container](https://github.com/MetaMask/mesh-testing)
+
+## 3.14.1 2018-2-1
+
+- Further fix scrolling for Firefox.
+
+## 3.14.0 2018-2-1
+
+- Removed unneeded data from storage
+- Add a "reset account" feature to Settings
+- Add warning for importing some kinds of files.
+- Scrollable Setting view for Firefox.
+
+## 3.13.8 2018-1-29
+
+- Fix provider for Kovan network.
+- Bump limit for EventEmitter listeners before warning.
+- Display Error when empty string is entered as a token address.
+
+## 3.13.7 2018-1-22
+
+- Add ability to bypass gas estimation loading indicator.
+- Forward failed transactions to Sentry error reporting service
+- Re-add changes from 3.13.5
+
+## 3.13.6 2017-1-18
+
+- Roll back changes to 3.13.4 to fix some issues with the new Infura REST provider.
+
+## 3.13.5 2018-1-16
+
+- Estimating gas limit for simple ether sends now faster & cheaper, by avoiding VM usage on recipients with no code.
+- Add an extra px to address for Firefox clipping.
+- Fix Firefox scrollbar.
+- Open metamask popup for transaction confirmation before gas estimation finishes and add a loading screen over transaction confirmation.
+- Fix bug that prevented eth_signTypedData from signing bytes.
+- Further improve gas price estimation.
+
+## 3.13.4 2018-1-9
+
+- Remove recipient field if application initializes a tx with an empty string, or 0x, and tx data. Throw an error with the same condition, but without tx data.
+- Improve gas price suggestion to be closer to the lowest that will be accepted.
+- Throw an error if a application tries to submit a tx whose value is a decimal, and inform that it should be in wei.
+- Fix bug that prevented updating custom token details.
+- No longer mark long-pending transactions as failed, since we now have button to retry with higher gas.
+- Fix rounding error when specifying an ether amount that has too much precision.
+- Fix bug where incorrectly inputting seed phrase would prevent any future attempts from succeeding.
+
+## 3.13.3 2017-12-14
+
+- Show tokens that are held that have no balance.
+- Reduce load on Infura by using a new block polling endpoint.
+
+## 3.13.2 2017-12-9
+
+- Reduce new block polling interval to 8000 ms, to ease server load.
+
+## 3.13.1 2017-12-7
+
+- Allow Dapps to specify a transaction nonce, allowing dapps to propose resubmit and force-cancel transactions.
+
+## 3.13.0 2017-12-7
+
+- Allow resubmitting transactions that are taking long to complete.
+
+## 3.12.1 2017-11-29
+
+- Fix bug where a user could be shown two different seed phrases.
+- Detect when multiple web3 extensions are active, and provide useful error.
+- Adds notice about seed phrase backup.
+
+## 3.12.0 2017-10-25
+
+- Add support for alternative ENS TLDs (Ethereum Name Service Top-Level Domains).
+- Lower minimum gas price to 0.1 GWEI.
+- Remove web3 injection message from production (thanks to @ChainsawBaby)
+- Add additional debugging info to our state logs, specifically OS version and browser version.
+
+## 3.11.2 2017-10-21
+
+- Fix bug where reject button would sometimes not work.
+- Fixed bug where sometimes MetaMask's connection to a page would be unreliable.
+
+## 3.11.1 2017-10-20
+
+- Fix bug where log filters were not populated correctly
 - Fix bug where web3 API was sometimes injected after the page loaded.
+- Fix bug where first account was sometimes not selected correctly after creating or restoring a vault.
 - Fix bug where imported accounts could not use new eth_signTypedData method.
 
 ## 3.11.0 2017-10-11

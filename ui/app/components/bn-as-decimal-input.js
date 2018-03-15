@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
+const t = require('../../i18n')
 
 module.exports = BnAsDecimalInput
 
@@ -31,6 +32,8 @@ BnAsDecimalInput.prototype.render = function () {
   const suffix = props.suffix
   const style = props.style
   const valueString = value.toString(10)
+  const newMin = min && this.downsize(min.toString(10), scale)
+  const newMax = max && this.downsize(max.toString(10), scale)
   const newValue = this.downsize(valueString, scale)
 
   return (
@@ -47,8 +50,8 @@ BnAsDecimalInput.prototype.render = function () {
           type: 'number',
           step: 'any',
           required: true,
-          min,
-          max,
+          min: newMin,
+          max: newMax,
           style: extend({
             display: 'block',
             textAlign: 'right',
@@ -128,17 +131,19 @@ BnAsDecimalInput.prototype.updateValidity = function (event) {
 }
 
 BnAsDecimalInput.prototype.constructWarning = function () {
-  const { name, min, max } = this.props
+  const { name, min, max, scale, suffix } = this.props
+  const newMin = min && this.downsize(min.toString(10), scale)
+  const newMax = max && this.downsize(max.toString(10), scale)
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${min} and less than or equal to ${max}.`
+    message += t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
   } else if (min) {
-    message += `must be greater than or equal to ${min}.`
+    message += t('greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
-    message += `must be less than or equal to ${max}.`
+    message += t('lessThanMax', [`${newMax} ${suffix}`])
   } else {
-    message += 'Invalid input.'
+    message += t('invalidInput')
   }
 
   return message

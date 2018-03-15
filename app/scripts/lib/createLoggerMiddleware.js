@@ -1,7 +1,7 @@
 // log rpc activity
 module.exports = createLoggerMiddleware
 
-function createLoggerMiddleware({ origin }) {
+function createLoggerMiddleware ({ origin }) {
   return function loggerMiddleware (req, res, next, end) {
     next((cb) => {
       if (res.error) {

@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
+const t = require('../../i18n')
 
 module.exports = HexAsDecimalInput
 
@@ -126,13 +127,13 @@ HexAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += `must be greater than or equal to  ${min} and less than or equal to ${max}.`
+    message += t('betweenMinAndMax', [min, max])
   } else if (min) {
-    message += `must be greater than or equal to ${min}.`
+    message += t('greaterThanMin', [min])
   } else if (max) {
-    message += `must be less than or equal to ${max}.`
+    message += t('lessThanMax', [max])
   } else {
-    message += 'Invalid input.'
+    message += t('invalidInput')
   }
 
   return message

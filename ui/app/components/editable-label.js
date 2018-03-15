@@ -1,56 +1,88 @@
-const Component = require('react').Component
+const { Component } = require('react')
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const inherits = require('util').inherits
-const findDOMNode = require('react-dom').findDOMNode
+const classnames = require('classnames')
+
+class EditableLabel extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      isEditing: false,
+      value: props.defaultValue || '',
+    }
+  }
+
+  handleSubmit () {
+    const { value } = this.state
+
+    if (value === '') {
+      return
+    }
+
+    Promise.resolve(this.props.onSubmit(value))
+      .then(() => this.setState({ isEditing: false }))
+  }
+
+  saveIfEnter (event) {
+    if (event.key === 'Enter') {
+      this.handleSubmit()
+    }
+  }
+
+  renderEditing () {
+    const { value } = this.state
+
+    return ([
+      h('input.large-input.editable-label__input', {
+        type: 'text',
+        required: true,
+        value: this.state.value,
+        onKeyPress: (event) => {
+          if (event.key === 'Enter') {
+            this.handleSubmit()
+          }
+        },
+        onChange: event => this.setState({ value: event.target.value }),
+        className: classnames({ 'editable-label__input--error': value === '' }),
+      }),
+      h('div.editable-label__icon-wrapper', [
+        h('i.fa.fa-check.editable-label__icon', {
+          onClick: () => this.handleSubmit(),
+        }),
+      ]),
+    ])
+  }
+
+  renderReadonly () {
+    return ([
+      h('div.editable-label__value', this.state.value),
+      h('div.editable-label__icon-wrapper', [
+        h('i.fa.fa-pencil.editable-label__icon', {
+          onClick: () => this.setState({ isEditing: true }),
+        }),
+      ]),
+    ])
+  }
+
+  render () {
+    const { isEditing } = this.state
+    const { className } = this.props
+
+    return (
+      h('div.editable-label', { className: classnames(className) },
+        isEditing
+          ? this.renderEditing()
+          : this.renderReadonly()
+      )
+    )
+  }
+}
+
+EditableLabel.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  defaultValue: PropTypes.string,
+  className: PropTypes.string,
+}
 
 module.exports = EditableLabel
-
-inherits(EditableLabel, Component)
-function EditableLabel () {
-  Component.call(this)
-}
-
-EditableLabel.prototype.render = function () {
-  const props = this.props
-  const state = this.state
-
-  if (state && state.isEditingLabel) {
-    return h('div.editable-label', [
-      h('input.sizing-input', {
-        defaultValue: props.textValue,
-        maxLength: '20',
-        onKeyPress: (event) => {
-          this.saveIfEnter(event)
-        },
-      }),
-      h('button.editable-button', {
-        onClick: () => this.saveText(),
-      }, 'Save'),
-    ])
-  } else {
-    return h('div.name-label', {
-      onClick: (event) => {
-        const nameAttribute = event.target.getAttribute('name')
-        // checks for class to handle smaller CTA above the account name
-        const classAttribute = event.target.getAttribute('class')
-        if (nameAttribute === 'edit' || classAttribute === 'edit-text') {
-          this.setState({ isEditingLabel: true })
-        }
-      },
-    }, this.props.children)
-  }
-}
-
-EditableLabel.prototype.saveIfEnter = function (event) {
-  if (event.key === 'Enter') {
-    this.saveText()
-  }
-}
-
-EditableLabel.prototype.saveText = function () {
-  var container = findDOMNode(this)
-  var text = container.querySelector('.editable-label input').value
-  var truncatedText = text.substring(0, 20)
-  this.props.saveText(truncatedText)
-  this.setState({ isEditingLabel: false, textLabel: truncatedText })
-}

@@ -1,18 +1,26 @@
 const assert = require('assert')
 const EventEmitter = require('events')
 const createMetamaskProvider = require('web3-provider-engine/zero.js')
+const SubproviderFromProvider = require('web3-provider-engine/subproviders/web3.js')
+const createInfuraProvider = require('eth-json-rpc-infura/src/createProvider')
 const ObservableStore = require('obs-store')
 const ComposedStore = require('obs-store/lib/composed')
 const extend = require('xtend')
 const EthQuery = require('eth-query')
 const createEventEmitterProxy = require('../lib/events-proxy.js')
-const RPC_ADDRESS_LIST = require('../config.js').network
-const DEFAULT_RPC = RPC_ADDRESS_LIST['rinkeby']
+const networkConfig = require('../config.js')
+const { OLD_UI_NETWORK_TYPE, DEFAULT_RPC } = networkConfig.enums
+const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
 
 module.exports = class NetworkController extends EventEmitter {
 
   constructor (config) {
     super()
+
+    this._networkEndpointVersion = OLD_UI_NETWORK_TYPE
+    this._networkEndpoints = this.getNetworkEndpoints(OLD_UI_NETWORK_TYPE)
+    this._defaultRpc = this._networkEndpoints[DEFAULT_RPC]
+
     config.provider.rpcTarget = this.getRpcAddressForType(config.provider.type, config.provider)
     this.networkStore = new ObservableStore('loading')
     this.providerStore = new ObservableStore(config.provider)
@@ -22,10 +30,32 @@ module.exports = class NetworkController extends EventEmitter {
     this.on('networkDidChange', this.lookupNetwork)
   }
 
+  async setNetworkEndpoints (version) {
+    if (version === this._networkEndpointVersion) {
+      return
+    }
+
+    this._networkEndpointVersion = version
+    this._networkEndpoints = this.getNetworkEndpoints(version)
+    this._defaultRpc = this._networkEndpoints[DEFAULT_RPC]
+    const { type } = this.getProviderConfig()
+
+    return this.setProviderType(type, true)
+  }
+
+  getNetworkEndpoints (version = OLD_UI_NETWORK_TYPE) {
+    return networkConfig[version]
+  }
+
   initializeProvider (_providerParams) {
     this._baseProviderParams = _providerParams
-    const rpcUrl = this.getCurrentRpcAddress()
-    this._configureStandardProvider({ rpcUrl })
+    const { type, rpcTarget } = this.providerStore.getState()
+    // map rpcTarget to rpcUrl
+    const opts = {
+      type,
+      rpcUrl: rpcTarget,
+    }
+    this._configureProvider(opts)
     this._proxy.on('block', this._logBlock.bind(this))
     this._proxy.on('error', this.verifyNetwork.bind(this))
     this.ethQuery = new EthQuery(this._proxy)
@@ -51,6 +81,10 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   lookupNetwork () {
+    // Prevent firing when provider is not defined.
+    if (!this.ethQuery || !this.ethQuery.sendAsync) {
+      return log.warn('NetworkController - lookupNetwork aborted due to missing ethQuery')
+    }
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
       if (err) return this.setNetworkState('loading')
       log.info('web3.getNetwork returned ' + network)
@@ -72,14 +106,17 @@ module.exports = class NetworkController extends EventEmitter {
     return this.getRpcAddressForType(provider.type)
   }
 
-  async setProviderType (type) {
+  async setProviderType (type, forceUpdate = false) {
     assert(type !== 'rpc', `NetworkController.setProviderType - cannot connect by type "rpc"`)
     // skip if type already matches
-    if (type === this.getProviderConfig().type) return
+    if (type === this.getProviderConfig().type && !forceUpdate) {
+      return
+    }
+
     const rpcTarget = this.getRpcAddressForType(type)
     assert(rpcTarget, `NetworkController - unknown rpc address for type "${type}"`)
     this.providerStore.updateState({ type, rpcTarget })
-    this._switchNetwork({ rpcUrl: rpcTarget })
+    this._switchNetwork({ type })
   }
 
   getProviderConfig () {
@@ -87,22 +124,67 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   getRpcAddressForType (type, provider = this.getProviderConfig()) {
-    if (RPC_ADDRESS_LIST[type]) return RPC_ADDRESS_LIST[type]
-    return provider && provider.rpcTarget ? provider.rpcTarget : DEFAULT_RPC
+    if (this._networkEndpoints[type]) {
+      return this._networkEndpoints[type]
+    }
+
+    return provider && provider.rpcTarget ? provider.rpcTarget : this._defaultRpc
   }
 
   //
   // Private
   //
 
-  _switchNetwork (providerParams) {
+  _switchNetwork (opts) {
     this.setNetworkState('loading')
-    this._configureStandardProvider(providerParams)
+    this._configureProvider(opts)
     this.emit('networkDidChange')
   }
 
-  _configureStandardProvider(_providerParams) {
-    const providerParams = extend(this._baseProviderParams, _providerParams)
+  _configureProvider (opts) {
+    // type-based rpc endpoints
+    const { type } = opts
+    if (type) {
+      // type-based infura rpc endpoints
+      const isInfura = INFURA_PROVIDER_TYPES.includes(type)
+      opts.rpcUrl = this.getRpcAddressForType(type)
+      if (isInfura) {
+        this._configureInfuraProvider(opts)
+      // other type-based rpc endpoints
+      } else {
+        this._configureStandardProvider(opts)
+      }
+    // url-based rpc endpoints
+    } else {
+      this._configureStandardProvider(opts)
+    }
+  }
+
+  _configureInfuraProvider (opts) {
+    log.info('_configureInfuraProvider', opts)
+    const infuraProvider = createInfuraProvider({
+      network: opts.type,
+    })
+    const infuraSubprovider = new SubproviderFromProvider(infuraProvider)
+    const providerParams = extend(this._baseProviderParams, {
+      rpcUrl: opts.rpcUrl,
+      engineParams: {
+        pollingInterval: 8000,
+        blockTrackerProvider: infuraProvider,
+      },
+      dataSubprovider: infuraSubprovider,
+    })
+    const provider = createMetamaskProvider(providerParams)
+    this._setProvider(provider)
+  }
+
+  _configureStandardProvider ({ rpcUrl }) {
+    const providerParams = extend(this._baseProviderParams, {
+      rpcUrl,
+      engineParams: {
+        pollingInterval: 8000,
+      },
+    })
     const provider = createMetamaskProvider(providerParams)
     this._setProvider(provider)
   }

@@ -1,100 +1,131 @@
-const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const FileInput = require('react-simple-file-input').default
+const t = require('../../../i18n')
 
-const HELP_LINK = 'https://github.com/MetaMask/faq/blob/master/README.md#q-i-cant-use-the-import-feature-for-uploading-a-json-file-the-window-keeps-closing-when-i-try-to-select-a-file'
+const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 
-module.exports = connect(mapStateToProps)(JsonImportSubview)
+class JsonImportSubview extends Component {
+  constructor (props) {
+    super(props)
 
-function mapStateToProps (state) {
+    this.state = {
+      file: null,
+      fileContents: '',
+    }
+  }
+
+  render () {
+    const { error } = this.props
+
+    return (
+      h('div.new-account-import-form__json', [
+
+        h('p', t('usedByClients')),
+        h('a.warning', {
+          href: HELP_LINK,
+          target: '_blank',
+        }, t('fileImportFail')),
+
+        h(FileInput, {
+          readAs: 'text',
+          onLoad: this.onLoad.bind(this),
+          style: {
+            margin: '20px 0px 12px 34%',
+            fontSize: '15px',
+            display: 'flex',
+            justifyContent: 'center',
+          },
+        }),
+
+        h('input.new-account-import-form__input-password', {
+          type: 'password',
+          placeholder: t('enterPassword'),
+          id: 'json-password-box',
+          onKeyPress: this.createKeyringOnEnter.bind(this),
+        }),
+
+        h('div.new-account-create-form__buttons', {}, [
+
+          h('button.new-account-create-form__button-cancel', {
+            onClick: () => this.props.goHome(),
+          }, [
+            t('cancel'),
+          ]),
+
+          h('button.new-account-create-form__button-create', {
+            onClick: () => this.createNewKeychain(),
+          }, [
+            t('import'),
+          ]),
+
+        ]),
+
+        error ? h('span.error', error) : null,
+      ])
+    )
+  }
+
+  onLoad (event, file) {
+    this.setState({file: file, fileContents: event.target.result})
+  }
+
+  createKeyringOnEnter (event) {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      this.createNewKeychain()
+    }
+  }
+
+  createNewKeychain () {
+    const state = this.state
+
+    if (!state) {
+      const message = 'You must select a valid file to import.'
+      return this.props.displayWarning(message)
+    }
+
+    const { fileContents } = state
+
+    if (!fileContents) {
+      const message = t('needImportFile')
+      return this.props.displayWarning(message)
+    }
+
+    const passwordInput = document.getElementById('json-password-box')
+    const password = passwordInput.value
+
+    if (!password) {
+      const message = t('needImportPassword')
+      return this.props.displayWarning(message)
+    }
+    
+    this.props.importNewJsonAccount([ fileContents, password ])
+  }
+}
+
+JsonImportSubview.propTypes = {
+  error: PropTypes.string,
+  goHome: PropTypes.func,
+  displayWarning: PropTypes.func,
+  importNewJsonAccount: PropTypes.func,
+}
+
+const mapStateToProps = state => {
   return {
     error: state.appState.warning,
   }
 }
 
-inherits(JsonImportSubview, Component)
-function JsonImportSubview () {
-  Component.call(this)
-}
-
-JsonImportSubview.prototype.render = function () {
-  const { error } = this.props
-
-  return (
-    h('div', {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '5px 15px 0px 15px',
-      },
-    }, [
-
-      h('p', 'Used by a variety of different clients'),
-      h('a.warning', { href: HELP_LINK, target: '_blank' }, 'File import not working? Click here!'),
-
-      h(FileInput, {
-        readAs: 'text',
-        onLoad: this.onLoad.bind(this),
-        style: {
-          margin: '20px 0px 12px 20px',
-          fontSize: '15px',
-        },
-      }),
-
-      h('input.large-input.letter-spacey', {
-        type: 'password',
-        placeholder: 'Enter password',
-        id: 'json-password-box',
-        onKeyPress: this.createKeyringOnEnter.bind(this),
-        style: {
-          width: 260,
-          marginTop: 12,
-        },
-      }),
-
-      h('button.primary', {
-        onClick: this.createNewKeychain.bind(this),
-        style: {
-          margin: 12,
-        },
-      }, 'Import'),
-
-      error ? h('span.error', error) : null,
-    ])
-  )
-}
-
-JsonImportSubview.prototype.onLoad = function (event, file) {
-  this.setState({file: file, fileContents: event.target.result})
-}
-
-JsonImportSubview.prototype.createKeyringOnEnter = function (event) {
-  if (event.key === 'Enter') {
-    event.preventDefault()
-    this.createNewKeychain()
+const mapDispatchToProps = dispatch => {
+  return {
+    goHome: () => dispatch(actions.goHome()),
+    displayWarning: warning => dispatch(actions.displayWarning(warning)),
+    importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
   }
 }
 
-JsonImportSubview.prototype.createNewKeychain = function () {
-  const state = this.state
-  const { fileContents } = state
-
-  if (!fileContents) {
-    const message = 'You must select a file to import.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
-
-  const passwordInput = document.getElementById('json-password-box')
-  const password = passwordInput.value
-
-  if (!password) {
-    const message = 'You must enter a password for the selected file.'
-    return this.props.dispatch(actions.displayWarning(message))
-  }
-
-  this.props.dispatch(actions.importNewAccount('JSON File', [ fileContents, password ]))
-}
+module.exports = connect(mapStateToProps, mapDispatchToProps)(JsonImportSubview)

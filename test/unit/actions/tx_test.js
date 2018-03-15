@@ -51,9 +51,8 @@ describe('tx confirmation screen', function () {
 
         actions.cancelTx({value: firstTxId})((action) => {
           result = reducers(initialState, action)
-          done()
         })
-
+        done()
       })
 
       it('should transition to the account detail view', function () {

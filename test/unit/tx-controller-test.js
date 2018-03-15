@@ -1,11 +1,12 @@
 const assert = require('assert')
 const ethUtil = require('ethereumjs-util')
 const EthTx = require('ethereumjs-tx')
+const EthjsQuery = require('ethjs-query')
 const ObservableStore = require('obs-store')
 const sinon = require('sinon')
 const TransactionController = require('../../app/scripts/controllers/transactions')
 const TxGasUtils = require('../../app/scripts/lib/tx-gas-utils')
-const { createStubedProvider } = require('../stub/provider')
+const { createTestProviderTools } = require('../stub/provider')
 
 const noop = () => true
 const currentNetworkId = 42
@@ -14,11 +15,18 @@ const privKey = new Buffer('8718b9618a37d1fc78c436511fc6df3c8258d3250635bba617f3
 
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub
+  let txController, provider, providerResultStub, testBlockchain
 
   beforeEach(function () {
-    providerResultStub = {}
-    provider = createStubedProvider(providerResultStub)
+    providerResultStub = {
+      // 1 gwei
+      eth_gasPrice: '0x0de0b6b3a7640000',
+      // by default, all accounts are external accounts (not contracts)
+      eth_getCode: '0x',
+    }
+    const providerTools = createTestProviderTools({ scaffold: providerResultStub })
+    provider = providerTools.provider
+    testBlockchain = providerTools.testBlockchain
 
     txController = new TransactionController({
       provider,
@@ -31,7 +39,6 @@ describe('Transaction Controller', function () {
       }),
     })
     txController.nonceTracker.getNonceLock = () => Promise.resolve({ nextNonce: 0, releaseLock: noop })
-    txController.txProviderUtils = new TxGasUtils(txController.provider)
   })
 
   describe('#getState', function () {
@@ -110,26 +117,19 @@ describe('Transaction Controller', function () {
         history: [],
       }
       txController.txStateManager._saveTxList([txMeta])
-      stub = sinon.stub(txController, 'addUnapprovedTransaction').returns(Promise.resolve(txController.txStateManager.addTx(txMeta)))
+      stub = sinon.stub(txController, 'addUnapprovedTransaction').callsFake(() => {
+        txController.emit('newUnapprovedTx', txMeta)
+        return Promise.resolve(txController.txStateManager.addTx(txMeta))
     })
 
     afterEach(function () {
       txController.txStateManager._saveTxList([])
       stub.restore()
     })
-
-    it('should emit newUnaprovedTx event and pass txMeta as the first argument', function (done) {
-      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
-        assert(txMetaFromEmit, 'txMeta is falsey')
-        assert.equal(txMetaFromEmit.id, 1, 'the right txMeta was passed')
-        done()
-      })
-      txController.newUnapprovedTransaction(txParams)
-      .catch(done)
-    })
+  })
 
     it('should resolve when finished and status is submitted and resolve with the hash', function (done) {
-      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.setTxHash(txMetaFromEmit.id, '0x0')
           txController.txStateManager.setTxStatusSubmitted(txMetaFromEmit.id)
@@ -145,7 +145,7 @@ describe('Transaction Controller', function () {
     })
 
     it('should reject when finished and status is rejected', function (done) {
-      txController.once('newUnaprovedTx', (txMetaFromEmit) => {
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
         setTimeout(() => {
           txController.txStateManager.setTxStatusRejected(txMetaFromEmit.id)
         }, 10)
@@ -160,8 +160,8 @@ describe('Transaction Controller', function () {
   })
 
   describe('#addUnapprovedTransaction', function () {
+
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
-      const addTxDefaultsStub = sinon.stub(txController, 'addTxDefaults').callsFake(() => Promise.resolve())
       txController.addUnapprovedTransaction({})
       .then((txMeta) => {
         assert(('id' in txMeta), 'should have a id')
@@ -172,10 +172,20 @@ describe('Transaction Controller', function () {
 
         const memTxMeta = txController.txStateManager.getTx(txMeta.id)
         assert.deepEqual(txMeta, memTxMeta, `txMeta should be stored in txController after adding it\n  expected: ${txMeta} \n  got: ${memTxMeta}`)
-        addTxDefaultsStub.restore()
         done()
       }).catch(done)
     })
+
+    it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
+      providerResultStub.eth_gasPrice = '4a817c800'
+      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
+        assert(txMetaFromEmit, 'txMeta is falsey')
+        done()
+      })
+      txController.addUnapprovedTransaction({})
+      .catch(done)
+    })
+
   })
 
   describe('#addTxDefaults', function () {
@@ -205,7 +215,7 @@ describe('Transaction Controller', function () {
       var sample = {
         value: '0x01',
       }
-      txController.txProviderUtils.validateTxParams(sample).then(() => {
+      txController.txGasUtil.validateTxParams(sample).then(() => {
         done()
       }).catch(done)
     })
@@ -214,7 +224,7 @@ describe('Transaction Controller', function () {
       var sample = {
         value: '-0x01',
       }
-      txController.txProviderUtils.validateTxParams(sample)
+      txController.txGasUtil.validateTxParams(sample)
       .then(() => done('expected to thrown on negativity values but didn\'t'))
       .catch((err) => {
         assert.ok(err, 'error')

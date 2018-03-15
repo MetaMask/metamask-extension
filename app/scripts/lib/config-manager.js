@@ -42,6 +42,17 @@ ConfigManager.prototype.getData = function () {
   return this.store.getState()
 }
 
+ConfigManager.prototype.setPasswordForgotten = function (passwordForgottenState) {
+  const data = this.getData()
+  data.forgottenPassword = passwordForgottenState
+  this.setData(data)
+}
+
+ConfigManager.prototype.getPasswordForgotten = function (passwordForgottenState) {
+  const data = this.getData()
+  return data.forgottenPassword
+}
+
 ConfigManager.prototype.setWallet = function (wallet) {
   var data = this.getData()
   data.wallet = wallet

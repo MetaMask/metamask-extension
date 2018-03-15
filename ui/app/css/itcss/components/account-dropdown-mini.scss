@@ -1,0 +1,48 @@
+.account-dropdown-mini {
+  height: 22px;
+  background-color: $white;
+  font-family: Roboto;
+  line-height: 16px;
+  font-size: 12px;
+  width: 124px;
+
+  &__close-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__list {
+    z-index: 1050;
+    position: absolute;
+    height: 180px;
+    width: 96pxpx;
+    border: 1px solid $geyser;
+    border-radius: 4px;
+    background-color: $white;
+    box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,.11);
+    overflow-y: scroll;
+  }
+
+  .account-list-item {
+    margin-top: 6px;
+  }
+
+  .account-list-item__account-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 80px;
+  }
+
+  .account-list-item__top-row {
+    margin: 0;
+  }
+
+  .account-list-item__icon {
+    position: initial;
+  }
+}

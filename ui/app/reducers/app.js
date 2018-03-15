@@ -14,6 +14,7 @@ function reduceApp (state, action) {
   if (selectedAddress) {
     name = 'accountDetail'
   }
+
   if (hasUnconfActions) {
     log.debug('pending txs detected, defaulting to conf-tx view.')
     name = 'confTx'
@@ -36,6 +37,17 @@ function reduceApp (state, action) {
   var appState = extend({
     shouldClose: false,
     menuOpen: false,
+    modal: {
+      open: false,
+      modalState: {
+        name: null,
+      },
+      previousModalState: {
+        name: null,
+      },
+    },
+    sidebarOpen: false,
+    networkDropdownOpen: false,
     currentView: seedWords ? seedConfView : defaultView,
     accountDetail: {
       subview: 'transactions',
@@ -46,12 +58,55 @@ function reduceApp (state, action) {
     isLoading: false,
     // Used to display error text
     warning: null,
+    buyView: {},
+    isMouseUser: false,
   }, state.appState)
 
   switch (action.type) {
+    // dropdown methods
+    case actions.NETWORK_DROPDOWN_OPEN:
+      return extend(appState, {
+        networkDropdownOpen: true,
+      })
+
+    case actions.NETWORK_DROPDOWN_CLOSE:
+      return extend(appState, {
+        networkDropdownOpen: false,
+      })
+
+    // sidebar methods
+    case actions.SIDEBAR_OPEN:
+      return extend(appState, {
+        sidebarOpen: true,
+      })
+
+    case actions.SIDEBAR_CLOSE:
+      return extend(appState, {
+        sidebarOpen: false,
+      })
+
+    // modal methods:
+    case actions.MODAL_OPEN:
+      return extend(appState, {
+        modal: Object.assign(
+          state.appState.modal,
+          { open: true },
+          { modalState: action.payload },
+          { previousModalState: appState.modal.modalState},
+        ),
+      })
+
+    case actions.MODAL_CLOSE:
+      return extend(appState, {
+        modal: Object.assign(
+          state.appState.modal,
+          { open: false },
+          { modalState: { name: null } },
+          { previousModalState: appState.modal.modalState},
+        ),
+      })
 
     // transition methods
-
     case actions.TRANSITION_FORWARD:
       return extend(appState, {
         transForward: true,
@@ -83,13 +138,17 @@ function reduceApp (state, action) {
       })
 
     case actions.FORGOT_PASSWORD:
-      return extend(appState, {
-        currentView: {
-          name: 'restoreVault',
-        },
-        transForward: false,
-        forgottenPassword: true,
+      const newState = extend(appState, {
+        forgottenPassword: action.value,
       })
+
+      if (action.value) {
+        newState.currentView = {
+          name: 'restoreVault',
+        }
+      }
+
+      return newState
 
     case actions.SHOW_INIT_MENU:
       return extend(appState, {
@@ -116,12 +175,30 @@ function reduceApp (state, action) {
       })
 
     case actions.SHOW_IMPORT_PAGE:
-
       return extend(appState, {
         currentView: {
           name: 'import-menu',
         },
         transForward: true,
+        warning: null,
+      })
+
+    case actions.SHOW_NEW_ACCOUNT_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'new-account-page',
+          context: action.formToSelect,
+        },
+        transForward: true,
+        warning: null,
+      })
+
+    case actions.SET_NEW_ACCOUNT_FORM:
+      return extend(appState, {
+        currentView: {
+          name: appState.currentView.name,
+          context: action.formToSelect,
+        },
       })
 
     case actions.SHOW_INFO_PAGE:
@@ -133,7 +210,7 @@ function reduceApp (state, action) {
         transForward: true,
       })
 
-    case actions.CREATE_NEW_VAULT_IN_PROGRESS:
+  case actions.CREATE_NEW_VAULT_IN_PROGRESS:
       return extend(appState, {
         currentView: {
           name: 'createVault',
@@ -166,6 +243,16 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'sendTransaction',
+          context: appState.currentView.context,
+        },
+        transForward: true,
+        warning: null,
+      })
+
+    case actions.SHOW_SEND_TOKEN_PAGE:
+      return extend(appState, {
+        currentView: {
+          name: 'sendToken',
           context: appState.currentView.context,
         },
         transForward: true,
@@ -307,7 +394,7 @@ function reduceApp (state, action) {
       return extend(appState, {
         currentView: {
           name: 'confTx',
-          context: 0,
+          context: action.id ? indexForPending(state, action.id) : 0,
         },
         transForward: action.transForward,
         warning: null,
@@ -328,7 +415,7 @@ function reduceApp (state, action) {
     case actions.COMPLETED_TX:
       log.debug('reducing COMPLETED_TX for tx ' + action.value)
       const otherUnconfActions = getUnconfActionList(state)
-      .filter(tx => tx.id !== action.value)
+        .filter(tx => tx.id !== action.value)
       const hasOtherUnconfActions = otherUnconfActions.length > 0
 
       if (hasOtherUnconfActions) {
@@ -400,6 +487,11 @@ function reduceApp (state, action) {
     case actions.UNLOCK_FAILED:
       return extend(appState, {
         warning: action.value || 'Incorrect password. Try again.',
+      })
+
+    case actions.UNLOCK_SUCCEEDED:
+      return extend(appState, {
+        warning: '',
       })
 
     case actions.SHOW_LOADING:
@@ -494,6 +586,16 @@ function reduceApp (state, action) {
         },
       })
 
+    case actions.ONBOARDING_BUY_ETH_VIEW:
+      return extend(appState, {
+        transForward: true,
+        currentView: {
+          name: 'onboardingBuyEth',
+          context: appState.currentView.name,
+        },
+        identity: state.metamask.identities[action.value],
+      })
+
     case actions.COINBASE_SUBVIEW:
       return extend(appState, {
         buyView: {
@@ -517,8 +619,8 @@ function reduceApp (state, action) {
             marketinfo: action.value.marketinfo,
             coinOptions: action.value.coinOptions,
           },
-          buyAddress: appState.buyView.buyAddress,
-          amount: appState.buyView.amount,
+          buyAddress: action.value.buyAddress || appState.buyView.buyAddress,
+          amount: appState.buyView.amount || 0,
         },
       })
 
@@ -561,6 +663,12 @@ function reduceApp (state, action) {
           data: action.value.data,
         },
       })
+
+    case actions.SET_MOUSE_USER_STATE:
+      return extend(appState, {
+        isMouseUser: action.value,
+      })
+
     default:
       return appState
   }
@@ -586,3 +694,7 @@ function indexForPending (state, txId) {
   const index = unconfTxList.indexOf(match)
   return index
 }
+
+// function indexForLastPending (state) {
+//   return getUnconfActionList(state).length
+// }

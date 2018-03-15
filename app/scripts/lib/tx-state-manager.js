@@ -4,7 +4,7 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const txStateHistoryHelper = require('./tx-state-history-helper')
 
-module.exports = class TransactionStateManger extends EventEmitter {
+module.exports = class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 
@@ -91,7 +91,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
   updateTx (txMeta, note) {
     if (txMeta.txParams) {
       Object.keys(txMeta.txParams).forEach((key) => {
-        let value = txMeta.txParams[key]
+        const value = txMeta.txParams[key]
         if (typeof value !== 'string') console.error(`${key}: ${value} in txParams is not a string`)
         if (!ethUtil.isHexPrefixed(value)) console.error('is not hex prefixed, anything on txParams must be hex prefixed')
       })
@@ -187,6 +187,10 @@ module.exports = class TransactionStateManger extends EventEmitter {
     this._setTxStatus(txId, 'rejected')
   }
 
+  // should update the status of the tx to 'unapproved'.
+  setTxStatusUnapproved (txId) {
+    this._setTxStatus(txId, 'unapproved')
+  }
   // should update the status of the tx to 'approved'.
   setTxStatusApproved (txId) {
     this._setTxStatus(txId, 'approved')
@@ -217,6 +221,17 @@ module.exports = class TransactionStateManger extends EventEmitter {
     this._setTxStatus(txId, 'failed')
   }
 
+  wipeTransactions (address) {
+    // network only tx
+    const txs = this.getFullTxList()
+    const network = this.getNetwork()
+
+    // Filter out the ones from the current account and network
+    const otherAccountTxs = txs.filter((txMeta) => !(txMeta.txParams.from === address && txMeta.metamaskNetworkId === network))
+
+    // Update state
+    this._saveTxList(otherAccountTxs)
+  }
 //
 //           PRIVATE METHODS
 //
@@ -236,7 +251,7 @@ module.exports = class TransactionStateManger extends EventEmitter {
     txMeta.status = status
     this.emit(`${txMeta.id}:${status}`, txId)
     this.emit(`tx:status-update`, txId, status)
-    if (status === 'submitted' || status === 'rejected') {
+    if (['submitted', 'rejected', 'failed'].includes(status)) {
       this.emit(`${txMeta.id}:finished`, txMeta)
     }
     this.updateTx(txMeta, `txStateManager: setting status to ${status}`)

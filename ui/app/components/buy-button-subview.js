@@ -9,6 +9,7 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
+const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -76,7 +77,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Buy Eth'),
+        }, t('depositEth')),
       ]),
 
       // loading indication
@@ -87,7 +88,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
           left: '49vw',
         },
       }, [
-        h(Loading, { isLoading }),
+        isLoading && h(Loading),
       ]),
 
       // account panel
@@ -118,7 +119,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, 'Select Service'),
+        }, t('selectService')),
       ]),
 
     ])
@@ -143,7 +144,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '4':
     case '42':
       const networkName = networkNames[network]
-      const label = `${networkName} Test Faucet`
+      const label = `${networkName} ${t('testFaucet')}`
       return (
         h('div.flex-column', {
           style: {
@@ -164,14 +165,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, 'Borrow With Dharma (Beta)')
+            }, t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', 'Unknown network ID')
+        h('h2.error', t('unknownNetworkId'))
       )
 
   }
@@ -203,8 +204,8 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
             'ShapeShift',
           ],
           subtext: {
-            'Coinbase': 'Crypto/FIAT (USA only)',
-            'ShapeShift': 'Crypto',
+            'Coinbase': `${t('crypto')}/${t('fiat')} (${t('usaOnly')})`,
+            'ShapeShift': t('crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),
@@ -245,7 +246,7 @@ BuyButtonSubview.prototype.navigateTo = function (url) {
 
 BuyButtonSubview.prototype.backButtonContext = function () {
   if (this.props.context === 'confTx') {
-    this.props.dispatch(actions.showConfTxPage(false))
+    this.props.dispatch(actions.showConfTxPage({transForward: false}))
   } else {
     this.props.dispatch(actions.goHome())
   }

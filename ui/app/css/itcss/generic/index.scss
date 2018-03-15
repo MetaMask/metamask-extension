@@ -1,0 +1,223 @@
+/*
+  Generic
+ */
+
+@import './reset.scss';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: Roboto, Arial;
+  color: #4d4d4d;
+  font-weight: 300;
+  line-height: 1.4em;
+  background: #f7f7f7;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 500px;
+}
+
+.app-root {
+  overflow: hidden;
+  position: relative;
+}
+
+.app-primary {
+  display: flex;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
+/* stylelint-disable */
+#app-content {
+  overflow-x: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (max-width: $break-small) {
+    background-color: $white;
+  }
+}
+/* stylelint-enable */
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: #df6b0e;
+}
+
+input.large-input,
+textarea.large-input {
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}
+
+.allcaps {
+  text-transform: uppercase;
+}
+
+.page-container {
+  width: 400px;
+  background-color: $white;
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, .08);
+  z-index: 25;
+  display: flex;
+  flex-flow: column;
+  border-radius: 7px;
+  height: 100%;
+
+  &__header {
+    display: flex;
+    flex-flow: column;
+    border-bottom: 1px solid $geyser;
+    padding: 20px;
+    flex: 0 0 auto;
+    position: relative;
+  }
+
+  &__header-close {
+    color: $tundora;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    overflow: hidden;
+
+    &::after {
+      content: '\00D7';
+      font-size: 40px;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    border-top: 1px solid $geyser;
+    padding: 1.6rem;
+    flex: 0 0 auto;
+
+    .btn-clear,
+    .btn-cancel {
+      font-size: 1rem;
+    }
+  }
+
+  &__footer-button {
+    width: 165px;
+    height: 55px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-right: 1rem;
+    border-radius: 2px;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+
+  &__title {
+    color: $black;
+    font-family: Roboto;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 2rem;
+  }
+
+  &__subtitle {
+    padding-top: .5rem;
+    line-height: initial;
+    font-size: .9rem;
+    color: $gray;
+  }
+
+  &__tabs {
+    padding: 0 1.3rem;
+    display: flex;
+  }
+
+  &__tab {
+    min-width: 5rem;
+    padding: .2rem .8rem .9rem;
+    color: $dusty-gray;
+    font-family: Roboto;
+    font-size: 1.1rem;
+    line-height: initial;
+    text-align: center;
+    cursor: pointer;
+    border-bottom: none;
+    margin-right: 1rem;
+
+    &:hover {
+      color: $black;
+    }
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+
+    &--selected {
+      color: $curious-blue;
+      border-bottom: 3px solid $curious-blue;
+
+      &:hover {
+        color: $curious-blue;
+      }
+    }
+  }
+
+  &--full-width {
+    width: initial;
+  }
+
+  &__content {
+    height: 100%;
+    overflow-y: auto;
+  }
+}
+
+@media screen and (max-width: 250px) {
+  .page-container {
+    &__footer {
+      flex-flow: column-reverse;
+    }
+
+    &__footer-button {
+      width: 100%;
+      margin-bottom: 1rem;
+      margin-right: 0;
+
+      &:first-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .page-container {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    background-color: $white;
+    border-radius: 0;
+  }
+}
