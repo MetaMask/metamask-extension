@@ -2,6 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
+const t = require('../i18n')
 
 module.exports = connect(mapStateToProps)(NewKeychain)
 
@@ -23,7 +24,7 @@ NewKeychain.prototype.render = function () {
         background: 'blue',
       },
     }, [
-      h('h1', `Here's a list!!!!`),
+      h('h1', t(`hereList`)),
     ])
   )
 }

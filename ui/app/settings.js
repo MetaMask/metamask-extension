@@ -10,6 +10,7 @@ const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
+const t = require('../i18n')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -84,7 +85,7 @@ class Settings extends Component {
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h(SimpleDropdown, {
-            placeholder: 'Select Currency',
+            placeholder: t('selectCurrency'),
             options: getInfuraCurrencyOptions(),
             selectedOption: currentCurrency,
             onSelect: newCurrency => setCurrentCurrency(newCurrency),
@@ -146,12 +147,12 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('span', 'New RPC URL'),
+          h('span', t('newRPC')),
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('input.settings__input', {
-              placeholder: 'New RPC URL',
+              placeholder: t('newRPC'),
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
@@ -164,7 +165,7 @@ class Settings extends Component {
                 event.preventDefault()
                 this.validateRpc(this.state.newRpc)
               },
-            }, 'Save'),
+            }, t('save')),
           ]),
         ]),
       ])
@@ -180,9 +181,9 @@ class Settings extends Component {
       const appendedRpc = `http://${newRpc}`
 
       if (validUrl.isWebUri(appendedRpc)) {
-        displayWarning('URIs require the appropriate HTTP/HTTPS prefix.')
+        displayWarning(t('urlErrorMsg'))
       } else {
-        displayWarning('Invalid RPC URI')
+        displayWarning(t('invalidRPC'))
       }
     }
   }
@@ -194,7 +195,7 @@ class Settings extends Component {
           h('div', 'State Logs'),
           h(
             'div.settings__content-description',
-            'State logs contain your public account addresses and sent transactions.'
+            t('saveLogs')
           ),
         ]),
         h('div.settings__content-item', [
@@ -209,7 +210,7 @@ class Settings extends Component {
                   }
                 })
               },
-            }, 'Download State Logs'),
+            }, t('downloadStatelogs')),
           ]),
         ]),
       ])
@@ -229,7 +230,7 @@ class Settings extends Component {
                 event.preventDefault()
                 revealSeedConfirmation()
               },
-            }, 'Reveal Seed Words'),
+            }, t('revealSeedWorld')),
           ]),
         ]),
       ])
@@ -249,7 +250,7 @@ class Settings extends Component {
                 event.preventDefault()
                 setFeatureFlagToBeta()
               },
-            }, 'Use old UI'),
+            }, t('useOldUI')),
           ]),
         ]),
       ])
@@ -268,7 +269,7 @@ class Settings extends Component {
               event.preventDefault()
               showResetAccountConfirmationModal()
             },
-          }, 'Reset Account'),
+          }, t('resetAccount')),
         ]),
       ]),
     ])
@@ -309,7 +310,7 @@ class Settings extends Component {
             href: 'https://metamask.io/privacy.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Privacy Policy'),
+            h('span.settings__info-link', t('privacyMsg')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -317,7 +318,7 @@ class Settings extends Component {
             href: 'https://metamask.io/terms.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Terms of Use'),
+            h('span.settings__info-link', t('terms')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -325,7 +326,7 @@ class Settings extends Component {
             href: 'https://metamask.io/attributions.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Attributions'),
+            h('span.settings__info-link', t('attributions')),
           ]),
         ]),
         h('hr.settings__info-separator'),
@@ -334,7 +335,7 @@ class Settings extends Component {
             href: 'https://support.metamask.io',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Visit our Support Center'),
+            h('span.settings__info-link', t('supportCenter')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -342,7 +343,7 @@ class Settings extends Component {
             href: 'https://metamask.io/',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Visit our web site'),
+            h('span.settings__info-link', t('visitWebSite')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -350,7 +351,7 @@ class Settings extends Component {
             target: '_blank',
             href: 'mailto:help@metamask.io?subject=Feedback',
           }, [
-            h('span.settings__info-link', 'Email us!'),
+            h('span.settings__info-link', t('emailUs')),
           ]),
         ]),
       ])
@@ -372,7 +373,7 @@ class Settings extends Component {
             h('div.settings__info-item', [
               h(
                 'div.settings__info-about',
-                'MetaMask is designed and built in California.'
+                t('californiaRoll')
               ),
             ]),
           ]),

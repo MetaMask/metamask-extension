@@ -10,7 +10,7 @@ const ToAutoComplete = require('./components/send/to-autocomplete')
 const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
-
+const t = require('../i18n')
 const {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./components/send/send-constants')
@@ -184,7 +184,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
   return h('div.page-container__header', [
 
-    h('div.page-container__title', selectedToken ? 'Send Tokens' : 'Send ETH'),
+    h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
 
     h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
 
@@ -377,11 +377,11 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = 'Insufficient funds.'
+    amountError = it('insufficientFounds')
   } else if (verifyTokenBalance && !sufficientTokens) {
     amountError = 'Insufficient tokens.'
   } else if (amountLessThanZero) {
-    amountError = 'Can not send negative amounts of ETH.'
+    amountError = t('negativeETH')
   }
 
   updateSendErrors({ amount: amountError })
@@ -439,7 +439,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Gas fee:'),
+    h('div.send-v2__form-label', t('gasFee')),
 
     h('div.send-v2__form-field', [
 
@@ -460,7 +460,7 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Transaction Memo:'),
+    h('div.send-v2__form-label', t('transactionMemo')),
 
     h('div.send-v2__form-field', [
       h(MemoTextArea, {
@@ -511,7 +511,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
     h('button.btn-clear.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
-    }, 'Next'),
+    }, t('next')),
   ])
 }
 

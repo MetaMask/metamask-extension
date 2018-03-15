@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const classnames = require('classnames')
 const R = require('ramda')
+const t = require('../../../i18n')
 
 class SimpleDropdown extends Component {
   constructor (props) {
@@ -74,7 +75,7 @@ class SimpleDropdown extends Component {
         onClick: () => this.toggleOpen(),
       },
       [
-        h('div.simple-dropdown__selected', this.getDisplayValue() || placeholder || 'Select'),
+        h('div.simple-dropdown__selected', this.getDisplayValue() || placeholder || t('Select')),
         h('i.fa.fa-caret-down.fa-lg.simple-dropdown__caret'),
         isOpen && this.renderOptions(),
       ]

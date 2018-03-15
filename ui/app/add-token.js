@@ -28,6 +28,7 @@ const ethUtil = require('ethereumjs-util')
 const { tokenInfoGetter } = require('./token-util')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
+const t = require('../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AddTokenScreen)
 
@@ -322,10 +323,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
       h('div.add-token__buttons', [
         h('button.btn-cancel.add-token__button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
-        }, 'Back'),
+        }, t('back')),
         h('button.btn-clear.add-token__button', {
           onClick: () => addTokens(tokens).then(goHome),
-        }, 'Add Tokens'),
+        }, t('addTokens')),
       ]),
     ])
   )
@@ -341,15 +342,15 @@ AddTokenScreen.prototype.render = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container', [
-          h('div.add-token__title', 'Add Token'),
-          h('div.add-token__description', 'Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here.'),
-          h('div.add-token__description', 'Search for tokens or select from our list of popular tokens.'),
+          h('div.add-token__title', t('addToken')),
+          h('div.add-token__description', t('tokenWarning1')),
+          h('div.add-token__description', t('tokenSelection')),
         ]),
         h('div.add-token__content-container', [
           h('div.add-token__input-container', [
             h('input.add-token__input', {
               type: 'text',
-              placeholder: 'Search',
+              placeholder: t('search'),
               onChange: e => this.setState({ searchQuery: e.target.value }),
             }),
             h('div.add-token__search-input-error-message', errors.tokenSelector),
@@ -363,7 +364,7 @@ AddTokenScreen.prototype.render = function () {
           h('div.add-token__add-custom', {
             onClick: () => this.setState({ isCollapsed: !isCollapsed }),
           }, [
-            'Add custom token',
+            t('addCustomTokens'),
             h(`i.fa.fa-angle-${isCollapsed ? 'down' : 'up'}`),
           ]),
           this.renderCustomForm(),
@@ -375,7 +376,7 @@ AddTokenScreen.prototype.render = function () {
         }, 'Cancel'),
         h('button.btn-clear.add-token__button', {
           onClick: this.onNext,
-        }, 'Next'),
+        }, t('next')),
       ]),
     ])
   )

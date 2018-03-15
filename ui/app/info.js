@@ -3,6 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('./actions')
+const t = require('../i18n')
 
 module.exports = connect(mapStateToProps)(InfoScreen)
 
@@ -65,7 +66,7 @@ InfoScreen.prototype.render = function () {
                   target: '_blank',
                   onClick (event) { this.navigateTo(event.target.href) },
                 }, [
-                  h('div.info', 'Privacy Policy'),
+                  h('div.info', t('privacyMsg')),
                 ]),
               ]),
               h('div', [
@@ -74,7 +75,7 @@ InfoScreen.prototype.render = function () {
                   target: '_blank',
                   onClick (event) { this.navigateTo(event.target.href) },
                 }, [
-                  h('div.info', 'Terms of Use'),
+                  h('div.info', t('terms')),
                 ]),
               ]),
               h('div', [
@@ -83,7 +84,7 @@ InfoScreen.prototype.render = function () {
                   target: '_blank',
                   onClick (event) { this.navigateTo(event.target.href) },
                 }, [
-                  h('div.info', 'Attributions'),
+                  h('div.info', t('attributions')),
                 ]),
               ]),
             ]
@@ -105,7 +106,7 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   href: 'https://metamask.helpscoutdocs.com/',
                   target: '_blank',
-                }, 'Visit our Knowledge Base'),
+                }, t('knowledgeDataBase')),
               ]),
 
               h('div', [
@@ -122,7 +123,7 @@ InfoScreen.prototype.render = function () {
                       WebkitFilter: 'grayscale(100%)',
                     },
                   }),
-                  h('div.info', 'Visit our web site'),
+                  h('div.info', t('visitWebSite')),
                 ]),
               ]),
 
@@ -131,7 +132,7 @@ InfoScreen.prototype.render = function () {
                   h('a.info', {
                     href: 'https://twitter.com/metamask_io',
                     target: '_blank',
-                  }, 'Follow us on Twitter'),
+                  }, t('followTwitter')),
                 ]),
               ]),
 
@@ -139,7 +140,7 @@ InfoScreen.prototype.render = function () {
                 h('a.info', {
                   target: '_blank',
                   href: 'mailto:support@metamask.io?subject=MetaMask Support',
-                }, 'Email us!'),
+                }, t('emailUs')),
               ]),
             ]),
         ]),

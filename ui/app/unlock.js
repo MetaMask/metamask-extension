@@ -94,7 +94,7 @@ UnlockScreen.prototype.render = function () {
           textDecoration: 'underline',
           marginTop: '32px',
         },
-      }, 'Use classic interface'),
+      }, t('classicInterface')),
     ])
   )
 }
