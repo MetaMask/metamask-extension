@@ -68,13 +68,11 @@ function mapDispatchToProps (dispatch) {
 
       let forceGasMin
       if (lastGasPrice) {
-        const stripped = ethUtil.stripHexPrefix(lastGasPrice)
-        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(stripped, 1.1, {
+        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
           multiplicandBase: 16,
           multiplierBase: 10,
           toNumericBase: 'hex',
           fromDenomination: 'WEI',
-          toDenomination: 'GWEI',
         }))
       }
 
@@ -454,7 +452,7 @@ ConfirmSendEther.prototype.render = function () {
 
 ConfirmSendEther.prototype.onSubmit = function (event) {
   event.preventDefault()
-  const txMeta = this.gatherTxMeta({ time: (new Date()).getTime() })
+  const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
   this.setState({ valid, submitting: true })
 
@@ -489,21 +487,34 @@ ConfirmSendEther.prototype.getFormEl = function () {
 }
 
 // After a customizable state value has been updated,
-ConfirmSendEther.prototype.gatherTxMeta = function (opts) {
+ConfirmSendEther.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
 
-  if (txData.lastGasPrice) {
-    const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
-    const { gasPrice: txGasPrice, gas: txGasLimit } = txData.txParams
+  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const {
+    lastGasPrice,
+    txParams: {
+      gasPrice: txGasPrice,
+      gas: txGasLimit,
+    },
+  } = txData
 
-    txData.txParams.gasPrice = sendGasPrice || txGasPrice
-    txData.txParams.gas = sendGasLimit || txGasLimit
+  let forceGasMin
+  if (lastGasPrice) {
+    forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    }))
   }
 
+  txData.txParams.gasPrice = sendGasPrice || forceGasMin || txGasPrice
+  txData.txParams.gas = sendGasLimit || txGasLimit
+
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
-  return Object.assign(txData, opts)
+  return txData
 }
 
 ConfirmSendEther.prototype.verifyGasParams = function () {
