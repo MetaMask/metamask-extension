@@ -61,7 +61,7 @@ class RecentBlocksController {
     return block
   }
 
-  async backfill() {
+  async backfill () {
     this.blockTracker.once('block', async (block) => {
       let blockNum = block.number
       let recentBlocks

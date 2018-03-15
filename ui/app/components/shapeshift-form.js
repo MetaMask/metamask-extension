@@ -15,7 +15,7 @@ function mapStateToProps (state) {
     selectedAddress,
   } = state.metamask
   const { warning } = state.appState
-  
+
   return {
     coinOptions,
     tokenExchangeRates,

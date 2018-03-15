@@ -42,7 +42,7 @@ AccountDetailsModal.prototype.render = function () {
   const { displayedForm, displayForm } = this.props
 
   return h('div.new-account', {}, [
-    
+
     h('div.new-account__header', [
 
       h('div.new-account__title', 'New Account'),

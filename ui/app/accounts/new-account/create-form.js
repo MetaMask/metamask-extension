@@ -19,7 +19,6 @@ class NewAccountCreateForm extends Component {
 
   render () {
     const { newAccountName, defaultAccountName } = this.state
-    
 
     return h('div.new-account-create-form', [
 
