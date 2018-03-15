@@ -186,7 +186,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
     h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
 
-    h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
+    h('div.page-container__subtitle', t('msgCompose1') + tokenText+  t('msgCompose2')),
 
     h('div.page-container__header-close', {
       onClick: () => {
@@ -231,7 +231,7 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'From:'),
+    h('div.send-v2__form-label', t('from')),
 
     h('div.send-v2__form-field', [
       h(FromDropdown, {
@@ -259,9 +259,9 @@ SendTransactionScreen.prototype.handleToChange = function (to) {
   if (!to) {
     toError = 'Required'
   } else if (!isValidAddress(to)) {
-    toError = 'Recipient address is invalid'
+    toError = t('invalidAddressRecipient')
   } else if (to === from) {
-    toError = 'From and To address cannot be the same'
+    toError = t('fromToSame')
   }
 
   updateSendTo(to)
@@ -277,7 +277,7 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     h('div.send-v2__form-label', [
 
-      'To:',
+      t('to'),
 
       this.renderErrorMessage('to'),
 
@@ -377,9 +377,9 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = it('insufficientFounds')
+    amountError = t('insufficientFounds')
   } else if (verifyTokenBalance && !sufficientTokens) {
-    amountError = 'Insufficient tokens.'
+    amountError = t('insufficientTokens')
   } else if (amountLessThanZero) {
     amountError = t('negativeETH')
   }
@@ -403,7 +403,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
   return h('div.send-v2__form-row', [
 
     h('div.send-v2__form-label', [
-      'Amount:',
+      t('amount'),
       this.renderErrorMessage('amount'),
       !errors.amount && gasTotal && h('div.send-v2__amount-max', {
         onClick: (event) => {

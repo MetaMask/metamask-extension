@@ -140,28 +140,28 @@ AddTokenScreen.prototype.validate = function () {
   if (customAddress) {
     const validAddress = ethUtil.isValidAddress(customAddress)
     if (!validAddress) {
-      errors.customAddress = 'Address is invalid. '
+      errors.customAddress = t('invalidAddress')
     }
 
     const validDecimals = customDecimals !== null && customDecimals >= 0 && customDecimals < 36
     if (!validDecimals) {
-      errors.customDecimals = 'Decimals must be at least 0, and not over 36.'
+      errors.customDecimals = t('decimalsMustZerotoTen')
     }
 
     const symbolLen = customSymbol.trim().length
     const validSymbol = symbolLen > 0 && symbolLen < 10
     if (!validSymbol) {
-      errors.customSymbol = 'Symbol must be between 0 and 10 characters.'
+      errors.customSymbol = t('symbolBetweenZeroTen')
     }
 
     const ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
-      errors.customAddress = 'Personal address detected. Input the token contract address.'
+      errors.customAddress = t('personalAddressDetected')
     }
 
     const tokenAlreadyAdded = this.checkExistingAddresses(customAddress)
     if (tokenAlreadyAdded) {
-      errors.customAddress = 'Token has already been added.'
+      errors.customAddress = t('tokenAlreadyAdded')
     }
   } else if (
     Object.entries(selectedTokens)
@@ -169,7 +169,7 @@ AddTokenScreen.prototype.validate = function () {
         isEmpty && !isSelected
       ), true)
   ) {
-    errors.tokenSelector = 'Must select at least 1 token.'
+    errors.tokenSelector = t('mustSelectOne')
   }
 
   return {
@@ -199,7 +199,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customAddress,
         }),
       }, [
-        h('div.add-token__add-custom-label', 'Token Address'),
+        h('div.add-token__add-custom-label', t('tokenAddress')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenAddressDidChange,
@@ -212,7 +212,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customSymbol,
         }),
       }, [
-        h('div.add-token__add-custom-label', 'Token Symbol'),
+        h('div.add-token__add-custom-label', t('tokenSymbol')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenSymbolDidChange,
@@ -226,7 +226,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customDecimals,
         }),
       }, [
-        h('div.add-token__add-custom-label', 'Decimals of Precision'),
+        h('div.add-token__add-custom-label', t('decimalsPrecision')),
         h('input.add-token__add-custom-input', {
           type: 'number',
           onChange: this.tokenDecimalsDidChange,
@@ -300,11 +300,11 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__title', 'Add Token'),
-          h('div.add-token__description', 'Would you like to add these tokens?'),
+          h('div.add-token__title', t('addToken')),
+          h('div.add-token__description', t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
-          h('div.add-token__description.add-token__confirmation-description', 'Your balances'),
+          h('div.add-token__description.add-token__confirmation-description', t('balances')),
           h('div.add-token__confirmation-token-list',
             Object.entries(tokens)
               .map(([ address, token ]) => (
@@ -373,7 +373,7 @@ AddTokenScreen.prototype.render = function () {
       h('div.add-token__buttons', [
         h('button.btn-cancel.add-token__button', {
           onClick: goHome,
-        }, 'Cancel'),
+        }, t('cancel')),
         h('button.btn-clear.add-token__button', {
           onClick: this.onNext,
         }, t('next')),

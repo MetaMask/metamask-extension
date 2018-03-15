@@ -37,7 +37,7 @@ RevealSeedConfirmation.prototype.render = function () {
           padding: 6,
         },
       }, [
-        'Reveal Seed Words',
+        t('revealSeedWorld'),
       ]),
 
       h('.div', {
@@ -49,13 +49,13 @@ RevealSeedConfirmation.prototype.render = function () {
         },
       }, [
 
-        h('h4', 'Do not recover your seed words in a public place! These words can be used to steal all your accounts.'),
+        h('h4', t('revealSeedWorldWarning')),
 
         // confirmation
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'Enter your password to confirm',
+          placeholder: t('enterPasswordConfirm'),
           onKeyPress: this.checkConfirmation.bind(this),
           style: {
             width: 260,
@@ -72,13 +72,13 @@ RevealSeedConfirmation.prototype.render = function () {
           // cancel
           h('button.primary', {
             onClick: this.goHome.bind(this),
-          }, 'CANCEL'),
+          }, t('cancel')),
 
           // submit
           h('button.primary', {
             style: { marginLeft: '10px' },
             onClick: this.revealSeedWords.bind(this),
-          }, 'OK'),
+          }, t('accept')),
 
         ]),
 
@@ -91,7 +91,7 @@ RevealSeedConfirmation.prototype.render = function () {
         ),
 
         props.inProgress && (
-          h('span.in-progress-notification', 'Generating Seed...')
+          h('span.in-progress-notification', t('generatingSeed'))
         ),
       ]),
     ])

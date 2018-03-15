@@ -45,8 +45,8 @@ class Settings extends Component {
     return h('div.settings__tabs', [
       h(TabBar, {
         tabs: [
-          { content: 'Settings', key: 'settings' },
-          { content: 'Info', key: 'info' },
+          { content: t('settings'), key: 'settings' },
+          { content: t('info'), key: 'info' },
         ],
         defaultTab: activeTab,
         tabSelected: key => this.setState({ activeTab: key }),
@@ -59,7 +59,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', 'Use Blockies Identicon'),
+        h('span', t('blockiesIdenticon')),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
@@ -79,7 +79,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', 'Current Conversion'),
+        h('span', t('currentConversion')),
         h('span.settings__content-description', `Updated ${Date(conversionDate)}`),
       ]),
       h('div.settings__content-item', [
@@ -102,31 +102,31 @@ class Settings extends Component {
     switch (provider.type) {
 
       case 'mainnet':
-        title = 'Current Network'
+        title = t('currentNetwork')
         value = 'Main Ethereum Network'
         color = '#038789'
         break
 
       case 'ropsten':
-        title = 'Current Network'
+        title = t('currentNetwork')
         value = 'Ropsten Test Network'
         color = '#e91550'
         break
 
       case 'kovan':
-        title = 'Current Network'
+        title = t('currentNetwork')
         value = 'Kovan Test Network'
         color = '#690496'
         break
 
       case 'rinkeby':
-        title = 'Current Network'
+        title = t('currentNetwork')
         value = 'Rinkeby Test Network'
         color = '#ebb33f'
         break
 
       default:
-        title = 'Current RPC'
+        title = t('currentRPC')
         value = provider.rpcTarget
     }
 
@@ -192,7 +192,7 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('div', 'State Logs'),
+          h('div', t('stateLogs')),
           h(
             'div.settings__content-description',
             t('saveLogs')
@@ -222,7 +222,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', 'Reveal Seed Words'),
+        h('div.settings__content-item', t('revealSeedWorld')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.settings__clear-button.settings__clear-button--red', {
@@ -242,7 +242,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', 'Use old UI'),
+        h('div.settings__content-item', t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.settings__clear-button.settings__clear-button--orange', {
@@ -261,7 +261,7 @@ class Settings extends Component {
     const { showResetAccountConfirmationModal } = this.props
 
     return h('div.settings__content-row', [
-      h('div.settings__content-item', 'Reset Account'),
+      h('div.settings__content-item', t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h('button.settings__clear-button.settings__clear-button--orange', {

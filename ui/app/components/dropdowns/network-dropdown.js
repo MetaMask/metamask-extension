@@ -237,7 +237,7 @@ NetworkDropdown.prototype.render = function () {
         }, t('customRPC')),
       ]
     ),
-
+    
   ])
 }
 

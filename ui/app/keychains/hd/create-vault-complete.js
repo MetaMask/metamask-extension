@@ -4,6 +4,7 @@ const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const exportAsFile = require('../../util').exportAsFile
+const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps)(CreateVaultCompleteScreen)
 
@@ -43,7 +44,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
           padding: 6,
         },
       }, [
-        'Vault Created',
+        t('vaultCreated'),
       ]),
 
       h('div', {
@@ -53,7 +54,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
           textAlign: 'center',
         },
       }, [
-        h('span.error', 'These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret.'),
+        h('span.error', t('twelveWords')),
       ]),
 
       h('textarea.twelve-word-phrase', {
@@ -69,7 +70,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
           fontSize: '0.9em',
           marginBottom: '10px',
         },
-      }, 'I\'ve copied it somewhere safe'),
+      }, t('copiedSafe')),
 
       h('button.primary', {
         onClick: () => exportAsFile(`MetaMask Seed Words`, seed),
@@ -77,7 +78,7 @@ CreateVaultCompleteScreen.prototype.render = function () {
           margin: '10px',
           fontSize: '0.9em',
         },
-      }, 'Save Seed Words As File'),
+      }, t('saveSeedAsFile')),
     ])
   )
 }

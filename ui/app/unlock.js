@@ -46,7 +46,7 @@ UnlockScreen.prototype.render = function () {
       h('input.large-input', {
         type: 'password',
         id: 'password-box',
-        placeholder: 'enter password',
+        placeholder: t('enterPassword'),
         style: {
           background: 'white',
         },
@@ -67,7 +67,7 @@ UnlockScreen.prototype.render = function () {
         style: {
           margin: 10,
         },
-      }, 'Log In'),
+      }, t('login')),
 
       h('p.pointer', {
         onClick: () => {
@@ -81,7 +81,7 @@ UnlockScreen.prototype.render = function () {
           color: 'rgb(247, 134, 28)',
           textDecoration: 'underline',
         },
-      }, 'Restore from seed phrase'),
+      }, t('restoreFromSeed')),
 
       h('p.pointer', {
         onClick: () => {
