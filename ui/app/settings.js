@@ -25,6 +25,23 @@ const getInfuraCurrencyOptions = () => {
   })
 }
 
+const locales = [
+  { name: 'English', code: 'en' },
+  { name: 'Japanese', code: 'ja' },
+  { name: 'French', code: 'fr' },
+  { name: 'Spanish', code: 'es' },
+]
+
+const getLocaleOptions = () => {
+  return locales.map((locale) => {
+    return {
+      displayValue: `${locale.name}`,
+      key: locale.code,
+      value: locale.code,
+    }
+  })
+}
+
 class Settings extends Component {
   constructor (props) {
     super(props)
@@ -88,6 +105,33 @@ class Settings extends Component {
             options: getInfuraCurrencyOptions(),
             selectedOption: currentCurrency,
             onSelect: newCurrency => setCurrentCurrency(newCurrency),
+          }),
+        ]),
+      ]),
+    ])
+  }
+
+  renderCurrentLocale () {
+    const { setCurrentLocale } = this.props
+    const currentLocaleName = global.translator.localeName
+    const currentLocale = locales.find(locale => locale.code === currentLocaleName)
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', 'Current Language'),
+        h('span.settings__content-description', `${currentLocale.name}`),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(SimpleDropdown, {
+            placeholder: 'Select Locale',
+            options: getLocaleOptions(),
+            selectedOption: currentLocaleName,
+            onSelect: async (newLocale) => {
+              log('set new locale', newLocale)
+              await global.translator.setLocale(newLocale)
+              log('did set new locale', newLocale)
+            },
           }),
         ]),
       ]),
@@ -281,6 +325,7 @@ class Settings extends Component {
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
         this.renderCurrentConversion(),
+        this.renderCurrentLocale(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
