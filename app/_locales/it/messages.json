@@ -1,0 +1,609 @@
+{
+  "accept": {
+    "message": "Accetta"
+  },
+  "account": {
+    "message": "Account"
+  },
+  "accountDetails": {
+    "message": "Dettagli Account"
+  },
+  "accountName": {
+    "message": "Nome Account"
+  },
+  "address": {
+    "message": "Indirizzo"
+  },
+  "addToken": {
+    "message": "Aggiungi Token"
+  },
+  "amount": {
+    "message": "Importo"
+  },
+  "amountPlusGas": {
+    "message": "Importo + Gas"
+  },
+  "appDescription": {
+    "message": "Ethereum Browser Extension",
+    "description": "La descrizione dell'applicazione"
+  },
+  "appName": {
+    "message": "MetaMask",
+    "description": "Il nome dell'applicazione"
+  },
+  "attemptingConnect": {
+    "message": "Tentativo di connessione alla blockchain."
+  },
+  "available": {
+    "message": "Disponibile"
+  },
+  "back": {
+    "message": "Indietro"
+  },
+  "balance": {
+    "message": "Bilancio:"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "Bilancio insufficiente per il gas totale corrente"
+  },
+  "beta": {
+    "message": "BETA"
+  },
+  "betweenMinAndMax": {
+    "message": "deve essere maggiore o uguale a $1 e minore o uguale a $2.",
+    "description": "aiuto per inserire un input esadecimale come decimale"
+  },
+  "borrowDharma": {
+    "message": "Prendi in presisito con Dharma (Beta)"
+  },
+  "buy": {
+    "message": "Compra"
+  },
+  "buyCoinbase": {
+    "message": "Compra su Coinbase"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere bitcoin, ethereum e litecoin."
+  },
+  "cancel": {
+    "message": "Cancella"
+  },
+  "clickCopy": {
+    "message": "Clicca per Copiare"
+  },
+  "confirm": {
+    "message": "Conferma"
+  },
+  "confirmContract": {
+    "message": "Conferma Contratto"
+  },
+  "confirmPassword": {
+    "message": "Conferma Password"
+  },
+  "confirmTransaction": {
+    "message": "Conferma Transazione"
+  },
+  "continueToCoinbase": {
+    "message": "Continua su Coinbase"
+  },
+  "contractDeployment": {
+    "message": "Distribuzione Contratto"
+  },
+  "conversionProgress": {
+    "message": "Conversione in corso"
+  },
+  "copiedButton": {
+    "message": "Copiato"
+  },
+  "copiedClipboard": {
+    "message": "Copiato negli Appunti"
+  },
+  "copiedExclamation": {
+    "message": "Copiato!"
+  },
+  "copy": {
+    "message": "Copia"
+  },
+  "copyToClipboard": {
+    "message": "Copia negli appunti"
+  },
+  "copyButton": {
+    "message": " Copia "
+  },
+  "copyPrivateKey": {
+    "message": "Questa è la tua chiave privata (clicca per copiare)"
+  },
+  "create": {
+    "message": "Crea"
+  },
+  "createAccount": {
+    "message": "Crea Account"
+  },
+  "createDen": {
+    "message": "Crea"
+  },
+  "crypto": {
+    "message": "Crypto",
+    "description": "Tipo di exchange (cryptomonete)"
+  },
+  "customGas": {
+    "message": "Personalizza Gas"
+  },
+  "customize": {
+    "message": "Personalizza"
+  },
+  "customRPC": {
+    "message": "RPC Personalizzata"
+  },
+  "defaultNetwork": {
+    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
+  },
+  "denExplainer": {
+    "message": "Il DEN è il tuo archivio crittato con password dentro Metamask."
+  },
+  "deposit": {
+    "message": "Deposita"
+  },
+  "depositBTC": {
+    "message": "Deposita i tuoi BTC all'indirizzo sotto:"
+  },
+  "depositCoin": {
+    "message": "Deposita $1 all'indirizzo sotto",
+    "description": "Dice all'utente quale moneta ha selezionato per depositare con Shapeshift"
+  },
+  "depositEth": {
+    "message": "Deposita Eth"
+  },
+  "depositEther": {
+    "message": "Deposita Ether"
+  },
+  "depositFiat": {
+    "message": "Deposita con moneta Fiat"
+  },
+  "depositFromAccount": {
+    "message": "Deposita da un altro account"
+  },
+  "depositShapeShift": {
+    "message": "Deposita con ShapeShift"
+  },
+  "depositShapeShiftExplainer": {
+    "message": "Se possiedi altre criptomonete, puoi scambiare e depositare Ether direttamente nel tuo portafoglio MetaMask. Nessun account richiesto."
+  },
+  "details": {
+    "message": "Dettagli"
+  },
+  "directDeposit": {
+    "message": "Deposito Diretto"
+  },
+  "directDepositEther": {
+    "message": "Deposita Direttamente Ether"
+  },
+  "directDepositEtherExplainer": {
+    "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."    
+  },
+  "done": {
+    "message": "Finito"
+  },
+  "edit": {
+    "message": "Modifica"
+  },
+  "editAccountName": {
+    "message": "Modifica Nome Account"
+  },
+  "encryptNewDen": {
+    "message": "Cripta il tuo nuovo DEN"
+  },
+  "enterPassword": {
+    "message": "Inserisci password"
+  },
+  "etherscanView": {
+    "message": "Vedi account su Etherscan"
+  },
+  "exchangeRate": {
+    "message": "Tasso di cambio"
+  },
+  "exportPrivateKey": {
+    "message": "Esporta Chiave Privata"
+  },
+  "exportPrivateKeyWarning": {
+    "message": "Esporta chiave privata a tuo rischio."
+  },
+  "failed": {
+    "message": "Fallito"
+  },
+  "fiat": {
+    "message": "FIAT",
+    "description": "Tipo di scambio"
+  },
+  "fileImportFail": {
+    "message": "Importazione file non funziona? Clicca qui!",
+    "description": "Aiuta gli utenti a importare il loro account da un file JSON"
+  },
+  "from": {
+    "message": "Da"
+  },
+  "fromShapeShift": {
+    "message": "Da ShapeShift"
+  },
+  "gas": {
+    "message": "Gas",
+    "description": "Piccola indicazione del costo del gas"
+  },
+  "gasFee": {
+    "message": "Costo Gas"
+  },
+  "gasLimit": {
+    "message": "Gas Limite"
+  },
+  "gasLimitCalculation": {
+    "message": "Calcoliamo il gas limite suggerito in base al successo delle transazioni in rete."
+  },
+  "gasLimitRequired": {
+    "message": "Gas Limite Richiesto"
+  },
+  "gasLimitTooLow": {
+    "message": "Il Gas Limite deve essere almeno 21000"
+  },
+  "gasPrice": {
+    "message": "Prezzo del Gas (GWEI)"
+  },
+  "gasPriceCalculation": {
+    "message": "Calcoliamo il gas limite suggerito in base al successo delle transazioni in rete."
+  },
+  "gasPriceRequired": {
+    "message": "Prezzo Gas Richiesto"
+  },
+  "getEther": {
+    "message": "Ottieni Ether"
+  },
+  "getEtherFromFaucet": {
+    "message": "Ottieni Get Ether da un faucet per $1",
+    "description": "Visualizza il nome della rete per il faucet Ether"
+  },
+  "greaterThanMin": {
+    "message": "deve essere maggiore o uguale a $1.",
+    "description": "aiuto per inserire un input esadecimale come decimale"
+  },
+  "here": {
+    "message": "qui",
+    "description": "per intendere -clicca qui- per maggiori informazioni (va con troubleTokenBalances)"
+  },
+  "hide": {
+    "message": "Nascondi"
+  },
+  "hideToken": {
+    "message": "Nascondi Token"
+  },
+  "hideTokenPrompt": {
+    "message": "Nascondi Token?"
+  },
+  "howToDeposit": {
+    "message": "Come vuoi depositare Ether?"
+  },
+  "import": {
+    "message": "Importa",
+    "description": "Tasto per importare un account da un file selezionato"
+  },
+  "importAccount": {
+    "message": "Importa Account"
+  },
+  "importAnAccount": {
+    "message": "Importa un account"
+  },
+  "importDen": {
+    "message": "Importa un DEN Esistente"
+  },
+  "imported": {
+    "message": "Importato",
+    "description": "stato che conferma che un account è stato totalmente caricato nel portachiavi"
+  },
+  "infoHelp": {
+    "message": "Informazioni & Aiuto"
+  },
+  "invalidAddress": {
+    "message": "Indirizzo non valido"
+  },
+  "invalidGasParams": {
+    "message": "Parametri del Gas non validi"
+  },
+  "invalidInput": {
+    "message": "Input non valido."
+  },
+  "invalidRequest": {
+    "message": "Richiesta non Valida"
+  },
+  "jsonFile": {
+    "message": "File JSON",
+    "description": "formato per importare un account"
+  },
+  "kovan": {
+    "message": "Rete di test Kovan"
+  },
+  "lessThanMax": {
+    "message": "deve essere minore o uguale a $1.",
+    "description": "aiuto per inserire un input esadecimale come decimale"
+  },
+  "limit": {
+    "message": "Limite"
+  },
+  "loading": {
+    "message": "Caricamento..."
+  },
+  "loadingTokens": {
+    "message": "Caricamento Tokens..."
+  },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
+  "logout": {
+    "message": "Disconnetti"
+  },
+  "loose": {
+    "message": "Libero"
+  },
+  "mainnet": {
+    "message": "Rete Ethereum Principale"
+  },
+  "message": {
+    "message": "Messaggio"
+  },
+  "min": {
+    "message": "Minimo"
+  },
+  "myAccounts": {
+    "message": "Account Miei"
+  },
+  "needEtherInWallet": {
+    "message": "Per interagire con applicazioni decentralizzate con MetaMask, devi possedere Ether nel tuo portafoglio."
+  },
+  "needImportFile": {
+    "message": "Devi selezionare un file da importare.",
+    "description": "L'utente sta importando un account e deve aggiungere un file per continuare"
+  },
+  "needImportPassword": {
+    "message": "Dei inserire una password per il file selezionato.",
+    "description": "Password e file necessari per importare un account"
+  },
+  "networks": {
+    "message": "Reti"
+  },
+  "newAccount": {
+    "message": "Nuovo Account"
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Nome predefinito per il prossimo account da creare nella schermata di creazione account"
+  },
+  "newContract": {
+    "message": "Nuovo Contratto"
+  },
+  "newPassword": {
+    "message": "Nuova Password (minimo 8 caratteri)"
+  },
+  "newRecipient": {
+    "message": "Nuovo Destinatario"
+  },
+  "next": {
+    "message": "Prossimo"
+  },
+  "noAddressForName": {
+    "message": "Nessun indirizzo è stato impostato per questo nome."
+  },
+  "noDeposits": {
+    "message": "Nessun deposito ricevuto"
+  },
+  "noTransactionHistory": {
+    "message": "Nessuna cronologia delle transazioni."
+  },
+  "noTransactions": {
+    "message": "Nessuna Transazione"
+  },
+  "notStarted": {
+    "message": "Non Iniziato"
+  },
+  "oldUI": {
+    "message": "Vecchia interfaccia"
+  },
+  "oldUIMessage": {
+    "message": "Sei ritornato alla vecchia interfaccia. Puoi ritornare alla nuova interfaccia tramite l'opzione nel menu a discesa in alto a destra."
+  },
+  "or": {
+    "message": "o",
+    "description": "scelta tra creare o importare un nuovo account"
+  },
+  "passwordMismatch": {
+    "message": "le password non corrispondono",
+    "description": "nella creazione della password, le due password all'interno dei campi non corrispondono"
+  },
+  "passwordShort": {
+    "message": "password non sufficientemente lunga",
+    "description": "nella creazione della password, la password non è lunga abbastanza"
+  },
+  "pastePrivateKey": {
+    "message": "Incolla la tua chiave privata qui:",
+    "description": "Per importare un account da una chiave privata"
+  },
+  "pasteSeed": {
+    "message": "Incolla la tua frase seed qui!"
+  },
+  "pleaseReviewTransaction": {
+    "message": "Ricontrolla la tua transazione."
+  },
+  "privateKey": {
+    "message": "Chiave Privata",
+    "description": "seleziona questo tipo di file per importare un account"
+  },
+  "privateKeyWarning": {
+    "message": "Attenzione: non dire a nessuno questa chiave! Chiunque con la tua chiave privata può rubare qualsiasi moneta contenuta nel tuo account."
+  },
+  "privateNetwork": {
+    "message": "Rete Privata"
+  },
+  "qrCode": {
+    "message": "Mostra Codice QR"
+  },
+  "readdToken": {
+    "message": "Puoi aggiungere nuovamente questo token in futuro andando in “Aggiungi token” nel menu delle opzioni del tuo account."    
+  },
+  "readMore": {
+    "message": "Leggi di più qui."
+  },
+  "receive": {
+    "message": "Ricevi"
+  },
+  "recipientAddress": {
+    "message": "Indirizzo Destinatario"
+  },
+  "refundAddress": {
+    "message": "Indirizzo di Rimborso"
+  },
+  "rejected": {
+    "message": "Respinta"
+  },
+  "required": {
+    "message": "Richiesto"
+  },
+  "retryWithMoreGas": {
+    "message": "Riprova con un prezzo del Gas maggiore qui"
+  },
+  "revert": {
+    "message": "Annulla"
+  },
+  "rinkeby": {
+    "message": "Rete di test Rinkeby"
+  },
+  "ropsten": {
+    "message": "Rete di test Ropsten"
+  },
+  "sampleAccountName": {
+    "message": "Es: Il mio nuovo account",
+    "description": "Aiuta l'utente a capire il concetto di aggiungere un nome leggibile al loro account"
+  },
+  "save": {
+    "message": "Salva"
+  },
+  "saveAsFile": {
+    "message": "Salva come File",
+    "description": "Processo per esportare un account"
+  },
+  "selectService": {
+    "message": "Seleziona Servizio"
+  },
+  "send": {
+    "message": "Invia"
+  },
+  "sendTokens": {
+    "message": "Invia Tokens"
+  },
+  "sendTokensAnywhere": {
+    "message": "Invia Tokens a chiunque abbia un account Ethereum"
+  },
+  "settings": {
+    "message": "Impostazioni"
+  },
+  "shapeshiftBuy": {
+    "message": "Compra con Shapeshift"
+  },
+  "showPrivateKeys": {
+    "message": "Mostra Chiave Privata"
+  },
+  "showQRCode": {
+    "message": "Mostra Codie QR"
+  },
+  "sign": {
+    "message": "Firma"
+  },
+  "signMessage": {
+    "message": "Firma Messaggio"
+  },
+  "signNotice": {
+    "message": "Firmare questo messaggio può avere effetti collaterali pericolosi. \nFirma messaggi da siti di cui ti fidi totalmente. \nQuesto metodo pericoloso sarà rimosso in versioni future."    
+  },
+  "sigRequest": {
+    "message": "Firma Richiesta"
+  },
+  "sigRequested": {
+    "message": "Richiesta Firma"
+  },
+  "status": {
+    "message": "Stato"
+  },
+  "submit": {
+    "message": "Invia"
+  },
+  "takesTooLong": {
+    "message": "Ci sta mettendo troppo?"
+  },
+  "testFaucet": {
+    "message": "Prova Faucet"
+  },
+  "to": {
+    "message": "A"
+  },
+  "toETHviaShapeShift": {
+    "message": "$1 a ETH via ShapeShift",
+    "description": "il sistema riempirà il tipo di deposito all'inizio del messaggio"
+  },
+  "tokenBalance": {
+    "message": "Bilancio Token:"
+  },
+  "total": {
+    "message": "Totale"
+  },
+  "transactionMemo": {
+    "message": "Promemoria Transazione (opzionale)"
+  },
+  "transactionNumber": {
+    "message": "Numero Transazione"
+  },
+  "transfers": {
+    "message": "Trasferimenti"
+  },
+  "troubleTokenBalances": {
+    "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
+    "description": "Seguito da un link (qui) per vedere il bilancio dei token"
+  },
+  "typePassword": {
+    "message": "Inserisci Password"
+  },
+  "uiWelcome": {
+    "message": "Benvenuto alla nuova interfaccia (Beta)"
+  },
+  "uiWelcomeMessage": {
+    "message": "Stai utilizzanto la nuova interfaccia di MetaMask. Guarda in giro, prova nuove funzionalità come inviare token, e facci sapere se hai dei problemi."    
+  },
+  "unavailable": {
+    "message": "Non Disponibile"
+  },
+  "unknown": {
+    "message": "Sconosciuto"
+  },
+  "unknownNetwork": {
+    "message": "Rete Privata Sconosciuta"
+  },
+  "unknownNetworkId": {
+    "message": "ID rete sconosciuto"
+  },
+  "usaOnly": {
+    "message": "Solo USA",
+    "description": "Usare questo sito di scambio è possibile solo per persone residenti in USA."
+  },
+  "usedByClients": {
+    "message": "Usato da una varietà di clienti diversi"
+  },
+  "viewAccount": {
+    "message": "Vedi Account"
+  },
+  "warning": {
+    "message": "Attenzione"
+  },
+  "whatsThis": {
+    "message": "Cos'è questo?"
+  },
+  "yourSigRequested": {
+    "message": "La tua firma sta venendo richiesta"
+  },
+  "youSign": {
+    "message": "Ti stai connettendo"
+  }
+}
