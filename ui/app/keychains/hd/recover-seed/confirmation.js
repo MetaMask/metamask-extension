@@ -4,15 +4,16 @@ const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
+const t = require('../../../../i18n')
 
 module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
 
 inherits(RevealSeedConfirmation, Component)
-function RevealSeedConfirmation () {
+function RevealSeedConfirmation() {
   Component.call(this)
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     warning: state.appState.warning,
   }
@@ -27,74 +28,74 @@ RevealSeedConfirmation.prototype.render = function () {
       style: { maxWidth: '420px' },
     }, [
 
-      h('h3.flex-center.text-transform-uppercase', {
-        style: {
-          background: '#EBEBEB',
-          color: '#AEAEAE',
-          marginBottom: 24,
-          width: '100%',
-          fontSize: '20px',
-          padding: 6,
-        },
-      }, [
-        t('revealSeedWorld'),
-      ]),
-
-      h('.div', {
-        style: {
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '20px',
-          justifyContent: 'center',
-        },
-      }, [
-
-        h('h4', t('revealSeedWorldWarning')),
-
-        // confirmation
-        h('input.large-input.letter-spacey', {
-          type: 'password',
-          id: 'password-box',
-          placeholder: t('enterPasswordConfirm'),
-          onKeyPress: this.checkConfirmation.bind(this),
+        h('h3.flex-center.text-transform-uppercase', {
           style: {
-            width: 260,
-            marginTop: '12px',
-          },
-        }),
-
-        h('.flex-row.flex-start', {
-          style: {
-            marginTop: 30,
-            width: '50%',
+            background: '#EBEBEB',
+            color: '#AEAEAE',
+            marginBottom: 24,
+            width: '100%',
+            fontSize: '20px',
+            padding: 6,
           },
         }, [
-          // cancel
-          h('button.primary', {
-            onClick: this.goHome.bind(this),
-          }, t('cancel')),
+            t('revealSeedWorld'),
+          ]),
 
-          // submit
-          h('button.primary', {
-            style: { marginLeft: '10px' },
-            onClick: this.revealSeedWords.bind(this),
-          }, t('accept')),
+        h('.div', {
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '20px',
+            justifyContent: 'center',
+          },
+        }, [
 
-        ]),
+            h('h4', t('revealSeedWorldWarning')),
 
-        (props.warning) && (
-          h('span.error', {
-            style: {
-              margin: '20px',
-            },
-          }, props.warning.split('-'))
-        ),
+            // confirmation
+            h('input.large-input.letter-spacey', {
+              type: 'password',
+              id: 'password-box',
+              placeholder: t('enterPasswordConfirm'),
+              onKeyPress: this.checkConfirmation.bind(this),
+              style: {
+                width: 260,
+                marginTop: '12px',
+              },
+            }),
 
-        props.inProgress && (
-          h('span.in-progress-notification', t('generatingSeed'))
-        ),
-      ]),
-    ])
+            h('.flex-row.flex-start', {
+              style: {
+                marginTop: 30,
+                width: '50%',
+              },
+            }, [
+                // cancel
+                h('button.primary', {
+                  onClick: this.goHome.bind(this),
+                }, t('cancel')),
+
+                // submit
+                h('button.primary', {
+                  style: { marginLeft: '10px' },
+                  onClick: this.revealSeedWords.bind(this),
+                }, t('accept')),
+
+              ]),
+
+            (props.warning) && (
+              h('span.error', {
+                style: {
+                  margin: '20px',
+                },
+              }, props.warning.split('-'))
+            ),
+
+            props.inProgress && (
+              h('span.in-progress-notification', t('generatingSeed'))
+            ),
+          ]),
+      ])
   )
 }
 

@@ -16,14 +16,14 @@ const menuItems = [
 
 module.exports = connect(mapStateToProps)(AccountImportSubview)
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     menuItems,
   }
 }
 
 inherits(AccountImportSubview, Component)
-function AccountImportSubview () {
+function AccountImportSubview() {
   Component.call(this)
 }
 
@@ -37,7 +37,7 @@ AccountImportSubview.prototype.render = function () {
     h('div.new-account-import-form', [
 
       h('.new-account-import-disclaimer', [
-        h('span',t('importedAccountMsg')),
+        h('span', t('importedAccountMsg')),
         h('span', {
           style: {
             cursor: 'pointer',

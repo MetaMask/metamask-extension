@@ -32,7 +32,7 @@ const { isValidAddress } = require('./util')
 module.exports = SendTransactionScreen
 
 inherits(SendTransactionScreen, PersistentForm)
-function SendTransactionScreen () {
+function SendTransactionScreen() {
   PersistentForm.call(this)
 
   this.state = {
@@ -115,7 +115,7 @@ SendTransactionScreen.prototype.updateGas = function () {
     ? tokenContract.balanceOf(from.address)
     : Promise.resolve()
   tokenBalancePromise
-      .then(usersToken => this.updateSendTokenBalance(usersToken))
+    .then(usersToken => this.updateSendTokenBalance(usersToken))
 
   if (!editingTransactionId) {
     const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
@@ -186,7 +186,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
     h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
 
-    h('div.page-container__subtitle', t('msgCompose1') + tokenText+  t('msgCompose2')),
+    h('div.page-container__subtitle', t('msgCompose1')+tokenText+t('msgCompose2')),
 
     h('div.page-container__header-close', {
       onClick: () => {
@@ -203,7 +203,7 @@ SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
   const errorMessage = errors[errorType]
 
   return errorMessage
-    ? h('div.send-v2__error', [ errorMessage ])
+    ? h('div.send-v2__error', [errorMessage])
     : null
 }
 
@@ -252,7 +252,7 @@ SendTransactionScreen.prototype.handleToChange = function (to) {
   const {
     updateSendTo,
     updateSendErrors,
-    from: {address: from},
+    from: { address: from },
   } = this.props
   let toError = null
 
@@ -320,7 +320,7 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
   const multiplier = Math.pow(10, Number(decimals || 0))
 
   const maxAmount = selectedToken
-    ? multiplyCurrencies(tokenBalance, multiplier, {toNumericBase: 'hex'})
+    ? multiplyCurrencies(tokenBalance, multiplier, { toNumericBase: 'hex' })
     : subtractCurrencies(
       ethUtil.addHexPrefix(balance),
       ethUtil.addHexPrefix(gasTotal),
@@ -411,7 +411,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
           setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ !maxModeOn ? 'Max' : '' ]),
+      }, [!maxModeOn ? 'Max' : '']),
     ]),
 
     h('div.send-v2__form-field', [
@@ -540,7 +540,7 @@ SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
 
 SendTransactionScreen.prototype.getEditedTx = function () {
   const {
-    from: {address: from},
+    from: { address: from },
     to,
     amount,
     gasLimit: gas,
@@ -583,7 +583,7 @@ SendTransactionScreen.prototype.getEditedTx = function () {
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
-    from: {address: from},
+    from: { address: from },
     to,
     amount,
     gasLimit: gas,

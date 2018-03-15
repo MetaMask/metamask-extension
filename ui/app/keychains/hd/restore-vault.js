@@ -133,8 +133,6 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   var passwordConfirm = passwordConfirmBox.value
   if (password.length < 8) {
     this.warning = t('passwordShort')
-    //this.warning = 'Password not long enough'//this one
-
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
