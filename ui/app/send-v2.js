@@ -186,7 +186,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
     h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
 
-    h('div.page-container__subtitle', t('msgCompose1')+tokenText+t('msgCompose2')),
+    h('div.page-container__subtitle', t('msgCompose1') + tokenText + t('msgCompose2')),
 
     h('div.page-container__header-close', {
       onClick: () => {
