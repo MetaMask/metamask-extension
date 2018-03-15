@@ -1,3 +1,9 @@
+/**
+ * @file      The central metamask controller. Aggregates other controllers and exports an api.
+ * @copyright Copyright (c) 2018 MetaMask
+ * @license   MIT
+ */
+
 const EventEmitter = require('events')
 const extend = require('xtend')
 const pump = require('pump')
@@ -41,7 +47,11 @@ const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 
 module.exports = class MetamaskController extends EventEmitter {
 
-  constructor (opts) {
+  /**
+   * @constructor
+   * @param {Object} opts 
+   */
+   constructor (opts) {
     super()
 
     this.defaultMaxListeners = 20
@@ -223,10 +233,9 @@ module.exports = class MetamaskController extends EventEmitter {
     this.infuraController.store.subscribe(sendUpdate)
   }
 
-  //
-  // Constructor helpers
-  //
-
+  /**
+   * Constructor helper: initialize a provider.
+   */
   initializeProvider () {
     const providerOpts = {
       static: {
@@ -257,6 +266,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return providerProxy
   }
 
+  /**
+   * Constructor helper: initialize a public confi store.
+   */
   initPublicConfigStore () {
     // get init state
     const publicConfigStore = new ObservableStore()
@@ -282,6 +294,9 @@ module.exports = class MetamaskController extends EventEmitter {
   // State Management
   //
 
+  /**
+   * ?
+   */
   getState () {
     const wallet = this.configManager.getWallet()
     const vault = this.keyringController.store.getState().vault
@@ -319,7 +334,10 @@ module.exports = class MetamaskController extends EventEmitter {
   //
   // Remote Features
   //
-
+  
+  /**
+   * ?
+   */
   getApi () {
     const keyringController = this.keyringController
     const preferencesController = this.preferencesController
@@ -517,10 +535,22 @@ module.exports = class MetamaskController extends EventEmitter {
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
   }
 
-  //
-  // Vault Management
-  //
+//=============================================================================
+// VAULT / KEYRING RELATED METHODS
+//=============================================================================
 
+  /**
+   * Creates a new Vault(?) and create a new keychain(?)
+   * 
+   * A vault is ...
+   * 
+   * A keychain is ...
+   * 
+   *
+   * @param  {} password
+   * 
+   * @returns {} vault
+   */
   async createNewVaultAndKeychain (password) {
     const release = await this.createVaultMutex.acquire()
     let vault
@@ -544,6 +574,11 @@ module.exports = class MetamaskController extends EventEmitter {
     return vault
   }
 
+  /**
+   * Create a new Vault and restore an existent keychain
+   * @param  {} password
+   * @param  {} seed
+   */
   async createNewVaultAndRestore (password, seed) {
     const release = await this.createVaultMutex.acquire()
     try {
@@ -557,16 +592,28 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
+  /**
+   * Retrieves the first Identiy from the passed Vault and selects the related address
+   * 
+   * An Identity is ...
+   * 
+   * @param  {} vault
+   */
   selectFirstIdentity (vault) {
     const { identities } = vault
     const address = Object.keys(identities)[0]
     this.preferencesController.setSelectedAddress(address)
   }
 
-  //
+  // ?
   // Opinionated Keyring Management
   //
 
+  /**
+   * Adds a new account to ... 
+   * 
+   * @returns {} keyState
+   */
   async addNewAccount () {
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
     if (!primaryKeyring) {
@@ -588,10 +635,12 @@ module.exports = class MetamaskController extends EventEmitter {
     return keyState
   }
 
-  // Adds the current vault's seed words to the UI's state tree.
-  //
-  // Used when creating a first vault, to allow confirmation.
-  // Also used when revealing the seed words in the confirmation view.
+  /**
+   * Adds the current vault's seed words to the UI's state tree.
+   * 
+   * Used when creating a first vault, to allow confirmation.
+   * Also used when revealing the seed words in the confirmation view.
+   */ 
   placeSeedWords (cb) {
 
     this.verifySeedPhrase()
@@ -604,10 +653,13 @@ module.exports = class MetamaskController extends EventEmitter {
       })
   }
 
-  // Verifies the current vault's seed words if they can restore the
-  // accounts belonging to the current vault.
-  //
-  // Called when the first account is created and on unlocking the vault.
+  /**
+   * Verifies the validity of the current vault's seed phrase.
+   * 
+   * Validity: seed phrase can restore the accounts belonging to the current vault.
+   *
+   * Called when the first account is created and on unlocking the vault.
+   */
   async verifySeedPhrase () {
 
     const primaryKeyring = this.keyringController.getKeyringsByType('HD Key Tree')[0]
@@ -632,22 +684,33 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  // ClearSeedWordCache
-  //
-  // Removes the primary account's seed words from the UI's state tree,
-  // ensuring they are only ever available in the background process.
+  /**
+   * Remove the primary account seed phrase from the UI's state tree.
+   * 
+   * The seed phrase remains available in the background process.
+   * 
+   */
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
-
+  
+  /**
+   * ?
+   */
   resetAccount (cb) {
     const selectedAddress = this.preferencesController.getSelectedAddress()
     this.txController.wipeTransactions(selectedAddress)
     cb(null, selectedAddress)
   }
 
-
+  /**
+   * Imports an account ... ?
+   * 
+   * @param  {} strategy
+   * @param  {} args
+   * @param  {} cb
+   */
   importAccountWithStrategy (strategy, args, cb) {
     accountImporter.importAccount(strategy, args)
     .then((privateKey) => {
@@ -659,11 +722,15 @@ module.exports = class MetamaskController extends EventEmitter {
     .catch((reason) => { cb(reason) })
   }
 
+//============================================================================= 
+// END (VAULT / KEYRING RELATED METHODS)
+//=============================================================================
 
-  //
-  // Identity Management
-  //
-  //
+
+
+//=============================================================================
+// Identity Management
+//=============================================================================
 
   async retryTransaction (txId, cb) {
     await this.txController.retryTransaction(txId)
@@ -729,7 +796,11 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
   }
-
+  
+  /**
+   * @param  {} msgParams
+   * @param  {} cb
+   */
   signMessage (msgParams, cb) {
     log.info('MetaMaskController - signMessage')
     const msgId = msgParams.metamaskId
@@ -758,6 +829,12 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // Prefixed Style Message Signing Methods:
+  
+  /**
+   * 
+   * @param  {} msgParams
+   * @param  {} cb
+   */
   approvePersonalMessage (msgParams, cb) {
     const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
     this.sendUpdate()
@@ -773,7 +850,10 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
   }
-
+  
+  /**
+   * @param  {} msgParams
+   */
   signPersonalMessage (msgParams) {
     log.info('MetaMaskController - signPersonalMessage')
     const msgId = msgParams.metamaskId
@@ -791,7 +871,10 @@ module.exports = class MetamaskController extends EventEmitter {
       return this.getState()
     })
   }
-
+  
+  /**
+   * @param  {} msgParams
+   */
   signTypedMessage (msgParams) {
     log.info('MetaMaskController - signTypedMessage')
     const msgId = msgParams.metamaskId
@@ -843,13 +926,23 @@ module.exports = class MetamaskController extends EventEmitter {
     this.sendUpdate()
     cb()
   }
-
+  
+  /**
+   * ?
+   * 
+   * @param  {} migratorOutput
+   */
   restoreOldVaultAccounts (migratorOutput) {
     const { serialized } = migratorOutput
     return this.keyringController.restoreKeyring(serialized)
     .then(() => migratorOutput)
   }
 
+  /**
+   * ?
+   * 
+   * @param  {} migratorOutput
+   */
   restoreOldLostAccounts (migratorOutput) {
     const { lostAccounts } = migratorOutput
     if (lostAccounts) {
@@ -859,10 +952,15 @@ module.exports = class MetamaskController extends EventEmitter {
     return Promise.resolve(migratorOutput)
   }
 
-  // IMPORT LOST ACCOUNTS
-  // @Object with key lostAccounts: @Array accounts <{ address, privateKey }>
-  // Uses the array's private keys to create a new Simple Key Pair keychain
-  // and add it to the keyring controller.
+
+  /**
+   * Import (lost) Accounts
+   * 
+   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
+   * 
+   * Uses the array's private keys to create a new Simple Key Pair keychain
+   * and add it to the keyring controller.
+   */
   importLostAccounts ({ lostAccounts }) {
     const privKeys = lostAccounts.map(acct => acct.privateKey)
     return this.keyringController.restoreKeyring({
@@ -871,9 +969,9 @@ module.exports = class MetamaskController extends EventEmitter {
     })
   }
 
-  //
-  // config
-  //
+//=============================================================================
+// CONFIG
+//=============================================================================
 
   // Log blocks
 
