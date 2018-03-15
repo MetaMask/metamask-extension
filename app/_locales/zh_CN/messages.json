@@ -294,7 +294,7 @@
     "message": "导入存在的 DEN"
   },
   "imported": {
-    "message": "已导入",
+    "message": "已导入私钥",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
@@ -339,7 +339,7 @@
     "message": "登出"
   },
   "loose": {
-    "message": "丢失"
+    "message": "疏松"
   },
   "mainnet": {
     "message": "以太坊主网络"
