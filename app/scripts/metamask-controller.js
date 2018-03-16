@@ -290,6 +290,9 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
+//=============================================================================
+// EXPOSED TO THE UI SUBSYSTEM
+//=============================================================================
 
   /**
    * The metamask-state of the various controllers, made available to the UI
@@ -415,122 +418,7 @@ module.exports = class MetamaskController extends EventEmitter {
     }
   }
 
-  setupUntrustedCommunication (connectionStream, originDomain) {
-    // Check if new connection is blacklisted
-    if (this.blacklistController.checkForPhishing(originDomain)) {
-      log.debug('MetaMask - sending phishing warning for', originDomain)
-      this.sendPhishingWarning(connectionStream, originDomain)
-      return
-    }
 
-    // setup multiplexing
-    const mux = setupMultiplex(connectionStream)
-    // connect features
-    this.setupProviderConnection(mux.createStream('provider'), originDomain)
-    this.setupPublicConfig(mux.createStream('publicConfig'))
-  }
-
-  setupTrustedCommunication (connectionStream, originDomain) {
-    // setup multiplexing
-    const mux = setupMultiplex(connectionStream)
-    // connect features
-    this.setupControllerConnection(mux.createStream('controller'))
-    this.setupProviderConnection(mux.createStream('provider'), originDomain)
-  }
-
-  sendPhishingWarning (connectionStream, hostname) {
-    const mux = setupMultiplex(connectionStream)
-    const phishingStream = mux.createStream('phishing')
-    phishingStream.write({ hostname })
-  }
-
-  setupControllerConnection (outStream) {
-    const api = this.getApi()
-    const dnode = Dnode(api)
-    pump(
-      outStream,
-      dnode,
-      outStream,
-      (err) => {
-        if (err) log.error(err)
-      }
-    )
-    dnode.on('remote', (remote) => {
-      // push updates to popup
-      const sendUpdate = remote.sendUpdate.bind(remote)
-      this.on('update', sendUpdate)
-    })
-  }
-
-  setupProviderConnection (outStream, origin) {
-    // setup json rpc engine stack
-    const engine = new RpcEngine()
-
-    // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({
-      provider: this.provider,
-      blockTracker: this.provider._blockTracker,
-    })
-
-    engine.push(createOriginMiddleware({ origin }))
-    engine.push(createLoggerMiddleware({ origin }))
-    engine.push(filterMiddleware)
-    engine.push(createProviderMiddleware({ provider: this.provider }))
-
-    // setup connection
-    const providerStream = createEngineStream({ engine })
-    pump(
-      outStream,
-      providerStream,
-      outStream,
-      (err) => {
-        // cleanup filter polyfill middleware
-        filterMiddleware.destroy()
-        if (err) log.error(err)
-      }
-    )
-  }
-
-  setupPublicConfig (outStream) {
-    pump(
-      asStream(this.publicConfigStore),
-      outStream,
-      (err) => {
-        if (err) log.error(err)
-      }
-    )
-  }
-
-  privateSendUpdate () {
-    this.emit('update', this.getState())
-  }
-
-  getGasPrice () {
-    const { recentBlocksController } = this
-    const { recentBlocks } = recentBlocksController.store.getState()
-
-    // Return 1 gwei if no blocks have been observed:
-    if (recentBlocks.length === 0) {
-      return '0x' + GWEI_BN.toString(16)
-    }
-
-    const lowestPrices = recentBlocks.map((block) => {
-      if (!block.gasPrices || block.gasPrices.length < 1) {
-        return GWEI_BN
-      }
-      return block.gasPrices
-      .map(hexPrefix => hexPrefix.substr(2))
-      .map(hex => new BN(hex, 16))
-      .sort((a, b) => {
-        return a.gt(b) ? 1 : -1
-      })[0]
-    })
-    .map(number => number.div(GWEI_BN).toNumber())
-
-    const percentileNum = percentile(50, lowestPrices)
-    const percentileNumBn = new BN(percentileNum)
-    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
-  }
 
 //=============================================================================
 // VAULT / KEYRING RELATED METHODS
@@ -970,6 +858,127 @@ module.exports = class MetamaskController extends EventEmitter {
     this.sendUpdate()
     cb()
   }
+
+//=============================================================================
+// SETUP
+//=============================================================================
+
+  setupUntrustedCommunication (connectionStream, originDomain) {
+    // Check if new connection is blacklisted
+    if (this.blacklistController.checkForPhishing(originDomain)) {
+      log.debug('MetaMask - sending phishing warning for', originDomain)
+      this.sendPhishingWarning(connectionStream, originDomain)
+      return
+    }
+
+    // setup multiplexing
+    const mux = setupMultiplex(connectionStream)
+    // connect features
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+    this.setupPublicConfig(mux.createStream('publicConfig'))
+  }
+
+  setupTrustedCommunication (connectionStream, originDomain) {
+    // setup multiplexing
+    const mux = setupMultiplex(connectionStream)
+    // connect features
+    this.setupControllerConnection(mux.createStream('controller'))
+    this.setupProviderConnection(mux.createStream('provider'), originDomain)
+  }
+
+  sendPhishingWarning (connectionStream, hostname) {
+    const mux = setupMultiplex(connectionStream)
+    const phishingStream = mux.createStream('phishing')
+    phishingStream.write({ hostname })
+  }
+
+  setupControllerConnection (outStream) {
+    const api = this.getApi()
+    const dnode = Dnode(api)
+    pump(
+      outStream,
+      dnode,
+      outStream,
+      (err) => {
+        if (err) log.error(err)
+      }
+    )
+    dnode.on('remote', (remote) => {
+      // push updates to popup
+      const sendUpdate = remote.sendUpdate.bind(remote)
+      this.on('update', sendUpdate)
+    })
+  }
+
+  setupProviderConnection (outStream, origin) {
+    // setup json rpc engine stack
+    const engine = new RpcEngine()
+
+    // create filter polyfill middleware
+    const filterMiddleware = createFilterMiddleware({
+      provider: this.provider,
+      blockTracker: this.provider._blockTracker,
+    })
+
+    engine.push(createOriginMiddleware({ origin }))
+    engine.push(createLoggerMiddleware({ origin }))
+    engine.push(filterMiddleware)
+    engine.push(createProviderMiddleware({ provider: this.provider }))
+
+    // setup connection
+    const providerStream = createEngineStream({ engine })
+    pump(
+      outStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // cleanup filter polyfill middleware
+        filterMiddleware.destroy()
+        if (err) log.error(err)
+      }
+    )
+  }
+
+  setupPublicConfig (outStream) {
+    pump(
+      asStream(this.publicConfigStore),
+      outStream,
+      (err) => {
+        if (err) log.error(err)
+      }
+    )
+  }
+
+  privateSendUpdate () {
+    this.emit('update', this.getState())
+  }
+
+  getGasPrice () {
+    const { recentBlocksController } = this
+    const { recentBlocks } = recentBlocksController.store.getState()
+
+    // Return 1 gwei if no blocks have been observed:
+    if (recentBlocks.length === 0) {
+      return '0x' + GWEI_BN.toString(16)
+    }
+
+    const lowestPrices = recentBlocks.map((block) => {
+      if (!block.gasPrices || block.gasPrices.length < 1) {
+        return GWEI_BN
+      }
+      return block.gasPrices
+      .map(hexPrefix => hexPrefix.substr(2))
+      .map(hex => new BN(hex, 16))
+      .sort((a, b) => {
+        return a.gt(b) ? 1 : -1
+      })[0]
+    })
+    .map(number => number.div(GWEI_BN).toNumber())
+
+    const percentileNum = percentile(50, lowestPrices)
+    const percentileNumBn = new BN(percentileNum)
+    return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
+  }  
 
 //=============================================================================
 // CONFIG
