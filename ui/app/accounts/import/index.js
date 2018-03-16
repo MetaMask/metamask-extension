@@ -1,7 +1,7 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 import Select from 'react-select'
 
 // Subviews
@@ -14,8 +14,8 @@ module.exports = connect(mapStateToProps)(AccountImportSubview)
 function mapStateToProps (state) {
   return {
     menuItems: [
-      t('privateKey'),
-      t('jsonFile'),
+      t(this.props.localeMessages, 'privateKey'),
+      t(this.props.localeMessages, 'jsonFile'),
     ],
   }
 }
@@ -84,9 +84,9 @@ AccountImportSubview.prototype.renderImportView = function () {
   const current = type || menuItems[0]
 
   switch (current) {
-    case t('privateKey'):
+    case t(this.props.localeMessages, 'privateKey'):
       return h(PrivateKeyImportView)
-    case t('jsonFile'):
+    case t(this.props.localeMessages, 'jsonFile'):
       return h(JsonImportView)
     default:
       return h(JsonImportView)

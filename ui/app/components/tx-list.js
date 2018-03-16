@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
@@ -10,7 +10,7 @@ const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
-const t = require('../../i18n')
+const t = require('../../i18n-helper').getMessage
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
 
@@ -57,7 +57,7 @@ TxList.prototype.renderTransaction = function () {
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
-        [ t('noTransactions') ],
+        [ t(this.props.localeMessages, 'noTransactions') ],
       )]
 }
 
@@ -108,7 +108,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   if (isUnapproved) {
     opts.onClick = () => showConfTxPage({id: transActionId})
-    opts.transactionStatus = t('Not Started')
+    opts.transactionStatus = t(this.props.localeMessages, 'Not Started')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }

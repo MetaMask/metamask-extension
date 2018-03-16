@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const copyToClipboard = require('copy-to-clipboard')
-const t = global.getMessage
+const t = require('../../i18n-helper').getMessage
 
 const Tooltip = require('./tooltip')
 
@@ -23,7 +23,7 @@ CopyButton.prototype.render = function () {
   const value = props.value
   const copied = state.copied
 
-  const message = copied ? t('copiedButton') : props.title || t('copyButton')
+  const message = copied ? t(this.props.localeMessages, 'copiedButton') : props.title || t(this.props.localeMessages, 'copyButton')
 
   return h('.copy-button', {
     style: {

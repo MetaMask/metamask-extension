@@ -1,9 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 const { getCurrentViewContext } = require('../../selectors')
 const classnames = require('classnames')
 
@@ -46,7 +46,7 @@ AccountDetailsModal.prototype.render = function () {
 
     h('div.new-account__header', [
 
-      h('div.new-account__title', t('newAccount')),
+      h('div.new-account__title', t(this.props.localeMessages, 'newAccount')),
 
       h('div.new-account__tabs', [
 
@@ -56,7 +56,7 @@ AccountDetailsModal.prototype.render = function () {
             'new-account__tabs__unselected cursor-pointer': displayedForm !== 'CREATE',
           }),
           onClick: () => displayForm('CREATE'),
-        }, t('createDen')),
+        }, t(this.props.localeMessages, 'createDen')),
 
         h('div.new-account__tabs__tab', {
           className: classnames('new-account__tabs__tab', {
@@ -64,7 +64,7 @@ AccountDetailsModal.prototype.render = function () {
             'new-account__tabs__unselected cursor-pointer': displayedForm !== 'IMPORT',
           }),
           onClick: () => displayForm('IMPORT'),
-        }, t('import')),
+        }, t(this.props.localeMessages, 'import')),
 
       ]),
 

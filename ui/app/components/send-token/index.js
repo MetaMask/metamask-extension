@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const h = require('react-hyperscript')
 const classnames = require('classnames')
 const abi = require('ethereumjs-abi')
@@ -7,7 +7,7 @@ const inherits = require('util').inherits
 const actions = require('../../actions')
 const selectors = require('../../selectors')
 const { isValidAddress, allNull } = require('../../util')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 // const BalanceComponent = require('./balance-component')
 const Identicon = require('../identicon')
@@ -127,14 +127,14 @@ SendTokenScreen.prototype.validate = function () {
   const amount = Number(stringAmount)
 
   const errors = {
-    to: !to ? t('required') : null,
-    amount: !amount ? t('required') : null,
-    gasPrice: !gasPrice ? t('gasPriceRequired') : null,
-    gasLimit: !gasLimit ? t('gasLimitRequired') : null,
+    to: !to ? t(this.props.localeMessages, 'required') : null,
+    amount: !amount ? t(this.props.localeMessages, 'required') : null,
+    gasPrice: !gasPrice ? t(this.props.localeMessages, 'gasPriceRequired') : null,
+    gasLimit: !gasLimit ? t(this.props.localeMessages, 'gasLimitRequired') : null,
   }
 
   if (to && !isValidAddress(to)) {
-    errors.to = t('invalidAddress')
+    errors.to = t(this.props.localeMessages, 'invalidAddress')
   }
 
   const isValid = Object.entries(errors).every(([key, value]) => value === null)
@@ -238,7 +238,7 @@ SendTokenScreen.prototype.renderToAddressInput = function () {
     h('input.large-input.send-screen-input', {
       name: 'address',
       list: 'addresses',
-      placeholder: t('address'),
+      placeholder: t(this.props.localeMessages, 'address'),
       value: to,
       onChange: e => this.setState({
         to: e.target.value,
@@ -356,7 +356,7 @@ SendTokenScreen.prototype.renderGasInput = function () {
     }),
 
     h('div.send-screen-gas-labels', {}, [
-      h('span', [ h('i.fa.fa-bolt'), t('gasFee') + ':']),
+      h('span', [ h('i.fa.fa-bolt'), t(this.props.localeMessages, 'gasFee') + ':']),
       h('span', [t('whatsThis')]),
     ]),
     h('div.large-input.send-screen-gas-input', [

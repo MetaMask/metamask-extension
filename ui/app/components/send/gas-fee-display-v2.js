@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyDisplay = require('./currency-display')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 module.exports = GasFeeDisplay
 
@@ -31,7 +31,7 @@ GasFeeDisplay.prototype.render = function () {
         convertedPrefix: '$',
         readOnly: true,
       })
-      : h('div.currency-display', t('loading')),
+      : h('div.currency-display', t(this.props.localeMessages, 'loading')),
 
     h('button.send-v2__sliders-icon-container', {
       onClick,

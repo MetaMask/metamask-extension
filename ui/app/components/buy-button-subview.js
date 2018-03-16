@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
@@ -9,7 +9,7 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
-const t = require('../../i18n')
+const t = require('../../i18n-helper.js').getMessage
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -77,7 +77,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t('depositEth')),
+        }, t(this.props.localeMessages, 'depositEth')),
       ]),
 
       // loading indication
@@ -119,7 +119,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t('selectService')),
+        }, t(this.props.localeMessages, 'selectService')),
       ]),
 
     ])
@@ -165,14 +165,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, t('borrowDharma'))
+            }, t(this.props.localeMessages, 'borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', t('unknownNetworkId'))
+        h('h2.error', t(this.props.localeMessages, 'unknownNetworkId'))
       )
 
   }
@@ -205,7 +205,7 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
           ],
           subtext: {
             'Coinbase': `${t('crypto')}/${t('fiat')} (${t('usaOnly')})`,
-            'ShapeShift': t('crypto'),
+            'ShapeShift': t(this.props.localeMessages, 'crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),

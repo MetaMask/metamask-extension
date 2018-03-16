@@ -1,14 +1,14 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 function mapStateToProps (state) {
   return {
@@ -65,12 +65,12 @@ AccountDetailsModal.prototype.render = function () {
 
       h('button.btn-clear.account-modal__button', {
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
-      }, t('etherscanView')),
+      }, t(this.props.localeMessages, 'etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
       h('button.btn-clear.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
-      }, t('exportPrivateKey')),
+      }, t(this.props.localeMessages, 'exportPrivateKey')),
 
   ])
 }

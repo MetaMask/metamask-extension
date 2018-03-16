@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
-const t = global.getMessage
+const t = require('../../i18n-helper').getMessage
 
 module.exports = BnAsDecimalInput
 
@@ -137,13 +137,13 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
+    message += t(this.props.localeMessages, 'betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
   } else if (min) {
-    message += t('greaterThanMin', [`${newMin} ${suffix}`])
+    message += t(this.props.localeMessages, 'greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
-    message += t('lessThanMax', [`${newMax} ${suffix}`])
+    message += t(this.props.localeMessages, 'lessThanMax', [`${newMax} ${suffix}`])
   } else {
-    message += t('invalidInput')
+    message += t(this.props.localeMessages, 'invalidInput')
   }
 
   return message

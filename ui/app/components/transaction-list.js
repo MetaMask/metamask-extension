@@ -3,7 +3,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const TransactionListItem = require('./transaction-list-item')
-const t = require('../../i18n')
+const t = require('../../i18n-helper').getMessage
 
 module.exports = TransactionList
 
@@ -79,7 +79,7 @@ TransactionList.prototype.render = function () {
             style: {
               marginTop: '50px',
             },
-          }, t('noTransactionHistory')),
+          }, t(this.props.localeMessages, 'noTransactionHistory')),
         ]),
       ]),
     ])

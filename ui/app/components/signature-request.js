@@ -2,14 +2,14 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
 
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
 const actions = require('../actions')
-const t = require('../../i18n')
+const t = require('../../i18n-helper').getMessage
 const { conversionUtil } = require('../conversion-util')
 
 const {
@@ -55,7 +55,7 @@ SignatureRequest.prototype.renderHeader = function () {
 
     h('div.request-signature__header-background'),
 
-    h('div.request-signature__header__text', t('sigRequest')),
+    h('div.request-signature__header__text', t(this.props.localeMessages, 'sigRequest')),
 
     h('div.request-signature__header__tip-container', [
       h('div.request-signature__header__tip'),
@@ -137,7 +137,7 @@ SignatureRequest.prototype.renderRequestInfo = function () {
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
-      t('yourSigRequested'),
+      t(this.props.localeMessages, 'yourSigRequested'),
     ]),
 
   ])
@@ -155,18 +155,18 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
-  let notice = t('youSign') + ':'
+  let notice = t(this.props.localeMessages, 'youSign') + ':'
 
   const { txData } = this.props
   const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
-    rows = [{ name: t('message'), value: this.msgHexToText(data) }]
+    rows = [{ name: t(this.props.localeMessages, 'message'), value: this.msgHexToText(data) }]
   } else if (type === 'eth_signTypedData') {
     rows = data
   } else if (type === 'eth_sign') {
-    rows = [{ name: t('message'), value: data }]
-    notice = t('signNotice')
+    rows = [{ name: t(this.props.localeMessages, 'message'), value: data }]
+    notice = t(this.props.localeMessages, 'signNotice')
   }
 
   return h('div.request-signature__body', {}, [
@@ -225,10 +225,10 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.request-signature__footer__cancel-button', {
       onClick: cancel,
-    }, t('cancel')),
+    }, t(this.props.localeMessages, 'cancel')),
     h('button.request-signature__footer__sign-button', {
       onClick: sign,
-    }, t('sign')),
+    }, t(this.props.localeMessages, 'sign')),
   ])
 }
 

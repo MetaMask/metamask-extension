@@ -1,10 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const { getSelectedAccount } = require('../../selectors')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 function mapStateToProps (state) {
   return {
@@ -70,7 +70,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        t('save'),
+        t(this.props.localeMessages, 'save'),
       ]),
 
     ]),

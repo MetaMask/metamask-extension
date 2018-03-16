@@ -333,6 +333,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -914,6 +915,15 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  setCurrentLocale (key, cb) {
+    try {
+      this.preferencesController.setCurrentLocale(key)
       cb(null)
     } catch (err) {
       cb(err)

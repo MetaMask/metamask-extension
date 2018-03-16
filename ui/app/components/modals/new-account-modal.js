@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../actions')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 class NewAccountModal extends Component {
   constructor (props) {
@@ -23,7 +23,7 @@ class NewAccountModal extends Component {
       h('div.new-account-modal-wrapper', {
       }, [
         h('div.new-account-modal-header', {}, [
-          t('newAccount'),
+          t(this.props.localeMessages, 'newAccount'),
         ]),
 
         h('div.modal-close-x', {
@@ -31,19 +31,19 @@ class NewAccountModal extends Component {
         }),
 
         h('div.new-account-modal-content', {}, [
-          t('accountName'),
+          t(this.props.localeMessages, 'accountName'),
         ]),
 
         h('div.new-account-input-wrapper', {}, [
           h('input.new-account-input', {
             value: this.state.newAccountName,
-            placeholder: t('sampleAccountName'),
+            placeholder: t(this.props.localeMessages, 'sampleAccountName'),
             onChange: event => this.setState({ newAccountName: event.target.value }),
           }, []),
         ]),
 
         h('div.new-account-modal-content.after-input', {}, [
-          t('or'),
+          t(this.props.localeMessages, 'or'),
         ]),
 
         h('div.new-account-modal-content.after-input.pointer', {
@@ -51,13 +51,13 @@ class NewAccountModal extends Component {
             this.props.hideModal()
             this.props.showImportPage()
           },
-        }, t('importAnAccount')),
+        }, t(this.props.localeMessages, 'importAnAccount')),
 
         h('div.new-account-modal-content.button.allcaps', {}, [
           h('button.btn-clear', {
             onClick: () => this.props.createAccount(newAccountName),
           }, [
-            t('save'),
+            t(this.props.localeMessages, 'save'),
           ]),
         ]),
       ]),

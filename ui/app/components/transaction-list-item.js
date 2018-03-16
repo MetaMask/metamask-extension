@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 
 const EthBalance = require('./eth-balance')
 const addressSummary = require('../util').addressSummary
@@ -11,7 +11,7 @@ const vreme = new (require('vreme'))()
 const Tooltip = require('./tooltip')
 const numberToBN = require('number-to-bn')
 const actions = require('../actions')
-const t = require('../../i18n')
+const t = require('../../i18n-helper').getMessage
 
 const TransactionIcon = require('./transaction-list-item-icon')
 const ShiftListItem = require('./shift-list-item')
@@ -86,7 +86,7 @@ TransactionListItem.prototype.render = function () {
         ]),
 
         h(Tooltip, {
-          title: t('transactionNumber'),
+          title: t(this.props.localeMessages, 'transactionNumber'),
           position: 'right',
         }, [
           h('span', {
@@ -143,12 +143,12 @@ TransactionListItem.prototype.render = function () {
           style: {
             paddingRight: '2px',
           },
-        }, t('takesTooLong')),
+        }, t(this.props.localeMessages, 'takesTooLong')),
         h('div', {
           style: {
             textDecoration: 'underline',
           },
-        }, t('retryWithMoreGas')),
+        }, t(this.props.localeMessages, 'retryWithMoreGas')),
       ]),
     ])
   )
@@ -177,11 +177,11 @@ function recipientField (txParams, transaction, isTx, isMsg) {
   let message
 
   if (isMsg) {
-    message = t('sigRequested')
+    message = t(this.props.localeMessages, 'sigRequested')
   } else if (txParams.to) {
     message = addressSummary(txParams.to)
   } else {
-    message = t('contractDeployment')
+    message = t(this.props.localeMessages, 'contractDeployment')
   }
 
   return h('div', {
@@ -204,7 +204,7 @@ function renderErrorOrWarning (transaction) {
 
   // show rejected
   if (status === 'rejected') {
-    return h('span.error', ' (' + t('rejected') + ')')
+    return h('span.error', ' (' + t(this.props.localeMessages, 'rejected') + ')')
   }
   if (transaction.err || transaction.warning) {
     const { err, warning = {} } = transaction
@@ -220,7 +220,7 @@ function renderErrorOrWarning (transaction) {
             title: message,
             position: 'bottom',
           }, [
-            h(`span.error`, ` (` + t('failed') + `)`),
+            h(`span.error`, ` (` + t(this.props.localeMessages, 'failed') + `)`),
           ])
       )
     }
@@ -232,7 +232,7 @@ function renderErrorOrWarning (transaction) {
         title: message,
         position: 'bottom',
       }, [
-        h(`span.warning`, ` (` + t('warning') + `)`),
+        h(`span.warning`, ` (` + t(this.props.localeMessages, 'warning') + `)`),
       ])
     }
   }

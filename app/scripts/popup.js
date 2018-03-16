@@ -1,8 +1,8 @@
 // setup i18n
-const Translator = require('../../ui/create-i18n')
-const translator = new Translator()
-global.translator = translator
-global.getMessage = translator.getMessage.bind(translator)
+// const Translator = require('../../ui/create-i18n')
+// const translator = new Translator()
+// global.translator = translator
+// global.getMessage = translator.getMessage.bind(translator)
 
 const injectCss = require('inject-css')
 const OldMetaMaskUiCss = require('../../old-ui/css')
@@ -15,6 +15,7 @@ const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 const setupRaven = require('./lib/setupRaven')
+const { fetchLocale } = require('../../ui/i18n-helper.js')
 
 start().catch(log.error)
 
@@ -28,7 +29,8 @@ async function start() {
   setupRaven({ release })
 
   // Load translator
-  await translator.setLocale('ja')
+  // await translator.setLocale('ja')
+  const localeMessages = await fetchLocale('ja')
 
   // inject css
   // const css = MetaMaskUiCss()
@@ -45,7 +47,7 @@ async function start() {
 
   // start ui
   const container = document.getElementById('app-content')
-  startPopup({ container, connectionStream }, (err, store) => {
+  startPopup({ container, connectionStream, localeMessages }, (err, store) => {
     if (err) return displayCriticalError(err)
 
     // Code commented out until we begin auto adding users to NewUI

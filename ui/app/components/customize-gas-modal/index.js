@@ -1,10 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const GasModalCard = require('./gas-modal-card')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 const ethUtil = require('ethereumjs-util')
 
@@ -147,7 +147,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   })
 
   if (!balanceIsSufficient) {
-    error = t('balanceIsInsufficientGas')
+    error = t(this.props.localeMessages, 'balanceIsInsufficientGas')
   }
 
   const gasLimitTooLow = gasLimit && conversionGreaterThan(
@@ -163,7 +163,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   )
 
   if (gasLimitTooLow) {
-    error = t('gasLimitTooLow')
+    error = t(this.props.localeMessages, 'gasLimitTooLow')
   }
 
   this.setState({ error })
@@ -240,7 +240,7 @@ CustomizeGasModal.prototype.render = function () {
     }, [
       h('div.send-v2__customize-gas__header', {}, [
 
-        h('div.send-v2__customize-gas__title', t('customGas')),
+        h('div.send-v2__customize-gas__title', t(this.props.localeMessages, 'customGas')),
 
         h('div.send-v2__customize-gas__close', {
           onClick: hideModal,
@@ -256,8 +256,8 @@ CustomizeGasModal.prototype.render = function () {
           // max: 1000,
           step: multiplyCurrencies(MIN_GAS_PRICE_GWEI, 10),
           onChange: value => this.convertAndSetGasPrice(value),
-          title: t('gasPrice'),
-          copy: t('gasPriceCalculation'),
+          title: t(this.props.localeMessages, 'gasPrice'),
+          copy: t(this.props.localeMessages, 'gasPriceCalculation'),
         }),
 
         h(GasModalCard, {
@@ -266,8 +266,8 @@ CustomizeGasModal.prototype.render = function () {
           // max: 100000,
           step: 1,
           onChange: value => this.convertAndSetGasLimit(value),
-          title: t('gasLimit'),
-          copy: t('gasLimitCalculation'),
+          title: t(this.props.localeMessages, 'gasLimit'),
+          copy: t(this.props.localeMessages, 'gasLimitCalculation'),
         }),
 
       ]),

@@ -1,10 +1,10 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('./metamask-connect')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
-const t = global.getMessage
+const t = require('../i18n-helper').getMessage
 
 // mascara
 const MascaraFirstTime = require('../../mascara/src/app/first-time').default
@@ -294,8 +294,8 @@ App.prototype.renderAppBar = function () {
 
             // metamask name
             h('.flex-row', [
-              h('h1', t('appName')),
-              h('div.beta-label', t('beta')),
+              h('h1', t(this.props.localeMessages, 'appName')),
+              h('div.beta-label', t(this.props.localeMessages, 'beta')),
             ]),
           ]),
 

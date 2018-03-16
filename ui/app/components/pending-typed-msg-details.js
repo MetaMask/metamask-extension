@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 
 const AccountPanel = require('./account-panel')
 const TypedMessageRenderer = require('./typed-message-renderer')
-const t = require('../../i18n')
+const t = require('../../i18n-helper').getMessage
 
 module.exports = PendingMsgDetails
 
@@ -46,7 +46,7 @@ PendingMsgDetails.prototype.render = function () {
           height: '260px',
         },
       }, [
-        h('label.font-small.allcaps', { style: { display: 'block' } }, t('youSign')),
+        h('label.font-small.allcaps', { style: { display: 'block' } }, t(this.props.localeMessages, 'youSign')),
         h(TypedMessageRenderer, {
           value: data,
           style: {

@@ -5,8 +5,8 @@ const exportAsFile = require('../util').exportAsFile
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
 const ethUtil = require('ethereumjs-util')
-const connect = require('react-redux').connect
-const t = global.getMessage
+const connect = require('../metamask-connect')
+const t = require('../../i18n-helper').getMessage
 
 module.exports = connect(mapStateToProps)(ExportAccountView)
 
@@ -36,7 +36,7 @@ ExportAccountView.prototype.render = function () {
   if (notExporting) return h('div')
 
   if (exportRequested) {
-    const warning = t('exportPrivateKeyWarning')
+    const warning = t(this.props.localeMessages, 'exportPrivateKeyWarning')
     return (
       h('div', {
         style: {
@@ -54,7 +54,7 @@ ExportAccountView.prototype.render = function () {
             h('p.error', warning),
             h('input#exportAccount.sizing-input', {
               type: 'password',
-              placeholder: t('confirmPassword').toLowerCase(),
+              placeholder: t(this.props.localeMessages, 'confirmPassword').toLowerCase(),
               onKeyPress: this.onExportKeyPress.bind(this),
               style: {
                 position: 'relative',
@@ -75,10 +75,10 @@ ExportAccountView.prototype.render = function () {
                 style: {
                   marginRight: '10px',
                 },
-              }, t('submit')),
+              }, t(this.props.localeMessages, 'submit')),
               h('button', {
                 onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-              }, t('cancel')),
+              }, t(this.props.localeMessages, 'cancel')),
             ]),
           (this.props.warning) && (
           h('span.error', {
@@ -99,7 +99,7 @@ ExportAccountView.prototype.render = function () {
         margin: '0 20px',
       },
     }, [
-      h('label', t('copyPrivateKey') + ':'),
+      h('label', t(this.props.localeMessages, 'copyPrivateKey') + ':'),
       h('p.error.cursor-pointer', {
         style: {
           textOverflow: 'ellipsis',
@@ -113,13 +113,13 @@ ExportAccountView.prototype.render = function () {
       }, plainKey),
       h('button', {
         onClick: () => this.props.dispatch(actions.backToAccountDetail(this.props.address)),
-      }, t('done')),
+      }, t(this.props.localeMessages, 'done')),
       h('button', {
         style: {
           marginLeft: '10px',
         },
         onClick: () => exportAsFile(`MetaMask ${nickname} Private Key`, plainKey),
-      }, t('saveAsFile')),
+      }, t(this.props.localeMessages, 'saveAsFile')),
     ])
   }
 }

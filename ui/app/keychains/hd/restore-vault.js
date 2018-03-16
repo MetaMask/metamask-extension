@@ -1,6 +1,6 @@
 const inherits = require('util').inherits
 const PersistentForm = require('../../../lib/persistent-form')
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 

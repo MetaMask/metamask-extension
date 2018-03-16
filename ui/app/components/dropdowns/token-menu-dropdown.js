@@ -1,9 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 
 module.exports = connect(null, mapDispatchToProps)(TokenMenuDropdown)
@@ -45,7 +45,7 @@ TokenMenuDropdown.prototype.render = function () {
             showHideTokenConfirmationModal(this.props.token)
             this.props.onClose()
           },
-        }, t('hideToken')),
+        }, t(this.props.localeMessages, 'hideToken')),
 
       ]),
     ]),

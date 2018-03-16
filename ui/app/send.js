@@ -1,7 +1,7 @@
 // const { inherits } = require('util')
 // const PersistentForm = require('../lib/persistent-form')
 // const h = require('react-hyperscript')
-// const connect = require('react-redux').connect
+// const connect = require('./metamask-connect')
 // const Identicon = require('./components/identicon')
 // const EnsInput = require('./components/ens-input')
 // const GasTooltip = require('./components/send/gas-tooltip')

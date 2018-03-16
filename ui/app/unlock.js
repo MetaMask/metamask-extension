@@ -1,11 +1,11 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
+const connect = require('./metamask-connect')
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
-const t = require('../i18n')
+const t = require('../i18n-helper').getMessage
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 const environmentType = require('../../app/scripts/lib/environment-type')
 
@@ -41,7 +41,7 @@ UnlockScreen.prototype.render = function () {
           textTransform: 'uppercase',
           color: '#7F8082',
         },
-      }, t('appName')),
+      }, t(this.props.localeMessages, 'appName')),
 
       h('input.large-input', {
         type: 'password',

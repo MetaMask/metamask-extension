@@ -6,7 +6,7 @@ const tokenAbi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(tokenAbi)
 const actions = require('../../actions')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 const clone = require('clone')
 const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')
@@ -134,7 +134,7 @@ ConfirmSendToken.prototype.getAmount = function () {
       ? +(sendTokenAmount * tokenExchangeRate * conversionRate).toFixed(2)
       : null,
     token: typeof value === 'undefined'
-      ? t('unknown')
+      ? t(this.props.localeMessages, 'unknown')
       : +sendTokenAmount.toFixed(decimals),
   }
 
@@ -205,7 +205,7 @@ ConfirmSendToken.prototype.getData = function () {
     },
     to: {
       address: value,
-      name: identities[value] ? identities[value].name : t('newRecipient'),
+      name: identities[value] ? identities[value].name : t(this.props.localeMessages, 'newRecipient'),
     },
     memo: txParams.memo || '',
   }
@@ -245,7 +245,7 @@ ConfirmSendToken.prototype.renderGasFee = function () {
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
-      h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
+      h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'gasFee') ]),
       h('div.confirm-screen-section-column', [
         h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency}`),
 
@@ -267,8 +267,8 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
     ? (
       h('section.flex-row.flex-center.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ t('total') + ' ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
+          h('span.confirm-screen-label', [ t(this.props.localeMessages, 'total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ t(this.props.localeMessages, 'amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
@@ -280,8 +280,8 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
     : (
       h('section.flex-row.flex-center.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ t('total') + ' ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
+          h('span.confirm-screen-label', [ t(this.props.localeMessages, 'total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ t(this.props.localeMessages, 'amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
@@ -315,9 +315,9 @@ ConfirmSendToken.prototype.render = function () {
         h('div.page-container__header', [
           h('button.confirm-screen-back-button', {
             onClick: () => editTransaction(txMeta),
-          }, t('edit')),
-          h('div.page-container__title', t('confirm')),
-          h('div.page-container__subtitle', t('pleaseReviewTransaction')),
+          }, t(this.props.localeMessages, 'edit')),
+          h('div.page-container__title', t(this.props.localeMessages, 'confirm')),
+          h('div.page-container__subtitle', t(this.props.localeMessages, 'pleaseReviewTransaction')),
         ]),
         h('div.flex-row.flex-center.confirm-screen-identicons', [
           h('div.confirm-screen-account-wrapper', [
@@ -358,7 +358,7 @@ ConfirmSendToken.prototype.render = function () {
 
         h('div.confirm-screen-rows', [
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'from') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', fromName),
               h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -366,7 +366,7 @@ ConfirmSendToken.prototype.render = function () {
           ]),
 
           toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'to') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', toName),
               h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
@@ -386,7 +386,7 @@ ConfirmSendToken.prototype.render = function () {
         // Cancel Button
         h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
           onClick: (event) => this.cancel(event, txMeta),
-        }, t('cancel')),
+        }, t(this.props.localeMessages, 'cancel')),
 
         // Accept Button
         h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
@@ -406,7 +406,7 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
+    this.props.dispatch(actions.displayWarning(t(this.props.localeMessages, 'invalidGasParams')))
     this.setState({ submitting: false })
   }
 }

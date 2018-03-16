@@ -1,13 +1,13 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
 const R = require('ramda')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 
 // classes from nodes of the toggle element.
@@ -95,13 +95,13 @@ NetworkDropdown.prototype.render = function () {
   }, [
 
     h('div.network-dropdown-header', {}, [
-      h('div.network-dropdown-title', {}, t('networks')),
+      h('div.network-dropdown-title', {}, t(this.props.localeMessages, 'networks')),
 
       h('div.network-dropdown-divider'),
 
       h('div.network-dropdown-content',
         {},
-        t('defaultNetwork')
+        t(this.props.localeMessages, 'defaultNetwork')
       ),
     ]),
 
@@ -123,7 +123,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
           },
-        }, t('mainnet')),
+        }, t(this.props.localeMessages, 'mainnet')),
       ]
     ),
 
@@ -145,7 +145,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
           },
-        }, t('ropsten')),
+        }, t(this.props.localeMessages, 'ropsten')),
       ]
     ),
 
@@ -167,7 +167,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
           },
-        }, t('kovan')),
+        }, t(this.props.localeMessages, 'kovan')),
       ]
     ),
 
@@ -189,7 +189,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
           },
-        }, t('rinkeby')),
+        }, t(this.props.localeMessages, 'rinkeby')),
       ]
     ),
 
@@ -211,7 +211,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: activeNetwork === 'http://localhost:8545' ? '#ffffff' : '#9b9b9b',
           },
-        }, t('localhost')),
+        }, t(this.props.localeMessages, 'localhost')),
       ]
     ),
 
@@ -235,7 +235,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
           },
-        }, t('customRPC')),
+        }, t(this.props.localeMessages, 'customRPC')),
       ]
     ),
 
@@ -250,15 +250,15 @@ NetworkDropdown.prototype.getNetworkName = function () {
   let name
 
   if (providerName === 'mainnet') {
-    name = t('mainnet')
+    name = t(this.props.localeMessages, 'mainnet')
   } else if (providerName === 'ropsten') {
-    name = t('ropsten')
+    name = t(this.props.localeMessages, 'ropsten')
   } else if (providerName === 'kovan') {
-    name = t('kovan')
+    name = t(this.props.localeMessages, 'kovan')
   } else if (providerName === 'rinkeby') {
-    name = t('rinkeby')
+    name = t(this.props.localeMessages, 'rinkeby')
   } else {
-    name = t('unknownNetwork')
+    name = t(this.props.localeMessages, 'unknownNetwork')
   }
 
   return name

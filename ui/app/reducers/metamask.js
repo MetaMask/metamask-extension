@@ -45,6 +45,7 @@ function reduceMetamask (state, action) {
     networkEndpointType: OLD_UI_NETWORK_TYPE,
     isRevealingSeedWords: false,
     welcomeScreenSeen: false,
+    currentLocale: 'ja',
   }, state.metamask)
 
   switch (action.type) {
@@ -351,6 +352,11 @@ function reduceMetamask (state, action) {
     case actions.CLOSE_WELCOME_SCREEN:
       return extend(metamaskState, {
         welcomeScreenSeen: true,
+      })
+
+    case action.SET_CURRENT_LOCALE:
+      return extend(metamaskState, {
+        currentLocale: action.value,
       })
 
     default:

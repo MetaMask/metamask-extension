@@ -112,9 +112,9 @@ class Settings extends Component {
   }
 
   renderCurrentLocale () {
-    const { setCurrentLocale } = this.props
-    const currentLocaleName = global.translator.localeName
-    const currentLocale = locales.find(locale => locale.code === currentLocaleName)
+    const { updateCurrentLocale, currentLocale } = this.props
+    // const currentLocaleName = global.translator.localeName
+    // const currentLocale = locales.find(locale => locale.code === currentLocaleName)
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
@@ -126,11 +126,12 @@ class Settings extends Component {
           h(SimpleDropdown, {
             placeholder: 'Select Locale',
             options: getLocaleOptions(),
-            selectedOption: currentLocaleName,
+            selectedOption: currentLocale,
             onSelect: async (newLocale) => {
-              log('set new locale', newLocale)
-              await global.translator.setLocale(newLocale)
-              log('did set new locale', newLocale)
+              // log('set new locale', newLocale)
+              // await global.translator.setLocale(newLocale)
+              updateCurrentLocale(newLocale)
+              // log('did set new locale', newLocale)
             },
           }),
         ]),
@@ -468,6 +469,7 @@ const mapStateToProps = state => {
     metamask: state.metamask,
     warning: state.appState.warning,
     isMascara: state.metamask.isMascara,
+    currentLocale: state.metamask.currentLocale,
   }
 }
 
@@ -479,6 +481,7 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
         .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))

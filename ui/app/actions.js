@@ -2,6 +2,7 @@ const abi = require('human-standard-token-abi')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const ethUtil = require('ethereumjs-util')
+const { fetchLocale } = require('../i18n-helper')
 
 var actions = {
   _setBackgroundConnection: _setBackgroundConnection,
@@ -23,7 +24,7 @@ var actions = {
   NETWORK_DROPDOWN_CLOSE: 'UI_NETWORK_DROPDOWN_CLOSE',
   showNetworkDropdown: showNetworkDropdown,
   hideNetworkDropdown: hideNetworkDropdown,
-  // menu state
+  // menu state/
   getNetworkStatus: 'getNetworkStatus',
   // transition state
   TRANSITION_FORWARD: 'TRANSITION_FORWARD',
@@ -254,6 +255,13 @@ var actions = {
   SET_USE_BLOCKIE: 'SET_USE_BLOCKIE',
   setUseBlockie,
 
+  // locale
+  SET_CURRENT_LOCALE: 'SET_CURRENT_LOCALE',
+  SET_LOCALE_MESSAGES: 'SET_LOCALE_MESSAGES',
+  setCurrentLocale,
+  updateCurrentLocale,
+  setLocaleMessages,
+  //
   // Feature Flags
   setFeatureFlag,
   updateFeatureFlags,
@@ -1787,6 +1795,39 @@ function setUseBlockie (val) {
       type: actions.SET_USE_BLOCKIE,
       value: val,
     })
+  }
+}
+
+function updateCurrentLocale (key) {
+  return (dispatch) => {
+    dispatch(actions.showLoadingIndication())
+    log.debug(`background.updateCurrentLocale`)
+    console.log(`fetchLocale`, fetchLocale);
+    fetchLocale(key)
+      .then((localeMessages) => {
+        background.setCurrentLocale(key, (err) => {
+          dispatch(actions.hideLoadingIndication())
+          if (err) {
+            return dispatch(actions.displayWarning(err.message))
+          }
+          dispatch(actions.setCurrentLocale(key))
+          dispatch(actions.setLocaleMessages(localeMessages))
+        })
+      })
+  }
+}
+
+function setCurrentLocale (key) {
+  return {
+    type: actions.SET_CURRENT_LOCALE,
+    value: key,
+  }
+}
+
+function setLocaleMessages (localeMessages) {
+  return {
+    type: actions.SET_LOCALE_MESSAGES,
+    value: localeMessages,
   }
 }
 

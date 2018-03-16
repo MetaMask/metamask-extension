@@ -1,6 +1,6 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const abi = require('human-standard-token-abi')
@@ -13,7 +13,7 @@ const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
-const t = require('../../i18n')
+const t = require('../../i18n-helper').getMessage
 
 module.exports = connect(mapStateToProps)(TxListItem)
 
@@ -64,7 +64,7 @@ TxListItem.prototype.getAddressText = function () {
     default:
       return address
         ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : t('contractDeployment')
+        : t(this.props.localeMessages, 'contractDeployment')
   }
 }
 

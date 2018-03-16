@@ -1,12 +1,12 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
-const t = global.getMessage
+const t = require('../../../i18n-helper').getMessage
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
 
@@ -71,10 +71,10 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       className: 'account-menu__header',
     }, [
-      t('myAccounts'),
+      t(this.props.localeMessages, 'myAccounts'),
       h('button.account-menu__logout-button', {
         onClick: lockMetamask,
-      }, t('logout')),
+      }, t(this.props.localeMessages, 'logout')),
     ]),
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
@@ -82,23 +82,23 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       onClick: () => showNewAccountPage('CREATE'),
       icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
-      text: t('createAccount'),
+      text: t(this.props.localeMessages, 'createAccount'),
     }),
     h(Item, {
       onClick: () => showNewAccountPage('IMPORT'),
       icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
-      text: t('importAccount'),
+      text: t(this.props.localeMessages, 'importAccount'),
     }),
     h(Divider),
     h(Item, {
       onClick: showInfoPage,
       icon: h('img', { src: 'images/mm-info-icon.svg' }),
-      text: t('infoHelp'),
+      text: t(this.props.localeMessages, 'infoHelp'),
     }),
     h(Item, {
       onClick: showConfigPage,
       icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
-      text: t('settings'),
+      text: t(this.props.localeMessages, 'settings'),
     }),
   ])
 }
@@ -156,6 +156,6 @@ AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label.allcaps', t('imported')) : null
+    return isLoose ? h('.keyring-label.allcaps', t(this.props.localeMessages, 'imported')) : null
   } catch (e) { return }
 }
