@@ -267,7 +267,7 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Constructor helper: initialize a public confi store.
+   * Constructor helper: initialize a public config store.
    */
   initPublicConfigStore () {
     // get init state
@@ -290,12 +290,11 @@ module.exports = class MetamaskController extends EventEmitter {
     return publicConfigStore
   }
 
-  //
-  // State Management
-  //
 
   /**
-   * ?
+   * The metamask-state of the various controllers, made available to the UI
+   * 
+   * @returns {Object} status 
    */
   getState () {
     const wallet = this.configManager.getWallet()
@@ -331,12 +330,10 @@ module.exports = class MetamaskController extends EventEmitter {
     )
   }
 
-  //
-  // Remote Features
-  //
-  
   /**
-   * ?
+   * Returns an api-object which is consumed by the UI
+   * 
+   * @returns {Object} 
    */
   getApi () {
     const keyringController = this.keyringController
@@ -656,7 +653,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Verifies the validity of the current vault's seed phrase.
    * 
-   * Validity: seed phrase can restore the accounts belonging to the current vault.
+   * Validity: seed phrase restores the accounts belonging to the current vault.
    *
    * Called when the first account is created and on unlocking the vault.
    */
@@ -722,81 +719,9 @@ module.exports = class MetamaskController extends EventEmitter {
     .catch((reason) => { cb(reason) })
   }
 
-//============================================================================= 
-// END (VAULT / KEYRING RELATED METHODS)
-//=============================================================================
+  // ---------------------------------------------------------------------------
+  // Identity Management (sign)
 
-
-
-//=============================================================================
-// Identity Management
-//=============================================================================
-
-  async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
-    const state = await this.getState()
-    return state
-  }
-
-
-  newUnsignedMessage (msgParams, cb) {
-    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.messageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  newUnsignedPersonalMessage (msgParams, cb) {
-    if (!msgParams.from) {
-      return cb(new Error('MetaMask Message Signature: from field is required.'))
-    }
-
-    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
-    this.sendUpdate()
-    this.opts.showUnconfirmedMessage()
-    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-
-  newUnsignedTypedMessage (msgParams, cb) {
-    let msgId
-    try {
-      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
-      this.sendUpdate()
-      this.opts.showUnconfirmedMessage()
-    } catch (e) {
-      return cb(e)
-    }
-
-    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
-      switch (data.status) {
-        case 'signed':
-          return cb(null, data.rawSig)
-        case 'rejected':
-          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
-        default:
-          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
-      }
-    })
-  }
-  
   /**
    * @param  {} msgParams
    * @param  {} cb
@@ -818,14 +743,6 @@ module.exports = class MetamaskController extends EventEmitter {
       this.messageManager.setMsgStatusSigned(msgId, rawSig)
       return this.getState()
     })
-  }
-
-  cancelMessage (msgId, cb) {
-    const messageManager = this.messageManager
-    messageManager.rejectMsg(msgId)
-    if (cb && typeof cb === 'function') {
-      cb(null, this.getState())
-    }
   }
 
   // Prefixed Style Message Signing Methods:
@@ -892,6 +809,133 @@ module.exports = class MetamaskController extends EventEmitter {
         return this.getState()
       })
   }
+  
+  // ---------------------------------------------------------------------------
+  // Account Restauration
+
+  /**
+   * ?
+   * 
+   * @param  {} migratorOutput
+   */
+  restoreOldVaultAccounts (migratorOutput) {
+    const { serialized } = migratorOutput
+    return this.keyringController.restoreKeyring(serialized)
+    .then(() => migratorOutput)
+  }
+
+  /**
+   * ?
+   * 
+   * @param  {} migratorOutput
+   */
+  restoreOldLostAccounts (migratorOutput) {
+    const { lostAccounts } = migratorOutput
+    if (lostAccounts) {
+      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
+      return this.importLostAccounts(migratorOutput)
+    }
+    return Promise.resolve(migratorOutput)
+  }
+
+  /**
+   * Import (lost) Accounts
+   * 
+   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
+   * 
+   * Uses the array's private keys to create a new Simple Key Pair keychain
+   * and add it to the keyring controller.
+   */
+  importLostAccounts ({ lostAccounts }) {
+    const privKeys = lostAccounts.map(acct => acct.privateKey)
+    return this.keyringController.restoreKeyring({
+      type: 'Simple Key Pair',
+      data: privKeys,
+    })
+  }
+
+//=============================================================================
+// END (VAULT / KEYRING RELATED METHODS)
+//=============================================================================
+
+
+
+//============================================================================= 
+// MESSAGES
+//=============================================================================  
+
+  async retryTransaction (txId, cb) {
+    await this.txController.retryTransaction(txId)
+    const state = await this.getState()
+    return state
+  }
+
+
+  newUnsignedMessage (msgParams, cb) {
+    const msgId = this.messageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.messageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  newUnsignedPersonalMessage (msgParams, cb) {
+    if (!msgParams.from) {
+      return cb(new Error('MetaMask Message Signature: from field is required.'))
+    }
+
+    const msgId = this.personalMessageManager.addUnapprovedMessage(msgParams)
+    this.sendUpdate()
+    this.opts.showUnconfirmedMessage()
+    this.personalMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  newUnsignedTypedMessage (msgParams, cb) {
+    let msgId
+    try {
+      msgId = this.typedMessageManager.addUnapprovedMessage(msgParams)
+      this.sendUpdate()
+      this.opts.showUnconfirmedMessage()
+    } catch (e) {
+      return cb(e)
+    }
+
+    this.typedMessageManager.once(`${msgId}:finished`, (data) => {
+      switch (data.status) {
+        case 'signed':
+          return cb(null, data.rawSig)
+        case 'rejected':
+          return cb(new Error('MetaMask Message Signature: User denied message signature.'))
+        default:
+          return cb(new Error(`MetaMask Message Signature: Unknown problem: ${JSON.stringify(msgParams)}`))
+      }
+    })
+  }
+
+  cancelMessage (msgId, cb) {
+    const messageManager = this.messageManager
+    messageManager.rejectMsg(msgId)
+    if (cb && typeof cb === 'function') {
+      cb(null, this.getState())
+    }
+  }  
 
   cancelPersonalMessage (msgId, cb) {
     const messageManager = this.personalMessageManager
@@ -925,48 +969,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
     cb()
-  }
-  
-  /**
-   * ?
-   * 
-   * @param  {} migratorOutput
-   */
-  restoreOldVaultAccounts (migratorOutput) {
-    const { serialized } = migratorOutput
-    return this.keyringController.restoreKeyring(serialized)
-    .then(() => migratorOutput)
-  }
-
-  /**
-   * ?
-   * 
-   * @param  {} migratorOutput
-   */
-  restoreOldLostAccounts (migratorOutput) {
-    const { lostAccounts } = migratorOutput
-    if (lostAccounts) {
-      this.configManager.setLostAccounts(lostAccounts.map(acct => acct.address))
-      return this.importLostAccounts(migratorOutput)
-    }
-    return Promise.resolve(migratorOutput)
-  }
-
-
-  /**
-   * Import (lost) Accounts
-   * 
-   * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
-   * 
-   * Uses the array's private keys to create a new Simple Key Pair keychain
-   * and add it to the keyring controller.
-   */
-  importLostAccounts ({ lostAccounts }) {
-    const privKeys = lostAccounts.map(acct => acct.privateKey)
-    return this.keyringController.restoreKeyring({
-      type: 'Simple Key Pair',
-      data: privKeys,
-    })
   }
 
 //=============================================================================
