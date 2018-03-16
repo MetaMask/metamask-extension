@@ -200,7 +200,7 @@
     "message": "이더스캔에서 계좌보기"
   },
   "exchangeRate": {
-    "message": "교환비율"
+    "message": "환율"
   },
   "exportPrivateKey": {
     "message": "비밀키 내보내기"
