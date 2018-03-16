@@ -293,7 +293,7 @@ class ConfirmDeployContract extends Component {
         ]),
 
         h('form#pending-tx-form', {
-          onClick: event => this.onSubmit(event),
+          onSubmit: event => this.onSubmit(event),
         }, [
           h('.page-container__footer', [
             // Cancel Button
