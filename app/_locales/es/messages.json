@@ -227,7 +227,7 @@
     "message": "Exportar llave privada"
   },
   "exportPrivateKeyWarning": {
-    "message": "Exportar llaves privadas bajo TU PROPIO riesgo."
+    "message": "Exportar llaves privadas bajo TU PROPIO riesgo"
   },
   "failed": {
     "message": "Fallo"
@@ -254,10 +254,10 @@
     "message": "Comisión de gas"
   },
   "gasLimit": {
-    "message": "Limite de gas"
+    "message": "Límite de gas"
   },
   "gasLimitCalculation": {
-    "message": "Calculamos el límite de gas sugerido en función de las tasas de éxito de la red."
+    "message": "Calculamos el límite de gas sugerido en función de las tasas de éxito de la red"
   },
   "gasLimitRequired": {
     "message": "Límite de Gas requerido"
@@ -269,7 +269,7 @@
     "message": "Precio del Gas (GWEI)"
   },
   "gasPriceCalculation": {
-    "message": "Calculamos los precios sugeridos del gas en función de las tasas de éxito de la red."
+    "message": "Calculamos los precios sugeridos del gas en función de las tasas de éxito de la red"
   },
   "gasPriceRequired": {
     "message": "Precio del gas requerido"
@@ -282,7 +282,7 @@
     "description": "Muestra el nombre de la red para el faucet (grifo) de Ether"
   },
   "greaterThanMin": {
-    "message": "Debe ser mayor o igual a $1.",
+    "message": "Debe ser mayor o igual a $1",
     "description": "helper para ingresar hex como entrada decimal"
   },
   "here": {
@@ -328,7 +328,7 @@
     "message": "Parametros de Gas Inválidos"
   },
   "invalidInput": {
-    "message": "Entrada inválida."
+    "message": "Entrada inválida"
   },
   "invalidRequest": {
     "message": "Peticion inválida"
@@ -350,7 +350,7 @@
     "message": "Red de pruebas Kovan"
   },
   "lessThanMax": {
-    "message": "Debe ser menor o igual a $1.",
+    "message": "Debe ser menor o igual a $1",
     "description": "helper para ingresar hex como decimal"
   },
   "limit": {
@@ -390,7 +390,7 @@
     "message": "Para interactuar con una aplicación descentralizada usando MetaMask, vas a necesitar tener Ether en tu billetera"
   },
   "needImportFile": {
-    "message": "Debes seleccionar un archivo para importar.",
+    "message": "Debes seleccionar un archivo para importar",
     "description": "El usuario está importando una cuenta y necesita agregar un archivo para continuar"
   },
   "needImportPassword": {
@@ -423,13 +423,13 @@
     "message": "Siguiente"
   },
   "noAddressForName": {
-    "message": "No se ha establecido ninguna dirección para este nombre."
+    "message": "No se ha establecido ninguna dirección para este nombre"
   },
   "noDeposits": {
     "message": "No hay depósitos recibidos"
   },
   "noTransactionHistory": {
-    "message": "Sin historial de transacciones."
+    "message": "Sin historial de transacciones"
   },
   "transactions": {
     "message": "Transacciones"
@@ -472,7 +472,7 @@
     "message": "Generando semilla..."
   },
   "pleaseReviewTransaction": {
-    "message": "Por favor revisa tu transaccion."
+    "message": "Por favor revisa tu transaccion"
   },
   "privateKey": {
     "message": "Llave privada",
@@ -491,7 +491,7 @@
     "message": "Puede volver a agregar este token en el futuro yendo a 'Agregar token' en el menú de opciones de su cuenta.."
   },
   "readMore": {
-    "message": "Leer más aquí."
+    "message": "Leer más aquí"
   },
   "receive": {
     "message": "Recibir"
@@ -679,7 +679,7 @@
     "message": "Leer más."
   },
   "secretPhrase": {
-    "message": "Ingresa tu frase de 12 palabras para restaurar tu bóveda."
+    "message": "Ingresa tu frase de 12 palabras para restaurar tu bóveda"
   },
   "spaceBetween": {
     "message": "Sólo puede haber un espacio entre las palabras"
@@ -706,7 +706,7 @@
     "message": "Mantenga un registro de los tokens que ha comprado con su cuenta de MetaMask. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
   },
   "tokenSelection": {
-    "message": "Busca tokens o selecciónalo de nuestra lista de tokens populares."
+    "message": "Busca tokens o selecciónalo de nuestra lista de tokens populares"
   },
   "search": {
     "message": "Buscar"
@@ -739,13 +739,13 @@
     "message": "Aquí está una lista!!!"
   },
   "insufficientFounds": {
-    "message": "Fondos insuficientes."
+    "message": "Fondos insuficientes"
   },
   "insufficientTokens": {
-    "message": "Tokens insuficientes."
+    "message": "Tokens insuficientes"
   },
   "negativeETH": {
-    "message": "No se pueden mandar cantidades negativas de ETH."
+    "message": "No se pueden mandar cantidades negativas de ETH"
   },
   "urlErrorMsg": {
     "message": "URI necesita el prefijo HTTP/HTTPS  apropiado"
@@ -772,13 +772,13 @@
     "message": "Reiniciar cuenta"
   },
   "builtInCalifornia": {
-    "message": "Metamask fue diseñado y construido en California.  "
+    "message": "Metamask fue diseñado y construido en California  "
   },
   "classicInterface": {
-    "message": "Usar interfaz clasica. "
+    "message": "Usar interfaz clasica "
   },
   "welcomeBeta": {
-    "message": "Bienvenido a Metamask Beta."
+    "message": "Bienvenido a Metamask Beta"
   },
   "metamaskDescription": {
     "message": "Metamask es una identidad segura en Ethereum"
@@ -790,7 +790,7 @@
     "message": "Los decimales deben ser al menos 0 y no más de 36"
   },
   "symbolBetweenZeroTen": {
-    "message": "Símbolo debe ser entre 0 y 10 caracteres."
+    "message": "Símbolo debe ser entre 0 y 10 caracteres"
   },
   "personalAddressDetected": {
     "message": "Dirección personal detectada. Ingresa la dirección del contrato del token"
