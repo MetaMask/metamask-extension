@@ -420,7 +420,7 @@
     "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
-    "message": "비밀키 스트링을 붙여넣어주세요.",
+    "message": "비밀키를 입력해주세요.",
     "description": "For importing an account from a private key"
   },
   "pasteSeed": {
