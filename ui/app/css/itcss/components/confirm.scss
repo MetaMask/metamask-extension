@@ -202,7 +202,7 @@
 }
 
 .confirm-screen-label {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 40px;
   color: $scorpion;
   text-align: left;
@@ -229,7 +229,6 @@ section .confirm-screen-account-number,
 .confirm-screen-row {
   display: flex;
   flex-flow: row nowrap;
-  border-bottom: 1px solid $alto;
   width: 100%;
   align-items: center;
   padding: 12px;
@@ -237,6 +236,10 @@ section .confirm-screen-account-number,
   font-size: 16px;
   line-height: 22px;
   font-weight: 300;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid $alto;
+  }
 }
 
 .confirm-screen-row-detail {
@@ -247,12 +250,9 @@ section .confirm-screen-account-number,
 
 .confirm-screen-total-box {
   background-color: $wild-sand;
-  padding: 20px;
-  padding-left: 35px;
-  border-bottom: 1px solid $alto;
 
   .confirm-screen-label {
-    line-height: 18px;
+    line-height: 21px;
   }
 
   .confirm-screen-row-detail {
@@ -261,7 +261,7 @@ section .confirm-screen-account-number,
 
   &__subtitle {
     font-size: 12px;
-    line-height: 22px;
+    line-height: 16px;
   }
 
   .confirm-screen-row-info {
@@ -303,22 +303,4 @@ section .confirm-screen-account-number,
   flex: 1 0 auto;
   font-weight: 300;
   margin: 0 5px;
-}
-
-#pending-tx-form {
-  flex: 1 0 auto;
-  position: relative;
-  display: flex;
-  flex-flow: row nowrap;
-  background-color: $white;
-  padding: 12px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  width: 100%;
-
-  @media screen and (max-width: $break-small) {
-    border-top: 1px solid $alto;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
 }
