@@ -47,10 +47,21 @@ InputNumber.prototype.setValue = function (newValue) {
   }
 }
 
+InputNumber.prototype.handleKeyDown = function (e, value, step) {
+  if (e.keyCode === 38 || e.key === 'ArrowUp'){
+    this.setValue(addCurrencies(value, step))
+  } else if (e.keyCode === 40 || e.key === 'ArrowDown') {
+    this.setValue(subtractCurrencies(value, step))
+  }
+}
+
 InputNumber.prototype.render = function () {
   const { unitLabel, step = 1, placeholder, value = 0 } = this.props
 
-  return h('div.customize-gas-input-wrapper', {}, [
+  return h('div.customize-gas-input-wrapper', {
+    tabIndex: '1',
+    onKeyDown: (e) => this.handleKeyDown(e, value, step),
+  }, [
     h(CurrencyInput, {
       className: 'customize-gas-input',
       value,
