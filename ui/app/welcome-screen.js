@@ -32,9 +32,9 @@ class WelcomeScreen extends Component {
             height: '225',
           }),
 
-          h('div.welcome-screen__info__header', t('welcomeMeta')),
+          h('div.welcome-screen__info__header', t('welcomeBeta')),
 
-          h('div.welcome-screen__info__copy', t('metaIs')),
+          h('div.welcome-screen__info__copy', t('metamaskDescription')),
 
           h('div.welcome-screen__info__copy', t(`holdEther`)),
 

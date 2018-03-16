@@ -222,7 +222,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', t('revealSeedWorld')),
+        h('div.settings__content-item', t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.settings__clear-button.settings__clear-button--red', {
@@ -230,7 +230,7 @@ class Settings extends Component {
                 event.preventDefault()
                 revealSeedConfirmation()
               },
-            }, t('revealSeedWorld')),
+            }, t('revealSeedWords')),
           ]),
         ]),
       ])
@@ -373,7 +373,7 @@ class Settings extends Component {
             h('div.settings__info-item', [
               h(
                 'div.settings__info-about',
-                t('californiaRoll')
+                t('builtInCalifornia')
               ),
             ]),
           ]),

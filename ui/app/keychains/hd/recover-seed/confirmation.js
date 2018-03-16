@@ -38,7 +38,7 @@ RevealSeedConfirmation.prototype.render = function () {
             padding: 6,
           },
         }, [
-            t('revealSeedWorld'),
+            t('revealSeedWords'),
           ]),
 
         h('.div', {
@@ -50,7 +50,7 @@ RevealSeedConfirmation.prototype.render = function () {
           },
         }, [
 
-            h('h4', t('revealSeedWorldWarning')),
+            h('h4', t('revealSeedWordsWarning')),
 
             // confirmation
             h('input.large-input.letter-spacey', {
