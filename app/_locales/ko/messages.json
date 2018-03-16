@@ -18,10 +18,10 @@
     "message": "토큰 추가"
   },
   "amount": {
-    "message": "양"
+    "message": "금액"
   },
   "amountPlusGas": {
-    "message": "양 + 가스"
+    "message": "금액 + 가스"
   },
   "appDescription": {
     "message": "이더리움 브라우저 확장 프로그램",
