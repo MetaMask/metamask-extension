@@ -89,15 +89,15 @@ class BackupPhraseScreen extends Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 
-  renderSecretScreen() {
+  renderSecretScreen () {
     const { isShowingSecret } = this.state
 
     return (
       <div className="backup-phrase__content-wrapper">
-        <div>
+        <div className="backup-phrase__phrase">
           <div className="backup-phrase__title">Secret Backup Phrase</div>
           <div className="backup-phrase__body-text">
             Your secret backup phrase makes it easy to back up and restore your account.
@@ -106,17 +106,6 @@ class BackupPhraseScreen extends Component {
             WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever.
           </div>
           {this.renderSecretWordsContainer()}
-          <button
-            className="first-time-flow__button"
-            onClick={() => isShowingSecret && this.setState({
-              isShowingSecret: false,
-              page: BackupPhraseScreen.PAGE.CONFIRM
-            })}
-            disabled={!isShowingSecret}
-          >
-            Next
-          </button>
-          <Breadcrumbs total={3} currentIndex={1} />
         </div>
         <div className="backup-phrase__tips">
           <div className="backup-phrase__tips-text">Tips:</div>
@@ -129,6 +118,19 @@ class BackupPhraseScreen extends Component {
           <div className="backup-phrase__tips-text">
             Memorize this phrase.
           </div>
+        </div>
+        <div className="backup-phrase__next-button">
+          <button
+            className="first-time-flow__button"
+            onClick={() => isShowingSecret && this.setState({
+              isShowingSecret: false,
+              page: BackupPhraseScreen.PAGE.CONFIRM,
+            })}
+            disabled={!isShowingSecret}
+          >
+            Next
+          </button>
+          <Breadcrumbs total={3} currentIndex={1} />
         </div>
       </div>
     )
@@ -231,10 +233,14 @@ class BackupPhraseScreen extends Component {
     return this.props.isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
-        <div className="backup-phrase">
-          {this.renderBack()}
-          <Identicon address={this.props.address} diameter={70} />
-          {this.renderContent()}
+        <div className="first-view-main-wrapper">
+          <div className="first-view-main">
+            <div className="backup-phrase">
+              {this.renderBack()}
+              <Identicon address={this.props.address} diameter={70} />
+              {this.renderContent()}
+            </div>
+          </div>
         </div>
       )
   }
