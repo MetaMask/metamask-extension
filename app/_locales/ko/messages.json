@@ -35,7 +35,7 @@
     "message": "블록체인에 접속 시도 중입니다."
   },
   "available": {
-    "message": "유효"
+    "message": "사용 가능한"
   },
   "back": {
     "message": "뒤로"
@@ -50,7 +50,7 @@
     "message": "베타"
   },
   "betweenMinAndMax": {
-    "message": "1 달러 이상 2 달러 이하여야 합니다.",
+    "message": "$1 이상 $2 이하여야 합니다.",
     "description": "helper for inputting hex as decimal input"
   },
   "borrowDharma": {
@@ -148,14 +148,14 @@
     "message": "아래 주소로 BTC를 입급해주세요."
   },
   "depositCoin": {
-    "message": "아래 주소로 1달러를 입금해주세요.",
+    "message": "아래 주소로 $1를 입금해주세요.",
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "이더리움 입금"
+    "message": "이더 입금"
   },
   "depositEther": {
-    "message": "이더리움 입금"
+    "message": "이더 입금"
   },
   "depositFiat": {
     "message": "현금으로 입금하기"
@@ -167,7 +167,7 @@
     "message": "ShapeShift를 통해 입금하기"
   },
   "depositShapeShiftExplainer": {
-    "message": "다른 암호화폐를 가지고 있으면, 계좌 생성 필요없이, 거래를 하거나 메타마스크 지갑을 통해 이더리움을 입금할 수 있습니다."
+    "message": "다른 암호화폐를 가지고 있으면, 계좌 생성 필요없이, 거래를 하거나 메타마스크 지갑을 통해 이더를 입금할 수 있습니다."
   },
   "details": {
     "message": "상세"
@@ -176,10 +176,10 @@
     "message": "즉시 입금"
   },
   "directDepositEther": {
-    "message": "이더리움 즉시 입금"
+    "message": "이더 즉시 입금"
   },
   "directDepositEtherExplainer": {
-    "message": "이더리움을 이미 보유하고 있다면, 직접 입금을 통해 이더리움을 즉시 입금하실 수 있습니다."
+    "message": "이더를 이미 보유하고 있다면, 직접 입금을 통해 이더를 즉시 입금하실 수 있습니다."
   },
   "done": {
     "message": "완료"
@@ -254,14 +254,14 @@
     "message": "가스 가격이 필요합니다."
   },
   "getEther": {
-    "message": "이더리움 얻기"
+    "message": "이더 얻기"
   },
   "getEtherFromFaucet": {
-    "message": "faucet에서 1달러에 달하는 이더리움을 얻으세요.",
+    "message": "faucet에서 $1에 달하는 이더를 얻으세요.",
     "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
-    "message": "1 달러 이상이어야 합니다.",
+    "message": "$1 이상이어야 합니다.",
     "description": "helper for inputting hex as decimal input"
   },
   "here": {
@@ -278,7 +278,7 @@
     "message": "토큰 숨기기?"
   },
   "howToDeposit": {
-    "message": "어떤 방법으로 이더리움을 입금하시겠습니까?"
+    "message": "어떤 방법으로 이더를 입금하시겠습니까?"
   },
   "import": {
     "message": "파일에서 가져오기",
@@ -320,7 +320,7 @@
     "message": "Kovan 테스트넷"
   },
   "lessThanMax": {
-    "message": "1달러 이하여야합니다.",
+    "message": "$1 이하여야합니다.",
     "description": "helper for inputting hex as decimal input"
   },
   "limit": {
@@ -354,7 +354,7 @@
     "message": "내 계좌"
   },
   "needEtherInWallet": {
-    "message": "dApp을 이용하기 위해서는 지갑에 이더리움이 있어야 합니다."
+    "message": "dApp을 이용하기 위해서는 지갑에 이더가 있어야 합니다."
   },
   "needImportFile": {
     "message": "가져올 파일을 선택해주세요.",
@@ -496,7 +496,7 @@
     "message": "토큰 전송"
   },
   "sendTokensAnywhere": {
-    "message": "이더리움 계좌로 토큰 전송"
+    "message": "이더 계좌로 토큰 전송"
   },
   "settings": {
     "message": "설정"
@@ -541,7 +541,7 @@
     "message": "대상"
   },
   "toETHviaShapeShift": {
-    "message": "ShapeShift를 통해 1 달러를 ETH로 바꾸기",
+    "message": "ShapeShift를 통해 $1를 ETH로 바꾸기",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenBalance": {
