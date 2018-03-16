@@ -17,12 +17,34 @@
   font-family: Roboto;
 }
 
+.alpha-warning__container {
+  display: flex;
+  justify-content: center;
+  background: #f7861c;
+}
+
 .alpha-warning,
 .alpha-warning-welcome-screen {
-  background: #f7861c;
   color: #fff;
   line-height: 2em;
-  padding-left: 10vw;
+}
+
+@media screen and (min-width: 576px) {
+  .alpha-warning {
+    width: 85vw;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .alpha-warning {
+    width: 80vw;
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .alpha-warning {
+    width: 62vw;
+  }
 }
 
 .alpha-warning-welcome-screen {
@@ -33,24 +55,20 @@
 .first-view-main-wrapper {
   display: flex;
   width: 100%;
-  padding-left: 10vw;
+  height: 100%;
+  justify-content: center;
+  padding: 0 10px;
 }
 
 .first-view-main,
 .first-view-main__mascara {
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 .first-view-main__mascara {
   justify-content: space-between;
-}
-
-@media screen and (max-width: 575px) {
-  .first-view-main-wrapper {
-    padding: 0;
-  }
 }
 
 @media screen and (min-width: 1281px) {
@@ -83,12 +101,8 @@
 .buy-ether {
   display: flex;
   flex-flow: column nowrap;
-  margin: 67px 0 50px;
-  max-width: 35rem;
-}
-
-.create-password {
-  margin: 67px 0 50px;
+  margin: 60px 0 30px 0;
+  position: relative;
 }
 
 .import-account {
@@ -131,10 +145,6 @@
     align-items: center;
     justify-content: space-evenly;
     margin-top: 12px;
-  }
-
-  .first-view-main .create-password {
-    margin-top: 0px;
   }
 
   .mascara-info {
@@ -212,7 +222,7 @@
 }
 
 .backup-phrase {
-  max-width: 100%;
+  width: 100%;
 }
 
 .create-password__title,
@@ -298,7 +308,18 @@
 
 .backup-phrase__content-wrapper {
   display: flex;
-  flex: row nowrap;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+.backup-phrase__phrase {
+  flex-grow: .5;
+  min-width: 0;
+}
+
+.backup-phrase__next-button {
+  flex-grow: 1;
+  width: 100%;
 }
 
 .backup-phrase__body-text {
@@ -306,8 +327,10 @@
 }
 
 .backup-phrase__tips {
-  margin: 40px 85px;
+  margin-top: 40px;
   width: 285px;
+  flex-grow: .5;
+  min-width: 0;
 }
 
 .backup-phrase__tips-text {
@@ -315,6 +338,22 @@
   font-size: 16px;
   line-height: 23px;
   font-family: Roboto;
+  min-width: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .backup-phrase__content-wrapper {
+    flex-direction: column;
+  }
+
+  .backup-phrase__phrase {
+    flex: 1 0 auto;
+  }
+
+  .backup-phrase__tips {
+    width: 100%;
+    flex: 1 0 auto;
+  }
 }
 
 .backup-phrase__secret {
@@ -371,13 +410,17 @@
 }
 
 .backup-phrase__back-button,
-.backup-phrase__back-button:hover,
-.import-account__back-button,
-.import-account__back-button:hover {
+.import-account__back-button {
   margin-bottom: 18px;
-  color: #22232C;
+  color: #22232c;
   font-size: 16px;
   line-height: 21px;
+  position: absolute;
+  top: -25px;
+}
+
+.backup-phrase__back-button {
+  top: -30px;
 }
 
 button.backup-phrase__reveal-button:hover {
