@@ -25,7 +25,7 @@
     "test:flat:build:states": "node development/genStates.js",
     "test:flat:build:ui": "npm run test:flat:build:states && browserify ./development/mock-dev.js -o ./development/bundle.js",
     "test:mascara": "npm run test:mascara:build && karma start test/mascara.conf.js",
-    "test:mascara:build": "mkdir -p dist/mascara && npm run test:mascara:build:ui && npm run test:mascara:build:background && npm run test:mascara:build:tests",
+    "test:mascara:build": "mkdirp dist/mascara && npm run test:mascara:build:ui && npm run test:mascara:build:background && npm run test:mascara:build:tests",
     "test:mascara:build:ui": "browserify mascara/test/test-ui.js -o dist/mascara/ui.js",
     "test:mascara:build:background": "browserify mascara/src/background.js -o dist/mascara/background.js",
     "test:mascara:build:tests": "browserify test/integration/lib/first-time.js -o dist/mascara/tests.js",
