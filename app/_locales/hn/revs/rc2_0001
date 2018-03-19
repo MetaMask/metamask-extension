@@ -545,275 +545,275 @@
   },
   "privateKey": {
     "message": "निजी कुंजी",
-    "description": "select this type of file to use to import an account"
+    "description": "खाता आयात करने के लिए उपयोग करने के लिए इस प्रकार की फ़ाइल का चयन करें"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "चेतावनी: कभी भी इस कुंजी का खुलासा न करें। आपकी निजी कुंजी वाले कोई भी आपके खाते में रखी किसी भी संपत्ति को चुरा सकता है।"
   },
   "privateNetwork": {
-    "message": "Private Network"
+    "message": "निजी नेटवर्क"
   },
   "qrCode": {
-    "message": "Show QR Code"
+    "message": "QR कोड दिखाएं"
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
+    "message": "आप अपने खाता विकल्प मेनू में" टोकन जोड़ें "पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
   },
   "readMore": {
-    "message": "Read more here."
+    "message": ""यहां और पढ़ें।"
   },
   "readMore2": {
-    "message": "Read more."
+    "message": "हां - और पढ़ें।"
   },
   "receive": {
-    "message": "Receive"
+    "message": "प्राप्त करें"
   },
   "recipientAddress": {
-    "message": "Recipient Address"
+    "message": "प्राप्तकर्ता पता"
   },
   "refundAddress": {
-    "message": "Your Refund Address"
+    "message": "आपका रिफंड पता"
   },
   "rejected": {
-    "message": "Rejected"
+    "message": "अस्वीकृत"
   },
   "resetAccount": {
-    "message": "Reset Account"
+    "message": "खाता रीसेट करें"
   },
   "restoreFromSeed": {
-    "message": "Restore from seed phrase"
+    "message": "बीज वाक्यांश से पुनर्स्थापित करें"
   },
   "required": {
-    "message": "Required"
+    "message": "आवश्यक"
   },
   "retryWithMoreGas": {
-    "message": "Retry with a higher gas price here"
+    "message": "यहां एक उच्च गैस कीमत के साथ पुन: प्रयास करें"
   },
   "revealSeedWords": {
-    "message": "Reveal Seed Words"
+    "message": "बीज शब्द प्रकट करें"
   },
   "revealSeedWordsWarning": {
-    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
+    "message": "किसी सार्वजनिक स्थान पर अपने बीज के शब्द ठीक नहीं करें! ये शब्द आपके सभी खातों को चोरी करने के लिए उपयोग किए जा सकते हैं।"
   },
   "revert": {
-    "message": "Revert"
+    "message": "वापस"
   },
   "rinkeby": {
-    "message": "Rinkeby Test Network"
+    "message": "रिचीव टेस्ट नेटवर्क"
   },
   "ropsten": {
-    "message": "Ropsten Test Network"
+    "message": "रॉप्स्टेन टेस्ट नेटवर्क"
   },
   "sampleAccountName": {
-    "message": "E.g. My new account",
-    "description": "Help user understand concept of adding a human-readable name to their account"
+    "message": "उदाहरण के लिए मेरा नया खाता"
+    "description": "उपयोगकर्ता को अपने खाते में मानव-पठनीय नाम जोड़ने की अवधारणा को समझें."
   },
   "save": {
-    "message": "Save"
+    "message": "सहेजें"
   },
   "saveAsFile": {
-    "message": "Save as File",
-    "description": "Account export process"
+    "message": "फ़ाइल के रूप में सहेजें",
+    "description": "खाता निर्यात प्रक्रिया"
   },
   "saveSeedAsFile": {
-    "message": "Save Seed Words As File"
+    "message": "सेड वर्ड्स - फाईल्स सेव करें"
   },
   "search": {
-    "message": "Search"
+    "message": "खोज करें"
   },
   "secretPhrase": {
-    "message": "Enter your secret twelve word phrase here to restore your vault."
+    "message": "अपनी गुप्त बारह शब्द वाक्यांश यहाँ अपनी तिजोरी को पुनर्स्थापित करने के लिए दर्ज करें।"
   },
   "seedPhraseReq": {
-    "message": "seed phrases are 12 words long"
+    "message": "बीज वाक्यांश 12 शब्द लंबा हैं"
   },
   "select": {
-    "message": "Select"
+    "message": "चुनें"
   },
   "selectCurrency": {
-    "message": "Select Currency"
+    "message": "मुद्रा चुनें"
   },
   "selectService": {
-    "message": "Select Service"
+    "message": "सेवा चुनें"
   },
   "selectType": {
-    "message": "Select Type"
+    "message": "प्रकार चुनें"
   },
   "send": {
-    "message": "Send"
+    "message": "भेजें"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "भेजें ETH"
   },
   "sendTokens": {
-    "message": "Send Tokens"
+    "message": "भेजें टोकन"
   },
   "sendTokensAnywhere": {
-    "message": "Send Tokens to anyone with an Ethereum account"
+    "message": "इटोरम खाते वाले किसी को भी टोकन भेजें"
   },
   "settings": {
-    "message": "Settings"
+    "message": "सेटिंग्स"
   },
   "shapeshiftBuy": {
-    "message": "Buy with Shapeshift"
+    "message": "शेपेशिस्ट के साथ खरीदें"
   },
   "showPrivateKeys": {
-    "message": "Show Private Keys"
+    "message": "निजी कुंजी दिखाएँ"
   },
   "showQRCode": {
-    "message": "Show QR Code"
+    "message": "QR कोड दिखाएं"
   },
   "sign": {
-    "message": "Sign"
+    "message": "हस्ताक्षर"
   },
   "signMessage": {
-    "message": "Sign Message"
+    "message": "हस्ताक्षर संदेश"
   },
   "signNotice": {
-    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+    "message": "इस संदेश पर हस्ताक्षर करने से \ ndangerous साइड इफेक्ट हो सकते हैं। \n केवल अपने पूरे खाते के साथ पूरी तरह से भरोसेमंद \n साइटों से संदेश पर हस्ताक्षर करें। \n यह खतरनाक विधि भविष्य के संस्करण में निकाल दी जाएगी।"
   },
   "sigRequest": {
-    "message": "Signature Request"
+    "message": "हस्ताक्षर अनुरोध"
   },
   "sigRequested": {
-    "message": "Signature Requested"
+    "message": "हस्ताक्षर अनुरोधित"
   },
   "spaceBetween": {
-    "message": "there can only be a space between words"
+    "message": "केवल शब्दों के बीच एक स्थान हो सकता है"
   },
   "status": {
-    "message": "Status"
+    "message": "स्थिति"
   },
   "stateLogs": {
-    "message": "State Logs"
+    "message": "स्थिति संदेश"
   },
   "stateLogsDescription": {
-    "message": "State logs contain your public account addresses and sent transactions."
+    "message": "स्थिति संदेश में आपका सार्वजनिक खाता, पतों और भेजे गए लेनदेन, होते हैं।"
   },
   "submit": {
-    "message": "Submit"
+    "message": "सबमिट करें"
   },
   "supportCenter": {
-    "message": "Visit our Support Center"
+    "message": "हमारे सहायता केंद्र पर जाएं"
   },
   "symbolBetweenZeroTen": {
-    "message": "Symbol must be between 0 and 10 characters."
+    "message": "प्रतीक 0 और 10 अक्षरों के बीच होना चाहिए"
   },
   "takesTooLong": {
-    "message": "Taking too long?"
+    "message": "बहुत समय ले रहा है?"
   },
   "terms": {
-    "message": "Terms of Use"
+    "message": "उपयोग की शर्तें"
   },
   "testFaucet": {
-    "message": "Test Faucet"
+    "message": "टेस्ट नलि"
   },
   "to": {
-    "message": "To"
+    "message": "के लिए"
   },
   "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
-    "description": "system will fill in deposit type in start of message"
+    "message": "शैपशैफ्ट द्वारा $ 1 से ETH में जमा",
+    "description": "संदेश की शुरुआत में जमा प्रकार भर जाएगा"
   },
   "tokenAddress": {
-    "message": "Token Address"
+    "message": "टोकन पता"
   },
   "tokenAlreadyAdded": {
-    "message": "Token has already been added."
+    "message": "टोकन पहले ही जोड़ा जा चुका है।"
   },
   "tokenBalance": {
-    "message": "Your Token Balance is:"
+    "message": "आपका टोकन बैलेंस है:"
   },
   "tokenSelection": {
-    "message": "Search for tokens or select from our list of popular tokens."
+    "message": "टोकन के लिए खोजें या हमारी लोकप्रिय टॉकेन्स की सूची से चुनें।"
   },
   "tokenSymbol": {
-    "message": "Token Symbol"
+    "message": "टोकन प्रतीक"
   },
   "tokenWarning1": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+    "message": "अपने मेटामास्क अकाउंट से खरीदे गए टोकनों का नज़र रखें। अगर आप किसी अलग खाते का उपयोग कर टोकन खरीदे हैं, तो ये टोकन यहां दिखाई नहीं देंगे।"
   },
   "total": {
-    "message": "Total"
+    "message": "कुल"
   },
   "transactions": {
-    "message": "transactions"
+    "message": "लेनदेन"
   },
   "transactionMemo": {
-    "message": "Transaction memo (optional)"
+    "message": "लेनदेन मेमो (वैकल्पिक)"
   },
   "transactionNumber": {
-    "message": "Transaction Number"
+    "message": "लेनदेन संख्या"
   },
   "transfers": {
-    "message": "Transfers"
+    "message": "स्थानांतरण"
   },
   "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them ",
-    "description": "Followed by a link (here) to view token balances"
+    "message": "मुसीबत... आपके टोकन शेष राशि को लोड करने में हमें परेशानी हुई थी। आप उन्हें देख सकते हैं",
+    "description": "टोकन शेष देखने के लिए एक लिंक ... (यहां)"
   },
   "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
+    "message": "ये 12 शब्द आपके मेटामास्क खातों को पुनर्स्थापित करने का एकमात्र तरीका है। \ n उन्हें कहीं सुरक्षित और गुप्त रूप से सहेजें।"
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "अपना पासवर्ड टाइप करें"
   },
   "uiWelcome": {
-    "message": "Welcome to the New UI (Beta)"
+    "message": "नया यूआई (बीटा) में आपका स्वागत है"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+    "message": "आप अब नए मेटामास्क UI का उपयोग कर रहे हैं। चारों ओर एक नज़र डालें, टोकन भेजने की तरह नई सुविधाएं देखें, और हमें बताएं कि आपके पास कोई समस्या है।"
   },
   "unavailable": {
-    "message": "Unavailable"
+    "message": "अनुपलब्ध"
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "अज्ञात नेटवर्क"
   },
   "unknownNetwork": {
-    "message": "Unknown Private Network"
+    "message": "अज्ञात निजी नेटवर्क"
   },
   "unknownNetworkId": {
-    "message": "Unknown network ID"
+    "message": "अज्ञात नेटवर्क आईडी.य़"
   },
   "uriErrorMsg": {
-    "message": "URIs require the appropriate HTTP/HTTPS prefix."
+    "message": "URI-यूआरआई को उपयुक्त HTTP / HTTPS उपसर्ग की आवश्यकता होती है।"
   },
   "usaOnly": {
-    "message": "USA only",
-    "description": "Using this exchange is limited to people inside the USA"
+    "message": "केवल यूएसए - USA",
+    "description": "इस एक्सचेंज का उपयोग करना संयुक्त राज्य अमेरिका के अंदर ही सीमित है"
   },
   "usedByClients": {
-    "message": "Used by a variety of different clients"
+    "message": "विभिन्न क्लाइंट्स द्वारा उपयोग किया जाता है"
   },
   "useOldUI": {
-    "message": "Use old UI"
+    "message": "पुराने UI का उपयोग करें"
   },
   "validFileImport": {
-    "message": "You must select a valid file to import."
+    "message": "आयात करने के लिए आपको एक वैध फ़ाइल चुननी होगी।"
   },
   "vaultCreated": {
-    "message": "Vault Created"
+    "message": "वॉल्ट बनाया गया"
   },
   "viewAccount": {
-    "message": "View Account"
+    "message": "खाता देखें"
   },
   "visitWebSite": {
-    "message": "Visit our web site"
+    "message": "हमारी वेब साइट पर जाएं"
   }, 
   "warning": {
-    "message": "Warning"
+    "message": "चेतावनी"
   },
   "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+    "message": "मेटामास्क बीटा में आपका स्वागत है"
   },
   "whatsThis": {
-    "message": "What's this?"
+    "message": "यह क्या है?"
   },
   "yourSigRequested": {
-    "message": "Your signature is being requested"
+    "message": "आपका हस्ताक्षर अनुरोध किया जा रहा है"
   },
   "youSign": {
-    "message": "You are signing"
+    "message": "आप हस्ताक्षर कर रहे हैं"
   }
 }
