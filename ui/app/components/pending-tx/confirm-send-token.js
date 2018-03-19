@@ -306,7 +306,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
   return fiatAmount && fiatGas
     ? (
-      h('section.flex-row.flex-center.confirm-screen-total-box ', [
+      h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
           h('span.confirm-screen-label', [ t('total') + ' ' ]),
           h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
@@ -319,7 +319,7 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
       ])
     )
     : (
-      h('section.flex-row.flex-center.confirm-screen-total-box ', [
+      h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
           h('span.confirm-screen-label', [ t('total') + ' ' ]),
           h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
@@ -365,80 +365,82 @@ ConfirmSendToken.prototype.render = function () {
           h('div.page-container__title', title),
           h('div.page-container__subtitle', subtitle),
         ]),
-        h('div.flex-row.flex-center.confirm-screen-identicons', [
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: fromAddress,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', fromName),
-            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
-          ]),
-          h('i.fa.fa-arrow-right.fa-lg'),
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: toAddress,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', toName),
-            // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
-          ]),
-        ]),
-
-        // h('h3.flex-center.confirm-screen-sending-to-message', {
-        //   style: {
-        //     textAlign: 'center',
-        //     fontSize: '16px',
-        //   },
-        // }, [
-          // `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
-        // ]),
-
-        this.renderHeroAmount(),
-
-        h('div.confirm-screen-rows', [
-          h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', fromName),
-              h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
+        h('.page-container__content', [
+          h('div.flex-row.flex-center.confirm-screen-identicons', [
+            h('div.confirm-screen-account-wrapper', [
+              h(
+                Identicon,
+                {
+                  address: fromAddress,
+                  diameter: 60,
+                },
+              ),
+              h('span.confirm-screen-account-name', fromName),
+              // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
+            ]),
+            h('i.fa.fa-arrow-right.fa-lg'),
+            h('div.confirm-screen-account-wrapper', [
+              h(
+                Identicon,
+                {
+                  address: toAddress,
+                  diameter: 60,
+                },
+              ),
+              h('span.confirm-screen-account-name', toName),
+              // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
             ]),
           ]),
 
-          toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', toName),
-              h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
+          // h('h3.flex-center.confirm-screen-sending-to-message', {
+          //   style: {
+          //     textAlign: 'center',
+          //     fontSize: '16px',
+          //   },
+          // }, [
+            // `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
+          // ]),
+
+          this.renderHeroAmount(),
+
+          h('div.confirm-screen-rows', [
+            h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', fromName),
+                h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
+              ]),
             ]),
+
+            toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', toName),
+                h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
+              ]),
+            ]),
+
+            this.renderGasFee(),
+
+            this.renderTotalPlusGas(),
+
           ]),
 
-          this.renderGasFee(),
+        ]),
+        h('form#pending-tx-form', {
+          onSubmit: this.onSubmit,
+        }, [
+          h('.page-container__footer', [
+            // Cancel Button
+            h('button.btn-cancel.page-container__footer-button.allcaps', {
+              onClick: (event) => this.cancel(event, txMeta),
+            }, t('cancel')),
 
-          this.renderTotalPlusGas(),
-
+            // Accept Button
+            h('button.btn-confirm.page-container__footer-button.allcaps', [t('confirm')]),
+          ]),
         ]),
       ]),
-
-      h('form#pending-tx-form', {
-        onSubmit: this.onSubmit,
-      }, [
-        // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
-          onClick: (event) => this.cancel(event, txMeta),
-        }, t('cancel')),
-
-        // Accept Button
-        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
-      ]),
-
-
     ])
   )
 }
