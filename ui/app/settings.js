@@ -113,8 +113,6 @@ class Settings extends Component {
 
   renderCurrentLocale () {
     const { updateCurrentLocale, currentLocale } = this.props
-    // const currentLocaleName = global.translator.localeName
-    // const currentLocale = locales.find(locale => locale.code === currentLocaleName)
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
@@ -128,10 +126,7 @@ class Settings extends Component {
             options: getLocaleOptions(),
             selectedOption: currentLocale,
             onSelect: async (newLocale) => {
-              // log('set new locale', newLocale)
-              // await global.translator.setLocale(newLocale)
               updateCurrentLocale(newLocale)
-              // log('did set new locale', newLocale)
             },
           }),
         ]),
