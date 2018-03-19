@@ -84,7 +84,7 @@
     "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
   },
   "ok": {
-    message: "Ok"
+    "message": "Ok"
   },
   "cancel": {
     "message": "Cancel"
@@ -282,6 +282,9 @@
   "from": {
     "message": "From"
   },
+  "to": {
+    "message": "To: "
+  },
   "fromToSame": {
     "message": "From and To address cannot be the same"
   },
@@ -411,6 +414,9 @@
   },
   "knowledgeDataBase": {
     "message": "Visit our Knowledge Base"
+  },
+  "max": {
+    "message": "Max"
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -684,8 +690,14 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "onlySendToEtherAddress": {
+    "message": "Only send to an Ethereum address."
+  },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
+  },
+  "required": {
+    "Required"
   },
   "settings": {
     "message": "Settings"
