@@ -619,6 +619,9 @@
   "ropsten": {
     "message": "Ropsten Test Network"
   },
+  "currentRpc": {
+    "message": "Current RPC"
+  },
   "connectingToMainnet": {
     "message": "Connecting to Main Ethereum Network"
   },
@@ -687,6 +690,9 @@
   "settings": {
     "message": "Settings"
   },
+  "info": {
+    "message": "Info"
+  },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
   },
@@ -722,6 +728,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "stateLogError": {
+    "message": "Error in retrieving state logs."
   },
   "submit": {
     "message": "Submit"
