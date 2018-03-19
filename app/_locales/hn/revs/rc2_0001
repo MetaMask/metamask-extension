@@ -147,147 +147,147 @@
     "message": "खाता बनाएं"
   },
   "createDen": {
-    "message": "खाता बनाएं"
+    "message": "डेन बनाएं"
   },
   "crypto": {
-    "message": "Crypto",
-    "description": "Exchange type (cryptocurrencies)"
+    "message": "क्रिप्टो",
+    "description": "एक्सचेंज टाइप (क्रिप्टोक्यूचरस)"
   },
   "currentConversion": {
-    "message": "Current Conversion"
+    "message": "वर्तमान रूपांतरण"
   },
   "currentNetwork": {
-    "message": "Current Network"
+    "message": "वर्तमान नेटवर्क"
   },
   "customGas": {
-    "message": "Customize Gas"
+    "message": "अनुकूलित करें गैस"
   },
   "customize": {
-    "message": "Customize"
+    "message": "अनुकूलित करें"
   },
   "customRPC": {
-    "message": "Custom RPC"
+    "message": "कस्टम RPC"
   },
   "decimalsMustZerotoTen": {
-    "message": "Decimals must be at least 0, and not over 36."
+    "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
   },
   "decimal": {
-    "message": "Decimals of Precision"
+    "message": "दशमलव परिशुद्धता"
   }, 
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
   },
   "denExplainer": {
-    "message": "Your DEN is your password-encrypted storage within MetaMask."
+    "message": "आपका डेन मेटामास्क के भीतर आपका पासवर्ड-एन्क्रिप्टेड स्टोरेज है।"
   },
   "deposit": {
-    "message": "Deposit"
+    "message": "जमा"
   },
   "depositBTC": {
-    "message": "Deposit your BTC to the address below:"
+    "message": "नीचे दिए गए पते पर अपना बीटीसी जमा करें:"
   },
   "depositCoin": {
-    "message": "Deposit your $1 to the address below",
-    "description": "Tells the user what coin they have selected to deposit with shapeshift"
+    "message": "नीचे दिए गए पते पर अपना $ 1 जमा करें",
+    "description": "उपयोगकर्ता को बताता है कि उन्होंने सिक्का के साथ जमा करने के लिए किस सिक्का का चयन किया है"
   },
   "depositEth": {
-    "message": "Deposit Eth"
+    "message": "Eth जमाआर्थ"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "जमा - Ether"
   },
   "depositFiat": {
-    "message": "Deposit with Fiat"
+    "message": "फिएट के साथ जमा हो"
   },
   "depositFromAccount": {
-    "message": "Deposit from another account"
+    "message": "दूसरे खाते से जमा करें"
   },
   "depositShapeShift": {
-    "message": "Deposit with ShapeShift"
+    "message": "शेपशिप के साथ जमा करें"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+    "message": "यदि आप अन्य क्रिप्टोकाउंटरज रखते हैं, तो आप सीधे मेटामास्क वॉलेट में ईथर को व्यापार और जमा कर सकते हैं। कोई खाता आवश्यक नहीं है।"
   },
   "details": {
-    "message": "Details"
+    "message": "संदेश विवरण"
   },
   "directDeposit": {
-    "message": "Direct Deposit"
+    "message": "प्रत्यक्ष जमा"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "सीधे ईथर जमा करें"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "यदि आपके पास पहले से कुछ ईथर है, तो सीधे जमा द्वारा अपने नए बटुए में ईथर प्राप्त करने का तेज़ तरीका है।"
   },
   "done": {
-    "message": "Done"
+    "message": "संपन्न"
   },
   "downloadStatelogs": {
-    "message": "Download State Logs"
+    "message": "राज्य लॉग डाउनलोड करें"
   },
   "edit": {
-    "message": "Edit"
+    "message": "संपादित करें"
   },
   "editAccountName": {
-    "message": "Edit Account Name"
+    "message": "खाता नाम संपादित करें"
   },
   "emailUs": {
-    "message": "Email us!"
+    "message": "हमें ईमेल करें!"
   },
   "encryptNewDen": {
-    "message": "Encrypt your new DEN"
+    "message": "अपना नया डेन एन्क्रिप्ट करें"
   },
   "enterPassword": {
-    "message": "Enter password"
+    "message": "पासवर्ड दर्ज करें"
   },
   "enterPasswordConfirm": {
-    "message": "Enter your password to confirm"
+    "message": "पुष्टि करने के लिए अपना पासवर्ड दर्ज करें"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "ईथरस्कैन पर खाता देखें"
   },
   "exchangeRate": {
-    "message": "Exchange Rate"
+    "message": "विनिमय दरै"
   },
   "exportPrivateKey": {
-    "message": "Export Private Key"
+    "message": "निजी कुंजी निर्यात करें"
   },
   "exportPrivateKeyWarning": {
-    "message": "Export private keys at your own risk."
+    "message": "अपने जोखिम पर निजी कुंजी निर्यात करें।"
   },
   "failed": {
-    "message": "Failed"
+    "message": "विफल"
   },
   "fiat": {
-    "message": "FIAT",
-    "description": "Exchange type"
+    "message": "FIAT एक्सचेंज टाइप",
+    "description": "एक्सचेंज FIAT टाइप"
   },
   "fileImportFail": {
-    "message": "File import not working? Click here!",
-    "description": "Helps user import their account from a JSON file"
+    "message": "फ़ाइल आयात काम नहीं कर रहा है? यहां क्लिक करें!",
+    "description": "यूजर को अपने खाते को जे.एस.ौ.एन फ़ाइल से आयात करने में मदद करता है"
   },
   "followTwitter": {
-    "message": "Follow us on Twitter"
+    "message": "हमें ट्विटर पर अनुसरण करें"
   },
   "from": {
-    "message": "From"
+    "message": "की तरफ से - संदेश"
   },
   "fromToSame": {
-    "message": "From and To address cannot be the same"
+    "message": "से और पता करने के लिए समान नहीं हो सकता"
   },
   "fromShapeShift": {
-    "message": "From ShapeShift"
+    "message": "सेशशशफ्ट का"
   },
   "gas": {
-    "message": "Gas",
-    "description": "Short indication of gas cost"
+    "message": "गैस की लागत",
+    "description": "गैस की लागत का संक्षिप्त संकेत"
   },
   "gasFee": {
-    "message": "Gas Fee"
+    "message": "गैस शुल्क"
   },
   "gasLimit": {
-    "message": "Gas Limit"
+    "message": "गैस सीमा"
   },
   "gasLimitCalculation": {
     "message": "We calculate the suggested gas limit based on network success rates."
