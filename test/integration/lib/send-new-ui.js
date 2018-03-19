@@ -1,4 +1,4 @@
-const reactTriggerChange = require('react-trigger-change')
+const reactTriggerChange = require('../../lib/react-trigger-change')
 const {
   timeout,
   queryAsync,

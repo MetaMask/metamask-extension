@@ -8,8 +8,12 @@ inherits(CurrencyInput, Component)
 function CurrencyInput (props) {
   Component.call(this)
 
+  const sanitizedValue = sanitizeValue(props.value)
+
   this.state = {
-    value: sanitizeValue(props.value),
+    value: sanitizedValue,
+    emptyState: false,
+    focused: false,
   }
 }
 
@@ -58,9 +62,11 @@ CurrencyInput.prototype.handleChange = function (newValue) {
   if (value === '0' && newValue[newValueLastIndex] === '0') {
     parsedValue = parsedValue.slice(0, newValueLastIndex)
   }
-
   const sanitizedValue = sanitizeValue(parsedValue)
-  this.setState({ value: sanitizedValue })
+  this.setState({
+    value: sanitizedValue,
+    emptyState: newValue === '' && sanitizedValue === '0',
+  })
   onInputChange(sanitizedValue)
 }
 
@@ -86,17 +92,19 @@ CurrencyInput.prototype.render = function () {
     readOnly,
     inputRef,
   } = this.props
+  const { emptyState, focused } = this.state
 
   const inputSizeMultiplier = readOnly ? 1 : 1.2
 
   const valueToRender = this.getValueToRender()
-
   return h('input', {
     className,
-    value: valueToRender,
-    placeholder,
+    value: emptyState ? '' : valueToRender,
+    placeholder: focused ? '' : placeholder,
     size: valueToRender.length * inputSizeMultiplier,
     readOnly,
+    onFocus: () => this.setState({ focused: true, emptyState: valueToRender === '0' }),
+    onBlur: () => this.setState({ focused: false, emptyState: false }),
     onChange: e => this.handleChange(e.target.value),
     ref: inputRef,
   })
