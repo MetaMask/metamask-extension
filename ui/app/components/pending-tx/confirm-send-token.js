@@ -378,7 +378,8 @@ ConfirmSendToken.prototype.render = function () {
 
             this.renderTotalPlusGas(),
 
-          ])
+          ]),
+          
         ]),
 
         h('form#pending-tx-form', {

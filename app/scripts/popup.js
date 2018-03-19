@@ -9,7 +9,6 @@ const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
 const setupRaven = require('./lib/setupRaven')
-const { fetchLocale } = require('../../ui/i18n-helper.js')
 
 start().catch(log.error)
 

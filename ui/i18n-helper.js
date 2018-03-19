@@ -1,5 +1,4 @@
 // cross-browser connection to extension i18n API
-const extension = require('extensionizer')
 const log = require('loglevel')
 
 const getMessage = (locale, key, substitutions) => {

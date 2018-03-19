@@ -1,5 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
+const connect = require('../metamask-connect')
 const PropTypes = require('prop-types')
 const t = require('../../i18n-helper').getMessage
 const Identicon = require('./identicon')
@@ -40,6 +41,9 @@ class SenderToRecipient extends Component {
 SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
+  localeMessages: PropTypes.object,
 }
 
-module.exports = SenderToRecipient
+module.exports = {
+  AccountDropdowns: connect()(SenderToRecipient),
+}

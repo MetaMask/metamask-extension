@@ -321,6 +321,7 @@ ConfirmDeployContract.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
   selectedAddress: PropTypes.string,
+  localeMessages: PropTypes.object,
 }
 
 const mapStateToProps = state => {

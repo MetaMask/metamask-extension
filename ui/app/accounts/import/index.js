@@ -2,6 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('../../metamask-connect')
+const t = require('../../../i18n-helper').getMessage
 import Select from 'react-select'
 
 // Subviews

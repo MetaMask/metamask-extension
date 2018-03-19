@@ -63,6 +63,7 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
+  localeMessages: PropTypes.object,
 }
 
 const mapDispatchToProps = dispatch => {

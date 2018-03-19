@@ -1802,7 +1802,6 @@ function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
     log.debug(`background.updateCurrentLocale`)
-    console.log(`fetchLocale`, fetchLocale);
     fetchLocale(key)
       .then((localeMessages) => {
         background.setCurrentLocale(key, (err) => {

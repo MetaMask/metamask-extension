@@ -79,8 +79,6 @@ Network.prototype.render = function () {
       },
     }, [
       (function () {
-        console.log(`12312312312312312 props.localeMessages`, props.localeMessages);
-        console.log(`12312312312312312 t(props.localeMessages, 'mainnet')`, t(props.localeMessages, 'mainnet'));
         switch (iconName) {
           case 'ethereum-network':
             return h('.network-indicator', [
