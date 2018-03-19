@@ -149,7 +149,7 @@
   },
   "depositCoin": {
     "message": "Déposez votre $1 à l'adresse ci-dessous",
-    "description": "Indique à l'utilisateur quelle monnaie ils a choisi de déposer avec shapeshift"
+    "description": "Indique à l'utilisateur quelle monnaie il a choisi de déposer avec shapeshift"
   },
   "depositEth": {
     "message": "Dépôt Eth"

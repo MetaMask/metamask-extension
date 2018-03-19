@@ -14,8 +14,14 @@
   "address": {
     "message": "Address"
   },
+  "addCustomToken": {
+    "message": "Add custom token"
+  },
   "addToken": {
     "message": "Add Token"
+  },
+  "addTokens": {
+    "message": "Add Tokens"
   },
   "amount": {
     "message": "Amount"
@@ -34,6 +40,9 @@
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
+  "attributions": {
+    "message": "Attributions"
+  },
   "available": {
     "message": "Available"
   },
@@ -42,6 +51,9 @@
   },
   "balance": {
     "message": "Balance:"
+  },
+  "balances": {
+    "message": "Your balances"
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
@@ -53,8 +65,14 @@
     "message": "must be greater than or equal to $1 and less than or equal to $2.",
     "description": "helper for inputting hex as decimal input"
   },
+  "blockiesIdenticon": {
+    "message": "Use Blockies Identicon"
+  },
   "borrowDharma": {
     "message": "Borrow With Dharma (Beta)"
+  },
+  "builtInCalifornia": {
+    "message": "MetaMask is designed and built in California."
   },
   "buy": {
     "message": "Buy"
@@ -67,6 +85,9 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "classicInterface": {
+    "message": "Use classic interface"
   },
   "clickCopy": {
     "message": "Click to Copy"
@@ -82,6 +103,9 @@
   },
   "confirmTransaction": {
     "message": "Confirm Transaction"
+  },
+  "continue": {
+    "message": "Continue"
   },
   "continueToCoinbase": {
     "message": "Continue to Coinbase"
@@ -100,6 +124,9 @@
   },
   "copiedExclamation": {
     "message": "Copied!"
+  },
+  "copiedSafe": {
+    "message": "I've copied it somewhere safe"
   },
   "copy": {
     "message": "Copy"
@@ -126,6 +153,12 @@
     "message": "Crypto",
     "description": "Exchange type (cryptocurrencies)"
   },
+  "currentConversion": {
+    "message": "Current Conversion"
+  },
+  "currentNetwork": {
+    "message": "Current Network"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -135,6 +168,12 @@
   "customRPC": {
     "message": "Custom RPC"
   },
+  "decimalsMustZerotoTen": {
+    "message": "Decimals must be at least 0, and not over 36."
+  },
+  "decimal": {
+    "message": "Decimals of Precision"
+  }, 
   "defaultNetwork": {
     "message": "The default network for Ether transactions is Main Net."
   },
@@ -184,17 +223,26 @@
   "done": {
     "message": "Done"
   },
+  "downloadStatelogs": {
+    "message": "Download State Logs"
+  },
   "edit": {
     "message": "Edit"
   },
   "editAccountName": {
     "message": "Edit Account Name"
   },
+  "emailUs": {
+    "message": "Email us!"
+  },
   "encryptNewDen": {
     "message": "Encrypt your new DEN"
   },
   "enterPassword": {
     "message": "Enter password"
+  },
+  "enterPasswordConfirm": {
+    "message": "Enter your password to confirm"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -219,8 +267,14 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "followTwitter": {
+    "message": "Follow us on Twitter"
+  },
   "from": {
     "message": "From"
+  },
+  "fromToSame": {
+    "message": "From and To address cannot be the same"
   },
   "fromShapeShift": {
     "message": "From ShapeShift"
@@ -243,6 +297,9 @@
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
+  },
+  "generatingSeed": {
+    "message": "Generating Seed..."
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
@@ -268,6 +325,9 @@
     "message": "here",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
+  "hereList": {
+    "message": "Here's a list!!!!"
+  },
   "hide": {
     "message": "Hide"
   },
@@ -280,12 +340,18 @@
   "howToDeposit": {
     "message": "How would you like to deposit Ether?"
   },
+  "holdEther": {
+    "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "Import Account"
+  },
+  "importAccountMsg": {
+    "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
   "importAnAccount": {
     "message": "Import an account"
@@ -300,8 +366,17 @@
   "infoHelp": {
     "message": "Info & Help"
   },
+  "insufficientFunds": {
+    "message": "Insufficient funds."
+  },
+  "insufficientTokens": {
+    "message": "Insufficient tokens."
+  },
   "invalidAddress": {
     "message": "Invalid address"
+  },
+  "invalidAddressRecipient": {
+    "message": "Recipient address is invalid"
   },
   "invalidGasParams": {
     "message": "Invalid Gas Parameters"
@@ -312,6 +387,12 @@
   "invalidRequest": {
     "message": "Invalid Request"
   },
+  "invalidRPC": {
+    "message": "Invalid RPC URI"
+  },
+  "jsonFail": {
+    "message": "Something went wrong. Please make sure your JSON file is properly formatted."
+  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -319,9 +400,15 @@
   "kovan": {
     "message": "Kovan Test Network"
   },
+  "knowledgeDataBase": {
+    "message": "Visit our Knowledge Base"
+  },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
+  },
+  "likeToAddTokens": {
+    "message": "Would you like to add these tokens?"
   },
   "limit": {
     "message": "Limit"
@@ -335,11 +422,17 @@
   "localhost": {
     "message": "Localhost 8545"
   },
+  "login": {
+    "message": "Log In"
+  },
   "logout": {
     "message": "Log out"
   },
   "loose": {
     "message": "Loose"
+  },
+  "loweCaseWords": {
+    "message": "seed words only have lowercase characters"
   },
   "mainnet": {
     "message": "Main Ethereum Network"
@@ -347,11 +440,17 @@
   "message": {
     "message": "Message"
   },
+  "metamaskDescription": {
+    "message": "MetaMask is a secure identity vault for Ethereum."
+  },
   "min": {
     "message": "Minimum"
   },
   "myAccounts": {
     "message": "My Accounts"
+  },
+  "mustSelectOne": {
+    "message": "Must select at least 1 token."
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
@@ -363,6 +462,9 @@
   "needImportPassword": {
     "message": "You must enter a password for the selected file.",
     "description": "Password and file needed to import an account"
+  },
+  "negativeETH": {
+    "message": "Can not send negative amounts of ETH."
   },
   "networks": {
     "message": "Networks"
@@ -382,6 +484,9 @@
   },
   "newRecipient": {
     "message": "New Recipient"
+  },
+  "newRPC": {
+    "message": "New RPC URL"
   },
   "next": {
     "message": "Next"
@@ -411,6 +516,9 @@
     "message": "or",
     "description": "choice between creating or importing a new account"
   },
+  "passwordCorrect": {
+    "message": "Please make sure your password is correct."
+  },
   "passwordMismatch": {
     "message": "passwords don't match",
     "description": "in password creation process, the two new password fields did not match"
@@ -426,8 +534,14 @@
   "pasteSeed": {
     "message": "Paste your seed phrase here!"
   },
+  "personalAddressDetected": {
+    "message": "Personal address detected. Input the token contract address."
+  },
   "pleaseReviewTransaction": {
     "message": "Please review your transaction."
+  },
+  "privacyMsg": {
+    "message": "Privacy Policy"
   },
   "privateKey": {
     "message": "Private Key",
@@ -448,6 +562,9 @@
   "readMore": {
     "message": "Read more here."
   },
+  "readMore2": {
+    "message": "Read more."
+  },
   "receive": {
     "message": "Receive"
   },
@@ -460,11 +577,23 @@
   "rejected": {
     "message": "Rejected"
   },
+  "resetAccount": {
+    "message": "Reset Account"
+  },
+  "restoreFromSeed": {
+    "message": "Restore from seed phrase"
+  },
   "required": {
     "message": "Required"
   },
   "retryWithMoreGas": {
     "message": "Retry with a higher gas price here"
+  },
+  "revealSeedWords": {
+    "message": "Reveal Seed Words"
+  },
+  "revealSeedWordsWarning": {
+    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
   },
   "revert": {
     "message": "Revert"
@@ -486,11 +615,35 @@
     "message": "Save as File",
     "description": "Account export process"
   },
+  "saveSeedAsFile": {
+    "message": "Save Seed Words As File"
+  },
+  "search": {
+    "message": "Search"
+  },
+  "secretPhrase": {
+    "message": "Enter your secret twelve word phrase here to restore your vault."
+  },
+  "seedPhraseReq": {
+    "message": "seed phrases are 12 words long"
+  },
+  "select": {
+    "message": "Select"
+  },
+  "selectCurrency": {
+    "message": "Select Currency"
+  },
   "selectService": {
     "message": "Select Service"
   },
+  "selectType": {
+    "message": "Select Type"
+  },
   "send": {
     "message": "Send"
+  },
+  "sendETH": {
+    "message": "Send ETH"
   },
   "sendTokens": {
     "message": "Send Tokens"
@@ -525,14 +678,32 @@
   "sigRequested": {
     "message": "Signature Requested"
   },
+  "spaceBetween": {
+    "message": "there can only be a space between words"
+  },
   "status": {
     "message": "Status"
+  },
+  "stateLogs": {
+    "message": "State Logs"
+  },
+  "stateLogsDescription": {
+    "message": "State logs contain your public account addresses and sent transactions."
   },
   "submit": {
     "message": "Submit"
   },
+  "supportCenter": {
+    "message": "Visit our Support Center"
+  },
+  "symbolBetweenZeroTen": {
+    "message": "Symbol must be between 0 and 10 characters."
+  },
   "takesTooLong": {
     "message": "Taking too long?"
+  },
+  "terms": {
+    "message": "Terms of Use"
   },
   "testFaucet": {
     "message": "Test Faucet"
@@ -544,11 +715,29 @@
     "message": "$1 to ETH via ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
+  "tokenAddress": {
+    "message": "Token Address"
+  },
+  "tokenAlreadyAdded": {
+    "message": "Token has already been added."
+  },
   "tokenBalance": {
     "message": "Your Token Balance is:"
   },
+  "tokenSelection": {
+    "message": "Search for tokens or select from our list of popular tokens."
+  },
+  "tokenSymbol": {
+    "message": "Token Symbol"
+  },
+  "tokenWarning1": {
+    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+  },
   "total": {
     "message": "Total"
+  },
+  "transactions": {
+    "message": "transactions"
   },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
@@ -562,6 +751,9 @@
   "troubleTokenBalances": {
     "message": "We had trouble loading your token balances. You can view them ",
     "description": "Followed by a link (here) to view token balances"
+  },
+  "twelveWords": {
+    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
   },
   "typePassword": {
     "message": "Type Your Password"
@@ -584,6 +776,9 @@
   "unknownNetworkId": {
     "message": "Unknown network ID"
   },
+  "uriErrorMsg": {
+    "message": "URIs require the appropriate HTTP/HTTPS prefix."
+  },
   "usaOnly": {
     "message": "USA only",
     "description": "Using this exchange is limited to people inside the USA"
@@ -591,11 +786,26 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "useOldUI": {
+    "message": "Use old UI"
+  },
+  "validFileImport": {
+    "message": "You must select a valid file to import."
+  },
+  "vaultCreated": {
+    "message": "Vault Created"
+  },
   "viewAccount": {
     "message": "View Account"
   },
+  "visitWebSite": {
+    "message": "Visit our web site"
+  }, 
   "warning": {
     "message": "Warning"
+  },
+  "welcomeBeta": {
+    "message": "Welcome to MetaMask Beta"
   },
   "whatsThis": {
     "message": "What's this?"
