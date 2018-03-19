@@ -10,6 +10,7 @@ const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
 const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
+const NetworkDisplay = require('../network-display')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -244,9 +245,12 @@ class ConfirmDeployContract extends Component {
     return (
       h('.page-container', [
         h('.page-container__header', [
-          h('.page-container__back-button', {
-            onClick: () => backToAccountDetail(selectedAddress),
-          }, t('back')),
+          h('.page-container__header-row', [
+            h('span.page-container__back-button', {
+              onClick: () => backToAccountDetail(selectedAddress),
+            }, t('back')),
+            window.METAMASK_UI_TYPE === 'notification' && h(NetworkDisplay),
+          ]),
           h('.page-container__title', t('confirmContract')),
           h('.page-container__subtitle', t('pleaseReviewTransaction')),
         ]),
