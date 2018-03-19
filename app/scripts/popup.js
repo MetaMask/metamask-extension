@@ -1,9 +1,3 @@
-// setup i18n
-// const Translator = require('../../ui/create-i18n')
-// const translator = new Translator()
-// global.translator = translator
-// global.getMessage = translator.getMessage.bind(translator)
-
 const injectCss = require('inject-css')
 const OldMetaMaskUiCss = require('../../old-ui/css')
 const NewMetaMaskUiCss = require('../../ui/css')
@@ -28,10 +22,6 @@ async function start() {
   const release = global.platform.getVersion()
   setupRaven({ release })
 
-  // Load translator
-  // await translator.setLocale('ja')
-  const localeMessages = await fetchLocale('ja')
-
   // inject css
   // const css = MetaMaskUiCss()
   // injectCss(css)
@@ -47,7 +37,7 @@ async function start() {
 
   // start ui
   const container = document.getElementById('app-content')
-  startPopup({ container, connectionStream, localeMessages }, (err, store) => {
+  startPopup({ container, connectionStream }, (err, store) => {
     if (err) return displayCriticalError(err)
 
     // Code commented out until we begin auto adding users to NewUI

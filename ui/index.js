@@ -4,7 +4,7 @@ const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
-const { fetchLocale } = require('./i18n-helper').getMessage
+const { fetchLocale } = require('./i18n-helper')
 const { OLD_UI_NETWORK_TYPE, BETA_UI_NETWORK_TYPE } = require('../app/scripts/config').enums
 
 global.log = require('loglevel')
@@ -19,16 +19,18 @@ function launchMetamaskUi (opts, cb) {
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {
     if (err) return cb(err)
-    startApp(metamaskState, accountManager, opts.localeMessages, opts)
+    startApp(metamaskState, accountManager, opts)
       .then((store) => {
         cb(null, store)
       })
   })
 }
 
-async function startApp (metamaskState, accountManager, currentLocaleMessages, opts) {
+async function startApp (metamaskState, accountManager, opts) {
   // parse opts
   if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
+
+  const currentLocaleMessages = await fetchLocale(metamaskState.currentLocale)
 
   const store = configureStore({
 

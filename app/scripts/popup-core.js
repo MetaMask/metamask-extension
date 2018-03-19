@@ -11,11 +11,11 @@ const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
 module.exports = initializePopup
 
 
-function initializePopup ({ container, connectionStream, localeMessages }, cb) {
+function initializePopup ({ container, connectionStream }, cb) {
   // setup app
   async.waterfall([
     (cb) => connectToAccountManager(connectionStream, cb),
-    (accountManager, cb) => launchMetamaskUi({ container, accountManager, localeMessages }, cb),
+    (accountManager, cb) => launchMetamaskUi({ container, accountManager }, cb),
   ], cb)
 }
 
