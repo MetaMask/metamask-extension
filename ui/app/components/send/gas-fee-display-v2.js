@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyDisplay = require('./currency-display')
-const t = require('../../../i18n')
+const t = global.getMessage
 
 module.exports = GasFeeDisplay
 

@@ -6,7 +6,7 @@ const tokenAbi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(tokenAbi)
 const actions = require('../../actions')
-const t = require('../../../i18n')
+const t = global.getMessage
 const clone = require('clone')
 const Identicon = require('../identicon')
 const ethUtil = require('ethereumjs-util')

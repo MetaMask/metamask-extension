@@ -4,7 +4,7 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
-const t = require('../../i18n')
+const t = global.getMessage
 
 module.exports = BnAsDecimalInput
 

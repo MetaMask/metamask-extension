@@ -6,7 +6,7 @@ const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
-const t = require('../../../i18n')
+const t = global.getMessage
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
 

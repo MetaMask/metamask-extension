@@ -5,7 +5,7 @@ const connect = require('react-redux').connect
 const actions = require('../../actions')
 const { getSelectedIdentity } = require('../../selectors')
 const Identicon = require('../identicon')
-const t = require('../../../i18n')
+const t = global.getMessage
 
 function mapStateToProps (state) {
   return {

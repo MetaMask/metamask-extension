@@ -7,7 +7,7 @@ const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
 const { getSelectedIdentity } = require('../../selectors')
 const ReadOnlyInput = require('../readonly-input')
-const t = require('../../../i18n')
+const t = global.getMessage
 const copyToClipboard = require('copy-to-clipboard')
 
 function mapStateToProps (state) {

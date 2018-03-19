@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const t = require('../../../i18n')
+const t = global.getMessage
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(PrivateKeyImportView)
 
