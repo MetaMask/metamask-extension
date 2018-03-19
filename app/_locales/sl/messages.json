@@ -62,7 +62,7 @@
     "message": "BETA"
   },
   "betweenMinAndMax": {
-    "message": "mora biti večji ali enak 1$ in manjši ali enak 2$.",
+    "message": "mora biti večji ali enak $1 in manjši ali enak $1.",
     "description": "helper for inputting hex as decimal input"
   },
   "blockiesIdenticon": {
@@ -172,7 +172,7 @@
     "message": "Decimalk mora biti vsaj 0, in ne več kot 36."
   },
   "decimal": {
-    "message": Decimalke natančnosti"
+    "message": "Decimalke natančnosti"
   }, 
   "defaultNetwork": {
     "message": "Privzeto omrežje za transakcije je Main Net."
@@ -187,15 +187,15 @@
     "message": "Vplačajte vaš BTC na spodnji naslov:"
   },
   "depositCoin": {
-    "message": "Vplačajte 1$ na spodnji naslov",
+    "message": "Vplačajte $1 na spodnji naslov",
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
     "message": "Vplačilo Eth"
   },
   "depositEther": {
-    "message": "Vplačilo Ethera"
-  },
+    "message": "Vplačilo ethera"
+  }
   "depositFiat": {
     "message": "Vplačilo s klasičnimi valutami"
   },
@@ -206,7 +206,7 @@
     "message": "Vplačilo z ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Če imate druge kriptovalute, lahko vpačate Ether neposredno v MetaMask. Brez računov."
+    "message": "Če imate druge kriptovalute, lahko vpačate ether neposredno v MetaMask. Brez računov."
   },
   "details": {
     "message": "Podrobnosti"
@@ -215,10 +215,10 @@
     "message": "Direktno vplačilo"
   },
   "directDepositEther": {
-    "message": "Direktno vplačilo Ethera"
+    "message": "Direktno vplačilo ehera"
   },
   "directDepositEtherExplainer": {
-    "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z direktnim vplačilom."
+    "message": "Če že imate ether, ga lahko najhitreje dobite v MetaMask z direktnim vplačilom."
   },
   "done": {
     "message": "Končano"
@@ -311,14 +311,14 @@
     "message": "Gas price je zahtevan"
   },
   "getEther": {
-    "message": "Dobi Ether"
+    "message": "Dobiite ether"
   },
   "getEtherFromFaucet": {
-    "message": "Dobi Ether iz fauceta za 1$",
+    "message": "Dobite ether iz fauceta za $1",
     "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
-    "message": "mora biti višji ali enak 1$.",
+    "message": "mora biti višji ali enak $1.",
     "description": "helper for inputting hex as decimal input"
   },
   "here": {
@@ -398,13 +398,13 @@
     "description": "format for importing an account"
   },
   "kovan": {
-    "message": "Kovan Test Network"
+    "message": "Testno omrežje Kovan"
   },
   "knowledgeDataBase": {
     "message": "Obiščite našo pomoč"
   },
   "lessThanMax": {
-    "message": "mora biti večji ali enak 1$.",
+    "message": "mora biti večji ali enak $1.",
     "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
@@ -435,7 +435,7 @@
     "message": "seed words imajo lahko le male črke"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Glavno omrežje"
   },
   "message": {
     "message": "Sporočilo"
@@ -453,367 +453,367 @@
     "message": "Izbran mora biti vsaj 1 žeton."
   },
   "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+    "message": "Za interakcijo z decentraliziranimi aplikacijami, ki uporabljajo MetaMask, boste v svoji denarnici potrebovali eter."
   },
   "needImportFile": {
-    "message": "You must select a file to import.",
+    "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"
   },
   "needImportPassword": {
-    "message": "You must enter a password for the selected file.",
+    "message": "Za izbrano datoteko morate vnesti geslo.",
     "description": "Password and file needed to import an account"
   },
   "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
+    "message": "Ni mogoče poslati negativne vsote ETH."
   },
   "networks": {
-    "message": "Networks"
+    "message": "Omrežja"
   },
   "newAccount": {
-    "message": "New Account"
+    "message": "Nov račun"
   },
   "newAccountNumberName": {
-    "message": "Account $1",
+    "message": "Račun $1",
     "description": "Default name of next account to be created on create account screen"
   },
   "newContract": {
-    "message": "New Contract"
+    "message": "Nova pogodba"
   },
   "newPassword": {
-    "message": "New Password (min 8 chars)"
+    "message": "Novo geslo (min. 8. črk)"
   },
   "newRecipient": {
-    "message": "New Recipient"
+    "message": "Nov prejemnik"
   },
   "newRPC": {
-    "message": "New RPC URL"
+    "message": "Nov RPC URL"
   },
   "next": {
-    "message": "Next"
+    "message": "Naprej"
   },
   "noAddressForName": {
-    "message": "No address has been set for this name."
+    "message": "Za to ime ni bil nastavljen noben naslov."
   },
   "noDeposits": {
-    "message": "No deposits received"
+    "message": "Ni prejetih vplačil"
   },
   "noTransactionHistory": {
-    "message": "No transaction history."
+    "message": "Ni zgodovine transakcij."
   },
   "noTransactions": {
-    "message": "No Transactions"
+    "message": "Ni transakcij"
   },
   "notStarted": {
-    "message": "Not Started"
+    "message": "Ni se začelo"
   },
   "oldUI": {
-    "message": "Old UI"
+    "message": "Starejši uporabniški vmesnik"
   },
   "oldUIMessage": {
-    "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
+    "message": "Vrnili ste se v starejši uporabniški vmesnik. V novega se lahko vrnete z možnostjo v spustnem meniju v zgornjem desnem kotu."
   },
   "or": {
-    "message": "or",
+    "message": "ali",
     "description": "choice between creating or importing a new account"
   },
   "passwordCorrect": {
-    "message": "Please make sure your password is correct."
+    "message": "Prepričajte se, da je geslo pravilno."
   },
   "passwordMismatch": {
-    "message": "passwords don't match",
+    "message": "gesli se ne ujemata",
     "description": "in password creation process, the two new password fields did not match"
   },
   "passwordShort": {
-    "message": "password not long enough",
+    "message": "geslo ni dovolj dolgo",
     "description": "in password creation process, the password is not long enough to be secure"
   },
   "pastePrivateKey": {
-    "message": "Paste your private key string here:",
+    "message": "Tukaj prilepite zasebni ključ:",
     "description": "For importing an account from a private key"
   },
   "pasteSeed": {
-    "message": "Paste your seed phrase here!"
+    "message": "Tukaj prilepite seed phrase!"
   },
   "personalAddressDetected": {
-    "message": "Personal address detected. Input the token contract address."
+    "message": "Osebni naslov je zaznan. Vnesite naslov žetona."
   },
   "pleaseReviewTransaction": {
-    "message": "Please review your transaction."
+    "message": "Preglejte transakcijo."
   },
   "privacyMsg": {
-    "message": "Privacy Policy"
+    "message": "Politika zasebnosti"
   },
   "privateKey": {
-    "message": "Private Key",
+    "message": "Zasebni ključ",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
+    "message": "Opozorilo: Nikoli ne razkrijte tega ključa. Vsakdo s svojimi zasebnimi ključi lahko ukrade vse premoženje v računu."
   },
   "privateNetwork": {
-    "message": "Private Network"
+    "message": "Zasebno omrežje"
   },
   "qrCode": {
-    "message": "Show QR Code"
+    "message": "Prikaži QR kodo"
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
+    "message": "Ta žeton lahko dodate tudi v prihodnosti, tako da odprete možnost »Dodaj žeton« v meniju z računi."
   },
   "readMore": {
-    "message": "Read more here."
+    "message": "Preberite več."
   },
   "readMore2": {
-    "message": "Read more."
+    "message": "Preberite več."
   },
   "receive": {
-    "message": "Receive"
+    "message": "Prejmite"
   },
   "recipientAddress": {
-    "message": "Recipient Address"
+    "message": "Prejemnikov naslov"
   },
   "refundAddress": {
-    "message": "Your Refund Address"
+    "message": "Vaš naslov za vračilo"
   },
   "rejected": {
-    "message": "Rejected"
+    "message": "Zavrnjeno"
   },
   "resetAccount": {
-    "message": "Reset Account"
+    "message": "Ponastavi račun"
   },
   "restoreFromSeed": {
-    "message": "Restore from seed phrase"
+    "message": "Obnovi iz seed phrase"
   },
   "required": {
-    "message": "Required"
+    "message": "Zahtevano"
   },
   "retryWithMoreGas": {
-    "message": "Retry with a higher gas price here"
+    "message": "Poskusi z višjim gas price"
   },
   "revealSeedWords": {
-    "message": "Reveal Seed Words"
+    "message": "Prikaži seed words"
   },
   "revealSeedWordsWarning": {
-    "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
+    "message": "Ne obnovite seed words na javnem mestu! Te besede se lahko uporabijo za krajo vseh vaših računov."
   },
   "revert": {
-    "message": "Revert"
+    "message": "Povrni"
   },
   "rinkeby": {
-    "message": "Rinkeby Test Network"
+    "message": "Testno omrežje Rinkeby"
   },
   "ropsten": {
-    "message": "Ropsten Test Network"
+    "message": "Testno omrežje Ropsten"
   },
   "sampleAccountName": {
-    "message": "E.g. My new account",
+    "message": "npr. Moj nov račun",
     "description": "Help user understand concept of adding a human-readable name to their account"
   },
   "save": {
-    "message": "Save"
+    "message": "Shrani"
   },
   "saveAsFile": {
-    "message": "Save as File",
+    "message": "SShrani kot datoteko",
     "description": "Account export process"
   },
   "saveSeedAsFile": {
-    "message": "Save Seed Words As File"
+    "message": "Shrani seed words kot datoteko"
   },
   "search": {
-    "message": "Search"
+    "message": "Iskanje"
   },
   "secretPhrase": {
-    "message": "Enter your secret twelve word phrase here to restore your vault."
+    "message": "Tukaj vnesite svoje seed words, da obnovite svoje račune."
   },
   "seedPhraseReq": {
-    "message": "seed phrases are 12 words long"
+    "message": "seed phrases so dolgi 12 besed"
   },
   "select": {
-    "message": "Select"
+    "message": "Izberi"
   },
   "selectCurrency": {
-    "message": "Select Currency"
+    "message": "Izberi valuto"
   },
   "selectService": {
-    "message": "Select Service"
+    "message": "Izberi storitev"
   },
   "selectType": {
-    "message": "Select Type"
+    "message": "Izberi vrsto"
   },
   "send": {
-    "message": "Send"
+    "message": "Pošlji"
   },
   "sendETH": {
-    "message": "Send ETH"
+    "message": "Pošlji ETH"
   },
   "sendTokens": {
-    "message": "Send Tokens"
+    "message": "Pošlji žetone"
   },
   "sendTokensAnywhere": {
-    "message": "Send Tokens to anyone with an Ethereum account"
+    "message": "Pošljite žetone vsem, ki imajo Ethereum račun"
   },
   "settings": {
-    "message": "Settings"
+    "message": "Nastavitve"
   },
   "shapeshiftBuy": {
-    "message": "Buy with Shapeshift"
+    "message": "Kupite z Shapeshift"
   },
   "showPrivateKeys": {
-    "message": "Show Private Keys"
+    "message": "Prikaži zasebne ključe"
   },
   "showQRCode": {
-    "message": "Show QR Code"
+    "message": "Prikaži QR kodo"
   },
   "sign": {
-    "message": "Sign"
+    "message": "Podpiši"
   },
   "signMessage": {
-    "message": "Sign Message"
+    "message": "Podpiši sporočilo"
   },
   "signNotice": {
-    "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
+    "message": "To podpisovanje lahko povzroči \nnevarne stranske učinke. Podpisujte samo sporočila \nstrani, ki jim zaupate s svojim celotnim računom.\n Ta nevarna funkcija bo odstranjena v prihodnji različici. "
   },
   "sigRequest": {
-    "message": "Signature Request"
+    "message": "Zahteva za podpis"
   },
   "sigRequested": {
-    "message": "Signature Requested"
+    "message": "Podpis je zahtevan"
   },
   "spaceBetween": {
-    "message": "there can only be a space between words"
+    "message": "med besedami je lahko samo presledek"
   },
   "status": {
     "message": "Status"
   },
   "stateLogs": {
-    "message": "State Logs"
+    "message": "State dnevniki"
   },
   "stateLogsDescription": {
-    "message": "State logs contain your public account addresses and sent transactions."
+    "message": "State dnevniki vsebujejo naslove vašega računa in poslane transakcije.."
   },
   "submit": {
-    "message": "Submit"
+    "message": "Potrdi"
   },
   "supportCenter": {
-    "message": "Visit our Support Center"
+    "message": "Obiščite našo podporo"
   },
   "symbolBetweenZeroTen": {
-    "message": "Symbol must be between 0 and 10 characters."
+    "message": "Simbol mora biti dolg od 0 do 10 znakov."
   },
   "takesTooLong": {
-    "message": "Taking too long?"
+    "message": "Traja predolgo?"
   },
   "terms": {
-    "message": "Terms of Use"
+    "message": "Pogoji uporabe"
   },
   "testFaucet": {
-    "message": "Test Faucet"
+    "message": "Testni faucet"
   },
   "to": {
-    "message": "To"
+    "message": "Za"
   },
   "toETHviaShapeShift": {
-    "message": "$1 to ETH via ShapeShift",
+    "message": "$1 v ETH prek ShapeShift",
     "description": "system will fill in deposit type in start of message"
   },
   "tokenAddress": {
-    "message": "Token Address"
+    "message": "Naslov žetona"
   },
   "tokenAlreadyAdded": {
-    "message": "Token has already been added."
+    "message": "Žeton je že bil dodan."
   },
   "tokenBalance": {
-    "message": "Your Token Balance is:"
+    "message": "Vaš znesek žetona:"
   },
   "tokenSelection": {
-    "message": "Search for tokens or select from our list of popular tokens."
+    "message": "Poiščite žetone ali jih izberite z našega seznama priljubljenih žetonov."
   },
   "tokenSymbol": {
-    "message": "Token Symbol"
+    "message": "Simbol žetona"
   },
   "tokenWarning1": {
-    "message": "Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here."
+    "message": "Spremljajte žetone, ki ste jih kupili s svojim MetaMask računom. Če ste kupili žetone z drugačnim računom, ti žetoni ne bodo prikazani tukaj."
   },
   "total": {
-    "message": "Total"
+    "message": "Skupno"
   },
   "transactions": {
-    "message": "transactions"
+    "message": "transakcije"
   },
   "transactionMemo": {
-    "message": "Transaction memo (optional)"
+    "message": "Opis transakcije (ni zahtevano)"
   },
   "transactionNumber": {
-    "message": "Transaction Number"
+    "message": "Številka transakcije"
   },
   "transfers": {
-    "message": "Transfers"
+    "message": "Prenosi"
   },
   "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them ",
+    "message": "Imeli smo težave pri nalaganju vaših žetonov. Ogledate si jih lahko ",
     "description": "Followed by a link (here) to view token balances"
   },
   "twelveWords": {
-    "message": "These 12 words are the only way to restore your MetaMask accounts.\nSave them somewhere safe and secret."
+    "message": "Edini način za obnovitev MetaMask računa, je teh 12 besed.\nShranite jih na varno in skrivno mesto."
   },
   "typePassword": {
-    "message": "Type Your Password"
+    "message": "Vpišite vaše geslo"
   },
   "uiWelcome": {
-    "message": "Welcome to the New UI (Beta)"
+    "message": "Dobrodošli v novem uporabniškem vmesniku (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+    "message": "Zdaj uporabljate novi MetaMask uporabniški vmesnik. Razglejte se, preizkusite nove funkcije, kot so pošiljanje žetonov, in nas obvestite, če imate kakšne težave."
   },
   "unavailable": {
-    "message": "Unavailable"
+    "message": "Ni na voljo"
   },
   "unknown": {
-    "message": "Unknown"
+    "message": "Neznano"
   },
   "unknownNetwork": {
-    "message": "Unknown Private Network"
+    "message": "Neznano zasebno omrežje"
   },
   "unknownNetworkId": {
-    "message": "Unknown network ID"
+    "message": "Neznan ID omrežja"
   },
   "uriErrorMsg": {
-    "message": "URIs require the appropriate HTTP/HTTPS prefix."
+    "message": "URI-ji zahtevajo ustrezno HTTP/HTTPS predpono."
   },
   "usaOnly": {
-    "message": "USA only",
+    "message": "Samo za ZDA",
     "description": "Using this exchange is limited to people inside the USA"
   },
   "usedByClients": {
-    "message": "Used by a variety of different clients"
+    "message": "Uporablja jih več različnih odjemalcev"
   },
   "useOldUI": {
-    "message": "Use old UI"
+    "message": "Uporabi star uporabniški vmesnik"
   },
   "validFileImport": {
-    "message": "You must select a valid file to import."
+    "message": "Za uvoz morate izbrati pravilno datoteko."
   },
   "vaultCreated": {
-    "message": "Vault Created"
+    "message": "Račun je ustvarjen"
   },
   "viewAccount": {
-    "message": "View Account"
+    "message": "Poglej račun"
   },
   "visitWebSite": {
-    "message": "Visit our web site"
+    "message": "Obiščite našo spletno stran"
   }, 
   "warning": {
-    "message": "Warning"
+    "message": "Opozorilo"
   },
   "welcomeBeta": {
-    "message": "Welcome to MetaMask Beta"
+    "message": "Dobrodošli v MetaMask Beta"
   },
   "whatsThis": {
-    "message": "What's this?"
+    "message": "Kaj je to?"
   },
   "yourSigRequested": {
-    "message": "Your signature is being requested"
+    "message": "Vaš podpis je bil zahtevan"
   },
   "youSign": {
-    "message": "You are signing"
+    "message": "Podpisani ste"
   }
 }
