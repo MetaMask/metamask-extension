@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="21px" viewBox="0 0 25 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>arrow-right</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Confirm-Send-ETH---V3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-500.000000, -235.000000)">
+        <g id="Group-4" transform="translate(312.000000, 99.000000)" fill="#5B5B5B">
+            <g id="Group-18" transform="translate(109.000000, 119.000000)">
+                <g id="arrow-right" transform="translate(78.000000, 17.000000)">
+                    <path d="M13.2809946,0.467462271 L13.2809946,0.467462271 C12.6477116,1.09191648 12.6477116,2.10286154 13.2809946,2.72571868 L19.1052554,8.46878095 L2.61883998,8.46878095 C1.72479329,8.46878095 0.999190175,9.18426813 0.999190175,10.0658505 L0.999190175,10.0674476 C0.999190175,10.94903 1.72479329,11.6629201 2.61883998,11.6629201 L19.1052554,11.6629201 L13.2809946,17.4075795 C12.6477116,18.0304366 12.6477116,19.0413817 13.2809946,19.6658359 C13.9126581,20.288693 14.9378964,20.288693 15.5711795,19.6658359 L25.3052748,10.0658505 L15.5711795,0.467462271 C14.9378964,-0.155394872 13.9126581,-0.155394872 13.2809946,0.467462271" id="Fill-1"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

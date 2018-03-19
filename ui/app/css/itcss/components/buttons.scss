@@ -45,6 +45,18 @@
   }
 }
 
+.btn-confirm {
+  background-color: $caribbean-green; // TODO: reusable color in colors.css
+  text-align: center;
+  padding: .8rem 1rem;
+  color: $white;
+  border: 2px solid $caribbean-green;
+  border-radius: 4px;
+  font-size: .85rem;
+  font-weight: 400;
+  transition: border-color .3s ease;
+}
+
 // No longer used in flat design, remove when modal buttons done
 // div.wallet-btn {
 //   border: 1px solid rgb(91, 93, 103);

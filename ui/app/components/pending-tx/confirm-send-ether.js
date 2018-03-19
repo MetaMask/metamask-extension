@@ -224,181 +224,185 @@ ConfirmSendEther.prototype.render = function () {
           h('div.page-container__title', 'Confirm'),
           h('div.page-container__subtitle', `Please review your transaction.`),
         ]),
-        h('div.flex-row.flex-center.confirm-screen-identicons', [
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: fromAddress,
-                diameter: 60,
+        h('.page-container__content', [
+          h('div.flex-row.flex-center.confirm-screen-identicons', [
+            h('div.confirm-screen-account-wrapper', [
+              h(
+                Identicon,
+                {
+                  address: fromAddress,
+                  diameter: 60,
+                },
+              ),
+              h('span.confirm-screen-account-name', fromName),
+              // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
+            ]),
+            h('i.fa.fa-arrow-right.fa-lg'),
+            h('div.confirm-screen-account-wrapper', [
+              h(
+                Identicon,
+                {
+                  address: txParams.to,
+                  diameter: 60,
+                },
+              ),
+              h('span.confirm-screen-account-name', toName),
+              // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
+            ]),
+          ]),
+
+          // h('h3.flex-center.confirm-screen-sending-to-message', {
+          //   style: {
+          //     textAlign: 'center',
+          //     fontSize: '16px',
+          //   },
+          // }, [
+          //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
+          // ]),
+
+          h('h3.flex-center.confirm-screen-send-amount', [`${amountInFIAT}`]),
+          h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
+          h('div.flex-center.confirm-memo-wrapper', [
+            h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
+          ]),
+
+          h('div.confirm-screen-rows', [
+            h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', fromName),
+                h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
+              ]),
+            ]),
+
+            h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', toName),
+                h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
+              ]),
+            ]),
+
+            h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', `${gasFeeInFIAT} ${currentCurrency.toUpperCase()}`),
+
+                h('div.confirm-screen-row-detail', `${gasFeeInETH} ETH`),
+              ]),
+            ]),
+
+
+            h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
+              h('div.confirm-screen-section-column', [
+                h('span.confirm-screen-label', [ t('total') + ' ' ]),
+                h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
+              ]),
+
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', `${totalInFIAT} ${currentCurrency.toUpperCase()}`),
+                h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
+              ]),
+            ]),
+          ]),
+
+  // These are latest errors handling from master
+  // Leaving as comments as reference when we start implementing error handling
+  //         h('style', `
+  //           .conf-buttons button {
+  //             margin-left: 10px;
+  //             text-transform: uppercase;
+  //           }
+  //         `),
+
+  //         txMeta.simulationFails ?
+  //           h('.error', {
+  //             style: {
+  //               marginLeft: 50,
+  //               fontSize: '0.9em',
+  //             },
+  //           }, 'Transaction Error. Exception thrown in contract code.')
+  //         : null,
+
+  //         !isValidAddress ?
+  //           h('.error', {
+  //             style: {
+  //               marginLeft: 50,
+  //               fontSize: '0.9em',
+  //             },
+  //           }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
+  //         : null,
+
+  //         insufficientBalance ?
+  //           h('span.error', {
+  //             style: {
+  //               marginLeft: 50,
+  //               fontSize: '0.9em',
+  //             },
+  //           }, 'Insufficient balance for transaction')
+  //         : null,
+
+  //         // send + cancel
+  //         h('.flex-row.flex-space-around.conf-buttons', {
+  //           style: {
+  //             display: 'flex',
+  //             justifyContent: 'flex-end',
+  //             margin: '14px 25px',
+  //           },
+  //         }, [
+  //           h('button', {
+  //             onClick: (event) => {
+  //               this.resetGasFields()
+  //               event.preventDefault()
+  //             },
+  //           }, 'Reset'),
+
+  //           // Accept Button or Buy Button
+  //           insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
+  //             h('input.confirm.btn-green', {
+  //               type: 'submit',
+  //               value: 'SUBMIT',
+  //               style: { marginLeft: '10px' },
+  //               disabled: buyDisabled,
+  //             }),
+
+  //           h('button.cancel.btn-red', {
+  //             onClick: props.cancelTransaction,
+  //           }, 'Reject'),
+  //         ]),
+  //         showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
+  //           style: {
+  //             display: 'flex',
+  //             justifyContent: 'flex-end',
+  //             margin: '14px 25px',
+  //           },
+  //         }, [
+  //           h('button.cancel.btn-red', {
+  //             onClick: props.cancelAllTransactions,
+  //           }, 'Reject All'),
+  //         ]) : null,
+  //       ]),
+  //     ])
+  //   )
+  // }
+        ]),
+
+        h('form#pending-tx-form', {
+          onSubmit: this.onSubmit,
+        }, [
+          h('.page-container__footer', [
+            // Cancel Button
+            h('button.btn-cancel.page-container__footer-button.allcaps', {
+              onClick: (event) => {
+                clearSend()
+                this.cancel(event, txMeta)
               },
-            ),
-            h('span.confirm-screen-account-name', fromName),
-            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
-          ]),
-          h('i.fa.fa-arrow-right.fa-lg'),
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: txParams.to,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', toName),
-            // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
+            }, t('cancel')),
+
+            // Accept Button
+            h('button.btn-confirm.page-container__footer-button.allcaps', [t('confirm')]),
           ]),
         ]),
-
-        // h('h3.flex-center.confirm-screen-sending-to-message', {
-        //   style: {
-        //     textAlign: 'center',
-        //     fontSize: '16px',
-        //   },
-        // }, [
-        //   `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
-        // ]),
-
-        h('h3.flex-center.confirm-screen-send-amount', [`${amountInFIAT}`]),
-        h('h3.flex-center.confirm-screen-send-amount-currency', [ currentCurrency.toUpperCase() ]),
-        h('div.flex-center.confirm-memo-wrapper', [
-          h('h3.confirm-screen-send-memo', [ memo ? `"${memo}"` : '' ]),
-        ]),
-
-        h('div.confirm-screen-rows', [
-          h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', fromName),
-              h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
-            ]),
-          ]),
-
-          h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', toName),
-              h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
-            ]),
-          ]),
-
-          h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${gasFeeInFIAT} ${currentCurrency.toUpperCase()}`),
-
-              h('div.confirm-screen-row-detail', `${gasFeeInETH} ETH`),
-            ]),
-          ]),
-
-
-          h('section.flex-row.flex-center.confirm-screen-total-box ', [
-            h('div.confirm-screen-section-column', [
-              h('span.confirm-screen-label', [ t('total') + ' ' ]),
-              h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
-            ]),
-
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', `${totalInFIAT} ${currentCurrency.toUpperCase()}`),
-              h('div.confirm-screen-row-detail', `${totalInETH} ETH`),
-            ]),
-          ]),
-        ]),
-
-// These are latest errors handling from master
-// Leaving as comments as reference when we start implementing error handling
-//         h('style', `
-//           .conf-buttons button {
-//             margin-left: 10px;
-//             text-transform: uppercase;
-//           }
-//         `),
-
-//         txMeta.simulationFails ?
-//           h('.error', {
-//             style: {
-//               marginLeft: 50,
-//               fontSize: '0.9em',
-//             },
-//           }, 'Transaction Error. Exception thrown in contract code.')
-//         : null,
-
-//         !isValidAddress ?
-//           h('.error', {
-//             style: {
-//               marginLeft: 50,
-//               fontSize: '0.9em',
-//             },
-//           }, 'Recipient address is invalid. Sending this transaction will result in a loss of ETH.')
-//         : null,
-
-//         insufficientBalance ?
-//           h('span.error', {
-//             style: {
-//               marginLeft: 50,
-//               fontSize: '0.9em',
-//             },
-//           }, 'Insufficient balance for transaction')
-//         : null,
-
-//         // send + cancel
-//         h('.flex-row.flex-space-around.conf-buttons', {
-//           style: {
-//             display: 'flex',
-//             justifyContent: 'flex-end',
-//             margin: '14px 25px',
-//           },
-//         }, [
-//           h('button', {
-//             onClick: (event) => {
-//               this.resetGasFields()
-//               event.preventDefault()
-//             },
-//           }, 'Reset'),
-
-//           // Accept Button or Buy Button
-//           insufficientBalance ? h('button.btn-green', { onClick: props.buyEth }, 'Buy Ether') :
-//             h('input.confirm.btn-green', {
-//               type: 'submit',
-//               value: 'SUBMIT',
-//               style: { marginLeft: '10px' },
-//               disabled: buyDisabled,
-//             }),
-
-//           h('button.cancel.btn-red', {
-//             onClick: props.cancelTransaction,
-//           }, 'Reject'),
-//         ]),
-//         showRejectAll ? h('.flex-row.flex-space-around.conf-buttons', {
-//           style: {
-//             display: 'flex',
-//             justifyContent: 'flex-end',
-//             margin: '14px 25px',
-//           },
-//         }, [
-//           h('button.cancel.btn-red', {
-//             onClick: props.cancelAllTransactions,
-//           }, 'Reject All'),
-//         ]) : null,
-//       ]),
-//     ])
-//   )
-// }
-      ]),
-
-      h('form#pending-tx-form', {
-        onSubmit: this.onSubmit,
-      }, [
-        // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button.allcaps', {
-          onClick: (event) => {
-            clearSend()
-            this.cancel(event, txMeta)
-          },
-        }, t('cancel')),
-
-        // Accept Button
-        h('button.confirm-screen-confirm-button.allcaps', [t('confirm')]),
       ]),
     ])
   )

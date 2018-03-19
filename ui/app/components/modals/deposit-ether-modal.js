@@ -109,7 +109,7 @@ DepositEtherModal.prototype.render = function () {
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
   const networkName = networkNames[network]
 
-  return h('div.page-container.page-container--full-width', {}, [
+  return h('div.page-container.page-container--full-width.page-container--full-height', {}, [
 
     h('div.page-container__header', [
 
