@@ -78,14 +78,16 @@ class BackupPhraseScreen extends Component {
           {this.props.seedWords}
         </div>
         {!isShowingSecret && (
-          <div className="backup-phrase__secret-blocker">
+          <div
+            className="backup-phrase__secret-blocker"
+            onClick={() => this.setState({ isShowingSecret: true })}
+          >
             <LockIcon width="28px" height="35px" fill="#FFFFFF" />
-            <button
+            <div
               className="backup-phrase__reveal-button"
-              onClick={() => this.setState({ isShowingSecret: true })}
             >
               Click here to reveal secret words
-            </button>
+            </div>
           </div>
         )}
       </div>
