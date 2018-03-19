@@ -50,47 +50,47 @@ try {
 console.log('\tverifying whether all your locale strings are contained in the english one')
 
 var counter = 0
-var foundError = false
+var foundErrorA = false
 var notFound = [];
 Object.keys(localeObj).forEach(function(key){
 	if (!englishObj[key]) {
-		foundError = true
+		foundErrorA = true
 		notFound.push(key)
 	}
 	counter++
 })
 
-if (foundError) {
+if (foundErrorA) {
 	console.log('\nThe following string(s) is(are) not found in the english locale:')
 	notFound.forEach(function(key) {
 		console.log(key)
 	})
-	process.exit(1)
+} else {
+	console.log('\tall ' + counter +' strings declared in your locale were found in the english one')
 }
-
-console.log('\tall ' + counter +' strings declared in your locale were found in the english one')
 
 console.log('\n\tverifying whether your locale contains all english strings')
 
 var counter = 0
-var foundError = false
+var foundErrorB = false
 var notFound = [];
 Object.keys(englishObj).forEach(function(key){
 	if (!localeObj[key]) {
-		foundError = true
+		foundErrorB = true
 		notFound.push(key)
 	}
 	counter++
 })
 
-if (foundError) {
+if (foundErrorB) {
 	console.log('\nThe following string(s) is(are) not found in the your locale:')
 	notFound.forEach(function(key) {
 		console.log(key)
 	})
-	process.exit(1)
+} else {
+	console.log('\tall ' + counter +' english strings were found in your locale!')
 }
 
-console.log('\tall ' + counter +' english strings were found in your locale!')
-
-console.log('You are good to go')
+if (!foundErrorA && !foundErrorB) {
+	console.log('You are good to go')
+}
