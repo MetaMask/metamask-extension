@@ -83,6 +83,9 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
   },
+  "ok": {
+    message: "Ok"
+  },
   "cancel": {
     "message": "Cancel"
   },
@@ -243,6 +246,12 @@
   },
   "enterPasswordConfirm": {
     "message": "Enter your password to confirm"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password not long enough"
+  },
+  "passwordsDontMatch": {
+    "message": "Passwords Don't Match"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -583,11 +592,17 @@
   "restoreFromSeed": {
     "message": "Restore from seed phrase"
   },
+  "restoreVault": {
+    "message": "Restore Vault"
+  },
   "required": {
     "message": "Required"
   },
   "retryWithMoreGas": {
     "message": "Retry with a higher gas price here"
+  },
+  "walletSeed": {
+    "message": "Wallet Seed"
   },
   "revealSeedWords": {
     "message": "Reveal Seed Words"
@@ -638,6 +653,9 @@
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
+  },
+  "newPassword8Chars": {
+    "message": "New Password (min 8 chars)"
   },
   "seedPhraseReq": {
     "message": "seed phrases are 12 words long"
