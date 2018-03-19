@@ -6,8 +6,8 @@
 Todo:
 
 ## - [ ] *STEP 1*
- - [ ] :1 To `fork` >> `clone` >> `deploy`, and take a code-lit survey of the working stacks.
- - [ ] :2 To formally `branch` out, stage new IDE and `popd()` anything unnecesary in the repository.
+ - [x] :1 To `fork` >> `clone` >> `deploy`, and take a code-lit survey of the working stacks.
+ - [x] :2 To formally `branch` out, stage new IDE and `popd()` anything unnecesary in the repository.
  - [ ] :3 Parsing manually `messages.json`, strata context into hinglish use-cases and finally script `devnagari`.
 
 ## - [ ] *STEP 2*
