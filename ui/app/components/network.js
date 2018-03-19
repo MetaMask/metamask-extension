@@ -1,11 +1,12 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const connect = require('../metamask-connect')
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
 const t = require('../../i18n-helper').getMessage
 
-module.exports = Network
+module.exports = connect()(Network)
 
 inherits(Network, Component)
 
@@ -78,6 +79,8 @@ Network.prototype.render = function () {
       },
     }, [
       (function () {
+        console.log(`12312312312312312 props.localeMessages`, props.localeMessages);
+        console.log(`12312312312312312 t(props.localeMessages, 'mainnet')`, t(props.localeMessages, 'mainnet'));
         switch (iconName) {
           case 'ethereum-network':
             return h('.network-indicator', [

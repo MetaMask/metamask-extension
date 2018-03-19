@@ -76,7 +76,7 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
 
   return h('div.request-signature__account', [
 
-    h('div.request-signature__account-text', [t('account') + ':']),
+    h('div.request-signature__account-text', [t(this.props.localeMessages, 'account') + ':']),
 
     h(AccountDropdownMini, {
       selectedAccount,
@@ -103,7 +103,7 @@ SignatureRequest.prototype.renderBalance = function () {
 
   return h('div.request-signature__balance', [
 
-    h('div.request-signature__balance-text', [t('balance')]),
+    h('div.request-signature__balance-text', [t(this.props.localeMessages, 'balance')]),
 
     h('div.request-signature__balance-value', `${balanceInEther} ETH`),
 

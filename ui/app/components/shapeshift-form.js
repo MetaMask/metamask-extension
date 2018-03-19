@@ -240,7 +240,7 @@ ShapeshiftForm.prototype.render = function () {
         className: btnClass,
         disabled: !token,
         onClick: () => this.onBuyWithShapeShift(),
-      }, [t('buy')]),
+      }, [t(this.props.localeMessages, 'buy')]),
 
     ])
 }

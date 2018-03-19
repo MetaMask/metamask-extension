@@ -51,7 +51,7 @@ EditAccountNameModal.prototype.render = function () {
       ]),
 
       h('div.edit-account-name-modal-title', {
-      }, [t('editAccountName')]),
+      }, [t(this.props.localeMessages, 'editAccountName')]),
 
       h('input.edit-account-name-modal-input', {
         placeholder: identity.name,

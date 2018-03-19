@@ -123,7 +123,7 @@ DepositEtherModal.prototype.render = function () {
 
     h('div.page-container__header', [
 
-      h('div.page-container__title', [t('depositEther')]),
+      h('div.page-container__title', [t(this.props.localeMessages, 'depositEther')]),
 
       h('div.page-container__subtitle', [
         t(this.props.localeMessages, 'needEtherInWallet'),

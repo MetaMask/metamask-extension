@@ -82,7 +82,7 @@ GasTooltip.prototype.render = function () {
             'marginTop': '81px',
           },
         }, [
-          h('span.gas-tooltip-label', {}, [t('gasLimit')]),
+          h('span.gas-tooltip-label', {}, [t(this.props.localeMessages, 'gasLimit')]),
           h('i.fa.fa-info-circle'),
         ]),
         h(InputNumber, {

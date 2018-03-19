@@ -280,16 +280,16 @@ CustomizeGasModal.prototype.render = function () {
 
         h('div.send-v2__customize-gas__revert', {
           onClick: () => this.revert(),
-        }, [t('revert')]),
+        }, [t(this.props.localeMessages, 'revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
           h('div.send-v2__customize-gas__cancel.allcaps', {
             onClick: this.props.hideModal,
-          }, [t('cancel')]),
+          }, [t(this.props.localeMessages, 'cancel')]),
 
           h(`div.send-v2__customize-gas__save${error ? '__error' : ''}.allcaps`, {
             onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
-          }, [t('save')]),
+          }, [t(this.props.localeMessages, 'save')]),
         ]),
 
       ]),

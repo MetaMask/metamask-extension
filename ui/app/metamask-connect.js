@@ -8,8 +8,10 @@ const metamaskConnect = (mapStateToProps, mapDispatchToProps) => {
 }
 
 const _higherOrderMapStateToProps = (mapStateToProps) => {
-    return (state, ownProps) => {
-        const stateProps = mapStateToProps(state, ownProps)
+    return (state, ownProps = {}) => {
+        const stateProps = mapStateToProps
+            ? mapStateToProps(state, ownProps)
+            : ownProps
         stateProps.localeMessages = state.localeMessages || {}
         return stateProps
     }

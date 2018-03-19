@@ -12,7 +12,7 @@ const getMessage = (locale, key, substitutions) => {
   const entry = locale[key]
   if (!entry) {
     log.error(`Translator - Unable to find value for "${key}"`)
-    throw new Error(`Translator - Unable to find value for "${key}"`)
+    // throw new Error(`Translator - Unable to find value for "${key}"`)
   }
   let phrase = entry.message
   // perform substitutions

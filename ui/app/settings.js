@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const { connect } = require('react-redux')
+const connect = require('./metamask-connect')
 const actions = require('./actions')
 const infuraCurrencies = require('./infura-conversion.json')
 const validUrl = require('valid-url')

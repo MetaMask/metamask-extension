@@ -30,7 +30,7 @@ class SenderToRecipient extends Component {
         ]),
         h('.sender-to-recipient__recipient', [
           h('i.fa.fa-file-text-o'),
-          h('.sender-to-recipient__name.sender-to-recipient__recipient-name', t('newContract')),
+          h('.sender-to-recipient__name.sender-to-recipient__recipient-name', t(this.props.localeMessages, 'newContract')),
         ]),
       ])
     )
