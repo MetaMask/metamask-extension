@@ -1,0 +1,144 @@
+{
+  "accept": {
+    "message": "स्वीकार करें"
+  },
+  "account": {
+    "message": "खाता"
+  },
+  "accountDetails": {
+    "message": "खाता विवरण"
+  },
+  "accountName": {
+    "message": "खाता का नाम"
+  },
+  "address": {
+    "message": "खाते का पता"
+  },
+  "addCustomToken": {
+    "message": "कस्टम टोकन जोड़ें"
+  },
+  "addToken": {
+    "message": "टोकन जोड़ें"
+  },
+  "addTokens": {
+    "message": "टोकनो को जोड़ें"
+  },
+  "amount": {
+    "message": "राशि"
+  },
+  "amountPlusGas": {
+    "message": "राशि + गैस"
+  },
+  "appDescription": {
+    "message": "एथरेम ब्राउज़र एक्सटेंशन",
+    "description": "आवेदन का विवरण"
+  },
+  "appName": {
+    "message": "मेटामास्क/MetaMask",
+    "description": "एप्लिकेशन का नाम"
+  },
+  "attemptingConnect": {
+    "message": "ब्लॉकचैन से कनेक्ट करने का प्रयास करना होगा।सब्र करे।"
+  },
+  "attributions": {
+    "message": "एट्रिब्यूशन},
+  "available": {
+    "message": "एट्रिब्यूशन उपलब्ध ह्ने"
+  },
+  "back": {
+    "message": "वापस"
+  },
+  "balance": {
+    "message": "उपलब्ध बैलेंस।"
+  },
+  "balances": {
+    "message": "ापके उपलब्ध बैलेंस"
+  },
+  "balanceIsInsufficientGas": {
+    "message": "वर्तमान गैस कुल के लिए अपर्याप्त शेष"
+  },
+  "beta": {
+    "message": "BETA/बीटा"
+  },
+  "betweenMinAndMax": {
+    "message": "$1 के बराबर या ज्यदा या, $2 के बराबर या कम होना चाहिए।",
+    "description": "हेक्स इनपुट के लिए दशमलव इनपुट के रूप में सहायक"
+  },
+  "blockiesIdenticon": {
+    "message": "ब्लॉकीज पहचान का उपयोग करें"
+  },
+  "borrowDharma": {
+    "message": "धर्मा (बीटा) से / के साथ उधार लें"
+  },
+  "builtInCalifornia": {
+    "message": "मेटामास्क कैलिफ़ोर्निया में डिज़ाइन और बनाया गया है।"
+  },
+  "buy": {
+    "message": "खरीदें"
+  },
+  "buyCoinbase": {
+    "message": "कॉनबेस पर खरीदें"
+  },
+  "buyCoinbaseExplainer": {
+    "message": "बिल्टकोइन, एथरेम और लाइटकोइन खरीदने और बेचने के लिए दुनिया का सबसे लोकप्रिय तरीका Coinbase है।"
+  },
+  "cancel": {
+    "message": "रद्द करें"
+  },
+  "classicInterface": {
+    "message": "क्लासिक इंटरफ़ेस का उपयोग क"
+  },
+  "clickCopy": {
+    "message": "कॉपी करने के लिए क्लिक करें"
+  },
+  "confirm": {
+    "message": "पुष्टि करें"
+  },
+  "confirmContract": {
+    "message": "अनुबंध की पुष्टि करें"
+  },
+  "confirmPassword": {
+    "message": "पासवर्ड की पुष्टि करें"
+  },
+  "confirmTransaction": {
+    "message": "लेनदेन की पुष्टि करें"
+  },
+  "continue": {
+    "message": "जारी रखें"
+  },
+  "continueToCoinbase": {
+    "message": "कॉ्ोनबेस को ब्हेजना जारी रखें"
+  },
+  "contractDeployment": {
+    "message": "अनुबंध परिनियोजन व तैनाती"
+  },
+  "conversionProgress": {
+    "message": "रूपांतरण प्रगति में हे।"
+  },
+  "copiedButton": {
+    "message": "कॉपी किया गया"
+  },
+  "copiedClipboard": {
+    "message": "क्लिपबोर्ड पर कॉपी किया गया"
+  },
+  "copiedExclamation": {
+    "message": "कॉपी कर दिया गया!"
+  },
+  "copiedSafe": {
+    "message": "मैंने इसे कहीं सुरक्षित कॉपी कर दिया है"
+  },
+  "copy": {
+    "message": "कॉपी / प्रतिलिपि कर्रे"
+  },
+  "copyToClipboard": {
+    "message": "क्लिपबोर्ड पर कॉपी करें"
+  },
+  "copyButton": {
+    "message": " कॉपी / प्रतिलिपि कर्रे [बत्तन] "
+  },
+  "copyPrivateKey": {
+    "message": "यह आपकी निजी कुंजी है (कॉपी करने के लिए क्लिक करें)।"
+  },
+  "create": {
+    "message": "बनाएं"
+  },
