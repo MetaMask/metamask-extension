@@ -63,26 +63,32 @@ class NoticeScreen extends Component {
     return (
       isLoading
         ? <LoadingScreen />
-        : <div
-          className="tou"
-          onScroll={this.onScroll}
-        >
-          <Identicon address={address} diameter={70} />
-          <div className="tou__title">{title}</div>
-          <Markdown
-            className="tou__body markdown"
-            source={body}
-            skipHtml
-          />
-          <button
-            className="first-time-flow__button"
-            onClick={atBottom && this.acceptTerms}
-            disabled={!atBottom}
-          >
-            Accept
-          </button>
-          <Breadcrumbs total={3} currentIndex={2} />
-        </div>
+        : (
+          <div className="first-view-main-wrapper">
+            <div className="first-view-main">
+              <div
+                className="tou"
+                onScroll={this.onScroll}
+              >
+                <Identicon address={address} diameter={70} />
+                <div className="tou__title">{title}</div>
+                <Markdown
+                  className="tou__body markdown"
+                  source={body}
+                  skipHtml
+                />
+                <button
+                  className="first-time-flow__button"
+                  onClick={atBottom && this.acceptTerms}
+                  disabled={!atBottom}
+                >
+                  Accept
+                </button>
+                <Breadcrumbs total={3} currentIndex={2} />
+              </div>
+            </div>
+          </div>
+        )
     )
   }
 }

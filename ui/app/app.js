@@ -329,12 +329,14 @@ App.prototype.renderAppBar = function () {
         ]),
       ]),
 
-      !isInitialized && !isPopup && betaUI && h('h2', {
-        className: classnames({
-          'alpha-warning': welcomeScreenSeen,
-          'alpha-warning-welcome-screen': !welcomeScreenSeen,
-        }),
-      }, 'Please be aware that this version is still under development'),
+      !isInitialized && !isPopup && betaUI && h('.alpha-warning__container', {}, [
+        h('h2', {
+          className: classnames({
+            'alpha-warning': welcomeScreenSeen,
+            'alpha-warning-welcome-screen': !welcomeScreenSeen,
+          }),
+        }, 'Please be aware that this version is still under development'),
+      ]),
 
     ])
   )

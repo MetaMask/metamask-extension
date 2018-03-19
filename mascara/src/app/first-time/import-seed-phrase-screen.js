@@ -79,70 +79,73 @@ class ImportSeedPhraseScreen extends Component {
     const { warning } = this.props
     const importDisabled = warning || !seedPhrase || !password || !confirmPassword
     return (
-      <div className="import-account">
-        <a
-          className="import-account__back-button"
-          onClick={e => {
-            e.preventDefault()
-            this.props.back()
-          }}
-          href="#"
-        >
-          {`< Back`}
-        </a>
-        <div className="import-account__title">
-          Import an Account with Seed Phrase
+      <div className="first-view-main-wrapper">
+        <div className="first-view-main">
+          <div className="import-account">
+            <a
+              className="import-account__back-button"
+              onClick={e => {
+                e.preventDefault()
+                this.props.back()
+              }}
+              href="#"
+            >
+              {`< Back`}
+            </a>
+            <div className="import-account__title">
+              Import an Account with Seed Phrase
+            </div>
+            <div className="import-account__selector-label">
+              Enter your secret twelve word phrase here to restore your vault.
+            </div>
+            <div className="import-account__input-wrapper">
+              <label className="import-account__input-label">Wallet Seed</label>
+              <textarea
+                className="import-account__secret-phrase"
+                onChange={e => this.onChange({seedPhrase: e.target.value})}
+                value={this.state.seedPhrase}
+                placeholder="Separate each word with a single space"
+              />
+            </div>
+            <span
+              className="error"
+            >
+              {this.props.warning}
+            </span>
+            <div className="import-account__input-wrapper">
+              <label className="import-account__input-label">New Password</label>
+              <input
+                className="first-time-flow__input"
+                type="password"
+                placeholder="New Password (min 8 characters)"
+                onChange={e => this.onChange({password: e.target.value})}
+              />
+            </div>
+            <div className="import-account__input-wrapper">
+              <label
+                className={classnames('import-account__input-label', {
+                  'import-account__input-label__disabled': password.length < 8,
+                })}
+              >Confirm Password</label>
+              <input
+                className={classnames('first-time-flow__input', {
+                  'first-time-flow__input__disabled': password.length < 8,
+                })}
+                type="password"
+                placeholder="Confirm Password"
+                onChange={e => this.onChange({confirmPassword: e.target.value})}
+                disabled={password.length < 8}
+              />
+            </div>
+            <button
+              className="first-time-flow__button"
+              onClick={() => !importDisabled && this.onClick()}
+              disabled={importDisabled}
+            >
+              Import
+            </button>
+          </div>
         </div>
-        <div className="import-account__selector-label">
-          Enter your secret twelve word phrase here to restore your vault.
-        </div>
-        <div className="import-account__input-wrapper">
-          <label className="import-account__input-label">Wallet Seed</label>
-          <textarea
-            className="import-account__secret-phrase"
-            onChange={e => this.onChange({seedPhrase: e.target.value})}
-            value={this.state.seedPhrase}
-            placeholder="Separate each word with a single space"
-          />
-        </div>
-        <span
-          className="error"
-        >
-          {this.props.warning}
-        </span>
-        <div className="import-account__input-wrapper">
-          <label className="import-account__input-label">New Password</label>
-          <input
-            className="first-time-flow__input"
-            type="password"
-            placeholder="New Password (min 8 characters)"
-            onChange={e => this.onChange({password: e.target.value})}
-          />
-        </div>
-        <div className="import-account__input-wrapper">
-          <label
-            className="import-account__input-label"
-            className={classnames('import-account__input-label', {
-              'import-account__input-label__disabled': password.length < 8,
-            })}
-          >Confirm Password</label>
-          <input
-            className={classnames('first-time-flow__input', {
-              'first-time-flow__input__disabled': password.length < 8,
-            })}
-            type="password"
-            placeholder="Confirm Password"
-            onChange={e => this.onChange({confirmPassword: e.target.value})}
-            disabled={password.length < 8}
-          />
-        </div>
-        <button
-          className="first-time-flow__button"
-          onClick={() => !importDisabled && this.onClick()}
-          disabled={importDisabled}
-        >
-          Import
-        </button>
       </div>
     )
   }

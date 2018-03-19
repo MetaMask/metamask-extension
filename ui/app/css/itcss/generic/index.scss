@@ -82,7 +82,6 @@ input.large-input {
   display: flex;
   flex-flow: column;
   border-radius: 7px;
-  height: 100%;
 
   &__header {
     display: flex;
@@ -116,7 +115,8 @@ input.large-input {
     flex: 0 0 auto;
 
     .btn-clear,
-    .btn-cancel {
+    .btn-cancel,
+    .btn-confirm {
       font-size: 1rem;
     }
   }
@@ -134,9 +134,16 @@ input.large-input {
     }
   }
 
+  &__back-button {
+    color: #2f9ae0;
+    font-size: 1rem;
+    cursor: pointer;
+    padding-bottom: 10px;
+    font-weight: 400;
+  }
+
   &__title {
     color: $black;
-    font-family: Roboto;
     font-size: 2rem;
     font-weight: 500;
     line-height: 2rem;
@@ -186,6 +193,10 @@ input.large-input {
 
   &--full-width {
     width: initial;
+  }
+
+  &--full-height {
+    height: 100%;
   }
 
   &__content {
