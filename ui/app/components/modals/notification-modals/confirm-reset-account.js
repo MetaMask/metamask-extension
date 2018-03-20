@@ -26,7 +26,6 @@ class ConfirmResetAccount extends Component {
       showCancelButton: true,
       showConfirmButton: true,
       onConfirm: resetAccount,
-      
     })
   }
 }

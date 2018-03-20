@@ -42,6 +42,7 @@ const isIE = !!document.documentMode
 const isEdge = !isIE && !!window.StyleMedia
 
 let popupIsOpen = false
+let notificationIsOpen = false
 let openMetamaskTabsIDs = {}
 
 // state persistence
@@ -165,6 +166,11 @@ function setupController (initState) {
           }
         })
       }
+      if (remotePort.name === 'notification') {
+        endOfStream(portStream, () => {
+          notificationIsOpen = false
+        })
+      }
     } else {
       // communication with page
       const originDomain = urlUtil.parse(remotePort.sender.url).hostname
@@ -207,7 +213,8 @@ function setupController (initState) {
 function triggerUi () {
   extension.tabs.query({ active: true }, (tabs) => {
     const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
-    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup()
+    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) notificationManager.showPopup()
+    notificationIsOpen = true
   })
 }
 

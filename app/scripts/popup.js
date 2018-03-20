@@ -65,6 +65,7 @@ startPopup({ container, connectionStream }, (err, store) => {
 
 function closePopupIfOpen (windowType) {
   if (windowType !== 'notification') {
+    // should close only chrome popup
     notificationManager.closePopup()
   }
 }

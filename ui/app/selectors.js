@@ -187,3 +187,4 @@ function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
   return currentView.context
 }
+

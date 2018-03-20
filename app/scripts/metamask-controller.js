@@ -832,13 +832,13 @@ module.exports = class MetamaskController extends EventEmitter {
     cb(null, this.getState())
   }
 
-  markPasswordForgotten(cb) {
+  markPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(true)
     this.sendUpdate()
     cb()
   }
 
-  unMarkPasswordForgotten(cb) {
+  unMarkPasswordForgotten (cb) {
     this.configManager.setPasswordForgotten(false)
     this.sendUpdate()
     cb()

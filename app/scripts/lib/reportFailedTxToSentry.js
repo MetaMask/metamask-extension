@@ -8,7 +8,7 @@ module.exports = reportFailedTxToSentry
 // for sending to sentry
 //
 
-function reportFailedTxToSentry({ raven, txMeta }) {
+function reportFailedTxToSentry ({ raven, txMeta }) {
   const errorMessage = extractErrorMessage(txMeta.err.message)
   raven.captureMessage(errorMessage, {
     // "extra" key is required by Sentry
@@ -26,7 +26,7 @@ function reportFailedTxToSentry({ raven, txMeta }) {
 // Transaction Failed: replacement transaction underpriced
 //
 
-function extractErrorMessage(errorMessage) {
+function extractErrorMessage (errorMessage) {
   const isEthjsRpcError = errorMessage.includes(ethJsRpcSlug)
   if (isEthjsRpcError) {
     const payloadAndError = errorMessage.slice(ethJsRpcSlug.length)
