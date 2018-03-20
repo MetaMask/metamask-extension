@@ -91,6 +91,7 @@ CurrencyInput.prototype.render = function () {
     placeholder,
     readOnly,
     inputRef,
+    type,
   } = this.props
   const { emptyState, focused } = this.state
 
@@ -99,6 +100,7 @@ CurrencyInput.prototype.render = function () {
   const valueToRender = this.getValueToRender()
   return h('input', {
     className,
+    type,
     value: emptyState ? '' : valueToRender,
     placeholder: focused ? '' : placeholder,
     size: valueToRender.length * inputSizeMultiplier,
