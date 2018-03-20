@@ -37,6 +37,9 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "approved": {
+    "message": "Approved"
+  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
@@ -231,6 +234,9 @@
   },
   "downloadStatelogs": {
     "message": "Download State Logs"
+  },
+  "dropped": {
+    "message": "Dropped"
   },
   "edit": {
     "message": "Edit"
@@ -703,7 +709,7 @@
     "message": "Settings"
   },
   "info": {
-    "message": "Info"
+  "message": "Info"
   },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
@@ -716,6 +722,9 @@
   },
   "sign": {
     "message": "Sign"
+  },
+  "signed": {
+    "message": "Signed"
   },
   "signMessage": {
     "message": "Sign Message"
@@ -746,6 +755,9 @@
   },
   "submit": {
     "message": "Submit"
+  },
+  "submitted": {
+    "message": "Submitted"
   },
   "supportCenter": {
     "message": "Visit our Support Center"

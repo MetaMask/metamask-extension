@@ -265,7 +265,7 @@ TxListItem.prototype.render = function () {
                 'tx-list-status--dropped': transactionStatus === 'dropped',
               }),
             },
-              transactionStatus,
+              this.txStatusIndicator(),
             ),
           ]),
         ]),
@@ -299,4 +299,29 @@ TxListItem.prototype.render = function () {
 
     ]), // holding on icon from design
   ])
+}
+
+TxListItem.prototype.txStatusIndicator = function () {
+  const { transactionStatus } = this.props
+
+  let name
+
+  if (transactionStatus === 'unapproved') {
+    name = t('unapproved')
+  } else if (transactionStatus === 'rejected') {
+    name = t('rejected')
+  } else if (transactionStatus === 'approved') {
+    name = t('approved')
+  } else if (transactionStatus === 'signed') {
+    name = t('signed')
+  } else if (transactionStatus === 'submitted') {
+    name = t('submitted')
+  } else if (transactionStatus === 'confirmed') {
+    name = t('confirmed')
+  } else if (transactionStatus === 'failed') {
+    name = t('failed')
+  } else if (transactionStatus === 'dropped') {
+    name = t('dropped')
+  }
+  return name
 }
