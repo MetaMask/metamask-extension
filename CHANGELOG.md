@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- MetaMask will no longer allow nonces to be specified by the dapp
 - Add ability for internationalization.
 - Will now throw an error if the `to` field in txParams is not valid.
 - Will strip null values from the `to` field.

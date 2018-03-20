@@ -408,7 +408,11 @@ function bundleTask(opts) {
       .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
       // Minification
       .pipe(gulpif(opts.isBuild, uglify({
-        mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
+        mangle: { reserved: [ 'MetamaskInpageProvider' ] },
+      })))
+      // Transpile to ES5
+      .pipe(gulpif(opts.isBuild, babel({
+        presets: ['env']
       })))
       // writes .map file
       .pipe(gulpif(debug, sourcemaps.write('./')))

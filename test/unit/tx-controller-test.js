@@ -392,6 +392,49 @@ describe('Transaction Controller', function () {
     })
   })
 
+  describe('#retryTransaction', function () {
+    it('should create a new txMeta with the same txParams as the original one', function (done) {
+      let txParams = {
+        nonce: '0x00',
+        from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
+        data: '0x0',
+      }
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams },
+      ])
+      txController.retryTransaction(1)
+      .then((txMeta) => {
+        assert.equal(txMeta.txParams.nonce, txParams.nonce, 'nonce should be the same')
+        assert.equal(txMeta.txParams.from, txParams.from, 'from should be the same')
+        assert.equal(txMeta.txParams.to, txParams.to, 'to should be the same')
+        assert.equal(txMeta.txParams.data, txParams.data, 'data should be the same')
+        assert.ok(('lastGasPrice' in txMeta), 'should have the key `lastGasPrice`')
+        assert.equal(txController.txStateManager.getTxList().length, 2)
+        done()
+      }).catch(done)
+    })
+  })
+
+  describe('#_markNonceDuplicatesDropped', function () {
+    it('should mark all nonce duplicates as dropped without marking the confirmed transaction as dropped', function () {
+      txController.txStateManager._saveTxList([
+        { id: 1, status: 'confirmed', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 2, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 3, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 4, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 5, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 6, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+        { id: 7, status: 'submitted', metamaskNetworkId: currentNetworkId, history: [{}], txParams: { nonce: '0x01' } },
+      ])
+      txController._markNonceDuplicatesDropped(1)
+      const confirmedTx = txController.txStateManager.getTx(1)
+      const droppedTxs = txController.txStateManager.getFilteredTxList({ nonce: '0x01', status: 'dropped' })
+      assert.equal(confirmedTx.status, 'confirmed', 'the confirmedTx should remain confirmed')
+      assert.equal(droppedTxs.length, 6, 'their should be 6 dropped txs')
+
+    })
+  })
 
   describe('#getPendingTransactions', function () {
     beforeEach(function () {
@@ -401,7 +444,7 @@ describe('Transaction Controller', function () {
         { id: 3, status: 'approved', metamaskNetworkId: currentNetworkId, txParams: {} },
         { id: 4, status: 'signed', metamaskNetworkId: currentNetworkId, txParams: {} },
         { id: 5, status: 'submitted', metamaskNetworkId: currentNetworkId, txParams: {} },
-        { id: 6, status: 'confimed', metamaskNetworkId: currentNetworkId, txParams: {} },
+        { id: 6, status: 'confirmed', metamaskNetworkId: currentNetworkId, txParams: {} },
         { id: 7, status: 'failed', metamaskNetworkId: currentNetworkId, txParams: {} },
       ])
     })

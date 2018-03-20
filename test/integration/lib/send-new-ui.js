@@ -93,7 +93,7 @@ async function runSendFlowTest(assert, done) {
     'send gas field should show estimated gas total converted to USD'
   )
 
-  const sendGasOpenCustomizeModalButton = await queryAsync($, '.send-v2__sliders-icon-container')
+  const sendGasOpenCustomizeModalButton = await queryAsync($, '.sliders-icon-container')
   sendGasOpenCustomizeModalButton[0].click()
 
   const customizeGasModal = await queryAsync($, '.send-v2__customize-gas')
@@ -135,9 +135,9 @@ async function runSendFlowTest(assert, done) {
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
   const confirmScreenRows = await queryAsync($, '.confirm-screen-rows')
-  const confirmScreenGas = confirmScreenRows.find('.confirm-screen-row-info')[2]
-  assert.equal(confirmScreenGas.textContent, '3.6 USD', 'confirm screen should show correct gas')
-  const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[3]
+  const confirmScreenGas = confirmScreenRows.find('.currency-display__converted-value')[0]
+  assert.equal(confirmScreenGas.textContent, '3.60 USD', 'confirm screen should show correct gas')
+  const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[2]
   assert.equal(confirmScreenTotal.textContent, '2405.36 USD', 'confirm screen should show correct total')
 
   const confirmScreenBackButton = await queryAsync($, '.confirm-screen-back-button')
