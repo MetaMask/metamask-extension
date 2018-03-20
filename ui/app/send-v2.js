@@ -42,6 +42,7 @@ function SendTransactionScreen () {
       to: null,
       amount: null,
     },
+    gasLoadingError: false,
   }
 
   this.handleToChange = this.handleToChange.bind(this)
@@ -128,6 +129,10 @@ SendTransactionScreen.prototype.updateGas = function () {
       .then(([gasPrice, gas]) => {
         const newGasTotal = this.getGasTotal(gas, gasPrice)
         updateGasTotal(newGasTotal)
+        this.setState({ gasLoadingError: false })
+      })
+      .catch(err => {
+        this.setState({ gasLoadingError: true })
       })
   } else {
     const newGasTotal = this.getGasTotal(gasLimit, gasPrice)
@@ -436,6 +441,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
     showCustomizeGasModal,
     gasTotal,
   } = this.props
+  const { gasLoadingError } = this.state
 
   return h('div.send-v2__form-row', [
 
@@ -448,6 +454,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
         conversionRate,
         convertedCurrency,
         onClick: showCustomizeGasModal,
+        gasLoadingError,
       }),
 
     ]),
@@ -571,9 +578,11 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       data,
     })
   } else {
+    const data = unapprovedTxs[editingTransactionId].txParams.data
     Object.assign(editingTx.txParams, {
       value: ethUtil.addHexPrefix(amount),
       to: ethUtil.addHexPrefix(to),
+      data,
     })
   }
 
