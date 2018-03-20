@@ -282,9 +282,6 @@
   "from": {
     "message": "From"
   },
-  "to": {
-    "message": "To: "
-  },
   "fromToSame": {
     "message": "From and To address cannot be the same"
   },
@@ -696,9 +693,6 @@
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
   },
-  "required": {
-    "Required"
-  },
   "settings": {
     "message": "Settings"
   },
@@ -763,7 +757,7 @@
     "message": "Test Faucet"
   },
   "to": {
-    "message": "To"
+    "message": "To: "
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
