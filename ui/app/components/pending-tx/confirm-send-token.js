@@ -9,6 +9,7 @@ const actions = require('../../actions')
 const t = require('../../../i18n-helper').getMessage
 const clone = require('clone')
 const Identicon = require('../identicon')
+const GasFeeDisplay = require('../send/gas-fee-display-v2.js')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const {
@@ -88,6 +89,39 @@ function mapDispatchToProps (dispatch, ownProps) {
         editingTransactionId: id,
       }))
       dispatch(actions.showSendTokenPage())
+    },
+    showCustomizeGasModal: (txMeta, sendGasLimit, sendGasPrice, sendGasTotal) => {
+      const { id, txParams, lastGasPrice } = txMeta
+      const { gas: txGasLimit, gasPrice: txGasPrice } = txParams
+      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+      const { params = [] } = tokenData
+      const { value: to } = params[0] || {}
+      const { value: tokenAmountInDec } = params[1] || {}
+      const tokenAmountInHex = conversionUtil(tokenAmountInDec, {
+        fromNumericBase: 'dec',
+        toNumericBase: 'hex',
+      })
+
+      let forceGasMin
+      if (lastGasPrice) {
+        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+          multiplicandBase: 16,
+          multiplierBase: 10,
+          toNumericBase: 'hex',
+          fromDenomination: 'WEI',
+        }))
+      }
+
+      dispatch(actions.updateSend({
+        gasLimit: sendGasLimit || txGasLimit,
+        gasPrice: sendGasPrice || txGasPrice,
+        editingTransactionId: id,
+        gasTotal: sendGasTotal,
+        to,
+        amount: tokenAmountInHex,
+        forceGasMin,
+      }))
+      dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
   }
 }
@@ -188,6 +222,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
     token: tokenExchangeRate
       ? tokenGas
       : null,
+    gasFeeInHex: gasTotal.toString(16),
   }
 }
 
@@ -240,19 +275,25 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
 }
 
 ConfirmSendToken.prototype.renderGasFee = function () {
-  const { token: { symbol }, currentCurrency } = this.props
-  const { fiat: fiatGas, token: tokenGas, eth: ethGas } = this.getGasFee()
+  const {
+    currentCurrency: convertedCurrency,
+    conversionRate,
+    send: { gasTotal, gasLimit: sendGasLimit, gasPrice: sendGasPrice },
+    showCustomizeGasModal,
+  } = this.props
+  const txMeta = this.gatherTxMeta()
+  const { gasFeeInHex } = this.getGasFee()
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
       h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'gasFee') ]),
       h('div.confirm-screen-section-column', [
-        h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency}`),
-
-        h(
-          'div.confirm-screen-row-detail',
-          tokenGas ? `${tokenGas} ${symbol}` : `${ethGas} ETH`
-        ),
+        h(GasFeeDisplay, {
+          gasTotal: gasTotal || gasFeeInHex,
+          conversionRate,
+          convertedCurrency,
+          onClick: () => showCustomizeGasModal(txMeta, sendGasLimit, sendGasPrice, gasTotal),
+        }),
       ]),
     ])
   )
@@ -308,16 +349,22 @@ ConfirmSendToken.prototype.render = function () {
 
   this.inputs = []
 
+  const isTxReprice = Boolean(txMeta.lastGasPrice)
+  const title = isTxReprice ? t(this.props.localeMessages, 'reprice:title') : t(this.props.localeMessages, 'confirm')
+  const subtitle = isTxReprice
+    ? t(this.props.localeMessages, 'reprice:subtitle')
+    : t(this.props.localeMessages, 'pleaseReviewTransaction')
+
   return (
     h('div.confirm-screen-container.confirm-send-token', [
       // Main Send token Card
       h('div.page-container', [
         h('div.page-container__header', [
-          h('button.confirm-screen-back-button', {
+          !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
             onClick: () => editTransaction(txMeta),
           }, t(this.props.localeMessages, 'edit')),
-          h('div.page-container__title', t(this.props.localeMessages, 'confirm')),
-          h('div.page-container__subtitle', t(this.props.localeMessages, 'pleaseReviewTransaction')),
+          h('div.page-container__title', title),
+          h('div.page-container__subtitle', subtitle),
         ]),
         h('.page-container__content', [
           h('div.flex-row.flex-center.confirm-screen-identicons', [
@@ -379,7 +426,7 @@ ConfirmSendToken.prototype.render = function () {
             this.renderTotalPlusGas(),
 
           ]),
-          
+
         ]),
 
         h('form#pending-tx-form', {
@@ -441,6 +488,27 @@ ConfirmSendToken.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
+
+  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const {
+    lastGasPrice,
+    txParams: {
+      gasPrice: txGasPrice,
+      gas: txGasLimit,
+    },
+  } = txData
+
+  let forceGasMin
+  if (lastGasPrice) {
+    forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    }))
+  }
+
+  txData.txParams.gasPrice = sendGasPrice || forceGasMin || txGasPrice
+  txData.txParams.gas = sendGasLimit || txGasLimit
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

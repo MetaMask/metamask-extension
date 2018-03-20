@@ -4,6 +4,7 @@ const Component = require('react').Component
 const connect = require('../../../metamask-connect')
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
+const t = require('../../../../i18n')
 
 module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
 
@@ -49,13 +50,13 @@ RevealSeedConfirmation.prototype.render = function () {
         },
       }, [
 
-        h('h4', 'Do not recover your seed words in a public place! These words can be used to steal all your accounts.'),
+        h('h4', t('revealSeedWordsWarning')),
 
         // confirmation
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'Enter your password to confirm',
+          placeholder: t('enterPasswordConfirm'),
           onKeyPress: this.checkConfirmation.bind(this),
           style: {
             width: 260,
@@ -91,7 +92,7 @@ RevealSeedConfirmation.prototype.render = function () {
         ),
 
         props.inProgress && (
-          h('span.in-progress-notification', 'Generating Seed...')
+          h('span.in-progress-notification', t('generatingSeed'))
         ),
       ]),
     ])

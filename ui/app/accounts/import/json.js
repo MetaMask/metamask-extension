@@ -85,7 +85,7 @@ class JsonImportSubview extends Component {
     const state = this.state
 
     if (!state) {
-      const message = 'You must select a valid file to import.'
+      const message = t('validFileImport')
       return this.props.displayWarning(message)
     }
 

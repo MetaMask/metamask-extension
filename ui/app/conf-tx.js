@@ -40,12 +40,30 @@ function mapStateToProps (state) {
     currentCurrency: state.metamask.currentCurrency,
     blockGasLimit: state.metamask.currentBlockGasLimit,
     computedBalances: state.metamask.computedBalances,
+    selectedAddressTxList: state.metamask.selectedAddressTxList,
   }
 }
 
 inherits(ConfirmTxScreen, Component)
 function ConfirmTxScreen () {
   Component.call(this)
+}
+
+ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
+  const {
+    unapprovedTxs,
+    network,
+    selectedAddressTxList,
+  } = this.props
+  const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
+  const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
+  const prevTxData = prevUnconfTxList[prevIndex] || {}
+  const prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
+  const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
+
+  if (prevTx.status === 'dropped' && unconfTxList.length === 0) {
+    this.goHome({})
+  }
 }
 
 ConfirmTxScreen.prototype.render = function () {

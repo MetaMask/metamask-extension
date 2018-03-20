@@ -48,6 +48,7 @@ function mapStateToProps (state) {
     primaryCurrency,
     convertedCurrency: getCurrentCurrency(state),
     data,
+    selectedAddress,
     amountConversionRate: selectedToken ? tokenToFiatRate : conversionRate,
     tokenContract: getSelectedTokenContract(state),
     unapprovedTxs: state.metamask.unapprovedTxs,

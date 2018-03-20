@@ -67,7 +67,7 @@ UnlockScreen.prototype.render = function () {
         style: {
           margin: 10,
         },
-      }, 'Log In'),
+      }, t('login')),
 
       h('p.pointer', {
         onClick: () => {
@@ -81,7 +81,7 @@ UnlockScreen.prototype.render = function () {
           color: 'rgb(247, 134, 28)',
           textDecoration: 'underline',
         },
-      }, 'Restore from seed phrase'),
+      }, t('restoreFromSeed')),
 
       h('p.pointer', {
         onClick: () => {
@@ -94,7 +94,7 @@ UnlockScreen.prototype.render = function () {
           textDecoration: 'underline',
           marginTop: '32px',
         },
-      }, 'Use classic interface'),
+      }, t('classicInterface')),
     ])
   )
 }
