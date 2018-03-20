@@ -10,7 +10,7 @@ const ToAutoComplete = require('./components/send/to-autocomplete')
 const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
-
+const t = require('../i18n')
 const {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
 } = require('./components/send/send-constants')
@@ -32,7 +32,7 @@ const { isValidAddress } = require('./util')
 module.exports = SendTransactionScreen
 
 inherits(SendTransactionScreen, PersistentForm)
-function SendTransactionScreen () {
+function SendTransactionScreen() {
   PersistentForm.call(this)
 
   this.state = {
@@ -116,7 +116,7 @@ SendTransactionScreen.prototype.updateGas = function () {
     ? tokenContract.balanceOf(from.address)
     : Promise.resolve()
   tokenBalancePromise
-      .then(usersToken => this.updateSendTokenBalance(usersToken))
+    .then(usersToken => this.updateSendTokenBalance(usersToken))
 
   if (!editingTransactionId) {
     const estimateGasParams = getParamsForGasEstimate(selectedAddress, symbol, data)
@@ -189,9 +189,9 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
   return h('div.page-container__header', [
 
-    h('div.page-container__title', selectedToken ? 'Send Tokens' : 'Send ETH'),
+    h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
 
-    h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
+    h('div.page-container__subtitle', t('msgCompose1') + tokenText + t('msgCompose2')),
 
     h('div.page-container__header-close', {
       onClick: () => {
@@ -208,7 +208,7 @@ SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
   const errorMessage = errors[errorType]
 
   return errorMessage
-    ? h('div.send-v2__error', [ errorMessage ])
+    ? h('div.send-v2__error', [errorMessage])
     : null
 }
 
@@ -236,7 +236,7 @@ SendTransactionScreen.prototype.renderFromRow = function () {
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'From:'),
+    h('div.send-v2__form-label', t('from')),
 
     h('div.send-v2__form-field', [
       h(FromDropdown, {
@@ -257,16 +257,16 @@ SendTransactionScreen.prototype.handleToChange = function (to) {
   const {
     updateSendTo,
     updateSendErrors,
-    from: {address: from},
+    from: { address: from },
   } = this.props
   let toError = null
 
   if (!to) {
     toError = 'Required'
   } else if (!isValidAddress(to)) {
-    toError = 'Recipient address is invalid'
+    toError = t('invalidAddressRecipient')
   } else if (to === from) {
-    toError = 'From and To address cannot be the same'
+    toError = t('fromToSame')
   }
 
   updateSendTo(to)
@@ -282,7 +282,7 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     h('div.send-v2__form-label', [
 
-      'To:',
+      t('to'),
 
       this.renderErrorMessage('to'),
 
@@ -325,7 +325,7 @@ SendTransactionScreen.prototype.setAmountToMax = function () {
   const multiplier = Math.pow(10, Number(decimals || 0))
 
   const maxAmount = selectedToken
-    ? multiplyCurrencies(tokenBalance, multiplier, {toNumericBase: 'hex'})
+    ? multiplyCurrencies(tokenBalance, multiplier, { toNumericBase: 'hex' })
     : subtractCurrencies(
       ethUtil.addHexPrefix(balance),
       ethUtil.addHexPrefix(gasTotal),
@@ -382,11 +382,11 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = 'Insufficient funds.'
+    amountError = t('insufficientFounds')
   } else if (verifyTokenBalance && !sufficientTokens) {
-    amountError = 'Insufficient tokens.'
+    amountError = t('insufficientTokens')
   } else if (amountLessThanZero) {
-    amountError = 'Can not send negative amounts of ETH.'
+    amountError = t('negativeETH')
   }
 
   updateSendErrors({ amount: amountError })
@@ -408,7 +408,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
   return h('div.send-v2__form-row', [
 
     h('div.send-v2__form-label', [
-      'Amount:',
+      t('amount'),
       this.renderErrorMessage('amount'),
       !errors.amount && gasTotal && h('div.send-v2__amount-max', {
         onClick: (event) => {
@@ -416,7 +416,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
           setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ !maxModeOn ? 'Max' : '' ]),
+      }, [!maxModeOn ? 'Max' : '']),
     ]),
 
     h('div.send-v2__form-field', [
@@ -445,7 +445,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Gas fee:'),
+    h('div.send-v2__form-label', t('gasFee')),
 
     h('div.send-v2__form-field', [
 
@@ -467,7 +467,7 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Transaction Memo:'),
+    h('div.send-v2__form-label', t('transactionMemo')),
 
     h('div.send-v2__form-field', [
       h(MemoTextArea, {
@@ -518,7 +518,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
     h('button.btn-clear.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
-    }, 'Next'),
+    }, t('next')),
   ])
 }
 
@@ -547,7 +547,7 @@ SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
 
 SendTransactionScreen.prototype.getEditedTx = function () {
   const {
-    from: {address: from},
+    from: { address: from },
     to,
     amount,
     gasLimit: gas,
@@ -592,7 +592,7 @@ SendTransactionScreen.prototype.getEditedTx = function () {
 SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
-    from: {address: from},
+    from: { address: from },
     to,
     amount,
     gasLimit: gas,

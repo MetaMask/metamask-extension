@@ -47,7 +47,7 @@ class JsonImportSubview extends Component {
 
         h('input.large-input.letter-spacey', {
           type: 'password',
-          placeholder: 'Enter password',
+          placeholder: t('enterPassword'),
           id: 'json-password-box',
           onKeyPress: this.createKeyringOnEnter.bind(this),
           style: {

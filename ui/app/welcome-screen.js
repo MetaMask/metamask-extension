@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {closeWelcomeScreen} from './actions'
 import Mascot from './components/mascot'
+const t = require('../i18n')
 
 class WelcomeScreen extends Component {
   static propTypes = {
@@ -31,16 +32,15 @@ class WelcomeScreen extends Component {
             height: '225',
           }),
 
-          h('div.welcome-screen__info__header', 'Welcome to MetaMask Beta'),
+          h('div.welcome-screen__info__header', t('welcomeBeta')),
 
-          h('div.welcome-screen__info__copy', 'MetaMask is a secure identity vault for Ethereum.'),
+          h('div.welcome-screen__info__copy', t('metamaskDescription')),
 
-          h('div.welcome-screen__info__copy', `It allows you to hold ether & tokens,
-            and serves as your bridge to decentralized applications.`),
+          h('div.welcome-screen__info__copy', t(`holdEther`)),
 
           h('button.welcome-screen__button', {
             onClick: this.initiateAccountCreation,
-          }, 'Continue'),
+          }, t('continue')),
 
         ]),
 

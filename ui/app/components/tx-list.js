@@ -40,7 +40,7 @@ TxList.prototype.render = function () {
   return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
-        h('div', 'transactions'),
+        h('div', t('transactions')),
       ]),
     ]),
     h('div.flex-column.tx-list-container', {}, [

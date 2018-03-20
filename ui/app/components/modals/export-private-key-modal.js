@@ -83,7 +83,7 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
     !privateKey && this.renderButton(
       'btn-cancel export-private-key__button export-private-key__button--cancel',
       () => hideModal(),
-      'Cancel'
+      t('cancel')
     ),
 
     (privateKey

@@ -113,15 +113,15 @@ class ImportAccountScreen extends Component {
             <div className="import-account__file-name">{name}</div>
           </div>
           <div className="import-account__input-error-message">
-            {warning && 'Something went wrong. Please make sure your JSON file is properly formatted.'}
+            {warning && t('jsonFail')}
           </div>
         </div>
         {Input({
-          label: 'Enter Password',
-          placeholder: 'Enter Password',
+          label: t('enterPassword'),
+          placeholder: t('enterPassword'),
           type: 'password',
           onChange: e => this.setState({ password: e.target.value }),
-          errorMessage: warning && 'Please make sure your password is correct.',
+          errorMessage: warning && t('passwordCorrect'),
         })}
       </div>
     )

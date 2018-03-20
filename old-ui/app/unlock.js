@@ -48,7 +48,7 @@ UnlockScreen.prototype.render = function () {
         h('input.large-input', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'enter password',
+          placeholder: t('enterPassword'),
           style: {
 
           },

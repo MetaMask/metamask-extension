@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../actions')
 const NotifcationModal = require('../notification-modal')
+const t = require('../../../../i18n')
 
 class ConfirmResetAccount extends Component {
   render () {
@@ -20,7 +21,7 @@ class ConfirmResetAccount extends Component {
           href: 'http://metamask.helpscoutdocs.com/article/36-resetting-an-account',
           target: '_blank',
           onClick (event) { global.platform.openWindow({ url: event.target.href }) },
-        }, 'Read more.'),
+        }, t('readMore2')),
 
       ]),
       showCancelButton: true,
