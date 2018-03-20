@@ -86,6 +86,7 @@ function mapDispatchToProps (dispatch, ownProps) {
         amount: tokenAmountInHex,
         errors: { to: null, amount: null },
         editingTransactionId: id,
+        token: ownProps.token,
       }))
       dispatch(actions.showSendTokenPage())
     },
