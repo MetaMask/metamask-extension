@@ -11,7 +11,7 @@
   "accountName": {
     "message": "Nombre de la cuenta"
   },
-  "addCustomTokens": {
+  "addCustomToken": {
     "message": "Agregar token personalizados"
   },
   "addToken": {
@@ -159,7 +159,7 @@
   "currentNetwork": {
     "message": "Red actual"
   },
-  "currentRPC": {
+  "currentRpc": {
     "message": "RPC actual"
   },
   "customGas": {
@@ -171,11 +171,11 @@
   "customize": {
     "message": "Personalizar"
   },
+  "decimal": {
+    "message": "Decimales de precisión"
+  },
   "decimalsMustZerotoTen": {
     "message": "Los decimales deben ser al menos 0 y no más de 36"
-  },
-  "decimalsPrecision": {
-    "message": "Decimales de precisión"
   },
   "defaultNetwork": {
     "message": "La red por defecto para las transacciones de Ether es MainNet (red principal)"
@@ -225,9 +225,6 @@
   },
   "done": {
     "message": "Completo"
-  },
-  "down": {
-    "message": "abajo"
   },
   "downloadStatelogs": {
     "message": "Descargar logs de estados"
@@ -366,7 +363,7 @@
     "message": "Importado",
     "description": "estado que muestra que una cuenta ha sido completamente cargada en el llavero"
   },
-  "importedAccountMsg": {
+  "importAccountMsg": {
     "message": "Cuentas importadas no serán asociadas con tu cuenta original creada con tu MetaMask. Aprende más acerca de importar cuentas. "
   },
   "info": {
@@ -375,7 +372,7 @@
   "infoHelp": {
     "message": "Informacion y Ayuda"
   },
-  "insufficientFounds": {
+  "insufficientFunds": {
     "message": "Fondos insuficientes"
   },
   "insufficientTokens": {
@@ -455,12 +452,6 @@
   "min": {
     "message": "Minimo"
   },
-  "msgCompose1": {
-    "message": "Solo manda "
-  },
-  "msgCompose2": {
-    "message": " a una dirección de Ethereum"
-  },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos un (1) token"
   },
@@ -530,9 +521,6 @@
   "or": {
     "message": "o",
     "description": "opción entre crear o importar una cuenta"
-  },
-  "password": {
-    "message": "Contraseña"
   },
   "passwordCorrect": {
     "message": "Asegurate que tu contraseña es correcta"
@@ -632,9 +620,6 @@
   "saveAsFile": {
     "message": "Guardar como archivo",
     "description": "Proceso de exportación de cuenta"
-  },
-  "saveLogs": {
-    "message": "Logs de estado contienen tus direcciones publicas y transacciones enviadas"
   },
   "saveSeedAsFile": {
     "message": "Guardar la semilla como archivo"
@@ -794,10 +779,7 @@
   "unknownNetworkId": {
     "message": "ID (identidad) de Red desconocida"
   },
-  "up": {
-    "message": "arriba"
-  },
-  "urlErrorMsg": {
+  "uriErrorMsg": {
     "message": "URI necesita el prefijo HTTP/HTTPS  apropiado"
   },
   "usaOnly": {
