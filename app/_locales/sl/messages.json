@@ -27,10 +27,10 @@
     "message": "Znesek"
   },
   "amountPlusGas": {
-    "message": "Amount + Gas"
+    "message": "Znesek + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Denarnica za Brskalnike",
+    "message": "Denarnica za Ethereum v brskalniku",
     "description": "The description of the application"
   },
   "appName": {
@@ -191,7 +191,7 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Vplačilo Eth"
+    "message": "Vplačilo ETH"
   },
   "depositEther": {
     "message": "Vplačilo ethera"
@@ -311,10 +311,10 @@
     "message": "Gas price je zahtevan"
   },
   "getEther": {
-    "message": "Dobiite ether"
+    "message": "Pridobite ether"
   },
   "getEtherFromFaucet": {
-    "message": "Dobite ether iz fauceta za $1",
+    "message": "Pridobite ether iz fauceta za $1",
     "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
@@ -612,7 +612,7 @@
     "message": "Shrani"
   },
   "saveAsFile": {
-    "message": "SShrani kot datoteko",
+    "message": "Shrani kot datoteko",
     "description": "Account export process"
   },
   "saveSeedAsFile": {
