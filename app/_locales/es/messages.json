@@ -37,6 +37,9 @@
     "message": "MetaMask",
     "description": "El nombre de la aplicación"
   },
+  "approved": {
+    "message": "Aprobado"
+  },
   "attemptingConnect": {
     "message": "Intentando conectar a la Blockchain"
   },
@@ -98,11 +101,29 @@
   "confirmContract": {
     "message": "Confirmar contrato"
   },
+  "confirmed": {
+    "message": "Confirmado"
+  },
   "confirmPassword": {
     "message": "Confirmar contraseña"
   },
   "confirmTransaction": {
     "message": "Confirmar transacción "
+  },
+  "connectingToMainnet": {
+    "message": "Conectando a la Red Principal de Ethereum (Main Net)"
+  },
+  "connectingToRopsten": {
+    "message": "Conectando a la Red de Test Ropsten"
+  },
+  "connectingToKovan": {
+    "message": "Conectando a la Red de Test Kovan"
+  },
+  "connectingToRinkeby": {
+    "message": "Conectando a la Red de Test Rinkeby"
+  },
+  "connectingToUnknown": {
+    "message": "Conectando a una red desconocida"
   },
   "continue": {
     "message": "Continuar"
@@ -228,6 +249,9 @@
   },
   "downloadStatelogs": {
     "message": "Descargar logs de estados"
+  },
+  "dropped": {
+    "message": "Caído"
   },
   "edit": {
     "message": "Editar"
@@ -419,6 +443,9 @@
   "limit": {
     "message": "Límite"
   },
+  "links": {
+    "message": "Enlaces"
+  },
   "loading": {
     "message": "Cargando..."
   },
@@ -442,6 +469,9 @@
   },
   "mainnet": {
     "message": "Red principal de Ethereum (MainNet)"
+  },
+  "max": {
+    "message": "Max"
   },
   "message": {
     "message": "Mensaje"
@@ -488,6 +518,9 @@
   "newPassword": {
     "message": "Nueva contraseña (mínimo [8] caracteres)"
   },
+  "newPassword8Chars": {
+    "message": "Nueva contraseña (mínimo [8] caracteres)"
+  },
   "newRPC": {
     "message": "Nueva URL del RPC"
   },
@@ -512,11 +545,17 @@
   "notStarted": {
     "message": "Sin iniciar"
   },
+  "ok": {
+    "message": "Ok"
+  },
   "oldUI": {
     "message": "Antigua UI"
   },
   "oldUIMessage": {
     "message": "Regresaste a la antigua UI. Puedes regresar a la nueva UI mediante la opcion en la barra desplegable del menu de arriba a la derecha."
+  },
+  "onlySendToEtherAddress": {
+    "message": "Sólo envía a una dirección de Ethereum"
   },
   "or": {
     "message": "o",
@@ -528,6 +567,12 @@
   "passwordMismatch": {
     "message": "Contraseña no concide",
     "description": "en el proceso de creación de contraseña, los dos campos de contraseña no coincidieron"
+  },
+  "passwordNotLongEnough": {
+    "message": "La contraseña no es lo suficientemente larga"
+  },
+  "passwordsDontMatch": {
+    "message": "Contraseñas no coínciden"
   },
   "passwordShort": {
     "message": "Contraseña no es lo suficientemente larga",
@@ -591,6 +636,9 @@
   },
   "restoreFromSeed": {
     "message": "Restaurar desde semilla"
+  },
+  "restoreVault": {
+    "message": "Restaurar Bóveda"
   },
   "retryWithMoreGas": {
     "message": "Vuelva a intentar con un precio de Gas más alto aquí"
@@ -678,6 +726,9 @@
   "sign": {
     "message": "Firmar"
   },
+  "signed": {
+    "message": "Firmado"
+  },
   "signMessage": {
     "message": "Firmar Mensaje"
   },
@@ -690,11 +741,20 @@
   "stateLogs": {
     "message": "Logs de estado"
   },
+  "stateLogsDescription": {
+    "message": "Los Logs de estado contienen tus direcciones de cuentas públicas y transacciones envíadas"
+  },
+  "stateLogError": {
+    "message": "Error en la recogida de logs de estado"
+  },
   "status": {
     "message": "Estado"
   },
   "submit": {
     "message": "Enviar"
+  },
+  "submitted": {
+    "message": "Enviado"
   },
   "supportCenter": {
     "message": "Visita nuestro centro de atención"
@@ -770,6 +830,9 @@
   "unavailable": {
     "message": "No disponible"
   },
+  "unapproved": {
+    "message": "No Aprobado"
+  },
   "unknown": {
     "message": "Desconocido (a)"
   },
@@ -803,6 +866,9 @@
   },
   "visitWebSite": {
     "message": "Visita nuestro sitio web"
+  },
+  "walletSeed": {
+    "message": "Semilla de la billetera"
   },
   "warning": {
     "message": "Advertencia"
