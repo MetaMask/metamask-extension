@@ -694,7 +694,7 @@
     "message": "Send Tokens"
   },
   "onlySendToEtherAddress": {
-    "message": "Only send to an Ethereum address."
+    "message": "Only send ETH to an Ethereum address."
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
