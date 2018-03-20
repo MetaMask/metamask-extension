@@ -37,6 +37,9 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "approved": {
+    "message": "Approved"
+  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
@@ -83,6 +86,9 @@
   "buyCoinbaseExplainer": {
     "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
   },
+  "ok": {
+    "message": "Ok"
+  },
   "cancel": {
     "message": "Cancel"
   },
@@ -94,6 +100,9 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "confirmed": {
+    "message": "Confirmed"
   },
   "confirmContract": {
     "message": "Confirm Contract"
@@ -226,6 +235,9 @@
   "downloadStatelogs": {
     "message": "Download State Logs"
   },
+  "dropped": {
+    "message": "Dropped"
+  },
   "edit": {
     "message": "Edit"
   },
@@ -243,6 +255,12 @@
   },
   "enterPasswordConfirm": {
     "message": "Enter your password to confirm"
+  },
+  "passwordNotLongEnough": {
+    "message": "Password not long enough"
+  },
+  "passwordsDontMatch": {
+    "message": "Passwords Don't Match"
   },
   "etherscanView": {
     "message": "View account on Etherscan"
@@ -403,12 +421,18 @@
   "knowledgeDataBase": {
     "message": "Visit our Knowledge Base"
   },
+  "max": {
+    "message": "Max"
+  },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
     "description": "helper for inputting hex as decimal input"
   },
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
+  },
+  "links": {
+    "message": "Links"
   },
   "limit": {
     "message": "Limit"
@@ -583,11 +607,17 @@
   "restoreFromSeed": {
     "message": "Restore from seed phrase"
   },
+  "restoreVault": {
+    "message": "Restore Vault"
+  },
   "required": {
     "message": "Required"
   },
   "retryWithMoreGas": {
     "message": "Retry with a higher gas price here"
+  },
+  "walletSeed": {
+    "message": "Wallet Seed"
   },
   "revealSeedWords": {
     "message": "Reveal Seed Words"
@@ -603,6 +633,24 @@
   },
   "ropsten": {
     "message": "Ropsten Test Network"
+  },
+  "currentRpc": {
+    "message": "Current RPC"
+  },
+  "connectingToMainnet": {
+    "message": "Connecting to Main Ethereum Network"
+  },
+  "connectingToRopsten": {
+    "message": "Connecting to Ropsten Test Network"
+  },
+  "connectingToKovan": {
+    "message": "Connecting to Kovan Test Network"
+  },
+  "connectingToRinkeby": {
+    "message": "Connecting to Rinkeby Test Network"
+  },
+  "connectingToUnknown": {
+    "message": "Connecting to Unknown Network"
   },
   "sampleAccountName": {
     "message": "E.g. My new account",
@@ -623,6 +671,9 @@
   },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
+  },
+  "newPassword8Chars": {
+    "message": "New Password (min 8 chars)"
   },
   "seedPhraseReq": {
     "message": "seed phrases are 12 words long"
@@ -648,11 +699,17 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "onlySendToEtherAddress": {
+    "message": "Only send ETH to an Ethereum address."
+  },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"
   },
   "settings": {
     "message": "Settings"
+  },
+  "info": {
+  "message": "Info"
   },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
@@ -665,6 +722,9 @@
   },
   "sign": {
     "message": "Sign"
+  },
+  "signed": {
+    "message": "Signed"
   },
   "signMessage": {
     "message": "Sign Message"
@@ -690,8 +750,14 @@
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
   },
+  "stateLogError": {
+    "message": "Error in retrieving state logs."
+  },
   "submit": {
     "message": "Submit"
+  },
+  "submitted": {
+    "message": "Submitted"
   },
   "supportCenter": {
     "message": "Visit our Support Center"
@@ -709,7 +775,7 @@
     "message": "Test Faucet"
   },
   "to": {
-    "message": "To"
+    "message": "To: "
   },
   "toETHviaShapeShift": {
     "message": "$1 to ETH via ShapeShift",
@@ -763,6 +829,9 @@
   },
   "uiWelcomeMessage": {
     "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+  },
+  "unapproved": {
+    "message": "Unapproved"
   },
   "unavailable": {
     "message": "Unavailable"
