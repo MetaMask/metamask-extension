@@ -578,9 +578,11 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       data,
     })
   } else {
+    const data = unapprovedTxs[editingTransactionId].txParams.data
     Object.assign(editingTx.txParams, {
       value: ethUtil.addHexPrefix(amount),
       to: ethUtil.addHexPrefix(to),
+      data,
     })
   }
 
