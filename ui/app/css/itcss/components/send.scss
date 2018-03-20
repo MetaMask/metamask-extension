@@ -660,6 +660,7 @@
 
   &__gas-fee-display {
     width: 100%;
+    position: relative;
 
     .currency-display--message {
       padding: 8px 38px 8px 10px;
@@ -890,4 +891,24 @@
       display: none;
     }
   }
+}
+
+.sliders-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
+  border: 1px solid $curious-blue;
+  border-radius: 4px;
+  background-color: $white;
+  position: absolute;
+  right: 15px;
+  top: 14px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.sliders-icon {
+  color: $curious-blue;
 }

@@ -36,11 +36,11 @@ GasFeeDisplay.prototype.render = function () {
         ? h('div..currency-display.currency-display--message', 'Set with the gas price customizer.')
         : h('div.currency-display', t('loading')),
 
-    h('button.send-v2__sliders-icon-container', {
+    h('button.sliders-icon-container', {
       onClick,
       disabled: !gasTotal && !gasLoadingError,
     }, [
-      h('i.fa.fa-sliders.send-v2__sliders-icon'),
+      h('i.fa.fa-sliders.sliders-icon'),
     ]),
 
   ])

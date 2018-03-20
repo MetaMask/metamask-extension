@@ -22,12 +22,14 @@ const {
   conversionUtil,
   multiplyCurrencies,
   conversionGreaterThan,
+  conversionMax,
   subtractCurrencies,
 } = require('../../conversion-util')
 
 const {
   getGasPrice,
   getGasLimit,
+  getForceGasMin,
   conversionRateSelector,
   getSendAmount,
   getSelectedToken,
@@ -45,6 +47,7 @@ function mapStateToProps (state) {
   return {
     gasPrice: getGasPrice(state),
     gasLimit: getGasLimit(state),
+    forceGasMin: getForceGasMin(state),
     conversionRate,
     amount: getSendAmount(state),
     maxModeOn: getSendMaxModeState(state),
@@ -115,9 +118,9 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     updateSendAmount(maxAmount)
   }
 
-  updateGasPrice(gasPrice)
-  updateGasLimit(gasLimit)
-  updateGasTotal(gasTotal)
+  updateGasPrice(ethUtil.addHexPrefix(gasPrice))
+  updateGasLimit(ethUtil.addHexPrefix(gasLimit))
+  updateGasTotal(ethUtil.addHexPrefix(gasTotal))
   hideModal()
 }
 
@@ -218,7 +221,7 @@ CustomizeGasModal.prototype.convertAndSetGasPrice = function (newGasPrice) {
 }
 
 CustomizeGasModal.prototype.render = function () {
-  const { hideModal } = this.props
+  const { hideModal, forceGasMin } = this.props
   const { gasPrice, gasLimit, gasTotal, error, priceSigZeros, priceSigDec } = this.state
 
   let convertedGasPrice = conversionUtil(gasPrice, {
@@ -229,6 +232,22 @@ CustomizeGasModal.prototype.render = function () {
   })
 
   convertedGasPrice += convertedGasPrice.match(/[.]/) ? priceSigZeros : `${priceSigDec}${priceSigZeros}`
+
+  let newGasPrice = gasPrice
+  if (forceGasMin) {
+    const convertedMinPrice = conversionUtil(forceGasMin, {
+      fromNumericBase: 'hex',
+      toNumericBase: 'dec',
+    })
+    convertedGasPrice = conversionMax(
+      { value: convertedMinPrice, fromNumericBase: 'dec' },
+      { value: convertedGasPrice, fromNumericBase: 'dec' }
+    )
+    newGasPrice = conversionMax(
+      { value: gasPrice, fromNumericBase: 'hex' },
+      { value: forceGasMin, fromNumericBase: 'hex' }
+    )
+  }
 
   const convertedGasLimit = conversionUtil(gasLimit, {
     fromNumericBase: 'hex',
@@ -252,7 +271,7 @@ CustomizeGasModal.prototype.render = function () {
 
         h(GasModalCard, {
           value: convertedGasPrice,
-          min: MIN_GAS_PRICE_GWEI,
+          min: forceGasMin || MIN_GAS_PRICE_GWEI,
           // max: 1000,
           step: multiplyCurrencies(MIN_GAS_PRICE_GWEI, 10),
           onChange: value => this.convertAndSetGasPrice(value),
@@ -288,7 +307,7 @@ CustomizeGasModal.prototype.render = function () {
           }, [t('cancel')]),
 
           h(`div.send-v2__customize-gas__save${error ? '__error' : ''}.allcaps`, {
-            onClick: () => !error && this.save(gasPrice, gasLimit, gasTotal),
+            onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
           }, [t('save')]),
         ]),
 

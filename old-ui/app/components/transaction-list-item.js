@@ -29,9 +29,16 @@ function TransactionListItem () {
 }
 
 TransactionListItem.prototype.showRetryButton = function () {
-  const { transaction = {} } = this.props
-  const { status, time } = transaction
-  return status === 'submitted' && Date.now() - time > 30000
+  const { transaction = {}, transactions } = this.props
+  const { status, submittedTime, txParams } = transaction
+  const currentNonce = txParams.nonce
+  const currentNonceTxs = transactions.filter(tx => tx.txParams.nonce === currentNonce)
+  const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[0]
+  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
+    && lastSubmittedTxWithCurrentNonce.id === transaction.id
+
+  return currentTxIsLatestWithNonce && Date.now() - submittedTime > 30000
 }
 
 TransactionListItem.prototype.render = function () {
@@ -200,6 +207,11 @@ function formatDate (date) {
 
 function renderErrorOrWarning (transaction) {
   const { status, err, warning } = transaction
+
+  // show dropped
+  if (status === 'dropped') {
+    return h('span.dropped', ' (Dropped)')
+  }
 
   // show rejected
   if (status === 'rejected') {
