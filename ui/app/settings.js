@@ -59,7 +59,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', 'Use Blockies Identicon'),
+        h('span', t('blockiesIdenticon')),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
@@ -79,7 +79,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', 'Current Conversion'),
+        h('span', t('currentConversion')),
         h('span.settings__content-description', `Updated ${Date(conversionDate)}`),
       ]),
       h('div.settings__content-item', [
@@ -192,7 +192,7 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('div', 'State Logs'),
+          h('div', t('stateLogs')),
           h(
             'div.settings__content-description',
             t('stateLogsDescription')
@@ -222,7 +222,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', 'Reveal Seed Words'),
+        h('div.settings__content-item', t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.settings__clear-button.settings__clear-button--red', {
@@ -242,7 +242,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', 'Use old UI'),
+        h('div.settings__content-item', t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.settings__clear-button.settings__clear-button--orange', {
@@ -261,7 +261,7 @@ class Settings extends Component {
     const { showResetAccountConfirmationModal } = this.props
 
     return h('div.settings__content-row', [
-      h('div.settings__content-item', 'Reset Account'),
+      h('div.settings__content-item', t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h('button.settings__clear-button.settings__clear-button--orange', {
@@ -304,13 +304,13 @@ class Settings extends Component {
   renderInfoLinks () {
     return (
       h('div.settings__content-item.settings__content-item--without-height', [
-        h('div.settings__info-link-header', 'Links'),
+        h('div.settings__info-link-header', t('links')),
         h('div.settings__info-link-item', [
           h('a', {
             href: 'https://metamask.io/privacy.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Privacy Policy'),
+            h('span.settings__info-link', t('privacyMsg')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -318,7 +318,7 @@ class Settings extends Component {
             href: 'https://metamask.io/terms.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Terms of Use'),
+            h('span.settings__info-link', t('terms')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -326,7 +326,7 @@ class Settings extends Component {
             href: 'https://metamask.io/attributions.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Attributions'),
+            h('span.settings__info-link', t('attributions')),
           ]),
         ]),
         h('hr.settings__info-separator'),
@@ -335,7 +335,7 @@ class Settings extends Component {
             href: 'https://support.metamask.io',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Visit our Support Center'),
+            h('span.settings__info-link', t('supportCenter')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -343,7 +343,7 @@ class Settings extends Component {
             href: 'https://metamask.io/',
             target: '_blank',
           }, [
-            h('span.settings__info-link', 'Visit our web site'),
+            h('span.settings__info-link', t('visitWebSite')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -351,7 +351,7 @@ class Settings extends Component {
             target: '_blank',
             href: 'mailto:help@metamask.io?subject=Feedback',
           }, [
-            h('span.settings__info-link', 'Email us!'),
+            h('span.settings__info-link', t('emailUs')),
           ]),
         ]),
       ])
@@ -373,7 +373,7 @@ class Settings extends Component {
             h('div.settings__info-item', [
               h(
                 'div.settings__info-about',
-                'MetaMask is designed and built in California.'
+                t('builtInCalifornia')
               ),
             ]),
           ]),

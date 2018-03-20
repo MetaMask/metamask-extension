@@ -425,6 +425,9 @@
   "likeToAddTokens": {
     "message": "Would you like to add these tokens?"
   },
+  "links": {
+    "message": "Links"
+  },
   "limit": {
     "message": "Limit"
   },
