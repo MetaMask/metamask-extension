@@ -18,6 +18,7 @@ GasFeeDisplay.prototype.render = function () {
     onClick,
     primaryCurrency = 'ETH',
     convertedCurrency,
+    gasLoadingError,
   } = this.props
 
   return h('div.send-v2__gas-fee-display', [
@@ -31,11 +32,13 @@ GasFeeDisplay.prototype.render = function () {
         convertedPrefix: '$',
         readOnly: true,
       })
-      : h('div.currency-display', t('loading')),
+      : gasLoadingError
+        ? h('div..currency-display.currency-display--message', 'Set with the gas price customizer.')
+        : h('div.currency-display', t('loading')),
 
     h('button.sliders-icon-container', {
       onClick,
-      disabled: !gasTotal,
+      disabled: !gasTotal && !gasLoadingError,
     }, [
       h('i.fa.fa-sliders.sliders-icon'),
     ]),

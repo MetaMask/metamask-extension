@@ -661,6 +661,12 @@
   &__gas-fee-display {
     width: 100%;
     position: relative;
+
+    .currency-display--message {
+      padding: 8px 38px 8px 10px;
+      display: flex;
+      align-items: center;
+    }
   }
 
   &__sliders-icon-container {
