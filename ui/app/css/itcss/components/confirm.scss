@@ -242,6 +242,22 @@ section .confirm-screen-account-number,
   }
 }
 
+@media screen and (max-width: 379px) {
+  .confirm-screen-row {
+    span.confirm-screen-section-column {
+      flex: 0.4;
+    }
+
+    div.confirm-screen-section-column {
+      flex: 0.6;
+    }
+
+    .currency-display__input {
+      font-size: 14px;
+    }
+  }
+}
+
 .confirm-screen-row-detail {
   font-size: 12px;
   line-height: 16px;
