@@ -98,6 +98,9 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmed": {
+    "message": "Confirmed"
+  },
   "confirmContract": {
     "message": "Confirm Contract"
   },
@@ -811,6 +814,9 @@
   },
   "uiWelcomeMessage": {
     "message": "You are now using the new Metamask UI. Take a look around, try out new features like sending tokens, and let us know if you have any issues."
+  },
+  "unapproved": {
+    "message": "Unapproved"
   },
   "unavailable": {
     "message": "Unavailable"
