@@ -97,7 +97,7 @@
 
 .tx-list-content-wrapper {
   align-items: stretch;
-  margin-bottom: 4px;
+  margin: 4px 0;
   flex: 1 0 auto;
   width: 100%;
   display: flex;
@@ -136,6 +136,7 @@
   align-self: center;
   flex: 0 0 auto;
   margin-right: 16px;
+  display: flex;
 }
 
 .tx-list-account-and-status-wrapper {
@@ -192,6 +193,7 @@
 }
 
 .tx-list-item {
+  height: 80px;
   border-top: 1px solid rgb(231, 231, 231);
   flex: 0 0 auto;
   display: flex;

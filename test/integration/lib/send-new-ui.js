@@ -1,4 +1,4 @@
-const reactTriggerChange = require('react-trigger-change')
+const reactTriggerChange = require('../../lib/react-trigger-change')
 const {
   timeout,
   queryAsync,
@@ -167,7 +167,7 @@ async function runSendFlowTest(assert, done) {
   // TODO: Need a way to mock background so that we can test correct transition from editing to confirm
   selectState.val('confirm new ui')
   reactTriggerChange(selectState[0])
-  const confirmScreenConfirmButton = await queryAsync($, '.confirm-screen-confirm-button')
+  const confirmScreenConfirmButton = await queryAsync($, '.btn-confirm.page-container__footer-button')
   console.log(`+++++++++++++++++++++++++++++++= confirmScreenConfirmButton[0]`, confirmScreenConfirmButton[0]);
   confirmScreenConfirmButton[0].click()
 
