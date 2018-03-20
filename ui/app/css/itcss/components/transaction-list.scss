@@ -170,6 +170,7 @@
 
   @media screen and (max-width: 379px) {
     margin-left: 0px;
+    text-align: center;
   }
 }
 
@@ -244,7 +245,6 @@
 }
 
 .tx-list-item {
-  height: 80px;
   border-top: 1px solid rgb(231, 231, 231);
   flex: 0 0 auto;
   display: flex;
