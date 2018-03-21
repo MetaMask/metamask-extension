@@ -63,10 +63,14 @@ PendingTx.prototype.componentWillMount = async function () {
       isFetching: false,
     })
   }
-  const tokenData = txParams && abiDecoder.decodeMethod(txParams.data)
-  const { name: tokenMethodName } = tokenData || {}
-  const isTokenTransaction = ['transfer', 'approve', 'transferFrom']
-    .find(possibleName => tokenMethodName === possibleName)
+
+  // inspect tx data for supported special confirmation screens
+  let isTokenTransaction = false
+  if (txParams.data) {
+    const tokenData = abiDecoder.decodeMethod(txParams.data)
+    const { name: tokenMethodName } = tokenData || {}
+    isTokenTransaction = (tokenMethodName === 'transfer')
+  }
 
   if (isTokenTransaction) {
     const token = util.getContractAtAddress(txParams.to)
