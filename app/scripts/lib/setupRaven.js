@@ -6,7 +6,7 @@ const DEV = 'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496'
 module.exports = setupRaven
 
 // Setup raven / sentry remote error reporting
-function setupRaven(opts) {
+function setupRaven (opts) {
   const { release } = opts
   let ravenTarget
 
