@@ -247,6 +247,10 @@ app sections
   color: #FFAE00;
 }
 
+.dropped {
+  color: #6195ED;
+}
+
 .lock {
   width: 50px;
   height: 50px;

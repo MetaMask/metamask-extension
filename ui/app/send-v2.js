@@ -1,6 +1,7 @@
 const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
+const t = require('../i18n')
 
 const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
@@ -42,6 +43,7 @@ function SendTransactionScreen () {
       to: null,
       amount: null,
     },
+    gasLoadingError: false,
   }
 
   this.handleToChange = this.handleToChange.bind(this)
@@ -128,6 +130,10 @@ SendTransactionScreen.prototype.updateGas = function () {
       .then(([gasPrice, gas]) => {
         const newGasTotal = this.getGasTotal(gas, gasPrice)
         updateGasTotal(newGasTotal)
+        this.setState({ gasLoadingError: false })
+      })
+      .catch(err => {
+        this.setState({ gasLoadingError: true })
       })
   } else {
     const newGasTotal = this.getGasTotal(gasLimit, gasPrice)
@@ -180,13 +186,12 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
 
 SendTransactionScreen.prototype.renderHeader = function () {
   const { selectedToken, clearSend, goHome } = this.props
-  const tokenText = selectedToken ? 'tokens' : 'ETH'
 
   return h('div.page-container__header', [
 
-    h('div.page-container__title', selectedToken ? 'Send Tokens' : 'Send ETH'),
+    h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
 
-    h('div.page-container__subtitle', `Only send ${tokenText} to an Ethereum address.`),
+    h('div.page-container__subtitle', t('onlySendToEtherAddress')),
 
     h('div.page-container__header-close', {
       onClick: () => {
@@ -257,11 +262,11 @@ SendTransactionScreen.prototype.handleToChange = function (to) {
   let toError = null
 
   if (!to) {
-    toError = 'Required'
+    toError = t('required')
   } else if (!isValidAddress(to)) {
-    toError = 'Recipient address is invalid'
+    toError = t('invalidAddressRecipient')
   } else if (to === from) {
-    toError = 'From and To address cannot be the same'
+    toError = t('fromToSame')
   }
 
   updateSendTo(to)
@@ -277,9 +282,9 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     h('div.send-v2__form-label', [
 
-      'To:',
+      t('to'),
 
-      this.renderErrorMessage('to'),
+      this.renderErrorMessage(t('to')),
 
     ]),
 
@@ -377,11 +382,11 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = 'Insufficient funds.'
+    amountError = t('insufficientFunds')
   } else if (verifyTokenBalance && !sufficientTokens) {
-    amountError = 'Insufficient tokens.'
+    amountError = t('insufficientTokens')
   } else if (amountLessThanZero) {
-    amountError = 'Can not send negative amounts of ETH.'
+    amountError = t('negativeETH')
   }
 
   updateSendErrors({ amount: amountError })
@@ -411,7 +416,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
           setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ !maxModeOn ? 'Max' : '' ]),
+      }, [ !maxModeOn ? t('max') : '' ]),
     ]),
 
     h('div.send-v2__form-field', [
@@ -436,10 +441,11 @@ SendTransactionScreen.prototype.renderGasRow = function () {
     showCustomizeGasModal,
     gasTotal,
   } = this.props
+  const { gasLoadingError } = this.state
 
   return h('div.send-v2__form-row', [
 
-    h('div.send-v2__form-label', 'Gas fee:'),
+    h('div.send-v2__form-label', h('gasFee')),
 
     h('div.send-v2__form-field', [
 
@@ -448,6 +454,7 @@ SendTransactionScreen.prototype.renderGasRow = function () {
         conversionRate,
         convertedCurrency,
         onClick: showCustomizeGasModal,
+        gasLoadingError,
       }),
 
     ]),
@@ -473,18 +480,19 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
-  return h('div.send-v2__form', {}, [
+  return h('.page-container__content', {}, [
+    h('.send-v2__form', [
+      this.renderFromRow(),
 
-    this.renderFromRow(),
+      this.renderToRow(),
 
-    this.renderToRow(),
+      this.renderAmountRow(),
 
-    this.renderAmountRow(),
+      this.renderGasRow(),
 
-    this.renderGasRow(),
+      // this.renderMemoRow(),
 
-    // this.renderMemoRow(),
-
+    ]),
   ])
 }
 
@@ -507,11 +515,11 @@ SendTransactionScreen.prototype.renderFooter = function () {
         clearSend()
         goHome()
       },
-    }, 'Cancel'),
+    }, t('cancel')),
     h('button.btn-clear.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
-    }, 'Next'),
+    }, t('next')),
   ])
 }
 
@@ -571,9 +579,11 @@ SendTransactionScreen.prototype.getEditedTx = function () {
       data,
     })
   } else {
+    const data = unapprovedTxs[editingTransactionId].txParams.data
     Object.assign(editingTx.txParams, {
       value: ethUtil.addHexPrefix(amount),
       to: ethUtil.addHexPrefix(to),
+      data,
     })
   }
 

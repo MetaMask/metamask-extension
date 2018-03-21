@@ -55,6 +55,7 @@ InputNumber.prototype.render = function () {
       className: 'customize-gas-input',
       value,
       placeholder,
+      type: 'number',
       onInputChange: newValue => {
         this.setValue(newValue)
       },
