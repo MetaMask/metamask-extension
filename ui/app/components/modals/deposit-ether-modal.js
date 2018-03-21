@@ -109,7 +109,7 @@ DepositEtherModal.prototype.render = function () {
   const isTestNetwork = ['3', '4', '42'].find(n => n === network)
   const networkName = networkNames[network]
 
-  return h('div.page-container.page-container--full-width', {}, [
+  return h('div.page-container.page-container--full-width.page-container--full-height', {}, [
 
     h('div.page-container__header', [
 
@@ -128,13 +128,15 @@ DepositEtherModal.prototype.render = function () {
       }),
 
     ]),
-    
+
     h('.page-container__content', {}, [
-    
+
       h('div.deposit-ether-modal__buy-rows', [
 
         this.renderRow({
-          logo: h('img.deposit-ether-modal__buy-row__eth-logo', { src: '../../../images/eth_logo.svg' }),
+          logo: h('img.deposit-ether-modal__logo', {
+            src: '../../../images/deposit-eth.svg',
+          }),
           title: DIRECT_DEPOSIT_ROW_TITLE,
           text: DIRECT_DEPOSIT_ROW_TEXT,
           buttonLabel: t('viewAccount'),
@@ -164,7 +166,7 @@ DepositEtherModal.prototype.render = function () {
           onButtonClick: () => toCoinbase(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
-        
+
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {

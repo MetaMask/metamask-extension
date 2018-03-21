@@ -132,7 +132,7 @@ App.prototype.render = function () {
   } = props
   const isLoadingNetwork = network === 'loading' && props.currentView.name !== 'config'
   const loadMessage = loadingMessage || isLoadingNetwork ?
-    `Connecting to ${this.getNetworkName()}` : null
+    this.getConnectingLabel() : null
   log.debug('Main ui render function')
 
   return (
@@ -329,12 +329,14 @@ App.prototype.renderAppBar = function () {
         ]),
       ]),
 
-      !isInitialized && !isPopup && betaUI && h('h2', {
-        className: classnames({
-          'alpha-warning': welcomeScreenSeen,
-          'alpha-warning-welcome-screen': !welcomeScreenSeen,
-        }),
-      }, 'Please be aware that this version is still under development'),
+      !isInitialized && !isPopup && betaUI && h('.alpha-warning__container', {}, [
+        h('h2', {
+          className: classnames({
+            'alpha-warning': welcomeScreenSeen,
+            'alpha-warning-welcome-screen': !welcomeScreenSeen,
+          }),
+        }, 'Please be aware that this version is still under development'),
+      ]),
 
     ])
   )
@@ -548,6 +550,27 @@ App.prototype.toggleMetamaskActive = function () {
   }
 }
 
+App.prototype.getConnectingLabel = function () {
+  const { provider } = this.props
+  const providerName = provider.type
+
+  let name
+
+  if (providerName === 'mainnet') {
+    name = t('connectingToMainnet')
+  } else if (providerName === 'ropsten') {
+    name = t('connectingToRopsten')
+  } else if (providerName === 'kovan') {
+    name = t('connectingToRopsten')
+  } else if (providerName === 'rinkeby') {
+    name = t('connectingToRinkeby')
+  } else {
+    name = t('connectingToUnknown')
+  }
+
+  return name
+}
+
 App.prototype.getNetworkName = function () {
   const { provider } = this.props
   const providerName = provider.type
@@ -555,15 +578,15 @@ App.prototype.getNetworkName = function () {
   let name
 
   if (providerName === 'mainnet') {
-    name = 'Main Ethereum Network'
+    name = t('mainnet')
   } else if (providerName === 'ropsten') {
-    name = 'Ropsten Test Network'
+    name = t('ropsten')
   } else if (providerName === 'kovan') {
-    name = 'Kovan Test Network'
+    name = t('kovan')
   } else if (providerName === 'rinkeby') {
-    name = 'Rinkeby Test Network'
+    name = t('rinkeby')
   } else {
-    name = 'Unknown Private Network'
+    name = t('unknownNetwork')
   }
 
   return name

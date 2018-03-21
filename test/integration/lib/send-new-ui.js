@@ -1,4 +1,4 @@
-const reactTriggerChange = require('react-trigger-change')
+const reactTriggerChange = require('../../lib/react-trigger-change')
 const {
   timeout,
   queryAsync,
@@ -93,7 +93,7 @@ async function runSendFlowTest(assert, done) {
     'send gas field should show estimated gas total converted to USD'
   )
 
-  const sendGasOpenCustomizeModalButton = await queryAsync($, '.send-v2__sliders-icon-container')
+  const sendGasOpenCustomizeModalButton = await queryAsync($, '.sliders-icon-container')
   sendGasOpenCustomizeModalButton[0].click()
 
   const customizeGasModal = await queryAsync($, '.send-v2__customize-gas')
@@ -128,19 +128,19 @@ async function runSendFlowTest(assert, done) {
   selectState.val('send edit')
   reactTriggerChange(selectState[0])
 
-  const confirmFromName = (await queryAsync($, '.confirm-screen-account-name')).first()
+  const confirmFromName = (await queryAsync($, '.sender-to-recipient__sender-name')).first()
   assert.equal(confirmFromName[0].textContent, 'Send Account 2', 'confirm screen should show correct from name')
 
-  const confirmToName = (await queryAsync($, '.confirm-screen-account-name')).last()
+  const confirmToName = (await queryAsync($, '.sender-to-recipient__recipient-name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
   const confirmScreenRows = await queryAsync($, '.confirm-screen-rows')
-  const confirmScreenGas = confirmScreenRows.find('.confirm-screen-row-info')[2]
-  assert.equal(confirmScreenGas.textContent, '3.6 USD', 'confirm screen should show correct gas')
-  const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[3]
+  const confirmScreenGas = confirmScreenRows.find('.currency-display__converted-value')[0]
+  assert.equal(confirmScreenGas.textContent, '3.60 USD', 'confirm screen should show correct gas')
+  const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[2]
   assert.equal(confirmScreenTotal.textContent, '2405.36 USD', 'confirm screen should show correct total')
 
-  const confirmScreenBackButton = await queryAsync($, '.confirm-screen-back-button')
+  const confirmScreenBackButton = await queryAsync($, '.page-container__back-button')
   confirmScreenBackButton[0].click()
 
   const sendFromFieldItemInEdit = await queryAsync($, '.account-list-item')
@@ -167,7 +167,7 @@ async function runSendFlowTest(assert, done) {
   // TODO: Need a way to mock background so that we can test correct transition from editing to confirm
   selectState.val('confirm new ui')
   reactTriggerChange(selectState[0])
-  const confirmScreenConfirmButton = await queryAsync($, '.confirm-screen-confirm-button')
+  const confirmScreenConfirmButton = await queryAsync($, '.btn-confirm.page-container__footer-button')
   console.log(`+++++++++++++++++++++++++++++++= confirmScreenConfirmButton[0]`, confirmScreenConfirmButton[0]);
   confirmScreenConfirmButton[0].click()
 

@@ -18,6 +18,7 @@ const selectors = {
   getCurrentAccountWithSendEtherInfo,
   getGasPrice,
   getGasLimit,
+  getForceGasMin,
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
@@ -128,6 +129,10 @@ function getGasPrice (state) {
 
 function getGasLimit (state) {
   return state.metamask.send.gasLimit
+}
+
+function getForceGasMin (state) {
+  return state.metamask.send.forceGasMin
 }
 
 function getSendFrom (state) {

@@ -9,19 +9,28 @@ abiDecoder.addABI(abi)
 const Identicon = require('./identicon')
 const contractMap = require('eth-contract-metadata')
 
+const actions = require('../actions')
 const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
 const t = require('../../i18n')
 
-module.exports = connect(mapStateToProps)(TxListItem)
+module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
 
 function mapStateToProps (state) {
   return {
     tokens: state.metamask.tokens,
     currentCurrency: getCurrentCurrency(state),
     tokenExchangeRates: state.metamask.tokenExchangeRates,
+    selectedAddressTxList: state.metamask.selectedAddressTxList,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    setSelectedToken: tokenAddress => dispatch(actions.setSelectedToken(tokenAddress)),
+    retryTransaction: transactionId => dispatch(actions.retryTransaction(transactionId)),
   }
 }
 
@@ -32,6 +41,7 @@ function TxListItem () {
   this.state = {
     total: null,
     fiatTotal: null,
+    isTokenTx: null,
   }
 }
 
@@ -40,12 +50,13 @@ TxListItem.prototype.componentDidMount = async function () {
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { name: txDataName } = decodedData || {}
+  const isTokenTx = txDataName === 'transfer'
 
-  const { total, fiatTotal } = txDataName === 'transfer'
+  const { total, fiatTotal } = isTokenTx
     ? await this.getSendTokenTotal()
     : this.getSendEtherTotal()
 
-  this.setState({ total, fiatTotal })
+  this.setState({ total, fiatTotal, isTokenTx })
 }
 
 TxListItem.prototype.getAddressText = function () {
@@ -168,22 +179,49 @@ TxListItem.prototype.getSendTokenTotal = async function () {
   }
 }
 
+TxListItem.prototype.showRetryButton = function () {
+  const {
+    transactionSubmittedTime,
+    selectedAddressTxList,
+    transactionId,
+    txParams,
+  } = this.props
+  const currentNonce = txParams.nonce
+  const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
+  const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
+  const lastSubmittedTxWithCurrentNonce = currentNonceSubmittedTxs[currentNonceSubmittedTxs.length - 1]
+  const currentTxIsLatestWithNonce = lastSubmittedTxWithCurrentNonce
+    && lastSubmittedTxWithCurrentNonce.id === transactionId
+
+  return currentTxIsLatestWithNonce && Date.now() - transactionSubmittedTime > 30000
+}
+
+TxListItem.prototype.setSelectedToken = function (tokenAddress) {
+  this.props.setSelectedToken(tokenAddress)
+}
+
+TxListItem.prototype.resubmit = function () {
+  const { transactionId } = this.props
+  this.props.retryTransaction(transactionId)
+}
+
 TxListItem.prototype.render = function () {
   const {
     transactionStatus,
     transactionAmount,
     onClick,
-    transActionId,
+    transactionId,
     dateString,
     address,
     className,
+    txParams,
   } = this.props
-  const { total, fiatTotal } = this.state
+  const { total, fiatTotal, isTokenTx } = this.state
   const showFiatTotal = transactionAmount !== '0x0' && fiatTotal
 
   return h(`div${className || ''}`, {
-    key: transActionId,
-    onClick: () => onClick && onClick(transActionId),
+    key: transactionId,
+    onClick: () => onClick && onClick(transactionId),
   }, [
     h(`div.flex-column.tx-list-item-wrapper`, {}, [
 
@@ -224,9 +262,10 @@ TxListItem.prototype.render = function () {
               className: classnames('tx-list-status', {
                 'tx-list-status--rejected': transactionStatus === 'rejected',
                 'tx-list-status--failed': transactionStatus === 'failed',
+                'tx-list-status--dropped': transactionStatus === 'dropped',
               }),
             },
-              transactionStatus,
+              this.txStatusIndicator(),
             ),
           ]),
         ]),
@@ -241,6 +280,48 @@ TxListItem.prototype.render = function () {
 
         ]),
       ]),
+
+      this.showRetryButton() && h('div.tx-list-item-retry-container', [
+
+        h('span.tx-list-item-retry-copy', 'Taking too long?'),
+
+        h('span.tx-list-item-retry-link', {
+          onClick: (event) => {
+            event.stopPropagation()
+            if (isTokenTx) {
+              this.setSelectedToken(txParams.to)
+            }
+            this.resubmit()
+          },
+        }, 'Increase the gas price on your transaction'),
+
+      ]),
+
     ]), // holding on icon from design
   ])
+}
+
+TxListItem.prototype.txStatusIndicator = function () {
+  const { transactionStatus } = this.props
+
+  let name
+
+  if (transactionStatus === 'unapproved') {
+    name = t('unapproved')
+  } else if (transactionStatus === 'rejected') {
+    name = t('rejected')
+  } else if (transactionStatus === 'approved') {
+    name = t('approved')
+  } else if (transactionStatus === 'signed') {
+    name = t('signed')
+  } else if (transactionStatus === 'submitted') {
+    name = t('submitted')
+  } else if (transactionStatus === 'confirmed') {
+    name = t('confirmed')
+  } else if (transactionStatus === 'failed') {
+    name = t('failed')
+  } else if (transactionStatus === 'dropped') {
+    name = t('dropped')
+  }
+  return name
 }

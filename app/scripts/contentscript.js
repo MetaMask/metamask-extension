@@ -96,7 +96,8 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 }
 
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck() && documentElementCheck()
+  return doctypeCheck() && suffixCheck() 
+    && documentElementCheck() && !blacklistedDomainCheck()
 }
 
 function doctypeCheck () {
@@ -127,6 +128,20 @@ function documentElementCheck () {
     return documentElement.toLowerCase() === 'html'
   }
   return true
+}
+
+function blacklistedDomainCheck () {
+  var blacklistedDomains = ['uscourts.gov', 'dropbox.com']
+  var currentUrl = window.location.href
+  var currentRegex
+  for (let i = 0; i < blacklistedDomains.length; i++) {
+    const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
+    currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
+    if (!currentRegex.test(currentUrl)) {
+      return true
+    }
+  }
+  return false
 }
 
 function redirectToPhishingWarning () {
