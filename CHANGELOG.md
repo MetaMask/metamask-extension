@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.3.0 Wed Mar 21 2018
+
 - Add internationalization support! Includes translations for 13 (!!) new languages: French, Spanish, Italian, German, Dutch, Portuguese, Japanese, Korean, Vietnamese, Mandarin, Hindi, Tagalog, and Russian! Read more about the community effort [here](https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c)
 - No longer uses nonces specified by the dapp
 - Will now throw an error if the `to` field in txParams is not valid.
