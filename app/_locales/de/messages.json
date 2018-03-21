@@ -369,7 +369,7 @@
   "infoHelp": {
     "message": "Info & Hilfe"
   },
-  "insufficientFunds": { 
+  "insufficientFunds": {
     "message": "Nicht genügend Guthaben."
   },
   "insufficientTokens": {
@@ -394,7 +394,7 @@
     "message": "Ungültige RPC URI"
   },
   "jsonFail": {
-    "message": "Irgendetwas ist schief gelaufen. Bitte überprüfe ob deine JSON Datei korrekt formatiert ist.“
+    "message": "Irgendetwas ist schief gelaufen. Bitte überprüfe ob deine JSON Datei korrekt formatiert ist."
   },
   "jsonFile": {
     "message": "JSON Datei",
@@ -557,7 +557,7 @@
     "description": "Wähle diesen Dateityp um damit einen Account zu importieren"
   },
   "privateKeyWarning": {
-    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."  
+    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
@@ -566,7 +566,7 @@
     "message": "QR Code anzeigen"
   },
   "readdToken": {
-    "message": "Du kannst  diesen Token zukünftig wieder hinzufügen indem du in den Menüpunkt \"Token hinzufügen"\ in den Einstellungen deines Accounts gehst."
+    "message": "Du kannst  diesen Token zukünftig wieder hinzufügen indem du in den Menüpunkt \"Token hinzufügen\" in den Einstellungen deines Accounts gehst."
   },
   "readMore": {
     "message": "Hier mehr erfahren."
@@ -782,7 +782,7 @@
     "message": "Tokensymbol"
   },
   "tokenWarning1": {
-    "message": "Behalte die Token die du mit deinem MetaMask Account gekauft hast im Auge. Wenn du Token mit einem anderen Account gekauft hast, werden diese hier nicht angezeigt.“
+    "message": "Behalte die Token die du mit deinem MetaMask Account gekauft hast im Auge. Wenn du Token mit einem anderen Account gekauft hast, werden diese hier nicht angezeigt."
   },
   "total": {
     "message": "Gesamt"
@@ -804,7 +804,7 @@
     "description": "Gefolgt von einem Link (hier) um die Tokenguthaben anzuzeigen"
   },
   "twelveWords": {
-    "message": "Diese 12 Wörter stellen die einzige Möglichkeit dar deinen MetaMask Account wiederherzustellen. Speichere sie daher an einem sicheren und geheimen Ort.”
+    "message": "Diese 12 Wörter stellen die einzige Möglichkeit dar deinen MetaMask Account wiederherzustellen. Speichere sie daher an einem sicheren und geheimen Ort."
   },
   "typePassword": {
     "message": "Passwort eingeben"
@@ -871,4 +871,3 @@
     "message": "Du unterschreibst"
   }
 }
-
