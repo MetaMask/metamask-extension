@@ -480,18 +480,19 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
-  return h('div.send-v2__form', {}, [
+  return h('.page-container__content', {}, [
+    h('.send-v2__form', [
+      this.renderFromRow(),
 
-    this.renderFromRow(),
+      this.renderToRow(),
 
-    this.renderToRow(),
+      this.renderAmountRow(),
 
-    this.renderAmountRow(),
+      this.renderGasRow(),
 
-    this.renderGasRow(),
+      // this.renderMemoRow(),
 
-    // this.renderMemoRow(),
-
+    ]),
   ])
 }
 

@@ -128,10 +128,10 @@ async function runSendFlowTest(assert, done) {
   selectState.val('send edit')
   reactTriggerChange(selectState[0])
 
-  const confirmFromName = (await queryAsync($, '.confirm-screen-account-name')).first()
+  const confirmFromName = (await queryAsync($, '.sender-to-recipient__sender-name')).first()
   assert.equal(confirmFromName[0].textContent, 'Send Account 2', 'confirm screen should show correct from name')
 
-  const confirmToName = (await queryAsync($, '.confirm-screen-account-name')).last()
+  const confirmToName = (await queryAsync($, '.sender-to-recipient__recipient-name')).last()
   assert.equal(confirmToName[0].textContent, 'Send Account 3', 'confirm screen should show correct to name')
 
   const confirmScreenRows = await queryAsync($, '.confirm-screen-rows')
@@ -140,7 +140,7 @@ async function runSendFlowTest(assert, done) {
   const confirmScreenTotal = confirmScreenRows.find('.confirm-screen-row-info')[2]
   assert.equal(confirmScreenTotal.textContent, '2405.36 USD', 'confirm screen should show correct total')
 
-  const confirmScreenBackButton = await queryAsync($, '.confirm-screen-back-button')
+  const confirmScreenBackButton = await queryAsync($, '.page-container__back-button')
   confirmScreenBackButton[0].click()
 
   const sendFromFieldItemInEdit = await queryAsync($, '.account-list-item')
