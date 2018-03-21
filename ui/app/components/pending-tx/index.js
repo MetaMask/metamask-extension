@@ -63,14 +63,17 @@ PendingTx.prototype.componentWillMount = async function () {
       isFetching: false,
     })
   }
+  const tokenData = txParams && abiDecoder.decodeMethod(txParams.data)
+  const { name: tokenMethodName } = tokenData || {}
+  const isTokenTransaction = ['transfer', 'approve', 'transferFrom']
+    .find(possibleName => tokenMethodName === possibleName)
 
-  try {
+  if (isTokenTransaction) {
     const token = util.getContractAtAddress(txParams.to)
     const results = await Promise.all([
       token.symbol(),
       token.decimals(),
     ])
-
     const [ symbol, decimals ] = results
 
     if (symbol[0] && decimals[0]) {
@@ -83,11 +86,14 @@ PendingTx.prototype.componentWillMount = async function () {
       })
     } else {
       this.setState({
-        transactionType: TX_TYPES.SEND_ETHER,
+        transactionType: TX_TYPES.SEND_TOKEN,
+        tokenAddress: txParams.to,
+        tokenSymbol: null,
+        tokenDecimals: null,
         isFetching: false,
       })
     }
-  } catch (e) {
+  } else {
     this.setState({
       transactionType: TX_TYPES.SEND_ETHER,
       isFetching: false,
