@@ -2,11 +2,15 @@
 
 ## Current Master
 
-- MetaMask will no longer allow nonces to be specified by the dapp
-- Add ability for internationalization.
+## 4.3.0 Wed Mar 21 2018
+
+- (beta) Add internationalization support! Includes translations for 13 (!!) new languages: French, Spanish, Italian, German, Dutch, Portuguese, Japanese, Korean, Vietnamese, Mandarin, Hindi, Tagalog, and Russian! Select "Try Beta" in the menu to take them for a spin. Read more about the community effort [here](https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c)
+- No longer uses nonces specified by the dapp
 - Will now throw an error if the `to` field in txParams is not valid.
 - Will strip null values from the `to` field.
-- Fix flashing to Log in screen after logging in or restoring from seed phrase.
+- (beta) No longer shows token confirmation screen when performing a non-send
+- (beta) Fixes bug where tx data was nullified when repricing a tx
+- Fix flashing Login screen after logging in or restoring from seed phrase.
 - Increase tap areas for menu buttons on mobile
 - Change all fonts in new-ui onboarding to Roboto, size 400
 - Add a welcome screen to new-ui onboarding flow
