@@ -6,6 +6,9 @@ workflows:
     jobs:
       - prep-deps-npm
       - prep-deps-firefox
+      - build:
+          requires:
+            - prep-deps-npm
       - prep-scss:
           requires:
             - prep-deps-npm
@@ -200,3 +203,14 @@ jobs:
       - run:
           name: test:integration:mascara
           command: npm run test:mascara
+
+  build:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: test:integration:mascara
+          command: npm run dist && find dist/ -type f -exec md5sum {} \; | sort -k 2 > dist_md5 && echo dist_md5
