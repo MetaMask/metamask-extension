@@ -11,7 +11,7 @@ class NewAccountModal extends Component {
     const newAccountNumber = numberOfExistingAccounts + 1
 
     this.state = {
-      newAccountName: `${t('account')} ${newAccountNumber}`,
+      newAccountName: `${props.t('account')} ${newAccountNumber}`,
     }
   }
 
@@ -69,7 +69,7 @@ NewAccountModal.propTypes = {
   showImportPage: PropTypes.func,
   createAccount: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
-  localeMessages: PropTypes.object,
+    t: PropTypes.func,
 }
 
 const mapStateToProps = state => {

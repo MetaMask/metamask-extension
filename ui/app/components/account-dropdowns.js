@@ -300,7 +300,7 @@ AccountDropdowns.propTypes = {
   style: PropTypes.object,
   enableAccountOptions: PropTypes.bool,
   enableAccountsSelector: PropTypes.bool,
-  localeMessages: PropTypes.object,
+    t: PropTypes.func,
 }
 
 const mapDispatchToProps = (dispatch) => {

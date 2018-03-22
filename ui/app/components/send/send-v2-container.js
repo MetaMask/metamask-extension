@@ -53,7 +53,6 @@ function mapStateToProps (state) {
     tokenContract: getSelectedTokenContract(state),
     unapprovedTxs: state.metamask.unapprovedTxs,
     network: state.metamask.network,
-    t: t.bind(null, state.localeMessages),
   }
 }
 

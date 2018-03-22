@@ -459,6 +459,7 @@ Settings.propTypes = {
   isMascara: PropTypes.bool,
   updateCurrentLocale: PropTypes.func,
   currentLocale: PropTypes.object,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {

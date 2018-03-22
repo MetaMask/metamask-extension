@@ -38,6 +38,7 @@ class NetworkDisplay extends Component {
 NetworkDisplay.propTypes = {
   network: PropTypes.string,
   provider: PropTypes.object,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = ({ metamask: { network, provider } }) => {

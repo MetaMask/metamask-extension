@@ -143,7 +143,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '4':
     case '42':
       const networkName = networkNames[network]
-      const label = `${networkName} ${t('testFaucet')}`
+      const label = `${networkName} ${this.props.t('testFaucet')}`
       return (
         h('div.flex-column', {
           style: {
@@ -203,7 +203,7 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
             'ShapeShift',
           ],
           subtext: {
-            'Coinbase': `${t('crypto')}/${t('fiat')} (${t('usaOnly')})`,
+            'Coinbase': `${this.props.t('crypto')}/${this.props.t('fiat')} (${this.props.t('usaOnly')})`,
             'ShapeShift': this.props.t('crypto'),
           },
           onClick: this.radioHandler.bind(this),

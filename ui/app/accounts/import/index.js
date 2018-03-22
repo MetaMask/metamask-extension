@@ -17,14 +17,13 @@ function AccountImportSubview () {
 }
 
 AccountImportSubview.prototype.getMenuItemTexts = function () {
-  return  [
+  return [
     this.props.t('privateKey'),
     this.props.t('jsonFile'),
   ]
 }
 
 AccountImportSubview.prototype.render = function () {
-  const props = this.props
   const state = this.state || {}
   const menuItems = this.getMenuItemTexts()
   const { type } = state
@@ -75,7 +74,6 @@ AccountImportSubview.prototype.render = function () {
 }
 
 AccountImportSubview.prototype.renderImportView = function () {
-  const props = this.props
   const state = this.state || {}
   const { type } = state
   const menuItems = this.getMenuItemTexts()

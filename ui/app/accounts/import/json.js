@@ -112,7 +112,7 @@ JsonImportSubview.propTypes = {
   goHome: PropTypes.func,
   displayWarning: PropTypes.func,
   importNewJsonAccount: PropTypes.func,
-  localeMessages: PropTypes.object,
+    t: PropTypes.func,
 }
 
 const mapStateToProps = state => {

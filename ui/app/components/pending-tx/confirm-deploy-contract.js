@@ -32,7 +32,7 @@ class ConfirmDeployContract extends Component {
     if (valid && this.verifyGasParams()) {
       this.props.sendTransaction(txMeta, event)
     } else {
-      this.props.displayWarning('invalidGasParams')
+      this.props.displayWarning(this.props.t('invalidGasParams'))
       this.setState({ submitting: false })
     }
   }
@@ -324,6 +324,7 @@ ConfirmDeployContract.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
   selectedAddress: PropTypes.string,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -346,7 +347,7 @@ const mapDispatchToProps = dispatch => {
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
-    displayWarning: warning => actions.displayWarning(t(warning)),
+    displayWarning: warning => actions.displayWarning(warning),
   }
 }
 

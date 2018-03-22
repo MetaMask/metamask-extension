@@ -61,7 +61,7 @@ NewAccountCreateForm.propTypes = {
   createAccount: PropTypes.func,
   goHome: PropTypes.func,
   numberOfExistingAccounts: PropTypes.number,
-  localeMessages: PropTypes.object,
+    t: PropTypes.object,
 }
 
 const mapStateToProps = state => {
