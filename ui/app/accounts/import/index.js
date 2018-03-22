@@ -9,26 +9,24 @@ const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
 
-module.exports = connect(mapStateToProps)(AccountImportSubview)
-
-function mapStateToProps (state) {
-  return {
-    menuItems: [
-      this.props.t('privateKey'),
-      this.props.t('jsonFile'),
-    ],
-  }
-}
+module.exports = connect()(AccountImportSubview)
 
 inherits(AccountImportSubview, Component)
 function AccountImportSubview () {
   Component.call(this)
 }
 
+AccountImportSubview.prototype.getMenuItemTexts = function () {
+  return  [
+    this.props.t('privateKey'),
+    this.props.t('jsonFile'),
+  ]
+}
+
 AccountImportSubview.prototype.render = function () {
   const props = this.props
   const state = this.state || {}
-  const { menuItems } = props
+  const menuItems = this.getMenuItemTexts()
   const { type } = state
 
   return (
@@ -80,7 +78,7 @@ AccountImportSubview.prototype.renderImportView = function () {
   const props = this.props
   const state = this.state || {}
   const { type } = state
-  const { menuItems } = props
+  const menuItems = this.getMenuItemTexts()
   const current = type || menuItems[0]
 
   switch (current) {

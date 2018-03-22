@@ -14,10 +14,6 @@ let SHAPESHIFT_ROW_TITLE
 let SHAPESHIFT_ROW_TEXT
 let FAUCET_ROW_TITLE
 
-const facuetRowText = (networkName) => {
-  return this.props.t('getEtherFromFaucet', [networkName])
-}
-
 function mapStateToProps (state) {
   return {
     network: state.metamask.network,
@@ -44,17 +40,17 @@ function mapDispatchToProps (dispatch) {
 }
 
 inherits(DepositEtherModal, Component)
-function DepositEtherModal () {
+function DepositEtherModal (props) {
   Component.call(this)
 
   // need to set after i18n locale has loaded
-  DIRECT_DEPOSIT_ROW_TITLE = this.props.t('directDepositEther')
-  DIRECT_DEPOSIT_ROW_TEXT = this.props.t('directDepositEtherExplainer')
-  COINBASE_ROW_TITLE = this.props.t('buyCoinbase')
-  COINBASE_ROW_TEXT = this.props.t('buyCoinbaseExplainer')
-  SHAPESHIFT_ROW_TITLE = this.props.t('depositShapeShift')
-  SHAPESHIFT_ROW_TEXT = this.props.t('depositShapeShiftExplainer')
-  FAUCET_ROW_TITLE = this.props.t('testFaucet')
+  DIRECT_DEPOSIT_ROW_TITLE = props.t('directDepositEther')
+  DIRECT_DEPOSIT_ROW_TEXT = props.t('directDepositEtherExplainer')
+  COINBASE_ROW_TITLE = props.t('buyCoinbase')
+  COINBASE_ROW_TEXT = props.t('buyCoinbaseExplainer')
+  SHAPESHIFT_ROW_TITLE = props.t('depositShapeShift')
+  SHAPESHIFT_ROW_TEXT = props.t('depositShapeShiftExplainer')
+  FAUCET_ROW_TITLE = props.t('testFaucet')
 
   this.state = {
     buyingWithShapeshift: false,
@@ -62,6 +58,10 @@ function DepositEtherModal () {
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(DepositEtherModal)
+
+DepositEtherModal.prototype.facuetRowText = function (networkName) {
+  return this.props.t('getEtherFromFaucet', [networkName])
+}
 
 DepositEtherModal.prototype.renderRow = function ({
   logo,
@@ -156,7 +156,7 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('i.fa.fa-tint.fa-2x'),
           title: FAUCET_ROW_TITLE,
-          text: facuetRowText(networkName),
+          text: this.facuetRowText(networkName),
           buttonLabel: this.props.t('getEther'),
           onButtonClick: () => toFaucet(network),
           hide: !isTestNetwork || buyingWithShapeshift,
