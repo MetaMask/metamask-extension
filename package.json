@@ -12,7 +12,7 @@
     "mascara": "gulp build && cross-env METAMASK_DEBUG=true node ./mascara/example/server",
     "dist": "npm run dist:clear && npm install && gulp dist",
     "dist:clear": "rm -rf node_modules/eth-contract-metadata && rm -rf node_modules/eth-phishing-detect",
-    "test": "npm run lint && npm run test:coverage && npm run test:integration",
+    "test": "npm run test:unit && npm run test:integration && npm run lint",
     "test:unit": "cross-env METAMASK_ENV=test mocha --exit --require babel-core/register --require test/helper.js --recursive \"test/unit/**/*.js\"",
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "npm run test:integration:build && npm run test:flat && npm run test:mascara",
