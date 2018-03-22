@@ -659,10 +659,10 @@
   "save": {
     "message": "Save"
   },
-  "reprice:title": {
+  "reprice_title": {
     "message": "Reprice Transaction"
   },
-  "reprice:subtitle": {
+  "reprice_subtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
   },
   "saveAsFile": {

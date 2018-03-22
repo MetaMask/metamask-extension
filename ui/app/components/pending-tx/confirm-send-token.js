@@ -350,9 +350,9 @@ ConfirmSendToken.prototype.render = function () {
   this.inputs = []
 
   const isTxReprice = Boolean(txMeta.lastGasPrice)
-  const title = isTxReprice ? this.props.t('reprice:title') : this.props.t('confirm')
+  const title = isTxReprice ? this.props.t('reprice_title') : this.props.t('confirm')
   const subtitle = isTxReprice
-    ? this.props.t('reprice:subtitle')
+    ? this.props.t('reprice_subtitle')
     : this.props.t('pleaseReviewTransaction')
 
   return (
