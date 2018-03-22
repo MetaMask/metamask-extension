@@ -57,7 +57,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.defaultMaxListeners = 20
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
-
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
@@ -82,6 +81,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
+      initLangCode: opts.initLangCode,
     })
 
     // currency controller
