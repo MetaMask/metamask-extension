@@ -59,11 +59,9 @@ class SenderToRecipient extends Component {
 SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
-    recipientName: PropTypes.string,
+  recipientName: PropTypes.string,
   recipientAddress: PropTypes.string,
   t: PropTypes.func,
 }
 
-module.exports = {
-  AccountDropdowns: connect()(SenderToRecipient),
-}
+module.exports = connect()(SenderToRecipient)
