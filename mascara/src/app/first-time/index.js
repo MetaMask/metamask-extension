@@ -131,7 +131,7 @@ class FirstTimeFlow extends Component {
       case SCREEN_TYPE.BACK_UP_PHRASE:
         return (
           <BackupPhraseScreen
-            next={() => goToBuyEtherView(address)}
+            next={() => openBuyEtherModal()}
           />
         )
       default:
@@ -167,7 +167,7 @@ export default connect(
   }),
   dispatch => ({
     leaveImportSeedScreenState: () => dispatch(unMarkPasswordForgotten()),
-    goToBuyEtherView: address => dispatch(onboardingBuyEthView(address)),
+    openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
   })
 )(FirstTimeFlow)
 
