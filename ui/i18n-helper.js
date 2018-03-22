@@ -2,7 +2,6 @@
 const log = require('loglevel')
 
 const getMessage = (locale, key, substitutions) => {
-  console.log(`locale, key, substitutions`, locale, key, substitutions);
   // check locale is loaded
   if (!locale) {
     // throw new Error('Translator - has not loaded a locale yet.')

@@ -13,7 +13,6 @@ const _higherOrderMapStateToProps = (mapStateToProps) => {
         const stateProps = mapStateToProps
             ? mapStateToProps(state, ownProps)
             : ownProps
-        console.log(`state.localeMessages`, state.localeMessages);
         stateProps.t = t.bind(null, state.localeMessages)
         return stateProps
     }
