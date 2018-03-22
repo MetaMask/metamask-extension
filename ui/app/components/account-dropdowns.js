@@ -9,7 +9,6 @@ const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
-const t = require('../../i18n-helper').getMessage
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -80,7 +79,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label.allcaps', t(this.props.localeMessages, 'loose')) : null
+      return isLoose ? h('.keyring-label.allcaps', this.props.t('loose')) : null
     } catch (e) { return }
   }
 
@@ -130,7 +129,7 @@ class AccountDropdowns extends Component {
                 diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, t(this.props.localeMessages, 'createAccount')),
+            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, this.props.t('createAccount')),
           ],
         ),
         h(
@@ -155,7 +154,7 @@ class AccountDropdowns extends Component {
                 fontSize: '24px',
                 marginBottom: '5px',
               },
-            }, t(this.props.localeMessages, 'importAccount')),
+            }, this.props.t('importAccount')),
           ]
         ),
       ]
@@ -193,7 +192,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
           },
-          t(this.props.localeMessages, 'etherscanView'),
+          this.props.t('etherscanView'),
         ),
         h(
           DropdownMenuItem,
@@ -205,7 +204,7 @@ class AccountDropdowns extends Component {
               actions.showQrView(selected, identity ? identity.name : '')
             },
           },
-          t(this.props.localeMessages, 'showQRCode'),
+          this.props.t('showQRCode'),
         ),
         h(
           DropdownMenuItem,
@@ -217,7 +216,7 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
           },
-          t(this.props.localeMessages, 'copyAddress'),
+          this.props.t('copyAddress'),
         ),
         h(
           DropdownMenuItem,
@@ -227,7 +226,7 @@ class AccountDropdowns extends Component {
               actions.requestAccountExport()
             },
           },
-          t(this.props.localeMessages, 'exportPrivateKey'),
+          this.props.t('exportPrivateKey'),
         ),
       ]
     )

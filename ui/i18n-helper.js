@@ -2,13 +2,15 @@
 const log = require('loglevel')
 
 const getMessage = (locale, key, substitutions) => {
+  console.log(`locale, key, substitutions`, locale, key, substitutions);
   // check locale is loaded
   if (!locale) {
     // throw new Error('Translator - has not loaded a locale yet.')
     return ''
   }
   // check entry is present
-  const entry = locale[key]
+  const { current, en } = locale
+  const entry = current[key] || en[key]
   if (!entry) {
     log.error(`Translator - Unable to find value for "${key}"`)
     // throw new Error(`Translator - Unable to find value for "${key}"`)

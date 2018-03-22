@@ -10,7 +10,6 @@ const Identicon = require('../../identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
 const { formatBalance } = require('../../../util')
-const t = require('../../../../i18n-helper').getMessage
 
 
 class AccountDropdowns extends Component {
@@ -131,7 +130,7 @@ class AccountDropdowns extends Component {
                   actions.showEditAccountModal(identity)
                 },
               }, [
-                t(this.props.localeMessages, 'edit'),
+                this.props.t('edit'),
               ]),
             ]),
 
@@ -145,7 +144,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label.allcaps', t(this.props.localeMessages, 'loose')) : null
+      return isLoose ? h('.keyring-label.allcaps', this.props.t('loose')) : null
     } catch (e) { return }
   }
 
@@ -203,7 +202,7 @@ class AccountDropdowns extends Component {
                 fontSize: '16px',
                 lineHeight: '23px',
               },
-            }, t(this.props.localeMessages, 'createAccount')),
+            }, this.props.t('createAccount')),
           ],
         ),
         h(
@@ -237,7 +236,7 @@ class AccountDropdowns extends Component {
                 fontSize: '16px',
                 lineHeight: '23px',
               },
-            }, t(this.props.localeMessages, 'importAccount')),
+            }, this.props.t('importAccount')),
           ]
         ),
       ]
@@ -288,7 +287,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          t(this.props.localeMessages, 'accountDetails'),
+          this.props.t('accountDetails'),
         ),
         h(
           DropdownMenuItem,
@@ -304,7 +303,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          t(this.props.localeMessages, 'etherscanView'),
+          this.props.t('etherscanView'),
         ),
         h(
           DropdownMenuItem,
@@ -320,7 +319,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          t(this.props.localeMessages, 'copyAddress'),
+          this.props.t('copyAddress'),
         ),
         h(
           DropdownMenuItem,
@@ -332,7 +331,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          t(this.props.localeMessages, 'exportPrivateKey'),
+          this.props.t('exportPrivateKey'),
         ),
         h(
           DropdownMenuItem,
@@ -347,7 +346,7 @@ class AccountDropdowns extends Component {
               menuItemStyles,
             ),
           },
-          t(this.props.localeMessages, 'addToken'),
+          this.props.t('addToken'),
         ),
 
       ]

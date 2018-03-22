@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const Identicon = require('../identicon')
-const t = require('../../../i18n-helper').getMessage
 
 function mapStateToProps (state) {
   return {
@@ -42,7 +41,7 @@ HideTokenConfirmationModal.prototype.render = function () {
     h('div.hide-token-confirmation__container', {
     }, [
       h('div.hide-token-confirmation__title', {}, [
-        t(this.props.localeMessages, 'hideTokenPrompt'),
+        this.props.t('hideTokenPrompt'),
       ]),
 
       h(Identicon, {
@@ -55,19 +54,19 @@ HideTokenConfirmationModal.prototype.render = function () {
       h('div.hide-token-confirmation__symbol', {}, symbol),
 
       h('div.hide-token-confirmation__copy', {}, [
-        t(this.props.localeMessages, 'readdToken'),
+        this.props.t('readdToken'),
       ]),
 
       h('div.hide-token-confirmation__buttons', {}, [
         h('button.btn-cancel.hide-token-confirmation__button.allcaps', {
           onClick: () => hideModal(),
         }, [
-          t(this.props.localeMessages, 'cancel'),
+          this.props.t('cancel'),
         ]),
         h('button.btn-clear.hide-token-confirmation__button.allcaps', {
           onClick: () => hideToken(address),
         }, [
-          t(this.props.localeMessages, 'hide'),
+          this.props.t('hide'),
         ]),
       ]),
     ]),

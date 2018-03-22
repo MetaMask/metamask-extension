@@ -223,7 +223,7 @@
   "done": {
     "message": "Finalizado"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Descarregar Registos de Estado"
   },
   "edit": {

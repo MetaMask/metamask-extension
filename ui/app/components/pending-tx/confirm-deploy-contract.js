@@ -8,7 +8,6 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
-const t = require('../../../i18n-helper').getMessage
 const SenderToRecipient = require('../sender-to-recipient')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
@@ -177,7 +176,7 @@ class ConfirmDeployContract extends Component {
 
     return (
       h('section.flex-row.flex-center.confirm-screen-row', [
-        h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'gasFee') ]),
+        h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('gasFee') ]),
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency.toUpperCase()}`),
 
@@ -216,8 +215,8 @@ class ConfirmDeployContract extends Component {
     return (
       h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ t(this.props.localeMessages, 'total') + ' ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ t(this.props.localeMessages, 'amountPlusGas') ]),
+          h('span.confirm-screen-label', [ this.props.t('total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ this.props.t('amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
@@ -246,9 +245,9 @@ class ConfirmDeployContract extends Component {
         h('.page-container__header', [
           h('.page-container__back-button', {
             onClick: () => backToAccountDetail(selectedAddress),
-          }, t(this.props.localeMessages, 'back')),
-          h('.page-container__title', t(this.props.localeMessages, 'confirmContract')),
-          h('.page-container__subtitle', t(this.props.localeMessages, 'pleaseReviewTransaction')),
+          }, this.props.t('back')),
+          h('.page-container__title', this.props.t('confirmContract')),
+          h('.page-container__subtitle', this.props.t('pleaseReviewTransaction')),
         ]),
         // Main Send token Card
         h('.page-container__content', [
@@ -271,7 +270,7 @@ class ConfirmDeployContract extends Component {
 
           h('div.confirm-screen-rows', [
             h('section.flex-row.flex-center.confirm-screen-row', [
-              h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'from') ]),
+              h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('from') ]),
               h('div.confirm-screen-section-column', [
                 h('div.confirm-screen-row-info', fromName),
                 h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -279,9 +278,9 @@ class ConfirmDeployContract extends Component {
             ]),
 
             h('section.flex-row.flex-center.confirm-screen-row', [
-              h('span.confirm-screen-label.confirm-screen-section-column', [ t(this.props.localeMessages, 'to') ]),
+              h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('to') ]),
               h('div.confirm-screen-section-column', [
-                h('div.confirm-screen-row-info', t(this.props.localeMessages, 'newContract')),
+                h('div.confirm-screen-row-info', this.props.t('newContract')),
               ]),
             ]),
 
@@ -299,12 +298,12 @@ class ConfirmDeployContract extends Component {
             // Cancel Button
             h('button.btn-cancel.page-container__footer-button.allcaps', {
               onClick: event => this.cancel(event, txMeta),
-            }, t(this.props.localeMessages, 'cancel')),
+            }, this.props.t('cancel')),
 
             // Accept Button
             h('button.btn-confirm.page-container__footer-button.allcaps', {
               onClick: event => this.onSubmit(event),
-            }, t(this.props.localeMessages, 'confirm')),
+            }, this.props.t('confirm')),
           ]),
         ]),
       ])
@@ -344,7 +343,7 @@ const mapDispatchToProps = dispatch => {
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
-    displayWarning: warning => actions.displayWarning(t(this.props.localeMessages, warning)),
+    displayWarning: warning => actions.displayWarning(this.props.t(warning)),
   }
 }
 

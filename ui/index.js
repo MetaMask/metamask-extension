@@ -31,6 +31,7 @@ async function startApp (metamaskState, accountManager, opts) {
   if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
 
   const currentLocaleMessages = await fetchLocale(metamaskState.currentLocale)
+  const enLocaleMessages = await fetchLocale('en')
 
   const store = configureStore({
 
@@ -40,7 +41,10 @@ async function startApp (metamaskState, accountManager, opts) {
     // appState represents the current tab's popup state
     appState: {},
 
-    localeMessages: currentLocaleMessages,
+    localeMessages: {
+      current: currentLocaleMessages,
+      en: enLocaleMessages,
+    },
 
     // Which blockchain we are using:
     networkVersion: opts.networkVersion,

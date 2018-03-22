@@ -2,9 +2,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const CurrencyDisplay = require('./currency-display')
-const t = require('../../../i18n-helper').getMessage
+const connect = require('../../metamask-connect')
 
-module.exports = GasFeeDisplay
+module.exports = connect()(GasFeeDisplay)
 
 inherits(GasFeeDisplay, Component)
 function GasFeeDisplay () {
@@ -33,8 +33,8 @@ GasFeeDisplay.prototype.render = function () {
         readOnly: true,
       })
       : gasLoadingError
-        ? h('div.currency-display.currency-display--message', t(this.props.localeMessages, 'setGasPrice'))
-        : h('div.currency-display', t(this.props.localeMessages, 'loading')),
+        ? h('div.currency-display.currency-display--message', this.props.t('setGasPrice'))
+        : h('div.currency-display', this.props.t('loading')),
 
     h('button.sliders-icon-container', {
       onClick,

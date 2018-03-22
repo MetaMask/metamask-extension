@@ -3,7 +3,6 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = require('../../../i18n-helper').getMessage
 
 class NewAccountModal extends Component {
   constructor (props) {
@@ -23,7 +22,7 @@ class NewAccountModal extends Component {
       h('div.new-account-modal-wrapper', {
       }, [
         h('div.new-account-modal-header', {}, [
-          t(this.props.localeMessages, 'newAccount'),
+          this.props.t('newAccount'),
         ]),
 
         h('div.modal-close-x', {
@@ -31,19 +30,19 @@ class NewAccountModal extends Component {
         }),
 
         h('div.new-account-modal-content', {}, [
-          t(this.props.localeMessages, 'accountName'),
+          this.props.t('accountName'),
         ]),
 
         h('div.new-account-input-wrapper', {}, [
           h('input.new-account-input', {
             value: this.state.newAccountName,
-            placeholder: t(this.props.localeMessages, 'sampleAccountName'),
+            placeholder: this.props.t('sampleAccountName'),
             onChange: event => this.setState({ newAccountName: event.target.value }),
           }, []),
         ]),
 
         h('div.new-account-modal-content.after-input', {}, [
-          t(this.props.localeMessages, 'or'),
+          this.props.t('or'),
         ]),
 
         h('div.new-account-modal-content.after-input.pointer', {
@@ -51,13 +50,13 @@ class NewAccountModal extends Component {
             this.props.hideModal()
             this.props.showImportPage()
           },
-        }, t(this.props.localeMessages, 'importAnAccount')),
+        }, this.props.t('importAnAccount')),
 
         h('div.new-account-modal-content.button.allcaps', {}, [
           h('button.btn-clear', {
             onClick: () => this.props.createAccount(newAccountName),
           }, [
-            t(this.props.localeMessages, 'save'),
+            this.props.t('save'),
           ]),
         ]),
       ]),

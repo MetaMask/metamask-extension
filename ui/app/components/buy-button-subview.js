@@ -9,7 +9,6 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
-const t = require('../../i18n-helper.js').getMessage
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -77,7 +76,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t(this.props.localeMessages, 'depositEth')),
+        }, this.props.t('depositEth')),
       ]),
 
       // loading indication
@@ -119,7 +118,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t(this.props.localeMessages, 'selectService')),
+        }, this.props.t('selectService')),
       ]),
 
     ])
@@ -165,14 +164,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, t(this.props.localeMessages, 'borrowDharma'))
+            }, this.props.t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', t(this.props.localeMessages, 'unknownNetworkId'))
+        h('h2.error', this.props.t('unknownNetworkId'))
       )
 
   }
@@ -205,7 +204,7 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
           ],
           subtext: {
             'Coinbase': `${t('crypto')}/${t('fiat')} (${t('usaOnly')})`,
-            'ShapeShift': t(this.props.localeMessages, 'crypto'),
+            'ShapeShift': this.props.t('crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),

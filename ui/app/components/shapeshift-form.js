@@ -7,7 +7,6 @@ const { qrcode } = require('qrcode-npm')
 const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions')
 const { isValidAddress } = require('../util')
 const SimpleDropdown = require('./dropdowns/simple-dropdown')
-const t = require('../../i18n-helper').getMessage
 
 function mapStateToProps (state) {
   const {
@@ -94,7 +93,7 @@ ShapeshiftForm.prototype.onBuyWithShapeShift = function () {
       }))
       .catch(() => this.setState({
         showQrCode: false,
-        errorMessage: t(this.props.localeMessages, 'invalidRequest'),
+        errorMessage: this.props.t('invalidRequest'),
         isLoading: false,
       }))
   }
@@ -126,10 +125,10 @@ ShapeshiftForm.prototype.renderMarketInfo = function () {
 
   return h('div.shapeshift-form__metadata', {}, [
 
-    this.renderMetadata(t(this.props.localeMessages, 'status'), limit ? t(this.props.localeMessages, 'available') : t(this.props.localeMessages, 'unavailable')),
-    this.renderMetadata(t(this.props.localeMessages, 'limit'), limit),
-    this.renderMetadata(t(this.props.localeMessages, 'exchangeRate'), rate),
-    this.renderMetadata(t(this.props.localeMessages, 'min'), minimum),
+    this.renderMetadata(this.props.t('status'), limit ? this.props.t('available') : this.props.t('unavailable')),
+    this.renderMetadata(this.props.t('limit'), limit),
+    this.renderMetadata(this.props.t('exchangeRate'), rate),
+    this.renderMetadata(this.props.t('min'), minimum),
 
   ])
 }
@@ -143,7 +142,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
   return h('div.shapeshift-form', {}, [
 
     h('div.shapeshift-form__deposit-instruction', [
-      t(this.props.localeMessages, 'depositCoin', [depositCoin.toUpperCase()]),
+      this.props.t('depositCoin', [depositCoin.toUpperCase()]),
     ]),
 
     h('div', depositAddress),
@@ -180,7 +179,7 @@ ShapeshiftForm.prototype.render = function () {
 
             h('div.shapeshift-form__selector', [
 
-              h('div.shapeshift-form__selector-label', t(this.props.localeMessages, 'deposit')),
+              h('div.shapeshift-form__selector-label', this.props.t('deposit')),
 
               h(SimpleDropdown, {
                 selectedOption: this.state.depositCoin,
@@ -200,7 +199,7 @@ ShapeshiftForm.prototype.render = function () {
             h('div.shapeshift-form__selector', [
 
               h('div.shapeshift-form__selector-label', [
-                t(this.props.localeMessages, 'receive'),
+                this.props.t('receive'),
               ]),
 
               h('div.shapeshift-form__selector-input', ['ETH']),
@@ -218,7 +217,7 @@ ShapeshiftForm.prototype.render = function () {
           }, [
 
             h('div.shapeshift-form__address-input-label', [
-              t(this.props.localeMessages, 'refundAddress'),
+              this.props.t('refundAddress'),
             ]),
 
             h('input.shapeshift-form__address-input', {
@@ -240,7 +239,7 @@ ShapeshiftForm.prototype.render = function () {
         className: btnClass,
         disabled: !token,
         onClick: () => this.onBuyWithShapeShift(),
-      }, [t(this.props.localeMessages, 'buy')]),
+      }, [this.props.t('buy')]),
 
     ])
 }

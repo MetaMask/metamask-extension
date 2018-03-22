@@ -759,7 +759,7 @@
   "stateLogs": {
     "message": "Logs de estado"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Descargar logs de estados"
   },
   "revealSeedWords": {

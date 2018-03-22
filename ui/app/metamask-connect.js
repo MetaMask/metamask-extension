@@ -1,4 +1,5 @@
 const connect = require('react-redux').connect
+const t = require('../i18n-helper').getMessage
 
 const metamaskConnect = (mapStateToProps, mapDispatchToProps) => {
     return connect(
@@ -12,7 +13,8 @@ const _higherOrderMapStateToProps = (mapStateToProps) => {
         const stateProps = mapStateToProps
             ? mapStateToProps(state, ownProps)
             : ownProps
-        stateProps.localeMessages = state.localeMessages || {}
+        console.log(`state.localeMessages`, state.localeMessages);
+        stateProps.t = t.bind(null, state.localeMessages)
         return stateProps
     }
 }

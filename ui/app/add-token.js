@@ -26,7 +26,6 @@ const fuse = new Fuse(contractList, {
 const actions = require('./actions')
 const ethUtil = require('ethereumjs-util')
 const { tokenInfoGetter } = require('./token-util')
-const t = require('../i18n')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -140,28 +139,28 @@ AddTokenScreen.prototype.validate = function () {
   if (customAddress) {
     const validAddress = ethUtil.isValidAddress(customAddress)
     if (!validAddress) {
-      errors.customAddress = t('invalidAddress')
+      errors.customAddress = this.props.t('invalidAddress')
     }
 
     const validDecimals = customDecimals !== null && customDecimals >= 0 && customDecimals < 36
     if (!validDecimals) {
-      errors.customDecimals = t('decimalsMustZerotoTen')
+      errors.customDecimals = this.props.t('decimalsMustZerotoTen')
     }
 
     const symbolLen = customSymbol.trim().length
     const validSymbol = symbolLen > 0 && symbolLen < 10
     if (!validSymbol) {
-      errors.customSymbol = t('symbolBetweenZeroTen')
+      errors.customSymbol = this.props.t('symbolBetweenZeroTen')
     }
 
     const ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
-      errors.customAddress = t('personalAddressDetected')
+      errors.customAddress = this.props.t('personalAddressDetected')
     }
 
     const tokenAlreadyAdded = this.checkExistingAddresses(customAddress)
     if (tokenAlreadyAdded) {
-      errors.customAddress = t('tokenAlreadyAdded')
+      errors.customAddress = this.props.t('tokenAlreadyAdded')
     }
   } else if (
     Object.entries(selectedTokens)
@@ -169,7 +168,7 @@ AddTokenScreen.prototype.validate = function () {
         isEmpty && !isSelected
       ), true)
   ) {
-    errors.tokenSelector = t('mustSelectOne')
+    errors.tokenSelector = this.props.t('mustSelectOne')
   }
 
   return {
@@ -199,7 +198,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customAddress,
         }),
       }, [
-        h('div.add-token__add-custom-label', t('tokenAddress')),
+        h('div.add-token__add-custom-label', this.props.t('tokenAddress')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenAddressDidChange,
@@ -212,7 +211,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customSymbol,
         }),
       }, [
-        h('div.add-token__add-custom-label', t('tokenSymbol')),
+        h('div.add-token__add-custom-label', this.props.t('tokenSymbol')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenSymbolDidChange,
@@ -226,7 +225,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customDecimals,
         }),
       }, [
-        h('div.add-token__add-custom-label', t('decimal')),
+        h('div.add-token__add-custom-label', this.props.t('decimal')),
         h('input.add-token__add-custom-input', {
           type: 'number',
           onChange: this.tokenDecimalsDidChange,
@@ -300,11 +299,11 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__title', t('addToken')),
-          h('div.add-token__description', t('likeToAddTokens')),
+          h('div.add-token__title', this.props.t('addToken')),
+          h('div.add-token__description', this.props.t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
-          h('div.add-token__description.add-token__confirmation-description', t('balances')),
+          h('div.add-token__description.add-token__confirmation-description', this.props.t('balances')),
           h('div.add-token__confirmation-token-list',
             Object.entries(tokens)
               .map(([ address, token ]) => (
@@ -323,10 +322,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
       h('div.add-token__buttons', [
         h('button.btn-cancel.add-token__button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
-        }, t('back')),
+        }, this.props.t('back')),
         h('button.btn-clear.add-token__button', {
           onClick: () => addTokens(tokens).then(goHome),
-        }, t('addTokens')),
+        }, this.props.t('addTokens')),
       ]),
     ])
   )
@@ -342,15 +341,15 @@ AddTokenScreen.prototype.render = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container', [
-          h('div.add-token__title', t('addToken')),
-          h('div.add-token__description', t('tokenWarning1')),
-          h('div.add-token__description', t('tokenSelection')),
+          h('div.add-token__title', this.props.t('addToken')),
+          h('div.add-token__description', this.props.t('tokenWarning1')),
+          h('div.add-token__description', this.props.t('tokenSelection')),
         ]),
         h('div.add-token__content-container', [
           h('div.add-token__input-container', [
             h('input.add-token__input', {
               type: 'text',
-              placeholder: t('search'),
+              placeholder: this.props.t('search'),
               onChange: e => this.setState({ searchQuery: e.target.value }),
             }),
             h('div.add-token__search-input-error-message', errors.tokenSelector),
@@ -364,7 +363,7 @@ AddTokenScreen.prototype.render = function () {
           h('div.add-token__add-custom', {
             onClick: () => this.setState({ isCollapsed: !isCollapsed }),
           }, [
-            t('addCustomToken'),
+            this.props.t('addCustomToken'),
             h(`i.fa.fa-angle-${isCollapsed ? 'down' : 'up'}`),
           ]),
           this.renderCustomForm(),
@@ -373,10 +372,10 @@ AddTokenScreen.prototype.render = function () {
       h('div.add-token__buttons', [
         h('button.btn-cancel.add-token__button', {
           onClick: goHome,
-        }, t('cancel')),
+        }, this.props.t('cancel')),
         h('button.btn-clear.add-token__button', {
           onClick: this.onNext,
-        }, t('next')),
+        }, this.props.t('next')),
       ]),
     ])
   )

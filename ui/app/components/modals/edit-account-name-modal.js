@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const { getSelectedAccount } = require('../../selectors')
-const t = require('../../../i18n-helper').getMessage
 
 function mapStateToProps (state) {
   return {
@@ -51,7 +50,7 @@ EditAccountNameModal.prototype.render = function () {
       ]),
 
       h('div.edit-account-name-modal-title', {
-      }, [t(this.props.localeMessages, 'editAccountName')]),
+      }, [this.props.t('editAccountName')]),
 
       h('input.edit-account-name-modal-input', {
         placeholder: identity.name,
@@ -70,7 +69,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        t(this.props.localeMessages, 'save'),
+        this.props.t('save'),
       ]),
 
     ]),

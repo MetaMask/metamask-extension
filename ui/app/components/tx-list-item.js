@@ -14,7 +14,6 @@ const { conversionUtil, multiplyCurrencies } = require('../conversion-util')
 const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
-const t = require('../../i18n-helper').getMessage
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
 
@@ -75,7 +74,7 @@ TxListItem.prototype.getAddressText = function () {
     default:
       return address
         ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : t(this.props.localeMessages, 'contractDeployment')
+        : this.props.t('contractDeployment')
   }
 }
 
@@ -307,21 +306,21 @@ TxListItem.prototype.txStatusIndicator = function () {
   let name
 
   if (transactionStatus === 'unapproved') {
-    name = t('unapproved')
+    name = this.props.t('unapproved')
   } else if (transactionStatus === 'rejected') {
-    name = t('rejected')
+    name = this.props.t('rejected')
   } else if (transactionStatus === 'approved') {
-    name = t('approved')
+    name = this.props.t('approved')
   } else if (transactionStatus === 'signed') {
-    name = t('signed')
+    name = this.props.t('signed')
   } else if (transactionStatus === 'submitted') {
-    name = t('submitted')
+    name = this.props.t('submitted')
   } else if (transactionStatus === 'confirmed') {
-    name = t('confirmed')
+    name = this.props.t('confirmed')
   } else if (transactionStatus === 'failed') {
-    name = t('failed')
+    name = this.props.t('failed')
   } else if (transactionStatus === 'dropped') {
-    name = t('dropped')
+    name = this.props.t('dropped')
   }
   return name
 }

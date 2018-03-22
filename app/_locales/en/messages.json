@@ -232,7 +232,7 @@
   "done": {
     "message": "Done"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Download State Logs"
   },
   "dropped": {

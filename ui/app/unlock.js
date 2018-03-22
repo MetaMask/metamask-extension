@@ -5,7 +5,6 @@ const connect = require('./metamask-connect')
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
-const t = require('../i18n-helper').getMessage
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 const environmentType = require('../../app/scripts/lib/environment-type')
 
@@ -41,7 +40,7 @@ UnlockScreen.prototype.render = function () {
           textTransform: 'uppercase',
           color: '#7F8082',
         },
-      }, t(this.props.localeMessages, 'appName')),
+      }, this.props.t('appName')),
 
       h('input.large-input', {
         type: 'password',
@@ -67,7 +66,7 @@ UnlockScreen.prototype.render = function () {
         style: {
           margin: 10,
         },
-      }, t('login')),
+      }, this.props.t('login')),
 
       h('p.pointer', {
         onClick: () => {
@@ -81,7 +80,7 @@ UnlockScreen.prototype.render = function () {
           color: 'rgb(247, 134, 28)',
           textDecoration: 'underline',
         },
-      }, t('restoreFromSeed')),
+      }, this.props.t('restoreFromSeed')),
 
       h('p.pointer', {
         onClick: () => {
@@ -94,7 +93,7 @@ UnlockScreen.prototype.render = function () {
           textDecoration: 'underline',
           marginTop: '32px',
         },
-      }, t('classicInterface')),
+      }, this.props.t('classicInterface')),
     ])
   )
 }

@@ -8,10 +8,10 @@ const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const t = require('../../i18n-helper').getMessage
+const connect = require('../metamask-connect')
 
 
-module.exports = EnsInput
+module.exports = connect()(EnsInput)
 
 inherits(EnsInput, Component)
 function EnsInput () {
@@ -90,13 +90,13 @@ EnsInput.prototype.lookupEnsName = function () {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    if (address === ZERO_ADDRESS) throw new Error(t(this.props.localeMessages, 'noAddressForName'))
+    if (address === ZERO_ADDRESS) throw new Error(this.props.t('noAddressForName'))
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
         nickname: recipient.trim(),
-        hoverText: address + '\n' + t(this.props.localeMessages, 'clickCopy'),
+        hoverText: address + '\n' + this.props.t('clickCopy'),
         ensFailure: false,
       })
     }

@@ -1,11 +1,11 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const t = require('../../i18n-helper').getMessage
+const connect = require('../metamask-connect')
 
 const AccountPanel = require('./account-panel')
 
-module.exports = PendingMsgDetails
+module.exports = connect()(PendingMsgDetails)
 
 inherits(PendingMsgDetails, Component)
 function PendingMsgDetails () {
@@ -40,7 +40,7 @@ PendingMsgDetails.prototype.render = function () {
       // message data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-column.flex-space-between', [
-          h('label.font-small.allcaps', t(this.props.localeMessages, 'message')),
+          h('label.font-small.allcaps', this.props.t('message')),
           h('span.font-small', msgParams.data),
         ]),
       ]),

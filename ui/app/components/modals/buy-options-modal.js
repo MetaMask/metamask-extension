@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
-const t = require('../../../i18n-helper').getMessage
 
 function mapStateToProps (state) {
   return {
@@ -57,15 +56,15 @@ BuyOptions.prototype.render = function () {
       }, [
         h('div.buy-modal-content-title', {
           style: {},
-        }, t(this.props.localeMessages, 'transfers')),
-        h('div', {}, t(this.props.localeMessages, 'howToDeposit')),
+        }, this.props.t('transfers')),
+        h('div', {}, this.props.t('howToDeposit')),
       ]),
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
         isTestNetwork
-          ? this.renderModalContentOption(networkName, t(this.props.localeMessages, 'testFaucet'), () => toFaucet(network))
-          : this.renderModalContentOption('Coinbase', t(this.props.localeMessages, 'depositFiat'), () => toCoinbase(address)),
+          ? this.renderModalContentOption(networkName, this.props.t('testFaucet'), () => toFaucet(network))
+          : this.renderModalContentOption('Coinbase', this.props.t('depositFiat'), () => toCoinbase(address)),
 
         // h('div.buy-modal-content-option', {}, [
         //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
@@ -73,8 +72,8 @@ BuyOptions.prototype.render = function () {
         // ]),,
 
         this.renderModalContentOption(
-          t(this.props.localeMessages, 'directDeposit'),
-          t(this.props.localeMessages, 'depositFromAccount'),
+          this.props.t('directDeposit'),
+          this.props.t('depositFromAccount'),
           () => this.goToAccountDetailsModal()
         ),
 
@@ -85,7 +84,7 @@ BuyOptions.prototype.render = function () {
           background: 'white',
         },
         onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, t(this.props.localeMessages, 'cancel'))),
+      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, this.props.t('cancel'))),
     ]),
   ])
 }

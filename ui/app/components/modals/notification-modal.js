@@ -3,7 +3,6 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = require('../../../i18n-helper').getMessage
 
 class NotificationModal extends Component {
   render () {
@@ -23,12 +22,12 @@ class NotificationModal extends Component {
       }, [
 
         h('div.notification-modal__header', {}, [
-          t(this.props.localeMessages, header),
+          this.props.t(header),
         ]),
 
         h('div.notification-modal__message-wrapper', {}, [
           h('div.notification-modal__message', {}, [
-            t(this.props.localeMessages, message),
+            this.props.t(message),
           ]),
         ]),
 

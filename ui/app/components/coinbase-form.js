@@ -3,7 +3,6 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('../metamask-connect')
 const actions = require('../actions')
-const t = require('../../i18n-helper').getMessage
 
 module.exports = connect(mapStateToProps)(CoinbaseForm)
 
@@ -38,11 +37,11 @@ CoinbaseForm.prototype.render = function () {
     }, [
       h('button.btn-green', {
         onClick: this.toCoinbase.bind(this),
-      }, t(this.props.localeMessages, 'continueToCoinbase')),
+      }, this.props.t('continueToCoinbase')),
 
       h('button.btn-red', {
         onClick: () => props.dispatch(actions.goHome()),
-      }, t(this.props.localeMessages, 'cancel')),
+      }, this.props.t('cancel')),
     ]),
   ])
 }

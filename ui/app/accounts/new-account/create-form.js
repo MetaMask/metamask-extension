@@ -3,7 +3,6 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = require('../../../i18n-helper').getMessage
 
 class NewAccountCreateForm extends Component {
   constructor (props) {
@@ -14,7 +13,7 @@ class NewAccountCreateForm extends Component {
 
     this.state = {
       newAccountName: '',
-      defaultAccountName: t(this.props.localeMessages, 'newAccountNumberName', [newAccountNumber]),
+      defaultAccountName: this.props.t('newAccountNumberName', [newAccountNumber]),
     }
   }
 
@@ -25,7 +24,7 @@ class NewAccountCreateForm extends Component {
     return h('div.new-account-create-form', [
 
       h('div.new-account-create-form__input-label', {}, [
-        t(this.props.localeMessages, 'accountName'),
+        this.props.t('accountName'),
       ]),
 
       h('div.new-account-create-form__input-wrapper', {}, [
@@ -41,13 +40,13 @@ class NewAccountCreateForm extends Component {
         h('button.new-account-create-form__button-cancel.allcaps', {
           onClick: () => this.props.goHome(),
         }, [
-          t(this.props.localeMessages, 'cancel'),
+          this.props.t('cancel'),
         ]),
 
         h('button.new-account-create-form__button-create.allcaps', {
           onClick: () => this.props.createAccount(newAccountName || defaultAccountName),
         }, [
-          t(this.props.localeMessages, 'create'),
+          this.props.t('create'),
         ]),
 
       ]),

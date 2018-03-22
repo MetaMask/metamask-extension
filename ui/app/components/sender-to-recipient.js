@@ -2,7 +2,6 @@ const { Component } = require('react')
 const h = require('react-hyperscript')
 const connect = require('../metamask-connect')
 const PropTypes = require('prop-types')
-const t = require('../../i18n-helper').getMessage
 const Identicon = require('./identicon')
 
 class SenderToRecipient extends Component {
@@ -31,7 +30,7 @@ class SenderToRecipient extends Component {
         ]),
         h('.sender-to-recipient__recipient', [
           h('i.fa.fa-file-text-o'),
-          h('.sender-to-recipient__name.sender-to-recipient__recipient-name', t(this.props.localeMessages, 'newContract')),
+          h('.sender-to-recipient__name.sender-to-recipient__recipient-name', this.props.t('newContract')),
         ]),
       ])
     )
