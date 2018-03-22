@@ -1,5 +1,5 @@
 const { Component } = require('react')
-const connect = require('../../metamask-connect')
+const { connect } = require('react-redux')
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const actions = require('../../actions')
@@ -8,7 +8,9 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
+const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
+const NetworkDisplay = require('../network-display')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -243,9 +245,12 @@ class ConfirmDeployContract extends Component {
     return (
       h('.page-container', [
         h('.page-container__header', [
-          h('.page-container__back-button', {
-            onClick: () => backToAccountDetail(selectedAddress),
-          }, this.props.t('back')),
+          h('.page-container__header-row', [
+            h('span.page-container__back-button', {
+              onClick: () => backToAccountDetail(selectedAddress),
+            }, this.props.t('back')),
+            window.METAMASK_UI_TYPE === 'notification' && h(NetworkDisplay),
+          ]),
           h('.page-container__title', this.props.t('confirmContract')),
           h('.page-container__subtitle', this.props.t('pleaseReviewTransaction')),
         ]),
@@ -320,7 +325,6 @@ ConfirmDeployContract.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
   selectedAddress: PropTypes.string,
-  localeMessages: PropTypes.object,
 }
 
 const mapStateToProps = state => {
@@ -343,7 +347,7 @@ const mapDispatchToProps = dispatch => {
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
-    displayWarning: warning => actions.displayWarning(this.props.t(warning)),
+    displayWarning: warning => actions.displayWarning(t(warning)),
   }
 }
 

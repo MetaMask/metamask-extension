@@ -106,6 +106,12 @@ input.large-input {
     }
   }
 
+  &__header-row {
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__footer {
     display: flex;
     flex-flow: row;
@@ -138,7 +144,6 @@ input.large-input {
     color: #2f9ae0;
     font-size: 1rem;
     cursor: pointer;
-    padding-bottom: 10px;
     font-weight: 400;
   }
 

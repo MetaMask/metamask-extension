@@ -11,11 +11,17 @@
   "accountName": {
     "message": "Nombre de la cuenta"
   },
-  "address": {
-    "message": "Dirección"
+  "addCustomToken": {
+    "message": "Agregar token personalizados"
   },
   "addToken": {
-    "message": "Agregar Token"
+    "message": "Agregar token"
+  },
+  "addTokens": {
+    "message": "Agregar tokens"
+  },
+  "address": {
+    "message": "Dirección"
   },
   "amount": {
     "message": "Cantidad"
@@ -24,15 +30,21 @@
     "message": "Cantidad + Gas"
   },
   "appDescription": {
-    "message": "Extensión del explorador usar Ethereum",
+    "message": "Extensión del navegador para Ethereum",
     "description": "La descripción de la aplicación"
   },
   "appName": {
     "message": "MetaMask",
     "description": "El nombre de la aplicación"
   },
+  "approved": {
+    "message": "Aprobado"
+  },
   "attemptingConnect": {
     "message": "Intentando conectar a la Blockchain"
+  },
+  "attributions": {
+    "message": "Atribuciones"
   },
   "available": {
     "message": "Disponible"
@@ -43,11 +55,11 @@
   "balance": {
     "message": "Saldo"
   },
-  "balances": {
-    "message": "Tus saldos"
-  },
   "balanceIsInsufficientGas": {
     "message": "Saldo de gas insuficiente"
+  },
+  "balances": {
+    "message": "Tus saldos"
   },
   "beta": {
     "message": "BETA"
@@ -56,8 +68,14 @@
     "message": "Debe ser mayor o igual a $1 y menor o igual a $2",
     "description": "helper para ingresar hex como un ingreso decimal"
   },
+  "blockiesIdenticon": {
+    "message": "Usar Blockies Identicon (Iconos)"
+  },
   "borrowDharma": {
     "message": "Pedir prestado con Dharma (Beta)"
+  },
+  "builtInCalifornia": {
+    "message": "Metamask fue diseñado y construido en California"
   },
   "buy": {
     "message": "Comprar"
@@ -66,10 +84,13 @@
     "message": "Comprar en Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase es la manera más popular en el mundo para comprar y vender bitcoin, ethereum y litecoin"
+    "message": "Coinbase es la plataforma global más popular para comprar y vender Bitcoin, Ethereum y Litecoin"
   },
   "cancel": {
     "message": "Cancelar"
+  },
+  "classicInterface": {
+    "message": "Usar interfaz clásica"
   },
   "clickCopy": {
     "message": "Click para copiar"
@@ -77,29 +98,41 @@
   "confirm": {
     "message": "Confirmar"
   },
-  "continue": {
-    "message": "Continuar"
-  },
   "confirmContract": {
     "message": "Confirmar contrato"
+  },
+  "confirmed": {
+    "message": "Confirmado"
   },
   "confirmPassword": {
     "message": "Confirmar contraseña"
   },
-  "enterPasswordConfirm": {
-    "message": "Ingresa tu contraseña para confirmar"
-  },
   "confirmTransaction": {
-    "message": "Confirmar transacción "
+    "message": "Confirmar transacción"
+  },
+  "connectingToMainnet": {
+    "message": "Conectando a la red principal de Ethereum (Main Net)"
+  },
+  "connectingToRopsten": {
+    "message": "Conectando a la red de test Ropsten"
+  },
+  "connectingToKovan": {
+    "message": "Conectando a la red de test Kovan"
+  },
+  "connectingToRinkeby": {
+    "message": "Conectando a la red de test Rinkeby"
+  },
+  "connectingToUnknown": {
+    "message": "Conectando a una red desconocida"
+  },
+  "continue": {
+    "message": "Continuar"
   },
   "continueToCoinbase": {
     "message": "Continuar a Coinbase"
   },
   "contractDeployment": {
-    "message": "Deployar contrato"
-  },
-  "currentConversion": {
-    "message": "Conversión Actual"
+    "message": "Desplegar (Deploy) contrato"
   },
   "conversionProgress": {
     "message": "Conversión en progreso"
@@ -111,53 +144,65 @@
     "message": "Copiado al portapapeles"
   },
   "copiedExclamation": {
-    "message": "Copiado!"
+    "message": "¡Copiado!"
+  },
+  "copiedSafe": {
+    "message": "Ya lo guardé en un lugar seguro"
   },
   "copy": {
     "message": "Copiar"
-  },
-  "copyToClipboard": {
-    "message": "Copiar al portapapeles"
   },
   "copyButton": {
     "message": " Copiar "
   },
   "copyPrivateKey": {
-    "message": "Esta es tu llave privada (Click para copiar)"
+    "message": "Ésta es tu llave privada (haz click para copiar)"
+  },
+  "copyToClipboard": {
+    "message": "Copiar al portapapeles"
   },
   "create": {
     "message": "Crear"
   },
   "createAccount": {
-    "message": "Crear Cuenta"
+    "message": "Crear cuenta"
   },
   "createDen": {
     "message": "Crear"
   },
   "crypto": {
     "message": "Crypto",
-    "description": "Tipo de Cambio (criptomonedas)"
+    "description": "Tipo de cambio (criptomonedas)"
+  },
+  "currentConversion": {
+    "message": "Conversión actual"
+  },
+  "currentNetwork": {
+    "message": "Red actual"
+  },
+  "currentRpc": {
+    "message": "RPC actual"
   },
   "customGas": {
-    "message": "Personalizar Gas"
+    "message": "Personalizar gas"
+  },
+  "customRPC": {
+    "message": "RPC personalizado"
   },
   "customize": {
     "message": "Personalizar"
   },
-  "currentRPC": {
-    "message": "RPC actual"
+  "decimal": {
+    "message": "Decimales de precisión"
   },
-  "customRPC": {
-    "message": "RPC Personalizado"
-  },
-  "newRPC": {
-    "message": "Nueva URL del RPC"
+  "decimalsMustZerotoTen": {
+    "message": "Los decimales deben ser al menos 0 y no más de 36"
   },
   "defaultNetwork": {
     "message": "La red por defecto para las transacciones de Ether es MainNet (red principal)"
   },
   "denExplainer": {
-    "message": "Tu DEN es tu contraseña encriptada guardada dentro de MetaMask"
+    "message": "El DEN es tu contraseña encriptada almacenada dentro de MetaMask"
   },
   "deposit": {
     "message": "Depositar"
@@ -170,13 +215,13 @@
     "description": "Informa al usuario que moneda ha elegido para depositar en shapeshift"
   },
   "depositEth": {
-    "message": "Depositar Eth"
+    "message": "Depositar Ether"
   },
   "depositEther": {
     "message": "Depositar Ether"
   },
   "depositFiat": {
-    "message": "Depositar con Fiat (divisa nacional)"
+    "message": "Depositar con fiat (divisa nacional)"
   },
   "depositFromAccount": {
     "message": "Depositar con otra cuenta"
@@ -185,22 +230,28 @@
     "message": "Depositar con ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "Si tu tienes otras criptomonedas, puedes intercambiar y depositar Ether directamente en tu billetera de MetaMask. No necesitas tener una cuenta."
+    "message": "Si posees otras criptomonedas, puedes intercambiar y depositar Ether directamente en tu billetera de MetaMask. No necesitas tener una cuenta."
   },
   "details": {
     "message": "Detalles"
   },
   "directDeposit": {
-    "message": "Deposito directo"
+    "message": "Depósito directo"
   },
   "directDepositEther": {
     "message": "Depositar Ether directamente"
   },
   "directDepositEtherExplainer": {
-    "message": "Si tu tienes algo de Ether, la forma rapida para tener Ether en tu nueva billetera es depositando directamente"
+    "message": "Si posees Ether, la forma más rápida de transferirlo a tu nueva billetera es depositándolo directamente"
   },
   "done": {
     "message": "Completo"
+  },
+  "downloadStatelogs": {
+    "message": "Descargar logs de estado"
+  },
+  "dropped": {
+    "message": "Caído"
   },
   "edit": {
     "message": "Editar"
@@ -208,14 +259,17 @@
   "editAccountName": {
     "message": "Editar el nombre de la cuenta"
   },
+  "emailUs": {
+    "message": "¡Envíanos un correo!"
+  },
   "encryptNewDen": {
     "message": "Encriptar tu nuevo DEN"
   },
   "enterPassword": {
     "message": "Ingresa contraseña"
   },
-  "passwordCorrect": {
-    "message": "Asegurate que tu contraseña es correcta"
+  "enterPasswordConfirm": {
+    "message": "Ingresa tu contraseña para confirmar"
   },
   "etherscanView": {
     "message": "Ver la cuenta en Etherscan"
@@ -234,17 +288,23 @@
   },
   "fiat": {
     "message": "FIAT",
-    "description": "Exchange type"
+    "description": "Tipo de cambio"
   },
   "fileImportFail": {
-    "message": "No funciona importar el archivo? Haz Click Aquí!",
+    "message": "¿La importación no funcionó? ¡Haz click aquí!",
     "description": "Ayuda al usuario a importar su cuenta desde un archivo JSON"
+  },
+  "followTwitter": {
+    "message": "Síguenos en Twitter"
   },
   "from": {
     "message": "De:"
   },
   "fromShapeShift": {
     "message": "De ShapeShift"
+  },
+  "fromToSame": {
+    "message": "La dirección de origen y destino no pueden ser la misma"
   },
   "gas": {
     "message": "Gas",
@@ -260,7 +320,7 @@
     "message": "Calculamos el límite de gas sugerido en función de las tasas de éxito de la red"
   },
   "gasLimitRequired": {
-    "message": "Límite de Gas requerido"
+    "message": "Límite de gas requerido"
   },
   "gasLimitTooLow": {
     "message": "El límite de gas debe ser de al menos 21000"
@@ -274,6 +334,9 @@
   "gasPriceRequired": {
     "message": "Precio del gas requerido"
   },
+  "generatingSeed": {
+    "message": "Generando semilla..."
+  },
   "getEther": {
     "message": "Conseguir Ether"
   },
@@ -286,27 +349,33 @@
     "description": "helper para ingresar hex como entrada decimal"
   },
   "here": {
-    "message": "Aqui",
+    "message": "Aquí",
     "description": "como en -haz click aquí- para más información"
+  },
+  "hereList": {
+    "message": "¡¡¡Aquí está una lista!!!"
   },
   "hide": {
     "message": "Ocultar"
   },
   "hideToken": {
-    "message": "Ocultar Token"
+    "message": "Ocultar token"
   },
   "hideTokenPrompt": {
-    "message": "Ocultar Token?"
+    "message": "¿Ocultar token?"
+  },
+  "holdEther": {
+    "message": "Te permite mantener tus ether y tokens, así como puente para aplicaciones descentralizadas"
   },
   "howToDeposit": {
-    "message": "Cómo te gustaria depositar Ether?"
+    "message": "¿Cómo te gustaria depositar Ether?"
   },
   "import": {
     "message": "Importar",
     "description": "Botón para importar una cuenta desde un archivo seleccionado"
   },
   "importAccount": {
-    "message": "Importar Cuenta"
+    "message": "Importar cuenta"
   },
   "importAnAccount": {
     "message": "Importar una cuenta"
@@ -316,51 +385,72 @@
   },
   "imported": {
     "message": "Importado",
-    "description": "estado que muestra que una cuenta ha sido completamente cargada en el llavero"
+    "description": "Estado que muestra que una cuenta ha sido completamente cargada en el llavero"
+  },
+  "importAccountMsg": {
+    "message": "Las cuentas importadas no serán asociadas con tu cuenta original creada con tu MetaMask. Aprende más acerca de importar cuentas."
+  },
+  "info": {
+    "message": "Información"
   },
   "infoHelp": {
-    "message": "Informacion y Ayuda"
+    "message": "Informacion y ayuda"
+  },
+  "insufficientFunds": {
+    "message": "Fondos insuficientes"
+  },
+  "insufficientTokens": {
+    "message": "Tokens insuficientes"
   },
   "invalidAddress": {
-    "message": "Dirección Inválida"
+    "message": "Dirección inválida"
+  },
+  "invalidAddressRecipient": {
+    "message": "Dirección del destinatario invalida"
   },
   "invalidGasParams": {
-    "message": "Parametros de Gas Inválidos"
+    "message": "Parametros de gas inválidos"
   },
   "invalidInput": {
     "message": "Entrada inválida"
   },
+  "invalidRPC": {
+    "message": "Invalida URL del RPC"
+  },
   "invalidRequest": {
-    "message": "Peticion inválida"
+    "message": "Petición inválida"
   },
-  "invalidAddressRecipient": {
-    "message": "Dirección del recipiente invalida"
-  },
-  "fromToSame": {
-    "message": "La dirección de origen y destino no pueden ser la misma"
+  "jsonFail": {
+    "message": "Algo falló. Asegúrate que tu JSON tiene el formato correcto"
   },
   "jsonFile": {
     "message": "Archivo JSON",
-    "description": "formato para importar una cuenta"
+    "description": "Formato para importar una cuenta"
   },
-  "jsonFail": {
-    "message": "Algo malo pasó. Asegurate que tu JSON tiene el formato correcto"
+  "knowledgeDataBase": {
+    "message": "Visita nuestra base de conocimiento"
   },
   "kovan": {
     "message": "Red de pruebas Kovan"
   },
   "lessThanMax": {
     "message": "Debe ser menor o igual a $1",
-    "description": "helper para ingresar hex como decimal"
+    "description": "Helper para ingresar hex como decimal"
+  },
+  "likeToAddTokens": {
+    "message": "¿Te gustaría agregar estos tokens?"
   },
   "limit": {
     "message": "Límite"
+  },
+  "links": {
+    "message": "Enlaces"
   },
   "loading": {
     "message": "Cargando..."
   },
   "loadingTokens": {
-    "message": "Cargando Tokens..."
+    "message": "Cargando tokens..."
   },
   "localhost": {
     "message": "Localhost 8545"
@@ -369,25 +459,37 @@
     "message": "Ingresar"
   },
   "logout": {
-    "message": "Cerrar sesion"
+    "message": "Cerrar sesión"
   },
   "loose": {
-    "message": "Loose"
+    "message": "Suelto"
+  },
+  "loweCaseWords": {
+    "message": "las frases semilla sólo pueden tener minúsculas"
   },
   "mainnet": {
-    "message": "Red principal de Ethereum (MainNet)"
+    "message": "Red principal de Ethereum (Main Net)"
+  },
+  "max": {
+    "message": "Max"
   },
   "message": {
     "message": "Mensaje"
   },
+  "metamaskDescription": {
+    "message": "MetaMask es una identidad segura en Ethereum"
+  },
   "min": {
-    "message": "Minimo"
+    "message": "Mínimo"
+  },
+  "mustSelectOne": {
+    "message": "Debe seleccionar al menos un (1) token"
   },
   "myAccounts": {
     "message": "Mis cuentas"
   },
   "needEtherInWallet": {
-    "message": "Para interactuar con una aplicación descentralizada usando MetaMask, vas a necesitar tener Ether en tu billetera"
+    "message": "Para interactuar con una aplicación descentralizada usando MetaMask, necesitas tener Ether en tu billetera"
   },
   "needImportFile": {
     "message": "Debes seleccionar un archivo para importar",
@@ -397,8 +499,8 @@
     "message": "Debes ingresar una contraseña para el archivo seleccionado",
     "description": "Contraseña y archivo necesarios para importar una cuenta"
   },
-  "validFileImport": {
-    "message": "Debes selecionar un archivo valido para importar"
+  "negativeETH": {
+    "message": "No se pueden mandar cantidades negativas de ETH"
   },
   "networks": {
     "message": "Redes"
@@ -416,6 +518,12 @@
   "newPassword": {
     "message": "Nueva contraseña (mínimo [8] caracteres)"
   },
+  "newPassword8Chars": {
+    "message": "Nueva contraseña (mínimo [8] caracteres)"
+  },
+  "newRPC": {
+    "message": "Nueva URL del RPC"
+  },
   "newRecipient": {
     "message": "Nuevo destinatario"
   },
@@ -431,67 +539,82 @@
   "noTransactionHistory": {
     "message": "Sin historial de transacciones"
   },
-  "transactions": {
-    "message": "Transacciones"
-  },
   "noTransactions": {
     "message": "Sin transacciones"
   },
   "notStarted": {
     "message": "Sin iniciar"
   },
-  "oldUI": {
-    "message": "Antigua UI"
+  "ok": {
+    "message": "Ok"
   },
-  "useOldUI": {
-    "message": "Usar UI antigua"
+  "oldUI": {
+    "message": "Antigua UI (Interfaz de Usuario)"
   },
   "oldUIMessage": {
-    "message": "Regresaste a la antigua UI. Puedes regresar a la nueva UI mediante la opcion en la barra desplegable del menu de arriba a la derecha."
+    "message": "Regresaste a la antigua UI (Interfaz de Usuario). Puedes regresar a la nueva UI mediante la opcion en la barra desplegable del menu de arriba a la derecha."
+  },
+  "onlySendToEtherAddress": {
+    "message": "Sólo envía a una dirección de Ethereum"
   },
   "or": {
     "message": "o",
     "description": "opción entre crear o importar una cuenta"
   },
+  "passwordCorrect": {
+    "message": "Asegurate que tu contraseña es correcta"
+  },
   "passwordMismatch": {
-    "message": "Contraseña no concide",
-    "description": "en el proceso de creación de contraseña, los dos campos de contraseña no coincidieron"
+    "message": "La contraseña no coincide",
+    "description": "En el proceso de creación de contraseña, los dos campos de contraseña no coincidieron"
+  },
+  "passwordNotLongEnough": {
+    "message": "La contraseña no es lo suficientemente larga"
+  },
+  "passwordsDontMatch": {
+    "message": "Las contraseñas no coinciden"
   },
   "passwordShort": {
-    "message": "Contraseña no es lo suficientemente larga",
-    "description": "in password creation process, the password is not long enough to be secure"
+    "message": "La contraseña no es lo suficientemente larga",
+    "description": "En el proceso de creación de contraseña, esta no es lo suficientemente larga para ser segura"
   },
   "pastePrivateKey": {
     "message": "Pega tu llave privada aqui",
     "description": "Para importar una cuenta desde una llave privada"
   },
   "pasteSeed": {
-    "message": "Pegue su frase semilla aquí!"
+    "message": "¡Pega tu frase semilla aquí!"
   },
-  "generatingSeed": {
-    "message": "Generando semilla..."
+  "personalAddressDetected": {
+    "message": "Dirección personal detectada. Ingresa la dirección del contrato del token"
   },
   "pleaseReviewTransaction": {
-    "message": "Por favor revisa tu transaccion"
+    "message": "Por favor, revisa tu transaccion"
+  },
+  "privacyMsg": {
+    "message": "Política de privacidad"
   },
   "privateKey": {
     "message": "Llave privada",
-    "description": "select this type of file to use to import an account"
+    "description": "Selecciona este tupo de archivo para importar una cuenta"
   },
   "privateKeyWarning": {
-    "message": "Advertencia: Nunca revele esta clave. Cualquier persona con sus claves privadas puede robar cualquier activo retenido en su cuenta."
+    "message": "Advertencia: NUNCA reveles esta clave. Cualquier persona con tus claves privadas puede robar los activos retenidos en tu cuenta"
   },
   "privateNetwork": {
-    "message": "Red Privada"
+    "message": "Red privada"
   },
   "qrCode": {
     "message": "Mostrar codigo QR"
   },
-  "readdToken": {
-    "message": "Puede volver a agregar este token en el futuro yendo a 'Agregar token' en el menú de opciones de su cuenta.."
-  },
   "readMore": {
     "message": "Leer más aquí"
+  },
+  "readMore2": {
+    "message": "Leer más"
+  },
+  "readdToken": {
+    "message": "Puedes volver a agregar este token en el futuro pinchando sobre 'Agregar token' en el menú de opciones de tu cuenta"
   },
   "receive": {
     "message": "Recibir"
@@ -500,7 +623,7 @@
     "message": "Dirección del receptor"
   },
   "refundAddress": {
-    "message": "Su dirección de reembolso"
+    "message": "Tu dirección de reembolso"
   },
   "rejected": {
     "message": "Rechazado"
@@ -508,8 +631,23 @@
   "required": {
     "message": "Requerido"
   },
+  "resetAccount": {
+    "message": "Reiniciar cuenta"
+  },
+  "restoreFromSeed": {
+    "message": "Restaurar desde semilla"
+  },
+  "restoreVault": {
+    "message": "Restaurar Bóveda"
+  },
   "retryWithMoreGas": {
-    "message": "Vuelva a intentar con un precio de Gas más alto aquí"
+    "message": "Vuelva a intentar con un precio de gas más alto aquí"
+  },
+  "revealSeedWords": {
+    "message": "Revelar palabras de semilla"
+  },
+  "revealSeedWordsWarning": {
+    "message": "¡No recuperes tu semilla en un lugar pública! Esas palabras pueden ser usadas para robarte todas tus cuentas"
   },
   "revert": {
     "message": "Revertir"
@@ -521,7 +659,7 @@
     "message": "Red privada Ropsten"
   },
   "sampleAccountName": {
-    "message": "Ej. Mi nueva cuenta",
+    "message": "P.ej. Mi nueva cuenta",
     "description": "Ayuda al usuario a entender el concepto de agregar un nombre, leíble por humanos, a su cuenta"
   },
   "save": {
@@ -531,26 +669,44 @@
     "message": "Guardar como archivo",
     "description": "Proceso de exportación de cuenta"
   },
+  "saveSeedAsFile": {
+    "message": "Guardar la semilla como archivo"
+  },
+  "search": {
+    "message": "Buscar"
+  },
+  "secretPhrase": {
+    "message": "Ingresa tu frase de doce (12) palabras para restaurar tu bóveda"
+  },
+  "seedPhraseReq": {
+    "message": "las frases semilla tienen doce (12) palabras de largo"
+  },
+  "select": {
+    "message": "Seleccionar"
+  },
+  "selectCurrency": {
+    "message": "Seleccionar moneda"
+  },
   "selectService": {
     "message": "Seleccionar servicio"
+  },
+  "selectType": {
+    "message": "Seleccionar tipo"
   },
   "send": {
     "message": "Enviar"
   },
-  "sendTokens": {
-    "message": "Enviar Tokens"
-  },
   "sendETH": {
-    "message": "Enviar ETH"
+    "message": "Enviar Ether"
+  },
+  "sendTokens": {
+    "message": "Enviar tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Enviar Tokens a cualquiera con una cuenta de Ethereum"
+    "message": "Enviar tokens a cualquiera con una cuenta de Ethereum"
   },
   "settings": {
     "message": "Configuración"
-  },
-  "info": {
-    "message": "Información"
   },
   "shapeshiftBuy": {
     "message": "Comprar con ShapeShift"
@@ -561,20 +717,35 @@
   "showQRCode": {
     "message": "Mostrar codigo QR"
   },
-  "sign": {
-    "message": "Firmar"
-  },
-  "signMessage": {
-    "message": "Firmar Mensaje"
-  },
-  "signNotice": {
-    "message": "Firmar este mensaje puede tener\n efectos secundarios peligrosos. Firma sólo\nmensajes desde sitios a los cuales tú estés dispuesto a confiar completamente tu cuenta.\nEste método peligroso va a ser \nremovido en una version futura."
-  },
   "sigRequest": {
     "message": "Solicitud de firma"
   },
   "sigRequested": {
     "message": "Firma solicitada"
+  },
+  "sign": {
+    "message": "Firmar"
+  },
+  "signed": {
+    "message": "Firmado"
+  },
+  "signMessage": {
+    "message": "Firmar mensaje"
+  },
+  "signNotice": {
+    "message": "Firmar este mensaje puede tener\n efectos secundarios peligrosos. Firma sólo\nmensajes desde sitios a los que estés plenamente dispuesto a confiar tu cuenta.\nEste método peligroso va a ser \neliminado en una version futura."
+  },
+  "spaceBetween": {
+    "message": "Sólo puede haber un espacio entre las palabras"
+  },
+  "stateLogs": {
+    "message": "Logs de estado"
+  },
+  "stateLogsDescription": {
+    "message": "Los logs de estado contienen tus direcciones de cuentas públicas y transacciones envíadas"
+  },
+  "stateLogError": {
+    "message": "Error en la recogida de logs de estado"
   },
   "status": {
     "message": "Estado"
@@ -582,11 +753,23 @@
   "submit": {
     "message": "Enviar"
   },
+  "submitted": {
+    "message": "Enviado"
+  },
+  "supportCenter": {
+    "message": "Visita nuestro centro de atención"
+  },
+  "symbolBetweenZeroTen": {
+    "message": "Símbolo debe ser entre 0 y 10 caracteres"
+  },
   "takesTooLong": {
-    "message": "¿Está tomando demasiado?"
+    "message": "¿Está tardando demasiado?"
+  },
+  "terms": {
+    "message": "Términos de uso"
   },
   "testFaucet": {
-    "message": "Testear Faucet"
+    "message": "Probar Faucet"
   },
   "to": {
     "message": "Para:"
@@ -595,24 +778,45 @@
     "message": "$1 a ETH via ShapeShift",
     "description": "el sistema llenará el tipo de depósito al principio del mensaje"
   },
+  "tokenAddress": {
+    "message": "Dirección del token"
+  },
+  "tokenAlreadyAdded": {
+    "message": "El token está actualmente agregado"
+  },
   "tokenBalance": {
-    "message": "Tu balance de Tokens es:"
+    "message": "Tu balance de tokens es:"
+  },
+  "tokenSelection": {
+    "message": "Busca tokens o selecciónalo de nuestra lista de tokens populares"
+  },
+  "tokenSymbol": {
+    "message": "Símbolo del token"
+  },
+  "tokenWarning1": {
+    "message": "Mantén un registro de los tokens que has comprado con tu cuenta de MetaMask. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
   },
   "total": {
     "message": "Total"
   },
   "transactionMemo": {
-    "message": "Memo de transaccion (opcional)"
+    "message": "Memo de transacción (opcional)"
   },
   "transactionNumber": {
     "message": "Número de transacción"
+  },
+  "transactions": {
+    "message": "Transacciones"
   },
   "transfers": {
     "message": "Transferencias"
   },
   "troubleTokenBalances": {
-    "message": "Tuvimos problemas para cargar sus balances de tokens. Puedes verlos ",
-    "description": "Followed by a link (here) to view token balances"
+    "message": "Tuvimos problemas para cargar tus saldos de tokens. Puedes verlos ",
+    "description": "Seguidos por un enlace (aquí) para ver los saldos de token"
+  },
+  "twelveWords": {
+    "message": "Estas 12 palabras son la única forma de restablecer tus cuentas de MetaMask. \nGuárdalas en un lugar seguro y secreto."
   },
   "typePassword": {
     "message": "Escribe tu contraseña"
@@ -621,10 +825,13 @@
     "message": "Bienvenido a la nueva UI (Beta)"
   },
   "uiWelcomeMessage": {
-    "message": "Estás usando la nueva UI de MetaMask. Echa un vistazo alrededor, prueba las nuevas características, tales como mandar tokens, y déjanos saber si tienes algún problema"
+    "message": "Estás usando la nueva UI de MetaMask. Echa un vistazo alrededor, prueba las nuevas características, tales como mandar tokens, y háznos saber si tienes algún problema"
   },
   "unavailable": {
     "message": "No disponible"
+  },
+  "unapproved": {
+    "message": "No aprobado"
   },
   "unknown": {
     "message": "Desconocido (a)"
@@ -633,208 +840,49 @@
     "message": "Red privada desconocida"
   },
   "unknownNetworkId": {
-    "message": "ID (identidad) de Red desconocida"
+    "message": "ID (identidad) de red desconocida"
   },
-  "currentNetwork": {
-    "message": "Red actual"
+  "uriErrorMsg": {
+    "message": "URI necesita el prefijo HTTP/HTTPS apropiado"
   },
   "usaOnly": {
     "message": "Sólo USA (Estados Unidos)",
-    "description": "El uso de este exchange (casa de cambio) estaá limitado a las personas dentro de los Estados Unidos de America"
+    "description": "El uso de este exchange (casa de cambio) está limitado a las personas dentro de los Estados Unidos de América"
+  },
+  "useOldUI": {
+    "message": "Usar UI antigua"
   },
   "usedByClients": {
     "message": "Utilizado por una variedad de clientes diferentes"
   },
-  "viewAccount": {
-    "message": "Mirar cuenta"
-  },
-  "warning": {
-    "message": "Advertencia"
-  },
-  "whatsThis": {
-    "message": "Qué es esto?"
-  },
-  "yourSigRequested": {
-    "message": "Tu firma ya fue solicidada"
-  },
-  "youSign": {
-    "message": "Usted está firmando"
-  },
-  "importedAccountMsg": {
-    "message": "Cuentas importadas no serán asociadas con tu cuenta original creada con tu MetaMask. Aprende más acerca de importar cuentas. "
-  },
-  "selectType": {
-    "message": "Seleccionar tipo"
-  },
-  "selectCurrency": {
-    "message": "Seleccionar moneda"
-  },
-  "password": {
-    "message": "Contraseña"
-  },
-  "select": {
-    "message": "Seleccionar"
-  },
-  "readMore2": {
-    "message": "Leer más."
-  },
-  "secretPhrase": {
-    "message": "Ingresa tu frase de 12 palabras para restaurar tu bóveda"
-  },
-  "spaceBetween": {
-    "message": "Sólo puede haber un espacio entre las palabras"
-  },
-  "loweCaseWords": {
-    "message": "las frases semilla sólo pueden tener minúsculas"
-  },
-  "seedPhraseReq": {
-    "message": "las frases semilla tienen doce (12) palabras de largo"
-  },
-  "addTokens": {
-    "message": "Agregar tokens"
-  },
-  "addCustomTokens": {
-    "message": "Agregar token personalizados"
-  },
-  "up": {
-    "message": "arriba"
-  },
-  "down": {
-    "message": "abajo"
-  },
-  "tokenWarning1": {
-    "message": "Mantenga un registro de los tokens que ha comprado con su cuenta de MetaMask. Si compraste tokens usando una cuenta diferente, esos tokens no aparecerán aquí."
-  },
-  "tokenSelection": {
-    "message": "Busca tokens o selecciónalo de nuestra lista de tokens populares"
-  },
-  "search": {
-    "message": "Buscar"
-  },
-  "privacyMsg": {
-    "message": "Política de privacidad"
-  },
-  "terms": {
-    "message": "Terminos de Uso"
-  },
-  "attributions": {
-    "message": "Atribuciones"
-  },
-  "supportCenter": {
-    "message": "Visita nuestro centro de atención"
-  },
-  "knowledgeDataBase": {
-    "message": "Visita nuestra base de conocimiento"
-  },
-  "visitWebSite": {
-    "message": "Visita nuestro sitio web"
-  },
-  "followTwitter": {
-    "message": "Síguenos en Twitter"
-  },
-  "emailUs": {
-    "message": "Envíanos un correo!"
-  },
-  "hereList": {
-    "message": "Aquí está una lista!!!"
-  },
-  "insufficientFounds": {
-    "message": "Fondos insuficientes"
-  },
-  "insufficientTokens": {
-    "message": "Tokens insuficientes"
-  },
-  "negativeETH": {
-    "message": "No se pueden mandar cantidades negativas de ETH"
-  },
-  "urlErrorMsg": {
-    "message": "URI necesita el prefijo HTTP/HTTPS  apropiado"
-  },
-  "invalidRPC": {
-    "message": "Invalida URL del RPC"
-  },
-  "saveLogs": {
-    "message": "Logs de estado contienen tus direcciones publicas y transacciones enviadas"
-  },
-  "stateLogs": {
-    "message": "Logs de estado"
-  },
-  "downloadStateLogs": {
-    "message": "Descargar logs de estados"
-  },
-  "revealSeedWords": {
-    "message": "Revelar palabras de semilla"
-  },
-  "revealSeedWordsWarning": {
-    "message": "No recuperes tu semilla en un lugar publico! Esas palabras pueden ser usadas para robarte todas tus cuentas"
-  },
-  "resetAccount": {
-    "message": "Reiniciar cuenta"
-  },
-  "builtInCalifornia": {
-    "message": "Metamask fue diseñado y construido en California  "
-  },
-  "classicInterface": {
-    "message": "Usar interfaz clasica "
-  },
-  "welcomeBeta": {
-    "message": "Bienvenido a Metamask Beta"
-  },
-  "metamaskDescription": {
-    "message": "Metamask es una identidad segura en Ethereum"
-  },
-  "holdEther": {
-    "message": "Te permite mantener tus ether y tokens, así como puente para aplicaciones descentralizadas"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Los decimales deben ser al menos 0 y no más de 36"
-  },
-  "symbolBetweenZeroTen": {
-    "message": "Símbolo debe ser entre 0 y 10 caracteres"
-  },
-  "personalAddressDetected": {
-    "message": "Dirección personal detectada. Ingresa la dirección del contrato del token"
-  },
-  "tokenAlreadyAdded": {
-    "message": "El token esta actualmente agregado"
-  },
-  "mustSelectOne": {
-    "message": "Debe seleccionar al menos un (1) token"
-  },
-  "tokenAddress": {
-    "message": "Dirección del token"
-  },
-  "tokenSymbol": {
-    "message": "Símbolo del token"
-  },
-  "decimalsPrecision": {
-    "message": "Decimales de precisión"
-  },
-  "likeToAddTokens": {
-    "message": "¿Te gustaría agregar estos tokens?"
-  },
-  "msgCompose1": {
-    "message": "Solo manda "
-  },
-  "msgCompose2": {
-    "message": " a una dirección de Ethereum"
-  },
-  "blockiesIdenticon": {
-    "message": "Usar Blockies Identicon (Iconos)"
+  "validFileImport": {
+    "message": "Debes selecionar un archivo valido para importar"
   },
   "vaultCreated": {
     "message": "Bóveda creada"
   },
-  "twelveWords": {
-    "message": "Estas 12 palabras son la única forma de restablecer sus cuentas de MetaMask. \nGuardalas en un lugar seguro y secreto."
+  "viewAccount": {
+    "message": "Mirar cuenta"
   },
-  "copiedSafe": {
-    "message": "Ya lo guardé en un lugar seguro"
+  "visitWebSite": {
+    "message": "Visita nuestro sitio web"
   },
-  "saveSeedAsFile": {
-    "message": "Guardar la semilla como archivo"
+  "walletSeed": {
+    "message": "Semilla de la billetera"
   },
-  "restoreFromSeed": {
-    "message": "Restaurar desde semilla"
+  "warning": {
+    "message": "Advertencia"
+  },
+  "welcomeBeta": {
+    "message": "Bienvenido a Metamask Beta"
+  },
+  "whatsThis": {
+    "message": "¿Qué es esto?"
+  },
+  "youSign": {
+    "message": "Usted está firmando"
+  },
+  "yourSigRequested": {
+    "message": "Tu firma ya fue solicitada"
   }
 }
