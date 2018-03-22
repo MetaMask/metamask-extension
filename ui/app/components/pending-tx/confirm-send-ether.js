@@ -13,7 +13,6 @@ const {
   multiplyCurrencies,
 } = require('../../conversion-util')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
-const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 

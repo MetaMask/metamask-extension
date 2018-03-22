@@ -8,7 +8,6 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
-const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 
