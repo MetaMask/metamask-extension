@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
+const connect = require('../metamask-connect')
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
 
 const networkToColorHash = {
