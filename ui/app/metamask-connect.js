@@ -9,11 +9,17 @@ const metamaskConnect = (mapStateToProps, mapDispatchToProps) => {
 }
 
 const _higherOrderMapStateToProps = (mapStateToProps) => {
+    let _t
+    let currentLocale
     return (state, ownProps = {}) => {
         const stateProps = mapStateToProps
             ? mapStateToProps(state, ownProps)
             : ownProps
-        stateProps.t = t.bind(null, state.localeMessages)
+        if (currentLocale !== state.metamask.currentLocale) {
+            currentLocale = state.metamask.currentLocale
+            _t = t.bind(null, state.localeMessages)
+        }
+        stateProps.t = _t
         return stateProps
     }
 }
