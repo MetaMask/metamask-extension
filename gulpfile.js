@@ -405,13 +405,13 @@ function bundleTask(opts) {
       .pipe(buffer())
       // sourcemaps
       // loads map from browserify file
-      .pipe(gulpif(debug, sourcemaps.init({ loadMaps: true })))
+      .pipe(sourcemaps.init({ loadMaps: true }))
       // Minification
       .pipe(gulpif(opts.isBuild, uglify({
         mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
       })))
       // writes .map file
-      .pipe(gulpif(debug, sourcemaps.write('./')))
+      .pipe(sourcemaps.write(debug ? './' : '../../maps'))
       // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
