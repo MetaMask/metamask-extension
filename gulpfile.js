@@ -411,7 +411,7 @@ function bundleTask(opts) {
         mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
       })))
       // writes .map file
-      .pipe(sourcemaps.write(debug ? './' : '../../maps'))
+      .pipe(sourcemaps.write(debug ? './' : '../../sourcemaps'))
       // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
