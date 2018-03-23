@@ -81,7 +81,7 @@
     "message": "ซื้อด้วย Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase เป็นที่ซื้อขายบิตคอยน์ไลท์คอยน์และอีเธอเรียมที่ได้รับความนิยมสูงสุดในโลก"
+    "message": "Coinbase เป็นแหล่งซื้อขายบิตคอยน์ไลท์คอยน์และอีเธอเรียมที่ได้รับความนิยมสูงสุดในโลก"
   },
   "cancel": {
     "message": "ยกเลิก"
@@ -108,7 +108,7 @@
     "message": "ทำต่อไป"
   },
   "continueToCoinbase": {
-    "message": "ทำต่อไปที่ Coinbase"
+    "message": "ไปที่ Coinbase"
   },
   "contractDeployment": {
     "message": "การติดตั้งสัญญา"
@@ -191,10 +191,10 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "ฝากอีเธอร์"
+    "message": "การฝากอีเธอร์"
   },
   "depositEther": {
-    "message": "ฝากอีเธอร์"
+    "message": "การฝากอีเธอร์"
   },
   "depositFiat": {
     "message": "ฝากด้วยเงินตรา"
@@ -435,7 +435,7 @@
     "message": "กลุ่มคำชีดมีเพียงตัวพิมพ์เล็กเท่านั้น"
   },
   "mainnet": {
-    "message": "เครือข่ายอีเธอเรียมหลัก"
+    "message": "เครือข่าย Main Net"
   },
   "message": {
     "message": "ข้อความ"
@@ -501,7 +501,7 @@
     "message": "ไม่มีรายการธุรกรรมในอดีต"
   },
   "noTransactions": {
-    "message": "ไม่มีรายการธุรกรรม"
+    "message": "ยังไม่มีรายการธุรกรรม"
   },
   "notStarted": {
     "message": "ยังไม่เริ่ม"
@@ -599,10 +599,10 @@
     "message": "ย้อนกลับคืน"
   },
   "rinkeby": {
-    "message": "เครือขายทดสอบ Rinkeby"
+    "message": "เครือข่ายทดสอบ Rinkeby"
   },
   "ropsten": {
-    "message": "เครือขายทดสอบ Ropsten"
+    "message": "เครือข่ายทดสอบ Ropsten"
   },
   "sampleAccountName": {
     "message": "เช่น บัญชีเฮงเฮงของฉัน",
@@ -762,7 +762,7 @@
     "message": "ยินดีต้อนรับสู่หน้าตาใหม่ (เบต้า)"
   },
   "uiWelcomeMessage": {
-    "message": "ขณะนี้คุณใช้งาน Metamask หน้าตาใหม่แล้ว ลองเล่ยคุณลักษณะใหม่ ๆ เช่นการส่งโทเค็นและหากคุณพบปัญหากรุณาแจ้งให้เราทราบ"
+    "message": "ขณะนี้คุณใช้งาน Metamask หน้าตาใหม่แล้ว ลองเล่นคุณลักษณะใหม่ ๆ เช่นการส่งโทเค็นและหากคุณพบปัญหากรุณาแจ้งให้เราทราบ"
   },
   "unavailable": {
     "message": "ใช้งานไม่ได้"
