@@ -29,7 +29,7 @@ function setupRaven(opts) {
     }
   })
   client.install()
-  
+
   return Raven
 }
 
@@ -47,6 +47,6 @@ function rewriteReportUrls(report) {
 function toMetamaskUrl(origUrl) {
   const filePath = origUrl.split(location.origin)[1]
   if (!filePath) return origUrl
-  const metamaskUrl = `${filePath}`
+  const metamaskUrl = `metamask${filePath}`
   return metamaskUrl
 }
