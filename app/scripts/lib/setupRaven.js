@@ -26,7 +26,7 @@ function setupRaven(opts) {
       rewriteReportUrls(report)
       // make request normally
       client._makeRequest(opts)
-    }
+    },
   })
   client.install()
 
