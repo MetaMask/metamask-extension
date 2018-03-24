@@ -339,7 +339,7 @@ function generateBundler(opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
     entries: ['./app/scripts/'+opts.filename],
     plugin: 'browserify-derequire',
-    debug: debug,
+    debug: true,
     fullPaths: debug,
   })
 
@@ -411,7 +411,7 @@ function bundleTask(opts) {
         mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
       })))
       // writes .map file
-      .pipe(sourcemaps.write(debug ? './' : '../../sourcemaps'))
+      .pipe(sourcemaps.write('../../sourcemaps'))
       // write completed bundles
       .pipe(gulp.dest('./dist/firefox/scripts'))
       .pipe(gulp.dest('./dist/chrome/scripts'))
