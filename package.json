@@ -29,6 +29,13 @@
     "test:mascara:build:ui": "browserify mascara/test/test-ui.js -o dist/mascara/ui.js",
     "test:mascara:build:background": "browserify mascara/src/background.js -o dist/mascara/background.js",
     "test:mascara:build:tests": "browserify test/integration/lib/first-time.js -o dist/mascara/tests.js",
+    "sentry": "export RELEASE=`cat app/manifest.json| jq -r .version` && npm run sentry:release && npm run sentry:upload",
+    "sentry:release": "npm run sentry:release:new && npm run sentry:release:clean",
+    "sentry:release:new": "sentry-cli releases --org 'metamask' --project 'metamask' new $RELEASE",
+    "sentry:release:clean": "sentry-cli releases --org 'metamask' --project 'metamask' files $RELEASE delete --all",
+    "sentry:upload": "npm run sentry:upload:source && npm run sentry:upload:maps",
+    "sentry:upload:source": "for FILEPATH in ./dist/chrome/scripts/*.js; do [ -e $FILEPATH ] || continue; export FILE=`basename $FILEPATH` && echo uploading $FILE && sentry-cli releases --org 'metamask' --project 'metamask' files $RELEASE upload $FILEPATH metamask/scripts/$FILE; done;",
+    "sentry:upload:maps": "sentry-cli releases --org 'metamask' --project 'metamask' files $RELEASE upload-sourcemaps ./dist/sourcemaps/ --url-prefix 'sourcemaps' --rewrite",
     "lint": "gulp lint",
     "lint:fix": "gulp lint:fix",
     "disc": "gulp disc --debug",
@@ -180,6 +187,7 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "@sentry/cli": "^1.30.3",
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
