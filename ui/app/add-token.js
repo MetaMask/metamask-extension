@@ -303,7 +303,6 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__title', t('addToken')),
           h('div.add-token__description', t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
@@ -339,78 +338,82 @@ AddTokenScreen.prototype.displayTab = function (selectedTab) {
   this.setState({ displayedTab: selectedTab })
 }
 
+AddTokenScreen.prototype.renderTabs = function () {
+  const { displayedTab, errors } = this.state
+
+  return displayedTab === 'CUSTOM_TOKEN'
+    ? this.renderCustomForm()
+    : h('div', [
+    h('div.add-token__wrapper', [
+      h('div.add-token__content-container', [
+        h('div.add-token__info-box', [
+          h('div.add-token__info-box__close'),
+          h('div.add-token__info-box__title', t('whatsThis')),
+          h('div.add-token__info-box__copy', t('keepTrackTokens')),
+          h('div.add-token__info-box__copy--blue', t('learnMore')),
+        ]),
+        h('div.add-token__input-container', [
+          h('input.add-token__input', {
+            type: 'text',
+            placeholder: t('searchTokens'),
+            onChange: e => this.setState({ searchQuery: e.target.value }),
+          }),
+          h('div.add-token__search-input-error-message', errors.tokenSelector),
+        ]),
+        this.renderTokenList(),
+      ]),
+    ]),
+  ])
+}
+
 AddTokenScreen.prototype.render = function () {
   const {
-    errors,
     isShowingConfirmation,
     displayedTab,
   } = this.state
   const { goHome } = this.props
 
-  return isShowingConfirmation
-    ? this.renderConfirmation()
-    : (
-    h('div.add-token', [
-      h('div.add-token__header', [
-        h('div.add-token__header__cancel', {
-          onClick: () => goHome(),
-        }, [
-          h('i.fa.fa-angle-left.fa-lg'),
-          h('span', t('cancel')),
-        ]),
-        h('div.add-token__header__title', t('addTokens')),
-        h('div.add-token__header__tabs', [
-
-          h('div.add-token__header__tabs__tab', {
-            className: classnames('add-token__header__tabs__tab', {
-              'add-token__header__tabs__selected': displayedTab === 'SEARCH',
-              'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
-            }),
-            onClick: () => this.displayTab('SEARCH'),
-          }, t('search')),
-
-          h('div.add-token__header__tabs__tab', {
-            className: classnames('add-token__header__tabs__tab', {
-              'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
-              'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
-            }),
-            onClick: () => this.displayTab('CUSTOM_TOKEN'),
-          }, t('customToken')),
-
-        ]),
+  return h('div.add-token', [
+    h('div.add-token__header', [
+      h('div.add-token__header__cancel', {
+        onClick: () => goHome(),
+      }, [
+        h('i.fa.fa-angle-left.fa-lg'),
+        h('span', t('cancel')),
       ]),
+      h('div.add-token__header__title', t('addTokens')),
+      !isShowingConfirmation && h('div.add-token__header__tabs', [
 
-      displayedTab === 'CUSTOM_TOKEN'
-        ? this.renderCustomForm()
-        : h('div', [
-        h('div.add-token__wrapper', [
-          h('div.add-token__content-container', [
-            h('div.add-token__info-box', [
-              h('div.add-token__info-box__close'),
-              h('div.add-token__info-box__title', t('whatsThis')),
-              h('div.add-token__info-box__copy', t('keepTrackTokens')),
-              h('div.add-token__info-box__copy--blue', t('learnMore')),
-            ]),
-            h('div.add-token__input-container', [
-              h('input.add-token__input', {
-                type: 'text',
-                placeholder: t('searchTokens'),
-                onChange: e => this.setState({ searchQuery: e.target.value }),
-              }),
-              h('div.add-token__search-input-error-message', errors.tokenSelector),
-            ]),
-            this.renderTokenList(),
-          ]),
-        ]),
+        h('div.add-token__header__tabs__tab', {
+          className: classnames('add-token__header__tabs__tab', {
+            'add-token__header__tabs__selected': displayedTab === 'SEARCH',
+            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
+          }),
+          onClick: () => this.displayTab('SEARCH'),
+        }, t('search')),
+
+        h('div.add-token__header__tabs__tab', {
+          className: classnames('add-token__header__tabs__tab', {
+            'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
+            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
+          }),
+          onClick: () => this.displayTab('CUSTOM_TOKEN'),
+        }, t('customToken')),
+
       ]),
-      h('div.add-token__buttons', [
-        h('button.btn-cancel.add-token__button--cancel', {
-          onClick: goHome,
-        }, t('cancel')),
-        h('button.btn-clear.add-token__button', {
-          onClick: this.onNext,
-        }, t('next')),
-      ]),
-    ])
-  )
+    ]),
+
+    isShowingConfirmation
+      ? this.renderConfirmation()
+      : this.renderTabs(),
+
+    !isShowingConfirmation && h('div.add-token__buttons', [
+      h('button.btn-cancel.add-token__button--cancel', {
+        onClick: goHome,
+      }, t('cancel')),
+      h('button.btn-clear.add-token__button', {
+        onClick: this.onNext,
+      }, t('next')),
+    ]),
+  ])
 }
