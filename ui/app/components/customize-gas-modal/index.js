@@ -301,12 +301,16 @@ CustomizeGasModal.prototype.render = function () {
         }, [this.props.t('revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
-          h('div.send-v2__customize-gas__cancel.allcaps', {
+          h('button.btn-secondary.send-v2__customize-gas__cancel', {
             onClick: this.props.hideModal,
+            style: {
+              marginRight: '10px',
+            },
           }, [this.props.t('cancel')]),
 
-          h(`div.send-v2__customize-gas__save${error ? '__error' : ''}.allcaps`, {
+          h('button.btn-primary.send-v2__customize-gas__save', {
             onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
+            className: error && 'btn-primary--disabled',
           }, [this.props.t('save')]),
         ]),
 

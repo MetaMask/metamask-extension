@@ -239,7 +239,7 @@ class Settings extends Component {
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.settings__clear-button', {
+            h('button.btn-primary--lg.settings__button', {
               onClick (event) {
                 window.logStateString((err, result) => {
                   if (err) {
@@ -264,7 +264,7 @@ class Settings extends Component {
         h('div.settings__content-item', this.props.t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.settings__clear-button.settings__clear-button--red', {
+            h('button.btn-primary--lg.settings__button--red', {
               onClick (event) {
                 event.preventDefault()
                 revealSeedConfirmation()
@@ -284,7 +284,7 @@ class Settings extends Component {
         h('div.settings__content-item', this.props.t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
-            h('button.settings__clear-button.settings__clear-button--orange', {
+            h('button.btn-primary--lg.settings__button--orange', {
               onClick (event) {
                 event.preventDefault()
                 setFeatureFlagToBeta()
@@ -303,7 +303,7 @@ class Settings extends Component {
       h('div.settings__content-item', this.props.t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
-          h('button.settings__clear-button.settings__clear-button--orange', {
+          h('button.btn-primary--lg.settings__button--orange', {
             onClick (event) {
               event.preventDefault()
               showResetAccountConfirmationModal()

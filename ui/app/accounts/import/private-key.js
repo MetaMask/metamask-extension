@@ -47,13 +47,13 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__buttons', {}, [
 
-        h('button.new-account-create-form__button-cancel.allcaps', {
+        h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => goHome(),
         }, [
           this.props.t('cancel'),
         ]),
 
-        h('button.new-account-create-form__button-create.allcaps', {
+        h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
           this.props.t('import'),

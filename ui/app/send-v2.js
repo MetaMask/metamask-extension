@@ -6,7 +6,7 @@ const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
 
 const FromDropdown = require('./components/send/from-dropdown')
-const ToAutoComplete = require('./components/send/to-autocomplete')
+const EnsInput = require('./components/ens-input')
 const CurrencyDisplay = require('./components/send/currency-display')
 const MemoTextArea = require('./components/send/memo-textarea')
 const GasFeeDisplay = require('./components/send/gas-fee-display-v2')
@@ -252,7 +252,7 @@ SendTransactionScreen.prototype.renderFromRow = function () {
   ])
 }
 
-SendTransactionScreen.prototype.handleToChange = function (to) {
+SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
   const {
     updateSendTo,
     updateSendErrors,
@@ -268,12 +268,12 @@ SendTransactionScreen.prototype.handleToChange = function (to) {
     toError = this.props.t('fromToSame')
   }
 
-  updateSendTo(to)
+  updateSendTo(to, nickname)
   updateSendErrors({ to: toError })
 }
 
 SendTransactionScreen.prototype.renderToRow = function () {
-  const { toAccounts, errors, to } = this.props
+  const { toAccounts, errors, to, network } = this.props
 
   const { toDropdownOpen } = this.state
 
@@ -288,7 +288,10 @@ SendTransactionScreen.prototype.renderToRow = function () {
     ]),
 
     h('div.send-v2__form-field', [
-      h(ToAutoComplete, {
+      h(EnsInput, {
+        name: 'address',
+        placeholder: 'Recipient Address',
+        network,
         to,
         accounts: Object.entries(toAccounts).map(([key, account]) => account),
         dropdownOpen: toDropdownOpen,
@@ -509,13 +512,13 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
-    h('button.btn-cancel.page-container__footer-button', {
+    h('button.btn-secondary--lg.page-container__footer-button', {
       onClick: () => {
         clearSend()
         goHome()
       },
     }, this.props.t('cancel')),
-    h('button.btn-clear.page-container__footer-button', {
+    h('button.btn-primary--lg.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
     }, this.props.t('next')),
@@ -537,11 +540,11 @@ SendTransactionScreen.prototype.render = function () {
   )
 }
 
-SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress) {
+SendTransactionScreen.prototype.addToAddressBookIfNew = function (newAddress, nickname = '') {
   const { toAccounts, addToAddressBook } = this.props
   if (!toAccounts.find(({ address }) => newAddress === address)) {
     // TODO: nickname, i.e. addToAddressBook(recipient, nickname)
-    addToAddressBook(newAddress)
+    addToAddressBook(newAddress, nickname)
   }
 }
 
@@ -602,6 +605,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     updateTx,
     selectedToken,
     editingTransactionId,
+    toNickname,
     errors: { amount: amountError, to: toError },
   } = this.props
 
@@ -611,7 +615,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
     return
   }
 
-  this.addToAddressBookIfNew(to)
+  this.addToAddressBookIfNew(to, toNickname)
 
   if (editingTransactionId) {
     const editedTx = this.getEditedTx()

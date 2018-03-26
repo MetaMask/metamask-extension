@@ -9,7 +9,7 @@ const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const connect = require('../metamask-connect')
-
+const ToAutoComplete = require('./send/to-autocomplete')
 
 module.exports = connect()(EnsInput)
 
@@ -22,12 +22,14 @@ EnsInput.prototype.render = function () {
   const props = this.props
   const opts = extend(props, {
     list: 'addresses',
-    onChange: () => {
+    onChange: (recipient) => {
       const network = this.props.network
       const networkHasEnsSupport = getNetworkEnsSupport(network)
+
       if (!networkHasEnsSupport) return
 
-      const recipient = document.querySelector('input[name="address"]').value
+      props.onChange(recipient)
+
       if (recipient.match(ensRE) === null) {
         return this.setState({
           loadingEns: false,
@@ -39,34 +41,13 @@ EnsInput.prototype.render = function () {
       this.setState({
         loadingEns: true,
       })
-      this.checkName()
+      this.checkName(recipient)
     },
   })
   return h('div', {
-    style: { width: '100%' },
+    style: { width: '100%', position: 'relative' },
   }, [
-    h('input.large-input.send-screen-input', opts),
-    // The address book functionality.
-    h('datalist#addresses',
-      [
-        // Corresponds to the addresses owned.
-        Object.keys(props.identities).map((key) => {
-          const identity = props.identities[key]
-          return h('option', {
-            value: identity.address,
-            label: identity.name,
-            key: identity.address,
-          })
-        }),
-        // Corresponds to previously sent-to addresses.
-        props.addressBook.map((identity) => {
-          return h('option', {
-            value: identity.address,
-            label: identity.name,
-            key: identity.address,
-          })
-        }),
-      ]),
+    h(ToAutoComplete, { ...opts }),
     this.ensIcon(),
   ])
 }
@@ -83,8 +64,7 @@ EnsInput.prototype.componentDidMount = function () {
   }
 }
 
-EnsInput.prototype.lookupEnsName = function () {
-  const recipient = document.querySelector('input[name="address"]').value
+EnsInput.prototype.lookupEnsName = function (recipient) {
   const { ensResolution } = this.state
 
   log.info(`ENS attempting to resolve name: ${recipient}`)
@@ -130,8 +110,8 @@ EnsInput.prototype.ensIcon = function (recipient) {
     title: hoverText,
     style: {
       position: 'absolute',
-      padding: '9px',
-      transform: 'translatex(-40px)',
+      top: '16px',
+      left: '-25px',
     },
   }, this.ensIconContents(recipient))
 }

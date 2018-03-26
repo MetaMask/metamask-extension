@@ -702,10 +702,10 @@ function updateSendFrom (from) {
   }
 }
 
-function updateSendTo (to) {
+function updateSendTo (to, nickname = '') {
   return {
     type: actions.UPDATE_SEND_TO,
-    value: to,
+    value: { to, nickname },
   }
 }
 

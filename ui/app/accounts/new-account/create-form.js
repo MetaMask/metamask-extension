@@ -37,13 +37,13 @@ class NewAccountCreateForm extends Component {
 
       h('div.new-account-create-form__buttons', {}, [
 
-        h('button.new-account-create-form__button-cancel.allcaps', {
+        h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => this.props.goHome(),
         }, [
           this.props.t('cancel'),
         ]),
 
-        h('button.new-account-create-form__button-create.allcaps', {
+        h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.props.createAccount(newAccountName || defaultAccountName),
         }, [
           this.props.t('create'),

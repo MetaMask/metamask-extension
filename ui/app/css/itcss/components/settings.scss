@@ -130,24 +130,32 @@
   cursor: pointer;
 }
 
-.settings__clear-button {
-  font-size: 16px;
-  border: 1px solid $curious-blue;
-  color: $curious-blue;
-  border-radius: 2px;
-  padding: 18px;
-  background-color: $white;
-  text-transform: uppercase;
-}
-
-.settings__clear-button--red {
-  border: 1px solid $monzo;
+.settings__button--red {
+  border-color: lighten($monzo, 10%);
   color: $monzo;
+
+  &:active {
+    background: lighten($monzo, 55%);
+    border-color: $monzo;
+  }
+
+  &:hover {
+    border-color: $monzo;
+  }
 }
 
-.settings__clear-button--orange {
-  border: 1px solid rgba(247, 134, 28, 1);
-  color: rgba(247, 134, 28, 1);
+.settings__button--orange {
+  border-color: lighten($ecstasy, 20%);
+  color: $ecstasy;
+
+  &:active {
+    background: lighten($ecstasy, 40%);
+    border-color: $ecstasy;
+  }
+
+  &:hover {
+    border-color: $ecstasy;
+  }
 }
 
 .settings__info-logo-wrapper {

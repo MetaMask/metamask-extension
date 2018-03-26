@@ -172,11 +172,8 @@
     justify-content: center;
   }
 
-  &__button {
-    flex: 1 0 141px;
-    margin: 0 12px;
-    padding: 10px 22px;
-    height: 54px;
+  &__cancel-button {
+    margin-right: 1.2rem;
   }
 
   &__token-icons-container {
@@ -334,7 +331,7 @@
     }
 
     &__buttons {
-      padding: 12px 0;
+      padding: 1rem;
       margin: 0;
       border-top: 1px solid $gallery;
       width: 100%;

@@ -103,10 +103,11 @@
 }
 
 .hero-balance-button {
+  min-width: initial;
   width: 6rem;
 
   @media #{$sub-mid-size-breakpoint-range} {
-    padding: 0.4rem;
+    padding: .4rem;
     width: 4rem;
     display: flex;
     flex: 1;
