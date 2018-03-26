@@ -10,6 +10,7 @@ import ImportSeedPhraseScreen from './import-seed-phrase-screen'
 import {
   onboardingBuyEthView,
   unMarkPasswordForgotten,
+  showModal,
 } from '../../../../ui/app/actions'
 
 class FirstTimeFlow extends Component {
@@ -80,7 +81,7 @@ class FirstTimeFlow extends Component {
   renderScreen () {
     const {SCREEN_TYPE} = FirstTimeFlow
     const {
-      goToBuyEtherView,
+      openBuyEtherModal,
       address,
       restoreCreatePasswordScreen,
       forgottenPassword,
