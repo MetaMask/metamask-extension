@@ -162,6 +162,7 @@
   &__row {
     display: flex;
     flex-flow: column;
+    flex: 1 0 auto;
   }
 
   &__row-title {
