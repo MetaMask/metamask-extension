@@ -14,7 +14,7 @@ const storage = {
   },
 }
 
-describe.only('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
+describe('storage is migrated successfully where transactions that are submitted have submittedTimes', () => {
   it('should add submittedTime key on the txMeta if appropriate', (done) => {
     migration22.migrate(storage)
     .then((migratedData) => {
