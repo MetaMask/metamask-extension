@@ -192,29 +192,8 @@
     justify-content: space-between;
   }
 
-  &__button-cancel,
-  &__button-create {
-    height: 55px;
+  &__button {
     width: 150px;
-    border-radius: 2px;
-    background-color: #FFFFFF;
-  }
-
-  &__button-cancel {
-    border: 1px solid $dusty-gray;
-    color: $dusty-gray;
-    font-family: Roboto;
-    font-size: 16px;
-    line-height: 21px;
-    text-align: center;
-  }
-
-  &__button-create {
-    border: 1px solid $curious-blue;
-    color: $curious-blue;
-    font-family: Roboto;
-    font-size: 16px;
-    line-height: 21px;
-    text-align: center;
+    min-width: initial;
   }
 }

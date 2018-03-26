@@ -261,20 +261,13 @@
     padding-top: 20px;
   }
 
-  &__button,
-  &__button--cancel {
+  &__confirm-button,
+  &__cancel-button {
     margin: 0 12px;
     padding: 10px 13px;
-    height: 44px;
+    height: 54px;
     width: 133px;
-    border: 1px solid $curious-blue;
-    border-radius: 2px;
-    font-color: $curious-blue;
-  }
-
-  &__button--cancel {
-    border-color: $dusty-gray;
-    font-color: $dusty-gray;
+    margin-right: 1.2rem;
   }
 
   &__token-icons-title {
@@ -442,7 +435,7 @@
     }
 
     &__buttons {
-      padding: 12px 0;
+      padding: 1rem;
       margin: 0;
       border-top: 1px solid $gallery;
       width: 100%;
