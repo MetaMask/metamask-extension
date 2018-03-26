@@ -510,13 +510,13 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const noErrors = !amountError && toError === null
 
   return h('div.page-container__footer', [
-    h('button.btn-cancel.page-container__footer-button', {
+    h('button.btn-secondary--lg.page-container__footer-button', {
       onClick: () => {
         clearSend()
         goHome()
       },
     }, t('cancel')),
-    h('button.btn-clear.page-container__footer-button', {
+    h('button.btn-primary--lg.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
     }, t('next')),
