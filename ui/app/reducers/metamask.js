@@ -39,6 +39,7 @@ function reduceMetamask (state, action) {
       maxModeOn: false,
       editingTransactionId: null,
       forceGasMin: null,
+      toNickname: '',
     },
     coinOptions: {},
     useBlockie: false,
@@ -238,7 +239,8 @@ function reduceMetamask (state, action) {
       return extend(metamaskState, {
         send: {
           ...metamaskState.send,
-          to: action.value,
+          to: action.value.to,
+          toNickname: action.value.nickname,
         },
       })
 

@@ -21,6 +21,8 @@ global.ethQuery = {
   sendTransaction: () => {},
 }
 
+global.ethereumProvider = {}
+
 async function runSendFlowTest(assert, done) {
   console.log('*** start runSendFlowTest')
   const selectState = await queryAsync($, 'select')
