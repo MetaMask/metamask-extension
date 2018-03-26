@@ -1,6 +1,12 @@
 # Changelog
 
 ## Current Master
+- Updates design of new-ui Add Token screen
+- New-ui can send to ens addresses
+- Update new-ui button styles
+- Signed-type-data notification handles long messages
+- Popup extension in new-ui uses new on-boarding designs
+- Buy ether step of new-ui on-boarding uses new buy ether modal designs
 
 ## 4.3.0 Wed Mar 21 2018
 
