@@ -195,7 +195,7 @@
   },
   "depositEther": {
     "message": "Vplačilo ethera"
-  }
+  },
   "depositFiat": {
     "message": "Vplačilo s klasičnimi valutami"
   },
