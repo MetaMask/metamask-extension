@@ -34,11 +34,11 @@ async function runAddTokenFlowTest (assert, done) {
   let addTokenWrapper = await queryAsync($, '.add-token__wrapper')
   assert.ok(addTokenWrapper[0], 'add token wrapper renders')
 
-  let addTokenTitle = await queryAsync($, '.add-token__title')
-  assert.equal(addTokenTitle[0].textContent, 'Add Token', 'add token title is correct')
+  let addTokenTitle = await queryAsync($, '.add-token__header__title')
+  assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
 
   // Cancel Add Token
-  const cancelAddTokenButton = await queryAsync($, 'button.btn-cancel.add-token__button')
+  const cancelAddTokenButton = await queryAsync($, 'button.btn-cancel.add-token__button--cancel')
   assert.ok(cancelAddTokenButton[0], 'cancel add token button present')
   cancelAddTokenButton.click()
 
@@ -51,9 +51,9 @@ async function runAddTokenFlowTest (assert, done) {
 
   // Verify Add Token Screen
   addTokenWrapper = await queryAsync($, '.add-token__wrapper')
-  addTokenTitle = await queryAsync($, '.add-token__title')
+  addTokenTitle = await queryAsync($, '.add-token__header__title')
   assert.ok(addTokenWrapper[0], 'add token wrapper renders')
-  assert.equal(addTokenTitle[0].textContent, 'Add Token', 'add token title is correct')
+  assert.equal(addTokenTitle[0].textContent, 'Add Tokens', 'add token title is correct')
 
   // Search for token
   const searchInput = await queryAsync($, 'input.add-token__input')
@@ -91,9 +91,11 @@ async function runAddTokenFlowTest (assert, done) {
   assert.ok(addTokenButton[0], 'add token button present')
   addTokenButton[0].click()
 
-  const addCustom = await queryAsync($, '.add-token__add-custom')
-  assert.ok(addCustom[0], 'add custom token button present')
-  addCustom[0].click()
+  const addTokenTabs = await queryAsync($, '.add-token__header__tabs__tab')
+  assert.equal(addTokenTabs.length, 2, 'expected number of tabs')
+  assert.equal(addTokenTabs[1].textContent, 'Custom Token', 'Custom Token tab present')
+  assert.ok(addTokenTabs[1], 'add custom token tab present')
+  addTokenTabs[1].click()
 
   // Input token contract address
   const customInput = await queryAsync($, 'input.add-token__add-custom-input')
@@ -108,7 +110,7 @@ async function runAddTokenFlowTest (assert, done) {
   // Verify symbol length error since contract address won't return symbol
   const errorMessage = await queryAsync($, '.add-token__add-custom-error-message')
   assert.ok(errorMessage[0], 'error rendered')
-  $('button.btn-cancel.add-token__button')[0].click()
+  $('button.btn-cancel.add-token__button--cancel')[0].click()
 
   // // Confirm Add token
   // assert.equal(
