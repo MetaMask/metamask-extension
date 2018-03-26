@@ -782,7 +782,6 @@
     &__buttons {
       display: flex;
       justify-content: space-between;
-      width: 181.75px;
       margin-right: 21.25px;
     }
 
@@ -800,13 +799,8 @@
     }
 
     &__cancel, &__save, &__save__error {
-      height: 34.64px;
       width: 85.74px;
-      border: 1px solid $dusty-gray;
-      border-radius: 2px;
-      font-family: 'DIN OT';
-      font-size: 12px;
-      color: $dusty-gray;
+      min-width: initial;
     }
 
     &__save__error {

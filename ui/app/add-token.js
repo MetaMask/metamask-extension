@@ -321,10 +321,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-cancel.add-token__button', {
+        h('button.btn-secondary--lg.add-token__cancel-button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
         }, t('back')),
-        h('button.btn-clear.add-token__button', {
+        h('button.btn-primary--lg', {
           onClick: () => addTokens(tokens).then(goHome),
         }, t('addTokens')),
       ]),
@@ -371,10 +371,10 @@ AddTokenScreen.prototype.render = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-cancel.add-token__button', {
+        h('button.btn-secondary--lg.add-token__cancel-button', {
           onClick: goHome,
         }, t('cancel')),
-        h('button.btn-clear.add-token__button', {
+        h('button.btn-primary--lg', {
           onClick: this.onNext,
         }, t('next')),
       ]),
