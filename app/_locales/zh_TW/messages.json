@@ -147,7 +147,7 @@
     "message": " 複製 "
   },
   "copyPrivateKey": {
-    "message": "7這是你的私鑰（點擊複製）"
+    "message": "這是你的私鑰（點擊複製）"
   },
   "create": {
     "message": "建立"
@@ -413,7 +413,7 @@
     "message": "查看我們的知識庫"
   },
   "max": {
-    "message": "Max"
+    "message": "最大值"
   },
   "lessThanMax": {
     "message": "必須小於等於 $1.",
@@ -426,7 +426,7 @@
     "message": "連結"
   },
   "limit": {
-    "message": "limit"
+    "message": "上限"
   },
   "loading": {
     "message": "載入..."
@@ -441,7 +441,7 @@
     "message": "登出"
   },
   "loose": {
-    "message": "loose"
+    "message": "非Metamask帳號"
   },
   "loweCaseWords": {
     "message": "助憶詞僅包含小寫字元"
@@ -453,7 +453,7 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "MetaMask 是Ethereum的安全身份識別金庫."
   },
   "min": {
     "message": "最小"
@@ -596,7 +596,7 @@
     "message": "改用更高的 Gas 價格重試"
   },
   "walletSeed": {
-    "message": "Wallet Seed"
+    "message": "錢包助憶詞"
   },
   "revealSeedWords": {
     "message": "顯示助憶詞"
