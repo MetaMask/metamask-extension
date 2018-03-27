@@ -1,6 +1,72 @@
 # Changelog
 
 ## Current Master
+- Updates design of new-ui Add Token screen
+- New-ui can send to ens addresses
+- Update new-ui button styles
+- Signed-type-data notification handles long messages
+- Popup extension in new-ui uses new on-boarding designs
+- Buy ether step of new-ui on-boarding uses new buy ether modal designs
+
+## 4.3.0 Wed Mar 21 2018
+
+- (beta) Add internationalization support! Includes translations for 13 (!!) new languages: French, Spanish, Italian, German, Dutch, Portuguese, Japanese, Korean, Vietnamese, Mandarin, Hindi, Tagalog, and Russian! Select "Try Beta" in the menu to take them for a spin. Read more about the community effort [here](https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c)
+- No longer uses nonces specified by the dapp
+- Will now throw an error if the `to` field in txParams is not valid.
+- Will strip null values from the `to` field.
+- (beta) No longer shows token confirmation screen when performing a non-send
+- (beta) Fixes bug where tx data was nullified when repricing a tx
+- Fix flashing Login screen after logging in or restoring from seed phrase.
+- Increase tap areas for menu buttons on mobile
+- Change all fonts in new-ui onboarding to Roboto, size 400
+- Add a welcome screen to new-ui onboarding flow
+- Make new-ui create password screen responsive
+- Hide network dropdown before account is initialized
+- Fix bug that could prevent MetaMask from saving the latest vault.
+
+## 4.2.0 Tue Mar 06 2018
+
+- Replace "Loose" wording to "Imported".
+- Replace "Unlock" wording with "Log In".
+- Add Imported Account disclaimer.
+- Allow adding custom tokens to classic ui when balance is 0
+- Allow editing of symbol and decimal info when adding custom token in new-ui
+- NewUI shapeshift form can select all coins (not just BTC)
+- Add most of Microsoft Edge support.
+
+## 4.1.3 2018-2-28
+
+- Ensure MetaMask's inpage provider is named MetamaskInpageProvider to keep some sites from breaking.
+- Add retry transaction button back into classic ui.
+- Add network dropdown styles to support long custom RPC urls
+
+## 4.1.2 2018-2-28
+
+- Actually includes all the fixes mentioned in 4.1.1 (sorry)
+
+## 4.1.1 2018-2-28
+
+- Fix "Add Token" screen referencing missing token logo urls
+- Prevent user from switching network during signature request
+- Fix misleading language "Contract Published" -> "Contract Deployment"
+- Fix cancel button on "Buy Eth" screen
+- Improve new-ui onboarding flow style
+
+## 4.1.0 2018-2-27
+
+- Report failed txs to Sentry with more specific message
+- Fix internal feature flags being sometimes undefined
+- Standardized license to MIT
+
+## 4.0.0 2018-2-22
+
+- Introduce new MetaMask user interface.
+
+## 3.14.2 2018-2-15
+
+- Fix bug where log subscriptions would break when switching network.
+- Fix bug where storage values were cached across blocks.
+- Add MetaMask light client [testing container](https://github.com/MetaMask/mesh-testing)
 
 ## 3.14.1 2018-2-1
 

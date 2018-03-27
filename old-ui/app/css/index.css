@@ -247,6 +247,10 @@ app sections
   color: #FFAE00;
 }
 
+.dropped {
+  color: #6195ED;
+}
+
 .lock {
   width: 50px;
   height: 50px;
@@ -285,7 +289,7 @@ app sections
 }
 
 .unlock-screen #metamask-mascot-container {
-  margin-top: 24px;
+  margin-top: 80px;
 }
 
 .unlock-screen h1 {
@@ -443,7 +447,7 @@ input.large-input {
   flex-wrap: wrap;
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 465px;
+  max-height: 585px;
   flex-direction: inherit;
 }
 
@@ -761,4 +765,51 @@ div.message-container > div:first-child {
   right: 17.5px;
   font-family: sans-serif;
   cursor: pointer;
+}
+
+.notification-modal__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  border: 1px solid #dedede;
+  box-shadow: 0 0 2px 2px #dedede;
+  font-family: Roboto;
+}
+
+.notification-modal__header {
+  background: #f6f6f6;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  font-size: 22px;
+  color: #1b344d;
+  height: 79px;
+}
+
+.notification-modal__message {
+  padding: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  font-size: 17px;
+  color: #1b344d;
+}
+
+.notification-modal__buttons {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 0px 42px;
+}
+
+.notification-modal__buttons__btn {
+  cursor: pointer;
+}
+
+.notification-modal__link {
+  color: #2f9ae0;
 }

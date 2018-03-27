@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
+const t = require('../../../i18n')
 
 class NewAccountCreateForm extends Component {
   constructor (props) {
@@ -14,7 +15,7 @@ class NewAccountCreateForm extends Component {
 
     this.state = {
       newAccountName: '',
-      defaultAccountName: `Account ${newAccountNumber}`,
+      defaultAccountName: t('newAccountNumberName', [newAccountNumber]),
     }
   }
 
@@ -25,7 +26,7 @@ class NewAccountCreateForm extends Component {
     return h('div.new-account-create-form', [
 
       h('div.new-account-create-form__input-label', {}, [
-        'Account Name',
+        t('accountName'),
       ]),
 
       h('div.new-account-create-form__input-wrapper', {}, [
@@ -38,19 +39,19 @@ class NewAccountCreateForm extends Component {
 
       h('div.new-account-create-form__buttons', {}, [
 
-        h('button.new-account-create-form__button-cancel', {
+        h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => history.push(DEFAULT_ROUTE),
         }, [
-          'CANCEL',
+          t('cancel'),
         ]),
 
-        h('button.new-account-create-form__button-create', {
+        h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => {
             createAccount(newAccountName || defaultAccountName)
               .then(() => history.push(DEFAULT_ROUTE))
           },
         }, [
-          'CREATE',
+          t('create'),
         ]),
 
       ]),

@@ -4,6 +4,7 @@ const {
   BnMultiplyByFraction,
   bnToHex,
 } = require('./util')
+const { addHexPrefix, isValidAddress } = require('ethereumjs-util')
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
 
 /*
@@ -13,7 +14,7 @@ and used to do things like calculate gas of a tx.
 */
 
 module.exports = class TxGasUtil {
-  
+
   constructor (provider) {
     this.query = new EthQuery(provider)
   }
@@ -68,7 +69,7 @@ module.exports = class TxGasUtil {
   }
 
   setTxGas (txMeta, blockGasLimitHex, estimatedGasHex) {
-    txMeta.estimatedGas = estimatedGasHex
+    txMeta.estimatedGas = addHexPrefix(estimatedGasHex)
     const txParams = txMeta.txParams
 
     // if gasLimit was specified and doesnt OOG,
@@ -112,12 +113,14 @@ module.exports = class TxGasUtil {
     }
   }
   validateRecipient (txParams) {
-    if (txParams.to === '0x') {
+    if (txParams.to === '0x' || txParams.to === null ) {
       if (txParams.data) {
         delete txParams.to
       } else {
         throw new Error('Invalid recipient address')
       }
+    } else if ( txParams.to !== undefined && !isValidAddress(txParams.to) ) {
+      throw new Error('Invalid recipient address')
     }
     return txParams
   }

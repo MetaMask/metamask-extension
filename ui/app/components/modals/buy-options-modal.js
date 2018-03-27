@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
+const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -56,15 +57,15 @@ BuyOptions.prototype.render = function () {
       }, [
         h('div.buy-modal-content-title', {
           style: {},
-        }, 'Transfers'),
-        h('div', {}, 'How would you like to deposit Ether?'),
+        }, t('transfers')),
+        h('div', {}, t('howToDeposit')),
       ]),
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
         isTestNetwork
-          ? this.renderModalContentOption(networkName, 'Test Faucet', () => toFaucet(network))
-          : this.renderModalContentOption('Coinbase', 'Deposit with Fiat', () => toCoinbase(address)),
+          ? this.renderModalContentOption(networkName, t('testFaucet'), () => toFaucet(network))
+          : this.renderModalContentOption('Coinbase', t('depositFiat'), () => toCoinbase(address)),
 
         // h('div.buy-modal-content-option', {}, [
         //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
@@ -72,8 +73,8 @@ BuyOptions.prototype.render = function () {
         // ]),,
 
         this.renderModalContentOption(
-          'Direct Deposit',
-          'Deposit from another account',
+          t('directDeposit'),
+          t('depositFromAccount'),
           () => this.goToAccountDetailsModal()
         ),
 
@@ -84,7 +85,7 @@ BuyOptions.prototype.render = function () {
           background: 'white',
         },
         onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, 'Cancel')),
+      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, t('cancel'))),
     ]),
   ])
 }

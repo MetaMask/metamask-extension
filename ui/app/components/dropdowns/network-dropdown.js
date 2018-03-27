@@ -6,6 +6,7 @@ const actions = require('../../actions')
 const Dropdown = require('./components/dropdown').Dropdown
 const DropdownMenuItem = require('./components/dropdown').DropdownMenuItem
 const NetworkDropdownIcon = require('./components/network-dropdown-icon')
+const t = require('../../../i18n')
 const R = require('ramda')
 
 // classes from nodes of the toggle element.
@@ -84,7 +85,7 @@ NetworkDropdown.prototype.render = function () {
     style: {
       position: 'absolute',
       top: '58px',
-      minWidth: '309px',
+      width: '309px',
       zIndex: '55px',
     },
     innerStyle: {
@@ -93,13 +94,13 @@ NetworkDropdown.prototype.render = function () {
   }, [
 
     h('div.network-dropdown-header', {}, [
-      h('div.network-dropdown-title', {}, 'Networks'),
+      h('div.network-dropdown-title', {}, t('networks')),
 
       h('div.network-dropdown-divider'),
 
       h('div.network-dropdown-content',
         {},
-        'The default network for Ether transactions is Main Net.'
+        t('defaultNetwork')
       ),
     ]),
 
@@ -114,14 +115,14 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'mainnet' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
-          backgroundColor: '#038789', // $blue-lagoon
+          backgroundColor: '#29B6AF', // $java
           isSelected: providerType === 'mainnet',
         }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'mainnet' ? '#ffffff' : '#9b9b9b',
           },
-        }, 'Main Ethereum Network'),
+        }, t('mainnet')),
       ]
     ),
 
@@ -136,14 +137,14 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'ropsten' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
-          backgroundColor: '#e91550', // $crimson
+          backgroundColor: '#ff4a8d', // $wild-strawberry
           isSelected: providerType === 'ropsten',
         }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'ropsten' ? '#ffffff' : '#9b9b9b',
           },
-        }, 'Ropsten Test Network'),
+        }, t('ropsten')),
       ]
     ),
 
@@ -158,14 +159,14 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'kovan' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
-          backgroundColor: '#690496', // $purple
+          backgroundColor: '#7057ff', // $cornflower-blue
           isSelected: providerType === 'kovan',
         }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'kovan' ? '#ffffff' : '#9b9b9b',
           },
-        }, 'Kovan Test Network'),
+        }, t('kovan')),
       ]
     ),
 
@@ -180,14 +181,14 @@ NetworkDropdown.prototype.render = function () {
       [
         providerType === 'rinkeby' ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
         h(NetworkDropdownIcon, {
-          backgroundColor: '#ebb33f', // $tulip-tree
+          backgroundColor: '#f6c343', // $saffron
           isSelected: providerType === 'rinkeby',
         }),
         h('span.network-name-item', {
           style: {
             color: providerType === 'rinkeby' ? '#ffffff' : '#9b9b9b',
           },
-        }, 'Rinkeby Test Network'),
+        }, t('rinkeby')),
       ]
     ),
 
@@ -209,7 +210,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: activeNetwork === 'http://localhost:8545' ? '#ffffff' : '#9b9b9b',
           },
-        }, 'Localhost 8545'),
+        }, t('localhost')),
       ]
     ),
 
@@ -233,7 +234,7 @@ NetworkDropdown.prototype.render = function () {
           style: {
             color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
           },
-        }, 'Custom RPC'),
+        }, t('customRPC')),
       ]
     ),
 
@@ -248,15 +249,15 @@ NetworkDropdown.prototype.getNetworkName = function () {
   let name
 
   if (providerName === 'mainnet') {
-    name = 'Main Ethereum Network'
+    name = t('mainnet')
   } else if (providerName === 'ropsten') {
-    name = 'Ropsten Test Network'
+    name = t('ropsten')
   } else if (providerName === 'kovan') {
-    name = 'Kovan Test Network'
+    name = t('kovan')
   } else if (providerName === 'rinkeby') {
-    name = 'Rinkeby Test Network'
+    name = t('rinkeby')
   } else {
-    name = 'Unknown Private Network'
+    name = t('unknownNetwork')
   }
 
   return name
@@ -276,11 +277,21 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcList, provider) {
           key: `common${rpc}`,
           closeMenu: () => this.props.hideNetworkDropdown(),
           onClick: () => props.setRpcTarget(rpc),
+          style: {
+            fontFamily: 'DIN OT',
+            fontSize: '16px',
+            lineHeight: '20px',
+            padding: '12px 0',
+          },
         },
         [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          rpc,
-          rpcTarget === rpc ? h('.check', '✓') : null,
+          rpcTarget === rpc ? h('i.fa.fa-check') : h('.network-check__transparent', '✓'),
+          h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
+          h('span.network-name-item', {
+            style: {
+              color: rpcTarget === rpc ? '#ffffff' : '#9b9b9b',
+            },
+          }, rpc),
         ]
       )
     }
@@ -292,12 +303,6 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
   const props = this.props
 
   if (type !== 'rpc') return null
-
-  // Concatenate long URLs
-  let label = rpcTarget
-  if (rpcTarget.length > 31) {
-    label = label.substr(0, 34) + '...'
-  }
 
   switch (rpcTarget) {
 
@@ -311,11 +316,21 @@ NetworkDropdown.prototype.renderCustomOption = function (provider) {
           key: rpcTarget,
           onClick: () => props.setRpcTarget(rpcTarget),
           closeMenu: () => this.props.hideNetworkDropdown(),
+          style: {
+            fontFamily: 'DIN OT',
+            fontSize: '16px',
+            lineHeight: '20px',
+            padding: '12px 0',
+          },
         },
         [
-          h('i.fa.fa-question-circle.fa-lg.menu-icon'),
-          label,
-          h('.check', '✓'),
+          h('i.fa.fa-check'),
+          h('i.fa.fa-question-circle.fa-med.menu-icon-circle'),
+          h('span.network-name-item', {
+            style: {
+              color: '#ffffff',
+            },
+          }, rpcTarget),
         ]
       )
   }

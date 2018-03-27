@@ -261,7 +261,7 @@
   .account-modal__button {
     margin-top: 17px;
     padding: 10px 22px;
-    width: 235px;
+    width: 286px;
   }
 }
 
@@ -341,9 +341,8 @@
 
 .export-private-key__button {
   margin-top: 17px;
-  padding: 10px 22px;
   width: 141px;
-  height: 54px;
+  min-width: initial;
 }
 
 .export-private-key__button--cancel {
@@ -547,38 +546,54 @@
 
 //Notification Modal
 
-.notification-modal-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  position: relative;
-  border: 1px solid $alto;
-  box-shadow: 0 0 2px 2px $alto;
-  font-family: Roboto;
-}
+.notification-modal {
 
-.notification-modal-header {
-  background: $wild-sand;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 30px;
-  font-size: 22px;
-  color: $nile-blue;
-  height: 79px;
-}
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    border: 1px solid $alto;
+    box-shadow: 0 0 2px 2px $alto;
+    font-family: Roboto;
+  }
 
-.notification-modal-message {
-  padding: 20px;
-}
+  &__header {
+    background: $wild-sand;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+    font-size: 22px;
+    color: $nile-blue;
+    height: 79px;
+  }
 
-.notification-modal-message {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  font-size: 17px;
-  color: $nile-blue;
+  &__message {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 17px;
+    color: $nile-blue;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 0px 42px;
+
+    &__btn {
+      cursor: pointer;
+    }
+  }
+
+  &__link {
+    color: $curious-blue;
+  }
 }
 
 // Deposit Ether Modal
@@ -625,16 +640,25 @@
 
   &__buy-rows {
     width: 100%;
-    padding: 33px;
-    padding-top: 0px;
+    padding: 0 30px;
     display: flex;
     flex-flow: column nowrap;
     flex: 1;
-    overflow-y: auto;
 
     @media screen and (max-width: 575px) {
       height: 0;
     }
+  }
+
+  &__logo {
+    height: 60px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__buy-row {
@@ -642,15 +666,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex: 1;
-    padding-bottom: 25px;
-    padding-top: 25px;
+    flex: 1 0 auto;
+    padding: 30px 0 20px;
+    min-height: 170px;
 
     @media screen and (max-width: 575px) {
-      min-height: 360px;
+      min-height: 270px;
       flex-flow: column;
-      justify-content: center;
-      padding-top: 45px;
+      justify-content: flex-start;
     }
 
     &__back {
@@ -676,34 +699,29 @@
       }
     }
 
-    &__logo {
+    &__logo-container {
       display: flex;
       justify-content: center;
-      flex: 0.3 1 auto;
+      flex: 0 0 auto;
+      padding: 0 20px;
 
-      @media screen and (min-width: 575px) {
-        min-width: 215px;
+      @media screen and (min-width: 576px) {
+        width: 12rem;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: 100%;
+        max-height: 6rem;
+        padding-bottom: 20px;
       }
     }
 
     &__coinbase-logo {
       height: 40px;
-      width: 180px;
     }
 
     &__shapeshift-logo {
       height: 60px;
-      width: 174px;
-    }
-
-    &__eth-logo {
-      border-radius: 50%;
-      width: 68px;
-      height: 68px;
-      border: 3px solid $tundora;
-      z-index: 25;
-      padding: 4px;
-      background-color: #fff;
     }
 
     &__right {
@@ -712,10 +730,11 @@
 
     &__description {
       color: $cape-cod;
-      flex: 0.5 1 auto;
+      padding-bottom: 20px;
+      align-self: flex-start;
 
       @media screen and (min-width: 575px) {
-        min-width: 315px;
+        width: 15rem;
       }
 
       &__title {
@@ -745,15 +764,7 @@
   }
 
   &__deposit-button, .shapeshift-form__shapeshift-buy-btn {
-    height: 54px;
     width: 257px;
-    border: 1px solid $curious-blue;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    font-size: 16px;
-    color: $curious-blue;
-    background-color: $white;
   }
 
   .shapeshift-form-wrapper {
@@ -770,6 +781,10 @@
       &__caret {
         width: auto;
         flex: 1;
+      }
+
+      @media screen and (max-width: 575px) {
+        width: auto;
       }
     }
   }

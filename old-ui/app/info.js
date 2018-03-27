@@ -63,7 +63,7 @@ InfoScreen.prototype.render = function () {
                 h('a', {
                   href: 'https://metamask.io/privacy.html',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
+                  onClick: (event) => { this.navigateTo(event.target.href) },
                 }, [
                   h('div.info', 'Privacy Policy'),
                 ]),
@@ -72,7 +72,7 @@ InfoScreen.prototype.render = function () {
                 h('a', {
                   href: 'https://metamask.io/terms.html',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
+                  onClick: (event) => { this.navigateTo(event.target.href) },
                 }, [
                   h('div.info', 'Terms of Use'),
                 ]),
@@ -81,7 +81,7 @@ InfoScreen.prototype.render = function () {
                 h('a', {
                   href: 'https://metamask.io/attributions.html',
                   target: '_blank',
-                  onClick (event) { this.navigateTo(event.target.href) },
+                  onClick: (event) => { this.navigateTo(event.target.href) },
                 }, [
                   h('div.info', 'Attributions'),
                 ]),

@@ -13,6 +13,7 @@ const { tokenInfoGetter } = require('../token-util')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const { CONFIRM_TRANSACTION_ROUTE } = require('../routes')
+const t = require('../../i18n')
 
 module.exports = compose(
   withRouter,
@@ -45,7 +46,7 @@ TxList.prototype.render = function () {
   return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
-        h('div', 'transactions'),
+        h('div', t('transactions')),
       ]),
     ]),
     h('div.flex-column.tx-list-container', {}, [
@@ -62,7 +63,7 @@ TxList.prototype.renderTransaction = function () {
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
-        [ 'No Transactions' ],
+        [ t('noTransactions') ],
       )]
 }
 
@@ -80,9 +81,10 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     address: transaction.txParams.to,
     transactionStatus: transaction.status,
     transactionAmount: transaction.txParams.value,
-    transActionId: transaction.id,
+    transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
+    transactionSubmittedTime: transaction.submittedTime,
   }
 
   const {
@@ -90,30 +92,32 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
     transactionStatus,
     transactionAmount,
     dateString,
-    transActionId,
+    transactionId,
     transactionHash,
     transactionNetworkId,
+    transactionSubmittedTime,
   } = props
   const { history } = this.props
 
   const opts = {
-    key: transActionId || transactionHash,
+    key: transactionId || transactionHash,
     txParams: transaction.txParams,
     transactionStatus,
-    transActionId,
+    transactionId,
     dateString,
     address,
     transactionAmount,
     transactionHash,
     conversionRate,
     tokenInfoGetter: this.tokenInfoGetter,
+    transactionSubmittedTime,
   }
 
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
     opts.onClick = () => history.push(CONFIRM_TRANSACTION_ROUTE)
-    opts.transactionStatus = 'Not Started'
+    opts.transactionStatus = t('Not Started')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }

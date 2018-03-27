@@ -23,9 +23,9 @@ const fuse = new Fuse(contractList, {
       { name: 'symbol', weight: 0.5 },
     ],
 })
-// const actions = require('./actions')
 const actions = require('../../actions')
 const ethUtil = require('ethereumjs-util')
+const t = require('../i18n')
 const { tokenInfoGetter } = require('../../token-util')
 const { DEFAULT_ROUTE } = require('../../routes')
 
@@ -53,13 +53,16 @@ function AddTokenScreen () {
     isShowingConfirmation: false,
     customAddress: '',
     customSymbol: '',
-    customDecimals: 0,
+    customDecimals: '',
     searchQuery: '',
-    isCollapsed: true,
     selectedTokens: {},
     errors: {},
+    autoFilled: false,
+    displayedTab: 'SEARCH',
   }
   this.tokenAddressDidChange = this.tokenAddressDidChange.bind(this)
+  this.tokenSymbolDidChange = this.tokenSymbolDidChange.bind(this)
+  this.tokenDecimalsDidChange = this.tokenDecimalsDidChange.bind(this)
   this.onNext = this.onNext.bind(this)
   Component.call(this)
 }
@@ -69,13 +72,17 @@ AddTokenScreen.prototype.componentWillMount = function () {
 }
 
 AddTokenScreen.prototype.toggleToken = function (address, token) {
-  const { selectedTokens, errors } = this.state
-  const { [address]: selectedToken } = selectedTokens
+  const { selectedTokens = {}, errors } = this.state
+  const selectedTokensCopy = { ...selectedTokens }
+
+  if (address in selectedTokensCopy) {
+    delete selectedTokensCopy[address]
+  } else {
+    selectedTokensCopy[address] = token
+  }
+
   this.setState({
-    selectedTokens: {
-      ...selectedTokens,
-      [address]: selectedToken ? null : token,
-    },
+    selectedTokens: selectedTokensCopy,
     errors: {
       ...errors,
       tokenSelector: null,
@@ -104,6 +111,16 @@ AddTokenScreen.prototype.tokenAddressDidChange = function (e) {
   }
 }
 
+AddTokenScreen.prototype.tokenSymbolDidChange = function (e) {
+  const customSymbol = e.target.value.trim()
+  this.setState({ customSymbol })
+}
+
+AddTokenScreen.prototype.tokenDecimalsDidChange = function (e) {
+  const customDecimals = e.target.value.trim()
+  this.setState({ customDecimals })
+}
+
 AddTokenScreen.prototype.checkExistingAddresses = function (address) {
   if (!address) return false
   const tokensList = this.props.tokens
@@ -123,28 +140,28 @@ AddTokenScreen.prototype.validate = function () {
   if (customAddress) {
     const validAddress = ethUtil.isValidAddress(customAddress)
     if (!validAddress) {
-      errors.customAddress = 'Address is invalid. '
+      errors.customAddress = t('invalidAddress')
     }
 
-    const validDecimals = customDecimals >= 0 && customDecimals < 36
+    const validDecimals = customDecimals !== null && customDecimals >= 0 && customDecimals < 36
     if (!validDecimals) {
-      errors.customDecimals = 'Decimals must be at least 0, and not over 36.'
+      errors.customDecimals = t('decimalsMustZerotoTen')
     }
 
     const symbolLen = customSymbol.trim().length
     const validSymbol = symbolLen > 0 && symbolLen < 10
     if (!validSymbol) {
-      errors.customSymbol = 'Symbol must be between 0 and 10 characters.'
+      errors.customSymbol = t('symbolBetweenZeroTen')
     }
 
     const ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
-      errors.customAddress = 'Personal address detected. Input the token contract address.'
+      errors.customAddress = t('personalAddressDetected')
     }
 
     const tokenAlreadyAdded = this.checkExistingAddresses(customAddress)
     if (tokenAlreadyAdded) {
-      errors.customAddress = 'Token has already been added.'
+      errors.customAddress = t('tokenAlreadyAdded')
     }
   } else if (
     Object.entries(selectedTokens)
@@ -152,7 +169,7 @@ AddTokenScreen.prototype.validate = function () {
         isEmpty && !isSelected
       ), true)
   ) {
-    errors.tokenSelector = 'Must select at least 1 token.'
+    errors.tokenSelector = t('mustSelectOne')
   }
 
   return {
@@ -167,21 +184,22 @@ AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address)
     this.setState({
       customSymbol: symbol,
       customDecimals: decimals.toString(),
+      autoFilled: true,
     })
   }
 }
 
 AddTokenScreen.prototype.renderCustomForm = function () {
-  const { customAddress, customSymbol, customDecimals, errors } = this.state
+  const { autoFilled, customAddress, customSymbol, customDecimals, errors } = this.state
 
-  return !this.state.isCollapsed && (
+  return (
     h('div.add-token__add-custom-form', [
       h('div', {
         className: classnames('add-token__add-custom-field', {
           'add-token__add-custom-field--error': errors.customAddress,
         }),
       }, [
-        h('div.add-token__add-custom-label', 'Token Address'),
+        h('div.add-token__add-custom-label', t('tokenAddress')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenAddressDidChange,
@@ -194,11 +212,12 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customSymbol,
         }),
       }, [
-        h('div.add-token__add-custom-label', 'Token Symbol'),
+        h('div.add-token__add-custom-label', t('tokenSymbol')),
         h('input.add-token__add-custom-input', {
           type: 'text',
+          onChange: this.tokenSymbolDidChange,
           value: customSymbol,
-          disabled: true,
+          disabled: autoFilled,
         }),
         h('div.add-token__add-custom-error-message', errors.customSymbol),
       ]),
@@ -207,11 +226,12 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customDecimals,
         }),
       }, [
-        h('div.add-token__add-custom-label', 'Decimals of Precision'),
+        h('div.add-token__add-custom-label', t('decimal')),
         h('input.add-token__add-custom-input', {
           type: 'number',
+          onChange: this.tokenDecimalsDidChange,
           value: customDecimals,
-          disabled: true,
+          disabled: autoFilled,
         }),
         h('div.add-token__add-custom-error-message', errors.customDecimals),
       ]),
@@ -227,33 +247,36 @@ AddTokenScreen.prototype.renderTokenList = function () {
   })
   const results = [...addressSearchResult, ...fuseSearchResult]
 
-  return Array(6).fill(undefined)
-    .map((_, i) => {
-      const { logo, symbol, name, address } = results[i] || {}
-      const tokenAlreadyAdded = this.checkExistingAddresses(address)
-      return Boolean(logo || symbol || name) && (
-        h('div.add-token__token-wrapper', {
-          className: classnames({
-            'add-token__token-wrapper--selected': selectedTokens[address],
-            'add-token__token-wrapper--disabled': tokenAlreadyAdded,
-          }),
-          onClick: () => !tokenAlreadyAdded && this.toggleToken(address, results[i]),
-        }, [
-          h('div.add-token__token-icon', {
-            style: {
-              backgroundImage: `url(images/contract/${logo})`,
-            },
-          }),
-          h('div.add-token__token-data', [
-            h('div.add-token__token-symbol', symbol),
-            h('div.add-token__token-name', name),
-          ]),
-          // tokenAlreadyAdded && (
-          //   h('div.add-token__token-message', 'Already added')
-          // ),
-        ])
-      )
-    })
+  return h('div', [
+      results.length > 0 && h('div.add-token__token-icons-title', t('popularTokens')),
+      h('div.add-token__token-icons-container', Array(6).fill(undefined)
+        .map((_, i) => {
+          const { logo, symbol, name, address } = results[i] || {}
+          const tokenAlreadyAdded = this.checkExistingAddresses(address)
+          return Boolean(logo || symbol || name) && (
+            h('div.add-token__token-wrapper', {
+              className: classnames({
+                'add-token__token-wrapper--selected': selectedTokens[address],
+                'add-token__token-wrapper--disabled': tokenAlreadyAdded,
+              }),
+              onClick: () => !tokenAlreadyAdded && this.toggleToken(address, results[i]),
+            }, [
+              h('div.add-token__token-icon', {
+                style: {
+                  backgroundImage: logo && `url(images/contract/${logo})`,
+                },
+              }),
+              h('div.add-token__token-data', [
+                h('div.add-token__token-symbol', symbol),
+                h('div.add-token__token-name', name),
+              ]),
+              // tokenAlreadyAdded && (
+              //   h('div.add-token__token-message', 'Already added')
+              // ),
+            ])
+          )
+      })),
+    ])
 }
 
 AddTokenScreen.prototype.renderConfirmation = function () {
@@ -280,11 +303,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__title', 'Add Token'),
-          h('div.add-token__description', 'Would you like to add these tokens?'),
+          h('div.add-token__description', t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
-          h('div.add-token__description.add-token__confirmation-description', 'Your balances'),
+          h('div.add-token__description.add-token__confirmation-description', t('balances')),
           h('div.add-token__confirmation-token-list',
             Object.entries(tokens)
               .map(([ address, token ]) => (
@@ -301,63 +323,97 @@ AddTokenScreen.prototype.renderConfirmation = function () {
         ]),
       ]),
       h('div.add-token__buttons', [
-        h('button.btn-cancel.add-token__button', {
+        h('button.btn-secondary--lg.add-token__cancel-button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
-        }, 'Back'),
-        h('button.btn-clear.add-token__button', {
+        }, t('back')),
+        h('button.btn-primary--lg', {
           onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
-        }, 'Add Tokens'),
+        }, t('addTokens')),
       ]),
     ])
   )
 }
 
+AddTokenScreen.prototype.displayTab = function (selectedTab) {
+  this.setState({ displayedTab: selectedTab })
+}
+
+AddTokenScreen.prototype.renderTabs = function () {
+  const { displayedTab, errors } = this.state
+
+  return displayedTab === 'CUSTOM_TOKEN'
+    ? this.renderCustomForm()
+    : h('div', [
+    h('div.add-token__wrapper', [
+      h('div.add-token__content-container', [
+        h('div.add-token__info-box', [
+          h('div.add-token__info-box__close'),
+          h('div.add-token__info-box__title', t('whatsThis')),
+          h('div.add-token__info-box__copy', t('keepTrackTokens')),
+          h('div.add-token__info-box__copy--blue', t('learnMore')),
+        ]),
+        h('div.add-token__input-container', [
+          h('input.add-token__input', {
+            type: 'text',
+            placeholder: t('searchTokens'),
+            onChange: e => this.setState({ searchQuery: e.target.value }),
+          }),
+          h('div.add-token__search-input-error-message', errors.tokenSelector),
+        ]),
+        this.renderTokenList(),
+      ]),
+    ]),
+  ])
+}
+
 AddTokenScreen.prototype.render = function () {
-  const { isCollapsed, errors, isShowingConfirmation } = this.state
+  const {
+    isShowingConfirmation,
+    displayedTab,
+  } = this.state
   const { history } = this.props
 
-  return isShowingConfirmation
-    ? this.renderConfirmation()
-    : (
-    h('div.add-token', [
-      h('div.add-token__wrapper', [
-        h('div.add-token__title-container', [
-          h('div.add-token__title', 'Add Token'),
-          h('div.add-token__description', 'Keep track of the tokens you’ve bought with your MetaMask account. If you bought tokens using a different account, those tokens will not appear here.'),
-          h('div.add-token__description', 'Search for tokens or select from our list of popular tokens.'),
-        ]),
-        h('div.add-token__content-container', [
-          h('div.add-token__input-container', [
-            h('input.add-token__input', {
-              type: 'text',
-              placeholder: 'Search',
-              onChange: e => this.setState({ searchQuery: e.target.value }),
-            }),
-            h('div.add-token__search-input-error-message', errors.tokenSelector),
-          ]),
-          h(
-            'div.add-token__token-icons-container',
-            this.renderTokenList(),
-          ),
-        ]),
-        h('div.add-token__footers', [
-          h('div.add-token__add-custom', {
-            onClick: () => this.setState({ isCollapsed: !isCollapsed }),
-          }, [
-            'Add custom token',
-            h(`i.fa.fa-angle-${isCollapsed ? 'down' : 'up'}`),
-          ]),
-          this.renderCustomForm(),
-        ]),
+  return h('div.add-token', [
+    h('div.add-token__header', [
+      h('div.add-token__header__cancel', {
+        onClick: () => history.goBack(),
+      }, [
+        h('i.fa.fa-angle-left.fa-lg'),
+        h('span', t('cancel')),
       ]),
-      h('div.add-token__buttons', [
-        h('button.btn-cancel.add-token__button', {
-          onClick: () => history.goBack(),
-        }, 'Cancel'),
-        h('button.btn-clear.add-token__button', {
-          onClick: this.onNext,
-        }, 'Next'),
+      h('div.add-token__header__title', t('addTokens')),
+      !isShowingConfirmation && h('div.add-token__header__tabs', [
+
+        h('div.add-token__header__tabs__tab', {
+          className: classnames('add-token__header__tabs__tab', {
+            'add-token__header__tabs__selected': displayedTab === 'SEARCH',
+            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
+          }),
+          onClick: () => this.displayTab('SEARCH'),
+        }, t('search')),
+
+        h('div.add-token__header__tabs__tab', {
+          className: classnames('add-token__header__tabs__tab', {
+            'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
+            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
+          }),
+          onClick: () => this.displayTab('CUSTOM_TOKEN'),
+        }, t('customToken')),
+
       ]),
-    ])
-  )
+    ]),
+//
+    isShowingConfirmation
+      ? this.renderConfirmation()
+      : this.renderTabs(),
+
+    !isShowingConfirmation && h('div.add-token__buttons', [
+      h('button.btn-secondary--lg.add-token__cancel-button', {
+        onClick: history.goBack(),
+      }, t('cancel')),
+      h('button.btn-primary--lg.add-token__confirm-button', {
+        onClick: this.onNext,
+      }, t('next')),
+    ]),
+  ])
 }

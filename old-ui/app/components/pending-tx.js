@@ -60,7 +60,8 @@ PendingTx.prototype.render = function () {
   // Gas
   const gas = txParams.gas
   const gasBn = hexToBn(gas)
-  const gasLimit = new BN(parseInt(blockGasLimit))
+  // default to 8MM gas limit
+  const gasLimit = new BN(parseInt(blockGasLimit) || '8000000')
   const safeGasLimitBN = this.bnMultiplyByFraction(gasLimit, 19, 20)
   const saferGasLimitBN = this.bnMultiplyByFraction(gasLimit, 18, 20)
   const safeGasLimit = safeGasLimitBN.toString(10)

@@ -6,6 +6,7 @@ const { compose } = require('recompose')
 const { connect } = require('react-redux')
 const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
+const t = require('../../../i18n')
 
 module.exports = compose(
   withRouter,
@@ -38,9 +39,9 @@ PrivateKeyImportView.prototype.render = function () {
   return (
     h('div.new-account-import-form__private-key', [
 
-      h('div.new-account-import-form__private-key-password-container', [
+      h('span.new-account-create-form__instruction', t('pastePrivateKey')),
 
-        h('span.new-account-import-form__instruction', 'Paste your private key string here:'),
+      h('div.new-account-import-form__private-key-password-container', [
 
         h('input.new-account-import-form__input-password', {
           type: 'password',
@@ -52,16 +53,16 @@ PrivateKeyImportView.prototype.render = function () {
 
       h('div.new-account-import-form__buttons', {}, [
 
-        h('button.new-account-create-form__button-cancel', {
+        h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, [
-          'CANCEL',
+          t('cancel'),
         ]),
 
-        h('button.new-account-create-form__button-create', {
+        h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
-          'IMPORT',
+          t('import'),
         ]),
 
       ]),

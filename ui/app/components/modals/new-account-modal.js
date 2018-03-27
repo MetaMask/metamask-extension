@@ -3,6 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../actions')
+const t = require('../../../i18n')
 
 class NewAccountModal extends Component {
   constructor (props) {
@@ -11,7 +12,7 @@ class NewAccountModal extends Component {
     const newAccountNumber = numberOfExistingAccounts + 1
 
     this.state = {
-      newAccountName: `Account ${newAccountNumber}`,
+      newAccountName: `${t('account')} ${newAccountNumber}`,
     }
   }
 
@@ -22,7 +23,7 @@ class NewAccountModal extends Component {
       h('div.new-account-modal-wrapper', {
       }, [
         h('div.new-account-modal-header', {}, [
-          'New Account',
+          t('newAccount'),
         ]),
 
         h('div.modal-close-x', {
@@ -30,19 +31,19 @@ class NewAccountModal extends Component {
         }),
 
         h('div.new-account-modal-content', {}, [
-          'Account Name',
+          t('accountName'),
         ]),
 
         h('div.new-account-input-wrapper', {}, [
           h('input.new-account-input', {
             value: this.state.newAccountName,
-            placeholder: 'E.g. My new account',
+            placeholder: t('sampleAccountName'),
             onChange: event => this.setState({ newAccountName: event.target.value }),
           }, []),
         ]),
 
         h('div.new-account-modal-content.after-input', {}, [
-          'or',
+          t('or'),
         ]),
 
         h('div.new-account-modal-content.after-input.pointer', {
@@ -50,13 +51,13 @@ class NewAccountModal extends Component {
             this.props.hideModal()
             this.props.showImportPage()
           },
-        }, 'Import an account'),
+        }, t('importAnAccount')),
 
-        h('div.new-account-modal-content.button', {}, [
+        h('div.new-account-modal-content.button.allcaps', {}, [
           h('button.btn-clear', {
             onClick: () => this.props.createAccount(newAccountName),
           }, [
-            'SAVE',
+            t('save'),
           ]),
         ]),
       ]),

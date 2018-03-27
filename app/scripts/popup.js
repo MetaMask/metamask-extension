@@ -8,7 +8,7 @@ const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
 const notificationManager = new NotificationManager()
-const setupRaven = require('./setupRaven')
+const setupRaven = require('./lib/setupRaven')
 
 // create platform global
 global.platform = new ExtensionPlatform()
@@ -65,6 +65,7 @@ startPopup({ container, connectionStream }, (err, store) => {
 
 function closePopupIfOpen (windowType) {
   if (windowType !== 'notification') {
+    // should close only chrome popup
     notificationManager.closePopup()
   }
 }

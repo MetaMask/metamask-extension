@@ -6,8 +6,11 @@ const PropTypes = require('prop-types')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
+const t = require('../../i18n')
 const getCaretCoordinates = require('textarea-caret')
 const { RESTORE_VAULT_ROUTE, DEFAULT_ROUTE } = require('../routes')
+const environmentType = require('../../../app/scripts/lib/environment-type')
+const { OLD_UI_NETWORK_TYPE } = require('../../../app/scripts/config').enums
 
 class InitializeMenuScreen extends Component {
   constructor (props) {
@@ -31,7 +34,6 @@ class InitializeMenuScreen extends Component {
   }
 
   render () {
-    const { history } = this.props
     const { warning } = this.state
 
     return (
@@ -48,8 +50,7 @@ class InitializeMenuScreen extends Component {
             color: '#7F8082',
             marginBottom: 10,
           },
-        }, 'MetaMask'),
-
+        }, t('appName')),
 
         h('div', [
           h('h3', {
@@ -58,10 +59,10 @@ class InitializeMenuScreen extends Component {
               color: '#7F8082',
               display: 'inline',
             },
-          }, 'Encrypt your new DEN'),
+          }, t('encryptNewDen')),
 
           h(Tooltip, {
-            title: 'Your DEN is your password-encrypted storage within MetaMask.',
+            title: t('denExplainer'),
           }, [
             h('i.fa.fa-question-circle.pointer', {
               style: {
@@ -81,7 +82,7 @@ class InitializeMenuScreen extends Component {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'New Password (min 8 chars)',
+          placeholder: t('newPassword'),
           onInput: this.inputChanged.bind(this),
           style: {
             width: 260,
@@ -93,7 +94,7 @@ class InitializeMenuScreen extends Component {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box-confirm',
-          placeholder: 'Confirm Password',
+          placeholder: t('confirmPassword'),
           onKeyPress: this.createVaultOnEnter.bind(this),
           onInput: this.inputChanged.bind(this),
           style: {
@@ -108,17 +109,29 @@ class InitializeMenuScreen extends Component {
           style: {
             margin: 12,
           },
-        }, 'Create'),
+        }, t('createDen')),
 
         h('.flex-row.flex-center.flex-grow', [
           h('p.pointer', {
-            onClick: () => history.push(RESTORE_VAULT_ROUTE),
+            onClick: () => this.showRestoreVault(),
             style: {
               fontSize: '0.8em',
               color: 'rgb(247, 134, 28)',
               textDecoration: 'underline',
             },
-          }, 'Import Existing DEN'),
+          }, t('importDen')),
+        ]),
+
+        h('.flex-row.flex-center.flex-grow', [
+          h('p.pointer', {
+            onClick: this.showOldUI.bind(this),
+            style: {
+              fontSize: '0.8em',
+              color: '#aeaeae',
+              textDecoration: 'underline',
+              marginTop: '32px',
+            },
+          }, 'Use classic interface'),
         ]),
 
       ])
@@ -142,11 +155,12 @@ class InitializeMenuScreen extends Component {
     this.setState({ warning: null })
 
     if (password.length < 8) {
-      this.setState({ warning: 'password not long enough' })
+      this.setState({ warning: t('passwordShort') })
       return
     }
+
     if (password !== passwordConfirm) {
-      this.setState({ warning: 'passwords don\'t match' })
+      this.setState({ warning: t('passwordMismatch') })
       return
     }
 
@@ -164,6 +178,20 @@ class InitializeMenuScreen extends Component {
       y: boundingRect.top + coordinates.top - element.scrollTop,
     })
   }
+
+  showRestoreVault () {
+    this.props.markPasswordForgotten()
+    if (environmentType() === 'popup') {
+      global.platform.openExtensionInBrowser()
+    }
+
+    this.props.history.push(RESTORE_VAULT_ROUTE)
+  }
+
+  showOldUI () {
+    this.props.dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
+      .then(() => this.props.dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
+  }
 }
 
 InitializeMenuScreen.propTypes = {
@@ -171,6 +199,8 @@ InitializeMenuScreen.propTypes = {
   isInitialized: PropTypes.bool,
   isUnlocked: PropTypes.bool,
   createNewVaultAndKeychain: PropTypes.func,
+  markPasswordForgotten: PropTypes.func,
+  dispatch: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -185,6 +215,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     createNewVaultAndKeychain: password => dispatch(actions.createNewVaultAndKeychain(password)),
+    markPasswordForgotten: () => dispatch(actions.markPasswordForgotten()),
   }
 }
 

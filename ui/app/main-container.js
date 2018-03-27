@@ -32,19 +32,7 @@ MainContainer.prototype.render = function () {
         return h(Settings, {key: 'config'})
       default:
         log.debug('rendering locked screen')
-        contents = {
-          component: UnlockScreen,
-          style: {
-            boxShadow: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#F7F7F7',
-            // must force 100%, because lock screen is full-width
-            width: '100%',
-          },
-          key: 'locked',
-        }
+        return h('.unlock-screen-container', {}, h(UnlockScreen, { key: 'locked' }))
     }
   }
 

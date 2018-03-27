@@ -62,7 +62,7 @@ TransactionList.prototype.render = function () {
             }
             return h(TransactionListItem, {
               transaction, i, network, key,
-              conversionRate,
+              conversionRate, transactions,
               showTx: (txId) => {
                 this.props.viewPendingTx(txId)
               },

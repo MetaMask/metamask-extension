@@ -8,9 +8,8 @@ const classnames = require('classnames')
 
 const AccountDropdownMini = require('../dropdowns/account-dropdown-mini')
 
-const actions = require('../../actions')
+const t = require('../../i18n')
 const { conversionUtil } = require('../../conversion-util')
-const txHelper = require('../../../lib/tx-helper')
 const { DEFAULT_ROUTE } = require('../../routes')
 
 const {
@@ -48,7 +47,7 @@ class SignatureRequest extends Component {
 
       h('div.request-signature__header-background'),
 
-      h('div.request-signature__header__text', 'Signature Request'),
+      h('div.request-signature__header__text', t('sigRequest')),
 
       h('div.request-signature__header__tip-container', [
         h('div.request-signature__header__tip'),
@@ -67,7 +66,7 @@ class SignatureRequest extends Component {
 
     return h('div.request-signature__account', [
 
-      h('div.request-signature__account-text', ['Account:']),
+      h('div.request-signature__account-text', [t('account') + ':']),
 
       h(AccountDropdownMini, {
         selectedAccount,
@@ -94,7 +93,7 @@ class SignatureRequest extends Component {
 
     return h('div.request-signature__balance', [
 
-      h('div.request-signature__balance-text', ['Balance:']),
+      h('div.request-signature__balance-text', [t('balance')]),
 
       h('div.request-signature__balance-value', `${balanceInEther} ETH`),
 
@@ -128,7 +127,7 @@ class SignatureRequest extends Component {
     return h('div.request-signature__request-info', [
 
       h('div.request-signature__headline', [
-        `Your signature is being requested`,
+        t('yourSigRequested'),
       ]),
 
     ])
@@ -145,23 +144,19 @@ class SignatureRequest extends Component {
   }
 
   renderBody () {
-    let rows = []
-    let notice = 'You are signing:'
+    let rows
+    let notice = t('youSign') + ':'
 
-    const { txData = {} } = this.props
-    const { type, msgParams = {} } = txData
-    const { data } = msgParams
+    const { txData } = this.props
+    const { type, msgParams: { data } } = txData
 
     if (type === 'personal_sign') {
-      rows = [{ name: 'Message', value: this.msgHexToText(data) }]
+      rows = [{ name: t('message'), value: this.msgHexToText(data) }]
     } else if (type === 'eth_signTypedData') {
       rows = data
     } else if (type === 'eth_sign') {
-      rows = [{ name: 'Message', value: data }]
-      notice = `Signing this message can have
-      dangerous side effects. Only sign messages from
-      sites you fully trust with your entire account.
-      This dangerous method will be removed in a future version. `
+      rows = [{ name: t('message'), value: data }]
+      notice = t('signNotice')
     }
 
     return h('div.request-signature__body', {}, [
@@ -227,16 +222,16 @@ class SignatureRequest extends Component {
     }
 
     return h('div.request-signature__footer', [
-      h('button.request-signature__footer__cancel-button', {
+      h('button.btn-secondary--lg.request-signature__footer__cancel-button', {
         onClick: () => {
           cancel().then(() => history.push(DEFAULT_ROUTE))
         },
-      }, 'CANCEL'),
-      h('button.request-signature__footer__sign-button', {
+      }, t('cancel')),
+      h('button.btn-primary--lg', {
         onClick: () => {
           sign().then(() => history.push(DEFAULT_ROUTE))
         },
-      }, 'SIGN'),
+      }, t('sign')),
     ])
   }
 
@@ -275,47 +270,15 @@ SignatureRequest.propTypes = {
 }
 
 const mapStateToProps = state => {
-  const { metamask } = state
-  const {
-    unapprovedTxs,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTypedMessages,
-    network,
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-  } = metamask
-  const unconfTxList = txHelper(
-    unapprovedTxs,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTypedMessages,
-    network
-  ) || []
-
   return {
     balance: getSelectedAccount(state).balance,
     selectedAccount: getCurrentAccountWithSendEtherInfo(state),
     selectedAddress: getSelectedAddress(state),
+    requester: null,
+    requesterAddress: null,
     accounts: accountsWithSendEtherInfoSelector(state),
     conversionRate: conversionRateSelector(state),
-    unapprovedMsgCount,
-    unapprovedPersonalMsgCount,
-    unapprovedTypedMessagesCount,
-    txData: unconfTxList[0] || {},
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    signPersonalMessage: params => dispatch(actions.signPersonalMsg(params)),
-    cancelPersonalMessage: params => dispatch(actions.cancelPersonalMsg(params)),
-    signTypedMessage: params => dispatch(actions.signTypedMsg(params)),
-    cancelTypedMessage: params => dispatch(actions.cancelTypedMsg(params)),
-    signMessage: params => dispatch(actions.signMsg(params)),
-    cancelMessage: params => dispatch(actions.cancelMsg(params)),
-  }
-}
-
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SignatureRequest)
+module.exports = connect(mapStateToProps)(SignatureRequest)

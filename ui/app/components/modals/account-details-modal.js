@@ -8,6 +8,7 @@ const { getSelectedIdentity } = require('../../selectors')
 const genAccountLink = require('../../../lib/account-link.js')
 const QrView = require('../qr-code')
 const EditableLabel = require('../editable-label')
+const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -62,14 +63,14 @@ AccountDetailsModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('button.btn-clear.account-modal__button', {
+      h('button.btn-primary.account-modal__button', {
         onClick: () => global.platform.openWindow({ url: genAccountLink(address, network) }),
-      }, 'View account on Etherscan'),
+      }, t('etherscanView')),
 
       // Holding on redesign for Export Private Key functionality
-      h('button.btn-clear.account-modal__button', {
+      h('button.btn-primary.account-modal__button', {
         onClick: () => showExportPrivateKeyModal(),
-      }, 'Export private key'),
+      }, t('exportPrivateKey')),
 
   ])
 }

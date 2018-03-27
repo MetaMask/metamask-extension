@@ -55,6 +55,16 @@
   }
 }
 
+.new-account-import-disclaimer {
+  width: 120%;
+  background-color: #F4F9FC;
+  display: inline-block;
+  align-items: center;
+  padding: 20px 30px 20px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .new-account-import-form {
   display: flex;
   flex-flow: column;
@@ -152,15 +162,14 @@
   display: flex;
   flex-flow: column;
   align-items: center;
+  padding: 30px 30px 0;
 
   &__input-label {
     color: $scorpion;
     font-family: Roboto;
     font-size: 16px;
     line-height: 21px;
-    margin-top: 29px;
     align-self: flex-start;
-    margin-left: 30px;
   }
 
   &__input {
@@ -181,32 +190,11 @@
     margin-top: 39px;
     display: flex;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
 
-  &__button-cancel,
-  &__button-create {
-    height: 55px;
+  &__button {
     width: 150px;
-    border-radius: 2px;
-    background-color: #FFFFFF;
-  }
-
-  &__button-cancel {
-    border: 1px solid $dusty-gray;
-    color: $dusty-gray;
-    font-family: Roboto;
-    font-size: 16px;
-    line-height: 21px;
-    text-align: center;
-  }
-
-  &__button-create {
-    border: 1px solid $curious-blue;
-    color: $curious-blue;
-    font-family: Roboto;
-    font-size: 16px;
-    line-height: 21px;
-    text-align: center;
+    min-width: initial;
   }
 }

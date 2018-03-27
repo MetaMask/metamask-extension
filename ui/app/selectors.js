@@ -18,6 +18,7 @@ const selectors = {
   getCurrentAccountWithSendEtherInfo,
   getGasPrice,
   getGasLimit,
+  getForceGasMin,
   getAddressBook,
   getSendFrom,
   getCurrentCurrency,
@@ -55,8 +56,9 @@ function getSelectedToken (state) {
   const tokens = state.metamask.tokens || []
   const selectedTokenAddress = state.metamask.selectedTokenAddress
   const selectedToken = tokens.filter(({ address }) => address === selectedTokenAddress)[0]
+  const sendToken = state.metamask.send.token
 
-  return selectedToken || null
+  return selectedToken || sendToken || null
 }
 
 function getSelectedTokenExchangeRate (state) {
@@ -128,6 +130,10 @@ function getGasPrice (state) {
 
 function getGasLimit (state) {
   return state.metamask.send.gasLimit
+}
+
+function getForceGasMin (state) {
+  return state.metamask.send.forceGasMin
 }
 
 function getSendFrom (state) {

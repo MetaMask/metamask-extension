@@ -74,14 +74,16 @@ class BackupPhraseScreen extends Component {
           {this.props.seedWords}
         </div>
         {!isShowingSecret && (
-          <div className="backup-phrase__secret-blocker">
+          <div
+            className="backup-phrase__secret-blocker"
+            onClick={() => this.setState({ isShowingSecret: true })}
+          >
             <LockIcon width="28px" height="35px" fill="#FFFFFF" />
-            <button
+            <div
               className="backup-phrase__reveal-button"
-              onClick={() => this.setState({ isShowingSecret: true })}
             >
               Click here to reveal secret words
-            </button>
+            </div>
           </div>
         )}
       </div>
@@ -94,7 +96,7 @@ class BackupPhraseScreen extends Component {
 
     return (
       <div className="backup-phrase__content-wrapper">
-        <div>
+        <div className="backup-phrase__phrase">
           <div className="backup-phrase__title">Secret Backup Phrase</div>
           <div className="backup-phrase__body-text">
             Your secret backup phrase makes it easy to back up and restore your account.
@@ -124,25 +126,36 @@ class BackupPhraseScreen extends Component {
             Memorize this phrase.
           </div>
         </div>
+        <div className="backup-phrase__next-button">
+          <button
+            className="first-time-flow__button"
+            onClick={() => isShowingSecret && this.setState({
+              isShowingSecret: false,
+              page: BackupPhraseScreen.PAGE.CONFIRM,
+            })}
+            disabled={!isShowingSecret}
+          >
+            Next
+          </button>
+          <Breadcrumbs total={3} currentIndex={1} />
+        </div>
       </div>
     )
   }
 
   render () {
-    return (
-      <div className="first-time-flow">
-      {
-        this.props.isLoading
-          ? <LoadingScreen loadingMessage="Creating your new account" />
-          : (
+    return this.props.isLoading
+      ? <LoadingScreen loadingMessage="Creating your new account" />
+      : (
+        <div className="first-view-main-wrapper">
+          <div className="first-view-main">
             <div className="backup-phrase">
               <Identicon address={this.props.address} diameter={70} />
               {this.renderSecretScreen()}
             </div>
-          )
-      }
-      </div>
-    )
+          </div>
+        </div>
+      )
   }
 }
 

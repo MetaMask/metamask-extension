@@ -46,7 +46,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
     incoming,
     currentCurrency,
     hideTooltip,
-    styleOveride,
+    styleOveride = {},
     showFiat = true,
   } = this.props
   const { fontSize, color, fontFamily, lineHeight } = styleOveride

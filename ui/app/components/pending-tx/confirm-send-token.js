@@ -8,8 +8,10 @@ const tokenAbi = require('human-standard-token-abi')
 const abiDecoder = require('abi-decoder')
 abiDecoder.addABI(tokenAbi)
 const actions = require('../../actions')
+const t = require('../../../i18n')
 const clone = require('clone')
 const Identicon = require('../identicon')
+const GasFeeDisplay = require('../send/gas-fee-display-v2.js')
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const {
@@ -69,8 +71,8 @@ function mapDispatchToProps (dispatch, ownProps) {
     updateTokenExchangeRate: () => dispatch(actions.updateTokenExchangeRate(symbol)),
     editTransaction: txMeta => {
       const { token: { address } } = ownProps
-      const { txParams, id } = txMeta
-      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+      const { txParams = {}, id } = txMeta
+      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data) || {}
       const { params = [] } = tokenData
       const { value: to } = params[0] || {}
       const { value: tokenAmountInDec } = params[1] || {}
@@ -91,8 +93,42 @@ function mapDispatchToProps (dispatch, ownProps) {
         amount: tokenAmountInHex,
         errors: { to: null, amount: null },
         editingTransactionId: id,
+        token: ownProps.token,
       }))
       dispatch(actions.showSendTokenPage())
+    },
+    showCustomizeGasModal: (txMeta, sendGasLimit, sendGasPrice, sendGasTotal) => {
+      const { id, txParams, lastGasPrice } = txMeta
+      const { gas: txGasLimit, gasPrice: txGasPrice } = txParams
+      const tokenData = txParams.data && abiDecoder.decodeMethod(txParams.data)
+      const { params = [] } = tokenData
+      const { value: to } = params[0] || {}
+      const { value: tokenAmountInDec } = params[1] || {}
+      const tokenAmountInHex = conversionUtil(tokenAmountInDec, {
+        fromNumericBase: 'dec',
+        toNumericBase: 'hex',
+      })
+
+      let forceGasMin
+      if (lastGasPrice) {
+        forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+          multiplicandBase: 16,
+          multiplierBase: 10,
+          toNumericBase: 'hex',
+          fromDenomination: 'WEI',
+        }))
+      }
+
+      dispatch(actions.updateSend({
+        gasLimit: sendGasLimit || txGasLimit,
+        gasPrice: sendGasPrice || txGasPrice,
+        editingTransactionId: id,
+        gasTotal: sendGasTotal,
+        to,
+        amount: tokenAmountInHex,
+        forceGasMin,
+      }))
+      dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
   }
 }
@@ -145,7 +181,7 @@ ConfirmSendToken.prototype.getAmount = function () {
       ? +(sendTokenAmount * tokenExchangeRate * conversionRate).toFixed(2)
       : null,
     token: typeof value === 'undefined'
-      ? 'Unknown'
+      ? t('unknown')
       : +sendTokenAmount.toFixed(decimals),
   }
 
@@ -199,6 +235,7 @@ ConfirmSendToken.prototype.getGasFee = function () {
     token: tokenExchangeRate
       ? tokenGas
       : null,
+    gasFeeInHex: gasTotal.toString(16),
   }
 }
 
@@ -216,7 +253,7 @@ ConfirmSendToken.prototype.getData = function () {
     },
     to: {
       address: value,
-      name: identities[value] ? identities[value].name : 'New Recipient',
+      name: identities[value] ? identities[value].name : t('newRecipient'),
     },
     memo: txParams.memo || '',
   }
@@ -251,19 +288,25 @@ ConfirmSendToken.prototype.renderHeroAmount = function () {
 }
 
 ConfirmSendToken.prototype.renderGasFee = function () {
-  const { token: { symbol }, currentCurrency } = this.props
-  const { fiat: fiatGas, token: tokenGas, eth: ethGas } = this.getGasFee()
+  const {
+    currentCurrency: convertedCurrency,
+    conversionRate,
+    send: { gasTotal, gasLimit: sendGasLimit, gasPrice: sendGasPrice },
+    showCustomizeGasModal,
+  } = this.props
+  const txMeta = this.gatherTxMeta()
+  const { gasFeeInHex } = this.getGasFee()
 
   return (
     h('section.flex-row.flex-center.confirm-screen-row', [
-      h('span.confirm-screen-label.confirm-screen-section-column', [ 'Gas Fee' ]),
+      h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
       h('div.confirm-screen-section-column', [
-        h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency}`),
-
-        h(
-          'div.confirm-screen-row-detail',
-          tokenGas ? `${tokenGas} ${symbol}` : `${ethGas} ETH`
-        ),
+        h(GasFeeDisplay, {
+          gasTotal: gasTotal || gasFeeInHex,
+          conversionRate,
+          convertedCurrency,
+          onClick: () => showCustomizeGasModal(txMeta, sendGasLimit, sendGasPrice, gasTotal),
+        }),
       ]),
     ])
   )
@@ -276,10 +319,10 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
 
   return fiatAmount && fiatGas
     ? (
-      h('section.flex-row.flex-center.confirm-screen-total-box ', [
+      h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ 'Total ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ 'Amount + Gas' ]),
+          h('span.confirm-screen-label', [ t('total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
@@ -289,15 +332,15 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
       ])
     )
     : (
-      h('section.flex-row.flex-center.confirm-screen-total-box ', [
+      h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ 'Total ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ 'Amount + Gas' ]),
+          h('span.confirm-screen-label', [ t('total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${tokenAmount} ${symbol}`),
-          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} Gas`),
+          h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} ${t('gas')}`),
         ]),
       ])
     )
@@ -319,93 +362,98 @@ ConfirmSendToken.prototype.render = function () {
 
   this.inputs = []
 
+  const title = txMeta.lastGasPrice ? 'Reprice Transaction' : t('confirm')
+  const subtitle = txMeta.lastGasPrice
+    ? 'Increase your gas fee to attempt to overwrite and speed up your transaction'
+    : t('pleaseReviewTransaction')
+
   return (
-    h('div.confirm-screen-container.confirm-send-token', {
-      style: { minWidth: '355px' },
-    }, [
+    h('div.confirm-screen-container.confirm-send-token', [
       // Main Send token Card
-      h('div.confirm-screen-wrapper.flex-column.flex-grow', [
-        h('h3.flex-center.confirm-screen-header', [
-          h('button.btn-clear.confirm-screen-back-button', {
-            onClick: () => this.editTransaction(txMeta),
-          }, 'EDIT'),
-          h('div.confirm-screen-title', 'Confirm Transaction'),
-          h('div.confirm-screen-header-tip'),
+      h('div.page-container', [
+        h('div.page-container__header', [
+          !txMeta.lastGasPrice && h('button.confirm-screen-back-button', {
+            onClick: () => editTransaction(txMeta),
+          }, t('edit')),
+          h('div.page-container__title', title),
+          h('div.page-container__subtitle', subtitle),
         ]),
-        h('div.flex-row.flex-center.confirm-screen-identicons', [
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: fromAddress,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', fromName),
-            // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
-          ]),
-          h('i.fa.fa-arrow-right.fa-lg'),
-          h('div.confirm-screen-account-wrapper', [
-            h(
-              Identicon,
-              {
-                address: toAddress,
-                diameter: 60,
-              },
-            ),
-            h('span.confirm-screen-account-name', toName),
-            // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
-          ]),
-        ]),
-
-        // h('h3.flex-center.confirm-screen-sending-to-message', {
-        //   style: {
-        //     textAlign: 'center',
-        //     fontSize: '16px',
-        //   },
-        // }, [
-          // `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
-        // ]),
-
-        this.renderHeroAmount(),
-
-        h('div.confirm-screen-rows', [
-          h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ 'From' ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', fromName),
-              h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
+        h('.page-container__content', [
+          h('div.flex-row.flex-center.confirm-screen-identicons', [
+            h('div.confirm-screen-account-wrapper', [
+              h(
+                Identicon,
+                {
+                  address: fromAddress,
+                  diameter: 60,
+                },
+              ),
+              h('span.confirm-screen-account-name', fromName),
+              // h('span.confirm-screen-account-number', fromAddress.slice(fromAddress.length - 4)),
+            ]),
+            h('i.fa.fa-arrow-right.fa-lg'),
+            h('div.confirm-screen-account-wrapper', [
+              h(
+                Identicon,
+                {
+                  address: toAddress,
+                  diameter: 60,
+                },
+              ),
+              h('span.confirm-screen-account-name', toName),
+              // h('span.confirm-screen-account-number', toAddress.slice(toAddress.length - 4)),
             ]),
           ]),
 
-          toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ 'To' ]),
-            h('div.confirm-screen-section-column', [
-              h('div.confirm-screen-row-info', toName),
-              h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
+          // h('h3.flex-center.confirm-screen-sending-to-message', {
+          //   style: {
+          //     textAlign: 'center',
+          //     fontSize: '16px',
+          //   },
+          // }, [
+            // `You're sending to Recipient ...${toAddress.slice(toAddress.length - 4)}`,
+          // ]),
+
+          this.renderHeroAmount(),
+
+          h('div.confirm-screen-rows', [
+            h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', fromName),
+                h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
+              ]),
             ]),
+
+            toAddress && h('section.flex-row.flex-center.confirm-screen-row', [
+              h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+              h('div.confirm-screen-section-column', [
+                h('div.confirm-screen-row-info', toName),
+                h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
+              ]),
+            ]),
+
+            this.renderGasFee(),
+
+            this.renderTotalPlusGas(),
+
           ]),
 
-          this.renderGasFee(),
+        ]),
+        h('form#pending-tx-form', {
+          onSubmit: this.onSubmit,
+        }, [
+          h('.page-container__footer', [
+            // Cancel Button
+            h('button.btn-cancel.page-container__footer-button.allcaps', {
+              onClick: (event) => this.cancel(event, txMeta),
+            }, t('cancel')),
 
-          this.renderTotalPlusGas(),
-
+            // Accept Button
+            h('button.btn-confirm.page-container__footer-button.allcaps', [t('confirm')]),
+          ]),
         ]),
       ]),
-
-      h('form#pending-tx-form', {
-        onSubmit: this.onSubmit,
-      }, [
-        // Cancel Button
-        h('div.cancel.btn-light.confirm-screen-cancel-button', {
-          onClick: (event) => this.cancel(event, txMeta),
-        }, 'CANCEL'),
-
-        // Accept Button
-        h('button.confirm-screen-confirm-button', ['CONFIRM']),
-      ]),
-
-
     ])
   )
 }
@@ -419,7 +467,7 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning('Invalid Gas Parameters'))
+    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
     this.setState({ submitting: false })
   }
 }
@@ -452,6 +500,27 @@ ConfirmSendToken.prototype.gatherTxMeta = function () {
   const props = this.props
   const state = this.state
   const txData = clone(state.txData) || clone(props.txData)
+
+  const { gasPrice: sendGasPrice, gas: sendGasLimit } = props.send
+  const {
+    lastGasPrice,
+    txParams: {
+      gasPrice: txGasPrice,
+      gas: txGasLimit,
+    },
+  } = txData
+
+  let forceGasMin
+  if (lastGasPrice) {
+    forceGasMin = ethUtil.addHexPrefix(multiplyCurrencies(lastGasPrice, 1.1, {
+      multiplicandBase: 16,
+      multiplierBase: 10,
+      toNumericBase: 'hex',
+    }))
+  }
+
+  txData.txParams.gasPrice = sendGasPrice || forceGasMin || txGasPrice
+  txData.txParams.gas = sendGasLimit || txGasLimit
 
   // log.debug(`UI has defaulted to tx meta ${JSON.stringify(txData)}`)
   return txData

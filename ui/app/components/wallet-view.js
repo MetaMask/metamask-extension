@@ -14,6 +14,7 @@ const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
+const t = require('../../i18n')
 
 module.exports = compose(
   withRouter,
@@ -122,7 +123,7 @@ WalletView.prototype.render = function () {
         onClick: hideSidebar,
       }),
 
-      h('div.wallet-view__keyring-label', isLoose ? 'IMPORTED' : ''),
+      h('div.wallet-view__keyring-label.allcaps', isLoose ? t('imported') : ''),
 
       h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },
@@ -139,13 +140,13 @@ WalletView.prototype.render = function () {
           selectedIdentity.name,
         ]),
 
-        h('button.btn-clear.wallet-view__details-button', 'DETAILS'),
+        h('button.btn-clear.wallet-view__details-button.allcaps', t('details')),
       ]),
     ]),
 
     h(Tooltip, {
       position: 'bottom',
-      title: this.state.hasCopied ? 'Copied!' : 'Copy to clipboard',
+      title: this.state.hasCopied ? t('copiedExclamation') : t('copyToClipboard'),
       wrapperClassName: 'wallet-view__tooltip',
     }, [
       h('button.wallet-view__address', {
@@ -173,9 +174,9 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h('button.btn-clear.wallet-view__add-token-button', {
+    h('button.btn-primary.wallet-view__add-token-button', {
       onClick: () => history.push(ADD_TOKEN_ROUTE),
-    }, 'Add Token'),
+    }, t('addToken')),
   ])
 }
 

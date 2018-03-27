@@ -1,29 +1,86 @@
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url('/fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
 
 .first-time-flow {
-  height: 100vh;
   width: 100vw;
-  background-color: #FFF;
+  background-color: #fff;
   overflow: auto;
+  display: flex;
+  justify-content: center;
+  flex: 1 0 auto;
+  font-weight: 400;
+  font-family: Roboto;
 }
 
-.alpha-warning {
+.alpha-warning__container {
+  display: flex;
+  justify-content: center;
   background: #f7861c;
+}
+
+.alpha-warning,
+.alpha-warning-welcome-screen {
   color: #fff;
   line-height: 2em;
-  padding-left: 2em;
 }
 
-.first-view-main {
+@media screen and (min-width: 576px) {
+  .alpha-warning {
+    width: 85vw;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .alpha-warning {
+    width: 80vw;
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .alpha-warning {
+    width: 62vw;
+  }
+}
+
+.alpha-warning-welcome-screen {
+  padding-left: 0;
+  text-align: center;
+}
+
+.first-view-main-wrapper {
   display: flex;
-  flex-direction: row-reverse;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.first-view-main,
+.first-view-main__mascara {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.first-view-main__mascara {
   justify-content: space-between;
+}
+
+@media screen and (min-width: 1281px) {
+  .first-view-main {
+    width: 62vw;
+  }
 }
 
 .mascara-info {
   display: flex;
   flex-flow: column;
   margin-top: 70px;
-  margin-right: 10vw;
   width: 35vw;
   max-width: 550px;
 }
@@ -44,8 +101,8 @@
 .buy-ether {
   display: flex;
   flex-flow: column nowrap;
-  margin: 67px 0 50px 146px;
-  max-width: 35rem;
+  margin: 60px 0 30px 0;
+  position: relative;
 }
 
 .import-account {
@@ -65,6 +122,10 @@
     width: calc(100vw - 80px);
   }
 
+  .unique-image {
+    width: auto;
+  }
+
   .create-password__title,
   .unique-image__title,
   .tou__title,
@@ -74,6 +135,41 @@
   .tou__title,
   .backup-phrase__title {
     width: initial !important;
+  }
+
+  .alpha-warning,
+  .alpha-warning-welcome-screen {
+    line-height: 1em;
+    padding: 8px 12px;
+  }
+
+  .first-view-main {
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 12px;
+  }
+
+  .mascara-info {
+    margin-top: 0px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .mascara-info .info {
+    text-align: center;
+    font-size: 16px;
+    margin: 0 10px;
+    padding-left: 0px;
+  }
+
+  .mascara-info :first-child {
+    align-self: center;
+  }
+
+  .first-view-phone-invisible {
+    display: none;
   }
 
   .first-time-flow__input {
@@ -129,10 +225,6 @@
   max-width: 46rem;
 }
 
-.backup-phrase {
-  max-width: 100%;
-}
-
 .create-password__title,
 .unique-image__title,
 .tou__title,
@@ -175,11 +267,11 @@
   color: #1B344D;
   font-size: 16px;
   line-height: 23px;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .buy-ether__small-body-text {
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
   height: 14px;
   color: #757575;
   font-size: 12px;
@@ -207,7 +299,7 @@
   height: 334px;
   overflow-y: auto;
   color: #757575;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
   font-size: 12px;
   line-height: 15px;
   text-align: justify;
@@ -216,7 +308,18 @@
 
 .backup-phrase__content-wrapper {
   display: flex;
-  flex: row nowrap;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+.backup-phrase__phrase {
+  flex-grow: .5;
+  min-width: 0;
+}
+
+.backup-phrase__next-button {
+  flex-grow: 1;
+  width: 100%;
 }
 
 .backup-phrase__body-text {
@@ -224,15 +327,33 @@
 }
 
 .backup-phrase__tips {
-  margin: 40px 85px;
+  margin-top: 40px;
   width: 285px;
+  flex-grow: .5;
+  min-width: 0;
 }
 
 .backup-phrase__tips-text {
   color: #5B5D67;
   font-size: 16px;
   line-height: 23px;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
+  min-width: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .backup-phrase__content-wrapper {
+    flex-direction: column;
+  }
+
+  .backup-phrase__phrase {
+    flex: 1 0 auto;
+  }
+
+  .backup-phrase__tips {
+    width: 100%;
+    flex: 1 0 auto;
+  }
 }
 
 .backup-phrase__secret {
@@ -250,7 +371,7 @@
 .backup-phrase__secret-words {
   width: 310px;
   color: #5B5D67;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 20px;
   line-height: 26px;
   text-align: center;
@@ -279,7 +400,7 @@
   background: none;
   box-shadow: none;
   color: #FFFFFF;
-  font-family: Montserrat Regular;
+  font-family: Roboto;
   font-size: 12px;
   font-weight: bold;
   line-height: 15px;
@@ -289,13 +410,17 @@
 }
 
 .backup-phrase__back-button,
-.backup-phrase__back-button:hover,
-.import-account__back-button,
-.import-account__back-button:hover {
+.import-account__back-button {
   margin-bottom: 18px;
-  color: #22232C;
+  color: #22232c;
   font-size: 16px;
   line-height: 21px;
+  position: absolute;
+  top: -25px;
+}
+
+.backup-phrase__back-button {
+  top: -30px;
 }
 
 button.backup-phrase__reveal-button:hover {
@@ -333,7 +458,7 @@ button.backup-phrase__reveal-button:hover {
 
 .backup-phrase__confirm-seed-option {
   color: #5B5D67;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 16px;
   line-height: 21px;
   background-color: #E7E7E7;
@@ -355,7 +480,7 @@ button.backup-phrase__confirm-seed-option:hover {
 .import-account__faq-link {
   font-size: 18px;
   line-height: 23px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
 }
 
 .import-account__selector-label {
@@ -370,7 +495,7 @@ button.backup-phrase__confirm-seed-option:hover {
   background-color: #FFFFFF;
   margin-top: 14px;
   color: #5B5D67;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
   padding: 14px 21px;
@@ -385,7 +510,7 @@ button.backup-phrase__confirm-seed-option:hover {
   font-size: 18px;
   line-height: 23px;
   margin-top: 21px;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .import-account__input-wrapper {
@@ -413,6 +538,10 @@ button.backup-phrase__confirm-seed-option:hover {
   line-height: 23px;
 }
 
+.import-account__input-label__disabled {
+  opacity: 0.5;
+}
+
 .import-account__input {
   width: 325px !important;
 }
@@ -427,7 +556,7 @@ button.backup-phrase__confirm-seed-option:hover {
   border: 1px solid #1B344D;
   border-radius: 4px;
   color: #1B344D;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   display: flex;
   flex-flow: column nowrap;
@@ -444,7 +573,7 @@ button.backup-phrase__confirm-seed-option:hover {
 
 .import-account__file-name {
   color: #000000;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
   margin-left: 22px;
@@ -465,7 +594,7 @@ button.backup-phrase__confirm-seed-option:hover {
 
 .buy-ether__content-headline {
   color: #1B344D;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 18px;
   line-height: 23px;
 }
@@ -494,7 +623,7 @@ button.backup-phrase__confirm-seed-option:hover {
   align-items: center;
   padding: 20px 0;
   color: #9B9B9B;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 14px;
   line-height: 18px;
   cursor: pointer;
@@ -529,7 +658,7 @@ button.backup-phrase__confirm-seed-option:hover {
 .buy-ether__button-separator-text {
   font-size: 20px;
   line-height: 26px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   margin: 35px 0 14px 30px;
   display: flex;
   flex-flow: column nowrap;
@@ -541,11 +670,10 @@ button.backup-phrase__confirm-seed-option:hover {
   color: #1B344D !important;
   font-size: 14px !important;
   line-height: 18px !important;
-  font-family: Montserrat UltraLight !important;
+  font-family: Roboto;
 }
 
 .buy-ether__action-content-wrapper {
-  width: 360px;
   display: flex;
   flex-flow: column nowrap;
 }
@@ -557,6 +685,10 @@ button.backup-phrase__confirm-seed-option:hover {
   padding: 15px;
   border: 1px solid #CDCDCD;
   background-color: #FFFFFF;
+}
+
+.first-time-flow__input__disabled {
+  opacity: 0.5;
 }
 
 .first-time-flow__input::placeholder {
@@ -571,6 +703,7 @@ button.backup-phrase__confirm-seed-option:hover {
   color: #FFFFFF;
   font-size: 20px;
   font-weight: 500;
+  font-family: Roboto;
   line-height: 26px;
   text-align: center;
   text-transform: uppercase;
@@ -595,7 +728,7 @@ button.first-time-flow__button:hover {
   color: #1B344D;
   font-size: 20px;
   line-height: 26px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   text-align: center;
   margin: 35px 0 14px;
   background-color: transparent;
@@ -647,7 +780,7 @@ button.first-time-flow__button--tertiary:hover {
   font-size: 20px;
   line-height: 26px;
   text-align: center;
-  font-family: Montserrat UltraLight;
+  font-family: Roboto;
 }
 
 .icon {
@@ -695,7 +828,7 @@ button.first-time-flow__button--tertiary:hover {
 .shapeshift-form__deposit-instruction {
   color: #757575;
   color: rgba(0, 0, 0, 0.45);
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-weight: 300;
   line-height: 19px;
   padding-bottom: 6px;
@@ -712,7 +845,7 @@ button.first-time-flow__button--tertiary:hover {
   width: 100%;
   height: 45px;
   line-height: 44px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
 }
 
 .shapeshift-form__address-input-label {
@@ -721,7 +854,7 @@ button.first-time-flow__button--tertiary:hover {
   font-weight: 500;
   line-height: 18px;
   padding-bottom: 6px;
-  font-family: Montserrat Light;
+  font-family: Roboto;
 }
 
 .shapeshift-form__address-input {
@@ -740,7 +873,7 @@ button.first-time-flow__button--tertiary:hover {
 
 .shapeshift-form__address-input-error-message {
   color: #FF001F;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 12px;
   height: 24px;
   line-height: 18px;
@@ -750,7 +883,7 @@ button.first-time-flow__button--tertiary:hover {
   display: flex;
   flex-flow: row wrap;
   color: #9B9B9B;
-  font-family: Montserrat Light;
+  font-family: Roboto;
   font-size: 10px;
   line-height: 16px;
 }

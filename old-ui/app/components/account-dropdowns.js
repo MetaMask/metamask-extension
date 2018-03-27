@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const PropTypes = require('react').PropTypes
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../../../ui/app/actions')
 const genAccountLink = require('etherscan-link').createAccountLink
@@ -79,7 +79,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label', 'LOOSE') : null
+      return isLoose ? h('.keyring-label', 'IMPORTED') : null
     } catch (e) { return }
   }
 
@@ -173,7 +173,7 @@ class AccountDropdowns extends Component {
           minWidth: '180px',
         },
         isOpen: optionsMenuActive,
-        onClickOutside: () => {
+        onClickOutside: (event) => {
           const { classList } = event.target
           const isNotToggleElement = !classList.contains(this.optionsMenuToggleClassName)
           if (optionsMenuActive && isNotToggleElement) {
@@ -268,6 +268,7 @@ class AccountDropdowns extends Component {
           'i.fa.fa-ellipsis-h',
           {
             style: {
+              margin: '0.5em',
               fontSize: '1.8em',
             },
             onClick: (event) => {

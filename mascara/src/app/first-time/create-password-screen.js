@@ -7,6 +7,7 @@ import Breadcrumbs from './breadcrumbs'
 import { DEFAULT_ROUTE, IMPORT_ACCOUNT_ROUTE } from '../../../../ui/app/routes'
 import EventEmitter from 'events'
 import Mascot from '../../../../ui/app/components/mascot'
+import classnames from 'classnames'
 
 class CreatePasswordScreen extends Component {
   static propTypes = {
@@ -15,6 +16,7 @@ class CreatePasswordScreen extends Component {
     history: PropTypes.object.isRequired,
     isInitialized: PropTypes.bool,
     isUnlocked: PropTypes.bool,
+    isMascara: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -61,15 +63,17 @@ class CreatePasswordScreen extends Component {
   }
 
   render () {
-    const { isLoading } = this.props
+    const { isLoading, isMascara } = this.props
 
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
       : (
-        <div>
-          <h2 className="alpha-warning">Warning: This is Experimental software and is a Developer BETA</h2>
-          <div className="first-view-main">
-            <div className="mascara-info">
+        <div className={classnames({ 'first-view-main-wrapper': !isMascara })}>
+          <div className={classnames({
+            'first-view-main': !isMascara,
+            'first-view-main__mascara': isMascara,
+          })}>
+            {isMascara && <div className="mascara-info first-view-phone-invisible">
               <Mascot
                 animationEventEmitter={this.animationEventEmitter}
                 width="225"
@@ -81,7 +85,7 @@ class CreatePasswordScreen extends Component {
               <div className="info">
                 It allows you to hold ether & tokens, and interact with decentralized applications.
               </div>
-            </div>
+            </div>}
             <div className="create-password">
               <div className="create-password__title">
                 Create Password

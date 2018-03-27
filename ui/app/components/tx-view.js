@@ -8,6 +8,7 @@ const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
 const { SEND_ROUTE } = require('../routes')
+const t = require('../../i18n')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
@@ -74,25 +75,25 @@ TxView.prototype.renderButtons = function () {
   return !selectedToken
     ? (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear.hero-balance-button', {
+        h('button.btn-primary.hero-balance-button', {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
-        }, 'DEPOSIT'),
+        }, t('deposit')),
 
-        h('button.btn-clear.hero-balance-button', {
+        h('button.btn-primary.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
           onClick: () => history.push(SEND_ROUTE),
-        }, 'SEND'),
+        }, t('send')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear.hero-balance-button', {
+        h('button.btn-primary.hero-balance-button', {
           onClick: () => history.push(SEND_ROUTE),
-        }, 'SEND'),
+        }, t('send')),
       ])
     )
 }
@@ -106,9 +107,10 @@ TxView.prototype.render = function () {
 
     h('div.flex-row.phone-visible', {
       style: {
-        margin: '1.5em 1.2em 0',
         justifyContent: 'space-between',
         alignItems: 'center',
+        flex: '0 0 auto',
+        margin: '10px',
       },
     }, [
 
@@ -116,11 +118,10 @@ TxView.prototype.render = function () {
         style: {
           fontSize: '1.3em',
           cursor: 'pointer',
+          padding: '10px',
         },
-        onClick: () => {
-          this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar()
-        },
-      }, []),
+        onClick: () => this.props.sidebarOpen ? this.props.hideSidebar() : this.props.showSidebar(),
+      }),
 
       h('.identicon-wrapper.select-none', {
         style: {

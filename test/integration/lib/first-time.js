@@ -1,6 +1,10 @@
 const reactTriggerChange = require('react-trigger-change')
 const PASSWORD = 'password123'
 const runMascaraFirstTimeTest = require('./mascara-first-time')
+const {
+  timeout,
+  findAsync,
+} = require('../../lib/util')
 
 QUnit.module('first time usage')
 
@@ -21,21 +25,19 @@ async function runFirstTimeUsageTest(assert, done) {
   selectState.val('first time')
   reactTriggerChange(selectState[0])
 
-  await timeout(2000)
-
   const app = $('#app-content')
 
   // recurse notices
   while (true) {
-    const button = app.find('button')
+    const button = await findAsync(app, 'button')
     if (button.html() === 'Accept') {
       // still notices to accept
-      const termsPage = app.find('.markdown')[0]
+      const termsPageRaw = await findAsync(app, '.markdown')
+      const termsPage = (await findAsync(app, '.markdown'))[0]
+      console.log('termsPageRaw', termsPageRaw)
       termsPage.scrollTop = termsPage.scrollHeight
-      await timeout()
       console.log('Clearing notice')
       button.click()
-      await timeout()
     } else {
       // exit loop
       console.log('No more notices...')
@@ -43,97 +45,68 @@ async function runFirstTimeUsageTest(assert, done) {
     }
   }
 
-  await timeout()
-
   // Scroll through terms
-  const title = app.find('h1')[1]
+  const title = (await findAsync(app, 'h1'))[0]
   assert.equal(title.textContent, 'MetaMask', 'title screen')
 
   // enter password
-  const pwBox = app.find('#password-box')[0]
-  const confBox = app.find('#password-box-confirm')[0]
+  const pwBox = (await findAsync(app, '#password-box'))[0]
+  const confBox = (await findAsync(app, '#password-box-confirm'))[0]
   pwBox.value = PASSWORD
   confBox.value = PASSWORD
 
-  await timeout()
-
   // create vault
-  const createButton = app.find('button.primary')[0]
+  const createButton = (await findAsync(app, 'button.primary'))[0]
   createButton.click()
 
-  await timeout(3000)
-
-  const created = app.find('h3')[0]
+  await timeout()
+  const created = (await findAsync(app, 'h3'))[0]
   assert.equal(created.textContent, 'Vault Created', 'Vault created screen')
 
   // Agree button
-  const button = app.find('button')[0]
+  const button = (await findAsync(app, 'button'))[0]
   assert.ok(button, 'button present')
   button.click()
 
-  await timeout(1000)
-
-  const detail = app.find('.account-detail-section')[0]
+  const detail = (await findAsync(app, '.account-detail-section'))[0]
   assert.ok(detail, 'Account detail section loaded.')
 
-  const sandwich = app.find('.sandwich-expando')[0]
+  const sandwich = (await findAsync(app, '.sandwich-expando'))[0]
   sandwich.click()
 
-  await timeout()
-
-  const menu = app.find('.menu-droppo')[0]
+  const menu = (await findAsync(app, '.menu-droppo'))[0]
   const children = menu.children
   const logout = children[2]
   assert.ok(logout, 'Lock menu item found')
   logout.click()
 
-  await timeout(1000)
-
-  const pwBox2 = app.find('#password-box')[0]
+  const pwBox2 = (await findAsync(app, '#password-box'))[0]
   pwBox2.value = PASSWORD
 
-  const createButton2 = app.find('button.primary')[0]
+  const createButton2 = (await findAsync(app, 'button.primary'))[0]
   createButton2.click()
 
-  await timeout(1000)
-
-  const detail2 = app.find('.account-detail-section')[0]
+  const detail2 = (await findAsync(app, '.account-detail-section'))[0]
   assert.ok(detail2, 'Account detail section loaded again.')
 
-  await timeout()
-
   // open account settings dropdown
-  const qrButton = app.find('.fa.fa-ellipsis-h')[0]
+  const qrButton = (await findAsync(app, '.fa.fa-ellipsis-h'))[0]
   qrButton.click()
 
-  await timeout(1000)
-
   // qr code item
-  const qrButton2 = app.find('.dropdown-menu-item')[1]
+  const qrButton2 = (await findAsync(app, '.dropdown-menu-item'))[1]
   qrButton2.click()
 
-  await timeout(1000)
-
-  const qrHeader = app.find('.qr-header')[0]
-  const qrContainer = app.find('#qr-container')[0]
+  const qrHeader = (await findAsync(app, '.qr-header'))[0]
+  const qrContainer = (await findAsync(app, '#qr-container'))[0]
   assert.equal(qrHeader.textContent, 'Account 1', 'Should show account label.')
   assert.ok(qrContainer, 'QR Container found')
 
-  await timeout()
-
-  const networkMenu = app.find('.network-indicator')[0]
+  const networkMenu = (await findAsync(app, '.network-indicator'))[0]
   networkMenu.click()
 
-  await timeout()
-
-  const networkMenu2 = app.find('.network-indicator')[0]
+  const networkMenu2 = (await findAsync(app, '.network-indicator'))[0]
   const children2 = networkMenu2.children
   children2.length[3]
   assert.ok(children2, 'All network options present')
-}
-
-function timeout (time) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, time || 1500)
-  })
 }

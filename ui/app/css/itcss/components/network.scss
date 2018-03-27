@@ -10,8 +10,9 @@
 .network-component.pointer {
   border: 2px solid $silver;
   border-radius: 82px;
-  padding: 3px;
+  padding: 7px 3px;
   flex: 0 0 auto;
+  display: flex;
 
   &.ethereum-network .menu-icon-circle div {
     background-color: rgba(3, 135, 137, .7) !important;
@@ -76,8 +77,11 @@
 
 .network-name-item {
   font-weight: 100;
-  flex: 1 0 auto;
+  flex: 1;
   color: $dusty-gray;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .network-check,
@@ -154,4 +158,16 @@
 
 .network-caret {
   margin: 0 8px 2px;
+}
+
+.network-display {
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    @media screen and (min-width: 576px) {
+      display: none;
+    }
+  }
 }

@@ -5,7 +5,7 @@ const TxStateManager = require('../../app/scripts/lib/tx-state-manager')
 const txStateHistoryHelper = require('../../app/scripts/lib/tx-state-history-helper')
 const noop = () => true
 
-describe('TransactionStateManger', function () {
+describe('TransactionStateManager', function () {
   let txStateManager
   const currentNetworkId = 42
   const otherNetworkId = 2

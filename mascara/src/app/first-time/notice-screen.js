@@ -7,6 +7,7 @@ import { markNoticeRead } from '../../../../ui/app/actions'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
 import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import LoadingScreen from './loading-screen'
 
 class NoticeScreen extends Component {
   static propTypes = {
@@ -23,6 +24,7 @@ class NoticeScreen extends Component {
     }),
     markNoticeRead: PropTypes.func,
     history: PropTypes.object,
+    isLoading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -60,38 +62,45 @@ class NoticeScreen extends Component {
     const {
       address,
       lastUnreadNotice: { title, body },
+      isLoading,
     } = this.props
     const { atBottom } = this.state
 
     return (
-      <div className="first-time-flow">
-        <div
-          className="tou"
-          onScroll={this.onScroll}
-        >
-          <Identicon address={address} diameter={70} />
-          <div className="tou__title">{title}</div>
-          <Markdown
-            className="tou__body markdown"
-            source={body}
-            skipHtml
-          />
-          <button
-            className="first-time-flow__button"
-            onClick={atBottom && this.acceptTerms}
-            disabled={!atBottom}
-          >
-            Accept
-          </button>
-          <Breadcrumbs total={3} currentIndex={2} />
-        </div>
-      </div>
+      isLoading
+        ? <LoadingScreen />
+        : (
+          <div className="first-view-main-wrapper">
+            <div className="first-view-main">
+              <div
+                className="tou"
+                onScroll={this.onScroll}
+              >
+                <Identicon address={address} diameter={70} />
+                <div className="tou__title">{title}</div>
+                <Markdown
+                  className="tou__body markdown"
+                  source={body}
+                  skipHtml
+                />
+                <button
+                  className="first-time-flow__button"
+                  onClick={atBottom && this.acceptTerms}
+                  disabled={!atBottom}
+                >
+                  Accept
+                </button>
+                <Breadcrumbs total={3} currentIndex={2} />
+              </div>
+            </div>
+          </div>
+        )
     )
   }
 }
 
 export default connect(
-  ({ metamask: { selectedAddress, lastUnreadNotice } }) => ({
+  ({ metamask: { selectedAddress, lastUnreadNotice }, appState: { isLoading } }) => ({
     lastUnreadNotice,
     address: selectedAddress,
   }),

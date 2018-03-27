@@ -66,8 +66,9 @@
 
     .keyring-label {
       margin-top: 5px;
-      background-color: $black;
-      color: $dusty-gray;
+      background-color: $dusty-gray;
+      color: $black;
+      font-weight: normal;
     }
   }
 
@@ -86,7 +87,6 @@
     flex: 1 0 auto;
     display: flex;
     flex-flow: column nowrap;
-    padding-top: 4px;
   }
 
   &__check-mark {
@@ -114,13 +114,11 @@
     color: $white;
     font-size: 18px;
     font-weight: 300;
-    line-height: 16px;
   }
 
   &__balance {
     color: $dusty-gray;
     font-size: 14px;
-    line-height: 19px;
   }
 
   &__action {

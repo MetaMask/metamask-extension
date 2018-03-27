@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
@@ -11,22 +12,26 @@ class UniqueImageScreen extends Component {
 
   render () {
     return (
-      <div className="unique-image">
-        <Identicon address={this.props.address} diameter={70} />
-        <div className="unique-image__title">Your unique account image</div>
-        <div className="unique-image__body-text">
-          This image was programmatically generated for you by your new account number.
+      <div className="first-view-main-wrapper">
+        <div className="first-view-main">
+          <div className="unique-image">
+            <Identicon address={this.props.address} diameter={70} />
+            <div className="unique-image__title">Your unique account image</div>
+            <div className="unique-image__body-text">
+              This image was programmatically generated for you by your new account number.
+            </div>
+            <div className="unique-image__body-text">
+              You’ll see this image everytime you need to confirm a transaction.
+            </div>
+            <button
+              className="first-time-flow__button"
+              onClick={this.props.next}
+            >
+              Next
+            </button>
+            <Breadcrumbs total={3} currentIndex={1} />
+          </div>
         </div>
-        <div className="unique-image__body-text">
-          You’ll see this image everytime you need to confirm a transaction.
-        </div>
-        <button
-          className="first-time-flow__button"
-          onClick={this.props.next}
-        >
-          Next
-        </button>
-        <Breadcrumbs total={3} currentIndex={1} />
       </div>
     )
   }

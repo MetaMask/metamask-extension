@@ -103,15 +103,13 @@
 }
 
 .confirm-screen-back-button {
-  background: transparent;
-  left: 24px;
+  color: $curious-blue;
+  font-family: Roboto;
+  font-size: 1rem;
   position: absolute;
-  padding: 6px 12px;
-  font-size: .7rem;
-
-  @media screen and (max-width: $break-small) {
-    margin-right: 12px;
-  }
+  top: 38px;
+  right: 38px;
+  background: none;
 }
 
 .confirm-screen-account-wrapper {
@@ -204,7 +202,7 @@
 }
 
 .confirm-screen-label {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 40px;
   color: $scorpion;
   text-align: left;
@@ -231,7 +229,6 @@ section .confirm-screen-account-number,
 .confirm-screen-row {
   display: flex;
   flex-flow: row nowrap;
-  border-bottom: 1px solid $alto;
   width: 100%;
   align-items: center;
   padding: 12px;
@@ -239,6 +236,26 @@ section .confirm-screen-account-number,
   font-size: 16px;
   line-height: 22px;
   font-weight: 300;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid $alto;
+  }
+}
+
+@media screen and (max-width: 379px) {
+  .confirm-screen-row {
+    span.confirm-screen-section-column {
+      flex: 0.4;
+    }
+
+    div.confirm-screen-section-column {
+      flex: 0.6;
+    }
+
+    .currency-display__input {
+      font-size: 14px;
+    }
+  }
 }
 
 .confirm-screen-row-detail {
@@ -249,12 +266,9 @@ section .confirm-screen-account-number,
 
 .confirm-screen-total-box {
   background-color: $wild-sand;
-  padding: 20px;
-  padding-left: 35px;
-  border-bottom: 1px solid $alto;
 
   .confirm-screen-label {
-    line-height: 18px;
+    line-height: 21px;
   }
 
   .confirm-screen-row-detail {
@@ -263,7 +277,7 @@ section .confirm-screen-account-number,
 
   &__subtitle {
     font-size: 12px;
-    line-height: 22px;
+    line-height: 16px;
   }
 
   .confirm-screen-row-info {
@@ -305,22 +319,4 @@ section .confirm-screen-account-number,
   flex: 1 0 auto;
   font-weight: 300;
   margin: 0 5px;
-}
-
-#pending-tx-form {
-  flex: 1 0 auto;
-  position: relative;
-  display: flex;
-  flex-flow: row nowrap;
-  background-color: $white;
-  padding: 12px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  width: 100%;
-
-  @media screen and (max-width: $break-small) {
-    border-top: 1px solid $alto;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
 }

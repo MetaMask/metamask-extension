@@ -1,10 +1,22 @@
 const extend = require('xtend')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
+const createId = require('./random-id')
 const ethUtil = require('ethereumjs-util')
 const txStateHistoryHelper = require('./tx-state-history-helper')
 
-module.exports = class TransactionStateManger extends EventEmitter {
+// STATUS METHODS
+  // statuses:
+  //    - `'unapproved'` the user has not responded
+  //    - `'rejected'` the user has responded no!
+  //    - `'approved'` the user has approved the tx
+  //    - `'signed'` the tx is signed
+  //    - `'submitted'` the tx is sent to a server
+  //    - `'confirmed'` the tx has been included in a block.
+  //    - `'failed'` the tx failed for some reason, included on tx data.
+  //    - `'dropped'` the tx nonce was already used
+
+module.exports = class TransactionStateManager extends EventEmitter {
   constructor ({ initState, txHistoryLimit, getNetwork }) {
     super()
 
@@ -14,6 +26,16 @@ module.exports = class TransactionStateManger extends EventEmitter {
     }, initState))
     this.txHistoryLimit = txHistoryLimit
     this.getNetwork = getNetwork
+  }
+
+  generateTxMeta (opts) {
+    return extend({
+      id: createId(),
+      time: (new Date()).getTime(),
+      status: 'unapproved',
+      metamaskNetworkId: this.getNetwork(),
+      loadingDefaults: true,
+    }, opts)
   }
 
   // Returns the number of txs for the current network.
@@ -164,16 +186,6 @@ module.exports = class TransactionStateManger extends EventEmitter {
     })
   }
 
-  // STATUS METHODS
-  // statuses:
-  //    - `'unapproved'` the user has not responded
-  //    - `'rejected'` the user has responded no!
-  //    - `'approved'` the user has approved the tx
-  //    - `'signed'` the tx is signed
-  //    - `'submitted'` the tx is sent to a server
-  //    - `'confirmed'` the tx has been included in a block.
-  //    - `'failed'` the tx failed for some reason, included on tx data.
-
   // get::set status
 
   // should return the status of the tx.
@@ -202,7 +214,11 @@ module.exports = class TransactionStateManger extends EventEmitter {
   }
 
   // should update the status of the tx to 'submitted'.
+  // and add a time stamp for when it was called
   setTxStatusSubmitted (txId) {
+    const txMeta = this.getTx(txId)
+    txMeta.submittedTime = (new Date()).getTime()
+    this.updateTx(txMeta, 'txStateManager - add submitted time stamp')
     this._setTxStatus(txId, 'submitted')
   }
 
@@ -210,6 +226,12 @@ module.exports = class TransactionStateManger extends EventEmitter {
   setTxStatusConfirmed (txId) {
     this._setTxStatus(txId, 'confirmed')
   }
+
+  // should update the status dropped
+  setTxStatusDropped (txId) {
+    this._setTxStatus(txId, 'dropped')
+  }
+
 
   setTxStatusFailed (txId, err) {
     const txMeta = this.getTx(txId)

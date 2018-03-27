@@ -1,6 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const t = require('../../i18n')
 
 const AccountPanel = require('./account-panel')
 
@@ -39,7 +40,7 @@ PendingMsgDetails.prototype.render = function () {
       // message data
       h('.tx-data.flex-column.flex-justify-center.flex-grow.select-none', [
         h('.flex-column.flex-space-between', [
-          h('label.font-small', 'MESSAGE'),
+          h('label.font-small.allcaps', t('message')),
           h('span.font-small', msgParams.data),
         ]),
       ]),
@@ -47,4 +48,3 @@ PendingMsgDetails.prototype.render = function () {
     ])
   )
 }
-

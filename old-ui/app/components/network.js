@@ -23,14 +23,15 @@ Network.prototype.render = function () {
 
   if (networkNumber === 'loading') {
     return h('span.pointer', {
+      className: props.onClick && 'pointer',
       style: {
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
       },
-      onClick: (event) => this.props.onClick(event),
+      onClick: (event) => props.onClick && props.onClick(event),
     }, [
-      h('img', {
+      props.onClick && h('img', {
         title: 'Attempting to connect to blockchain.',
         style: {
           width: '27px',
@@ -60,9 +61,10 @@ Network.prototype.render = function () {
   }
 
   return (
-    h('#network_component.pointer', {
+    h('#network_component', {
+      className: props.onClick && 'pointer',
       title: hoverText,
-      onClick: (event) => this.props.onClick(event),
+      onClick: (event) => props.onClick && props.onClick(event),
     }, [
       (function () {
         switch (iconName) {
@@ -74,7 +76,7 @@ Network.prototype.render = function () {
                   color: '#039396',
                 }},
               'Main Network'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'ropsten-test-network':
             return h('.network-indicator', [
@@ -84,7 +86,7 @@ Network.prototype.render = function () {
                   color: '#ff6666',
                 }},
               'Ropsten Test Net'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'kovan-test-network':
             return h('.network-indicator', [
@@ -94,7 +96,7 @@ Network.prototype.render = function () {
                   color: '#690496',
                 }},
               'Kovan Test Net'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           case 'rinkeby-test-network':
             return h('.network-indicator', [
@@ -104,7 +106,7 @@ Network.prototype.render = function () {
                   color: '#e7a218',
                 }},
               'Rinkeby Test Net'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
           default:
             return h('.network-indicator', [
@@ -120,7 +122,7 @@ Network.prototype.render = function () {
                   color: '#AEAEAE',
                 }},
               'Private Network'),
-              h('i.fa.fa-caret-down.fa-lg'),
+              props.onClick && h('i.fa.fa-caret-down.fa-lg'),
             ])
         }
       })(),

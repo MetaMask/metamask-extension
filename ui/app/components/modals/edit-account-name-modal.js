@@ -4,6 +4,7 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const { getSelectedAccount } = require('../../selectors')
+const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -50,7 +51,7 @@ EditAccountNameModal.prototype.render = function () {
       ]),
 
       h('div.edit-account-name-modal-title', {
-      }, ['Edit Account Name']),
+      }, [t('editAccountName')]),
 
       h('input.edit-account-name-modal-input', {
         placeholder: identity.name,
@@ -60,7 +61,7 @@ EditAccountNameModal.prototype.render = function () {
         value: this.state.inputText,
       }, []),
 
-      h('button.btn-clear.edit-account-name-modal-save-button', {
+      h('button.btn-clear.edit-account-name-modal-save-button.allcaps', {
         onClick: () => {
           if (this.state.inputText.length !== 0) {
             saveAccountLabel(identity.address, this.state.inputText)
@@ -69,7 +70,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        'SAVE',
+        t('save'),
       ]),
 
     ]),

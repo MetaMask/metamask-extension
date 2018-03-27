@@ -6,6 +6,7 @@ const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
+const t = require('../i18n')
 
 // mascara
 const MascaraCreatePassword = require('../../mascara/src/app/first-time/create-password-screen').default
@@ -14,8 +15,8 @@ const MascaraNoticeScreen = require('../../mascara/src/app/first-time/notice-scr
 const MascaraSeedScreen = require('../../mascara/src/app/first-time/seed-screen').default
 const MascaraConfirmSeedScreen = require('../../mascara/src/app/first-time/confirm-seed-screen').default
 // init
-const InitializeMenuScreen = require('./first-time/init-menu')
 const NewKeyChainScreen = require('./new-keychain')
+
 // accounts
 const MainContainer = require('./main-container')
 const SendTransactionScreen2 = require('./components/send/send-v2-container')
@@ -127,21 +128,31 @@ class App extends Component {
       isLoading,
       loadingMessage,
       network,
+      isMouseUser,
       provider,
       frequentRpcList,
       currentView,
+      setMouseUserState,
     } = this.props
     const isLoadingNetwork = network === 'loading' && currentView.name !== 'config'
     const loadMessage = loadingMessage || isLoadingNetwork ?
-      `Connecting to ${this.getNetworkName()}` : null
+      this.getConnectingLabel() : null
     log.debug('Main ui render function')
 
     return (
       h('.flex-column.full-height', {
+        className: classnames({ 'mouse-user-styles': isMouseUser }),
         style: {
           overflowX: 'hidden',
           position: 'relative',
           alignItems: 'center',
+        },
+        tabIndex: '0',
+        onClick: () => setMouseUserState(true),
+        onKeyDown: (e) => {
+          if (e.keyCode === 9) {
+            setMouseUserState(false)
+          }
         },
       }, [
 
@@ -236,6 +247,10 @@ class App extends Component {
       showNetworkDropdown,
       hideNetworkDropdown,
       currentView,
+      isInitialized,
+      welcomeScreenSeen,
+      isPopup,
+      betaUI,
     } = this.props
 
     if (window.METAMASK_UI_TYPE === 'notification') {
@@ -261,7 +276,7 @@ class App extends Component {
         style: {},
       }, [
 
-        h('.app-header.flex-row.flex-space-between', {
+        (isInitialized || welcomeScreenSeen || isPopup || !betaUI) && h('.app-header.flex-row.flex-space-between', {
           className: classnames({
             'app-header--initialized': !isOnboarding,
           }),
@@ -282,7 +297,7 @@ class App extends Component {
 
             ]),
 
-            h('div.header__right-actions', [
+            betaUI && isInitialized && h('div.header__right-actions', [
               h('div.network-component-wrapper', {
                 style: {},
               }, [
@@ -310,6 +325,15 @@ class App extends Component {
               ]),
             ]),
           ]),
+        ]),
+
+        !isInitialized && !isPopup && betaUI && h('.alpha-warning__container', {}, [
+          h('h2', {
+            className: classnames({
+              'alpha-warning': welcomeScreenSeen,
+              'alpha-warning-welcome-screen': !welcomeScreenSeen,
+            }),
+          }, 'Please be aware that this version is still under development'),
         ]),
 
       ])
@@ -567,6 +591,27 @@ class App extends Component {
     }
   }
 
+  getConnectingLabel = function () {
+    const { provider } = this.props
+    const providerName = provider.type
+
+    let name
+
+    if (providerName === 'mainnet') {
+      name = t('connectingToMainnet')
+    } else if (providerName === 'ropsten') {
+      name = t('connectingToRopsten')
+    } else if (providerName === 'kovan') {
+      name = t('connectingToRopsten')
+    } else if (providerName === 'rinkeby') {
+      name = t('connectingToRinkeby')
+    } else {
+      name = t('connectingToUnknown')
+    }
+
+    return name
+  }
+
   getNetworkName () {
     const { provider } = this.props
     const providerName = provider.type
@@ -620,6 +665,11 @@ App.propTypes = {
   unapprovedMsgCount: PropTypes.number,
   unapprovedPersonalMsgCount: PropTypes.number,
   unapprovedTypedMessagesCount: PropTypes.number,
+  welcomeScreenSeen: PropTypes.bool,
+  isPopup: PropTypes.bool,
+  betaUI: PropTypes.bool,
+  isMouseUser: PropTypes.bool,
+  setMouseUserState: PropTypes.func,
 }
 
 function mapStateToProps (state) {
@@ -663,8 +713,10 @@ function mapStateToProps (state) {
     transForward: state.appState.transForward,
     isMascara: state.metamask.isMascara,
     isOnboarding: Boolean(!noActiveNotices || seedWords || !isInitialized),
+    isPopup: state.metamask.isPopup,
     seedWords: state.metamask.seedWords,
     unapprovedTxs,
+    unapprovedMsgs: state.metamask.unapprovedMsgs,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
     unapprovedTypedMessagesCount,
@@ -676,6 +728,11 @@ function mapStateToProps (state) {
     lostAccounts,
     frequentRpcList: state.metamask.frequentRpcList || [],
     currentCurrency: state.metamask.currentCurrency,
+    isMouseUser: state.appState.isMouseUser,
+    betaUI: state.metamask.featureFlags.betaUI,
+    isRevealingSeedWords: state.metamask.isRevealingSeedWords,
+    Qr: state.appState.Qr,
+    welcomeScreenSeen: state.metamask.welcomeScreenSeen,
 
     // state needed to get account dropdown temporarily rendering from app bar
     identities,
@@ -692,6 +749,7 @@ function mapDispatchToProps (dispatch, ownProps) {
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     setCurrentCurrencyToUSD: () => dispatch(actions.setCurrentCurrency('usd')),
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
+    setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
   }
 }
 
