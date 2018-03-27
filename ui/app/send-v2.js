@@ -597,7 +597,7 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   event.preventDefault()
   const {
     from: {address: from},
-    to,
+    to: _to,
     amount,
     gasLimit: gas,
     gasPrice,
@@ -615,6 +615,8 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
   if (!noErrors) {
     return
   }
+
+  const to = ethUtil.addHexPrefix(_to)
 
   this.addToAddressBookIfNew(to, toNickname)
 
