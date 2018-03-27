@@ -54,10 +54,10 @@ function AddTokenScreen () {
     customSymbol: '',
     customDecimals: '',
     searchQuery: '',
-    isCollapsed: true,
     selectedTokens: {},
     errors: {},
     autoFilled: false,
+    displayedTab: 'SEARCH',
   }
   this.tokenAddressDidChange = this.tokenAddressDidChange.bind(this)
   this.tokenSymbolDidChange = this.tokenSymbolDidChange.bind(this)
@@ -191,7 +191,7 @@ AddTokenScreen.prototype.attemptToAutoFillTokenParams = async function (address)
 AddTokenScreen.prototype.renderCustomForm = function () {
   const { autoFilled, customAddress, customSymbol, customDecimals, errors } = this.state
 
-  return !this.state.isCollapsed && (
+  return (
     h('div.add-token__add-custom-form', [
       h('div', {
         className: classnames('add-token__add-custom-field', {
@@ -246,33 +246,36 @@ AddTokenScreen.prototype.renderTokenList = function () {
   })
   const results = [...addressSearchResult, ...fuseSearchResult]
 
-  return Array(6).fill(undefined)
-    .map((_, i) => {
-      const { logo, symbol, name, address } = results[i] || {}
-      const tokenAlreadyAdded = this.checkExistingAddresses(address)
-      return Boolean(logo || symbol || name) && (
-        h('div.add-token__token-wrapper', {
-          className: classnames({
-            'add-token__token-wrapper--selected': selectedTokens[address],
-            'add-token__token-wrapper--disabled': tokenAlreadyAdded,
-          }),
-          onClick: () => !tokenAlreadyAdded && this.toggleToken(address, results[i]),
-        }, [
-          h('div.add-token__token-icon', {
-            style: {
-              backgroundImage: logo && `url(images/contract/${logo})`,
-            },
-          }),
-          h('div.add-token__token-data', [
-            h('div.add-token__token-symbol', symbol),
-            h('div.add-token__token-name', name),
-          ]),
-          // tokenAlreadyAdded && (
-          //   h('div.add-token__token-message', 'Already added')
-          // ),
-        ])
-      )
-    })
+  return h('div', [
+      results.length > 0 && h('div.add-token__token-icons-title', this.props.t('popularTokens')),
+      h('div.add-token__token-icons-container', Array(6).fill(undefined)
+        .map((_, i) => {
+          const { logo, symbol, name, address } = results[i] || {}
+          const tokenAlreadyAdded = this.checkExistingAddresses(address)
+          return Boolean(logo || symbol || name) && (
+            h('div.add-token__token-wrapper', {
+              className: classnames({
+                'add-token__token-wrapper--selected': selectedTokens[address],
+                'add-token__token-wrapper--disabled': tokenAlreadyAdded,
+              }),
+              onClick: () => !tokenAlreadyAdded && this.toggleToken(address, results[i]),
+            }, [
+              h('div.add-token__token-icon', {
+                style: {
+                  backgroundImage: logo && `url(images/contract/${logo})`,
+                },
+              }),
+              h('div.add-token__token-data', [
+                h('div.add-token__token-symbol', symbol),
+                h('div.add-token__token-name', name),
+              ]),
+              // tokenAlreadyAdded && (
+              //   h('div.add-token__token-message', 'Already added')
+              // ),
+            ])
+          )
+      })),
+    ])
 }
 
 AddTokenScreen.prototype.renderConfirmation = function () {
@@ -299,7 +302,6 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__title', this.props.t('addToken')),
           h('div.add-token__description', this.props.t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
@@ -331,52 +333,86 @@ AddTokenScreen.prototype.renderConfirmation = function () {
   )
 }
 
+AddTokenScreen.prototype.displayTab = function (selectedTab) {
+  this.setState({ displayedTab: selectedTab })
+}
+
+AddTokenScreen.prototype.renderTabs = function () {
+  const { displayedTab, errors } = this.state
+
+  return displayedTab === 'CUSTOM_TOKEN'
+    ? this.renderCustomForm()
+    : h('div', [
+    h('div.add-token__wrapper', [
+      h('div.add-token__content-container', [
+        h('div.add-token__info-box', [
+          h('div.add-token__info-box__close'),
+          h('div.add-token__info-box__title', this.props.t('whatsThis')),
+          h('div.add-token__info-box__copy', this.props.t('keepTrackTokens')),
+          h('div.add-token__info-box__copy--blue', this.props.t('learnMore')),
+        ]),
+        h('div.add-token__input-container', [
+          h('input.add-token__input', {
+            type: 'text',
+            placeholder: this.props.t('searchTokens'),
+            onChange: e => this.setState({ searchQuery: e.target.value }),
+          }),
+          h('div.add-token__search-input-error-message', errors.tokenSelector),
+        ]),
+        this.renderTokenList(),
+      ]),
+    ]),
+  ])
+}
+
 AddTokenScreen.prototype.render = function () {
-  const { isCollapsed, errors, isShowingConfirmation } = this.state
+  const {
+    isShowingConfirmation,
+    displayedTab,
+  } = this.state
   const { goHome } = this.props
 
-  return isShowingConfirmation
-    ? this.renderConfirmation()
-    : (
-    h('div.add-token', [
-      h('div.add-token__wrapper', [
-        h('div.add-token__title-container', [
-          h('div.add-token__title', this.props.t('addToken')),
-          h('div.add-token__description', this.props.t('tokenWarning1')),
-          h('div.add-token__description', this.props.t('tokenSelection')),
-        ]),
-        h('div.add-token__content-container', [
-          h('div.add-token__input-container', [
-            h('input.add-token__input', {
-              type: 'text',
-              placeholder: this.props.t('search'),
-              onChange: e => this.setState({ searchQuery: e.target.value }),
-            }),
-            h('div.add-token__search-input-error-message', errors.tokenSelector),
-          ]),
-          h(
-            'div.add-token__token-icons-container',
-            this.renderTokenList(),
-          ),
-        ]),
-        h('div.add-token__footers', [
-          h('div.add-token__add-custom', {
-            onClick: () => this.setState({ isCollapsed: !isCollapsed }),
-          }, [
-            this.props.t('addCustomToken'),
-            h(`i.fa.fa-angle-${isCollapsed ? 'down' : 'up'}`),
-          ]),
-          this.renderCustomForm(),
-        ]),
+  return h('div.add-token', [
+    h('div.add-token__header', [
+      h('div.add-token__header__cancel', {
+        onClick: () => goHome(),
+      }, [
+        h('i.fa.fa-angle-left.fa-lg'),
+        h('span', this.props.t('cancel')),
       ]),
-      h('div.add-token__buttons', [
-        h('button.btn-secondary--lg.add-token__cancel-button', {
-          onClick: goHome,
-        }, this.props.t('cancel')),
-        h('button.btn-primary--lg', {
-          onClick: this.onNext,
-        }, this.props.t('next')),
+      h('div.add-token__header__title', this.props.t('addTokens')),
+      !isShowingConfirmation && h('div.add-token__header__tabs', [
+
+        h('div.add-token__header__tabs__tab', {
+          className: classnames('add-token__header__tabs__tab', {
+            'add-token__header__tabs__selected': displayedTab === 'SEARCH',
+            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
+          }),
+          onClick: () => this.displayTab('SEARCH'),
+        }, this.props.t('search')),
+
+        h('div.add-token__header__tabs__tab', {
+          className: classnames('add-token__header__tabs__tab', {
+            'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
+            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
+          }),
+          onClick: () => this.displayTab('CUSTOM_TOKEN'),
+        }, this.props.t('customToken')),
+
       ]),
-    ])
-  )
+    ]),
+//
+    isShowingConfirmation
+      ? this.renderConfirmation()
+      : this.renderTabs(),
+
+    !isShowingConfirmation && h('div.add-token__buttons', [
+      h('button.btn-secondary--lg.add-token__cancel-button', {
+        onClick: goHome,
+      }, this.props.t('cancel')),
+      h('button.btn-primary--lg.add-token__confirm-button', {
+        onClick: this.onNext,
+      }, this.props.t('next')),
+    ]),
+  ])
 }

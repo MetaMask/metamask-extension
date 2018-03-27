@@ -2,6 +2,17 @@
 
 ## Current Master
 
+## 4.4.0 Mon Mar 26 2018
+
+- Internationalization: Taiwanese, Thai, Slovenian
+- Fixes bug where MetaMask would not open once its storage grew too large.
+- Updates design of new-ui Add Token screen
+- New-ui can send to ens addresses
+- Update new-ui button styles
+- Signed-type-data notification handles long messages
+- Popup extension in new-ui uses new on-boarding designs
+- Buy ether step of new-ui on-boarding uses new buy ether modal designs
+
 ## 4.3.0 Wed Mar 21 2018
 
 - (beta) Add internationalization support! Includes translations for 13 (!!) new languages: French, Spanish, Italian, German, Dutch, Portuguese, Japanese, Korean, Vietnamese, Mandarin, Hindi, Tagalog, and Russian! Select "Try Beta" in the menu to take them for a spin. Read more about the community effort [here](https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c)

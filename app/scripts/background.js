@@ -85,7 +85,6 @@ async function loadStateFromPersistence () {
 
   // write to disk
   if (localStore.isSupported) localStore.set(versionedData)
-  diskStore.putState(versionedData)
 
   // return just the data
   return versionedData.data
@@ -123,7 +122,6 @@ function setupController (initState, initLangCode) {
     debounce(1000),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
-    asStream(diskStore),
     (error) => {
       log.error('pump hit error', error)
     }

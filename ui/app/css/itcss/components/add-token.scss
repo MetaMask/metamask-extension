@@ -1,37 +1,118 @@
 .add-token {
   width: 498px;
+  max-height: 805px;
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
   position: relative;
   z-index: 12;
-  font-family: 'DIN Next Light';
+  font-family: 'Roboto';
+  background: white;
+  border-radius: 8px;
 
   &__wrapper {
     background-color: $white;
-    box-shadow: 0 2px 4px 0 rgba($black, .08);
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
     flex: 0 0 auto;
   }
 
-  &__title-container {
+  &__header {
     display: flex;
     flex-flow: column nowrap;
-    align-items: center;
-    padding: 30px 60px 12px;
-    border-bottom: 1px solid $gallery;
+    padding: 16px 16px 0px;
+    border-bottom: 1px solid $geyser;
     flex: 0 0 auto;
+
+    &__cancel {
+      color: $dodger-blue;
+      display: flex;
+      align-items: center;
+
+      span {
+        font-family: Roboto;
+        font-size: 16px; 
+        line-height: 21px;
+        margin-left: 8px;
+      }
+    }
+
+    &__title {
+      color: $tundora;
+      font-size: 32px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    &__tabs {
+      margin-left: 22px;
+      display: flex;
+
+      &__tab {
+        height: 54px;
+        padding: 15px 10px;
+        color: $dusty-gray;
+        font-family: Roboto;
+        font-size: 18px;
+        line-height: 24px;
+        text-align: center;
+      }
+
+      &__tab:first-of-type {
+        margin-right: 20px;
+      }
+
+      &__unselected:hover {
+        color: $black;
+        border-bottom: none;
+      }
+
+      &__selected {
+        color: $curious-blue;
+        border-bottom: 3px solid $curious-blue;
+      }
+    }
   }
 
-  &__title {
-    color: $scorpion;
-    font-size: 20px;
-    line-height: 26px;
-    text-align: center;
-    font-weight: 600;
-    margin-bottom: 12px;
+  &__info-box {
+    height: 96px;
+    margin: 20px 24px 0px;
+    border-radius: 4px;
+    background-color: $alabaster;
+    position: relative;
+    padding-left: 18px;
+    display: flex;
+    flex-flow: column;
+
+    &__close::after {
+      content: '\00D7';
+      font-size: 29px;
+      font-weight: 200;
+      color: $dusty-gray;
+      position: absolute;
+      right: 17px;
+      cursor: pointer;
+    }
+
+    &__title {
+      color: $mid-gray;
+      font-family: Roboto;
+      font-size: 14px;
+      margin-top: 15px;
+      margin-bottom: 9px;
+    }
+
+    &__copy,
+    &__copy--blue {
+      color: $mid-gray;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    &__copy--blue {
+      color: $curious-blue;
+    }
   }
 
   &__description {
@@ -48,19 +129,17 @@
 
   &__content-container {
     width: 100%;
-    border-bottom: 1px solid $gallery;
   }
 
   &__input-container {
-    padding: 11px 0;
-    width: 263px;
-    margin: 0 auto;
+    display: flex;
     position: relative;
   }
 
   &__search-input-error-message {
     position: absolute;
     bottom: -10px;
+    left: 22px;
     font-size: 12px;
     width: 100%;
     text-overflow: ellipsis;
@@ -69,16 +148,24 @@
     color: $red;
   }
 
-  &__input {
-    width: 100%;
-    border: 2px solid $gallery;
+  &__input,
+  &__add-custom-input {
+    height: 54px;
+    padding: 21px 6px;
+    border: 1px solid $geyser;
     border-radius: 4px;
-    padding: 5px 15px;
-    font-size: 14px;
-    line-height: 19px;
+    margin: 22px 24px;
+    position: relative;
+    flex: 1 0 auto;
+    color: $scorpion;
+    font-family: Roboto;
+    font-size: 16px;
 
     &::placeholder {
-      color: $silver;
+      color: $scorpion;
+      font-family: Roboto;
+      font-size: 16px;
+      line-height: 21px;
     }
   }
 
@@ -115,13 +202,14 @@
   &__add-custom-form {
     display: flex;
     flex-flow: column nowrap;
-    margin: 8px 0 51px;
+    margin: 40px 0 30px;
   }
 
   &__add-custom-field {
-    width: 290px;
-    margin: 0 auto;
     position: relative;
+    display: flex;
+    flex-flow: column;
+    flex: 1 0 auto;
 
     &--error {
       .add-token__add-custom-input {
@@ -132,7 +220,8 @@
 
   &__add-custom-error-message {
     position: absolute;
-    bottom: -21px;
+    bottom: 1px;
+    left: 22px;
     font-size: 12px;
     width: 100%;
     text-overflow: ellipsis;
@@ -144,36 +233,50 @@
   &__add-custom-label {
     font-size: 16px;
     line-height: 21px;
-    margin-bottom: 8px;
+    margin-left: 22px;
+    color: $scorpion;
   }
 
   &__add-custom-input {
-    width: 100%;
-    border: 1px solid $silver;
-    padding: 5px 15px;
-    font-size: 14px;
-    line-height: 19px;
+    margin-top: 6px;
+    font-size: 16px;
 
     &::placeholder {
       color: $silver;
+      font-size: 16px;
     }
   }
 
   &__add-custom-field + &__add-custom-field {
-    margin-top: 21px;
+    margin-top: 6px;
   }
 
   &__buttons {
     display: flex;
     flex-flow: row nowrap;
-    margin: 30px 0 51px;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
+    padding-bottom: 30px;
+    padding-top: 20px;
   }
 
+  &__confirm-button,
   &__cancel-button {
+    margin: 0 12px;
+    padding: 10px 13px;
+    height: 54px;
+    width: 133px;
     margin-right: 1.2rem;
+  }
+
+  &__token-icons-title {
+    color: #5B5D67;
+    font-family: Roboto;
+    font-size: 18px;
+    line-height: 24px;
+    margin-left: 24px;
+    margin-top: 8px;
   }
 
   &__token-icons-container {
@@ -188,7 +291,7 @@
     flex: 0 0 42.5%;
     align-items: center;
     padding: 12px;
-    margin: 2.5%;
+    margin: 0% 2.5% 1.5%;
     box-sizing: border-box;
     border-radius: 10px;
     cursor: pointer;
@@ -302,13 +405,14 @@
     top: 0;
     width: 100%;
     overflow: hidden;
-    height: 100%;
+    flex: 1 0 auto;
 
     &__wrapper {
       box-shadow: none !important;
       flex: 1 1 auto;
       width: 100%;
-      overflow-y: auto;
+      overflow-y: scroll;
+      height: 400px;
     }
 
     &__footers {

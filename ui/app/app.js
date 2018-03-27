@@ -385,7 +385,7 @@ App.prototype.renderPrimary = function () {
     isUnlocked,
   } = props
   const isMascaraOnboarding = isMascara && isOnboarding
-  const isBetaUIOnboarding = betaUI && isOnboarding && !props.isPopup && !isRevealingSeedWords
+  const isBetaUIOnboarding = betaUI && isOnboarding
 
   if (!welcomeScreenSeen && betaUI && !isInitialized && !isUnlocked) {
     return h(WelcomeScreen)
@@ -396,7 +396,7 @@ App.prototype.renderPrimary = function () {
   }
 
   // notices
-  if (!props.noActiveNotices) {
+  if (!props.noActiveNotices && !betaUI) {
     log.debug('rendering notice screen for unread notices.')
     return h(NoticeScreen, {
       notice: props.lastUnreadNotice,
@@ -417,7 +417,7 @@ App.prototype.renderPrimary = function () {
     return h(HDRestoreVaultScreen, {key: 'HDRestoreVaultScreen'})
   } else if (!props.isInitialized && !props.isUnlocked && !isRevealingSeedWords) {
     log.debug('rendering menu screen')
-    return props.isPopup
+    return !betaUI
       ? h(OldUIInitializeMenuScreen, {key: 'menuScreenInit'})
       : h(InitializeMenuScreen, {key: 'menuScreenInit'})
   }
