@@ -143,7 +143,10 @@ AddTokenScreen.prototype.validate = function () {
       errors.customAddress = t('invalidAddress')
     }
 
-    const validDecimals = customDecimals !== null && customDecimals >= 0 && customDecimals < 36
+    const validDecimals = customDecimals !== null
+      && customDecimals !== ''
+      && customDecimals >= 0
+      && customDecimals < 36
     if (!validDecimals) {
       errors.customDecimals = t('decimalsMustZerotoTen')
     }
