@@ -10,7 +10,7 @@ inherits(CurrencyDisplay, Component)
 function CurrencyDisplay () {
   Component.call(this)
 }
-//
+
 function toHexWei (value) {
   return conversionUtil(value, {
     fromNumericBase: 'dec',

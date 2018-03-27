@@ -21,7 +21,7 @@ const {
 } = require('../../token-util')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
-//
+
 const {
   getTokenExchangeRate,
   getSelectedAddress,
