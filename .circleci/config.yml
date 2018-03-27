@@ -252,5 +252,5 @@ jobs:
       - image: circleci/node:8-browsers
     steps:
       - run:
-        name: All Tests Passed
-        command: echo 'weew - everything passed!'
+          name: All Tests Passed
+          command: echo 'weew - everything passed!'
