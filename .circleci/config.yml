@@ -40,7 +40,7 @@ workflows:
             - prep-deps-npm
             - prep-deps-firefox
             - prep-scss
-      - all-tests-passed:
+      - all-tests-pass:
           requires:
             - test-lint
             - test-unit
@@ -247,9 +247,10 @@ jobs:
           name: test:integration:mascara
           command: npm run test:mascara
 
-all-tests-pass:
-  docker:
-    - image: circleci/node:8-browsers
-    - run:
-      name: All Tests Passed
-      command: echo 'weew - everything passed!'
+  all-tests-pass:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - run:
+        name: All Tests Passed
+        command: echo 'weew - everything passed!'
