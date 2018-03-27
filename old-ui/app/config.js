@@ -168,7 +168,6 @@ ConfigScreen.prototype.render = function () {
               h('a', {
                 href: 'http://metamask.helpscoutdocs.com/article/36-resetting-an-account',
                 target: '_blank',
-                onClick (event) { this.navigateTo(event.target.href) },
               }, 'Read more.'),
             ]),
             h('br'),
@@ -259,8 +258,4 @@ function currentProviderDisplay (metamaskState) {
     h('span', {style: { fontWeight: 'bold', paddingRight: '10px'}}, title),
     h('span', value),
   ])
-}
-
-ConfigScreen.prototype.navigateTo = function (url) {
-  global.platform.openWindow({ url })
 }
