@@ -14,7 +14,13 @@
   "address": {
     "message": "アドレス"
   },
+  "addCustomToken": {
+    "message": "カスタムトークンを追加"
+  },  
   "addToken": {
+    "message": "トークンを追加"
+  },
+  "addTokens": {
     "message": "トークンを追加"
   },
   "amount": {
@@ -60,13 +66,16 @@
     "message": "購入"
   },
   "buyCoinbase": {
-    "message": "Coinbaseで購入"
+    "message": "Coinbaseのサイトで購入"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbaseは、世界で最もポピュラーなBitcoin、Ethereum、そしてLitecoinの取引所です。"
+    "message": "Etherを購入できます。Coinbaseは、世界的なBitcoin、Ethereum、そしてLitecoinの取引所です。"
   },
   "cancel": {
     "message": "キャンセル"
+  },
+  "classicInterface": {
+    "message": "旧インタフェイスを使用"
   },
   "clickCopy": {
     "message": "クリックしてコピー"
@@ -84,7 +93,7 @@
     "message": "トランザクションの確認"
   },
   "continueToCoinbase": {
-    "message": "Coinbaseで続行"
+    "message": "Coinbaseを開く"
   },
   "contractDeployment": {
     "message": "コントラクトのデプロイ"
@@ -126,8 +135,14 @@
     "message": "暗号通貨",
     "description": "Exchange type (cryptocurrencies)"
   },
+  "currentConversion": {
+    "message": "基軸通貨"
+  },
   "customGas": {
     "message": "ガスのカスタマイズ"
+  },
+  "customToken": {
+    "message": "カスタムトークン"
   },
   "customize": {
     "message": "カスタマイズ"
@@ -135,39 +150,42 @@
   "customRPC": {
     "message": "カスタムRPC"
   },
+  "decimal": {
+    "message": "小数点桁数"
+  }, 
   "defaultNetwork": {
-    "message": "Etherトランザクションのデフォルトのネットワークはメインネットです。"
+    "message": "デフォルトのEther送受信ネットワークはメインネットです。"
   },
   "denExplainer": {
     "message": "DENとは、あなたのパスワードが暗号化されたMetaMask内のストレージです。"
   },
   "deposit": {
-    "message": "デポジット"
+    "message": "お振込み"
   },
   "depositBTC": {
-    "message": "あなたのBTCを次のアドレスへデポジット:"
+    "message": "BTCを下記のアドレスへ振込んでください:"
   },
   "depositCoin": {
-    "message": "あなたの $1を次のアドレスへデポジット",
+    "message": "あなたの $1を下記のアドレスへ振込んでください",
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "ETHをデポジット"
+    "message": "ETHを入金"
   },
   "depositEther": {
-    "message": "Etherをデポジット"
+    "message": "Etherを入金"
   },
   "depositFiat": {
     "message": "法定通貨でデポジット"
   },
   "depositFromAccount": {
-    "message": "別のアカウントからデポジット"
+    "message": "別のアカウントから入金"
   },
   "depositShapeShift": {
-    "message": "ShapeShiftでデポジット"
+    "message": "ShapeShiftで交換"
   },
   "depositShapeShiftExplainer": {
-    "message": "あなたが他の暗号通貨を持っているなら、Etherにトレードしてダイレクトにメタマスクウォレットへのデポジットが可能です。アカウント作成は不要。"
+    "message": "他の暗号通貨とEtherを交換して、MetaMaskのウォレットへ入金できます。アカウント作成は不要です。"
   },
   "details": {
     "message": "詳細"
@@ -176,10 +194,10 @@
     "message": "ダイレクトデポジット"
   },
   "directDepositEther": {
-    "message": "Etherをダイレクトデポジット"
+    "message": "Etherを直接入金"
   },
   "directDepositEtherExplainer": {
-    "message": "あなたがEtherをすでにお持ちなら、ダイレクトデポジットは新しいウォレットにEtherを入手する最も迅速な方法です。"
+    "message": "既にEtherをお持ちなら、MetaMaskの新しいウォレットにEtherを送信することができます。"
   },
   "done": {
     "message": "完了"
@@ -197,7 +215,7 @@
     "message": "パスワードを入力"
   },
   "etherscanView": {
-    "message": "Etherscanでアカウントを見る"
+    "message": "Etherscanでアカウントを参照"
   },
   "exchangeRate": {
     "message": "交換レート"
@@ -254,10 +272,10 @@
     "message": "必要ガスプライス"
   },
   "getEther": {
-    "message": "Etherをゲット"
+    "message": "Etherを取得する"
   },
   "getEtherFromFaucet": {
-    "message": "フォーセットで $1のEtherをゲット",
+    "message": "フォーセットで $1のEtherを得ることができます。",
     "description": "Displays network name for Ether faucet"
   },
   "greaterThanMin": {
@@ -281,11 +299,14 @@
     "message": "どのようにEtherをデポジットしますか?"
   },
   "import": {
-    "message": "インポート",
+    "message": "追加",
     "description": "Button to import an account from a selected file"
   },
   "importAccount": {
     "message": "アカウントのインポート"
+  },
+  "importAccountMsg": {
+    "message":"追加したアカウントはMetaMaskのアカウントシードフレーズとは関連付けられません。インポートしたアカウントについての詳細は"
   },
   "importAnAccount": {
     "message": "アカウントをインポート"
@@ -298,7 +319,10 @@
     "description": "status showing that an account has been fully loaded into the keyring"
   },
   "infoHelp": {
-    "message": "インフォメーションとヘルプ"
+    "message": "情報とヘルプ"
+  },
+  "insufficientFunds": {
+    "message": "残高不足"
   },
   "invalidAddress": {
     "message": "アドレスが無効です。"
@@ -316,12 +340,21 @@
     "message": "JSONファイル",
     "description": "format for importing an account"
   },
+  "keepTrackTokens": {
+    "message": "MetaMaskアカウントで入手したトークンを追跡でできます。"
+  },
   "kovan": {
     "message": "Kovanテストネットワーク"
+  },
+  "learnMore": {
+    "message": "詳細"
   },
   "lessThanMax": {
     "message": " $1以下にして下さい。",
     "description": "helper for inputting hex as decimal input"
+  },
+  "likeToAddTokens": {
+    "message": "トークンを追加しますか?"
   },
   "limit": {
     "message": "リミット"
@@ -354,7 +387,7 @@
     "message": "マイアカウント"
   },
   "needEtherInWallet": {
-    "message": "MetaMaskを使って分散型アプリケーションと対話するためには、あなたのウォレットにEtherが必要になります。"
+    "message": "MetaMaskで分散型アプリケーションを使用するためには、このウォレットにEtherが必要です。"
   },
   "needImportFile": {
     "message": "インポートするファイルを選択してください。",
@@ -383,6 +416,9 @@
   "newRecipient": {
     "message": "新規受取人"
   },
+  "newRPC": {
+    "message": "新しいRPCのURLを追加"
+  },
   "next": {
     "message": "次へ"
   },
@@ -390,7 +426,7 @@
     "message": "この名前にはアドレスが設定されていません。"
   },
   "noDeposits": {
-    "message": "デポジットがありません。"
+    "message": "お振込みがありません。"
   },
   "noTransactionHistory": {
     "message": "トランザクション履歴がありません。"
@@ -427,7 +463,7 @@
     "message": "シードをここにペーストして下さい!"
   },
   "pleaseReviewTransaction": {
-    "message": "トランザクションをレビューして下さい。"
+    "message": "トランザクションを確認して下さい。"
   },
   "privateKey": {
     "message": "秘密鍵",
@@ -449,22 +485,31 @@
     "message": "もっと読む"
   },
   "receive": {
-    "message": "受け取る"
+    "message": "お受取り"
   },
   "recipientAddress": {
     "message": "受取人アドレス"
   },
   "refundAddress": {
-    "message": "あなたの返金先アドレス"
+    "message": "お受取りアドレス"
   },
   "rejected": {
     "message": "拒否されました"
+  },
+  "resetAccount": {
+    "message": "アカウントをリセット"
+  },
+  "restoreFromSeed": {
+    "message": "パスフレーズから復元する"
   },
   "required": {
     "message": "必要です。"
   },
   "retryWithMoreGas": {
     "message": "より高いガスプライスで再度試して下さい。"
+  },
+  "revealSeedWords": {
+    "message": "パスフレーズを表示"
   },
   "revert": {
     "message": "元に戻す"
@@ -492,17 +537,26 @@
   "send": {
     "message": "送信"
   },
+  "sendETH": {
+    "message": "ETHの送信"
+  },
   "sendTokens": {
     "message": "トークンを送る"
   },
+  "onlySendToEtherAddress": {
+    "message": "ETHはイーサリウムアカウントのみに送信できます。"
+  },
+  "searchTokens": {
+    "message": "トークンの検索"
+  },
   "sendTokensAnywhere": {
-    "message": "イーサリアムのアカウントを持っている人にトークンを送る"
+    "message": "イーサリアムアカウントを持っている人にトークンを送る"
   },
   "settings": {
     "message": "設定"
   },
   "shapeshiftBuy": {
-    "message": "Shapeshiftで買う"
+    "message": "Shapeshiftで取引"
   },
   "showPrivateKeys": {
     "message": "秘密鍵を表示"
@@ -532,20 +586,32 @@
     "message": "送信"
   },
   "takesTooLong": {
-    "message": "長くかかりすぎていますか?"
+    "message": "送信に時間がかかりますか?"
   },
   "testFaucet": {
     "message": "Faucetをテスト"
   },
   "to": {
-    "message": "宛先"
+    "message": "送信先"
   },
   "toETHviaShapeShift": {
     "message": "ShapeShiftで $1をETHにする",
     "description": "system will fill in deposit type in start of message"
   },
+  "tokenAddress": {
+    "message": "トークンアドレス"
+  },
   "tokenBalance": {
     "message": "あなたのトークン残高:"
+  },
+  "tokenSelection": {
+    "message": "トークンを検索、またはリストから選択してください。"
+  },
+  "tokenSymbol": {
+    "message": "トークンシンボル"
+  },
+  "tokenWarning1": {
+    "message": "MetaMaskのアカウントで取得したアカウントのみ追加できます。他のアカウントを使用して取得したトークンは、カスタムトークンを使用してください。"
   },
   "total": {
     "message": "合計"
@@ -564,7 +630,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
-    "message": "パスワードタイプ"
+    "message": "パスワードの入力"
   },
   "uiWelcome": {
     "message": "新UIへようこそ！(ベータ版)"
@@ -591,6 +657,9 @@
   "usedByClients": {
     "message": "様々なクライアントによって使用されています。"
   },
+  "useOldUI": {
+    "message": "旧UIに切り替え"
+  },
   "viewAccount": {
     "message": "アカウントを見る"
   },
@@ -598,7 +667,7 @@
     "message": "警告"
   },
   "whatsThis": {
-    "message": "これは何でしょう?"
+    "message": "この機能について"
   },
   "yourSigRequested": {
     "message": "あなたの署名がリクエストされています。"
