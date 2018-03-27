@@ -6,7 +6,7 @@ workflows:
     jobs:
       - prep-deps-npm
       - prep-deps-firefox
-      - build:
+      - prep-build:
           requires:
             - prep-deps-npm
       - prep-scss:
@@ -17,6 +17,7 @@ workflows:
             - prep-deps-npm
       - test-e2e:
           requires:
+            - prep-build
             - prep-deps-npm
       - test-unit:
           requires:
@@ -71,6 +72,23 @@ jobs:
           paths:
             - firefox
 
+  prep-build:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: build:dist
+          command: npm run dist
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - save_cache:
+          key: build-cache-{{ .Revision }}
+          paths:
+            - dist
 
   prep-scss:
     docker:
@@ -109,9 +127,8 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Build
-          command: npm run dist
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
       - run:
           name: Test
           command: npm run test:e2e
@@ -220,17 +237,3 @@ jobs:
       - run:
           name: test:integration:mascara
           command: npm run test:mascara
-
-  build:
-    docker:
-      - image: circleci/node:8-browsers
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: build:dist
-          command: npm run dist
-      - run:
-          name: build:debug
-          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
