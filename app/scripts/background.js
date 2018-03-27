@@ -42,6 +42,7 @@ const isIE = !!document.documentMode
 const isEdge = !isIE && !!window.StyleMedia
 
 let popupIsOpen = false
+let notificationIsOpen = false
 let openMetamaskTabsIDs = {}
 
 // state persistence
@@ -83,7 +84,6 @@ async function loadStateFromPersistence () {
 
   // write to disk
   if (localStore.isSupported) localStore.set(versionedData)
-  diskStore.putState(versionedData)
 
   // return just the data
   return versionedData.data
@@ -120,7 +120,6 @@ function setupController (initState) {
     debounce(1000),
     storeTransform(versionifyData),
     storeTransform(syncDataWithExtension),
-    asStream(diskStore),
     (error) => {
       log.error('pump hit error', error)
     }
@@ -165,6 +164,11 @@ function setupController (initState) {
           }
         })
       }
+      if (remotePort.name === 'notification') {
+        endOfStream(portStream, () => {
+          notificationIsOpen = false
+        })
+      }
     } else {
       // communication with page
       const originDomain = urlUtil.parse(remotePort.sender.url).hostname
@@ -207,7 +211,8 @@ function setupController (initState) {
 function triggerUi () {
   extension.tabs.query({ active: true }, (tabs) => {
     const currentlyActiveMetamaskTab = tabs.find(tab => openMetamaskTabsIDs[tab.id])
-    if (!popupIsOpen && !currentlyActiveMetamaskTab) notificationManager.showPopup()
+    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) notificationManager.showPopup()
+    notificationIsOpen = true
   })
 }
 

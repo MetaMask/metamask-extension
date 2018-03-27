@@ -10,6 +10,7 @@ import ImportSeedPhraseScreen from './import-seed-phrase-screen'
 import {
   onboardingBuyEthView,
   unMarkPasswordForgotten,
+  showModal,
 } from '../../../../ui/app/actions'
 
 class FirstTimeFlow extends Component {
@@ -80,7 +81,7 @@ class FirstTimeFlow extends Component {
   renderScreen () {
     const {SCREEN_TYPE} = FirstTimeFlow
     const {
-      goToBuyEtherView,
+      openBuyEtherModal,
       address,
       restoreCreatePasswordScreen,
       forgottenPassword,
@@ -131,7 +132,7 @@ class FirstTimeFlow extends Component {
       case SCREEN_TYPE.BACK_UP_PHRASE:
         return (
           <BackupPhraseScreen
-            next={() => goToBuyEtherView(address)}
+            next={() => openBuyEtherModal()}
           />
         )
       default:
@@ -167,7 +168,7 @@ export default connect(
   }),
   dispatch => ({
     leaveImportSeedScreenState: () => dispatch(unMarkPasswordForgotten()),
-    goToBuyEtherView: address => dispatch(onboardingBuyEthView(address)),
+    openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
   })
 )(FirstTimeFlow)
 

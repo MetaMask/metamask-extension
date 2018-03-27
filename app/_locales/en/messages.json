@@ -171,6 +171,9 @@
   "customGas": {
     "message": "Customize Gas"
   },
+  "customToken": {
+    "message": "Custom Token"
+  },
   "customize": {
     "message": "Customize"
   },
@@ -415,6 +418,9 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keepTrackTokens": {
+    "message": "Keep track of the tokens you’ve bought with your MetaMask account."
+  },
   "kovan": {
     "message": "Kovan Test Network"
   },
@@ -423,6 +429,9 @@
   },
   "max": {
     "message": "Max"
+  },
+  "learnMore": {
+    "message": "Learn more."
   },
   "lessThanMax": {
     "message": "must be less than or equal to $1.",
@@ -564,6 +573,9 @@
   "pleaseReviewTransaction": {
     "message": "Please review your transaction."
   },
+  "popularTokens": {
+    "message": "Popular Tokens"
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -701,6 +713,9 @@
   },
   "onlySendToEtherAddress": {
     "message": "Only send ETH to an Ethereum address."
+  },
+  "searchTokens": {
+    "message": "Search Tokens"
   },
   "sendTokensAnywhere": {
     "message": "Send Tokens to anyone with an Ethereum account"

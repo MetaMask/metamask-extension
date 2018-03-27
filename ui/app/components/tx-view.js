@@ -69,13 +69,13 @@ TxView.prototype.renderButtons = function () {
   return !selectedToken
     ? (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear.hero-balance-button.allcaps', {
+        h('button.btn-primary.hero-balance-button', {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
         }, t('deposit')),
 
-        h('button.btn-clear.hero-balance-button.allcaps', {
+        h('button.btn-primary.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
@@ -85,7 +85,7 @@ TxView.prototype.renderButtons = function () {
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
-        h('button.btn-clear.hero-balance-button', {
+        h('button.btn-primary.hero-balance-button', {
           onClick: showSendTokenPage,
         }, t('send')),
       ])

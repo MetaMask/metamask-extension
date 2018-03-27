@@ -122,6 +122,10 @@
     width: calc(100vw - 80px);
   }
 
+  .unique-image {
+    width: auto;
+  }
+
   .create-password__title,
   .unique-image__title,
   .tou__title,
@@ -219,10 +223,6 @@
 
 .tou {
   max-width: 46rem;
-}
-
-.backup-phrase {
-  width: 100%;
 }
 
 .create-password__title,
@@ -674,7 +674,6 @@ button.backup-phrase__confirm-seed-option:hover {
 }
 
 .buy-ether__action-content-wrapper {
-  width: 360px;
   display: flex;
   flex-flow: column nowrap;
 }

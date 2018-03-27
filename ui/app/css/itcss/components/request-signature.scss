@@ -162,6 +162,7 @@
   &__row {
     display: flex;
     flex-flow: column;
+    flex: 1 0 auto;
   }
 
   &__row-title {
@@ -190,41 +191,19 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
     font-size: 22px;
     position: relative;
     flex: 0 0 auto;
     border-top: 1px solid $geyser;
+    padding: 1.6rem;
 
-    &__cancel-button,
-    &__sign-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1 0 auto;
-      font-family: Roboto;
-      font-size: 16px;
-      font-weight: 300;
-      height: 55px;
-      line-height: 32px;
-      cursor: pointer;
-      border-radius: 2px;
-      box-shadow: none;
-      max-width: 162px;
-      margin: 12px;
+    button {
+      width: 165px;
     }
 
     &__cancel-button {
-      background: none;
-      border: 1px solid $dusty-gray;
-      margin-right: 6px;
-    }
-
-    &__sign-button {
-      background-color: $caribbean-green;
-      border-width: 0;
-      color: $white;
-      margin-left: 6px;
+      margin-right: 1.2rem;
     }
   }
 }

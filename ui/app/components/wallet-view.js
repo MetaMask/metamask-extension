@@ -168,7 +168,7 @@ WalletView.prototype.render = function () {
 
     h(TokenList),
 
-    h('button.btn-clear.wallet-view__add-token-button', {
+    h('button.btn-primary.wallet-view__add-token-button', {
       onClick: () => {
         showAddTokenPage()
         hideSidebar()
