@@ -17,7 +17,7 @@
     "test:single": "cross-env METAMASK_ENV=test mocha --require test/helper.js",
     "test:integration": "npm run test:integration:build && npm run test:flat && npm run test:mascara",
     "test:integration:build": "gulp build:scss",
-    "test:e2e": "METAMASK_ENV=test mocha test/e2e/metamask.spec --recursive || true",
+    "test:e2e": "METAMASK_ENV=test mocha test/e2e/metamask.spec --recursive",
     "test:coverage": "nyc npm run test:unit && npm run test:coveralls-upload",
     "test:coveralls-upload": "if [ $COVERALLS_REPO_TOKEN ]; then nyc report --reporter=text-lcov | coveralls; fi",
     "test:flat": "npm run test:flat:build && karma start test/flat.conf.js",
