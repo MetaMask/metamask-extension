@@ -12,6 +12,9 @@ workflows:
       - test-lint:
           requires:
             - prep-deps-npm
+      - test-e2e:
+          requires:
+            - prep-deps-npm
       - test-unit:
           requires:
             - prep-deps-npm
@@ -95,6 +98,20 @@ jobs:
       - run:
           name: Test
           command: npm run lint
+
+  test-e2e:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Build
+          command: npm run dist
+      - run:
+          name: Test
+          command: npm run test:e2e
 
   test-unit:
     docker:
