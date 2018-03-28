@@ -11,6 +11,7 @@ const createEventEmitterProxy = require('../lib/events-proxy.js')
 const networkConfig = require('../config.js')
 const { OLD_UI_NETWORK_TYPE, DEFAULT_RPC } = networkConfig.enums
 const INFURA_PROVIDER_TYPES = ['ropsten', 'rinkeby', 'kovan', 'mainnet']
+const noop = function () {}
 
 module.exports = class NetworkController extends EventEmitter {
 
@@ -80,15 +81,21 @@ module.exports = class NetworkController extends EventEmitter {
     return this.getNetworkState() === 'loading'
   }
 
-  lookupNetwork () {
+  lookupNetwork (cb = noop){
     // Prevent firing when provider is not defined.
     if (!this.ethQuery || !this.ethQuery.sendAsync) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing ethQuery')
     }
     this.ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      if (err) return this.setNetworkState('loading')
+      if (err) {
+        this.setNetworkState('loading')
+        console.error(err)
+        cb(err)
+        return
+      }
       log.info('web3.getNetwork returned ' + network)
       this.setNetworkState(network)
+      cb(null, network)
     })
   }
 

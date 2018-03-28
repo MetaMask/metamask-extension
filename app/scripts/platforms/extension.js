@@ -31,6 +31,14 @@ class ExtensionPlatform {
       cb(e)
     }
   }
+
+  isOnline () {
+    return navigator.onLine
+  }
+
+  addOnLineListener (cb) {
+    window.addEventListener('online', cb)
+  }
 }
 
 module.exports = ExtensionPlatform
