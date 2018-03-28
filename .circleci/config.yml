@@ -6,6 +6,9 @@ workflows:
     jobs:
       - prep-deps-npm
       - prep-deps-firefox
+      - prep-build:
+          requires:
+            - prep-deps-npm
       - prep-scss:
           requires:
             - prep-deps-npm
@@ -14,6 +17,7 @@ workflows:
             - prep-deps-npm
       - test-e2e:
           requires:
+            - prep-build
             - prep-deps-npm
       - test-unit:
           requires:
@@ -36,6 +40,15 @@ workflows:
             - prep-deps-npm
             - prep-deps-firefox
             - prep-scss
+      - all-tests-pass:
+          requires:
+            - test-lint
+            - test-unit
+            - test-e2e
+            - test-integration-mascara-chrome
+            - test-integration-mascara-firefox
+            - test-integration-flat-chrome
+            - test-integration-flat-firefox
 
 jobs:
   prep-deps-npm:
@@ -68,6 +81,23 @@ jobs:
           paths:
             - firefox
 
+  prep-build:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: build:dist
+          command: npm run dist
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - save_cache:
+          key: build-cache-{{ .Revision }}
+          paths:
+            - dist
 
   prep-scss:
     docker:
@@ -106,9 +136,8 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Build
-          command: npm run dist
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
       - run:
           name: Test
           command: npm run test:e2e
@@ -217,3 +246,11 @@ jobs:
       - run:
           name: test:integration:mascara
           command: npm run test:mascara
+
+  all-tests-pass:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - run:
+          name: All Tests Passed
+          command: echo 'weew - everything passed!'
