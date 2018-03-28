@@ -12,33 +12,32 @@
 
 const fs = require('fs')
 const path = require('path')
-const locales = require('../app/_locales/index.json')
+const localeIndex = require('../app/_locales/index.json')
 
 console.log('Locale Verification')
 
 const specifiedLocale = process.argv[2]
 if (specifiedLocale) {
 	console.log(`Verifying selected locale "${specifiedLocale}":\n\n`)
-	const locale = locales.find(locale => locale.code === specifiedLocale)
-	verifyLocale({ locale })
+	const locale = localeIndex.find(localeMeta => localeMeta.code === specifiedLocale)
+	verifyLocale({ localeMeta })
 } else {
 	console.log('Verifying all locales:\n\n')
-	locales.forEach(locale => {
-		verifyLocale({ locale })
+	localeIndex.forEach(localeMeta => {
+		verifyLocale({ localeMeta })
 		console.log('\n')
 	})
 }
 
 
 
-function verifyLocale({ locale }) {
-	const localeCode = locale.code
-	const localeName = locale.name
-	console.log(`Status of "${localeName}" (${localeCode})`)
+function verifyLocale({ localeMeta }) {
+	const localeCode = localeMeta.code
+	const localeName = localeMeta.name
 
 	try {
 		const localeFilePath = path.join(process.cwd(), 'app', '_locales', localeCode, 'messages.json')
-		localeObj = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'));
+		targetLocale = JSON.parse(fs.readFileSync(localeFilePath, 'utf8'));
 	} catch (e) {
 		if (e.code == 'ENOENT') {
 			console.log('Locale file not found')
@@ -50,7 +49,7 @@ function verifyLocale({ locale }) {
 
 	try {
 		const englishFilePath = path.join(process.cwd(), 'app', '_locales', 'en', 'messages.json')
-		englishObj = JSON.parse(fs.readFileSync(englishFilePath, 'utf8'));
+		englishLocale = JSON.parse(fs.readFileSync(englishFilePath, 'utf8'));
 	} catch (e) {
 		if(e.code == 'ENOENT') {
 			console.log('English File not found')
@@ -61,50 +60,38 @@ function verifyLocale({ locale }) {
 	}
 
 	// console.log('  verifying whether all your locale ("${localeCode}") strings are contained in the english one')
+	const extraItems = compareLocalesForMissingItems({ base: targetLocale, subject: englishLocale })
+	// console.log('\n  verifying whether your locale ("${localeCode}") contains all english strings')
+	const missingItems = compareLocalesForMissingItems({ base: englishLocale, subject: targetLocale })
 
-	var counter = 0
-	var foundErrorA = false
-	var notFound = [];
-	Object.keys(localeObj).forEach(function(key){
-		if (!englishObj[key]) {
-			foundErrorA = true
-			notFound.push(key)
-		}
-		counter++
-	})
+	const englishEntryCount = Object.keys(englishLocale).length
+	const coveragePercent = 100 * (englishEntryCount - missingItems.length) / englishEntryCount
 
-	if (foundErrorA) {
+	console.log(`Status of **${localeName} (${localeCode})** ${coveragePercent.toFixed(2)}% coverage:`)
+
+	if (extraItems.length) {
 		console.log('\nMissing from english locale:')
-		notFound.forEach(function(key) {
+		extraItems.forEach(function(key) {
 			console.log(`  - [ ] ${key}`)
 		})
 	} else {
 		// console.log(`  all ${counter} strings declared in your locale ("${localeCode}") were found in the english one`)
 	}
 
-	// console.log('\n  verifying whether your locale ("${localeCode}") contains all english strings')
-
-	var counter = 0
-	var foundErrorB = false
-	var notFound = [];
-	Object.keys(englishObj).forEach(function(key){
-		if (!localeObj[key]) {
-			foundErrorB = true
-			notFound.push(key)
-		}
-		counter++
-	})
-
-	if (foundErrorB) {
-		console.log(`\nMissing from "${localeCode}":`)
-		notFound.forEach(function(key) {
+	if (missingItems.length) {
+		console.log(`\nMissing:`)
+		missingItems.forEach(function(key) {
 			console.log(`  - [ ] ${key}`)
 		})
 	} else {
 		// console.log(`  all ${counter} english strings were found in your locale ("${localeCode}")!`)
 	}
 
-	if (!foundErrorA && !foundErrorB) {
-		console.log('You are good to go')
+	if (!extraItems.length && !missingItems.length) {
+		console.log('Full coverage  : )')
 	}
+}
+
+function compareLocalesForMissingItems({ base, subject }) {
+	return Object.keys(base).filter((key) => !subject[key])
 }
