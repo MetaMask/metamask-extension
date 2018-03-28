@@ -16,7 +16,7 @@ const {
 const {
   getGasTotal,
   isBalanceSufficient,
-}  = require('../send/send-utils')
+} = require('../send/send-utils')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
 const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
@@ -343,7 +343,7 @@ ConfirmSendEther.prototype.render = function () {
               className: classnames({
                 'confirm-screen-section-column--with-error': errors['insufficientFunds'],
                 'confirm-screen-section-column': !errors['insufficientFunds'],
-              })
+              }),
             }, [
               h('span.confirm-screen-label', [ t('total') + ' ' ]),
               h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),

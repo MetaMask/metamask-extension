@@ -18,8 +18,13 @@ const {
   addCurrencies,
 } = require('../../conversion-util')
 const {
+  getGasTotal,
+  isBalanceSufficient,
+} = require('../send/send-utils')
+const {
   calcTokenAmount,
 } = require('../../token-util')
+const classnames = require('classnames')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
@@ -41,9 +46,10 @@ function mapStateToProps (state, ownProps) {
     identities,
     currentCurrency,
   } = state.metamask
+  const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
   const tokenExchangeRate = getTokenExchangeRate(state, symbol)
-
+  const { balance } = accounts[selectedAddress]
   return {
     conversionRate,
     identities,
@@ -53,6 +59,7 @@ function mapStateToProps (state, ownProps) {
     currentCurrency: currentCurrency.toUpperCase(),
     send: state.metamask.send,
     tokenContract: getSelectedTokenContract(state),
+    balance,
   }
 }
 
@@ -124,6 +131,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       }))
       dispatch(actions.showModal({ name: 'CUSTOMIZE_GAS' }))
     },
+    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
   }
 }
 
@@ -301,7 +309,7 @@ ConfirmSendToken.prototype.renderGasFee = function () {
 }
 
 ConfirmSendToken.prototype.renderTotalPlusGas = function () {
-  const { token: { symbol }, currentCurrency } = this.props
+  const { token: { symbol }, currentCurrency, send: { errors } } = this.props
   const { fiat: fiatAmount, token: tokenAmount } = this.getAmount()
   const { fiat: fiatGas, token: tokenGas } = this.getGasFee()
 
@@ -321,7 +329,12 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
     )
     : (
       h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
-        h('div.confirm-screen-section-column', [
+        h('div', {
+          className: classnames({
+            'confirm-screen-section-column--with-error': errors['insufficientFunds'],
+            'confirm-screen-section-column': !errors['insufficientFunds'],
+          }),
+        }, [
           h('span.confirm-screen-label', [ t('total') + ' ' ]),
           h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
         ]),
@@ -330,8 +343,18 @@ ConfirmSendToken.prototype.renderTotalPlusGas = function () {
           h('div.confirm-screen-row-info', `${tokenAmount} ${symbol}`),
           h('div.confirm-screen-row-detail', `+ ${fiatGas} ${currentCurrency} ${t('gas')}`),
         ]),
+
+        this.renderErrorMessage('insufficientFunds'),
       ])
     )
+}
+
+ConfirmSendToken.prototype.renderErrorMessage = function (message) {
+  const { send: { errors } } = this.props
+
+  return errors[message]
+    ? h('div.confirm-screen-error', [ errors[message] ])
+    : null
 }
 
 ConfirmSendToken.prototype.render = function () {
@@ -448,17 +471,43 @@ ConfirmSendToken.prototype.render = function () {
 
 ConfirmSendToken.prototype.onSubmit = function (event) {
   event.preventDefault()
+  const { updateSendErrors } = this.props
   const txMeta = this.gatherTxMeta()
   const valid = this.checkValidity()
+  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
   this.setState({ valid, submitting: true })
 
-  if (valid && this.verifyGasParams()) {
+  if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
+  } else if (!balanceIsSufficient) {
+    updateSendErrors({ insufficientFunds: t('insufficientFunds') })
   } else {
-    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
+    updateSendErrors({ invalidGasParams: t('invalidGasParams') })
     this.setState({ submitting: false })
   }
 }
+
+ConfirmSendToken.prototype.isBalanceSufficient = function (txMeta) {
+  const {
+    balance,
+    conversionRate,
+  } = this.props
+  const {
+    txParams: {
+      gas,
+      gasPrice,
+    },
+  } = txMeta
+  const gasTotal = getGasTotal(gas, gasPrice)
+
+  return isBalanceSufficient({
+    amount: '0',
+    gasTotal,
+    balance,
+    conversionRate,
+  })
+}
+
 
 ConfirmSendToken.prototype.cancel = function (event, txMeta) {
   event.preventDefault()
