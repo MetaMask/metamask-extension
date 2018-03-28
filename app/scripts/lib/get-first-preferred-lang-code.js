@@ -1,9 +1,8 @@
-const fs = require('fs')
-const path = require('path')
 const extension = require('extensionizer')
 const promisify = require('pify')
+const allLocales = require('../../_locales/index.json')
 
-const existingLocaleCodes = fs.readdirSync(path.join(__dirname, '..', '..', '_locales'))
+const existingLocaleCodes = allLocales.map(locale => locale.code)
 
 async function getFirstPreferredLangCode () {
   const userPreferredLocaleCodes = await promisify(
