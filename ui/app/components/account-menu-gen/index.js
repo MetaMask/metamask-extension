@@ -1,7 +1,14 @@
+/**
+ * @file      Account Menu Component, partially with a generic UI.
+ * @copyright Copyright (c) 2018 MetaMask
+ * @license   MIT
+ */
+
 const inherits = require('util').inherits
 const Component = require('react').Component
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
@@ -10,20 +17,33 @@ const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
 
+// ?
 inherits(AccountMenu, Component)
-function AccountMenu () { Component.call(this) }
 
+// Constructor
+function AccountMenu () {
+  Component.call(this) 
+}
+
+/**
+ * Maps state objects to properties, to simplify access
+ */
 function mapStateToProps (state) {
   return {
-    selectedAddress: state.metamask.selectedAddress,
-    isAccountMenuOpen: state.metamask.isAccountMenuOpen,
-    keyrings: state.metamask.keyrings,
-    identities: state.metamask.identities,
-    accounts: state.metamask.accounts,
-
+    selectedAddress:    state.metamask.selectedAddress,
+    isAccountMenuOpen:  state.metamask.isAccountMenuOpen,
+    keyrings:           state.metamask.keyrings,
+    identities:         state.metamask.identities,
+    accounts:           state.metamask.accounts,
+    keyringProviders:   state.metamask.keyringProviders,
   }
 }
 
+/**
+ * TODO
+ * 
+ * @param {*} dispatch 
+ */
 function mapDispatchToProps (dispatch) {
   return {
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
@@ -56,6 +76,9 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+/**
+ * Renders the Account Menu
+ */
 AccountMenu.prototype.render = function () {
   const {
     isAccountMenuOpen,
@@ -79,16 +102,9 @@ AccountMenu.prototype.render = function () {
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
     h(Divider),
-    h(Item, {
-      onClick: () => showNewAccountPage('CREATE'),
-      icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
-      text: t('createAccount'),
-    }),
-    h(Item, {
-      onClick: () => showNewAccountPage('IMPORT'),
-      icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
-      text: t('importAccount'),
-    }),
+
+    this.renderAccountNew(),
+
     h(Divider),
     h(Item, {
       onClick: showInfoPage,
@@ -103,6 +119,53 @@ AccountMenu.prototype.render = function () {
   ])
 }
 
+
+/**
+ * Renders the Account-New Menu-Entries dynamically, using keyringProviders data
+ * 
+ * Relevant data is passed within the kyeringProviders state object
+ * 
+ */
+AccountMenu.prototype.renderAccountNew = function () {
+
+  // UI type will be later supplemented with e.g. "HardWalletPage"
+
+
+  const {
+    keyrings,
+    keyringProviders,
+    showNewAccountPage, // needed thus onClick event fires properly
+  } = this.props
+
+  var temp=[];
+  Object.keys(keyringProviders).map((key, index) => {
+
+    const func = keyringProviders[key].func;
+    const text = keyringProviders[key].text;
+    const img  = keyringProviders[key].img;
+
+    temp.push(
+      h(Item, {
+        onClick: () => showNewAccountPage(func),
+        icon: h('img.account-menu__item-icon', { src: img }),
+        text: t(text),
+      })
+    )    
+  })
+
+  return temp;
+
+  // The techniques used here will be applied similar to the other  places, increasing
+  // step by step the abstract/generic nature of the keyrings/ui interaction
+
+  // Pass2: once the 2 keyrings work fine, add a dummy-keyring to "play" a bit around
+  // Pass3: add ledger-keyring (should be trivial at this point, or at lest should have
+  //        reduced effort.
+}
+
+/**
+ * TODO
+ */
 AccountMenu.prototype.renderAccounts = function () {
   const {
     identities,
@@ -152,6 +215,11 @@ AccountMenu.prototype.renderAccounts = function () {
   })
 }
 
+/**
+ * TODO
+ * 
+ * @param {*} keyring 
+ */
 AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
