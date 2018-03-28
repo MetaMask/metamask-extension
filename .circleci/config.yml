@@ -99,8 +99,7 @@ jobs:
           paths:
             - dist
       - store_artifacts:
-          path: dist/chrome
-          # destination: build
+          path: dist/mascara
 
   prep-scss:
     docker:
