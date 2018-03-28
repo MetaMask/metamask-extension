@@ -250,7 +250,7 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      // if txMeta has lastGasPrice then it is a retry at same nonce with higher 
+      // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
@@ -273,12 +273,14 @@ module.exports = class TransactionController extends EventEmitter {
 
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
-    const txParams = txMeta.txParams
-    const fromAddress = txParams.from
     // add network/chain id
-    txParams.chainId = ethUtil.addHexPrefix(this.getChainId().toString(16))
+    const chainId = this.getChainId()
+    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    // sign tx
+    const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
+    // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx
