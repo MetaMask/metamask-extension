@@ -20,7 +20,7 @@ window.METAMASK_PLATFORM_TYPE = 'mascara'
 const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
 
 const background = new SWcontroller({
-  fileName: '/background.js',
+  fileName: './scripts/background.js',
   letBeIdle: false,
   intervalDelay,
   wakeUpInterval: 20000,

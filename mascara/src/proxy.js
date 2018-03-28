@@ -4,7 +4,7 @@ const SwStream = require('sw-stream/lib/sw-stream.js')
 
 const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
 const background = new SWcontroller({
-  fileName: '/background.js',
+  fileName: './scripts/background.js',
   letBeIdle: false,
   wakeUpInterval: 30000,
   intervalDelay,
