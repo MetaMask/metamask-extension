@@ -98,6 +98,9 @@ jobs:
           key: build-cache-{{ .Revision }}
           paths:
             - dist
+      - store_artifacts:
+          path: dist/chrome
+          # destination: build
 
   prep-scss:
     docker:
