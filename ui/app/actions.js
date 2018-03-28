@@ -1803,9 +1803,9 @@ function setUseBlockie (val) {
 function updateCurrentLocale (key) {
   return (dispatch) => {
     dispatch(actions.showLoadingIndication())
-    log.debug(`background.updateCurrentLocale`)
     fetchLocale(key)
       .then((localeMessages) => {
+        log.debug(`background.setCurrentLocale`)
         background.setCurrentLocale(key, (err) => {
           dispatch(actions.hideLoadingIndication())
           if (err) {
