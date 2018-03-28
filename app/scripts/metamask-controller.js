@@ -588,7 +588,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.txController.wipeTransactions(selectedAddress)
 
     const networkController = this.networkController
-    const oldType = networkController.getProvoderConfig().type
+    const oldType = networkController.getProviderConfig().type
     await networkController.setProviderType(oldType, true)
 
     return selectedAddress
