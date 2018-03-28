@@ -106,12 +106,9 @@ module.exports = class TransactionStateManager extends EventEmitter {
   }
 
   updateTx (txMeta, note) {
+    // validate txParams
     if (txMeta.txParams) {
-      Object.keys(txMeta.txParams).forEach((key) => {
-        const value = txMeta.txParams[key]
-        if (typeof value !== 'string') console.error(`${key}: ${value} in txParams is not a string`)
-        if (!ethUtil.isHexPrefixed(value)) console.error('is not hex prefixed, anything on txParams must be hex prefixed')
-      })
+      this.validateTxParams(txMeta.txParams)
     }
 
     // create txMeta snapshot for history
@@ -137,6 +134,15 @@ module.exports = class TransactionStateManager extends EventEmitter {
     const txMeta = this.getTx(txId)
     txMeta.txParams = extend(txMeta.txParams, txParams)
     this.updateTx(txMeta, `txStateManager#updateTxParams`)
+  }
+
+  // validates txParams members by type
+  validateTxParams(txParams) {
+    Object.keys(txParams).forEach((key) => {
+      const value = txParams[key]
+      if (typeof value !== 'string') throw new Error(`${key}: ${value} in txParams is not a string`)
+      if (!ethUtil.isHexPrefixed(value)) throw new Error('is not hex prefixed, everything on txParams must be hex prefixed')
+    })
   }
 
 /*
