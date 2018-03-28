@@ -32,6 +32,15 @@ var babel = require('gulp-babel')
 var disableDebugTools = gutil.env.disableDebugTools
 var debug = gutil.env.debug
 
+const commonPlatforms = [
+  // browser extensions
+  'firefox',
+  'chrome',
+  'edge',
+  'opera',
+  // browser webapp
+  'mascara',
+]
 
 // browser reload
 
@@ -46,58 +55,28 @@ gulp.task('dev:reload', function() {
 
 gulp.task('copy:locales', copyTask({
   source: './app/_locales/',
-  destinations: [
-    './dist/firefox/_locales',
-    './dist/chrome/_locales',
-    './dist/edge/_locales',
-    './dist/opera/_locales',
-  ]
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/_locales`),
 }))
 gulp.task('copy:images', copyTask({
   source: './app/images/',
-  destinations: [
-    './dist/firefox/images',
-    './dist/chrome/images',
-    './dist/edge/images',
-    './dist/opera/images',
-  ],
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
 }))
 gulp.task('copy:contractImages', copyTask({
   source: './node_modules/eth-contract-metadata/images/',
-  destinations: [
-    './dist/firefox/images/contract',
-    './dist/chrome/images/contract',
-    './dist/edge/images/contract',
-    './dist/opera/images/contract',
-  ],
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contract`),
 }))
 gulp.task('copy:fonts', copyTask({
   source: './app/fonts/',
-  destinations: [
-    './dist/firefox/fonts',
-    './dist/chrome/fonts',
-    './dist/edge/fonts',
-    './dist/opera/fonts',
-  ],
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
 }))
 gulp.task('copy:reload', copyTask({
   source: './app/scripts/',
-  destinations: [
-    './dist/firefox/scripts',
-    './dist/chrome/scripts',
-    './dist/edge/scripts',
-    './dist/opera/scripts',
-  ],
+  destinations: commonPlatforms.map(platform => `./dist/${platform}/scripts`),
   pattern: '/chromereload.js',
 }))
 gulp.task('copy:root', copyTask({
   source: './app/',
-  destinations: [
-    './dist/firefox',
-    './dist/chrome',
-    './dist/edge',
-    './dist/opera',
-  ],
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
   pattern: '/*',
 }))
 
@@ -208,7 +187,7 @@ const jsFiles = [
   'inpage',
   'contentscript',
   'background',
-  'popup',
+  'ui',
 ]
 
 // scss compilation and autoprefixing tasks
@@ -230,7 +209,7 @@ gulp.task('lint-scss', function() {
     .src('ui/app/css/itcss/**/*.scss')
     .pipe(gulpStylelint({
       reporters: [
-        {formatter: 'string', console: true}
+        { formatter: 'string', console: true }
       ],
       fix: true,
     }));
@@ -243,32 +222,51 @@ gulp.task('fmt-scss', function () {
 });
 
 // bundle tasks
+createTasksForBuildJsExtension({ jsFiles, taskPrefix: 'dev:js', bundleTaskOpts: { isBuild: false } })
+createTasksForBuildJsExtension({ jsFiles, taskPrefix: 'build:js:extension', bundleTaskOpts: { isBuild: true }  })
+createTasksForBuildJsMascara({ taskPrefix: 'build:js:mascara' })
 
-var jsDevStrings = jsFiles.map(jsFile => `dev:js:${jsFile}`)
-var jsBuildStrings = jsFiles.map(jsFile => `build:js:${jsFile}`)
+function createTasksForBuildJsExtension({ jsFiles, taskPrefix, bundleTaskOpts }) {
+  // inpage must be built before all other scripts:
+  const rootDir = './app/scripts'
+  const nonInpageFiles = jsFiles.filter(file => file !== 'inpage')
+  const buildPhase1 = ['inpage']
+  const buildPhase2 = nonInpageFiles
+  const destinations = [
+    './dist/firefox/scripts',
+    './dist/chrome/scripts',
+    './dist/edge/scripts',
+    './dist/opera/scripts',
+  ]
+  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
+}
 
-jsFiles.forEach((jsFile) => {
-  gulp.task(`dev:js:${jsFile}`,   bundleTask({
-    watch: true,
-    label: jsFile,
-    filename: `${jsFile}.js`,
-    isBuild: false
-  }))
-  gulp.task(`build:js:${jsFile}`, bundleTask({
-    watch: false,
-    label: jsFile,
-    filename: `${jsFile}.js`,
-    isBuild: true
-  }))
-})
+function createTasksForBuildJsMascara({ taskPrefix, bundleTaskOpts }) {
+  // inpage must be built before all other scripts:
+  const rootDir = './mascara/src/'
+  const jsFiles = ['ui', 'proxy', 'background']
+  const destinations = ['./dist/mascara/scripts']
+  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1: jsFiles })
+}
 
-// inpage must be built before all other scripts:
-const firstDevString = jsDevStrings.shift()
-gulp.task('dev:js', gulp.series(firstDevString, gulp.parallel(...jsDevStrings)))
+function createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1 = [], buildPhase2 = [] }) {
+  // bundle task for each file
+  jsFiles.forEach((jsFile) => {
+    gulp.task(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
+      watch: false,
+      label: jsFile,
+      filename: `${jsFile}.js`,
+      filepath: `${rootDir}/${jsFile}.js`,
+      destinations,
+    }, bundleTaskOpts)))
+  })
+  // compose into larger task
+  const subtasks = []
+  subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
+  if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
 
-// inpage must be built before all other scripts:
-const firstBuildString = jsBuildStrings.shift()
-gulp.task('build:js',  gulp.series(firstBuildString, gulp.parallel(...jsBuildStrings)))
+  gulp.task(taskPrefix, gulp.series(subtasks))
+}
 
 // disc bundle analyzer tasks
 
@@ -277,7 +275,6 @@ jsFiles.forEach((jsFile) => {
 })
 
 gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
-
 
 // clean dist
 
@@ -295,16 +292,44 @@ gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:ope
 
 // set env var for production
 gulp.task('apply-prod-environment', function(done) {
-    process.env.NODE_ENV = 'production'
-    done()
+  process.env.NODE_ENV = 'production'
+  done()
 });
 
 // high level tasks
 
-gulp.task('dev', gulp.series('build:scss', 'dev:js', 'copy', gulp.parallel('watch:scss', 'copy:watch', 'dev:reload')))
+gulp.task('dev',
+  gulp.series(
+    'build:scss',
+    'dev:js',
+    'copy',
+    gulp.parallel(
+      'watch:scss',
+      'copy:watch',
+      'dev:reload'
+    )
+  )
+)
 
-gulp.task('build', gulp.series('clean', 'build:scss', gulp.parallel('build:js', 'copy')))
-gulp.task('dist', gulp.series('apply-prod-environment', 'build', 'zip'))
+gulp.task('build',
+  gulp.series(
+    'clean',
+    'build:scss',
+    gulp.parallel(
+      'build:js:extension',
+      'build:js:mascara',
+      'copy'
+    )
+  )
+)
+
+gulp.task('dist',
+  gulp.series(
+    'apply-prod-environment',
+    'build',
+    'zip'
+  )
+)
 
 // task generators
 
@@ -337,7 +362,7 @@ function zipTask(target) {
 
 function generateBundler(opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
-    entries: ['./app/scripts/'+opts.filename],
+    entries: [opts.filepath],
     plugin: 'browserify-derequire',
     debug: true,
     fullPaths: debug,
@@ -384,19 +409,21 @@ function bundleTask(opts) {
   return performBundle
 
   function performBundle(){
-    return (
 
-      bundler.bundle()
+    let buildStream = bundler.bundle()
 
-      // handle errors
-      .on('error', (err) => {
-        beep()
-        if (opts.watch) {
-          console.warn(err.stack)
-        } else {
-          throw err
-        }
-      })
+    // handle errors
+    buildStream.on('error', (err) => {
+      beep()
+      if (opts.watch) {
+        console.warn(err.stack)
+      } else {
+        throw err
+      }
+    })
+
+    // process bundles
+    buildStream = buildStream
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
@@ -412,15 +439,18 @@ function bundleTask(opts) {
       })))
       // writes .map file
       .pipe(sourcemaps.write(debug ? './' : '../../sourcemaps'))
-      // write completed bundles
-      .pipe(gulp.dest('./dist/firefox/scripts'))
-      .pipe(gulp.dest('./dist/chrome/scripts'))
-      .pipe(gulp.dest('./dist/edge/scripts'))
-      .pipe(gulp.dest('./dist/opera/scripts'))
-      // finally, trigger live reload
+
+    // write completed bundles
+    opts.destinations.forEach((dest) => {
+      buildStream = buildStream.pipe(gulp.dest(dest))
+    })
+
+    // finally, trigger live reload
+    buildStream = buildStream
       .pipe(gulpif(debug, livereload()))
 
-    )
+    return buildStream
+
   }
 }
 
