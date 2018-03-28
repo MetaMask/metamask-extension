@@ -6,7 +6,7 @@ const { compose } = require('recompose')
 const { connect } = require('react-redux')
 const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
-const t = require('../../../i18n')
+const t = require('../../../../../i18n')
 
 module.exports = compose(
   withRouter,

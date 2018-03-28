@@ -12,7 +12,7 @@ const SimpleDropdown = require('../../dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
 const { OLD_UI_NETWORK_TYPE } = require('../../../../../app/scripts/config').enums
-const t = require('../i18n')
+const t = require('../../../../i18n')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -235,6 +235,24 @@ class Settings extends Component {
         ]),
       ])
     )
+  }
+
+  renderResetAccount () {
+    const { showResetAccountConfirmationModal } = this.props
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', t('resetAccount')),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h('button.btn-primary--lg.settings__button--orange', {
+            onClick (event) {
+              event.preventDefault()
+              showResetAccountConfirmationModal()
+            },
+          }, t('resetAccount')),
+        ]),
+      ]),
+    ])
   }
 
   render () {

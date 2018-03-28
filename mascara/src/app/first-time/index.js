@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import { withRouter, Switch, Route, Redirect } from 'react-router-dom'
+import { compose } from 'recompose'
 import CreatePasswordScreen from './create-password-screen'
 import UniqueImageScreen from './unique-image-screen'
 import NoticeScreen from './notice-screen'
@@ -12,6 +14,13 @@ import {
   unMarkPasswordForgotten,
   showModal,
 } from '../../../../ui/app/actions'
+import {
+  DEFAULT_ROUTE,
+  WELCOME_ROUTE,
+  INITIALIZE_ROUTE,
+  INITIALIZE_IMPORT_ACCOUNT_ROUTE,
+  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+} from '../../../../ui/app/routes'
 
 class FirstTimeFlow extends Component {
 
@@ -20,7 +29,10 @@ class FirstTimeFlow extends Component {
     seedWords: PropTypes.string,
     address: PropTypes.string,
     noActiveNotices: PropTypes.bool,
-    goToBuyEtherView: PropTypes.func.isRequired,
+    goToBuyEtherView: PropTypes.func,
+    isUnlocked: PropTypes.bool,
+    history: PropTypes.object,
+    welcomeScreenSeen: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -44,6 +56,14 @@ class FirstTimeFlow extends Component {
     super(props)
     this.state = {
       screenType: this.getScreenType(),
+    }
+  }
+
+  componentDidMount () {
+    const { isInitialized, isUnlocked, history } = this.props
+
+    if (isInitialized || isUnlocked) {
+      history.push(DEFAULT_ROUTE)
     }
   }
 
@@ -141,34 +161,54 @@ class FirstTimeFlow extends Component {
   }
 
   render () {
-    return (
-      <div className="first-time-flow">
-        {this.renderScreen()}
-      </div>
-    )
+    return this.props.welcomeScreenSeen
+      ? (
+        <div className="first-time-flow">
+          <Switch>
+            <Route exact path={INITIALIZE_IMPORT_ACCOUNT_ROUTE} component={ImportAccountScreen} />
+            <Route
+              exact
+              path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}
+              component={ImportSeedPhraseScreen}
+            />
+            <Route exact path={INITIALIZE_ROUTE} component={CreatePasswordScreen} />
+          </Switch>
+        </div>
+      )
+      : <Redirect to={WELCOME_ROUTE } />
   }
-
 }
 
-export default connect(
-  ({
-    metamask: {
-      isInitialized,
-      seedWords,
-      noActiveNotices,
-      selectedAddress,
-      forgottenPassword,
-    }
-  }) => ({
+const mapStateToProps = ({ metamask }) => {
+  const {
+    isInitialized,
+    seedWords,
+    noActiveNotices,
+    selectedAddress,
+    forgottenPassword,
+    isMascara,
+    isUnlocked,
+    welcomeScreenSeen,
+  } = metamask
+
+  return {
+    isMascara,
     isInitialized,
     seedWords,
     noActiveNotices,
     address: selectedAddress,
     forgottenPassword,
-  }),
-  dispatch => ({
-    leaveImportSeedScreenState: () => dispatch(unMarkPasswordForgotten()),
-    openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
-  })
-)(FirstTimeFlow)
+    isUnlocked,
+    welcomeScreenSeen,
+  }
+}
 
+const mapDispatchToProps = dispatch => ({
+  leaveImportSeedScreenState: () => dispatch(unMarkPasswordForgotten()),
+  openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
+})
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(FirstTimeFlow)

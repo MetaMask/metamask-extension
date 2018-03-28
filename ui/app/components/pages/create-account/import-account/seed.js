@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const t = require('../../../i18n')
+const t = require('../../../../../i18n')
 
 module.exports = connect(mapStateToProps)(SeedImportSubview)
 

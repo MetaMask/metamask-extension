@@ -1,21 +1,23 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const { connect } = require('react-redux')
-const { Switch, Redirect, withRouter } = require('react-router-dom')
+const { Route, Switch, Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
 const t = require('../i18n')
 
+// init
+const InitializeScreen = require('../../mascara/src/app/first-time').default
+const WelcomeScreen = require('./welcome-screen').default
+const NewKeyChainScreen = require('./new-keychain')
 // mascara
 const MascaraCreatePassword = require('../../mascara/src/app/first-time/create-password-screen').default
 const MascaraBuyEtherScreen = require('../../mascara/src/app/first-time/buy-ether-screen').default
 const MascaraNoticeScreen = require('../../mascara/src/app/first-time/notice-screen').default
 const MascaraSeedScreen = require('../../mascara/src/app/first-time/seed-screen').default
 const MascaraConfirmSeedScreen = require('../../mascara/src/app/first-time/confirm-seed-screen').default
-// init
-const NewKeyChainScreen = require('./new-keychain')
 
 // accounts
 const MainContainer = require('./main-container')
@@ -28,7 +30,6 @@ const WalletView = require('./components/wallet-view')
 // other views
 const Authenticated = require('./components/pages/authenticated')
 const Initialized = require('./components/pages/initialized')
-const MetamaskRoute = require('./components/pages/metamask-route')
 const Settings = require('./components/pages/settings')
 const UnlockPage = require('./components/pages/unlock')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
@@ -65,6 +66,7 @@ const {
   INITIALIZE_ROUTE,
   NOTICE_ROUTE,
   SIGNATURE_REQUEST_ROUTE,
+  WELCOME_ROUTE,
 } = require('./routes')
 
 class App extends Component {
@@ -87,11 +89,14 @@ class App extends Component {
 
     return (
       h(Switch, [
-        h(MetamaskRoute, {
-          path: INITIALIZE_ROUTE,
+        h(Route, {
+          path: WELCOME_ROUTE,
           exact,
-          component: InitializeMenuScreen,
-          mascaraComponent: MascaraCreatePassword,
+          component: WelcomeScreen,
+        }),
+        h(Route, {
+          path: INITIALIZE_ROUTE,
+          component: InitializeScreen,
         }),
         h(Initialized, {
           path: REVEAL_SEED_ROUTE,
@@ -110,8 +115,7 @@ class App extends Component {
         h(Initialized, {
           path: NOTICE_ROUTE,
           exact,
-          component: NoticeScreen,
-          mascaraComponent: MascaraNoticeScreen,
+          component: MascaraNoticeScreen,
         }),
         h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, exact, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen2 }),
@@ -465,7 +469,7 @@ class App extends Component {
 
     //   //   default:
     //   //     log.debug('rendering menu screen')
-    //   //     return h(InitializeMenuScreen, {key: 'menuScreenInit'})
+    //   //     return h(InitializeScreen, {key: 'menuScreenInit'})
     //   // }
     // }
 

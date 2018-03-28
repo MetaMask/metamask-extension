@@ -4,7 +4,7 @@ const h = require('react-hyperscript')
 const { connect } = require('react-redux')
 const actions = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
-const t = require('../../../i18n')
+const t = require('../../../../i18n')
 
 class NewAccountCreateForm extends Component {
   constructor (props) {

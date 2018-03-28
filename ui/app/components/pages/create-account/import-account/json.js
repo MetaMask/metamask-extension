@@ -6,7 +6,7 @@ const { compose } = require('recompose')
 const { connect } = require('react-redux')
 const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
-const t = require('../../../i18n')
+const t = require('../../../../../i18n')
 const { DEFAULT_ROUTE } = require('../../../../routes')
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 

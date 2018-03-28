@@ -1,13 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
 import { createNewVaultAndKeychain } from '../../../../ui/app/actions'
 import LoadingScreen from './loading-screen'
 import Breadcrumbs from './breadcrumbs'
-import { DEFAULT_ROUTE, IMPORT_ACCOUNT_ROUTE } from '../../../../ui/app/routes'
 import EventEmitter from 'events'
 import Mascot from '../../../../ui/app/components/mascot'
 import classnames from 'classnames'
+import {
+  DEFAULT_ROUTE,
+  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+  INITIALIZE_IMPORT_ACCOUNT_ROUTE,
+} from '../../../../ui/app/routes'
 
 class CreatePasswordScreen extends Component {
   static propTypes = {
@@ -63,7 +69,7 @@ class CreatePasswordScreen extends Component {
   }
 
   render () {
-    const { isLoading, isMascara } = this.props
+    const { isLoading, isMascara, history } = this.props
 
     return isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />
@@ -114,7 +120,7 @@ class CreatePasswordScreen extends Component {
                 className="first-time-flow__link create-password__import-link"
                 onClick={e => {
                   e.preventDefault()
-                  history.push(IMPORT_ACCOUNT_ROUTE)
+                  history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE)
                 }}
               >
                 Import with seed phrase
@@ -125,7 +131,7 @@ class CreatePasswordScreen extends Component {
                 className="first-time-flow__link create-password__import-link"
                 onClick={e => {
                   e.preventDefault()
-                  goToImportAccount()
+                  history.push(INITIALIZE_IMPORT_ACCOUNT_ROUTE)
                 }}
               >
                 Import an account
@@ -140,18 +146,22 @@ class CreatePasswordScreen extends Component {
 }
 
 const mapStateToProps = state => {
-  const { metamask: { isInitialized, isUnlocked }, appState: { isLoading } } = state
+  const { metamask: { isInitialized, isUnlocked, isMascara }, appState: { isLoading } } = state
 
   return {
     isLoading,
     isInitialized,
     isUnlocked,
+    isMascara,
   }
 }
 
-export default connect(
-  mapStateToProps,
-  dispatch => ({
-    createAccount: password => dispatch(createNewVaultAndKeychain(password)),
-  })
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      createAccount: password => dispatch(createNewVaultAndKeychain(password)),
+    })
+  )
 )(CreatePasswordScreen)

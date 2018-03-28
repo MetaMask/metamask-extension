@@ -8,7 +8,7 @@ const classnames = require('classnames')
 
 const AccountDropdownMini = require('../dropdowns/account-dropdown-mini')
 
-const t = require('../../i18n')
+const t = require('../../../i18n')
 const { conversionUtil } = require('../../conversion-util')
 const { DEFAULT_ROUTE } = require('../../routes')
 

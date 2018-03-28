@@ -5,19 +5,22 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {closeWelcomeScreen} from './actions'
 import Mascot from './components/mascot'
+import { INITIALIZE_ROUTE } from './routes'
 
 class WelcomeScreen extends Component {
   static propTypes = {
     closeWelcomeScreen: PropTypes.func.isRequired,
+    history: PropTypes.object,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.animationEventEmitter = new EventEmitter()
   }
 
   initiateAccountCreation = () => {
     this.props.closeWelcomeScreen()
+    this.props.history.push(INITIALIZE_ROUTE)
   }
 
   render () {

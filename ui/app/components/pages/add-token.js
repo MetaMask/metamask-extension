@@ -25,7 +25,7 @@ const fuse = new Fuse(contractList, {
 })
 const actions = require('../../actions')
 const ethUtil = require('ethereumjs-util')
-const t = require('../i18n')
+const t = require('../../../i18n')
 const { tokenInfoGetter } = require('../../token-util')
 const { DEFAULT_ROUTE } = require('../../routes')
 
@@ -409,7 +409,7 @@ AddTokenScreen.prototype.render = function () {
 
     !isShowingConfirmation && h('div.add-token__buttons', [
       h('button.btn-secondary--lg.add-token__cancel-button', {
-        onClick: history.goBack(),
+        onClick: () => history.goBack(),
       }, t('cancel')),
       h('button.btn-primary--lg.add-token__confirm-button', {
         onClick: this.onNext,

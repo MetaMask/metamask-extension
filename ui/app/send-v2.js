@@ -186,7 +186,7 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
 }
 
 SendTransactionScreen.prototype.renderHeader = function () {
-  const { selectedToken, clearSend, goHome } = this.props
+  const { selectedToken, clearSend, history } = this.props
 
   return h('div.page-container__header', [
 
@@ -197,7 +197,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
     h('div.page-container__header-close', {
       onClick: () => {
         clearSend()
-        goHome()
+        history.goBack()
       },
     }),
 
