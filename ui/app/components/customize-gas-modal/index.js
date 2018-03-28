@@ -64,6 +64,7 @@ function mapDispatchToProps (dispatch) {
     updateGasLimit: newGasLimit => dispatch(actions.updateGasLimit(newGasLimit)),
     updateGasTotal: newGasTotal => dispatch(actions.updateGasTotal(newGasTotal)),
     updateSendAmount: newAmount => dispatch(actions.updateSendAmount(newAmount)),
+    updateSendErrors: error => dispatch(actions.updateSendErrors(error)),
   }
 }
 
@@ -106,6 +107,7 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
     selectedToken,
     balance,
     updateSendAmount,
+    updateSendErrors,
   } = this.props
 
   if (maxModeOn && !selectedToken) {
@@ -120,6 +122,7 @@ CustomizeGasModal.prototype.save = function (gasPrice, gasLimit, gasTotal) {
   updateGasPrice(ethUtil.addHexPrefix(gasPrice))
   updateGasLimit(ethUtil.addHexPrefix(gasLimit))
   updateGasTotal(ethUtil.addHexPrefix(gasTotal))
+  updateSendErrors({ insufficientFunds: false })
   hideModal()
 }
 
