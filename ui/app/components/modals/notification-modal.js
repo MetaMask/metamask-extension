@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const { connect } = require('react-redux')
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 
 class NotificationModal extends Component {
@@ -22,12 +22,12 @@ class NotificationModal extends Component {
       }, [
 
         h('div.notification-modal__header', {}, [
-          header,
+          this.props.t(header),
         ]),
 
         h('div.notification-modal__message-wrapper', {}, [
           h('div.notification-modal__message', {}, [
-            message,
+            this.props.t(message),
           ]),
         ]),
 
@@ -62,6 +62,7 @@ NotificationModal.propTypes = {
   showCancelButton: PropTypes.bool,
   showConfirmButton: PropTypes.bool,
   onConfirm: PropTypes.func,
+    t: PropTypes.func,
 }
 
 const mapDispatchToProps = dispatch => {

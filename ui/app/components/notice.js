@@ -4,9 +4,9 @@ const h = require('react-hyperscript')
 const ReactMarkdown = require('react-markdown')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
-const t = require('../../i18n')
+const connect = require('../metamask-connect')
 
-module.exports = Notice
+module.exports = connect()(Notice)
 
 inherits(Notice, Component)
 function Notice () {
@@ -111,7 +111,7 @@ Notice.prototype.render = function () {
         style: {
           marginTop: '18px',
         },
-      }, t('accept')),
+      }, this.props.t('accept')),
     ])
   )
 }

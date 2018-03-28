@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix bug where the "Reset account" feature would not clear the network cache.
+
 ## 4.4.0 Mon Mar 26 2018
 
 - Internationalization: Taiwanese, Thai, Slovenian

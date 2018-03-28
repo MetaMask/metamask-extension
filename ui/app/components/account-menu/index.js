@@ -1,12 +1,11 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const { Menu, Item, Divider, CloseArea } = require('../dropdowns/components/menu')
 const Identicon = require('../identicon')
 const { formatBalance } = require('../../util')
-const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountMenu)
 
@@ -71,10 +70,10 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       className: 'account-menu__header',
     }, [
-      t('myAccounts'),
+      this.props.t('myAccounts'),
       h('button.account-menu__logout-button', {
         onClick: lockMetamask,
-      }, t('logout')),
+      }, this.props.t('logout')),
     ]),
     h(Divider),
     h('div.account-menu__accounts', this.renderAccounts()),
@@ -82,23 +81,23 @@ AccountMenu.prototype.render = function () {
     h(Item, {
       onClick: () => showNewAccountPage('CREATE'),
       icon: h('img.account-menu__item-icon', { src: 'images/plus-btn-white.svg' }),
-      text: t('createAccount'),
+      text: this.props.t('createAccount'),
     }),
     h(Item, {
       onClick: () => showNewAccountPage('IMPORT'),
       icon: h('img.account-menu__item-icon', { src: 'images/import-account.svg' }),
-      text: t('importAccount'),
+      text: this.props.t('importAccount'),
     }),
     h(Divider),
     h(Item, {
       onClick: showInfoPage,
       icon: h('img', { src: 'images/mm-info-icon.svg' }),
-      text: t('infoHelp'),
+      text: this.props.t('infoHelp'),
     }),
     h(Item, {
       onClick: showConfigPage,
       icon: h('img.account-menu__item-icon', { src: 'images/settings.svg' }),
-      text: t('settings'),
+      text: this.props.t('settings'),
     }),
   ])
 }
@@ -156,6 +155,6 @@ AccountMenu.prototype.indicateIfLoose = function (keyring) {
   try { // Sometimes keyrings aren't loaded yet:
     const type = keyring.type
     const isLoose = type !== 'HD Key Tree'
-    return isLoose ? h('.keyring-label.allcaps', t('imported')) : null
+    return isLoose ? h('.keyring-label.allcaps', this.props.t('imported')) : null
   } catch (e) { return }
 }

@@ -20,7 +20,6 @@ class FirstTimeFlow extends Component {
     seedWords: PropTypes.string,
     address: PropTypes.string,
     noActiveNotices: PropTypes.bool,
-    goToBuyEtherView: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -171,4 +170,3 @@ export default connect(
     openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
   })
 )(FirstTimeFlow)
-

@@ -2,9 +2,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const AccountListItem = require('./account-list-item')
-const t = require('../../../i18n')
+const connect = require('../../metamask-connect')
 
-module.exports = ToAutoComplete
+module.exports = connect()(ToAutoComplete)
 
 inherits(ToAutoComplete, Component)
 function ToAutoComplete () {
@@ -93,7 +93,7 @@ ToAutoComplete.prototype.render = function () {
   return h('div.send-v2__to-autocomplete', {}, [
 
     h('input.send-v2__to-autocomplete__input', {
-      placeholder: t('recipientAddress'),
+      placeholder: this.props.t('recipientAddress'),
       className: inError ? `send-v2__error-border` : '',
       value: to,
       onChange: event => onChange(event.target.value),

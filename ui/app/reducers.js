@@ -7,6 +7,7 @@ const copyToClipboard = require('copy-to-clipboard')
 const reduceIdentities = require('./reducers/identities')
 const reduceMetamask = require('./reducers/metamask')
 const reduceApp = require('./reducers/app')
+const reduceLocale = require('./reducers/locale')
 
 window.METAMASK_CACHED_LOG_STATE = null
 
@@ -37,6 +38,12 @@ function rootReducer (state, action) {
   //
 
   state.appState = reduceApp(state, action)
+
+  //
+  // LocaleMessages
+  //
+
+  state.localeMessages = reduceLocale(state, action)
 
   window.METAMASK_CACHED_LOG_STATE = state
   return state

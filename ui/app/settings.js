@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const { connect } = require('react-redux')
+const connect = require('./metamask-connect')
 const actions = require('./actions')
 const infuraCurrencies = require('./infura-conversion.json')
 const validUrl = require('valid-url')
@@ -9,8 +9,8 @@ const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
+const locales = require('../../app/_locales/index.json')
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
-const t = require('../i18n')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -22,6 +22,16 @@ const getInfuraCurrencyOptions = () => {
       displayValue: `${code.toUpperCase()} - ${name}`,
       key: code,
       value: code,
+    }
+  })
+}
+
+const getLocaleOptions = () => {
+  return locales.map((locale) => {
+    return {
+      displayValue: `${locale.name}`,
+      key: locale.code,
+      value: locale.code,
     }
   })
 }
@@ -45,8 +55,8 @@ class Settings extends Component {
     return h('div.settings__tabs', [
       h(TabBar, {
         tabs: [
-          { content: t('settings'), key: 'settings' },
-          { content: t('info'), key: 'info' },
+          { content: this.props.t('settings'), key: 'settings' },
+          { content: this.props.t('info'), key: 'info' },
         ],
         defaultTab: activeTab,
         tabSelected: key => this.setState({ activeTab: key }),
@@ -59,7 +69,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', t('blockiesIdenticon')),
+        h('span', this.props.t('blockiesIdenticon')),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
@@ -79,16 +89,40 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', t('currentConversion')),
+        h('span', this.props.t('currentConversion')),
         h('span.settings__content-description', `Updated ${Date(conversionDate)}`),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h(SimpleDropdown, {
-            placeholder: t('selectCurrency'),
+            placeholder: this.props.t('selectCurrency'),
             options: getInfuraCurrencyOptions(),
             selectedOption: currentCurrency,
             onSelect: newCurrency => setCurrentCurrency(newCurrency),
+          }),
+        ]),
+      ]),
+    ])
+  }
+
+  renderCurrentLocale () {
+    const { updateCurrentLocale, currentLocale } = this.props
+    const currentLocaleMeta = locales.find(locale => locale.code === currentLocale)
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', 'Current Language'),
+        h('span.settings__content-description', `${currentLocaleMeta.name}`),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(SimpleDropdown, {
+            placeholder: 'Select Locale',
+            options: getLocaleOptions(),
+            selectedOption: currentLocale,
+            onSelect: async (newLocale) => {
+              updateCurrentLocale(newLocale)
+            },
           }),
         ]),
       ]),
@@ -102,31 +136,31 @@ class Settings extends Component {
     switch (provider.type) {
 
       case 'mainnet':
-        title = t('currentNetwork')
-        value = t('mainnet')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('mainnet')
         color = '#038789'
         break
 
       case 'ropsten':
-        title = t('currentNetwork')
-        value = t('ropsten')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('ropsten')
         color = '#e91550'
         break
 
       case 'kovan':
-        title = t('currentNetwork')
-        value = t('kovan')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('kovan')
         color = '#690496'
         break
 
       case 'rinkeby':
-        title = t('currentNetwork')
-        value = t('rinkeby')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('rinkeby')
         color = '#ebb33f'
         break
 
       default:
-        title = t('currentRpc')
+        title = this.props.t('currentRpc')
         value = provider.rpcTarget
     }
 
@@ -147,12 +181,12 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('span', t('newRPC')),
+          h('span', this.props.t('newRPC')),
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('input.settings__input', {
-              placeholder: t('newRPC'),
+              placeholder: this.props.t('newRPC'),
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
@@ -165,7 +199,7 @@ class Settings extends Component {
                 event.preventDefault()
                 this.validateRpc(this.state.newRpc)
               },
-            }, t('save')),
+            }, this.props.t('save')),
           ]),
         ]),
       ])
@@ -181,9 +215,9 @@ class Settings extends Component {
       const appendedRpc = `http://${newRpc}`
 
       if (validUrl.isWebUri(appendedRpc)) {
-        displayWarning(t('uriErrorMsg'))
+        displayWarning(this.props.t('uriErrorMsg'))
       } else {
-        displayWarning(t('invalidRPC'))
+        displayWarning(this.props.t('invalidRPC'))
       }
     }
   }
@@ -192,10 +226,10 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('div', t('stateLogs')),
+          h('div', this.props.t('stateLogs')),
           h(
             'div.settings__content-description',
-            t('stateLogsDescription')
+            this.props.t('stateLogsDescription')
           ),
         ]),
         h('div.settings__content-item', [
@@ -204,13 +238,13 @@ class Settings extends Component {
               onClick (event) {
                 window.logStateString((err, result) => {
                   if (err) {
-                    this.state.dispatch(actions.displayWarning(t('stateLogError')))
+                    this.state.dispatch(actions.displayWarning(this.props.t('stateLogError')))
                   } else {
                     exportAsFile('MetaMask State Logs.json', result)
                   }
                 })
               },
-            }, t('downloadStateLogs')),
+            }, this.props.t('downloadStateLogs')),
           ]),
         ]),
       ])
@@ -222,7 +256,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', t('revealSeedWords')),
+        h('div.settings__content-item', this.props.t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary--lg.settings__button--red', {
@@ -230,7 +264,7 @@ class Settings extends Component {
                 event.preventDefault()
                 revealSeedConfirmation()
               },
-            }, t('revealSeedWords')),
+            }, this.props.t('revealSeedWords')),
           ]),
         ]),
       ])
@@ -242,7 +276,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', t('useOldUI')),
+        h('div.settings__content-item', this.props.t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary--lg.settings__button--orange', {
@@ -250,7 +284,7 @@ class Settings extends Component {
                 event.preventDefault()
                 setFeatureFlagToBeta()
               },
-            }, t('useOldUI')),
+            }, this.props.t('useOldUI')),
           ]),
         ]),
       ])
@@ -261,7 +295,7 @@ class Settings extends Component {
     const { showResetAccountConfirmationModal } = this.props
 
     return h('div.settings__content-row', [
-      h('div.settings__content-item', t('resetAccount')),
+      h('div.settings__content-item', this.props.t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h('button.btn-primary--lg.settings__button--orange', {
@@ -269,7 +303,7 @@ class Settings extends Component {
               event.preventDefault()
               showResetAccountConfirmationModal()
             },
-          }, t('resetAccount')),
+          }, this.props.t('resetAccount')),
         ]),
       ]),
     ])
@@ -282,6 +316,7 @@ class Settings extends Component {
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
         this.renderCurrentConversion(),
+        this.renderCurrentLocale(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
@@ -304,13 +339,13 @@ class Settings extends Component {
   renderInfoLinks () {
     return (
       h('div.settings__content-item.settings__content-item--without-height', [
-        h('div.settings__info-link-header', t('links')),
+        h('div.settings__info-link-header', this.props.t('links')),
         h('div.settings__info-link-item', [
           h('a', {
             href: 'https://metamask.io/privacy.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('privacyMsg')),
+            h('span.settings__info-link', this.props.t('privacyMsg')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -318,7 +353,7 @@ class Settings extends Component {
             href: 'https://metamask.io/terms.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('terms')),
+            h('span.settings__info-link', this.props.t('terms')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -326,7 +361,7 @@ class Settings extends Component {
             href: 'https://metamask.io/attributions.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('attributions')),
+            h('span.settings__info-link', this.props.t('attributions')),
           ]),
         ]),
         h('hr.settings__info-separator'),
@@ -335,7 +370,7 @@ class Settings extends Component {
             href: 'https://support.metamask.io',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('supportCenter')),
+            h('span.settings__info-link', this.props.t('supportCenter')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -343,7 +378,7 @@ class Settings extends Component {
             href: 'https://metamask.io/',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('visitWebSite')),
+            h('span.settings__info-link', this.props.t('visitWebSite')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -351,7 +386,7 @@ class Settings extends Component {
             target: '_blank',
             href: 'mailto:help@metamask.io?subject=Feedback',
           }, [
-            h('span.settings__info-link', t('emailUs')),
+            h('span.settings__info-link', this.props.t('emailUs')),
           ]),
         ]),
       ])
@@ -373,7 +408,7 @@ class Settings extends Component {
             h('div.settings__info-item', [
               h(
                 'div.settings__info-about',
-                t('builtInCalifornia')
+                this.props.t('builtInCalifornia')
               ),
             ]),
           ]),
@@ -417,6 +452,9 @@ Settings.propTypes = {
   warning: PropTypes.string,
   goHome: PropTypes.func,
   isMascara: PropTypes.bool,
+  updateCurrentLocale: PropTypes.func,
+  currentLocale: PropTypes.string,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -424,6 +462,7 @@ const mapStateToProps = state => {
     metamask: state.metamask,
     warning: state.appState.warning,
     isMascara: state.metamask.isMascara,
+    currentLocale: state.metamask.currentLocale,
   }
 }
 
@@ -435,6 +474,7 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
         .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))
@@ -446,4 +486,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Settings)
-

@@ -11,6 +11,7 @@ class PreferencesController {
       tokens: [],
       useBlockie: false,
       featureFlags: {},
+      currentLocale: opts.initLangCode,
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -22,6 +23,10 @@ class PreferencesController {
 
   getUseBlockie () {
     return this.store.getState().useBlockie
+  }
+
+  setCurrentLocale (key) {
+    this.store.updateState({ currentLocale: key })
   }
 
   setSelectedAddress (_address) {

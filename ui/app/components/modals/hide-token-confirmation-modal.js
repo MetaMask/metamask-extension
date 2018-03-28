@@ -1,10 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const Identicon = require('../identicon')
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -42,7 +41,7 @@ HideTokenConfirmationModal.prototype.render = function () {
     h('div.hide-token-confirmation__container', {
     }, [
       h('div.hide-token-confirmation__title', {}, [
-        t('hideTokenPrompt'),
+        this.props.t('hideTokenPrompt'),
       ]),
 
       h(Identicon, {
@@ -55,19 +54,19 @@ HideTokenConfirmationModal.prototype.render = function () {
       h('div.hide-token-confirmation__symbol', {}, symbol),
 
       h('div.hide-token-confirmation__copy', {}, [
-        t('readdToken'),
+        this.props.t('readdToken'),
       ]),
 
       h('div.hide-token-confirmation__buttons', {}, [
         h('button.btn-cancel.hide-token-confirmation__button.allcaps', {
           onClick: () => hideModal(),
         }, [
-          t('cancel'),
+          this.props.t('cancel'),
         ]),
         h('button.btn-clear.hide-token-confirmation__button.allcaps', {
           onClick: () => hideToken(address),
         }, [
-          t('hide'),
+          this.props.t('hide'),
         ]),
       ]),
     ]),

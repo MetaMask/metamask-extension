@@ -4,9 +4,9 @@ const inherits = require('util').inherits
 
 const Tooltip = require('./tooltip')
 const copyToClipboard = require('copy-to-clipboard')
-const t = require('../../i18n')
+const connect = require('../metamask-connect')
 
-module.exports = Copyable
+module.exports = connect()(Copyable)
 
 inherits(Copyable, Component)
 function Copyable () {
@@ -23,7 +23,7 @@ Copyable.prototype.render = function () {
   const { copied } = state
 
   return h(Tooltip, {
-    title: copied ? t('copiedExclamation') : t('copy'),
+    title: copied ? this.props.t('copiedExclamation') : this.props.t('copy'),
     position: 'bottom',
   }, h('span', {
     style: {
