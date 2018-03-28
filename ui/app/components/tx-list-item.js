@@ -62,20 +62,23 @@ TxListItem.prototype.getAddressText = function () {
   const {
     address,
     txParams = {},
+    isMsg,
   } = this.props
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { name: txDataName, params = [] } = decodedData || {}
   const { value } = params[0] || {}
 
-  switch (txDataName) {
-    case 'transfer':
-      return `${value.slice(0, 10)}...${value.slice(-4)}`
-    default:
-      return address
-        ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : this.props.t('contractDeployment')
+  let addressText
+  if (txDataName === 'transfer' || address) {
+    addressText = `${value.slice(0, 10)}...${value.slice(-4)}`
+  } else if (isMsg) {
+    addressText = this.props.t('sigRequest')
+  } else {
+    addressText = this.props.t('contractDeployment')
   }
+
+  return addressText
 }
 
 TxListItem.prototype.getSendEtherTotal = function () {
@@ -185,6 +188,9 @@ TxListItem.prototype.showRetryButton = function () {
     transactionId,
     txParams,
   } = this.props
+  if (!txParams) {
+    return false
+  }
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
