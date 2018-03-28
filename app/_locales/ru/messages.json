@@ -223,7 +223,7 @@
   "done": {
     "message": "Готово"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Загрузить логи статус"
   },
   "edit": {
