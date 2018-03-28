@@ -9,6 +9,7 @@ const { exportAsFile } = require('./util')
 const TabBar = require('./components/tab-bar')
 const SimpleDropdown = require('./components/dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
+const locales = require('../../app/_locales/index.json')
 const { OLD_UI_NETWORK_TYPE } = require('../../app/scripts/config').enums
 
 const getInfuraCurrencyOptions = () => {
@@ -24,13 +25,6 @@ const getInfuraCurrencyOptions = () => {
     }
   })
 }
-
-const locales = [
-  { name: 'English', code: 'en' },
-  { name: 'Japanese', code: 'ja' },
-  { name: 'French', code: 'fr' },
-  { name: 'Spanish', code: 'es' },
-]
 
 const getLocaleOptions = () => {
   return locales.map((locale) => {
@@ -491,4 +485,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(Settings)
-
