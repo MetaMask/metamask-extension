@@ -1,6 +1,6 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('./metamask-connect')
 const h = require('react-hyperscript')
 const App = require('./app')
 const OldApp = require('../../old-ui/app/app')

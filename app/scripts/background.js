@@ -19,7 +19,7 @@ const setupRaven = require('./lib/setupRaven')
 const reportFailedTxToSentry = require('./lib/reportFailedTxToSentry')
 const setupMetamaskMeshMetrics = require('./lib/setupMetamaskMeshMetrics')
 const EdgeEncryptor = require('./edge-encryptor')
-
+const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 
 const STORAGE_KEY = 'metamask-config'
 const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
@@ -58,7 +58,8 @@ setupMetamaskMeshMetrics()
 
 async function initialize () {
   const initState = await loadStateFromPersistence()
-  await setupController(initState)
+  const initLangCode = await getFirstPreferredLangCode()
+  await setupController(initState, initLangCode)
   log.debug('MetaMask initialization complete.')
 }
 
@@ -89,11 +90,11 @@ async function loadStateFromPersistence () {
   return versionedData.data
 }
 
-function setupController (initState) {
+function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
-
+  
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
@@ -101,6 +102,8 @@ function setupController (initState) {
     showUnapprovedTx: triggerUi,
     // initial state
     initState,
+    // initial locale code
+    initLangCode,
     // platform specific api
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,

@@ -1,7 +1,6 @@
 const { inherits } = require('util')
 const PersistentForm = require('../lib/persistent-form')
 const h = require('react-hyperscript')
-const t = require('../i18n')
 
 const ethAbi = require('ethereumjs-abi')
 const ethUtil = require('ethereumjs-util')
@@ -189,9 +188,9 @@ SendTransactionScreen.prototype.renderHeader = function () {
 
   return h('div.page-container__header', [
 
-    h('div.page-container__title', selectedToken ? t('sendTokens') : t('sendETH')),
+    h('div.page-container__title', selectedToken ? this.props.t('sendTokens') : this.props.t('sendETH')),
 
-    h('div.page-container__subtitle', t('onlySendToEtherAddress')),
+    h('div.page-container__subtitle', this.props.t('onlySendToEtherAddress')),
 
     h('div.page-container__header-close', {
       onClick: () => {
@@ -262,11 +261,11 @@ SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
   let toError = null
 
   if (!to) {
-    toError = t('required')
+    toError = this.props.t('required')
   } else if (!isValidAddress(to)) {
-    toError = t('invalidAddressRecipient')
+    toError = this.props.t('invalidAddressRecipient')
   } else if (to === from) {
-    toError = t('fromToSame')
+    toError = this.props.t('fromToSame')
   }
 
   updateSendTo(to, nickname)
@@ -282,9 +281,9 @@ SendTransactionScreen.prototype.renderToRow = function () {
 
     h('div.send-v2__form-label', [
 
-      t('to'),
+      this.props.t('to'),
 
-      this.renderErrorMessage(t('to')),
+      this.renderErrorMessage(this.props.t('to')),
 
     ]),
 
@@ -385,11 +384,11 @@ SendTransactionScreen.prototype.validateAmount = function (value) {
   )
 
   if (conversionRate && !sufficientBalance) {
-    amountError = t('insufficientFunds')
+    amountError = this.props.t('insufficientFunds')
   } else if (verifyTokenBalance && !sufficientTokens) {
-    amountError = t('insufficientTokens')
+    amountError = this.props.t('insufficientTokens')
   } else if (amountLessThanZero) {
-    amountError = t('negativeETH')
+    amountError = this.props.t('negativeETH')
   }
 
   updateSendErrors({ amount: amountError })
@@ -419,7 +418,7 @@ SendTransactionScreen.prototype.renderAmountRow = function () {
           setMaxModeTo(true)
           this.setAmountToMax()
         },
-      }, [ !maxModeOn ? t('max') : '' ]),
+      }, [ !maxModeOn ? this.props.t('max') : '' ]),
     ]),
 
     h('div.send-v2__form-field', [
@@ -518,11 +517,11 @@ SendTransactionScreen.prototype.renderFooter = function () {
         clearSend()
         goHome()
       },
-    }, t('cancel')),
+    }, this.props.t('cancel')),
     h('button.btn-primary--lg.page-container__footer-button', {
       disabled: !noErrors || !gasTotal || missingTokenBalance,
       onClick: event => this.onSubmit(event),
-    }, t('next')),
+    }, this.props.t('next')),
   ])
 }
 

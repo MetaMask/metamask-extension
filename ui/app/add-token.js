@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const classnames = require('classnames')
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
+const connect = require('./metamask-connect')
 const R = require('ramda')
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
@@ -26,7 +26,6 @@ const fuse = new Fuse(contractList, {
 const actions = require('./actions')
 const ethUtil = require('ethereumjs-util')
 const { tokenInfoGetter } = require('./token-util')
-const t = require('../i18n')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
@@ -140,28 +139,28 @@ AddTokenScreen.prototype.validate = function () {
   if (customAddress) {
     const validAddress = ethUtil.isValidAddress(customAddress)
     if (!validAddress) {
-      errors.customAddress = t('invalidAddress')
+      errors.customAddress = this.props.t('invalidAddress')
     }
 
     const validDecimals = customDecimals !== null && customDecimals >= 0 && customDecimals < 36
     if (!validDecimals) {
-      errors.customDecimals = t('decimalsMustZerotoTen')
+      errors.customDecimals = this.props.t('decimalsMustZerotoTen')
     }
 
     const symbolLen = customSymbol.trim().length
     const validSymbol = symbolLen > 0 && symbolLen < 10
     if (!validSymbol) {
-      errors.customSymbol = t('symbolBetweenZeroTen')
+      errors.customSymbol = this.props.t('symbolBetweenZeroTen')
     }
 
     const ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
-      errors.customAddress = t('personalAddressDetected')
+      errors.customAddress = this.props.t('personalAddressDetected')
     }
 
     const tokenAlreadyAdded = this.checkExistingAddresses(customAddress)
     if (tokenAlreadyAdded) {
-      errors.customAddress = t('tokenAlreadyAdded')
+      errors.customAddress = this.props.t('tokenAlreadyAdded')
     }
   } else if (
     Object.entries(selectedTokens)
@@ -169,7 +168,7 @@ AddTokenScreen.prototype.validate = function () {
         isEmpty && !isSelected
       ), true)
   ) {
-    errors.tokenSelector = t('mustSelectOne')
+    errors.tokenSelector = this.props.t('mustSelectOne')
   }
 
   return {
@@ -199,7 +198,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customAddress,
         }),
       }, [
-        h('div.add-token__add-custom-label', t('tokenAddress')),
+        h('div.add-token__add-custom-label', this.props.t('tokenAddress')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenAddressDidChange,
@@ -212,7 +211,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customSymbol,
         }),
       }, [
-        h('div.add-token__add-custom-label', t('tokenSymbol')),
+        h('div.add-token__add-custom-label', this.props.t('tokenSymbol')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenSymbolDidChange,
@@ -226,7 +225,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customDecimals,
         }),
       }, [
-        h('div.add-token__add-custom-label', t('decimal')),
+        h('div.add-token__add-custom-label', this.props.t('decimal')),
         h('input.add-token__add-custom-input', {
           type: 'number',
           onChange: this.tokenDecimalsDidChange,
@@ -248,7 +247,7 @@ AddTokenScreen.prototype.renderTokenList = function () {
   const results = [...addressSearchResult, ...fuseSearchResult]
 
   return h('div', [
-      results.length > 0 && h('div.add-token__token-icons-title', t('popularTokens')),
+      results.length > 0 && h('div.add-token__token-icons-title', this.props.t('popularTokens')),
       h('div.add-token__token-icons-container', Array(6).fill(undefined)
         .map((_, i) => {
           const { logo, symbol, name, address } = results[i] || {}
@@ -303,10 +302,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__description', t('likeToAddTokens')),
+          h('div.add-token__description', this.props.t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
-          h('div.add-token__description.add-token__confirmation-description', t('balances')),
+          h('div.add-token__description.add-token__confirmation-description', this.props.t('balances')),
           h('div.add-token__confirmation-token-list',
             Object.entries(tokens)
               .map(([ address, token ]) => (
@@ -325,10 +324,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
       h('div.add-token__buttons', [
         h('button.btn-secondary--lg.add-token__cancel-button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
-        }, t('back')),
+        }, this.props.t('back')),
         h('button.btn-primary--lg', {
           onClick: () => addTokens(tokens).then(goHome),
-        }, t('addTokens')),
+        }, this.props.t('addTokens')),
       ]),
     ])
   )
@@ -348,14 +347,14 @@ AddTokenScreen.prototype.renderTabs = function () {
       h('div.add-token__content-container', [
         h('div.add-token__info-box', [
           h('div.add-token__info-box__close'),
-          h('div.add-token__info-box__title', t('whatsThis')),
-          h('div.add-token__info-box__copy', t('keepTrackTokens')),
-          h('div.add-token__info-box__copy--blue', t('learnMore')),
+          h('div.add-token__info-box__title', this.props.t('whatsThis')),
+          h('div.add-token__info-box__copy', this.props.t('keepTrackTokens')),
+          h('div.add-token__info-box__copy--blue', this.props.t('learnMore')),
         ]),
         h('div.add-token__input-container', [
           h('input.add-token__input', {
             type: 'text',
-            placeholder: t('searchTokens'),
+            placeholder: this.props.t('searchTokens'),
             onChange: e => this.setState({ searchQuery: e.target.value }),
           }),
           h('div.add-token__search-input-error-message', errors.tokenSelector),
@@ -379,9 +378,9 @@ AddTokenScreen.prototype.render = function () {
         onClick: () => goHome(),
       }, [
         h('i.fa.fa-angle-left.fa-lg'),
-        h('span', t('cancel')),
+        h('span', this.props.t('cancel')),
       ]),
-      h('div.add-token__header__title', t('addTokens')),
+      h('div.add-token__header__title', this.props.t('addTokens')),
       !isShowingConfirmation && h('div.add-token__header__tabs', [
 
         h('div.add-token__header__tabs__tab', {
@@ -390,7 +389,7 @@ AddTokenScreen.prototype.render = function () {
             'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
           }),
           onClick: () => this.displayTab('SEARCH'),
-        }, t('search')),
+        }, this.props.t('search')),
 
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
@@ -398,7 +397,7 @@ AddTokenScreen.prototype.render = function () {
             'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
           }),
           onClick: () => this.displayTab('CUSTOM_TOKEN'),
-        }, t('customToken')),
+        }, this.props.t('customToken')),
 
       ]),
     ]),
@@ -410,10 +409,10 @@ AddTokenScreen.prototype.render = function () {
     !isShowingConfirmation && h('div.add-token__buttons', [
       h('button.btn-secondary--lg.add-token__cancel-button', {
         onClick: goHome,
-      }, t('cancel')),
+      }, this.props.t('cancel')),
       h('button.btn-primary--lg.add-token__confirm-button', {
         onClick: this.onNext,
-      }, t('next')),
+      }, this.props.t('next')),
     ]),
   ])
 }

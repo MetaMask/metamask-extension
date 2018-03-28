@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
@@ -9,7 +9,6 @@ const Loading = require('./loading')
 const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
-const t = require('../../i18n')
 
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
 
@@ -77,7 +76,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t('depositEth')),
+        }, this.props.t('depositEth')),
       ]),
 
       // loading indication
@@ -119,7 +118,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, t('selectService')),
+        }, this.props.t('selectService')),
       ]),
 
     ])
@@ -144,7 +143,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '4':
     case '42':
       const networkName = networkNames[network]
-      const label = `${networkName} ${t('testFaucet')}`
+      const label = `${networkName} ${this.props.t('testFaucet')}`
       return (
         h('div.flex-column', {
           style: {
@@ -165,14 +164,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, t('borrowDharma'))
+            }, this.props.t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', t('unknownNetworkId'))
+        h('h2.error', this.props.t('unknownNetworkId'))
       )
 
   }
@@ -204,8 +203,8 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
             'ShapeShift',
           ],
           subtext: {
-            'Coinbase': `${t('crypto')}/${t('fiat')} (${t('usaOnly')})`,
-            'ShapeShift': t('crypto'),
+            'Coinbase': `${this.props.t('crypto')}/${this.props.t('fiat')} (${this.props.t('usaOnly')})`,
+            'ShapeShift': this.props.t('crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),

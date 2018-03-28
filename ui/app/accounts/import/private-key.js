@@ -1,9 +1,8 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = require('../../../i18n')
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(PrivateKeyImportView)
 
@@ -34,7 +33,7 @@ PrivateKeyImportView.prototype.render = function () {
   return (
     h('div.new-account-import-form__private-key', [
 
-      h('span.new-account-create-form__instruction', t('pastePrivateKey')),
+      h('span.new-account-create-form__instruction', this.props.t('pastePrivateKey')),
 
       h('div.new-account-import-form__private-key-password-container', [
 
@@ -51,13 +50,13 @@ PrivateKeyImportView.prototype.render = function () {
         h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => goHome(),
         }, [
-          t('cancel'),
+          this.props.t('cancel'),
         ]),
 
         h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
-          t('import'),
+          this.props.t('import'),
         ]),
 
       ]),

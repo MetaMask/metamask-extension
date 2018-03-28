@@ -1,10 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const { getSelectedAccount } = require('../../selectors')
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -51,7 +50,7 @@ EditAccountNameModal.prototype.render = function () {
       ]),
 
       h('div.edit-account-name-modal-title', {
-      }, [t('editAccountName')]),
+      }, [this.props.t('editAccountName')]),
 
       h('input.edit-account-name-modal-input', {
         placeholder: identity.name,
@@ -70,7 +69,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        t('save'),
+        this.props.t('save'),
       ]),
 
     ]),

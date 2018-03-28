@@ -2,14 +2,13 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const Identicon = require('./identicon')
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
 
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
 const actions = require('../actions')
-const t = require('../../i18n')
 const { conversionUtil } = require('../conversion-util')
 
 const {
@@ -55,7 +54,7 @@ SignatureRequest.prototype.renderHeader = function () {
 
     h('div.request-signature__header-background'),
 
-    h('div.request-signature__header__text', t('sigRequest')),
+    h('div.request-signature__header__text', this.props.t('sigRequest')),
 
     h('div.request-signature__header__tip-container', [
       h('div.request-signature__header__tip'),
@@ -76,7 +75,7 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
 
   return h('div.request-signature__account', [
 
-    h('div.request-signature__account-text', [t('account') + ':']),
+    h('div.request-signature__account-text', [this.props.t('account') + ':']),
 
     h(AccountDropdownMini, {
       selectedAccount,
@@ -103,7 +102,7 @@ SignatureRequest.prototype.renderBalance = function () {
 
   return h('div.request-signature__balance', [
 
-    h('div.request-signature__balance-text', [t('balance')]),
+    h('div.request-signature__balance-text', [this.props.t('balance')]),
 
     h('div.request-signature__balance-value', `${balanceInEther} ETH`),
 
@@ -137,7 +136,7 @@ SignatureRequest.prototype.renderRequestInfo = function () {
   return h('div.request-signature__request-info', [
 
     h('div.request-signature__headline', [
-      t('yourSigRequested'),
+      this.props.t('yourSigRequested'),
     ]),
 
   ])
@@ -155,18 +154,18 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
 
 SignatureRequest.prototype.renderBody = function () {
   let rows
-  let notice = t('youSign') + ':'
+  let notice = this.props.t('youSign') + ':'
 
   const { txData } = this.props
   const { type, msgParams: { data } } = txData
 
   if (type === 'personal_sign') {
-    rows = [{ name: t('message'), value: this.msgHexToText(data) }]
+    rows = [{ name: this.props.t('message'), value: this.msgHexToText(data) }]
   } else if (type === 'eth_signTypedData') {
     rows = data
   } else if (type === 'eth_sign') {
-    rows = [{ name: t('message'), value: data }]
-    notice = t('signNotice')
+    rows = [{ name: this.props.t('message'), value: data }]
+    notice = this.props.t('signNotice')
   }
 
   return h('div.request-signature__body', {}, [
@@ -225,10 +224,10 @@ SignatureRequest.prototype.renderFooter = function () {
   return h('div.request-signature__footer', [
     h('button.btn-secondary--lg.request-signature__footer__cancel-button', {
       onClick: cancel,
-    }, t('cancel')),
+    }, this.props.t('cancel')),
     h('button.btn-primary--lg', {
       onClick: sign,
-    }, t('sign')),
+    }, this.props.t('sign')),
   ])
 }
 

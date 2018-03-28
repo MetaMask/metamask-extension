@@ -1,11 +1,11 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const connect = require('../metamask-connect')
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
-const t = require('../../i18n')
 
-module.exports = Network
+module.exports = connect()(Network)
 
 inherits(Network, Component)
 
@@ -34,7 +34,7 @@ Network.prototype.render = function () {
       onClick: (event) => this.props.onClick(event),
     }, [
       h('img', {
-        title: t('attemptingConnect'),
+        title: props.t('attemptingConnect'),
         style: {
           width: '27px',
         },
@@ -42,22 +42,22 @@ Network.prototype.render = function () {
       }),
     ])
   } else if (providerName === 'mainnet') {
-    hoverText = t('mainnet')
+    hoverText = props.t('mainnet')
     iconName = 'ethereum-network'
   } else if (providerName === 'ropsten') {
-    hoverText = t('ropsten')
+    hoverText = props.t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 3) {
-    hoverText = t('ropsten')
+    hoverText = props.t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (providerName === 'kovan') {
-    hoverText = t('kovan')
+    hoverText = props.t('kovan')
     iconName = 'kovan-test-network'
   } else if (providerName === 'rinkeby') {
-    hoverText = t('rinkeby')
+    hoverText = props.t('rinkeby')
     iconName = 'rinkeby-test-network'
   } else {
-    hoverText = t('unknownNetwork')
+    hoverText = props.t('unknownNetwork')
     iconName = 'unknown-private-network'
   }
 
@@ -85,7 +85,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#038789', // $blue-lagoon
                 nonSelectBackgroundColor: '#15afb2',
               }),
-              h('.network-name', t('mainnet')),
+              h('.network-name', props.t('mainnet')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'ropsten-test-network':
@@ -94,7 +94,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#e91550', // $crimson
                 nonSelectBackgroundColor: '#ec2c50',
               }),
-              h('.network-name', t('ropsten')),
+              h('.network-name', props.t('ropsten')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'kovan-test-network':
@@ -103,7 +103,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#690496', // $purple
                 nonSelectBackgroundColor: '#b039f3',
               }),
-              h('.network-name', t('kovan')),
+              h('.network-name', props.t('kovan')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'rinkeby-test-network':
@@ -112,7 +112,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#ebb33f', // $tulip-tree
                 nonSelectBackgroundColor: '#ecb23e',
               }),
-              h('.network-name', t('rinkeby')),
+              h('.network-name', props.t('rinkeby')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           default:
@@ -124,7 +124,7 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name', t('privateNetwork')),
+              h('.network-name', props.t('privateNetwork')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
         }

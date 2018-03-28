@@ -1,9 +1,8 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
-const t = require('../../../i18n')
 const GasModalCard = require('./gas-modal-card')
 
 const ethUtil = require('ethereumjs-util')
@@ -150,7 +149,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   })
 
   if (!balanceIsSufficient) {
-    error = t('balanceIsInsufficientGas')
+    error = this.props.t('balanceIsInsufficientGas')
   }
 
   const gasLimitTooLow = gasLimit && conversionGreaterThan(
@@ -166,7 +165,7 @@ CustomizeGasModal.prototype.validate = function ({ gasTotal, gasLimit }) {
   )
 
   if (gasLimitTooLow) {
-    error = t('gasLimitTooLow')
+    error = this.props.t('gasLimitTooLow')
   }
 
   this.setState({ error })
@@ -259,7 +258,7 @@ CustomizeGasModal.prototype.render = function () {
     }, [
       h('div.send-v2__customize-gas__header', {}, [
 
-        h('div.send-v2__customize-gas__title', t('customGas')),
+        h('div.send-v2__customize-gas__title', this.props.t('customGas')),
 
         h('div.send-v2__customize-gas__close', {
           onClick: hideModal,
@@ -275,8 +274,8 @@ CustomizeGasModal.prototype.render = function () {
           // max: 1000,
           step: multiplyCurrencies(MIN_GAS_PRICE_GWEI, 10),
           onChange: value => this.convertAndSetGasPrice(value),
-          title: t('gasPrice'),
-          copy: t('gasPriceCalculation'),
+          title: this.props.t('gasPrice'),
+          copy: this.props.t('gasPriceCalculation'),
         }),
 
         h(GasModalCard, {
@@ -285,8 +284,8 @@ CustomizeGasModal.prototype.render = function () {
           // max: 100000,
           step: 1,
           onChange: value => this.convertAndSetGasLimit(value),
-          title: t('gasLimit'),
-          copy: t('gasLimitCalculation'),
+          title: this.props.t('gasLimit'),
+          copy: this.props.t('gasLimitCalculation'),
         }),
 
       ]),
@@ -299,7 +298,7 @@ CustomizeGasModal.prototype.render = function () {
 
         h('div.send-v2__customize-gas__revert', {
           onClick: () => this.revert(),
-        }, [t('revert')]),
+        }, [this.props.t('revert')]),
 
         h('div.send-v2__customize-gas__buttons', [
           h('button.btn-secondary.send-v2__customize-gas__cancel', {
@@ -307,12 +306,12 @@ CustomizeGasModal.prototype.render = function () {
             style: {
               marginRight: '10px',
             },
-          }, [t('cancel')]),
+          }, [this.props.t('cancel')]),
 
           h('button.btn-primary.send-v2__customize-gas__save', {
             onClick: () => !error && this.save(newGasPrice, gasLimit, gasTotal),
             className: error && 'btn-primary--disabled',
-          }, [t('save')]),
+          }, [this.props.t('save')]),
         ]),
 
       ]),

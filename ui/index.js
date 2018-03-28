@@ -4,6 +4,7 @@ const Root = require('./app/root')
 const actions = require('./app/actions')
 const configureStore = require('./app/store')
 const txHelper = require('./lib/tx-helper')
+const { fetchLocale } = require('./i18n-helper')
 const { OLD_UI_NETWORK_TYPE, BETA_UI_NETWORK_TYPE } = require('../app/scripts/config').enums
 
 global.log = require('loglevel')
@@ -18,14 +19,22 @@ function launchMetamaskUi (opts, cb) {
   // check if we are unlocked first
   accountManager.getState(function (err, metamaskState) {
     if (err) return cb(err)
-    const store = startApp(metamaskState, accountManager, opts)
-    cb(null, store)
+    startApp(metamaskState, accountManager, opts)
+      .then((store) => {
+        cb(null, store)
+      })
   })
 }
 
-function startApp (metamaskState, accountManager, opts) {
+async function startApp (metamaskState, accountManager, opts) {
   // parse opts
   if (!metamaskState.featureFlags) metamaskState.featureFlags = {}
+
+  const currentLocaleMessages = metamaskState.currentLocale
+    ? await fetchLocale(metamaskState.currentLocale)
+    : {}
+  const enLocaleMessages = await fetchLocale('en')
+
   const store = configureStore({
 
     // metamaskState represents the cross-tab state
@@ -33,6 +42,11 @@ function startApp (metamaskState, accountManager, opts) {
 
     // appState represents the current tab's popup state
     appState: {},
+
+    localeMessages: {
+      current: currentLocaleMessages,
+      en: enLocaleMessages,
+    },
 
     // Which blockchain we are using:
     networkVersion: opts.networkVersion,
