@@ -38,11 +38,6 @@ module.exports = class TransactionStateManager extends EventEmitter {
     }, opts)
   }
 
-  // Returns the number of txs for the current network.
-  getTxCount () {
-    return this.getTxList().length
-  }
-
   getTxList () {
     const network = this.getNetwork()
     const fullTxList = this.getFullTxList()
@@ -88,7 +83,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
     txMeta.history.push(snapshot)
 
     const transactions = this.getFullTxList()
-    const txCount = this.getTxCount()
+    const txCount = transactions.length
     const txHistoryLimit = this.txHistoryLimit
 
     // checks if the length of the tx history is
