@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../../actions')
 const NotifcationModal = require('../notification-modal')
 

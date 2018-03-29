@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const Identicon = require('../identicon')
 const CurrencyDisplay = require('./currency-display')
 const { conversionRateSelector, getCurrentCurrency } = require('../../selectors')

@@ -1,11 +1,17 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const classnames = require('classnames')
 const inherits = require('util').inherits
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
 
+Network.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect()(Network)
+
 
 inherits(Network, Component)
 
@@ -15,6 +21,7 @@ function Network () {
 
 Network.prototype.render = function () {
   const props = this.props
+  const context = this.context
   const networkNumber = props.network
   let providerName
   try {
@@ -34,7 +41,7 @@ Network.prototype.render = function () {
       onClick: (event) => this.props.onClick(event),
     }, [
       h('img', {
-        title: props.t('attemptingConnect'),
+        title: context.t('attemptingConnect'),
         style: {
           width: '27px',
         },
@@ -42,22 +49,22 @@ Network.prototype.render = function () {
       }),
     ])
   } else if (providerName === 'mainnet') {
-    hoverText = props.t('mainnet')
+    hoverText = context.t('mainnet')
     iconName = 'ethereum-network'
   } else if (providerName === 'ropsten') {
-    hoverText = props.t('ropsten')
+    hoverText = context.t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 3) {
-    hoverText = props.t('ropsten')
+    hoverText = context.t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (providerName === 'kovan') {
-    hoverText = props.t('kovan')
+    hoverText = context.t('kovan')
     iconName = 'kovan-test-network'
   } else if (providerName === 'rinkeby') {
-    hoverText = props.t('rinkeby')
+    hoverText = context.t('rinkeby')
     iconName = 'rinkeby-test-network'
   } else {
-    hoverText = props.t('unknownNetwork')
+    hoverText = context.t('unknownNetwork')
     iconName = 'unknown-private-network'
   }
 
@@ -85,7 +92,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#038789', // $blue-lagoon
                 nonSelectBackgroundColor: '#15afb2',
               }),
-              h('.network-name', props.t('mainnet')),
+              h('.network-name', context.t('mainnet')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'ropsten-test-network':
@@ -94,7 +101,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#e91550', // $crimson
                 nonSelectBackgroundColor: '#ec2c50',
               }),
-              h('.network-name', props.t('ropsten')),
+              h('.network-name', context.t('ropsten')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'kovan-test-network':
@@ -103,7 +110,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#690496', // $purple
                 nonSelectBackgroundColor: '#b039f3',
               }),
-              h('.network-name', props.t('kovan')),
+              h('.network-name', context.t('kovan')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           case 'rinkeby-test-network':
@@ -112,7 +119,7 @@ Network.prototype.render = function () {
                 backgroundColor: '#ebb33f', // $tulip-tree
                 nonSelectBackgroundColor: '#ecb23e',
               }),
-              h('.network-name', props.t('rinkeby')),
+              h('.network-name', context.t('rinkeby')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
           default:
@@ -124,7 +131,7 @@ Network.prototype.render = function () {
                 },
               }),
 
-              h('.network-name', props.t('privateNetwork')),
+              h('.network-name', context.t('privateNetwork')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
         }

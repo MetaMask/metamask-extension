@@ -1,12 +1,18 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 
 const Tooltip = require('./tooltip')
 const copyToClipboard = require('copy-to-clipboard')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
+
+Copyable.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect()(Copyable)
+
 
 inherits(Copyable, Component)
 function Copyable () {
@@ -23,7 +29,7 @@ Copyable.prototype.render = function () {
   const { copied } = state
 
   return h(Tooltip, {
-    title: copied ? this.props.t('copiedExclamation') : this.props.t('copy'),
+    title: copied ? this.context.t('copiedExclamation') : this.context.t('copy'),
     position: 'bottom',
   }, h('span', {
     style: {

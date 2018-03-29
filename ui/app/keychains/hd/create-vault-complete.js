@@ -1,6 +1,6 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../actions')
 const exportAsFile = require('../../util').exportAsFile
