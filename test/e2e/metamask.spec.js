@@ -1,5 +1,8 @@
+const fs = require('fs')
+const mkdirp = require('mkdirp')
 const path = require('path')
 const assert = require('assert')
+const pify = require('pify')
 const webdriver = require('selenium-webdriver')
 const By = webdriver.By
 const { delay, buildWebDriver } = require('./func')
@@ -18,6 +21,12 @@ describe('Metamask popup page', function () {
     const extensionId = await elems[1].getAttribute('id')
     await driver.get(`chrome-extension://${extensionId}/popup.html`)
     await delay(500)
+  })
+
+  afterEach(async function () {
+    if (this.currentTest.state === 'failed') {
+      await verboseReportOnFailure(this.currentTest)
+    }
   })
 
   after(async function () {
@@ -39,9 +48,7 @@ describe('Metamask popup page', function () {
     it('should show privacy notice', async () => {
       const privacy = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
-      driver.findElement(By.css(
-        'button'
-      )).click()
+      driver.findElement(By.css('button')).click()
     })
 
     it('should show terms of use', async () => {
@@ -51,9 +58,7 @@ describe('Metamask popup page', function () {
     })
 
     it('should be unable to continue without scolling throught the terms of use', async () => {
-      const button = await driver.findElement(By.css(
-        'button'
-      )).isEnabled()
+      const button = await driver.findElement(By.css('button')).isEnabled()
       assert.equal(button, false, 'disabled continue button')
       const element = driver.findElement(By.linkText(
         'Attributions'
@@ -115,4 +120,17 @@ describe('Metamask popup page', function () {
       await delay(500)
     })
   })
+
+  async function verboseReportOnFailure(test) {
+    const artifactDir = `./test-artifacts/${test.title}`
+    const filepathBase = `${artifactDir}/test-failure`
+    await pify(mkdirp)(artifactDir)
+    // capture screenshot
+    const screenshot = await driver.takeScreenshot()
+    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+    // capture dom source
+    const htmlSource = await driver.getPageSource()
+    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
+  }
+
 })
