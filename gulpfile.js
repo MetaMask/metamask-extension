@@ -78,6 +78,11 @@ gulp.task('copy:reload', copyTask({
   destinations: commonPlatforms.map(platform => `./dist/${platform}/scripts`),
   pattern: '/chromereload.js',
 }))
+gulp.task('copy:html', copyTask({
+  source: './app/',
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+  pattern: '/*.html',
+}))
 
 // copy extension
 
@@ -86,10 +91,13 @@ gulp.task('copy:manifest', copyTask({
   destinations: browserPlatforms.map(platform => `./dist/${platform}`),
   pattern: '/*.json',
 }))
-gulp.task('copy:html', copyTask({
-  source: './app/',
-  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
-  pattern: '/*.html',
+
+// copy mascara
+
+gulp.task('copy:html:mascara', copyTask({
+  source: './mascara/',
+  destinations: [`./dist/mascara/`],
+  pattern: 'proxy/index.html',
 }))
 
 // manifest tinkering
@@ -143,6 +151,7 @@ const copyTaskNames = [
   'copy:fonts',
   'copy:manifest',
   'copy:html',
+  'copy:html:mascara',
   'copy:contractImages',
 ]
 
