@@ -171,7 +171,7 @@ App.prototype.renderAppBar = function () {
           h('img', {
             height: 24,
             width: 24,
-            src: '/images/icon-128.png',
+            src: './images/icon-128.png',
           }),
 
           h(NetworkIndicator, {
