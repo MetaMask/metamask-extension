@@ -162,18 +162,6 @@ gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
 
-// record deps
-
-gulp.task('deps', function (cb) {
-  exec('npm ls', (err, stdoutOutput, stderrOutput) => {
-    if (err) return cb(err)
-    const browsers = ['firefox','chrome','edge','opera']
-    asyncEach(browsers, (target, done) => {
-      fs.writeFile(`./dist/${target}/deps.txt`, stdoutOutput, done)
-    }, cb)
-  })
-})
-
 // lint js
 
 gulp.task('lint', function () {
