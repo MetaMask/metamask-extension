@@ -10,9 +10,14 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   transition: linear 200ms;
   background-color: rgba($wallet-balance-bg, 0);
   position: relative;
+  flex: 1;
+  min-width: 0;
 
   &__token-balance {
     font-size: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     @media #{$wallet-balance-breakpoint-range} {
       font-size: 95%;
@@ -51,7 +56,8 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
   &__balance-ellipsis {
     display: flex;
     align-items: center;
-    width: 100%;
+    min-width: 0;
+    flex: 1;
   }
 
   &__ellipsis {
@@ -61,6 +67,7 @@ $wallet-balance-breakpoint-range: "screen and (min-width: #{$break-large}) and (
 
   &__balance-wrapper {
     flex: 1 1 auto;
+    min-width: 0;
   }
 }
 

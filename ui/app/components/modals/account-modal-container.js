@@ -1,11 +1,10 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const { getSelectedIdentity } = require('../../selectors')
 const Identicon = require('../identicon')
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -60,7 +59,7 @@ AccountModalContainer.prototype.render = function () {
 
         h('i.fa.fa-angle-left.fa-lg'),
 
-        h('span.account-modal-back__text', ' ' + t('back')),
+        h('span.account-modal-back__text', ' ' + this.props.t('back')),
 
       ]),
 

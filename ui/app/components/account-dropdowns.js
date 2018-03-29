@@ -3,13 +3,12 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const actions = require('../actions')
 const genAccountLink = require('etherscan-link').createAccountLink
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const Dropdown = require('./dropdown').Dropdown
 const DropdownMenuItem = require('./dropdown').DropdownMenuItem
 const Identicon = require('./identicon')
 const ethUtil = require('ethereumjs-util')
 const copyToClipboard = require('copy-to-clipboard')
-const t = require('../../i18n')
 
 class AccountDropdowns extends Component {
   constructor (props) {
@@ -80,7 +79,7 @@ class AccountDropdowns extends Component {
     try { // Sometimes keyrings aren't loaded yet:
       const type = keyring.type
       const isLoose = type !== 'HD Key Tree'
-      return isLoose ? h('.keyring-label.allcaps', t('loose')) : null
+      return isLoose ? h('.keyring-label.allcaps', this.props.t('loose')) : null
     } catch (e) { return }
   }
 
@@ -130,7 +129,7 @@ class AccountDropdowns extends Component {
                 diameter: 32,
               },
             ),
-            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, t('createAccount')),
+            h('span', { style: { marginLeft: '20px', fontSize: '24px' } }, this.props.t('createAccount')),
           ],
         ),
         h(
@@ -155,7 +154,7 @@ class AccountDropdowns extends Component {
                 fontSize: '24px',
                 marginBottom: '5px',
               },
-            }, t('importAccount')),
+            }, this.props.t('importAccount')),
           ]
         ),
       ]
@@ -193,7 +192,7 @@ class AccountDropdowns extends Component {
               global.platform.openWindow({ url })
             },
           },
-          t('etherscanView'),
+          this.props.t('etherscanView'),
         ),
         h(
           DropdownMenuItem,
@@ -205,7 +204,7 @@ class AccountDropdowns extends Component {
               actions.showQrView(selected, identity ? identity.name : '')
             },
           },
-          t('showQRCode'),
+          this.props.t('showQRCode'),
         ),
         h(
           DropdownMenuItem,
@@ -217,7 +216,7 @@ class AccountDropdowns extends Component {
               copyToClipboard(checkSumAddress)
             },
           },
-          t('copyAddress'),
+          this.props.t('copyAddress'),
         ),
         h(
           DropdownMenuItem,
@@ -227,7 +226,7 @@ class AccountDropdowns extends Component {
               actions.requestAccountExport()
             },
           },
-          t('exportPrivateKey'),
+          this.props.t('exportPrivateKey'),
         ),
       ]
     )
@@ -301,6 +300,7 @@ AccountDropdowns.propTypes = {
   style: PropTypes.object,
   enableAccountOptions: PropTypes.bool,
   enableAccountsSelector: PropTypes.bool,
+    t: PropTypes.func,
 }
 
 const mapDispatchToProps = (dispatch) => {

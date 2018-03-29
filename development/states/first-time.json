@@ -36,7 +36,8 @@
     },
     "shapeShiftTxList": [],
     "lostAccounts": [],
-    "tokens": []
+    "tokens": [],
+    "currentLocale": "en"
   },
   "appState": {
     "menuOpen": false,

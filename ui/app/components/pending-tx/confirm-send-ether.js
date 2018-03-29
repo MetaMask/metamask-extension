@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const { connect } = require('react-redux')
+const connect = require('../../metamask-connect')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
@@ -15,7 +15,6 @@ const {
   multiplyCurrencies,
 } = require('../../conversion-util')
 const GasFeeDisplay = require('../send/gas-fee-display-v2')
-const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 
@@ -202,7 +201,7 @@ ConfirmSendEther.prototype.getData = function () {
     },
     to: {
       address: txParams.to,
-      name: identities[txParams.to] ? identities[txParams.to].name : t('newRecipient'),
+      name: identities[txParams.to] ? identities[txParams.to].name : this.props.t('newRecipient'),
     },
     memo: txParams.memo || '',
     gasFeeInFIAT,
@@ -309,7 +308,7 @@ ConfirmSendEther.prototype.render = function () {
 
         h('div.confirm-screen-rows', [
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('from') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', fromName),
               h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -317,7 +316,7 @@ ConfirmSendEther.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('to') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', toName),
               h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
@@ -325,7 +324,7 @@ ConfirmSendEther.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('gasFee') ]),
             h('div.confirm-screen-section-column', [
               h(GasFeeDisplay, {
                 gasTotal: gasTotal || gasFeeInHex,
@@ -338,8 +337,8 @@ ConfirmSendEther.prototype.render = function () {
 
           h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
             h('div.confirm-screen-section-column', [
-              h('span.confirm-screen-label', [ t('total') + ' ' ]),
-              h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
+              h('span.confirm-screen-label', [ this.props.t('total') + ' ' ]),
+              h('div.confirm-screen-total-box__subtitle', [ this.props.t('amountPlusGas') ]),
             ]),
 
             h('div.confirm-screen-section-column', [
@@ -440,10 +439,10 @@ ConfirmSendEther.prototype.render = function () {
               clearSend()
               this.cancel(event, txMeta)
             },
-          }, t('cancel')),
+          }, this.props.t('cancel')),
 
           // Accept Button
-          h('button.btn-confirm.page-container__footer-button.allcaps', [t('confirm')]),
+          h('button.btn-confirm.page-container__footer-button.allcaps', [this.props.t('confirm')]),
         ]),
       ]),
     ])
@@ -459,7 +458,7 @@ ConfirmSendEther.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams()) {
     this.props.sendTransaction(txMeta, event)
   } else {
-    this.props.dispatch(actions.displayWarning(t('invalidGasParams')))
+    this.props.dispatch(actions.displayWarning(this.props.t('invalidGasParams')))
     this.setState({ submitting: false })
   }
 }

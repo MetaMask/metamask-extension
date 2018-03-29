@@ -1,6 +1,13 @@
 # Changelog
 
 ## Current Master
+
+- Fix bug where the "Reset account" feature would not clear the network cache.
+
+## 4.4.0 Mon Mar 26 2018
+
+- Internationalization: Taiwanese, Thai, Slovenian
+- Fixes bug where MetaMask would not open once its storage grew too large.
 - Updates design of new-ui Add Token screen
 - New-ui can send to ens addresses
 - Update new-ui button styles

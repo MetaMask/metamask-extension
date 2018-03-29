@@ -1,22 +1,18 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('react-redux').connect
+const connect = require('../../metamask-connect')
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
 const ShapeshiftForm = require('../shapeshift-form')
-const t = require('../../../i18n')
 
-const DIRECT_DEPOSIT_ROW_TITLE = t('directDepositEther')
-const DIRECT_DEPOSIT_ROW_TEXT = t('directDepositEtherExplainer')
-const COINBASE_ROW_TITLE = t('buyCoinbase')
-const COINBASE_ROW_TEXT = t('buyCoinbaseExplainer')
-const SHAPESHIFT_ROW_TITLE = t('depositShapeShift')
-const SHAPESHIFT_ROW_TEXT = t('depositShapeShiftExplainer')
-const FAUCET_ROW_TITLE = t('testFaucet')
-const facuetRowText = (networkName) => {
-  return t('getEtherFromFaucet', [networkName])
-}
+let DIRECT_DEPOSIT_ROW_TITLE
+let DIRECT_DEPOSIT_ROW_TEXT
+let COINBASE_ROW_TITLE
+let COINBASE_ROW_TEXT
+let SHAPESHIFT_ROW_TITLE
+let SHAPESHIFT_ROW_TEXT
+let FAUCET_ROW_TITLE
 
 function mapStateToProps (state) {
   return {
@@ -44,8 +40,17 @@ function mapDispatchToProps (dispatch) {
 }
 
 inherits(DepositEtherModal, Component)
-function DepositEtherModal () {
+function DepositEtherModal (props) {
   Component.call(this)
+
+  // need to set after i18n locale has loaded
+  DIRECT_DEPOSIT_ROW_TITLE = props.t('directDepositEther')
+  DIRECT_DEPOSIT_ROW_TEXT = props.t('directDepositEtherExplainer')
+  COINBASE_ROW_TITLE = props.t('buyCoinbase')
+  COINBASE_ROW_TEXT = props.t('buyCoinbaseExplainer')
+  SHAPESHIFT_ROW_TITLE = props.t('depositShapeShift')
+  SHAPESHIFT_ROW_TEXT = props.t('depositShapeShiftExplainer')
+  FAUCET_ROW_TITLE = props.t('testFaucet')
 
   this.state = {
     buyingWithShapeshift: false,
@@ -53,6 +58,10 @@ function DepositEtherModal () {
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(DepositEtherModal)
+
+DepositEtherModal.prototype.facuetRowText = function (networkName) {
+  return this.props.t('getEtherFromFaucet', [networkName])
+}
 
 DepositEtherModal.prototype.renderRow = function ({
   logo,
@@ -113,10 +122,10 @@ DepositEtherModal.prototype.render = function () {
 
     h('div.page-container__header', [
 
-      h('div.page-container__title', [t('depositEther')]),
+      h('div.page-container__title', [this.props.t('depositEther')]),
 
       h('div.page-container__subtitle', [
-        t('needEtherInWallet'),
+        this.props.t('needEtherInWallet'),
       ]),
 
       h('div.page-container__header-close', {
@@ -139,7 +148,7 @@ DepositEtherModal.prototype.render = function () {
           }),
           title: DIRECT_DEPOSIT_ROW_TITLE,
           text: DIRECT_DEPOSIT_ROW_TEXT,
-          buttonLabel: t('viewAccount'),
+          buttonLabel: this.props.t('viewAccount'),
           onButtonClick: () => this.goToAccountDetailsModal(),
           hide: buyingWithShapeshift,
         }),
@@ -147,8 +156,8 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('i.fa.fa-tint.fa-2x'),
           title: FAUCET_ROW_TITLE,
-          text: facuetRowText(networkName),
-          buttonLabel: t('getEther'),
+          text: this.facuetRowText(networkName),
+          buttonLabel: this.props.t('getEther'),
           onButtonClick: () => toFaucet(network),
           hide: !isTestNetwork || buyingWithShapeshift,
         }),
@@ -162,7 +171,7 @@ DepositEtherModal.prototype.render = function () {
           }),
           title: COINBASE_ROW_TITLE,
           text: COINBASE_ROW_TEXT,
-          buttonLabel: t('continueToCoinbase'),
+          buttonLabel: this.props.t('continueToCoinbase'),
           onButtonClick: () => toCoinbase(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
@@ -175,7 +184,7 @@ DepositEtherModal.prototype.render = function () {
           }),
           title: SHAPESHIFT_ROW_TITLE,
           text: SHAPESHIFT_ROW_TEXT,
-          buttonLabel: t('shapeshiftBuy'),
+          buttonLabel: this.props.t('shapeshiftBuy'),
           onButtonClick: () => this.setState({ buyingWithShapeshift: true }),
           hide: isTestNetwork,
           hideButton: buyingWithShapeshift,

@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const connect = require('react-redux').connect
+const connect = require('../metamask-connect')
 const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
@@ -8,7 +8,6 @@ const { compose } = require('recompose')
 const actions = require('../actions')
 const selectors = require('../selectors')
 const { SEND_ROUTE } = require('../routes')
-const t = require('../../i18n')
 
 const BalanceComponent = require('./balance-component')
 const TxList = require('./tx-list')
@@ -79,21 +78,21 @@ TxView.prototype.renderButtons = function () {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
-        }, t('deposit')),
+        }, this.props.t('deposit')),
 
         h('button.btn-primary.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
           onClick: () => history.push(SEND_ROUTE),
-        }, t('send')),
+        }, this.props.t('send')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-primary.hero-balance-button', {
           onClick: () => history.push(SEND_ROUTE),
-        }, t('send')),
+        }, this.props.t('send')),
       ])
     )
 }

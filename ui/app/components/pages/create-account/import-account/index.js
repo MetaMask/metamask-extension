@@ -1,43 +1,38 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const t = require('../../../../../i18n')
+const connect = require('../../../../metamask-connect')
 import Select from 'react-select'
 
 // Subviews
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
-const menuItems = [
-  t('privateKey'),
-  t('jsonFile'),
-]
 
-module.exports = connect(mapStateToProps)(AccountImportSubview)
-
-function mapStateToProps (state) {
-  return {
-    menuItems,
-  }
-}
+module.exports = connect()(AccountImportSubview)
 
 inherits(AccountImportSubview, Component)
 function AccountImportSubview () {
   Component.call(this)
 }
 
+AccountImportSubview.prototype.getMenuItemTexts = function () {
+  return [
+    this.props.t('privateKey'),
+    this.props.t('jsonFile'),
+  ]
+}
+
 AccountImportSubview.prototype.render = function () {
-  const props = this.props
   const state = this.state || {}
-  const { menuItems } = props
+  const menuItems = this.getMenuItemTexts()
   const { type } = state
 
   return (
     h('div.new-account-import-form', [
 
       h('.new-account-import-disclaimer', [
-        h('span', t('importAccountMsg')),
+        h('span', this.props.t('importAccountMsg')),
         h('span', {
           style: {
             cursor: 'pointer',
@@ -48,12 +43,12 @@ AccountImportSubview.prototype.render = function () {
               url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
             })
           },
-        }, t('here')),
+        }, this.props.t('here')),
       ]),
 
       h('div.new-account-import-form__select-section', [
 
-        h('div.new-account-import-form__select-label', t('selectType')),
+        h('div.new-account-import-form__select-label', this.props.t('selectType')),
 
         h(Select, {
           className: 'new-account-import-form__select',
@@ -79,16 +74,15 @@ AccountImportSubview.prototype.render = function () {
 }
 
 AccountImportSubview.prototype.renderImportView = function () {
-  const props = this.props
   const state = this.state || {}
   const { type } = state
-  const { menuItems } = props
+  const menuItems = this.getMenuItemTexts()
   const current = type || menuItems[0]
 
   switch (current) {
-    case t('privateKey'):
+    case this.props.t('privateKey'):
       return h(PrivateKeyImportView)
-    case t('jsonFile'):
+    case this.props.t('jsonFile'):
       return h(JsonImportView)
     default:
       return h(JsonImportView)

@@ -1,8 +1,7 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('react-redux').connect
-const t = require('../../../../../i18n')
+const connect = require('../../../../metamask-connect')
 
 module.exports = connect(mapStateToProps)(SeedImportSubview)
 
@@ -21,10 +20,10 @@ SeedImportSubview.prototype.render = function () {
       style: {
       },
     }, [
-      t('pasteSeed'),
+      this.props.t('pasteSeed'),
       h('textarea'),
       h('br'),
-      h('button', t('submit')),
+      h('button', this.props.t('submit')),
     ])
   )
 }

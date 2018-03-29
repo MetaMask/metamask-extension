@@ -3,7 +3,7 @@ const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const { connect } = require('react-redux')
+const connect = require('../../../metamask-connect')
 const actions = require('../../../actions')
 const infuraCurrencies = require('../../../infura-conversion.json')
 const validUrl = require('valid-url')
@@ -11,8 +11,8 @@ const { exportAsFile } = require('../../../util')
 const SimpleDropdown = require('../../dropdowns/simple-dropdown')
 const ToggleButton = require('react-toggle-button')
 const { REVEAL_SEED_ROUTE } = require('../../../routes')
+const locales = require('../../../../../app/_locales/index.json')
 const { OLD_UI_NETWORK_TYPE } = require('../../../../../app/scripts/config').enums
-const t = require('../../../../i18n')
 
 const getInfuraCurrencyOptions = () => {
   const sortedCurrencies = infuraCurrencies.objects.sort((a, b) => {
@@ -24,6 +24,16 @@ const getInfuraCurrencyOptions = () => {
       displayValue: `${code.toUpperCase()} - ${name}`,
       key: code,
       value: code,
+    }
+  })
+}
+
+const getLocaleOptions = () => {
+  return locales.map((locale) => {
+    return {
+      displayValue: `${locale.name}`,
+      key: locale.code,
+      value: locale.code,
     }
   })
 }
@@ -42,7 +52,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', t('blockiesIdenticon')),
+        h('span', this.props.t('blockiesIdenticon')),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
@@ -62,16 +72,40 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', t('currentConversion')),
+        h('span', this.props.t('currentConversion')),
         h('span.settings__content-description', `Updated ${Date(conversionDate)}`),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h(SimpleDropdown, {
-            placeholder: t('selectCurrency'),
+            placeholder: this.props.t('selectCurrency'),
             options: getInfuraCurrencyOptions(),
             selectedOption: currentCurrency,
             onSelect: newCurrency => setCurrentCurrency(newCurrency),
+          }),
+        ]),
+      ]),
+    ])
+  }
+
+  renderCurrentLocale () {
+    const { updateCurrentLocale, currentLocale } = this.props
+    const currentLocaleMeta = locales.find(locale => locale.code === currentLocale)
+
+    return h('div.settings__content-row', [
+      h('div.settings__content-item', [
+        h('span', 'Current Language'),
+        h('span.settings__content-description', `${currentLocaleMeta.name}`),
+      ]),
+      h('div.settings__content-item', [
+        h('div.settings__content-item-col', [
+          h(SimpleDropdown, {
+            placeholder: 'Select Locale',
+            options: getLocaleOptions(),
+            selectedOption: currentLocale,
+            onSelect: async (newLocale) => {
+              updateCurrentLocale(newLocale)
+            },
           }),
         ]),
       ]),
@@ -85,31 +119,31 @@ class Settings extends Component {
     switch (provider.type) {
 
       case 'mainnet':
-        title = t('currentNetwork')
-        value = t('mainnet')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('mainnet')
         color = '#038789'
         break
 
       case 'ropsten':
-        title = t('currentNetwork')
-        value = t('ropsten')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('ropsten')
         color = '#e91550'
         break
 
       case 'kovan':
-        title = t('currentNetwork')
-        value = t('kovan')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('kovan')
         color = '#690496'
         break
 
       case 'rinkeby':
-        title = t('currentNetwork')
-        value = t('rinkeby')
+        title = this.props.t('currentNetwork')
+        value = this.props.t('rinkeby')
         color = '#ebb33f'
         break
 
       default:
-        title = t('currentRpc')
+        title = this.props.t('currentRpc')
         value = provider.rpcTarget
     }
 
@@ -130,12 +164,12 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('span', t('newRPC')),
+          h('span', this.props.t('newRPC')),
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('input.settings__input', {
-              placeholder: t('newRPC'),
+              placeholder: this.props.t('newRPC'),
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
@@ -148,7 +182,7 @@ class Settings extends Component {
                 event.preventDefault()
                 this.validateRpc(this.state.newRpc)
               },
-            }, t('save')),
+            }, this.props.t('save')),
           ]),
         ]),
       ])
@@ -164,9 +198,9 @@ class Settings extends Component {
       const appendedRpc = `http://${newRpc}`
 
       if (validUrl.isWebUri(appendedRpc)) {
-        displayWarning(t('uriErrorMsg'))
+        displayWarning(this.props.t('uriErrorMsg'))
       } else {
-        displayWarning(t('invalidRPC'))
+        displayWarning(this.props.t('invalidRPC'))
       }
     }
   }
@@ -175,10 +209,10 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('div', t('stateLogs')),
+          h('div', this.props.t('stateLogs')),
           h(
             'div.settings__content-description',
-            t('stateLogsDescription')
+            this.props.t('stateLogsDescription')
           ),
         ]),
         h('div.settings__content-item', [
@@ -187,13 +221,13 @@ class Settings extends Component {
               onClick (event) {
                 window.logStateString((err, result) => {
                   if (err) {
-                    this.state.dispatch(actions.displayWarning(t('stateLogError')))
+                    this.state.dispatch(actions.displayWarning(this.props.t('stateLogError')))
                   } else {
                     exportAsFile('MetaMask State Logs.json', result)
                   }
                 })
               },
-            }, t('downloadStateLogs')),
+            }, this.props.t('downloadStateLogs')),
           ]),
         ]),
       ])
@@ -205,12 +239,15 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', t('revealSeedWords')),
+        h('div.settings__content-item', this.props.t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary--lg.settings__button--red', {
-              onClick: () => history.push(REVEAL_SEED_ROUTE),
-            }, t('revealSeedWords')),
+              onClick: event => {
+                event.preventDefault()
+                history.push(REVEAL_SEED_ROUTE)
+              },
+            }, this.props.t('revealSeedWords')),
           ]),
         ]),
       ])
@@ -222,7 +259,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', t('useOldUI')),
+        h('div.settings__content-item', this.props.t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary--lg.settings__button--orange', {
@@ -230,7 +267,7 @@ class Settings extends Component {
                 event.preventDefault()
                 setFeatureFlagToBeta()
               },
-            }, t('useOldUI')),
+            }, this.props.t('useOldUI')),
           ]),
         ]),
       ])
@@ -241,7 +278,7 @@ class Settings extends Component {
     const { showResetAccountConfirmationModal } = this.props
 
     return h('div.settings__content-row', [
-      h('div.settings__content-item', t('resetAccount')),
+      h('div.settings__content-item', this.props.t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h('button.btn-primary--lg.settings__button--orange', {
@@ -249,7 +286,7 @@ class Settings extends Component {
               event.preventDefault()
               showResetAccountConfirmationModal()
             },
-          }, t('resetAccount')),
+          }, this.props.t('resetAccount')),
         ]),
       ]),
     ])
@@ -262,6 +299,7 @@ class Settings extends Component {
       h('div.settings__content', [
         warning && h('div.settings__error', warning),
         this.renderCurrentConversion(),
+        this.renderCurrentLocale(),
         // this.renderCurrentProvider(),
         this.renderNewRpcUrl(),
         this.renderStateLogs(),
@@ -286,6 +324,9 @@ Settings.propTypes = {
   warning: PropTypes.string,
   history: PropTypes.object,
   isMascara: PropTypes.bool,
+  updateCurrentLocale: PropTypes.func,
+  currentLocale: PropTypes.string,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -293,6 +334,7 @@ const mapStateToProps = state => {
     metamask: state.metamask,
     warning: state.appState.warning,
     isMascara: state.metamask.isMascara,
+    currentLocale: state.metamask.currentLocale,
   }
 }
 
@@ -303,6 +345,7 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     revealSeedConfirmation: () => dispatch(actions.revealSeedConfirmation()),
     setUseBlockie: value => dispatch(actions.setUseBlockie(value)),
+    updateCurrentLocale: key => dispatch(actions.updateCurrentLocale(key)),
     setFeatureFlagToBeta: () => {
       return dispatch(actions.setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL'))
         .then(() => dispatch(actions.setNetworkEndpoints(OLD_UI_NETWORK_TYPE)))

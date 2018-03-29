@@ -4,9 +4,9 @@ const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
-const t = require('../../i18n')
+const connect = require('../metamask-connect')
 
-module.exports = BnAsDecimalInput
+module.exports = connect()(BnAsDecimalInput)
 
 inherits(BnAsDecimalInput, Component)
 function BnAsDecimalInput () {
@@ -137,13 +137,13 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
+    message += this.props.t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
   } else if (min) {
-    message += t('greaterThanMin', [`${newMin} ${suffix}`])
+    message += this.props.t('greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
-    message += t('lessThanMax', [`${newMax} ${suffix}`])
+    message += this.props.t('lessThanMax', [`${newMax} ${suffix}`])
   } else {
-    message += t('invalidInput')
+    message += this.props.t('invalidInput')
   }
 
   return message

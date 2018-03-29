@@ -1,9 +1,8 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
+const connect = require('../metamask-connect')
 const NetworkDropdownIcon = require('./dropdowns/components/network-dropdown-icon')
-const t = require('../../i18n')
 
 const networkToColorHash = {
   1: '#038789',
@@ -31,7 +30,7 @@ class NetworkDisplay extends Component {
     const { provider: { type } } = this.props
     return h('.network-display__container', [
       this.renderNetworkIcon(),
-      h('.network-name', t(type)),
+      h('.network-name', this.props.t(type)),
     ])
   }
 }
@@ -39,6 +38,7 @@ class NetworkDisplay extends Component {
 NetworkDisplay.propTypes = {
   network: PropTypes.string,
   provider: PropTypes.object,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = ({ metamask: { network, provider } }) => {

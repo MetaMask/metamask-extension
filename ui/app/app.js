@@ -1,12 +1,11 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
+const connect = require('./metamask-connect')
 const { Route, Switch, Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
 const actions = require('./actions')
 const classnames = require('classnames')
-const t = require('../i18n')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
@@ -297,7 +296,10 @@ class App extends Component {
               }),
 
               // metamask name
-              h('h1', 'MetaMask'),
+              h('.flex-row', [
+                h('h1', this.props.t('appName')),
+                h('div.beta-label', this.props.t('beta')),
+              ]),
 
             ]),
 
@@ -602,15 +604,15 @@ class App extends Component {
     let name
 
     if (providerName === 'mainnet') {
-      name = t('connectingToMainnet')
+      name = this.props.t('connectingToMainnet')
     } else if (providerName === 'ropsten') {
-      name = t('connectingToRopsten')
+      name = this.props.t('connectingToRopsten')
     } else if (providerName === 'kovan') {
-      name = t('connectingToRopsten')
+      name = this.props.t('connectingToRopsten')
     } else if (providerName === 'rinkeby') {
-      name = t('connectingToRinkeby')
+      name = this.props.t('connectingToRinkeby')
     } else {
-      name = t('connectingToUnknown')
+      name = this.props.t('connectingToUnknown')
     }
 
     return name
@@ -623,15 +625,15 @@ class App extends Component {
     let name
 
     if (providerName === 'mainnet') {
-      name = 'Main Ethereum Network'
+      name = this.props.t('mainnet')
     } else if (providerName === 'ropsten') {
-      name = 'Ropsten Test Network'
+      name = this.props.t('ropsten')
     } else if (providerName === 'kovan') {
-      name = 'Kovan Test Network'
+      name = this.props.t('kovan')
     } else if (providerName === 'rinkeby') {
-      name = 'Rinkeby Test Network'
+      name = this.props.t('rinkeby')
     } else {
-      name = 'Unknown Private Network'
+      name = this.props.t('unknownNetwork')
     }
 
     return name

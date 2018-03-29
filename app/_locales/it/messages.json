@@ -223,7 +223,7 @@
   "done": {
     "message": "Finito"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Scarica i log di Stato"
   },
   "edit": {

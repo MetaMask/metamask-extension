@@ -1,12 +1,11 @@
 const { EventEmitter } = require('events')
 const { Component } = require('react')
-const { connect } = require('react-redux')
+const connect = require('../metamask-connect')
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const Mascot = require('../components/mascot')
 const actions = require('../actions')
 const Tooltip = require('../components/tooltip')
-const t = require('../../i18n')
 const getCaretCoordinates = require('textarea-caret')
 const { RESTORE_VAULT_ROUTE, DEFAULT_ROUTE } = require('../routes')
 const environmentType = require('../../../app/scripts/lib/environment-type')
@@ -50,7 +49,7 @@ class InitializeMenuScreen extends Component {
             color: '#7F8082',
             marginBottom: 10,
           },
-        }, t('appName')),
+        }, this.props.t('appName')),
 
         h('div', [
           h('h3', {
@@ -59,10 +58,10 @@ class InitializeMenuScreen extends Component {
               color: '#7F8082',
               display: 'inline',
             },
-          }, t('encryptNewDen')),
+          }, this.props.t('encryptNewDen')),
 
           h(Tooltip, {
-            title: t('denExplainer'),
+            title: this.props.t('denExplainer'),
           }, [
             h('i.fa.fa-question-circle.pointer', {
               style: {
@@ -82,7 +81,7 @@ class InitializeMenuScreen extends Component {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: t('newPassword'),
+          placeholder: this.props.t('newPassword'),
           onInput: this.inputChanged.bind(this),
           style: {
             width: 260,
@@ -94,7 +93,7 @@ class InitializeMenuScreen extends Component {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box-confirm',
-          placeholder: t('confirmPassword'),
+          placeholder: this.props.t('confirmPassword'),
           onKeyPress: this.createVaultOnEnter.bind(this),
           onInput: this.inputChanged.bind(this),
           style: {
@@ -109,7 +108,7 @@ class InitializeMenuScreen extends Component {
           style: {
             margin: 12,
           },
-        }, t('createDen')),
+        }, this.props.t('createDen')),
 
         h('.flex-row.flex-center.flex-grow', [
           h('p.pointer', {
@@ -119,7 +118,7 @@ class InitializeMenuScreen extends Component {
               color: 'rgb(247, 134, 28)',
               textDecoration: 'underline',
             },
-          }, t('importDen')),
+          }, this.props.t('importDen')),
         ]),
 
         h('.flex-row.flex-center.flex-grow', [
@@ -155,12 +154,12 @@ class InitializeMenuScreen extends Component {
     this.setState({ warning: null })
 
     if (password.length < 8) {
-      this.setState({ warning: t('passwordShort') })
+      this.setState({ warning: this.props.t('passwordShort') })
       return
     }
 
     if (password !== passwordConfirm) {
-      this.setState({ warning: t('passwordMismatch') })
+      this.setState({ warning: this.props.t('passwordMismatch') })
       return
     }
 

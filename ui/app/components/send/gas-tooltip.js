@@ -2,9 +2,9 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const InputNumber = require('../input-number.js')
-const t = require('../../../i18n')
+const connect = require('../../metamask-connect')
 
-module.exports = GasTooltip
+module.exports = connect()(GasTooltip)
 
 inherits(GasTooltip, Component)
 function GasTooltip () {
@@ -82,7 +82,7 @@ GasTooltip.prototype.render = function () {
             'marginTop': '81px',
           },
         }, [
-          h('span.gas-tooltip-label', {}, [t('gasLimit')]),
+          h('span.gas-tooltip-label', {}, [this.props.t('gasLimit')]),
           h('i.fa.fa-info-circle'),
         ]),
         h(InputNumber, {

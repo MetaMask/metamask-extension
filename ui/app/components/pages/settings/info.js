@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const t = require('../../../../i18n')
+const connect = require('../../../metamask-connect')
 
 class Info extends Component {
   renderLogo () {
@@ -15,13 +15,13 @@ class Info extends Component {
   renderInfoLinks () {
     return (
       h('div.settings__content-item.settings__content-item--without-height', [
-        h('div.settings__info-link-header', t('links')),
+        h('div.settings__info-link-header', this.props.t('links')),
         h('div.settings__info-link-item', [
           h('a', {
             href: 'https://metamask.io/privacy.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('privacyMsg')),
+            h('span.settings__info-link', this.props.t('privacyMsg')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -29,7 +29,7 @@ class Info extends Component {
             href: 'https://metamask.io/terms.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('terms')),
+            h('span.settings__info-link', this.props.t('terms')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -37,7 +37,7 @@ class Info extends Component {
             href: 'https://metamask.io/attributions.html',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('attributions')),
+            h('span.settings__info-link', this.props.t('attributions')),
           ]),
         ]),
         h('hr.settings__info-separator'),
@@ -46,7 +46,7 @@ class Info extends Component {
             href: 'https://support.metamask.io',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('supportCenter')),
+            h('span.settings__info-link', this.props.t('supportCenter')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -54,7 +54,7 @@ class Info extends Component {
             href: 'https://metamask.io/',
             target: '_blank',
           }, [
-            h('span.settings__info-link', t('visitWebSite')),
+            h('span.settings__info-link', this.props.t('visitWebSite')),
           ]),
         ]),
         h('div.settings__info-link-item', [
@@ -62,7 +62,7 @@ class Info extends Component {
             target: '_blank',
             href: 'mailto:help@metamask.io?subject=Feedback',
           }, [
-            h('span.settings__info-link', t('emailUs')),
+            h('span.settings__info-link', this.props.t('emailUs')),
           ]),
         ]),
       ])
@@ -82,7 +82,7 @@ class Info extends Component {
             h('div.settings__info-item', [
               h(
                 'div.settings__info-about',
-                t('builtInCalifornia')
+                this.props.t('builtInCalifornia')
               ),
             ]),
           ]),
@@ -103,6 +103,7 @@ Info.propTypes = {
   warning: PropTypes.string,
   location: PropTypes.object,
   history: PropTypes.object,
+  t: PropTypes.func,
 }
 
-module.exports = Info
+module.exports = connect()(Info)
