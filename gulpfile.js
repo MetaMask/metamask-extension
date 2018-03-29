@@ -54,51 +54,65 @@ gulp.task('dev:reload', function() {
   })
 })
 
-
 // copy universal
 
-gulp.task('copy:locales', copyTask({
+const copyTaskNames = []
+const copyDevTaskNames = []
+
+createCopyTasks('locales', {
   source: './app/_locales/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/_locales`),
-}))
-gulp.task('copy:images', copyTask({
+})
+createCopyTasks('images', {
   source: './app/images/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
-}))
-gulp.task('copy:contractImages', copyTask({
-  source: './node_modules/eth-contract-metadata/images/',
+})
+createCopyTasks('contractImages', {
+  source: `${require.resolve('eth-contract-metadata')}/images/`,
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contract`),
-}))
-gulp.task('copy:fonts', copyTask({
+})
+createCopyTasks('fonts', {
   source: './app/fonts/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/fonts`),
-}))
-gulp.task('copy:reload', copyTask({
+})
+createCopyTasks('reload', {
+  devOnly: true,
   source: './app/scripts/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
   pattern: '/chromereload.js',
-}))
-gulp.task('copy:html', copyTask({
-  source: './app/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+})
+createCopyTasks('html', {
+  source: './app/',
   pattern: '/*.html',
-}))
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
+})
 
 // copy extension
 
-gulp.task('copy:manifest', copyTask({
+createCopyTasks('manifest', {
   source: './app/',
-  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
   pattern: '/*.json',
-}))
+  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
+})
 
 // copy mascara
 
-gulp.task('copy:html:mascara', copyTask({
+createCopyTasks('html:mascara', {
   source: './mascara/',
-  destinations: [`./dist/mascara/`],
   pattern: 'proxy/index.html',
-}))
+  destinations: [`./dist/mascara/`],
+})
+
+function createCopyTasks(label, opts) {
+  if (!opts.devOnly) {
+    const copyTaskName = `copy:${label}`
+    copyTask(copyTaskName, opts)
+    copyTaskNames.push(copyTaskName)
+  }
+  const copyDevTaskName = `copy:dev:${label}`
+  copyTask(copyDevTaskName, Object.assign({ devMode: true }, opts))
+  copyDevTaskNames.push(copyDevTaskName)
+}
 
 // manifest tinkering
 
@@ -145,20 +159,6 @@ gulp.task('manifest:production', function() {
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
-const copyTaskNames = [
-  'copy:locales',
-  'copy:images',
-  'copy:fonts',
-  'copy:manifest',
-  'copy:html',
-  'copy:html:mascara',
-  'copy:contractImages',
-]
-
-if (debugMode) {
-  copyTaskNames.push('copy:reload')
-}
-
 gulp.task('copy',
   gulp.series(
     gulp.parallel(...copyTaskNames),
@@ -167,9 +167,14 @@ gulp.task('copy',
     'manifest:opera'
   )
 )
-gulp.task('copy:watch', function(){
-  gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
-})
+
+gulp.task('copy:dev',
+  gulp.series(
+    gulp.parallel(...copyDevTaskNames),
+    'manifest:chrome',
+    'manifest:opera'
+  )
+)
 
 // lint js
 
@@ -323,7 +328,7 @@ gulp.task('dev',
     'copy',
     gulp.parallel(
       'watch:scss',
-      'copy:watch',
+      'copy:dev',
       'dev:reload'
     )
   )
@@ -351,20 +356,33 @@ gulp.task('dist',
 
 // task generators
 
-function copyTask(opts){
+function copyTask(taskName, opts){
   const source = opts.source
   const destination = opts.destination
   const destinations = opts.destinations || [ destination ]
   const pattern = opts.pattern || '/**/*'
+  const devMode = opts.devMode
 
-  return performCopy
+  return gulp.task(taskName, performCopy)
 
   function performCopy(){
-    let stream = gulp.src(source + pattern, { base: source })
+    // stream from source
+    let stream
+    if (devMode) {
+      stream = watch(source + pattern, { base: source })
+    } else {
+      stream = gulp.src(source + pattern, { base: source })
+    }
+
+    // copy to destinations
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(gulpif(debugMode,livereload()))
+
+    // trigger reload
+    if (devMode) {
+      stream.pipe(livereload())
+    }
 
     return stream
   }
