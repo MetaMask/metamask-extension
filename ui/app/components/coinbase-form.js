@@ -1,10 +1,16 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../actions')
 
+CoinbaseForm.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(CoinbaseForm)
+
 
 function mapStateToProps (state) {
   return {
@@ -37,11 +43,11 @@ CoinbaseForm.prototype.render = function () {
     }, [
       h('button.btn-green', {
         onClick: this.toCoinbase.bind(this),
-      }, this.props.t('continueToCoinbase')),
+      }, this.context.t('continueToCoinbase')),
 
       h('button.btn-red', {
         onClick: () => props.dispatch(actions.goHome()),
-      }, this.props.t('cancel')),
+      }, this.context.t('cancel')),
     ]),
   ])
 }

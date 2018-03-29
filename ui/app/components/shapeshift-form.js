@@ -1,7 +1,8 @@
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
+const PropTypes = require('prop-types')
 const Component = require('react').Component
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const classnames = require('classnames')
 const { qrcode } = require('qrcode-npm')
 const { shapeShiftSubview, pairUpdate, buyWithShapeShift } = require('../actions')
@@ -32,7 +33,12 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+ShapeshiftForm.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ShapeshiftForm)
+
 
 inherits(ShapeshiftForm, Component)
 function ShapeshiftForm () {
@@ -93,7 +99,7 @@ ShapeshiftForm.prototype.onBuyWithShapeShift = function () {
       }))
       .catch(() => this.setState({
         showQrCode: false,
-        errorMessage: this.props.t('invalidRequest'),
+        errorMessage: this.context.t('invalidRequest'),
         isLoading: false,
       }))
   }
@@ -125,10 +131,10 @@ ShapeshiftForm.prototype.renderMarketInfo = function () {
 
   return h('div.shapeshift-form__metadata', {}, [
 
-    this.renderMetadata(this.props.t('status'), limit ? this.props.t('available') : this.props.t('unavailable')),
-    this.renderMetadata(this.props.t('limit'), limit),
-    this.renderMetadata(this.props.t('exchangeRate'), rate),
-    this.renderMetadata(this.props.t('min'), minimum),
+    this.renderMetadata(this.context.t('status'), limit ? this.context.t('available') : this.context.t('unavailable')),
+    this.renderMetadata(this.context.t('limit'), limit),
+    this.renderMetadata(this.context.t('exchangeRate'), rate),
+    this.renderMetadata(this.context.t('min'), minimum),
 
   ])
 }
@@ -142,7 +148,7 @@ ShapeshiftForm.prototype.renderQrCode = function () {
   return h('div.shapeshift-form', {}, [
 
     h('div.shapeshift-form__deposit-instruction', [
-      this.props.t('depositCoin', [depositCoin.toUpperCase()]),
+      this.context.t('depositCoin', [depositCoin.toUpperCase()]),
     ]),
 
     h('div', depositAddress),
@@ -179,7 +185,7 @@ ShapeshiftForm.prototype.render = function () {
 
             h('div.shapeshift-form__selector', [
 
-              h('div.shapeshift-form__selector-label', this.props.t('deposit')),
+              h('div.shapeshift-form__selector-label', this.context.t('deposit')),
 
               h(SimpleDropdown, {
                 selectedOption: this.state.depositCoin,
@@ -199,7 +205,7 @@ ShapeshiftForm.prototype.render = function () {
             h('div.shapeshift-form__selector', [
 
               h('div.shapeshift-form__selector-label', [
-                this.props.t('receive'),
+                this.context.t('receive'),
               ]),
 
               h('div.shapeshift-form__selector-input', ['ETH']),
@@ -217,7 +223,7 @@ ShapeshiftForm.prototype.render = function () {
           }, [
 
             h('div.shapeshift-form__address-input-label', [
-              this.props.t('refundAddress'),
+              this.context.t('refundAddress'),
             ]),
 
             h('input.shapeshift-form__address-input', {
@@ -239,7 +245,7 @@ ShapeshiftForm.prototype.render = function () {
         className: btnClass,
         disabled: !token,
         onClick: () => this.onBuyWithShapeShift(),
-      }, [this.props.t('buy')]),
+      }, [this.context.t('buy')]),
 
     ])
 }
