@@ -350,7 +350,7 @@ function copyTask(opts){
   return performCopy
 
   function performCopy(){
-    let stream = gulp.src(source + pattern, { base: source }).pipe(debug({ title: source }))
+    let stream = gulp.src(source + pattern, { base: source })
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
