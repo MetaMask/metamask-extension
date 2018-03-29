@@ -183,21 +183,6 @@ gulp.task('lint:fix', function () {
     .pipe(eslint.failAfterError())
 });
 
-/*
-gulp.task('default', ['lint'], function () {
-    // This will only run if the lint task is successful...
-});
-*/
-
-// build js
-
-const jsFiles = [
-  'inpage',
-  'contentscript',
-  'background',
-  'ui',
-]
-
 // scss compilation and autoprefixing tasks
 
 gulp.task('build:scss', function () {
@@ -229,33 +214,53 @@ gulp.task('fmt-scss', function () {
     .pipe(gulp.dest('ui/app/css/itcss'));
 });
 
+// build js
+
+const buildJsFiles = [
+  'inpage',
+  'contentscript',
+  'background',
+  'ui',
+]
+
 // bundle tasks
-createTasksForBuildJsExtension({ jsFiles, taskPrefix: 'dev:js', bundleTaskOpts: { isBuild: false } })
-createTasksForBuildJsExtension({ jsFiles, taskPrefix: 'build:js:extension', bundleTaskOpts: { isBuild: true }  })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:js', devMode: true })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:js:extension'  })
 createTasksForBuildJsMascara({ taskPrefix: 'build:js:mascara' })
 
-function createTasksForBuildJsExtension({ jsFiles, taskPrefix, bundleTaskOpts }) {
+function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './app/scripts'
-  const nonInpageFiles = jsFiles.filter(file => file !== 'inpage')
+  const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
   const buildPhase1 = ['inpage']
   const buildPhase2 = nonInpageFiles
   const destinations = browserPlatforms.map(platform => `./dist/${platform}/scripts`)
-  bundleTaskOpts.sourceMapDir = bundleTaskOpts.sourceMapDir || (debugMode ? './' : '../../sourcemaps')
-  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, sourceMapDir, buildPhase1, buildPhase2 })
+  bundleTaskOpts = Object.assign({
+    buildSourceMaps: true,
+    sourceMapDir: devMode ? './' : '../../sourcemaps',
+    minifyBuild: !devMode,
+    buildWithFullPaths: devMode,
+  }, bundleTaskOpts)
+  createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
 }
 
-function createTasksForBuildJsMascara({ taskPrefix, bundleTaskOpts }) {
+function createTasksForBuildJsMascara({ taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './mascara/src/'
-  const jsFiles = ['ui', 'proxy', 'background']
+  const buildPhase1 = ['ui', 'proxy', 'background']
   const destinations = ['./dist/mascara']
-  bundleTaskOpts.sourceMapDir = bundleTaskOpts.sourceMapDir || (debugMode ? './' : '../sourcemaps')
-  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, sourceMapDir, buildPhase1: jsFiles })
+  bundleTaskOpts = Object.assign({
+    buildSourceMaps: true,
+    sourceMapDir: './',
+    minifyBuild: !devMode,
+    buildWithFullPaths: devMode,
+  }, bundleTaskOpts)
+  createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 })
 }
 
-function createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, sourceMapDir, buildPhase1 = [], buildPhase2 = [] }) {
+function createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 = [], buildPhase2 = [] }) {
   // bundle task for each file
+  const jsFiles = [].concat(buildPhase1, buildPhase2)
   jsFiles.forEach((jsFile) => {
     gulp.task(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
       watch: false,
@@ -275,14 +280,13 @@ function createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, d
 
 // disc bundle analyzer tasks
 
-jsFiles.forEach((jsFile) => {
-  gulp.task(`disc:${jsFile}`,   discTask({ label: jsFile, filename: `${jsFile}.js` }))
+buildJsFiles.forEach((jsFile) => {
+  gulp.task(`disc:${jsFile}`, discTask({ label: jsFile, filename: `${jsFile}.js` }))
 })
 
-gulp.task('disc', gulp.parallel(jsFiles.map(jsFile => `disc:${jsFile}`)))
+gulp.task('disc', gulp.parallel(buildJsFiles.map(jsFile => `disc:${jsFile}`)))
 
 // clean dist
-
 
 gulp.task('clean', function clean() {
   return del(['./dist/*'])
@@ -369,8 +373,8 @@ function generateBundler(opts, performBundle) {
   const browserifyOpts = assign({}, watchify.args, {
     entries: [opts.filepath],
     plugin: 'browserify-derequire',
-    debug: true,
-    fullPaths: debugMode,
+    debug: opts.buildSourceMaps,
+    fullPaths: opts.buildWithFullPaths,
   })
 
   let bundler = browserify(browserifyOpts)
@@ -385,6 +389,10 @@ function generateBundler(opts, performBundle) {
 }
 
 function discTask(opts) {
+  opts = Object.assign({
+    buildWithFullPaths: true,
+  }, opts)
+
   const bundler = generateBundler(opts, performBundle)
   // output build logs to terminal
   bundler.on('log', gutil.log)
@@ -393,9 +401,9 @@ function discTask(opts) {
 
   function performBundle(){
     // start "disc" build
-    let discDir = path.join(__dirname, 'disc')
+    const discDir = path.join(__dirname, 'disc')
     mkdirp.sync(discDir)
-    let discPath = path.join(discDir, `${opts.label}.html`)
+    const discPath = path.join(discDir, `${opts.label}.html`)
 
     return (
       bundler.bundle()
@@ -435,15 +443,30 @@ function bundleTask(opts) {
       .pipe(replace('\'GULP_METAMASK_DEBUG\'', debugMode))
       // buffer file contents (?)
       .pipe(buffer())
-      // sourcemaps
-      // loads map from browserify file
-      .pipe(sourcemaps.init({ loadMaps: true }))
-      // Minification
-      .pipe(gulpif(opts.isBuild, uglify({
-        mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
-      })))
-      // writes .map file
-      .pipe(sourcemaps.write(opts.sourceMapDir))
+
+
+    // Initialize Source Maps
+    if (opts.buildSourceMaps) {
+      buildStream = buildStream
+        // loads map from browserify file
+        .pipe(sourcemaps.init({ loadMaps: true }))
+    }
+
+    // Minification
+    if (opts.minifyBuild) {
+      buildStream = buildStream
+        .pipe(uglify({
+          mangle: {
+            reserved: [ 'MetamaskInpageProvider' ]
+          },
+        }))
+    }
+
+    // Finalize Source Maps (writes .map file)
+    if (opts.buildSourceMaps) {
+      buildStream = buildStream
+        .pipe(sourcemaps.write(opts.sourceMapDir))
+    }
 
     // write completed bundles
     opts.destinations.forEach((dest) => {
