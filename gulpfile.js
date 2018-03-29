@@ -75,7 +75,7 @@ gulp.task('copy:fonts', copyTask({
 }))
 gulp.task('copy:reload', copyTask({
   source: './app/scripts/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}/scripts`),
+  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
   pattern: '/chromereload.js',
 }))
 gulp.task('copy:html', copyTask({
@@ -243,10 +243,10 @@ function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bun
   const nonInpageFiles = buildJsFiles.filter(file => file !== 'inpage')
   const buildPhase1 = ['inpage']
   const buildPhase2 = nonInpageFiles
-  const destinations = browserPlatforms.map(platform => `./dist/${platform}/scripts`)
+  const destinations = browserPlatforms.map(platform => `./dist/${platform}`)
   bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
-    sourceMapDir: devMode ? './' : '../../sourcemaps',
+    sourceMapDir: devMode ? './' : '../sourcemaps',
     minifyBuild: !devMode,
     buildWithFullPaths: devMode,
   }, bundleTaskOpts)
