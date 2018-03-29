@@ -103,6 +103,18 @@ function ConfirmSendEther () {
   this.onSubmit = this.onSubmit.bind(this)
 }
 
+ConfirmSendEther.prototype.componentWillMount = function () {
+  const { updateSendErrors } = this.props
+  const txMeta = this.gatherTxMeta()
+  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+
+  updateSendErrors({
+    insufficientFunds: balanceIsSufficient
+      ? false
+      : this.props.t('insufficientFunds')
+  })
+}
+
 ConfirmSendEther.prototype.getAmount = function () {
   const { conversionRate, currentCurrency } = this.props
   const txMeta = this.gatherTxMeta()

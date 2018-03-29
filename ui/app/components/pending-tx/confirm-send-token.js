@@ -142,12 +142,20 @@ function ConfirmSendToken () {
 }
 
 ConfirmSendToken.prototype.componentWillMount = function () {
-  const { tokenContract, selectedAddress } = this.props
+  const { tokenContract, selectedAddress, updateSendErrors} = this.props
+  const txMeta = this.gatherTxMeta()
+  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
   tokenContract && tokenContract
     .balanceOf(selectedAddress)
     .then(usersToken => {
     })
   this.props.updateTokenExchangeRate()
+
+  updateSendErrors({
+    insufficientFunds: balanceIsSufficient
+      ? false
+      : this.props.t('insufficientFunds')
+  })
 }
 
 ConfirmSendToken.prototype.getAmount = function () {
