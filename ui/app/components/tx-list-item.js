@@ -71,7 +71,8 @@ TxListItem.prototype.getAddressText = function () {
 
   let addressText
   if (txDataName === 'transfer' || address) {
-    addressText = `${value.slice(0, 10)}...${value.slice(-4)}`
+    const addressToRender = txDataName === 'transfer' ? value : address
+    addressText = `${addressToRender.slice(0, 10)}...${addressToRender.slice(-4)}`
   } else if (isMsg) {
     addressText = this.props.t('sigRequest')
   } else {
