@@ -3,7 +3,6 @@ const Component = require('react').Component
 const Provider = require('react-redux').Provider
 const h = require('react-hyperscript')
 const SelectedApp = require('./select-app')
-const I18nProvider = require('./i18n-provider')
 
 module.exports = Root
 
@@ -16,7 +15,7 @@ Root.prototype.render = function () {
     h(Provider, {
       store: this.props.store,
     }, [
-      h(I18nProvider, [ h(SelectedApp) ]),
+      h(SelectedApp),
     ])
 
   )
