@@ -1,37 +1,37 @@
-var watchify = require('watchify')
-var browserify = require('browserify')
-var disc = require('disc')
-var gulp = require('gulp')
-var source = require('vinyl-source-stream')
-var buffer = require('vinyl-buffer')
-var gutil = require('gulp-util')
-var watch = require('gulp-watch')
-var sourcemaps = require('gulp-sourcemaps')
-var jsoneditor = require('gulp-json-editor')
-var zip = require('gulp-zip')
-var assign = require('lodash.assign')
-var livereload = require('gulp-livereload')
-var del = require('del')
-var eslint = require('gulp-eslint')
-var fs = require('fs')
-var path = require('path')
-var manifest = require('./app/manifest.json')
-var gulpif = require('gulp-if')
-var replace = require('gulp-replace')
-var mkdirp = require('mkdirp')
-var asyncEach = require('async/each')
-var exec = require('child_process').exec
-var sass = require('gulp-sass')
-var autoprefixer = require('gulp-autoprefixer')
-var gulpStylelint = require('gulp-stylelint')
-var stylefmt = require('gulp-stylefmt')
-var uglify = require('gulp-uglify-es').default
-var babel = require('gulp-babel')
-var debug = require('gulp-debug')
+const watchify = require('watchify')
+const browserify = require('browserify')
+const disc = require('disc')
+const gulp = require('gulp')
+const source = require('vinyl-source-stream')
+const buffer = require('vinyl-buffer')
+const gutil = require('gulp-util')
+const watch = require('gulp-watch')
+const sourcemaps = require('gulp-sourcemaps')
+const jsoneditor = require('gulp-json-editor')
+const zip = require('gulp-zip')
+const assign = require('lodash.assign')
+const livereload = require('gulp-livereload')
+const del = require('del')
+const eslint = require('gulp-eslint')
+const fs = require('fs')
+const path = require('path')
+const manifest = require('./app/manifest.json')
+const gulpif = require('gulp-if')
+const replace = require('gulp-replace')
+const mkdirp = require('mkdirp')
+const asyncEach = require('async/each')
+const exec = require('child_process').exec
+const sass = require('gulp-sass')
+const autoprefixer = require('gulp-autoprefixer')
+const gulpStylelint = require('gulp-stylelint')
+const stylefmt = require('gulp-stylefmt')
+const uglify = require('gulp-uglify-es').default
+const babel = require('gulp-babel')
+const debug = require('gulp-debug')
 
 
-var disableDebugTools = gutil.env.disableDebugTools
-var debugMode = gutil.env.debug
+const disableDebugTools = gutil.env.disableDebugTools
+const debugMode = gutil.env.debug
 
 const browserPlatforms = [
   'firefox',
@@ -240,13 +240,9 @@ function createTasksForBuildJsExtension({ jsFiles, taskPrefix, bundleTaskOpts })
   const nonInpageFiles = jsFiles.filter(file => file !== 'inpage')
   const buildPhase1 = ['inpage']
   const buildPhase2 = nonInpageFiles
-  const destinations = [
-    './dist/firefox/scripts',
-    './dist/chrome/scripts',
-    './dist/edge/scripts',
-    './dist/opera/scripts',
-  ]
-  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
+  const destinations = browserPlatforms.map(platform => `./dist/${platform}/scripts`)
+  bundleTaskOpts.sourceMapDir = bundleTaskOpts.sourceMapDir || (debugMode ? './' : '../../sourcemaps')
+  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, sourceMapDir, buildPhase1, buildPhase2 })
 }
 
 function createTasksForBuildJsMascara({ taskPrefix, bundleTaskOpts }) {
@@ -254,10 +250,11 @@ function createTasksForBuildJsMascara({ taskPrefix, bundleTaskOpts }) {
   const rootDir = './mascara/src/'
   const jsFiles = ['ui', 'proxy', 'background']
   const destinations = ['./dist/mascara']
-  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1: jsFiles })
+  bundleTaskOpts.sourceMapDir = bundleTaskOpts.sourceMapDir || (debugMode ? './' : '../sourcemaps')
+  createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, sourceMapDir, buildPhase1: jsFiles })
 }
 
-function createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1 = [], buildPhase2 = [] }) {
+function createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, sourceMapDir, buildPhase1 = [], buildPhase2 = [] }) {
   // bundle task for each file
   jsFiles.forEach((jsFile) => {
     gulp.task(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
@@ -298,7 +295,7 @@ gulp.task('zip:edge', zipTask('edge'))
 gulp.task('zip:opera', zipTask('opera'))
 gulp.task('zip', gulp.parallel('zip:chrome', 'zip:firefox', 'zip:edge', 'zip:opera'))
 
-// set env var for production
+// set env for production
 gulp.task('apply-prod-environment', function(done) {
   process.env.NODE_ENV = 'production'
   done()
@@ -342,10 +339,10 @@ gulp.task('dist',
 // task generators
 
 function copyTask(opts){
-  var source = opts.source
-  var destination = opts.destination
-  var destinations = opts.destinations || [ destination ]
-  var pattern = opts.pattern || '/**/*'
+  const source = opts.source
+  const destination = opts.destination
+  const destinations = opts.destinations || [ destination ]
+  const pattern = opts.pattern || '/**/*'
 
   return performCopy
 
@@ -446,7 +443,7 @@ function bundleTask(opts) {
         mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
       })))
       // writes .map file
-      .pipe(sourcemaps.write(debugMode ? './' : '../../sourcemaps'))
+      .pipe(sourcemaps.write(opts.sourceMapDir))
 
     // write completed bundles
     opts.destinations.forEach((dest) => {
