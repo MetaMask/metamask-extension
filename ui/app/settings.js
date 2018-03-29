@@ -108,7 +108,7 @@ class Settings extends Component {
   renderCurrentLocale () {
     const { updateCurrentLocale, currentLocale } = this.props
     const currentLocaleMeta = locales.find(locale => locale.code === currentLocale)
-    const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name || ''
+    const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : ''
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
