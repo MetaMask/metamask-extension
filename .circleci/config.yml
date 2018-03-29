@@ -100,6 +100,7 @@ jobs:
             - dist
       - store_artifacts:
           path: dist/mascara
+          destination: build
       - run:
           name: build:announce
           command: |
