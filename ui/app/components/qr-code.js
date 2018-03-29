@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const qrCode = require('qrcode-npm').qrcode
 const inherits = require('util').inherits
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const isHexPrefixed = require('ethereumjs-util').isHexPrefixed
 const ReadOnlyInput = require('./readonly-input')
 

@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../actions')
 
 class NewAccountModal extends Component {
@@ -11,7 +11,7 @@ class NewAccountModal extends Component {
     const newAccountNumber = numberOfExistingAccounts + 1
 
     this.state = {
-      newAccountName: `${props.t('account')} ${newAccountNumber}`,
+      newAccountName: `${this.context.t('account')} ${newAccountNumber}`,
     }
   }
 
@@ -22,7 +22,7 @@ class NewAccountModal extends Component {
       h('div.new-account-modal-wrapper', {
       }, [
         h('div.new-account-modal-header', {}, [
-          this.props.t('newAccount'),
+          this.context.t('newAccount'),
         ]),
 
         h('div.modal-close-x', {
@@ -30,19 +30,19 @@ class NewAccountModal extends Component {
         }),
 
         h('div.new-account-modal-content', {}, [
-          this.props.t('accountName'),
+          this.context.t('accountName'),
         ]),
 
         h('div.new-account-input-wrapper', {}, [
           h('input.new-account-input', {
             value: this.state.newAccountName,
-            placeholder: this.props.t('sampleAccountName'),
+            placeholder: this.context.t('sampleAccountName'),
             onChange: event => this.setState({ newAccountName: event.target.value }),
           }, []),
         ]),
 
         h('div.new-account-modal-content.after-input', {}, [
-          this.props.t('or'),
+          this.context.t('or'),
         ]),
 
         h('div.new-account-modal-content.after-input.pointer', {
@@ -50,13 +50,13 @@ class NewAccountModal extends Component {
             this.props.hideModal()
             this.props.showImportPage()
           },
-        }, this.props.t('importAnAccount')),
+        }, this.context.t('importAnAccount')),
 
         h('div.new-account-modal-content.button.allcaps', {}, [
           h('button.btn-clear', {
             onClick: () => this.props.createAccount(newAccountName),
           }, [
-            this.props.t('save'),
+            this.context.t('save'),
           ]),
         ]),
       ]),
@@ -104,4 +104,9 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
+NewAccountModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(NewAccountModal)
+

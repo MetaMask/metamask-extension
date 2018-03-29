@@ -1,7 +1,8 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
-const connect = require('./metamask-connect')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const actions = require('./actions')
 const classnames = require('classnames')
 
@@ -45,7 +46,12 @@ const QrView = require('./components/qr-code')
 // Global Modals
 const Modal = require('./components/modals/index').Modal
 
+App.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(App)
+
 
 inherits(App, Component)
 function App () { Component.call(this) }
@@ -293,8 +299,8 @@ App.prototype.renderAppBar = function () {
 
             // metamask name
             h('.flex-row', [
-              h('h1', this.props.t('appName')),
-              h('div.beta-label', this.props.t('beta')),
+              h('h1', this.context.t('appName')),
+              h('div.beta-label', this.context.t('beta')),
             ]),
           ]),
 
@@ -556,15 +562,15 @@ App.prototype.getConnectingLabel = function () {
   let name
 
   if (providerName === 'mainnet') {
-    name = this.props.t('connectingToMainnet')
+    name = this.context.t('connectingToMainnet')
   } else if (providerName === 'ropsten') {
-    name = this.props.t('connectingToRopsten')
+    name = this.context.t('connectingToRopsten')
   } else if (providerName === 'kovan') {
-    name = this.props.t('connectingToRopsten')
+    name = this.context.t('connectingToRopsten')
   } else if (providerName === 'rinkeby') {
-    name = this.props.t('connectingToRinkeby')
+    name = this.context.t('connectingToRinkeby')
   } else {
-    name = this.props.t('connectingToUnknown')
+    name = this.context.t('connectingToUnknown')
   }
 
   return name
@@ -577,15 +583,15 @@ App.prototype.getNetworkName = function () {
   let name
 
   if (providerName === 'mainnet') {
-    name = this.props.t('mainnet')
+    name = this.context.t('mainnet')
   } else if (providerName === 'ropsten') {
-    name = this.props.t('ropsten')
+    name = this.context.t('ropsten')
   } else if (providerName === 'kovan') {
-    name = this.props.t('kovan')
+    name = this.context.t('kovan')
   } else if (providerName === 'rinkeby') {
-    name = this.props.t('rinkeby')
+    name = this.context.t('rinkeby')
   } else {
-    name = this.props.t('unknownNetwork')
+    name = this.context.t('unknownNetwork')
   }
 
   return name

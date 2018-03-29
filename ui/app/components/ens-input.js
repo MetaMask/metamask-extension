@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const extend = require('xtend')
@@ -8,10 +9,15 @@ const ENS = require('ethjs-ens')
 const networkMap = require('ethjs-ens/lib/network-map.json')
 const ensRE = /.+\..+$/
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const ToAutoComplete = require('./send/to-autocomplete')
 
+EnsInput.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect()(EnsInput)
+
 
 inherits(EnsInput, Component)
 function EnsInput () {
@@ -70,13 +76,13 @@ EnsInput.prototype.lookupEnsName = function (recipient) {
   log.info(`ENS attempting to resolve name: ${recipient}`)
   this.ens.lookup(recipient.trim())
   .then((address) => {
-    if (address === ZERO_ADDRESS) throw new Error(this.props.t('noAddressForName'))
+    if (address === ZERO_ADDRESS) throw new Error(this.context.t('noAddressForName'))
     if (address !== ensResolution) {
       this.setState({
         loadingEns: false,
         ensResolution: address,
         nickname: recipient.trim(),
-        hoverText: address + '\n' + this.props.t('clickCopy'),
+        hoverText: address + '\n' + this.context.t('clickCopy'),
         ensFailure: false,
       })
     }

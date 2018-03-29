@@ -1,11 +1,11 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../actions')
 
 class NewAccountCreateForm extends Component {
-  constructor (props) {
+  constructor (props, context) {
     super(props)
 
     const { numberOfExistingAccounts = 0 } = props
@@ -13,7 +13,7 @@ class NewAccountCreateForm extends Component {
 
     this.state = {
       newAccountName: '',
-      defaultAccountName: this.props.t('newAccountNumberName', [newAccountNumber]),
+      defaultAccountName: context.t('newAccountNumberName', [newAccountNumber]),
     }
   }
 
@@ -24,7 +24,7 @@ class NewAccountCreateForm extends Component {
     return h('div.new-account-create-form', [
 
       h('div.new-account-create-form__input-label', {}, [
-        this.props.t('accountName'),
+        this.context.t('accountName'),
       ]),
 
       h('div.new-account-create-form__input-wrapper', {}, [
@@ -40,13 +40,13 @@ class NewAccountCreateForm extends Component {
         h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => this.props.goHome(),
         }, [
-          this.props.t('cancel'),
+          this.context.t('cancel'),
         ]),
 
         h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.props.createAccount(newAccountName || defaultAccountName),
         }, [
-          this.props.t('create'),
+          this.context.t('create'),
         ]),
 
       ]),
@@ -97,4 +97,9 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
+NewAccountCreateForm.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(NewAccountCreateForm)
+
