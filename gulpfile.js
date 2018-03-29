@@ -27,19 +27,23 @@ var gulpStylelint = require('gulp-stylelint')
 var stylefmt = require('gulp-stylefmt')
 var uglify = require('gulp-uglify-es').default
 var babel = require('gulp-babel')
+var debug = require('gulp-debug')
 
 
 var disableDebugTools = gutil.env.disableDebugTools
-var debug = gutil.env.debug
+var debugMode = gutil.env.debug
 
-const commonPlatforms = [
-  // browser extensions
+const browserPlatforms = [
   'firefox',
   'chrome',
   'edge',
   'opera',
+]
+const commonPlatforms = [
   // browser webapp
   'mascara',
+  // browser extensions
+  ...browserPlatforms
 ]
 
 // browser reload
@@ -51,7 +55,7 @@ gulp.task('dev:reload', function() {
 })
 
 
-// copy static
+// copy universal
 
 gulp.task('copy:locales', copyTask({
   source: './app/_locales/',
@@ -74,11 +78,21 @@ gulp.task('copy:reload', copyTask({
   destinations: commonPlatforms.map(platform => `./dist/${platform}/scripts`),
   pattern: '/chromereload.js',
 }))
-gulp.task('copy:root', copyTask({
+
+// copy extension
+
+gulp.task('copy:manifest', copyTask({
   source: './app/',
-  destinations: commonPlatforms.map(platform => `./dist/${platform}`),
-  pattern: '/*',
+  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
+  pattern: '/*.json',
 }))
+gulp.task('copy:html', copyTask({
+  source: './app/',
+  destinations: browserPlatforms.map(platform => `./dist/${platform}`),
+  pattern: '/*.html',
+}))
+
+// manifest tinkering
 
 gulp.task('manifest:chrome', function() {
   return gulp.src('./dist/chrome/manifest.json')
@@ -113,7 +127,7 @@ gulp.task('manifest:production', function() {
   ],{base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(gulpif(!debug,jsoneditor(function(json) {
+  .pipe(gulpif(!debugMode,jsoneditor(function(json) {
     json.background.scripts = json.background.scripts.filter((script) => {
       return !script.includes('chromereload')
     })
@@ -123,21 +137,27 @@ gulp.task('manifest:production', function() {
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
 
-const staticFiles = [
-  'locales',
-  'images',
-  'fonts',
-  'root'
+const copyTaskNames = [
+  'copy:locales',
+  'copy:images',
+  'copy:fonts',
+  'copy:manifest',
+  'copy:html',
+  'copy:contractImages',
 ]
 
-var copyStrings = staticFiles.map(staticFile => `copy:${staticFile}`)
-copyStrings.push('copy:contractImages')
-
-if (debug) {
-  copyStrings.push('copy:reload')
+if (debugMode) {
+  copyTaskNames.push('copy:reload')
 }
 
-gulp.task('copy', gulp.series(gulp.parallel(...copyStrings), 'manifest:production', 'manifest:chrome', 'manifest:opera'))
+gulp.task('copy',
+  gulp.series(
+    gulp.parallel(...copyTaskNames),
+    'manifest:production',
+    'manifest:chrome',
+    'manifest:opera'
+  )
+)
 gulp.task('copy:watch', function(){
   gulp.watch(['./app/{_locales,images}/*', './app/scripts/chromereload.js', './app/*.{html,json}'], gulp.series('copy'))
 })
@@ -245,7 +265,7 @@ function createTasksForBuildJsMascara({ taskPrefix, bundleTaskOpts }) {
   // inpage must be built before all other scripts:
   const rootDir = './mascara/src/'
   const jsFiles = ['ui', 'proxy', 'background']
-  const destinations = ['./dist/mascara/scripts']
+  const destinations = ['./dist/mascara']
   createTasksForBuildJs({ rootDir, jsFiles, taskPrefix, bundleTaskOpts, destinations, buildPhase1: jsFiles })
 }
 
@@ -342,11 +362,11 @@ function copyTask(opts){
   return performCopy
 
   function performCopy(){
-    let stream = gulp.src(source + pattern, { base: source })
+    let stream = gulp.src(source + pattern, { base: source }).pipe(debug({ title: source }))
     destinations.forEach(function(destination) {
       stream = stream.pipe(gulp.dest(destination))
     })
-    stream.pipe(gulpif(debug,livereload()))
+    stream.pipe(gulpif(debugMode,livereload()))
 
     return stream
   }
@@ -365,7 +385,7 @@ function generateBundler(opts, performBundle) {
     entries: [opts.filepath],
     plugin: 'browserify-derequire',
     debug: true,
-    fullPaths: debug,
+    fullPaths: debugMode,
   })
 
   let bundler = browserify(browserifyOpts)
@@ -427,7 +447,7 @@ function bundleTask(opts) {
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
-      .pipe(replace('\'GULP_METAMASK_DEBUG\'', debug))
+      .pipe(replace('\'GULP_METAMASK_DEBUG\'', debugMode))
       // buffer file contents (?)
       .pipe(buffer())
       // sourcemaps
@@ -438,7 +458,7 @@ function bundleTask(opts) {
         mangle: {  reserved: [ 'MetamaskInpageProvider' ] },
       })))
       // writes .map file
-      .pipe(sourcemaps.write(debug ? './' : '../../sourcemaps'))
+      .pipe(sourcemaps.write(debugMode ? './' : '../../sourcemaps'))
 
     // write completed bundles
     opts.destinations.forEach((dest) => {
@@ -447,7 +467,7 @@ function bundleTask(opts) {
 
     // finally, trigger live reload
     buildStream = buildStream
-      .pipe(gulpif(debug, livereload()))
+      .pipe(gulpif(debugMode, livereload()))
 
     return buildStream
 
