@@ -3,6 +3,7 @@
 ## Current Master
 
 - Fix bug where the "Reset account" feature would not clear the network cache.
+- Increase maximum gas limit, to allow very gas heavy transactions, since block gas limits have been stable.
 
 ## 4.4.0 Mon Mar 26 2018
 
