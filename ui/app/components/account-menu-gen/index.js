@@ -35,7 +35,7 @@ function mapStateToProps (state) {
     keyrings:           state.metamask.keyrings,
     identities:         state.metamask.identities,
     accounts:           state.metamask.accounts,
-    keyringProviders:   state.metamask.keyringProviders,
+    walletProviders:   state.metamask.walletProviders,
   }
 }
 
@@ -121,7 +121,7 @@ AccountMenu.prototype.render = function () {
 
 
 /**
- * Renders the Account-New Menu-Entries dynamically, using keyringProviders data
+ * Renders the Account-New Menu-Entries dynamically, using walletProviders data
  * 
  * Relevant data is passed within the kyeringProviders state object
  * 
@@ -133,16 +133,16 @@ AccountMenu.prototype.renderAccountNew = function () {
 
   const {
     keyrings,
-    keyringProviders,
+    walletProviders,
     showNewAccountPage, // needed thus onClick event fires properly
   } = this.props
 
   var temp=[];
-  Object.keys(keyringProviders).map((key, index) => {
+  Object.keys(walletProviders).map((key, index) => {
 
-    const func = keyringProviders[key].func;
-    const text = keyringProviders[key].text;
-    const img  = keyringProviders[key].img;
+    const func = walletProviders[key].func;
+    const text = walletProviders[key].text;
+    const img  = walletProviders[key].img;
 
     temp.push(
       h(Item, {
