@@ -97,7 +97,7 @@ describe('Metamask popup page', function () {
       await delay(300)
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(500)
-      await driver.findElement(By.css('#app-content > div > div > div:nth-child(3) > span > div > li:nth-child(3)')).click()
+      await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)')).click()
     })
 
     it('should accept account password after lock', async () => {
