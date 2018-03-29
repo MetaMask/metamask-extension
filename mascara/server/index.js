@@ -15,21 +15,20 @@ function createMetamascaraServer () {
   const uiBundle = createBundle(path.join(__dirname, '/../src/ui.js'))
   const backgroundBuild = createBundle(path.join(__dirname, '/../src/background.js'))
 
-  // serve bundles
+  // setup server
   const server = express()
   server.use(compression())
 
-  // ui window
-  serveBundle(server, '/scripts/ui.js', uiBundle)
-  server.use(express.static(path.join(__dirname, '/../ui/'), { setHeaders: (res) => res.set('X-Frame-Options', 'DENY') }))
-  server.use(express.static(path.join(__dirname, '/../../dist/chrome')))
-  // metamascara
+  // serve bundles
   serveBundle(server, '/metamascara.js', metamascaraBundle)
-  // proxy
+  serveBundle(server, '/scripts/ui.js', uiBundle)
   serveBundle(server, '/scripts/proxy.js', proxyBundle)
-  server.use('/', express.static(path.join(__dirname, '/../proxy')))
-  // background
   serveBundle(server, '/scripts/background.js', backgroundBuild)
+
+  // serve assets
+  server.use(express.static(path.join(__dirname, '/../ui/'), { setHeaders: (res) => res.set('X-Frame-Options', 'DENY') }))
+  server.use(express.static(path.join(__dirname, '/../../dist/mascara')))
+  server.use(express.static(path.join(__dirname, '/../proxy')))
 
   return server
 
