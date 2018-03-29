@@ -14,7 +14,7 @@ describe('Metamask popup page', function () {
     const extPath = path.resolve('dist/chrome')
     driver = buildWebDriver(extPath)
     await driver.get('chrome://extensions-frame')
-    const elems = await driver.findElements(By.className('extension-list-item-wrapper'))
+    const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
     const extensionId = await elems[1].getAttribute('id')
     await driver.get(`chrome-extension://${extensionId}/popup.html`)
     await delay(500)
@@ -37,9 +37,7 @@ describe('Metamask popup page', function () {
     })
 
     it('should show privacy notice', async () => {
-      const privacy = await driver.findElement(By.className(
-        'terms-header'
-      )).getText()
+      const privacy = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
       driver.findElement(By.css(
         'button'
@@ -48,9 +46,7 @@ describe('Metamask popup page', function () {
 
     it('should show terms of use', async () => {
       await delay(300)
-      const terms = await driver.findElement(By.className(
-        'terms-header'
-      )).getText()
+      const terms = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
     })
 
@@ -87,16 +83,16 @@ describe('Metamask popup page', function () {
 
     it('should show value was created and seed phrase', async () => {
       await delay(700)
-      this.seedPhase = await driver.findElement(By.className('twelve-word-phrase')).getText()
+      this.seedPhase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
       const continueAfterSeedPhrase = await driver.findElement(By.css('button'))
       await continueAfterSeedPhrase.click()
     })
 
     it('should show lock account', async () => {
       await delay(300)
-      await driver.findElement(By.className('sandwich-expando')).click()
+      await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(500)
-      await driver.findElement(By.xpath('//*[@id="app-content"]/div/div[3]/span/div/li[2]')).click()
+      await driver.findElement(By.css('#app-content > div > div > div:nth-child(3) > span > div > li:nth-child(3)')).click()
     })
 
     it('should accept account password after lock', async () => {
@@ -106,16 +102,16 @@ describe('Metamask popup page', function () {
       await delay(500)
     })
 
-    it('should show QR code', async () => {
+    it('should show QR code option', async () => {
       await delay(300)
-      await driver.findElement(By.className('fa-ellipsis-h')).click()
-      await driver.findElement(By.xpath('//*[@id="app-content"]/div/div[4]/div/div/div[1]/flex-column/div[1]/div/span/i/div/div/li[2]')).click()
+      await driver.findElement(By.css('.fa-ellipsis-h')).click()
+      await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div > div:nth-child(1) > flex-column > div.name-label > div > span > i > div > div > li:nth-child(3)')).click()
       await delay(300)
     })
 
     it('should show the account address', async () => {
-      this.accountAddress = await driver.findElement(By.className('ellip-address')).getText()
-      await driver.findElement(By.className('fa-arrow-left')).click()
+      this.accountAddress = await driver.findElement(By.css('.ellip-address')).getText()
+      await driver.findElement(By.css('.fa-arrow-left')).click()
       await delay(500)
     })
   })
