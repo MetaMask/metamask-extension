@@ -23,7 +23,8 @@ function createMetamascaraServer () {
   serveBundle(server, '/metamascara.js', metamascaraBundle)
   serveBundle(server, '/scripts/ui.js', uiBundle)
   serveBundle(server, '/scripts/proxy.js', proxyBundle)
-  serveBundle(server, '/scripts/background.js', backgroundBuild)
+  // the serviceworker must be served from the root of the app
+  serveBundle(server, '/background.js', backgroundBuild)
 
   // serve assets
   server.use(express.static(path.join(__dirname, '/../ui/'), { setHeaders: (res) => res.set('X-Frame-Options', 'DENY') }))
