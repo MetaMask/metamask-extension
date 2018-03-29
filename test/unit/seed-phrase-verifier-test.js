@@ -1,6 +1,6 @@
 const assert = require('assert')
 const clone = require('clone')
-const KeyringController = require('eth-keyring-controller')
+const KeyringController = require('mm-vault')
 const firstTimeState = require('../../app/scripts/first-time-state')
 const seedPhraseVerifier = require('../../app/scripts/lib/seed-phrase-verifier')
 const mockEncryptor = require('../lib/mock-encryptor')
