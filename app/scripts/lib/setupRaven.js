@@ -23,10 +23,20 @@ function setupRaven(opts) {
     release,
     transport: function(opts) {
       const report = opts.data
-      // simplify ethjs error messages
+      // simplify certain complex error messages
       report.exception.values.forEach(item => {
-        item.value = extractEthjsErrorMessage(item.value)
+        let errorMessage = item.value
+        // simplify ethjs error messages
+        errorMessage = extractEthjsErrorMessage(errorMessage)
+        // simplify 'Transaction Failed: known transaction'
+        if (errorMessage.indexOf('Transaction Failed: known transaction') === 0) {
+          // cut the hash from the error message
+          errorMessage = 'Transaction Failed: known transaction'
+        }
+        // finalize
+        item.value = errorMessage
       })
+
       // modify report urls
       rewriteReportUrls(report)
       // make request normally

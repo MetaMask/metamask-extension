@@ -49,12 +49,14 @@ describe('Metamask popup page', function () {
       const privacy = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(privacy, 'PRIVACY NOTICE', 'shows privacy notice')
       driver.findElement(By.css('button')).click()
+      await delay(300)
     })
 
     it('should show terms of use', async () => {
       await delay(300)
       const terms = await driver.findElement(By.css('.terms-header')).getText()
       assert.equal(terms, 'TERMS OF USE', 'shows terms of use')
+      await delay(300)
     })
 
     it('should be unable to continue without scolling throught the terms of use', async () => {
@@ -64,6 +66,7 @@ describe('Metamask popup page', function () {
         'Attributions'
       ))
       await driver.executeScript('arguments[0].scrollIntoView(true)', element)
+      await delay(300)
     })
 
     it('should be able to continue when scrolled to the bottom of terms of use', async () => {
@@ -72,10 +75,10 @@ describe('Metamask popup page', function () {
       await delay(500)
       assert.equal(buttonEnabled, true, 'enabled continue button')
       await button.click()
+      await delay(300)
     })
 
     it('should accept password with length of eight', async () => {
-      await delay(300)
       const passwordBox = await driver.findElement(By.id('password-box'))
       const passwordBoxConfirm = await driver.findElement(By.id('password-box-confirm'))
       const button = driver.findElement(By.css('button'))
@@ -91,10 +94,10 @@ describe('Metamask popup page', function () {
       this.seedPhase = await driver.findElement(By.css('.twelve-word-phrase')).getText()
       const continueAfterSeedPhrase = await driver.findElement(By.css('button'))
       await continueAfterSeedPhrase.click()
+      await delay(300)
     })
 
     it('should show lock account', async () => {
-      await delay(300)
       await driver.findElement(By.css('.sandwich-expando')).click()
       await delay(500)
       await driver.findElement(By.css('#app-content > div > div:nth-child(3) > span > div > li:nth-child(3)')).click()
