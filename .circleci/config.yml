@@ -99,7 +99,10 @@ jobs:
           paths:
             - dist
       - store_artifacts:
-          path: dist
+          path: dist/mascara
+          destination: builds/mascara
+      - store_artifacts:
+          path: builds
           destination: builds
       - run:
           name: build:announce
