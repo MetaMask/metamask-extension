@@ -99,14 +99,14 @@ jobs:
           paths:
             - dist
       - store_artifacts:
-          path: dist/mascara
-          destination: build
+          path: dist
+          destination: builds
       - run:
           name: build:announce
           command: |
             CIRCLE_PR_NUMBER="${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}"
             SHORT_SHA1=$(echo $CIRCLE_SHA1 | cut -c 1-7)
-            QA_BUILD_URL="https://$CIRCLE_BUILD_NUM-42009758-gh.circle-artifacts.com/0/home/circleci/project/dist/mascara/home.html"
+            QA_BUILD_URL="https://$CIRCLE_BUILD_NUM-42009758-gh.circle-artifacts.com/0/builds/mascara/home.html"
             COMMENT_BODY="[Try QA Build for $SHORT_SHA1]($QA_BUILD_URL)"
             JSON_PAYLOAD="{\"body\":\"$COMMENT_BODY\"}"
             POST_COMMENT_URI="https://api.github.com/repos/metamask/metamask-extension/issues/$CIRCLE_PR_NUMBER/comments"
