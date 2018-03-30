@@ -35,6 +35,7 @@ async function captureAllScreens() {
   tabs = await driver.getAllWindowHandles()
   await driver.switchTo().window(tabs[0])
   await delay(300)
+  await setProviderType('localhost')
 
   // click try new ui
   await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-center.flex-grow > p')).click()
@@ -42,8 +43,12 @@ async function captureAllScreens() {
 
   // close metamask homepage and extra home.html
   tabs = await driver.getAllWindowHandles()
-  await driver.switchTo().window(tabs[2])
-  driver.close()
+  console.log(tabs)
+  // metamask homepage is opened on prod, not dev
+  if (tabs.length > 2) {
+    await driver.switchTo().window(tabs[2])
+    driver.close()
+  }
   await driver.switchTo().window(tabs[1])
   driver.close()
   await driver.switchTo().window(tabs[0])
@@ -159,7 +164,11 @@ async function captureAllScreens() {
   }
 
   async function setLocale(code) {
-    await driver.executeScript('setLocale(arguments[0])', code)
+    await driver.executeScript('window.metamask.updateCurrentLocale(arguments[0])', code)
+  }
+
+  async function setProviderType(type) {
+    await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
   }
 
   // cleanup

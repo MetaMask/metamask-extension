@@ -69,9 +69,14 @@ async function startApp (metamaskState, accountManager, opts) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
-  // used by screenshotter tooling
-  global.setLocale = (key) => {
-    store.dispatch(actions.updateCurrentLocale(key))
+  // global metamask api - used by tooling
+  global.metamask = {
+    updateCurrentLocale: (code) => {
+      store.dispatch(actions.updateCurrentLocale(code))
+    },
+    setProviderType: (type) => {
+      store.dispatch(actions.setProviderType(type))
+    },
   }
 
   // start app
