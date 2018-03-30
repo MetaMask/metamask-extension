@@ -36,8 +36,6 @@ async function captureAllScreens() {
   await driver.switchTo().window(tabs[0])
   await delay(300)
 
-  await captureScreenShot('start-old')
-
   // click try new ui
   await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-center.flex-grow > p')).click()
   await delay(300)
@@ -105,7 +103,7 @@ async function captureAllScreens() {
   // finish up
   console.log('building gif...')
   await generateGif()
-  // await driver.quit()
+  await driver.quit()
   return
 
   //
@@ -147,12 +145,15 @@ async function captureAllScreens() {
 
   async function captureLanguageScreenShots(label) {
     const nonEnglishLocales = localesIndex.filter(localeMeta => localeMeta.code !== 'en')
+    // take english shot
+    await captureScreenShot(`${label} (en)`)
     for (let localeMeta of nonEnglishLocales) {
-      // set locale
+      // set locale and take shot
       await setLocale(localeMeta.code)
       await delay(300)
       await captureScreenShot(`${label} (${localeMeta.code})`)
     }
+    // return locale to english
     await setLocale('en')
     await delay(300)
   }
@@ -184,11 +185,11 @@ async function captureAllScreens() {
     const pngBuffer = Buffer.from(screenshot, 'base64')
     const size = sizeOfPng.calculate(pngBuffer)
 
-    // read all pngs into gif
+    // read only the english pngs into gif
     const encoder = new GIFEncoder(size.width, size.height)
-    const stream = pngFileStream('./test-artifacts/screens/*.png')
+    const stream = pngFileStream('./test-artifacts/screens/* (en).png')
       .pipe(encoder.createWriteStream({ repeat: -1, delay: 1000, quality: 10 }))
-      .pipe(fs.createWriteStream('./test-artifacts/screens/walkthrough.gif'))
+      .pipe(fs.createWriteStream('./test-artifacts/screens/walkthrough (en).gif'))
 
     // wait for end
     await pify(endOfStream)(stream)
