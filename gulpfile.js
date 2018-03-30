@@ -254,6 +254,7 @@ function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bun
     sourceMapDir: devMode ? './' : '../sourcemaps',
     minifyBuild: !devMode,
     buildWithFullPaths: devMode,
+    watch: devMode,
   }, bundleTaskOpts)
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
 }
@@ -268,6 +269,7 @@ function createTasksForBuildJsMascara({ taskPrefix, devMode, bundleTaskOpts = {}
     sourceMapDir: './',
     minifyBuild: !devMode,
     buildWithFullPaths: devMode,
+    watch: devMode,
   }, bundleTaskOpts)
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 })
 }
@@ -277,7 +279,6 @@ function createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinatio
   const jsFiles = [].concat(buildPhase1, buildPhase2)
   jsFiles.forEach((jsFile) => {
     gulp.task(`${taskPrefix}:${jsFile}`, bundleTask(Object.assign({
-      watch: false,
       label: jsFile,
       filename: `${jsFile}.js`,
       filepath: `${rootDir}/${jsFile}.js`,
@@ -289,7 +290,7 @@ function createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinatio
   subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
   if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
 
-  gulp.task(taskPrefix, gulp.series(subtasks))
+  gulp.task(taskPrefix, gulp.parallel(subtasks))
 }
 
 // disc bundle analyzer tasks
@@ -324,9 +325,9 @@ gulp.task('apply-prod-environment', function(done) {
 gulp.task('dev',
   gulp.series(
     'build:scss',
-    'dev:js',
     'copy',
     gulp.parallel(
+      'dev:js',
       'watch:scss',
       'copy:dev',
       'dev:reload'
