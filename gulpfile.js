@@ -114,6 +114,37 @@ function createCopyTasks(label, opts) {
   copyDevTaskNames.push(copyDevTaskName)
 }
 
+function copyTask(taskName, opts){
+  const source = opts.source
+  const destination = opts.destination
+  const destinations = opts.destinations || [destination]
+  const pattern = opts.pattern || '/**/*'
+  const devMode = opts.devMode
+
+  return gulp.task(taskName, function () {
+    if (devMode) {
+      watch(source + pattern, (event) => {
+        livereload.changed(event.path)
+        performCopy()
+      })
+    }
+
+    return performCopy()
+  })
+
+  function performCopy() {
+    // stream from source
+    let stream = gulp.src(source + pattern, { base: source })
+
+    // copy to destinations
+    destinations.forEach(function(destination) {
+      stream = stream.pipe(gulp.dest(destination))
+    })
+
+    return stream
+  }
+}
+
 // manifest tinkering
 
 gulp.task('manifest:chrome', function() {
@@ -401,38 +432,6 @@ gulp.task('dist',
 )
 
 // task generators
-
-function copyTask(taskName, opts){
-  const source = opts.source
-  const destination = opts.destination
-  const destinations = opts.destinations || [ destination ]
-  const pattern = opts.pattern || '/**/*'
-  const devMode = opts.devMode
-
-  return gulp.task(taskName, performCopy)
-
-  function performCopy(){
-    // stream from source
-    let stream
-    if (devMode) {
-      stream = watch(source + pattern, { base: source })
-    } else {
-      stream = gulp.src(source + pattern, { base: source })
-    }
-
-    // copy to destinations
-    destinations.forEach(function(destination) {
-      stream = stream.pipe(gulp.dest(destination))
-    })
-
-    // trigger reload
-    if (devMode) {
-      stream.pipe(livereload())
-    }
-
-    return stream
-  }
-}
 
 function zipTask(target) {
   return () => {
