@@ -28,7 +28,8 @@ const stylefmt = require('gulp-stylefmt')
 const uglify = require('gulp-uglify-es').default
 const babel = require('gulp-babel')
 const debug = require('gulp-debug')
-
+const pify = require('pify')
+const endOfStream = pify(require('end-of-stream'))
 
 const disableDebugTools = gutil.env.disableDebugTools
 const debugMode = gutil.env.debug
@@ -260,7 +261,11 @@ gulp.task('dev:scss', createScssBuildTask({
 function createScssBuildTask({ src, dest, devMode, pattern }) {
   return function () {
     if (devMode) {
-      watch(pattern, buildScss)
+      watch(pattern, async (event) => {
+        const stream = buildScss()
+        await endOfStream(stream)
+        livereload.changed(event.path)
+      })
     }
     return buildScss()
   }
@@ -454,7 +459,11 @@ function generateBundler(opts, performBundle) {
   if (opts.watch) {
     bundler = watchify(bundler)
     // on any file update, re-runs the bundler
-    bundler.on('update', performBundle)
+    bundler.on('update', async (ids) => {
+      const stream = performBundle()
+      await endOfStream(stream)
+      livereload.changed(`${ids}`)
+    })
   }
 
   return bundler
@@ -494,7 +503,6 @@ function bundleTask(opts) {
   return performBundle
 
   function performBundle(){
-
     let buildStream = bundler.bundle()
 
     // handle errors
@@ -544,10 +552,6 @@ function bundleTask(opts) {
     opts.destinations.forEach((dest) => {
       buildStream = buildStream.pipe(gulp.dest(dest))
     })
-
-    // finally, trigger live reload
-    buildStream = buildStream
-      .pipe(gulpif(debugMode, livereload()))
 
     return buildStream
 
