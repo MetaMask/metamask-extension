@@ -318,7 +318,7 @@ function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bun
 function createTasksForBuildJsMascara({ taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
   const rootDir = './mascara/src/'
-  const buildPhase1 = ['ui', 'proxy', 'background']
+  const buildPhase1 = ['ui', 'proxy', 'background', 'metamascara']
   const destinations = ['./dist/mascara']
   bundleTaskOpts = Object.assign({
     buildSourceMaps: true,
