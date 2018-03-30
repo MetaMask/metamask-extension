@@ -160,7 +160,7 @@ ConfirmSendToken.prototype.componentWillMount = function () {
   updateSendErrors({
     insufficientFunds: balanceIsSufficient
       ? false
-      : this.props.t('insufficientFunds')
+      : this.context.t('insufficientFunds'),
   })
 }
 
@@ -495,7 +495,7 @@ ConfirmSendToken.prototype.onSubmit = function (event) {
   if (valid && this.verifyGasParams() && balanceIsSufficient) {
     this.props.sendTransaction(txMeta, event)
   } else if (!balanceIsSufficient) {
-    updateSendErrors({ insufficientFunds: this.props.t('insufficientFunds') })
+    updateSendErrors({ insufficientFunds: this.context.t('insufficientFunds') })
   } else {
     updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
     this.setState({ submitting: false })
