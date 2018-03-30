@@ -290,7 +290,7 @@ function createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinatio
   subtasks.push(gulp.parallel(buildPhase1.map(file => `${taskPrefix}:${file}`)))
   if (buildPhase2.length) subtasks.push(gulp.parallel(buildPhase2.map(file => `${taskPrefix}:${file}`)))
 
-  gulp.task(taskPrefix, gulp.parallel(subtasks))
+  gulp.task(taskPrefix, gulp.series(subtasks))
 }
 
 // disc bundle analyzer tasks
