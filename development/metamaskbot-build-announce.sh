@@ -16,13 +16,13 @@ read -d '' COMMENT_BODY <<EOF
 <details>
   <summary>
     Builds ready [$SHORT_SHA1]:
-    <a href="$MASCARA">mascara</a>,
-    <a href="$CHROME">chrome</a>,
-    <a href="$FIREFOX">firefox</a>,
-    <a href="$EDGE">edge</a>,
-    <a href="$OPERA">opera</a>
+    <a href=\"$MASCARA\">mascara</a>,
+    <a href=\"$CHROME\">chrome</a>,
+    <a href=\"$FIREFOX\">firefox</a>,
+    <a href=\"$EDGE\">edge</a>,
+    <a href=\"$OPERA\">opera</a>
   </summary>
-  <image src="$WALKTHROUGH">
+  <image src=\"$WALKTHROUGH\">
 </details>
 EOF
 
