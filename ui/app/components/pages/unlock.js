@@ -1,14 +1,22 @@
 const { Component } = require('react')
 const PropTypes = require('prop-types')
-const { connect } = require('react-redux')
+const connect = require('../../metamask-connect')
 const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const { tryUnlockMetamask, forgotPassword, markPasswordForgotten } = require('../../actions')
+const {
+  tryUnlockMetamask,
+  forgotPassword,
+  markPasswordForgotten,
+  setNetworkEndpoints,
+  setFeatureFlag,
+} = require('../../actions')
+const environmentType = require('../../../../app/scripts/lib/environment-type')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
 const Mascot = require('../mascot')
-const { DEFAULT_ROUTE } = require('../../routes')
+const { OLD_UI_NETWORK_TYPE } = require('../../../../app/scripts/config').enums
+const { DEFAULT_ROUTE, RESTORE_VAULT_ROUTE } = require('../../routes')
 
 class UnlockScreen extends Component {
   constructor (props) {
@@ -77,70 +85,76 @@ class UnlockScreen extends Component {
 
   render () {
     const { error } = this.state
-    const { markPasswordForgotten } = this.props
-
     return (
-      h('.unlock-page.main-container', [
-        h('.flex-column', {
+      h('.unlock-screen', [
+
+        h(Mascot, {
+          animationEventEmitter: this.animationEventEmitter,
+        }),
+
+        h('h1', {
           style: {
-            width: 'inherit',
+            fontSize: '1.4em',
+            textTransform: 'uppercase',
+            color: '#7F8082',
           },
-        }, [
-          h('.unlock-screen.flex-column.flex-center.flex-grow', [
+        }, this.props.t('appName')),
 
-            h(Mascot, {
-              animationEventEmitter: this.animationEventEmitter,
-            }),
+        h('input.large-input', {
+          type: 'password',
+          id: 'password-box',
+          placeholder: 'enter password',
+          style: {
+            background: 'white',
+          },
+          onKeyPress: this.onKeyPress.bind(this),
+          onInput: this.inputChanged.bind(this),
+        }),
 
-            h('h1', {
-              style: {
-                fontSize: '1.4em',
-                textTransform: 'uppercase',
-                color: '#7F8082',
-              },
-            }, 'MetaMask'),
+        h('.error', {
+          style: {
+            display: error ? 'block' : 'none',
+            padding: '0 20px',
+            textAlign: 'center',
+          },
+        }, error),
 
-            h('input.large-input', {
-              type: 'password',
-              id: 'password-box',
-              placeholder: 'enter password',
-              style: {
-                background: 'white',
-              },
-              onKeyPress: this.onKeyPress.bind(this),
-              onInput: this.inputChanged.bind(this),
-            }),
+        h('button.primary.cursor-pointer', {
+          onClick: this.onSubmit.bind(this),
+          style: {
+            margin: 10,
+          },
+        }, this.props.t('login')),
 
-            h('.error', {
-              style: {
-                display: error ? 'block' : 'none',
-                padding: '0 20px',
-                textAlign: 'center',
-              },
-            }, error),
+        h('p.pointer', {
+          onClick: () => {
+            this.props.markPasswordForgotten()
+            this.props.history.push(RESTORE_VAULT_ROUTE)
 
-            h('button.primary.cursor-pointer', {
-              onClick: this.onSubmit.bind(this),
-              style: {
-                margin: 10,
-              },
-            }, 'Unlock'),
+            console.log('typeeee', environmentType())
+            if (environmentType() === 'popup') {
+              global.platform.openExtensionInBrowser()
+            }
+          },
+          style: {
+            fontSize: '0.8em',
+            color: 'rgb(247, 134, 28)',
+            textDecoration: 'underline',
+          },
+        }, this.props.t('restoreFromSeed')),
 
-            h('.flex-row.flex-center.flex-grow', [
-              h('p.pointer', {
-                onClick: () => {
-                  markPasswordForgotten()
-                  global.platform.openExtensionInBrowser()
-                },
-                style: {
-                  fontSize: '0.8em',
-                  color: 'rgb(247, 134, 28)',
-                  textDecoration: 'underline',
-                },
-              }, 'Restore from seed phrase'),
-            ]),
-          ]),
-        ]),
+        h('p.pointer', {
+          onClick: () => {
+            this.props.useOldInterface()
+              .then(() => this.props.setNetworkEndpoints(OLD_UI_NETWORK_TYPE))
+          },
+          style: {
+            fontSize: '0.8em',
+            color: '#aeaeae',
+            textDecoration: 'underline',
+            marginTop: '32px',
+          },
+        }, this.props.t('classicInterface')),
       ])
     )
   }
@@ -152,6 +166,9 @@ UnlockScreen.propTypes = {
   markPasswordForgotten: PropTypes.func,
   history: PropTypes.object,
   isUnlocked: PropTypes.bool,
+  t: PropTypes.func,
+  useOldInterface: PropTypes.func,
+  setNetworkEndpoints: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -166,6 +183,8 @@ const mapDispatchToProps = dispatch => {
     forgotPassword: () => dispatch(forgotPassword()),
     tryUnlockMetamask: password => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
+    useOldInterface: () => dispatch(setFeatureFlag('betaUI', false, 'OLD_UI_NOTIFICATION_MODAL')),
+    setNetworkEndpoints: type => dispatch(setNetworkEndpoints(type)),
   }
 }
 

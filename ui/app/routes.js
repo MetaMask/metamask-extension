@@ -10,12 +10,13 @@ const NEW_ACCOUNT_ROUTE = '/new-account'
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import'
 const SEND_ROUTE = '/send'
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction'
+const SIGNATURE_REQUEST_ROUTE = '/confirm-transaction/signature-request'
 const NOTICE_ROUTE = '/notice'
-const SIGNATURE_REQUEST_ROUTE = '/signature-request'
 const WELCOME_ROUTE = '/welcome'
 const INITIALIZE_ROUTE = '/initialize'
 const INITIALIZE_IMPORT_ACCOUNT_ROUTE = '/initialize/import-account'
 const INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE = '/initialize/import-with-seed-phrase'
+const INITIALIZE_UNIQUE_IMAGE_ROUTE = '/initialize/unique-image'
 
 module.exports = {
   DEFAULT_ROUTE,
@@ -36,4 +37,5 @@ module.exports = {
   INITIALIZE_ROUTE,
   INITIALIZE_IMPORT_ACCOUNT_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+  INITIALIZE_UNIQUE_IMAGE_ROUTE,
 }

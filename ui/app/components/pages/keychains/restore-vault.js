@@ -2,9 +2,9 @@ const { withRouter } = require('react-router-dom')
 const PropTypes = require('prop-types')
 const { compose } = require('recompose')
 const PersistentForm = require('../../../../lib/persistent-form')
-const { connect } = require('react-redux')
+const connect = require('../../../metamask-connect')
 const h = require('react-hyperscript')
-const { createNewVaultAndRestore } = require('../../../actions')
+const { createNewVaultAndRestore, unMarkPasswordForgotten } = require('../../../actions')
 const { DEFAULT_ROUTE } = require('../../../routes')
 
 class RestoreVaultPage extends PersistentForm {
@@ -20,6 +20,11 @@ class RestoreVaultPage extends PersistentForm {
     if (event.key === 'Enter') {
       this.createNewVaultAndRestore()
     }
+  }
+
+  cancel () {
+    this.props.unMarkPasswordForgotten()
+      .then(this.props.history.goBack())
   }
 
   createNewVaultAndRestore () {
@@ -51,7 +56,7 @@ class RestoreVaultPage extends PersistentForm {
 
     // submit
     this.props.createNewVaultAndRestore(password, seed)
-      .then(() => history.push(DEFAULT_ROUTE))
+      .then(() => this.props.history.push(DEFAULT_ROUTE))
       .catch(({ message }) => {
         this.setState({ error: message })
         log.error(message)
@@ -76,7 +81,7 @@ class RestoreVaultPage extends PersistentForm {
             padding: 6,
           },
         }, [
-          'Restore Vault',
+          this.props.t('restoreVault'),
         ]),
 
         // wallet seed entry
@@ -85,14 +90,14 @@ class RestoreVaultPage extends PersistentForm {
           dataset: {
             persistentFormId: 'wallet-seed',
           },
-          placeholder: 'Enter your secret twelve word phrase here to restore your vault.',
+          placeholder: this.props.t('secretPhrase'),
         }),
 
         // password
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: 'New Password (min 8 chars)',
+          placeholder: this.props.t('newPassword8Chars'),
           dataset: {
             persistentFormId: 'password',
           },
@@ -106,7 +111,7 @@ class RestoreVaultPage extends PersistentForm {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box-confirm',
-          placeholder: 'Confirm Password',
+          placeholder: this.props.t('confirmPassword'),
           onKeyPress: this.createOnEnter.bind(this),
           dataset: {
             persistentFormId: 'password-confirmation',
@@ -130,12 +135,14 @@ class RestoreVaultPage extends PersistentForm {
         }, [
 
           // cancel
-          h('button.primary', { onClick: () => history.goBack() }, 'CANCEL'),
+          h('button.primary', {
+            onClick: () => this.cancel(),
+          }, this.props.t('cancel')),
 
           // submit
           h('button.primary', {
             onClick: this.createNewVaultAndRestore.bind(this),
-          }, 'OK'),
+          }, this.props.t('ok')),
 
         ]),
       ])
@@ -161,6 +168,7 @@ const mapDispatchToProps = dispatch => {
     createNewVaultAndRestore: (password, seed) => {
       return dispatch(createNewVaultAndRestore(password, seed))
     },
+    unMarkPasswordForgotten: () => dispatch(unMarkPasswordForgotten()),
   }
 }
 

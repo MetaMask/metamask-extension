@@ -42,10 +42,7 @@ class NoticeScreen extends Component {
   acceptTerms = () => {
     const { markNoticeRead, lastUnreadNotice, history } = this.props
     markNoticeRead(lastUnreadNotice)
-      .then(() => {
-        history.push(DEFAULT_ROUTE)
-        this.setState({ atBottom: false })
-      })
+      .then(() => history.push(DEFAULT_ROUTE))
   }
 
   onScroll = debounce(() => {

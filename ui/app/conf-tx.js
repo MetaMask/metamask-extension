@@ -2,12 +2,13 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('./metamask-connect')
-const { withRouter } = require('react-router-dom')
+const { withRouter, Redirect } = require('react-router-dom')
 const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
 
 const PendingTx = require('./components/pending-tx')
+const SignatureRequest = require('./components/signature-request')
 // const PendingMsg = require('./components/pending-msg')
 // const PendingPersonalMsg = require('./components/pending-personal-msg')
 // const PendingTypedMsg = require('./components/pending-typed-msg')
@@ -55,6 +56,7 @@ function ConfirmTxScreen () {
 }
 
 ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
+  console.log('CONFTX COMPONENTDIDUPDATE')
   const {
     unapprovedTxs,
     network,
@@ -67,6 +69,7 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
   if (prevTx.status === 'dropped' && unconfTxList.length === 0) {
+    console.log('CONFTX REDIRECTINGTODEFAULT')
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
@@ -87,6 +90,7 @@ ConfirmTxScreen.prototype.render = function () {
   } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
+  console.log('UNCONF', unconfTxList, props.index, props)
 
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
@@ -108,7 +112,13 @@ ConfirmTxScreen.prototype.render = function () {
   */
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
-  if (unconfTxList.length === 0) return h(Loading)
+  if (unconfTxList.length === 0) {
+    return h(Redirect, {
+      to: {
+        pathname: DEFAULT_ROUTE,
+      },
+    })
+  }
 
   return currentTxView({
     // Properties
@@ -136,11 +146,27 @@ ConfirmTxScreen.prototype.render = function () {
 function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
-  const { txParams } = txData
+  const { txParams, msgParams } = txData
+  console.log('TXPARAMS', txParams, msgParams)
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')
     return h(PendingTx, opts)
+  } else if (msgParams) {
+    log.debug('msgParams detected, rendering pending msg')
+
+    return h(SignatureRequest, opts)
+
+    // if (type === 'eth_sign') {
+    //   log.debug('rendering eth_sign message')
+    //   return h(PendingMsg, opts)
+    // } else if (type === 'personal_sign') {
+    //   log.debug('rendering personal_sign message')
+    // return h(PendingPersonalMsg, opts)
+    // } else if (type === 'eth_signTypedData') {
+    //   log.debug('rendering eth_signTypedData message')
+    //   return h(PendingTypedMsg, opts)
+    // }
   }
 
   return h(Loading)
@@ -174,7 +200,7 @@ ConfirmTxScreen.prototype.signMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
-  this.props.dispatch(actions.signMsg(params))
+  return this.props.dispatch(actions.signMsg(params))
 }
 
 ConfirmTxScreen.prototype.stopPropagation = function (event) {
@@ -188,7 +214,7 @@ ConfirmTxScreen.prototype.signPersonalMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
-  this.props.dispatch(actions.signPersonalMsg(params))
+  return this.props.dispatch(actions.signPersonalMsg(params))
 }
 
 ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
@@ -196,25 +222,25 @@ ConfirmTxScreen.prototype.signTypedMessage = function (msgData, event) {
   var params = msgData.msgParams
   params.metamaskId = msgData.id
   this.stopPropagation(event)
-  this.props.dispatch(actions.signTypedMsg(params))
+  return this.props.dispatch(actions.signTypedMsg(params))
 }
 
 ConfirmTxScreen.prototype.cancelMessage = function (msgData, event) {
   log.info('canceling message')
   this.stopPropagation(event)
-  this.props.dispatch(actions.cancelMsg(msgData))
+  return this.props.dispatch(actions.cancelMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.cancelPersonalMessage = function (msgData, event) {
   log.info('canceling personal message')
   this.stopPropagation(event)
-  this.props.dispatch(actions.cancelPersonalMsg(msgData))
+  return this.props.dispatch(actions.cancelPersonalMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.cancelTypedMessage = function (msgData, event) {
   log.info('canceling typed message')
   this.stopPropagation(event)
-  this.props.dispatch(actions.cancelTypedMsg(msgData))
+  return this.props.dispatch(actions.cancelTypedMsg(msgData))
 }
 
 ConfirmTxScreen.prototype.goHome = function (event) {
