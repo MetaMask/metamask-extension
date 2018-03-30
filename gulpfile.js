@@ -231,20 +231,6 @@ gulp.task('lint:fix', function () {
 
 // scss compilation and autoprefixing tasks
 
-// gulp.task('build:scss', function () {
-//   return gulp.src('ui/app/css/index.scss')
-//     .pipe(sourcemaps.init())
-//     .pipe(sass().on('error', sass.logError))
-//     .pipe(sourcemaps.write())
-//     .pipe(autoprefixer())
-//     .pipe(gulp.dest('ui/app/css/output'))
-// })
-// gulp.task('dev:scss', function() {
-//   gulp.watch(['ui/app/css/**/*.scss'], gulp.parallel(['build:scss']))
-// })
-
-
-
 gulp.task('build:scss', createScssBuildTask({
   src: 'ui/app/css/index.scss',
   dest: 'ui/app/css/output',
@@ -390,19 +376,6 @@ gulp.task('apply-prod-environment', function(done) {
 });
 
 // high level tasks
-//
-// gulp.task('dev',
-//   gulp.series(
-//     'build:scss',
-//     'copy',
-//     gulp.parallel(
-//       'dev:js',
-//       'dev:scss',
-//       'dev:copy',
-//       'dev:reload'
-//     )
-//   )
-// )
 
 gulp.task('dev',
   gulp.series(
