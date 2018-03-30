@@ -2,7 +2,8 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const classnames = require('classnames')
 const h = require('react-hyperscript')
-const connect = require('../../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const R = require('ramda')
 const Fuse = require('fuse.js')
 const contractMap = require('eth-contract-metadata')
@@ -30,7 +31,12 @@ const { DEFAULT_ROUTE } = require('../../routes')
 
 const emptyAddr = '0x0000000000000000000000000000000000000000'
 
+AddTokenScreen.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AddTokenScreen)
+
 
 function mapStateToProps (state) {
   const { identities, tokens } = state.metamask
@@ -139,7 +145,7 @@ AddTokenScreen.prototype.validate = function () {
   if (customAddress) {
     const validAddress = ethUtil.isValidAddress(customAddress)
     if (!validAddress) {
-      errors.customAddress = this.props.t('invalidAddress')
+      errors.customAddress = this.context.t('invalidAddress')
     }
 
     const validDecimals = customDecimals !== null
@@ -147,23 +153,23 @@ AddTokenScreen.prototype.validate = function () {
       && customDecimals >= 0
       && customDecimals < 36
     if (!validDecimals) {
-      errors.customDecimals = this.props.t('decimalsMustZerotoTen')
+      errors.customDecimals = this.context.t('decimalsMustZerotoTen')
     }
 
     const symbolLen = customSymbol.trim().length
     const validSymbol = symbolLen > 0 && symbolLen < 10
     if (!validSymbol) {
-      errors.customSymbol = this.props.t('symbolBetweenZeroTen')
+      errors.customSymbol = this.context.t('symbolBetweenZeroTen')
     }
 
     const ownAddress = identitiesList.includes(standardAddress)
     if (ownAddress) {
-      errors.customAddress = this.props.t('personalAddressDetected')
+      errors.customAddress = this.context.t('personalAddressDetected')
     }
 
     const tokenAlreadyAdded = this.checkExistingAddresses(customAddress)
     if (tokenAlreadyAdded) {
-      errors.customAddress = this.props.t('tokenAlreadyAdded')
+      errors.customAddress = this.context.t('tokenAlreadyAdded')
     }
   } else if (
     Object.entries(selectedTokens)
@@ -171,7 +177,7 @@ AddTokenScreen.prototype.validate = function () {
         isEmpty && !isSelected
       ), true)
   ) {
-    errors.tokenSelector = this.props.t('mustSelectOne')
+    errors.tokenSelector = this.context.t('mustSelectOne')
   }
 
   return {
@@ -201,7 +207,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customAddress,
         }),
       }, [
-        h('div.add-token__add-custom-label', this.props.t('tokenAddress')),
+        h('div.add-token__add-custom-label', this.context.t('tokenAddress')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenAddressDidChange,
@@ -214,7 +220,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customSymbol,
         }),
       }, [
-        h('div.add-token__add-custom-label', this.props.t('tokenSymbol')),
+        h('div.add-token__add-custom-label', this.context.t('tokenSymbol')),
         h('input.add-token__add-custom-input', {
           type: 'text',
           onChange: this.tokenSymbolDidChange,
@@ -228,7 +234,7 @@ AddTokenScreen.prototype.renderCustomForm = function () {
           'add-token__add-custom-field--error': errors.customDecimals,
         }),
       }, [
-        h('div.add-token__add-custom-label', this.props.t('decimal')),
+        h('div.add-token__add-custom-label', this.context.t('decimal')),
         h('input.add-token__add-custom-input', {
           type: 'number',
           onChange: this.tokenDecimalsDidChange,
@@ -250,7 +256,7 @@ AddTokenScreen.prototype.renderTokenList = function () {
   const results = [...addressSearchResult, ...fuseSearchResult]
 
   return h('div', [
-      results.length > 0 && h('div.add-token__token-icons-title', this.props.t('popularTokens')),
+      results.length > 0 && h('div.add-token__token-icons-title', this.context.t('popularTokens')),
       h('div.add-token__token-icons-container', Array(6).fill(undefined)
         .map((_, i) => {
           const { logo, symbol, name, address } = results[i] || {}
@@ -305,10 +311,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
     h('div.add-token', [
       h('div.add-token__wrapper', [
         h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__description', this.props.t('likeToAddTokens')),
+          h('div.add-token__description', this.context.t('likeToAddTokens')),
         ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
-          h('div.add-token__description.add-token__confirmation-description', this.props.t('balances')),
+          h('div.add-token__description.add-token__confirmation-description', this.context.t('balances')),
           h('div.add-token__confirmation-token-list',
             Object.entries(tokens)
               .map(([ address, token ]) => (
@@ -327,10 +333,10 @@ AddTokenScreen.prototype.renderConfirmation = function () {
       h('div.add-token__buttons', [
         h('button.btn-secondary--lg.add-token__cancel-button', {
           onClick: () => this.setState({ isShowingConfirmation: false }),
-        }, this.props.t('back')),
+        }, this.context.t('back')),
         h('button.btn-primary--lg', {
           onClick: () => addTokens(tokens).then(() => history.push(DEFAULT_ROUTE)),
-        }, this.props.t('addTokens')),
+        }, this.context.t('addTokens')),
       ]),
     ])
   )
@@ -350,14 +356,14 @@ AddTokenScreen.prototype.renderTabs = function () {
       h('div.add-token__content-container', [
         h('div.add-token__info-box', [
           h('div.add-token__info-box__close'),
-          h('div.add-token__info-box__title', this.props.t('whatsThis')),
-          h('div.add-token__info-box__copy', this.props.t('keepTrackTokens')),
-          h('div.add-token__info-box__copy--blue', this.props.t('learnMore')),
+          h('div.add-token__info-box__title', this.context.t('whatsThis')),
+          h('div.add-token__info-box__copy', this.context.t('keepTrackTokens')),
+          h('div.add-token__info-box__copy--blue', this.context.t('learnMore')),
         ]),
         h('div.add-token__input-container', [
           h('input.add-token__input', {
             type: 'text',
-            placeholder: this.props.t('searchTokens'),
+            placeholder: this.context.t('searchTokens'),
             onChange: e => this.setState({ searchQuery: e.target.value }),
           }),
           h('div.add-token__search-input-error-message', errors.tokenSelector),
@@ -381,9 +387,9 @@ AddTokenScreen.prototype.render = function () {
         onClick: () => history.goBack(),
       }, [
         h('i.fa.fa-angle-left.fa-lg'),
-        h('span', this.props.t('cancel')),
+        h('span', this.context.t('cancel')),
       ]),
-      h('div.add-token__header__title', this.props.t('addTokens')),
+      h('div.add-token__header__title', this.context.t('addTokens')),
       !isShowingConfirmation && h('div.add-token__header__tabs', [
 
         h('div.add-token__header__tabs__tab', {
@@ -392,7 +398,7 @@ AddTokenScreen.prototype.render = function () {
             'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
           }),
           onClick: () => this.displayTab('SEARCH'),
-        }, this.props.t('search')),
+        }, this.context.t('search')),
 
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
@@ -400,7 +406,7 @@ AddTokenScreen.prototype.render = function () {
             'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
           }),
           onClick: () => this.displayTab('CUSTOM_TOKEN'),
-        }, this.props.t('customToken')),
+        }, this.context.t('customToken')),
 
       ]),
     ]),
@@ -412,10 +418,10 @@ AddTokenScreen.prototype.render = function () {
     !isShowingConfirmation && h('div.add-token__buttons', [
       h('button.btn-secondary--lg.add-token__cancel-button', {
         onClick: () => history.goBack(),
-      }, this.props.t('cancel')),
+      }, this.context.t('cancel')),
       h('button.btn-primary--lg.add-token__confirm-button', {
         onClick: this.onNext,
-      }, this.props.t('next')),
+      }, this.context.t('next')),
     ]),
   ])
 }

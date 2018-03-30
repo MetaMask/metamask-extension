@@ -1,5 +1,6 @@
 const Component = require('react').Component
-const connect = require('../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
@@ -19,6 +20,10 @@ module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(WalletView)
+
+WalletView.contextTypes = {
+  t: PropTypes.func,
+}
 
 function mapStateToProps (state) {
 
@@ -122,7 +127,7 @@ WalletView.prototype.render = function () {
         onClick: hideSidebar,
       }),
 
-      h('div.wallet-view__keyring-label.allcaps', isLoose ? this.props.t('imported') : ''),
+      h('div.wallet-view__keyring-label.allcaps', isLoose ? this.context.t('imported') : ''),
 
       h('div.flex-column.flex-center.wallet-view__name-container', {
         style: { margin: '0 auto' },
@@ -139,13 +144,13 @@ WalletView.prototype.render = function () {
           selectedIdentity.name,
         ]),
 
-        h('button.btn-clear.wallet-view__details-button.allcaps', this.props.t('details')),
+        h('button.btn-clear.wallet-view__details-button.allcaps', this.context.t('details')),
       ]),
     ]),
 
     h(Tooltip, {
       position: 'bottom',
-      title: this.state.hasCopied ? this.props.t('copiedExclamation') : this.props.t('copyToClipboard'),
+      title: this.state.hasCopied ? this.context.t('copiedExclamation') : this.context.t('copyToClipboard'),
       wrapperClassName: 'wallet-view__tooltip',
     }, [
       h('button.wallet-view__address', {
@@ -175,7 +180,7 @@ WalletView.prototype.render = function () {
 
     h('button.btn-primary.wallet-view__add-token-button', {
       onClick: () => history.push(ADD_TOKEN_ROUTE),
-    }, this.props.t('addToken')),
+    }, this.context.t('addToken')),
   ])
 }
 

@@ -33,6 +33,42 @@ describe('Nonce Tracker', function () {
       })
     })
 
+    describe('sentry issue 476304902', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        pendingTxs = txGen.generate({ status: 'submitted' }, {
+          fromNonce: 3,
+          count: 29,
+        })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x3')
+      })
+
+      it('should return 9', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '32', `nonce should be 32 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
+
+    describe('issue 3670', function () {
+      beforeEach(function () {
+        const txGen = new MockTxGen()
+        pendingTxs = txGen.generate({ status: 'submitted' }, {
+          fromNonce: 6,
+          count: 3,
+        })
+        nonceTracker = generateNonceTrackerWith(pendingTxs, [], '0x6')
+      })
+
+      it('should return 9', async function () {
+        this.timeout(15000)
+        const nonceLock = await nonceTracker.getNonceLock('0x7d3517b0d011698406d6e0aed8453f0be2697926')
+        assert.equal(nonceLock.nextNonce, '9', `nonce should be 9 got ${nonceLock.nextNonce}`)
+        await nonceLock.releaseLock()
+      })
+    })
+
     describe('with no previous txs', function () {
       beforeEach(function () {
         nonceTracker = generateNonceTrackerWith([], [])

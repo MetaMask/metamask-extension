@@ -1,5 +1,6 @@
 const Component = require('react').Component
-const connect = require('../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const prefixForNetwork = require('../../lib/etherscan-prefix-for-network')
@@ -18,6 +19,10 @@ module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(TxList)
+
+TxList.contextTypes = {
+  t: PropTypes.func,
+}
 
 function mapStateToProps (state) {
   return {
@@ -45,7 +50,7 @@ TxList.prototype.render = function () {
   return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
-        h('div', this.props.t('transactions')),
+        h('div', this.context.t('transactions')),
       ]),
     ]),
     h('div.flex-column.tx-list-container', {}, [
@@ -62,7 +67,7 @@ TxList.prototype.renderTransaction = function () {
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
-        [ this.props.t('noTransactions') ],
+        [ this.context.t('noTransactions') ],
       )]
 }
 
@@ -116,7 +121,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   if (isUnapproved) {
     opts.onClick = () => history.push(CONFIRM_TRANSACTION_ROUTE)
-    opts.transactionStatus = this.props.t('notStarted')
+    opts.transactionStatus = this.context.t('notStarted')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }

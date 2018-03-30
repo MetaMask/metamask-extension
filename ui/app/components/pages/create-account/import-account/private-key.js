@@ -3,14 +3,20 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const connect = require('../../../../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
+
+PrivateKeyImportView.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(PrivateKeyImportView)
+
 
 function mapStateToProps (state) {
   return {
@@ -38,7 +44,7 @@ PrivateKeyImportView.prototype.render = function () {
   return (
     h('div.new-account-import-form__private-key', [
 
-      h('span.new-account-create-form__instruction', this.props.t('pastePrivateKey')),
+      h('span.new-account-create-form__instruction', this.context.t('pastePrivateKey')),
 
       h('div.new-account-import-form__private-key-password-container', [
 
@@ -55,13 +61,13 @@ PrivateKeyImportView.prototype.render = function () {
         h('button.btn-secondary--lg.new-account-create-form__button', {
           onClick: () => this.props.history.push(DEFAULT_ROUTE),
         }, [
-          this.props.t('cancel'),
+          this.context.t('cancel'),
         ]),
 
         h('button.btn-primary--lg.new-account-create-form__button', {
           onClick: () => this.createNewKeychain(),
         }, [
-          this.props.t('import'),
+          this.context.t('import'),
         ]),
 
       ]),

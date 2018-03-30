@@ -1,5 +1,5 @@
 const Component = require('react').Component
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const clone = require('clone')
 const abi = require('human-standard-token-abi')

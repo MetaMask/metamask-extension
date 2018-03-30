@@ -1,6 +1,7 @@
 const { EventEmitter } = require('events')
 const { Component } = require('react')
-const connect = require('../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const Mascot = require('../components/mascot')
@@ -49,7 +50,7 @@ class InitializeMenuScreen extends Component {
             color: '#7F8082',
             marginBottom: 10,
           },
-        }, this.props.t('appName')),
+        }, this.context.t('appName')),
 
         h('div', [
           h('h3', {
@@ -58,10 +59,10 @@ class InitializeMenuScreen extends Component {
               color: '#7F8082',
               display: 'inline',
             },
-          }, this.props.t('encryptNewDen')),
+          }, this.context.t('encryptNewDen')),
 
           h(Tooltip, {
-            title: this.props.t('denExplainer'),
+            title: this.context.t('denExplainer'),
           }, [
             h('i.fa.fa-question-circle.pointer', {
               style: {
@@ -81,7 +82,7 @@ class InitializeMenuScreen extends Component {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: this.props.t('newPassword'),
+          placeholder: this.context.t('newPassword'),
           onInput: this.inputChanged.bind(this),
           style: {
             width: 260,
@@ -93,7 +94,7 @@ class InitializeMenuScreen extends Component {
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box-confirm',
-          placeholder: this.props.t('confirmPassword'),
+          placeholder: this.context.t('confirmPassword'),
           onKeyPress: this.createVaultOnEnter.bind(this),
           onInput: this.inputChanged.bind(this),
           style: {
@@ -108,7 +109,7 @@ class InitializeMenuScreen extends Component {
           style: {
             margin: 12,
           },
-        }, this.props.t('createDen')),
+        }, this.context.t('createDen')),
 
         h('.flex-row.flex-center.flex-grow', [
           h('p.pointer', {
@@ -118,7 +119,7 @@ class InitializeMenuScreen extends Component {
               color: 'rgb(247, 134, 28)',
               textDecoration: 'underline',
             },
-          }, this.props.t('importDen')),
+          }, this.context.t('importDen')),
         ]),
 
         h('.flex-row.flex-center.flex-grow', [
@@ -154,12 +155,12 @@ class InitializeMenuScreen extends Component {
     this.setState({ warning: null })
 
     if (password.length < 8) {
-      this.setState({ warning: this.props.t('passwordShort') })
+      this.setState({ warning: this.context.t('passwordShort') })
       return
     }
 
     if (password !== passwordConfirm) {
-      this.setState({ warning: this.props.t('passwordMismatch') })
+      this.setState({ warning: this.context.t('passwordMismatch') })
       return
     }
 
@@ -200,6 +201,10 @@ InitializeMenuScreen.propTypes = {
   createNewVaultAndKeychain: PropTypes.func,
   markPasswordForgotten: PropTypes.func,
   dispatch: PropTypes.func,
+}
+
+InitializeMenuScreen.contextTypes = {
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {

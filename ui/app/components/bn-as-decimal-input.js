@@ -1,12 +1,18 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
+
+BnAsDecimalInput.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect()(BnAsDecimalInput)
+
 
 inherits(BnAsDecimalInput, Component)
 function BnAsDecimalInput () {
@@ -137,13 +143,13 @@ BnAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += this.props.t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
+    message += this.context.t('betweenMinAndMax', [`${newMin} ${suffix}`, `${newMax} ${suffix}`])
   } else if (min) {
-    message += this.props.t('greaterThanMin', [`${newMin} ${suffix}`])
+    message += this.context.t('greaterThanMin', [`${newMin} ${suffix}`])
   } else if (max) {
-    message += this.props.t('lessThanMax', [`${newMax} ${suffix}`])
+    message += this.context.t('lessThanMax', [`${newMax} ${suffix}`])
   } else {
-    message += this.props.t('invalidInput')
+    message += this.context.t('invalidInput')
   }
 
   return message

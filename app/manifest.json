@@ -27,8 +27,8 @@
   "default_locale": "en",
   "background": {
     "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js"
+      "chromereload.js",
+      "background.js"
     ],
     "persistent": true
   },
@@ -48,7 +48,7 @@
         "https://*/*"
       ],
       "js": [
-        "scripts/contentscript.js"
+        "contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -62,7 +62,7 @@
     "https://*.infura.io/"
   ],
   "web_accessible_resources": [
-    "scripts/inpage.js"
+    "inpage.js"
   ],
   "externally_connectable": {
     "matches": [

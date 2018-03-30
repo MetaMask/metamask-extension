@@ -3,7 +3,7 @@ const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../../actions')
 const infuraCurrencies = require('../../../infura-conversion.json')
 const validUrl = require('valid-url')
@@ -52,7 +52,7 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', this.props.t('blockiesIdenticon')),
+        h('span', this.context.t('blockiesIdenticon')),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
@@ -72,13 +72,13 @@ class Settings extends Component {
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
-        h('span', this.props.t('currentConversion')),
+        h('span', this.context.t('currentConversion')),
         h('span.settings__content-description', `Updated ${Date(conversionDate)}`),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h(SimpleDropdown, {
-            placeholder: this.props.t('selectCurrency'),
+            placeholder: this.context.t('selectCurrency'),
             options: getInfuraCurrencyOptions(),
             selectedOption: currentCurrency,
             onSelect: newCurrency => setCurrentCurrency(newCurrency),
@@ -91,11 +91,12 @@ class Settings extends Component {
   renderCurrentLocale () {
     const { updateCurrentLocale, currentLocale } = this.props
     const currentLocaleMeta = locales.find(locale => locale.code === currentLocale)
+    const currentLocaleName = currentLocaleMeta ? currentLocaleMeta.name : ''
 
     return h('div.settings__content-row', [
       h('div.settings__content-item', [
         h('span', 'Current Language'),
-        h('span.settings__content-description', `${currentLocaleMeta.name}`),
+        h('span.settings__content-description', `${currentLocaleName}`),
       ]),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
@@ -119,31 +120,31 @@ class Settings extends Component {
     switch (provider.type) {
 
       case 'mainnet':
-        title = this.props.t('currentNetwork')
-        value = this.props.t('mainnet')
+        title = this.context.t('currentNetwork')
+        value = this.context.t('mainnet')
         color = '#038789'
         break
 
       case 'ropsten':
-        title = this.props.t('currentNetwork')
-        value = this.props.t('ropsten')
+        title = this.context.t('currentNetwork')
+        value = this.context.t('ropsten')
         color = '#e91550'
         break
 
       case 'kovan':
-        title = this.props.t('currentNetwork')
-        value = this.props.t('kovan')
+        title = this.context.t('currentNetwork')
+        value = this.context.t('kovan')
         color = '#690496'
         break
 
       case 'rinkeby':
-        title = this.props.t('currentNetwork')
-        value = this.props.t('rinkeby')
+        title = this.context.t('currentNetwork')
+        value = this.context.t('rinkeby')
         color = '#ebb33f'
         break
 
       default:
-        title = this.props.t('currentRpc')
+        title = this.context.t('currentRpc')
         value = provider.rpcTarget
     }
 
@@ -164,12 +165,12 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('span', this.props.t('newRPC')),
+          h('span', this.context.t('newRPC')),
         ]),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('input.settings__input', {
-              placeholder: this.props.t('newRPC'),
+              placeholder: this.context.t('newRPC'),
               onChange: event => this.setState({ newRpc: event.target.value }),
               onKeyPress: event => {
                 if (event.key === 'Enter') {
@@ -182,7 +183,7 @@ class Settings extends Component {
                 event.preventDefault()
                 this.validateRpc(this.state.newRpc)
               },
-            }, this.props.t('save')),
+            }, this.context.t('save')),
           ]),
         ]),
       ])
@@ -198,9 +199,9 @@ class Settings extends Component {
       const appendedRpc = `http://${newRpc}`
 
       if (validUrl.isWebUri(appendedRpc)) {
-        displayWarning(this.props.t('uriErrorMsg'))
+        displayWarning(this.context.t('uriErrorMsg'))
       } else {
-        displayWarning(this.props.t('invalidRPC'))
+        displayWarning(this.context.t('invalidRPC'))
       }
     }
   }
@@ -209,10 +210,10 @@ class Settings extends Component {
     return (
       h('div.settings__content-row', [
         h('div.settings__content-item', [
-          h('div', this.props.t('stateLogs')),
+          h('div', this.context.t('stateLogs')),
           h(
             'div.settings__content-description',
-            this.props.t('stateLogsDescription')
+            this.context.t('stateLogsDescription')
           ),
         ]),
         h('div.settings__content-item', [
@@ -221,13 +222,13 @@ class Settings extends Component {
               onClick (event) {
                 window.logStateString((err, result) => {
                   if (err) {
-                    this.state.dispatch(actions.displayWarning(this.props.t('stateLogError')))
+                    this.state.dispatch(actions.displayWarning(this.context.t('stateLogError')))
                   } else {
                     exportAsFile('MetaMask State Logs.json', result)
                   }
                 })
               },
-            }, this.props.t('downloadStateLogs')),
+            }, this.context.t('downloadStateLogs')),
           ]),
         ]),
       ])
@@ -239,7 +240,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', this.props.t('revealSeedWords')),
+        h('div.settings__content-item', this.context.t('revealSeedWords')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary--lg.settings__button--red', {
@@ -247,7 +248,7 @@ class Settings extends Component {
                 event.preventDefault()
                 history.push(REVEAL_SEED_ROUTE)
               },
-            }, this.props.t('revealSeedWords')),
+            }, this.context.t('revealSeedWords')),
           ]),
         ]),
       ])
@@ -259,7 +260,7 @@ class Settings extends Component {
 
     return (
       h('div.settings__content-row', [
-        h('div.settings__content-item', this.props.t('useOldUI')),
+        h('div.settings__content-item', this.context.t('useOldUI')),
         h('div.settings__content-item', [
           h('div.settings__content-item-col', [
             h('button.btn-primary--lg.settings__button--orange', {
@@ -267,7 +268,7 @@ class Settings extends Component {
                 event.preventDefault()
                 setFeatureFlagToBeta()
               },
-            }, this.props.t('useOldUI')),
+            }, this.context.t('useOldUI')),
           ]),
         ]),
       ])
@@ -278,7 +279,7 @@ class Settings extends Component {
     const { showResetAccountConfirmationModal } = this.props
 
     return h('div.settings__content-row', [
-      h('div.settings__content-item', this.props.t('resetAccount')),
+      h('div.settings__content-item', this.context.t('resetAccount')),
       h('div.settings__content-item', [
         h('div.settings__content-item-col', [
           h('button.btn-primary--lg.settings__button--orange', {
@@ -286,7 +287,7 @@ class Settings extends Component {
               event.preventDefault()
               showResetAccountConfirmationModal()
             },
-          }, this.props.t('resetAccount')),
+          }, this.context.t('resetAccount')),
         ]),
       ]),
     ])
@@ -354,6 +355,10 @@ const mapDispatchToProps = dispatch => {
       return dispatch(actions.showModal({ name: 'CONFIRM_RESET_ACCOUNT' }))
     },
   }
+}
+
+Settings.contextTypes = {
+  t: PropTypes.func,
 }
 
 module.exports = compose(

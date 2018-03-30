@@ -1,5 +1,6 @@
 const Component = require('react').Component
-const connect = require('../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const ethUtil = require('ethereumjs-util')
 const inherits = require('util').inherits
@@ -17,6 +18,10 @@ module.exports = compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(TxView)
+
+TxView.contextTypes = {
+  t: PropTypes.func,
+}
 
 function mapStateToProps (state) {
   const sidebarOpen = state.appState.sidebarOpen
@@ -78,21 +83,21 @@ TxView.prototype.renderButtons = function () {
           onClick: () => showModal({
             name: 'DEPOSIT_ETHER',
           }),
-        }, this.props.t('deposit')),
+        }, this.context.t('deposit')),
 
         h('button.btn-primary.hero-balance-button', {
           style: {
             marginLeft: '0.8em',
           },
           onClick: () => history.push(SEND_ROUTE),
-        }, this.props.t('send')),
+        }, this.context.t('send')),
       ])
     )
     : (
       h('div.flex-row.flex-center.hero-balance-buttons', [
         h('button.btn-primary.hero-balance-button', {
           onClick: () => history.push(SEND_ROUTE),
-        }, this.props.t('send')),
+        }, this.context.t('send')),
       ])
     )
 }

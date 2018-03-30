@@ -1,6 +1,7 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const abi = require('human-standard-token-abi')
@@ -15,7 +16,12 @@ const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
 
+TxListItem.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
+
 
 function mapStateToProps (state) {
   return {
@@ -74,7 +80,7 @@ TxListItem.prototype.getAddressText = function () {
     default:
       return address
         ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : this.props.t('contractDeployment')
+        : this.context.t('contractDeployment')
   }
 }
 
@@ -306,21 +312,21 @@ TxListItem.prototype.txStatusIndicator = function () {
   let name
 
   if (transactionStatus === 'unapproved') {
-    name = this.props.t('unapproved')
+    name = this.context.t('unapproved')
   } else if (transactionStatus === 'rejected') {
-    name = this.props.t('rejected')
+    name = this.context.t('rejected')
   } else if (transactionStatus === 'approved') {
-    name = this.props.t('approved')
+    name = this.context.t('approved')
   } else if (transactionStatus === 'signed') {
-    name = this.props.t('signed')
+    name = this.context.t('signed')
   } else if (transactionStatus === 'submitted') {
-    name = this.props.t('submitted')
+    name = this.context.t('submitted')
   } else if (transactionStatus === 'confirmed') {
-    name = this.props.t('confirmed')
+    name = this.context.t('confirmed')
   } else if (transactionStatus === 'failed') {
-    name = this.props.t('failed')
+    name = this.context.t('failed')
   } else if (transactionStatus === 'dropped') {
-    name = this.props.t('dropped')
+    name = this.context.t('dropped')
   }
   return name
 }

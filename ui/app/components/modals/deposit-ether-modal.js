@@ -1,7 +1,8 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
 const ShapeshiftForm = require('../shapeshift-form')
@@ -40,27 +41,32 @@ function mapDispatchToProps (dispatch) {
 }
 
 inherits(DepositEtherModal, Component)
-function DepositEtherModal (props) {
+function DepositEtherModal (props, context) {
   Component.call(this)
 
   // need to set after i18n locale has loaded
-  DIRECT_DEPOSIT_ROW_TITLE = props.t('directDepositEther')
-  DIRECT_DEPOSIT_ROW_TEXT = props.t('directDepositEtherExplainer')
-  COINBASE_ROW_TITLE = props.t('buyCoinbase')
-  COINBASE_ROW_TEXT = props.t('buyCoinbaseExplainer')
-  SHAPESHIFT_ROW_TITLE = props.t('depositShapeShift')
-  SHAPESHIFT_ROW_TEXT = props.t('depositShapeShiftExplainer')
-  FAUCET_ROW_TITLE = props.t('testFaucet')
+  DIRECT_DEPOSIT_ROW_TITLE = context.t('directDepositEther')
+  DIRECT_DEPOSIT_ROW_TEXT = context.t('directDepositEtherExplainer')
+  COINBASE_ROW_TITLE = context.t('buyCoinbase')
+  COINBASE_ROW_TEXT = context.t('buyCoinbaseExplainer')
+  SHAPESHIFT_ROW_TITLE = context.t('depositShapeShift')
+  SHAPESHIFT_ROW_TEXT = context.t('depositShapeShiftExplainer')
+  FAUCET_ROW_TITLE = context.t('testFaucet')
 
   this.state = {
     buyingWithShapeshift: false,
   }
 }
 
+DepositEtherModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(DepositEtherModal)
 
+
 DepositEtherModal.prototype.facuetRowText = function (networkName) {
-  return this.props.t('getEtherFromFaucet', [networkName])
+  return this.context.t('getEtherFromFaucet', [networkName])
 }
 
 DepositEtherModal.prototype.renderRow = function ({
@@ -122,10 +128,10 @@ DepositEtherModal.prototype.render = function () {
 
     h('div.page-container__header', [
 
-      h('div.page-container__title', [this.props.t('depositEther')]),
+      h('div.page-container__title', [this.context.t('depositEther')]),
 
       h('div.page-container__subtitle', [
-        this.props.t('needEtherInWallet'),
+        this.context.t('needEtherInWallet'),
       ]),
 
       h('div.page-container__header-close', {
@@ -144,11 +150,11 @@ DepositEtherModal.prototype.render = function () {
 
         this.renderRow({
           logo: h('img.deposit-ether-modal__logo', {
-            src: '../../../images/deposit-eth.svg',
+            src: './images/deposit-eth.svg',
           }),
           title: DIRECT_DEPOSIT_ROW_TITLE,
           text: DIRECT_DEPOSIT_ROW_TEXT,
-          buttonLabel: this.props.t('viewAccount'),
+          buttonLabel: this.context.t('viewAccount'),
           onButtonClick: () => this.goToAccountDetailsModal(),
           hide: buyingWithShapeshift,
         }),
@@ -157,7 +163,7 @@ DepositEtherModal.prototype.render = function () {
           logo: h('i.fa.fa-tint.fa-2x'),
           title: FAUCET_ROW_TITLE,
           text: this.facuetRowText(networkName),
-          buttonLabel: this.props.t('getEther'),
+          buttonLabel: this.context.t('getEther'),
           onButtonClick: () => toFaucet(network),
           hide: !isTestNetwork || buyingWithShapeshift,
         }),
@@ -165,13 +171,13 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {
-              backgroundImage: 'url(\'../../../images/coinbase logo.png\')',
+              backgroundImage: 'url(\'./images/coinbase logo.png\')',
               height: '40px',
             },
           }),
           title: COINBASE_ROW_TITLE,
           text: COINBASE_ROW_TEXT,
-          buttonLabel: this.props.t('continueToCoinbase'),
+          buttonLabel: this.context.t('continueToCoinbase'),
           onButtonClick: () => toCoinbase(address),
           hide: isTestNetwork || buyingWithShapeshift,
         }),
@@ -179,12 +185,12 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {
-              backgroundImage: 'url(\'../../../images/shapeshift logo.png\')',
+              backgroundImage: 'url(\'./images/shapeshift logo.png\')',
             },
           }),
           title: SHAPESHIFT_ROW_TITLE,
           text: SHAPESHIFT_ROW_TEXT,
-          buttonLabel: this.props.t('shapeshiftBuy'),
+          buttonLabel: this.context.t('shapeshiftBuy'),
           onButtonClick: () => this.setState({ buyingWithShapeshift: true }),
           hide: isTestNetwork,
           hideButton: buyingWithShapeshift,

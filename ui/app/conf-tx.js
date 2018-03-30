@@ -1,7 +1,7 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
-const connect = require('./metamask-connect')
+const connect = require('react-redux').connect
 const { withRouter, Redirect } = require('react-router-dom')
 const { compose } = require('recompose')
 const actions = require('./actions')

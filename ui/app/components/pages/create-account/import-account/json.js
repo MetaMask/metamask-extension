@@ -3,7 +3,7 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
-const connect = require('../../../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
 const { DEFAULT_ROUTE } = require('../../../../routes')
@@ -25,11 +25,11 @@ class JsonImportSubview extends Component {
     return (
       h('div.new-account-import-form__json', [
 
-        h('p', this.props.t('usedByClients')),
+        h('p', this.context.t('usedByClients')),
         h('a.warning', {
           href: HELP_LINK,
           target: '_blank',
-        }, this.props.t('fileImportFail')),
+        }, this.context.t('fileImportFail')),
 
         h(FileInput, {
           readAs: 'text',
@@ -44,7 +44,7 @@ class JsonImportSubview extends Component {
 
         h('input.new-account-import-form__input-password', {
           type: 'password',
-          placeholder: this.props.t('enterPassword'),
+          placeholder: this.context.t('enterPassword'),
           id: 'json-password-box',
           onKeyPress: this.createKeyringOnEnter.bind(this),
         }),
@@ -54,13 +54,13 @@ class JsonImportSubview extends Component {
           h('button.btn-secondary.new-account-create-form__button', {
             onClick: () => this.props.history.push(DEFAULT_ROUTE),
           }, [
-            this.props.t('cancel'),
+            this.context.t('cancel'),
           ]),
 
           h('button.btn-primary.new-account-create-form__button', {
             onClick: () => this.createNewKeychain(),
           }, [
-            this.props.t('import'),
+            this.context.t('import'),
           ]),
 
         ]),
@@ -85,14 +85,14 @@ class JsonImportSubview extends Component {
     const state = this.state
 
     if (!state) {
-      const message = this.props.t('validFileImport')
+      const message = this.context.t('validFileImport')
       return this.props.displayWarning(message)
     }
 
     const { fileContents } = state
 
     if (!fileContents) {
-      const message = this.props.t('needImportFile')
+      const message = this.context.t('needImportFile')
       return this.props.displayWarning(message)
     }
 
@@ -100,7 +100,7 @@ class JsonImportSubview extends Component {
     const password = passwordInput.value
 
     if (!password) {
-      const message = this.props.t('needImportPassword')
+      const message = this.context.t('needImportPassword')
       return this.props.displayWarning(message)
     }
 
@@ -129,6 +129,10 @@ const mapDispatchToProps = dispatch => {
     displayWarning: warning => dispatch(actions.displayWarning(warning)),
     importNewJsonAccount: options => dispatch(actions.importNewAccount('JSON File', options)),
   }
+}
+
+JsonImportSubview.contextTypes = {
+  t: PropTypes.func,
 }
 
 module.exports = compose(

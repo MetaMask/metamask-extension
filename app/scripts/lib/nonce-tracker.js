@@ -31,14 +31,13 @@ class NonceTracker {
     const networkNonceResult = await this._getNetworkNextNonce(address)
     const highestLocallyConfirmed = this._getHighestLocallyConfirmed(address)
     const nextNetworkNonce = networkNonceResult.nonce
-    const highestLocalNonce = highestLocallyConfirmed
-    const highestSuggested = Math.max(nextNetworkNonce, highestLocalNonce)
+    const highestSuggested = Math.max(nextNetworkNonce, highestLocallyConfirmed)
 
     const pendingTxs = this.getPendingTransactions(address)
     const localNonceResult = this._getHighestContinuousFrom(pendingTxs, highestSuggested) || 0
 
     nonceDetails.params = {
-      highestLocalNonce,
+      highestLocallyConfirmed,
       highestSuggested,
       nextNetworkNonce,
     }

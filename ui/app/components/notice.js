@@ -1,12 +1,18 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const ReactMarkdown = require('react-markdown')
 const linker = require('extension-link-enabler')
 const findDOMNode = require('react-dom').findDOMNode
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
+
+Notice.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect()(Notice)
+
 
 inherits(Notice, Component)
 function Notice () {
@@ -111,7 +117,7 @@ Notice.prototype.render = function () {
         style: {
           marginTop: '18px',
         },
-      }, this.props.t('accept')),
+      }, this.context.t('accept')),
     ])
   )
 }

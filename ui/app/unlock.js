@@ -1,7 +1,8 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('./metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('./actions')
 const getCaretCoordinates = require('textarea-caret')
 const EventEmitter = require('events').EventEmitter
@@ -10,7 +11,12 @@ const environmentType = require('../../app/scripts/lib/environment-type')
 
 const Mascot = require('./components/mascot')
 
+UnlockScreen.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(UnlockScreen)
+
 
 inherits(UnlockScreen, Component)
 function UnlockScreen () {
@@ -40,7 +46,7 @@ UnlockScreen.prototype.render = function () {
           textTransform: 'uppercase',
           color: '#7F8082',
         },
-      }, this.props.t('appName')),
+      }, this.context.t('appName')),
 
       h('input.large-input', {
         type: 'password',
@@ -66,7 +72,7 @@ UnlockScreen.prototype.render = function () {
         style: {
           margin: 10,
         },
-      }, this.props.t('login')),
+      }, this.context.t('login')),
 
       h('p.pointer', {
         onClick: () => {
@@ -80,7 +86,7 @@ UnlockScreen.prototype.render = function () {
           color: 'rgb(247, 134, 28)',
           textDecoration: 'underline',
         },
-      }, this.props.t('restoreFromSeed')),
+      }, this.context.t('restoreFromSeed')),
 
       h('p.pointer', {
         onClick: () => {
@@ -93,7 +99,7 @@ UnlockScreen.prototype.render = function () {
           textDecoration: 'underline',
           marginTop: '32px',
         },
-      }, this.props.t('classicInterface')),
+      }, this.context.t('classicInterface')),
     ])
   )
 }
