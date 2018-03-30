@@ -16,12 +16,13 @@ let driver
 
 captureAllScreens().catch((err) => {
   try {
-    verboseReportOnFailure()
     console.error(err)
+    verboseReportOnFailure()
     driver.quit()
-  } finally {
-    process.exit(1)
+  } catch (err) {
+    console.error(err)
   }
+  process.exit(1)
 })
 
 async function captureAllScreens() {
