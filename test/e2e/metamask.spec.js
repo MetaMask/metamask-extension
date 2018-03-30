@@ -44,7 +44,7 @@ describe('Metamask popup page', function () {
 
     it('should match title', async () => {
       const title = await driver.getTitle()
-      assert.equal(title, 'MetaMask Plugin', 'title matches MetaMask Plugin')
+      assert.equal(title, 'MetaMask', 'title matches MetaMask')
     })
 
     it('should show privacy notice', async () => {

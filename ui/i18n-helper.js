@@ -27,7 +27,7 @@ const getMessage = (locale, key, substitutions) => {
 
 function fetchLocale (localeName) {
   return new Promise((resolve, reject) => {
-    return fetch(`/_locales/${localeName}/messages.json`)
+    return fetch(`./_locales/${localeName}/messages.json`)
       .then(response => response.json())
       .then(
         locale => resolve(locale),
