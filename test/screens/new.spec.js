@@ -12,7 +12,17 @@ const By = webdriver.By
 const { delay, buildWebDriver } = require('./func')
 const localesIndex = require('../../app/_locales/index.json')
 
-captureAllScreens().catch(console.error)
+let driver
+
+captureAllScreens().catch((err) => {
+  try {
+    verboseReportOnFailure()
+    console.error(err)
+    driver.quit()
+  } finally {
+    process.exit(1)
+  }
+})
 
 async function captureAllScreens() {
   let screenshotCount = 0
@@ -26,7 +36,7 @@ async function captureAllScreens() {
 
   // setup selenium and install extension
   const extPath = path.resolve('dist/chrome')
-  const driver = buildWebDriver(extPath)
+  driver = buildWebDriver(extPath)
   await driver.get('chrome://extensions-frame')
   const elems = await driver.findElements(By.css('.extension-list-item-wrapper'))
   const extensionId = await elems[1].getAttribute('id')
@@ -34,7 +44,7 @@ async function captureAllScreens() {
   await delay(500)
   tabs = await driver.getAllWindowHandles()
   await driver.switchTo().window(tabs[0])
-  await delay(300)
+  await delay(500)
   await setProviderType('localhost')
 
   // click try new ui
@@ -43,7 +53,6 @@ async function captureAllScreens() {
 
   // close metamask homepage and extra home.html
   tabs = await driver.getAllWindowHandles()
-  console.log(tabs)
   // metamask homepage is opened on prod, not dev
   if (tabs.length > 2) {
     await driver.switchTo().window(tabs[2])
@@ -202,6 +211,18 @@ async function captureAllScreens() {
 
     // wait for end
     await pify(endOfStream)(stream)
+  }
+
+  async function verboseReportOnFailure(test) {
+    const artifactDir = `./test-artifacts/${test.title}`
+    const filepathBase = `${artifactDir}/test-failure`
+    await pify(mkdirp)(artifactDir)
+    // capture screenshot
+    const screenshot = await driver.takeScreenshot()
+    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+    // capture dom source
+    const htmlSource = await driver.getPageSource()
+    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
   }
 
 }
