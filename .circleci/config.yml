@@ -19,6 +19,10 @@ workflows:
           requires:
             - prep-build
             - prep-deps-npm
+      - test-screens:
+          requires:
+            - prep-build
+            - prep-deps-npm
       - test-unit:
           requires:
             - prep-deps-npm
@@ -45,6 +49,7 @@ workflows:
             - test-lint
             - test-unit
             - test-e2e
+            - test-screens
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -141,6 +146,22 @@ jobs:
       - run:
           name: Test
           command: npm run test:e2e
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-screens:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - run:
+          name: Test
+          command: npm run test:screens
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
