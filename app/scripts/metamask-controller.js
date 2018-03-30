@@ -57,7 +57,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.defaultMaxListeners = 20
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
-    
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
@@ -242,6 +241,11 @@ module.exports = class MetamaskController extends EventEmitter {
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
+        eth_sendTransaction: (payload, next, end) => {
+          const origin = payload.origin
+          const txParams = payload.params[0]
+          nodeify(this.txController.newUnapprovedTransaction, this.txController)(txParams, { origin }, end)
+        },
       },
       // account mgmt
       getAccounts: (cb) => {
@@ -256,7 +260,6 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing

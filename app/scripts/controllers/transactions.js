@@ -161,9 +161,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
-  async newUnapprovedTransaction (txParams) {
+  async newUnapprovedTransaction (txParams, opts = {origin: 'metamask'}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    initialTxMeta.origin = opts.origin
+    this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
