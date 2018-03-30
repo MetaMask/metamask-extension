@@ -10,6 +10,7 @@ const pngFileStream = require('png-file-stream')
 const sizeOfPng = require('image-size/lib/types/png')
 const By = webdriver.By
 const { delay, buildWebDriver } = require('./func')
+const localesIndex = require('../../app/_locales/index.json')
 
 captureAllScreens().catch(console.error)
 
@@ -49,62 +50,62 @@ async function captureAllScreens() {
   driver.close()
   await driver.switchTo().window(tabs[0])
   await delay(300)
-  await captureScreenShot('welcome-new-ui')
+  await captureLanguageScreenShots('welcome-new-ui')
 
   // setup account
   await delay(1000)
   await driver.findElement(By.css('body')).click()
   await delay(300)
-  await captureScreenShot('welcome')
+  await captureLanguageScreenShots('welcome')
 
   await driver.findElement(By.css('button')).click()
-  await captureScreenShot('create password')
+  await captureLanguageScreenShots('create password')
 
   const passwordBox = await driver.findElement(By.css('input[type=password]:nth-of-type(1)'))
   const passwordBoxConfirm = await driver.findElement(By.css('input[type=password]:nth-of-type(2)'))
   passwordBox.sendKeys('123456789')
   passwordBoxConfirm.sendKeys('123456789')
   await delay(500)
-  await captureScreenShot('choose-password-filled')
+  await captureLanguageScreenShots('choose-password-filled')
 
   await driver.findElement(By.css('button')).click()
   await delay(500)
-  await captureScreenShot('unique account image')
+  await captureLanguageScreenShots('unique account image')
 
   await driver.findElement(By.css('button')).click()
   await delay(500)
-  await captureScreenShot('privacy note')
+  await captureLanguageScreenShots('privacy note')
 
   await driver.findElement(By.css('button')).click()
   await delay(300)
-  await captureScreenShot('terms')
+  await captureLanguageScreenShots('terms')
 
   await delay(300)
   element = driver.findElement(By.linkText('Attributions'))
   await driver.executeScript('arguments[0].scrollIntoView(true)', element)
   await delay(300)
-  await captureScreenShot('terms-scrolled')
+  await captureLanguageScreenShots('terms-scrolled')
 
   await driver.findElement(By.css('button')).click()
   await delay(300)
-  await captureScreenShot('secret backup phrase')
+  await captureLanguageScreenShots('secret backup phrase')
 
   await driver.findElement(By.css('button')).click()
   await delay(300)
-  await captureScreenShot('secret backup phrase')
+  await captureLanguageScreenShots('secret backup phrase')
 
   await driver.findElement(By.css('.backup-phrase__reveal-button')).click()
   await delay(300)
-  await captureScreenShot('secret backup phrase - reveal')
+  await captureLanguageScreenShots('secret backup phrase - reveal')
 
   await driver.findElement(By.css('button')).click()
   await delay(300)
-  await captureScreenShot('confirm secret backup phrase')
+  await captureLanguageScreenShots('confirm secret backup phrase')
 
   // finish up
   console.log('building gif...')
   await generateGif()
-  await driver.quit()
+  // await driver.quit()
   return
 
   //
@@ -143,6 +144,22 @@ async function captureAllScreens() {
   //   await driver.findElement(By.css('.fa-arrow-left')).click()
   //   await delay(500)
   // })
+
+  async function captureLanguageScreenShots(label) {
+    const nonEnglishLocales = localesIndex.filter(localeMeta => localeMeta.code !== 'en')
+    for (let localeMeta of nonEnglishLocales) {
+      // set locale
+      await setLocale(localeMeta.code)
+      await delay(300)
+      await captureScreenShot(`${label} (${localeMeta.code})`)
+    }
+    await setLocale('en')
+    await delay(300)
+  }
+
+  async function setLocale(code) {
+    await driver.executeScript('setLocale(arguments[0])', code)
+  }
 
   // cleanup
   await driver.quit()

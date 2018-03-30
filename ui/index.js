@@ -69,6 +69,11 @@ async function startApp (metamaskState, accountManager, opts) {
     store.dispatch(actions.updateMetamaskState(metamaskState))
   })
 
+  // used by screenshotter tooling
+  global.setLocale = (key) => {
+    store.dispatch(actions.updateCurrentLocale(key))
+  }
+
   // start app
   render(
     h(Root, {
