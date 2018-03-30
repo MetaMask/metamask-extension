@@ -69,7 +69,7 @@ createCopyTasks('images', {
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images`),
 })
 createCopyTasks('contractImages', {
-  source: `${require.resolve('eth-contract-metadata')}/images/`,
+  source: './node_modules/eth-contract-metadata/images/',
   destinations: commonPlatforms.map(platform => `./dist/${platform}/images/contract`),
 })
 createCopyTasks('fonts', {
@@ -293,9 +293,10 @@ const buildJsFiles = [
 ]
 
 // bundle tasks
-createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:js', devMode: true })
-createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:js:extension'  })
-createTasksForBuildJsMascara({ taskPrefix: 'build:js:mascara' })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'dev:extension:js', devMode: true })
+createTasksForBuildJsExtension({ buildJsFiles, taskPrefix: 'build:extension:js'  })
+createTasksForBuildJsMascara({ taskPrefix: 'build:mascara:js' })
+createTasksForBuildJsMascara({ taskPrefix: 'dev:mascara:js', devMode: true })
 
 function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bundleTaskOpts = {} }) {
   // inpage must be built before all other scripts:
@@ -382,7 +383,32 @@ gulp.task('dev',
     'clean',
     'dev:scss',
     gulp.parallel(
-      'dev:js',
+      'dev:extension:js',
+      'dev:mascara:js',
+      'dev:copy',
+      'dev:reload'
+    )
+  )
+)
+
+gulp.task('dev:extension',
+  gulp.series(
+    'clean',
+    'dev:scss',
+    gulp.parallel(
+      'dev:extension:js',
+      'dev:copy',
+      'dev:reload'
+    )
+  )
+)
+
+gulp.task('dev:mascara',
+  gulp.series(
+    'clean',
+    'dev:scss',
+    gulp.parallel(
+      'dev:mascara:js',
       'dev:copy',
       'dev:reload'
     )
@@ -394,8 +420,30 @@ gulp.task('build',
     'clean',
     'build:scss',
     gulp.parallel(
-      'build:js:extension',
-      // 'build:js:mascara',
+      'build:extension:js',
+      'build:mascara:js',
+      'copy'
+    )
+  )
+)
+
+gulp.task('build:extension',
+  gulp.series(
+    'clean',
+    'build:scss',
+    gulp.parallel(
+      'build:extension:js',
+      'copy'
+    )
+  )
+)
+
+gulp.task('build:mascara',
+  gulp.series(
+    'clean',
+    'build:scss',
+    gulp.parallel(
+      'build:mascara:js',
       'copy'
     )
   )
