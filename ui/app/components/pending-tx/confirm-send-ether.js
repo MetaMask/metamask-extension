@@ -1,5 +1,6 @@
 const Component = require('react').Component
-const connect = require('../../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const actions = require('../../actions')
@@ -23,7 +24,12 @@ const NetworkDisplay = require('../network-display')
 
 const { MIN_GAS_PRICE_HEX } = require('../send/send-constants')
 
+ConfirmSendEther.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmSendEther)
+
 
 function mapStateToProps (state) {
   const {
@@ -216,7 +222,7 @@ ConfirmSendEther.prototype.getData = function () {
     },
     to: {
       address: txParams.to,
-      name: identities[txParams.to] ? identities[txParams.to].name : this.props.t('newRecipient'),
+      name: identities[txParams.to] ? identities[txParams.to].name : this.context.t('newRecipient'),
     },
     memo: txParams.memo || '',
     gasFeeInFIAT,
@@ -322,7 +328,7 @@ ConfirmSendEther.prototype.render = function () {
 
         h('div.confirm-screen-rows', [
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('from') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('from') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', fromName),
               h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -330,7 +336,7 @@ ConfirmSendEther.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('to') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('to') ]),
             h('div.confirm-screen-section-column', [
               h('div.confirm-screen-row-info', toName),
               h('div.confirm-screen-row-detail', `...${toAddress.slice(toAddress.length - 4)}`),
@@ -338,7 +344,7 @@ ConfirmSendEther.prototype.render = function () {
           ]),
 
           h('section.flex-row.flex-center.confirm-screen-row', [
-            h('span.confirm-screen-label.confirm-screen-section-column', [ this.props.t('gasFee') ]),
+            h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('gasFee') ]),
             h('div.confirm-screen-section-column', [
               h(GasFeeDisplay, {
                 gasTotal: gasTotal || gasFeeInHex,
@@ -356,8 +362,8 @@ ConfirmSendEther.prototype.render = function () {
                 'confirm-screen-section-column': !errors['insufficientFunds'],
               }),
             }, [
-              h('span.confirm-screen-label', [ this.props.t('total') + ' ' ]),
-              h('div.confirm-screen-total-box__subtitle', [ this.props.t('amountPlusGas') ]),
+              h('span.confirm-screen-label', [ this.context.t('total') + ' ' ]),
+              h('div.confirm-screen-total-box__subtitle', [ this.context.t('amountPlusGas') ]),
             ]),
 
             h('div.confirm-screen-section-column', [
@@ -460,10 +466,10 @@ ConfirmSendEther.prototype.render = function () {
               clearSend()
               this.cancel(event, txMeta)
             },
-          }, this.props.t('cancel')),
+          }, this.context.t('cancel')),
 
           // Accept Button
-          h('button.btn-confirm.page-container__footer-button.allcaps', [this.props.t('confirm')]),
+          h('button.btn-confirm.page-container__footer-button.allcaps', [this.context.t('confirm')]),
         ]),
       ]),
     ])
@@ -491,7 +497,7 @@ ConfirmSendEther.prototype.onSubmit = function (event) {
   } else if (!balanceIsSufficient) {
     updateSendErrors({ insufficientFunds: this.props.t('insufficientFunds') })
   } else {
-    updateSendErrors({ invalidGasParams: this.props.t('invalidGasParams') })
+    updateSendErrors({ invalidGasParams: this.context.t('invalidGasParams') })
     this.setState({ submitting: false })
   }
 }
