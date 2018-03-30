@@ -1,7 +1,5 @@
 const path = require('path')
 const express = require('express')
-const createBundle = require('./util').createBundle
-const serveBundle = require('./util').serveBundle
 const compression = require('compression')
 
 module.exports = createMetamascaraServer
