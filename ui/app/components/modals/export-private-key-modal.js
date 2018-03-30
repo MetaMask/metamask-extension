@@ -1,7 +1,8 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const actions = require('../../actions')
 const AccountModalContainer = require('./account-modal-container')
@@ -37,7 +38,12 @@ function ExportPrivateKeyModal () {
   }
 }
 
+ExportPrivateKeyModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ExportPrivateKeyModal)
+
 
 ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (password, address) {
   const { exportAccount } = this.props
@@ -48,8 +54,8 @@ ExportPrivateKeyModal.prototype.exportAccountAndGetPrivateKey = function (passwo
 
 ExportPrivateKeyModal.prototype.renderPasswordLabel = function (privateKey) {
   return h('span.private-key-password-label', privateKey
-    ? this.props.t('copyPrivateKey')
-    : this.props.t('typePassword')
+    ? this.context.t('copyPrivateKey')
+    : this.context.t('typePassword')
   )
 }
 
@@ -86,8 +92,8 @@ ExportPrivateKeyModal.prototype.renderButtons = function (privateKey, password, 
     ),
 
     (privateKey
-      ? this.renderButton('btn-primary--lg export-private-key__button', () => hideModal(), this.props.t('done'))
-      : this.renderButton('btn-primary--lg export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), this.props.t('confirm'))
+      ? this.renderButton('btn-primary--lg export-private-key__button', () => hideModal(), this.context.t('done'))
+      : this.renderButton('btn-primary--lg export-private-key__button', () => this.exportAccountAndGetPrivateKey(this.state.password, address), this.context.t('confirm'))
     ),
 
   ])
@@ -120,7 +126,7 @@ ExportPrivateKeyModal.prototype.render = function () {
 
       h('div.account-modal-divider'),
 
-      h('span.modal-body-title', this.props.t('showPrivateKeys')),
+      h('span.modal-body-title', this.context.t('showPrivateKeys')),
 
       h('div.private-key-password', {}, [
         this.renderPasswordLabel(privateKey),
@@ -130,7 +136,7 @@ ExportPrivateKeyModal.prototype.render = function () {
         !warning ? null : h('span.private-key-password-error', warning),
       ]),
 
-      h('div.private-key-password-warning', this.props.t('privateKeyWarning')),
+      h('div.private-key-password-warning', this.context.t('privateKeyWarning')),
 
       this.renderButtons(privateKey, this.state.password, address, hideModal),
 
