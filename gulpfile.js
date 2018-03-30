@@ -109,7 +109,7 @@ function createCopyTasks(label, opts) {
     copyTask(copyTaskName, opts)
     copyTaskNames.push(copyTaskName)
   }
-  const copyDevTaskName = `copy:dev:${label}`
+  const copyDevTaskName = `dev:copy:${label}`
   copyTask(copyDevTaskName, Object.assign({ devMode: true }, opts))
   copyDevTaskNames.push(copyDevTaskName)
 }
@@ -168,7 +168,7 @@ gulp.task('copy',
   )
 )
 
-gulp.task('copy:dev',
+gulp.task('dev:copy',
   gulp.series(
     gulp.parallel(...copyDevTaskNames),
     'manifest:chrome',
@@ -199,17 +199,50 @@ gulp.task('lint:fix', function () {
 
 // scss compilation and autoprefixing tasks
 
-gulp.task('build:scss', function () {
-  return gulp.src('ui/app/css/index.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
-    .pipe(sourcemaps.write())
-    .pipe(autoprefixer())
-    .pipe(gulp.dest('ui/app/css/output'))
-})
-gulp.task('watch:scss', function() {
-  gulp.watch(['ui/app/css/**/*.scss'], gulp.series(['build:scss']))
-})
+// gulp.task('build:scss', function () {
+//   return gulp.src('ui/app/css/index.scss')
+//     .pipe(sourcemaps.init())
+//     .pipe(sass().on('error', sass.logError))
+//     .pipe(sourcemaps.write())
+//     .pipe(autoprefixer())
+//     .pipe(gulp.dest('ui/app/css/output'))
+// })
+// gulp.task('dev:scss', function() {
+//   gulp.watch(['ui/app/css/**/*.scss'], gulp.parallel(['build:scss']))
+// })
+
+
+
+gulp.task('build:scss', createScssBuildTask({
+  src: 'ui/app/css/index.scss',
+  dest: 'ui/app/css/output',
+  devMode: false,
+}))
+
+gulp.task('dev:scss', createScssBuildTask({
+  src: 'ui/app/css/index.scss',
+  dest: 'ui/app/css/output',
+  devMode: true,
+  pattern: 'ui/app/css/**/*.scss',
+}))
+
+function createScssBuildTask({ src, dest, devMode, pattern }) {
+  return function () {
+    if (devMode) {
+      watch(pattern, buildScss)
+    }
+    return buildScss()
+  }
+
+  function buildScss() {
+    return gulp.src(src)
+      .pipe(sourcemaps.init())
+      .pipe(sass().on('error', sass.logError))
+      .pipe(sourcemaps.write())
+      .pipe(autoprefixer())
+      .pipe(gulp.dest(dest))
+  }
+}
 
 gulp.task('lint-scss', function() {
   return gulp
@@ -321,15 +354,27 @@ gulp.task('apply-prod-environment', function(done) {
 });
 
 // high level tasks
+//
+// gulp.task('dev',
+//   gulp.series(
+//     'build:scss',
+//     'copy',
+//     gulp.parallel(
+//       'dev:js',
+//       'dev:scss',
+//       'dev:copy',
+//       'dev:reload'
+//     )
+//   )
+// )
 
 gulp.task('dev',
   gulp.series(
-    'build:scss',
-    'copy',
+    'clean',
+    'dev:scss',
     gulp.parallel(
       'dev:js',
-      'watch:scss',
-      'copy:dev',
+      'dev:copy',
       'dev:reload'
     )
   )
@@ -341,7 +386,7 @@ gulp.task('build',
     'build:scss',
     gulp.parallel(
       'build:js:extension',
-      'build:js:mascara',
+      // 'build:js:mascara',
       'copy'
     )
   )
