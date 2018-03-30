@@ -7,8 +7,8 @@ const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('./lib/port-stream.js')
 
-const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'scripts', 'inpage.js')).toString()
-const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('scripts/inpage.js') + '\n'
+const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
+const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
 
 // Eventually this streaming injection could be replaced with:
@@ -96,7 +96,7 @@ function logStreamDisconnectWarning (remoteLabel, err) {
 }
 
 function shouldInjectWeb3 () {
-  return doctypeCheck() && suffixCheck() 
+  return doctypeCheck() && suffixCheck()
     && documentElementCheck() && !blacklistedDomainCheck()
 }
 

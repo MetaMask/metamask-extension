@@ -46,7 +46,7 @@ class SenderToRecipient extends Component {
             h('img', {
               height: 15,
               width: 15,
-              src: '/images/arrow-right.svg',
+              src: './images/arrow-right.svg',
             }),
           ]),
         ]),

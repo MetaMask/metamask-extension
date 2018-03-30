@@ -150,7 +150,7 @@ DepositEtherModal.prototype.render = function () {
 
         this.renderRow({
           logo: h('img.deposit-ether-modal__logo', {
-            src: '../../../images/deposit-eth.svg',
+            src: './images/deposit-eth.svg',
           }),
           title: DIRECT_DEPOSIT_ROW_TITLE,
           text: DIRECT_DEPOSIT_ROW_TEXT,
@@ -171,7 +171,7 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {
-              backgroundImage: 'url(\'../../../images/coinbase logo.png\')',
+              backgroundImage: 'url(\'./images/coinbase logo.png\')',
               height: '40px',
             },
           }),
@@ -185,7 +185,7 @@ DepositEtherModal.prototype.render = function () {
         this.renderRow({
           logo: h('div.deposit-ether-modal__logo', {
             style: {
-              backgroundImage: 'url(\'../../../images/shapeshift logo.png\')',
+              backgroundImage: 'url(\'./images/shapeshift logo.png\')',
             },
           }),
           title: SHAPESHIFT_ROW_TITLE,

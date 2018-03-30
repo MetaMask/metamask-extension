@@ -1,6 +1,6 @@
 const injectCss = require('inject-css')
-const SWcontroller = require('client-sw-ready-event/lib/sw-client.js')
-const SwStream = require('sw-stream/lib/sw-stream.js')
+const SwController = require('sw-controller')
+const SwStream = require('sw-stream')
 const MetaMaskUiCss = require('../../ui/css')
 const MetamascaraPlatform = require('../../app/scripts/platforms/window')
 const startPopup = require('../../app/scripts/popup-core')
@@ -8,27 +8,44 @@ const startPopup = require('../../app/scripts/popup-core')
 // create platform global
 global.platform = new MetamascaraPlatform()
 
-
 var css = MetaMaskUiCss()
 injectCss(css)
 const container = document.getElementById('app-content')
 
-var name = 'popup'
+const name = 'popup'
 window.METAMASK_UI_TYPE = name
 window.METAMASK_PLATFORM_TYPE = 'mascara'
 
-const intervalDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
+const keepAliveDelay = Math.floor(Math.random() * (30000 - 1000)) + 1000
 
-const background = new SWcontroller({
-  fileName: '/background.js',
-  letBeIdle: false,
-  intervalDelay,
-  wakeUpInterval: 20000,
+const swController = new SwController({
+  fileName: './background.js',
+  keepAlive: true,
+  keepAliveDelay,
+  keepAliveInterval: 20000,
 })
+
+swController.once('updatefound', windowReload)
+swController.once('ready', async () => {
+  try {
+    swController.removeListener('updatefound', windowReload)
+    console.log('swController ready')
+    await timeout(1000)
+    console.log('connecting to app')
+    await connectApp()
+    console.log('app connected')
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+console.log('starting service worker')
+swController.startWorker()
+
 // Setup listener for when the service worker is read
-const connectApp = function (readSw) {
+function connectApp() {
   const connectionStream = SwStream({
-    serviceWorker: background.controller,
+    serviceWorker: swController.getWorker(),
     context: name,
   })
   return new Promise((resolve, reject) => {
@@ -43,19 +60,6 @@ const connectApp = function (readSw) {
     })
   })
 }
-background.on('ready', async (sw) => {
-  try {
-    background.removeListener('updatefound', connectApp)
-    await timeout(1000)
-    await connectApp(sw)
-    console.log('hello from cb ready event!')
-  } catch (e) {
-    console.error(e)
-  }
-})
-background.on('updatefound', windowReload)
-
-background.startWorker()
 
 function windowReload () {
   if (window.METAMASK_SKIP_RELOAD) return
