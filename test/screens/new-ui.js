@@ -214,16 +214,16 @@ async function captureAllScreens() {
     await pify(endOfStream)(stream)
   }
 
-  async function verboseReportOnFailure(test) {
-    const artifactDir = `./test-artifacts/${test.title}`
-    const filepathBase = `${artifactDir}/test-failure`
-    await pify(mkdirp)(artifactDir)
-    // capture screenshot
-    const screenshot = await driver.takeScreenshot()
-    await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
-    // capture dom source
-    const htmlSource = await driver.getPageSource()
-    await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
-  }
+}
 
+async function verboseReportOnFailure(test) {
+  const artifactDir = `./test-artifacts/${test.title}`
+  const filepathBase = `${artifactDir}/test-failure`
+  await pify(mkdirp)(artifactDir)
+  // capture screenshot
+  const screenshot = await driver.takeScreenshot()
+  await pify(fs.writeFile)(`${filepathBase}-screenshot.png`, screenshot, { encoding: 'base64' })
+  // capture dom source
+  const htmlSource = await driver.getPageSource()
+  await pify(fs.writeFile)(`${filepathBase}-dom.html`, htmlSource)
 }

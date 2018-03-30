@@ -15,7 +15,7 @@
     "test:e2e": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:e2e:run'",
     "test:e2e:run": "mocha test/e2e/metamask.spec --recursive",
     "test:screens": "shell-parallel -s 'npm run ganache:start' -x 'sleep 3 && npm run test:screens:run'",
-    "test:screens:run": "mocha test/screens/new.spec --recursive",
+    "test:screens:run": "node test/screens/new-ui.js",
     "test:coverage": "nyc npm run test:unit && npm run test:coveralls-upload",
     "test:coveralls-upload": "if [ $COVERALLS_REPO_TOKEN ]; then nyc report --reporter=text-lcov | coveralls; fi",
     "test:flat": "npm run test:flat:build && karma start test/flat.conf.js",
