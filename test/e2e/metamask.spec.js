@@ -38,6 +38,8 @@ describe('Metamask popup page', function () {
       const tabs = await driver.getAllWindowHandles()
       await driver.switchTo().window(tabs[0])
       await delay(300)
+      await setProviderType('localhost')
+      await delay(300)
     })
 
     it('should match title', async () => {
@@ -123,6 +125,10 @@ describe('Metamask popup page', function () {
       await delay(500)
     })
   })
+
+  async function setProviderType(type) {
+    await driver.executeScript('window.metamask.setProviderType(arguments[0])', type)
+  }
 
   async function verboseReportOnFailure(test) {
     const artifactDir = `./test-artifacts/${test.title}`
