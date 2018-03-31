@@ -17,12 +17,17 @@ workflows:
             - prep-deps-npm
       - test-e2e:
           requires:
-            - prep-build
             - prep-deps-npm
-      - test-screens:
+            - prep-build
+      - job-screens:
           requires:
-            - prep-build
             - prep-deps-npm
+            - prep-build
+      - job-announce:
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - job-screens
       - test-unit:
           requires:
             - prep-deps-npm
@@ -49,7 +54,7 @@ workflows:
             - test-lint
             - test-unit
             - test-e2e
-            - test-screens
+            - job-screens
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -103,15 +108,7 @@ jobs:
           key: build-cache-{{ .Revision }}
           paths:
             - dist
-      - store_artifacts:
-          path: dist/mascara
-          destination: builds/mascara
-      - store_artifacts:
-          path: builds
-          destination: builds
-      - run:
-          name: build:announce
-          command: ./development/metamaskbot-build-announce.js
+            - builds
 
   prep-scss:
     docker:
@@ -159,7 +156,7 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
-  test-screens:
+  job-screens:
     docker:
       - image: circleci/node:8-browsers
     steps:
@@ -171,9 +168,34 @@ jobs:
       - run:
           name: Test
           command: npm run test:screens
+      - save_cache:
+          key: job-screens-{{ .Revision }}
+          paths:
+            - test-artifacts
+
+  job-announce:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - restore_cache:
+          key: job-screens-{{ .Revision }}
+      - store_artifacts:
+          path: dist/mascara
+          destination: builds/mascara
+      - store_artifacts:
+          path: builds
+          destination: builds
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - run:
+          name: build:announce
+          command: ./development/metamaskbot-build-announce.js
 
   test-unit:
     docker:
