@@ -45,7 +45,7 @@ async function captureAllScreens() {
   await delay(500)
   tabs = await driver.getAllWindowHandles()
   await driver.switchTo().window(tabs[0])
-  await delay(500)
+  await delay(1000)
   await setProviderType('localhost')
   await delay(300)
 
