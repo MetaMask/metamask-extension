@@ -47,6 +47,7 @@ async function captureAllScreens() {
   await driver.switchTo().window(tabs[0])
   await delay(500)
   await setProviderType('localhost')
+  await delay(300)
 
   // click try new ui
   await driver.findElement(By.css('#app-content > div > div.app-primary.from-right > div > div.flex-row.flex-center.flex-grow > p')).click()
