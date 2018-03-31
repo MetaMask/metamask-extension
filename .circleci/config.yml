@@ -111,7 +111,7 @@ jobs:
           destination: builds
       - run:
           name: build:announce
-          command: ./development/metamaskbot-build-announce.sh
+          command: ./development/metamaskbot-build-announce.js
 
   prep-scss:
     docker:
