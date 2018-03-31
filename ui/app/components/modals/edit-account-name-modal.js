@@ -1,10 +1,10 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
 const { getSelectedAccount } = require('../../selectors')
-const t = require('../../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -33,7 +33,12 @@ function EditAccountNameModal (props) {
   }
 }
 
+EditAccountNameModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(EditAccountNameModal)
+
 
 EditAccountNameModal.prototype.render = function () {
   const { hideModal, saveAccountLabel, identity } = this.props
@@ -51,7 +56,7 @@ EditAccountNameModal.prototype.render = function () {
       ]),
 
       h('div.edit-account-name-modal-title', {
-      }, [t('editAccountName')]),
+      }, [this.context.t('editAccountName')]),
 
       h('input.edit-account-name-modal-input', {
         placeholder: identity.name,
@@ -70,7 +75,7 @@ EditAccountNameModal.prototype.render = function () {
         },
         disabled: this.state.inputText.length === 0,
       }, [
-        t('save'),
+        this.context.t('save'),
       ]),
 
     ]),

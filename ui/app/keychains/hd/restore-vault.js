@@ -1,11 +1,16 @@
 const inherits = require('util').inherits
+const PropTypes = require('prop-types')
 const PersistentForm = require('../../../lib/persistent-form')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
-const t = require('../../../i18n')
 const actions = require('../../actions')
 
+RestoreVaultScreen.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(RestoreVaultScreen)
+
 
 inherits(RestoreVaultScreen, PersistentForm)
 function RestoreVaultScreen () {
@@ -37,23 +42,23 @@ RestoreVaultScreen.prototype.render = function () {
           padding: 6,
         },
       }, [
-        t('restoreVault'),
+        this.context.t('restoreVault'),
       ]),
 
       // wallet seed entry
-      h('h3', t('walletSeed')),
+      h('h3', this.context.t('walletSeed')),
       h('textarea.twelve-word-phrase.letter-spacey', {
         dataset: {
           persistentFormId: 'wallet-seed',
         },
-        placeholder: t('secretPhrase'),
+        placeholder: this.context.t('secretPhrase'),
       }),
 
       // password
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box',
-        placeholder: t('newPassword8Chars'),
+        placeholder: this.context.t('newPassword8Chars'),
         dataset: {
           persistentFormId: 'password',
         },
@@ -67,7 +72,7 @@ RestoreVaultScreen.prototype.render = function () {
       h('input.large-input.letter-spacey', {
         type: 'password',
         id: 'password-box-confirm',
-        placeholder: t('confirmPassword'),
+        placeholder: this.context.t('confirmPassword'),
         onKeyPress: this.createOnEnter.bind(this),
         dataset: {
           persistentFormId: 'password-confirmation',
@@ -97,7 +102,7 @@ RestoreVaultScreen.prototype.render = function () {
           style: {
             textTransform: 'uppercase',
           },
-        }, t('cancel')),
+        }, this.context.t('cancel')),
 
         // submit
         h('button.primary', {
@@ -105,7 +110,7 @@ RestoreVaultScreen.prototype.render = function () {
           style: {
             textTransform: 'uppercase',
           },
-        }, t('ok')),
+        }, this.context.t('ok')),
       ]),
     ])
   )
@@ -136,13 +141,13 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
   var passwordConfirmBox = document.getElementById('password-box-confirm')
   var passwordConfirm = passwordConfirmBox.value
   if (password.length < 8) {
-    this.warning = t('passwordNotLongEnough')
+    this.warning = this.context.t('passwordNotLongEnough')
 
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (password !== passwordConfirm) {
-    this.warning = t('passwordsDontMatch')
+    this.warning = this.context.t('passwordsDontMatch')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
@@ -152,18 +157,18 @@ RestoreVaultScreen.prototype.createNewVaultAndRestore = function () {
 
   // true if the string has more than a space between words.
   if (seed.split('  ').length > 1) {
-    this.warning = t('spaceBetween')
+    this.warning = this.context.t('spaceBetween')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
   // true if seed contains a character that is not between a-z or a space
   if (!seed.match(/^[a-z ]+$/)) {
-    this.warning = t('loweCaseWords')
+    this.warning = this.context.t('loweCaseWords')
       this.props.dispatch(actions.displayWarning(this.warning))
     return
   }
   if (seed.split(' ').length !== 12) {
-    this.warning = t('seedPhraseReq')
+    this.warning = this.context.t('seedPhraseReq')
     this.props.dispatch(actions.displayWarning(this.warning))
     return
   }

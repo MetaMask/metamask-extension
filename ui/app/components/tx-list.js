@@ -1,4 +1,5 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
@@ -10,9 +11,13 @@ const { formatDate } = require('../util')
 const { showConfTxPage } = require('../actions')
 const classnames = require('classnames')
 const { tokenInfoGetter } = require('../token-util')
-const t = require('../../i18n')
+
+TxList.contextTypes = {
+  t: PropTypes.func,
+}
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxList)
+
 
 function mapStateToProps (state) {
   return {
@@ -40,7 +45,7 @@ TxList.prototype.render = function () {
   return h('div.flex-column', [
     h('div.flex-row.tx-list-header-wrapper', [
       h('div.flex-row.tx-list-header', [
-        h('div', t('transactions')),
+        h('div', this.context.t('transactions')),
       ]),
     ]),
     h('div.flex-column.tx-list-container', {}, [
@@ -57,7 +62,7 @@ TxList.prototype.renderTransaction = function () {
     : [h(
         'div.tx-list-item.tx-list-item--empty',
         { key: 'tx-list-none' },
-        [ t('noTransactions') ],
+        [ this.context.t('noTransactions') ],
       )]
 }
 
@@ -72,9 +77,9 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   const props = {
     dateString: formatDate(transaction.time),
-    address: transaction.txParams.to,
+    address: transaction.txParams && transaction.txParams.to,
     transactionStatus: transaction.status,
-    transactionAmount: transaction.txParams.value,
+    transactionAmount: transaction.txParams && transaction.txParams.value,
     transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
@@ -96,6 +101,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const opts = {
     key: transactionId || transactionHash,
     txParams: transaction.txParams,
+    isMsg: Boolean(transaction.msgParams),
     transactionStatus,
     transactionId,
     dateString,
@@ -110,8 +116,8 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
-    opts.onClick = () => showConfTxPage({id: transactionId})
-    opts.transactionStatus = t('Not Started')
+    opts.onClick = () => showConfTxPage({ id: transactionId })
+    opts.transactionStatus = this.context.t('notStarted')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
   }

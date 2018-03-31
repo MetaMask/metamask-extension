@@ -52,7 +52,7 @@ class CurrencyController {
       this.setConversionDate(Number(parsedResponse.timestamp))
     }).catch((err) => {
       if (err) {
-        console.warn('MetaMask - Failed to query currency conversion.')
+        console.warn(`MetaMask - Failed to query currency conversion:`, currentCurrency, err)
         this.setConversionRate(0)
         this.setConversionDate('N/A')
       }

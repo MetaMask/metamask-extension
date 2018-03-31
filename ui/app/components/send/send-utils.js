@@ -2,6 +2,7 @@ const {
   addCurrencies,
   conversionUtil,
   conversionGTE,
+  multiplyCurrencies,
 } = require('../../conversion-util')
 const {
   calcTokenAmount,
@@ -31,7 +32,7 @@ function isBalanceSufficient ({
     {
       value: totalAmount,
       fromNumericBase: 'hex',
-      conversionRate: amountConversionRate,
+      conversionRate: amountConversionRate || conversionRate,
       fromCurrency: primaryCurrency,
     },
   )
@@ -62,7 +63,16 @@ function isTokenBalanceSufficient ({
   return tokenBalanceIsSufficient
 }
 
+function getGasTotal (gasLimit, gasPrice) {
+  return multiplyCurrencies(gasLimit, gasPrice, {
+    toNumericBase: 'hex',
+    multiplicandBase: 16,
+    multiplierBase: 16,
+  })
+}
+
 module.exports = {
+  getGasTotal,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 }

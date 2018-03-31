@@ -19,11 +19,13 @@ module.exports = function(config) {
       'test/integration/jquery-3.1.0.min.js',
       { pattern: 'dist/chrome/images/**/*.*', watched: false, included: false, served: true },
       { pattern: 'dist/chrome/fonts/**/*.*', watched: false, included: false, served: true },
+      { pattern: 'dist/chrome/_locales/**/*.*', watched: false, included: false, served: true },
     ],
 
     proxies: {
       '/images/': '/base/dist/chrome/images/',
       '/fonts/': '/base/dist/chrome/fonts/',
+      '/_locales/': '/base/dist/chrome/_locales/',
     },
 
     // test results reporter to use

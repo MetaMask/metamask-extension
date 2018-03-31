@@ -1,43 +1,44 @@
 const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
-const t = require('../../../i18n')
 import Select from 'react-select'
 
 // Subviews
 const JsonImportView = require('./json.js')
 const PrivateKeyImportView = require('./private-key.js')
 
-const menuItems = [
-  t('privateKey'),
-  t('jsonFile'),
-]
 
-module.exports = connect(mapStateToProps)(AccountImportSubview)
-
-function mapStateToProps (state) {
-  return {
-    menuItems,
-  }
+AccountImportSubview.contextTypes = {
+  t: PropTypes.func,
 }
+
+module.exports = connect()(AccountImportSubview)
+
 
 inherits(AccountImportSubview, Component)
 function AccountImportSubview () {
   Component.call(this)
 }
 
+AccountImportSubview.prototype.getMenuItemTexts = function () {
+  return [
+    this.context.t('privateKey'),
+    this.context.t('jsonFile'),
+  ]
+}
+
 AccountImportSubview.prototype.render = function () {
-  const props = this.props
   const state = this.state || {}
-  const { menuItems } = props
+  const menuItems = this.getMenuItemTexts()
   const { type } = state
 
   return (
     h('div.new-account-import-form', [
 
       h('.new-account-import-disclaimer', [
-        h('span', t('importAccountMsg')),
+        h('span', this.context.t('importAccountMsg')),
         h('span', {
           style: {
             cursor: 'pointer',
@@ -48,12 +49,12 @@ AccountImportSubview.prototype.render = function () {
               url: 'https://metamask.helpscoutdocs.com/article/17-what-are-loose-accounts',
             })
           },
-        }, t('here')),
+        }, this.context.t('here')),
       ]),
 
       h('div.new-account-import-form__select-section', [
 
-        h('div.new-account-import-form__select-label', t('selectType')),
+        h('div.new-account-import-form__select-label', this.context.t('selectType')),
 
         h(Select, {
           className: 'new-account-import-form__select',
@@ -79,16 +80,15 @@ AccountImportSubview.prototype.render = function () {
 }
 
 AccountImportSubview.prototype.renderImportView = function () {
-  const props = this.props
   const state = this.state || {}
   const { type } = state
-  const { menuItems } = props
+  const menuItems = this.getMenuItemTexts()
   const current = type || menuItems[0]
 
   switch (current) {
-    case t('privateKey'):
+    case this.context.t('privateKey'):
       return h(PrivateKeyImportView)
-    case t('jsonFile'):
+    case this.context.t('jsonFile'):
       return h(JsonImportView)
     default:
       return h(JsonImportView)
