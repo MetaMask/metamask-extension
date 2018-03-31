@@ -4,7 +4,6 @@ const connect = require('react-redux').connect
 const { Route, Switch, Redirect, withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const h = require('react-hyperscript')
-const PropTypes = require('prop-types')
 const actions = require('./actions')
 const classnames = require('classnames')
 
@@ -730,6 +729,10 @@ function mapDispatchToProps (dispatch, ownProps) {
     toggleAccountMenu: () => dispatch(actions.toggleAccountMenu()),
     setMouseUserState: (isMouseUser) => dispatch(actions.setMouseUserState(isMouseUser)),
   }
+}
+
+App.contextTypes = {
+  t: PropTypes.func,
 }
 
 module.exports = compose(

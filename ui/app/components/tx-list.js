@@ -120,7 +120,10 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const isUnapproved = transactionStatus === 'unapproved'
 
   if (isUnapproved) {
-    opts.onClick = () => history.push(CONFIRM_TRANSACTION_ROUTE)
+    opts.onClick = () => {
+      this.props.showConfTxPage({ id: transactionId })
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
     opts.transactionStatus = this.context.t('notStarted')
   } else if (transactionHash) {
     opts.onClick = () => this.view(transactionHash, transactionNetworkId)
