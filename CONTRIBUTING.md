@@ -34,11 +34,14 @@ Create a folder somewhere manually called `node_modules`. For example in `~/node
 
 ```sh
 mkdir node_modules
-cd node modules
-git clone https://github.com/MetaMask/metamask-extension
+cd node_modules
+git clone https://github.com/MetaMask/metamask-extension metamask
 git clone https://github.com/MetaMask/provider-engine
-# clone more repos...
-cd metamask-extension
+# clone more modules you want to work on
+# ensure to run "npm install" in each module
+cd provider-engine
+npm install
+cd ../metamask-extension
 npm install
 ```
 
