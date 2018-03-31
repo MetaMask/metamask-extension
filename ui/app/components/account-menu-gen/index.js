@@ -140,9 +140,7 @@ AccountMenu.prototype.renderAccountNew = function () {
   var temp=[];
   Object.keys(walletProviders).map((key, index) => {
 
-    const func = walletProviders[key].func;
-    const text = walletProviders[key].text;
-    const img  = walletProviders[key].img;
+    const {func, text, img} = walletProviders[key];
 
     temp.push(
       h(Item, {
