@@ -208,7 +208,7 @@ async function captureAllScreens() {
     // read only the english pngs into gif
     const encoder = new GIFEncoder(size.width, size.height)
     const stream = pngFileStream('./test-artifacts/screens/* (en).png')
-      .pipe(encoder.createWriteStream({ repeat: -1, delay: 1000, quality: 10 }))
+      .pipe(encoder.createWriteStream({ repeat: 0, delay: 1000, quality: 10 }))
       .pipe(fs.createWriteStream('./test-artifacts/screens/walkthrough (en).gif'))
 
     // wait for end
