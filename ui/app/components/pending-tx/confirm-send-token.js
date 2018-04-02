@@ -147,21 +147,43 @@ function ConfirmSendToken () {
   this.onSubmit = this.onSubmit.bind(this)
 }
 
-ConfirmSendToken.prototype.componentWillMount = function () {
-  const { tokenContract, selectedAddress, updateSendErrors} = this.props
+ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
+  const {
+    balance: oldBalance,
+    conversionRate: oldConversionRate,
+  } = prevProps
+  const {
+    updateSendErrors,
+    balance,
+    conversionRate,
+  } = this.props
   const txMeta = this.gatherTxMeta()
-  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+
+  const shouldUpdateBalanceSendErrors = balance && [
+    balance !== oldBalance,
+    conversionRate !== oldConversionRate,
+  ].some(x => Boolean(x))
+
+  if (shouldUpdateBalanceSendErrors) {
+    const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+    updateSendErrors({
+      insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+    })
+  }
+}
+
+ConfirmSendToken.prototype.componentWillMount = function () {
+  const { tokenContract, selectedAddress } = this.props
   tokenContract && tokenContract
     .balanceOf(selectedAddress)
     .then(usersToken => {
     })
   this.props.updateTokenExchangeRate()
+  this.updateComponentSendErrors({})
+}
 
-  updateSendErrors({
-    insufficientFunds: balanceIsSufficient
-      ? false
-      : this.context.t('insufficientFunds'),
-  })
+ConfirmSendToken.prototype.componentDidUpdate = function (prevProps) {
+  this.updateComponentSendErrors(prevProps)
 }
 
 ConfirmSendToken.prototype.getAmount = function () {
