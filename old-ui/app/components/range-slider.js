@@ -35,7 +35,7 @@ RangeSlider.prototype.render = function () {
         step: increment,
         style: range,
         value: state.value || defaultValue,
-        onChange: mirrorInput ? this.mirrorInputs.bind(this, event) : onInput,
+        onChange: mirrorInput ? this.mirrorInputs.bind(this) : onInput,
       }),
 
       // Mirrored input for range
@@ -47,7 +47,7 @@ RangeSlider.prototype.render = function () {
         value: state.value || defaultValue,
         step: increment,
         style: input,
-        onChange: this.mirrorInputs.bind(this, event),
+        onChange: this.mirrorInputs.bind(this),
       }) : null,
     ])
   )

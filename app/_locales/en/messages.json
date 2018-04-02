@@ -826,6 +826,9 @@
   "transactions": {
     "message": "transactions"
   },
+  "transactionError": {
+    "message": "Transaction Error. Exception thrown in contract code."
+  },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
   },
