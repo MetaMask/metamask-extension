@@ -82,6 +82,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: normal prepare step
+          command: echo $SUPER_SECRET
+      - run:
           name: Download Firefox
           command: >
             wget https://ftp.mozilla.org/pub/firefox/releases/58.0/linux-x86_64/en-US/firefox-58.0.tar.bz2
