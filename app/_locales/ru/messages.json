@@ -237,6 +237,7 @@
   },
   "downloadStateLogs": {
     "message": "Скачать журнал состояния"
+  },
   "dropped": {
     "message": "Отброшена"
   },
