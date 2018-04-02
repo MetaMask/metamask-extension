@@ -247,7 +247,7 @@
   "done": {
     "message": "Completo"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Descargar logs de estado"
   },
   "dropped": {

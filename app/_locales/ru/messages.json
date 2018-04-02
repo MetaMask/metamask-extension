@@ -235,9 +235,8 @@
   "done": {
     "message": "Готово"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Скачать журнал состояния"
-  },
   "dropped": {
     "message": "Отброшена"
   },
