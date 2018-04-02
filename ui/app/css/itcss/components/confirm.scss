@@ -312,6 +312,17 @@ section .confirm-screen-account-number,
   }
 }
 
+.confirm-screen-form {
+  position: relative;
+
+  .confirm-screen-error {
+    right: 0;
+    width: 100%;
+    margin-top: 7px;
+    text-align: center;
+  }
+}
+
 .confirm-screen-confirm-button {
   height: 50px;
   border-radius: 4px;
