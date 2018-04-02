@@ -100,6 +100,7 @@ module.exports = class TxGasUtil {
   }
 
   async validateTxParams (txParams) {
+    this.validateFrom(txParams)
     this.validateRecipient(txParams)
     if ('value' in txParams) {
       const value = txParams.value.toString()
@@ -112,6 +113,12 @@ module.exports = class TxGasUtil {
       }
     }
   }
+
+  validateFrom (txParams) {
+    if ( !(typeof txParams.from === 'string') ) throw new Error(`Invalid from address ${txParams.from} not a string`)
+    if (!isValidAddress(txParams.from)) throw new Error('Invalid from address')
+  }
+
   validateRecipient (txParams) {
     if (txParams.to === '0x' || txParams.to === null ) {
       if (txParams.data) {
