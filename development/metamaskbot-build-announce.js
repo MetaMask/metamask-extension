@@ -3,7 +3,6 @@ const request = require('request-promise')
 const { version } = require('../dist/chrome/manifest.json')
 
 const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
-console.log('GITHUB_COMMENT_TOKEN', GITHUB_COMMENT_TOKEN)
 const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
 console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST)
 const CIRCLE_SHA1 = process.env.CIRCLE_SHA1
