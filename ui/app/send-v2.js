@@ -635,6 +635,10 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
       txParams.to = to
     }
 
+    Object.keys(txParams).forEach(key => {
+      txParams[key] = ethUtil.addHexPrefix(txParams[key])
+    })
+
     selectedToken
       ? signTokenTx(selectedToken.address, to, amount, txParams)
       : signTx(txParams)

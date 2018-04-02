@@ -207,9 +207,11 @@ gulp.task('dev:copy',
 
 // lint js
 
+const lintTargets = ['app/**/*.json', 'app/**/*.js', '!app/scripts/vendor/**/*.js', 'ui/**/*.js', 'old-ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js']
+
 gulp.task('lint', function () {
   // Ignoring node_modules, dist/firefox, and docs folders:
-  return gulp.src(['app/**/*.js', '!app/scripts/vendor/**/*.js', 'ui/**/*.js', 'old-ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js'])
+  return gulp.src(lintTargets)
     .pipe(eslint(fs.readFileSync(path.join(__dirname, '.eslintrc'))))
     // eslint.format() outputs the lint results to the console.
     // Alternatively use eslint.formatEach() (see Docs).
@@ -220,7 +222,7 @@ gulp.task('lint', function () {
 });
 
 gulp.task('lint:fix', function () {
-  return gulp.src(['app/**/*.js', 'ui/**/*.js', 'old-ui/**/*.js', 'mascara/src/*.js', 'mascara/server/*.js', '!node_modules/**', '!dist/firefox/**', '!docs/**', '!app/scripts/chromereload.js', '!mascara/test/jquery-3.1.0.min.js'])
+  return gulp.src(lintTargets)
     .pipe(eslint(Object.assign(fs.readFileSync(path.join(__dirname, '.eslintrc')), {fix: true})))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
