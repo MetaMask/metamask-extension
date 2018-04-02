@@ -156,6 +156,11 @@ ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
     updateSendErrors,
     balance,
     conversionRate,
+    send: {
+      errors: {
+        simulationFails,
+      },
+    },
   } = this.props
   const txMeta = this.gatherTxMeta()
 
@@ -168,6 +173,14 @@ ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
     const balanceIsSufficient = this.isBalanceSufficient(txMeta)
     updateSendErrors({
       insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+    })
+  }
+
+  const shouldUpdateSimulationSendError = Boolean(txMeta.simulationFails) !== Boolean(simulationFails)
+
+  if (shouldUpdateSimulationSendError) {
+    updateSendErrors({
+      simulationFails: !txMeta.simulationFails ? false : this.context.t('transactionError'),
     })
   }
 }
@@ -489,8 +502,10 @@ ConfirmSendToken.prototype.render = function () {
         ]),
 
         h('form#pending-tx-form', {
+          className: 'confirm-screen-form',
           onSubmit: this.onSubmit,
         }, [
+          this.renderErrorMessage('simulationFails'),
           h('.page-container__footer', [
             // Cancel Button
             h('button.btn-cancel.page-container__footer-button.allcaps', {
