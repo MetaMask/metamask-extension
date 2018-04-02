@@ -17,8 +17,17 @@ workflows:
             - prep-deps-npm
       - test-e2e:
           requires:
-            - prep-build
             - prep-deps-npm
+            - prep-build
+      - job-screens:
+          requires:
+            - prep-deps-npm
+            - prep-build
+      - job-announce:
+          requires:
+            - prep-deps-npm
+            - prep-build
+            - job-screens
       - test-unit:
           requires:
             - prep-deps-npm
@@ -45,6 +54,7 @@ workflows:
             - test-lint
             - test-unit
             - test-e2e
+            - job-screens
             - test-integration-mascara-chrome
             - test-integration-mascara-firefox
             - test-integration-flat-chrome
@@ -98,32 +108,7 @@ jobs:
           key: build-cache-{{ .Revision }}
           paths:
             - dist
-      - store_artifacts:
-          path: dist/mascara
-          destination: builds/mascara
-      - store_artifacts:
-          path: builds
-          destination: builds
-      - run:
-          name: build:announce
-          command: |
-            CIRCLE_PR_NUMBER="${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}"
-            SHORT_SHA1=$(echo $CIRCLE_SHA1 | cut -c 1-7)
-            BUILD_LINK_BASE="https://$CIRCLE_BUILD_NUM-42009758-gh.circle-artifacts.com/0/builds"
-            VERSION=$(node -p 'require("./dist/chrome/manifest.json").version')
-            MASCARA="$BUILD_LINK_BASE/mascara/home.html"
-            CHROME="$BUILD_LINK_BASE/metamask-chrome-$VERSION.zip"
-            FIREFOX="$BUILD_LINK_BASE/metamask-firefox-$VERSION.zip"
-            OPERA="$BUILD_LINK_BASE/metamask-opera-$VERSION.zip"
-            EDGE="$BUILD_LINK_BASE/metamask-edge-$VERSION.zip"
-            COMMENT_MAIN="Builds ready [$SHORT_SHA1]: [mascara][mascara], [chrome][chrome], [firefox][firefox], [edge][edge], [opera][opera]"
-            COMMENT_LINKS="[mascara]:$MASCARA\n[chrome]:$CHROME\n[firefox]:$FIREFOX\n[opera]:$OPERA\n[edge]:$EDGE\n"
-            COMMENT_BODY="$COMMENT_MAIN\n\n$COMMENT_LINKS"
-            JSON_PAYLOAD="{\"body\":\"$COMMENT_BODY\"}"
-            POST_COMMENT_URI="https://api.github.com/repos/metamask/metamask-extension/issues/$CIRCLE_PR_NUMBER/comments"
-            echo "Announcement:\n$COMMENT_BODY"
-            echo "Posting to $POST_COMMENT_URI"
-            curl -d "$JSON_PAYLOAD" -H "Authorization: token $GITHUB_COMMENT_TOKEN" $POST_COMMENT_URI
+            - builds
 
   prep-scss:
     docker:
@@ -170,6 +155,47 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+
+  job-screens:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - run:
+          name: Test
+          command: npm run test:screens
+      - save_cache:
+          key: job-screens-{{ .Revision }}
+          paths:
+            - test-artifacts
+
+  job-announce:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: build-cache-{{ .Revision }}
+      - restore_cache:
+          key: job-screens-{{ .Revision }}
+      - store_artifacts:
+          path: dist/mascara
+          destination: builds/mascara
+      - store_artifacts:
+          path: builds
+          destination: builds
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - run:
+          name: build:announce
+          command: ./development/metamaskbot-build-announce.js
 
   test-unit:
     docker:
