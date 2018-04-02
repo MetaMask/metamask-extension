@@ -29,7 +29,8 @@
   "plugins": [
     "mocha",
     "chai",
-    "react"
+    "react",
+    "json"
   ],
 
   "globals": {
