@@ -56,7 +56,6 @@ function ConfirmTxScreen () {
 }
 
 ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
-  console.log('CONFTX COMPONENTDIDUPDATE')
   const {
     unapprovedTxs,
     network,
@@ -69,7 +68,6 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
   if (prevTx.status === 'dropped' && unconfTxList.length === 0) {
-    console.log('CONFTX REDIRECTINGTODEFAULT')
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
@@ -90,7 +88,6 @@ ConfirmTxScreen.prototype.render = function () {
   } = props
 
   var unconfTxList = txHelper(unapprovedTxs, unapprovedMsgs, unapprovedPersonalMsgs, unapprovedTypedMessages, network)
-  console.log('UNCONF', unconfTxList, props.index, props)
 
   var txData = unconfTxList[props.index] || {}
   var txParams = txData.params || {}
@@ -147,7 +144,6 @@ function currentTxView (opts) {
   log.info('rendering current tx view')
   const { txData } = opts
   const { txParams, msgParams } = txData
-  console.log('TXPARAMS', txParams, msgParams)
 
   if (txParams) {
     log.debug('txParams detected, rendering pending tx')

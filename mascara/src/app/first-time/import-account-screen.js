@@ -142,7 +142,6 @@ class ImportAccountScreen extends Component {
   render () {
     const { OPTIONS } = ImportAccountScreen
     const { selectedOption } = this.state
-    console.log('RENDER IMPORT')
 
     return this.props.isLoading
       ? <LoadingScreen loadingMessage="Creating your new account" />

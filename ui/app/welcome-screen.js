@@ -12,6 +12,7 @@ import { INITIALIZE_CREATE_PASSWORD_ROUTE } from './routes'
 class WelcomeScreen extends Component {
   static propTypes = {
     closeWelcomeScreen: PropTypes.func.isRequired,
+    welcomeScreenSeen: PropTypes.bool,
     history: PropTypes.object,
   }
 
@@ -24,7 +25,6 @@ class WelcomeScreen extends Component {
     const { history, welcomeScreenSeen } = this.props
 
     if (welcomeScreenSeen) {
-      console.log('SEENT', welcomeScreenSeen)
       history.push(INITIALIZE_CREATE_PASSWORD_ROUTE)
     }
   }

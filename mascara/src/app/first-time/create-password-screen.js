@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { withRouter, Redirect } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import { createNewVaultAndKeychain } from '../../../../ui/app/actions'
-import LoadingScreen from './loading-screen'
 import Breadcrumbs from './breadcrumbs'
 import EventEmitter from 'events'
 import Mascot from '../../../../ui/app/components/mascot'
 import classnames from 'classnames'
 import {
-  DEFAULT_ROUTE,
   INITIALIZE_UNIQUE_IMAGE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
-  // INITIALIZE_IMPORT_ACCOUNT_ROUTE,
   INITIALIZE_NOTICE_ROUTE,
 } from '../../../../ui/app/routes'
 
@@ -30,19 +27,17 @@ class CreatePasswordScreen extends Component {
   state = {
     password: '',
     confirmPassword: '',
-    isLoading: false,
   }
 
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.animationEventEmitter = new EventEmitter()
   }
 
   componentWillMount () {
-    const { isInitialized, isUnlocked, history, noActiveNotices } = this.props
+    const { isInitialized, history } = this.props
 
     if (isInitialized) {
-      console.log('%c IM already initialized', 'background: #222; color: #bada55')
       history.push(INITIALIZE_NOTICE_ROUTE)
     }
   }
@@ -71,16 +66,11 @@ class CreatePasswordScreen extends Component {
 
     this.setState({ isLoading: true })
     createAccount(password)
-      .then(() => {
-        // this.setState({ isLoading: false })
-        history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE)
-      })
-      .catch(() => this.setState({ isLoading: false}))
+      .then(() => history.push(INITIALIZE_UNIQUE_IMAGE_ROUTE))
   }
 
   renderFields () {
     const { isMascara, history } = this.props
-    const { isLoading } = this.state
 
     return (
       <div className={classnames({ 'first-view-main-wrapper': !isMascara })}>
@@ -154,20 +144,7 @@ class CreatePasswordScreen extends Component {
   }
 
   render () {
-    const { isInitialized, isUnlocked, history, noActiveNotices, isMascara } = this.props
-
-    // if (isInitialized) {
-    //   console.log('%c IM already initialized', 'background: #222; color: #bada55')
-    //   if (!noActiveNotices) {
-    //     console.log('%c GOING TO NOTICES', 'background: #222; color: #bada55')
-    //     // history.replace(INITIALIZE_NOTICE_ROUTE)
-    //     return <Redirect to={INITIALIZE_NOTICE_ROUTE} />
-    //   } else {
-    //     console.log('%c GOING TO DEFAULT', 'background: #222; color: #bada55')
-    //     // history.replace(DEFAULT_ROUTE)
-    //     return <Redirect to={DEFAULT_ROUTE} />
-    //   }
-    // }
+    const { history, isMascara } = this.props
 
     return (
       <div className={classnames({ 'first-view-main-wrapper': !isMascara })}>

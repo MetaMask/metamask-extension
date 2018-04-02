@@ -8,11 +8,7 @@ import debounce from 'lodash.debounce'
 import { markNoticeRead } from '../../../../ui/app/actions'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
-import {
-  INITIALIZE_ROUTE,
-  DEFAULT_ROUTE,
-  INITIALIZE_BACKUP_PHRASE_ROUTE,
-} from '../../../../ui/app/routes'
+import { INITIALIZE_BACKUP_PHRASE_ROUTE } from '../../../../ui/app/routes'
 import LoadingScreen from './loading-screen'
 
 class NoticeScreen extends Component {
@@ -42,9 +38,8 @@ class NoticeScreen extends Component {
     atBottom: false,
   }
 
-  componentWillMount () {
+  componentDidMount () {
     if (this.props.noActiveNotices) {
-      console.log('%c NOTICESCREEN NOACTIVENOTICES', 'background: #222; color: #bada55')
       this.props.history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
     }
 
@@ -55,7 +50,6 @@ class NoticeScreen extends Component {
     const { markNoticeRead, lastUnreadNotice, history } = this.props
     markNoticeRead(lastUnreadNotice)
       .then(hasActiveNotices => {
-        console.log('ACCEPT TERMS, NO ACTIVE NOTICES', hasActiveNotices, 'background: #222; color: #bada55')
         if (!hasActiveNotices) {
           history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
         } else {

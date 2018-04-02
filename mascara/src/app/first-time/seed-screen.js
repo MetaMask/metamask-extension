@@ -59,6 +59,7 @@ class BackupPhraseScreen extends Component {
 
   componentWillMount () {
     const { seedWords, history } = this.props
+
     if (!seedWords) {
       history.push(DEFAULT_ROUTE)
     }

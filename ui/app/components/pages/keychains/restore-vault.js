@@ -65,7 +65,6 @@ class RestoreVaultPage extends PersistentForm {
 
   render () {
     const { error } = this.state
-    const { history } = this.props
     this.persistentFormParentId = 'restore-vault-form'
 
     return (

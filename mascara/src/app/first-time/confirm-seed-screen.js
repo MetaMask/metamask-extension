@@ -9,7 +9,7 @@ import Identicon from '../../../../ui/app/components/identicon'
 import { confirmSeedWords } from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
-import { INITIALIZE_ROUTE, DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
 
 class ConfirmSeedScreen extends Component {
   static propTypes = {
@@ -35,21 +35,21 @@ class ConfirmSeedScreen extends Component {
 
   componentWillMount () {
     const { seedWords, history } = this.props
+
     if (!seedWords) {
-      history.push(INITIALIZE_ROUTE)
+      history.push(DEFAULT_ROUTE)
     }
   }
 
   handleClick () {
-    this.props.confirmSeedWords()
-      .then(() => {
-        console.log('FINISHED')
-        this.props.history.push(DEFAULT_ROUTE)
-      })
+    const { confirmSeedWords, history } = this.props
+
+    confirmSeedWords()
+      .then(() => history.push(DEFAULT_ROUTE))
   }
 
   render () {
-    const { seedWords, confirmSeedWords, history } = this.props
+    const { seedWords } = this.props
     const { selectedSeeds, shuffledSeeds } = this.state
     const isValid = seedWords === selectedSeeds.map(([_, seed]) => seed).join(' ')
 

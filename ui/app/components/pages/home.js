@@ -35,8 +35,6 @@ class Home extends Component {
       unapprovedTypedMessagesCount = 0,
     } = this.props
 
-    console.log('HOME MOUNTED')
-
     // unapprovedTxs and unapproved messages
     if (Object.keys(unapprovedTxs).length ||
     unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
