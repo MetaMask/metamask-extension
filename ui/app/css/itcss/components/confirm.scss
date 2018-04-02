@@ -266,6 +266,7 @@ section .confirm-screen-account-number,
 
 .confirm-screen-total-box {
   background-color: $wild-sand;
+  position: relative;
 
   .confirm-screen-label {
     line-height: 21px;
@@ -284,6 +285,30 @@ section .confirm-screen-account-number,
     font-size: 16px;
     font-weight: 500;
     line-height: 21px;
+  }
+}
+
+.confirm-screen-error {
+  font-size: 12px;
+  line-height: 12px;
+  color: #f00;
+  position: absolute;
+  right: 12px;
+  width: 80px;
+  text-align: right;
+}
+
+.confirm-screen-row.confirm-screen-total-box {
+  .confirm-screen-section-column--with-error {
+    flex: 0.6;
+  }
+}
+
+@media screen and (max-width: 379px) {
+  .confirm-screen-row.confirm-screen-total-box {
+    .confirm-screen-section-column--with-error {
+      flex: 0.4;
+    }
   }
 }
 

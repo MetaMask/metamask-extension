@@ -16,7 +16,6 @@ const eslint = require('gulp-eslint')
 const fs = require('fs')
 const path = require('path')
 const manifest = require('./app/manifest.json')
-const gulpif = require('gulp-if')
 const replace = require('gulp-replace')
 const mkdirp = require('mkdirp')
 const asyncEach = require('async/each')
@@ -31,8 +30,6 @@ const debug = require('gulp-debug')
 const pify = require('pify')
 const endOfStream = pify(require('end-of-stream'))
 
-const disableDebugTools = gutil.env.disableDebugTools
-const debugMode = gutil.env.debug
 
 const browserPlatforms = [
   'firefox',
@@ -181,12 +178,12 @@ gulp.task('manifest:production', function() {
   ],{base: './dist/'})
 
   // Exclude chromereload script in production:
-  .pipe(gulpif(!debugMode,jsoneditor(function(json) {
+  .pipe(jsoneditor(function(json) {
     json.background.scripts = json.background.scripts.filter((script) => {
       return !script.includes('chromereload')
     })
     return json
-  })))
+  }))
 
   .pipe(gulp.dest('./dist/', { overwrite: true }))
 })
@@ -311,6 +308,7 @@ function createTasksForBuildJsExtension({ buildJsFiles, taskPrefix, devMode, bun
     minifyBuild: !devMode,
     buildWithFullPaths: devMode,
     watch: devMode,
+    devMode,
   }, bundleTaskOpts)
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1, buildPhase2 })
 }
@@ -326,6 +324,7 @@ function createTasksForBuildJsMascara({ taskPrefix, devMode, bundleTaskOpts = {}
     minifyBuild: !devMode,
     buildWithFullPaths: devMode,
     watch: devMode,
+    devMode,
   }, bundleTaskOpts)
   createTasksForBuildJs({ rootDir, taskPrefix, bundleTaskOpts, destinations, buildPhase1 })
 }
@@ -541,7 +540,7 @@ function bundleTask(opts) {
       // convert bundle stream to gulp vinyl stream
       .pipe(source(opts.filename))
       // inject variables into bundle
-      .pipe(replace('\'GULP_METAMASK_DEBUG\'', debugMode))
+      .pipe(replace('\'GULP_METAMASK_DEBUG\'', opts.devMode))
       // buffer file contents (?)
       .pipe(buffer())
 

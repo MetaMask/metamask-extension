@@ -188,7 +188,7 @@
     "valid-url": "^1.0.9",
     "vreme": "^3.0.2",
     "web3": "^0.20.1",
-    "web3-provider-engine": "^13.5.6",
+    "web3-provider-engine": "^13.8.0",
     "web3-stream-provider": "^3.0.1",
     "xtend": "^4.0.1"
   },
@@ -226,7 +226,6 @@
     "gulp": "github:gulpjs/gulp#6d71a658c61edb3090221579d8f97dbe086ba2ed",
     "gulp-babel": "^7.0.0",
     "gulp-eslint": "^4.0.0",
-    "gulp-if": "^2.0.2",
     "gulp-json-editor": "^2.2.1",
     "gulp-livereload": "^3.8.1",
     "gulp-replace": "^0.6.1",
