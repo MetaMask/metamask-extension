@@ -109,16 +109,50 @@ function ConfirmSendEther () {
   this.onSubmit = this.onSubmit.bind(this)
 }
 
-ConfirmSendEther.prototype.componentWillMount = function () {
-  const { updateSendErrors } = this.props
+ConfirmSendEther.prototype.updateComponentSendErrors = function (prevProps) {
+  const {
+    balance: oldBalance,
+    conversionRate: oldConversionRate,
+  } = prevProps
+  const {
+    updateSendErrors,
+    balance,
+    conversionRate,
+    send: {
+      errors: {
+        simulationFails,
+      },
+    },
+  } = this.props
   const txMeta = this.gatherTxMeta()
-  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
 
-  updateSendErrors({
-    insufficientFunds: balanceIsSufficient
-      ? false
-      : this.context.t('insufficientFunds'),
-  })
+  const shouldUpdateBalanceSendErrors = balance && [
+    balance !== oldBalance,
+    conversionRate !== oldConversionRate,
+  ].some(x => Boolean(x))
+
+  if (shouldUpdateBalanceSendErrors) {
+    const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+    updateSendErrors({
+      insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+    })
+  }
+
+  const shouldUpdateSimulationSendError = Boolean(txMeta.simulationFails) !== Boolean(simulationFails)
+
+  if (shouldUpdateSimulationSendError) {
+    updateSendErrors({
+      simulationFails: !txMeta.simulationFails ? false : this.context.t('transactionError'),
+    })
+  }
+}
+
+ConfirmSendEther.prototype.componentWillMount = function () {
+  this.updateComponentSendErrors({})
+}
+
+ConfirmSendEther.prototype.componentDidUpdate = function (prevProps) {
+  this.updateComponentSendErrors(prevProps)
 }
 
 ConfirmSendEther.prototype.getAmount = function () {
@@ -457,8 +491,10 @@ ConfirmSendEther.prototype.render = function () {
       ]),
 
       h('form#pending-tx-form', {
+        className: 'confirm-screen-form',
         onSubmit: this.onSubmit,
       }, [
+        this.renderErrorMessage('simulationFails'),
         h('.page-container__footer', [
           // Cancel Button
           h('button.btn-cancel.page-container__footer-button.allcaps', {

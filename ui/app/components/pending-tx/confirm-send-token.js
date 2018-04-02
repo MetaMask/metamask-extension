@@ -147,21 +147,56 @@ function ConfirmSendToken () {
   this.onSubmit = this.onSubmit.bind(this)
 }
 
-ConfirmSendToken.prototype.componentWillMount = function () {
-  const { tokenContract, selectedAddress, updateSendErrors} = this.props
+ConfirmSendToken.prototype.updateComponentSendErrors = function (prevProps) {
+  const {
+    balance: oldBalance,
+    conversionRate: oldConversionRate,
+  } = prevProps
+  const {
+    updateSendErrors,
+    balance,
+    conversionRate,
+    send: {
+      errors: {
+        simulationFails,
+      },
+    },
+  } = this.props
   const txMeta = this.gatherTxMeta()
-  const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+
+  const shouldUpdateBalanceSendErrors = balance && [
+    balance !== oldBalance,
+    conversionRate !== oldConversionRate,
+  ].some(x => Boolean(x))
+
+  if (shouldUpdateBalanceSendErrors) {
+    const balanceIsSufficient = this.isBalanceSufficient(txMeta)
+    updateSendErrors({
+      insufficientFunds: balanceIsSufficient ? false : this.context.t('insufficientFunds'),
+    })
+  }
+
+  const shouldUpdateSimulationSendError = Boolean(txMeta.simulationFails) !== Boolean(simulationFails)
+
+  if (shouldUpdateSimulationSendError) {
+    updateSendErrors({
+      simulationFails: !txMeta.simulationFails ? false : this.context.t('transactionError'),
+    })
+  }
+}
+
+ConfirmSendToken.prototype.componentWillMount = function () {
+  const { tokenContract, selectedAddress } = this.props
   tokenContract && tokenContract
     .balanceOf(selectedAddress)
     .then(usersToken => {
     })
   this.props.updateTokenExchangeRate()
+  this.updateComponentSendErrors({})
+}
 
-  updateSendErrors({
-    insufficientFunds: balanceIsSufficient
-      ? false
-      : this.context.t('insufficientFunds'),
-  })
+ConfirmSendToken.prototype.componentDidUpdate = function (prevProps) {
+  this.updateComponentSendErrors(prevProps)
 }
 
 ConfirmSendToken.prototype.getAmount = function () {
@@ -467,8 +502,10 @@ ConfirmSendToken.prototype.render = function () {
         ]),
 
         h('form#pending-tx-form', {
+          className: 'confirm-screen-form',
           onSubmit: this.onSubmit,
         }, [
+          this.renderErrorMessage('simulationFails'),
           h('.page-container__footer', [
             // Cancel Button
             h('button.btn-cancel.page-container__footer-button.allcaps', {

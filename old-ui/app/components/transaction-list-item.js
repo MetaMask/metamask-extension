@@ -30,7 +30,7 @@ function TransactionListItem () {
 
 TransactionListItem.prototype.showRetryButton = function () {
   const { transaction = {}, transactions } = this.props
-  const { status, submittedTime, txParams } = transaction
+  const { submittedTime, txParams } = transaction
 
   if (!txParams) {
     return false
