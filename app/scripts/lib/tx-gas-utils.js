@@ -52,7 +52,9 @@ module.exports = class TxGasUtil {
     // if recipient has no code, gas is 21k max:
     const recipient = txParams.to
     const hasRecipient = Boolean(recipient)
-    const code = await this.query.getCode(recipient)
+    let code
+    if (recipient) code = await this.query.getCode(recipient)
+
     if (hasRecipient && (!code || code === '0x')) {
       txParams.gas = SIMPLE_GAS_COST
       txMeta.simpleSend = true // Prevents buffer addition
