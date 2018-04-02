@@ -162,7 +162,7 @@ describe('Transaction Controller', function () {
   describe('#addUnapprovedTransaction', function () {
 
     it('should add an unapproved transaction and return a valid txMeta', function (done) {
-      txController.addUnapprovedTransaction({})
+      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d' })
       .then((txMeta) => {
         assert(('id' in txMeta), 'should have a id')
         assert(('time' in txMeta), 'should have a time stamp')
@@ -182,7 +182,7 @@ describe('Transaction Controller', function () {
         assert(txMetaFromEmit, 'txMeta is falsey')
         done()
       })
-      txController.addUnapprovedTransaction({})
+      txController.addUnapprovedTransaction({ from: '0x1678a085c290ebd122dc42cba69373b5953b831d' })
       .catch(done)
     })
 
@@ -213,6 +213,7 @@ describe('Transaction Controller', function () {
   describe('#validateTxParams', function () {
     it('does not throw for positive values', function (done) {
       var sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '0x01',
       }
       txController.txGasUtil.validateTxParams(sample).then(() => {
@@ -222,6 +223,7 @@ describe('Transaction Controller', function () {
 
     it('returns error for negative values', function (done) {
       var sample = {
+        from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '-0x01',
       }
       txController.txGasUtil.validateTxParams(sample)
