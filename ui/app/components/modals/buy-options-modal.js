@@ -1,7 +1,8 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../../actions')
 const networkNames = require('../../../../app/scripts/config.js').networkNames
 
@@ -32,7 +33,12 @@ function BuyOptions () {
   Component.call(this)
 }
 
+BuyOptions.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(BuyOptions)
+
 
 BuyOptions.prototype.renderModalContentOption = function (title, header, onClick) {
   return h('div.buy-modal-content-option', {
@@ -56,15 +62,15 @@ BuyOptions.prototype.render = function () {
       }, [
         h('div.buy-modal-content-title', {
           style: {},
-        }, this.props.t('transfers')),
-        h('div', {}, this.props.t('howToDeposit')),
+        }, this.context.t('transfers')),
+        h('div', {}, this.context.t('howToDeposit')),
       ]),
 
       h('div.buy-modal-content-options.flex-column.flex-center', {}, [
 
         isTestNetwork
-          ? this.renderModalContentOption(networkName, this.props.t('testFaucet'), () => toFaucet(network))
-          : this.renderModalContentOption('Coinbase', this.props.t('depositFiat'), () => toCoinbase(address)),
+          ? this.renderModalContentOption(networkName, this.context.t('testFaucet'), () => toFaucet(network))
+          : this.renderModalContentOption('Coinbase', this.context.t('depositFiat'), () => toCoinbase(address)),
 
         // h('div.buy-modal-content-option', {}, [
         //   h('div.buy-modal-content-option-title', {}, 'Shapeshift'),
@@ -72,8 +78,8 @@ BuyOptions.prototype.render = function () {
         // ]),,
 
         this.renderModalContentOption(
-          this.props.t('directDeposit'),
-          this.props.t('depositFromAccount'),
+          this.context.t('directDeposit'),
+          this.context.t('depositFromAccount'),
           () => this.goToAccountDetailsModal()
         ),
 
@@ -84,7 +90,7 @@ BuyOptions.prototype.render = function () {
           background: 'white',
         },
         onClick: () => { this.props.hideModal() },
-      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, this.props.t('cancel'))),
+      }, h('div.buy-modal-content-footer#buy-modal-content-footer-text', {}, this.context.t('cancel'))),
     ]),
   ])
 }

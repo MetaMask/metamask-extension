@@ -1,11 +1,16 @@
 const inherits = require('util').inherits
-
 const Component = require('react').Component
-const connect = require('../../../metamask-connect')
+const PropTypes = require('prop-types')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const actions = require('../../../actions')
 
+RevealSeedConfirmation.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(RevealSeedConfirmation)
+
 
 inherits(RevealSeedConfirmation, Component)
 function RevealSeedConfirmation () {
@@ -49,13 +54,13 @@ RevealSeedConfirmation.prototype.render = function () {
         },
       }, [
 
-        h('h4', this.props.t('revealSeedWordsWarning')),
+        h('h4', this.context.t('revealSeedWordsWarning')),
 
         // confirmation
         h('input.large-input.letter-spacey', {
           type: 'password',
           id: 'password-box',
-          placeholder: this.props.t('enterPasswordConfirm'),
+          placeholder: this.context.t('enterPasswordConfirm'),
           onKeyPress: this.checkConfirmation.bind(this),
           style: {
             width: 260,
@@ -91,7 +96,7 @@ RevealSeedConfirmation.prototype.render = function () {
         ),
 
         props.inProgress && (
-          h('span.in-progress-notification', this.props.t('generatingSeed'))
+          h('span.in-progress-notification', this.context.t('generatingSeed'))
         ),
       ]),
     ])

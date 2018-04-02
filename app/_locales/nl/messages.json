@@ -299,7 +299,7 @@
     "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "generatingSeed": {
-    "message": "Zaad produceren ..."
+    "message": "Back-up woorden produceren ..."
   },
   "gasPrice": {
     "message": "Gasprijs (GWEI)"
@@ -432,7 +432,7 @@
     "message": "Los"
   },
   "loweCaseWords": {
-    "message": "zaadwoorden hebben alleen kleine letters"
+    "message": "back-up woorden hebben alleen kleine letters"
   },
   "mainnet": {
     "message": "belangrijkste ethereum-netwerk"
@@ -532,7 +532,7 @@
     "description": "Voor het importeren van een account vanaf een privésleutel"
   },
   "pasteSeed": {
-    "message": "Plak je zaadzin hier!"
+    "message": "Plak je back-up woorden hier!"
   },
   "personalAddressDetected": {
     "message": "Persoonlijk adres gedetecteerd. Voer het tokencontractadres in."
@@ -581,7 +581,7 @@
     "message": "Account opnieuw instellen"
   },
   "restoreFromSeed": {
-    "message": "Herstel van zaaduitdrukking"
+    "message": "Herstel vanuit back-up woorden"
   },
   "required": {
     "message": "Verplicht"
@@ -590,10 +590,10 @@
     "message": "Probeer hier opnieuw met een hogere gasprijs"
   },
   "revealSeedWords": {
-    "message": "Onthul zaadwoorden"
+    "message": "Onthul back-up woorden"
   },
   "revealSeedWordsWarning": {
-    "message": "Herstel je zaadwoorden niet op een openbare plaats! Deze woorden kunnen worden gebruikt om al uw accounts te stelen."
+    "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
   },
   "revert": {
     "message": "terugkeren"
@@ -616,7 +616,7 @@
     "description": "Account export proces"
   },
   "saveSeedAsFile": {
-    "message": "Bewaar zaadwoorden als bestand"
+    "message": "Bewaar back-up woorden als bestand"
   },
   "search": {
     "message": "Zoeken"
@@ -625,7 +625,7 @@
     "message": "Voer hier je geheime twaalfwoordfrase in om je kluis te herstellen."
   },
   "seedPhraseReq": {
-    "message": "zaadzinnen zijn 12 woorden lang"
+    "message": "Back-up woorden zijn 12 woorden lang"
   },
   "select": {
     "message": "kiezen"

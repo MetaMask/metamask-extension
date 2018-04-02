@@ -14,7 +14,13 @@
   "address": {
     "message": "Adresse"
   },
+  "addCustomToken": {
+    "message": "Eigenen Token hinzufügen"
+  },
   "addToken": {
+    "message": "Token hinzufügen"
+  },
+  "addTokens": {
     "message": "Token hinzufügen"
   },
   "amount": {
@@ -31,8 +37,14 @@
     "message": "MetaMask",
     "description": "Der Name der Erweiterung"
   },
+  "approved": {
+    "message": "Genehmigt"
+  },
   "attemptingConnect": {
     "message": "Versuch mit der Blockchain zu verbinden."
+  },
+  "attributions": {
+    "message": "Was wir verwenden"
   },
   "available": {
     "message": "Verfügbar"
@@ -42,6 +54,9 @@
   },
   "balance": {
     "message": "Guthaben:"
+  },
+  "balances": {
+    "message": "Deine Guthaben"
   },
   "balanceIsInsufficientGas": {
     "message": "Guthaben unzureichend für den aktuellen gesamten Gasbetrag"
@@ -69,7 +84,7 @@
     "message": "Auf Coinbase kaufen"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase ist die weltweit bekannteste Möglichkeit bitcoin, ethereum und litecoin zu kaufen und verkaufen."
+    "message": "Coinbase ist die weltweit bekannteste Art und Weise um bitcoin, ethereum und litecoin zu kaufen und verkaufen."
   },
     "ok": {
     "message": "Ok"
@@ -105,7 +120,7 @@
     "message": "Zu Coinbase fortfahren"
   },
   "contractDeployment": {
-    "message": "Smart Contract ausführen"
+    "message": "Smart Contract Ausführung"
   },
   "conversionProgress": {
     "message": "Umtausch in Arbeit"
@@ -148,7 +163,7 @@
     "description": "Börsentyp (Kryptowährungen)"
   },
   "currentConversion": {
-    "message": "Aktueller Umtausch"
+    "message": "Aktuelle Tauschwährung"
   },
   "currentNetwork": {
     "message": "Aktuelles Netzwerk"
@@ -185,7 +200,7 @@
     "description": "Teilt dem Benutzer mit welchen Token er beim Einzahlen mit Shapeshift ausgewählt hat"
   },
   "depositEth": {
-    "message": "Eth einzahlen"
+    "message": "Eth kaufen"
   },
   "depositEther": {
     "message": "Ether einzahlen"
@@ -274,7 +289,7 @@
     "message": "Folge uns auf Twitter"
   },
   "from": {
-    "message": "von"
+    "message": "Von"
   },
   "fromToSame": {
     "message": "Ziel- und Ursprungsadresse dürfen nicht identisch sein"
@@ -347,14 +362,14 @@
     "message": "Es erlaubt dir ether & Token zu halten und dient dir als Verbindung zu dezentralisierten Applikationen."
   },
   "import": {
-    "message": "Import",
+    "message": "Importieren",
     "description": "Button um den Account aus einer ausgewählten Datei zu importieren"
   },
   "importAccount": {
     "message": "Account importieren"
   },
   "importAccountMsg": {
-    "message":" Importierte Accounts werden nicht mit der Seed Wörterfolge  deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
+    "message":" Importierte Accounts werden nicht mit der Seed-Wörterfolge  deines ursprünglichen MetaMask Accounts verknüpft. Erfahre mehr über importierte Accounts."
   },
   "importAnAccount": {
     "message": "Einen Account importieren"
@@ -369,7 +384,7 @@
   "infoHelp": {
     "message": "Info & Hilfe"
   },
-  "insufficientFunds": {
+  "insufficientFunds": { 
     "message": "Nicht genügend Guthaben."
   },
   "insufficientTokens": {
@@ -441,10 +456,10 @@
     "message": "Frei"
   },
   "loweCaseWords": {
-    "message": "Die Wörter der Seed Wörterfolgen sind alle kleingeschrieben"
+    "message": "Die Wörter der Seed-Wörterfolgen sind alle kleingeschrieben"
   },
   "mainnet": {
-    "message": "Ethereum Hauptnetzwerk (Main Net)"
+    "message": "Ethereum Main Net"
   },
   "message": {
     "message": "Nachricht"
@@ -541,7 +556,7 @@
     "description": "Für den Import eine Accounts mit Hilfe eines Private Keys"
   },
   "pasteSeed": {
-    "message": "Füge deine Seed Wörterfolge hier ein!"
+    "message": "Füge deine Seed-Wörterfolge hier ein!"
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte füge die Token Contract Adresse ein."
@@ -557,7 +572,7 @@
     "description": "Wähle diesen Dateityp um damit einen Account zu importieren"
   },
   "privateKeyWarning": {
-    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
+    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."  
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
@@ -566,7 +581,7 @@
     "message": "QR Code anzeigen"
   },
   "readdToken": {
-    "message": "Du kannst  diesen Token zukünftig wieder hinzufügen indem du in den Menüpunkt \"Token hinzufügen\" in den Einstellungen deines Accounts gehst."
+    "message": "Du kannst diesen Token immer erneut hinzufügen, indem du in den Menüpunkt \"Token hinzufügen\" in den Einstellungen deines Accounts gehst."
   },
   "readMore": {
     "message": "Hier mehr erfahren."
@@ -590,7 +605,7 @@
     "message": "Account zurücksetzten"
   },
   "restoreFromSeed": {
-    "message": "Mit Hilfe der Seed Wörterfolge wiederherstellen."
+    "message": "Mit Hilfe der Seed-Wörterfolge wiederherstellen."
   },
   "restoreVault": {
     "message": "Vault wiederherstellen"
@@ -605,13 +620,13 @@
     "message": "Wallet Seed"
   },
   "revealSeedWords": {
-    "message": "Seed Wörterfolge anzeigen"
+    "message": "Seed-Wörterfolge anzeigen"
   },
   "revealSeedWordsWarning": {
-    "message": "Bitte niemals deine Seed Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
+    "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
   },
   "revert": {
-    "message": "Zurück gehen"
+    "message": "Rückgängig machen"
   },
   "rinkeby": {
     "message": "Rinkeby Testnetzwerk"
@@ -623,7 +638,7 @@
     "message": "Aktueller RPC"
   },
   "connectingToMainnet": {
-    "message": "Verbinde zum Ethereum Hauptnetzwerk (Main Net)"
+    "message": "Verbinde zum Ethereum Main Net"
   },
   "connectingToRopsten": {
     "message": " Verbinde zum Ropsten Testnetzwerk"
@@ -649,7 +664,7 @@
     "description": "Prozess des Exportieren eines Accounts"
   },
   "saveSeedAsFile": {
-    "message": "Seed Wörterfolge als Datei speichern"
+    "message": "Seed-Wörterfolge als Datei speichern"
   },
   "search": {
     "message": "Suche"
@@ -661,7 +676,7 @@
     "message": "Neues Passwort (min. 8 Zeichen)"
   },
   "seedPhraseReq": {
-    "message": "Seed Wörterfolgen bestehen aus 12 Wörtern"
+    "message": "Seed-Wörterfolgen bestehen aus 12 Wörtern"
   },
   "select": {
     "message": "Auswählen"
@@ -685,7 +700,7 @@
     "message": "Token senden"
   },
   "onlySendToEtherAddress": {
-    "message": "ETH nur zu einer Ethereum Adresse senden."
+    "message": "ETH unbedingt nur zu einer Ethereum Adresse senden."
   },
   "sendTokensAnywhere": {
     "message": "Token zu einer beliebigen Person mit einem Ethereumaccount senden"
@@ -742,7 +757,7 @@
     "message": "Einreichen"
   },
   "submitted": {
-    "message": "Eingereicht"
+    "message": "Abgeschickt"
   },
   "supportCenter": {
     "message": "Gehe zu unserem Support Center"
@@ -782,7 +797,7 @@
     "message": "Tokensymbol"
   },
   "tokenWarning1": {
-    "message": "Behalte die Token die du mit deinem MetaMask Account gekauft hast im Auge. Wenn du Token mit einem anderen Account gekauft hast, werden diese hier nicht angezeigt."
+    "message": "Behalte die Token die du mit deinem MetaMask Account gekauft hast im Blick. Wenn du Token mit einem anderen Account gekauft hast, werden diese hier nicht angezeigt."
   },
   "total": {
     "message": "Gesamt"
@@ -853,7 +868,7 @@
     "message": " Account einsehen"
   },
   "visitWebSite": {
-    "message": "Gehe zu unsere Webseite"
+    "message": "Gehe zu unserer Webseite"
   },
   "warning": {
     "message": "Warnung"

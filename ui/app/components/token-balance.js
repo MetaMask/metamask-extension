@@ -2,7 +2,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const selectors = require('../selectors')
 
 function mapStateToProps (state) {

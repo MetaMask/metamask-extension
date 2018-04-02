@@ -1,7 +1,7 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const isNode = require('detect-node')
 const findDOMNode = require('react-dom').findDOMNode
 const jazzicon = require('jazzicon')
@@ -47,7 +47,7 @@ IdenticonComponent.prototype.render = function () {
     )
     : (
       h('img.balance-icon', {
-        src: '../images/eth_logo.svg',
+        src: './images/eth_logo.svg',
         style: {
           height: diameter,
           width: diameter,
@@ -105,9 +105,8 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
 function _generateBlockie (container, address, diameter) {
   const img = new Image()
   img.src = toDataUrl(address)
-  const dia = !diameter || diameter < 50 ? 50 : diameter
-  img.height = dia * 1.25
-  img.width = dia * 1.25
+  img.height = diameter
+  img.width = diameter
   container.appendChild(img)
 }
 

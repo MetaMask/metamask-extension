@@ -1,7 +1,8 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const actions = require('../actions')
 const CoinbaseForm = require('./coinbase-form')
 const ShapeshiftForm = require('./shapeshift-form')
@@ -10,7 +11,12 @@ const AccountPanel = require('./account-panel')
 const RadioList = require('./custom-radio-list')
 const networkNames = require('../../../app/scripts/config.js').networkNames
 
+BuyButtonSubview.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(BuyButtonSubview)
+
 
 function mapStateToProps (state) {
   return {
@@ -76,7 +82,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, this.props.t('depositEth')),
+        }, this.context.t('depositEth')),
       ]),
 
       // loading indication
@@ -118,7 +124,7 @@ BuyButtonSubview.prototype.headerSubview = function () {
             paddingTop: '4px',
             paddingBottom: '4px',
           },
-        }, this.props.t('selectService')),
+        }, this.context.t('selectService')),
       ]),
 
     ])
@@ -143,7 +149,7 @@ BuyButtonSubview.prototype.primarySubview = function () {
     case '4':
     case '42':
       const networkName = networkNames[network]
-      const label = `${networkName} ${this.props.t('testFaucet')}`
+      const label = `${networkName} ${this.context.t('testFaucet')}`
       return (
         h('div.flex-column', {
           style: {
@@ -164,14 +170,14 @@ BuyButtonSubview.prototype.primarySubview = function () {
               style: {
                 marginTop: '15px',
               },
-            }, this.props.t('borrowDharma'))
+            }, this.context.t('borrowDharma'))
           ) : null,
       ])
     )
 
     default:
       return (
-        h('h2.error', this.props.t('unknownNetworkId'))
+        h('h2.error', this.context.t('unknownNetworkId'))
       )
 
   }
@@ -203,8 +209,8 @@ BuyButtonSubview.prototype.mainnetSubview = function () {
             'ShapeShift',
           ],
           subtext: {
-            'Coinbase': `${this.props.t('crypto')}/${this.props.t('fiat')} (${this.props.t('usaOnly')})`,
-            'ShapeShift': this.props.t('crypto'),
+            'Coinbase': `${this.context.t('crypto')}/${this.context.t('fiat')} (${this.context.t('usaOnly')})`,
+            'ShapeShift': this.context.t('crypto'),
           },
           onClick: this.radioHandler.bind(this),
         }),

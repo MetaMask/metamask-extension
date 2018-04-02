@@ -1,6 +1,7 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const inherits = require('util').inherits
 const classnames = require('classnames')
 const abi = require('human-standard-token-abi')
@@ -15,7 +16,12 @@ const { calcTokenAmount } = require('../token-util')
 
 const { getCurrentCurrency } = require('../selectors')
 
+TxListItem.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(TxListItem)
+
 
 function mapStateToProps (state) {
   return {
@@ -62,20 +68,24 @@ TxListItem.prototype.getAddressText = function () {
   const {
     address,
     txParams = {},
+    isMsg,
   } = this.props
 
   const decodedData = txParams.data && abiDecoder.decodeMethod(txParams.data)
   const { name: txDataName, params = [] } = decodedData || {}
   const { value } = params[0] || {}
 
-  switch (txDataName) {
-    case 'transfer':
-      return `${value.slice(0, 10)}...${value.slice(-4)}`
-    default:
-      return address
-        ? `${address.slice(0, 10)}...${address.slice(-4)}`
-        : this.props.t('contractDeployment')
+  let addressText
+  if (txDataName === 'transfer' || address) {
+    const addressToRender = txDataName === 'transfer' ? value : address
+    addressText = `${addressToRender.slice(0, 10)}...${addressToRender.slice(-4)}`
+  } else if (isMsg) {
+    addressText = this.context.t('sigRequest')
+  } else {
+    addressText = this.context.t('contractDeployment')
   }
+
+  return addressText
 }
 
 TxListItem.prototype.getSendEtherTotal = function () {
@@ -185,6 +195,9 @@ TxListItem.prototype.showRetryButton = function () {
     transactionId,
     txParams,
   } = this.props
+  if (!txParams) {
+    return false
+  }
   const currentNonce = txParams.nonce
   const currentNonceTxs = selectedAddressTxList.filter(tx => tx.txParams.nonce === currentNonce)
   const currentNonceSubmittedTxs = currentNonceTxs.filter(tx => tx.status === 'submitted')
@@ -306,21 +319,21 @@ TxListItem.prototype.txStatusIndicator = function () {
   let name
 
   if (transactionStatus === 'unapproved') {
-    name = this.props.t('unapproved')
+    name = this.context.t('unapproved')
   } else if (transactionStatus === 'rejected') {
-    name = this.props.t('rejected')
+    name = this.context.t('rejected')
   } else if (transactionStatus === 'approved') {
-    name = this.props.t('approved')
+    name = this.context.t('approved')
   } else if (transactionStatus === 'signed') {
-    name = this.props.t('signed')
+    name = this.context.t('signed')
   } else if (transactionStatus === 'submitted') {
-    name = this.props.t('submitted')
+    name = this.context.t('submitted')
   } else if (transactionStatus === 'confirmed') {
-    name = this.props.t('confirmed')
+    name = this.context.t('confirmed')
   } else if (transactionStatus === 'failed') {
-    name = this.props.t('failed')
+    name = this.context.t('failed')
   } else if (transactionStatus === 'dropped') {
-    name = this.props.t('dropped')
+    name = this.context.t('dropped')
   }
   return name
 }

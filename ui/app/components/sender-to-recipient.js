@@ -1,6 +1,6 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
-const connect = require('../metamask-connect')
+const connect = require('react-redux').connect
 const PropTypes = require('prop-types')
 const Identicon = require('./identicon')
 
@@ -21,7 +21,7 @@ class SenderToRecipient extends Component {
         this.renderRecipientIcon(),
         h(
           '.sender-to-recipient__name.sender-to-recipient__recipient-name',
-          recipientName || this.props.t('newContract')
+          recipientName || this.context.t('newContract')
         ),
       ])
     )
@@ -46,7 +46,7 @@ class SenderToRecipient extends Component {
             h('img', {
               height: 15,
               width: 15,
-              src: '/images/arrow-right.svg',
+              src: './images/arrow-right.svg',
             }),
           ]),
         ]),
@@ -64,4 +64,9 @@ SenderToRecipient.propTypes = {
   t: PropTypes.func,
 }
 
+SenderToRecipient.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect()(SenderToRecipient)
+
