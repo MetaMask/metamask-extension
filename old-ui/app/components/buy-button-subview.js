@@ -247,7 +247,6 @@ BuyButtonSubview.prototype.backButtonContext = function () {
   if (this.props.context === 'confTx') {
     this.props.dispatch(actions.showConfTxPage(false))
   } else {
-    console.log(`actions.goHome`, actions.goHome);
     this.props.dispatch(actions.goHome())
   }
 }
