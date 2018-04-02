@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
-import { compose, onlyUpdateForPropTypes } from 'recompose'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
-import { DEFAULT_ROUTE, CONFIRM_SEED_ROUTE } from '../../../../ui/app/routes'
+import { DEFAULT_ROUTE, INITIALIZE_CONFIRM_SEED_ROUTE } from '../../../../ui/app/routes'
 
 const LockIcon = props => (
   <svg
@@ -105,14 +106,6 @@ class BackupPhraseScreen extends Component {
             WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever.
           </div>
           {this.renderSecretWordsContainer()}
-          <button
-            className="first-time-flow__button"
-            onClick={() => isShowingSecret && history.push(CONFIRM_SEED_ROUTE)}
-            disabled={!isShowingSecret}
-          >
-            Next
-          </button>
-          <Breadcrumbs total={3} currentIndex={1} />
         </div>
         <div className="backup-phrase__tips">
           <div className="backup-phrase__tips-text">Tips:</div>
@@ -129,10 +122,7 @@ class BackupPhraseScreen extends Component {
         <div className="backup-phrase__next-button">
           <button
             className="first-time-flow__button"
-            onClick={() => isShowingSecret && this.setState({
-              isShowingSecret: false,
-              page: BackupPhraseScreen.PAGE.CONFIRM,
-            })}
+            onClick={() => isShowingSecret && history.push(INITIALIZE_CONFIRM_SEED_ROUTE)}
             disabled={!isShowingSecret}
           >
             Next
@@ -160,7 +150,7 @@ class BackupPhraseScreen extends Component {
 }
 
 export default compose(
-  onlyUpdateForPropTypes,
+  withRouter,
   connect(
     ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
       seedWords,

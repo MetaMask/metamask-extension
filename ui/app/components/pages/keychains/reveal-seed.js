@@ -133,7 +133,7 @@ class RevealSeedPage extends Component {
           }, [
             // cancel
             h('button.primary', {
-              onClick: () => history.goBack(),
+              onClick: () => history.push(DEFAULT_ROUTE),
             }, 'CANCEL'),
 
             // submit

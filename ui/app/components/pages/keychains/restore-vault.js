@@ -24,7 +24,7 @@ class RestoreVaultPage extends PersistentForm {
 
   cancel () {
     this.props.unMarkPasswordForgotten()
-      .then(this.props.history.goBack())
+      .then(this.props.history.push(DEFAULT_ROUTE))
   }
 
   createNewVaultAndRestore () {

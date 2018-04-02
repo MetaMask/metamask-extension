@@ -8,7 +8,7 @@ import {
   displayWarning,
   unMarkPasswordForgotten,
 } from '../../../../ui/app/actions'
-import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import { DEFAULT_ROUTE, INITIALIZE_NOTICE_ROUTE } from '../../../../ui/app/routes'
 
 class ImportSeedPhraseScreen extends Component {
   static propTypes = {
@@ -71,7 +71,7 @@ class ImportSeedPhraseScreen extends Component {
 
     leaveImportSeedScreenState()
     createNewVaultAndRestore(password, this.parseSeedPhrase(seedPhrase))
-      .then(() => history.push(DEFAULT_ROUTE))
+      .then(() => history.push(INITIALIZE_NOTICE_ROUTE))
   }
 
   render () {

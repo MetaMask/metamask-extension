@@ -1322,12 +1322,13 @@ function markNoticeRead (notice) {
           dispatch(actions.displayWarning(err))
           return reject(err)
         }
+
         if (notice) {
           dispatch(actions.showNotice(notice))
-          resolve()
+          resolve(true)
         } else {
           dispatch(actions.clearNotices())
-          resolve()
+          resolve(false)
         }
       })
     })

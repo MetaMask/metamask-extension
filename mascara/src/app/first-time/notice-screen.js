@@ -2,11 +2,17 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
 import debounce from 'lodash.debounce'
 import { markNoticeRead } from '../../../../ui/app/actions'
 import Identicon from '../../../../ui/app/components/identicon'
 import Breadcrumbs from './breadcrumbs'
-import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import {
+  INITIALIZE_ROUTE,
+  DEFAULT_ROUTE,
+  INITIALIZE_BACKUP_PHRASE_ROUTE,
+} from '../../../../ui/app/routes'
 import LoadingScreen from './loading-screen'
 
 class NoticeScreen extends Component {
@@ -25,6 +31,7 @@ class NoticeScreen extends Component {
     markNoticeRead: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
+    noActiveNotices: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -35,14 +42,27 @@ class NoticeScreen extends Component {
     atBottom: false,
   }
 
-  componentDidMount () {
+  componentWillMount () {
+    if (this.props.noActiveNotices) {
+      console.log('%c NOTICESCREEN NOACTIVENOTICES', 'background: #222; color: #bada55')
+      this.props.history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
+    }
+
     this.onScroll()
   }
 
   acceptTerms = () => {
     const { markNoticeRead, lastUnreadNotice, history } = this.props
     markNoticeRead(lastUnreadNotice)
-      .then(() => history.push(DEFAULT_ROUTE))
+      .then(hasActiveNotices => {
+        console.log('ACCEPT TERMS, NO ACTIVE NOTICES', hasActiveNotices, 'background: #222; color: #bada55')
+        if (!hasActiveNotices) {
+          history.push(INITIALIZE_BACKUP_PHRASE_ROUTE)
+        } else {
+          this.setState({ atBottom: false })
+          this.onScroll()
+        }
+      })
   }
 
   onScroll = debounce(() => {
@@ -98,12 +118,24 @@ class NoticeScreen extends Component {
   }
 }
 
-export default connect(
-  ({ metamask: { selectedAddress, lastUnreadNotice }, appState: { isLoading } }) => ({
-    lastUnreadNotice,
+const mapStateToProps = ({ metamask, appState }) => {
+  const { selectedAddress, lastUnreadNotice, noActiveNotices } = metamask
+  const { isLoading } = appState
+
+  return {
     address: selectedAddress,
-  }),
-  dispatch => ({
-    markNoticeRead: notice => dispatch(markNoticeRead(notice)),
-  })
+    lastUnreadNotice,
+    noActiveNotices,
+    isLoading,
+  }
+}
+
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      markNoticeRead: notice => dispatch(markNoticeRead(notice)),
+    })
+  )
 )(NoticeScreen)

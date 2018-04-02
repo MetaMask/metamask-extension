@@ -9,6 +9,7 @@ import NoticeScreen from './notice-screen'
 import BackupPhraseScreen from './seed-screen'
 import ImportAccountScreen from './import-account-screen'
 import ImportSeedPhraseScreen from './import-seed-phrase-screen'
+import ConfirmSeed from './confirm-seed-screen'
 import {
   onboardingBuyEthView,
   unMarkPasswordForgotten,
@@ -19,8 +20,14 @@ import {
   WELCOME_ROUTE,
   INITIALIZE_ROUTE,
   INITIALIZE_IMPORT_ACCOUNT_ROUTE,
+  INITIALIZE_UNIQUE_IMAGE_ROUTE,
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
+  INITIALIZE_NOTICE_ROUTE,
+  INITIALIZE_BACKUP_PHRASE_ROUTE,
+  INITIALIZE_CONFIRM_SEED_ROUTE,
+  INITIALIZE_CREATE_PASSWORD_ROUTE,
 } from '../../../../ui/app/routes'
+import WelcomeScreen from '../../../../ui/app/welcome-screen'
 
 class FirstTimeFlow extends Component {
 
@@ -60,11 +67,17 @@ class FirstTimeFlow extends Component {
   }
 
   componentDidMount () {
-    const { isInitialized, isUnlocked, history } = this.props
+    const { isInitialized, isUnlocked, history, noActiveNotices } = this.props
 
-    if (isInitialized || isUnlocked) {
-      history.push(DEFAULT_ROUTE)
-    }
+    // if (isInitialized || isUnlocked) {
+    //   history.push(DEFAULT_ROUTE)
+    // }
+
+    // if (!noActiveNotices) {
+    //   console.log('INITIALIZE ACTIVE NOTICES')
+    //   history.push(INITIALIZE_NOTICE_ROUTE)
+    // }
+
   }
 
   setScreenType (screenType) {
@@ -161,21 +174,24 @@ class FirstTimeFlow extends Component {
   }
 
   render () {
-    return this.props.welcomeScreenSeen
-      ? (
-        <div className="first-time-flow">
-          <Switch>
-            <Route exact path={INITIALIZE_IMPORT_ACCOUNT_ROUTE} component={ImportAccountScreen} />
-            <Route
-              exact
-              path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}
-              component={ImportSeedPhraseScreen}
-            />
-            <Route exact path={INITIALIZE_ROUTE} component={CreatePasswordScreen} />
-          </Switch>
-        </div>
-      )
-      : <Redirect to={WELCOME_ROUTE } />
+    return (
+      <div className="first-time-flow">
+        <Switch>
+          <Route exact path={INITIALIZE_IMPORT_ACCOUNT_ROUTE} component={ImportAccountScreen} />
+          <Route
+            exact
+            path={INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE}
+            component={ImportSeedPhraseScreen}
+          />
+          <Route exact path={INITIALIZE_UNIQUE_IMAGE_ROUTE} component={UniqueImageScreen} />
+          <Route exact path={INITIALIZE_NOTICE_ROUTE} component={NoticeScreen} />
+          <Route exact path={INITIALIZE_BACKUP_PHRASE_ROUTE} component={BackupPhraseScreen} />
+          <Route exact path={INITIALIZE_CONFIRM_SEED_ROUTE} component={ConfirmSeed} />
+          <Route exact path={INITIALIZE_CREATE_PASSWORD_ROUTE} component={CreatePasswordScreen} />
+          <Route exact path={INITIALIZE_ROUTE} component={WelcomeScreen} />
+        </Switch>
+      </div>
+    )
   }
 }
 

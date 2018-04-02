@@ -35,11 +35,11 @@ class Home extends Component {
       unapprovedTypedMessagesCount = 0,
     } = this.props
 
-    console.log('IN HOME COMPONENDIMOUNT')
+    console.log('HOME MOUNTED')
+
     // unapprovedTxs and unapproved messages
     if (Object.keys(unapprovedTxs).length ||
     unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
-      console.log('IN HOME SHOULD REDIRECT')
       this.props.history.push(CONFIRM_TRANSACTION_ROUTE)
     }
   }
@@ -54,6 +54,15 @@ class Home extends Component {
       activeAddress,
       seedWords,
     } = this.props
+
+    // notices
+    if (!noActiveNotices || (lostAccounts && lostAccounts.length > 0)) {
+      return h(Redirect, {
+        to: {
+          pathname: NOTICE_ROUTE,
+        },
+      })
+    }
 
     // seed words
     if (seedWords) {
@@ -70,15 +79,6 @@ class Home extends Component {
       return h(Redirect, {
         to: {
           pathname: RESTORE_VAULT_ROUTE,
-        },
-      })
-    }
-
-    // notices
-    if (!noActiveNotices || (lostAccounts && lostAccounts.length > 0)) {
-      return h(Redirect, {
-        to: {
-          pathname: NOTICE_ROUTE,
         },
       })
     }

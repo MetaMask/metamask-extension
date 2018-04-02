@@ -88,34 +88,18 @@ class App extends Component {
 
     return (
       h(Switch, [
-        h(Route, {
-          path: WELCOME_ROUTE,
-          exact,
-          component: WelcomeScreen,
-        }),
-        h(Route, {
-          path: INITIALIZE_ROUTE,
-          component: InitializeScreen,
-        }),
+        h(Route, { path: INITIALIZE_ROUTE, component: InitializeScreen }),
         h(Initialized, {
           path: REVEAL_SEED_ROUTE,
           exact,
           component: RevealSeedPage,
           mascaraComponent: MascaraSeedScreen,
         }),
-        h(Initialized, {
-          path: CONFIRM_SEED_ROUTE,
-          exact,
-          mascaraComponent: MascaraConfirmSeedScreen,
-        }),
+        // h(Initialized, { path: CONFIRM_SEED_ROUTE, exact, component: MascaraConfirmSeedScreen }),
         h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
         h(Initialized, { path: SETTINGS_ROUTE, component: Settings }),
         h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
-        h(Initialized, {
-          path: NOTICE_ROUTE,
-          exact,
-          component: MascaraNoticeScreen,
-        }),
+        h(Initialized, { path: NOTICE_ROUTE, exact, component: NoticeScreen }),
         h(Authenticated, { path: CONFIRM_TRANSACTION_ROUTE, component: ConfirmTxScreen }),
         h(Authenticated, { path: SEND_ROUTE, exact, component: SendTransactionScreen2 }),
         h(Authenticated, { path: ADD_TOKEN_ROUTE, exact, component: AddTokenPage }),
@@ -322,7 +306,7 @@ class App extends Component {
 
               ]),
 
-              isUnlocked && h('div.account-menu__icon', { onClick: this.context.toggleAccountMenu }, [
+              isUnlocked && h('div.account-menu__icon', { onClick: this.props.toggleAccountMenu }, [
                 h(Identicon, {
                   address: this.props.selectedAddress,
                   diameter: 32,

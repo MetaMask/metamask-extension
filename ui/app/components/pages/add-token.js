@@ -384,7 +384,7 @@ AddTokenScreen.prototype.render = function () {
   return h('div.add-token', [
     h('div.add-token__header', [
       h('div.add-token__header__cancel', {
-        onClick: () => history.goBack(),
+        onClick: () => history.push(DEFAULT_ROUTE),
       }, [
         h('i.fa.fa-angle-left.fa-lg'),
         h('span', this.context.t('cancel')),
@@ -417,7 +417,7 @@ AddTokenScreen.prototype.render = function () {
 
     !isShowingConfirmation && h('div.add-token__buttons', [
       h('button.btn-secondary--lg.add-token__cancel-button', {
-        onClick: () => history.goBack(),
+        onClick: () => history.push(DEFAULT_ROUTE),
       }, this.context.t('cancel')),
       h('button.btn-primary--lg.add-token__confirm-button', {
         onClick: this.onNext,

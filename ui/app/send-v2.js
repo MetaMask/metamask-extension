@@ -29,7 +29,7 @@ const {
   isTokenBalanceSufficient,
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
-const { CONFIRM_TRANSACTION_ROUTE } = require('./routes')
+const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
 
 SendTransactionScreen.contextTypes = {
   t: PropTypes.func,
@@ -201,7 +201,7 @@ SendTransactionScreen.prototype.renderHeader = function () {
     h('div.page-container__header-close', {
       onClick: () => {
         clearSend()
-        history.goBack()
+        history.push(DEFAULT_ROUTE)
       },
     }),
 
@@ -521,7 +521,7 @@ SendTransactionScreen.prototype.renderFooter = function () {
     h('button.btn-secondary--lg.page-container__footer-button', {
       onClick: () => {
         clearSend()
-        history.goBack()
+        history.push(DEFAULT_ROUTE)
       },
     }, this.context.t('cancel')),
     h('button.btn-primary--lg.page-container__footer-button', {

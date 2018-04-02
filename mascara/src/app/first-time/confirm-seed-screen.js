@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
-import { compose, onlyUpdateForPropTypes } from 'recompose'
+import { compose } from 'recompose'
 import Identicon from '../../../../ui/app/components/identicon'
 import { confirmSeedWords } from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
-import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
+import { INITIALIZE_ROUTE, DEFAULT_ROUTE } from '../../../../ui/app/routes'
 
 class ConfirmSeedScreen extends Component {
   static propTypes = {
@@ -35,8 +36,16 @@ class ConfirmSeedScreen extends Component {
   componentWillMount () {
     const { seedWords, history } = this.props
     if (!seedWords) {
-      history.push(DEFAULT_ROUTE)
+      history.push(INITIALIZE_ROUTE)
     }
+  }
+
+  handleClick () {
+    this.props.confirmSeedWords()
+      .then(() => {
+        console.log('FINISHED')
+        this.props.history.push(DEFAULT_ROUTE)
+      })
   }
 
   render () {
@@ -50,66 +59,70 @@ class ConfirmSeedScreen extends Component {
         this.props.isLoading
           ? <LoadingScreen loadingMessage="Creating your new account" />
           : (
-            <div className="backup-phrase">
-              <Identicon address={this.props.address} diameter={70} />
-              <div className="backup-phrase__content-wrapper">
-                <div>
-                  <div className="backup-phrase__title">
-                    Confirm your Secret Backup Phrase
-                  </div>
-                  <div className="backup-phrase__body-text">
-                    Please select each phrase in order to make sure it is correct.
-                  </div>
-                  <div className="backup-phrase__confirm-secret">
-                    {selectedSeeds.map(([_, word], i) => (
-                      <button
-                        key={i}
-                        className="backup-phrase__confirm-seed-option"
-                      >
-                        {word}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="backup-phrase__confirm-seed-options">
-                    {shuffledSeeds.map((word, i) => {
-                      const isSelected = selectedSeeds
-                        .filter(([index, seed]) => seed === word && index === i)
-                        .length
+            <div className="first-view-main-wrapper">
+              <div className="first-view-main">
+                <div className="backup-phrase">
+                  <Identicon address={this.props.address} diameter={70} />
+                  <div className="backup-phrase__content-wrapper">
+                    <div>
+                      <div className="backup-phrase__title">
+                        Confirm your Secret Backup Phrase
+                      </div>
+                      <div className="backup-phrase__body-text">
+                        Please select each phrase in order to make sure it is correct.
+                      </div>
+                      <div className="backup-phrase__confirm-secret">
+                        {selectedSeeds.map(([_, word], i) => (
+                          <button
+                            key={i}
+                            className="backup-phrase__confirm-seed-option"
+                          >
+                            {word}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="backup-phrase__confirm-seed-options">
+                        {shuffledSeeds.map((word, i) => {
+                          const isSelected = selectedSeeds
+                            .filter(([index, seed]) => seed === word && index === i)
+                            .length
 
-                      return (
-                        <button
-                          key={i}
-                          className={classnames('backup-phrase__confirm-seed-option', {
-                            'backup-phrase__confirm-seed-option--selected': isSelected,
-                          })}
-                          onClick={() => {
-                            if (!isSelected) {
-                              this.setState({
-                                selectedSeeds: [...selectedSeeds, [i, word]],
-                              })
-                            } else {
-                              this.setState({
-                                selectedSeeds: selectedSeeds
-                                  .filter(([index, seed]) => !(seed === word && index === i)),
-                              })
-                            }
-                          }}
-                        >
-                          {word}
-                        </button>
-                      )
-                    })}
+                          return (
+                            <button
+                              key={i}
+                              className={classnames('backup-phrase__confirm-seed-option', {
+                                'backup-phrase__confirm-seed-option--selected': isSelected,
+                              })}
+                              onClick={() => {
+                                if (!isSelected) {
+                                  this.setState({
+                                    selectedSeeds: [...selectedSeeds, [i, word]],
+                                  })
+                                } else {
+                                  this.setState({
+                                    selectedSeeds: selectedSeeds
+                                      .filter(([index, seed]) => !(seed === word && index === i)),
+                                  })
+                                }
+                              }}
+                            >
+                              {word}
+                            </button>
+                          )
+                        })}
+                      </div>
+                      <button
+                        className="first-time-flow__button"
+                        onClick={() => isValid && this.handleClick()}
+                        disabled={!isValid}
+                      >
+                        Confirm
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    className="first-time-flow__button"
-                    onClick={() => isValid && confirmSeedWords().then(() => history.push(DEFAULT_ROUTE))}
-                    disabled={!isValid}
-                  >
-                    Confirm
-                  </button>
+                  <Breadcrumbs total={3} currentIndex={1} />
                 </div>
               </div>
-              <Breadcrumbs total={3} currentIndex={1} />
             </div>
           )
       }
@@ -119,7 +132,7 @@ class ConfirmSeedScreen extends Component {
 }
 
 export default compose(
-  onlyUpdateForPropTypes,
+  withRouter,
   connect(
     ({ metamask: { selectedAddress, seedWords }, appState: { isLoading } }) => ({
       seedWords,
