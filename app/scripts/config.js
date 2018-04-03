@@ -13,7 +13,7 @@ const DEFAULT_RPC = 'rinkeby'
 const OLD_UI_NETWORK_TYPE = 'network'
 const BETA_UI_NETWORK_TYPE = 'networkBeta'
 
-global.METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+global.METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 module.exports = {
   network: {
