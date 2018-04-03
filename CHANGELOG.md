@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.5.1 Tue Apr 03 2018
+
 - Fix default network (should be mainnet not Rinkeby)
 - Fix Sentry automated error reporting endpoint
 
