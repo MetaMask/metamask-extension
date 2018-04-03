@@ -43,7 +43,7 @@ class CurrencyController {
     this.store.updateState({ conversionDate })
   }
 
-  await updateConversionRate () {
+  async updateConversionRate () {
     try {
       const currentCurrency = this.getCurrentCurrency()
       const response = await fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
