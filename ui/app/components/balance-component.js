@@ -99,7 +99,7 @@ BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatS
   if (shouldNotRenderFiat) return null
 
   const display = currencyFormatter.format(Number(fiatDisplayNumber), {
-    code: fiatSuffix.toUpperCase()
+    code: fiatSuffix.toUpperCase(),
   })
 
   return h('div.fiat-amount', {
