@@ -192,6 +192,9 @@ jobs:
           path: dist/mascara
           destination: builds/mascara
       - store_artifacts:
+          path: dist/sourcemaps
+          destination: builds/sourcemaps
+      - store_artifacts:
           path: builds
           destination: builds
       - store_artifacts:
