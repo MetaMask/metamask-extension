@@ -2,7 +2,7 @@ const extension = require('extensionizer')
 const promisify = require('pify')
 const allLocales = require('../../_locales/index.json')
 
-const existingLocaleCodes = allLocales.map(locale => locale.code)
+const existingLocaleCodes = allLocales.map(locale => locale.code.replace('_', '-'))
 
 async function getFirstPreferredLangCode () {
   const userPreferredLocaleCodes = await promisify(
