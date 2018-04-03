@@ -4,6 +4,7 @@ const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenBalance = require('./token-balance')
 const Identicon = require('./identicon')
+const currencyFormatter = require('currency-formatter')
 
 const { formatBalance, generateBalanceObject } = require('../util')
 
@@ -97,9 +98,13 @@ BalanceComponent.prototype.renderFiatAmount = function (fiatDisplayNumber, fiatS
   const shouldNotRenderFiat = fiatDisplayNumber === 'N/A' || Number(fiatDisplayNumber) === 0
   if (shouldNotRenderFiat) return null
 
+  const display = currencyFormatter.format(Number(fiatDisplayNumber), {
+    code: fiatSuffix.toUpperCase()
+  })
+
   return h('div.fiat-amount', {
     style: {},
-  }, `${fiatPrefix}${fiatDisplayNumber} ${fiatSuffix}`)
+  }, display)
 }
 
 BalanceComponent.prototype.getTokenBalance = function (formattedBalance, shorten) {
