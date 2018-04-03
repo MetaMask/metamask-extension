@@ -75,7 +75,7 @@ async function runAddTokenFlowTest (assert, done) {
   // Confirm Add token
   assert.equal(
     $('.add-token__description')[0].textContent,
-    'Would you like to add these tokens?',
+    'Token balance(s)',
     'confirm add token rendered'
   )
   assert.ok($('button.btn-primary--lg')[0], 'confirm add token button found')
