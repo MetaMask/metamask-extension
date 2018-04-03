@@ -310,9 +310,6 @@ AddTokenScreen.prototype.renderConfirmation = function () {
   return (
     h('div.add-token', [
       h('div.add-token__wrapper', [
-        h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__description', this.context.t('likeToAddTokens')),
-        ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
           h('div.add-token__description.add-token__confirmation-description', this.context.t('balances')),
           h('div.add-token__confirmation-token-list',
@@ -390,12 +387,13 @@ AddTokenScreen.prototype.render = function () {
         h('span', this.context.t('cancel')),
       ]),
       h('div.add-token__header__title', this.context.t('addTokens')),
+      isShowingConfirmation && h('div.add-token__header__subtitle', this.context.t('likeToAddTokens')),
       !isShowingConfirmation && h('div.add-token__header__tabs', [
 
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
             'add-token__header__tabs__selected': displayedTab === 'SEARCH',
-            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
+            'add-token__header__tabs__unselected': displayedTab !== 'SEARCH',
           }),
           onClick: () => this.displayTab('SEARCH'),
         }, this.context.t('search')),
@@ -403,7 +401,7 @@ AddTokenScreen.prototype.render = function () {
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
             'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
-            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
+            'add-token__header__tabs__unselected': displayedTab !== 'CUSTOM_TOKEN',
           }),
           onClick: () => this.displayTab('CUSTOM_TOKEN'),
         }, this.context.t('customToken')),

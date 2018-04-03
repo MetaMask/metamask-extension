@@ -31,7 +31,7 @@
 
       span {
         font-family: Roboto;
-        font-size: 16px; 
+        font-size: 16px;
         line-height: 21px;
         margin-left: 8px;
       }
@@ -42,6 +42,11 @@
       font-size: 32px;
       font-weight: 500;
       margin-top: 4px;
+    }
+
+    &__subtitle {
+      margin-top: 15px;
+      margin-bottom: 21px;
     }
 
     &__tabs {
@@ -65,6 +70,7 @@
       &__unselected:hover {
         color: $black;
         border-bottom: none;
+        cursor: pointer;
       }
 
       &__selected {
@@ -124,7 +130,7 @@
   }
 
   &__confirmation-description {
-    margin: 12px 0;
+    margin: 20px 0 40px 0;
   }
 
   &__content-container {
