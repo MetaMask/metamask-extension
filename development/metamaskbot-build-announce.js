@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const request = require('request-promise')
-const { version } = require('../dist/chrome/manifest.json')
+const VERSION = require('../dist/chrome/manifest.json').version
 
 const GITHUB_COMMENT_TOKEN = process.env.GITHUB_COMMENT_TOKEN
 const CIRCLE_PULL_REQUEST = process.env.CIRCLE_PULL_REQUEST
@@ -15,10 +15,10 @@ const SHORT_SHA1 = CIRCLE_SHA1.slice(0,7)
 const BUILD_LINK_BASE = `https://${CIRCLE_BUILD_NUM}-42009758-gh.circle-artifacts.com/0`
 
 const MASCARA = `${BUILD_LINK_BASE}/builds/mascara/home.html`
-const CHROME = `${BUILD_LINK_BASE}/builds/metamask-chrome-${version}.zip`
-const FIREFOX = `${BUILD_LINK_BASE}/builds/metamask-firefox-${version}.zip`
-const EDGE = `${BUILD_LINK_BASE}/builds/metamask-edge-${version}.zip`
-const OPERA = `${BUILD_LINK_BASE}/builds/metamask-opera-${version}.zip`
+const CHROME = `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`
+const FIREFOX = `${BUILD_LINK_BASE}/builds/metamask-firefox-${VERSION}.zip`
+const EDGE = `${BUILD_LINK_BASE}/builds/metamask-edge-${VERSION}.zip`
+const OPERA = `${BUILD_LINK_BASE}/builds/metamask-opera-${VERSION}.zip`
 const WALKTHROUGH = `${BUILD_LINK_BASE}/test-artifacts/screens/walkthrough%20%28en%29.gif`
 
 const commentBody = `
