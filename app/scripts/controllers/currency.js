@@ -43,20 +43,18 @@ class CurrencyController {
     this.store.updateState({ conversionDate })
   }
 
-  updateConversionRate () {
-    const currentCurrency = this.getCurrentCurrency()
-    return fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
-    .then(response => response.json())
-    .then((parsedResponse) => {
+  await updateConversionRate () {
+    try {
+      const currentCurrency = this.getCurrentCurrency()
+      const response = await fetch(`https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`)
+      const parsedResponse = await response.json()
       this.setConversionRate(Number(parsedResponse.bid))
       this.setConversionDate(Number(parsedResponse.timestamp))
-    }).catch((err) => {
-      if (err) {
-        console.warn(`MetaMask - Failed to query currency conversion:`, currentCurrency, err)
-        this.setConversionRate(0)
-        this.setConversionDate('N/A')
-      }
-    })
+    } catch (err) {
+      console.warn(`MetaMask - Failed to query currency conversion:`, currentCurrency, err)
+      this.setConversionRate(0)
+      this.setConversionDate('N/A')
+    }
   }
 
   scheduleConversionInterval () {
