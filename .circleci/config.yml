@@ -67,12 +67,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Install deps via npm
           command: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - save_cache:
+          key: dependency-cache-{{ .Revision }}
           paths:
             - node_modules
 
@@ -97,7 +101,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: build:dist
           command: npm run dist
@@ -116,7 +120,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -135,7 +139,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Test
           command: npm run lint
@@ -146,7 +150,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -162,7 +166,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - run:
@@ -179,7 +183,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - restore_cache:
           key: build-cache-{{ .Revision }}
       - restore_cache:
@@ -203,7 +207,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: test:coverage
           command: npm run test:coverage
@@ -225,7 +229,7 @@ jobs:
             && sudo mv /usr/bin/firefox /usr/bin/firefox-old
             && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -244,7 +248,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -272,7 +276,7 @@ jobs:
             && sudo mv /usr/bin/firefox /usr/bin/firefox-old
             && sudo ln -s /opt/firefox58/firefox /usr/bin/firefox
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
@@ -291,7 +295,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ .Revision }}
       - run:
           name: Get Scss Cache key
           # this allows us to checksum against a whole directory
