@@ -28,8 +28,14 @@ const uglify = require('gulp-uglify-es').default
 const babel = require('gulp-babel')
 const debug = require('gulp-debug')
 const pify = require('pify')
+const gulpMultiProcess = require('gulp-multi-process')
 const endOfStream = pify(require('end-of-stream'))
 
+function gulpParallel (...args) {
+  return function spawnGulpChildProcess(cb) {
+    return gulpMultiProcess(args, cb, true)
+  }
+}
 
 const browserPlatforms = [
   'firefox',
@@ -420,7 +426,7 @@ gulp.task('build',
   gulp.series(
     'clean',
     'build:scss',
-    gulp.parallel(
+    gulpParallel(
       'build:extension:js',
       'build:mascara:js',
       'copy'
@@ -477,6 +483,16 @@ function generateBundler(opts, performBundle) {
   })
 
   let bundler = browserify(browserifyOpts)
+
+  // Minification
+  if (opts.minifyBuild) {
+    bundler.transform('uglifyify', {
+      global: true,
+      mangle: {
+        reserved: [ 'MetamaskInpageProvider' ]
+      },
+    })
+  }
 
   if (opts.watch) {
     bundler = watchify(bundler)
@@ -546,22 +562,11 @@ function bundleTask(opts) {
       // buffer file contents (?)
       .pipe(buffer())
 
-
     // Initialize Source Maps
     if (opts.buildSourceMaps) {
       buildStream = buildStream
         // loads map from browserify file
         .pipe(sourcemaps.init({ loadMaps: true }))
-    }
-
-    // Minification
-    if (opts.minifyBuild) {
-      buildStream = buildStream
-        .pipe(uglify({
-          mangle: {
-            reserved: [ 'MetamaskInpageProvider' ]
-          },
-        }))
     }
 
     // Finalize Source Maps (writes .map file)
