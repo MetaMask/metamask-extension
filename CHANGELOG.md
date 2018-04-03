@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.5.0 Mon Apr 02 2018
+
 - (beta ui) Internationalization: Select your preferred language in the settings screen
 - Internationalization: various locale improvements
 - Fix bug where the "Reset account" feature would not clear the network cache.
