@@ -22,7 +22,7 @@ const EdgeEncryptor = require('./edge-encryptor')
 const getFirstPreferredLangCode = require('./lib/get-first-preferred-lang-code')
 
 const STORAGE_KEY = 'metamask-config'
-const METAMASK_DEBUG = 'GULP_METAMASK_DEBUG'
+const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 window.log = log
 log.setDefaultLevel(METAMASK_DEBUG ? 'debug' : 'warn')
@@ -94,7 +94,7 @@ function setupController (initState, initLangCode) {
   //
   // MetaMask Controller
   //
-  
+
   const controller = new MetamaskController({
     // User confirmation callbacks:
     showUnconfirmedMessage: triggerUi,
