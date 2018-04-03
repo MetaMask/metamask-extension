@@ -203,6 +203,9 @@ jobs:
       - run:
           name: build:announce
           command: ./development/metamaskbot-build-announce.js
+      - run:
+          name: sentry sourcemaps upload
+          command: npm run sentry:publish
 
   test-unit:
     docker:
