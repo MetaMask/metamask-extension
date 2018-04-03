@@ -55,11 +55,25 @@ function ConfirmTxScreen () {
   Component.call(this)
 }
 
+ConfirmTxScreen.prototype.componentDidMount = function () {
+  const {
+    unapprovedTxs = {},
+    network,
+    send,
+  } = this.props
+  const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
+
+  if (unconfTxList.length === 0 && !send.to) {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
+}
+
 ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const {
-    unapprovedTxs,
+    unapprovedTxs = {},
     network,
     selectedAddressTxList,
+    send,
   } = this.props
   const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevProps
   const prevUnconfTxList = txHelper(prevUnapprovedTxs, {}, {}, {}, network)
@@ -67,7 +81,7 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (prevTx.status === 'dropped' && unconfTxList.length === 0) {
+  if (unconfTxList.length === 0 && (prevTx.status === 'dropped' || !send.to)) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
@@ -109,13 +123,6 @@ ConfirmTxScreen.prototype.render = function () {
   */
 
   log.info(`rendering a combined ${unconfTxList.length} unconf msg & txs`)
-  if (unconfTxList.length === 0) {
-    return h(Redirect, {
-      to: {
-        pathname: DEFAULT_ROUTE,
-      },
-    })
-  }
 
   return currentTxView({
     // Properties

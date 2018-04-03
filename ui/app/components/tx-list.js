@@ -82,9 +82,9 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
 
   const props = {
     dateString: formatDate(transaction.time),
-    address: transaction.txParams.to,
+    address: transaction.txParams && transaction.txParams.to,
     transactionStatus: transaction.status,
-    transactionAmount: transaction.txParams.value,
+    transactionAmount: transaction.txParams && transaction.txParams.value,
     transactionId: transaction.id,
     transactionHash: transaction.hash,
     transactionNetworkId: transaction.metamaskNetworkId,
@@ -106,6 +106,7 @@ TxList.prototype.renderTransactionListItem = function (transaction, conversionRa
   const opts = {
     key: transactionId || transactionHash,
     txParams: transaction.txParams,
+    isMsg: Boolean(transaction.msgParams),
     transactionStatus,
     transactionId,
     dateString,

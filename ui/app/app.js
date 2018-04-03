@@ -77,7 +77,6 @@ class App extends Component {
           component: RevealSeedPage,
           mascaraComponent: MascaraSeedScreen,
         }),
-        // h(Initialized, { path: CONFIRM_SEED_ROUTE, exact, component: MascaraConfirmSeedScreen }),
         h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
         h(Initialized, { path: SETTINGS_ROUTE, component: Settings }),
         h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
@@ -214,7 +213,6 @@ class App extends Component {
       networkDropdownOpen,
       showNetworkDropdown,
       hideNetworkDropdown,
-      currentView,
       isInitialized,
       welcomeScreenSeen,
       isPopup,
@@ -276,7 +274,7 @@ class App extends Component {
                 h(NetworkIndicator, {
                   network,
                   provider,
-                  disabled: currentView.name === 'confTx',
+                  disabled: this.props.location.pathname === CONFIRM_TRANSACTION_ROUTE,
                   onClick: (event) => {
                     event.preventDefault()
                     event.stopPropagation()
@@ -395,6 +393,7 @@ App.propTypes = {
   showNetworkDropdown: PropTypes.func,
   hideNetworkDropdown: PropTypes.func,
   history: PropTypes.object,
+  location: PropTypes.object,
   dispatch: PropTypes.func,
   toggleAccountMenu: PropTypes.func,
   selectedAddress: PropTypes.string,

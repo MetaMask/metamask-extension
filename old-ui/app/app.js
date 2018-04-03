@@ -581,7 +581,6 @@ App.prototype.renderPrimary = function () {
 
     case 'qr':
       log.debug('rendering show qr screen')
-      console.log(`QrView`, QrView);
       return h('div', {
         style: {
           position: 'absolute',

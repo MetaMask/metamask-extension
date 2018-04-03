@@ -27,6 +27,7 @@ const {
 const {
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  getGasTotal,
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
 const { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } = require('./routes')
@@ -133,7 +134,7 @@ SendTransactionScreen.prototype.updateGas = function () {
         estimateGas(estimateGasParams),
       ])
       .then(([gasPrice, gas]) => {
-        const newGasTotal = this.getGasTotal(gas, gasPrice)
+        const newGasTotal = getGasTotal(gas, gasPrice)
         updateGasTotal(newGasTotal)
         this.setState({ gasLoadingError: false })
       })
@@ -141,17 +142,9 @@ SendTransactionScreen.prototype.updateGas = function () {
         this.setState({ gasLoadingError: true })
       })
   } else {
-    const newGasTotal = this.getGasTotal(gasLimit, gasPrice)
+    const newGasTotal = getGasTotal(gasLimit, gasPrice)
     updateGasTotal(newGasTotal)
   }
-}
-
-SendTransactionScreen.prototype.getGasTotal = function (gasLimit, gasPrice) {
-  return multiplyCurrencies(gasLimit, gasPrice, {
-    toNumericBase: 'hex',
-    multiplicandBase: 16,
-    multiplierBase: 16,
-  })
 }
 
 SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
@@ -641,6 +634,10 @@ SendTransactionScreen.prototype.onSubmit = function (event) {
       txParams.value = amount
       txParams.to = to
     }
+
+    Object.keys(txParams).forEach(key => {
+      txParams[key] = ethUtil.addHexPrefix(txParams[key])
+    })
 
     selectedToken
       ? signTokenTx(selectedToken.address, to, amount, txParams)

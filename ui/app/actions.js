@@ -1374,7 +1374,7 @@ function retryTransaction (txId) {
 
 function setProviderType (type) {
   return (dispatch) => {
-    log.debug(`background.setProviderType`)
+    log.debug(`background.setProviderType`, type)
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
@@ -1395,13 +1395,14 @@ function updateProviderType (type) {
 }
 
 function setRpcTarget (newRpc) {
-  log.debug(`background.setRpcTarget: ${newRpc}`)
   return (dispatch) => {
+    log.debug(`background.setRpcTarget: ${newRpc}`)
     background.setCustomRpc(newRpc, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(self.displayWarning('Had a problem changing networks!'))
       }
+      dispatch(actions.setSelectedToken())
     })
   }
 }
