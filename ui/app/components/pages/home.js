@@ -27,6 +27,22 @@ const {
 } = require('../../routes')
 
 class Home extends Component {
+  componentDidMount () {
+    const {
+      history,
+      unapprovedTxs = {},
+      unapprovedMsgCount = 0,
+      unapprovedPersonalMsgCount = 0,
+      unapprovedTypedMessagesCount = 0,
+    } = this.props
+
+    // unapprovedTxs and unapproved messages
+    if (Object.keys(unapprovedTxs).length ||
+      unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
+      history.push(CONFIRM_TRANSACTION_ROUTE)
+    }
+  }
+
   render () {
     log.debug('rendering primary')
     const {
@@ -36,10 +52,6 @@ class Home extends Component {
       currentView,
       activeAddress,
       seedWords,
-      unapprovedTxs = {},
-      unapprovedMsgCount = 0,
-      unapprovedPersonalMsgCount = 0,
-      unapprovedTypedMessagesCount = 0,
     } = this.props
 
     // notices
@@ -66,16 +78,6 @@ class Home extends Component {
       return h(Redirect, {
         to: {
           pathname: RESTORE_VAULT_ROUTE,
-        },
-      })
-    }
-
-    // unapprovedTxs and unapproved messages
-    if (Object.keys(unapprovedTxs).length ||
-    unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount > 0) {
-      return h(Redirect, {
-        to: {
-          pathname: CONFIRM_TRANSACTION_ROUTE,
         },
       })
     }

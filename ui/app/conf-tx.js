@@ -2,7 +2,7 @@ const inherits = require('util').inherits
 const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
-const { withRouter, Redirect } = require('react-router-dom')
+const { withRouter } = require('react-router-dom')
 const { compose } = require('recompose')
 const actions = require('./actions')
 const txHelper = require('../lib/tx-helper')
@@ -25,6 +25,7 @@ function mapStateToProps (state) {
   const {
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
   } = metamask
 
   return {
@@ -45,6 +46,7 @@ function mapStateToProps (state) {
     computedBalances: state.metamask.computedBalances,
     unapprovedMsgCount,
     unapprovedPersonalMsgCount,
+    unapprovedTypedMessagesCount,
     send: state.metamask.send,
     selectedAddressTxList: state.metamask.selectedAddressTxList,
   }
@@ -55,6 +57,16 @@ function ConfirmTxScreen () {
   Component.call(this)
 }
 
+ConfirmTxScreen.prototype.getUnapprovedMessagesTotal = function () {
+  const {
+    unapprovedMsgCount = 0,
+    unapprovedPersonalMsgCount = 0,
+    unapprovedTypedMessagesCount = 0,
+  } = this.props
+
+  return unapprovedTypedMessagesCount + unapprovedMsgCount + unapprovedPersonalMsgCount
+}
+
 ConfirmTxScreen.prototype.componentDidMount = function () {
   const {
     unapprovedTxs = {},
@@ -63,7 +75,7 @@ ConfirmTxScreen.prototype.componentDidMount = function () {
   } = this.props
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (unconfTxList.length === 0 && !send.to) {
+  if (unconfTxList.length === 0 && !send.to && this.getUnapprovedMessagesTotal() === 0) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
@@ -81,7 +93,8 @@ ConfirmTxScreen.prototype.componentDidUpdate = function (prevProps) {
   const prevTx = selectedAddressTxList.find(({ id }) => id === prevTxData.id) || {}
   const unconfTxList = txHelper(unapprovedTxs, {}, {}, {}, network)
 
-  if (unconfTxList.length === 0 && (prevTx.status === 'dropped' || !send.to)) {
+  if (unconfTxList.length === 0 &&
+    (prevTx.status === 'dropped' || !send.to && this.getUnapprovedMessagesTotal() === 0)) {
     this.props.history.push(DEFAULT_ROUTE)
   }
 }
