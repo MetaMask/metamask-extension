@@ -56,6 +56,7 @@ inherits(AddTokenScreen, Component)
 function AddTokenScreen () {
   this.state = {
     isShowingConfirmation: false,
+    isShowingInfoBox: true,
     customAddress: '',
     customSymbol: '',
     customDecimals: '',
@@ -344,18 +345,22 @@ AddTokenScreen.prototype.displayTab = function (selectedTab) {
 }
 
 AddTokenScreen.prototype.renderTabs = function () {
-  const { displayedTab, errors } = this.state
+  const { isShowingInfoBox, displayedTab, errors } = this.state
 
   return displayedTab === 'CUSTOM_TOKEN'
     ? this.renderCustomForm()
     : h('div', [
     h('div.add-token__wrapper', [
       h('div.add-token__content-container', [
-        h('div.add-token__info-box', [
-          h('div.add-token__info-box__close'),
+        isShowingInfoBox && h('div.add-token__info-box', [
+          h('div.add-token__info-box__close', {
+            onClick: () => this.setState({ isShowingInfoBox: false }),
+          }),
           h('div.add-token__info-box__title', this.context.t('whatsThis')),
           h('div.add-token__info-box__copy', this.context.t('keepTrackTokens')),
-          h('div.add-token__info-box__copy--blue', this.context.t('learnMore')),
+          h('a.add-token__info-box__copy--blue', {
+            href: 'http://metamask.helpscoutdocs.com/article/16-managing-erc20-tokens',
+          }, this.context.t('learnMore')),
         ]),
         h('div.add-token__input-container', [
           h('input.add-token__input', {
