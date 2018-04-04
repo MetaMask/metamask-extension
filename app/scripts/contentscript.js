@@ -131,7 +131,11 @@ function documentElementCheck () {
 }
 
 function blacklistedDomainCheck () {
-  var blacklistedDomains = ['uscourts.gov', 'dropbox.com']
+  var blacklistedDomains = [
+    'uscourts.gov',
+    'dropbox.com',
+    'webbyawards.com',
+  ]
   var currentUrl = window.location.href
   var currentRegex
   for (let i = 0; i < blacklistedDomains.length; i++) {
