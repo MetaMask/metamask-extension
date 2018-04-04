@@ -1,12 +1,18 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const extend = require('xtend')
-const t = require('../../i18n')
+const connect = require('react-redux').connect
 
-module.exports = HexAsDecimalInput
+HexAsDecimalInput.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(HexAsDecimalInput)
+
 
 inherits(HexAsDecimalInput, Component)
 function HexAsDecimalInput () {
@@ -127,13 +133,13 @@ HexAsDecimalInput.prototype.constructWarning = function () {
   let message = name ? name + ' ' : ''
 
   if (min && max) {
-    message += t('betweenMinAndMax', [min, max])
+    message += this.context.t('betweenMinAndMax', [min, max])
   } else if (min) {
-    message += t('greaterThanMin', [min])
+    message += this.context.t('greaterThanMin', [min])
   } else if (max) {
-    message += t('lessThanMax', [max])
+    message += this.context.t('lessThanMax', [max])
   } else {
-    message += t('invalidInput')
+    message += this.context.t('invalidInput')
   }
 
   return message

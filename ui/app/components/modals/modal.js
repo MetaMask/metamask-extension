@@ -6,7 +6,6 @@ const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
 const isMobileView = require('../../../lib/is-mobile-view')
 const isPopupOrNotification = require('../../../../app/scripts/lib/is-popup-or-notification')
-const t = require('../../../i18n')
 
 // Modal Components
 const BuyOptions = require('./buy-options-modal')
@@ -174,8 +173,8 @@ const MODALS = {
   BETA_UI_NOTIFICATION_MODAL: {
     contents: [
       h(NotifcationModal, {
-        header: t('uiWelcome'),
-        message: t('uiWelcomeMessage'),
+        header: 'uiWelcome',
+        message: 'uiWelcomeMessage',
       }),
     ],
     mobileModalStyle: {
@@ -191,8 +190,8 @@ const MODALS = {
   OLD_UI_NOTIFICATION_MODAL: {
     contents: [
       h(NotifcationModal, {
-        header: t('oldUI'),
-        message: t('oldUIMessage'),
+        header: 'oldUI',
+        message: 'oldUIMessage',
       }),
     ],
     mobileModalStyle: {

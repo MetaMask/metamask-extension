@@ -161,9 +161,11 @@ module.exports = class TransactionController extends EventEmitter {
     this.emit(`${txMeta.id}:unapproved`, txMeta)
   }
 
-  async newUnapprovedTransaction (txParams) {
+  async newUnapprovedTransaction (txParams, opts = {}) {
     log.debug(`MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`)
     const initialTxMeta = await this.addUnapprovedTransaction(txParams)
+    initialTxMeta.origin = opts.origin
+    this.txStateManager.updateTx(initialTxMeta, '#newUnapprovedTransaction - adding the origin')
     // listen for tx completion (success, fail)
     return new Promise((resolve, reject) => {
       this.txStateManager.once(`${initialTxMeta.id}:finished`, (finishedTxMeta) => {
@@ -185,12 +187,12 @@ module.exports = class TransactionController extends EventEmitter {
     // validate
     await this.txGasUtil.validateTxParams(txParams)
     // construct txMeta
-    const txMeta = this.txStateManager.generateTxMeta({txParams})
+    let txMeta = this.txStateManager.generateTxMeta({txParams})
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
     try {
-      await this.addTxDefaults(txMeta)
+      txMeta = await this.addTxDefaults(txMeta)
     } catch (error) {
       console.log(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
@@ -213,6 +215,7 @@ module.exports = class TransactionController extends EventEmitter {
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
+    if (txParams.to === null) delete txParams.to
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
@@ -250,7 +253,7 @@ module.exports = class TransactionController extends EventEmitter {
       // wait for a nonce
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress)
       // add nonce to txParams
-      // if txMeta has lastGasPrice then it is a retry at same nonce with higher 
+      // if txMeta has lastGasPrice then it is a retry at same nonce with higher
       // gas price transaction and their for the nonce should not be calculated
       const nonce = txMeta.lastGasPrice ? txMeta.txParams.nonce : nonceLock.nextNonce
       txMeta.txParams.nonce = ethUtil.addHexPrefix(nonce.toString(16))
@@ -273,12 +276,14 @@ module.exports = class TransactionController extends EventEmitter {
 
   async signTransaction (txId) {
     const txMeta = this.txStateManager.getTx(txId)
-    const txParams = txMeta.txParams
-    const fromAddress = txParams.from
     // add network/chain id
-    txParams.chainId = ethUtil.addHexPrefix(this.getChainId().toString(16))
+    const chainId = this.getChainId()
+    const txParams = Object.assign({}, txMeta.txParams, { chainId })
+    // sign tx
+    const fromAddress = txParams.from
     const ethTx = new Transaction(txParams)
     await this.signEthTx(ethTx, fromAddress)
+    // set state to signed
     this.txStateManager.setTxStatusSigned(txMeta.id)
     const rawTx = ethUtil.bufferToHex(ethTx.serialize())
     return rawTx

@@ -47,7 +47,7 @@ IdenticonComponent.prototype.render = function () {
     )
     : (
       h('img.balance-icon', {
-        src: '../images/eth_logo.svg',
+        src: './images/eth_logo.svg',
         style: {
           height: diameter,
           width: diameter,
@@ -105,9 +105,8 @@ IdenticonComponent.prototype.componentDidUpdate = function () {
 function _generateBlockie (container, address, diameter) {
   const img = new Image()
   img.src = toDataUrl(address)
-  const dia = !diameter || diameter < 50 ? 50 : diameter
-  img.height = dia * 1.25
-  img.width = dia * 1.25
+  img.height = diameter
+  img.width = diameter
   container.appendChild(img)
 }
 

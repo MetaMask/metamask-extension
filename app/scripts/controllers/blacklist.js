@@ -41,9 +41,9 @@ class BlacklistController {
 
   scheduleUpdates () {
     if (this._phishingUpdateIntervalRef) return
-    this.updatePhishingList()
+    this.updatePhishingList().catch(log.warn)
     this._phishingUpdateIntervalRef = setInterval(() => {
-      this.updatePhishingList()
+      this.updatePhishingList().catch(log.warn)
     }, POLLING_INTERVAL)
   }
 
@@ -57,4 +57,3 @@ class BlacklistController {
 }
 
 module.exports = BlacklistController
-

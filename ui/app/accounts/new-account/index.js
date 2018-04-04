@@ -1,9 +1,9 @@
 const Component = require('react').Component
 const h = require('react-hyperscript')
+const PropTypes = require('prop-types')
 const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const actions = require('../../actions')
-const t = require('../../../i18n')
 const { getCurrentViewContext } = require('../../selectors')
 const classnames = require('classnames')
 
@@ -37,7 +37,12 @@ function AccountDetailsModal (props) {
   }
 }
 
+AccountDetailsModal.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps, mapDispatchToProps)(AccountDetailsModal)
+
 
 AccountDetailsModal.prototype.render = function () {
   const { displayedForm, displayForm } = this.props
@@ -46,7 +51,7 @@ AccountDetailsModal.prototype.render = function () {
 
     h('div.new-account__header', [
 
-      h('div.new-account__title', t('newAccount')),
+      h('div.new-account__title', this.context.t('newAccount')),
 
       h('div.new-account__tabs', [
 
@@ -56,7 +61,7 @@ AccountDetailsModal.prototype.render = function () {
             'new-account__tabs__unselected cursor-pointer': displayedForm !== 'CREATE',
           }),
           onClick: () => displayForm('CREATE'),
-        }, t('createDen')),
+        }, this.context.t('createDen')),
 
         h('div.new-account__tabs__tab', {
           className: classnames('new-account__tabs__tab', {
@@ -64,7 +69,7 @@ AccountDetailsModal.prototype.render = function () {
             'new-account__tabs__unselected cursor-pointer': displayedForm !== 'IMPORT',
           }),
           onClick: () => displayForm('IMPORT'),
-        }, t('import')),
+        }, this.context.t('import')),
 
       ]),
 

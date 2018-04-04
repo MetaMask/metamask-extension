@@ -2,6 +2,18 @@
 
 ## Current Master
 
+## 4.5.1 Tue Apr 03 2018
+
+- Fix default network (should be mainnet not Rinkeby)
+- Fix Sentry automated error reporting endpoint
+
+## 4.5.0 Mon Apr 02 2018
+
+- (beta ui) Internationalization: Select your preferred language in the settings screen
+- Internationalization: various locale improvements
+- Fix bug where the "Reset account" feature would not clear the network cache.
+- Increase maximum gas limit, to allow very gas heavy transactions, since block gas limits have been stable.
+
 ## 4.4.0 Mon Mar 26 2018
 
 - Internationalization: Taiwanese, Thai, Slovenian

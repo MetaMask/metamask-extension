@@ -56,7 +56,7 @@
     "message": "Balance:"
   },
   "balances": {
-    "message": "Your balances"
+    "message": "Token balance(s)"
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
@@ -185,7 +185,7 @@
   },
   "decimal": {
     "message": "Decimals of Precision"
-  }, 
+  },
   "defaultNetwork": {
     "message": "The default network for Ether transactions is Main Net."
   },
@@ -235,7 +235,7 @@
   "done": {
     "message": "Done"
   },
-  "downloadStatelogs": {
+  "downloadStateLogs": {
     "message": "Download State Logs"
   },
   "dropped": {
@@ -671,6 +671,12 @@
   "save": {
     "message": "Save"
   },
+  "reprice_title": {
+    "message": "Reprice Transaction"
+  },
+  "reprice_subtitle": {
+    "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
+  },
   "saveAsFile": {
     "message": "Save as File",
     "description": "Account export process"
@@ -820,6 +826,9 @@
   "transactions": {
     "message": "transactions"
   },
+  "transactionError": {
+    "message": "Transaction Error. Exception thrown in contract code."
+  },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
   },
@@ -884,7 +893,7 @@
   },
   "visitWebSite": {
     "message": "Visit our web site"
-  }, 
+  },
   "warning": {
     "message": "Warning"
   },

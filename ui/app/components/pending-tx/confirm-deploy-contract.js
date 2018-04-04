@@ -1,5 +1,5 @@
 const { Component } = require('react')
-const { connect } = require('react-redux')
+const connect = require('react-redux').connect
 const h = require('react-hyperscript')
 const PropTypes = require('prop-types')
 const actions = require('../../actions')
@@ -8,7 +8,6 @@ const ethUtil = require('ethereumjs-util')
 const BN = ethUtil.BN
 const hexToBn = require('../../../../app/scripts/lib/hex-to-bn')
 const { conversionUtil } = require('../../conversion-util')
-const t = require('../../../i18n')
 const SenderToRecipient = require('../sender-to-recipient')
 const NetworkDisplay = require('../network-display')
 
@@ -33,7 +32,7 @@ class ConfirmDeployContract extends Component {
     if (valid && this.verifyGasParams()) {
       this.props.sendTransaction(txMeta, event)
     } else {
-      this.props.displayWarning('invalidGasParams')
+      this.props.displayWarning(this.context.t('invalidGasParams'))
       this.setState({ submitting: false })
     }
   }
@@ -178,7 +177,7 @@ class ConfirmDeployContract extends Component {
 
     return (
       h('section.flex-row.flex-center.confirm-screen-row', [
-        h('span.confirm-screen-label.confirm-screen-section-column', [ t('gasFee') ]),
+        h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('gasFee') ]),
         h('div.confirm-screen-section-column', [
           h('div.confirm-screen-row-info', `${fiatGas} ${currentCurrency.toUpperCase()}`),
 
@@ -217,8 +216,8 @@ class ConfirmDeployContract extends Component {
     return (
       h('section.flex-row.flex-center.confirm-screen-row.confirm-screen-total-box ', [
         h('div.confirm-screen-section-column', [
-          h('span.confirm-screen-label', [ t('total') + ' ' ]),
-          h('div.confirm-screen-total-box__subtitle', [ t('amountPlusGas') ]),
+          h('span.confirm-screen-label', [ this.context.t('total') + ' ' ]),
+          h('div.confirm-screen-total-box__subtitle', [ this.context.t('amountPlusGas') ]),
         ]),
 
         h('div.confirm-screen-section-column', [
@@ -248,11 +247,11 @@ class ConfirmDeployContract extends Component {
           h('.page-container__header-row', [
             h('span.page-container__back-button', {
               onClick: () => backToAccountDetail(selectedAddress),
-            }, t('back')),
+            }, this.context.t('back')),
             window.METAMASK_UI_TYPE === 'notification' && h(NetworkDisplay),
           ]),
-          h('.page-container__title', t('confirmContract')),
-          h('.page-container__subtitle', t('pleaseReviewTransaction')),
+          h('.page-container__title', this.context.t('confirmContract')),
+          h('.page-container__subtitle', this.context.t('pleaseReviewTransaction')),
         ]),
         // Main Send token Card
         h('.page-container__content', [
@@ -275,7 +274,7 @@ class ConfirmDeployContract extends Component {
 
           h('div.confirm-screen-rows', [
             h('section.flex-row.flex-center.confirm-screen-row', [
-              h('span.confirm-screen-label.confirm-screen-section-column', [ t('from') ]),
+              h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('from') ]),
               h('div.confirm-screen-section-column', [
                 h('div.confirm-screen-row-info', fromName),
                 h('div.confirm-screen-row-detail', `...${fromAddress.slice(fromAddress.length - 4)}`),
@@ -283,9 +282,9 @@ class ConfirmDeployContract extends Component {
             ]),
 
             h('section.flex-row.flex-center.confirm-screen-row', [
-              h('span.confirm-screen-label.confirm-screen-section-column', [ t('to') ]),
+              h('span.confirm-screen-label.confirm-screen-section-column', [ this.context.t('to') ]),
               h('div.confirm-screen-section-column', [
-                h('div.confirm-screen-row-info', t('newContract')),
+                h('div.confirm-screen-row-info', this.context.t('newContract')),
               ]),
             ]),
 
@@ -303,12 +302,12 @@ class ConfirmDeployContract extends Component {
             // Cancel Button
             h('button.btn-cancel.page-container__footer-button.allcaps', {
               onClick: event => this.cancel(event, txMeta),
-            }, t('cancel')),
+            }, this.context.t('cancel')),
 
             // Accept Button
             h('button.btn-confirm.page-container__footer-button.allcaps', {
               onClick: event => this.onSubmit(event),
-            }, t('confirm')),
+            }, this.context.t('confirm')),
           ]),
         ]),
       ])
@@ -325,6 +324,7 @@ ConfirmDeployContract.propTypes = {
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
   selectedAddress: PropTypes.string,
+  t: PropTypes.func,
 }
 
 const mapStateToProps = state => {
@@ -347,8 +347,12 @@ const mapDispatchToProps = dispatch => {
   return {
     backToAccountDetail: address => dispatch(actions.backToAccountDetail(address)),
     cancelTransaction: ({ id }) => dispatch(actions.cancelTx({ id })),
-    displayWarning: warning => actions.displayWarning(t(warning)),
+    displayWarning: warning => actions.displayWarning(warning),
   }
+}
+
+ConfirmDeployContract.contextTypes = {
+  t: PropTypes.func,
 }
 
 module.exports = connect(mapStateToProps, mapDispatchToProps)(ConfirmDeployContract)

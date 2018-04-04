@@ -1,7 +1,7 @@
 const { Component } = require('react')
 const h = require('react-hyperscript')
+const connect = require('react-redux').connect
 const PropTypes = require('prop-types')
-const t = require('../../i18n')
 const Identicon = require('./identicon')
 
 class SenderToRecipient extends Component {
@@ -21,7 +21,7 @@ class SenderToRecipient extends Component {
         this.renderRecipientIcon(),
         h(
           '.sender-to-recipient__name.sender-to-recipient__recipient-name',
-          recipientName || t('newContract')
+          recipientName || this.context.t('newContract')
         ),
       ])
     )
@@ -46,7 +46,7 @@ class SenderToRecipient extends Component {
             h('img', {
               height: 15,
               width: 15,
-              src: '/images/arrow-right.svg',
+              src: './images/arrow-right.svg',
             }),
           ]),
         ]),
@@ -61,6 +61,12 @@ SenderToRecipient.propTypes = {
   senderAddress: PropTypes.string,
   recipientName: PropTypes.string,
   recipientAddress: PropTypes.string,
+  t: PropTypes.func,
 }
 
-module.exports = SenderToRecipient
+SenderToRecipient.contextTypes = {
+  t: PropTypes.func,
+}
+
+module.exports = connect()(SenderToRecipient)
+

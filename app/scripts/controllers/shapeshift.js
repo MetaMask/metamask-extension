@@ -45,18 +45,19 @@ class ShapeshiftController {
     })
   }
 
-  updateTx (tx) {
-    const url = `https://shapeshift.io/txStat/${tx.depositAddress}`
-    return fetch(url)
-    .then((response) => {
-      return response.json()
-    }).then((json) => {
+  async updateTx (tx) {
+    try {
+      const url = `https://shapeshift.io/txStat/${tx.depositAddress}`
+      const response = await fetch(url)
+      const json = await response.json()
       tx.response = json
       if (tx.response.status === 'complete') {
         tx.time = new Date().getTime()
       }
       return tx
-    })
+    } catch (err) {
+      log.warn(err)
+    }
   }
 
   saveTx (tx) {

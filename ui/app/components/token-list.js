@@ -1,11 +1,11 @@
 const Component = require('react').Component
+const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const inherits = require('util').inherits
 const TokenTracker = require('eth-token-tracker')
 const TokenCell = require('./token-cell.js')
 const connect = require('react-redux').connect
 const selectors = require('../selectors')
-const t = require('../../i18n')
 
 function mapStateToProps (state) {
   return {
@@ -25,7 +25,12 @@ for (const address in contracts) {
   }
 }
 
+TokenList.contextTypes = {
+  t: PropTypes.func,
+}
+
 module.exports = connect(mapStateToProps)(TokenList)
+
 
 inherits(TokenList, Component)
 function TokenList () {
@@ -43,7 +48,7 @@ TokenList.prototype.render = function () {
   const { tokens, isLoading, error } = state
 
   if (isLoading) {
-    return this.message(t('loadingTokens'))
+    return this.message(this.context.t('loadingTokens'))
   }
 
   if (error) {
@@ -53,7 +58,7 @@ TokenList.prototype.render = function () {
         padding: '80px',
       },
     }, [
-      t('troubleTokenBalances'),
+      this.context.t('troubleTokenBalances'),
       h('span.hotFix', {
         style: {
           color: 'rgba(247, 134, 28, 1)',
@@ -64,7 +69,7 @@ TokenList.prototype.render = function () {
           url: `https://ethplorer.io/address/${userAddress}`,
         })
         },
-      }, t('here')),
+      }, this.context.t('here')),
     ])
   }
 

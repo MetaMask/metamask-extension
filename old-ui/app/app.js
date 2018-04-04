@@ -171,7 +171,7 @@ App.prototype.renderAppBar = function () {
           h('img', {
             height: 24,
             width: 24,
-            src: '/images/icon-128.png',
+            src: './images/icon-128.png',
           }),
 
           h(NetworkIndicator, {
@@ -581,7 +581,6 @@ App.prototype.renderPrimary = function () {
 
     case 'qr':
       log.debug('rendering show qr screen')
-      console.log(`QrView`, QrView);
       return h('div', {
         style: {
           position: 'absolute',

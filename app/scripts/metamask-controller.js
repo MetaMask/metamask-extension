@@ -19,7 +19,7 @@ const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
 const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
-const KeyringController = require('eth-keyring-controller')
+const KeyringController = require('mm-vault')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
 const CurrencyController = require('./controllers/currency')
@@ -49,7 +49,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * @constructor
-   * @param {Object} opts 
+   * @param {Object} opts
    */
    constructor (opts) {
     super()
@@ -57,7 +57,6 @@ module.exports = class MetamaskController extends EventEmitter {
     this.defaultMaxListeners = 20
 
     this.sendUpdate = debounce(this.privateSendUpdate.bind(this), 200)
-
     this.opts = opts
     const initState = opts.initState || {}
     this.recordFirstTimeInfo(initState)
@@ -82,6 +81,7 @@ module.exports = class MetamaskController extends EventEmitter {
     // preferences controller
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
+      initLangCode: opts.initLangCode,
     })
 
     // currency controller
@@ -241,6 +241,11 @@ module.exports = class MetamaskController extends EventEmitter {
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
+        eth_sendTransaction: (payload, next, end) => {
+          const origin = payload.origin
+          const txParams = payload.params[0]
+          nodeify(this.txController.newUnapprovedTransaction, this.txController)(txParams, { origin }, end)
+        },
       },
       // account mgmt
       getAccounts: (cb) => {
@@ -255,7 +260,6 @@ module.exports = class MetamaskController extends EventEmitter {
         cb(null, result)
       },
       // tx signing
-      processTransaction: nodeify(async (txParams) => await this.txController.newUnapprovedTransaction(txParams), this),
       // old style msg signing
       processMessage: this.newUnsignedMessage.bind(this),
       // personal_sign msg signing
@@ -296,8 +300,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * The metamask-state of the various controllers, made available to the UI
-   * 
-   * @returns {Object} status 
+   *
+   * @returns {Object} status
    */
   getState () {
     const wallet = this.configManager.getWallet()
@@ -335,8 +339,8 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Returns an api-object which is consumed by the UI
-   * 
-   * @returns {Object} 
+   *
+   * @returns {Object}
    */
   getApi () {
     const keyringController = this.keyringController
@@ -351,6 +355,7 @@ module.exports = class MetamaskController extends EventEmitter {
       getState: (cb) => cb(null, this.getState()),
       setCurrentCurrency: this.setCurrentCurrency.bind(this),
       setUseBlockie: this.setUseBlockie.bind(this),
+      setCurrentLocale: this.setCurrentLocale.bind(this),
       markAccountsFound: this.markAccountsFound.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -365,7 +370,7 @@ module.exports = class MetamaskController extends EventEmitter {
       placeSeedWords: this.placeSeedWords.bind(this),
       verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
       clearSeedWordCache: this.clearSeedWordCache.bind(this),
-      resetAccount: this.resetAccount.bind(this),
+      resetAccount: nodeify(this.resetAccount, this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // vault management
@@ -426,14 +431,14 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Creates a new Vault(?) and create a new keychain(?)
-   * 
+   *
    * A vault is ...
-   * 
+   *
    * A keychain is ...
-   * 
+   *
    *
    * @param  {} password
-   * 
+   *
    * @returns {} vault
    */
   async createNewVaultAndKeychain (password) {
@@ -479,9 +484,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Retrieves the first Identiy from the passed Vault and selects the related address
-   * 
+   *
    * An Identity is ...
-   * 
+   *
    * @param  {} vault
    */
   selectFirstIdentity (vault) {
@@ -495,8 +500,8 @@ module.exports = class MetamaskController extends EventEmitter {
   //
 
   /**
-   * Adds a new account to ... 
-   * 
+   * Adds a new account to ...
+   *
    * @returns {} keyState
    */
   async addNewAccount () {
@@ -522,10 +527,10 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Adds the current vault's seed words to the UI's state tree.
-   * 
+   *
    * Used when creating a first vault, to allow confirmation.
    * Also used when revealing the seed words in the confirmation view.
-   */ 
+   */
   placeSeedWords (cb) {
 
     this.verifySeedPhrase()
@@ -540,7 +545,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Verifies the validity of the current vault's seed phrase.
-   * 
+   *
    * Validity: seed phrase restores the accounts belonging to the current vault.
    *
    * Called when the first account is created and on unlocking the vault.
@@ -571,27 +576,32 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Remove the primary account seed phrase from the UI's state tree.
-   * 
+   *
    * The seed phrase remains available in the background process.
-   * 
+   *
    */
   clearSeedWordCache (cb) {
     this.configManager.setSeedWords(null)
     cb(null, this.preferencesController.getSelectedAddress())
   }
-  
+
   /**
    * ?
    */
-  resetAccount (cb) {
+  async resetAccount (cb) {
     const selectedAddress = this.preferencesController.getSelectedAddress()
     this.txController.wipeTransactions(selectedAddress)
-    cb(null, selectedAddress)
+
+    const networkController = this.networkController
+    const oldType = networkController.getProviderConfig().type
+    await networkController.setProviderType(oldType, true)
+
+    return selectedAddress
   }
 
   /**
    * Imports an account ... ?
-   * 
+   *
    * @param  {} strategy
    * @param  {} args
    * @param  {} cb
@@ -634,9 +644,9 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // Prefixed Style Message Signing Methods:
-  
+
   /**
-   * 
+   *
    * @param  {} msgParams
    * @param  {} cb
    */
@@ -655,7 +665,7 @@ module.exports = class MetamaskController extends EventEmitter {
       }
     })
   }
-  
+
   /**
    * @param  {} msgParams
    */
@@ -676,7 +686,7 @@ module.exports = class MetamaskController extends EventEmitter {
       return this.getState()
     })
   }
-  
+
   /**
    * @param  {} msgParams
    */
@@ -697,13 +707,13 @@ module.exports = class MetamaskController extends EventEmitter {
         return this.getState()
       })
   }
-  
+
   // ---------------------------------------------------------------------------
   // Account Restauration
 
   /**
    * ?
-   * 
+   *
    * @param  {} migratorOutput
    */
   restoreOldVaultAccounts (migratorOutput) {
@@ -714,7 +724,7 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * ?
-   * 
+   *
    * @param  {} migratorOutput
    */
   restoreOldLostAccounts (migratorOutput) {
@@ -728,9 +738,9 @@ module.exports = class MetamaskController extends EventEmitter {
 
   /**
    * Import (lost) Accounts
-   * 
+   *
    * @param  {Object} {lostAccounts} @Array accounts <{ address, privateKey }>
-   * 
+   *
    * Uses the array's private keys to create a new Simple Key Pair keychain
    * and add it to the keyring controller.
    */
@@ -823,7 +833,7 @@ module.exports = class MetamaskController extends EventEmitter {
     if (cb && typeof cb === 'function') {
       cb(null, this.getState())
     }
-  }  
+  }
 
   cancelPersonalMessage (msgId, cb) {
     const messageManager = this.personalMessageManager
@@ -978,7 +988,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const percentileNum = percentile(50, lowestPrices)
     const percentileNumBn = new BN(percentileNum)
     return '0x' + percentileNumBn.mul(GWEI_BN).toString(16)
-  }  
+  }
 
 //=============================================================================
 // CONFIG
@@ -1023,6 +1033,15 @@ module.exports = class MetamaskController extends EventEmitter {
   setUseBlockie (val, cb) {
     try {
       this.preferencesController.setUseBlockie(val)
+      cb(null)
+    } catch (err) {
+      cb(err)
+    }
+  }
+
+  setCurrentLocale (key, cb) {
+    try {
+      this.preferencesController.setCurrentLocale(key)
       cb(null)
     } catch (err) {
       cb(err)
