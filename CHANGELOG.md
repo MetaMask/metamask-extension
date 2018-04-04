@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix overly strict validation where transactions were rejected with hex encoded "chainId"
+
 ## 4.5.1 Tue Apr 03 2018
 
 - Fix default network (should be mainnet not Rinkeby)
