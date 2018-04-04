@@ -9,7 +9,7 @@ const firstTimeState = require('../../app/scripts/first-time-state')
 describe('MetaMaskController', function () {
   let metamaskController
   const sandbox = sinon.sandbox.create()
-  const noop = () => { }
+  const noop = () => {}
 
   beforeEach(function () {
 
@@ -17,6 +17,14 @@ describe('MetaMaskController', function () {
       .persist()
       .get('/v2/blacklist')
       .reply(200, blacklistJSON)
+
+    nock('https://api.infura.io')
+      .get('/v1/ticker/ethusd')
+      .reply(200, '{"base": "ETH", "quote": "USD", "bid": 288.45, "ask": 288.46, "volume": 112888.17569277, "exchange": "bitfinex", "total_volume": 272175.00106721005, "num_exchanges": 8, "timestamp": 1506444677}')
+
+    nock('https://api.infura.io')
+      .get('/v1/ticker/ethjpy')
+      .reply(200, '{"base": "ETH", "quote": "JPY", "bid": 32300.0, "ask": 32400.0, "volume": 247.4616071, "exchange": "kraken", "total_volume": 247.4616071, "num_exchanges": 1, "timestamp": 1506444676}')
 
     nock('https://api.infura.io')
       .persist()
@@ -46,6 +54,7 @@ describe('MetaMaskController', function () {
   })
 
   describe('#getGasPrice', function () {
+
     it('gives the 50th percentile lowest accepted gas price from recentBlocksController', async function () {
       const realRecentBlocksController = metamaskController.recentBlocksController
       metamaskController.recentBlocksController = {
@@ -98,6 +107,142 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore(password, rightSeed)
 
       assert(metamaskController.keyringController.createNewVaultAndRestore.calledTwice)
+    })
+  })
+
+  describe('#getApi', function () {
+    let getApi, state
+
+    beforeEach(function () {
+      getApi = metamaskController.getApi()
+    })
+
+    it('getState', function (done) {
+      getApi.getState((err, res) => {
+        if (err) {
+          done(err)
+        } else {
+          state = res
+        }
+      })
+      assert.deepEqual(state, metamaskController.getState())
+      done()
+    })
+
+  })
+
+  describe('preferencesController', function () {
+
+    it('defaults useBlockie to false', function () {
+      assert.equal(metamaskController.preferencesController.store.getState().useBlockie, false)
+    })
+
+    it('setUseBlockie to true', async function () {
+      metamaskController.setUseBlockie(true, noop)
+      assert.equal(metamaskController.preferencesController.store.getState().useBlockie, true)
+    })
+
+  })
+
+  describe('#selectFirstIdentity', function () {
+    let identities, address
+
+    beforeEach(function () {
+      address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+      identities = {
+        identities: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            'address': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            'name': 'Account 1',
+          },
+        },
+      }
+      metamaskController.selectFirstIdentity(identities)
+    })
+
+    it('changes preferences controller select address', function () {
+      const preferenceControllerState = metamaskController.preferencesController.store.getState()
+      assert.equal(preferenceControllerState.selectedAddress, address)
+    })
+
+    it('changes metamask controller selected address', function () {
+      const metamaskState = metamaskController.getState()
+      assert.equal(metamaskState.selectedAddress, address)
+    })
+  })
+
+  describe('#setCustomRpc', function () {
+    const customRPC = 'https://custom.rpc/'
+    let rpcTarget
+
+    beforeEach(function () {
+
+      nock('https://custom.rpc')
+      .post('/')
+      .reply(200)
+
+      rpcTarget = metamaskController.setCustomRpc(customRPC)
+    })
+
+    it('returns custom RPC that when called', async function () {
+      assert.equal(await rpcTarget, customRPC)
+    })
+
+    it('changes the network controller rpc', function () {
+      const networkControllerState = metamaskController.networkController.store.getState()
+      assert.equal(networkControllerState.provider.rpcTarget, customRPC)
+    })
+  })
+
+  describe('#setCurrentCurrency', function () {
+    let defaultMetaMaskCurrency
+
+    beforeEach(function () {
+      defaultMetaMaskCurrency = metamaskController.currencyController.getCurrentCurrency()
+    })
+
+    it('defaults to usd', function () {
+      assert.equal(defaultMetaMaskCurrency, 'usd')
+    })
+
+    it('sets currency to JPY', function () {
+      metamaskController.setCurrentCurrency('JPY', noop)
+      assert.equal(metamaskController.currencyController.getCurrentCurrency(), 'JPY')
+    })
+  })
+
+  describe('#createShapeshifttx', function () {
+    let depositAddress, depositType, shapeShiftTxList
+    beforeEach(function () {
+      nock('https://shapeshift.io')
+        .get('/txStat/3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc')
+        .reply(200, '{"status": "no_deposits", "address": "3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc"}')
+
+      depositAddress = '3EevLFfB4H4XMWQwYCgjLie1qCAGpd2WBc'
+      depositType = 'ETH'
+      shapeShiftTxList = metamaskController.shapeshiftController.store.getState().shapeShiftTxList
+    })
+
+    it('creates', async function () {
+      metamaskController.createShapeShiftTx(depositAddress, depositType)
+      assert.equal(shapeShiftTxList[0].depositAddress, depositAddress)
+    })
+  })
+
+  describe('#addNewAccount', function () {
+    let addNewAccount
+
+    beforeEach(function () {
+      addNewAccount = metamaskController.addNewAccount()
+    })
+
+    it('errors when an primary keyring is does not exist', async function () {
+      try {
+        await addNewAccount
+        assert.equal(1 === 0)
+      } catch (e) {
+        assert.equal(e.message, 'MetamaskController - No HD Key Tree found')
+      }
     })
   })
 })

@@ -45,7 +45,6 @@ describe('currency-controller', function () {
         currencyController.updateConversionRate()
         .then(function () {
           var result = currencyController.getConversionRate()
-          console.log('currencyController.getConversionRate:', result)
           assert.equal(typeof result, 'number')
           done()
         }).catch(function (err) {
