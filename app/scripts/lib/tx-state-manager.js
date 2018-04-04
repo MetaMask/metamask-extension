@@ -143,7 +143,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
       // validate types
       switch (key) {
         case 'chainId':
-          if (typeof value !== 'number') throw new Error(`${key} in txParams is not a Number. got: (${value})`)
+          if (typeof value !== 'number' && typeof value !== 'string') throw new Error(`${key} in txParams is not a Number or hex string. got: (${value})`)
           break
         default:
           if (typeof value !== 'string') throw new Error(`${key} in txParams is not a string. got: (${value})`)
