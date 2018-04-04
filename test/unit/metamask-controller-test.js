@@ -8,7 +8,7 @@ const firstTimeState = require('../../app/scripts/first-time-state')
 
 describe('MetaMaskController', function () {
   let metamaskController
-  const sandbox = sinon.sandbox.create()
+  const sandbox = sinon.createSandbox()
   const noop = () => {}
 
   beforeEach(function () {
@@ -36,7 +36,7 @@ describe('MetaMaskController', function () {
       encryptor: {
         encrypt: function (password, object) {
           this.object = object
-          return Promise.resolve()
+          return Promise.resolve()g
         },
         decrypt: function () {
           return Promise.resolve(this.object)
