@@ -294,7 +294,7 @@ describe('PendingTransactionTracker', function () {
     })
 
     afterEach(() => {
-      pendingTxTracker.publishTransaction.reset()
+      pendingTxTracker.publishTransaction.restore()
     })
 
     it('should publish the transaction', function (done) {

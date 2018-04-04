@@ -8,7 +8,7 @@ describe('infura-controller', function () {
 
   before(async function () {
     infuraController = new InfuraController()
-    sandbox = sinon.sandbox.create()
+    sandbox = sinon.createSandbox()
     sinon.stub(infuraController, 'checkInfuraNetworkStatus').resolves(response)
     networkStatus = await infuraController.checkInfuraNetworkStatus()
   })
