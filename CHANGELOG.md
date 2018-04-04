@@ -2,6 +2,11 @@
 
 ## Current Master
 
+## 4.5.1 Tue Apr 03 2018
+
+- Fix default network (should be mainnet not Rinkeby)
+- Fix Sentry automated error reporting endpoint
+
 ## 4.5.0 Mon Apr 02 2018
 
 - (beta ui) Internationalization: Select your preferred language in the settings screen

@@ -56,6 +56,7 @@ inherits(AddTokenScreen, Component)
 function AddTokenScreen () {
   this.state = {
     isShowingConfirmation: false,
+    isShowingInfoBox: true,
     customAddress: '',
     customSymbol: '',
     customDecimals: '',
@@ -310,9 +311,6 @@ AddTokenScreen.prototype.renderConfirmation = function () {
   return (
     h('div.add-token', [
       h('div.add-token__wrapper', [
-        h('div.add-token__title-container.add-token__confirmation-title', [
-          h('div.add-token__description', this.context.t('likeToAddTokens')),
-        ]),
         h('div.add-token__content-container.add-token__confirmation-content', [
           h('div.add-token__description.add-token__confirmation-description', this.context.t('balances')),
           h('div.add-token__confirmation-token-list',
@@ -347,18 +345,22 @@ AddTokenScreen.prototype.displayTab = function (selectedTab) {
 }
 
 AddTokenScreen.prototype.renderTabs = function () {
-  const { displayedTab, errors } = this.state
+  const { isShowingInfoBox, displayedTab, errors } = this.state
 
   return displayedTab === 'CUSTOM_TOKEN'
     ? this.renderCustomForm()
     : h('div', [
     h('div.add-token__wrapper', [
       h('div.add-token__content-container', [
-        h('div.add-token__info-box', [
-          h('div.add-token__info-box__close'),
+        isShowingInfoBox && h('div.add-token__info-box', [
+          h('div.add-token__info-box__close', {
+            onClick: () => this.setState({ isShowingInfoBox: false }),
+          }),
           h('div.add-token__info-box__title', this.context.t('whatsThis')),
           h('div.add-token__info-box__copy', this.context.t('keepTrackTokens')),
-          h('div.add-token__info-box__copy--blue', this.context.t('learnMore')),
+          h('a.add-token__info-box__copy--blue', {
+            href: 'http://metamask.helpscoutdocs.com/article/16-managing-erc20-tokens',
+          }, this.context.t('learnMore')),
         ]),
         h('div.add-token__input-container', [
           h('input.add-token__input', {
@@ -390,12 +392,13 @@ AddTokenScreen.prototype.render = function () {
         h('span', this.context.t('cancel')),
       ]),
       h('div.add-token__header__title', this.context.t('addTokens')),
+      isShowingConfirmation && h('div.add-token__header__subtitle', this.context.t('likeToAddTokens')),
       !isShowingConfirmation && h('div.add-token__header__tabs', [
 
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
             'add-token__header__tabs__selected': displayedTab === 'SEARCH',
-            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'SEARCH',
+            'add-token__header__tabs__unselected': displayedTab !== 'SEARCH',
           }),
           onClick: () => this.displayTab('SEARCH'),
         }, this.context.t('search')),
@@ -403,7 +406,7 @@ AddTokenScreen.prototype.render = function () {
         h('div.add-token__header__tabs__tab', {
           className: classnames('add-token__header__tabs__tab', {
             'add-token__header__tabs__selected': displayedTab === 'CUSTOM_TOKEN',
-            'add-token__header__tabs__unselected cursor-pointer': displayedTab !== 'CUSTOM_TOKEN',
+            'add-token__header__tabs__unselected': displayedTab !== 'CUSTOM_TOKEN',
           }),
           onClick: () => this.displayTab('CUSTOM_TOKEN'),
         }, this.context.t('customToken')),
