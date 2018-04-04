@@ -2,6 +2,7 @@
 
 ## Current Master
 
+- Fix bug where checksum address are messing with balance issue [#3843](https://github.com/MetaMask/metamask-extension/issues/3843)
 - new ui: fix the confirm transaction screen
 
 ## 4.5.2 Wed Apr 04 2018
