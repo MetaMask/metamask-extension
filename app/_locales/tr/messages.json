@@ -59,230 +59,230 @@
       "message": "Jeton bakiyesi"
     },
     "balanceIsInsufficientGas": {
-      "message": "Insufficient balance for current gas total"
+      "message": "Toplam gas için yetersiz bakiye"
     },
     "beta": {
       "message": "BETA"
     },
     "betweenMinAndMax": {
-      "message": "must be greater than or equal to $1 and less than or equal to $2.",
-      "description": "helper for inputting hex as decimal input"
+      "message": "$1'e eşit veya daha büyük olmalı ve $2'den küçük veya eşit olmalı",
+      "description": "Hex'in ondalık girişi için yardımcı"
     },
     "blockiesIdenticon": {
-      "message": "Use Blockies Identicon"
+      "message": "Blockies Identicon kullan"
     },
     "borrowDharma": {
-      "message": "Borrow With Dharma (Beta)"
+      "message": "Dharma (Beta) ile ödünç al"
     },
     "builtInCalifornia": {
-      "message": "MetaMask is designed and built in California."
+      "message": "MetaMask California'da tasarlandı ve yaratıldı"
     },
     "buy": {
-      "message": "Buy"
+      "message": "Satın al"
     },
     "buyCoinbase": {
-      "message": "Buy on Coinbase"
+      "message": "Coinbase'de satın al"
     },
     "buyCoinbaseExplainer": {
-      "message": "Coinbase is the world’s most popular way to buy and sell bitcoin, ethereum, and litecoin."
+      "message": "Coinbase bitcoin, ethereum, and litecoin alıp satmanın dünyadaki en popüler yolu"
     },
     "ok": {
-      "message": "Ok"
+      "message": "Tamam"
     },
     "cancel": {
-      "message": "Cancel"
+      "message": "Vazgeç"
     },
     "classicInterface": {
-      "message": "Use classic interface"
+      "message": "Klasik arayüzü kullan"
     },
     "clickCopy": {
-      "message": "Click to Copy"
+      "message": "Kopyalamak için tıkla"
     },
     "confirm": {
-      "message": "Confirm"
+      "message": "Onayla"
     },
     "confirmed": {
-      "message": "Confirmed"
+      "message": "Onaylandı"
     },
     "confirmContract": {
-      "message": "Confirm Contract"
+      "message": "Sözleşmeyi onayla"
     },
     "confirmPassword": {
-      "message": "Confirm Password"
+      "message": "Şifreyi onayla"
     },
     "confirmTransaction": {
-      "message": "Confirm Transaction"
+      "message": "İşlemi onayla"
     },
     "continue": {
-      "message": "Continue"
+      "message": "Devam et"
     },
     "continueToCoinbase": {
-      "message": "Continue to Coinbase"
+      "message": "Coinbase'e devam et"
     },
     "contractDeployment": {
-      "message": "Contract Deployment"
+      "message": "Sözleşme kurulumu"
     },
     "conversionProgress": {
-      "message": "Conversion in progress"
+      "message": "Çevirim devam ediyor"
     },
     "copiedButton": {
-      "message": "Copied"
+      "message": "Kopyalandı"
     },
     "copiedClipboard": {
-      "message": "Copied to Clipboard"
+      "message": "Panoya kopyalandı"
     },
     "copiedExclamation": {
-      "message": "Copied!"
+      "message": "Kopyalandı!"
     },
     "copiedSafe": {
-      "message": "I've copied it somewhere safe"
+      "message": "Güvenli bir yere kopyaladım"
     },
     "copy": {
-      "message": "Copy"
+      "message": "Kopyala"
     },
     "copyToClipboard": {
-      "message": "Copy to clipboard"
+      "message": "Panoya kopyala"
     },
     "copyButton": {
-      "message": " Copy "
+      "message": " Kopyala "
     },
     "copyPrivateKey": {
-      "message": "This is your private key (click to copy)"
+      "message": "Bu sizin özel anahtarınız (kopyalamak için tıklayın)"
     },
     "create": {
-      "message": "Create"
+      "message": "Yarat"
     },
     "createAccount": {
-      "message": "Create Account"
+      "message": "Hesap Oluştur"
     },
     "createDen": {
-      "message": "Create"
+      "message": "Yarat"
     },
     "crypto": {
-      "message": "Crypto",
-      "description": "Exchange type (cryptocurrencies)"
+      "message": "Kripto",
+      "description": "Kambiyo tipi (kripto para)"
     },
     "currentConversion": {
-      "message": "Current Conversion"
+      "message": "Geçerli çevirme"
     },
     "currentNetwork": {
-      "message": "Current Network"
+      "message": "Geçerli Ağ"
     },
     "customGas": {
-      "message": "Customize Gas"
+      "message": "Gas'i özelleştir"
     },
     "customToken": {
-      "message": "Custom Token"
+      "message": "Özel Jeton"
     },
     "customize": {
-      "message": "Customize"
+      "message": "Özelleştir"
     },
     "customRPC": {
-      "message": "Custom RPC"
+      "message": "Özel RPC"
     },
     "decimalsMustZerotoTen": {
-      "message": "Decimals must be at least 0, and not over 36."
+      "message": "Ondalıklar en azından 0 olmalı ve 36'dan büyük olmamalı."
     },
     "decimal": {
-      "message": "Decimals of Precision"
+      "message": "Ondalık hassasiyeti"
     },
     "defaultNetwork": {
-      "message": "The default network for Ether transactions is Main Net."
+      "message": "Ether işlemleri için varsayılan ağ Main Net."
     },
     "denExplainer": {
-      "message": "Your DEN is your password-encrypted storage within MetaMask."
+      "message": "DEN'iniz MetaMask içersinde parola-şifrelenmiş deponuzdur."
     },
     "deposit": {
-      "message": "Deposit"
+      "message": "Yatır"
     },
     "depositBTC": {
-      "message": "Deposit your BTC to the address below:"
+      "message": "BTC'inizi aşağıdaki adrese yatırın:"
     },
     "depositCoin": {
-      "message": "Deposit your $1 to the address below",
-      "description": "Tells the user what coin they have selected to deposit with shapeshift"
+      "message": "$1'nızı aşağıdaki adrese yatırın",
+      "description": "Kullanıcıya hangi jetonu seçtiyse onu yatırmasını shapeshift ile söyler."
     },
     "depositEth": {
-      "message": "Deposit Eth"
+      "message": "Eth yatır"
     },
     "depositEther": {
-      "message": "Deposit Ether"
+      "message": "Ether yatır"
     },
     "depositFiat": {
-      "message": "Deposit with Fiat"
+      "message": "Para yatır"
     },
     "depositFromAccount": {
-      "message": "Deposit from another account"
+      "message": "Başka bir hesaptan yatır"
     },
     "depositShapeShift": {
-      "message": "Deposit with ShapeShift"
+      "message": "ShapeShift ile yatır"
     },
     "depositShapeShiftExplainer": {
-      "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+      "message": "Eğer başka kripto paralara sahipseniz, MetaMask cüzdanınıza direk olarak Ether yatırabilirsiniz. Hesaba gerek yoktur."
     },
     "details": {
-      "message": "Details"
+      "message": "Ayrıntılar"
     },
     "directDeposit": {
-      "message": "Direct Deposit"
+      "message": "Direk Yatırma"
     },
     "directDepositEther": {
-      "message": "Directly Deposit Ether"
+      "message": "Direk Ether Yatırma"
     },
     "directDepositEtherExplainer": {
       "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
     },
     "done": {
-      "message": "Done"
+      "message": "Bitti"
     },
     "downloadStateLogs": {
-      "message": "Download State Logs"
+      "message": "Durum kayıtlarını indir"
     },
     "dropped": {
-      "message": "Dropped"
+      "message": "Bırakıldı"
     },
     "edit": {
-      "message": "Edit"
+      "message": "Düzenle"
     },
     "editAccountName": {
-      "message": "Edit Account Name"
+      "message": "Hesap ismini düzenle"
     },
     "emailUs": {
-      "message": "Email us!"
+      "message": "Bize e-posta atın!"
     },
     "encryptNewDen": {
-      "message": "Encrypt your new DEN"
+      "message": "Yeni DEN'inizi şifreleyin"
     },
     "enterPassword": {
-      "message": "Enter password"
+      "message": "Parolanızı girin"
     },
     "enterPasswordConfirm": {
-      "message": "Enter your password to confirm"
+      "message": "Onaylamak için parolanızı girin"
     },
     "passwordNotLongEnough": {
-      "message": "Password not long enough"
+      "message": "Parola yeterince uzun değil"
     },
     "passwordsDontMatch": {
-      "message": "Passwords Don't Match"
+      "message": "Parolalar eşleşmiyor"
     },
     "etherscanView": {
-      "message": "View account on Etherscan"
+      "message": "Hesabı Etherscan üzerinde izle"
     },
     "exchangeRate": {
-      "message": "Exchange Rate"
+      "message": "Döviz kuru"
     },
     "exportPrivateKey": {
-      "message": "Export Private Key"
+      "message": "Özel anahtarı ver"
     },
     "exportPrivateKeyWarning": {
-      "message": "Export private keys at your own risk."
+      "message": "Özel anahtarınızı vermek sizin sorumluluğunuzdadır."
     },
     "failed": {
-      "message": "Failed"
+      "message": "Başarısız oldu"
     },
     "fiat": {
-      "message": "FIAT",
-      "description": "Exchange type"
+      "message": "Para",
+      "description": "Döviz türü"
     },
     "fileImportFail": {
       "message": "File import not working? Click here!",
