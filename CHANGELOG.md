@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- new ui: fix the confirm transaction screen
+
 ## 4.5.2 Wed Apr 04 2018
 
 - Fix overly strict validation where transactions were rejected with hex encoded "chainId"
