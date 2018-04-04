@@ -185,7 +185,7 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    await this._validateTxParams(txParams)
+    this._validateTxParams(txParams)
     this._normalizeTxParams(txParams)
     // construct txMeta
     let txMeta = this.txStateManager.generateTxMeta({txParams})
@@ -317,13 +317,18 @@ module.exports = class TransactionController extends EventEmitter {
   _normalizeTxParams (txParams) {
     delete txParams.chainId
 
-    if ( !txParams.to ) delete txParams.to
-    else txParams.to = ethUtil.addHexPrefix(txParams.to)
-
+    if ( !txParams.to ) {
+      delete txParams.to
+    } else {
+      txParams.to = ethUtil.addHexPrefix(txParams.to)
+    }
     txParams.from = ethUtil.addHexPrefix(txParams.from).toLowerCase()
 
-    if (!txParams.data) delete txParams.data
-    else txParams.data = ethUtil.addHexPrefix(txParams.data)
+    if (!txParams.data) {
+      delete txParams.data
+    } else {
+      txParams.data = ethUtil.addHexPrefix(txParams.data)
+    }
 
     if (txParams.value) txParams.value = ethUtil.addHexPrefix(txParams.value)
 
@@ -331,7 +336,7 @@ module.exports = class TransactionController extends EventEmitter {
     if (txParams.gasPrice) txParams.gas = ethUtil.addHexPrefix(txParams.gas)
   }
 
-  async _validateTxParams (txParams) {
+  _validateTxParams (txParams) {
     this._validateFrom(txParams)
     this._validateRecipient(txParams)
     if ('value' in txParams) {

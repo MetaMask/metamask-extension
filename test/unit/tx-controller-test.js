@@ -210,28 +210,25 @@ describe('Transaction Controller', function () {
     })
   })
 
-  describe('#validateTxParams', function () {
-    it('does not throw for positive values', function (done) {
+  describe('#_validateTxParams', function () {
+    it('does not throw for positive values', function () {
       var sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '0x01',
       }
-      txController._validateTxParams(sample).then(() => {
-        done()
-      }).catch(done)
+      txController._validateTxParams(sample)
     })
 
-    it('returns error for negative values', function (done) {
+    it('returns error for negative values', function () {
       var sample = {
         from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         value: '-0x01',
       }
-      txController._validateTxParams(sample)
-      .then(() => done('expected to thrown on negativity values but didn\'t'))
-      .catch((err) => {
+      try {
+        txController._validateTxParams(sample)
+      } catch (err) {
         assert.ok(err, 'error')
-        done()
-      })
+      }
     })
   })
 
