@@ -11,7 +11,6 @@ const classnames = require('classnames')
 const InitializeScreen = require('../../mascara/src/app/first-time').default
 // mascara
 const MascaraSeedScreen = require('../../mascara/src/app/first-time/seed-screen').default
-
 // accounts
 const SendTransactionScreen2 = require('./components/send/send-v2-container')
 const ConfirmTxScreen = require('./conf-tx')
@@ -26,7 +25,7 @@ const Initialized = require('./components/pages/initialized')
 const Settings = require('./components/pages/settings')
 const UnlockPage = require('./components/pages/unlock')
 const RestoreVaultPage = require('./components/pages/keychains/restore-vault')
-const RevealSeedPage = require('./components/pages/keychains/reveal-seed')
+const RevealSeedConfirmation = require('./keychains/hd/recover-seed/confirmation')
 const AddTokenPage = require('./components/pages/add-token')
 const CreateAccountPage = require('./components/pages/create-account')
 const NoticeScreen = require('./components/pages/notice')
@@ -71,12 +70,7 @@ class App extends Component {
     return (
       h(Switch, [
         h(Route, { path: INITIALIZE_ROUTE, component: InitializeScreen }),
-        h(Initialized, {
-          path: REVEAL_SEED_ROUTE,
-          exact,
-          component: RevealSeedPage,
-          mascaraComponent: MascaraSeedScreen,
-        }),
+        h(Initialized, { path: REVEAL_SEED_ROUTE, exact, component: RevealSeedConfirmation }),
         h(Initialized, { path: UNLOCK_ROUTE, exact, component: UnlockPage }),
         h(Initialized, { path: SETTINGS_ROUTE, component: Settings }),
         h(Initialized, { path: RESTORE_VAULT_ROUTE, exact, component: RestoreVaultPage }),
