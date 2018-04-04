@@ -2,6 +2,8 @@
 
 ## Current Master
 
+- Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+
 ## 4.5.3 Wed Apr 04 2018
 
 - Fix bug where checksum address are messing with balance issue [#3843](https://github.com/MetaMask/metamask-extension/issues/3843)
