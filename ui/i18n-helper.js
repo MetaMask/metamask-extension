@@ -25,18 +25,15 @@ const getMessage = (locale, key, substitutions) => {
   return phrase
 }
 
-function fetchLocale (localeName) {
-  return new Promise((resolve, reject) => {
-    return fetch(`./_locales/${localeName}/messages.json`)
-      .then(response => response.json())
-      .then(
-        locale => resolve(locale),
-        error => {
-          log.error(`failed to fetch ${localeName} locale because of ${error}`)
-          resolve({})
-        }
-      )
-  })
+async function fetchLocale (localeName) {
+  try {
+    const response = await fetch(`./_locales/${localeName}/messages.json`)
+    const locale = await response.json()
+    return locale
+  } catch (error) {
+    log.error(`failed to fetch ${localeName} locale because of ${error}`)
+    return {}
+  }
 }
 
 module.exports = {

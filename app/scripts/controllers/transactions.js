@@ -187,12 +187,12 @@ module.exports = class TransactionController extends EventEmitter {
     // validate
     await this.txGasUtil.validateTxParams(txParams)
     // construct txMeta
-    const txMeta = this.txStateManager.generateTxMeta({txParams})
+    let txMeta = this.txStateManager.generateTxMeta({txParams})
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
     try {
-      await this.addTxDefaults(txMeta)
+      txMeta = await this.addTxDefaults(txMeta)
     } catch (error) {
       console.log(error)
       this.txStateManager.setTxStatusFailed(txMeta.id, error)
@@ -215,6 +215,7 @@ module.exports = class TransactionController extends EventEmitter {
     }
     txParams.gasPrice = ethUtil.addHexPrefix(gasPrice.toString(16))
     txParams.value = txParams.value || '0x0'
+    if (txParams.to === null) delete txParams.to
     // set gasLimit
     return await this.txGasUtil.analyzeGasUsage(txMeta)
   }
