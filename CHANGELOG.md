@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.5.4 Thu Apr 05 2018
+
 - Graceful handling of unknown keys in txParams
 - Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
 - Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
