@@ -108,6 +108,10 @@ module.exports = class TransactionStateManager extends EventEmitter {
   updateTx (txMeta, note) {
     // validate txParams
     if (txMeta.txParams) {
+      if (typeof txMeta.txParams.data === 'undefined') {
+        delete txMeta.txParams.data
+      }
+
       this.validateTxParams(txMeta.txParams)
     }
 
