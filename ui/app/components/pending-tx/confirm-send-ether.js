@@ -283,6 +283,7 @@ ConfirmSendEther.prototype.editTransaction = function (txMeta) {
 
 ConfirmSendEther.prototype.render = function () {
   const {
+    editTransaction,
     currentCurrency,
     clearSend,
     conversionRate,
@@ -338,7 +339,7 @@ ConfirmSendEther.prototype.render = function () {
       h('.page-container__header', [
         h('.page-container__header-row', [
           h('span.page-container__back-button', {
-            onClick: () => this.editTransaction(txMeta),
+            onClick: () => editTransaction(txMeta),
             style: {
               visibility: !txMeta.lastGasPrice ? 'initial' : 'hidden',
             },

@@ -173,8 +173,6 @@ async function runSendFlowTest(assert, done) {
   console.log(`+++++++++++++++++++++++++++++++= confirmScreenConfirmButton[0]`, confirmScreenConfirmButton[0]);
   confirmScreenConfirmButton[0].click()
 
-  await timeout(10000000)
-
   const txView = await queryAsync($, '.tx-view')
   console.log(`++++++++++++++++++++++++++++++++ txView[0]`, txView[0]);
 
