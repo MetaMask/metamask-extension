@@ -15,7 +15,6 @@ Steps to mark a full pass of QA complete.
     * Import a loose account (not related to HD Wallet)
     * Import old existing vault seed phrase (pref with test Ether)
     * Download State Logs, Priv key file, seed phrase file.
-* Open Developer Console in background and popup
 * Send Ether
     * by address
     * by ens name
