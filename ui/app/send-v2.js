@@ -255,7 +255,6 @@ SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
   const {
     updateSendTo,
     updateSendErrors,
-    from: {address: from},
   } = this.props
   let toError = null
 
@@ -263,8 +262,6 @@ SendTransactionScreen.prototype.handleToChange = function (to, nickname = '') {
     toError = this.context.t('required')
   } else if (!isValidAddress(to)) {
     toError = this.context.t('invalidAddressRecipient')
-  } else if (to === from) {
-    toError = this.context.t('fromToSame')
   }
 
   updateSendTo(to, nickname)
