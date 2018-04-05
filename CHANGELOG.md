@@ -1,9 +1,11 @@
 # Changelog
 
 ## Current Master
-- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
 
+- Graceful handling of unknown keys in txParams
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
 - Fix Download State Logs button [#3791](https://github.com/MetaMask/metamask-extension/issues/3791)
+- Fix migration error reporting
 
 ## 4.5.3 Wed Apr 04 2018
 
