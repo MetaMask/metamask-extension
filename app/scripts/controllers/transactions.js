@@ -315,6 +315,18 @@ module.exports = class TransactionController extends EventEmitter {
 //
 
   _normalizeTxParams (txParams) {
+    const acceptableKeys = [
+      'from',
+      'to',
+      'nonce',
+      'value',
+      'data',
+      'gas',
+      'gasPrice',
+    ]
+    Object.keys(txParams).forEach((key) => {
+      if (!acceptableKeys.includes(key)) delete txParams[key]
+    })
     delete txParams.chainId
 
     if ( !txParams.to ) {
