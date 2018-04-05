@@ -285,78 +285,78 @@
       "description": "Döviz türü"
     },
     "fileImportFail": {
-      "message": "File import not working? Click here!",
-      "description": "Helps user import their account from a JSON file"
+      "message": "Dosya alma çalışmıyor mu? Buraya tıklayın!",
+      "description": "Kullanıcıların hesaplarını JSON dosyasından almalarına yardım eder"
     },
     "followTwitter": {
-      "message": "Follow us on Twitter"
+      "message": "Bizi twitter'da takip edin"
     },
     "from": {
-      "message": "From"
+      "message": "Kimden"
     },
     "fromToSame": {
-      "message": "From and To address cannot be the same"
+      "message": "Kimden ve kime adresi aynı olamaz"
     },
     "fromShapeShift": {
-      "message": "From ShapeShift"
+      "message": "ShapeShift'den"
     },
     "gas": {
       "message": "Gas",
-      "description": "Short indication of gas cost"
+      "description": "Gas maliyetinin kısa indikatörü"
     },
     "gasFee": {
-      "message": "Gas Fee"
+      "message": "Gas Ücreti"
     },
     "gasLimit": {
-      "message": "Gas Limit"
+      "message": "Gas Limiti"
     },
     "gasLimitCalculation": {
-      "message": "We calculate the suggested gas limit based on network success rates."
+      "message": "Önerilen gas limitini ağ başarı oranını baz alarak hesaplıyoruz."
     },
     "gasLimitRequired": {
-      "message": "Gas Limit Required"
+      "message": "Gas limiti gereklidir"
     },
     "gasLimitTooLow": {
-      "message": "Gas limit must be at least 21000"
+      "message": "Gas limiti en az 21000 olmalıdır"
     },
     "generatingSeed": {
-      "message": "Generating Seed..."
+      "message": "Kaynak Oluşturuyor..."
     },
     "gasPrice": {
-      "message": "Gas Price (GWEI)"
+      "message": "Gas Fiyatı (GWEI)"
     },
     "gasPriceCalculation": {
-      "message": "We calculate the suggested gas prices based on network success rates."
+      "message": "Önerilen gas fiyatını ağ başarı oranını baz alarak hesaplıyoruz."
     },
     "gasPriceRequired": {
-      "message": "Gas Price Required"
+      "message": "Gas Fiyatı Gereklidir"
     },
     "getEther": {
-      "message": "Get Ether"
+      "message": "Ether Al"
     },
     "getEtherFromFaucet": {
-      "message": "Get Ether from a faucet for the $1",
-      "description": "Displays network name for Ether faucet"
+      "message": "Musluktan $1 karşılığı Ether alın",
+      "description": "Ether musluğunun ağ ismini gösterir"
     },
     "greaterThanMin": {
       "message": "must be greater than or equal to $1.",
       "description": "helper for inputting hex as decimal input"
     },
     "here": {
-      "message": "here",
+      "message": "burada",
       "description": "as in -click here- for more information (goes with troubleTokenBalances)"
     },
     "hereList": {
-      "message": "Here's a list!!!!"
+      "message": "İşte bir liste!!!!"
     },
     "hide": {
-      "message": "Hide"
+      "message": "Gizle"
     },
     "hideToken": {
-      "message": "Hide Token"
+      "message": "Jetonu gizle"
     },
     "hideTokenPrompt": {
-      "message": "Hide Token?"
+      "message": "Jetonu gizle?"
     },
     "howToDeposit": {
       "message": "How would you like to deposit Ether?"
@@ -365,73 +365,73 @@
       "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
     },
     "import": {
-      "message": "Import",
+      "message": "Al",
       "description": "Button to import an account from a selected file"
     },
     "importAccount": {
-      "message": "Import Account"
+      "message": "Hesap Al"
     },
     "importAccountMsg": {
       "message":" Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
     },
     "importAnAccount": {
-      "message": "Import an account"
+      "message": "Hesap al"
     },
     "importDen": {
-      "message": "Import Existing DEN"
+      "message": "Varolan DEN al"
     },
     "imported": {
-      "message": "Imported",
-      "description": "status showing that an account has been fully loaded into the keyring"
+      "message": "Alındı",
+      "description": "Hesabın keyringe başarı ile alındığını gösteren durum"
     },
     "infoHelp": {
-      "message": "Info & Help"
+      "message": "Bilgi ve yardım"
     },
     "insufficientFunds": {
-      "message": "Insufficient funds."
+      "message": "Yetersiz kaynak."
     },
     "insufficientTokens": {
-      "message": "Insufficient tokens."
+      "message": "Yetersiz Jeton."
     },
     "invalidAddress": {
-      "message": "Invalid address"
+      "message": "Geçersiz adres"
     },
     "invalidAddressRecipient": {
-      "message": "Recipient address is invalid"
+      "message": "Alıcı adresi geçersiz"
     },
     "invalidGasParams": {
-      "message": "Invalid Gas Parameters"
+      "message": "Geçersiz gas parametreleri"
     },
     "invalidInput": {
-      "message": "Invalid input."
+      "message": "Geçersiz giriş."
     },
     "invalidRequest": {
-      "message": "Invalid Request"
+      "message": "Geçersiz istek"
     },
     "invalidRPC": {
-      "message": "Invalid RPC URI"
+      "message": "Geçersiz RPC URI"
     },
     "jsonFail": {
       "message": "Something went wrong. Please make sure your JSON file is properly formatted."
     },
     "jsonFile": {
-      "message": "JSON File",
-      "description": "format for importing an account"
+      "message": "JSON Dosyası",
+      "description": "Hesap alımı için düzenle"
     },
     "keepTrackTokens": {
       "message": "Keep track of the tokens you’ve bought with your MetaMask account."
     },
     "kovan": {
-      "message": "Kovan Test Network"
+      "message": "Kovan Test Ağı"
     },
     "knowledgeDataBase": {
       "message": "Visit our Knowledge Base"
     },
     "max": {
-      "message": "Max"
+      "message": "Maksimum"
     },
     "learnMore": {
-      "message": "Learn more."
+      "message": "Daha fazla bilgi."
     },
     "lessThanMax": {
       "message": "must be less than or equal to $1.",
@@ -447,19 +447,19 @@
       "message": "Limit"
     },
     "loading": {
-      "message": "Loading..."
+      "message": "Yükleniyor..."
     },
     "loadingTokens": {
-      "message": "Loading Tokens..."
+      "message": "Jetonlar yükleniyor..."
     },
     "localhost": {
       "message": "Localhost 8545"
     },
     "login": {
-      "message": "Log In"
+      "message": "Giriş yap"
     },
     "logout": {
-      "message": "Log out"
+      "message": "Çıkış"
     },
     "loose": {
       "message": "Loose"
@@ -468,10 +468,10 @@
       "message": "seed words only have lowercase characters"
     },
     "mainnet": {
-      "message": "Main Ethereum Network"
+      "message": "Main Ethereum Ağı"
     },
     "message": {
-      "message": "Message"
+      "message": "Mesaj"
     },
     "metamaskDescription": {
       "message": "MetaMask is a secure identity vault for Ethereum."
@@ -480,10 +480,10 @@
       "message": "Minimum"
     },
     "myAccounts": {
-      "message": "My Accounts"
+      "message": "Hesaplarım"
     },
     "mustSelectOne": {
-      "message": "Must select at least 1 token."
+      "message": "En az bir jeton seçilmeli"
     },
     "needEtherInWallet": {
       "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
@@ -500,47 +500,47 @@
       "message": "Can not send negative amounts of ETH."
     },
     "networks": {
-      "message": "Networks"
+      "message": "Ağlar"
     },
     "newAccount": {
-      "message": "New Account"
+      "message": "Yeni Hesap"
     },
     "newAccountNumberName": {
-      "message": "Account $1",
-      "description": "Default name of next account to be created on create account screen"
+      "message": "Hesap $1",
+      "description": "Hesap yaratma ekranındaki bir sonraki hesabın varsayılan ismi"
     },
     "newContract": {
-      "message": "New Contract"
+      "message": "Yeni Sözleşme"
     },
     "newPassword": {
-      "message": "New Password (min 8 chars)"
+      "message": "Yeni Parola (min 8 karakter)"
     },
     "newRecipient": {
-      "message": "New Recipient"
+      "message": "Yeni alıcı"
     },
     "newRPC": {
-      "message": "New RPC URL"
+      "message": "Yeni RPC URL"
     },
     "next": {
-      "message": "Next"
+      "message": "Sonraki"
     },
     "noAddressForName": {
       "message": "No address has been set for this name."
     },
     "noDeposits": {
-      "message": "No deposits received"
+      "message": "Yatırma alınmadı"
     },
     "noTransactionHistory": {
-      "message": "No transaction history."
+      "message": "İşlem geçmişi yok."
     },
     "noTransactions": {
-      "message": "No Transactions"
+      "message": "İşlem yok"
     },
     "notStarted": {
-      "message": "Not Started"
+      "message": "Başlamadı"
     },
     "oldUI": {
-      "message": "Old UI"
+      "message": "Eski UI"
     },
     "oldUIMessage": {
       "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
@@ -550,7 +550,7 @@
       "description": "choice between creating or importing a new account"
     },
     "passwordCorrect": {
-      "message": "Please make sure your password is correct."
+      "message": "Lütfen parolanın doğru olduğuna emin olun."
     },
     "passwordMismatch": {
       "message": "passwords don't match",
@@ -565,111 +565,111 @@
       "description": "For importing an account from a private key"
     },
     "pasteSeed": {
-      "message": "Paste your seed phrase here!"
+      "message": "Kaynak ifadenizi buraya yapıştırın!"
     },
     "personalAddressDetected": {
-      "message": "Personal address detected. Input the token contract address."
+      "message": "Kişisel adres tespit edilidi. Jeton sözleşme adresini girin."
     },
     "pleaseReviewTransaction": {
-      "message": "Please review your transaction."
+      "message": "Lütfen işleminizi gözden geçirin."
     },
     "popularTokens": {
-      "message": "Popular Tokens"
+      "message": "Popüler Jetonlar"
     },
     "privacyMsg": {
-      "message": "Privacy Policy"
+      "message": "Gizlilik Şartları"
     },
     "privateKey": {
-      "message": "Private Key",
-      "description": "select this type of file to use to import an account"
+      "message": "Özel Anahtar",
+      "description": "Hesap alırken bu tip bir dosya seçin"
     },
     "privateKeyWarning": {
       "message": "Warning: Never disclose this key. Anyone with your private keys can take steal any assets held in your account."
     },
     "privateNetwork": {
-      "message": "Private Network"
+      "message": "Özel Ağ"
     },
     "qrCode": {
-      "message": "Show QR Code"
+      "message": "QR Kodunu göster"
     },
     "readdToken": {
       "message": "You can add this token back in the future by going go to “Add token” in your accounts options menu."
     },
     "readMore": {
-      "message": "Read more here."
+      "message": "Burada daha fazla okuyun."
     },
     "readMore2": {
-      "message": "Read more."
+      "message": "Daha fazla okuyun."
     },
     "receive": {
-      "message": "Receive"
+      "message": "Al"
     },
     "recipientAddress": {
-      "message": "Recipient Address"
+      "message": "Alıcı adresi"
     },
     "refundAddress": {
-      "message": "Your Refund Address"
+      "message": "İade adresiniz"
     },
     "rejected": {
-      "message": "Rejected"
+      "message": "Rededildi"
     },
     "resetAccount": {
-      "message": "Reset Account"
+      "message": "Hesabı sıfıla"
     },
     "restoreFromSeed": {
-      "message": "Restore from seed phrase"
+      "message": "Kaynak ifadeden geri getir. Restore from seed phrase"
     },
     "restoreVault": {
-      "message": "Restore Vault"
+      "message": "Kasayı geri getir"
     },
     "required": {
-      "message": "Required"
+      "message": "Gerekli"
     },
     "retryWithMoreGas": {
-      "message": "Retry with a higher gas price here"
+      "message": "Daha yüksek bir gas fiyatı ile tekrar dene"
     },
     "walletSeed": {
-      "message": "Wallet Seed"
+      "message": "Cüzdan Kaynağı"
     },
     "revealSeedWords": {
-      "message": "Reveal Seed Words"
+      "message": "Kaynak kelimelerini göster"
     },
     "revealSeedWordsWarning": {
       "message": "Do not recover your seed words in a public place! These words can be used to steal all your accounts."
     },
     "revert": {
-      "message": "Revert"
+      "message": "Geri döndür"
     },
     "rinkeby": {
-      "message": "Rinkeby Test Network"
+      "message": "Rinkeby Test Ağı"
     },
     "ropsten": {
-      "message": "Ropsten Test Network"
+      "message": "Ropsten Test Ağı"
     },
     "currentRpc": {
-      "message": "Current RPC"
+      "message": "Geçerli RPC"
     },
     "connectingToMainnet": {
-      "message": "Connecting to Main Ethereum Network"
+      "message": "Main Ethereum Ağına bağlanıyor"
     },
     "connectingToRopsten": {
-      "message": "Connecting to Ropsten Test Network"
+      "message": "Ropsten Test Ağına bağlanıyor"
     },
     "connectingToKovan": {
-      "message": "Connecting to Kovan Test Network"
+      "message": "Kovan Test Ağına bağlanıyor"
     },
     "connectingToRinkeby": {
-      "message": "Connecting to Rinkeby Test Network"
+      "message": "Rinkeby Test Ağına bağlanıyor"
     },
     "connectingToUnknown": {
-      "message": "Connecting to Unknown Network"
+      "message": "Bilinmeyen Ağa bağlanıyor"
     },
     "sampleAccountName": {
       "message": "E.g. My new account",
       "description": "Help user understand concept of adding a human-readable name to their account"
     },
     "save": {
-      "message": "Save"
+      "message": "Kaydet"
     },
     "reprice_title": {
       "message": "Reprice Transaction"
@@ -678,14 +678,14 @@
       "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
     },
     "saveAsFile": {
-      "message": "Save as File",
+      "message": "Dosya olarak kaydet",
       "description": "Account export process"
     },
     "saveSeedAsFile": {
       "message": "Save Seed Words As File"
     },
     "search": {
-      "message": "Search"
+      "message": "Ara"
     },
     "secretPhrase": {
       "message": "Enter your secret twelve word phrase here to restore your vault."
@@ -727,76 +727,76 @@
       "message": "Send Tokens to anyone with an Ethereum account"
     },
     "settings": {
-      "message": "Settings"
+      "message": "Ayarlar"
     },
     "info": {
-    "message": "Info"
+    "message": "Bilgi"
     },
     "shapeshiftBuy": {
-      "message": "Buy with Shapeshift"
+      "message": "Shapeshift ile satın al"
     },
     "showPrivateKeys": {
-      "message": "Show Private Keys"
+      "message": "Özel anahtarları göster"
     },
     "showQRCode": {
-      "message": "Show QR Code"
+      "message": "QR Kodu göster"
     },
     "sign": {
-      "message": "Sign"
+      "message": "İmza"
     },
     "signed": {
-      "message": "Signed"
+      "message": "İmzalandı"
     },
     "signMessage": {
-      "message": "Sign Message"
+      "message": "Mesajı İmzala"
     },
     "signNotice": {
       "message": "Signing this message can have \ndangerous side effects. Only sign messages from \nsites you fully trust with your entire account.\n This dangerous method will be removed in a future version. "
     },
     "sigRequest": {
-      "message": "Signature Request"
+      "message": "İmza isteği"
     },
     "sigRequested": {
-      "message": "Signature Requested"
+      "message": "İmza isteniyor"
     },
     "spaceBetween": {
       "message": "there can only be a space between words"
     },
     "status": {
-      "message": "Status"
+      "message": "Durum"
     },
     "stateLogs": {
-      "message": "State Logs"
+      "message": "Durum Kayıtları"
     },
     "stateLogsDescription": {
       "message": "State logs contain your public account addresses and sent transactions."
     },
     "stateLogError": {
-      "message": "Error in retrieving state logs."
+      "message": "Durum kayıtlarını alma hatası"
     },
     "submit": {
-      "message": "Submit"
+      "message": "Gönder"
     },
     "submitted": {
-      "message": "Submitted"
+      "message": "Gönderildi"
     },
     "supportCenter": {
-      "message": "Visit our Support Center"
+      "message": "Destek merkezimizi ziyaret edin"
     },
     "symbolBetweenZeroTen": {
       "message": "Symbol must be between 0 and 10 characters."
     },
     "takesTooLong": {
-      "message": "Taking too long?"
+      "message": "Çok mu uzun sürüyor?"
     },
     "terms": {
-      "message": "Terms of Use"
+      "message": "Kullanım şartları"
     },
     "testFaucet": {
-      "message": "Test Faucet"
+      "message": "Test Musluğu"
     },
     "to": {
-      "message": "To: "
+      "message": "Kime: "
     },
     "toETHviaShapeShift": {
       "message": "$1 to ETH via ShapeShift",
