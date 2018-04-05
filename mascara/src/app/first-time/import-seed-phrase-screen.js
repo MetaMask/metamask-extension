@@ -76,8 +76,9 @@ class ImportSeedPhraseScreen extends Component {
 
   render () {
     const { seedPhrase, password, confirmPassword } = this.state
-    const { warning } = this.props
-    const importDisabled = warning || !seedPhrase || !password || !confirmPassword
+    const { warning, isLoading } = this.props
+    const importDisabled = warning || !seedPhrase || !password || !confirmPassword || isLoading
+
     return (
       <div className="first-view-main-wrapper">
         <div className="first-view-main">
@@ -152,7 +153,7 @@ class ImportSeedPhraseScreen extends Component {
 }
 
 export default connect(
-  ({ appState: { warning } }) => ({ warning }),
+  ({ appState: { warning, isLoading } }) => ({ warning, isLoading }),
   dispatch => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten())
