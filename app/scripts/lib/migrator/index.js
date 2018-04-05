@@ -30,7 +30,7 @@ class Migrator extends EventEmitter {
         versionedData = migratedData
       } catch (err) {
         // emit error instead of throw so as to not break the run (gracefully fail)
-        const error = new Error(`MetaMask Migration Error #${version}:\n${err.stack}`)
+        const error = new Error(`MetaMask Migration Error #${migration.version}:\n${err.stack}`)
         this.emit('error', error)
         // stop migrating and use state as is
         return versionedData
