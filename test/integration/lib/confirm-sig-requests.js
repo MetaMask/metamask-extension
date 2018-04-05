@@ -21,6 +21,9 @@ async function runConfirmSigRequestsTest(assert, done) {
   selectState.val('confirm sig requests')
   reactTriggerChange(selectState[0])
 
+  const pendingRequestItem = await queryAsync($, '.tx-list-item.tx-list-pending-item-container.tx-list-clickable')
+  pendingRequestItem[0].click()
+
   let confirmSigHeadline = await queryAsync($, '.request-signature__headline')
   assert.equal(confirmSigHeadline[0].textContent, 'Your signature is being requested')
 
@@ -35,9 +38,6 @@ async function runConfirmSigRequestsTest(assert, done) {
 
   let confirmSigMessage = await queryAsync($, '.request-signature__notice')
   assert.ok(confirmSigMessage[0].textContent.match(/^Signing\sthis\smessage/))
-
-  confirmSigRowValue = await queryAsync($, '.request-signature__row-value')
-  assert.equal(confirmSigRowValue[0].textContent, '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0')
 
   confirmSigSignButton = await queryAsync($, 'button.btn-primary--lg')
   confirmSigSignButton[0].click()
