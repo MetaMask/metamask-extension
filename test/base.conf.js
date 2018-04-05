@@ -10,6 +10,8 @@ module.exports = function(config) {
       terminal: false,
     },
 
+    browserNoActivityTimeout: 100000000,
+
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['qunit'],
