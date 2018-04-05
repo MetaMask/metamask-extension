@@ -3,7 +3,8 @@
 Steps to mark a full pass of QA complete.
 * Browsers: Opera, Chrome, Firefox, Edge.
 * OS: Ubuntu, Mac OSX, Windows
-* Open Developer Console in background and popup
+* Load older version of MetaMask and attempt to simulate updating the extension.
+* Open Developer Console in background and popup, inspect errors.
 * Vault integrity
     * create vault
     * Log out
@@ -37,7 +38,8 @@ Steps to mark a full pass of QA complete.
 * Send a transaction and sign a message (https://danfinlay.github.io/js-eth-personal-sign-examples/) for each keyring type
     * hd keyring
     * imported keyring
-* Change network from mainnet → ropesten → rinkeby → localhost
+* Change network from mainnet → ropsten → rinkeby → localhost (ganache)
+* Ganache set blocktime to simulate retryTx in MetaMask
 * Copy public key to clipboard
 * Export private key
 
