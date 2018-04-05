@@ -185,10 +185,10 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    this._validateTxParams(txParams)
-    this._normalizeTxParams(txParams)
+    const normalizedTxParams = this._normalizeTxParams(txParams)
+    this._validateTxParams(normalizedTxParams)
     // construct txMeta
-    let txMeta = this.txStateManager.generateTxMeta({txParams})
+    let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
     this.emit('newUnapprovedTx', txMeta)
     // add default tx params
@@ -315,37 +315,24 @@ module.exports = class TransactionController extends EventEmitter {
 //
 
   _normalizeTxParams (txParams) {
-    const acceptableKeys = [
-      'from',
-      'to',
-      'nonce',
-      'value',
-      'data',
-      'gas',
-      'gasPrice',
-    ]
-    Object.keys(txParams).forEach((key) => {
-      if (!acceptableKeys.includes(key)) delete txParams[key]
+    // functions that handle normalizing of that key in txParams
+    const whiteList = {
+      from: from => ethUtil.addHexPrefix(from).toLowerCase(),
+      to: to => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
+      nonce: nonce => ethUtil.addHexPrefix(nonce),
+      value: value => ethUtil.addHexPrefix(value),
+      data: data => ethUtil.addHexPrefix(data),
+      gas: gas => ethUtil.addHexPrefix(gas),
+      gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
+    }
+
+    // apply only keys in the whiteList
+    const normalizedTxParams = {}
+    Object.keys(whiteList).forEach((key) => {
+      if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
     })
-    delete txParams.chainId
 
-    if ( !txParams.to ) {
-      delete txParams.to
-    } else {
-      txParams.to = ethUtil.addHexPrefix(txParams.to)
-    }
-    txParams.from = ethUtil.addHexPrefix(txParams.from).toLowerCase()
-
-    if (!txParams.data) {
-      delete txParams.data
-    } else {
-      txParams.data = ethUtil.addHexPrefix(txParams.data)
-    }
-
-    if (txParams.value) txParams.value = ethUtil.addHexPrefix(txParams.value)
-
-    if (txParams.gas) txParams.gas = ethUtil.addHexPrefix(txParams.gas)
-    if (txParams.gasPrice) txParams.gas = ethUtil.addHexPrefix(txParams.gas)
+    return normalizedTxParams
   }
 
   _validateTxParams (txParams) {
