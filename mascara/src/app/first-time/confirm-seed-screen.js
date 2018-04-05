@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import shuffle from 'lodash.shuffle'
 import { compose } from 'recompose'
 import Identicon from '../../../../ui/app/components/identicon'
-import { confirmSeedWords } from '../../../../ui/app/actions'
+import { confirmSeedWords, showModal } from '../../../../ui/app/actions'
 import Breadcrumbs from './breadcrumbs'
 import LoadingScreen from './loading-screen'
 import { DEFAULT_ROUTE } from '../../../../ui/app/routes'
@@ -18,6 +18,7 @@ class ConfirmSeedScreen extends Component {
     seedWords: PropTypes.string,
     confirmSeedWords: PropTypes.func,
     history: PropTypes.object,
+    openBuyEtherModal: PropTypes.func,
   };
 
   static defaultProps = {
@@ -42,10 +43,13 @@ class ConfirmSeedScreen extends Component {
   }
 
   handleClick () {
-    const { confirmSeedWords, history } = this.props
+    const { confirmSeedWords, history, openBuyEtherModal } = this.props
 
     confirmSeedWords()
-      .then(() => history.push(DEFAULT_ROUTE))
+      .then(() => {
+        history.push(DEFAULT_ROUTE)
+        openBuyEtherModal()
+      })
   }
 
   render () {
@@ -141,6 +145,7 @@ export default compose(
     }),
     dispatch => ({
       confirmSeedWords: () => dispatch(confirmSeedWords()),
+      openBuyEtherModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER'})),
     })
   )
 )(ConfirmSeedScreen)
