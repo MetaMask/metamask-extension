@@ -1,6 +1,7 @@
 # Changelog
 
 ## Current Master
+- Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
 
 ## 4.5.3 Wed Apr 04 2018
 
