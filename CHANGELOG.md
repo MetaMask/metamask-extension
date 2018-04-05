@@ -2,6 +2,15 @@
 
 ## Current Master
 
+## 4.5.3 Wed Apr 04 2018
+
+- Fix bug where checksum address are messing with balance issue [#3843](https://github.com/MetaMask/metamask-extension/issues/3843)
+- new ui: fix the confirm transaction screen
+
+## 4.5.2 Wed Apr 04 2018
+
+- Fix overly strict validation where transactions were rejected with hex encoded "chainId"
+
 ## 4.5.1 Tue Apr 03 2018
 
 - Fix default network (should be mainnet not Rinkeby)

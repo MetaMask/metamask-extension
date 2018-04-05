@@ -242,6 +242,7 @@ ConfirmSendEther.prototype.getData = function () {
   const { identities } = this.props
   const txMeta = this.gatherTxMeta()
   const txParams = txMeta.txParams || {}
+  const account = identities ? identities[txParams.from] || {} : {}
   const { FIAT: gasFeeInFIAT, ETH: gasFeeInETH, gasFeeInHex } = this.getGasFee()
   const { FIAT: amountInFIAT, ETH: amountInETH } = this.getAmount()
 
@@ -257,7 +258,7 @@ ConfirmSendEther.prototype.getData = function () {
   return {
     from: {
       address: txParams.from,
-      name: identities[txParams.from].name,
+      name: account.name,
     },
     to: {
       address: txParams.to,
