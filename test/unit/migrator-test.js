@@ -50,10 +50,18 @@ describe('Migrator', () => {
     const migrator = new Migrator({ migrations: liveMigrations })
     migrator.migrateData(firstTimeState)
     .then((migratedData) => {
-    console.log(migratedData)
       const last = liveMigrations.length - 1
       assert.equal(migratedData.meta.version, liveMigrations[last].version)
       done()
+    }).catch(done)
+  })
+
+  it('should emit an error', function (done) {
+    this.timeout(15000)
+    const migrator = new Migrator({ migrations: [{ version: 1, migrate: async () => { throw new Error('test') } } ] })
+    migrator.on('error', () => done())
+    migrator.migrateData({ meta: {version: 0} })
+    .then((migratedData) => {
     }).catch(done)
   })
 
