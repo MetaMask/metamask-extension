@@ -78,6 +78,28 @@ async function loadStateFromPersistence () {
                   diskStore.getState() ||
                   migrator.generateInitialState(firstTimeState)
 
+  // check if somehow state is empty
+  // this should never happen but new error reporting suggests that it has
+  // for a small number of users
+  // https://github.com/metamask/metamask-extension/issues/3919
+  if (versionedData && !versionedData.data) {
+    // try to recover from diskStore incase only localStore is bad
+    const diskStoreState = diskStore.getState()
+    if (diskStoreState && diskStoreState.data) {
+      // we were able to recover (though it might be old)
+      versionedData = diskStoreState
+      const vaultStructure = getObjStructure(versionedData)
+      raven.captureMessage('MetaMask - Empty vault found - recovered from diskStore', {
+        // "extra" key is required by Sentry
+        extra: { vaultStructure },
+      })
+    } else {
+      // unable to recover, clear state
+      versionedData = migrator.generateInitialState(firstTimeState)
+      raven.captureMessage('MetaMask - Empty vault found - unable to recover')
+    }
+  }
+
   // report migration errors to sentry
   migrator.on('error', (err) => {
     // get vault structure without secrets
