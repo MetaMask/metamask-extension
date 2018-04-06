@@ -1,7 +1,8 @@
 const assert = require('assert')
 const clone = require('clone')
 const Migrator = require('../../app/scripts/lib/migrator/')
-const migrations = [
+const liveMigrations = require('../../app/scripts/migrations/')
+const stubMigrations = [
   {
     version: 1,
     migrate: (data) => {
@@ -29,13 +30,31 @@ const migrations = [
   },
 ]
 const versionedData = {meta: {version: 0}, data: {hello: 'world'}}
+
+const firstTimeState = {
+  meta: { version: 0 },
+  data: require('../../app/scripts/first-time-state'),
+}
+
 describe('Migrator', () => {
-  const migrator = new Migrator({ migrations })
+  const migrator = new Migrator({ migrations: stubMigrations })
   it('migratedData version should be version 3', (done) => {
     migrator.migrateData(versionedData)
     .then((migratedData) => {
-      assert.equal(migratedData.meta.version, migrations[2].version)
+      assert.equal(migratedData.meta.version, stubMigrations[2].version)
       done()
     }).catch(done)
   })
+
+  it('should match the last version in live migrations', (done) => {
+    const migrator = new Migrator({ migrations: liveMigrations })
+    migrator.migrateData(firstTimeState)
+    .then((migratedData) => {
+    console.log(migratedData)
+      const last = liveMigrations.length - 1
+      assert.equal(migratedData.meta.version, liveMigrations[last].version)
+      done()
+    }).catch(done)
+  })
+
 })
