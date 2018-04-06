@@ -174,8 +174,11 @@ function setupController (initState, initLangCode) {
   }
 
   function persistData(state) {
+    if (!state) {
+      throw new Error('MetaMask - updated state is missing', state)
+    }
     if (!state.data) {
-      throw new Error('MetaMask - updated state is missing data', state)
+      throw new Error('MetaMask - updated state does not have data', state)
     }
     if (localStore.isSupported) {
       localStore.set(state)
