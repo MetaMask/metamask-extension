@@ -36,10 +36,9 @@ const firstTimeState = {
   data: require('../../app/scripts/first-time-state'),
 }
 
-describe.only('Migrator', () => {
+describe('Migrator', () => {
   const migrator = new Migrator({ migrations: stubMigrations })
   it('migratedData version should be version 3', (done) => {
-    migrator.on('error', console.log)
     migrator.migrateData(versionedData)
     .then((migratedData) => {
       assert.equal(migratedData.meta.version, stubMigrations[2].version)
@@ -49,7 +48,6 @@ describe.only('Migrator', () => {
 
   it('should match the last version in live migrations', (done) => {
     const migrator = new Migrator({ migrations: liveMigrations })
-    migrator.on('error', console.log)
     migrator.migrateData(firstTimeState)
     .then((migratedData) => {
     console.log(migratedData)
