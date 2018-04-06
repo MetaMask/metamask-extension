@@ -2,6 +2,8 @@
 
 ## Current Master
 
+## 4.5.5 Fri Apr 06 2018
+
 - Graceful handling of unknown keys in txParams
 - Fixes buggy handling of historical transactions with unknown keys in txParams
 - Fix link for 'Learn More' in the Add Token Screen to open to a new tab.
