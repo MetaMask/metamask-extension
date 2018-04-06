@@ -3,11 +3,11 @@ const ObservableStore = require('obs-store')
 const ethUtil = require('ethereumjs-util')
 const Transaction = require('ethereumjs-tx')
 const EthQuery = require('ethjs-query')
-const TransactionStateManager = require('../lib/tx-state-manager')
-const TxGasUtil = require('../lib/tx-gas-utils')
-const PendingTransactionTracker = require('../lib/pending-tx-tracker')
-const NonceTracker = require('../lib/nonce-tracker')
-
+const TransactionStateManager = require('./tx-state-manager')
+const TxGasUtil = require('./tx-gas-utils')
+const PendingTransactionTracker = require('./pending-tx-tracker')
+const NonceTracker = require('./nonce-tracker')
+const txUtils = require('./lib/util')
 /*
   Transaction Controller is an aggregate of sub-controllers and trackers
   composing them in a way to be exposed to the metamask controller
@@ -185,8 +185,8 @@ module.exports = class TransactionController extends EventEmitter {
 
   async addUnapprovedTransaction (txParams) {
     // validate
-    const normalizedTxParams = this._normalizeTxParams(txParams)
-    this._validateTxParams(normalizedTxParams)
+    const normalizedTxParams = txUtils.normalizeTxParams(txParams)
+    txUtils.validateTxParams(normalizedTxParams)
     // construct txMeta
     let txMeta = this.txStateManager.generateTxMeta({ txParams: normalizedTxParams })
     this.addTx(txMeta)
@@ -313,60 +313,6 @@ module.exports = class TransactionController extends EventEmitter {
 //
 //           PRIVATE METHODS
 //
-
-  _normalizeTxParams (txParams) {
-    // functions that handle normalizing of that key in txParams
-    const whiteList = {
-      from: from => ethUtil.addHexPrefix(from).toLowerCase(),
-      to: to => ethUtil.addHexPrefix(txParams.to).toLowerCase(),
-      nonce: nonce => ethUtil.addHexPrefix(nonce),
-      value: value => ethUtil.addHexPrefix(value),
-      data: data => ethUtil.addHexPrefix(data),
-      gas: gas => ethUtil.addHexPrefix(gas),
-      gasPrice: gasPrice => ethUtil.addHexPrefix(gasPrice),
-    }
-
-    // apply only keys in the whiteList
-    const normalizedTxParams = {}
-    Object.keys(whiteList).forEach((key) => {
-      if (txParams[key]) normalizedTxParams[key] = whiteList[key](txParams[key])
-    })
-
-    return normalizedTxParams
-  }
-
-  _validateTxParams (txParams) {
-    this._validateFrom(txParams)
-    this._validateRecipient(txParams)
-    if ('value' in txParams) {
-      const value = txParams.value.toString()
-      if (value.includes('-')) {
-        throw new Error(`Invalid transaction value of ${txParams.value} not a positive number.`)
-      }
-
-      if (value.includes('.')) {
-        throw new Error(`Invalid transaction value of ${txParams.value} number must be in wei`)
-      }
-    }
-  }
-
-  _validateFrom (txParams) {
-    if ( !(typeof txParams.from === 'string') ) throw new Error(`Invalid from address ${txParams.from} not a string`)
-    if (!ethUtil.isValidAddress(txParams.from)) throw new Error('Invalid from address')
-  }
-
-  _validateRecipient (txParams) {
-    if (txParams.to === '0x' || txParams.to === null ) {
-      if (txParams.data) {
-        delete txParams.to
-      } else {
-        throw new Error('Invalid recipient address')
-      }
-    } else if ( txParams.to !== undefined && !ethUtil.isValidAddress(txParams.to) ) {
-      throw new Error('Invalid recipient address')
-    }
-    return txParams
-  }
 
   _markNonceDuplicatesDropped (txId) {
     this.txStateManager.setTxStatusConfirmed(txId)

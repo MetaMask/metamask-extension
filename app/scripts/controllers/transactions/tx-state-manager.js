@@ -1,9 +1,9 @@
 const extend = require('xtend')
 const EventEmitter = require('events')
 const ObservableStore = require('obs-store')
-const createId = require('./random-id')
+const createId = require('../../lib/random-id')
 const ethUtil = require('ethereumjs-util')
-const txStateHistoryHelper = require('./tx-state-history-helper')
+const txStateHistoryHelper = require('./lib/tx-state-history-helper')
 
 // STATUS METHODS
   // statuses:
@@ -92,7 +92,9 @@ module.exports = class TransactionStateManager extends EventEmitter {
     // or rejected tx's.
     // not tx's that are pending or unapproved
     if (txCount > txHistoryLimit - 1) {
-      let index = transactions.findIndex((metaTx) => metaTx.status === 'confirmed' || metaTx.status === 'rejected')
+      let index = transactions.findIndex((metaTx) => {
+        return this.getFinalStates().includes(metaTx.status)
+      })
       if (index !== -1) {
         transactions.splice(index, 1)
       }
@@ -258,6 +260,16 @@ module.exports = class TransactionStateManager extends EventEmitter {
     this._setTxStatus(txId, 'failed')
   }
 
+  // returns an array of states that can be considered final
+  getFinalStates () {
+    return [
+      'rejected',  // the user has responded no!
+      'confirmed',  // the tx has been included in a block.
+      'failed',  // the tx failed for some reason, included on tx data.
+      'dropped',  // the tx nonce was already used
+    ]
+  }
+
   wipeTransactions (address) {
     // network only tx
     const txs = this.getFullTxList()
@@ -273,9 +285,8 @@ module.exports = class TransactionStateManager extends EventEmitter {
 //           PRIVATE METHODS
 //
 
-  //  Should find the tx in the tx list and
-  //  update it.
-  //  should set the status in txData
+  // STATUS METHODS
+  // statuses:
   //    - `'unapproved'` the user has not responded
   //    - `'rejected'` the user has responded no!
   //    - `'approved'` the user has approved the tx
@@ -283,6 +294,7 @@ module.exports = class TransactionStateManager extends EventEmitter {
   //    - `'submitted'` the tx is sent to a server
   //    - `'confirmed'` the tx has been included in a block.
   //    - `'failed'` the tx failed for some reason, included on tx data.
+  //    - `'dropped'` the tx nonce was already used
   _setTxStatus (txId, status) {
     const txMeta = this.getTx(txId)
     txMeta.status = status
