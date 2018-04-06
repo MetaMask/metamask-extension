@@ -6,6 +6,8 @@ const Identicon = require('./identicon')
 const connect = require('react-redux').connect
 const ethUtil = require('ethereumjs-util')
 const classnames = require('classnames')
+const { compose } = require('recompose')
+const { withRouter } = require('react-router-dom')
 
 const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
@@ -19,6 +21,8 @@ const {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
 } = require('../selectors.js')
+
+const { DEFAULT_ROUTE } = require('../routes')
 
 function mapStateToProps (state) {
   return {
@@ -42,7 +46,10 @@ SignatureRequest.contextTypes = {
   t: PropTypes.func,
 }
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(SignatureRequest)
+module.exports = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps)
+)(SignatureRequest)
 
 
 inherits(SignatureRequest, Component)
@@ -229,10 +236,14 @@ SignatureRequest.prototype.renderFooter = function () {
 
   return h('div.request-signature__footer', [
     h('button.btn-secondary--lg.request-signature__footer__cancel-button', {
-      onClick: cancel,
+      onClick: event => {
+        cancel(event).then(() => this.props.history.push(DEFAULT_ROUTE))
+      },
     }, this.context.t('cancel')),
     h('button.btn-primary--lg', {
-      onClick: sign,
+      onClick: event => {
+        sign(event).then(() => this.props.history.push(DEFAULT_ROUTE))
+      },
     }, this.context.t('sign')),
   ])
 }

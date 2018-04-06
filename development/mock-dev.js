@@ -36,15 +36,28 @@ log.setLevel('debug')
 //
 
 const qs = require('qs')
-let queryString = qs.parse(window.location.href.split('#')[1])
-let selectedView = queryString.view || 'first time'
+const routerPath = window.location.href.split('#')[1]
+let queryString = {}
+let selectedView
+
+if (routerPath) {
+  queryString = qs.parse(routerPath.split('?')[1])
+}
+
+selectedView = queryString.view || 'first time'
 const firstState = states[selectedView]
 updateQueryParams(selectedView)
 
-function updateQueryParams(newView) {
+function updateQueryParams (newView) {
   queryString.view = newView
   const params = qs.stringify(queryString)
-  window.location.href = window.location.href.split('#')[0] + `#${params}`
+  const locationPaths = window.location.href.split('#')
+  const routerPath = locationPaths[1] || ''
+  const newPath = locationPaths[0] + '#' + routerPath.split('?')[0] + `?${params}`
+
+  if (window.location.href !== newPath) {
+    window.location.href = newPath
+  }
 }
 
 //
