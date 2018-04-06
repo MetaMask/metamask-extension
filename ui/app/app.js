@@ -9,8 +9,6 @@ const classnames = require('classnames')
 
 // init
 const InitializeScreen = require('../../mascara/src/app/first-time').default
-// mascara
-const MascaraSeedScreen = require('../../mascara/src/app/first-time/seed-screen').default
 // accounts
 const SendTransactionScreen2 = require('./components/send/send-v2-container')
 const ConfirmTxScreen = require('./conf-tx')

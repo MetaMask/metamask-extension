@@ -516,7 +516,9 @@ ConfirmSendEther.prototype.render = function () {
           }, this.context.t('cancel')),
 
           // Accept Button
-          h('button.btn-confirm.page-container__footer-button.allcaps', [this.context.t('confirm')]),
+          h('button.btn-confirm.page-container__footer-button.allcaps', {
+            onClick: event => this.onSubmit(event),
+          }, this.context.t('confirm')),
         ]),
       ]),
     ])
