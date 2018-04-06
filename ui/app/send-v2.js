@@ -31,6 +31,11 @@ const {
 } = require('./components/send/send-utils')
 const { isValidAddress } = require('./util')
 
+import PageContainer from './components/page-container/page-container.component'
+import SendHeader from './components/send_/send-header/send-header.container'
+import PageContainerContent from './components/page-container/page-container-content.component'
+import PageContainerFooter from './components/page-container/page-container-footer.component'
+
 SendTransactionScreen.contextTypes = {
   t: PropTypes.func,
 }
@@ -179,25 +184,6 @@ SendTransactionScreen.prototype.componentDidUpdate = function (prevProps) {
       this.updateGas()
     }
   }
-}
-
-SendTransactionScreen.prototype.renderHeader = function () {
-  const { selectedToken, clearSend, goHome } = this.props
-
-  return h('div.page-container__header', [
-
-    h('div.page-container__title', selectedToken ? this.context.t('sendTokens') : this.context.t('sendETH')),
-
-    h('div.page-container__subtitle', this.context.t('onlySendToEtherAddress')),
-
-    h('div.page-container__header-close', {
-      onClick: () => {
-        clearSend()
-        goHome()
-      },
-    }),
-
-  ])
 }
 
 SendTransactionScreen.prototype.renderErrorMessage = function (errorType) {
@@ -477,7 +463,7 @@ SendTransactionScreen.prototype.renderMemoRow = function () {
 }
 
 SendTransactionScreen.prototype.renderForm = function () {
-  return h('.page-container__content', {}, [
+  return h(PageContainerContent, [
     h('.send-v2__form', [
       this.renderFromRow(),
 
@@ -486,9 +472,6 @@ SendTransactionScreen.prototype.renderForm = function () {
       this.renderAmountRow(),
 
       this.renderGasRow(),
-
-      // this.renderMemoRow(),
-
     ]),
   ])
 }
@@ -506,26 +489,22 @@ SendTransactionScreen.prototype.renderFooter = function () {
   const missingTokenBalance = selectedToken && !tokenBalance
   const noErrors = !amountError && toError === null
 
-  return h('div.page-container__footer', [
-    h('button.btn-secondary--lg.page-container__footer-button', {
-      onClick: () => {
-        clearSend()
-        goHome()
-      },
-    }, this.context.t('cancel')),
-    h('button.btn-primary--lg.page-container__footer-button', {
-      disabled: !noErrors || !gasTotal || missingTokenBalance,
-      onClick: event => this.onSubmit(event),
-    }, this.context.t('next')),
-  ])
+  return h(PageContainerFooter, {
+    onCancel: () => {
+      clearSend()
+      goHome()
+    },
+    onSubmit: e => this.onSubmit(e),
+    disabled: !noErrors || !gasTotal || missingTokenBalance,
+  })
 }
 
 SendTransactionScreen.prototype.render = function () {
   return (
 
-    h('div.page-container', [
+    h(PageContainer, [
 
-      this.renderHeader(),
+      h(SendHeader),
 
       this.renderForm(),
 
