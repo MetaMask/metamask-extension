@@ -162,9 +162,9 @@ function setupController (initState, initLangCode) {
     asStream(controller.store),
     debounce(1000),
     storeTransform(versionifyData),
-    storeTransform(syncDataWithExtension),
+    storeTransform(persistData),
     (error) => {
-      log.error('pump hit error', error)
+      log.error('MetaMask - Persistence pipeline failed', error)
     }
   )
 
@@ -173,7 +173,10 @@ function setupController (initState, initLangCode) {
     return versionedData
   }
 
-  function syncDataWithExtension(state) {
+  function persistData(state) {
+    if (!state.data) {
+      throw new Error('MetaMask - updated state is missing data', state)
+    }
     if (localStore.isSupported) {
       localStore.set(state)
       .catch((err) => {
