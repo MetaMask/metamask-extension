@@ -27,8 +27,11 @@ module.exports = {
 
 function transformState (state) {
   const newState = state
-  if (newState.config.provider.type === 'testnet') {
-    newState.config.provider.type = 'ropsten'
+  const { config } = newState
+  if ( config && config.provider ) {
+    if (config.provider.type === 'testnet') {
+      newState.config.provider.type = 'ropsten'
+    }
   }
   return newState
 }
