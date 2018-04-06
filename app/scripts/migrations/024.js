@@ -13,24 +13,20 @@ const clone = require('clone')
 module.exports = {
   version,
 
-  migrate: function (originalVersionedData) {
+  migrate: async function (originalVersionedData) {
     const versionedData = clone(originalVersionedData)
     versionedData.meta.version = version
-    try {
-      const state = versionedData.data
-      const newState = transformState(state)
-      versionedData.data = newState
-    } catch (err) {
-      console.warn(`MetaMask Migration #${version}` + err.stack)
-    }
-    return Promise.resolve(versionedData)
+    const state = versionedData.data
+    const newState = transformState(state)
+    versionedData.data = newState
+    return versionedData
   },
 }
 
 function transformState (state) {
   const newState = state
+  if (!newState.TransactionController) return newState
   const transactions = newState.TransactionController.transactions
-
   newState.TransactionController.transactions = transactions.map((txMeta, _, txList) => {
     if (
       txMeta.status === 'unapproved' &&

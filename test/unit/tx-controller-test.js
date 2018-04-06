@@ -239,19 +239,20 @@ describe('Transaction Controller', function () {
         from: 'a7df1beDBF813f57096dF77FCd515f0B3900e402',
         to: null,
         data: '68656c6c6f20776f726c64',
+        random: 'hello world',
       }
 
-      txController._normalizeTxParams(txParams)
+      let normalizedTxParams = txController._normalizeTxParams(txParams)
 
-      assert(!txParams.chainId, 'their should be no chainId')
-      assert(!txParams.to, 'their should be no to address if null')
-      assert.equal(txParams.from.slice(0, 2), '0x', 'from should be hexPrefixd')
-      assert.equal(txParams.data.slice(0, 2), '0x', 'data should be hexPrefixd')
+      assert(!normalizedTxParams.chainId, 'their should be no chainId')
+      assert(!normalizedTxParams.to, 'their should be no to address if null')
+      assert.equal(normalizedTxParams.from.slice(0, 2), '0x', 'from should be hexPrefixd')
+      assert.equal(normalizedTxParams.data.slice(0, 2), '0x', 'data should be hexPrefixd')
+      assert(!('random' in normalizedTxParams), 'their should be no random key in normalizedTxParams')
 
       txParams.to = 'a7df1beDBF813f57096dF77FCd515f0B3900e402'
-
-      txController._normalizeTxParams(txParams)
-      assert.equal(txParams.to.slice(0, 2), '0x', 'to should be hexPrefixd')
+      normalizedTxParams = txController._normalizeTxParams(txParams)
+      assert.equal(normalizedTxParams.to.slice(0, 2), '0x', 'to should be hexPrefixd')
 
     })
   })

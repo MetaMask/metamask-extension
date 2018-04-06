@@ -35,6 +35,7 @@ function mapDispatchToProps (dispatch) {
 
 inherits(PrivateKeyImportView, Component)
 function PrivateKeyImportView () {
+  this.createKeyringOnEnter = this.createKeyringOnEnter.bind(this)
   Component.call(this)
 }
 
@@ -51,7 +52,7 @@ PrivateKeyImportView.prototype.render = function () {
         h('input.new-account-import-form__input-password', {
           type: 'password',
           id: 'private-key-box',
-          onKeyPress: () => this.createKeyringOnEnter(),
+          onKeyPress: e => this.createKeyringOnEnter(e),
         }),
 
       ]),
