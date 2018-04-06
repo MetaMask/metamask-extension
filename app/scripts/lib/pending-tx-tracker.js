@@ -181,6 +181,7 @@ module.exports = class PendingTransactionTracker extends EventEmitter {
     const address = txMeta.txParams.from
     const completed = this.getCompletedTransactions(address)
     const sameNonce = completed.filter((otherMeta) => {
+      if( otherTxMeta.hash === txMeta.hash )return false
       return otherMeta.txParams.nonce === txMeta.txParams.nonce
     })
     return sameNonce.length > 0
